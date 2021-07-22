@@ -5,7 +5,7 @@ import { debounce } from 'lodash'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import { TimebarVisualisations } from 'types'
 import { selectTimebarVisualisation } from 'features/app/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { CALLBACK_URL_KEY, useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveActivityDataviews,
   selectActiveTrackDataviews,
@@ -28,7 +28,8 @@ export const TimeRangeAtom = atom<Range | null>({
   default: null,
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
-      // const { redirectUrl } = useLoginRedirect()
+      const redirectUrl =
+        typeof window !== undefined ? window.localStorage.getItem(CALLBACK_URL_KEY) : null
       const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
       const dispatch = useDispatch()
 
@@ -37,16 +38,15 @@ export const TimeRangeAtom = atom<Range | null>({
           setSelf({
             ...urlTimeRange,
           })
-          // TODO read redirect URl without hoook to avoid recoil build crash
-          // } else if (redirectUrl) {
+        } else if (redirectUrl) {
           // Workaround to get start and end date from redirect url as the
           // location reducer isn't ready until initialDispatch
-          // const url = new URL(redirectUrl)
-          // const start = url.searchParams.get('start')
-          // const end = url.searchParams.get('end')
-          // if (start && end) {
-          //   setSelf({ start, end })
-          // }
+          const url = new URL(redirectUrl)
+          const start = url.searchParams.get('start')
+          const end = url.searchParams.get('end')
+          if (start && end) {
+            setSelf({ start, end })
+          }
         }
       }
       const updateTimerangeDebounced = debounce(dispatch(updateUrlTimerange), 1000)

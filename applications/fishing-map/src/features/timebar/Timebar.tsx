@@ -199,12 +199,13 @@ const TimebarWrapper = () => {
     syncedTracks: (TimebarTrack | null)[] | undefined
     syncedTracksEvents: RenderedEvent[][]
   }>(() => {
-    if (!tracks) {
+    if (!tracks || !tracks.filter(Boolean).length) {
       return {
         syncedTracks: [],
         syncedTracksEvents: [],
       }
     }
+    // TODO: restore and fix for vessels with no events (as private_ecuador_vms workspace)
     if (tracks.length !== tracksEvents.length) {
       console.warn('tracks and tracks events dont have the same length')
       return {
@@ -215,14 +216,14 @@ const TimebarWrapper = () => {
     const syncedTracks = []
     const syncedTracksEvents = []
     for (let i = 0; i < tracks.length; i++) {
-      if (tracks[i] && tracksEvents[i] && tracksEvents[i].length) {
+      if (tracks[i] && tracksEvents[i]) {
         syncedTracks.push(tracks[i])
         syncedTracksEvents.push(tracksEvents[i])
       }
     }
     return {
-      syncedTracks,
-      syncedTracksEvents,
+      syncedTracks: syncedTracks,
+      syncedTracksEvents: syncedTracksEvents,
     }
   }, [tracks, tracksEvents])
 

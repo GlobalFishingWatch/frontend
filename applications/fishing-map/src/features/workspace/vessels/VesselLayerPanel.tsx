@@ -84,9 +84,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     />
   )
 
-  const loading =
-    trackResource?.status === ResourceStatus.Loading ||
-    infoResource?.status === ResourceStatus.Loading
+  const trackLoading = trackResource?.status === ResourceStatus.Loading
+  const infoLoading = infoResource?.status === ResourceStatus.Loading
 
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
@@ -133,16 +132,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {loading ? (
-            <IconButton
-              loading
-              className={styles.loadingIcon}
-              size="small"
-              tooltip={t('vessel.loading', 'Loading vessel track')}
-            />
-          ) : (
-            <Fragment>
-              {layerActive && (
+          <Fragment>
+            {layerActive && !infoLoading ? (
+              trackLoading ? (
+                <IconButton
+                  loading
+                  className={styles.loadingIcon}
+                  size="small"
+                  tooltip={t('vessel.loading', 'Loading vessel track')}
+                />
+              ) : (
                 <Fragment>
                   <Color
                     dataview={dataview}
@@ -153,7 +152,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   />
                   <FitBounds hasError={trackError} trackResource={trackResource} />
                 </Fragment>
-              )}
+              )
+            ) : null}
+            {infoLoading ? (
+              <IconButton
+                loading
+                className={styles.loadingIcon}
+                size="small"
+                tooltip={t('vessel.loadingInfo', 'Loading vessel info')}
+              />
+            ) : (
               <ExpandedContainer
                 visible={infoOpen}
                 onClickOutside={closeExpandedContainer}
@@ -205,9 +213,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   tooltipPlacement="top"
                 />
               </ExpandedContainer>
-              <Remove dataview={dataview} />
-            </Fragment>
-          )}
+            )}
+            <Remove dataview={dataview} />
+          </Fragment>
         </div>
       </div>
     </div>
