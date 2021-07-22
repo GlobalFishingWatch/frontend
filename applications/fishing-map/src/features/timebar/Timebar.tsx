@@ -205,7 +205,7 @@ const TimebarWrapper = () => {
         syncedTracksEvents: [],
       }
     }
-    // TODO: restore and fix for vessels with no events (as private_ecuador_vms workspace)
+
     if (tracks.length !== tracksEvents.length) {
       console.warn('tracks and tracks events dont have the same length')
       return {
@@ -213,6 +213,7 @@ const TimebarWrapper = () => {
         syncedTracksEvents: [],
       }
     }
+
     const syncedTracks = []
     const syncedTracksEvents = []
     for (let i = 0; i < tracks.length; i++) {
