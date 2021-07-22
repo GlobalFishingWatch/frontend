@@ -1,13 +1,16 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { history } from 'redux-first-router'
 import { useCallback, useEffect } from 'react'
 import { parse } from 'qs'
 import GFWAPI, { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { QueryParams } from 'types'
 import useLocalStorage from 'hooks/use-local-storage'
-import { selectCurrentLocation, selectLocationPayload } from 'routes/routes.selectors'
-import { initialDispatch } from 'store'
-import { ROUTE_TYPES } from './routes'
+import {
+  selectCurrentLocation,
+  selectLocationPayload,
+  selectLocationType,
+} from 'routes/routes.selectors'
+// import { initialDispatch } from 'store'
+import { parseWorkspace, ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 
 export const CALLBACK_URL_KEY = 'CallbackUrl'
@@ -48,21 +51,27 @@ export const useLoginRedirect = () => {
 
 export const useReplaceLoginUrl = () => {
   const { redirectUrl, cleanRedirectUrl } = useLoginRedirect()
+  const dispatch = useDispatch()
+  const locationPayload = useSelector(selectLocationPayload)
+  const locationType = useSelector(selectLocationType)
 
   useEffect(() => {
-    const { replace } = history()
-    const query = parse(window.location.search, { ignoreQueryPrefix: true })
-    const accessToken = query[ACCESS_TOKEN_STRING]
-    if (redirectUrl && query[CALLBACK_URL_PARAM]) {
-      const url = new URL(redirectUrl)
-      if (accessToken) {
-        url.searchParams.set(ACCESS_TOKEN_STRING, accessToken as string)
-      }
-      replace(url.toString())
+    const currentQuery = parse(window.location.search, { ignoreQueryPrefix: true })
+    const accessToken = currentQuery[ACCESS_TOKEN_STRING]
+    if (redirectUrl && currentQuery[CALLBACK_URL_PARAM]) {
+      const query = {
+        ...parseWorkspace(new URL(redirectUrl).search),
+        [ACCESS_TOKEN_STRING]: accessToken,
+      } as QueryParams
+
+      dispatch(
+        updateLocation(locationType, {
+          query,
+          payload: locationPayload,
+          replaceQuery: true,
+        })
+      )
       cleanRedirectUrl()
-    }
-    if (initialDispatch) {
-      initialDispatch()
     }
     return () => {
       // ensures the localStorage is clean when the app is unmounted

@@ -54,7 +54,12 @@ export type WorkspaceState = {
   bivariateDataviews?: BivariateDataviews
   activityCategory?: WorkspaceActivityCategory
 }
-export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState
+
+export type RedirectParam = {
+  'access-token'?: string
+}
+
+export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState & RedirectParam
 
 export type MapCoordinates = {
   latitude: number
