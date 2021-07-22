@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.0.5
+
+### Patch Changes
+
+- 3fec1989: handle missing track crash
+
 ## 2.0.4
 
 ### Patch Changes

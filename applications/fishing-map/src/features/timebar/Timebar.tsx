@@ -199,12 +199,13 @@ const TimebarWrapper = () => {
     syncedTracks: (TimebarTrack | null)[] | undefined
     syncedTracksEvents: RenderedEvent[][]
   }>(() => {
-    if (!tracks) {
+    if (!tracks || !tracks.filter(Boolean).length) {
       return {
         syncedTracks: [],
         syncedTracksEvents: [],
       }
     }
+
     if (tracks.length !== tracksEvents.length) {
       console.warn('tracks and tracks events dont have the same length')
       return {
@@ -212,17 +213,18 @@ const TimebarWrapper = () => {
         syncedTracksEvents: [],
       }
     }
+
     const syncedTracks = []
     const syncedTracksEvents = []
     for (let i = 0; i < tracks.length; i++) {
-      if (tracks[i] && tracksEvents[i] && tracksEvents[i].length) {
+      if (tracks[i] && tracksEvents[i]) {
         syncedTracks.push(tracks[i])
         syncedTracksEvents.push(tracksEvents[i])
       }
     }
     return {
-      syncedTracks,
-      syncedTracksEvents,
+      syncedTracks: syncedTracks,
+      syncedTracksEvents: syncedTracksEvents,
     }
   }, [tracks, tracksEvents])
 

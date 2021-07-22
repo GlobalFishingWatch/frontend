@@ -46,6 +46,9 @@ const getCoords = (tracks, outerScale) => {
   if (tracks === null) return null
   const coordTracks = []
   tracks.forEach((track) => {
+    if (!track) {
+      return
+    }
     const coordTrack = {
       color: track.color,
       segmentsOffsetY: track.segmentsOffsetY,

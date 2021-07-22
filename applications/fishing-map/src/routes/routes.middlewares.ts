@@ -1,4 +1,5 @@
 import { Middleware, Dispatch } from 'redux'
+import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { RootState } from 'store'
@@ -23,6 +24,9 @@ export const routerQueryMiddleware: Middleware =
         newAction.query = {
           ...prevQuery,
           ...newAction.query,
+        }
+        if (newAction.query[ACCESS_TOKEN_STRING]) {
+          delete newAction.query[ACCESS_TOKEN_STRING]
         }
       }
       const { query } = action

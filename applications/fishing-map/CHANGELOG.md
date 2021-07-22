@@ -1,12 +1,19 @@
 # @globalfishingwatchapp/fishing-map
 
-## 1.1.9
+## 1.1.10
 
 ### Patch Changes
 
 - Include resources slice, selectors and helpers to consume API
 - Updated dependencies [undefined]
   - @globalfishingwatch/dataviews-client@11.8.1
+
+## 1.1.9
+
+### Patch Changes
+
+- Updated dependencies [3fec1989]
+  - @globalfishingwatch/timebar@2.0.5
 
 ## 1.1.8
 

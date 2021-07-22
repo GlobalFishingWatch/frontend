@@ -5,6 +5,8 @@ import { Dictionary } from '@reduxjs/toolkit'
 import { invert, isObject, isString, transform } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
+export const PATH_BASENAME = process.env.NODE_ENV === 'production' ? '/map' : ''
+
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
@@ -198,12 +200,13 @@ const decoder = (str: string, decoder?: any, charset?: string, type?: string) =>
   }
 }
 
-const parseWorkspace = (queryString: string) => {
+export const parseWorkspace = (queryString: string) => {
   const parsed = parse(queryString, {
     arrayLimit: 1000,
     depth: 20,
     decoder,
     strictNullHandling: true,
+    ignoreQueryPrefix: true,
   })
   const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
   const parsedDetokenized = deepDetokenizeValues(parsedWithAbbr)
@@ -219,7 +222,7 @@ const parseWorkspace = (queryString: string) => {
 }
 
 const routesOptions: Options = {
-  initialDispatch: false,
+  basename: PATH_BASENAME,
   querySerializer: {
     stringify: stringifyWorkspace,
     parse: parseWorkspace,
