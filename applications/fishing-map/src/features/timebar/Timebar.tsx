@@ -199,30 +199,31 @@ const TimebarWrapper = () => {
     syncedTracks: (TimebarTrack | null)[] | undefined
     syncedTracksEvents: RenderedEvent[][]
   }>(() => {
-    if (!tracks) {
+    if (!tracks || !tracks.filter(Boolean).length) {
       return {
         syncedTracks: [],
         syncedTracksEvents: [],
       }
     }
-    if (tracks.length !== tracksEvents.length) {
-      console.warn('tracks and tracks events dont have the same length')
-      return {
-        syncedTracks: [],
-        syncedTracksEvents: [],
-      }
-    }
-    const syncedTracks = []
-    const syncedTracksEvents = []
-    for (let i = 0; i < tracks.length; i++) {
-      if (tracks[i] && tracksEvents[i] && tracksEvents[i].length) {
-        syncedTracks.push(tracks[i])
-        syncedTracksEvents.push(tracksEvents[i])
-      }
-    }
+    // TODO: restore and fix for vessels with no events (as private_ecuador_vms workspace)
+    // if (tracks.length !== tracksEvents.length) {
+    //   console.warn('tracks and tracks events dont have the same length')
+    //   return {
+    //     syncedTracks: [],
+    //     syncedTracksEvents: [],
+    //   }
+    // }
+    // const syncedTracks = []
+    // const syncedTracksEvents = []
+    // for (let i = 0; i < tracks.length; i++) {
+    //   if (tracks[i] && tracksEvents[i] && tracksEvents[i].length) {
+    //     syncedTracks.push(tracks[i])
+    //     syncedTracksEvents.push(tracksEvents[i])
+    //   }
+    // }
     return {
-      syncedTracks,
-      syncedTracksEvents,
+      syncedTracks: tracks,
+      syncedTracksEvents: tracksEvents,
     }
   }, [tracks, tracksEvents])
 
