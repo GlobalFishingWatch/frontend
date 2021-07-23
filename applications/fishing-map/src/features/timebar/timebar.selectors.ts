@@ -18,6 +18,7 @@ import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.selectors'
+import { getVesselResourceQuery } from 'features/resources/resources.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { EVENTS_COLORS } from 'data/config'
 
@@ -72,7 +73,7 @@ export const selectTracksGraphs = createSelector(
     if (!vesselDataviews || vesselDataviews.length > 2 || !resources) return
 
     const graphs = vesselDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      const { url } = getVesselResourceQuery(dataview, DatasetTypes.Tracks) || { url: '' }
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
@@ -102,8 +103,10 @@ const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
     const vesselsEvents = trackDataviews.map((dataview) => {
-      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-      // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      const { url: tracksUrl } = getVesselResourceQuery(dataview, DatasetTypes.Tracks) || {
+        url: '',
+      }
+      // const { url: eventsUrl } = getVesselResourceQuery(dataview, DatasetTypes.Events) || { url: '' }
       const eventsResources = resolveDataviewEventsResources(dataview)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
