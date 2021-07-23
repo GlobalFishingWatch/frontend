@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect'
 import { resolveDataviewsResourceQueries } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
-import { isGuestUser } from 'features/user/user.selectors'
-import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import { selectResources } from './resources.slice'
 
@@ -23,7 +21,6 @@ export const selectVisibleResources = createSelector(
 )
 
 export const selectDataviewsResourceQueries = createSelector(
-  [selectDataviewInstancesResolved, isGuestUser, selectDebugOptions],
-  (dataviewInstances, guestUser, { thinning }) =>
-    resolveDataviewsResourceQueries(dataviewInstances ?? [])
+  [selectDataviewInstancesResolved],
+  (dataviewInstances) => resolveDataviewsResourceQueries(dataviewInstances ?? [])
 )

@@ -93,6 +93,7 @@ export const resolveDataviewDatasetResource = (
   )
 
   if (!datasetConfig) return {}
+
   const url = resolveEndpoint(dataset, datasetConfig)
 
   if (!url) return {}
@@ -104,14 +105,14 @@ export const resolveDataviewResourceByDatasetType = (
   dataview: UrlDataviewInstance<Generators.Type>,
   datasetType: DatasetTypes
 ): Resource | undefined => {
-  const resource = resolveDataviewDatasetResource(dataview, datasetType)
-  if (resource.url && resource.dataset && resource.datasetConfig) {
+  const { url, dataset, datasetConfig } = resolveDataviewDatasetResource(dataview, datasetType)
+  if (url && dataset && datasetConfig) {
     return {
       dataviewId: dataview.dataviewId as number,
-      url: resource.url,
-      dataset: resource.dataset,
-      datasetConfig: resource.datasetConfig,
-    } as Resource
+      url: url,
+      dataset: dataset,
+      datasetConfig: datasetConfig,
+    }
   }
 }
 
