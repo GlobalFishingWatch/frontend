@@ -92,6 +92,7 @@ export const resolveDataviewDatasetResource = (
   )
 
   if (!datasetConfig) return {}
+
   const url = resolveEndpoint(dataset, datasetConfig)
 
   if (!url) return {}

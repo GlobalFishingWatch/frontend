@@ -55,7 +55,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
 
       if (
         process.env.NODE_ENV === 'development' ||
-        process.env.REACT_APP_USE_DATASETS_MOCK === 'true'
+        process.env.REACT_APP_USE_LOCAL_DATASETS === 'true'
       ) {
         const mockedDatasets = await import('./datasets.mock')
         datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')

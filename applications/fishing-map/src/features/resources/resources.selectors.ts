@@ -28,17 +28,17 @@ export const selectVisibleResources = createSelector(
   }
 )
 
-const getVesselResourceQuery = (
+export const getVesselResourceQuery = (
   dataview: UrlDataviewInstance<Generators.Type>,
-  datasetType: DatasetTypes
+  datasetType: DatasetTypes | DatasetTypes[]
 ): Resource | null => {
-  const resource = resolveDataviewDatasetResource(dataview, datasetType)
-  if (resource.url && resource.dataset && resource.datasetConfig) {
+  const { url, dataset, datasetConfig } = resolveDataviewDatasetResource(dataview, datasetType)
+  if (url && dataset && datasetConfig) {
     return {
       dataviewId: dataview.dataviewId as number,
-      url: resource.url,
-      dataset: resource.dataset,
-      datasetConfig: resource.datasetConfig,
+      url: url,
+      dataset: dataset,
+      datasetConfig: datasetConfig,
     }
   }
   return null
