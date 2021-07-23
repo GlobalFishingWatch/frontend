@@ -17,6 +17,7 @@
   "event": {
     "avgDuration": "Avg Duration",
     "avgSpeed": "Avg Speed",
+    "authStatus": "Authorization status",
     "distance": "Distance",
     "encounter": "encounter",
     "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
@@ -38,6 +39,7 @@
     "minCoords": "Min coordinates",
     "minuteAbbreviated": "{{count}}m",
     "minuteAbbreviated_plural": "{{count}}m",
+    "nextPort": "Next port traveled",
     "port": "Port",
     "portAction": "Docked for",
     "portAt": "Docked at {{port}} for",
@@ -51,7 +53,8 @@
     "fishingEvent": "Fishing in {{ regionName }}",
     "fishingGroup": "{{ count }} Fishing events in {{ regionName }}",
     "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
-    "noDescription": "No description found"
+    "noDescription": "No description found",
+    "vesselInvolved": "Vessel involved in the event"
   },
   "map": {
     "loading": "Map loading",

@@ -1,9 +1,14 @@
-import { ActivityEvent, ActivityEventGroup } from 'types/activity'
-import { GroupRegions, MarineRegionType } from 'features/regions/regions.slice'
+import { ActivityEvent } from 'types/activity'
 
 export const groupEvents = (events: ActivityEvent[]) => {
   console.error('not implemented yet')
 }
+
+export const getEncounterStatus = (event: ActivityEvent): string => {
+  return event.encounter?.authorizationStatus || ''
+}
+
+
 // const equals = (a: GroupRegions[], b: GroupRegions[]) =>
 //   a.length === b.length && a.every((v, i) => v.type === b[i].type && v.id === b[i].id)
 
