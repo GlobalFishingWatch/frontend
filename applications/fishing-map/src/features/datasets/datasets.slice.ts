@@ -15,6 +15,25 @@ import { LATEST_CARRIER_DATASET_ID } from 'data/config'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
+export const USE_PRESENCE_POC = process.env.REACT_APP_USE_PRESENCE_POC === 'true'
+export const PRESENCE_POC_ID = 'global-presence-tracks'
+
+const parsePresencePOCDataset = (dataset: Dataset) => {
+  if (USE_PRESENCE_POC && dataset.id.includes(PRESENCE_POC_ID)) {
+    const pocDataset = {
+      ...dataset,
+      endpoints: dataset.endpoints?.map((endpoint) => {
+        if (endpoint.id === 'carriers-tracks') {
+          return { ...endpoint, pathTemplate: '/prototype/vessels/{{vesselId}}/tracks' }
+        }
+        return endpoint
+      }),
+    }
+    return pocDataset
+  }
+  return dataset
+}
+
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
   string,
@@ -24,7 +43,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
-    return dataset
+    return parsePresencePOCDataset(dataset)
   } catch (e) {
     return rejectWithValue({
       status: e.status || e.code,
@@ -65,7 +84,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         const mockedDatasets = await import('./datasets.mock')
         datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
       }
-      return datasets
+      return datasets.map(parsePresencePOCDataset)
     } catch (e) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
