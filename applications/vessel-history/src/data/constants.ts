@@ -6,7 +6,6 @@ export const SEARCH_MIN_CHARACTERS = 3
 // TODO: Remove this and load searchable datasets from dataview
 export const BASE_DATASET =
   'public-global-fishing-vessels:v20201001,public-global-carrier-vessels:v20201001'
-export const FISHING_EVENTS_DATASET = 'public-global-fishing-events:v20201001'
 export const SHOW_VESSEL_API_SOURCE =
   process.env.REACT_APP_WORKSPACE_ENV === 'production' ? false : true
 

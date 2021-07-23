@@ -1,2 +1,2 @@
 export * from './resources-slice'
-export { default as resolveResourceEndpoint } from './resources-endpoint'
+export { default as resolveDataviewsResourceQueries } from './resources-resolvers'
