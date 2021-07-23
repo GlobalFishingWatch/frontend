@@ -45,16 +45,30 @@
 
 .eventIcon {
   position: relative;
-}
-
-.eventIcon i {
-  display: inline-block;
   width: 31px;
   margin: 0 9px 0 0;
   height: 31px;
   border: 1px solid rgba(34, 68, 126, 0.1);
   border-radius: 15.5px;
-  background: #fff url('../../../../assets/icons/fishingEvent.svg') no-repeat center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eventIcon.fishing {
+  background-color: #fff;
+}
+
+.eventIcon.encounter.unmatched {
+  background-color: #fae9a0;
+}
+
+.eventIcon.loitering {
+  background-color: #ddbef0;
+}
+
+.eventIcon svg {
+  display: inline-block;
 }
 
 .eventIcon .eventCount {
