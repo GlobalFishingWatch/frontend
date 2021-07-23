@@ -24,7 +24,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import { removeDatasetVersion } from 'features/datasets/datasets.utils'
-import { USE_PRESENCE_POC } from 'features/datasets/datasets.slice'
+import { PRESENCE_POC_INTERACTION, USE_PRESENCE_POC } from 'features/datasets/datasets.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
 import { t } from 'features/i18n/i18n'
@@ -180,7 +180,7 @@ export const useClickedEventConnect = () => {
           feature.temporalgrid.sublayerInteractionType
         )
         const isPresencePOCFeature =
-          feature.temporalgrid.sublayerInteractionType === ('presence-POC' as any)
+          feature.temporalgrid.sublayerInteractionType === PRESENCE_POC_INTERACTION
         return hasSubLayerInteraction || (USE_PRESENCE_POC && isPresencePOCFeature)
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
