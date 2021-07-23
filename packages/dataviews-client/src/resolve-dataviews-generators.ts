@@ -354,10 +354,11 @@ export function getDataviewsGeneratorConfigs(
         // Some VMS presence layers have interaction, this is the way of
         // allowing it but keeping it disabled in the global one
         interactionTypes[0] === 'presence'
-          ? dataview?.config?.presenceDetails === true
-            ? 'presence-detail'
+          ? dataview?.config?.presenceInteraction
+            ? (`presence-${dataview?.config?.presenceInteraction}` as HeatmapAnimatedInteractionType)
             : 'presence'
           : (interactionTypes[0] as HeatmapAnimatedInteractionType)
+
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
         datasets,

@@ -6,10 +6,7 @@ import { DatasetTypes, ResourceStatus, Vessel } from '@globalfishingwatch/api-ty
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Segment } from '@globalfishingwatch/data-transforms'
-import {
-  UrlDataviewInstance,
-  resolveDataviewDatasetResource,
-} from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -19,6 +16,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { isGuestUser } from 'features/user/user.selectors'
+import { getVesselResourceQuery } from 'features/resources/resources.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -35,8 +33,8 @@ const showDebugVesselId = process.env.NODE_ENV === 'development'
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+  const { url: infoUrl } = getVesselResourceQuery(dataview, DatasetTypes.Vessels) || { url: '' }
+  const { url: trackUrl } = getVesselResourceQuery(dataview, DatasetTypes.Tracks) || { url: '' }
   const infoResource = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const guestUser = useSelector(isGuestUser)

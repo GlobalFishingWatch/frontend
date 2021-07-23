@@ -23,6 +23,6 @@ export const selectVisibleResources = createSelector(
 )
 
 export const selectDataviewsResourceQueries = createSelector(
-  [selectDataviewInstancesResolved, isGuestUser, selectDebugOptions],
-  (dataviewInstances, guestUser, { thinning }) => resolveResourceEndpoint(dataviewInstances ?? [])
+  [selectDataviewInstancesResolved],
+  (dataviewInstances) => resolveResourceEndpoint(dataviewInstances ?? [])
 )

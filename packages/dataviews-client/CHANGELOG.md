@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.9.0
+
+### Minor Changes
+
+- 0c82c8d3: support presence-POC interactionType
+-
 ## 11.8.1
 
 ### Patch Changes

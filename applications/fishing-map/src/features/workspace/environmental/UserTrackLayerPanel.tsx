@@ -5,16 +5,14 @@ import { useTranslation } from 'react-i18next'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
-import {
-  resolveDataviewDatasetResource,
-  UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
+import { getVesselResourceQuery } from 'features/resources/resources.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
@@ -62,7 +60,7 @@ function UserTrackLayerPanel({
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = dataset?.ownerId === userId
 
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
+  const { url: trackUrl } = getVesselResourceQuery(dataview, DatasetTypes.UserTracks) || { url: '' }
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const trackError = trackResource?.status === ResourceStatus.Error
 

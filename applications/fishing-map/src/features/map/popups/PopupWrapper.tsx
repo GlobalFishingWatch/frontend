@@ -69,7 +69,10 @@ function PopupWrapper({
               ))
             case DataviewCategory.Presence:
               return features.map((feature, i) => {
-                if (feature.temporalgrid?.sublayerInteractionType === 'presence-detail') {
+                if (
+                  feature.temporalgrid?.sublayerInteractionType === 'presence-detail' ||
+                  feature.temporalgrid?.sublayerInteractionType === ('presence-POC' as any)
+                ) {
                   return (
                     <FishingTooltipRow
                       key={i + (feature.title as string)}

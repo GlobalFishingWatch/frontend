@@ -24,6 +24,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import { removeDatasetVersion } from 'features/datasets/datasets.utils'
+import { USE_PRESENCE_POC } from 'features/datasets/datasets.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
 import { t } from 'features/i18n/i18n'
@@ -172,15 +173,15 @@ export const useClickedEventConnect = () => {
     // get temporal grid clicked features and order them by sublayerindex
     const fishingActivityFeatures = event.features
       .filter((feature) => {
-        if (!feature.temporalgrid) {
+        if (!feature.temporalgrid?.visible) {
           return false
         }
-        return (
-          feature.temporalgrid.visible &&
-          SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-            feature.temporalgrid.sublayerInteractionType
-          )
+        const hasSubLayerInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+          feature.temporalgrid.sublayerInteractionType
         )
+        const isPresencePOCFeature =
+          feature.temporalgrid.sublayerInteractionType === ('presence-POC' as any)
+        return hasSubLayerInteraction || (USE_PRESENCE_POC && isPresencePOCFeature)
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
