@@ -18,7 +18,7 @@ import { ThinningLevels, THINNING_LEVELS } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { selectDatasets } from 'features/datasets/datasets.slice'
+import { PRESENCE_POC_ID, selectDatasets } from 'features/datasets/datasets.slice'
 import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
@@ -28,32 +28,6 @@ import { isGuestUser } from 'features/user/user.selectors'
 import { selectActivityCategoryFn } from 'features/app/app.selectors'
 import { selectAllDataviews } from './dataviews.slice'
 
-export const selectDataviews = createSelector(
-  [selectAllDataviews, isGuestUser, selectDebugOptions],
-  (dataviews, guestUser, { thinning }) => {
-    return dataviews?.map((dataview) => {
-      if (thinning) {
-        // Insert thinning queryParams depending on the user type
-        const thinningConfig = guestUser
-          ? THINNING_LEVELS[ThinningLevels.Aggressive]
-          : THINNING_LEVELS[ThinningLevels.Default]
-        const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-          id,
-          value,
-        }))
-        return {
-          ...dataview,
-          datasetsConfig: dataview.datasetsConfig?.map((datasetConfig) => {
-            if (datasetConfig.endpoint !== EndpointId.Tracks) return datasetConfig
-            return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
-          }),
-        }
-      }
-      return dataview
-    })
-  }
-)
-
 const defaultBasemapDataview = {
   id: 'basemap',
   config: {
@@ -62,7 +36,7 @@ const defaultBasemapDataview = {
   },
 }
 
-export const selectBasemapDataview = createSelector([selectDataviews], (dataviews) => {
+export const selectBasemapDataview = createSelector([selectAllDataviews], (dataviews) => {
   const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
   return basemapDataview || defaultBasemapDataview
 })
@@ -95,8 +69,38 @@ export const selectDataviewInstancesMerged = createSelector(
   }
 )
 
+export const selectDataviewInstancesMergedThinning = createSelector(
+  [selectDataviewInstancesMerged, isGuestUser, selectDebugOptions],
+  (dataviewInstances, guestUser, { thinning }) => {
+    return dataviewInstances?.map((dataviewInstance) => {
+      if (thinning) {
+        // Insert thinning queryParams depending on the user type
+        const thinningConfig = guestUser
+          ? THINNING_LEVELS[ThinningLevels.Aggressive]
+          : THINNING_LEVELS[ThinningLevels.Default]
+        const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+          id,
+          value,
+        }))
+        return {
+          ...dataviewInstance,
+          datasetsConfig: dataviewInstance.datasetsConfig?.map((datasetConfig) => {
+            if (
+              datasetConfig.endpoint !== EndpointId.Tracks ||
+              datasetConfig.datasetId.includes(PRESENCE_POC_ID) // Thinning disabled for BigQuery tracks POC
+            )
+              return datasetConfig
+            return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
+          }),
+        }
+      }
+      return dataviewInstance
+    })
+  }
+)
+
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMerged, selectDataviews, selectDatasets],
+  [selectDataviewInstancesMergedThinning, selectAllDataviews, selectDatasets],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
