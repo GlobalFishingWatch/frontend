@@ -16,14 +16,21 @@ const getPriorityzedFieldValue = <T = any>(
   dataValues: { source: VesselAPISource; value: T }[]
 ): T[] => {
   const fieldPriority = getFieldPriority(field)
-  return dataValues
+  const values = dataValues
     .filter(({ value }) => value !== null && value !== undefined)
     .map((dataValue) => ({
       value: dataValue.value,
       priority: fieldPriority.indexOf(dataValue.source),
     }))
-    .sort((a, b) => (a.priority < b.priority ? 1 : -1))
-    .map(({ value }) => value)
+    .sort((a, b) => (a.priority > b.priority ? 1 : -1))
+    .map(({ value }) =>
+      // return unique values when it's an array
+      Array.isArray(value)
+        ? (value.filter((item, index) => index === value.indexOf(item)) as any)
+        : value
+    )
+
+  return values
 }
 
 const priorityzeFieldValue = <T>(
