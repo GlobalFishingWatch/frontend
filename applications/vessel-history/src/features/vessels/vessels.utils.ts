@@ -30,7 +30,7 @@ const getPriorityzedFieldValue = <T = any>(
         : value
     )
 
-  return values
+  return values.filter((value) => value)
 }
 
 const priorityzeFieldValue = <T>(
