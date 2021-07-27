@@ -5,7 +5,7 @@ import { Dictionary } from '@reduxjs/toolkit'
 import { invert, isObject, isString, transform } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-export const PATH_BASENAME = process.env.NODE_ENV === 'production' ? '/map' : ''
+export const PATH_BASENAME = process.env.REACT_APP_WORKSPACE_ENV === 'production' ? '/map' : ''
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
