@@ -1,7 +1,8 @@
 .activityContainer {
-  padding: 8px;
+  padding: var(--space-XS);
 }
 
+/*
 .divider {
   opacity: 0.1;
   background-color: #22447e;
@@ -22,44 +23,52 @@
   background-size: 15px 15px;
   top: -6px;
   padding: 0 21px 0 10px;
-}
+} */
 
 .event {
-  padding: 0 7px;
+  padding: var(--space-XS);
   display: flex;
   align-items: center;
+  border-bottom: var(--border);
 }
 
 .event .eventData .date {
-  opacity: 0.5;
-  color: #22447e;
-  font-family: Roboto, 'Courier New', Courier, monospace;
-  font-size: 14px;
-  letter-spacing: 0;
-  line-height: 16px;
+  font-size: 1rem;
+  line-height: var(--space-S);
 }
 
 .event .eventData .description {
-  color: #22447e;
-  font-family: Roboto, 'Courier New', Courier, monospace;
-  font-size: 16px;
-  letter-spacing: 0;
-  line-height: 18px;
-  margin-top: 3px;
+  font: var(--font-XS);
+  line-height: var(--space-S);
+  margin-top: var(--space-XS);
 }
 
 .eventIcon {
   position: relative;
-}
-
-.eventIcon i {
-  display: inline-block;
   width: 31px;
   margin: 0 9px 0 0;
   height: 31px;
   border: 1px solid rgba(34, 68, 126, 0.1);
   border-radius: 15.5px;
-  background: #fff url('../../../../assets/icons/fishingEvent.svg') no-repeat center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eventIcon.fishing {
+  background-color: #fff;
+}
+
+.eventIcon.encounter.unmatched {
+  background-color: #fae9a0;
+}
+
+.eventIcon.loitering {
+  background-color: #ddbef0;
+}
+
+.eventIcon svg {
+  display: inline-block;
 }
 
 .eventIcon .eventCount {
@@ -94,4 +103,8 @@
 
 .event .actions.oneIcon {
   min-width: 28px;
+}
+
+.spinnerFull {
+  height: calc(100vh - 110px);
 }

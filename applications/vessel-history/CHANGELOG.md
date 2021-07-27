@@ -7,10 +7,14 @@
 - Updated dependencies [720f160a]
   - @globalfishingwatch/layer-composer@8.10.4
 
+
 ## 0.0.75
 
 ### Patch Changes
 
+- Include resources slice, selectors and helpers to consume API
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@11.8.1
 - Updated dependencies [828f0c4b]
   - @globalfishingwatch/layer-composer@8.10.3
 

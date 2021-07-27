@@ -18,6 +18,7 @@
 
 ### Patch Changes
 
+- Include resources slice, selectors and helpers to consume API
 - Updated dependencies [0c82c8d3]
   - @globalfishingwatch/dataviews-client@11.9.0
 

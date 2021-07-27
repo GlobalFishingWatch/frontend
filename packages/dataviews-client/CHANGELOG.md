@@ -5,6 +5,12 @@
 ### Minor Changes
 
 - 0c82c8d3: support presence-POC interactionType
+-
+## 11.8.1
+
+### Patch Changes
+
+- Include resources slice, selectors and helpers to consume API
 
 ## 11.8.0
 

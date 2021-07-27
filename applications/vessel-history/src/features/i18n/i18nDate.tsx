@@ -5,22 +5,23 @@ import { Locale } from 'types'
 import i18n from './i18n'
 
 type Dates = {
-  date: string
+  date: string | number
   format?: DateTimeFormatOptions
 }
 
 type formatI18DateParams = { format?: DateTimeFormatOptions; locale?: Locale }
 
 export const formatI18nDate = (
-  date: string,
+  date: string | number,
   { format = DateTime.DATE_MED, locale = i18n.language as Locale }: formatI18DateParams = {}
 ) => {
-  return `${DateTime.fromISO(date).toUTC().setLocale(locale).toLocaleString(format)}${
+  const dateTimeDate = typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
+  return `${dateTimeDate.toUTC().setLocale(locale).toLocaleString(format)}${
     format === DateTime.DATETIME_MED ? ' UTC' : ''
   }`
 }
 
-export const useI18nDate = (date: string, format = DateTime.DATE_MED) => {
+export const useI18nDate = (date: string | number, format = DateTime.DATE_MED) => {
   const { i18n } = useTranslation()
   return formatI18nDate(date, { format, locale: i18n.language as Locale })
 }
