@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.10.1
+
+### Patch Changes
+
+- fix release
+
 ## 11.10.0
 
 ### Minor Changes
