@@ -17,6 +17,7 @@ import {
   TooltipEventFeature,
   useClickedEventConnect,
 } from 'features/map/map.hooks'
+import { PRESENCE_POC_INTERACTION } from 'features/datasets/datasets.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { isUserLogged } from 'features/user/user.selectors'
@@ -124,9 +125,10 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                 <button
                   key={i}
                   disabled={
-                    !SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-                      feature.temporalgrid?.sublayerInteractionType || ''
-                    )
+                    ![
+                      ...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
+                      PRESENCE_POC_INTERACTION,
+                    ].includes(feature.temporalgrid?.sublayerInteractionType || '')
                   }
                   className={styles.vesselRow}
                   onClick={() => onVesselClick(vessel)}

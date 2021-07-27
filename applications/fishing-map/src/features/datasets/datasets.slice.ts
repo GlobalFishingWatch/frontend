@@ -2,6 +2,7 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { memoize, uniqBy, without, kebabCase } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
+import { HeatmapAnimatedInteractionType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
@@ -16,6 +17,7 @@ import { LATEST_CARRIER_DATASET_ID } from 'data/config'
 export const DATASETS_USER_SOURCE_ID = 'user'
 
 export const USE_PRESENCE_POC = process.env.REACT_APP_USE_PRESENCE_POC === 'true'
+export const PRESENCE_POC_INTERACTION = 'presence-POC' as HeatmapAnimatedInteractionType
 export const PRESENCE_POC_ID = 'global-presence-tracks'
 
 const parsePresencePOCDataset = (dataset: Dataset) => {

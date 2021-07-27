@@ -75,7 +75,7 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to all features</h2>
         <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">account</a> to access advanced analysis features, data downloads and advanced search options. Registration takes two minutes.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Previous Global Fishing Watch map</h2>
-        <p><a href="https://globalfishingwatch.org/legacy-map">Access the previous Global Fishing Watch map</a> to migrate workspaces until 18 October 2021.</p>
+        <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Access the previous Global Fishing Watch map</a> to migrate workspaces until 18 October 2021.</p>
       `,
     },
     es: {
@@ -97,7 +97,7 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Regístrese para tener acceso gratuito a todas las funciones</h2>
         <p><a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">Regístrese para obtener una cuenta gratuita de Global Fishing Watch</ a > para acceder a funciones de análisis avanzado, descargas de datos y opciones de búsqueda avanzada. El registro demora dos minutos. </p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Mapa anterior de Global Fishing Watch</h2>
-        <p><a href="https://globalfishingwatch.org/legacy-map">Acceda aquí a la versión anterior del mapa de Global Fishing Watch</a> para migrar los espacios de trabajo hasta el 18 de octubre de 2021.</p>
+        <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Acceda aquí a la versión anterior del mapa de Global Fishing Watch</a> para migrar los espacios de trabajo hasta el 18 de octubre de 2021.</p>
       `,
     },
     fr: {
@@ -117,7 +117,7 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Enregistrez-vous pour l’accès à toutes les fonctionnalités</h2>
         <p>Vous pouvez vous <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">créer un compte Global Fishing Watch</a> gratuitement pour accéder aux fonctionnalités avancées d’analyse, téléchargement de données et enregistrement d’espaces de travail. </p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Previous Global Fishing Watch map</h2>
-        <p><a href="https://globalfishingwatch.org/legacy-map">Accédez à l’ancienne version de la carte Global Fishing Watch</a> pour migrer vos espaces de travail avant le 18 octobre 2021. </p>
+        <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Accédez à l’ancienne version de la carte Global Fishing Watch</a> pour migrer vos espaces de travail avant le 18 octobre 2021. </p>
       `,
     },
     id: {
@@ -137,7 +137,7 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Daftar untuk akses gratis ke semua fitur</h2>
         <p>Daftarkan <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">akun</a> Global Fishing Watch gratis untuk mengakses fitur analisis lanjutan, unduhan data, dan menyimpan ruang kerja Anda. Pendaftaran memakan waktu dua menit.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Peta Global Fishing Watch sebelumnya</h2>
-        <p><a href="https://globalfishingwatch.org/legacy-map">Akses peta Global Fishing Watch sebelumnya di sini untuk memigrasikan ruang kerja hingga 18 Oktober 2021.</a></p>
+        <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Akses peta Global Fishing Watch sebelumnya di sini untuk memigrasikan ruang kerja hingga 18 Oktober 2021.</a></p>
       `,
     },
   },

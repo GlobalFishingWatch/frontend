@@ -24,9 +24,10 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import { removeDatasetVersion } from 'features/datasets/datasets.utils'
-import { USE_PRESENCE_POC } from 'features/datasets/datasets.slice'
+import { PRESENCE_POC_INTERACTION, USE_PRESENCE_POC } from 'features/datasets/datasets.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
+import { isGuestUser } from 'features/user/user.selectors'
 import { t } from 'features/i18n/i18n'
 import {
   selectDefaultMapGeneratorsConfig,
@@ -79,6 +80,7 @@ export const useGeneratorsConnect = () => {
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
+  const guestUser = useSelector(isGuestUser)
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
@@ -180,8 +182,8 @@ export const useClickedEventConnect = () => {
           feature.temporalgrid.sublayerInteractionType
         )
         const isPresencePOCFeature =
-          feature.temporalgrid.sublayerInteractionType === ('presence-POC' as any)
-        return hasSubLayerInteraction || (USE_PRESENCE_POC && isPresencePOCFeature)
+          feature.temporalgrid.sublayerInteractionType === PRESENCE_POC_INTERACTION
+        return hasSubLayerInteraction || (USE_PRESENCE_POC && isPresencePOCFeature && !guestUser)
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 

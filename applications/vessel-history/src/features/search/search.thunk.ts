@@ -9,7 +9,7 @@ const fetchData = async (query: string, offset: number, signal?: AbortSignal | n
   return await GFWAPI.fetch<any>(
     `/v1/vessels/search?datasets=${encodeURIComponent(
       BASE_DATASET
-    )}&limit=${RESULTS_PER_PAGE}&offset=${offset}&query=${encodeURIComponent(query)}`,
+    )}&limit=${RESULTS_PER_PAGE}&offset=${offset}&query=${encodeURIComponent(query)}&useTMT=true`,
     {
       signal,
     }
