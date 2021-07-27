@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 9.1.0
+
+### Minor Changes
+
+- ed6965f3: Added vessel event icons
+
 ## 9.0.1
 
 ### Patch Changes
