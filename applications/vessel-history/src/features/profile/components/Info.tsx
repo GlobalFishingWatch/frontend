@@ -77,15 +77,17 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       <div className={styles.infoContainer}>
         {vessel && (
           <Fragment>
-            <ImageGallery
-              items={imageList}
-              onImageLoad={() => setImageLoading(false)}
-              showThumbnails={false}
-              showBullets={true}
-              slideDuration={5000}
-              showPlayButton={imageList.length > 1}
-              additionalClass={cx(styles.imageGallery, { [styles.loading]: imageLoading })}
-            />
+            {imageList.length > 0 && (
+              <ImageGallery
+                items={imageList}
+                onImageLoad={() => setImageLoading(false)}
+                showThumbnails={false}
+                showBullets={true}
+                slideDuration={5000}
+                showPlayButton={imageList.length > 1}
+                additionalClass={cx(styles.imageGallery, { [styles.loading]: imageLoading })}
+              />
+            )}
             <div className={styles.identifiers}>
               <InfoField
                 vesselName={vessel.shipname ?? ''}
