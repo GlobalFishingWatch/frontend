@@ -172,8 +172,8 @@
     "schema": {}
   },
   "public-eez-land": {
-    "name": "EEZ (marineregions.org)",
-    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
+    "name": "ZEE (Fuente: Marine Regions)",
+    "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200MN), versión 11. Fuente: marineregions.org",
     "schema": {}
   },
   "public-fd-chlorophyl-ascension-v2": {
