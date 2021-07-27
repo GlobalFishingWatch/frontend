@@ -2,7 +2,7 @@
   "name": "@globalfishingwatchapp/fishing-map",
   "version": "1.1.10",
   "private": true,
-  "homepage": "https://globalfishingwatch.org/map",
+  "homepage": ".",
   "scripts": {
     "start": "PORT=3003 react-scripts start",
     "build": "react-scripts build",
