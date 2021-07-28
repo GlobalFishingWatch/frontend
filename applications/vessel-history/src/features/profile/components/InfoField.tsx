@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import I18nDate from 'features/i18n/i18nDate'
+import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { ValueItem } from 'types'
 import styles from './Info.module.css'
 import InfoFieldHistory from './InfoFieldHistory'
@@ -68,7 +69,6 @@ const InfoField: React.FC<ListItemProps> = ({
   const [modalOpen, setModalOpen] = useState(false)
   const openModal = useCallback(() => setModalOpen(true), [])
   const closeModal = useCallback(() => setModalOpen(false), [])
-  const defaultEmptyValue = '-'
 
   const current: ValueItem = {
     value,
@@ -89,7 +89,7 @@ const InfoField: React.FC<ListItemProps> = ({
     <div className={styles.identifierField}>
       <label>{t(`vessel.${label}` as any, label)}</label>
       <div>
-        <div onClick={openModal}>{value.length > 0 ? value : defaultEmptyValue}</div>
+        <div onClick={openModal}>{value.length > 0 ? value : DEFAULT_EMPTY_VALUE}</div>
         {valuesHistory.length > 1 && (
           <button className={styles.moreValues} onClick={openModal}>
             {t('vessel.plusPreviousValuesByField', defaultValue, {

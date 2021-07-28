@@ -51,3 +51,5 @@ export const EVENTS_COLORS: Record<string, string> = {
   fishing: '#fff',
   fishingLabels: '#163f89',
 }
+
+export const DEFAULT_EMPTY_VALUE = ' --- '

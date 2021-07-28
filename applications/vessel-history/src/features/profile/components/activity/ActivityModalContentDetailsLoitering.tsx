@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { ActivityEvent } from 'types/activity'
 
 interface ActivityModalContentProps {
@@ -20,7 +21,7 @@ const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> 
           ? t('event.formatDistanceKm', '{{value}} km', {
               value: event.loitering?.totalDistanceKilometers.toFixed(2),
             })
-          : '-'}
+          : DEFAULT_EMPTY_VALUE}
       </p>
       <p>
         <span>{t('event.medianSpeed', 'Median Speed')}:</span>{' '}
@@ -28,7 +29,7 @@ const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> 
           ? t('event.formatSpeedKnots', '{{value}} knots', {
               value: event.loitering?.medianSpeedKnots.toFixed(2),
             })
-          : '-'}
+          : DEFAULT_EMPTY_VALUE}
       </p>
       <p>
         <span>{t('event.position', 'Position')}:</span>{' '}

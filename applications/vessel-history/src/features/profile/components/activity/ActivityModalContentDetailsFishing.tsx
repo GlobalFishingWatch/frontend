@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { ActivityEvent } from 'types/activity'
 
 interface ActivityModalContentProps {
@@ -20,7 +21,7 @@ const ActivityModalContentDetailsFishing: React.FC<ActivityModalContentProps> = 
           ? t('event.formatDistanceKm', '{{value}} km', {
               value: event.fishing?.totalDistanceKm.toFixed(2),
             })
-          : '-'}
+          : DEFAULT_EMPTY_VALUE}
       </p>
       <p>
         <span>{t('event.avgSpeed', 'Avg Speed')}:</span>{' '}
