@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { VesselSearch as Vessel } from '@globalfishingwatch/api-types'
+import { EMPTY_DEFAULT_VALUE } from 'data/config'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
@@ -39,12 +40,12 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
       <Link
         to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId ?? 'NA']}
       >
-        <h3>{vessel?.shipname}</h3>
+        <h3>{vessel?.shipname ?? EMPTY_DEFAULT_VALUE}</h3>
       </Link>
       <div className={styles.identifiers}>
         <div>
           <label>{t('vessel.flag', 'flag')}</label>
-          {flagLabel}
+          {flagLabel ?? EMPTY_DEFAULT_VALUE}
         </div>
         {vessel.mmsi && (
           <div>
@@ -67,7 +68,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
         {SHOW_VESSEL_API_SOURCE && (
           <div>
             <label>{t('vessel.source', 'source')}</label>
-            {sourceAPI.join('+')}
+            {sourceAPI.join('+') ?? EMPTY_DEFAULT_VALUE}
           </div>
         )}
         <div>
@@ -78,17 +79,17 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               {vessel.firstTransmissionDate ? (
                 <I18nDate date={vessel.firstTransmissionDate} />
               ) : (
-                '-'
+                EMPTY_DEFAULT_VALUE
               )}{' '}
               {t('common.to', 'to')}{' '}
               {vessel.lastTransmissionDate ? (
                 <I18nDate date={vessel.lastTransmissionDate} />
               ) : (
-                ' - '
+                EMPTY_DEFAULT_VALUE
               )}
             </Fragment>
           ) : (
-            '-'
+            EMPTY_DEFAULT_VALUE
           )}
         </div>
         {props.saved && (
