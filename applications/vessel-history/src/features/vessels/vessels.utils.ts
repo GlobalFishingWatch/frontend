@@ -8,7 +8,7 @@ export const formatVesselProfileId = (dataset: string, gfwId: string, tmtId: str
 }
 
 const getFieldPriority = (field: VesselFieldKey): VesselAPISource[] => {
-  return [VesselAPISource.TMT, VesselAPISource.GFW]
+  return [VesselAPISource.GFW, VesselAPISource.TMT]
 }
 
 const getPriorityzedFieldValue = <T = any>(
