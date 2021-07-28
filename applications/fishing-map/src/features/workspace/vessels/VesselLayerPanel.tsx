@@ -7,8 +7,8 @@ import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import {
-  UrlDataviewInstance,
   resolveDataviewDatasetResource,
+  UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'

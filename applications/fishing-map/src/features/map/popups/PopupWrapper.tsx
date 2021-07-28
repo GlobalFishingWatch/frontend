@@ -7,6 +7,7 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
+import { PRESENCE_POC_INTERACTION, USE_PRESENCE_POC } from 'features/datasets/datasets.slice'
 import styles from './Popup.module.css'
 import FishingTooltipRow from './FishingLayers'
 import PresenceTooltipRow from './PresenceLayers'
@@ -69,7 +70,11 @@ function PopupWrapper({
               ))
             case DataviewCategory.Presence:
               return features.map((feature, i) => {
-                if (feature.temporalgrid?.sublayerInteractionType === 'presence-detail') {
+                if (
+                  feature.temporalgrid?.sublayerInteractionType === 'presence-detail' ||
+                  (USE_PRESENCE_POC &&
+                    feature.temporalgrid?.sublayerInteractionType === PRESENCE_POC_INTERACTION)
+                ) {
                   return (
                     <FishingTooltipRow
                       key={i + (feature.title as string)}

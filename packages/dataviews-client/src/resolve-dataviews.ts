@@ -8,6 +8,7 @@ import {
   EndpointId,
   Resource,
 } from '@globalfishingwatch/api-types'
+import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { resolveEndpoint } from '.'
 
@@ -92,11 +93,27 @@ export const resolveDataviewDatasetResource = (
   )
 
   if (!datasetConfig) return {}
+
   const url = resolveEndpoint(dataset, datasetConfig)
 
   if (!url) return {}
 
   return { dataset, datasetConfig, url }
+}
+
+export const resolveDataviewResourceByDatasetType = (
+  dataview: UrlDataviewInstance<Generators.Type>,
+  datasetType: DatasetTypes
+): Resource | undefined => {
+  const { url, dataset, datasetConfig } = resolveDataviewDatasetResource(dataview, datasetType)
+  if (url && dataset && datasetConfig) {
+    return {
+      dataviewId: dataview.dataviewId as number,
+      url: url,
+      dataset: dataset,
+      datasetConfig: datasetConfig,
+    }
+  }
 }
 
 // Workaround to support multiple resource for the same dataset type (fishing, loitering...)
@@ -119,18 +136,9 @@ export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): R
     }
     return { ...dataview, datasets: [dataset], datasetsConfig: [datasetConfig] }
   })
-  const resources = dataviews?.flatMap((dataview) => {
-    const resource = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-    if (resource.url && resource.dataset && resource.datasetConfig) {
-      return {
-        dataviewId: dataview.dataviewId as number,
-        url: resource.url,
-        dataset: resource.dataset,
-        datasetConfig: resource.datasetConfig,
-      } as Resource
-    }
-    return []
-  })
+  const resources = dataviews?.flatMap(
+    (dataview) => resolveDataviewResourceByDatasetType(dataview, DatasetTypes.Events) ?? []
+  )
   return resources
 }
 

@@ -137,7 +137,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
     const temporalgridDataviews = selectActivityDataviews(state) || []
-
     if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
       return

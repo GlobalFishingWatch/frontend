@@ -15,8 +15,7 @@ import {
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
-import { selectVesselActivity } from 'features/vessels/activity/vessels-activity.slice'
-import { ActivityEventGroup } from 'types/activity'
+import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.slice'
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
@@ -32,7 +31,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const vesselId = useSelector(selectVesselId)
-  const activities = useSelector(selectVesselActivity)
+  const eventsForTracks = useSelector(selectEventsForTracks)
+  const activities = useMemo(() => eventsForTracks.map((e) => e.data).flat(), [eventsForTracks])
   const vesselTmtId = useSelector(selectTmtId)
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
@@ -60,9 +60,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         dataset: vesselDataset,
         vesselMatchId: vesselTmtId,
         source: '',
-        activities: activities.flatMap((groups: ActivityEventGroup) => {
-          return groups.entries
-        }),
+        activities: activities,
         savedOn: DateTime.utc().toISO(),
       },
     })
@@ -79,15 +77,17 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       <div className={styles.infoContainer}>
         {vessel && (
           <Fragment>
-            <ImageGallery
-              items={imageList}
-              onImageLoad={() => setImageLoading(false)}
-              showThumbnails={false}
-              showBullets={true}
-              slideDuration={5000}
-              showPlayButton={imageList.length > 1}
-              additionalClass={cx(styles.imageGallery, { [styles.loading]: imageLoading })}
-            />
+            {imageList.length > 0 && (
+              <ImageGallery
+                items={imageList}
+                onImageLoad={() => setImageLoading(false)}
+                showThumbnails={false}
+                showBullets={true}
+                slideDuration={5000}
+                showPlayButton={imageList.length > 1}
+                additionalClass={cx(styles.imageGallery, { [styles.loading]: imageLoading })}
+              />
+            )}
             <div className={styles.identifiers}>
               <InfoField
                 vesselName={vessel.shipname ?? ''}

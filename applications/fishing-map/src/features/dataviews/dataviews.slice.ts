@@ -20,8 +20,8 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: number[], { signal, rejectWithValue, getState }) => {
-    const existingIds = selectIds(getState() as RootState) as string[]
-    const uniqIds = Array.from(new Set([...ids, ...existingIds]))
+    const existingIds = selectIds(getState() as RootState) as number[]
+    const uniqIds = ids.filter((id) => !existingIds.includes(id))
     try {
       let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${uniqIds.join(',')}`, {
         signal,

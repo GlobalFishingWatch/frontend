@@ -1,35 +1,24 @@
 import React, { Fragment } from 'react'
-import { useTranslation } from 'react-i18next'
-import { DateTime, DurationUnit } from 'luxon'
-import { ActivityEvent, EventType } from 'types/activity'
+import { DateTime } from 'luxon'
 import I18nDate from 'features/i18n/i18nDate'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
 import styles from './Activity.module.css'
 
 interface ActivityDateProps {
-  event: ActivityEvent
+  event: RenderedEvent
 }
 
 const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement => {
   const event = props.event
-  const { t } = useTranslation()
-  const start = DateTime.fromISO(event.start)
-  const end = DateTime.fromISO(event.end)
-  const unit: DurationUnit = 'hours' 
-  const diff = Math.round(end.diff(start).as(unit) * 10) /10
-  if (event.type === EventType.Fishing) {
-    return (
-      <Fragment>
-        {event.start && event.end && (
-          <div className={styles.date}>
-            <I18nDate date={event.start} format={DateTime.DATETIME_SHORT} /> - {t('event.diffHours', '{{ diff }} hours', { diff: diff })}
-          </div>
-        )}
-      </Fragment>
-    )
-  }
-
   return (
-    <Fragment></Fragment>
+    <Fragment>
+      {event.start && event.end && (
+        <div className={styles.date}>
+          <I18nDate date={event.start as number} format={DateTime.DATETIME_SHORT} /> -{' '}
+          {event.durationDescription}
+        </div>
+      )}
+    </Fragment>
   )
 }
 

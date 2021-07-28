@@ -2,6 +2,7 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { memoize, uniqBy, without, kebabCase } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
+import { HeatmapAnimatedInteractionType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
@@ -15,6 +16,26 @@ import { LATEST_CARRIER_DATASET_ID } from 'data/config'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
+export const USE_PRESENCE_POC = process.env.REACT_APP_USE_PRESENCE_POC === 'true'
+export const PRESENCE_POC_INTERACTION = 'presence-POC' as HeatmapAnimatedInteractionType
+export const PRESENCE_POC_ID = 'global-presence-tracks'
+
+const parsePresencePOCDataset = (dataset: Dataset) => {
+  if (USE_PRESENCE_POC && dataset.id.includes(PRESENCE_POC_ID)) {
+    const pocDataset = {
+      ...dataset,
+      endpoints: dataset.endpoints?.map((endpoint) => {
+        if (endpoint.id === 'carriers-tracks') {
+          return { ...endpoint, pathTemplate: '/prototype/vessels/{{vesselId}}/tracks' }
+        }
+        return endpoint
+      }),
+    }
+    return pocDataset
+  }
+  return dataset
+}
+
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
   string,
@@ -24,7 +45,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
-    return dataset
+    return parsePresencePOCDataset(dataset)
   } catch (e) {
     return rejectWithValue({
       status: e.status || e.code,
@@ -37,7 +58,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
-    const uniqIds = ids?.length ? Array.from(new Set([...ids, ...existingIds])) : []
+    const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
     try {
       const workspacesParams = {
         ...(uniqIds?.length && { ids: uniqIds }),
@@ -60,12 +81,12 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
       if (
         process.env.NODE_ENV === 'development' ||
-        process.env.REACT_APP_USE_DATASETS_MOCK === 'true'
+        process.env.REACT_APP_USE_LOCAL_DATASETS === 'true'
       ) {
         const mockedDatasets = await import('./datasets.mock')
         datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
       }
-      return datasets
+      return datasets.map(parsePresencePOCDataset)
     } catch (e) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }

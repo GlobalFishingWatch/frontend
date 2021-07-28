@@ -1,5 +1,17 @@
 # @globalfishingwatch/layer-composer
 
+## 8.10.4
+
+### Patch Changes
+
+- 720f160a: render polygons highlight above basemap
+
+## 8.10.3
+
+### Patch Changes
+
+- 828f0c4b: render polygons highlight below basemap
+
 ## 8.10.2
 
 ### Patch Changes
