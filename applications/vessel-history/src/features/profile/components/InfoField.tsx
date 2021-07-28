@@ -56,6 +56,7 @@ interface ListItemProps {
   value: string
   valuesHistory?: ValueItem[]
   vesselName: string
+  hideSince?: ConstrainBooleanParameters
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -63,6 +64,7 @@ const InfoField: React.FC<ListItemProps> = ({
   label,
   valuesHistory = [],
   vesselName,
+  hideSince = true,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
@@ -98,7 +100,7 @@ const InfoField: React.FC<ListItemProps> = ({
             })}
           </button>
         )}
-        {valuesHistory.length === 1 && since && (
+        {!hideSince && valuesHistory.length === 1 && since && (
           <p className={styles.rangeLabel}>
             {t('common.since', 'Since')} <I18nDate date={since} />
           </p>
