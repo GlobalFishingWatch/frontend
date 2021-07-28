@@ -27,7 +27,10 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const sourceAPI = getVesselAPISource(vessel)
 
   return (
-    <div className={styles.vesselItem}>
+    <Link
+      to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId ?? 'NA']}
+      className={styles.vesselItem}
+    >
       {props.saved && onDeleteClick && (
         <IconButton
           type="warning"
@@ -37,11 +40,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           onClick={onDeleteClick}
         ></IconButton>
       )}
-      <Link
-        to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId ?? 'NA']}
-      >
-        <h3>{vessel?.shipname ?? EMPTY_DEFAULT_VALUE}</h3>
-      </Link>
+      <h3>{vessel?.shipname ?? EMPTY_DEFAULT_VALUE}</h3>
       <div className={styles.identifiers}>
         <div>
           <label>{t('vessel.flag', 'flag')}</label>
@@ -99,7 +98,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           </div>
         )}
       </div>
-    </div>
+    </Link>
   )
 }
 
