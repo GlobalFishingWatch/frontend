@@ -58,7 +58,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
-    const uniqIds = ids?.length ? Array.from(new Set([...ids, ...existingIds])) : []
+    const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
     try {
       const workspacesParams = {
         ...(uniqIds?.length && { ids: uniqIds }),
