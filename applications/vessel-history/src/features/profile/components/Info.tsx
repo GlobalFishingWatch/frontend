@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
 import { DateTime } from 'luxon'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
-import { EMPTY_DEFAULT_VALUE } from 'data/config'
+import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselWithHistory } from 'types'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
@@ -91,63 +91,63 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             )}
             <div className={styles.identifiers}>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.name}
                 value={vessel.shipname}
                 valuesHistory={vessel.history.shipname.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.type}
-                value={vessel.type ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.type ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.vesselType.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.flag}
                 value={vessel.flag}
                 valuesHistory={vessel.history.flag.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.mmsi}
-                value={vessel.mmsi ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.mmsi ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.mmsi.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.imo}
-                value={vessel.imo ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.imo ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.imo.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.callsign}
-                value={vessel.callsign ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.callsign ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.callsign.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.geartype}
-                value={vessel.geartype ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.geartype ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.geartype.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.length}
-                value={vessel.length ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.length ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.length.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.grossTonnage}
-                value={vessel.grossTonnage ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.grossTonnage ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.grossTonnage.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.depth}
-                value={vessel.depth ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.depth ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.depth.byDate}
               ></InfoField>
               <div className={styles.identifierField}>
@@ -160,20 +160,20 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 )}
               </div>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.builtYear}
-                value={vessel.builtYear ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.builtYear ?? DEFAULT_EMPTY_VALUE}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.owner}
-                value={vessel.owner ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.owner ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.owner.byDate}
               ></InfoField>
               <InfoField
-                vesselName={vessel.shipname ?? EMPTY_DEFAULT_VALUE}
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.operator}
-                value={vessel.operator ?? EMPTY_DEFAULT_VALUE}
+                value={vessel.operator ?? DEFAULT_EMPTY_VALUE}
                 valuesHistory={vessel.history.operator.byDate}
               ></InfoField>
             </div>

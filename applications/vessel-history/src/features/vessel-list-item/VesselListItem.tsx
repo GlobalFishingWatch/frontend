@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { VesselSearch as Vessel } from '@globalfishingwatch/api-types'
-import { EMPTY_DEFAULT_VALUE } from 'data/config'
+import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
@@ -40,11 +40,11 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           onClick={onDeleteClick}
         ></IconButton>
       )}
-      <h3>{vessel?.shipname ?? EMPTY_DEFAULT_VALUE}</h3>
+      <h3>{vessel?.shipname ?? DEFAULT_EMPTY_VALUE}</h3>
       <div className={styles.identifiers}>
         <div>
           <label>{t('vessel.flag', 'flag')}</label>
-          {flagLabel ?? EMPTY_DEFAULT_VALUE}
+          {flagLabel ?? DEFAULT_EMPTY_VALUE}
         </div>
         {vessel.mmsi && (
           <div>
@@ -67,7 +67,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
         {SHOW_VESSEL_API_SOURCE && (
           <div>
             <label>{t('vessel.source', 'source')}</label>
-            {sourceAPI.join('+') ?? EMPTY_DEFAULT_VALUE}
+            {sourceAPI.join('+') ?? DEFAULT_EMPTY_VALUE}
           </div>
         )}
         <div>
@@ -78,17 +78,17 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               {vessel.firstTransmissionDate ? (
                 <I18nDate date={vessel.firstTransmissionDate} />
               ) : (
-                EMPTY_DEFAULT_VALUE
+                DEFAULT_EMPTY_VALUE
               )}{' '}
               {t('common.to', 'to')}{' '}
               {vessel.lastTransmissionDate ? (
                 <I18nDate date={vessel.lastTransmissionDate} />
               ) : (
-                EMPTY_DEFAULT_VALUE
+                DEFAULT_EMPTY_VALUE
               )}
             </Fragment>
           ) : (
-            EMPTY_DEFAULT_VALUE
+            DEFAULT_EMPTY_VALUE
           )}
         </div>
         {props.saved && (

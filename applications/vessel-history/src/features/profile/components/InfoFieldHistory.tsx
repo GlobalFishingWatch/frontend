@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
-import { EMPTY_DEFAULT_VALUE } from 'data/config'
+import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { ValueItem } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import { VesselFieldLabel } from './InfoField'
@@ -63,7 +63,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                 <div>
                   <span className={styles.rangeLabel}>{t('common.since', 'Since')}: </span>
                   <span className={styles.rangeValue}>{since && <I18nDate date={since} />}</span>
-                  <span className={styles.rangeValue}>{!since && EMPTY_DEFAULT_VALUE}</span>
+                  <span className={styles.rangeValue}>{!since && DEFAULT_EMPTY_VALUE}</span>
                 </div>
               </div>
             </div>
