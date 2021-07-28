@@ -2,16 +2,13 @@
 
 exports[`<VesselListItem /> does not show source API in production environment 1`] = `
 <DocumentFragment>
-  <div
+  <a
     class="vesselItem"
+    to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
   >
-    <a
-      to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
-    >
-      <h3>
-        DON TITO
-      </h3>
-    </a>
+    <h3>
+      DON TITO
+    </h3>
     <div
       class="identifiers"
     >
@@ -40,22 +37,19 @@ exports[`<VesselListItem /> does not show source API in production environment 1
         from Jan 19, 2012 to Dec 13, 2020
       </div>
     </div>
-  </div>
+  </a>
 </DocumentFragment>
 `;
 
 exports[`<VesselListItem /> shows source API in environments others than production 1`] = `
 <DocumentFragment>
-  <div
+  <a
     class="vesselItem"
+    to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
   >
-    <a
-      to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
-    >
-      <h3>
-        DON TITO
-      </h3>
-    </a>
+    <h3>
+      DON TITO
+    </h3>
     <div
       class="identifiers"
     >
@@ -90,6 +84,6 @@ exports[`<VesselListItem /> shows source API in environments others than product
         from Jan 19, 2012 to Dec 13, 2020
       </div>
     </div>
-  </div>
+  </a>
 </DocumentFragment>
 `;
