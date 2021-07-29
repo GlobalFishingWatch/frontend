@@ -90,7 +90,7 @@ steps:
       - '-c'
       - |-
         gcloud beta run deploy \
-        vessel-history-`echo $BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,63)}'` \
+        `echo vessel-history-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'` \
         --project \
         $_RUN_PROJECT \
         --image \
