@@ -102,7 +102,6 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     origin: '',
     history: {
       ...vesselHistory,
-      flag: emptyHistory,
     },
     imageList: imageList ?? [],
   }
