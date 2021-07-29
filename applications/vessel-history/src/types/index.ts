@@ -34,6 +34,7 @@ export interface MapCoordinates extends CoordinatePosition {
 export interface FieldValueCounter<T = string> {
   counter: number
   name: T
+  source?: VesselAPISource
 }
 
 export interface VesselFieldHistory<T> {

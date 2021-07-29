@@ -50,19 +50,19 @@ const mergeHistoryFields = (
 ) => {
   const fieldValues = getPriorityzedFieldValue<VesselFieldsHistory>(field, dataValues)
 
-  const getFieldHistory = (
+  const getFieldHistory = <T>(
     fieldName: keyof VesselFieldsHistory,
+    fieldHistory: T[],
     vessel: VesselWithHistory,
     source: VesselAPISource
-  ) => {
-    const fieldActualValue =
-      vessel.history[fieldName].byDate.length === 0
-        ? vessel[fieldName as VesselFieldKey]
-        : undefined
-    return vessel.history[fieldName].byDate
-      .map((item) => ({ ...item, source } as ValueItem))
-      .concat(fieldActualValue ? [{ source, value: fieldActualValue } as ValueItem] : [])
+  ): T[] => {
+    const fieldActualValue = vessel[fieldName as VesselFieldKey]
+    // When the field has no history then use the actual value of it if it's defined
+    return fieldHistory.length === 0 && fieldActualValue !== undefined
+      ? [{ source, value: fieldActualValue } as any]
+      : fieldHistory.map((item) => ({ ...item, source }))
   }
+
   return (fieldValues || []).reduce(
     (acc, current, sourceIndex) =>
       typedKeys<VesselFieldsHistory>(current as VesselFieldsHistory).reduce(
@@ -71,8 +71,9 @@ const mergeHistoryFields = (
           [fieldName]: {
             byCount: (acc[fieldName]?.byCount || []).concat(current[fieldName].byCount),
             byDate: (acc[fieldName]?.byDate || []).concat(
-              getFieldHistory(
+              getFieldHistory<ValueItem>(
                 fieldName,
+                current[fieldName]?.byDate ?? [],
                 dataValues[sourceIndex].vessel,
                 dataValues[sourceIndex].source
               )
