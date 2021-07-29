@@ -7,6 +7,7 @@ import { DateTime } from 'luxon'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselWithHistory } from 'types'
+import I18nDate from 'features/i18n/i18nDate'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { OfflineVessel } from 'types/vessel'
@@ -176,6 +177,30 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 value={vessel.operator}
                 valuesHistory={vessel.history.operator.byDate}
               ></InfoField>
+
+              <div className={styles.identifierField}>
+                <label>{t(`vessel.aisTransmission_plural`, 'AIS Transmissions')}</label>
+                <div>
+                  {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
+                    <Fragment>
+                      {t('common.from', 'from')}{' '}
+                      {vessel.firstTransmissionDate ? (
+                        <I18nDate date={vessel.firstTransmissionDate} />
+                      ) : (
+                        DEFAULT_EMPTY_VALUE
+                      )}{' '}
+                      {t('common.to', 'to')}{' '}
+                      {vessel.lastTransmissionDate ? (
+                        <I18nDate date={vessel.lastTransmissionDate} />
+                      ) : (
+                        DEFAULT_EMPTY_VALUE
+                      )}
+                    </Fragment>
+                  ) : (
+                    DEFAULT_EMPTY_VALUE
+                  )}
+                </div>
+              </div>
             </div>
           </Fragment>
         )}

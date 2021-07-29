@@ -56,6 +56,7 @@ interface ListItemProps {
   value?: string
   valuesHistory?: ValueItem[]
   vesselName: string
+  hideSince?: ConstrainBooleanParameters
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -63,11 +64,15 @@ const InfoField: React.FC<ListItemProps> = ({
   label,
   valuesHistory = [],
   vesselName,
+  hideSince = true,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)
-  const openModal = useCallback(() => setModalOpen(true), [])
+  const openModal = useCallback(
+    () => valuesHistory.length > 1 && setModalOpen(true),
+    [valuesHistory.length]
+  )
   const closeModal = useCallback(() => setModalOpen(false), [])
 
   const current: ValueItem = {
@@ -79,10 +84,6 @@ const InfoField: React.FC<ListItemProps> = ({
     return t(`vessel.${plural}` as any, `${label}s`)
   }, [t, label])
 
-  const defaultValue = useMemo(() => {
-    return `+${valuesHistory.length} previous ${labelPlural.toLocaleUpperCase()}`
-  }, [valuesHistory, labelPlural])
-
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
 
   return (
@@ -92,13 +93,13 @@ const InfoField: React.FC<ListItemProps> = ({
         <div onClick={openModal}>{value}</div>
         {valuesHistory.length > 1 && (
           <button className={styles.moreValues} onClick={openModal}>
-            {t('vessel.plusPreviousValuesByField', defaultValue, {
+            {t('vessel.historicalValues', 'historical values', {
               quantity: valuesHistory.length,
               fieldLabel: labelPlural.toLocaleUpperCase(),
             })}
           </button>
         )}
-        {valuesHistory.length === 1 && since && (
+        {!hideSince && valuesHistory.length === 1 && since && (
           <p className={styles.rangeLabel}>
             {t('common.since', 'Since')} <I18nDate date={since} />
           </p>
