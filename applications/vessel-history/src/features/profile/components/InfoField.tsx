@@ -69,7 +69,10 @@ const InfoField: React.FC<ListItemProps> = ({
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)
-  const openModal = useCallback(() => setModalOpen(true), [])
+  const openModal = useCallback(
+    () => valuesHistory.length > 1 && setModalOpen(true),
+    [valuesHistory.length]
+  )
   const closeModal = useCallback(() => setModalOpen(false), [])
 
   const current: ValueItem = {
@@ -81,10 +84,6 @@ const InfoField: React.FC<ListItemProps> = ({
     return t(`vessel.${plural}` as any, `${label}s`)
   }, [t, label])
 
-  const defaultValue = useMemo(() => {
-    return `+${valuesHistory.length} previous ${labelPlural.toLocaleUpperCase()}`
-  }, [valuesHistory, labelPlural])
-
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
 
   return (
@@ -94,7 +93,7 @@ const InfoField: React.FC<ListItemProps> = ({
         <div onClick={openModal}>{value.length > 0 ? value : DEFAULT_EMPTY_VALUE}</div>
         {valuesHistory.length > 1 && (
           <button className={styles.moreValues} onClick={openModal}>
-            {t('vessel.plusPreviousValuesByField', defaultValue, {
+            {t('vessel.historicalValues', 'historical values', {
               quantity: valuesHistory.length,
               fieldLabel: labelPlural.toLocaleUpperCase(),
             })}

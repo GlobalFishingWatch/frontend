@@ -30,6 +30,10 @@
 .moreValues {
   display: block;
   cursor: pointer;
+  text-transform: initial;
+  margin-left: var(--space-S);
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
 }
 
 .saveButton {
