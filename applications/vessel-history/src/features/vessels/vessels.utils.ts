@@ -1,5 +1,5 @@
 import { typedKeys } from 'utils/shared'
-import { VesselAPISource, VesselFieldsHistory, VesselWithHistory } from 'types'
+import { ValueItem, VesselAPISource, VesselFieldsHistory, VesselWithHistory } from 'types'
 
 type VesselFieldKey = keyof VesselWithHistory
 
@@ -42,17 +42,41 @@ const priorityzeFieldValue = <T>(
 
 const mergeHistoryFields = (
   field: VesselFieldKey,
-  dataValues: { source: VesselAPISource; value: VesselFieldsHistory }[]
+  dataValues: {
+    source: VesselAPISource
+    value: VesselFieldsHistory
+    vessel: VesselWithHistory
+  }[]
 ) => {
   const fieldValues = getPriorityzedFieldValue<VesselFieldsHistory>(field, dataValues)
+
+  const getFieldHistory = (
+    fieldName: keyof VesselFieldsHistory,
+    vessel: VesselWithHistory,
+    source: VesselAPISource
+  ) => {
+    const fieldActualValue =
+      vessel.history[fieldName].byDate.length === 0
+        ? vessel[fieldName as VesselFieldKey]
+        : undefined
+    return vessel.history[fieldName].byDate
+      .map((item) => ({ ...item, source } as ValueItem))
+      .concat(fieldActualValue ? [{ source, value: fieldActualValue } as ValueItem] : [])
+  }
   return (fieldValues || []).reduce(
-    (acc, current) =>
+    (acc, current, sourceIndex) =>
       typedKeys<VesselFieldsHistory>(current as VesselFieldsHistory).reduce(
         (history, fieldName) => ({
           ...history,
           [fieldName]: {
             byCount: (acc[fieldName]?.byCount || []).concat(current[fieldName].byCount),
-            byDate: (acc[fieldName]?.byDate || []).concat(current[fieldName].byDate),
+            byDate: (acc[fieldName]?.byDate || []).concat(
+              getFieldHistory(
+                fieldName,
+                dataValues[sourceIndex].vessel,
+                dataValues[sourceIndex].source
+              )
+            ),
           },
         }),
         { ...acc }
@@ -79,6 +103,7 @@ export const mergeVesselFromSources = (
               vesselData.map((data) => ({
                 source: data.source,
                 value: data.vessel[key] as VesselFieldsHistory,
+                vessel: data.vessel,
               }))
             )
           : priorityzeFieldValue(

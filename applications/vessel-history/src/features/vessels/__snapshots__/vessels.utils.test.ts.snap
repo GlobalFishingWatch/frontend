@@ -8,7 +8,7 @@ Object {
   "depth": undefined,
   "firstTransmissionDate": "2013-05-14T03:31:40Z",
   "flag": "ITA",
-  "geartype": "Purse seine",
+  "geartype": "trawlers",
   "grossTonnage": "51.000",
   "history": Object {
     "builtYear": Object {
@@ -16,6 +16,7 @@ Object {
       "byDate": Array [
         Object {
           "firstSeen": "1991-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "1951",
         },
       ],
@@ -24,6 +25,11 @@ Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
+          "source": "GFW",
+          "value": "IRNZ",
+        },
+        Object {
+          "source": "TMT",
           "value": "IRNZ",
         },
       ],
@@ -34,20 +40,37 @@ Object {
     },
     "flag": Object {
       "byCount": Array [],
-      "byDate": Array [],
+      "byDate": Array [
+        Object {
+          "source": "GFW",
+          "value": "ITA",
+        },
+        Object {
+          "firstSeen": "1991-02-02T00:00:00.000Z",
+          "source": "TMT",
+          "value": "ITA",
+        },
+      ],
     },
     "geartype": Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
+          "source": "GFW",
+          "value": "trawlers",
+        },
+        Object {
+          "source": "TMT",
           "value": "Purse seine",
         },
         Object {
           "firstSeen": "1991-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "Pole and line",
         },
         Object {
           "firstSeen": "1991-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "Otter trawl",
         },
       ],
@@ -57,26 +80,38 @@ Object {
       "byDate": Array [
         Object {
           "firstSeen": "1991-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "51.000",
         },
       ],
     },
     "imo": Object {
       "byCount": Array [],
-      "byDate": Array [],
+      "byDate": Array [
+        Object {
+          "source": "GFW",
+          "value": "0",
+        },
+      ],
     },
     "length": Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
           "firstSeen": "1991-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "18.550",
         },
       ],
     },
     "mmsi": Object {
       "byCount": Array [],
-      "byDate": Array [],
+      "byDate": Array [
+        Object {
+          "source": "GFW",
+          "value": "247099420",
+        },
+      ],
     },
     "operator": Object {
       "byCount": Array [],
@@ -90,17 +125,24 @@ Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
+          "source": "GFW",
+          "value": "MARIA MARIA 2",
+        },
+        Object {
           "firstSeen": "1991-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "MARIA MADRE II",
         },
         Object {
           "endDate": "1991-02-02T00:00:00.000Z",
           "firstSeen": "1981-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "MARIA MARIA",
         },
         Object {
           "endDate": "1981-02-02T00:00:00.000Z",
           "firstSeen": "1971-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "MAAAARIA",
         },
       ],
@@ -110,12 +152,13 @@ Object {
       "byDate": Array [
         Object {
           "firstSeen": "1991-02-02T00:00:00.000Z",
+          "source": "TMT",
           "value": "Fishing Vessel",
         },
       ],
     },
   },
-  "id": "d0876b71-9cff-4586-bf27-bb84d1d8a322",
+  "id": "ea39ee174-4f61-cf0a-9ed8-fa5c25459890",
   "imageList": Array [],
   "imo": "0",
   "lastTransmissionDate": "2013-05-31T09:37:36Z",
@@ -124,7 +167,7 @@ Object {
   "operator": undefined,
   "origin": undefined,
   "owner": undefined,
-  "shipname": "MARIA MADRE II",
+  "shipname": "MARIA MARIA 2",
   "type": "Fishing Vessel",
 }
 `;
