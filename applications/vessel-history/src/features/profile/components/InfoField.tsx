@@ -53,13 +53,13 @@ enum VesselFieldLabelPlural {
 }
 interface ListItemProps {
   label: VesselFieldLabel
-  value: string
+  value?: string
   valuesHistory?: ValueItem[]
   vesselName: string
 }
 
 const InfoField: React.FC<ListItemProps> = ({
-  value = '',
+  value = DEFAULT_EMPTY_VALUE,
   label,
   valuesHistory = [],
   vesselName,
@@ -89,7 +89,7 @@ const InfoField: React.FC<ListItemProps> = ({
     <div className={styles.identifierField}>
       <label>{t(`vessel.${label}` as any, label)}</label>
       <div>
-        <div onClick={openModal}>{value.length > 0 ? value : DEFAULT_EMPTY_VALUE}</div>
+        <div onClick={openModal}>{value}</div>
         {valuesHistory.length > 1 && (
           <button className={styles.moreValues} onClick={openModal}>
             {t('vessel.plusPreviousValuesByField', defaultValue, {
