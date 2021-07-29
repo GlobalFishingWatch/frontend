@@ -103,7 +103,7 @@
     "title": "Settings"
   },
   "vessel": {
-    "aisTransmissionPlural": "AIS Transmissions",
+    "aisTransmission_plural": "AIS Transmissions",
     "authorization_plural": "authorizations",
     "callsign": "callsign",
     "flag": "flag",

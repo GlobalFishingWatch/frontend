@@ -179,7 +179,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               ></InfoField>
 
               <div className={styles.identifierField}>
-                <label>{t(`vessel.aisTransmissionPlural`, 'AIS Transmissions')}</label>
+                <label>{t(`vessel.aisTransmission_plural`, 'AIS Transmissions')}</label>
                 <div>
                   {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
                     <Fragment>
