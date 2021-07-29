@@ -153,7 +153,7 @@
     "features": {
       "activityLayers": "Capas de Actividad",
       "analysis": "Análisis",
-      "environmentLayers": "Capas de Entorno",
+      "environmentLayers": "Capas de Datos Ambientales",
       "other": "Otro",
       "referenceLayers": "Capas de Referencia",
       "timebar": "Barra de tiempo en la parte inferior del mapa",
@@ -181,7 +181,7 @@
     "send": "Enviar",
     "type": "¿Sobre qué tema son sus comentarios?",
     "whatIssue": "¿Dónde tienes un problema?",
-    "whichFeature": "¿Qué funcionalidad te gustaría mejorar?"
+    "whichFeature": "¿Qué funcionalidad le gustaría mejorar?"
   },
   "footer": {
     "convenedBy": "Socios fundadores",
