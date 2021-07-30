@@ -1,13 +1,12 @@
-import React, { Fragment, useCallback, useEffect, useState, useMemo } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { VesselWithHistory } from 'types'
-import {
-  RenderedEvent,
-  selectEventsWithRenderingInfo,
-} from 'features/vessels/activity/vessels-activity.slice'
+import { RenderedEvent} from 'features/vessels/activity/vessels-activity.slice'
+import { selectFilteredEvents } from 'features/vessels/activity/vessels-activity.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import ActivityFilters from '../../filters/ActivityFilters'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -21,11 +20,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
 
   const eventsLoading = useSelector(selectResourcesLoading)
-  const eventsForTracks = useSelector(selectEventsWithRenderingInfo)
-  const events = useMemo(
-    () => eventsForTracks.flat().sort((a, b) => (a.start > b.start ? -1 : 1)),
-    [eventsForTracks]
-  )
+  const events = useSelector(selectFilteredEvents)
 
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
@@ -41,6 +36,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   return (
     <Fragment>
+      <ActivityFilters></ActivityFilters>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>
