@@ -5,7 +5,7 @@ import { TooltipTypes } from '../types/types'
 
 export { default } from './IconButton'
 
-export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning'
+export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning' | 'solid'
 export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
 
 export interface IconButtonProps {
