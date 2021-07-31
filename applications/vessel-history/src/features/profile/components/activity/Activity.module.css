@@ -2,7 +2,6 @@
   padding: var(--space-XS);
 }
 
-/*
 .divider {
   opacity: 0.1;
   background-color: #22447e;
@@ -23,13 +22,12 @@
   background-size: 15px 15px;
   top: -6px;
   padding: 0 21px 0 10px;
-} */
+}
 
 .event {
   padding: var(--space-XS);
   display: flex;
   align-items: center;
-  border-bottom: var(--border);
 }
 
 .event .eventData .date {

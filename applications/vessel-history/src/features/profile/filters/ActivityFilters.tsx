@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { IconButton, InputDate, Modal, Switch } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
@@ -8,7 +9,7 @@ import { selectEnd, selectFilter, selectStart } from './filters.slice'
 import styles from './ActivityFilters.module.css'
 
 const ActivityFilters: React.FC = (): React.ReactElement => {
-
+  const { t } = useTranslation()
   const { setFilter, setDate } = useApplyFiltersConnect()
   const [isModalOpen, setIsOpen] = useState(false)
   const openModal = useCallback(() => {
@@ -25,18 +26,18 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
 
   return (
     <Fragment>
-      <Modal title="Filter events" isOpen={isModalOpen} onClose={closeModal}>
+      <Modal title={t(`filters.title` as any, 'Filter events')} isOpen={isModalOpen} onClose={closeModal}>
           <div className={styles.filterSelector}>
-            <Switch className={styles.filterSwitch} onClick={() => setFilter('portVisits', !isPortVisitActive) } active={isPortVisitActive}></Switch>Port visits
+            <Switch className={styles.filterSwitch} onClick={() => setFilter('portVisits', !isPortVisitActive) } active={isPortVisitActive}></Switch>{t(`settings.portVisits.title` as any, 'Port Visits')}
           </div>
           <div className={styles.filterSelector}>
-            <Switch className={styles.filterSwitch} onClick={() => setFilter('fishingEvents', !isFishingEventsActive) } active={isFishingEventsActive}></Switch>Fishing events
+            <Switch className={styles.filterSwitch} onClick={() => setFilter('fishingEvents', !isFishingEventsActive) } active={isFishingEventsActive}></Switch>{t(`settings.fishingEvents.title` as any, 'Fishing Events')}
           </div>
           <div className={styles.filterSelector}>
-            <Switch className={styles.filterSwitch} onClick={() => setFilter('encounters', !isEncountersActive) } active={isEncountersActive}></Switch>Encounters
+            <Switch className={styles.filterSwitch} onClick={() => setFilter('encounters', !isEncountersActive) } active={isEncountersActive}></Switch>{t(`settings.encounters.title` as any, 'Encounters')}
           </div>
           <div className={styles.filterSelector}>
-            <Switch className={styles.filterSwitch} onClick={() => setFilter('loiteringEvents', !isLoiteringEventsActive) } active={isLoiteringEventsActive}></Switch>Loitering Events
+            <Switch className={styles.filterSwitch} onClick={() => setFilter('loiteringEvents', !isLoiteringEventsActive) } active={isLoiteringEventsActive}></Switch>{t(`settings.loiteringEvents.title` as any, 'Loitering Events')}
           </div>
           <br/>
           <InputDate 
@@ -49,7 +50,7 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
             onRemove={() => {
               setDate('start', DEFAULT_WORKSPACE.start)
             }}
-            label="Start" 
+            label={t(`filters.start` as any, 'Start')}
             max={DEFAULT_WORKSPACE.end} />
           <InputDate 
             value={end} 
@@ -61,7 +62,7 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
             onRemove={() => {
               setDate('end', DEFAULT_WORKSPACE.end)
             }}
-            label="End" 
+            label={t(`filters.start` as any, 'End')} 
             max={DEFAULT_WORKSPACE.end} />
       </Modal>
       <div className={styles.filters}>

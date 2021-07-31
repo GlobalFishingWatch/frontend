@@ -42,8 +42,7 @@ const slice = createSlice({
 })
 export default slice.reducer
 
-export const { updateFilters } = slice.actions
-export const { resetFilters } = slice.actions
+export const { resetFilters, updateFilters } = slice.actions
 export const selectFilters = (state: RootState) => state.filters.filters
 export const selectStart = (state: RootState) => state.filters.filters.start
 export const selectEnd = (state: RootState) => state.filters.filters.end
