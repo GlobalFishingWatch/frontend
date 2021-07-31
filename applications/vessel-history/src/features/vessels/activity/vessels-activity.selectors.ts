@@ -1,15 +1,19 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RenderedEvent, selectEventsWithRenderingInfo } from 'features/vessels/activity/vessels-activity.slice';
-import { Filters, initialState, selectFilters } from './../../profile/filters/filters.slice';
+import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice';
 
 export const selectFilteredEvents = createSelector(
   [selectEventsWithRenderingInfo, selectFilters],
   (events, filters) => {
-    const startTimestamp = new Date(filters.start).getTime()
-    const endTimestamp = new Date(filters.end).getTime()
+    const startDate = new Date(filters.start)
+    startDate.setHours(0, 0, 0, 0)
+    const startTimestamp = startDate.getTime()
+    const endDate = new Date(filters.end)
+    endDate.setHours(0, 0, 0, 0)
+    const endTimestamp = endDate.getTime()
 
     return events.flat().filter((event: RenderedEvent) => {
-      if (startTimestamp > event.start || endTimestamp < event.end) {
+      if (startTimestamp >= event.start || endTimestamp <= event.end) {
         return false
       }
       if (event.type === 'fishing') {
