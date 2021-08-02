@@ -1,5 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
+import { TestLibrary2 } from '@nx-app/test-library2';
+import { TestLibrary3 } from '@globalfishingwatch/test-library-3';
 import './App.css';
 
 function App() {
@@ -10,6 +12,8 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
+        <TestLibrary2 />
+        <TestLibrary3 />
         <a
           className="App-link"
           href="https://reactjs.org"

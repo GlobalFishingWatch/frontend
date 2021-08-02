@@ -1,0 +1,200 @@
+{
+  "version": 2,
+  "projects": {
+    "nx-app": {
+      "root": "apps/nx-app",
+      "sourceRoot": "apps/nx-app/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "command": "node ../../node_modules/.bin/react-app-rewired build",
+            "cwd": "apps/nx-app",
+            "outputPath": "dist/apps/nx-app"
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": [],
+          "options": {
+            "command": "node ../../node_modules/.bin/react-app-rewired start",
+            "cwd": "apps/nx-app"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": [],
+          "options": {
+            "command": "node ../../node_modules/.bin/eslint src/**/*.tsx src/**/*.ts",
+            "cwd": "apps/nx-app"
+          }
+        },
+        "test": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": [],
+          "options": {
+            "command": "node ../../node_modules/.bin/react-app-rewired test --watchAll=false",
+            "cwd": "apps/nx-app"
+          }
+        }
+      }
+    },
+    "nx-app-e2e": {
+      "root": "apps/nx-app-e2e",
+      "sourceRoot": "apps/nx-app-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["nx e2e-serve nx-app-e2e", "nx e2e-run nx-app-e2e"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/nx-app-e2e/**/*.{js,ts}"]
+          }
+        },
+        "e2e-run": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/nx-app-e2e/cypress.json",
+            "tsConfig": "apps/nx-app-e2e/tsconfig.e2e.json",
+            "baseUrl": "http://localhost:3000"
+          }
+        },
+        "e2e-serve": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["nx serve nx-app"],
+            "readyWhen": "can now view"
+          }
+        }
+      }
+    },
+    "test-library": {
+      "root": "libs/test-library",
+      "sourceRoot": "libs/test-library/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/test-library/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/test-library"],
+          "options": {
+            "jestConfig": "libs/test-library/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "test-library2": {
+      "root": "libs/test-library2",
+      "sourceRoot": "libs/test-library2/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/test-library2",
+            "tsConfig": "libs/test-library2/tsconfig.lib.json",
+            "project": "libs/test-library2/package.json",
+            "entryFile": "libs/test-library2/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "libs/test-library2/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/test-library2/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/test-library2"],
+          "options": {
+            "jestConfig": "libs/test-library2/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "test-library3": {
+      "root": "libs/test-library3",
+      "sourceRoot": "libs/test-library3/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/test-library3",
+            "tsConfig": "libs/test-library3/tsconfig.lib.json",
+            "project": "libs/test-library3/package.json",
+            "entryFile": "libs/test-library3/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "libs/test-library3/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/test-library3/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/test-library3"],
+          "options": {
+            "jestConfig": "libs/test-library3/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "css",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  },
+  "defaultProject": "nx-app"
+}
