@@ -1,5 +1,11 @@
 # @globalfishingwatch/data-transforms
 
+## 1.4.0
+
+### Minor Changes
+
+- e7f48fe5: new wrapBBoxLongitudes util to avoid antimeridian issues
+
 ## 1.3.0
 
 ### Minor Changes
