@@ -57,7 +57,7 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
           label={t('event.avgDuration', 'Avg Duration')}
           value={event.durationDescription}
         />
-        {detailsPerType}
+        <div className={styles.break} />
         <ActivityModalContentField
           label={t('event.startDistanceShore', 'Start distance from shore')}
           value={
@@ -98,6 +98,7 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
               : DEFAULT_EMPTY_VALUE
           }
         />
+        {detailsPerType}
       </div>
     </Fragment>
   )

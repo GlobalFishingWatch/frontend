@@ -1,3 +1,9 @@
+.modalContainer {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
 .modalContainer span {
   text-transform: capitalize;
 }
@@ -6,11 +12,14 @@
   font-weight: bold;
   font-size: 2rem;
   margin-top: 1rem;
+  flex-basis: 100%;
 }
-.modalContainer > div {
-  color: var(--opacity-secondary);
-  padding: var(--space-S);
-}
+
 .fieldLabel {
   font-weight: bold;
+}
+
+.break {
+  flex-basis: 100%;
+  height: 0;
 }

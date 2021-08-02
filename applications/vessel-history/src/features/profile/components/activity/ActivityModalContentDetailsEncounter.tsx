@@ -38,15 +38,15 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
         />
       )}
       {relatedVessel && (
-        <div>
-          <h3>{t('event.vesselInvolved', 'Vessel involved in the event')}:</h3>
+        <Fragment>
+          <h3>{t('event.vesselInvolved', 'Vessel involved in the event')}</h3>
           <ActivityModalContentField label={t('vessel.name', 'Name')} value={relatedVessel.name} />
           <ActivityModalContentField label={t('vessel.flag', 'Flag')} value={relatedVessel.flag} />
           <ActivityModalContentField
             label={t('event.nextPort', 'Next port traveled')}
             value={relatedVessel.nextPort?.label}
           />
-        </div>
+        </Fragment>
       )}
     </Fragment>
   )

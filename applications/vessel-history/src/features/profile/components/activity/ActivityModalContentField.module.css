@@ -1,9 +1,6 @@
 .field {
   padding: var(--space-S);
-}
-.label {
-  font-weight: bold;
-  text-transform: capitalize;
+  width: 50vh;
 }
 .value {
   font-weight: normal;
