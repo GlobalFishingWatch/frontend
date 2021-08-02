@@ -7,6 +7,7 @@ import {
   segmentsToBbox,
   filterSegmentsByTimerange,
   geoJSONToSegments,
+  wrapBBoxLongitudes,
 } from '@globalfishingwatch/data-transforms'
 import { Resource } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -32,7 +33,8 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
       const filteredSegments = filterSegmentsByTimerange(segments, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
       if (bbox) {
-        fitBounds(bbox as Bbox)
+        const bboxLongitudes = wrapBBoxLongitudes(bbox as Bbox)
+        fitBounds(bboxLongitudes as Bbox)
       } else {
         // TODO use prompt to ask user if wants to update the timerange to fit the track
         if (
