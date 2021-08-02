@@ -4,7 +4,6 @@ import { EventVessel } from '@globalfishingwatch/api-types/dist'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { ActivityEvent } from 'types/activity'
 import ActivityModalContentField from './ActivityModalContentField'
-import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
   event: ActivityEvent
