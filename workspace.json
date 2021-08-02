@@ -1,0 +1,103 @@
+{
+  "version": 2,
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "projects": {
+    "@globalfishingwatch/api-client": {
+      "root": "packages/api-client",
+      "sourceRoot": "packages/api-client/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/api-types": {
+      "root": "packages/api-types",
+      "sourceRoot": "packages/api-types/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/data-transforms": {
+      "root": "packages/data-transforms",
+      "sourceRoot": "packages/data-transforms/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/dataviews-client": {
+      "root": "packages/dataviews-client",
+      "sourceRoot": "packages/dataviews-client/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/fourwings-aggregate": {
+      "root": "packages/fourwings-aggregate",
+      "sourceRoot": "packages/fourwings-aggregate/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/layer-composer": {
+      "root": "packages/layer-composer",
+      "sourceRoot": "packages/layer-composer/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/linting": {
+      "root": "linting",
+      "type": "library"
+    },
+    "@globalfishingwatch/ocean-areas": {
+      "root": "packages/ocean-areas",
+      "sourceRoot": "packages/ocean-areas/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/pbf": {
+      "root": "packages/pbf-decoders",
+      "sourceRoot": "packages/pbf-decoders/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/react-hooks": {
+      "root": "packages/react-hooks",
+      "sourceRoot": "packages/react-hooks/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/timebar": {
+      "root": "packages/timebar",
+      "sourceRoot": "packages/timebar/src",
+      "type": "library"
+    },
+    "@globalfishingwatch/ui-components": {
+      "root": "packages/ui-components",
+      "sourceRoot": "packages/ui-components/src",
+      "type": "library"
+    },
+    "@globalfishingwatchapp/dataviews-editor": {
+      "root": "applications/dataviews-editor",
+      "sourceRoot": "applications/dataviews-editor/src",
+      "type": "application"
+    },
+    "@globalfishingwatchapp/fishing-map": {
+      "root": "applications/fishing-map",
+      "sourceRoot": "applications/fishing-map/src",
+      "type": "application",
+      "dependsOn": [
+        {
+          "target": "start",
+          "projects": "dependencies"
+        }
+      ]
+    },
+    "@globalfishingwatchapp/sandbox": {
+      "root": "applications/sandbox",
+      "sourceRoot": "applications/sandbox/src",
+      "type": "application"
+    },
+    "@globalfishingwatchapp/temporalgrid-demo": {
+      "root": "applications/temporalgrid-demo",
+      "sourceRoot": "applications/temporalgrid-demo/src",
+      "type": "application"
+    },
+    "@globalfishingwatchapp/tile-inspector": {
+      "root": "applications/tile-inspector",
+      "sourceRoot": "applications/tile-inspector/src",
+      "type": "application"
+    },
+    "@globalfishingwatchapp/vessel-history": {
+      "root": "applications/vessel-history",
+      "sourceRoot": "applications/vessel-history/src",
+      "type": "application"
+    }
+  }
+}

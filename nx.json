@@ -1,0 +1,101 @@
+{
+  "npmScope": "globalfishingwatch",
+  "affected": {
+    "defaultBase": "develop"
+  },
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": ["build", "test", "lint", "package", "prepare"],
+        "accessToken": "Mjc4NjY1MTAtNGU1Ni00MzY1LWJjOTItZmE2ZjE4MmNlNTRlfHJlYWQtd3JpdGU=",
+        "canTrackAnalytics": false,
+        "showUsageWarnings": true
+      }
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ],
+    "prepare": [
+      {
+        "target": "prepare",
+        "projects": "dependencies"
+      }
+    ],
+    "package": [
+      {
+        "target": "package",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "projects": {
+    "@globalfishingwatch/api-client": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/api-types": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/data-transforms": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/dataviews-client": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/fourwings-aggregate": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/layer-composer": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/linting": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/ocean-areas": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/pbf": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/react-hooks": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/timebar": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatch/ui-components": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatchapp/dataviews-editor": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatchapp/fishing-map": {
+      "implicitDependencies": ["@globalfishingwatch/ui-components"]
+    },
+    "@globalfishingwatchapp/sandbox": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatchapp/temporalgrid-demo": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatchapp/tile-inspector": {
+      "implicitDependencies": []
+    },
+    "@globalfishingwatchapp/vessel-history": {
+      "implicitDependencies": []
+    }
+  }
+}
