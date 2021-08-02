@@ -1,5 +1,15 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.78
+
+### Patch Changes
+
+- 33e692a8: added filters to the activity tab
+- Updated dependencies [e7f48fe5]
+- Updated dependencies [33e692a8]
+  - @globalfishingwatch/data-transforms@1.4.0
+  - @globalfishingwatch/ui-components@9.1.1
+
 ## 0.0.77
 
 ### Patch Changes
