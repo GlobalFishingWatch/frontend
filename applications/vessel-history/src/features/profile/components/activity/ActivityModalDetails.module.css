@@ -1,5 +1,4 @@
 .modalContainer span {
-  font-weight: bold;
   text-transform: capitalize;
 }
 
@@ -7,4 +6,11 @@
   font-weight: bold;
   font-size: 2rem;
   margin-top: 1rem;
+}
+.modalContainer > div {
+  color: var(--opacity-secondary);
+  padding: var(--space-S);
+}
+.fieldLabel {
+  font-weight: bold;
 }

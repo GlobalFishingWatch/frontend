@@ -1,0 +1,11 @@
+.field {
+  padding: var(--space-S);
+}
+.label {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.value {
+  font-weight: normal;
+  color: var(--opacity-secondary);
+}

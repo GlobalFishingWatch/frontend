@@ -9,6 +9,7 @@ import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFis
 import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsLoitering'
 import styles from './ActivityModalDetails.module.css'
 import ActivityModalContentDetailsEncounter from './ActivityModalContentDetailsEncounter'
+import ActivityModalContentField from './ActivityModalContentField'
 
 interface ActivityModalContentProps {
   event: RenderedEvent
@@ -44,50 +45,59 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
   return (
     <Fragment>
       <div className={styles.modalContainer}>
-        <p>
-          <span>{t('event.start', 'Start date')}:</span>{' '}
-          <I18nDate date={event.start} format={DateTime.DATETIME_FULL} />
-        </p>
-        <p>
-          <span>{t('event.end', 'End date')}:</span>{' '}
-          <I18nDate date={event.end} format={DateTime.DATETIME_FULL} />
-        </p>
-        <p>
-          <span>{t('event.avgDuration', 'Avg Duration')}:</span> {event.durationDescription}
-        </p>
+        <ActivityModalContentField
+          label={t('event.start', 'Start date')}
+          value={<I18nDate date={event.start} format={DateTime.DATETIME_FULL} />}
+        />
+        <ActivityModalContentField
+          label={t('event.end', 'End date')}
+          value={<I18nDate date={event.end} format={DateTime.DATETIME_FULL} />}
+        />
+        <ActivityModalContentField
+          label={t('event.avgDuration', 'Avg Duration')}
+          value={event.durationDescription}
+        />
         {detailsPerType}
-        <p>
-          <span>{t('event.startDistanceShore', 'Start distance from shore')}:</span>{' '}
-          {event.distances?.startDistanceFromShoreKm
-            ? t('event.formatDistanceKm', '{{value}} km', {
-                value: event.distances?.startDistanceFromShoreKm?.toFixed(2),
-              })
-            : DEFAULT_EMPTY_VALUE}
-        </p>
-        <p>
-          <span>{t('event.endDistanceShore', 'End distance from shore')}:</span>{' '}
-          {event.distances?.endDistanceFromShoreKm
-            ? t('event.formatDistanceKm', '{{value}} km', {
-                value: event.distances?.endDistanceFromShoreKm?.toFixed(2),
-              })
-            : DEFAULT_EMPTY_VALUE}
-        </p>
-        <p>
-          <span>{t('event.startDistancePort', 'Start distance from port')}:</span>{' '}
-          {event.distances?.startDistanceFromPortKm
-            ? t('event.formatDistanceKm', '{{value}} km', {
-                value: event.distances?.startDistanceFromPortKm?.toFixed(2),
-              })
-            : DEFAULT_EMPTY_VALUE}
-        </p>
-        <p>
-          <span>{t('event.endDistancePort', 'End distance from port')}:</span>{' '}
-          {event.distances?.endDistanceFromPortKm
-            ? t('event.formatDistanceKm', '{{value}} km', {
-                value: event.distances?.endDistanceFromPortKm?.toFixed(2),
-              })
-            : DEFAULT_EMPTY_VALUE}
-        </p>
+        <ActivityModalContentField
+          label={t('event.startDistanceShore', 'Start distance from shore')}
+          value={
+            event.distances?.startDistanceFromShoreKm
+              ? t('event.formatDistanceKm', '{{value}} km', {
+                  value: event.distances?.startDistanceFromShoreKm?.toFixed(2),
+                })
+              : DEFAULT_EMPTY_VALUE
+          }
+        />
+        <ActivityModalContentField
+          label={t('event.endDistanceShore', 'End distance from shore')}
+          value={
+            event.distances?.endDistanceFromShoreKm
+              ? t('event.formatDistanceKm', '{{value}} km', {
+                  value: event.distances?.endDistanceFromShoreKm?.toFixed(2),
+                })
+              : DEFAULT_EMPTY_VALUE
+          }
+        />
+        <ActivityModalContentField
+          label={t('event.startDistancePort', 'Start distance from port')}
+          value={
+            event.distances?.startDistanceFromPortKm
+              ? t('event.formatDistanceKm', '{{value}} km', {
+                  value: event.distances?.startDistanceFromPortKm?.toFixed(2),
+                })
+              : DEFAULT_EMPTY_VALUE
+          }
+        />
+        <ActivityModalContentField
+          label={t('event.endDistancePort', 'End distance from port')}
+          value={
+            event.distances?.endDistanceFromPortKm
+              ? t('event.formatDistanceKm', '{{value}} km', {
+                  value: event.distances?.endDistanceFromPortKm?.toFixed(2),
+                })
+              : DEFAULT_EMPTY_VALUE
+          }
+        />
       </div>
     </Fragment>
   )
