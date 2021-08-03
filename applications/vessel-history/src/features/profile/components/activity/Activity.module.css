@@ -1,5 +1,6 @@
 .activityContainer {
   padding: var(--space-XS);
+  height: calc(100vh - 180px);
 }
 
 .divider {
