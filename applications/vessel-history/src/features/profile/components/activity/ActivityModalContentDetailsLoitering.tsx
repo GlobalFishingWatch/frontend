@@ -1,10 +1,14 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { ActivityEvent } from 'types/activity'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
+import { toFixed } from 'utils/shared'
+import ActivityModalContentDetails from './ActivityModalContentDetails'
+import ActivityModalContentField from './ActivityModalContentField'
+import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
-  event: ActivityEvent
+  event: RenderedEvent
 }
 
 const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> = (
@@ -15,26 +19,34 @@ const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> 
 
   return (
     <Fragment>
-      <p>
-        <span>{t('event.distance', 'Distance')}:</span>{' '}
-        {event.loitering?.totalDistanceKilometers
-          ? t('event.formatDistanceKm', '{{value}} km', {
-              value: event.loitering?.totalDistanceKilometers.toFixed(2),
-            })
-          : DEFAULT_EMPTY_VALUE}
-      </p>
-      <p>
-        <span>{t('event.medianSpeed', 'Median Speed')}:</span>{' '}
-        {event.loitering?.medianSpeedKnots
-          ? t('event.formatSpeedKnots', '{{value}} knots', {
-              value: event.loitering?.medianSpeedKnots.toFixed(2),
-            })
-          : DEFAULT_EMPTY_VALUE}
-      </p>
-      <p>
-        <span>{t('event.position', 'Position')}:</span>{' '}
-        {`${event.position.lat}, ${event.position.lon}`}
-      </p>
+      <div className={styles.row}>
+        <ActivityModalContentField
+          label={t('event.distance', 'Distance')}
+          value={
+            event.loitering?.totalDistanceKilometers
+              ? t('event.formatDistanceKm', '{{value}} km', {
+                  value: event.loitering?.totalDistanceKilometers.toFixed(2),
+                })
+              : DEFAULT_EMPTY_VALUE
+          }
+        />
+        <ActivityModalContentField
+          label={t('event.medianSpeed', 'Median Speed')}
+          value={
+            event.loitering?.medianSpeedKnots
+              ? t('event.formatSpeedKnots', '{{value}} knots', {
+                  value: event.loitering?.medianSpeedKnots.toFixed(2),
+                })
+              : DEFAULT_EMPTY_VALUE
+          }
+        />
+        <ActivityModalContentField
+          label={t('event.position', 'Position')}
+          value={`${toFixed(event.position.lat, 4)}, ${toFixed(event.position.lon, 4)}`}
+        />
+      </div>
+
+      <ActivityModalContentDetails event={event} />
     </Fragment>
   )
 }
