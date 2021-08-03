@@ -1,6 +1,5 @@
 .field {
   padding: var(--space-S);
-  /* width: 50vh; */
 }
 .value {
   font-weight: normal;
