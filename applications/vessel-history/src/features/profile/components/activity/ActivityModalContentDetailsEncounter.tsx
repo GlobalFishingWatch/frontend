@@ -2,11 +2,13 @@ import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EventVessel } from '@globalfishingwatch/api-types/dist'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { ActivityEvent } from 'types/activity'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
 import ActivityModalContentField from './ActivityModalContentField'
+import ActivityModalContentDetails from './ActivityModalContentDetails'
+import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
-  event: ActivityEvent
+  event: RenderedEvent
 }
 
 const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> = (
@@ -18,6 +20,22 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
 
   return (
     <Fragment>
+      {relatedVessel && (
+        <div className={styles.row}>
+          <ActivityModalContentField
+            label={t('vessel.encounteredVessel', 'Encountered Vessel')}
+            value={relatedVessel.name}
+          />
+          <ActivityModalContentField label={t('vessel.flag', 'Flag')} value={relatedVessel.flag} />
+          <ActivityModalContentField
+            label={t('event.nextPort', 'Next port traveled')}
+            value={relatedVessel.nextPort?.label}
+          />
+        </div>
+      )}
+
+      <ActivityModalContentDetails event={event} />
+
       {event.encounter && (
         <ActivityModalContentField
           label={t('event.medianSpeed', 'Median Speed')}
@@ -35,17 +53,6 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
           label={t('event.authStatus', 'Authorization status')}
           value={event.encounter.authorizationStatus}
         />
-      )}
-      {relatedVessel && (
-        <Fragment>
-          <h3>{t('event.vesselInvolved', 'Vessel involved in the event')}</h3>
-          <ActivityModalContentField label={t('vessel.name', 'Name')} value={relatedVessel.name} />
-          <ActivityModalContentField label={t('vessel.flag', 'Flag')} value={relatedVessel.flag} />
-          <ActivityModalContentField
-            label={t('event.nextPort', 'Next port traveled')}
-            value={relatedVessel.nextPort?.label}
-          />
-        </Fragment>
       )}
     </Fragment>
   )

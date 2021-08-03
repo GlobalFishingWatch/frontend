@@ -16,7 +16,7 @@ const ActivityModalContentField: React.FC<ActivityModalContentFieldProps> = ({
   return (
     <Fragment>
       <div className={cx(className, styles.field)}>
-        <label className={styles.label}>{label}: </label>
+        <label className={styles.label}>{label}</label>
         <span className={styles.value}>{value}</span>
       </div>
     </Fragment>
