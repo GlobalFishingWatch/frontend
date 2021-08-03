@@ -2,7 +2,9 @@ import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { ActivityEvent } from 'types/activity'
+import { toFixed } from 'utils/shared'
 import ActivityModalContentField from './ActivityModalContentField'
+import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
   event: ActivityEvent
@@ -37,8 +39,9 @@ const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> 
         }
       />
       <ActivityModalContentField
+        className={styles.oneColumnField}
         label={t('event.position', 'Position')}
-        value={`${event.position.lat}, ${event.position.lon}`}
+        value={`${toFixed(event.position.lat, 4)}, ${toFixed(event.position.lon, 4)}`}
       />
     </Fragment>
   )

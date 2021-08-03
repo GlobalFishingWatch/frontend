@@ -7,9 +7,9 @@ import I18nDate from 'features/i18n/i18nDate'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
 import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFishing'
 import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsLoitering'
-import styles from './ActivityModalDetails.module.css'
 import ActivityModalContentDetailsEncounter from './ActivityModalContentDetailsEncounter'
 import ActivityModalContentField from './ActivityModalContentField'
+import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
   event: RenderedEvent
@@ -54,10 +54,10 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
           value={<I18nDate date={event.end} format={DateTime.DATETIME_FULL} />}
         />
         <ActivityModalContentField
+          className={styles.oneColumnField}
           label={t('event.avgDuration', 'Avg Duration')}
           value={event.durationDescription}
         />
-        <div className={styles.break} />
         <ActivityModalContentField
           label={t('event.startDistanceShore', 'Start distance from shore')}
           value={
