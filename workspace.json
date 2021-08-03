@@ -63,38 +63,43 @@
       "sourceRoot": "packages/ui-components/src",
       "type": "library"
     },
-    "@globalfishingwatchapp/dataviews-editor": {
+    "dataviews-editor": {
       "root": "applications/dataviews-editor",
       "sourceRoot": "applications/dataviews-editor/src",
       "type": "application"
     },
-    "@globalfishingwatchapp/fishing-map": {
+    "fishing-map": {
       "root": "applications/fishing-map",
       "sourceRoot": "applications/fishing-map/src",
       "type": "application",
-      "dependsOn": [
-        {
-          "target": "start",
-          "projects": "dependencies"
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "command": "node ../../node_modules/.bin/react-scripts build",
+            "cwd": "applications/fishing-map",
+            "outputPath": "applications/fishing-map/dist"
+          }
         }
-      ]
+      }
     },
-    "@globalfishingwatchapp/sandbox": {
+    "sandbox": {
       "root": "applications/sandbox",
       "sourceRoot": "applications/sandbox/src",
       "type": "application"
     },
-    "@globalfishingwatchapp/temporalgrid-demo": {
+    "temporalgrid-demo": {
       "root": "applications/temporalgrid-demo",
       "sourceRoot": "applications/temporalgrid-demo/src",
       "type": "application"
     },
-    "@globalfishingwatchapp/tile-inspector": {
+    "tile-inspector": {
       "root": "applications/tile-inspector",
       "sourceRoot": "applications/tile-inspector/src",
       "type": "application"
     },
-    "@globalfishingwatchapp/vessel-history": {
+    "vessel-history": {
       "root": "applications/vessel-history",
       "sourceRoot": "applications/vessel-history/src",
       "type": "application"

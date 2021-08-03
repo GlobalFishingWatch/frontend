@@ -1,7 +1,7 @@
 {
   "npmScope": "globalfishingwatch",
   "affected": {
-    "defaultBase": "develop"
+    "defaultBase": "monorepo-update"
   },
   "implicitDependencies": {
     "workspace.json": "*",
@@ -15,7 +15,7 @@
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": ["build", "test", "lint", "package", "prepare"],
+        "cacheableOperations": ["build", "test", "lint", "start", "prepare"],
         "accessToken": "Mjc4NjY1MTAtNGU1Ni00MzY1LWJjOTItZmE2ZjE4MmNlNTRlfHJlYWQtd3JpdGU=",
         "canTrackAnalytics": false,
         "showUsageWarnings": true
@@ -29,15 +29,15 @@
         "projects": "dependencies"
       }
     ],
-    "prepare": [
+    "start": [
       {
-        "target": "prepare",
+        "target": "start",
         "projects": "dependencies"
       }
     ],
-    "package": [
+    "prepare": [
       {
-        "target": "package",
+        "target": "prepare",
         "projects": "dependencies"
       }
     ]
@@ -79,22 +79,22 @@
     "@globalfishingwatch/ui-components": {
       "implicitDependencies": []
     },
-    "@globalfishingwatchapp/dataviews-editor": {
+    "dataviews-editor": {
       "implicitDependencies": []
     },
-    "@globalfishingwatchapp/fishing-map": {
-      "implicitDependencies": ["@globalfishingwatch/ui-components"]
-    },
-    "@globalfishingwatchapp/sandbox": {
+    "fishing-map": {
       "implicitDependencies": []
     },
-    "@globalfishingwatchapp/temporalgrid-demo": {
+    "sandbox": {
       "implicitDependencies": []
     },
-    "@globalfishingwatchapp/tile-inspector": {
+    "temporalgrid-demo": {
       "implicitDependencies": []
     },
-    "@globalfishingwatchapp/vessel-history": {
+    "tile-inspector": {
+      "implicitDependencies": []
+    },
+    "vessel-history": {
       "implicitDependencies": []
     }
   }
