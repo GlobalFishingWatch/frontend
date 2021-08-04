@@ -28,29 +28,6 @@ export enum VesselFieldLabel {
   authorizations = 'authorizations',
   registeredGearType = 'registeredGearType',
 }
-
-enum VesselFieldLabelPlural {
-  name = 'name_plural',
-  flag = 'flag_plural',
-  shipname = 'shipname_plural',
-  firstTransmissionDate = 'firstTransmissionDate_plural',
-  lastTransmissionDate = 'lastTransmissionDate_plural',
-  imo = 'imo_plural',
-  mmsi = 'mmsi_plural',
-  callsign = 'callsign_plural',
-  fleet = 'fleet_plural',
-  origin = 'origin_plural',
-  type = 'type_plural',
-  gearType = 'gearType_plural',
-  length = 'length_plural',
-  depth = 'depth_plural',
-  grossTonnage = 'grossTonnage_plural',
-  owner = 'owner_plural',
-  operator = 'operator_plural',
-  builtYear = 'builtYear_plural',
-  authorizations = 'authorization_plural',
-  registeredGearType = 'registeredGearType_plural',
-}
 interface ListItemProps {
   label: VesselFieldLabel
   value?: string
@@ -70,7 +47,7 @@ const InfoField: React.FC<ListItemProps> = ({
 
   const [modalOpen, setModalOpen] = useState(false)
   const openModal = useCallback(
-    () => valuesHistory.length > 1 && setModalOpen(true),
+    () => valuesHistory.length > 0 && setModalOpen(true),
     [valuesHistory.length]
   )
   const closeModal = useCallback(() => setModalOpen(false), [])
@@ -79,11 +56,6 @@ const InfoField: React.FC<ListItemProps> = ({
     value,
     firstSeen: valuesHistory.slice().shift()?.firstSeen ?? valuesHistory.slice().shift()?.endDate,
   }
-  const labelPlural: VesselFieldLabelPlural = useMemo(() => {
-    const plural = VesselFieldLabelPlural[label as keyof typeof VesselFieldLabelPlural]
-    return t(`vessel.${plural}` as any, `${label}s`)
-  }, [t, label])
-
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
 
   return (
@@ -91,11 +63,10 @@ const InfoField: React.FC<ListItemProps> = ({
       <label>{t(`vessel.${label}` as any, label)}</label>
       <div>
         <div onClick={openModal}>{value}</div>
-        {valuesHistory.length > 1 && (
+        {valuesHistory.length > 0 && (
           <button className={styles.moreValues} onClick={openModal}>
-            {t('vessel.historicalValues', 'historical values', {
+            {t('vessel.formatValues', '{{quantity}} values', {
               quantity: valuesHistory.length,
-              fieldLabel: labelPlural.toLocaleUpperCase(),
             })}
           </button>
         )}
