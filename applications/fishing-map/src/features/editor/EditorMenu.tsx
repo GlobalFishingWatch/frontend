@@ -6,7 +6,7 @@ import { Dataview } from '@globalfishingwatch/api-types/dist'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { selectWorkspaceDataviewInstancesMergedDataviewIds } from 'features/dataviews/dataviews.selectors'
+import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { addDataviewEntity } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -25,9 +25,9 @@ const EditorMenu: React.FC = () => {
   const [error, setError] = useState<string | undefined>()
   const editorDataviewsStatus = useSelector(selectEditorDataviewsStatus)
   const editorDataviews = useSelector(selectEditorDataviews)
-  const { addNewDataviewInstances } = useDataviewInstancesConnect()
+  const { addNewDataviewInstances, deleteDataviewInstance } = useDataviewInstancesConnect()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const workspaceDataviewIds = useSelector(selectWorkspaceDataviewInstancesMergedDataviewIds) || []
+  const workspaceDataviewInstances = useSelector(selectDataviewInstancesMerged) || []
 
   useEffect(() => {
     dispatch(fetchEditorDataviewsThunk())
@@ -51,7 +51,13 @@ const EditorMenu: React.FC = () => {
 
   const groupedDataviews = groupBy(editorDataviews, 'category')
 
-  const onDataviewClick = async (dataview: Dataview) => {
+  const isDataviewAdded = (dataviewId: number) => {
+    return workspaceDataviewInstances.find(
+      (dataviewInstance) => dataviewId === dataviewInstance.dataviewId && !dataviewInstance.deleted
+    )
+  }
+
+  const addDataviewToWorkspace = async (dataview: Dataview) => {
     setLoadingId(dataview.id)
     const dataviewInstance = {
       id: `${dataview.name}-${Date.now()}`,
@@ -69,6 +75,22 @@ const EditorMenu: React.FC = () => {
     setLoadingId(undefined)
   }
 
+  const onDataviewClick = (dataview: Dataview) => {
+    const alreadyInWorkspace = isDataviewAdded(dataview.id)
+    if (alreadyInWorkspace) {
+      const dataviewInstance = workspaceDataviewInstances.find(
+        (dataviewInstance) => dataviewInstance.dataviewId === dataview.id
+      )
+      if (dataviewInstance) {
+        deleteDataviewInstance(dataviewInstance.id)
+      } else {
+        console.warn('No dataview instance found to delete for dataview:', dataview)
+      }
+    } else {
+      addDataviewToWorkspace(dataview)
+    }
+  }
+
   return (
     <div className={styles.row}>
       <ul className={styles.dataviewsList}>
@@ -80,7 +102,7 @@ const EditorMenu: React.FC = () => {
               <ul>
                 {sortDataviews.length > 0 &&
                   sortDataviews.map((dataview) => {
-                    const alreadyInWorkspace = workspaceDataviewIds.includes(dataview.id)
+                    const alreadyInWorkspace = isDataviewAdded(dataview.id)
                     return (
                       <li
                         key={dataview.id}
@@ -89,9 +111,10 @@ const EditorMenu: React.FC = () => {
                         {dataview.name}{' '}
                         <IconButton
                           loading={dataview.id === loadingId}
-                          icon={alreadyInWorkspace ? 'tick' : 'plus'}
-                          disabled={alreadyInWorkspace}
-                          tooltip={alreadyInWorkspace ? 'Already added' : 'Add to workspace'}
+                          icon={alreadyInWorkspace ? 'delete' : 'plus'}
+                          tooltip={
+                            alreadyInWorkspace ? 'Remove from workspace' : 'Add to workspace'
+                          }
                           size="small"
                           type="border"
                           className={styles.button}

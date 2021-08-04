@@ -69,13 +69,6 @@ export const selectDataviewInstancesMerged = createSelector(
   }
 )
 
-export const selectWorkspaceDataviewInstancesMergedDataviewIds = createSelector(
-  [selectDataviewInstancesMerged],
-  (dataviewInstances) => {
-    return dataviewInstances?.map(({ dataviewId }) => dataviewId)
-  }
-)
-
 export const selectDataviewInstancesMergedThinning = createSelector(
   [selectDataviewInstancesMerged, isGuestUser, selectDebugOptions],
   (dataviewInstances, guestUser, { thinning }) => {
