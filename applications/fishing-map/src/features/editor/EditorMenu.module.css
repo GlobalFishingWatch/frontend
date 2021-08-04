@@ -1,26 +1,21 @@
-.header {
+.dataviewsList {
+  padding-bottom: var(--space-M);
+}
+
+.dataviewsList > li {
+  margin-bottom: var(--space-M);
+}
+
+.dataviewsList ul {
+  margin-left: var(--space-S);
+}
+
+.row {
   display: flex;
   align-items: center;
+  margin-bottom: var(--space-XS);
 }
 
-.header:not(:first-child) {
-  margin-top: 2rem;
-}
-.header label {
-  margin-left: 1rem;
-}
-
-.editor {
-  margin-top: 1rem;
-  width: 100%;
-  height: 600px;
-  font-size: 1.2rem;
-  font-family: monospace;
-  background: #212121;
-  color: white;
-}
-
-section:not(:first-child) {
-  border-top: var(--border);
-  margin-top: 4rem;
+.button {
+  margin-left: var(--space-S);
 }

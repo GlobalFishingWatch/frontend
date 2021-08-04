@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy, memoize } from 'lodash'
 import { Dataview } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -47,8 +47,14 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState
     fetchThunk: fetchDataviewsByIdsThunk,
     fetchByIdThunk: fetchDataviewByIdThunk,
   },
+  reducers: {
+    addDataviewEntity: (state, action: PayloadAction<Dataview>) => {
+      entityAdapter.addOne(state, action.payload)
+    },
+  },
 })
 
+export const { addDataviewEntity } = dataviewsSlice.actions
 export const {
   selectAll: selectAllDataviews,
   selectById,

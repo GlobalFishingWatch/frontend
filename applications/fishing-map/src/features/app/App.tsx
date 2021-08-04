@@ -26,7 +26,7 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk } from 'features/user/user.slice'
+import { fetchUserThunk, isGFWUser } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -79,6 +79,7 @@ function App(): React.ReactElement {
   const analysisQuery = useSelector(selectAnalysisQuery)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
+  const gfwUser = useSelector(isGFWUser)
   const narrowSidebar = workspaceLocation && !analysisQuery
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
   const { editorActive, dispatchToggleEditorMenu } = useEditorMenu()
@@ -217,12 +218,16 @@ function App(): React.ReactElement {
           activeLinkId="map-data"
         />
       )}
-      <Modal title="Secret debug menu 🤖" isOpen={debugActive} onClose={dispatchToggleDebugMenu}>
-        <DebugMenu />
-      </Modal>
-      <Modal title="Editor 📝" isOpen={editorActive} onClose={dispatchToggleEditorMenu}>
-        <EditorMenu />
-      </Modal>
+      {gfwUser && (
+        <Modal title="Secret debug menu 🤖" isOpen={debugActive} onClose={dispatchToggleDebugMenu}>
+          <DebugMenu />
+        </Modal>
+      )}
+      {gfwUser && (
+        <Modal title="Editor 📝" isOpen={editorActive} onClose={dispatchToggleEditorMenu}>
+          <EditorMenu />
+        </Modal>
+      )}
       {welcomePopupOpen && !readOnly && (
         <Suspense fallback={null}>
           <Modal

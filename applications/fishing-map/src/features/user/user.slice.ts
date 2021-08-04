@@ -21,6 +21,8 @@ const initialState: UserState = {
 }
 
 export const GUEST_USER_TYPE = 'guest'
+export const ADMIN_GROUP_ID = 'Admin-group'
+export const GFW_GROUP_ID = 'GFW'
 
 export const fetchGuestUser = async () => {
   const permissions = await fetch(`${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`).then(
@@ -89,6 +91,7 @@ const userSlice = createSlice({
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
-export const isGFWUser = (state: RootState) => state.user.data?.groups.includes('GFW')
+export const isAdminUser = (state: RootState) => state.user.data?.groups.includes(ADMIN_GROUP_ID)
+export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
 
 export default userSlice.reducer
