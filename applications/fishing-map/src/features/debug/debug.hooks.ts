@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectActive, toggleDebugMenu } from 'features/debug/debug.slice'
+import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
+import { isGFWUser } from 'features/user/user.slice'
 
 type DebugMenu = {
   debugActive: boolean
@@ -9,11 +10,14 @@ type DebugMenu = {
 
 const useDebugMenu = (): DebugMenu => {
   const dispatch = useDispatch()
+  const gfwUser = useSelector(isGFWUser)
   const numTimesDebugKeyDown = useRef(0)
   const debugKeyDownInterval = useRef<number>(0)
+
   const dispatchToggleDebugMenu = useCallback(() => {
     dispatch(toggleDebugMenu())
   }, [dispatch])
+
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === 'd') {
@@ -30,13 +34,17 @@ const useDebugMenu = (): DebugMenu => {
     },
     [dispatchToggleDebugMenu, numTimesDebugKeyDown]
   )
+
   useEffect(() => {
-    document.addEventListener('keydown', onKeyDown)
+    if (gfwUser) {
+      document.addEventListener('keydown', onKeyDown)
+    }
     return () => {
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [onKeyDown])
-  const debugActive = useSelector(selectActive)
+  }, [gfwUser, onKeyDown])
+
+  const debugActive = useSelector(selectDebugActive)
   return { debugActive, dispatchToggleDebugMenu }
 }
 

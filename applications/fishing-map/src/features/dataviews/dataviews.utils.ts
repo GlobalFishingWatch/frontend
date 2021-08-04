@@ -8,12 +8,12 @@ import {
 } from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
-  DEFAULT_ENVIRONMENT_DATAVIEW_ID,
-  DEFAULT_CONTEXT_DATAVIEW_ID,
+  TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
+  TEMPLATE_CONTEXT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
-  DEFAULT_VESSEL_DATAVIEW_ID,
+  TEMPLATE_VESSEL_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
-  DEFAULT_USER_TRACK_ID,
+  TEMPLATE_USER_TRACK_ID,
   DEFAULT_VIIRS_DATAVIEW_ID,
 } from 'data/workspaces'
 
@@ -62,7 +62,7 @@ export const getVesselDataviewInstance = (
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     // TODO find the way to use different vessel dataviews, for example
     // panama and peru doesn't show events and needed a workaround to work with this
-    dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
+    dataviewId: TEMPLATE_VESSEL_DATAVIEW_ID,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
@@ -110,7 +110,7 @@ export const getEnvironmentDataviewInstance = (
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
-    dataviewId: DEFAULT_ENVIRONMENT_DATAVIEW_ID,
+    dataviewId: TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
     datasetsConfig: [
       {
         datasetId,
@@ -132,7 +132,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
   ]
   const dataviewInstance = {
     id: `user-track-${dataset.id}`,
-    dataviewId: DEFAULT_USER_TRACK_ID,
+    dataviewId: TEMPLATE_USER_TRACK_ID,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
@@ -150,7 +150,7 @@ export const getContextDataviewInstance = (
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
-    dataviewId: DEFAULT_CONTEXT_DATAVIEW_ID,
+    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_ID,
     datasetsConfig: [
       {
         datasetId,

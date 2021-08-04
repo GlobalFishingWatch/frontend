@@ -6,6 +6,7 @@ import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
+import useEditorMenu from 'features/editor/editor.hooks'
 import {
   isWorkspaceLocation,
   selectLocationCategory,
@@ -17,6 +18,7 @@ import {
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
+import EditorMenu from 'features/editor/EditorMenu'
 import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
 import {
@@ -79,6 +81,7 @@ function App(): React.ReactElement {
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
+  const { editorActive, dispatchToggleEditorMenu } = useEditorMenu()
 
   const locationIsMarineManager =
     useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
@@ -214,12 +217,11 @@ function App(): React.ReactElement {
           activeLinkId="map-data"
         />
       )}
-      <Modal
-        title="Secret debug menu 🤖"
-        isOpen={debugActive}
-        onClose={() => dispatchToggleDebugMenu()}
-      >
+      <Modal title="Secret debug menu 🤖" isOpen={debugActive} onClose={dispatchToggleDebugMenu}>
         <DebugMenu />
+      </Modal>
+      <Modal title="Editor 📝" isOpen={editorActive} onClose={dispatchToggleEditorMenu}>
+        <EditorMenu />
       </Modal>
       {welcomePopupOpen && !readOnly && (
         <Suspense fallback={null}>

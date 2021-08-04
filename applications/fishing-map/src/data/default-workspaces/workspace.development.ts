@@ -10,7 +10,7 @@ import {
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
   DEFAULT_VIIRS_DATAVIEW_ID,
-  DEFAULT_EVENTS_DATAVIEW_ID,
+  DEFAULT_CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -80,7 +80,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       id: 'encounter-events',
-      dataviewId: DEFAULT_EVENTS_DATAVIEW_ID,
+      dataviewId: DEFAULT_CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
       config: {
         visible: false,
       },

@@ -32,20 +32,21 @@ export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 17
 export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 
 // Workspaces dataviews
-export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
 export const DEFAULT_FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
-export const DEFAULT_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 : 254
+export const DEFAULT_CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID =
+  WORKSPACE_ENV === 'development' ? 140 : 254
 export const DEFAULT_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
 export const DEFAULT_VIIRS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 159 : 255
-export const DEFAULT_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
-export const DEFAULT_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223
-export const DEFAULT_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 154 : 251
+export const TEMPLATE_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
+export const TEMPLATE_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
+export const TEMPLATE_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223
+export const TEMPLATE_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 154 : 251
 
 export const DEFAULT_DATAVIEW_IDS = [
-  DEFAULT_USER_TRACK_ID, // Default user custom tracks dataview for new layers
-  DEFAULT_VESSEL_DATAVIEW_ID, // Fetch vessel information
-  DEFAULT_CONTEXT_DATAVIEW_ID, // Default context dataview for new layers
   DEFAULT_PRESENCE_DATAVIEW_ID, // In case the workspace doesn't have the dataview added,
   DEFAULT_VIIRS_DATAVIEW_ID, // we ensure the + icon woks for the presence category
-  DEFAULT_ENVIRONMENT_DATAVIEW_ID, // Default environmet dataview for new layers
+  TEMPLATE_VESSEL_DATAVIEW_ID, // Fetch vessel information
+  TEMPLATE_USER_TRACK_ID, // Default user custom tracks dataview for new layers
+  TEMPLATE_CONTEXT_DATAVIEW_ID, // Default context dataview for new layers
+  TEMPLATE_ENVIRONMENT_DATAVIEW_ID, // Default environmet dataview for new layers
 ]
