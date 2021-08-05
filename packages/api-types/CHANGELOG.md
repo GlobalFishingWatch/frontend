@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.7.0
+
+### Minor Changes
+
+- 7b95b52a: Update loitering event fields
+
 ## 4.6.0
 
 ### Minor Changes
