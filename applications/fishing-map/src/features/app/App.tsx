@@ -224,7 +224,7 @@ function App(): React.ReactElement {
         </Modal>
       )}
       {gfwUser && (
-        <Modal title="Editor 📝" isOpen={editorActive} onClose={dispatchToggleEditorMenu}>
+        <Modal title="Workspace editor 📝" isOpen={editorActive} onClose={dispatchToggleEditorMenu}>
           <EditorMenu />
         </Modal>
       )}

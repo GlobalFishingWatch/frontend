@@ -1,3 +1,14 @@
+.container {
+  position: relative;
+  min-height: 100%;
+}
+
+.footerButton {
+  position: sticky;
+  bottom: var(--space-M);
+  left: 100%;
+}
+
 .dataviewsList {
   padding-bottom: var(--space-M);
 }
@@ -10,12 +21,52 @@
   margin-left: var(--space-S);
 }
 
+.loading {
+  min-height: 40rem;
+}
+
 .row {
   display: flex;
   align-items: center;
   margin-bottom: var(--space-XS);
 }
 
-.button {
+.rowHighlight {
+  font-weight: 500;
+}
+
+.input {
+  margin-bottom: var(--space-S);
+}
+
+.addButton {
   margin-left: var(--space-S);
+}
+
+.cancelButton {
+  margin-right: var(--space-S);
+}
+
+.rangeContainer {
+  display: flex;
+  margin-top: var(--space-S);
+}
+
+.stepInput {
+  width: 14rem;
+  margin-left: var(--space-XS);
+}
+
+.footer {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.error {
+  color: var(--color-danger-red);
 }
