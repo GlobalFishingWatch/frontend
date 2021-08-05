@@ -23,19 +23,19 @@ const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> 
         <ActivityModalContentField
           label={t('event.distance', 'Distance')}
           value={
-            event.loitering?.totalDistanceKilometers
+            event.loitering?.totalDistanceKm
               ? t('event.formatDistanceKm', '{{value}} km', {
-                  value: event.loitering?.totalDistanceKilometers.toFixed(2),
+                  value: event.loitering?.totalDistanceKm.toFixed(2),
                 })
               : DEFAULT_EMPTY_VALUE
           }
         />
         <ActivityModalContentField
-          label={t('event.medianSpeed', 'Median Speed')}
+          label={t('event.avgSpeed', 'Avg Speed')}
           value={
-            event.loitering?.medianSpeedKnots
+            event.loitering?.averageSpeedKnots
               ? t('event.formatSpeedKnots', '{{value}} knots', {
-                  value: event.loitering?.medianSpeedKnots.toFixed(2),
+                  value: event.loitering?.averageSpeedKnots.toFixed(2),
                 })
               : DEFAULT_EMPTY_VALUE
           }
