@@ -106,7 +106,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...DEFAULT_DATAVIEW_IDS,
         ...(workspace.dataviews?.map(({ id }) => id as number) || []),
         ...workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId),
-      ]
+        ...urlDataviewInstances?.map(({ dataviewId }) => dataviewId as number),
+      ].filter(Boolean)
 
       const uniqDataviewIds = uniq(dataviewIds)
 
