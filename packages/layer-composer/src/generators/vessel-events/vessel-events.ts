@@ -24,14 +24,17 @@ interface VesselsEventsSource extends GeoJSONSourceRaw {
 
 export type GlobalVesselEventsGeneratorConfig = MergedGeneratorConfig<VesselEventsGeneratorConfig>
 
-const POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH = 9
 const DEFAULT_STROKE_COLOR = 'rgba(0, 193, 231, 1)'
 
 class VesselsEventsGenerator {
   type = Type.VesselEvents
 
   _showTrackSegments = (config: GlobalVesselEventsGeneratorConfig) => {
-    return config.track && (config.zoom as number) >= POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH
+    return (
+      config.track &&
+      config.pointsToSegmentsSwitchLevel !== undefined &&
+      (config.zoom as number) >= config.pointsToSegmentsSwitchLevel
+    )
   }
 
   _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
@@ -93,7 +96,7 @@ class VesselsEventsGenerator {
         id: `${config.id}_background`,
         type: 'circle',
         source: `${config.id}_points`,
-        ...(showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
+        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         paint: {
           'circle-color': ['get', 'color'],
           'circle-stroke-width': [
@@ -127,7 +130,7 @@ class VesselsEventsGenerator {
       pointsLayers.push({
         id: `${config.id}_outline`,
         source: `${config.id}_points`,
-        ...(showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
+        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         type: 'symbol',
         layout: {
           'icon-allow-overlap': true,
@@ -149,7 +152,7 @@ class VesselsEventsGenerator {
         id: `${config.id}_segments`,
         source: `${config.id}_segments`,
         type: 'line',
-        minzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH,
+        minzoom: config.pointsToSegmentsSwitchLevel,
         layout: {
           'line-join': 'round',
           'line-cap': 'round',

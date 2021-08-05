@@ -251,6 +251,7 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   showIcons?: boolean
   showAuthorizationStatus?: boolean
   currentEventId?: string
+  pointsToSegmentsSwitchLevel?: number
 }
 
 /**

@@ -56,6 +56,7 @@ export const getVesselDataviewInstance = (
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       color: DEFAULT_TRACK_COLOR,
+      pointsToSegmentsSwitchLevel: null,
     },
     datasetsConfig,
   }
