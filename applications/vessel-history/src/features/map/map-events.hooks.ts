@@ -18,7 +18,6 @@ export default function useMapEvents() {
       const highlightEvent: { id: string } | undefined = { id: vesselFeature?.properties.id }
 
       if (highlightEvent && highlightedEvent?.id !== highlightEvent.id) {
-        console.log('currentEventId = ', highlightEvent)
         dispatch(setHighlightedEvent(highlightEvent as any))
       }
     },
