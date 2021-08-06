@@ -62,9 +62,7 @@ function EnvironmentalLayerPanel({
     return <DatasetNotFound dataview={dataview} />
   }
 
-  const title = isCustomUserLayer
-    ? dataset?.name || dataset?.id
-    : t(`datasets:${dataset?.id}.name` as any)
+  const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
 
   const TitleComponent = (
     <Title

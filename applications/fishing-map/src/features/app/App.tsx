@@ -224,7 +224,13 @@ function App(): React.ReactElement {
         </Modal>
       )}
       {gfwUser && (
-        <Modal title="Workspace editor 📝" isOpen={editorActive} onClose={dispatchToggleEditorMenu}>
+        <Modal
+          title="Workspace editor 📝"
+          isOpen={editorActive}
+          shouldCloseOnEsc={false}
+          contentClassName={styles.editorModal}
+          onClose={dispatchToggleEditorMenu}
+        >
           <EditorMenu />
         </Modal>
       )}

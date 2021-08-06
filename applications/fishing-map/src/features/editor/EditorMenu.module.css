@@ -28,7 +28,7 @@
 .row {
   display: flex;
   align-items: center;
-  margin-bottom: var(--space-XS);
+  margin-bottom: var(--space-S);
 }
 
 .rowHighlight {
@@ -37,6 +37,10 @@
 
 .input {
   margin-bottom: var(--space-S);
+}
+
+.input2Columns {
+  width: 50%;
 }
 
 .addButton {
@@ -53,18 +57,14 @@
 }
 
 .stepInput {
-  width: 14rem;
+  width: 10%;
   margin-left: var(--space-XS);
 }
 
 .footer {
-  position: absolute;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
 .error {

@@ -10,6 +10,7 @@ interface ModalProps {
   header?: boolean
   className?: string
   closeButtonClassName?: string
+  shouldCloseOnEsc?: boolean
   contentClassName?: string
   overlayClassName?: string
   portalClassName?: string
@@ -33,6 +34,7 @@ function Modal(props: ModalProps) {
     contentClassName,
     overlayClassName,
     closeButtonClassName,
+    shouldCloseOnEsc = false,
     children,
   } = props
   const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
@@ -44,6 +46,7 @@ function Modal(props: ModalProps) {
     <ReactModal
       portalClassName={portalClassName}
       overlayClassName={cx(styles.modalOverlay, overlayClassName)}
+      shouldCloseOnEsc={shouldCloseOnEsc}
       className={cx(styles.modalContentWrapper, className)}
       appElement={appElement}
       isOpen={isOpen}

@@ -5,11 +5,13 @@ import {
   ApiAppName,
   Dataview,
   DataviewCategory,
+  DataviewConfig,
   EndpointId,
 } from '@globalfishingwatch/api-types/dist'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
+import Choice from '@globalfishingwatch/ui-components/dist/choice'
 import Select from '@globalfishingwatch/ui-components/dist/select'
 import MultiSelect from '@globalfishingwatch/ui-components/dist/multi-select'
 import {
@@ -36,6 +38,24 @@ type NewDataviewEditorProps = {
   onCancelClick: () => void
 }
 
+const categoryOptions = [
+  { id: DataviewCategory.Environment, label: 'Environment' },
+  { id: DataviewCategory.Fishing, label: 'Fishing' },
+  { id: DataviewCategory.Presence, label: 'Presence' },
+  { id: UNKNOWN_CATEGORY, label: 'Unknown' },
+]
+
+const dynamicHeatmapOption = { id: 'dynamic', title: 'Dynamic' }
+const staticHeatmapOption = { id: 'static', title: 'Static' }
+const heatmapTypesOptions = [dynamicHeatmapOption, staticHeatmapOption]
+
+const temporalResolutionOptions = [
+  { id: 'month', label: 'Month' },
+  { id: '10days', label: '10days' },
+  { id: 'day', label: 'Day' },
+  { id: 'hour', label: 'Hour' },
+]
+
 const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
@@ -61,13 +81,6 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
     return filteredDatasets.map((dataset) => ({ id: dataset.id, label: dataset.id }))
   }, [dataview.category, datasets])
 
-  const categoryOptions = [
-    { id: DataviewCategory.Environment, label: 'Environment' },
-    { id: DataviewCategory.Fishing, label: 'Fishing' },
-    { id: DataviewCategory.Presence, label: 'Presence' },
-    { id: UNKNOWN_CATEGORY, label: 'Unknown' },
-  ]
-
   useEffect(() => {
     if (!isEditingDataview) {
       dispatch(fetchAllDatasetsThunk())
@@ -78,6 +91,13 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
     setDataview((dataview) => ({ ...dataview, ...property }))
   }
 
+  const onDataviewConfigChange = (config: Partial<DataviewConfig>) => {
+    setDataview((dataview) => ({
+      ...dataview,
+      config: { ...dataview.config, ...config },
+    }))
+  }
+
   const onSaveClick = async () => {
     const dataviewDatasetsIds = dataviewDatasets.map(({ id }) => id)
     const newDataview = {
@@ -85,10 +105,11 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
       app: APP_NAME as ApiAppName,
       config: {
         ...dataview.config,
-        type: GeneratorType.HeatmapAnimated,
+        type: dataview.config?.static ? GeneratorType.Heatmap : GeneratorType.HeatmapAnimated,
         ...(dataview.category !== DataviewCategory.Environment && {
           datasets: dataviewDatasetsIds,
         }),
+        ...(dataview.config?.breaks?.length && { breaks: dataview.config.breaks }),
       },
       datasetsConfig: isEditingDataview
         ? dataview.datasetsConfig
@@ -111,7 +132,10 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
     } else {
       action = await dispatch(createDataviewThunk(newDataview))
     }
-    if (createDataviewThunk.fulfilled.match(action)) {
+    if (
+      updateDataviewThunk.fulfilled.match(action) ||
+      createDataviewThunk.fulfilled.match(action)
+    ) {
       if (!isEditingDataview) {
         const dataviewInstance = getDataviewInstanceFromDataview(action.payload as Dataview)
         addNewDataviewInstances([dataviewInstance])
@@ -135,7 +159,8 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
     dataview.description !== undefined &&
     dataview.category !== undefined &&
     dataview.category !== UNKNOWN_CATEGORY &&
-    dataview.config !== undefined &&
+    dataview.config?.color !== undefined &&
+    (dataview.category !== DataviewCategory.Environment || dataview.config.breaks?.length > 0) &&
     (isEditingDataview || dataviewDatasets.length > 0)
 
   return (
@@ -143,33 +168,43 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
       <InputText
         inputSize="small"
         value={dataview.name}
-        label={t('common.name', 'Name')}
+        label={`${t('common.name', 'Name')} *`}
         className={styles.input}
         onChange={(e) => onDataviewPropertyChange({ name: e.target.value })}
       />
       <InputText
         inputSize="small"
         value={dataview.description}
-        label={t('common.description', 'Description')}
+        label={`${t('common.description', 'Description')} *`}
         className={styles.input}
         onChange={(e) => onDataviewPropertyChange({ description: e.target.value })}
       />
       <Select
-        label={t('common.category', 'Category')}
+        label={`${t('common.category', 'Category')} *`}
         placeholder={t('selects.placeholder', 'Select an option')}
         options={categoryOptions}
         className={styles.input}
         selectedOption={categoryOptions.find(({ id }) => id === dataview.category)}
         onSelect={(selected) => {
+          setDataviewDatasets([])
           onDataviewPropertyChange({ category: selected.id })
+          let breaks: number[] = []
+          if (selected.id === DataviewCategory.Environment) {
+            breaks = [...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS)].map(
+              (_, i) => i / COLOR_RAMP_DEFAULT_NUM_STEPS
+            )
+          }
+          onDataviewConfigChange({ breaks })
         }}
         onRemove={() => {
+          setDataviewDatasets([])
           onDataviewPropertyChange({ category: undefined })
+          onDataviewConfigChange({ breaks: [] })
         }}
       />
       {!isEditingDataview && (
         <MultiSelect
-          label={t('dataset.title_plural', 'Datasets')}
+          label={`${t('dataset.title_plural', 'Datasets')} *`}
           placeholder={
             dataviewDatasets.length > 0
               ? dataviewDatasets.map(({ id }) => id).join(', ')
@@ -190,42 +225,78 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
         />
       )}
       <div className={styles.input}>
-        <label>Color</label>
+        <label>Color *</label>
         <ColorBar
           colorBarOptions={FillColorBarOptions}
           selectedColor={dataview.config?.color}
           onColorClick={(color) => {
-            onDataviewPropertyChange({ config: { color: color.value, colorRamp: color.id } })
+            onDataviewConfigChange({
+              color: color.value,
+              colorRamp: color.id,
+            })
           }}
         />
       </div>
       {dataview.category === DataviewCategory.Environment &&
         (isEditingDataview || dataviewDatasets.length > 0) && (
           <Fragment>
-            <label>Breaks</label>
-            <div className={styles.rangeContainer}>
-              {[...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS)].map((_, i) => (
-                <InputText
-                  inputSize="small"
-                  type="number"
-                  step="0.1"
-                  key={i}
-                  value={dataview.config?.breaks?.[i]}
-                  className={styles.stepInput}
-                  onChange={(e) => {
-                    const breaks = dataview.config?.breaks
-                      ? [...dataview.config.breaks]
-                      : [...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS).fill(0)]
-                    breaks[i] = parseFloat(e.target.value)
-                    onDataviewPropertyChange({
-                      config: {
-                        ...dataview.config,
-                        breaks,
-                      },
-                    })
+            <div className={styles.row}>
+              <div className={styles.rowContent}>
+                <label>Breaks *</label>
+                <div className={styles.rangeContainer}>
+                  {[...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS)].map((_, i) => (
+                    <InputText
+                      inputSize="small"
+                      type="number"
+                      step="0.1"
+                      key={i}
+                      placeholder={(i / COLOR_RAMP_DEFAULT_NUM_STEPS).toString()}
+                      value={dataview.config?.breaks?.[i]}
+                      className={styles.stepInput}
+                      onChange={(e) => {
+                        const breaks = dataview.config?.breaks
+                          ? [...dataview.config.breaks]
+                          : [...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS).fill(0)]
+                        breaks[i] = parseFloat(e.target.value)
+                        onDataviewConfigChange({ breaks })
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className={styles.row}>
+              <div className={styles.input2Columns}>
+                <label>Heatmap type</label>
+                <Choice
+                  options={heatmapTypesOptions}
+                  activeOption={
+                    dataview.config?.static ? staticHeatmapOption.id : dynamicHeatmapOption.id
+                  }
+                  onOptionClick={(option) => {
+                    onDataviewConfigChange({ static: option.id === staticHeatmapOption.id })
+                  }}
+                  size="small"
+                />
+              </div>
+              {!dataview.config?.static && (
+                <Select
+                  label="Temporal resolution"
+                  placeholder={t('selects.placeholder', 'Select an option')}
+                  options={temporalResolutionOptions}
+                  containerClassName={styles.input2Columns}
+                  direction="top"
+                  selectedOption={temporalResolutionOptions.find(
+                    ({ id }) => id === dataview.config?.interval
+                  )}
+                  onSelect={(selected) => {
+                    onDataviewConfigChange({ interval: selected.id })
+                  }}
+                  onRemove={() => {
+                    onDataviewConfigChange({ interval: undefined })
                   }}
                 />
-              ))}
+              )}
             </div>
           </Fragment>
         )}
