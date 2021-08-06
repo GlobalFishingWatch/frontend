@@ -41,6 +41,8 @@ RUN yarn build
 FROM appsoa/docker-alpine-htpasswd as htpasswd
 ARG BASIC_AUTH_USER=gfw
 ARG BASIC_AUTH_PASS=default
+ENV BASIC_AUTH_USER $BASIC_AUTH_USER
+ENV BASIC_AUTH_PASS $BASIC_AUTH_PASS
 RUN htpasswd -Bbn "${BASIC_AUTH_USER}" "${BASIC_AUTH_PASS}" > /tmp/.htpasswd
 
 #################################################################################
