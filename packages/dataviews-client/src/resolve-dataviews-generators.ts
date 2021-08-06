@@ -159,8 +159,9 @@ export function getGeneratorConfig(
 
       generator = {
         ...generator,
-        maxZoom: 8,
-        fetchStats: !dataview.config.steps,
+        maxZoom: dataview.config.maxZoom || 8,
+        fetchStats: !dataview.config.breaks,
+        static: dataview.config.static || false,
         datasets: [heatmapDataset?.id],
         tilesUrl: tilesEndpoint?.pathTemplate,
         statsUrl: statsEndpoint?.pathTemplate,

@@ -12,7 +12,10 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Select from '@globalfishingwatch/ui-components/dist/select'
 import MultiSelect from '@globalfishingwatch/ui-components/dist/multi-select'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import {
+  GeneratorType,
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+} from '@globalfishingwatch/layer-composer/dist/generators'
 import ColorBar, { FillColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/dataviews/dataviews.slice'
@@ -27,7 +30,6 @@ import { getDataviewInstanceFromDataview } from './editor.utils'
 import useEditorMenu from './editor.hooks'
 
 const UNKNOWN_CATEGORY = 'unknown' as DataviewCategory
-const NUM_BREAKS = 9
 
 type NewDataviewEditorProps = {
   editDataview?: Dataview
@@ -202,7 +204,7 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
           <Fragment>
             <label>Breaks</label>
             <div className={styles.rangeContainer}>
-              {[...new Array(NUM_BREAKS)].map((_, i) => (
+              {[...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS)].map((_, i) => (
                 <InputText
                   inputSize="small"
                   type="number"
@@ -213,7 +215,7 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
                   onChange={(e) => {
                     const breaks = dataview.config?.breaks
                       ? [...dataview.config.breaks]
-                      : [...new Array(NUM_BREAKS).fill(0)]
+                      : [...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS).fill(0)]
                     breaks[i] = parseFloat(e.target.value)
                     onDataviewPropertyChange({
                       config: {
