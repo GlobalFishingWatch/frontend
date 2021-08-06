@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.12.0
+
+### Minor Changes
+
+- 74c5a020: Customize vessel events styles on map
+
 ## 8.11.0
 
 ### Minor Changes

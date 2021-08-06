@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.80
+
+### Patch Changes
+
+- 74c5a020: Customize vessel events styles on map
+- Updated dependencies [74c5a020]
+  - @globalfishingwatch/dataviews-client@11.12.0
+  - @globalfishingwatch/layer-composer@8.12.0
+
 ## 0.0.79
 
 ### Patch Changes
