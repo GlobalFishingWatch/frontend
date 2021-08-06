@@ -271,9 +271,10 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   // end: string
   // zoom: number
   maxZoom?: number
-  breaks?: number
-  steps?: number[]
+  numBreaks?: number
+  breaks?: number[]
   tilesUrl: string
+  static?: boolean
   statsUrl?: string
   scalePowExponent?: number
   datasets: string[]

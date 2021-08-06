@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.11.0
+
+### Minor Changes
+
+- support static heatmap
+
 ## 8.10.4
 
 ### Patch Changes

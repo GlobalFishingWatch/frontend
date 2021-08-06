@@ -6,6 +6,7 @@ import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
+import useEditorMenu from 'features/editor/editor.hooks'
 import {
   isWorkspaceLocation,
   selectLocationCategory,
@@ -17,6 +18,7 @@ import {
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
+import EditorMenu from 'features/editor/EditorMenu'
 import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
 import {
@@ -24,7 +26,7 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk } from 'features/user/user.slice'
+import { fetchUserThunk, isGFWUser } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -77,8 +79,10 @@ function App(): React.ReactElement {
   const analysisQuery = useSelector(selectAnalysisQuery)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
+  const gfwUser = useSelector(isGFWUser)
   const narrowSidebar = workspaceLocation && !analysisQuery
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
+  const { editorActive, dispatchToggleEditorMenu } = useEditorMenu()
 
   const locationIsMarineManager =
     useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
@@ -214,13 +218,22 @@ function App(): React.ReactElement {
           activeLinkId="map-data"
         />
       )}
-      <Modal
-        title="Secret debug menu 🤖"
-        isOpen={debugActive}
-        onClose={() => dispatchToggleDebugMenu()}
-      >
-        <DebugMenu />
-      </Modal>
+      {gfwUser && (
+        <Modal title="Secret debug menu 🤖" isOpen={debugActive} onClose={dispatchToggleDebugMenu}>
+          <DebugMenu />
+        </Modal>
+      )}
+      {gfwUser && (
+        <Modal
+          title="Workspace editor 📝"
+          isOpen={editorActive}
+          shouldCloseOnEsc={false}
+          contentClassName={styles.editorModal}
+          onClose={dispatchToggleEditorMenu}
+        >
+          <EditorMenu />
+        </Modal>
+      )}
       {welcomePopupOpen && !readOnly && (
         <Suspense fallback={null}>
           <Modal

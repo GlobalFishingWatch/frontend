@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.11.0
+
+### Minor Changes
+
+- support static heatmap
+
 ## 11.10.1
 
 ### Patch Changes
