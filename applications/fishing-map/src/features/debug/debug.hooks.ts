@@ -20,7 +20,7 @@ const useDebugMenu = (): DebugMenu => {
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === 'd') {
+      if (event.key === 'd' || event.key === 'D') {
         window.clearTimeout(debugKeyDownInterval.current)
         numTimesDebugKeyDown.current++
         debugKeyDownInterval.current = window.setTimeout(() => {

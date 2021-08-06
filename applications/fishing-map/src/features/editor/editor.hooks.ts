@@ -20,7 +20,7 @@ const useEditorMenu = (): EditorMenu => {
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === 'e') {
+      if (event.key === 'e' || event.key === 'E') {
         window.clearTimeout(editorKeyDownInterval.current)
         numTimesEditorKeyDown.current++
         editorKeyDownInterval.current = window.setTimeout(() => {
