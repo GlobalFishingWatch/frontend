@@ -60,6 +60,7 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const [dataview, setDataview] = useState<Partial<Dataview>>(editDataview || ({} as Dataview))
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
   const [dataviewDatasets, setDataviewDatasets] = useState<{ id: string; label: string }[]>([])
   const datasets = useSelector(selectFourwingsDatasets)
@@ -99,6 +100,7 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
   }
 
   const onSaveClick = async () => {
+    setLoading(true)
     const dataviewDatasetsIds = dataviewDatasets.map(({ id }) => id)
     const newDataview = {
       ...dataview,
@@ -132,6 +134,7 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
     } else {
       action = await dispatch(createDataviewThunk(newDataview))
     }
+    setLoading(false)
     if (
       updateDataviewThunk.fulfilled.match(action) ||
       createDataviewThunk.fulfilled.match(action)
@@ -319,6 +322,7 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
             {t('common.cancel', 'Cancel')}
           </Button>
           <Button
+            loading={loading}
             disabled={!validDataview || error !== undefined}
             tooltip={validDataview ? '' : 'Complete all fields'}
             tooltipPlacement="top"
