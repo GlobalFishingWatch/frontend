@@ -11,6 +11,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import {
+  clearVesselDataview,
   fetchVesselByIdThunk,
   selectVesselById,
   selectVesselsStatus,
@@ -69,6 +70,7 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   useEffect(() => {
     const fetchVessel = async () => {
+      dispatch(clearVesselDataview(null))
       const [dataset, gfwId] = (
         Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
       ).split('_')
