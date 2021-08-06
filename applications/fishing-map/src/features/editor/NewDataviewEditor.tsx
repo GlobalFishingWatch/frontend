@@ -156,7 +156,6 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
 
   const validDataview =
     dataview.name !== undefined &&
-    dataview.description !== undefined &&
     dataview.category !== undefined &&
     dataview.category !== UNKNOWN_CATEGORY &&
     dataview.config?.color !== undefined &&
@@ -171,13 +170,6 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
         label={`${t('common.name', 'Name')} *`}
         className={styles.input}
         onChange={(e) => onDataviewPropertyChange({ name: e.target.value })}
-      />
-      <InputText
-        inputSize="small"
-        value={dataview.description}
-        label={`${t('common.description', 'Description')} *`}
-        className={styles.input}
-        onChange={(e) => onDataviewPropertyChange({ description: e.target.value })}
       />
       <Select
         label={`${t('common.category', 'Category')} *`}
@@ -224,18 +216,33 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
           }}
         />
       )}
-      <div className={styles.input}>
-        <label>Color *</label>
-        <ColorBar
-          colorBarOptions={FillColorBarOptions}
-          selectedColor={dataview.config?.color}
-          onColorClick={(color) => {
-            onDataviewConfigChange({
-              color: color.value,
-              colorRamp: color.id,
-            })
-          }}
-        />
+      <div className={styles.row}>
+        <div className={styles.input2Columns}>
+          <label>Color *</label>
+          <ColorBar
+            colorBarOptions={FillColorBarOptions}
+            selectedColor={dataview.config?.color}
+            onColorClick={(color) => {
+              onDataviewConfigChange({
+                color: color.value,
+                colorRamp: color.id,
+              })
+            }}
+          />
+        </div>
+        <div className={styles.input2Columns}>
+          <label>Max zoom level *</label>
+          <InputText
+            inputSize="small"
+            type="number"
+            step="1"
+            defaultValue={8}
+            value={dataview.config?.maxZoom}
+            onChange={(e) => {
+              onDataviewConfigChange({ maxZoom: parseInt(e.target.value) })
+            }}
+          />
+        </div>
       </div>
       {dataview.category === DataviewCategory.Environment &&
         (isEditingDataview || dataviewDatasets.length > 0) && (
