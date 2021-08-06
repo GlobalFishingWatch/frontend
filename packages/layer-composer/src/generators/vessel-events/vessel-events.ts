@@ -33,6 +33,7 @@ class VesselsEventsGenerator {
     return (
       config.track &&
       config.pointsToSegmentsSwitchLevel !== undefined &&
+      Number.isFinite(config.pointsToSegmentsSwitchLevel) &&
       (config.zoom as number) >= config.pointsToSegmentsSwitchLevel
     )
   }
@@ -89,6 +90,14 @@ class VesselsEventsGenerator {
     }
     const showTrackSegments = this._showTrackSegments(config)
 
+    const { activeIconsSize, iconsSize, activeStrokeColor, strokeColor } = {
+      activeIconsSize: 1,
+      iconsSize: 1,
+      activeStrokeColor: config.color || DEFAULT_STROKE_COLOR,
+      strokeColor: DEFAULT_LANDMASS_COLOR,
+      ...config.event,
+    }
+
     const activeFilter = ['case', ['==', ['get', 'id'], config.currentEventId || null]]
 
     const pointsLayers: (CircleLayer | SymbolLayer)[] = [
@@ -110,12 +119,8 @@ class VesselsEventsGenerator {
             14,
             [...activeFilter, 2, 3],
           ],
-          'circle-stroke-color': [
-            ...activeFilter,
-            config.color || DEFAULT_STROKE_COLOR,
-            DEFAULT_LANDMASS_COLOR,
-          ],
-          'circle-radius': [...activeFilter, 8, 4],
+          'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
+          'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * iconsSize],
         },
         metadata: {
           group: Group.Point,
@@ -135,7 +140,7 @@ class VesselsEventsGenerator {
         layout: {
           'icon-allow-overlap': true,
           'icon-image': ['get', 'icon'],
-          'icon-size': [...activeFilter, 1, 0],
+          'icon-size': [...activeFilter, 1 * iconsSize, 0],
         },
         metadata: {
           group: Group.Point,

@@ -247,6 +247,12 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   type: Type.VesselEvents
   data: RawEvent[]
   color?: string
+  event?: {
+    activeIconsSize?: number
+    activeStrokeColor?: string
+    iconsSize?: number
+    strokeColor?: string
+  }
   track?: TrackGeneratorConfigData
   showIcons?: boolean
   showAuthorizationStatus?: boolean
