@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client/dist/api-client'
+import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import {
   getDataviewsGeneratorConfigs,
   UrlDataviewInstance,
@@ -12,9 +13,10 @@ import {
 import { selectVesselsStatus } from 'features/vessels/vessels.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { ResourcesState, selectResources } from 'features/resources/resources.slice'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { DEBUG_MODE, DEFAULT_WORKSPACE } from 'data/config'
 import { Range } from 'types'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
+import { selectHighlightedEvent, selectHighlightedTime } from './map.slice'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -30,15 +32,22 @@ type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
   resources: ResourcesState
   staticTime: Range
+  highlightedTime?: Range
+  highlightedEvent?: ApiEvent
 }
 
 const getGeneratorsConfig = ({
   dataviews = [],
   resources,
   staticTime,
+  highlightedTime,
+  highlightedEvent,
 }: GetGeneratorConfigParams) => {
   const generatorOptions = {
     timeRange: staticTime,
+    highlightedEvent,
+    highlightedTime,
+    debug: DEBUG_MODE,
   }
 
   const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
@@ -47,8 +56,8 @@ const getGeneratorsConfig = ({
 }
 
 const selectMapGeneratorsConfig = createSelector(
-  [selectDataviewInstancesResolved, selectResources],
-  (dataviews = [], resources) => {
+  [selectDataviewInstancesResolved, selectResources, selectHighlightedTime, selectHighlightedEvent],
+  (dataviews = [], resources, highlightedTime, highlightedEvent) => {
     return getGeneratorsConfig({
       dataviews,
       resources,
@@ -56,6 +65,8 @@ const selectMapGeneratorsConfig = createSelector(
         start: DEFAULT_WORKSPACE.start,
         end: DEFAULT_WORKSPACE.end,
       },
+      highlightedTime,
+      highlightedEvent,
     })
   }
 )

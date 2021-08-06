@@ -7,6 +7,10 @@ export const WORKSPACE_ENV =
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
 
+export const DEBUG_MODE =
+  ((process.env.REACT_APP_DEBUG_MODE ?? false) as boolean) ||
+  (WORKSPACE_ENV === 'production' ? false : true)
+
 export const FULL_SUFIX = 'full'
 
 export const DEFAULT_WORKSPACE: AppState = {

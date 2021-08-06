@@ -24,14 +24,18 @@ interface VesselsEventsSource extends GeoJSONSourceRaw {
 
 export type GlobalVesselEventsGeneratorConfig = MergedGeneratorConfig<VesselEventsGeneratorConfig>
 
-const POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH = 9
 const DEFAULT_STROKE_COLOR = 'rgba(0, 193, 231, 1)'
 
 class VesselsEventsGenerator {
   type = Type.VesselEvents
 
   _showTrackSegments = (config: GlobalVesselEventsGeneratorConfig) => {
-    return config.track && (config.zoom as number) >= POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH
+    return (
+      config.track &&
+      config.pointsToSegmentsSwitchLevel !== undefined &&
+      Number.isFinite(config.pointsToSegmentsSwitchLevel) &&
+      (config.zoom as number) >= config.pointsToSegmentsSwitchLevel
+    )
   }
 
   _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
@@ -86,6 +90,14 @@ class VesselsEventsGenerator {
     }
     const showTrackSegments = this._showTrackSegments(config)
 
+    const { activeIconsSize, iconsSize, activeStrokeColor, strokeColor } = {
+      activeIconsSize: 1,
+      iconsSize: 1,
+      activeStrokeColor: config.color || DEFAULT_STROKE_COLOR,
+      strokeColor: DEFAULT_LANDMASS_COLOR,
+      ...config.event,
+    }
+
     const activeFilter = ['case', ['==', ['get', 'id'], config.currentEventId || null]]
 
     const pointsLayers: (CircleLayer | SymbolLayer)[] = [
@@ -93,7 +105,7 @@ class VesselsEventsGenerator {
         id: `${config.id}_background`,
         type: 'circle',
         source: `${config.id}_points`,
-        ...(showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
+        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         paint: {
           'circle-color': ['get', 'color'],
           'circle-stroke-width': [
@@ -107,12 +119,8 @@ class VesselsEventsGenerator {
             14,
             [...activeFilter, 2, 3],
           ],
-          'circle-stroke-color': [
-            ...activeFilter,
-            config.color || DEFAULT_STROKE_COLOR,
-            DEFAULT_LANDMASS_COLOR,
-          ],
-          'circle-radius': [...activeFilter, 8, 4],
+          'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
+          'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * iconsSize],
         },
         metadata: {
           group: Group.Point,
@@ -127,12 +135,12 @@ class VesselsEventsGenerator {
       pointsLayers.push({
         id: `${config.id}_outline`,
         source: `${config.id}_points`,
-        ...(showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
+        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         type: 'symbol',
         layout: {
           'icon-allow-overlap': true,
           'icon-image': ['get', 'icon'],
-          'icon-size': [...activeFilter, 1, 0],
+          'icon-size': [...activeFilter, 1 * iconsSize, 0],
         },
         metadata: {
           group: Group.Point,
@@ -149,7 +157,7 @@ class VesselsEventsGenerator {
         id: `${config.id}_segments`,
         source: `${config.id}_segments`,
         type: 'line',
-        minzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH,
+        minzoom: config.pointsToSegmentsSwitchLevel,
         layout: {
           'line-join': 'round',
           'line-cap': 'round',
