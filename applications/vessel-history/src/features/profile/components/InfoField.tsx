@@ -28,77 +28,49 @@ export enum VesselFieldLabel {
   authorizations = 'authorizations',
   registeredGearType = 'registeredGearType',
 }
-
-enum VesselFieldLabelPlural {
-  name = 'name_plural',
-  flag = 'flag_plural',
-  shipname = 'shipname_plural',
-  firstTransmissionDate = 'firstTransmissionDate_plural',
-  lastTransmissionDate = 'lastTransmissionDate_plural',
-  imo = 'imo_plural',
-  mmsi = 'mmsi_plural',
-  callsign = 'callsign_plural',
-  fleet = 'fleet_plural',
-  origin = 'origin_plural',
-  type = 'type_plural',
-  gearType = 'gearType_plural',
-  length = 'length_plural',
-  depth = 'depth_plural',
-  grossTonnage = 'grossTonnage_plural',
-  owner = 'owner_plural',
-  operator = 'operator_plural',
-  builtYear = 'builtYear_plural',
-  authorizations = 'authorization_plural',
-  registeredGearType = 'registeredGearType_plural',
-}
 interface ListItemProps {
   label: VesselFieldLabel
-  value: string
+  value?: string
   valuesHistory?: ValueItem[]
   vesselName: string
+  hideSince?: ConstrainBooleanParameters
 }
 
 const InfoField: React.FC<ListItemProps> = ({
-  value = '',
+  value = DEFAULT_EMPTY_VALUE,
   label,
   valuesHistory = [],
   vesselName,
+  hideSince = true,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)
-  const openModal = useCallback(() => setModalOpen(true), [])
+  const openModal = useCallback(
+    () => valuesHistory.length > 0 && setModalOpen(true),
+    [valuesHistory.length]
+  )
   const closeModal = useCallback(() => setModalOpen(false), [])
 
   const current: ValueItem = {
     value,
     firstSeen: valuesHistory.slice().shift()?.firstSeen ?? valuesHistory.slice().shift()?.endDate,
   }
-  const labelPlural: VesselFieldLabelPlural = useMemo(() => {
-    const plural = VesselFieldLabelPlural[label as keyof typeof VesselFieldLabelPlural]
-    return t(`vessel.${plural}` as any, `${label}s`)
-  }, [t, label])
-
-  const defaultValue = useMemo(() => {
-    return `+${valuesHistory.length} previous ${labelPlural.toLocaleUpperCase()}`
-  }, [valuesHistory, labelPlural])
-
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
 
   return (
     <div className={styles.identifierField}>
       <label>{t(`vessel.${label}` as any, label)}</label>
       <div>
-        <div onClick={openModal}>{value.length > 0 ? value : DEFAULT_EMPTY_VALUE}</div>
-        {valuesHistory.length > 1 && (
+        <div onClick={openModal}>{value}</div>
+        {valuesHistory.length > 0 && (
           <button className={styles.moreValues} onClick={openModal}>
-            {t('vessel.plusPreviousValuesByField', defaultValue, {
+            {t('vessel.formatValues', '{{quantity}} values', {
               quantity: valuesHistory.length,
-              fieldLabel: labelPlural.toLocaleUpperCase(),
             })}
           </button>
         )}
-        {valuesHistory.length === 1 && since && (
+        {!hideSince && valuesHistory.length === 1 && since && (
           <p className={styles.rangeLabel}>
             {t('common.since', 'Since')} <I18nDate date={since} />
           </p>

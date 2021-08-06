@@ -60,11 +60,17 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
               </div>
               <div className={styles.identifierField}>
                 <label>{t('common.currentTimeRange', 'CURRENT TIME RANGE')}</label>
-                <div>
-                  <span className={styles.rangeLabel}>{t('common.since', 'Since')}: </span>
-                  <span className={styles.rangeValue}>{since && <I18nDate date={since} />}</span>
-                  <span className={styles.rangeValue}>{!since && DEFAULT_EMPTY_VALUE}</span>
-                </div>
+                {since && (
+                  <div>
+                    <span className={styles.rangeLabel}>{t('common.since', 'Since')}: </span>
+                    <span className={styles.rangeValue}>{<I18nDate date={since} />}</span>
+                  </div>
+                )}
+                {!since && (
+                  <div>
+                    <span className={styles.rangeValue}>{DEFAULT_EMPTY_VALUE}</span>
+                  </div>
+                )}
               </div>
             </div>
             {previousHistory.map((historyValue: ValueItem, index) => (

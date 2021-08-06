@@ -25,6 +25,8 @@
     "encounter": "encounter",
     "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
     "end": "End",
+    "endDistancePort": "End distance from port",
+    "endDistanceShore": "End distance from shore",
     "fishing": "fishing",
     "fishingAction": "Fishing in {{regionName}}",
     "formatDistanceKm": "{{value}} km",

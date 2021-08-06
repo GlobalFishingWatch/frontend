@@ -25,7 +25,6 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     authorisationList,
     imageList,
   } = data
-  const emptyHistory = { byDate: [], byCount: [] }
   const vesselHistory = {
     builtYear: {
       byCount: [],
@@ -102,7 +101,6 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     origin: '',
     history: {
       ...vesselHistory,
-      flag: emptyHistory,
     },
     imageList: imageList ?? [],
   }

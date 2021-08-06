@@ -60,6 +60,8 @@ export const selectEventsForTracks = createSelector(
   }
 )
 
+
+
 export interface RenderedEvent extends ActivityEvent {
   color: string
   description: string
@@ -129,8 +131,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-                count: Math.round(duration.minutes as number),
-              })
+              count: Math.round(duration.minutes as number),
+            })
             : '',
         ].join(' ')
 

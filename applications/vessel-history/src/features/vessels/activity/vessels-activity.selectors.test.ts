@@ -1,0 +1,55 @@
+import { Filters } from 'features/profile/filters/filters.slice'
+import { selectFilteredEvents } from './vessels-activity.selectors'
+import { loiteringAndEncounterEvents } from './__mocks__/selectEventsWithRenderingInfo.mock'
+import { RenderedEvent } from './vessels-activity.slice'
+
+jest.mock('features/vessels/activity/vessels-activity.slice')
+jest.mock('features/profile/filters/filters.slice')
+
+describe('selectFilteredEvents', () => {
+  const cases: [string, string, string, RenderedEvent[][], Filters, number][] = [
+    [
+      'encounters',
+      '2019-01-01',
+      '2019-12-31',
+      loiteringAndEncounterEvents as any,
+      {
+        encounters: true,
+        loiteringEvents: false,
+        fishingEvents: false,
+        portVisits: false,
+        start: '2019-01-01',
+        end: '2019-12-31',
+      },
+      2,
+    ],
+    [
+      'loitering',
+      '2019-01-01',
+      '2019-12-31',
+      loiteringAndEncounterEvents as any,
+      {
+        encounters: false,
+        loiteringEvents: true,
+        fishingEvents: false,
+        portVisits: false,
+        start: '2019-01-01',
+        end: '2019-12-31',
+      },
+      52,
+    ],
+  ]
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  test.each(cases)(
+    ' filtered by %p between %p and %p',
+    (eventType, start, end, selectEventsWithRenderingInfo, selectFilters, expectedCount) => {
+      const result = selectFilteredEvents.resultFunc(selectEventsWithRenderingInfo, selectFilters)
+      expect(result).toMatchSnapshot()
+      expect(result.length).toEqual(expectedCount)
+    }
+  )
+})

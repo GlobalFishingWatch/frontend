@@ -32,6 +32,7 @@ import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
+import { resetFilters } from './filters/filters.slice'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
@@ -61,6 +62,10 @@ const Profile: React.FC = (props): React.ReactElement => {
       })
     }
   }, [dispatch, resourceQueries])
+
+  useEffect(() => {
+    dispatch(resetFilters())
+  }, [dispatch, vesselProfileId])
 
   useEffect(() => {
     const fetchVessel = async () => {

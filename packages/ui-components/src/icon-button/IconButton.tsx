@@ -15,6 +15,7 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
     id,
     type = 'default',
     size = 'default',
+    active = 'false',
     disabled = false,
     loading = false,
     className,
