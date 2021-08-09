@@ -12,8 +12,9 @@ import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
 import mapReducer from './features/map/map.slice'
 import rulersReducer from './features/map/rulers/rulers.slice'
-import debugReducer from './features/debug/debug.slice'
 import analysisReducer from './features/analysis/analysis.slice'
+import debugReducer from './features/debug/debug.slice'
+import editorReducer from './features/editor/editor.slice'
 
 const {
   reducer: location,
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
   map: mapReducer,
   rulers: rulersReducer,
   debug: debugReducer,
+  editor: editorReducer,
   location: location,
   title: titleReducer,
   analysis: analysisReducer,

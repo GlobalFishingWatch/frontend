@@ -51,8 +51,8 @@ export const selectTracksData = createSelector(
 
       const trackSegments: TimebarTrackSegment[] = segments.map((segment) => {
         return {
-          start: Math.min(...segment.map((p) => p.timestamp || Number.POSITIVE_INFINITY)),
-          end: Math.max(...segment.map((p) => p.timestamp || Number.NEGATIVE_INFINITY)),
+          start: segment[0].timestamp || Number.POSITIVE_INFINITY,
+          end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
         }
       })
       return {
@@ -61,7 +61,6 @@ export const selectTracksData = createSelector(
         segmentsOffsetY: track.dataset.type === DatasetTypes.UserTracks,
       }
     })
-
     return tracksSegments
   }
 )

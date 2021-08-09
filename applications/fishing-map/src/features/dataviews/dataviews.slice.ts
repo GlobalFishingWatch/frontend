@@ -1,8 +1,8 @@
-import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy, memoize } from 'lodash'
 import { Dataview } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -39,6 +39,55 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
     }
   }
 )
+
+export const createDataviewThunk = createAsyncThunk<
+  Dataview,
+  Partial<Dataview>,
+  {
+    rejectValue: AsyncError
+  }
+>('dataviews/create', async (dataview, { rejectWithValue }) => {
+  try {
+    const createdDataview = await GFWAPI.fetch<Dataview>('/v1/dataviews', {
+      method: 'POST',
+      body: dataview as any,
+    })
+
+    return createdDataview
+  } catch (e) {
+    return rejectWithValue({ status: e.status || e.code, message: e.message })
+  }
+})
+
+export const updateDataviewThunk = createAsyncThunk<
+  Dataview,
+  Partial<Dataview>,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'dataviews/update',
+  async (partialDataview, { rejectWithValue }) => {
+    try {
+      const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${partialDataview.id}`, {
+        method: 'PATCH',
+        body: partialDataview as any,
+      })
+      return dataview
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
+    }
+  },
+  {
+    condition: (partialDataset) => {
+      if (!partialDataset || !partialDataset.id) {
+        console.warn('To update the dataset you need the id')
+        return false
+      }
+    },
+  }
+)
+
 export type ResourcesState = AsyncReducer<Dataview>
 
 const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState, Dataview>({
@@ -46,9 +95,17 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState
   thunks: {
     fetchThunk: fetchDataviewsByIdsThunk,
     fetchByIdThunk: fetchDataviewByIdThunk,
+    createThunk: createDataviewThunk,
+    updateThunk: updateDataviewThunk,
+  },
+  reducers: {
+    addDataviewEntity: (state, action: PayloadAction<Dataview>) => {
+      entityAdapter.addOne(state, action.payload)
+    },
   },
 })
 
+export const { addDataviewEntity } = dataviewsSlice.actions
 export const {
   selectAll: selectAllDataviews,
   selectById,

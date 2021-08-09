@@ -18,6 +18,10 @@
   flex-direction: column;
 }
 
+.editorModal {
+  height: 60rem;
+}
+
 @media print {
   :global(*) {
     -webkit-print-color-adjust: exact !important;

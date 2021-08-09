@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 9.1.2
+
+### Patch Changes
+
+- fix IconButton build
+
 ## 9.1.1
 
 ### Patch Changes

@@ -32,6 +32,7 @@ class HeatmapGenerator {
         `Heatmap generator must specify datasets parameters in ${JSON.stringify(config)}`
       )
     }
+    const staticHeatmap = config.static || false
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
@@ -42,7 +43,7 @@ class HeatmapGenerator {
     url.searchParams.set('geomType', 'rectangle')
     url.searchParams.set('singleFrame', 'true')
     url.searchParams.set('datasets', toURLArray('datasets', config.datasets))
-    if (config.start && config.end) {
+    if (!staticHeatmap && config.start && config.end) {
       url.searchParams.set('date-range', [config.start, config.end].join(','))
     }
     if (config.filters) {
@@ -73,20 +74,19 @@ class HeatmapGenerator {
     config: GlobalHeatmapGeneratorConfig,
     statsByZoom?: StatsByZoom
   ): [FillLayer, LineLayer] => {
-    let stops = config.steps || []
+    let breaks = config.breaks || []
     const zoom = Math.min(config.zoomLoadLevel, config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
     const stats = statsByZoom?.[zoom]
-    if (!stops?.length && stats) {
+    if (!breaks?.length && stats) {
       const { min, max, avg } = stats
-      const numBreaks =
-        config.breaks || (config.steps as number[])?.length || COLOR_RAMP_DEFAULT_NUM_STEPS
-      stops = getBreaks(min, max, avg, config.scalePowExponent, numBreaks)
+      const numBreaks = config.numBreaks || COLOR_RAMP_DEFAULT_NUM_STEPS
+      breaks = getBreaks(min, max, avg, config.scalePowExponent, numBreaks)
     }
 
     const colorRampType = config.colorRamp || 'teal'
     const pickValueAt = 'value'
     const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampType]
-    const legendRamp = stops.length ? zip(stops, originalColorRamp) : []
+    const legendRamp = breaks.length ? zip(breaks, originalColorRamp) : []
 
     const colorRampValues = flatten(legendRamp)
     const valueExpression = ['to-number', ['get', pickValueAt]]
@@ -157,7 +157,8 @@ class HeatmapGenerator {
     }
 
     const hasDates = config.start !== undefined && config.end !== undefined
-    const needFetchStats = config.fetchStats === true && config.statsUrl !== undefined
+    const needFetchStats =
+      !config.breaks || (config.fetchStats === true && config.statsUrl !== undefined)
     const cacheKey = this.getCacheKey(config)
     const statsCache = this.statsCache[cacheKey]
 
