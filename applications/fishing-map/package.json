@@ -165,7 +165,7 @@
   },
   "jest": {
     "transform": {
-      ".+\\.js$": "babel-jest"
+      "^.+\\.js$": "babel-jest"
     },
     "transformIgnorePatterns": [],
     "collectCoverageFrom": [
