@@ -33,7 +33,7 @@
     "@typescript-eslint/scope-manager": "^4.x",
     "babel-eslint": "^10.x",
     "eslint": "7.x",
-    "eslint-config-prettier": "^6.x",
+    "eslint-config-prettier": "^8.x",
     "eslint-config-react-app": "^6.x",
     "eslint-import-resolver-typescript": "^2.x",
     "eslint-plugin-flowtype": "^5.x",
