@@ -2,6 +2,7 @@ declare module 'intersection-observer'
 declare module 'auth-middleware'
 declare module 'auth-middleware/*'
 declare module 'formatcoords'
+declare module 'util'
 
 declare module 'workerize-loader!*' {
   type AnyFunction = (...args: any[]) => any

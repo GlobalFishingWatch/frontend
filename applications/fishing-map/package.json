@@ -82,6 +82,7 @@
     "shpjs": "3.6.3",
     "source-map-explorer": "2.5.2",
     "typescript": "4.3.5",
+    "util": "0.12.4",
     "viewport-mercator-project": "7.0.3"
   },
   "devDependencies": {

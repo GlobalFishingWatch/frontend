@@ -5,6 +5,7 @@ import { RecoilRoot } from 'recoil'
 import App from 'features/app/App'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import store from './store'
+import 'util'
 import './features/i18n/i18n'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
