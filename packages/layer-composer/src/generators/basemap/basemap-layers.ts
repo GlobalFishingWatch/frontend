@@ -15,6 +15,16 @@ export const layers: Dictionary<Layer[]> = {
       },
     },
   ],
+  [BasemapType.Labels]: [
+    {
+      type: 'raster',
+      id: BasemapType.Labels,
+      source: BasemapType.Labels,
+      metadata: {
+        group: Group.BasemapForeground,
+      },
+    },
+  ],
   [BasemapType.Default]: [
     {
       id: 'bathymetry',
@@ -88,6 +98,16 @@ export const sources: Dictionary<Record<string, Partial<any>>> = {
     satellite: {
       tiles: [
         'https://gtiles.api.dev.globalfishingwatch.org/v1/tileset/sat/tile?x={x}&y={y}&z={z}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+      attribution: 'Google',
+    },
+  },
+  [BasemapType.Labels]: {
+    labels: {
+      tiles: [
+        'https://gtiles.api.dev.globalfishingwatch.org/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}',
       ],
       type: 'raster',
       tileSize: 256,

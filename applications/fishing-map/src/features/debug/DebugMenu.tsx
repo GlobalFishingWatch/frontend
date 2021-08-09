@@ -47,6 +47,14 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_debug">Track thinning</label>
         </div>
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
+        <div className={styles.header}>
+          <Switch
+            active={debugOptions.basemapLabels}
+            onClick={() => dispatch(toggleOption(DebugOption.BasemapLabels))}
+          />
+          <label htmlFor="option_debug">Basemap labels</label>
+        </div>
+        <p>Show or hide basemap labels</p>
       </section>
       <hr className={styles.separation} />
       <section>

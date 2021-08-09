@@ -6,6 +6,7 @@ export enum DebugOption {
   Extruded = 'extruded',
   Debug = 'debug',
   Thinning = 'thinning',
+  BasemapLabels = 'basemapLabels',
 }
 
 export type DebugOptions = Record<DebugOption, boolean>
@@ -22,6 +23,7 @@ const initialState: DebugState = {
     extruded: false,
     debug: false,
     thinning: true,
+    basemapLabels: false,
   },
 }
 
