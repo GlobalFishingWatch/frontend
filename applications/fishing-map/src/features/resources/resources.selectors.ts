@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect'
+import { createSelector } from '@reduxjs/toolkit'
 import { resolveDataviewsResourceQueries } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { selectVisibleEvents } from 'features/app/app.selectors'
