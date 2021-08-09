@@ -40,6 +40,7 @@ class VesselsEventsGenerator {
 
   _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
     const { id, data, track, start, end, showAuthorizationStatus } = config
+    const iconsPrefix = config.event?.iconsPrefix
 
     if (!data) {
       // console.warn(`${VESSEL_EVENTS_TYPE} source generator needs geojson data`, config)
@@ -48,7 +49,8 @@ class VesselsEventsGenerator {
 
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(
       data,
-      showAuthorizationStatus
+      showAuthorizationStatus,
+      iconsPrefix
     ) as FeatureCollection
     const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
       geojson.features,
@@ -90,9 +92,10 @@ class VesselsEventsGenerator {
     }
     const showTrackSegments = this._showTrackSegments(config)
 
-    const { activeIconsSize, iconsSize, activeStrokeColor, strokeColor } = {
+    const { activeIconsSize, iconsSize, inactiveIconsSize, activeStrokeColor, strokeColor } = {
       activeIconsSize: 1,
       iconsSize: 1,
+      inactiveIconsSize: 1,
       activeStrokeColor: config.color || DEFAULT_STROKE_COLOR,
       strokeColor: DEFAULT_LANDMASS_COLOR,
       ...config.event,
@@ -120,7 +123,7 @@ class VesselsEventsGenerator {
             [...activeFilter, 2, 3],
           ],
           'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
-          'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * iconsSize],
+          'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
         },
         metadata: {
           group: Group.Point,
