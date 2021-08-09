@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.12.1
+
+### Patch Changes
+
+- fix selectResourceByUrl
+
 ## 11.12.0
 
 ### Minor Changes
