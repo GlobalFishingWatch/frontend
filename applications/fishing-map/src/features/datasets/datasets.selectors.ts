@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect'
+import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'

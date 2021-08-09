@@ -59,12 +59,12 @@
     "@types/d3": "^5.7.2",
     "@types/d3-scale": "^3.2.2",
     "@types/geojson": "^7946.0.7",
-    "@types/luxon": "^1.24.3",
+    "@types/luxon": "^1.27.1",
     "@types/node": "^14.14.37",
     "cross-env": "^7.0.3",
     "mkdirp": "^1.0.4",
     "lodash": "^4.17.21",
-    "luxon": "^1.24.1",
+    "luxon": "^2.0.2",
     "rollup": "^2.33.1",
     "rollup-plugin-multi-input": "^1.1.1",
     "rollup-plugin-postcss": "^3.1.8",
@@ -75,7 +75,7 @@
     "@globalfishingwatch/data-transforms": "^1.x",
     "@globalfishingwatch/fourwings-aggregate": "4.x",
     "lodash": "^4.17.21",
-    "luxon": "^1.24.1"
+    "luxon": "^2.0.2"
   },
   "publishConfig": {
     "access": "public"
