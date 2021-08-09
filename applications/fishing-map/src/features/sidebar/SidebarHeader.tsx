@@ -24,7 +24,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectReadOnly, selectViewport } from 'features/app/app.selectors'
-import { selectUserData } from 'features/user/user.slice'
+import { isAdminUser, selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLoginRedirect } from 'routes/routes.hook'
@@ -37,6 +37,7 @@ function SaveWorkspaceButton() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const guestUser = useSelector(isGuestUser)
+  const adminUser = useSelector(isAdminUser)
   const viewport = useSelector(selectViewport)
   const timerange = useTimerangeConnect()
   const userData = useSelector(selectUserData)
@@ -48,32 +49,51 @@ function SaveWorkspaceButton() {
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
   const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
 
+  const updateWorkspaceAction = (workspaceId: string) => {
+    return dispatch(updatedCurrentWorkspaceThunk(workspaceId))
+  }
+
+  const createWorkspaceAction = () => {
+    const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
+    const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
+    const start = formatI18nDate(timerange.start as string, {
+      format: dateFormat,
+    })
+      .replace(',', '')
+      .replace('.', '')
+    const end = formatI18nDate(timerange.end as string, {
+      format: dateFormat,
+    })
+      .replace(',', '')
+      .replace('.', '')
+
+    const defaultName = isDefaultWorkspace
+      ? `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`
+      : workspace?.name
+    const name = prompt(t('workspace.nameInput', 'Workspace name'), defaultName)
+    if (name) {
+      return dispatch(saveCurrentWorkspaceThunk(name))
+    }
+  }
+
   const onSaveClick = async () => {
     if (!showClipboardNotification) {
       let dispatchedAction
-      if (workspace && isOwnerWorkspace) {
-        dispatchedAction = await dispatch(updatedCurrentWorkspaceThunk(workspace.id))
-      } else {
-        const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
-        const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
-        const start = formatI18nDate(timerange.start as string, {
-          format: dateFormat,
-        })
-          .replace(',', '')
-          .replace('.', '')
-        const end = formatI18nDate(timerange.end as string, {
-          format: dateFormat,
-        })
-          .replace(',', '')
-          .replace('.', '')
-
-        const defaultName = isDefaultWorkspace
-          ? `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`
-          : workspace?.name
-        const name = prompt(t('workspace.nameInput', 'Workspace name'), defaultName)
-        if (name) {
-          dispatchedAction = await dispatch(saveCurrentWorkspaceThunk(name))
+      if (workspace && workspace.id !== DEFAULT_WORKSPACE_ID) {
+        if (isOwnerWorkspace) {
+          dispatchedAction = await updateWorkspaceAction(workspace.id)
+        } else if (adminUser) {
+          const overwrite = window.confirm(
+            `You are not the creator of this workspace! \nClick OK to overwrite it or Cancel if you want to save it as a new one \n\n ⚠️ With admin power comes admin responsability (B.Parker)`
+          )
+          if (overwrite) {
+            dispatchedAction = await updateWorkspaceAction(workspace.id)
+          } else {
+            dispatchedAction = await createWorkspaceAction()
+          }
         }
+      } else {
+        dispatchedAction = await createWorkspaceAction()
       }
       if (dispatchedAction) {
         if (

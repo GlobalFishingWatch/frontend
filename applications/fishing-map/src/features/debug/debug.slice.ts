@@ -46,7 +46,7 @@ const debugSlice = createSlice({
 
 export const { toggleDebugMenu, toggleOption } = debugSlice.actions
 
-export const selectActive = (state: RootState) => state.debug.active
+export const selectDebugActive = (state: RootState) => state.debug.active
 export const selectDebugOptions = (state: RootState) => state.debug.options
 
 export default debugSlice.reducer

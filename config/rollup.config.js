@@ -37,6 +37,9 @@ const prepareConfig = async (customConfig = {}) => {
     external: [
       'react',
       'react-dom',
+      'redux',
+      'react-redux',
+      '@reduxjs/toolkit',
       'countryflag',
       'lodash',
       'downshift',

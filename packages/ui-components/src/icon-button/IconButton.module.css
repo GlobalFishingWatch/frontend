@@ -66,6 +66,17 @@
   background-color: var(--color-primary-blue-hover);
 }
 
+.solid {
+  color: rgba(var(--color-primary-blue), var(--opacity-secondary));
+  background-color: var(--color-terthiary-blue);
+}
+
+.solid:hover,
+.solid:focus {
+  color: var(--color-white);
+  background-color: var(--color-primary-blue);
+}
+
 .defaultSize {
   width: var(--size-M);
   height: var(--size-M);

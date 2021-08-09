@@ -127,9 +127,8 @@ export const selectVisibleEvents = createSelector(
     return visibleEvents
   }
 )
-
 export const selectTimebarGraph = createSelector(
-  [selectWorkspaceStateProperty('timebarGraph'), selectActiveVesselsDataviews],
+  [selectWorkspaceStateProperty('timebarGraph'), (state) => selectActiveVesselsDataviews(state)],
   (timebarGraph, vessels): TimebarGraphs => {
     return vessels && vessels.length ? timebarGraph : TimebarGraphs.None
   }
@@ -170,7 +169,7 @@ export const selectCustomWorkspace = createSelector(
     selectTimeRange,
     selectLocationCategory,
     selectWorkspaceAppState,
-    selectDataviewInstancesMerged,
+    (state) => selectDataviewInstancesMerged(state),
   ],
   (
     workspace,

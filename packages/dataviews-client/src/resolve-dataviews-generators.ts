@@ -134,6 +134,8 @@ export function getGeneratorConfig(
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data : []))
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
+          event: dataview.config?.event,
+          pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
           type: Generators.Type.VesselEvents,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
@@ -159,8 +161,9 @@ export function getGeneratorConfig(
 
       generator = {
         ...generator,
-        maxZoom: 8,
-        fetchStats: !dataview.config.steps,
+        maxZoom: dataview.config.maxZoom || 8,
+        fetchStats: !dataview.config.breaks,
+        static: dataview.config.static || false,
         datasets: [heatmapDataset?.id],
         tilesUrl: tilesEndpoint?.pathTemplate,
         statsUrl: statsEndpoint?.pathTemplate,

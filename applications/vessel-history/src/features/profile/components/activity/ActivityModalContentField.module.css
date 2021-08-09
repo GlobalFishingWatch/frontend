@@ -1,0 +1,7 @@
+.field {
+  padding: var(--space-S);
+}
+.value {
+  font-weight: normal;
+  color: var(--opacity-secondary);
+}

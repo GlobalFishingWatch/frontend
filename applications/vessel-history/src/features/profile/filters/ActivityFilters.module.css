@@ -1,0 +1,13 @@
+.filters {
+  text-align: right;
+  padding: 10px 10px 0 10px;
+}
+
+.filterSelector {
+  display: flex;
+  align-items: center;
+}
+
+.filterSwitch {
+  margin-right: 10px;
+}

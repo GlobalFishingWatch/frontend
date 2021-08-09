@@ -1,5 +1,17 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.12.0
+
+### Minor Changes
+
+- 74c5a020: Customize vessel events styles on map
+
+## 11.11.0
+
+### Minor Changes
+
+- support static heatmap
+
 ## 11.10.1
 
 ### Patch Changes

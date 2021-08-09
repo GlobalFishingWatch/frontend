@@ -86,9 +86,10 @@ export interface EncounterEvent<Vessel = EventVessel> {
 }
 
 export interface LoiteringEvent {
-  medianSpeedKnots: number
   totalTimeHours: number
-  totalDistanceKilometers: number
+  totalDistanceKm: number
+  averageDistanceFromShoreKm: number
+  averageSpeedKnots: number
 }
 
 export interface PortEvent {

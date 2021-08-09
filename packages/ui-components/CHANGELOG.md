@@ -1,5 +1,17 @@
 # @globalfishingwatch/ui-components
 
+## 9.1.2
+
+### Patch Changes
+
+- fix IconButton build
+
+## 9.1.1
+
+### Patch Changes
+
+- 33e692a8: added filters to the activity tab
+
 ## 9.1.0
 
 ### Minor Changes

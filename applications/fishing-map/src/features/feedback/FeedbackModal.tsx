@@ -18,9 +18,9 @@ type FeedbackModalProps = {
 
 type FeedbackData = {
   date: string
-  url: string
   userAgent: string
   resolution: string
+  url?: string
   userId?: number | typeof GUEST_USER_TYPE
   name?: string
   email?: string
@@ -72,7 +72,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   const initialFeedbackState = {
     date: new Date().toISOString(),
-    url: window.location.href,
     userAgent: navigator.userAgent,
     resolution: `${window.innerWidth}x${window.innerHeight}px`,
   }
@@ -158,6 +157,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       const sheet = feedbackSpreadsheetDoc.sheetsByTitle[FEEDBACK_SHEET_TITLE]
       const finalFeedbackData = {
         ...feedbackData,
+        url: window.location.href,
         userId: feedbackData.userId || GUEST_USER_TYPE,
       }
       await sheet.addRow(finalFeedbackData)

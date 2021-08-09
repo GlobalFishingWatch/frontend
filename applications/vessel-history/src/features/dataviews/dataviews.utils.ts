@@ -15,6 +15,7 @@ import {
   dataviewInstances,
   vesselDataviewIds,
   DEFAULT_TRACK_COLOR,
+  MAP_BACKGROUND_COLOR,
 } from './dataviews.config'
 
 // used in workspaces with encounter events layers
@@ -56,6 +57,14 @@ export const getVesselDataviewInstance = (
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       color: DEFAULT_TRACK_COLOR,
+      pointsToSegmentsSwitchLevel: null,
+      event: {
+        activeIconsSize: 3,
+        activeStrokeColor: MAP_BACKGROUND_COLOR,
+        strokeColor: MAP_BACKGROUND_COLOR,
+        iconsSize: 2,
+      },
+      showIcons: true,
     },
     datasetsConfig,
   }

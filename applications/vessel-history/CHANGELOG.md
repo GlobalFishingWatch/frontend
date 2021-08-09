@@ -1,5 +1,31 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.80
+
+### Patch Changes
+
+- 74c5a020: Customize vessel events styles on map
+- Updated dependencies [74c5a020]
+  - @globalfishingwatch/dataviews-client@11.12.0
+  - @globalfishingwatch/layer-composer@8.12.0
+
+## 0.0.79
+
+### Patch Changes
+
+- Updated dependencies [7b95b52a]
+  - @globalfishingwatch/api-types@4.7.0
+
+## 0.0.78
+
+### Patch Changes
+
+- 33e692a8: added filters to the activity tab
+- Updated dependencies [e7f48fe5]
+- Updated dependencies [33e692a8]
+  - @globalfishingwatch/data-transforms@1.4.0
+  - @globalfishingwatch/ui-components@9.1.1
+
 ## 0.0.77
 
 ### Patch Changes

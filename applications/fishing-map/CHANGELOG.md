@@ -1,5 +1,40 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.19
+
+### Patch Changes
+
+- Updated dependencies [74c5a020]
+  - @globalfishingwatch/dataviews-client@11.12.0
+  - @globalfishingwatch/layer-composer@8.12.0
+
+## 1.1.18
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@8.11.0
+  - @globalfishingwatch/dataviews-client@11.11.0
+  - @globalfishingwatch/ui-components@9.1.2
+
+## 1.1.17
+
+### Patch Changes
+
+- Updated dependencies [7b95b52a]
+  - @globalfishingwatch/api-types@4.7.0
+
+## 1.1.16
+
+### Patch Changes
+
+- Updated dependencies [e7f48fe5]
+- Updated dependencies [33e692a8]
+  - @globalfishingwatch/data-transforms@1.4.0
+  - @globalfishingwatch/ui-components@9.1.1
+
 ## 1.1.15
 
 ### Patch Changes

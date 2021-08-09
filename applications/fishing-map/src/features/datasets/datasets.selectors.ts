@@ -33,6 +33,13 @@ export const selectDatasetsByType = (type: DatasetTypes) => {
   })
 }
 
+export const selectFourwingsDatasets = createSelector(
+  [selectDatasetsByType(DatasetTypes.Fourwings)],
+  (datasets) => {
+    return datasets
+  }
+)
+
 export const selectVesselsDatasets = createSelector(
   [selectDatasetsByType(DatasetTypes.Vessels)],
   (datasets) => {
