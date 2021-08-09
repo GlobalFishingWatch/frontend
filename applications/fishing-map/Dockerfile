@@ -36,7 +36,7 @@ ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
 ENV REACT_APP_CARRIER_PORTAL_URL=${REACT_APP_CARRIER_PORTAL_URL}
 ENV REACT_APP_LATEST_CARRIER_DATASET_ID=${REACT_APP_LATEST_CARRIER_DATASET_ID}
 ENV REACT_APP_WORKSPACE_ENV=${REACT_APP_WORKSPACE_ENV}
-RUN npm install --unsafe-perm
+RUN yarn install --unsafe-perm --frozen-lockfile
 
 # Build the application assets
 ENV NODE_ENV=production
@@ -46,7 +46,7 @@ COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
-RUN npm run build
+RUN yarn build
 
 #################################################################################
 # Actual application to run
