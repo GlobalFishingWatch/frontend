@@ -1,5 +1,5 @@
 import ReactGA from 'react-ga'
-import { DateTime } from 'luxon'
+import { DateObject, DateTime } from 'luxon'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 
@@ -25,8 +25,11 @@ export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
 export const PRIVATE_SUFIX = 'private'
 
+// TODO: remove when luxon types are updated to version 2
+// https://moment.github.io/luxon/#/upgrading?id=fromobject
+const fromObject = DateTime.fromObject as (obj: DateObject, config: any) => DateTime
 // used when no url data and no workspace data
-export const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second: 0, zone: 'utc' })
+export const LAST_DATA_UPDATE = fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
   .minus({ days: 3 })
   .toISO()
 
