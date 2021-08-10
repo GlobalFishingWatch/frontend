@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { Authorization } from '@globalfishingwatch/api-types'
 import { TMTDetail, ValueItem, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
@@ -16,6 +17,12 @@ const sortValuesByDate = (a: ValueItem, b: ValueItem) =>
 const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem: ValueItem[]) => {
   return valueItem.slice().shift()?.value || undefined
 }
+const sortAuthorizations: (authorizations: Authorization[]) => Authorization[] = (authorizations: Authorization[]) => {
+  return authorizations.sort((a, b) => {
+    return (a.endDate > b.endDate ? 1 : -1)
+  })
+}
+
 
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
@@ -95,7 +102,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     owner: extractValue(vesselHistory.owner.byDate),
     operator: extractValue(vesselHistory.operator.byDate),
     builtYear: extractValue(vesselHistory.builtYear.byDate),
-    authorizations: authorisationList.map((auth) => auth.source) ?? [],
+    authorizations: authorisationList ? sortAuthorizations(authorisationList) : [],
     firstTransmissionDate: '',
     lastTransmissionDate: '',
     origin: '',
