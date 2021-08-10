@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.14.0
+
+### Minor Changes
+
+- 2c4a5386: Basemap layer now supports a labels option
+
 ## 8.13.0
 
 ### Minor Changes
