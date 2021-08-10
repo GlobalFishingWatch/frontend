@@ -33,7 +33,8 @@ const getDateTimeDate = (date: string | number) => {
 
 export const getVesselEventsGeojson = (
   trackEvents: RawEvent[] | null,
-  showAuthorizationStatus = true
+  showAuthorizationStatus = true,
+  iconsPrefix = 'carrier_portal_'
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -67,7 +68,7 @@ export const getVesselEventsGeojson = (
             encounterVesselId: event.encounter?.vessel?.id,
             encounterVesselName: event.encounter?.vessel?.name,
           }),
-        icon: `carrier_portal_${event.type}`,
+        icon: `${iconsPrefix}${event.type}`,
         color:
           isEncounterEvent && showAuthorizationStatus
             ? getEncounterAuthColor(authorizationStatus)

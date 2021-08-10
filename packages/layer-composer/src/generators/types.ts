@@ -250,7 +250,9 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   event?: {
     activeIconsSize?: number
     activeStrokeColor?: string
+    iconsPrefix?: string
     iconsSize?: number
+    inactiveIconsSize?: number
     strokeColor?: string
   }
   track?: TrackGeneratorConfigData
