@@ -409,6 +409,26 @@
       "event_mean_position": "event_mean_position"
     }
   },
+  "public-global-encounters-events": {
+    "name": "Encounter Events. (AIS)",
+    "description": "The dataset contains encounter events for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
+    "schema": {
+      "fields": "fields",
+      "event_id": "event_id",
+      "event_end": "event_end",
+      "vessel_id": "vessel_id",
+      "event_info": "event_info",
+      "event_type": {
+        "keyword": "event_type",
+        "enum": {
+          "port": "port"
+        }
+      },
+      "event_start": "event_start",
+      "event_vessels": "event_vessels",
+      "event_mean_position": "event_mean_position"
+    }
+  },
   "public-global-fishing-effort": {
     "name": "AIS",
     "description": "We analyze the automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either “apparently fishing” or “not fishing” and shows the former on our fishing activity heat map.\n\nYou can find more detail in our Technology page: https://globalfishingwatch.org/our-technology/",
