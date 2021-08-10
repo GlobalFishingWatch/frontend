@@ -409,6 +409,26 @@
       "event_mean_position": "event_mean_position"
     }
   },
+  "public-global-encounters-events": {
+    "name": "Encounter Events. (AIS)",
+    "description": "The dataset contains encounter events for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
+    "schema": {
+      "fields": "fields",
+      "event_id": "event_id",
+      "event_end": "event_end",
+      "vessel_id": "vessel_id",
+      "event_info": "event_info",
+      "event_type": {
+        "keyword": "event_type",
+        "enum": {
+          "port": "port"
+        }
+      },
+      "event_start": "event_start",
+      "event_vessels": "event_vessels",
+      "event_mean_position": "event_mean_position"
+    }
+  },
   "public-global-fishing-effort": {
     "name": "AIS",
     "description": "Kami menggunakan data tentang identitas kapal, jenis, lokasi, kecepatan, arah, dan lainnya yang disiarkan menggunakan sistem identifikasi otomatis (AIS) dan dikumpulkan melalui satelit dan penerima terestrial. Kami menganalisis data AIS yang dikumpulkan dari kapal yang diidentifikasi oleh penelitian kami sebagai kapal penangkap ikan komersial yang diketahui atau diperkirakan, dan menerapkan algoritma deteksi penangkapan ikan untuk menentukan \"\"aktivitas penangkapan ikan yang terlihat\"\" berdasarkan perubahan dalam kecepatan dan arah kapal. Algoritma tersebut mengklasifikasikan setiap titik data siaran AIS untuk kapal-kapal ini sebagai \"\"terlihat sedang memancing\"\" atau \"\"tidak mamancing\"\" dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan kami. \n\nAnda dapat menemukan lebih detail di halaman teknologi kami.",
