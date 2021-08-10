@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 12.0.2
+
+### Patch Changes
+
+- fix build
+
 ## 12.0.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.12.2
+
+### Patch Changes
+
+- fix build
+
 ## 11.12.1
 
 ### Patch Changes

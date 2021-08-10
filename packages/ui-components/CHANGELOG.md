@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 9.1.3
+
+### Patch Changes
+
+- fix build
+
 ## 9.1.2
 
 ### Patch Changes

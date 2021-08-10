@@ -1,5 +1,11 @@
 # @globalfishingwatch/pbf
 
+## 1.0.11
+
+### Patch Changes
+
+- fix build
+
 ## 1.0.10
 
 ### Patch Changes

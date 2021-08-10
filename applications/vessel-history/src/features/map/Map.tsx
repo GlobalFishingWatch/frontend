@@ -16,11 +16,15 @@ const Map = (): ReactElement => {
   const map = useMapInstance()
   const { selectVesselEventOnClick } = useMapEvents()
 
-  const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+  const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange } = useViewport()
   const resourcesLoading = useSelector(selectResourcesLoading) ?? false
 
-  const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
+  const { style, loading: layerComposerLoading } = useLayerComposer(
+    generatorsConfig,
+    globalConfig,
+    styleTransformations
+  )
   const mapOptions = {
     customAttribution: '© Copyright Global Fishing Watch 2020',
   }
