@@ -59,6 +59,7 @@ export interface VesselFieldsHistory {
 
 export interface VesselWithHistory extends Vessel {
   history: VesselFieldsHistory
+  iuuStatus?: number
 }
 
 export enum VesselAPISource {
@@ -120,6 +121,7 @@ export interface RelationList {
 export interface TMTDetail {
   vesselMatchId: string
   valueList: ValueList
+  iuuStatus: number
   relationList: RelationList
   authorisationList: Authorization[]
   imageList: string[]

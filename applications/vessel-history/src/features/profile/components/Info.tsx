@@ -222,6 +222,14 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   
                 </div>
               </div>
+              {vessel.iuuStatus !== undefined && 
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.iuuStatus}
+                  value={t(`vessel.iuuStatusOptions.${vessel.iuuStatus}` as any, t('common.unknown', 'unknown'))}
+                  valuesHistory={[]}
+                ></InfoField>
+              }
             </div>
           </Fragment>
         )}

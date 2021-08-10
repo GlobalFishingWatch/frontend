@@ -28,6 +28,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
   const {
     vesselMatchId,
     valueList,
+    iuuStatus,
     relationList: { vesselOperations, vesselOwnership },
     authorisationList,
     imageList,
@@ -84,7 +85,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     operator: {
       byCount: [],
       byDate: vesselOperations.sort(sortValuesByDate),
-    },
+    }
   }
 
   const vessel: VesselWithHistory = {
@@ -103,6 +104,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     operator: extractValue(vesselHistory.operator.byDate),
     builtYear: extractValue(vesselHistory.builtYear.byDate),
     authorizations: authorisationList ? sortAuthorizations(authorisationList) : [],
+    iuuStatus: iuuStatus,
     firstTransmissionDate: '',
     lastTransmissionDate: '',
     origin: '',

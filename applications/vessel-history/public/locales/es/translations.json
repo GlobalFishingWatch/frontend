@@ -146,7 +146,13 @@
     "name_plural": "nombres",
     "operator_plural": "operadores",
     "owner_plural": "propietarios",
-    "type_plural": "tipos"
+    "type_plural": "tipos",
+    "iuuStatus": "IUU Status",
+    "iuuStatusOptions": {
+      "0": "Not listed",
+      "1": "previously listed",
+      "2": "currently listed"
+    }
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"

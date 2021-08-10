@@ -40,8 +40,16 @@ const getPriorityzedFieldValue = <T = any>(
         ? (value.filter((item, index) => index === value.indexOf(item)) as any)
         : value
     })
+  return values.filter((value) => {
+    if (Array.isArray(value) && value.length) {
+      return true
+    }
+    if (value !== undefined && value !== '') {
+      return true
+    }
 
-  return values.filter((value) => value)
+    return value
+  })
 }
 
 const priorityzeFieldValue = <T>(

@@ -27,6 +27,7 @@ export enum VesselFieldLabel {
   builtYear = 'builtYear',
   authorizations = 'authorizations',
   registeredGearType = 'registeredGearType',
+  iuuStatus = 'iuuStatus',
 }
 interface ListItemProps {
   label: VesselFieldLabel
