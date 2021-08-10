@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 2.0.2
+
+### Patch Changes
+
+- fix build
+
 ## 2.0.1
 
 ### Patch Changes

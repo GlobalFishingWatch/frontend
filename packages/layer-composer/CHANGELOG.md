@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.12.1
+
+### Patch Changes
+
+- fix build
+
 ## 8.12.0
 
 ### Minor Changes

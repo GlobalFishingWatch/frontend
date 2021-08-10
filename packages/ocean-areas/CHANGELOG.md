@@ -1,5 +1,11 @@
 ## 0.0.1
 
+## 0.2.6
+
+### Patch Changes
+
+- fix build
+
 ## 0.2.5
 
 ### Patch Changes

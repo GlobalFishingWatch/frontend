@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/dataviews-client",
-  "version": "11.12.1",
+  "version": "11.12.2",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -31,21 +31,21 @@
     "qs": "^6.9.4"
   },
   "devDependencies": {
-    "@globalfishingwatch/api-client": "^2.0.0",
-    "@globalfishingwatch/api-types": "^4.6.0",
-    "@globalfishingwatch/layer-composer": "^8.12.0",
-    "@rollup/plugin-commonjs": "^16.0.0",
+    "@globalfishingwatch/api-client": "^2.0.2",
+    "@globalfishingwatch/api-types": "^4.7.2",
+    "@globalfishingwatch/layer-composer": "^8.12.1",
+    "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^10.0.0",
-    "@rollup/plugin-typescript": "^6.1.0",
-    "@rollup/plugin-url": "^5.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.0",
+    "@rollup/plugin-url": "^6.1.0",
     "@types/lodash": "^4.14.168",
     "@types/qs": "^6.9.3",
     "cross-env": "^7.0.3",
     "d3-scale": "3.2.3",
     "rollup": "^2.33.1",
-    "rollup-plugin-multi-input": "^1.1.1",
-    "rollup-plugin-postcss": "^3.1.8",
+    "rollup-plugin-multi-input": "^1.3.1",
+    "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-terser": "^7.0.2"
   },
   "publishConfig": {

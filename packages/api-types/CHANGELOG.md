@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.7.2
+
+### Patch Changes
+
+- fix build
+
 ## 4.7.1
 
 ### Patch Changes
