@@ -2,6 +2,8 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectBasemapDataview } from 'features/dataviews/dataviews.selectors'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
 
@@ -9,6 +11,9 @@ const DebugMenu: React.FC = () => {
   const dispatch = useDispatch()
   const debugOptions = useSelector(selectDebugOptions)
   const locationQuery = useSelector(selectLocationQuery)
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const basemapDataview = useSelector(selectBasemapDataview)
+
   return (
     <div className={styles.row}>
       <section>
@@ -50,7 +55,17 @@ const DebugMenu: React.FC = () => {
         <div className={styles.header}>
           <Switch
             active={debugOptions.basemapLabels}
-            onClick={() => dispatch(toggleOption(DebugOption.BasemapLabels))}
+            onClick={() => {
+              if (basemapDataview && basemapDataview.id) {
+                upsertDataviewInstance({
+                  id: basemapDataview.id as string,
+                  config: {
+                    labels: !debugOptions.basemapLabels,
+                  },
+                })
+              }
+              dispatch(toggleOption(DebugOption.BasemapLabels))
+            }}
           />
           <label htmlFor="option_debug">Basemap labels</label>
         </div>

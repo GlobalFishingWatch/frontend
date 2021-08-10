@@ -51,7 +51,6 @@ type DataviewsGeneratorConfigsParams = {
   highlightedEvent?: ApiEvent
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: Generators.HeatmapAnimatedMode
-  basemapLabels?: boolean
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -87,7 +86,7 @@ export function getGeneratorConfig(
   params?: DataviewsGeneratorConfigsParams,
   resources?: DataviewsGeneratorResource
 ) {
-  const { debug = false, highlightedTime, highlightedEvent, basemapLabels } = params || {}
+  const { debug = false, highlightedTime, highlightedEvent } = params || {}
 
   let generator: GeneratorDataviewConfig = {
     id: dataview.id,
@@ -95,12 +94,6 @@ export function getGeneratorConfig(
   }
 
   switch (dataview.config?.type) {
-    case Generators.Type.Basemap: {
-      return {
-        ...generator,
-        labels: basemapLabels,
-      }
-    }
     case Generators.Type.TileCluster: {
       const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
         dataview,

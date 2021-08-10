@@ -72,7 +72,6 @@ const getGeneratorsConfig = ({
     highlightedTime,
     debug: debugOptions.debug,
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-    basemapLabels: debugOptions.basemapLabels,
   }
 
   const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
