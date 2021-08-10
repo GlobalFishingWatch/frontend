@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.13.0
+
+### Minor Changes
+
+- 1f6ccdf4: Customize inactive icon size and name prefix on events
+
 ## 8.12.1
 
 ### Patch Changes
