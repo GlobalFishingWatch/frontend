@@ -1,4 +1,4 @@
-import { Vessel } from '@globalfishingwatch/api-types'
+import { Vessel, Authorization } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -117,18 +117,11 @@ export interface RelationList {
   vesselOwnership: VesselOwnership[]
   vesselOperations: VesselOperation[]
 }
-
-export interface AuthorizationList {
-  source: string
-  startDate: string
-  endDate?: string
-}
-
 export interface TMTDetail {
   vesselMatchId: string
   valueList: ValueList
   relationList: RelationList
-  authorisationList: AuthorizationList[]
+  authorisationList: Authorization[]
   imageList: string[]
 }
 

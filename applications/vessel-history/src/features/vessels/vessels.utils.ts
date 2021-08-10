@@ -16,19 +16,30 @@ const getPriorityzedFieldValue = <T = any>(
   dataValues: { source: VesselAPISource; value: T }[]
 ): T[] => {
   const fieldPriority = getFieldPriority(field)
+
   const values = dataValues
     .filter(({ value }) => value !== null && value !== undefined)
     .map((dataValue) => ({
       value: dataValue.value,
       priority: fieldPriority.indexOf(dataValue.source),
     }))
-    .sort((a, b) => (a.priority > b.priority ? 1 : -1))
-    .map(({ value }) =>
+    .sort((a, b) => {
+      // If any of the values not exist, we use the other
+      if (!a.value || (Array.isArray(a.value) && !a.value.length)) {
+        return 1
+      }
+      if (!b.value || (Array.isArray(b.value) && !b.value.length)) {
+        return -1
+      }
+      // if both exist we apply the priority
+      return (a.priority > b.priority ? 1 : -1)
+    })
+    .map(({ value }) => {
       // return unique values when it's an array
-      Array.isArray(value)
+      return Array.isArray(value)
         ? (value.filter((item, index) => index === value.indexOf(item)) as any)
         : value
-    )
+    })
 
   return values.filter((value) => value)
 }
@@ -100,17 +111,17 @@ export const mergeVesselFromSources = (
       const value =
         key.toString() === 'history'
           ? mergeHistoryFields(
-              key,
-              vesselData.map((data) => ({
-                source: data.source,
-                value: data.vessel[key] as VesselFieldsHistory,
-                vessel: data.vessel,
-              }))
-            )
+            key,
+            vesselData.map((data) => ({
+              source: data.source,
+              value: data.vessel[key] as VesselFieldsHistory,
+              vessel: data.vessel,
+            }))
+          )
           : priorityzeFieldValue(
-              key,
-              vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
-            )
+            key,
+            vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
+          )
       return {
         ...acc,
         [key]: value,
