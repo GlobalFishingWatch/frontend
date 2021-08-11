@@ -26,10 +26,11 @@ import {
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectActivityCategoryFn } from 'features/app/app.selectors'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID } from 'data/workspaces'
 import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
-  id: 'basemap',
+  id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   config: {
     type: Generators.Type.Basemap,
     basemap: Generators.BasemapType.Default,
@@ -40,6 +41,14 @@ export const selectBasemapDataview = createSelector([selectAllDataviews], (datav
   const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
   return basemapDataview || defaultBasemapDataview
 })
+
+export const selectBasemapDataviewInstance = createSelector(
+  [selectWorkspaceDataviewInstances],
+  (dataviews) => {
+    const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
+    return basemapDataview || defaultBasemapDataview
+  }
+)
 
 export const selectDefaultBasemapGenerator = createSelector(
   [selectBasemapDataview],

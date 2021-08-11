@@ -2,6 +2,7 @@ import { PUBLIC_SUFIX } from './config'
 
 export const DEFAULT_WORKSPACE_KEY = 'default'
 export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
+export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
 
 export type WorkspaceEnv = 'development' | 'production'
 export const WORKSPACE_ENV =
