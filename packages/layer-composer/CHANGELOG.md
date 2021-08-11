@@ -1,5 +1,12 @@
 # @globalfishingwatch/layer-composer
 
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [23f147e3]
+  - @globalfishingwatch/api-types@5.0.0
+
 ## 8.14.0
 
 ### Minor Changes
