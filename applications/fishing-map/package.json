@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "1.1.24",
+  "version": "1.1.25",
   "private": true,
   "homepage": "/",
   "scripts": {
@@ -21,9 +21,9 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "2.0.2",
-    "@globalfishingwatch/api-types": "4.7.2",
+    "@globalfishingwatch/api-types": "4.8.0",
     "@globalfishingwatch/data-transforms": "1.4.1",
-    "@globalfishingwatch/dataviews-client": "11.13.0",
+    "@globalfishingwatch/dataviews-client": "11.13.1",
     "@globalfishingwatch/fourwings-aggregate": "4.0.4",
     "@globalfishingwatch/layer-composer": "8.14.0",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
