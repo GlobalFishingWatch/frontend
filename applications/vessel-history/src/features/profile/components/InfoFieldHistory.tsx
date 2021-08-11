@@ -54,52 +54,48 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
         >
           <div>
             <div className={styles.historyItem}>
+              <label className={styles.identifierField}>{t(`vessel.${label}` as any, label)}</label>
+              <label className={styles.identifierField}>
+                {t('common.timeRange', 'time range')}
+              </label>
+              <label className={styles.identifierField}>{t(`vessel.source`, 'source')}</label>
+            </div>
+
+            <div className={styles.historyItem}>
+              <div className={styles.identifierField}>{current.value}</div>
               <div className={styles.identifierField}>
-                <label>{t(`vessel.${label}` as any, label)}</label>
-                <div>{current.value}</div>
-              </div>
-              <div className={styles.identifierField}>
-                <label>{t('common.currentTimeRange', 'CURRENT TIME RANGE')}</label>
                 {since && (
-                  <div>
+                  <Fragment>
                     <span className={styles.rangeLabel}>{t('common.since', 'Since')}: </span>
                     <span className={styles.rangeValue}>{<I18nDate date={since} />}</span>
-                  </div>
+                  </Fragment>
                 )}
-                {!since && (
-                  <div>
-                    <span className={styles.rangeValue}>{DEFAULT_EMPTY_VALUE}</span>
-                  </div>
-                )}
+                {!since && <span className={styles.rangeValue}>{DEFAULT_EMPTY_VALUE}</span>}
               </div>
+              <div className={styles.identifierField}>{current.source}</div>
             </div>
             {previousHistory.map((historyValue: ValueItem, index) => (
               <div className={styles.historyItem} key={index}>
+                <div className={styles.identifierField}>{historyValue.value}</div>
                 <div className={styles.identifierField}>
-                  <label>{t(`vessel.${label}` as any, label)}</label>
-                  <div>{historyValue.value}</div>
+                  {historyValue.firstSeen && (
+                    <div>
+                      <span className={styles.rangeLabel}>{t('common.from', 'From')}: </span>
+                      <span className={styles.rangeValue}>
+                        <I18nDate date={historyValue.firstSeen} />
+                      </span>
+                    </div>
+                  )}
+                  {historyValue.endDate && (
+                    <div>
+                      <span className={styles.rangeLabel}>{t('common.to', 'To')}: </span>
+                      <span className={styles.rangeValue}>
+                        <I18nDate date={historyValue.endDate} />
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <div className={styles.identifierField}>
-                  <label>{t('common.timeRange', 'Time Range')}</label>
-                  <div>
-                    {historyValue.firstSeen && (
-                      <div>
-                        <span className={styles.rangeLabel}>{t('common.from', 'From')}: </span>
-                        <span className={styles.rangeValue}>
-                          <I18nDate date={historyValue.firstSeen} />
-                        </span>
-                      </div>
-                    )}
-                    {historyValue.endDate && (
-                      <div>
-                        <span className={styles.rangeLabel}>{t('common.to', 'To')}: </span>
-                        <span className={styles.rangeValue}>
-                          <I18nDate date={historyValue.endDate} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <div className={styles.identifierField}>{historyValue.source}</div>
               </div>
             ))}
           </div>

@@ -4,7 +4,6 @@
 
 .identifiers {
   overflow: hidden;
-  color: #22447e;
   display: flex;
   flex-flow: row wrap;
   margin-bottom: var(--size-M);
@@ -13,18 +12,18 @@
 .identifierField {
   float: left;
   width: 50%;
-  opacity: 0.65;
-  color: #163f89;
-  font-family: Roboto, Arial, Helvetica, sans-serif;
-  font-size: 1.4rem;
-  letter-spacing: 0;
+  font: var(--font-S);
   line-height: 1.7rem;
-  padding: 0.5rem;
-  min-height: 4rem;
+  padding: var(--space-XS);
+  min-height: var(--size-M);
 }
-
-.identifiers div label {
-  opacity: 0.8;
+div.identifierField {
+  color: var(--color-primary-blue);
+}
+label.identifierField,
+div.identifierField label {
+  color: var(--color-secondary-blue);
+  opacity: var(--opacity-secondary);
 }
 
 .moreValues {
