@@ -34,6 +34,7 @@ const defaultBasemapDataview = {
   config: {
     type: Generators.Type.Basemap,
     basemap: Generators.BasemapType.Default,
+    labels: false,
   },
 }
 
@@ -41,14 +42,6 @@ export const selectBasemapDataview = createSelector([selectAllDataviews], (datav
   const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
   return basemapDataview || defaultBasemapDataview
 })
-
-export const selectBasemapDataviewInstance = createSelector(
-  [selectWorkspaceDataviewInstances],
-  (dataviews) => {
-    const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
-    return basemapDataview || defaultBasemapDataview
-  }
-)
 
 export const selectDefaultBasemapGenerator = createSelector(
   [selectBasemapDataview],
@@ -114,6 +107,14 @@ export const selectAllDataviewInstancesResolved = createSelector(
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
     return dataviewInstancesResolved
+  }
+)
+
+export const selectBasemapDataviewInstance = createSelector(
+  [selectAllDataviewInstancesResolved],
+  (dataviews) => {
+    const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
+    return basemapDataview || defaultBasemapDataview
   }
 )
 

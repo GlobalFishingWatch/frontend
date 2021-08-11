@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -13,6 +13,12 @@ const DebugMenu: React.FC = () => {
   const locationQuery = useSelector(selectLocationQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const basemapDataviewInstance = useSelector(selectBasemapDataviewInstance)
+
+  useEffect(() => {
+    if (basemapDataviewInstance.config?.labels === true && debugOptions.basemapLabels === false) {
+      dispatch(toggleOption(DebugOption.BasemapLabels))
+    }
+  }, [basemapDataviewInstance, debugOptions, dispatch])
 
   return (
     <div className={styles.row}>
