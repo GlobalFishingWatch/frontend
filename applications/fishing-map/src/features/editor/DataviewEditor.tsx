@@ -104,6 +104,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
     const dataviewDatasetsIds = dataviewDatasets.map(({ id }) => id)
     const newDataview = {
       ...dataview,
+      description: '',
       app: APP_NAME as ApiAppName,
       config: {
         ...dataview.config,
