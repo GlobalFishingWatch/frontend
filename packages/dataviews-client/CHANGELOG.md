@@ -1,5 +1,17 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.13.1
+
+### Patch Changes
+
+- fix release
+
+## 11.13.0
+
+### Minor Changes
+
+- 2c4a5386: Basemap layer now supports a labels option
+
 ## 11.12.2
 
 ### Patch Changes

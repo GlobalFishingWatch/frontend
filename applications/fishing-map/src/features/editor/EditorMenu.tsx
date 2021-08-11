@@ -4,8 +4,9 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import { Dataview } from '@globalfishingwatch/api-types/dist'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { selectUserDataviewEditPermissions } from 'features/user/user.selectors'
 import WorkspaceEditor from './WorkspaceEditor'
-import NewDataviewEditor from './NewDataviewEditor'
+import DataviewEditor from './DataviewEditor'
 import styles from './EditorMenu.module.css'
 
 type Section = 'dataviews' | 'new-dataview'
@@ -13,6 +14,7 @@ const EditorMenu = () => {
   const [activeSection, setActiveSection] = useState<Section>('dataviews')
   const [editDataview, setEditDataview] = useState<Dataview | undefined>()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const userDataviewPermissions = useSelector(selectUserDataviewEditPermissions)
 
   const onEditClick = (dataview: Dataview) => {
     setEditDataview(dataview)
@@ -25,13 +27,13 @@ const EditorMenu = () => {
   }
 
   if (activeSection === 'new-dataview') {
-    return <NewDataviewEditor editDataview={editDataview} onCancelClick={onCancelClick} />
+    return <DataviewEditor editDataview={editDataview} onCancelClick={onCancelClick} />
   }
 
   return (
     <div className={styles.container}>
       <WorkspaceEditor onEditClick={onEditClick} />
-      {workspaceStatus === AsyncReducerStatus.Finished && (
+      {workspaceStatus === AsyncReducerStatus.Finished && userDataviewPermissions && (
         <Button
           className={styles.footerButton}
           onClick={() => {

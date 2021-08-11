@@ -1,9 +1,9 @@
 {
   "name": "@globalfishingwatchapp/temporalgrid-demo",
-  "version": "0.7.123",
+  "version": "0.7.125",
   "private": true,
   "dependencies": {
-    "@globalfishingwatch/layer-composer": "8.12.1",
+    "@globalfishingwatch/layer-composer": "8.14.0",
     "@globalfishingwatch/react-hooks": "12.0.2",
     "@globalfishingwatch/react-map-gl": "5.2.9-gfw.17",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",

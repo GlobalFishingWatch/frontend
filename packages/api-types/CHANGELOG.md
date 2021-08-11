@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.8.0
+
+### Minor Changes
+
+- 9aa50a38: user permissions definitions
+
 ## 4.7.2
 
 ### Patch Changes

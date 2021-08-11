@@ -1,14 +1,27 @@
+export type UserPermissionType = 'application' | 'dataset' | 'entity'
+export type UserPermissionValue =
+  | 'workspace'
+  | 'dataview'
+  | 'map-client'
+  | 'data-portal'
+  | 'carrier-portal'
+  | 'fishing-map'
+  | 'indonesia:*'
+  | 'carriers:*'
+  | 'public'
+export type UserPermissionAction =
+  | 'read'
+  | 'read-all'
+  | 'create'
+  | 'create-all'
+  | 'delete'
+  | 'delete-all'
+  | string
+
 export interface UserPermission {
-  type: 'application' | 'dataset'
-  value:
-    | 'map-client'
-    | 'data-portal'
-    | 'carrier-portal'
-    | 'fishing-map'
-    | 'indonesia:*'
-    | 'carriers:*'
-    | 'public'
-  action: string
+  type: UserPermissionType
+  value: UserPermissionValue
+  action: UserPermissionAction
 }
 
 export interface UserData {
