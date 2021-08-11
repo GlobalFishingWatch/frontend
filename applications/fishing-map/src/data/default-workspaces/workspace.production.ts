@@ -11,6 +11,7 @@ import {
   DEFAULT_PRESENCE_DATAVIEW_ID,
   DEFAULT_VIIRS_DATAVIEW_ID,
   DEFAULT_CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
+  DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -29,7 +30,7 @@ const workspace: Workspace<WorkspaceState> = {
   dataviews: [],
   dataviewInstances: [
     {
-      id: 'basemap',
+      id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
       dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
     },
     {
