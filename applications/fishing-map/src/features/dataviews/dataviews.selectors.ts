@@ -70,7 +70,7 @@ export const selectDataviewInstancesMerged = createSelector(
 )
 
 export const selectDataviewInstancesMergedThinning = createSelector(
-  [selectDataviewInstancesMerged, isGuestUser, selectDebugOptions],
+  [selectDataviewInstancesMerged, (state) => isGuestUser(state), selectDebugOptions],
   (dataviewInstances, guestUser, { thinning }) => {
     return dataviewInstances?.map((dataviewInstance) => {
       if (thinning) {

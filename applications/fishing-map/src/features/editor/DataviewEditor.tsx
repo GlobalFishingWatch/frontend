@@ -33,11 +33,6 @@ import useEditorMenu from './editor.hooks'
 
 const UNKNOWN_CATEGORY = 'unknown' as DataviewCategory
 
-type NewDataviewEditorProps = {
-  editDataview?: Dataview
-  onCancelClick: () => void
-}
-
 const categoryOptions = [
   { id: DataviewCategory.Environment, label: 'Environment' },
   { id: DataviewCategory.Fishing, label: 'Fishing' },
@@ -56,7 +51,12 @@ const temporalResolutionOptions = [
   { id: 'hour', label: 'Hour' },
 ]
 
-const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorProps) => {
+type DataviewEditorProps = {
+  editDataview?: Dataview
+  onCancelClick: () => void
+}
+
+const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const [dataview, setDataview] = useState<Partial<Dataview>>(editDataview || ({} as Dataview))
@@ -336,4 +336,4 @@ const NewDataviewEditor = ({ editDataview, onCancelClick }: NewDataviewEditorPro
   )
 }
 
-export default NewDataviewEditor
+export default DataviewEditor

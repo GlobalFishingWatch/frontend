@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { orderBy } from 'lodash'
-import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import {
   selectContextAreasDataviews,
@@ -22,6 +23,24 @@ export const isUserLogged = createSelector(
     return status === AsyncReducerStatus.Finished && logged
   }
 )
+
+export const hasUserPermission = (permission: UserPermission) =>
+  createSelector([selectUserData], (userData) => {
+    if (!userData?.permissions) return false
+    return checkExistPermissionInList(userData.permissions, permission)
+  })
+
+export const selectUserWorkspaceEditPermissions = hasUserPermission({
+  type: 'entity',
+  value: 'workspace',
+  action: 'create-all',
+})
+
+export const selectUserDataviewEditPermissions = hasUserPermission({
+  type: 'entity',
+  value: 'dataview',
+  action: 'create-all',
+})
 
 export const selectUserId = createSelector([selectUserData], (userData) => {
   return userData?.id

@@ -24,8 +24,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectReadOnly, selectViewport } from 'features/app/app.selectors'
-import { isAdminUser, selectUserData } from 'features/user/user.slice'
-import { isGuestUser } from 'features/user/user.selectors'
+import { selectUserData } from 'features/user/user.slice'
+import { isGuestUser, selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLoginRedirect } from 'routes/routes.hook'
 import styles from './SidebarHeader.module.css'
@@ -37,7 +37,7 @@ function SaveWorkspaceButton() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const guestUser = useSelector(isGuestUser)
-  const adminUser = useSelector(isAdminUser)
+  const hasEditPermission = useSelector(selectUserWorkspaceEditPermissions)
   const viewport = useSelector(selectViewport)
   const timerange = useTimerangeConnect()
   const userData = useSelector(selectUserData)
@@ -82,7 +82,7 @@ function SaveWorkspaceButton() {
       if (workspace && workspace.id !== DEFAULT_WORKSPACE_ID) {
         if (isOwnerWorkspace) {
           dispatchedAction = await updateWorkspaceAction(workspace.id)
-        } else if (adminUser) {
+        } else if (hasEditPermission) {
           const overwrite = window.confirm(
             `You are not the creator of this workspace! \nClick OK to overwrite it or Cancel if you want to save it as a new one \n\n ⚠️ With admin power comes admin responsability (B.Parker)`
           )
