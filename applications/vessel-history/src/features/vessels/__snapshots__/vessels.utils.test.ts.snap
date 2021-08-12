@@ -161,6 +161,7 @@ Object {
   "id": "ea39ee174-4f61-cf0a-9ed8-fa5c25459890",
   "imageList": Array [],
   "imo": "0",
+  "iuuStatus": 0,
   "lastTransmissionDate": "2013-05-31T09:37:36Z",
   "length": "18.550",
   "mmsi": "247099420",

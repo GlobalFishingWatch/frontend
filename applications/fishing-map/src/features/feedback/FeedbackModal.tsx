@@ -55,7 +55,7 @@ export const FEEDBACK_FEATURE_IDS = [
   'vesselTracks',
   'vesselSearch',
   'environmentLayers',
-  'reference',
+  'referenceLayers',
   'timebar',
   'analysis',
   'other',
