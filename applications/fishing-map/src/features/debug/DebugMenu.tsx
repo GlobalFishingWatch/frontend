@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -13,13 +13,6 @@ const DebugMenu: React.FC = () => {
   const locationQuery = useSelector(selectLocationQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const basemapDataviewInstance = useSelector(selectBasemapDataviewInstance)
-
-  useEffect(() => {
-    if (basemapDataviewInstance.config?.labels === true && debugOptions.basemapLabels === false) {
-      dispatch(toggleOption(DebugOption.BasemapLabels))
-    }
-  }, [basemapDataviewInstance, debugOptions, dispatch])
-
   return (
     <div className={styles.row}>
       <section>
@@ -60,17 +53,16 @@ const DebugMenu: React.FC = () => {
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
         <div className={styles.header}>
           <Switch
-            active={debugOptions.basemapLabels}
+            active={basemapDataviewInstance?.config?.labels}
             onClick={() => {
               if (basemapDataviewInstance?.id) {
                 upsertDataviewInstance({
                   id: basemapDataviewInstance.id as string,
                   config: {
-                    labels: !debugOptions.basemapLabels,
+                    labels: !basemapDataviewInstance?.config?.labels,
                   },
                 })
               }
-              dispatch(toggleOption(DebugOption.BasemapLabels))
             }}
           />
           <label htmlFor="option_debug">Basemap labels</label>

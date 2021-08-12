@@ -9,19 +9,19 @@
     "since": "depuis le",
     "timeRange": "intervalle de temps",
     "to": "à",
-    "unknown": "Unknown",
+    "unknown": "Inconnu",
     "in": "in",
     "commingSoon": "à venir!",
     "historyFor": "historique pour",
     "previous": "Précédent"
   },
   "event": {
-    "authStatus": "Authorization status",
-    "avgSpeed": "Avg Speed",
+    "authStatus": "Statut d'autorisation",
+    "avgSpeed": "Vitesse moyenne",
     "distance": "Distance",
-    "distancePort": "Distance from port",
-    "distanceShore": "Distance from shore",
-    "duration": "Duration",
+    "distancePort": "Distance du port",
+    "distanceShore": "Distance de la côte",
+    "duration": "Durée",
     "encounter": "encounter",
     "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
     "end": "End",
@@ -146,7 +146,13 @@
     "name_plural": "Noms",
     "operator_plural": "opérateurs",
     "owner_plural": "propriétaires",
-    "type_plural": "types"
+    "type_plural": "types",
+    "iuuStatus": "IUU Status",
+    "iuuStatusOptions": {
+      "0": "Not listed",
+      "1": "previously listed",
+      "2": "currently listed"
+    }
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"

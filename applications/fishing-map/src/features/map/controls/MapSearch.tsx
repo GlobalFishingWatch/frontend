@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/dist'
 import { OceanArea, searchOceanAreas, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -20,7 +21,8 @@ const MapSearch = () => {
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
     const bounds = selectedItem?.properties.bounds as Bbox
     if (bounds) {
-      fitBounds(bounds)
+      const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
+      fitBounds(wrappedBounds)
     }
   }
 

@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 5.0.0
+
+### Major Changes
+
+- 23f147e3: Feature/vv 144
+
 ## 4.8.0
 
 ### Minor Changes

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
 import { DateTime } from 'luxon'
+import { Authorization } from '@globalfishingwatch/api-types'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselWithHistory } from 'types'
@@ -73,6 +74,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     () => (vessel?.imageList ?? []).map((url) => ({ original: url })),
     [vessel]
   )
+
+  const authorizations: Authorization[] = vessel?.authorizations?.length ? 
+    Array.from(new Map(vessel.authorizations.map(item => [item.source, item])).values()) : []
   const [imageLoading, setImageLoading] = useState(true)
   return (
     <Fragment>
@@ -153,8 +157,24 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               ></InfoField>
               <div className={styles.identifierField}>
                 <label>{t('vessel.authorization_plural', 'authorizations')}</label>
-                {vessel.authorizations?.map((auth) => (
-                  <p key={auth}>{auth}</p>
+                {authorizations?.map((auth, index) => (
+                  <p key={index}>
+                    {auth.source}{' '}
+                    <Fragment>
+                      {t('common.from', 'from')}{' '}
+                        {auth.startDate ? (
+                          <I18nDate date={auth.startDate} />
+                        ) : (
+                          DEFAULT_EMPTY_VALUE
+                        )}{' '}
+                        {t('common.to', 'to')}{' '}
+                        {auth.endDate ? (
+                          <I18nDate date={auth.endDate} />
+                        ) : (
+                          DEFAULT_EMPTY_VALUE
+                        )}
+                      </Fragment>
+                  </p>
                 ))}
                 {!vessel.authorizations?.length && (
                   <p>{t('vessel.noAuthorizations', 'No authorizations found')}</p>
@@ -199,8 +219,17 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   ) : (
                     DEFAULT_EMPTY_VALUE
                   )}
+                  
                 </div>
               </div>
+              <InfoField
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                label={VesselFieldLabel.iuuStatus}
+                value={vessel.iuuStatus !== undefined ? 
+                  t(`vessel.iuuStatusOptions.${vessel.iuuStatus}` as any, vessel.iuuStatus.toString()) 
+                  : DEFAULT_EMPTY_VALUE}
+                valuesHistory={[]}
+              ></InfoField>
             </div>
           </Fragment>
         )}
