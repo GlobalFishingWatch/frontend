@@ -16,6 +16,7 @@ import {
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { MapboxEvent } from '@globalfishingwatch/mapbox-gl'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/dist'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -276,13 +277,14 @@ export const useAnalysisGeometry = () => {
         const areaName: string = name || id || value || ''
         const bounds = bbox(contextAreaGeometry) as Bbox
         if (bounds) {
-          setAnalysisBounds(bounds)
-          fitMapBounds(bounds, { padding: 10 })
+          const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
+          setAnalysisBounds(wrappedBounds)
+          fitMapBounds(wrappedBounds, { padding: 10 })
           dispatch(
             setAnalysisGeometry({
               geometry: contextAreaGeometry,
               name: areaName,
-              bounds,
+              bounds: wrappedBounds,
             })
           )
           setHighlightedArea()
