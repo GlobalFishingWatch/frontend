@@ -37,7 +37,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   }, [dispatch])
 
   return (
-    <Fragment>
+    <div className={styles.activityContainer}>
       <ActivityFilters></ActivityFilters>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
@@ -75,7 +75,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
           </div>
         </Fragment>
       )}
-    </Fragment>
+    </div>
   )
 }
 

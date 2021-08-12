@@ -47,6 +47,7 @@ const MapControls = ({
               <IconButton
                 icon="layers"
                 type="map-tool"
+                size="medium"
                 data-tip-pos="left"
                 aria-label={t('map.toggleLayers', 'Toggle layers')}
                 onClick={() => setShowLayersPopup(!showLayersPopup)}
