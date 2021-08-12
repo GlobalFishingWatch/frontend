@@ -25,6 +25,7 @@ import { ReactComponent as EventEncounter } from '../assets/icons/event-encounte
 import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
 import { ReactComponent as EventFishing } from '../assets/icons/event-fishing.svg'
 import { ReactComponent as EventPort } from '../assets/icons/event-port.svg'
+import { ReactComponent as EventPortVisit } from '../assets/icons/event-port-visit.svg'
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
@@ -82,6 +83,7 @@ export const IconComponents = {
   'event-loitering': EventLoitering,
   'event-fishing': EventFishing,
   'event-port': EventPort,
+  'event-port-visit': EventPortVisit,
   feedback: Feedback,
   'filter-off': FilterOff,
   'filter-on': FilterOn,
