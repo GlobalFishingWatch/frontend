@@ -40,7 +40,7 @@
     "nextPort": "Next port traveled",
     "port": "Port",
     "portAction": "Docked for",
-    "portAt": "Docked at {{port}} for",
+    "portAt": "Docked at {{port}}",
     "position": "Position",
     "start": "Start",
     "unknown": "Unknown event",

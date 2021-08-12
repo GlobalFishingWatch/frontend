@@ -60,8 +60,6 @@ export const selectEventsForTracks = createSelector(
   }
 )
 
-
-
 export interface RenderedEvent extends ActivityEvent {
   color: string
   description: string
@@ -97,9 +95,16 @@ export const selectEventsWithRenderingInfo = createSelector(
             }
             descriptionGeneric = t('event.encounter')
             break
-          case 'port':
-            if (event.port && event.port.name) {
-              description = t('event.portAt', { port: event.port.name })
+          case 'port_visit':
+            const { name, flag } = event.port_visit?.startAnchorage ??
+              event.port_visit?.intermediateAnchorage ??
+              event.port_visit?.endAnchorage ?? { name: undefined, flag: undefined }
+            if (name) {
+              const portLabel = [
+                name,
+                ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : []),
+              ].join(', ')
+              description = t('event.portAt', { port: portLabel })
             } else {
               description = t('event.portAction')
             }
@@ -131,8 +136,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-              count: Math.round(duration.minutes as number),
-            })
+                count: Math.round(duration.minutes as number),
+              })
             : '',
         ].join(' ')
 
