@@ -52,6 +52,7 @@ export const EVENTS_COLORS: Record<string, string> = {
   encounter: '#FAE9A0',
   loitering: '#cfa9f9',
   port: '#99EEFF',
+  port_visit: '#99EEFF',
   fishing: '#fff',
   fishingLabels: '#163f89',
 }

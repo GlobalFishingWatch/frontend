@@ -1,9 +1,10 @@
 import { Filters } from 'features/profile/filters/filters.slice'
-import { selectFilteredEvents } from './vessels-activity.selectors'
-import { loiteringAndEncounterEvents } from './__mocks__/selectEventsWithRenderingInfo.mock'
-import { RenderedEvent } from './vessels-activity.slice'
+import { selectFilteredEvents, RenderedEvent } from './vessels-activity.selectors'
+import {
+  loiteringAndEncounterEvents,
+  portVisitEvents,
+} from './__mocks__/selectEventsWithRenderingInfo.mock'
 
-jest.mock('features/vessels/activity/vessels-activity.slice')
 jest.mock('features/profile/filters/filters.slice')
 
 describe('selectFilteredEvents', () => {
@@ -12,7 +13,7 @@ describe('selectFilteredEvents', () => {
       'encounters',
       '2019-01-01',
       '2019-12-31',
-      loiteringAndEncounterEvents as any,
+      [...loiteringAndEncounterEvents, ...portVisitEvents] as any,
       {
         encounters: true,
         loiteringEvents: false,
@@ -27,7 +28,7 @@ describe('selectFilteredEvents', () => {
       'loitering',
       '2019-01-01',
       '2019-12-31',
-      loiteringAndEncounterEvents as any,
+      [...loiteringAndEncounterEvents, ...portVisitEvents] as any,
       {
         encounters: false,
         loiteringEvents: true,
@@ -37,6 +38,21 @@ describe('selectFilteredEvents', () => {
         end: '2019-12-31',
       },
       52,
+    ],
+    [
+      'port_visit',
+      '2019-01-01',
+      '2019-12-31',
+      [...loiteringAndEncounterEvents, ...portVisitEvents] as any,
+      {
+        encounters: false,
+        loiteringEvents: false,
+        fishingEvents: false,
+        portVisits: true,
+        start: '2019-01-01',
+        end: '2019-12-31',
+      },
+      5,
     ],
   ]
 
