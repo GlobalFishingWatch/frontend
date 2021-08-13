@@ -49,40 +49,40 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "Bandera",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "Flota",
         "enum": {
-          "industrial": "industrial",
-          "artisanal": "artisanal",
-          "not defined": "not defined"
+          "industrial": "Industrial",
+          "artisanal": "Artesanal",
+          "not defined": "No definido"
         }
       },
-      "hours": "hours",
+      "hours": "horas",
       "origin": {
-        "keyword": "origin",
+        "keyword": "Origen",
         "enum": {
-          "PER": "PER",
-          "Foreign": "Foreign"
+          "PER": "Peru",
+          "Foreign": "Exterior"
         }
       },
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Arte de pesca",
         "enum": {
-          "drifting_longlines": "drifting_longlines",
-          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
-          "set_longlines": "set_longlines",
-          "purse_seines": "purse_seines",
-          "trawlers": "trawlers",
-          "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
-          "pots_and_traps": "pots_and_traps",
-          "set_gillnets": "set_gillnets",
-          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
-          "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
-          "fishing": "fishing",
-          "driftnets|set_gillnets": "driftnets|set_gillnets",
-          "fishing|purse_seines": "fishing|purse_seines",
-          "drifting_longlines|trawlers": "drifting_longlines|trawlers"
+          "drifting_longlines": "Palangres a la deriva",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "Redes de deriva | Pesqueras | Vara | Redes de enmalle | Palangres",
+          "set_longlines": "Palangres",
+          "purse_seines": "Redes de cerco",
+          "trawlers": "Red de arrastre",
+          "drifting_longlines|squid_jiggers": "Palangres a la deriva | Jigger calamar",
+          "pots_and_traps": "Trampas y nasas",
+          "set_gillnets": "Redes de enmalle",
+          "set_longlines|squid_jigger": "Palangres | Jigger calamar",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "Red de deriva | Vara | Redes de enmalle | Palangres",
+          "fishing": "Pesqueras",
+          "driftnets|set_gillnets": "Red de deriva | Redes de enmalle",
+          "fishing|purse_seines": "Pesca | Red de cerco",
+          "drifting_longlines|trawlers": "Palangre a la deriva | Red de arrastre"
         }
       },
       "vessel_id": "vessel_id",
@@ -97,8 +97,8 @@
     "schema": {}
   },
   "public-brazil-opentuna-presence": {
-    "name": "VMS Brasil",
-    "description": "Presence (Brazil Open tuna)",
+    "name": "Brazil Open Tuna VMS",
+    "description": "Brazil Open Tuna VMS Presence",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -133,14 +133,14 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "Bandera",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
-          "chile_vms_industry": "chile_vms_industry",
-          "chile_vms_aquaculture": "chile_vms_aquaculture",
-          "chile_vms_transport": "chile_vms_transport"
+          "chile_vms_small_fisheries": "Pequeña pesca",
+          "chile_vms_industry": "Industria",
+          "chile_vms_aquaculture": "Acuicultura",
+          "chile_vms_transport": "Transporte"
         }
       },
       "vessel_id": "vessel_id"
