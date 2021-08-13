@@ -1,5 +1,19 @@
 # @globalfishingwatch/ui-components
 
+## 10.1.0
+
+### Minor Changes
+
+- 5fccc9f4: Added port visit event
+- 06bbf6b9: Modified port visit event
+
+## 10.0.0
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@9.0.0
+- @globalfishingwatch/react-hooks@13.0.0
+
 ## 9.1.3
 
 ### Patch Changes

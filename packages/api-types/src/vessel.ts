@@ -1,3 +1,9 @@
+export interface Authorization {
+  source: string
+  startDate: string
+  endDate: string
+}
+
 export interface Vessel {
   id: string
   flag: string
@@ -17,7 +23,7 @@ export interface Vessel {
   owner?: string
   operator?: string
   builtYear?: string
-  authorizations?: string[]
+  authorizations?: Authorization[]
   registeredGearType?: string
   imageList?: string[]
 }

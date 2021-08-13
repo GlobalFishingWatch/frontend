@@ -257,7 +257,7 @@
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
     "graph": "Gráfico",
     "graphOptions": {
-      "depth": "Profunda $t(common.comingPron)",
+      "depth": "Profundidad $t(common.comingSoon)",
       "none": "Ninguna",
       "speed": "Velocidad"
     },

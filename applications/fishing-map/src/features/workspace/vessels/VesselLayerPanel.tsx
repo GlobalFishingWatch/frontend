@@ -176,7 +176,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                           <label>{t(`vessel.${field.id}` as any)}</label>
                           {fieldValues.map((fieldValue, i) => (
                             <span key={field.id + fieldValue}>
-                              {fieldValue ? getFieldValue(field, fieldValue) : '---'}
+                              {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
                               {/* Field values separator */}
                               {i < fieldValues.length - 1 ? ', ' : ''}
                             </span>
@@ -202,6 +202,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   size="small"
                   icon={infoError ? 'warning' : 'info'}
                   type={infoError ? 'warning' : 'default'}
+                  disabled={infoError}
                   tooltip={
                     infoError
                       ? t('errors.vesselLoading', 'There was an error loading the vessel details')

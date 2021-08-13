@@ -1,5 +1,18 @@
 # @globalfishingwatch/api-types
 
+## 5.1.0
+
+### Minor Changes
+
+- 5fccc9f4: Added port visit event
+- 06bbf6b9: Modified port visit event
+
+## 5.0.0
+
+### Major Changes
+
+- 23f147e3: Feature/vv 144
+
 ## 4.8.0
 
 ### Minor Changes

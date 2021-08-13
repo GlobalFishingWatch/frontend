@@ -1,5 +1,19 @@
 # @globalfishingwatch/layer-composer
 
+## 9.1.0
+
+### Minor Changes
+
+- 5fccc9f4: Added port visit event
+- 06bbf6b9: Modified port visit event
+
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [23f147e3]
+  - @globalfishingwatch/api-types@5.0.0
+
 ## 8.14.0
 
 ### Minor Changes

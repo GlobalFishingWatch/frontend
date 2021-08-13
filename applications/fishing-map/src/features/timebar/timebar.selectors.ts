@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import {
   ApiEvent,
   DatasetTypes,
+  EventTypes,
   Resource,
   ResourceStatus,
   TrackResourceData,
@@ -154,7 +155,7 @@ export const selectEventsWithRenderingInfo = createSelector(
         let description
         let descriptionGeneric
         switch (event.type) {
-          case 'encounter':
+          case EventTypes.Encounter:
             if (event.encounter) {
               description = `${vesselName} ${t(
                 'event.encounterActionWith',
@@ -167,7 +168,7 @@ export const selectEventsWithRenderingInfo = createSelector(
             }
             descriptionGeneric = `${vesselName} ${t('event.encounter')}`
             break
-          case 'port':
+          case EventTypes.Port:
             if (event.port && event.port.name) {
               description = `${vesselName} ${t('event.portAt', { port: event.port.name })} `
             } else {
@@ -175,11 +176,11 @@ export const selectEventsWithRenderingInfo = createSelector(
             }
             descriptionGeneric = `${vesselName} ${t('event.port')}`
             break
-          case 'loitering':
+          case EventTypes.Loitering:
             description = `${vesselName} ${t('event.loiteringAction')}`
             descriptionGeneric = `${vesselName} ${t('event.loitering')}`
             break
-          case 'fishing':
+          case EventTypes.Fishing:
             description = `${vesselName} ${t('event.fishingAction')}`
             descriptionGeneric = `${vesselName} ${t('event.fishing')}`
             break
