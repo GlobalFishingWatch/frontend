@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+
 export const loiteringAndEncounterEvents = [
   {
     id: 'loitering-2980',
@@ -3541,8 +3543,8 @@ export const portVisitEvents = [
       ssvid: '259078000',
       nextPort: null,
     },
-    start: 1577723142000,
-    end: 1577730532000,
+    start: DateTime.fromISO('2020-01-01T00:00:00.000Z').toMillis(),
+    end: DateTime.fromISO('2020-01-01T00:00:00.001Z').toMillis(),
     position: {
       lat: 68.57208583335,
       lon: 15.00140916665,
@@ -3623,8 +3625,8 @@ export const portVisitEvents = [
       ssvid: '259078000',
       nextPort: null,
     },
-    start: 1577691612000,
-    end: 1577703351000,
+    start: DateTime.fromISO('2019-12-31T23:59:59.998Z').toMillis(),
+    end: DateTime.fromISO('2019-12-31T23:59:59.999Z').toMillis(),
     position: {
       lat: 68.88012875,
       lon: 16.2652629167,

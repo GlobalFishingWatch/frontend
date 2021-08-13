@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
+import { DateTime, Interval } from 'luxon'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewEventsResources,
@@ -209,17 +209,24 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
 export const selectFilteredEvents = createSelector(
   [selectEventsWithRenderingInfo, selectFilters],
   (events, filters) => {
-    const startDate = new Date(filters.start)
-    startDate.setHours(0, 0, 0, 0)
-    const startTimestamp = startDate.getTime()
-    const endDate = new Date(filters.end)
-    endDate.setHours(0, 0, 0, 0)
-    const endTimestamp = endDate.getTime()
+    // Need to parse the timerange start and end dates in UTC
+    // to not exclude events in the boundaries of the range
+    // if the user setting the filter is in a timezone with offset != 0
+    const startDate = DateTime.fromISO(filters.start, { zone: 'utc' })
+
+    // Setting the time to 23:59:59.99 so the events in that same day
+    //  are also displayed
+    const endDateUTC = DateTime.fromISO(filters.end, { zone: 'utc' }).toISODate()
+    const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
+    const interval = Interval.fromDateTimes(startDate, endDate)
 
     return events
       .flat()
       .filter((event: RenderedEvent) => {
-        if (startTimestamp >= event.start || endTimestamp <= event.end) {
+        if (
+          !interval.contains(DateTime.fromMillis(event.start as number)) &&
+          !interval.contains(DateTime.fromMillis(event.end as number))
+        ) {
           return false
         }
         if (event.type === 'fishing') {
