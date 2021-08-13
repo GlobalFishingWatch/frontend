@@ -27,7 +27,7 @@
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
     "context_area_plural": "Reference layers",
-    "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
+    "copiedToClipboard": "The link to share this workspace has been copied to your clipboard.",
     "country_plural": "Countries",
     "dateRange": "between {{start}} and {{end}}",
     "days": "Day",
@@ -58,7 +58,7 @@
     "presence": "Presence",
     "report": "Report",
     "save": "Save",
-    "seeDefault": "See default view",
+    "seeDefault": "See default workspace",
     "share": "Share map",
     "unknown": "Other",
     "update": "Update",
@@ -114,7 +114,7 @@
     "latestCarrierNotFound": "Latest carrier dataset not found.",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found.",
-    "privateView": "This is a private view",
+    "privateView": "This is a private workspace.",
     "requestAccess": "Request access",
     "showError": "Show error",
     "switchAccount": "Switch account",
@@ -277,7 +277,7 @@
     "title": "User"
   },
   "vessel": {
-    "addToWorkspace": "Add vessel to view",
+    "addToWorkspace": "Add vessel to workspace",
     "beam": "Beam",
     "callsign": "Call sign",
     "capacity": "Capacity",
@@ -334,8 +334,8 @@
     "nameInput": "Workspace name",
     "new": "New workspace",
     "remove": "Remove workspace",
-    "save": "Save the current view",
-    "saved": "The current view has been saved and it's available in your profile.",
+    "save": "Save the current workspace",
+    "saved": "The current workspace has been saved and it's available in your profile.",
     "saveLogin": "Register and login to save workspace views (free, 2 minutes)",
     "title_plural": "Workspaces"
   }
