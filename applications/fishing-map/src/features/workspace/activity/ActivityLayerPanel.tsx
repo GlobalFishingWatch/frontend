@@ -11,6 +11,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { removeDatasetVersion } from 'features/datasets/datasets.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import DatasetFilterSource from '../shared/DatasetSourceField'
@@ -89,7 +90,7 @@ function ActivityLayerPanel({
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
   let datasetName = dataset
-    ? t(`datasets:${dataset?.id?.split(':')[0]}.name` as any)
+    ? t(`datasets:${removeDatasetVersion(dataset?.id)}.name` as any)
     : dataview.name || ''
   const fishingDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)

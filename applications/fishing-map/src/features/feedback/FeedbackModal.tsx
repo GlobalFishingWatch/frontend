@@ -9,6 +9,7 @@ import { getSourcesSelectedInDataview } from 'features/workspace/activity/activi
 import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { isGuestUser, selectUserGroupsClean } from 'features/user/user.selectors'
+import { removeDatasetVersion } from 'features/datasets/datasets.utils'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -116,13 +117,15 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       return sourcesInDataview.map((source) => {
         return {
           id: `Data: ${source.id}`,
-          label: `Data: ${t(`datasets:${source.id.split(':')[0]}.name` as any)}`,
+          label: `Data: ${t(`datasets:${removeDatasetVersion(source.id)}.name` as any)}`,
         }
       })
     } else {
       return {
         id: `Data: ${dataview.id}`,
-        label: `Data: ${t(`datasets:${dataview.datasets?.[0]?.id.split(':')[0]}.name` as any)}`,
+        label: `Data: ${t(
+          `datasets:${removeDatasetVersion(dataview.datasets?.[0]?.id || '')}.name` as any
+        )}`,
       }
     }
   })
