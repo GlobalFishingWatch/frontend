@@ -5,6 +5,7 @@ import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFis
 import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsLoitering'
 import ActivityModalContentDetailsEncounter from './ActivityModalContentDetailsEncounter'
 import styles from './ActivityModalDetails.module.css'
+import ActivityModalContentDetailsPortVisit from './ActivityModalContentDetailsPortVisit'
 
 interface ActivityModalContentProps {
   event: RenderedEvent
@@ -29,6 +30,12 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
           <ActivityModalContentDetailsEncounter
             event={event}
           ></ActivityModalContentDetailsEncounter>
+        )
+      case EventTypes.Port:
+        return (
+          <ActivityModalContentDetailsPortVisit
+            event={event}
+          ></ActivityModalContentDetailsPortVisit>
         )
       default:
         return <Fragment />

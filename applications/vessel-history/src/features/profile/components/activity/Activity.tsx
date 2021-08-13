@@ -11,6 +11,7 @@ import {
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
+import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -36,6 +37,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   useEffect(() => {
     dispatch(fetchRegionsThunk())
+    dispatch(fetchPsmaThunk())
   }, [dispatch])
 
   return (

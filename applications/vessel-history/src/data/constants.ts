@@ -25,3 +25,9 @@ export const FISHING_EVENTS_MIN_DISTANCE = 0
 export const FISHING_EVENTS_MAX_DISTANCE = 99
 export const LOITERING_EVENTS_MIN_DISTANCE = 0
 export const LOITERING_EVENTS_MAX_DISTANCE = 99
+
+export const PORT_CONFIDENCE = {
+  '2': 'low',
+  '3': 'medium',
+  '4': 'high',
+}
