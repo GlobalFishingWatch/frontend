@@ -12,7 +12,7 @@ export interface DataviewConfig<Type = any> {
   [key: string]: any
 }
 
-export interface DataviewDatasetConfigParams {
+export interface DataviewDatasetConfigParam {
   id: string
   value: string | number | boolean | string[]
 }
@@ -20,8 +20,8 @@ export interface DataviewDatasetConfigParams {
 export interface DataviewDatasetConfig {
   datasetId: string
   endpoint: string
-  params: DataviewDatasetConfigParams[]
-  query?: DataviewDatasetConfigParams[]
+  params: DataviewDatasetConfigParam[]
+  query?: DataviewDatasetConfigParam[]
 }
 
 export interface DataviewCreation<T = any> {

@@ -202,6 +202,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   size="small"
                   icon={infoError ? 'warning' : 'info'}
                   type={infoError ? 'warning' : 'default'}
+                  disabled={infoError}
                   tooltip={
                     infoError
                       ? t('errors.vesselLoading', 'There was an error loading the vessel details')
