@@ -5,7 +5,7 @@ import {
   resolveDataviewEventsResources,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from 'data/config'
 import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
 import { t } from 'features/i18n/i18n'
@@ -81,7 +81,7 @@ export const selectEventsWithRenderingInfo = createSelector(
         let description = ''
         let descriptionGeneric = ''
         switch (event.type) {
-          case 'encounter':
+          case EventTypes.Encounter:
             if (event.encounter) {
               description = t(
                 'event.encounterActionWith',
@@ -96,7 +96,7 @@ export const selectEventsWithRenderingInfo = createSelector(
             }
             descriptionGeneric = t('event.encounter')
             break
-          case 'port_visit':
+          case EventTypes.Port:
             const { name, flag } = event.port_visit?.intermediateAnchorage ??
               event.port_visit?.startAnchorage ??
               event.port_visit?.endAnchorage ?? { name: undefined, flag: undefined }
@@ -111,13 +111,13 @@ export const selectEventsWithRenderingInfo = createSelector(
             }
             descriptionGeneric = t('event.port')
             break
-          case 'loitering':
+          case EventTypes.Loitering:
             description = t('event.loiteringAction', 'Loitering in {{regionName}}', {
               regionName: regionDescription,
             })
             descriptionGeneric = t('event.loitering')
             break
-          case 'fishing':
+          case EventTypes.Fishing:
             description = t('event.fishingAction', 'Fishing in {{regionName}}', {
               regionName: regionDescription,
             })

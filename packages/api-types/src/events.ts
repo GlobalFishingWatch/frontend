@@ -11,7 +11,7 @@ export enum EventTypes {
   Loitering = 'loitering',
 }
 
-export type EventType = 'encounter' | 'fishing' | 'gap' | 'port' | 'loitering'
+export type EventType = 'encounter' | 'fishing' | 'gap' | 'port_visit' | 'loitering'
 
 export interface EventNextPort {
   id: string
