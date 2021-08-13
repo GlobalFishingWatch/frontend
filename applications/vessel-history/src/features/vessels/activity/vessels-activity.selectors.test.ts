@@ -1,9 +1,8 @@
 import { Filters } from 'features/profile/filters/filters.slice'
-import { selectFilteredEvents } from './vessels-activity.selectors'
+import { selectFilteredEvents, RenderedEvent } from './vessels-activity.selectors'
 import { loiteringAndEncounterEvents } from './__mocks__/selectEventsWithRenderingInfo.mock'
-import { RenderedEvent } from './vessels-activity.slice'
 
-jest.mock('features/vessels/activity/vessels-activity.slice')
+jest.mock('features/vessels/activity/vessels-activity.selectors')
 jest.mock('features/profile/filters/filters.slice')
 
 describe('selectFilteredEvents', () => {
