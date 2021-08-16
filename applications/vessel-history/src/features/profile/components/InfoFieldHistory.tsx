@@ -35,7 +35,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
           ? t('common.AIS', 'AIS')
           : t('common.Other', 'Other')
         : DEFAULT_EMPTY_VALUE,
-    []
+    [t]
   )
   if (history.length < 1) {
     return <div></div>
