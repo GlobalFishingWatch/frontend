@@ -608,6 +608,16 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-indonesia-zebrax-presence": {
+    "name": "Indonesia Zebrax",
+    "description": "Zebra X Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)",

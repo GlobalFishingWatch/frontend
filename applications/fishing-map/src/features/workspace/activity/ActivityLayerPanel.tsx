@@ -90,7 +90,7 @@ function ActivityLayerPanel({
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
   let datasetName = dataset
-    ? t(`datasets:${removeDatasetVersion(dataset?.id)}.name` as any)
+    ? t(`datasets:${removeDatasetVersion(dataset?.id)}.name` as any, dataset.name)
     : dataview.name || ''
   const fishingDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
