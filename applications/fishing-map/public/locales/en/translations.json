@@ -22,8 +22,8 @@
     "analysis": "Create an analysis for this area",
     "analysisNotAvailable": "Toggle an activity or environment layer on to create an analysis for this area",
     "apparentFishing": "Apparent fishing effort",
-    "category": "Category",
     "cancel": "Cancel",
+    "category": "Category",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
     "context_area_plural": "Reference layers",
@@ -92,6 +92,7 @@
     "requiredFields": "Required fields {{fields}}",
     "timeNameField": "Time name field",
     "title": "Dataset",
+    "title_plural": "Datasets",
     "typePoints": " Points",
     "typePointsDescription": "Display one or multiple positions sized by any quantitative value in your dataset.",
     "typePolygons": " Polygons",
@@ -100,8 +101,7 @@
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
     "uploadLogin": "Register and <1>login</1> to upload datasets (free, 2 minutes)",
     "uploadNewContext": "Upload new reference layer",
-    "uploadNewEnviroment": "Upload new environment dataset",
-    "title_plural": "Datasets"
+    "uploadNewEnviroment": "Upload new environment dataset"
   },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",
@@ -303,6 +303,7 @@
       "set_gillnets": "Set gillnet",
       "set_longlines": "Set longline",
       "squid_jigger": "Squid jigger",
+      "squid_jiggers": "Gear Squid Jiggers",
       "trawlers": "Trawler",
       "trollers": "Troller",
       "tuna_purse_seines": "Tuna purse seine"
