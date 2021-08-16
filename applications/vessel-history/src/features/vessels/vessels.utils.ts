@@ -32,7 +32,7 @@ const getPriorityzedFieldValue = <T = any>(
         return -1
       }
       // if both exist we apply the priority
-      return (a.priority > b.priority ? 1 : -1)
+      return a.priority > b.priority ? 1 : -1
     })
     .map(({ value }) => {
       // return unique values when it's an array
@@ -77,9 +77,22 @@ const mergeHistoryFields = (
   ): T[] => {
     const fieldActualValue = vessel[fieldName as VesselFieldKey]
     // When the field has no history then use the actual value of it if it's defined
+    // and using transmision dates as default on field value history time range
     return fieldHistory.length === 0 && fieldActualValue !== undefined
-      ? [{ source, value: fieldActualValue } as any]
-      : fieldHistory.map((item) => ({ ...item, source }))
+      ? [
+          {
+            source,
+            value: fieldActualValue,
+            firstSeen: vessel.firstTransmissionDate,
+            endDate: vessel.lastTransmissionDate,
+          } as any,
+        ]
+      : fieldHistory.map((item) => ({
+          firstSeen: vessel.firstTransmissionDate,
+          endDate: vessel.lastTransmissionDate,
+          ...item,
+          source,
+        }))
   }
 
   return (fieldValues || []).reduce(
@@ -119,17 +132,17 @@ export const mergeVesselFromSources = (
       const value =
         key.toString() === 'history'
           ? mergeHistoryFields(
-            key,
-            vesselData.map((data) => ({
-              source: data.source,
-              value: data.vessel[key] as VesselFieldsHistory,
-              vessel: data.vessel,
-            }))
-          )
+              key,
+              vesselData.map((data) => ({
+                source: data.source,
+                value: data.vessel[key] as VesselFieldsHistory,
+                vessel: data.vessel,
+              }))
+            )
           : priorityzeFieldValue(
-            key,
-            vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
-          )
+              key,
+              vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
+            )
       return {
         ...acc,
         [key]: value,

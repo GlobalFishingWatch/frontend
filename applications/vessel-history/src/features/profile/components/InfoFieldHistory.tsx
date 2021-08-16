@@ -1,14 +1,13 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { ValueItem } from 'types'
+import { ValueItem, VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 
 interface ListItemProps {
-  current: ValueItem
   history: ValueItem[]
   isOpen: boolean
   label: VesselFieldLabel
@@ -17,7 +16,6 @@ interface ListItemProps {
 }
 
 const InfoFieldHistory: React.FC<ListItemProps> = ({
-  current,
   history,
   isOpen,
   label,
@@ -30,13 +28,15 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     return `${label} History for ${vesselName}`
   }, [label, vesselName])
 
-  const since = useMemo(
-    () => current?.firstSeen ?? history.slice(0, 1)?.shift()?.firstSeen,
-    [current, history]
+  const formatSource = useCallback(
+    (source?: VesselAPISource) =>
+      source
+        ? source === VesselAPISource.GFW
+          ? t('common.AIS', 'AIS')
+          : t('common.Other', 'Other')
+        : DEFAULT_EMPTY_VALUE,
+    []
   )
-
-  const previousHistory = useMemo(() => history.slice(1), [history])
-
   if (history.length < 1) {
     return <div></div>
   }
@@ -61,22 +61,11 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
               <label className={styles.identifierField}>{t(`vessel.source`, 'source')}</label>
             </div>
 
-            <div className={styles.historyItem}>
-              <div className={styles.identifierField}>{current.value}</div>
-              <div className={styles.identifierField}>
-                {since && (
-                  <Fragment>
-                    <span className={styles.rangeLabel}>{t('common.since', 'Since')}: </span>
-                    <span className={styles.rangeValue}>{<I18nDate date={since} />}</span>
-                  </Fragment>
-                )}
-                {!since && <span className={styles.rangeValue}>{DEFAULT_EMPTY_VALUE}</span>}
-              </div>
-              <div className={styles.identifierField}>{current.source}</div>
-            </div>
-            {previousHistory.map((historyValue: ValueItem, index) => (
+            {history.map((historyValue: ValueItem, index) => (
               <div className={styles.historyItem} key={index}>
-                <div className={styles.identifierField}>{historyValue.value}</div>
+                <div className={styles.identifierField}>
+                  {historyValue.value ? historyValue.value : DEFAULT_EMPTY_VALUE}
+                </div>
                 <div className={styles.identifierField}>
                   {historyValue.firstSeen && (
                     <div>
@@ -94,8 +83,11 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                       </span>
                     </div>
                   )}
+                  {!historyValue.firstSeen && !historyValue.endDate && (
+                    <Fragment>{DEFAULT_EMPTY_VALUE}</Fragment>
+                  )}
                 </div>
-                <div className={styles.identifierField}>{historyValue.source}</div>
+                <div className={styles.identifierField}>{formatSource(historyValue.source)}</div>
               </div>
             ))}
           </div>
