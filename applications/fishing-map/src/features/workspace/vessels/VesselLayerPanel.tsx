@@ -99,7 +99,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       return <I18nFlag iso={fieldValue} />
     }
     if (field.id === 'geartype') {
-      return t(`vessel.gearTypes.${fieldValue}` as any, EMPTY_FIELD_PLACEHOLDER)
+      if (!fieldValue) return EMPTY_FIELD_PLACEHOLDER
+      const fieldValueSplit = fieldValue.split('|')
+      if (fieldValueSplit.length > 1) {
+        return fieldValueSplit
+          .map((field) => t(`vessel.gearTypes.${field}` as any, field))
+          .join(', ')
+      }
+      return t(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
     }
     if (field.id === 'mmsi') {
       return (
