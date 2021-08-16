@@ -105,7 +105,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText
           type="number"
-          value={settings.duration ?? 0}
+          value={settings.duration}
           min={props.minDuration}
           max={props.maxDuration}
           onChange={(event) => setSetting(section, 'duration', parseInt(event.currentTarget.value))}
@@ -114,16 +114,35 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
-          {t('settings.distance', 'DISTANCE TRAVELLED')}
+          {t('event.distanceShore', 'Distance from shore')}
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText
           type="number"
-          value={settings.distance ?? 0}
+          value={settings.distanceShoreLonger}
           min={props.minDistance}
           max={props.maxDistance}
-          onChange={(event) => setSetting(section, 'distance', parseInt(event.currentTarget.value))}
+          onChange={(event) =>
+            setSetting(section, 'distanceShoreLonger', parseInt(event.currentTarget.value))
+          }
+        ></InputText>
+        <span>{t('settings.kms', 'kms')}</span>
+      </div>
+      <div className={cx(styles.settingsField, styles.inlineRow)}>
+        <label>
+          {t('event.distancePort', 'Distance from port')}
+          <IconButton type="default" size="tiny" icon="info"></IconButton>
+        </label>
+        <span>{t('settings.longerThan', 'Longer than')}</span>
+        <InputText
+          type="number"
+          value={settings.distancePortLonger}
+          min={props.minDistance}
+          max={props.maxDistance}
+          onChange={(event) =>
+            setSetting(section, 'distancePortLonger', parseInt(event.currentTarget.value))
+          }
         ></InputText>
         <span>{t('settings.kms', 'kms')}</span>
       </div>
