@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
@@ -27,10 +27,32 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const RFMOS_OPTIONS: MultiSelectOption[] = useSelector(selectRFMOs) ?? []
   const MPAS_OPTIONS: MultiSelectOption[] = useSelector(selectMPAs) ?? []
 
-  const eezs = EEZ_OPTIONS.filter((option) => settings.eezs?.includes(option.id))
+  const anyOption: SelectOption<string> = useMemo(
+    () => ({
+      id: '0-any',
+      label: t('common.any', 'Any') as string,
+      disabled: false,
+      tooltip: t('common.any', 'Any') as string,
+    }),
+    [t]
+  )
+
+  const eezs = [anyOption, ...EEZ_OPTIONS].filter((option) => settings.eezs?.includes(option.id))
   const rfmos = RFMOS_OPTIONS.filter((option) => settings.rfmos?.includes(option.id))
   const mpas = MPAS_OPTIONS.filter((option) => settings.mpas?.includes(option.id))
 
+  const eezList = useMemo(
+    () => [anyOption, ...eezs, ...EEZ_OPTIONS.filter((option) => !eezs.includes(option))],
+    [EEZ_OPTIONS, anyOption, eezs]
+  )
+  const onSelectEEZ = useCallback(
+    (selected: SelectOption<string>) => {
+      selected === anyOption
+        ? setSettingOptions(section, 'eezs', [selected])
+        : setSettingOptions(section, 'eezs', [...eezs, selected])
+    },
+    [anyOption]
+  )
   return (
     <div>
       <div className={styles.settingsField}>
@@ -42,7 +64,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           selectedOptions={eezs}
           placeholderDisplayAll={true}
           onCleanClick={() => setSettingOptions(section, 'eezs', [])}
-          onSelect={(selected) => setSettingOptions(section, 'eezs', [...eezs, selected])}
+          onSelect={onSelectEEZ}
           onRemove={(option) =>
             setSettingOptions(
               section,
@@ -50,7 +72,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
               eezs.filter((o) => o.id !== option.id)
             )
           }
-          options={EEZ_OPTIONS}
+          options={eezList}
         ></MultiSelect>
       </div>
       <div className={styles.settingsField}>

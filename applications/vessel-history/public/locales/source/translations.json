@@ -2,6 +2,7 @@
   "common": {
     "activity": "activity",
     "AIS": "AIS",
+    "any": "Any",
     "from": "from",
     "info": "info",
     "map": "map",
@@ -85,7 +86,6 @@
     "selected": "selected"
   },
   "settings": {
-    "distance": "DISTANCE TRAVELLED",
     "duration": "DURATION",
     "eezs": {
       "label": "Events in these EEZs"
@@ -113,7 +113,8 @@
     "rfmos": {
       "label": "Events in these RFMOS"
     },
-    "title": "Settings"
+    "title": "Settings",
+    "distance": "DISTANCE TRAVELLED"
   },
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",
