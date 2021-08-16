@@ -1,21 +1,21 @@
 import { createSelector } from '@reduxjs/toolkit'
 import {
-  EndpointId,
   DataviewInstance,
   DataviewCategory,
   DatasetTypes,
+  DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
   getGeneratorConfig,
+  getTrackDataviewDatasetConfigs,
+  DOWNLOADABLE_DATAVIEW_TYPES,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { ThinningLevels, THINNING_LEVELS } from 'data/config'
-import { selectDebugOptions } from 'features/debug/debug.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { PRESENCE_POC_ID, selectDatasets } from 'features/datasets/datasets.slice'
@@ -24,9 +24,9 @@ import {
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
-import { isGuestUser } from 'features/user/user.selectors'
 import { selectActivityCategoryFn } from 'features/app/app.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID } from 'data/workspaces'
+import { selectThinningConfig } from 'features/resources/resources.selectors'
 import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
@@ -71,38 +71,8 @@ export const selectDataviewInstancesMerged = createSelector(
   }
 )
 
-export const selectDataviewInstancesMergedThinning = createSelector(
-  [selectDataviewInstancesMerged, (state) => isGuestUser(state), selectDebugOptions],
-  (dataviewInstances, guestUser, { thinning }) => {
-    return dataviewInstances?.map((dataviewInstance) => {
-      if (thinning) {
-        // Insert thinning queryParams depending on the user type
-        const thinningConfig = guestUser
-          ? THINNING_LEVELS[ThinningLevels.Aggressive]
-          : THINNING_LEVELS[ThinningLevels.Default]
-        const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-          id,
-          value,
-        }))
-        return {
-          ...dataviewInstance,
-          datasetsConfig: dataviewInstance.datasetsConfig?.map((datasetConfig) => {
-            if (
-              datasetConfig.endpoint !== EndpointId.Tracks ||
-              datasetConfig.datasetId.includes(PRESENCE_POC_ID) // Thinning disabled for BigQuery tracks POC
-            )
-              return datasetConfig
-            return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
-          }),
-        }
-      }
-      return dataviewInstance
-    })
-  }
-)
-
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedThinning, selectAllDataviews, selectDatasets],
+  [selectDataviewInstancesMerged, selectAllDataviews, selectDatasets],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
@@ -110,8 +80,44 @@ export const selectAllDataviewInstancesResolved = createSelector(
   }
 )
 
+/**
+ * Prepare dataviews for querying resources, by altering datasetConfigs
+ * - Filter out non track dvs
+ * - Add thinning query params
+ * - Add extra dataset config for track speed, if needed
+ * - Filter events dataset configs
+ */
+export const selectDataviewsForResourceQuerying = createSelector(
+  [selectAllDataviewInstancesResolved, selectThinningConfig],
+  (dataviewInstances, thinningConfig) => {
+    if (!dataviewInstances) return []
+    const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
+      if (!DOWNLOADABLE_DATAVIEW_TYPES.includes(dataviewInstance.config?.type as Generators.Type))
+        return dataviewInstance
+
+      const { track, info, events } = getTrackDataviewDatasetConfigs(dataviewInstance)
+      if (thinningConfig && !track.datasetId.includes(PRESENCE_POC_ID)) {
+        const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+          id,
+          value,
+        }))
+        track.query = [...(track.query || []), ...thinningQuery]
+      }
+
+      const preparedDatasetConfigs = [track, info, ...events] as DataviewDatasetConfig[]
+
+      const preparedDataview = {
+        ...dataviewInstance,
+        datasetsConfig: preparedDatasetConfigs,
+      }
+      return preparedDataview
+    })
+    return preparedDataviewsInstances
+  }
+)
+
 export const selectBasemapDataviewInstance = createSelector(
-  [selectAllDataviewInstancesResolved],
+  [selectDataviewsForResourceQuerying],
   (dataviews) => {
     const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
     return basemapDataview || defaultBasemapDataview
@@ -119,7 +125,7 @@ export const selectBasemapDataviewInstance = createSelector(
 )
 
 export const selectDataviewInstancesResolved = createSelector(
-  [selectAllDataviewInstancesResolved, selectActivityCategoryFn],
+  [selectDataviewsForResourceQuerying, selectActivityCategoryFn],
   (dataviews = [], activityCategory) => {
     return dataviews.filter((dataview) => {
       const activityDataview = isActivityDataview(dataview)

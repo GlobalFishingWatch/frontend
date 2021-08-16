@@ -17,6 +17,8 @@ export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, '
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
 
+export const DOWNLOADABLE_DATAVIEW_TYPES = [Generators.Type.Track]
+
 /**
  * Detects newly instanciated dataviews in workspaceDataviewInstances
  * @param workspaceDataviewInstances
@@ -89,53 +91,83 @@ export const getDatasetConfigByDatasetType = (
   return getDatasetConfigsByDatasetType(dataview, type)[0]
 }
 
+export const getTrackDataviewDatasetConfigs = (dataviewInstance: UrlDataviewInstance) => {
+  const info = getDatasetConfigByDatasetType(dataviewInstance, DatasetTypes.Vessels)
+
+  const trackDatasetType =
+    dataviewInstance.datasets && dataviewInstance.datasets?.[0]?.type === DatasetTypes.UserTracks
+      ? DatasetTypes.UserTracks
+      : DatasetTypes.Tracks
+  const track = { ...getDatasetConfigByDatasetType(dataviewInstance, trackDatasetType) }
+
+  const events = getDatasetConfigsByDatasetType(dataviewInstance, DatasetTypes.Events).filter(
+    (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
+  ) // Loitering
+
+  return {
+    info,
+    track,
+    events,
+  }
+}
+
 /**
  * Collect available datasetConfigs from dataviews and prepare resource queries
  */
-export const resolveDataviewDatasetResources = (dataviews: UrlDataviewInstance[]): Resource[] => {
-  return dataviews.flatMap((dataview) => {
-    if (!dataview.datasetsConfig) return []
-    return dataview.datasetsConfig.flatMap((datasetConfig) => {
-      const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
-      if (!dataset) return []
-      const url = resolveEndpoint(dataset, datasetConfig)
-      if (!url) return []
-      return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
+export const resolveResourcesFromDatasetConfigs = (
+  dataviews: UrlDataviewInstance[]
+): Resource[] => {
+  return dataviews
+    .filter((dataview) =>
+      DOWNLOADABLE_DATAVIEW_TYPES.includes(dataview.config?.type as Generators.Type)
+    )
+    .flatMap((dataview) => {
+      if (!dataview.datasetsConfig) return []
+      return dataview.datasetsConfig.flatMap((datasetConfig) => {
+        const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
+        if (!dataset) return []
+        const url = resolveEndpoint(dataset, datasetConfig)
+        if (!url) return []
+        return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
+      })
     })
+}
+
+export const resolveDataviewDatasetResources = (
+  dataview: UrlDataviewInstance,
+  datasetTypeOrId: DatasetTypes | DatasetTypes[] | string
+): Resource[] => {
+  const isArray = Array.isArray(datasetTypeOrId)
+  const isType = isArray || Object.values(DatasetTypes).includes(datasetTypeOrId as DatasetTypes)
+  let types: DatasetTypes[]
+  if (isType) {
+    types = isArray ? (datasetTypeOrId as DatasetTypes[]) : [datasetTypeOrId as DatasetTypes]
+  }
+
+  const dataviewDatasets = dataview.datasets || []
+
+  const datasets = isType
+    ? dataviewDatasets.filter((dataset) => types.includes(dataset.type))
+    : dataviewDatasets.filter((dataset) => dataset.id === datasetTypeOrId)
+
+  const resources = datasets?.flatMap((dataset) => {
+    const datasetConfig = dataview?.datasetsConfig?.find(
+      (datasetConfig) => datasetConfig.datasetId === dataset.id
+    )
+    if (!datasetConfig) return []
+    const url = resolveEndpoint(dataset, datasetConfig)
+    if (!url) return []
+    return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
   })
+
+  return resources
 }
 
 export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
-  typeOrId: DatasetTypes | DatasetTypes[] | string
-): {
-  dataset?: Dataset
-  datasetConfig?: DataviewDatasetConfig
-  url?: string
-} => {
-  const isArray = Array.isArray(typeOrId)
-  const isType = isArray || Object.values(DatasetTypes).includes(typeOrId as DatasetTypes)
-  let types: DatasetTypes[]
-  if (isType) {
-    types = isArray ? (typeOrId as DatasetTypes[]) : [typeOrId as DatasetTypes]
-  }
-
-  const dataset = isType
-    ? dataview.datasets?.find((dataset) => types.includes(dataset.type))
-    : dataview.datasets?.find((dataset) => dataset.id === typeOrId)
-
-  if (!dataset) return {}
-  const datasetConfig = dataview?.datasetsConfig?.find(
-    (datasetConfig) => datasetConfig.datasetId === dataset.id
-  )
-
-  if (!datasetConfig) return {}
-
-  const url = resolveEndpoint(dataset, datasetConfig)
-
-  if (!url) return {}
-
-  return { dataset, datasetConfig, url }
+  datasetTypeOrId: DatasetTypes | DatasetTypes[] | string
+): Resource => {
+  return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || {}
 }
 
 // TODO Deprecate
@@ -161,9 +193,6 @@ export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): R
   if (!dataview.datasetsConfig?.length) {
     return []
   }
-  // Filter datasetsConfigs of endpoint type event
-  // Filter datasetsConfig that have a vessel id query
-  // For each datasetsConfig find corresponding dataset (datasetId/dataset.id)
   const dataviews = dataview.datasetsConfig?.flatMap((datasetConfig) => {
     if (datasetConfig.endpoint !== EndpointId.Events) {
       return []

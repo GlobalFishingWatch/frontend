@@ -2,12 +2,15 @@ export { default } from './dataviews-client'
 export {
   default as resolveDataviews,
   resolveDataviewDatasetResource,
+  resolveDataviewDatasetResources,
   resolveDataviewEventsResources,
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
   getDatasetConfigsByDatasetType,
   getDatasetConfigByDatasetType,
-  resolveDataviewDatasetResources,
+  resolveResourcesFromDatasetConfigs,
+  getTrackDataviewDatasetConfigs,
+  DOWNLOADABLE_DATAVIEW_TYPES,
 } from './resolve-dataviews'
 export {
   getGeneratorConfig,
