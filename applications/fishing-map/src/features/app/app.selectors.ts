@@ -182,7 +182,6 @@ export const selectCustomWorkspace = createSelector(
     return {
       ...workspace,
       app: APP_NAME,
-      public: true,
       category,
       aoi: undefined,
       dataviews: workspace?.dataviews?.map(({ id }) => id as number),
