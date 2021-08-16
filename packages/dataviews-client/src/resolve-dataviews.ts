@@ -68,6 +68,43 @@ export const mergeWorkspaceUrlDataviewInstances = (
   return [...urlDataviews.new, ...workspaceDataviewInstancesMerged]
 }
 
+export const getDatasetConfigsByDatasetType = (
+  dataview: UrlDataviewInstance,
+  type: DatasetTypes
+): DataviewDatasetConfig[] => {
+  const availableDatasets = dataview.datasets || []
+  const availableDatasetConfigs = dataview.datasetsConfig || []
+  const datasets = availableDatasets.filter((dataset) => dataset.type === type)
+  const datasetIds = datasets.map((dataset) => dataset.id)
+  const datasetConfigs = availableDatasetConfigs.filter((datasetConfig) =>
+    datasetIds.includes(datasetConfig.datasetId)
+  )
+  return datasetConfigs
+}
+
+export const getDatasetConfigByDatasetType = (
+  dataview: UrlDataviewInstance,
+  type: DatasetTypes
+): DataviewDatasetConfig => {
+  return getDatasetConfigsByDatasetType(dataview, type)[0]
+}
+
+/**
+ * Collect available datasetConfigs from dataviews and prepare resource queries
+ */
+export const resolveDataviewDatasetResources = (dataviews: UrlDataviewInstance[]): Resource[] => {
+  return dataviews.flatMap((dataview) => {
+    if (!dataview.datasetsConfig) return []
+    return dataview.datasetsConfig.flatMap((datasetConfig) => {
+      const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
+      if (!dataset) return []
+      const url = resolveEndpoint(dataset, datasetConfig)
+      if (!url) return []
+      return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
+    })
+  })
+}
+
 export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
   typeOrId: DatasetTypes | DatasetTypes[] | string
@@ -101,6 +138,7 @@ export const resolveDataviewDatasetResource = (
   return { dataset, datasetConfig, url }
 }
 
+// TODO Deprecate
 export const resolveDataviewResourceByDatasetType = (
   dataview: UrlDataviewInstance<Generators.Type>,
   datasetType: DatasetTypes
@@ -116,12 +154,16 @@ export const resolveDataviewResourceByDatasetType = (
   }
 }
 
+// TODO Deprecate
 // Workaround to support multiple resource for the same dataset type (fishing, loitering...)
 // Ideally we move the `resolveDataviewDatasetResource` method to support it natively
 export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): Resource[] => {
   if (!dataview.datasetsConfig?.length) {
     return []
   }
+  // Filter datasetsConfigs of endpoint type event
+  // Filter datasetsConfig that have a vessel id query
+  // For each datasetsConfig find corresponding dataset (datasetId/dataset.id)
   const dataviews = dataview.datasetsConfig?.flatMap((datasetConfig) => {
     if (datasetConfig.endpoint !== EndpointId.Events) {
       return []

@@ -6,6 +6,7 @@ import {
   UrlDataviewInstance,
 } from '../resolve-dataviews'
 
+// TODO Deprecate
 const resolveDataviewsResourceQueries = (
   dataviewInstances: UrlDataviewInstance<Generators.Type>[]
 ): Resource[] => {

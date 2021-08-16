@@ -5,6 +5,9 @@ export {
   resolveDataviewEventsResources,
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
+  getDatasetConfigsByDatasetType,
+  getDatasetConfigByDatasetType,
+  resolveDataviewDatasetResources,
 } from './resolve-dataviews'
 export {
   getGeneratorConfig,
