@@ -6,11 +6,9 @@ export {
   resolveDataviewEventsResources,
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
-  getDatasetConfigsByDatasetType,
-  getDatasetConfigByDatasetType,
   resolveResourcesFromDatasetConfigs,
-  getTrackDataviewDatasetConfigs,
-  DOWNLOADABLE_DATAVIEW_TYPES,
+  getDataviewsForResourceQuerying,
+  TrackDatasetConfigs,
 } from './resolve-dataviews'
 export {
   getGeneratorConfig,

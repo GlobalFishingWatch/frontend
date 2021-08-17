@@ -17,8 +17,6 @@ export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, '
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
 
-export const DOWNLOADABLE_DATAVIEW_TYPES = [Generators.Type.Track]
-
 /**
  * Detects newly instanciated dataviews in workspaceDataviewInstances
  * @param workspaceDataviewInstances
@@ -70,7 +68,7 @@ export const mergeWorkspaceUrlDataviewInstances = (
   return [...urlDataviews.new, ...workspaceDataviewInstancesMerged]
 }
 
-export const getDatasetConfigsByDatasetType = (
+const getDatasetConfigsByDatasetType = (
   dataview: UrlDataviewInstance,
   type: DatasetTypes
 ): DataviewDatasetConfig[] => {
@@ -84,14 +82,22 @@ export const getDatasetConfigsByDatasetType = (
   return datasetConfigs
 }
 
-export const getDatasetConfigByDatasetType = (
+const getDatasetConfigByDatasetType = (
   dataview: UrlDataviewInstance,
   type: DatasetTypes
 ): DataviewDatasetConfig => {
   return getDatasetConfigsByDatasetType(dataview, type)[0]
 }
 
-export const getTrackDataviewDatasetConfigs = (dataviewInstance: UrlDataviewInstance) => {
+export type TrackDatasetConfigs = {
+  info: DataviewDatasetConfig
+  track: DataviewDatasetConfig
+  events: DataviewDatasetConfig[]
+}
+
+const getTrackDataviewDatasetConfigs = (
+  dataviewInstance: UrlDataviewInstance
+): TrackDatasetConfigs => {
   const info = getDatasetConfigByDatasetType(dataviewInstance, DatasetTypes.Vessels)
 
   const trackDatasetType =
@@ -111,6 +117,34 @@ export const getTrackDataviewDatasetConfigs = (dataviewInstance: UrlDataviewInst
   }
 }
 
+export const getDataviewsForResourceQuerying = (
+  dataviewInstances: UrlDataviewInstance[],
+  trackDatasetConfigsTransform?: (
+    trackDatasetConfigs: TrackDatasetConfigs
+  ) => DataviewDatasetConfig[]
+) => {
+  if (!dataviewInstances) return []
+  const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
+    if (dataviewInstance.config?.type !== Generators.Type.Track) return dataviewInstance
+
+    const { track, info, events } = getTrackDataviewDatasetConfigs(dataviewInstance)
+    let preparedDatasetConfigs
+
+    if (trackDatasetConfigsTransform) {
+      preparedDatasetConfigs = trackDatasetConfigsTransform({ track, info, events })
+    } else {
+      preparedDatasetConfigs = [track, info, ...events] as DataviewDatasetConfig[]
+    }
+
+    const preparedDataview = {
+      ...dataviewInstance,
+      datasetsConfig: preparedDatasetConfigs,
+    }
+    return preparedDataview
+  })
+  return preparedDataviewsInstances
+}
+
 /**
  * Collect available datasetConfigs from dataviews and prepare resource queries
  */
@@ -118,9 +152,7 @@ export const resolveResourcesFromDatasetConfigs = (
   dataviews: UrlDataviewInstance[]
 ): Resource[] => {
   return dataviews
-    .filter((dataview) =>
-      DOWNLOADABLE_DATAVIEW_TYPES.includes(dataview.config?.type as Generators.Type)
-    )
+    .filter((dataview) => dataview.config?.type === Generators.Type.Track)
     .flatMap((dataview) => {
       if (!dataview.datasetsConfig) return []
       return dataview.datasetsConfig.flatMap((datasetConfig) => {

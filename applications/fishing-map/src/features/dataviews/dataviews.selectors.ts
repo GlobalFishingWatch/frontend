@@ -1,17 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
-import {
-  DataviewInstance,
-  DataviewCategory,
-  DatasetTypes,
-  DataviewDatasetConfig,
-} from '@globalfishingwatch/api-types'
+import { DataviewInstance, DataviewCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
   getGeneratorConfig,
-  getTrackDataviewDatasetConfigs,
-  DOWNLOADABLE_DATAVIEW_TYPES,
+  getDataviewsForResourceQuerying,
+  TrackDatasetConfigs,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
@@ -81,38 +76,26 @@ export const selectAllDataviewInstancesResolved = createSelector(
 )
 
 /**
- * Prepare dataviews for querying resources, by altering datasetConfigs
- * - Filter out non track dvs
- * - Add thinning query params
- * - Add extra dataset config for track speed, if needed
- * - Filter events dataset configs
+ * Calls getDataviewsForResourceQuerying to prepare track dataviews' datasetConfigs.
+ * Injects app-specific logic by using getDataviewsForResourceQuerying's callback
  */
 export const selectDataviewsForResourceQuerying = createSelector(
   [selectAllDataviewInstancesResolved, selectThinningConfig],
   (dataviewInstances, thinningConfig) => {
-    if (!dataviewInstances) return []
-    const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
-      if (!DOWNLOADABLE_DATAVIEW_TYPES.includes(dataviewInstance.config?.type as Generators.Type))
-        return dataviewInstance
-
-      const { track, info, events } = getTrackDataviewDatasetConfigs(dataviewInstance)
-      if (thinningConfig && !track.datasetId.includes(PRESENCE_POC_ID)) {
-        const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-          id,
-          value,
-        }))
-        track.query = [...(track.query || []), ...thinningQuery]
+    return getDataviewsForResourceQuerying(
+      dataviewInstances || [],
+      ({ track, info, events }: TrackDatasetConfigs) => {
+        const trackWithThinning = track
+        if (thinningConfig && !track.datasetId.includes(PRESENCE_POC_ID)) {
+          const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+            id,
+            value,
+          }))
+          trackWithThinning.query = [...(track.query || []), ...thinningQuery]
+        }
+        return [trackWithThinning, info, ...events]
       }
-
-      const preparedDatasetConfigs = [track, info, ...events] as DataviewDatasetConfig[]
-
-      const preparedDataview = {
-        ...dataviewInstance,
-        datasetsConfig: preparedDatasetConfigs,
-      }
-      return preparedDataview
-    })
-    return preparedDataviewsInstances
+    )
   }
 )
 
