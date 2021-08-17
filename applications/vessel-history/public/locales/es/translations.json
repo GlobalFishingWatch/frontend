@@ -6,6 +6,7 @@
     "info": "info",
     "map": "mapa",
     "offlineAccess": "acceso sin conexión",
+    "offlineAccessEmptyState": "The vessels you save for offline access will appear here.",
     "Other": "Other",
     "since": "desde",
     "timeRange": "período",
