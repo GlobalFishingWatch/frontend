@@ -1,7 +1,7 @@
 {
   "private-brazil-opentuna-presence": {
     "name": "VMS Brasil",
-    "description": "Presence (Brazil Open tuna - private)",
+    "description": "Brazil Open Tuna VMS Presence (Private)",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -27,6 +27,16 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-indonesia-presence": {
+    "name": "VMS Indonesia (Presence)",
+    "description": "Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id"
     }
   },
   "private-panama-fishing-effort": {
@@ -63,7 +73,7 @@
         "keyword": "Origen",
         "enum": {
           "PER": "Peru",
-          "Foreign": "Exterior"
+          "Foreign": "Extranjero"
         }
       },
       "geartype": {
@@ -89,6 +99,51 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-peru-presence": {
+    "name": "VMS Perú Presencia (Privado)",
+    "description": "Esta capa de Global Fishing Watch utiliza los datos proporcionados por el Ministerio de la Producción del Gobierno peruano (PRODUCE). El permiso para incluir datos peruanos exigió que se implementara un retraso de 10 días para la publicación. Los datos se recogen utilizando su Sistema de Monitorización de Buques (VMS) a través de satélites y receptores terrestres, y contiene un tipo de engranaje de identidad, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "Industrial",
+          "artisanal": "Artesanal",
+          "not defined": "No definido"
+        }
+      },
+      "origin": {
+        "keyword": "Origen",
+        "enum": {
+          "PER": "Peru",
+          "Foreign": "Exterior"
+        }
+      },
+      "geartype": {
+        "keyword": "Arte de pesca",
+        "enum": {
+          "drifting_longlines": "Palangres a la deriva",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "Redes de deriva | Pesqueras | Vara | Redes de enmalle | Palangres",
+          "set_longlines": "Palangres",
+          "purse_seines": "Redes de cerco",
+          "driftnets|fishing|set_gillnets": "Red de deriva | Pesca | Redes de enmalle",
+          "trawlers": "Red de arrastre",
+          "drifting_longlines|squid_jiggers": "Palangres a la deriva | Jigger calamar",
+          "pots_and_traps": "Trampas y nasas",
+          "set_gillnets": "Redes de enmalle",
+          "set_longlines|squid_jigger": "Palangres | Jigger calamar",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "Red de deriva | Vara | Redes de enmalle | Palangres",
+          "fishing": "Pesqueras",
+          "driftnets|set_gillnets": "Red de deriva | Redes de enmalle",
+          "fishing|purse_seines": "Pesca | Red de cerco",
+          "drifting_longlines|trawlers": "Palangre a la deriva | Red de arrastre"
+        }
+      },
+      "vessel_id": "vessel_id"
     }
   },
   "public-areas-to-be-avoided-1618836788619": {
@@ -551,6 +606,16 @@
       "elevation_m": "altitud_m",
       "distance_from_port_m": "distancia_de_puerto_m",
       "distance_from_shore_m": "distancia_de_oro_m"
+    }
+  },
+  "public-indonesia-zebrax-presence": {
+    "name": "Indonesia Zebrax",
+    "description": "Zebra X Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id"
     }
   },
   "public-inshore-fishing-zone-1618837176535": {

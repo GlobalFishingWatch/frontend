@@ -22,8 +22,8 @@
     "analysis": "Buat analisis untuk area ini",
     "analysisNotAvailable": "Alihkan aktivitas atau lapisan lingkungan untuk menganalisisnya di area ini",
     "apparentFishing": "Upaya Penangkapan Ikan yang terlihat",
-    "category": "Category",
     "cancel": "Cancel",
+    "category": "Category",
     "comingSoon": "segera akan datang!",
     "confirm": "Konfirmasi",
     "context_area_plural": "Layers referensi",
@@ -92,6 +92,7 @@
     "requiredFields": "Bidang yang harus diisi {{fields}}",
     "timeNameField": "Bidang nama waktu",
     "title": "Dataset",
+    "title_plural": "Dataset",
     "typePoints": " Poin",
     "typePointsDescription": "Menampilkan satu atau beberapa posisi yang diukur berdasarkan nilai kuantitatif apa pun dalam kumpulan data Anda.",
     "typePolygons": " Poligon",
@@ -100,8 +101,7 @@
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
     "uploadLogin": "Anda perlu <1> masuk </1> untuk mengunggah dataset (gratis, 2 menit)",
     "uploadNewContext": "Unggah layer referensi baru",
-    "uploadNewEnviroment": "Unggah dataset lingkungan baru",
-    "title_plural": "Dataset"
+    "uploadNewEnviroment": "Unggah dataset lingkungan baru"
   },
   "errors": {
     "contactUs": "Harap <1> hubungi kami </1> untuk melaporkan masalah tersebut.",
@@ -303,6 +303,7 @@
       "set_gillnets": "Jaring Insang Tetap",
       "set_longlines": "Rawai Dasar",
       "squid_jigger": "Pancing Cumi",
+      "squid_jiggers": "Gear Squid Jiggers",
       "trawlers": "Pukat Hela",
       "trollers": "Tonda",
       "tuna_purse_seines": "Pukat Cincin Tuna"
