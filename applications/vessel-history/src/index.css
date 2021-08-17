@@ -5,7 +5,13 @@
   --color-terthiary-green: rgba(var(--primary-green-rgb), var(--opacity-terthiary));
   --color-primary-green-hover: rgba(var(--primary-green-rgb), var(--opacity-hover));
   --color-primary-green-border: rgba(var(--primary-green-rgb), var(--opacity-border));
-  --base-font-size: 14px;
+  --header-height: 5rem;
+  --tabs-height: 4rem;
+  --base-font-size: 15px;
+}
+
+html {
+  font-size: var(--base-font-size);
 }
 
 body {
