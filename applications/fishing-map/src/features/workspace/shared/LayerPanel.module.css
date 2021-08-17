@@ -78,6 +78,7 @@
 
 .tagList {
   width: 100%;
+  white-space: normal;
 }
 
 .tagList.hidden {
@@ -86,6 +87,7 @@
 
 .megedTagList {
   width: 100%;
+  white-space: normal;
 }
 
 .infoContent {
