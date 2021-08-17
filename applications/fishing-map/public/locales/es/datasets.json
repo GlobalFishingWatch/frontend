@@ -73,7 +73,7 @@
         "keyword": "Origen",
         "enum": {
           "PER": "Peru",
-          "Foreign": "Exterior"
+          "Foreign": "Extranjero"
         }
       },
       "geartype": {
