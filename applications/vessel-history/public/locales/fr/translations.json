@@ -6,6 +6,7 @@
     "info": "Infos",
     "map": "carte",
     "offlineAccess": "accès hors ligne",
+    "offlineAccessEmptyState": "The vessels you save for offline access will appear here.",
     "Other": "Other",
     "since": "depuis le",
     "timeRange": "intervalle de temps",
