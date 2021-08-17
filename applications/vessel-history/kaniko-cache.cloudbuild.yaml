@@ -19,8 +19,6 @@ steps:
       [
         'run',
         'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history-kaniko-cache:$COMMIT_SHA',
-        'cat',
-        '/tmp/test',
       ]
 
 timeout: 1800s
