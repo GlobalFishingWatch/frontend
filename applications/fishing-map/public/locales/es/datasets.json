@@ -171,8 +171,8 @@
       "fleet": {
         "keyword": "flota",
         "enum": {
-          "chile_vms_small_fisheries": "chile_vms_pesca_pequeña",
-          "chile_vms_industry": "industria chile_vms_"
+          "chile_vms_small_fisheries": "Pequeña pesca",
+          "chile_vms_industry": "Industria"
         }
       },
       "hours": "horas",
