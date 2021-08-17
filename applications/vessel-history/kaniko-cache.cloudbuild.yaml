@@ -1,0 +1,26 @@
+steps:
+  - name: 'gcr.io/kaniko-project/executor:latest'
+    id: 'build kaniko multistage image'
+    args:
+      [
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history-kaniko-cache:$COMMIT_SHA',
+        '--cache=true',
+        '--build-arg',
+        'FOO=$_FOO',
+        '-f',
+        './applications/vessel-history/kaniko-cache.Dockerfile',
+        '-c',
+        './applications/vessel-history',
+      ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'test output'
+    args:
+      [
+        'run',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history-kaniko-cache:$COMMIT_SHA',
+        'cat',
+        '/tmp/test',
+      ]
+
+timeout: 1800s
