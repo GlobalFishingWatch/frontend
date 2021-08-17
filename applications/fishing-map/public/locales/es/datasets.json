@@ -1,6 +1,6 @@
 {
   "private-brazil-opentuna-presence": {
-    "name": "VMS Brasil",
+    "name": "Brazil Open Tuna VMS",
     "description": "Brazil Open Tuna VMS Presence (Private)",
     "schema": {
       "lat": "lat",
