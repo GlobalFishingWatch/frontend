@@ -48,6 +48,10 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
     []
   )
 
+  if (readOnly && !hasVisibleDataviews) {
+    return null
+  }
+
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
