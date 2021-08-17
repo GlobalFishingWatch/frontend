@@ -99,7 +99,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       return <I18nFlag iso={fieldValue} />
     }
     if (field.id === 'geartype') {
-      return t(`vessel.gearTypes.${fieldValue}` as any, EMPTY_FIELD_PLACEHOLDER)
+      if (!fieldValue) return EMPTY_FIELD_PLACEHOLDER
+      const fieldValueSplit = fieldValue.split('|')
+      if (fieldValueSplit.length > 1) {
+        return fieldValueSplit
+          .map((field) => t(`vessel.gearTypes.${field}` as any, field))
+          .join(', ')
+      }
+      return t(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
     }
     if (field.id === 'mmsi') {
       return (
@@ -176,7 +183,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                           <label>{t(`vessel.${field.id}` as any)}</label>
                           {fieldValues.map((fieldValue, i) => (
                             <span key={field.id + fieldValue}>
-                              {fieldValue ? getFieldValue(field, fieldValue) : '---'}
+                              {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
                               {/* Field values separator */}
                               {i < fieldValues.length - 1 ? ', ' : ''}
                             </span>
@@ -202,6 +209,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   size="small"
                   icon={infoError ? 'warning' : 'info'}
                   type={infoError ? 'warning' : 'default'}
+                  disabled={infoError}
                   tooltip={
                     infoError
                       ? t('errors.vesselLoading', 'There was an error loading the vessel details')

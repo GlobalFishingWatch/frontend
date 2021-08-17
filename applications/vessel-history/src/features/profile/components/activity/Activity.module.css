@@ -113,3 +113,7 @@
 .spinnerFull {
   height: calc(100vh - 110px);
 }
+
+.eventIcon.port_visit {
+  background-color: #99eeff;
+}

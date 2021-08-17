@@ -69,6 +69,7 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
   return (
     <IconButton
       size="small"
+      disabled={hasError}
       icon={hasError ? 'warning' : 'target'}
       type={hasError ? 'warning' : 'default'}
       className={className}

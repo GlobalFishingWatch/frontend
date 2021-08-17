@@ -49,6 +49,8 @@ const defaultMiddlewareOptions: any = {
     ignoredPaths: [
       // Too big to check for immutability:
       'resources',
+      'datasets',
+      'dataviews',
     ],
   },
 }

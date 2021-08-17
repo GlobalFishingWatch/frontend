@@ -102,7 +102,7 @@ export const getCommonSchemaFieldsInDataview = (
     ? intersection(...schemaFields).map((field) => {
         const label = t(
           `datasets:${datasetId}.schema.${schema}.enum.${field}`,
-          capitalize(lowerCase(field))
+          t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
         )
         return { id: field, label: label || capitalize(lowerCase(field)) }
       })

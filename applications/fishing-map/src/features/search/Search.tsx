@@ -373,7 +373,9 @@ function Search() {
                           key={id}
                         >
                           <Fragment>
-                            <div className={styles.name}>{shipname || EMPTY_FIELD_PLACEHOLDER}</div>
+                            <div className={styles.name}>
+                              {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
+                            </div>
                             <div className={styles.properties}>
                               <div className={styles.property}>
                                 <label>{t('vessel.flag', 'Flag')}</label>

@@ -22,12 +22,12 @@
     "analysis": "Create an analysis for this area",
     "analysisNotAvailable": "Toggle an activity or environment layer on to create an analysis for this area",
     "apparentFishing": "Apparent fishing effort",
-    "category": "Category",
     "cancel": "Cancel",
+    "category": "Category",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
     "context_area_plural": "Reference layers",
-    "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
+    "copiedToClipboard": "The link to share this workspace has been copied to your clipboard.",
     "country_plural": "Countries",
     "dateRange": "between {{start}} and {{end}}",
     "days": "Day",
@@ -58,7 +58,7 @@
     "presence": "Presence",
     "report": "Report",
     "save": "Save",
-    "seeDefault": "See default view",
+    "seeDefault": "See default workspace",
     "share": "Share map",
     "unknown": "Other",
     "update": "Update",
@@ -92,6 +92,7 @@
     "requiredFields": "Required fields {{fields}}",
     "timeNameField": "Time name field",
     "title": "Dataset",
+    "title_plural": "Datasets",
     "typePoints": " Points",
     "typePointsDescription": "Display one or multiple positions sized by any quantitative value in your dataset.",
     "typePolygons": " Polygons",
@@ -100,8 +101,7 @@
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
     "uploadLogin": "Register and <1>login</1> to upload datasets (free, 2 minutes)",
     "uploadNewContext": "Upload new reference layer",
-    "uploadNewEnviroment": "Upload new environment dataset",
-    "title_plural": "Datasets"
+    "uploadNewEnviroment": "Upload new environment dataset"
   },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",
@@ -114,7 +114,7 @@
     "latestCarrierNotFound": "Latest carrier dataset not found.",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found.",
-    "privateView": "This is a private view",
+    "privateView": "This is a private workspace.",
     "requestAccess": "Request access",
     "showError": "Show error",
     "switchAccount": "Switch account",
@@ -277,7 +277,7 @@
     "title": "User"
   },
   "vessel": {
-    "addToWorkspace": "Add vessel to view",
+    "addToWorkspace": "Add vessel to workspace",
     "beam": "Beam",
     "callsign": "Call sign",
     "capacity": "Capacity",
@@ -303,6 +303,7 @@
       "set_gillnets": "Set gillnet",
       "set_longlines": "Set longline",
       "squid_jigger": "Squid jigger",
+      "squid_jiggers": "Gear Squid Jiggers",
       "trawlers": "Trawler",
       "trollers": "Troller",
       "tuna_purse_seines": "Tuna purse seine"
@@ -334,8 +335,8 @@
     "nameInput": "Workspace name",
     "new": "New workspace",
     "remove": "Remove workspace",
-    "save": "Save the current view",
-    "saved": "The current view has been saved and it's available in your profile.",
+    "save": "Save the current workspace",
+    "saved": "The current workspace has been saved and it's available in your profile.",
     "saveLogin": "Register and login to save workspace views (free, 2 minutes)",
     "title_plural": "Workspaces"
   }

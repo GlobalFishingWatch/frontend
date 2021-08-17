@@ -28,26 +28,29 @@ export const VIIRS_LAYER_ID = 'presence'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 type VesselInstanceDatasets = {
-  trackDatasetId: string
-  infoDatasetId: string
+  trackDatasetId?: string
+  infoDatasetId?: string
   eventsDatasetsId?: string[]
 }
 export const getVesselDataviewInstance = (
   vessel: { id: string },
   { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
 ): DataviewInstance<Generators.Type> => {
-  const datasetsConfig: DataviewDatasetConfig[] = [
-    {
-      datasetId: trackDatasetId,
-      params: [{ id: 'vesselId', value: vessel.id }],
-      endpoint: EndpointId.Tracks,
-    },
-    {
+  const datasetsConfig: DataviewDatasetConfig[] = []
+  if (infoDatasetId) {
+    datasetsConfig.push({
       datasetId: infoDatasetId,
       params: [{ id: 'vesselId', value: vessel.id }],
       endpoint: EndpointId.Vessel,
-    },
-  ]
+    })
+  }
+  if (trackDatasetId) {
+    datasetsConfig.push({
+      datasetId: trackDatasetId,
+      params: [{ id: 'vesselId', value: vessel.id }],
+      endpoint: EndpointId.Tracks,
+    })
+  }
   if (eventsDatasetsId) {
     eventsDatasetsId.forEach((eventDatasetId) => {
       datasetsConfig.push({

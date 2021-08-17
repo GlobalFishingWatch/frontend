@@ -24,13 +24,16 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   const { flags, sources, fleets, origins, activeAfterDate, activeBeforeDate } = searchFilters
 
   const flagOptions = useMemo(getFlags, [])
-  const sourceOptions = useMemo(
-    () =>
-      datasets
-        ?.sort((a, b) => a.name.localeCompare(b.name))
-        .map(({ id, name }) => ({ id, label: name })),
-    [datasets]
-  )
+  const sourceOptions = useMemo(() => {
+    return datasets
+      ?.sort((a, b) => a.name.localeCompare(b.name))
+      .map(({ id, name }) => ({
+        id,
+        label: name,
+        // TODO decide if we want to translate this
+        // label: t(`datasets:${removeDatasetVersion(id)}.name` as any, name),
+      }))
+  }, [datasets])
 
   useEffect(() => {
     if (activeAfterDate === undefined) {
