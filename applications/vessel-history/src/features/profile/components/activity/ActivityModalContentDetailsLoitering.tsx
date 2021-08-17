@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { toFixed } from 'utils/shared'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import ActivityModalContentField from './ActivityModalContentField'

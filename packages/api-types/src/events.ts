@@ -7,11 +7,11 @@ export enum EventTypes {
   Encounter = 'encounter',
   Fishing = 'fishing',
   Gap = 'gap',
-  Port = 'port',
+  Port = 'port_visit',
   Loitering = 'loitering',
 }
 
-export type EventType = 'encounter' | 'fishing' | 'gap' | 'port' | 'loitering'
+export type EventType = 'encounter' | 'fishing' | 'gap' | 'port_visit' | 'loitering'
 
 export interface EventNextPort {
   id: string
@@ -100,6 +100,27 @@ export interface PortEvent {
   position: PointCoordinate
 }
 
+export interface Anchorage {
+  id: string
+  lat: number
+  lon: number
+  flag: string
+  name: string
+  at_dock: boolean
+  anchorage_id: number
+  top_destination: string
+  distance_from_shore_km: number
+}
+
+export interface PortVisitEvent {
+  visitId: string
+  confidence: number
+  durationHrs: number
+  startAnchorage: Anchorage
+  intermediateAnchorage: Anchorage
+  endAnchorage: Anchorage
+}
+
 export interface ApiEvent<Vessel = EventVessel> {
   id: string
   type: EventTypes
@@ -113,6 +134,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   loitering?: LoiteringEvent
   encounter?: EncounterEvent<Vessel>
   port?: PortEvent
+  port_visit?: PortVisitEvent
 }
 
 export interface ApiEvents<T = ApiEvent> {

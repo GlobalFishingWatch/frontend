@@ -15,8 +15,8 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 
 ## Others
 
-| Layer name | Dev id | Pro id |
-| ---------- | ------ | ------ |
-| Basemap    | 90     | 173    |
-| Tracks     | 92     | 171    |
-| Events     | 140    | ---    |
+| Layer name | Dev id     | Pro id      |
+| ---------- | ---------- | ----------- |
+| Basemap    | 90         | 173         |
+| Tracks     | ~~92~~ 176 | ~~171~~ TBD |
+| Events     | 140        | ---         |
