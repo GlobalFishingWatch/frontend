@@ -18,6 +18,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import LocalStorageLoginLink from 'routes/LoginLink'
@@ -427,10 +428,10 @@ function Search() {
                                   </span>
                                 </div>
                               )}
-                              {dataset?.name && (
+                              {dataset && (
                                 <div className={styles.property}>
                                   <label>{t('vessel.source', 'Source')}</label>
-                                  <span>{dataset.name}</span>
+                                  <span>{getDatasetLabel(dataset)}</span>
                                 </div>
                               )}
                             </div>

@@ -7,7 +7,11 @@ import { Dataset } from '@globalfishingwatch/api-types/dist'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { getFiltersBySchema, SchemaFieldDataview } from 'features/datasets/datasets.utils'
+import {
+  getDatasetLabel,
+  getFiltersBySchema,
+  SchemaFieldDataview,
+} from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
@@ -27,11 +31,9 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   const sourceOptions = useMemo(() => {
     return datasets
       ?.sort((a, b) => a.name.localeCompare(b.name))
-      .map(({ id, name }) => ({
-        id,
-        label: name,
-        // TODO decide if we want to translate this
-        // label: t(`datasets:${removeDatasetVersion(id)}.name` as any, name),
+      .map((dataset) => ({
+        id: dataset.id,
+        label: getDatasetLabel(dataset),
       }))
   }, [datasets])
 
@@ -179,3 +181,6 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
 }
 
 export default SearchFilters
+function getDatasetName(dataset: Dataset): any {
+  throw new Error('Function not implemented.')
+}
