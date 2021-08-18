@@ -26,6 +26,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
+import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
 
@@ -219,13 +220,14 @@ function ActivitySection(): React.ReactElement {
           bivariateDataviews === undefined && isVisible && isNextVisible && !isLastElement
         return (
           <Fragment key={dataview.id}>
-            <LayerPanel
-              key={dataview.id}
-              dataview={dataview}
-              showBorder={!showBivariateIcon}
-              isOpen={dataview.id === addedDataviewId}
-              onToggle={onToggleLayer(dataview)}
-            />
+            <LayerPanelContainer key={dataview.id} dataview={dataview}>
+              <LayerPanel
+                dataview={dataview}
+                showBorder={!showBivariateIcon}
+                isOpen={dataview.id === addedDataviewId}
+                onToggle={onToggleLayer(dataview)}
+              />
+            </LayerPanelContainer>
             {showBivariateIcon && (
               <div className={cx(activityStyles.bivariateToggleContainer, 'print-hidden')}>
                 <IconButton
