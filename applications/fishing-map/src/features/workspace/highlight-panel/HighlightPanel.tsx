@@ -24,7 +24,7 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
     if (matchDataviewInstance && dataviewIdDismissed !== HighlightConfig.dataviewInstanceId) {
       setTimeout(() => {
         if (ref.current?.scrollIntoView) {
-          ref.current.scrollIntoView({ behavior: 'smooth' })
+          ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
         }
         setVisible(true)
       }, 2000)
