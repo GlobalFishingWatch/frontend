@@ -40,6 +40,7 @@ import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
 import { ReactComponent as Pin } from '../assets/icons/pin.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
+import { ReactComponent as Private } from '../assets/icons/private.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
 import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
 import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
@@ -98,6 +99,7 @@ export const IconComponents = {
   minus: Minus,
   pin: Pin,
   plus: Plus,
+  private: Private,
   publish: Publish,
   'remove-from-map': RemoveFromMap,
   ruler: Ruler,
