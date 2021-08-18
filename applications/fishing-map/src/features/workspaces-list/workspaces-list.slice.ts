@@ -25,31 +25,34 @@ type fetchWorkspacesThunkParams = {
 }
 export const fetchWorkspacesThunk = createAsyncThunk<
   Workspace[],
-  fetchWorkspacesThunkParams,
+  fetchWorkspacesThunkParams | undefined,
   {
     rejectValue: AsyncError
   }
->('workspaces/fetch', async ({ app = APP_NAME, ids, userId }, { getState, rejectWithValue }) => {
-  const state = getState() as RootState
-  const defaultWorkspaceLoaded = selectWorkspaceById(DEFAULT_WORKSPACE_ID)(state) !== undefined
-  const workspacesParams = { app, ids, ownerId: userId }
-  try {
-    const workspaces = await GFWAPI.fetch<AppWorkspace[]>(
-      `/v1/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
-    )
+>(
+  'workspaces/fetch',
+  async ({ app = APP_NAME, ids, userId } = {}, { getState, rejectWithValue }) => {
+    const state = getState() as RootState
+    const defaultWorkspaceLoaded = selectWorkspaceById(DEFAULT_WORKSPACE_ID)(state) !== undefined
+    const workspacesParams = { app, ids, ownerId: userId }
+    try {
+      const workspaces = await GFWAPI.fetch<AppWorkspace[]>(
+        `/v1/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
+      )
 
-    if (ids?.includes(DEFAULT_WORKSPACE_ID) && !defaultWorkspaceLoaded) {
-      const defaultWorkspace = await getDefaultWorkspace()
-      return [...workspaces, defaultWorkspace]
+      if (ids?.includes(DEFAULT_WORKSPACE_ID) && !defaultWorkspaceLoaded) {
+        const defaultWorkspace = await getDefaultWorkspace()
+        return [...workspaces, defaultWorkspace]
+      }
+      return workspaces
+    } catch (e) {
+      return rejectWithValue({
+        status: e.status || e.code,
+        message: `${ids || userId} - ${e.message}`,
+      })
     }
-    return workspaces
-  } catch (e) {
-    return rejectWithValue({
-      status: e.status || e.code,
-      message: `${ids || userId} - ${e.message}`,
-    })
   }
-})
+)
 
 export const fetchDefaultWorkspaceThunk = createAsyncThunk<Workspace>(
   'workspaces/fetchDefault',
