@@ -1,8 +1,9 @@
-import React, { useState, useLayoutEffect, useRef } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import useLocalStorage from 'hooks/use-local-storage'
 import { Locale } from 'types'
+import useMapInstance from 'features/map/map-context.hooks'
 import TooltipContainer from '../shared/TooltipContainer'
 import HighlightConfig from './highlight-panel.content'
 import styles from './HighlightPanel.module.css'
@@ -15,21 +16,32 @@ export const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
 
 const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
   const { t, i18n } = useTranslation()
+  const map = useMapInstance()
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
   const [dataviewIdDismissed, setDataviewIdDismissed] = useLocalStorage(HIGHLIGHT_POPUP_KEY, '')
   const matchDataviewInstance = HighlightConfig.dataviewInstanceId === dataviewInstanceId
 
-  useLayoutEffect(() => {
+  const onMapLoaded = useCallback(() => {
     if (matchDataviewInstance && dataviewIdDismissed !== HighlightConfig.dataviewInstanceId) {
-      setTimeout(() => {
-        if (ref.current?.scrollIntoView) {
-          ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
-        }
-        setVisible(true)
-      }, 2000)
+      if (ref.current?.scrollIntoView) {
+        ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+      }
+      setVisible(true)
     }
-  }, [matchDataviewInstance, dataviewIdDismissed])
+    map?.off('idle', onMapLoaded)
+  }, [map, dataviewIdDismissed, matchDataviewInstance])
+
+  useEffect(() => {
+    if (map) {
+      map.on('idle', onMapLoaded)
+    }
+    return () => {
+      if (map) {
+        map.off('idle', onMapLoaded)
+      }
+    }
+  }, [map, onMapLoaded])
 
   const onDismiss = () => {
     setVisible(false)
