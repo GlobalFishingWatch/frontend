@@ -48,8 +48,9 @@ function Button(props: ButtonProps) {
       {href !== undefined && !disabled ? (
         <a
           href={href}
-          className={cx(styles.button, styles[type], styles[size], className)}
           target={target}
+          onClick={onClick}
+          className={cx(styles.button, styles[type], styles[size], className)}
         >
           {loading ? (
             <Spinner

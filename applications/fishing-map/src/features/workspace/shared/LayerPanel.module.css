@@ -1,11 +1,16 @@
+.LayerPanelContainer {
+  display: flex;
+}
+
 .LayerPanel {
   z-index: 0;
+  width: calc(100% - 1px);
   position: relative;
   padding-top: var(--space-XS);
   min-height: var(--size-M);
 }
 
-.LayerPanel:not(:last-child):not(.noBorder)::after {
+.LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
   content: '';
   position: absolute;
   left: var(--space-S);
