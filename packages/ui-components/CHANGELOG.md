@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 10.1.1
+
+### Patch Changes
+
+- eae1524c: onclick callback for link buttons
+
 ## 10.1.0
 
 ### Minor Changes
