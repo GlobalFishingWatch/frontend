@@ -17,14 +17,6 @@ export const useSettingsConnect = () => {
   const dispatch = useDispatch()
   const settings = useSelector(selectSettings)
 
-  const onlyUnique = useCallback((value: Region, index: number, self: Region[]) => {
-    return self.map((item) => item.id).indexOf(value.id) === index
-  }, [])
-
-  const EEZ_REGIONS: Region[] = useSelector(selectEEZs) ?? []
-  const RFMOS_REGIONS: Region[] = (useSelector(selectRFMOs) ?? []).filter(onlyUnique)
-  const MPAS_REGIONS: Region[] = useSelector(selectMPAs) ?? []
-
   const mergeSettings = (
     settingType: string,
     updatedSectionSettings: SettingsEvents | SettingsPortVisits
@@ -57,10 +49,6 @@ export const useSettingsConnect = () => {
   return {
     setSetting,
     setSettingOptions,
-    EEZ_REGIONS,
-    RFMOS_REGIONS,
-    MPAS_REGIONS,
-    anyRegion,
   }
 }
 
