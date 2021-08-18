@@ -34,7 +34,7 @@ import {
   DEFAULT_PRESENCE_DATAVIEW_ID,
   DEFAULT_VIIRS_DATAVIEW_ID,
 } from 'data/workspaces'
-import { removeDatasetVersion } from 'features/datasets/datasets.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
@@ -184,15 +184,14 @@ function ActivitySection(): React.ReactElement {
         const datasetId = dataview.datasetsConfig?.find(
           (d) => d.endpoint === EndpointId.FourwingsTiles
         )?.datasetId
-        option.label = t(
-          `datasets:${removeDatasetVersion(datasetId || '')}.name` as any,
-          dataview.name
-        )
+        if (datasetId) {
+          option.label = getDatasetLabel({ id: datasetId })
+        }
       }
 
       return option
     })
-    return options
+    return options.sort((a, b) => a.label.localeCompare(b.label))
   }, [fishingDataviews, t])
 
   const presenceOptions = useMemo(() => {
@@ -206,14 +205,13 @@ function ActivitySection(): React.ReactElement {
         const datasetId = dataview.datasetsConfig?.find(
           (d) => d.endpoint === EndpointId.FourwingsTiles
         )?.datasetId
-        option.label = t(
-          `datasets:${removeDatasetVersion(datasetId || '')}.name` as any,
-          dataview.name
-        )
+        if (datasetId) {
+          option.label = getDatasetLabel({ id: datasetId })
+        }
       }
       return option
     })
-    return options
+    return options.sort((a, b) => a.label.localeCompare(b.label))
   }, [presenceDataviews, t])
 
   return (
