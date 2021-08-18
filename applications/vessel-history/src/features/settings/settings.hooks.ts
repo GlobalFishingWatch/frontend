@@ -1,5 +1,7 @@
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
+import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import {
   selectSettings,
   Settings,
@@ -8,9 +10,20 @@ import {
   updateSettings,
 } from './settings.slice'
 
-export const useApplySettingsConnect = () => {
+export const useSettingsConnect = () => {
   const dispatch = useDispatch()
   const settings = useSelector(selectSettings)
+
+  const onlyUnique = useCallback(
+    (value: MultiSelectOption, index: number, self: MultiSelectOption[]) => {
+      return self.map((item) => item.id).indexOf(value.id) === index
+    },
+    []
+  )
+
+  const EEZ_OPTIONS: MultiSelectOption[] = useSelector(selectEEZs) ?? []
+  const RFMOS_OPTIONS: MultiSelectOption[] = (useSelector(selectRFMOs) ?? []).filter(onlyUnique)
+  const MPAS_OPTIONS: MultiSelectOption[] = useSelector(selectMPAs) ?? []
 
   const mergeSettings = (
     settingType: string,
@@ -44,5 +57,8 @@ export const useApplySettingsConnect = () => {
   return {
     setSetting,
     setSettingOptions,
+    EEZ_OPTIONS,
+    RFMOS_OPTIONS,
+    MPAS_OPTIONS,
   }
 }

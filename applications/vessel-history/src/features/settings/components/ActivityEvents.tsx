@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { MultiSelect, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
-import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
-import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
+// import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
+// import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { SettingsEvents } from '../settings.slice'
-import { useApplySettingsConnect } from '../settings.hooks'
+import { useSettingsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
 
 interface SettingsProps {
@@ -22,10 +22,8 @@ interface SettingsProps {
 const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { settings, section } = props
   const { t } = useTranslation()
-  const { setSettingOptions, setSetting } = useApplySettingsConnect()
-  const EEZ_OPTIONS: SelectOption[] = useSelector(selectEEZs) ?? []
-  const RFMOS_OPTIONS: MultiSelectOption[] = useSelector(selectRFMOs) ?? []
-  const MPAS_OPTIONS: MultiSelectOption[] = useSelector(selectMPAs) ?? []
+  const { setSettingOptions, setSetting, EEZ_OPTIONS, RFMOS_OPTIONS, MPAS_OPTIONS } =
+    useSettingsConnect()
 
   const anyOption: SelectOption<string> = useMemo(
     () => ({
@@ -37,22 +35,51 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
     [t]
   )
 
-  const eezs = [anyOption, ...EEZ_OPTIONS].filter((option) => settings.eezs?.includes(option.id))
-  const rfmos = RFMOS_OPTIONS.filter((option) => settings.rfmos?.includes(option.id))
-  const mpas = MPAS_OPTIONS.filter((option) => settings.mpas?.includes(option.id))
-
-  const eezList = useMemo(
-    () => [anyOption, ...eezs, ...EEZ_OPTIONS.filter((option) => !eezs.includes(option))],
-    [EEZ_OPTIONS, anyOption, eezs]
-  )
-  const onSelectEEZ = useCallback(
-    (selected: SelectOption<string>) => {
-      selected === anyOption
-        ? setSettingOptions(section, 'eezs', [selected])
-        : setSettingOptions(section, 'eezs', [...eezs, selected])
+  const getOptions = useCallback(
+    (availableOptions: SelectOption[], selected?: string | string[]) => {
+      const allOptions = [anyOption, ...availableOptions]
+      const selectedOptions = allOptions.filter((option) => selected?.includes(option.id))
+      const options = [
+        // First display ANY whether it's selected or not
+        anyOption,
+        // Then all selected options
+        ...selectedOptions.filter((option) => option !== anyOption),
+        // And at the bottom the rest of the options
+        ...availableOptions.filter((option) => !selectedOptions.includes(option)),
+      ]
+      return { options, selectedOptions }
     },
     [anyOption]
   )
+
+  const onSelectRegion = useCallback(
+    (selected: SelectOption<string>, currentSelected: SelectOption[], field: string) => {
+      selected === anyOption
+        ? // when ANY is selected the rest are deselected
+          setSettingOptions(section, field, [selected])
+        : // when other than ANY is selected
+          setSettingOptions(section, field, [
+            // then ANY should be deselected
+            ...currentSelected.filter((option) => option !== anyOption),
+            selected,
+          ])
+    },
+    [section, setSettingOptions, anyOption]
+  )
+
+  const { options: eezOptions, selectedOptions: eezSelected } = useMemo(
+    () => getOptions(EEZ_OPTIONS, settings.eezs),
+    [EEZ_OPTIONS, settings.eezs, getOptions]
+  )
+  const { options: rfmoOptions, selectedOptions: rfmoSelected } = useMemo(
+    () => getOptions(RFMOS_OPTIONS, settings.rfmos),
+    [RFMOS_OPTIONS, settings.rfmos, getOptions]
+  )
+  const { options: mpaOptions, selectedOptions: mpaSelected } = useMemo(
+    () => getOptions(MPAS_OPTIONS, settings.mpas),
+    [MPAS_OPTIONS, settings.mpas, getOptions]
+  )
+
   return (
     <div>
       <div className={styles.settingsField}>
@@ -61,18 +88,18 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
-          selectedOptions={eezs}
+          selectedOptions={eezSelected}
           placeholderDisplayAll={true}
           onCleanClick={() => setSettingOptions(section, 'eezs', [])}
-          onSelect={onSelectEEZ}
+          onSelect={(item) => onSelectRegion(item, eezSelected, 'eezs')}
           onRemove={(option) =>
             setSettingOptions(
               section,
               'eezs',
-              eezs.filter((o) => o.id !== option.id)
+              eezSelected.filter((o) => o.id !== option.id)
             )
           }
-          options={eezList}
+          options={eezOptions}
         ></MultiSelect>
       </div>
       <div className={styles.settingsField}>
@@ -82,19 +109,17 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         </label>
         <MultiSelect
           onCleanClick={() => setSettingOptions(section, 'rfmos', [])}
-          selectedOptions={rfmos}
+          selectedOptions={rfmoSelected}
           placeholderDisplayAll={true}
-          onSelect={(selected: MultiSelectOption) =>
-            setSettingOptions(section, 'rfmos', [...rfmos, selected])
-          }
+          onSelect={(item) => onSelectRegion(item, rfmoSelected, 'rfmos')}
           onRemove={(option) =>
             setSettingOptions(
               section,
               'rfmos',
-              rfmos.filter((o) => o.id !== option.id)
+              rfmoSelected.filter((o) => o.id !== option.id)
             )
           }
-          options={RFMOS_OPTIONS}
+          options={rfmoOptions}
         ></MultiSelect>
       </div>
       <div className={styles.settingsField}>
@@ -104,19 +129,17 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         </label>
         <MultiSelect
           onCleanClick={() => setSettingOptions(section, 'mpas', [])}
-          selectedOptions={mpas}
+          selectedOptions={mpaSelected}
           placeholderDisplayAll={true}
-          onSelect={(selected: MultiSelectOption) =>
-            setSettingOptions(section, 'mpas', [...mpas, selected])
-          }
+          onSelect={(item) => onSelectRegion(item, mpaSelected, 'mpas')}
           onRemove={(option) =>
             setSettingOptions(
               section,
               'mpas',
-              mpas.filter((o) => o.id !== option.id)
+              mpaSelected.filter((o) => o.id !== option.id)
             )
           }
-          options={MPAS_OPTIONS}
+          options={mpaOptions}
         ></MultiSelect>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
