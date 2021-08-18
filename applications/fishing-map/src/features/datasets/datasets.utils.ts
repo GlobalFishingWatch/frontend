@@ -4,6 +4,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
+import { getDatasetNameTranslated } from 'features/i18n/utils'
 
 export type SupportedDatasetSchema =
   | 'flag'
@@ -16,6 +17,13 @@ export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' 
 
 export const removeDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[0] : ''
+}
+
+export const getDatasetLabel = (dataset: { id: string; name?: string }): string => {
+  const { id, name = '' } = dataset || {}
+  if (!id) return name || ''
+  const label = getDatasetNameTranslated(dataset)
+  return dataset.id.includes(PRIVATE_SUFIX) ? `${label} 🔒` : label
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
@@ -95,7 +103,6 @@ export const getCommonSchemaFieldsInDataview = (
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
   )
-
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
   const datasetId = activeDatasets?.[0]?.id?.split(':')[0]
   const commonSchemaFields = schemaFields
@@ -104,7 +111,7 @@ export const getCommonSchemaFieldsInDataview = (
           `datasets:${datasetId}.schema.${schema}.enum.${field}`,
           t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
         )
-        return { id: field, label: label || capitalize(lowerCase(field)) }
+        return { id: field, label: label }
       })
     : []
   return commonSchemaFields.sort(sortFields)

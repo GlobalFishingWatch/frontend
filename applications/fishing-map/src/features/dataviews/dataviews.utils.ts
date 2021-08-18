@@ -9,6 +9,7 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { PRIVATE_SUFIX } from 'data/config'
 import {
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
   TEMPLATE_CONTEXT_DATAVIEW_ID,
@@ -16,6 +17,7 @@ import {
   TEMPLATE_VESSEL_DATAVIEW_ID,
   TEMPLATE_USER_TRACK_ID,
 } from 'data/workspaces'
+import { UrlDataviewInstance } from '../../../../../packages/dataviews-client/dist'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -161,4 +163,9 @@ export const getActivityDataviewInstanceFromDataview = (
       colorCyclingType: 'fill' as ColorCyclingType,
     },
   }
+}
+
+export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {
+  const datasets = dataview.datasets || []
+  return datasets.some((d) => d.id.includes(PRIVATE_SUFIX))
 }
