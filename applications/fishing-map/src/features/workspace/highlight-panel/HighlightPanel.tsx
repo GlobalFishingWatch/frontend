@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import useLocalStorage from 'hooks/use-local-storage'
@@ -61,7 +62,7 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
   return (
     <TooltipContainer
       visible={visible}
-      className={styles.noBorder}
+      className={styles.highlightPanel}
       component={
         <div className={styles.container}>
           <img className={styles.img} src={HighlightConfig.imageUrl} alt="highlight dataview" />
@@ -70,10 +71,15 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
             <p className={styles.text}>{highlightContent.description}</p>
           </div>
           <div className={styles.footer}>
-            <Button type="secondary" onClick={onDismiss}>
+            <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
               {t('common.dismiss', 'Dismiss')}
             </Button>
-            <Button href={HighlightConfig.learnMoreUrl} target="_blank" onClick={onDismiss}>
+            <Button
+              href={HighlightConfig.learnMoreUrl}
+              target="_blank"
+              onClick={onDismiss}
+              className={cx(styles.footerBtn, styles.cta)}
+            >
               {t('common.learnMore', 'Learn more')}
             </Button>
           </div>
