@@ -1,11 +1,10 @@
-import { ReactElement, useCallback, useRef } from 'react'
+import { ReactElement, useCallback, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import Info from 'features/map/info/Info'
-import { updateProfileParams, updateQueryParams, updateUrlViewport } from 'routes/routes.actions'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useGeneratorsConnect } from './map.hooks'
@@ -40,18 +39,14 @@ const Map = (): ReactElement => {
     style?.metadata as ExtendedStyleMeta,
     map
   )
-  let flying = false
-  let setMapCenter: ReturnType<typeof setTimeout>
+  const [flying, setflying] = useState(false)
+  const [centetingMap, setCenteringMap] = useState<ReturnType<typeof setTimeout> | undefined>(undefined)
   mapRef?.current?.getMap().on('moveend', (e: any) => {
     if(flying) {
-      console.log('*****', e)
-      console.log('*****', mapRef.current?.getMap().getCenter())
-      
-      
-      if (setMapCenter){
-        clearTimeout(setMapCenter)
+      if (centetingMap){
+        clearTimeout(centetingMap)
       }
-      setMapCenter = setTimeout(() => {
+      setCenteringMap(setTimeout(() => {
         setMapCoordinates({
           latitude: mapRef.current?.getMap().getCenter().lat,
           longitude: mapRef.current?.getMap().getCenter().lng,
@@ -59,7 +54,6 @@ const Map = (): ReactElement => {
           pitch: 60
         })
         setTimeout(() => {
-          console.log('////////////////////////////////////')
           mapRef?.current?.getMap().easeTo({
             center: [
               mapRef.current?.getMap().getCenter().lng,
@@ -69,20 +63,19 @@ const Map = (): ReactElement => {
             pitch: 0
           })
         }, 100)
-      }, 100)
+      }, 100))
       mapRef?.current?.getMap().fire('flyend');
     }
   });
   mapRef?.current?.getMap().on('flystart', function(){
-    flying = true;
+    setflying(true)
   });
   mapRef?.current?.getMap().on('flyend', function(){
-    flying = false;
+    setflying(false)
   });
 
   const onEventChange = useCallback(
     (nextEvent: RenderedEvent) => {
-      console.log(mapRef.current?.getMap())
       mapRef.current.getMap().flyTo({
         center: [
           nextEvent.position.lon,
@@ -95,12 +88,8 @@ const Map = (): ReactElement => {
         essential: true // this animation is considered essential with respect to prefers-reduced-motion
       })
       mapRef?.current?.getMap().fire('flystart')
-      
-      console.log(mapRef.current?.getMap().getCenter())
-      console.log(nextEvent.position.lon,
-        nextEvent.position.lat)
       dispatchQueryParams({'latitude': nextEvent.position.lat, 'longitude': nextEvent.position.lon})
-    }, [dispatch])
+    }, [dispatchQueryParams])
   
 
   return (
