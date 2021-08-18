@@ -1,0 +1,38 @@
+.highlightRef {
+  width: 1px;
+}
+
+.noBorder {
+  border: none;
+}
+
+.container {
+  width: 34rem;
+}
+
+.img {
+  object-fit: cover;
+  height: 16rem;
+  width: 100%;
+}
+
+.content {
+  min-height: 10rem;
+  padding: var(--space-XS) var(--space-S) var(--space-S) var(--space-S);
+}
+
+.title {
+  font: var(--font-L);
+}
+
+.text {
+  font: var(--font-M);
+  max-height: 14rem;
+  overflow: auto;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-S) var(--space-S) var(--space-XS) var(--space-S);
+}
