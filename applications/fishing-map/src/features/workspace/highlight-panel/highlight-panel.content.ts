@@ -14,7 +14,7 @@ export type HighlighPanelConfig = {
 } & HighlighPanelConfigLocale
 
 const highlightPanelConfig: HighlighPanelConfig = {
-  dataviewInstanceId: 'fishing-vms',
+  dataviewInstanceId: 'highlight-vms-with-ecuador',
   imageUrl: 'https://seatechaquariums.com/wp-content/uploads/2015/01/fish-facts-624x390.jpg',
   learnMoreUrl: 'http://www.globalfishingwatch.org',
   en: {
