@@ -17,7 +17,10 @@ import {
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
-import { getFishingDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  getFishingDataviewInstance,
+  getActivityDataviewInstanceFromDataview,
+} from 'features/dataviews/dataviews.utils'
 import { WorkspaceActivityCategory } from 'types'
 import {
   selectBivariateDataviews,
@@ -32,7 +35,6 @@ import {
   DEFAULT_VIIRS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { removeDatasetVersion } from 'features/datasets/datasets.utils'
-import { getActivityDataviewInstanceFromDataview } from 'features/editor/editor.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
@@ -88,6 +90,15 @@ function ActivitySection(): React.ReactElement {
     [dispatchQueryParams, start, end]
   )
 
+  const addDataviewInstance = useCallback(
+    (dataviewInstance: UrlDataviewInstance) => {
+      dispatchQueryParams({ bivariateDataviews: undefined })
+      upsertDataviewInstance(dataviewInstance)
+      setAddedDataviewId(dataviewInstance.id)
+    },
+    [dispatchQueryParams, upsertDataviewInstance]
+  )
+
   const onAddFishingClick = useCallback(
     (dataviewId?: number) => {
       const dataview = fishingDataviews.find((d) => d.id === dataviewId)
@@ -95,12 +106,10 @@ function ActivitySection(): React.ReactElement {
         ? getActivityDataviewInstanceFromDataview(dataview)
         : getFishingDataviewInstance()
       if (dataviewInstance) {
-        dispatchQueryParams({ bivariateDataviews: undefined })
-        upsertDataviewInstance(dataviewInstance)
-        setAddedDataviewId(dataviewInstance.id)
+        addDataviewInstance(dataviewInstance)
       }
     },
-    [dispatchQueryParams, fishingDataviews, upsertDataviewInstance]
+    [addDataviewInstance, fishingDataviews]
   )
 
   const onAddPresenceClick = useCallback(
@@ -108,12 +117,10 @@ function ActivitySection(): React.ReactElement {
       const dataview = presenceDataviews.find((d) => d.id === dataviewId)
       const dataviewInstance = getActivityDataviewInstanceFromDataview(dataview)
       if (dataviewInstance) {
-        dispatchQueryParams({ bivariateDataviews: undefined })
-        upsertDataviewInstance(dataviewInstance)
-        setAddedDataviewId(dataviewInstance.id)
+        addDataviewInstance(dataviewInstance)
       }
     },
-    [dispatchQueryParams, presenceDataviews, upsertDataviewInstance]
+    [addDataviewInstance, presenceDataviews]
   )
 
   const onBivariateDataviewsClick = useCallback(

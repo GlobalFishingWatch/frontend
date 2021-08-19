@@ -269,19 +269,12 @@ export const selectActiveDataviews = createSelector(
 )
 
 export const selectAvailableFishingDataviews = createSelector([selectAllDataviews], (dataviews) => {
-  return dataviews?.filter(
-    (d) =>
-      d.category === DataviewCategory.Fishing || DEFAULT_FISHING_DATAVIEW_ID === (d.id as number)
-  )
+  return dataviews?.filter((d) => d.category === DataviewCategory.Fishing)
 })
 
 export const selectAvailablePresenceDataviews = createSelector(
   [selectAllDataviews],
   (dataviews) => {
-    return dataviews?.filter(
-      (d) =>
-        d.category === DataviewCategory.Presence ||
-        DEFAULT_PRESENCE_DATAVIEWS.includes(d.id as number)
-    )
+    return dataviews?.filter((d) => d.category === DataviewCategory.Presence)
   }
 )

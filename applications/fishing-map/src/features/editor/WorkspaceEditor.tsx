@@ -9,6 +9,7 @@ import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { addDataviewEntity } from 'features/dataviews/dataviews.slice'
+import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -18,7 +19,6 @@ import {
   selectEditorDataviewsStatus,
 } from './editor.slice'
 import styles from './EditorMenu.module.css'
-import { getDataviewInstanceFromDataview } from './editor.utils'
 
 type WorkspaceEditorProps = {
   onEditClick: (dataview: Dataview) => void

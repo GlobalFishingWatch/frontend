@@ -21,6 +21,7 @@ import {
 import ColorBar, { FillColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/dataviews/dataviews.slice'
+import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
 import { selectFourwingsDatasets } from 'features/datasets/datasets.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -28,7 +29,6 @@ import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { APP_NAME } from 'data/config'
 import styles from './EditorMenu.module.css'
-import { getDataviewInstanceFromDataview } from './editor.utils'
 import useEditorMenu from './editor.hooks'
 
 const UNKNOWN_CATEGORY = 'unknown' as DataviewCategory
