@@ -5,25 +5,24 @@ import formatcoords from 'formatcoords'
 import ResizePanel from 'react-resize-panel'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist/events'
-import { RenderedEvent, selectEventsWithRenderingInfo } from 'features/vessels/activity/vessels-activity.selectors'
+import { RenderedEvent, selectEvents, selectEventsWithRenderingInfo } from 'features/vessels/activity/vessels-activity.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
+import { cheapDistance } from 'utils/vessel'
 import { selectHighlightedEvent, setHighlightedEvent } from '../map.slice'
 import styles from './Info.module.css'
 
 
 interface InfoProps {
   map: any
-  onEventChange: (event: RenderedEvent) => void
+  onEventChange: (event: RenderedEvent, pitch: number, bearing: number) => void
 }
 
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
-  const {setMapCoordinates} = useViewport()
-  const events: RenderedEvent[] = useSelector(selectEventsWithRenderingInfo).flat()
+  const events: RenderedEvent[] = useSelector(selectEvents)
   const eventsMap: string[] = useMemo(() => events.map(e => e.id), [events])
-  console.log(eventsMap)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent | undefined>(undefined)
 
@@ -33,9 +32,12 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       if (nextPosition >= 0 && nextPosition < eventsMap.length) {
         const nextEvent = events[nextPosition]
         dispatch(setHighlightedEvent({id: eventsMap[nextPosition] } as ApiEvent))
-        props.onEventChange(nextEvent)
+        const distance = Math.floor(cheapDistance(nextEvent.position, events[actualEventIndex].position) * 10)
+        const pitch = Math.min(distance * 4, 60)
+        const bearing = nextEvent.position.lat > events[actualEventIndex].position.lat ? 1 : -1
+        props.onEventChange(nextEvent, pitch, bearing)
       }
-    }, [dispatch, events, eventsMap, setMapCoordinates]
+    }, [dispatch, events, eventsMap, props]
   )
 
   useEffect(() => {

@@ -117,7 +117,8 @@ const Profile: React.FC = (props): React.ReactElement => {
         latitude: latitude as number,
         longitude: longitude as number,
         zoom: DEFAULT_VESSEL_MAP_ZOOM,
-        pitch: 1
+        pitch: 0,
+        bearing: 0
       })
     } else {
       alert('The vessel has no activity in your selected timerange')

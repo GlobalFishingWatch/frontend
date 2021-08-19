@@ -12,7 +12,7 @@ import { selectViewport } from 'features/app/app.selectors'
 import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
-type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom' | 'pitch'>
+type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom' | 'pitch' | 'bearing'>
 type UseViewport = {
   viewport: MapCoordinates
   onViewportChange: (viewport: ViewportProps) => void
@@ -126,7 +126,7 @@ export function useMapFitBounds() {
           right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
         },
       })
-      setMapCoordinates({ latitude, longitude, zoom, pitch: 0 })
+      setMapCoordinates({ latitude, longitude, zoom, pitch: 0, bearing: 0 })
     },
     [map, setMapCoordinates]
   )
