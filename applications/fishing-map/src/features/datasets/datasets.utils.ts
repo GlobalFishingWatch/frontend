@@ -15,6 +15,9 @@ export type SupportedDatasetSchema =
   | 'qf_detect'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
+export const isPrivateDataset = (dataset: Partial<Dataset>) =>
+  (dataset?.id || '').includes(PRIVATE_SUFIX)
+
 export const removeDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[0] : ''
 }
@@ -23,7 +26,7 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
   const { id, name = '' } = dataset || {}
   if (!id) return name || ''
   const label = getDatasetNameTranslated(dataset)
-  return dataset.id.includes(PRIVATE_SUFIX) ? `${label} 🔒` : label
+  return isPrivateDataset(dataset) ? `${label} 🔒` : label
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
