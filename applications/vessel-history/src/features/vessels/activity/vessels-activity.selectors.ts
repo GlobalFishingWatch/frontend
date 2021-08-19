@@ -137,8 +137,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-                count: Math.round(duration.minutes as number),
-              })
+              count: Math.round(duration.minutes as number),
+            })
             : '',
         ].join(' ')
 
@@ -206,8 +206,13 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
   return regionsDescription ?? ''
 }
 
+export const selectEvents = createSelector(
+  [selectEventsWithRenderingInfo],
+  (events) => events.flat().sort((a, b) => (a.start > b.start ? -1 : 1))
+)
+
 export const selectFilteredEvents = createSelector(
-  [selectEventsWithRenderingInfo, selectFilters],
+  [selectEvents, selectFilters],
   (events, filters) => {
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
@@ -221,7 +226,6 @@ export const selectFilteredEvents = createSelector(
     const interval = Interval.fromDateTimes(startDate, endDate)
 
     return events
-      .flat()
       .filter((event: RenderedEvent) => {
         if (
           !interval.contains(DateTime.fromMillis(event.start as number)) &&
@@ -244,7 +248,7 @@ export const selectFilteredEvents = createSelector(
 
         return true
       })
-      .sort((a, b) => (a.start > b.start ? -1 : 1))
+
   }
 )
 

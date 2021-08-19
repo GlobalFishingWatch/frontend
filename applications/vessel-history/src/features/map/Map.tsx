@@ -38,20 +38,23 @@ const Map = (): ReactElement => {
     style?.metadata as ExtendedStyleMeta,
     map
   )
+
   let flying = false
-  console.log(flying)
   let centetingMap: ReturnType<typeof setTimeout>
   mapRef?.current?.getMap().on('moveend', (e: any) => {
     if(flying) {
       if (centetingMap){
         clearTimeout(centetingMap)
       }
+      const currentPitch = mapRef.current.getMap().getPitch()
+      const currentBearing = mapRef.current.getMap().getBearing()
       centetingMap = setTimeout(() => {
         setMapCoordinates({
           latitude: mapRef.current?.getMap().getCenter().lat,
           longitude: mapRef.current?.getMap().getCenter().lng,
           zoom: 8,
-          pitch: 60
+          pitch: currentPitch,
+          bearing: currentBearing
         })
         setTimeout(() => {
           mapRef?.current?.getMap().easeTo({
@@ -59,8 +62,9 @@ const Map = (): ReactElement => {
               mapRef.current?.getMap().getCenter().lng,
               mapRef.current?.getMap().getCenter().lat
             ],
-            duration: 2000,
-            pitch: 0
+            duration: 2000 + currentPitch * 10 + currentBearing * 10,
+            pitch: 0,
+            bearing: 0,
           })
         }, 100)
       }, 100)
@@ -75,16 +79,17 @@ const Map = (): ReactElement => {
   });
 
   const onEventChange = useCallback(
-    (nextEvent: RenderedEvent) => {
+    (nextEvent: RenderedEvent, pitch: number, bearing: number) => {
       mapRef.current.getMap().flyTo({
         center: [
           nextEvent.position.lon,
           nextEvent.position.lat,
         ],
-        pitch: 60,
+        pitch,
+        bearing: bearing * pitch,
         zoom: 8,
         speed: 0.4, // make the flying slow
-        curve: 1, // change the speed at which it zooms out
+        curve: 1.5, // change the speed at which it zooms out
         essential: true // this animation is considered essential with respect to prefers-reduced-motion
       })
       mapRef?.current?.getMap().fire('flystart')
