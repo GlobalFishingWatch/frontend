@@ -84,7 +84,7 @@
 .dateFormat {
   opacity: 0.5;
   color: #22447e;
-  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-family: var(--font-family);
   font-size: 14px;
   letter-spacing: 0;
   line-height: 16px;
@@ -101,8 +101,10 @@
 }
 
 .coords {
-  color: rgba(255, 255, 255, 0.65);
-  font-family: Roboto, Arial, Helvetica, sans-serif;
+  color: rgb(var(--off-white-rgb), 0.65);
+
+  /* rgba(255, 255, 255, 0.65); */
+  font-family: var(--font-family);
   font-size: 1.2rem;
   letter-spacing: 0;
   line-height: 40px;
