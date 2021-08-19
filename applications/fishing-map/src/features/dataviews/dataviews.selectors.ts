@@ -286,7 +286,6 @@ export const selectAllDataviewsInWorkspace = createSelector(
 export const selectAvailableFishingDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
-    console.log(dataviews)
     return dataviews?.filter((d) => d.category === DataviewCategory.Fishing)
   }
 )
