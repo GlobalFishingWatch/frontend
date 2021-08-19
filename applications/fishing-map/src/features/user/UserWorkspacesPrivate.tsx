@@ -3,7 +3,6 @@ import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import Icon from '@globalfishingwatch/ui-components/dist/icon'
 import { Workspace } from '@globalfishingwatch/api-types/dist'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
@@ -57,8 +56,7 @@ function UserWorkspacesPrivate() {
                 }}
                 onClick={() => onWorkspaceClick(workspace)}
               >
-                <Icon icon="private" />
-                <span className={styles.workspaceTitle}>{workspace.name}</span>
+                <span className={styles.workspaceTitle}>🔒 {workspace.name}</span>
                 <IconButton icon="arrow-right" />
               </Link>
             </li>

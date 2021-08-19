@@ -26,7 +26,7 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
   const { id, name = '' } = dataset || {}
   if (!id) return name || ''
   const label = getDatasetNameTranslated(dataset)
-  return isPrivateDataset(dataset) ? `${label} 🔒` : label
+  return isPrivateDataset(dataset) ? `🔒 ${label}` : label
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
