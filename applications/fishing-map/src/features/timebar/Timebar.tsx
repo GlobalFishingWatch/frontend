@@ -32,6 +32,7 @@ import {
 import TimebarSettings from './TimebarSettings'
 import {
   selectTracksData,
+  selectTrackSpeedData,
   selectTracksGraphs,
   selectEventsWithRenderingInfo,
   TimebarTrack,
@@ -65,7 +66,11 @@ const TimebarWrapper = () => {
   const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
+  console.log(tracks)
+  const trackSpeeds = useSelector(selectTrackSpeedData)
+  console.log(trackSpeeds)
   const tracksGraphs = useSelector(selectTracksGraphs)
+  console.log(tracksGraphs)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
 
   const dispatch = useDispatch()

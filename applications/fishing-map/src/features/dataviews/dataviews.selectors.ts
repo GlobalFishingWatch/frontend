@@ -93,7 +93,31 @@ export const selectDataviewsForResourceQuerying = createSelector(
           }))
           trackWithThinning.query = [...(track.query || []), ...thinningQuery]
         }
-        return [trackWithThinning, info, ...events]
+
+        // TODO change original dataview
+        const trackWithoutSpeed = trackWithThinning
+        const query = trackWithoutSpeed.query || []
+        const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
+        if (fieldsQueryIndex > -1) {
+          // query[fieldsQueryIndex] = {
+          //   id: 'fields',
+          //   value: 'lonlat,timestamp',
+          // }
+          // trackWithoutSpeed.query = query
+        }
+
+        let trackSpeed
+        if (/* timebar req speed  && */ fieldsQueryIndex > -1) {
+          trackSpeed = { ...trackWithoutSpeed }
+          const trackSpeedQuery = [...query]
+          trackSpeedQuery[fieldsQueryIndex] = {
+            id: 'fields',
+            value: 'speed',
+          }
+          trackSpeed.query = trackSpeedQuery
+        }
+
+        return [trackWithoutSpeed, info, ...events, ...(trackSpeed ? [trackSpeed] : [])]
       }
     )
   }

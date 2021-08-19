@@ -64,6 +64,26 @@ export const selectTracksData = createSelector(
     return tracksSegments
   }
 )
+export const selectTrackSpeedData = createSelector(
+  [selectActiveTrackDataviews, selectResources],
+  (trackDataviews, resources) => {
+    if (!trackDataviews || !resources) return
+
+    const tracksSegments = trackDataviews.flatMap((dataview) => {
+      const { url } = resolveDataviewDatasetResource(
+        dataview,
+        [DatasetTypes.Tracks, DatasetTypes.UserTracks],
+        { id: 'fields', value: 'speed' }
+      )
+      if (!url) return null
+      const track = resources[url] as Resource<TrackResourceData>
+      if (!track?.data) return null
+
+      return track.data
+    })
+    return tracksSegments
+  }
+)
 
 export const selectTracksGraphs = createSelector(
   [selectActiveVesselsDataviews, selectTimebarGraph, selectResources],
