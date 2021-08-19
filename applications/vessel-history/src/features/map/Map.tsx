@@ -86,7 +86,7 @@ const Map = (): ReactElement => {
           nextEvent.position.lat,
         ],
         pitch,
-        bearing: bearing * pitch,
+        bearing,
         zoom: 8,
         speed: 0.4, // make the flying slow
         curve: 1.5, // change the speed at which it zooms out

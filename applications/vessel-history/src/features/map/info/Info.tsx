@@ -34,7 +34,11 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         dispatch(setHighlightedEvent({id: eventsMap[nextPosition] } as ApiEvent))
         const distance = Math.floor(cheapDistance(nextEvent.position, events[actualEventIndex].position) * 10)
         const pitch = Math.min(distance * 4, 60)
-        const bearing = nextEvent.position.lat > events[actualEventIndex].position.lat ? 1 : -1
+        //const bearing = nextEvent.position.lat > events[actualEventIndex].position.lat ? 1 : -1
+        const bearing = Math.atan2(
+          nextEvent.position.lon - events[actualEventIndex].position.lon, 
+          nextEvent.position.lat - events[actualEventIndex].position.lat
+        ) * pitch * -1;
         props.onEventChange(nextEvent, pitch, bearing)
       }
     }, [dispatch, events, eventsMap, props]
