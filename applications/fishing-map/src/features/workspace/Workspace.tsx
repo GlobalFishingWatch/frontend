@@ -19,9 +19,9 @@ import { updateLocation } from 'routes/routes.actions'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { selectDataviewsForResourceQuerying } from 'features/dataviews/dataviews.selectors'
 import { SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
+import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -118,9 +118,7 @@ function Workspace() {
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
-  const resourceQueries = resolveResourcesFromDatasetConfigs(
-    useSelector(selectDataviewsForResourceQuerying) ?? []
-  )
+  const resourceQueries = useSelector(selectDataviewsResourceQueries)
 
   useEffect(() => {
     if (resourceQueries) {

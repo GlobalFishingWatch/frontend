@@ -7,6 +7,7 @@ import {
   getGeneratorConfig,
   getDataviewsForResourceQuerying,
   TrackDatasetConfigs,
+  resolveResourcesFromDatasetConfigs,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
@@ -99,14 +100,6 @@ export const selectDataviewsForResourceQuerying = createSelector(
   }
 )
 
-export const selectBasemapDataviewInstance = createSelector(
-  [selectDataviewsForResourceQuerying],
-  (dataviews) => {
-    const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
-    return basemapDataview || defaultBasemapDataview
-  }
-)
-
 export const selectDataviewInstancesResolved = createSelector(
   [selectDataviewsForResourceQuerying, selectActivityCategoryFn],
   (dataviews = [], activityCategory) => {
@@ -114,6 +107,13 @@ export const selectDataviewInstancesResolved = createSelector(
       const activityDataview = isActivityDataview(dataview)
       return activityDataview ? dataview.category === activityCategory : true
     })
+  }
+)
+
+export const selectDataviewsResourceQueries = createSelector(
+  [selectDataviewInstancesResolved],
+  (dataviews) => {
+    return resolveResourcesFromDatasetConfigs(dataviews)
   }
 )
 
@@ -141,6 +141,14 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
     return dataviews?.filter((dataview) => ids.includes(dataview.id))
   })
 }
+
+export const selectBasemapDataviewInstance = createSelector(
+  [selectDataviewsForResourceQuerying],
+  (dataviews) => {
+    const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
+    return basemapDataview || defaultBasemapDataview
+  }
+)
 
 export const selectTrackDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
