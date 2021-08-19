@@ -55,7 +55,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   const onSaveClick = async (data: VesselWithHistory) => {
     setLoading(true)
-    console.log(activities)
     await dispatchCreateOfflineVessel({
       vessel: {
         ...data,
