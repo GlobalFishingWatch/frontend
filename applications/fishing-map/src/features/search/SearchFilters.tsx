@@ -181,6 +181,3 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
 }
 
 export default SearchFilters
-function getDatasetName(dataset: Dataset): any {
-  throw new Error('Function not implemented.')
-}
