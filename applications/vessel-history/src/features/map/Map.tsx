@@ -38,14 +38,15 @@ const Map = (): ReactElement => {
     style?.metadata as ExtendedStyleMeta,
     map
   )
-  const [flying, setflying] = useState(false)
-  const [centetingMap, setCenteringMap] = useState<ReturnType<typeof setTimeout> | undefined>(undefined)
+  let flying = false
+  console.log(flying)
+  let centetingMap: ReturnType<typeof setTimeout>
   mapRef?.current?.getMap().on('moveend', (e: any) => {
     if(flying) {
       if (centetingMap){
         clearTimeout(centetingMap)
       }
-      setCenteringMap(setTimeout(() => {
+      centetingMap = setTimeout(() => {
         setMapCoordinates({
           latitude: mapRef.current?.getMap().getCenter().lat,
           longitude: mapRef.current?.getMap().getCenter().lng,
@@ -62,15 +63,15 @@ const Map = (): ReactElement => {
             pitch: 0
           })
         }, 100)
-      }, 100))
+      }, 100)
       mapRef?.current?.getMap().fire('flyend');
     }
   });
   mapRef?.current?.getMap().on('flystart', function(){
-    setflying(true)
+    flying = true
   });
   mapRef?.current?.getMap().on('flyend', function(){
-    setflying(false)
+    flying = false
   });
 
   const onEventChange = useCallback(

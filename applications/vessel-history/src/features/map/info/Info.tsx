@@ -23,6 +23,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const {setMapCoordinates} = useViewport()
   const events: RenderedEvent[] = useSelector(selectEventsWithRenderingInfo).flat()
   const eventsMap: string[] = useMemo(() => events.map(e => e.id), [events])
+  console.log(eventsMap)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent | undefined>(undefined)
 
