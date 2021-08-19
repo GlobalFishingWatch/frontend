@@ -1,12 +1,12 @@
 import { ReactElement, useCallback, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import Info from 'features/map/info/Info'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
@@ -17,7 +17,6 @@ import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const Map = (): ReactElement => {
   const map = useMapInstance()
-  const dispatch = useDispatch()
   const mapRef = useRef<any>(null)
   const { selectVesselEventOnClick } = useMapEvents()
   const { dispatchQueryParams } = useLocationConnect()
@@ -105,7 +104,6 @@ const Map = (): ReactElement => {
           onClick={onMapClick}
           mapStyle={style}
           mapOptions={mapOptions}
-          //transitionDuration={500}
         ></InteractiveMap>
       )}
       <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>

@@ -15,7 +15,6 @@ export default function useMapEvents() {
       const vesselFeature = features.find(
         (feature) => feature.generatorType === Generators.Type.VesselEvents
       )
-      console.log(vesselFeature)
       const highlightEvent: { id: string } | undefined = { id: vesselFeature?.properties.id }
 
       if (highlightEvent && highlightedEvent?.id !== highlightEvent.id) {
