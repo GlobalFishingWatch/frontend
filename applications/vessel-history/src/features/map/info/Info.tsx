@@ -5,8 +5,8 @@ import formatcoords from 'formatcoords'
 import ResizePanel from 'react-resize-panel'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist/events'
+import { RenderedEvent, selectEventsWithRenderingInfo } from 'features/vessels/activity/vessels-activity.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
-import { RenderedEvent, selectEventsWithRenderingInfo } from 'features/vessels/activity/vessels-activity.slice'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
 import { selectHighlightedEvent, setHighlightedEvent } from '../map.slice'
@@ -33,19 +33,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         const nextEvent = events[nextPosition]
         dispatch(setHighlightedEvent({id: eventsMap[nextPosition] } as ApiEvent))
         props.onEventChange(nextEvent)
-        /*props.map.current.getMap().flyTo({
-          center: [
-            nextEvent.position.lon,
-            nextEvent.position.lat,
-          ],
-          essential: true // this animation is considered essential with respect to prefers-reduced-motion
-        })*/
-        /*setMapCoordinates({
-          latitude: nextEvent.position.lat,
-          longitude: nextEvent.position.lon,
-          zoom: 8
-        })*/
-
       }
     }, [dispatch, events, eventsMap, setMapCoordinates]
   )
