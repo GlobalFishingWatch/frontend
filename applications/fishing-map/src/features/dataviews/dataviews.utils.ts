@@ -1,6 +1,8 @@
+import { kebabCase } from 'lodash'
 import {
   ColorCyclingType,
   Dataset,
+  Dataview,
   DataviewCategory,
   DataviewDatasetConfig,
   DataviewInstance,
@@ -12,9 +14,7 @@ import {
   TEMPLATE_CONTEXT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   TEMPLATE_VESSEL_DATAVIEW_ID,
-  DEFAULT_PRESENCE_DATAVIEW_ID,
   TEMPLATE_USER_TRACK_ID,
-  DEFAULT_VIIRS_DATAVIEW_ID,
 } from 'data/workspaces'
 
 // used in workspaces with encounter events layers
@@ -23,8 +23,6 @@ export const FISHING_LAYER_PREFIX = 'fishing-'
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
-export const PRESENCE_LAYER_ID = 'presence'
-export const VIIRS_LAYER_ID = 'presence'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 type VesselInstanceDatasets = {
@@ -81,26 +79,6 @@ export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> 
       colorCyclingType: 'fill' as ColorCyclingType,
     },
     dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
-  }
-}
-
-export const getPresenceDataviewInstance = (): DataviewInstance<Generators.Type> => {
-  return {
-    id: `${PRESENCE_LAYER_ID}-${Date.now()}`,
-    config: {
-      colorCyclingType: 'fill' as ColorCyclingType,
-    },
-    dataviewId: DEFAULT_PRESENCE_DATAVIEW_ID,
-  }
-}
-
-export const getViirsDataviewInstance = (): DataviewInstance<Generators.Type> => {
-  return {
-    id: `${VIIRS_LAYER_ID}-${Date.now()}`,
-    config: {
-      colorCyclingType: 'fill' as ColorCyclingType,
-    },
-    dataviewId: DEFAULT_VIIRS_DATAVIEW_ID,
   }
 }
 
@@ -163,4 +141,24 @@ export const getContextDataviewInstance = (
     ],
   }
   return contextDataviewInstance
+}
+
+export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
+  return {
+    id: `${kebabCase(dataview.name)}-${Date.now()}`,
+    dataviewId: dataview.id,
+  }
+}
+
+export const getActivityDataviewInstanceFromDataview = (
+  dataview?: Dataview
+): DataviewInstance<Generators.Type> | undefined => {
+  if (!dataview) return
+  const instance = getDataviewInstanceFromDataview(dataview)
+  return {
+    ...instance,
+    config: {
+      colorCyclingType: 'fill' as ColorCyclingType,
+    },
+  }
 }

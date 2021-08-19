@@ -37,7 +37,6 @@ export type WorkspaceAnalysis = {
   bounds?: [number, number, number, number]
 }
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
-export type WorkspacePresenceCategory = 'presence' | 'viirs'
 export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {
@@ -59,7 +58,10 @@ export type RedirectParam = {
   'access-token'?: string
 }
 
-export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState & RedirectParam
+export type QueryParams = Partial<WorkspaceViewport> &
+  Partial<WorkspaceTimeRange> &
+  WorkspaceState &
+  RedirectParam
 
 export type MapCoordinates = {
   latitude: number

@@ -26,7 +26,11 @@ import {
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectActivityCategoryFn } from 'features/app/app.selectors'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID } from 'data/workspaces'
+import {
+  DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_PRESENCE_DATAVIEWS,
+} from 'data/workspaces'
 import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
@@ -262,4 +266,15 @@ export const selectActiveDataviews = createSelector(
     ...(activeEnvironmentalDataviews || []),
     ...(activeContextAreasDataviews || []),
   ]
+)
+
+export const selectAvailableFishingDataviews = createSelector([selectAllDataviews], (dataviews) => {
+  return dataviews?.filter((d) => d.category === DataviewCategory.Fishing)
+})
+
+export const selectAvailablePresenceDataviews = createSelector(
+  [selectAllDataviews],
+  (dataviews) => {
+    return dataviews?.filter((d) => d.category === DataviewCategory.Presence)
+  }
 )
