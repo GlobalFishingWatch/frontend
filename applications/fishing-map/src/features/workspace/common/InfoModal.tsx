@@ -6,7 +6,8 @@ import Tabs, { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types/dist'
-import { removeDatasetVersion } from 'features/datasets/datasets.utils'
+import { getDatasetDescriptionTranslated } from 'features/i18n/utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -25,13 +26,10 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
       if (dataview.config?.datasets && !dataview.config?.datasets?.includes(dataset.id)) {
         return []
       }
-      const datasetId = removeDatasetVersion(dataset?.id)
-      if (!datasetId) return []
-
-      const description = t(`datasets:${datasetId}.description` as any, '')
+      const description = getDatasetDescriptionTranslated(dataset)
       return {
-        id: datasetId,
-        title: t(`datasets:${datasetId}.name` as any, dataset.name),
+        id: dataset.id,
+        title: getDatasetLabel(dataset),
         content: (
           <p className={styles.content}>
             {/**
@@ -43,7 +41,7 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
         ),
       }
     })
-  }, [dataview, t])
+  }, [dataview])
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
   const handleClick = useCallback(

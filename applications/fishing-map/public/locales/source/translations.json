@@ -340,6 +340,7 @@
     "save": "Save the current view",
     "saved": "Current view was saved and it's available in your user profile",
     "saveLogin": "You need to login to save views",
+    "privateTitle_plural": "Private workspaces",
     "title_plural": "Workspaces"
   }
 }
