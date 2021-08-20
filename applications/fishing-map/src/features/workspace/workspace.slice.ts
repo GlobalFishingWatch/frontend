@@ -1,14 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
 import { DateTime } from 'luxon'
-import {
-  Workspace,
-  Dataview,
-  DataviewInstance,
-  WorkspaceUpsert,
-} from '@globalfishingwatch/api-types'
+import { Workspace, Dataview, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
@@ -25,6 +19,7 @@ import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace, selectDaysFromLatest } from 'features/app/app.selectors'
 import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -57,17 +52,6 @@ export const getDefaultWorkspace = () => {
     (m) => m.default
   )
   return workspace as Promise<Workspace<WorkspaceState>>
-}
-
-export const getDatasetByDataview = (
-  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
-) => {
-  return uniq(
-    dataviews?.flatMap((dataviews) => {
-      if (!dataviews.datasetsConfig) return []
-      return dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
-    })
-  )
 }
 
 export const fetchWorkspaceThunk = createAsyncThunk(
@@ -127,7 +111,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...(workspace.dataviewInstances || []),
           ...(urlDataviewInstances || []),
         ]
-        const datasets = getDatasetByDataview(dataviewInstances)
+        const datasets = getDatasetsInDataviews(dataviewInstances)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasets))
         signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
