@@ -10,8 +10,16 @@ export type SettingsEvents = {
   distancePortLonger?: number
 }
 export type SettingsPortVisits = {
-  ports?: number
+  flags?: string[]
+  duration?: number
+  distanceShoreLonger?: number
 }
+
+export type SettingEventSectionName =
+  | 'fishingEvents'
+  | 'encounters'
+  | 'loiteringEvents'
+  | 'portVisits'
 
 export type Settings = {
   fishingEvents: SettingsEvents

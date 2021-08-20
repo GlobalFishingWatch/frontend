@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { MultiSelect, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import { SettingsEvents } from '../settings.slice'
+import { SettingEventSectionName, SettingsEvents } from '../settings.slice'
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
 
 interface SettingsProps {
   settings: SettingsEvents
-  section: string
+  section: SettingEventSectionName
   minDuration: number
   maxDuration: number
   minDistance: number
@@ -20,8 +20,23 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
   const { setSettingOptions, setSetting } = useSettingsConnect()
 
-  const { eez, rfmo, mpa } = useSettingsRegionsConnect(section, settings)
+  const { EEZ_REGIONS, RFMOS_REGIONS, MPAS_REGIONS, getOptions } = useSettingsRegionsConnect(
+    section,
+    settings
+  )
 
+  const eez = useMemo(
+    () => getOptions(EEZ_REGIONS, 'eezs', settings.eezs),
+    [EEZ_REGIONS, settings.eezs, getOptions]
+  )
+  const rfmo = useMemo(
+    () => getOptions(RFMOS_REGIONS, 'rfmos', settings.rfmos),
+    [RFMOS_REGIONS, settings.rfmos, getOptions]
+  )
+  const mpa = useMemo(
+    () => getOptions(MPAS_REGIONS, 'mpas', settings.mpas),
+    [MPAS_REGIONS, settings.mpas, getOptions]
+  )
   return (
     <div>
       <div className={styles.settingsField}>

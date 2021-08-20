@@ -5,8 +5,10 @@ import { capitalize } from 'lodash'
 import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { Region, anyRegion } from 'features/regions/regions.slice'
+import flags from 'data/flags'
 import {
   selectSettings,
+  SettingEventSectionName,
   Settings,
   SettingsEvents,
   SettingsPortVisits,
@@ -52,7 +54,10 @@ export const useSettingsConnect = () => {
   }
 }
 
-export const useSettingsRegionsConnect = (section: string, settings: SettingsEvents) => {
+export const useSettingsRegionsConnect = (
+  section: SettingEventSectionName,
+  settings: SettingsEvents
+) => {
   const { t } = useTranslation()
   const { setSettingOptions } = useSettingsConnect()
 
@@ -63,6 +68,7 @@ export const useSettingsRegionsConnect = (section: string, settings: SettingsEve
   const EEZ_REGIONS: Region[] = useSelector(selectEEZs)
   const RFMOS_REGIONS: Region[] = useSelector(selectRFMOs).filter(onlyUnique)
   const MPAS_REGIONS: Region[] = useSelector(selectMPAs)
+  const COUNTRIES: Region[] = flags
 
   const anyOption: MultiSelectOption<string> = useMemo(
     () => ({
@@ -118,21 +124,11 @@ export const useSettingsRegionsConnect = (section: string, settings: SettingsEve
     [anyOption, section, onSelectRegion, setSettingOptions]
   )
 
-  const eez = useMemo(
-    () => getOptions(EEZ_REGIONS, 'eezs', settings.eezs),
-    [EEZ_REGIONS, settings.eezs, getOptions]
-  )
-  const rfmo = useMemo(
-    () => getOptions(RFMOS_REGIONS, 'rfmos', settings.rfmos),
-    [RFMOS_REGIONS, settings.rfmos, getOptions]
-  )
-  const mpa = useMemo(
-    () => getOptions(MPAS_REGIONS, 'mpas', settings.mpas),
-    [MPAS_REGIONS, settings.mpas, getOptions]
-  )
   return {
-    eez,
-    rfmo,
-    mpa,
+    EEZ_REGIONS,
+    RFMOS_REGIONS,
+    MPAS_REGIONS,
+    COUNTRIES,
+    getOptions,
   }
 }

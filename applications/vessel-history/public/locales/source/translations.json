@@ -108,6 +108,7 @@
     "portVisits": {
       "inputEnd": "ports",
       "inputStart": "Port visits in",
+      "inThesePortStates": "Events in these port States",
       "title": "Port Visits"
     },
     "rfmos": {
