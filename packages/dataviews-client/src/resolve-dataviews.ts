@@ -121,10 +121,8 @@ export const getDataviewsForResourceQuerying = (
     switch (dataviewInstance.config?.type) {
       case Generators.Type.Track:
         preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
-        if (datasetConfigsTransform && datasetConfigsTransform[Generators.Type.Track]) {
-          preparedDatasetConfigs =
-            datasetConfigsTransform[Generators.Type.Track]!(preparedDatasetConfigs)
-        }
+        preparedDatasetConfigs =
+          datasetConfigsTransform?.[Generators.Type.Track]?.(preparedDatasetConfigs)
         break
 
       default:
