@@ -32,7 +32,7 @@
     }
   },
   "full-panama-carrier-vessels": {
-    "name": "Panama VMS (Carrier Vessels)",
+    "name": "VMS de Panamá (Buques de transporte)",
     "description": "Dataset for VMS Panama - Carriers (Public)",
     "schema": {
       "id": "id",
