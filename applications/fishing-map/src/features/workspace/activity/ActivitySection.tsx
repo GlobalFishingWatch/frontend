@@ -200,7 +200,7 @@ function ActivitySection(): React.ReactElement {
       if (dataview.id === DEFAULT_PRESENCE_DATAVIEW_ID) {
         option.label = t('common.presence', 'Fishing presence')
       } else if (dataview.id === DEFAULT_VIIRS_DATAVIEW_ID) {
-        option.label = t('common.viirs', 'VIIRS')
+        option.label = t('common.viirs', 'Night light detections (VIIRS)')
       } else {
         const datasetId = dataview.datasetsConfig?.find(
           (d) => d.endpoint === EndpointId.FourwingsTiles
