@@ -10,7 +10,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
-  resolveDataviewEventsResources,
+  resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
@@ -104,7 +104,7 @@ const selectEventsForTracks = createSelector(
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      const eventsResources = resolveDataviewEventsResources(dataview)
+      const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
       const tracksResourceResolved =

@@ -27,7 +27,7 @@ import type {
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import {
   resolveDataviewDatasetResource,
-  resolveDataviewEventsResources,
+  resolveDataviewDatasetResources,
   UrlDataviewInstance,
 } from './resolve-dataviews'
 
@@ -125,7 +125,7 @@ export function getGeneratorConfig(
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data
       }
-      const eventsResources = resolveDataviewEventsResources(dataview)
+      const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
