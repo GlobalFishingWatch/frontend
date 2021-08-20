@@ -4,11 +4,11 @@ export {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
   resolveDataviewEventsResources,
-  UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
   resolveResourcesFromDatasetConfigs,
   getDataviewsForResourceQuerying,
-  TrackDatasetConfigs,
+  UrlDataviewInstance,
+  DatasetConfigsTransforms,
 } from './resolve-dataviews'
 export {
   getGeneratorConfig,

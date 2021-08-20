@@ -89,15 +89,9 @@ const getDatasetConfigByDatasetType = (
   return getDatasetConfigsByDatasetType(dataview, type)[0]
 }
 
-export type TrackDatasetConfigs = {
-  info: DataviewDatasetConfig
-  track: DataviewDatasetConfig
-  events: DataviewDatasetConfig[]
-}
-
 const getTrackDataviewDatasetConfigs = (
   dataviewInstance: UrlDataviewInstance
-): TrackDatasetConfigs => {
+): DataviewDatasetConfig[] => {
   const info = getDatasetConfigByDatasetType(dataviewInstance, DatasetTypes.Vessels)
 
   const trackDatasetType =
@@ -110,32 +104,32 @@ const getTrackDataviewDatasetConfigs = (
     (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
   ) // Loitering
 
-  return {
-    info,
-    track,
-    events,
-  }
+  return [info, track, ...events]
 }
+
+export type DatasetConfigsTransforms = Partial<
+  Record<Generators.Type, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
+>
 
 export const getDataviewsForResourceQuerying = (
   dataviewInstances: UrlDataviewInstance[],
-  trackDatasetConfigsTransform?: (
-    trackDatasetConfigs: TrackDatasetConfigs
-  ) => DataviewDatasetConfig[]
+  datasetConfigsTransform?: DatasetConfigsTransforms
 ) => {
   if (!dataviewInstances) return []
   const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
-    if (dataviewInstance.config?.type !== Generators.Type.Track) return dataviewInstance
-
-    const { track, info, events } = getTrackDataviewDatasetConfigs(dataviewInstance)
     let preparedDatasetConfigs
+    switch (dataviewInstance.config?.type) {
+      case Generators.Type.Track:
+        preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
+        if (datasetConfigsTransform && datasetConfigsTransform[Generators.Type.Track]) {
+          preparedDatasetConfigs =
+            datasetConfigsTransform[Generators.Type.Track]!(preparedDatasetConfigs)
+        }
+        break
 
-    if (trackDatasetConfigsTransform) {
-      preparedDatasetConfigs = trackDatasetConfigsTransform({ track, info, events })
-    } else {
-      preparedDatasetConfigs = [track, info, ...events] as DataviewDatasetConfig[]
+      default:
+        return dataviewInstance
     }
-
     const preparedDataview = {
       ...dataviewInstance,
       datasetsConfig: preparedDatasetConfigs,

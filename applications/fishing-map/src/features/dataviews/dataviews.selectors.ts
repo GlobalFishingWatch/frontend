@@ -6,8 +6,8 @@ import {
   mergeWorkspaceUrlDataviewInstances,
   getGeneratorConfig,
   getDataviewsForResourceQuerying,
-  TrackDatasetConfigs,
   resolveResourcesFromDatasetConfigs,
+  DatasetConfigsTransforms,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
@@ -83,9 +83,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
 export const selectDataviewsForResourceQuerying = createSelector(
   [selectAllDataviewInstancesResolved, selectThinningConfig],
   (dataviewInstances, thinningConfig) => {
-    return getDataviewsForResourceQuerying(
-      dataviewInstances || [],
-      ({ track, info, events }: TrackDatasetConfigs) => {
+    const datasetConfigsTransforms: DatasetConfigsTransforms = {
+      [Generators.Type.Track]: ([track, info, ...events]) => {
         const trackWithThinning = track
         if (thinningConfig && !track.datasetId.includes(PRESENCE_POC_ID)) {
           const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
@@ -95,8 +94,9 @@ export const selectDataviewsForResourceQuerying = createSelector(
           trackWithThinning.query = [...(track.query || []), ...thinningQuery]
         }
         return [trackWithThinning, info, ...events]
-      }
-    )
+      },
+    }
+    return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)
   }
 )
 
