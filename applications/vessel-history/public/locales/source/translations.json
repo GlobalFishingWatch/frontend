@@ -97,7 +97,7 @@
       "title": "Fishing Events"
     },
     "hours": "hours",
-    "kms": "kms",
+    "km": "km",
     "loiteringEvents": {
       "title": "Loitering Events"
     },
@@ -115,6 +115,7 @@
       "label": "Events in these RFMOS"
     },
     "title": "Settings",
+    "kms": "kms",
     "distance": "DISTANCE TRAVELLED"
   },
   "vessel": {

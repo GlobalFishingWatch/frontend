@@ -111,7 +111,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             setSetting(section, 'distanceShoreLonger', parseInt(event.currentTarget.value))
           }
         ></InputText>
-        <span>{t('settings.kms', 'kms')}</span>
+        <span>{t('settings.km', 'km')}</span>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
@@ -128,7 +128,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             setSetting(section, 'distancePortLonger', parseInt(event.currentTarget.value))
           }
         ></InputText>
-        <span>{t('settings.kms', 'kms')}</span>
+        <span>{t('settings.km', 'km')}</span>
       </div>
     </div>
   )
