@@ -94,6 +94,12 @@ export const selectDataviewsForResourceQuerying = createSelector(
           }))
           trackWithThinning.query = [...(track.query || []), ...thinningQuery]
         }
+        // Clean resources when mandatory vesselId is missing
+        // needed for vessels with no info datasets (zebraX)
+        const vesselID = info.query?.find((q) => q.id === 'vesselId')?.value
+        if (!vesselID) {
+          return [trackWithThinning, ...events]
+        }
         return [trackWithThinning, info, ...events]
       },
     }
