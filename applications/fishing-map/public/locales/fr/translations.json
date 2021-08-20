@@ -66,7 +66,7 @@
     "update": "Mise à jour",
     "vessel": "Navire",
     "vessel_plural": "Navires",
-    "viirs": "VIIRS",
+    "viirs": "Night light detections (VIIRS)",
     "welcomePopupDisable": "Ne plus afficher"
   },
   "dataset": {
@@ -340,6 +340,7 @@
     "save": "Enregistrer la vue actuelle",
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil",
     "saveLogin": "Vous devez vous connecter pour enregistrer les vues (gratuit, 2 minutes)",
+    "privateTitle_plural": "Private workspaces",
     "title_plural": "Vues"
   }
 }
