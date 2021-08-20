@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { resolveResourcesFromDatasetConfigs } from '@globalfishingwatch/dataviews-client'
 import Search from 'features/search/Search'
 import {
   selectWorkspaceStatus,

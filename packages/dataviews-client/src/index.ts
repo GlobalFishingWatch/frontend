@@ -3,7 +3,6 @@ export {
   default as resolveDataviews,
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
-  resolveDataviewEventsResources,
   mergeWorkspaceUrlDataviewInstances,
   resolveResourcesFromDatasetConfigs,
   getDataviewsForResourceQuerying,
