@@ -90,18 +90,12 @@ const getDatasetConfigByDatasetType = (
   return getDatasetConfigsByDatasetType(dataview, type)[0]
 }
 
-export type TrackDatasetConfigs = {
-  info: DataviewDatasetConfig
-  track: DataviewDatasetConfig
-  events: DataviewDatasetConfig[]
-}
-
 /**
  * Collect only necessary datasetConfigs for track dataviews
  */
 const getTrackDataviewDatasetConfigs = (
   dataviewInstance: UrlDataviewInstance
-): TrackDatasetConfigs => {
+): DataviewDatasetConfig[] => {
   const info = getDatasetConfigByDatasetType(dataviewInstance, DatasetTypes.Vessels)
 
   const trackDatasetType =
@@ -114,12 +108,12 @@ const getTrackDataviewDatasetConfigs = (
     (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
   ) // Loitering
 
-  return {
-    info,
-    track,
-    events,
-  }
+  return [info, track, ...events]
 }
+
+export type DatasetConfigsTransforms = Partial<
+  Record<Generators.Type, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
+>
 
 /**
  * Prepare dataviews for querying resources, by altering datasetConfigs
@@ -130,23 +124,21 @@ const getTrackDataviewDatasetConfigs = (
  */
 export const getDataviewsForResourceQuerying = (
   dataviewInstances: UrlDataviewInstance[],
-  trackDatasetConfigsTransform?: (
-    trackDatasetConfigs: TrackDatasetConfigs
-  ) => DataviewDatasetConfig[]
+  datasetConfigsTransform?: DatasetConfigsTransforms
 ) => {
   if (!dataviewInstances) return []
   const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
-    if (dataviewInstance.config?.type !== Generators.Type.Track) return dataviewInstance
-
-    const { track, info, events } = getTrackDataviewDatasetConfigs(dataviewInstance)
     let preparedDatasetConfigs
+    switch (dataviewInstance.config?.type) {
+      case Generators.Type.Track:
+        preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
+        preparedDatasetConfigs =
+          datasetConfigsTransform?.[Generators.Type.Track]?.(preparedDatasetConfigs)
+        break
 
-    if (trackDatasetConfigsTransform) {
-      preparedDatasetConfigs = trackDatasetConfigsTransform({ track, info, events })
-    } else {
-      preparedDatasetConfigs = [track, info, ...events] as DataviewDatasetConfig[]
+      default:
+        return dataviewInstance
     }
-
     const preparedDataview = {
       ...dataviewInstance,
       datasetsConfig: preparedDatasetConfigs,
@@ -228,49 +220,6 @@ export const resolveDataviewDatasetResource = (
   queryParamFilter?: DataviewDatasetConfigParams
 ): Resource => {
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId, queryParamFilter)[0] || {}
-}
-
-// TODO Deprecate
-export const resolveDataviewResourceByDatasetType = (
-  dataview: UrlDataviewInstance<Generators.Type>,
-  datasetType: DatasetTypes
-): Resource | undefined => {
-  const { url, dataset, datasetConfig } = resolveDataviewDatasetResource(dataview, datasetType)
-  if (url && dataset && datasetConfig) {
-    return {
-      dataviewId: dataview.dataviewId as number,
-      url: url,
-      dataset: dataset,
-      datasetConfig: datasetConfig,
-    }
-  }
-}
-
-// TODO Deprecate
-// Workaround to support multiple resource for the same dataset type (fishing, loitering...)
-// Ideally we move the `resolveDataviewDatasetResource` method to support it natively
-export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): Resource[] => {
-  if (!dataview.datasetsConfig?.length) {
-    return []
-  }
-  const dataviews = dataview.datasetsConfig?.flatMap((datasetConfig) => {
-    if (datasetConfig.endpoint !== EndpointId.Events) {
-      return []
-    }
-    const vesselID = datasetConfig.query?.find((q) => q.id === 'vessels')?.value
-    if (!vesselID) {
-      return []
-    }
-    const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
-    if (!dataset) {
-      return []
-    }
-    return { ...dataview, datasets: [dataset], datasetsConfig: [datasetConfig] }
-  })
-  const resources = dataviews?.flatMap(
-    (dataview) => resolveDataviewResourceByDatasetType(dataview, DatasetTypes.Events) ?? []
-  )
-  return resources
 }
 
 /**

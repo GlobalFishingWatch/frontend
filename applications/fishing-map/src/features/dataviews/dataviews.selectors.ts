@@ -6,7 +6,8 @@ import {
   mergeWorkspaceUrlDataviewInstances,
   getGeneratorConfig,
   getDataviewsForResourceQuerying,
-  TrackDatasetConfigs,
+  resolveResourcesFromDatasetConfigs,
+  DatasetConfigsTransforms,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
@@ -17,10 +18,11 @@ import { PRESENCE_POC_ID, selectDatasets } from 'features/datasets/datasets.slic
 import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
+  selectWorkspaceDataviews,
 } from 'features/workspace/workspace.selectors'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { selectActivityCategoryFn } from 'features/app/app.selectors'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID } from 'data/workspaces'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { selectThinningConfig } from 'features/resources/resources.selectors'
 import { selectAllDataviews } from './dataviews.slice'
 
@@ -82,9 +84,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
 export const selectDataviewsForResourceQuerying = createSelector(
   [selectAllDataviewInstancesResolved, selectThinningConfig],
   (dataviewInstances, thinningConfig) => {
-    return getDataviewsForResourceQuerying(
-      dataviewInstances || [],
-      ({ track, info, events }: TrackDatasetConfigs) => {
+    const datasetConfigsTransforms: DatasetConfigsTransforms = {
+      [Generators.Type.Track]: ([track, info, ...events]) => {
         const trackWithThinning = track
         if (thinningConfig && !track.datasetId.includes(PRESENCE_POC_ID)) {
           const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
@@ -99,11 +100,11 @@ export const selectDataviewsForResourceQuerying = createSelector(
         const query = trackWithoutSpeed.query || []
         const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
         if (fieldsQueryIndex > -1) {
-          // query[fieldsQueryIndex] = {
-          //   id: 'fields',
-          //   value: 'lonlat,timestamp',
-          // }
-          // trackWithoutSpeed.query = query
+          query[fieldsQueryIndex] = {
+            id: 'fields',
+            value: 'lonlat,timestamp',
+          }
+          trackWithoutSpeed.query = query
         }
 
         let trackSpeed
@@ -118,18 +119,37 @@ export const selectDataviewsForResourceQuerying = createSelector(
         }
 
         return [trackWithoutSpeed, info, ...events, ...(trackSpeed ? [trackSpeed] : [])]
-      }
-    )
+      },
+    }
+    return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)
   }
 )
 
-export const selectBasemapDataviewInstance = createSelector(
-  [selectDataviewsForResourceQuerying],
-  (dataviews) => {
-    const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
-    return basemapDataview || defaultBasemapDataview
-  }
-)
+//  // TODO change original dataview
+//  const trackWithoutSpeed = trackWithThinning
+//  const query = trackWithoutSpeed.query || []
+//  const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
+//  if (fieldsQueryIndex > -1) {
+//    // query[fieldsQueryIndex] = {
+//    //   id: 'fields',
+//    //   value: 'lonlat,timestamp',
+//    // }
+//    // trackWithoutSpeed.query = query
+//  }
+
+//  let trackSpeed
+//  if (/* timebar req speed  && */ fieldsQueryIndex > -1) {
+//    trackSpeed = { ...trackWithoutSpeed }
+//    const trackSpeedQuery = [...query]
+//    trackSpeedQuery[fieldsQueryIndex] = {
+//      id: 'fields',
+//      value: 'speed',
+//    }
+//    trackSpeed.query = trackSpeedQuery
+//  }
+
+//  return [trackWithoutSpeed, info, ...events, ...(trackSpeed ? [trackSpeed] : [])]
+// }
 
 export const selectDataviewInstancesResolved = createSelector(
   [selectDataviewsForResourceQuerying, selectActivityCategoryFn],
@@ -138,6 +158,13 @@ export const selectDataviewInstancesResolved = createSelector(
       const activityDataview = isActivityDataview(dataview)
       return activityDataview ? dataview.category === activityCategory : true
     })
+  }
+)
+
+export const selectDataviewsResourceQueries = createSelector(
+  [selectDataviewInstancesResolved],
+  (dataviews) => {
+    return resolveResourcesFromDatasetConfigs(dataviews)
   }
 )
 
@@ -165,6 +192,14 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
     return dataviews?.filter((dataview) => ids.includes(dataview.id))
   })
 }
+
+export const selectBasemapDataviewInstance = createSelector(
+  [selectDataviewsForResourceQuerying],
+  (dataviews) => {
+    const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
+    return basemapDataview || defaultBasemapDataview
+  }
+)
 
 export const selectTrackDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
@@ -275,4 +310,36 @@ export const selectActiveDataviews = createSelector(
     ...(activeEnvironmentalDataviews || []),
     ...(activeContextAreasDataviews || []),
   ]
+)
+
+export const selectAllDataviewsInWorkspace = createSelector(
+  [selectAllDataviews, selectWorkspaceDataviews, selectWorkspaceDataviewInstances],
+  (dataviews = [], workspaceDataviews, workspaceDataviewInstances) => {
+    return dataviews?.filter((dataview) => {
+      if (DEFAULT_DATAVIEW_IDS.includes(dataview.id)) {
+        return true
+      }
+      if (workspaceDataviews?.some((d) => d.id === dataview.id)) {
+        return true
+      }
+      if (workspaceDataviewInstances?.some((d) => d.dataviewId === dataview.id)) {
+        return true
+      }
+      return false
+    })
+  }
+)
+
+export const selectAvailableFishingDataviews = createSelector(
+  [selectAllDataviewsInWorkspace],
+  (dataviews) => {
+    return dataviews?.filter((d) => d.category === DataviewCategory.Fishing)
+  }
+)
+
+export const selectAvailablePresenceDataviews = createSelector(
+  [selectAllDataviewsInWorkspace],
+  (dataviews) => {
+    return dataviews?.filter((d) => d.category === DataviewCategory.Presence)
+  }
 )

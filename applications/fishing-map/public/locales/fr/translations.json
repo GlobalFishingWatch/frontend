@@ -22,8 +22,8 @@
     "analysis": "Créer une analyse pour cette zone",
     "analysisNotAvailable": "Activer/désactiver un calque d'activité ou d'environnement pour l'analyser dans cette zone",
     "apparentFishing": "Effort de pêche apparent",
-    "category": "Category",
     "cancel": "Cancel",
+    "category": "Category",
     "comingSoon": "à venir!",
     "confirm": "Valider",
     "context_area_plural": "Calques de référence",
@@ -35,6 +35,7 @@
     "description": "Libellé",
     "detection": "Détection",
     "detection_plural": "Détections",
+    "dismiss": "Dissmiss",
     "environment": "Environnement",
     "events": "Évènements",
     "feedback": "Vos commentaires",
@@ -44,6 +45,7 @@
     "hour_plural": "heures",
     "in": "dans",
     "layerList": "Liste des calques",
+    "learnMore": "Learn more",
     "loggedAs": "Connecté en tant que",
     "login": "Se connecter",
     "logout": "Déconnexion",
@@ -92,6 +94,7 @@
     "requiredFields": "Champs requis {{fields}}",
     "timeNameField": "Champ date/heure",
     "title": "Jeu de données",
+    "title_plural": "Jeux de données",
     "typePoints": " Points",
     "typePointsDescription": "Affichez des points dont la taille est corrélée à n'importe quelle valeur quantitative de votre jeu de données.",
     "typePolygons": " Polygones",
@@ -100,8 +103,7 @@
     "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou navires.",
     "uploadLogin": "Inscrivez-vous et  <1>connectez-vous</1> pour télécharger des jeux de données (gratuit, 2 minutes)",
     "uploadNewContext": "Ajouter de nouveux calques de référence",
-    "uploadNewEnviroment": "Ajouter un nouveau jeu de données d'environnement",
-    "title_plural": "Jeux de données"
+    "uploadNewEnviroment": "Ajouter un nouveau jeu de données d'environnement"
   },
   "errors": {
     "contactUs": "Veuillez <1>nous contacter</1> pour signaler le problème.",
@@ -303,6 +305,7 @@
       "set_gillnets": "Filet maillant",
       "set_longlines": "Palangre",
       "squid_jigger": "Pêcheur de calamar (jigger)",
+      "squid_jiggers": "Gear Squid Jiggers",
       "trawlers": "Chalutier",
       "trollers": "Pêche à la traîne",
       "tuna_purse_seines": "Senne coulissante au thon"

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { resolveResourcesFromDatasetConfigs } from '@globalfishingwatch/dataviews-client'
 import Search from 'features/search/Search'
 import {
   selectWorkspaceStatus,
@@ -19,9 +18,9 @@ import { updateLocation } from 'routes/routes.actions'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { selectDataviewsForResourceQuerying } from 'features/dataviews/dataviews.selectors'
-import { SUPPORT_EMAIL } from 'data/config'
+import { PRIVATE_SUFIX, SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
+import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -118,9 +117,7 @@ function Workspace() {
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
-  const resourceQueries = resolveResourcesFromDatasetConfigs(
-    useSelector(selectDataviewsForResourceQuerying) ?? []
-  )
+  const resourceQueries = useSelector(selectDataviewsResourceQueries)
 
   useEffect(() => {
     if (resourceQueries) {
@@ -154,7 +151,12 @@ function Workspace() {
       {(locationCategory === WorkspaceCategories.MarineManager ||
         locationCategory === WorkspaceCategories.FishingActivity) &&
         workspace?.name &&
-        !readOnly && <h2 className={styles.title}>{workspace.name}</h2>}
+        !readOnly && (
+          <h2 className={styles.title}>
+            {workspace.id.startsWith(PRIVATE_SUFIX) && '🔒 '}
+            {workspace.name}
+          </h2>
+        )}
       <ActivitySection />
       <VesselsSection />
       <EventsSection />

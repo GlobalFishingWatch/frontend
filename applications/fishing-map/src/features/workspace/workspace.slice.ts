@@ -166,7 +166,12 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
             `/${version}/workspaces`,
             {
               method: 'POST',
-              body: { ...mergedWorkspace, name },
+              body: {
+                ...mergedWorkspace,
+                name,
+                // TODO make this optional for admins
+                public: false,
+              },
             } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
           )
         } catch (e) {

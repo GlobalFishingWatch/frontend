@@ -3,13 +3,14 @@ import { DateTime } from 'luxon'
 import {
   ApiEvent,
   DatasetTypes,
+  EventTypes,
   Resource,
   ResourceStatus,
   TrackResourceData,
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
-  resolveDataviewEventsResources,
+  resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
@@ -123,7 +124,7 @@ const selectEventsForTracks = createSelector(
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      const eventsResources = resolveDataviewEventsResources(dataview)
+      const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
       const tracksResourceResolved =
@@ -174,7 +175,7 @@ export const selectEventsWithRenderingInfo = createSelector(
         let description
         let descriptionGeneric
         switch (event.type) {
-          case 'encounter':
+          case EventTypes.Encounter:
             if (event.encounter) {
               description = `${vesselName} ${t(
                 'event.encounterActionWith',
@@ -187,7 +188,7 @@ export const selectEventsWithRenderingInfo = createSelector(
             }
             descriptionGeneric = `${vesselName} ${t('event.encounter')}`
             break
-          case 'port':
+          case EventTypes.Port:
             if (event.port && event.port.name) {
               description = `${vesselName} ${t('event.portAt', { port: event.port.name })} `
             } else {
@@ -195,11 +196,11 @@ export const selectEventsWithRenderingInfo = createSelector(
             }
             descriptionGeneric = `${vesselName} ${t('event.port')}`
             break
-          case 'loitering':
+          case EventTypes.Loitering:
             description = `${vesselName} ${t('event.loiteringAction')}`
             descriptionGeneric = `${vesselName} ${t('event.loitering')}`
             break
-          case 'fishing':
+          case EventTypes.Fishing:
             description = `${vesselName} ${t('event.fishingAction')}`
             descriptionGeneric = `${vesselName} ${t('event.fishing')}`
             break

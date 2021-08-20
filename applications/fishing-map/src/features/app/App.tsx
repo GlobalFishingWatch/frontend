@@ -190,8 +190,11 @@ function App(): React.ReactElement {
   }, [isAnalysing, locationType])
 
   let asideWidth = '50%'
-  if (narrowSidebar) asideWidth = '37rem'
-  if (readOnly) asideWidth = '32rem'
+  if (readOnly) {
+    asideWidth = analysisQuery ? '45%' : '32rem'
+  } else if (narrowSidebar) {
+    asideWidth = '37rem'
+  }
 
   return (
     /* Value as null as there is no needed to set a default value but Typescript complains */

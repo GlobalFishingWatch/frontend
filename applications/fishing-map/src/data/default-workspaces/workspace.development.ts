@@ -48,7 +48,11 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
-      id: 'fishing-vms',
+      // This id is used for highlighting the dataview with a popup on the right
+      // update it here if you want to show it again or go to
+      // applications/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
+      // and update the `dataviewInstanceId`
+      id: 'highlight-vms-with-ecuador',
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
@@ -57,6 +61,7 @@ const workspace: Workspace<WorkspaceState> = {
           'public-indonesia-fishing-effort:v20200320',
           'public-panama-fishing-effort:v20200331',
           'public-peru-fishing-effort:v20200324',
+          'public-ecuador-fishing-effort:v20210612',
         ],
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,

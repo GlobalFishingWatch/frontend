@@ -50,8 +50,9 @@ export const TEMPLATE_DATAVIEW_IDS = [
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
 ]
 
-export const DEFAULT_DATAVIEW_IDS = [
+export const DEFAULT_PRESENCE_DATAVIEWS = [
   DEFAULT_PRESENCE_DATAVIEW_ID, // In case the workspace doesn't have the dataview added,
   DEFAULT_VIIRS_DATAVIEW_ID, // we ensure the + icon woks for the presence category
-  ...TEMPLATE_DATAVIEW_IDS,
 ]
+
+export const DEFAULT_DATAVIEW_IDS = [...DEFAULT_PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]

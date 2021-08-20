@@ -4,20 +4,24 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
+import { EndpointId } from '@globalfishingwatch/api-types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActivityDataviews,
+  selectAvailableFishingDataviews,
+  selectAvailablePresenceDataviews,
+} from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   getFishingDataviewInstance,
-  getPresenceDataviewInstance,
-  getViirsDataviewInstance,
+  getActivityDataviewInstanceFromDataview,
 } from 'features/dataviews/dataviews.utils'
-import { WorkspaceActivityCategory, WorkspacePresenceCategory } from 'types'
+import { WorkspaceActivityCategory } from 'types'
 import {
   selectBivariateDataviews,
   selectActivityCategory,
@@ -25,7 +29,14 @@ import {
 } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+import {
+  DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_PRESENCE_DATAVIEW_ID,
+  DEFAULT_VIIRS_DATAVIEW_ID,
+} from 'data/workspaces'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
+import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
 
@@ -36,6 +47,8 @@ function ActivitySection(): React.ReactElement {
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
   const activityCategory = useSelector(selectActivityCategory)
+  const fishingDataviews = useSelector(selectAvailableFishingDataviews)
+  const presenceDataviews = useSelector(selectAvailablePresenceDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
@@ -77,22 +90,37 @@ function ActivitySection(): React.ReactElement {
     [dispatchQueryParams, start, end]
   )
 
-  const onAddFishingClick = useCallback(() => {
-    dispatchQueryParams({ bivariateDataviews: undefined })
-    const dataviewInstance = getFishingDataviewInstance()
-    upsertDataviewInstance(dataviewInstance)
-    setAddedDataviewId(dataviewInstance.id)
-  }, [dispatchQueryParams, upsertDataviewInstance])
-
-  const onAddPresenceClick = useCallback(
-    (presenceCategory: WorkspacePresenceCategory) => {
+  const addDataviewInstance = useCallback(
+    (dataviewInstance: UrlDataviewInstance) => {
       dispatchQueryParams({ bivariateDataviews: undefined })
-      const dataviewInstance =
-        presenceCategory === 'presence' ? getPresenceDataviewInstance() : getViirsDataviewInstance()
       upsertDataviewInstance(dataviewInstance)
       setAddedDataviewId(dataviewInstance.id)
     },
     [dispatchQueryParams, upsertDataviewInstance]
+  )
+
+  const onAddFishingClick = useCallback(
+    (dataviewId?: number) => {
+      const dataview = fishingDataviews.find((d) => d.id === dataviewId)
+      const dataviewInstance = dataview
+        ? getActivityDataviewInstanceFromDataview(dataview)
+        : getFishingDataviewInstance()
+      if (dataviewInstance) {
+        addDataviewInstance(dataviewInstance)
+      }
+    },
+    [addDataviewInstance, fishingDataviews]
+  )
+
+  const onAddPresenceClick = useCallback(
+    (dataviewId: number) => {
+      const dataview = presenceDataviews.find((d) => d.id === dataviewId)
+      const dataviewInstance = getActivityDataviewInstanceFromDataview(dataview)
+      if (dataviewInstance) {
+        addDataviewInstance(dataviewInstance)
+      }
+    },
+    [addDataviewInstance, presenceDataviews]
   )
 
   const onBivariateDataviewsClick = useCallback(
@@ -147,16 +175,44 @@ function ActivitySection(): React.ReactElement {
     []
   )
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
-  const presenceOptions = useMemo(
-    () => [
-      {
-        id: 'presence' as WorkspacePresenceCategory,
-        label: t('common.presence', 'Fishing presence'),
-      },
-      { id: 'viirs' as WorkspacePresenceCategory, label: t('common.viirs', 'VIIRS') },
-    ],
-    [t]
-  )
+  const fishingOptions = useMemo(() => {
+    const options = fishingDataviews.map((dataview) => {
+      const option = { id: dataview.id, label: dataview.name }
+      if (dataview.id === DEFAULT_FISHING_DATAVIEW_ID) {
+        option.label = t('common.apparentFishing', 'Apparent Fishing Effort')
+      } else {
+        const datasetId = dataview.datasetsConfig?.find(
+          (d) => d.endpoint === EndpointId.FourwingsTiles
+        )?.datasetId
+        if (datasetId) {
+          option.label = getDatasetLabel({ id: datasetId })
+        }
+      }
+
+      return option
+    })
+    return options.sort((a, b) => a.label.localeCompare(b.label))
+  }, [fishingDataviews, t])
+
+  const presenceOptions = useMemo(() => {
+    const options = presenceDataviews.map((dataview) => {
+      const option = { id: dataview.id, label: dataview.name }
+      if (dataview.id === DEFAULT_PRESENCE_DATAVIEW_ID) {
+        option.label = t('common.presence', 'Fishing presence')
+      } else if (dataview.id === DEFAULT_VIIRS_DATAVIEW_ID) {
+        option.label = t('common.viirs', 'VIIRS')
+      } else {
+        const datasetId = dataview.datasetsConfig?.find(
+          (d) => d.endpoint === EndpointId.FourwingsTiles
+        )?.datasetId
+        if (datasetId) {
+          option.label = getDatasetLabel({ id: datasetId })
+        }
+      }
+      return option
+    })
+    return options.sort((a, b) => a.label.localeCompare(b.label))
+  }, [presenceDataviews, t])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
@@ -171,7 +227,7 @@ function ActivitySection(): React.ReactElement {
         />
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
-            {activityCategory === 'presence' ? (
+            {activityCategory === 'presence' && (
               <TooltipContainer
                 visible={newLayerOpen}
                 onClickOutside={() => {
@@ -198,16 +254,45 @@ function ActivitySection(): React.ReactElement {
                   />
                 </div>
               </TooltipContainer>
-            ) : (
-              <IconButton
-                icon="plus"
-                type="border"
-                size="medium"
-                tooltip={t('layer.add', 'Add layer')}
-                tooltipPlacement="top"
-                onClick={() => onAddFishingClick()}
-              />
             )}
+            {activityCategory === 'fishing' &&
+              (fishingDataviews.length > 1 ? (
+                <TooltipContainer
+                  visible={newLayerOpen}
+                  onClickOutside={() => {
+                    setNewLayerOpen(false)
+                  }}
+                  component={
+                    <TooltipListContainer>
+                      {fishingOptions.map(({ id, label }) => (
+                        <li key={id}>
+                          <button onClick={() => onAddFishingClick(id)}>{label}</button>
+                        </li>
+                      ))}
+                    </TooltipListContainer>
+                  }
+                >
+                  <div className={styles.lastBtn}>
+                    <IconButton
+                      icon="plus"
+                      type="border"
+                      size="medium"
+                      tooltip={t('layer.add', 'Add layer')}
+                      tooltipPlacement="top"
+                      onClick={() => setNewLayerOpen(true)}
+                    />
+                  </div>
+                </TooltipContainer>
+              ) : (
+                <IconButton
+                  icon="plus"
+                  type="border"
+                  size="medium"
+                  tooltip={t('layer.add', 'Add layer')}
+                  tooltipPlacement="top"
+                  onClick={() => onAddFishingClick()}
+                />
+              ))}
           </div>
         )}
       </div>
@@ -219,13 +304,14 @@ function ActivitySection(): React.ReactElement {
           bivariateDataviews === undefined && isVisible && isNextVisible && !isLastElement
         return (
           <Fragment key={dataview.id}>
-            <LayerPanel
-              key={dataview.id}
-              dataview={dataview}
-              showBorder={!showBivariateIcon}
-              isOpen={dataview.id === addedDataviewId}
-              onToggle={onToggleLayer(dataview)}
-            />
+            <LayerPanelContainer key={dataview.id} dataview={dataview}>
+              <LayerPanel
+                dataview={dataview}
+                showBorder={!showBivariateIcon}
+                isOpen={dataview.id === addedDataviewId}
+                onToggle={onToggleLayer(dataview)}
+              />
+            </LayerPanelContainer>
             {showBivariateIcon && (
               <div className={cx(activityStyles.bivariateToggleContainer, 'print-hidden')}>
                 <IconButton

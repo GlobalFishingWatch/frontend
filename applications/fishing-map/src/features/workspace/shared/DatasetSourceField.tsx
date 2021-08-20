@@ -5,6 +5,7 @@ import TagList, { TagItem } from '@globalfishingwatch/ui-components/dist/tag-lis
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { dataviewWithPrivateDatasets } from 'features/dataviews/dataviews.utils'
 
 type DatasetFilterSourceProps = {
   dataview: UrlDataviewInstance
@@ -15,8 +16,9 @@ function DatasetFilterSource({ dataview }: DatasetFilterSourceProps) {
   const sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
+  const hasPrivateDatasets = dataviewWithPrivateDatasets(dataview as UrlDataviewInstance)
   let mergedSourceOptions: TagItem[] = []
-  if (vmsSources?.length > 1) {
+  if (!hasPrivateDatasets && vmsSources?.length > 1) {
     mergedSourceOptions = [
       ...nonVmsSources,
       {

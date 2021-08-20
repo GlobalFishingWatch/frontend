@@ -1,4 +1,5 @@
 import React from 'react'
+import cx from 'classnames'
 import Tippy from '@tippyjs/react'
 import styles from './TooltipContainer.module.css'
 
@@ -6,7 +7,8 @@ interface TooltipContainerProps {
   visible: boolean
   children: React.ReactElement
   component: React.ReactElement | null
-  onClickOutside: () => void
+  className?: string
+  onClickOutside?: () => void
 }
 
 export function TooltipListContainer({
@@ -17,7 +19,15 @@ export function TooltipListContainer({
   return <ul className={styles.listContainer}>{children}</ul>
 }
 
-function TooltipContainer({ visible, children, component, onClickOutside }: TooltipContainerProps) {
+const onClickOutSideFallback = () => {}
+
+function TooltipContainer({
+  visible,
+  children,
+  component,
+  className = '',
+  onClickOutside = onClickOutSideFallback,
+}: TooltipContainerProps) {
   return (
     <Tippy
       interactive
@@ -27,7 +37,7 @@ function TooltipContainer({ visible, children, component, onClickOutside }: Tool
       render={(attrs) => {
         if (!visible) return null
         return (
-          <div className={styles.tooltipContent} tabIndex={-1} {...attrs}>
+          <div className={cx(styles.tooltipContent, className)} tabIndex={-1} {...attrs}>
             {component}
             <div className={styles.tooltipArrow} data-popper-arrow></div>
           </div>

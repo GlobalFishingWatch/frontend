@@ -9,9 +9,11 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { PRIVATE_SUFIX } from 'data/config'
 import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'
 
 const DEFAULT_GROUP_ID = 'Default'
+const PRIVATE_SUPPORTED_GROUPS = ['Indonesia', 'Peru', 'Panama']
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
@@ -59,6 +61,24 @@ export const selectUserWorkspaces = createSelector(
   (userData, workspaces) => {
     return orderBy(
       workspaces?.filter((workspace) => workspace.ownerId === userData?.id),
+      'createdAt',
+      'desc'
+    )
+  }
+)
+
+export const selectUserWorkspacesPrivate = createSelector(
+  [selectUserGroups, selectWorkspaces],
+  (userGroups = [], workspaces) => {
+    const groupsWithAccess = userGroups
+      .filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g))
+      .map((g) => g.toLowerCase())
+    return orderBy(
+      workspaces?.filter(
+        (workspace) =>
+          workspace.id.includes(PRIVATE_SUFIX) &&
+          groupsWithAccess.some((g) => workspace.id.includes(g))
+      ),
       'createdAt',
       'desc'
     )

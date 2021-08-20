@@ -22,8 +22,8 @@
     "analysis": "Crear un análisis para esta área",
     "analysisNotAvailable": "Activa una actividad o capa de referencia para analizarla en este área",
     "apparentFishing": "Esfuerzo de pesca aparente",
-    "category": "Category",
     "cancel": "Cancel",
+    "category": "Category",
     "comingSoon": "¡próximamente!",
     "confirm": "Confirmar",
     "context_area_plural": "Capas de referencias",
@@ -35,6 +35,7 @@
     "description": "Descripción",
     "detection": "Detección",
     "detection_plural": "Detecciones",
+    "dismiss": "Dissmiss",
     "environment": "Datos ambientales",
     "events": "Eventos",
     "feedback": "Comentarios",
@@ -44,6 +45,7 @@
     "hour_plural": "horas",
     "in": "en",
     "layerList": "Lista de capas",
+    "learnMore": "Learn more",
     "loggedAs": "Registrado como",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
@@ -92,6 +94,7 @@
     "requiredFields": "Campos requeridos {{fields}}",
     "timeNameField": "Campo nombre de hora",
     "title": "Datos",
+    "title_plural": "Datos",
     "typePoints": " Puntos",
     "typePointsDescription": "Muestra una o varias posiciones de tamaño por cualquier valor cuantitativo en tus datos.",
     "typePolygons": " Polígonos",
@@ -100,8 +103,7 @@
     "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o embarcaciones.",
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir datos (gratis y toma 2 minutos)",
     "uploadNewContext": "Subir nuevas capas de referencia",
-    "uploadNewEnviroment": "Subir un nuevo dato ambiental",
-    "title_plural": "Datos"
+    "uploadNewEnviroment": "Subir un nuevo dato ambiental"
   },
   "errors": {
     "contactUs": "Por favor <1>póngase en contacto con nosotros</1> para informar del problema.",
@@ -257,7 +259,7 @@
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
     "graph": "Gráfico",
     "graphOptions": {
-      "depth": "Profunda $t(common.comingPron)",
+      "depth": "Profundidad $t(common.comingSoon)",
       "none": "Ninguna",
       "speed": "Velocidad"
     },
@@ -303,6 +305,7 @@
       "set_gillnets": "Redes de enmalle",
       "set_longlines": "Palangres",
       "squid_jigger": "Jigger calamar",
+      "squid_jiggers": "Gear Squid Jiggers",
       "trawlers": "Red de arrastre",
       "trollers": "Curricaneros",
       "tuna_purse_seines": "Red de cerco atunera"

@@ -7,7 +7,7 @@ export const gfwVessel: GFWDetail = {
   geartype: 'trawlers',
   id: 'ea39ee174-4f61-cf0a-9ed8-fa5c25459890',
   imo: '0',
-  lastTransmissionDate: '2013-05-31T09:37:36Z',
+  lastTransmissionDate: '2021-08-17T09:08:00Z',
   mmsi: '247099420',
   normalized_shipname: 'MARIA MARIA 2',
   shipname: 'MARIA MARIA 2',
@@ -28,11 +28,20 @@ export const tmtVessel: TMTDetail = {
     loa: [{ value: '18.550', firstSeen: '1991-02-02T00:00:00.000Z' }],
     mmsi: [],
     name: [
-      { value: 'MARIA MADRE II', firstSeen: '1991-02-02T00:00:00.000Z' },
+      {
+        value: 'MARIA MADRE II',
+        firstSeen: '1991-02-02T00:00:00.000Z',
+        endDate: '2013-05-14T03:31:40Z',
+      },
       {
         value: 'MARIA MARIA',
         firstSeen: '1981-02-02T00:00:00.000Z',
         endDate: '1991-02-02T00:00:00.000Z',
+      },
+      {
+        value: 'MAR',
+        firstSeen: '',
+        endDate: '',
       },
       {
         value: 'MAAAARIA',
@@ -44,7 +53,7 @@ export const tmtVessel: TMTDetail = {
     vesselType: [{ value: 'Fishing Vessel', firstSeen: '1991-02-02T00:00:00.000Z' }],
     gear: [
       { value: 'Otter trawl', firstSeen: '1991-02-02T00:00:00.000Z' },
-      { value: 'Pole and line', firstSeen: '1991-02-02T00:00:00.000Z' },
+      { value: 'Pole and line', firstSeen: '2001-02-02T00:00:00.000Z' },
       { value: 'Purse seine' },
     ],
     depth: [],

@@ -1,5 +1,24 @@
 # @globalfishingwatch/ui-components
 
+## 10.1.2
+
+### Patch Changes
+
+- new private icon option
+
+## 10.1.1
+
+### Patch Changes
+
+- eae1524c: onclick callback for link buttons
+
+## 10.1.0
+
+### Minor Changes
+
+- 5fccc9f4: Added port visit event
+- 06bbf6b9: Modified port visit event
+
 ## 10.0.0
 
 ### Patch Changes
