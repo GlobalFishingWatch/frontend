@@ -1,10 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { resolveResourcesFromDatasetConfigs } from '@globalfishingwatch/dataviews-client'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import { ThinningLevels, THINNING_LEVELS } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { isGuestUser } from 'features/user/user.selectors'
-import { selectDataviewInstancesResolved } from '../dataviews/dataviews.selectors'
 import { selectResources } from './resources.slice'
 
 export const selectVisibleResources = createSelector(
