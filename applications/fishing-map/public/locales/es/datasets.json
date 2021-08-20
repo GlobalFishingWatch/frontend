@@ -1,6 +1,6 @@
 {
   "full-chile-fishing-vessels": {
-    "name": "VMS Chile",
+    "name": "VMS de Chile (Buques de pesca)",
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
@@ -20,7 +20,7 @@
     }
   },
   "full-indonesia-fishing-vessels": {
-    "name": "VMS Indonesia",
+    "name": "VMS de Indonesia (Buques de pesca)",
     "description": "Dataset for VMS Indonesia (Public)",
     "schema": {
       "id": "id",
@@ -32,7 +32,7 @@
     }
   },
   "full-peru-fishing-vessels": {
-    "name": "Peru VMS",
+    "name": "VMS de Perú (Barcos pesqueros)",
     "description": "Dataset for VMS Peru (Public)",
     "schema": {
       "id": "id",
@@ -119,7 +119,7 @@
     }
   },
   "private-panama-fishing-vessels": {
-    "name": "Panama Private VMS (Fishing Vessels)",
+    "name": "VMS de Panamá (Buques de pesca)",
     "description": "Dataset for VMS Panama (Private)",
     "schema": {
       "id": "id",
@@ -547,7 +547,7 @@
     "schema": {}
   },
   "public-global-carrier-vessels": {
-    "name": "AIS (Carrier Vessels)",
+    "name": "AIS (buques de transporte)",
     "description": "Carriers from AIS",
     "schema": {
       "id": "id",
@@ -630,7 +630,7 @@
     }
   },
   "public-global-fishing-vessels": {
-    "name": "AIS (Fishing Vessels)",
+    "name": "AIS (Buques de pesca)",
     "description": "Vessels from AIS",
     "schema": {
       "id": "id",
@@ -686,7 +686,7 @@
     }
   },
   "public-global-support-vessels": {
-    "name": "AIS (Support Vessels)",
+    "name": "AIS (Buques de soporte)",
     "description": "Support vessels from AIS",
     "schema": {
       "id": "id",
@@ -840,7 +840,7 @@
     }
   },
   "public-panama-fishing-vessels": {
-    "name": "Panamá VMS",
+    "name": "VMS de Panamá  (Buques de pesca)",
     "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
     "schema": {
       "id": "id",
