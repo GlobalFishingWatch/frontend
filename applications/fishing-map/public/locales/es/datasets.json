@@ -31,6 +31,21 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "full-panama-carrier-vessels": {
+    "name": "Panama VMS (Carrier Vessels)",
+    "description": "Dataset for VMS Panama - Carriers (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "mmsi": "mmsi",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "full-peru-fishing-vessels": {
     "name": "VMS de Perú (Barcos pesqueros)",
     "description": "Dataset for VMS Peru (Public)",
@@ -66,7 +81,7 @@
   },
   "private-brazil-opentuna-presence": {
     "name": "Brazil Open Tuna VMS",
-    "description": "Brazil Open Tuna VMS Presence (Private)",
+    "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por ATLANTIC'S ALLIANCE FOR SOSTENIBLE TUNA, un grupo de empresas atuneras privadas brasileñas que decidieron ser transparentes, más información aquí. Los datos se recopilan utilizando su Sistema de Monitoreo de Embarcaciones (VMS) a través de satélites, incluida la identificación, ubicación, velocidad y rumbo de la embarcación. La información que se muestra representa la presencia del barco.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -120,7 +135,7 @@
   },
   "private-panama-fishing-vessels": {
     "name": "VMS de Panamá (Buques de pesca)",
-    "description": "Dataset for VMS Panama (Private)",
+    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
     "schema": {
       "id": "id",
       "imo": "imo",
@@ -266,7 +281,7 @@
   },
   "public-chile-presence": {
     "name": "VMS Chile",
-    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por el Servicio Nacional de Pesca y Acuicultura del gobierno chileno, SERNAPESCA. También es posible utilizar la ficha FILTERS en nuestra caja de herramientas para ver por separado los datos del VMS chileno para la pesca artesanal (&lt;18 metros) y buques industriales de pesca (&gt;18 metros). Tenga en cuenta que hay unos pocos barcos que son &lt;18 metros pero considerados industriales porque estaban registrados en la captura de cuotas industriales. SERNAPESCA también está utilizando nuestro mapa para visualizar y rastrear las posiciones de los buques para su flota, incluyendo los buques involucrados en la acuicultura (Visite el mapa en el sitio web de SERNAPESCA). Los datos se recogen utilizando los datos VMS chilenos vía satélites y receptores terrestres, y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesquera aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "description": "Esta capa utiliza el Sistema de Monitoreo de Embarcaciones (VMS) recibido por el sistema VMS de Chile vía satélite y contiene identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más.\nCada punto de la capa de datos de la embarcación del transportista representa una posición de los transportistas, pero no se muestran todas las posiciones. Las posiciones de los buques de transporte se muestran una vez al día. Haga clic en la posición de una embarcación de transporte para ver la ruta completa de la embarcación. ",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -547,7 +562,7 @@
     "schema": {}
   },
   "public-global-carrier-vessels": {
-    "name": "AIS (buques de transporte)",
+    "name": "AIS (Buques de transporte)",
     "description": "Carriers from AIS",
     "schema": {
       "id": "id",
@@ -824,6 +839,23 @@
     "name": "MPA - Sin actividad pesquera (Fuente: WDPA)",
     "description": "90% de la ZEE",
     "schema": {}
+  },
+  "public-panama-carrier-presence": {
+    "name": "Panama VMS",
+    "description": "Esta capa utiliza los datos del Sistema de Monitoreo de Buques (VMS) proporcionados por la Autoridad Panameña de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panamá vía satélite y contienen identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más. Cada punto de la capa de datos de la embarcación del transportista representa una posición de los transportistas, pero no se muestran todas las posiciones. Las posiciones de los buques de transporte se muestran una vez al día. Haga clic en la posición de una embarcación de transporte para ver la ruta completa de la embarcación.",
+    "schema": {
+      "id": "id",
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shipname": "shipname",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "distance_from_shore_m": "distance_from_shore_m",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
   },
   "public-panama-fishing-effort": {
     "name": "VMS de Panamá",
