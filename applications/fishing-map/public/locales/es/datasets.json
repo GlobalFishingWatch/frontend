@@ -1,4 +1,69 @@
 {
+  "full-chile-fishing-vessels": {
+    "name": "VMS Chile",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industry": "industry",
+          "small_fisheries": "small_fisheries"
+        }
+      },
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionData": "firstTransmissionData",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "full-indonesia-fishing-vessels": {
+    "name": "VMS Indonesia",
+    "description": "Dataset for VMS Indonesia (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "full-peru-fishing-vessels": {
+    "name": "Peru VMS",
+    "description": "Dataset for VMS Peru (Public)",
+    "schema": {
+      "id": "id",
+      "beam": "beam",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "width": "width",
+      "length": "length",
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "Peru": "Peru",
+          "Foreign": "Foreign"
+        }
+      },
+      "source": "source",
+      "capacity": "capacity",
+      "shipname": "shipname",
+      "nationalId": "nationalId",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-brazil-opentuna-presence": {
     "name": "Brazil Open Tuna VMS",
     "description": "Brazil Open Tuna VMS Presence (Private)",
@@ -10,7 +75,7 @@
     }
   },
   "private-ecuador-fishing-effort": {
-    "name": "VMS Ecuador",
+    "name": "VMS de Ecuador",
     "description": "Description pending",
     "schema": {
       "lat": "lat",
@@ -51,6 +116,23 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-panama-fishing-vessels": {
+    "name": "Panama Private VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Panama (Private)",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "flag",
+      "length": "length",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "vesel_type": "vesel_type",
+      "net_tonnage": "net_tonnage",
+      "gross_tonnage": "gross_tonnage",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "private-peru-fishing-effort": {
@@ -464,6 +546,18 @@
     "description": "Las zonas de pesca restringidas son areas definidas geográficamente en donde algunas actividades específicas de pesca están temporalmente prohibidas o restringidas con el objetivo de mejorar los patrones de explotación y conservar poblaciones específicas, así como también hábitats delicados de los fondos marinos. Fuente: FAO.",
     "schema": {}
   },
+  "public-global-carrier-vessels": {
+    "name": "AIS (Carrier Vessels)",
+    "description": "Carriers from AIS",
+    "schema": {
+      "id": "id",
+      "dataset": "dataset",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-global-encounters-events-carriers-fishing": {
     "name": "Encuentros para embarcaciones Transportistas y Pesqueras (AIS)",
     "description": "Identificado de los datos AIS como lugares donde dos buques, un transportador y uno pesquero; estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media de &lt;2 nudos, y a menos de 10 km de la costa.",
@@ -535,6 +629,46 @@
       "vessel_id": "i_id"
     }
   },
+  "public-global-fishing-vessels": {
+    "name": "AIS (Fishing Vessels)",
+    "description": "Vessels from AIS",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "flag",
+      "mmsi": "mmsi",
+      "source": "source",
+      "dataset": "dataset",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "tuna_purse_seines": "tuna_purse_seines",
+          "driftnets": "driftnets",
+          "trollers": "trollers",
+          "set_longlines": "set_longlines",
+          "purse_seines": "purse_seines",
+          "pots_and_traps": "pots_and_traps",
+          "other_fishing": "other_fishing",
+          "dredge_fishing": "dredge_fishing",
+          "set_gillnets": "set_gillnets",
+          "fixed_gear": "fixed_gear",
+          "trawlers": "trawlers",
+          "fishing": "fishing",
+          "seiners": "seiners",
+          "other_purse_seines": "other_purse_seines",
+          "other_seines": "other_seines",
+          "squid_jigger": "squid_jigger",
+          "pole_and_line": "pole_and_line",
+          "drifting_longlines": "drifting_longlines"
+        }
+      },
+      "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-global-presence": {
     "name": "AIS",
     "description": "Utilizamos datos sobre la identidad, el tipo, la ubicación, la velocidad, la dirección y más de una embarcación que se transmiten mediante el Sistema de identificación automática (AIS) y se recopilan a través de satélites y receptores terrestres. AIS fue desarrollado para seguridad / prevención de colisiones. Analizamos los datos AIS recopilados de los barcos que nuestra investigación ha identificado como transportistas. La capa de actividad muestra un mapa de calor de la presencia de las embarcaciones. La presencia se determina tomando una posición por día por embarcación a partir de las posiciones transmitidas por el AIS de la embarcación.",
@@ -549,6 +683,29 @@
           "unknown": "Otros"
         }
       }
+    }
+  },
+  "public-global-support-vessels": {
+    "name": "AIS (Support Vessels)",
+    "description": "Support vessels from AIS",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "flag",
+      "mmsi": "mmsi",
+      "source": "source",
+      "dataset": "dataset",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "Purse Seine Support Vessel": "Purse Seine Support Vessel"
+        }
+      },
+      "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-global-viirs": {
