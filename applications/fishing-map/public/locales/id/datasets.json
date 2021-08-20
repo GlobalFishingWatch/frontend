@@ -152,7 +152,7 @@
     "schema": {}
   },
   "public-brazil-opentuna-presence": {
-    "name": "Brazil VMS",
+    "name": "Brazil Open Tuna VMS",
     "description": "Presence (Brazil Open tuna)",
     "schema": {
       "lat": "lat",
@@ -215,6 +215,26 @@
     "name": "SAR without an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) without a known match to any vessel recorded using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
     "schema": {}
+  },
+  "public-ecuador-fishing-effort": {
+    "name": "Ecuador VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "hours": "hours",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
   },
   "public-eez-areas": {
     "name": "ZEE (Sumber: Marine Regions)",
