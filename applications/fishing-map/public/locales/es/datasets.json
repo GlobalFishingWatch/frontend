@@ -32,7 +32,7 @@
     }
   },
   "full-panama-carrier-vessels": {
-    "name": "Panama VMS (Carrier Vessels)",
+    "name": "VMS de Panamá (Buques de transporte)",
     "description": "Dataset for VMS Panama - Carriers (Public)",
     "schema": {
       "id": "id",
@@ -250,7 +250,7 @@
   },
   "public-brazil-opentuna-presence": {
     "name": "Brazil Open Tuna VMS",
-    "description": "Brazil Open Tuna VMS Presence",
+    "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por ATLANTIC'S ALLIANCE FOR SOSTENIBLE TUNA, un grupo de empresas atuneras privadas brasileñas que decidieron ser transparentes, más información aquí. Los datos se recopilan utilizando su Sistema de Monitoreo de Embarcaciones (VMS) a través de satélites, incluida la identificación, ubicación, velocidad y rumbo de la embarcación. La información que se muestra representa la presencia del barco.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
