@@ -66,7 +66,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
   (dataviewInstances) => {
     const thinningConfig = THINNING_LEVELS[APP_THINNING]
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
-      [Generators.Type.Track]: ([track, info, ...events]) => {
+      [Generators.Type.Track]: ([info, track, ...events]) => {
         const trackWithThinning = track
         const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
           id,
