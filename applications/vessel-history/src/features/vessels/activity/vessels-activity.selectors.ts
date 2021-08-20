@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
 import {
   resolveDataviewDatasetResource,
-  resolveDataviewEventsResources,
+  resolveDataviewDatasetResources,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
@@ -30,7 +30,7 @@ export const selectEventsForTracks = createSelector(
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      const eventsResources = resolveDataviewEventsResources(dataview)
+      const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
       const tracksResourceResolved =
