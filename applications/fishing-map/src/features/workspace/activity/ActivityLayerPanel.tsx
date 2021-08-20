@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
+import {
+  DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_PRESENCE_DATAVIEW_ID,
+  DEFAULT_VIIRS_DATAVIEW_ID,
+} from 'data/workspaces'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
@@ -88,17 +91,18 @@ function ActivityLayerPanel({
     setFiltersOpen(false)
   }
 
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  let datasetName = dataset ? getDatasetNameTranslated(dataset) : dataview.name || ''
+  const activeDatasets = dataview.datasets?.filter((d) => dataview.config?.datasets.includes(d.id))
+  let datasetName = dataview.name || ''
   const fishingDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
-  if (
-    dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID ||
-    dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
-  ) {
-    datasetName = presenceDataview
-      ? t(`common.presence`, 'Vessel presence')
-      : t(`common.apparentFishing`, 'Apparent Fishing Effort')
+  if (dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID) {
+    datasetName = t(`common.apparentFishing`, 'Apparent Fishing Effort')
+  } else if (dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID) {
+    datasetName = t(`common.presence`, 'Vessel presence')
+  } else if (dataview.dataviewId === DEFAULT_VIIRS_DATAVIEW_ID) {
+    datasetName = t(`common.viirs`, 'Night light detections (VIIRS)')
+  } else if (activeDatasets && activeDatasets.length === 1) {
+    datasetName = getDatasetNameTranslated(activeDatasets[0])
   }
   const TitleComponent = (
     <Title
