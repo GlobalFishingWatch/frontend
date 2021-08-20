@@ -1,5 +1,5 @@
-import { intersection, lowerCase } from 'lodash'
-import { Dataset, Dataview, EventTypes } from '@globalfishingwatch/api-types'
+import { intersection, lowerCase, uniq } from 'lodash'
+import { Dataset, Dataview, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -27,6 +27,17 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
   if (!id) return name || ''
   const label = getDatasetNameTranslated(dataset)
   return isPrivateDataset(dataset) ? `🔒 ${label}` : label
+}
+
+export const getDatasetsInDataviews = (
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+) => {
+  return uniq(
+    dataviews?.flatMap((dataviews) => {
+      if (!dataviews.datasetsConfig) return []
+      return dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+    })
+  )
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {

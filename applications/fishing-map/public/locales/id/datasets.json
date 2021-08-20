@@ -248,6 +248,19 @@
     "description": "25 nm buffer around islands recommending shipping diversion",
     "schema": {}
   },
+  "public-brazil-opentuna-fishing-vessels": {
+    "name": "Brazil Open Tuna VMS (Fishing vessels)",
+    "description": "Dataset for VMS Brazil (Public)",
+    "schema": {
+      "id": "id",
+      "code": "code",
+      "source": "source",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-brazil-opentuna-presence": {
     "name": "Brazil Open Tuna VMS",
     "description": "Presence (Brazil Open tuna)",
@@ -331,6 +344,19 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-ecuador-fishing-vessels": {
+    "name": "Ecuador VMS (Fishing vessels)",
+    "description": "Dataset for VMS Ecuador (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "nationalId": "nationalId",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-eez-areas": {
