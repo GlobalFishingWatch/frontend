@@ -31,6 +31,21 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "full-panama-carrier-vessels": {
+    "name": "Panama VMS (Carrier Vessels)",
+    "description": "Dataset for VMS Panama - Carriers (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "mmsi": "mmsi",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "full-peru-fishing-vessels": {
     "name": "Peru VMS",
     "description": "Dataset for VMS Peru (Public)",
@@ -266,7 +281,7 @@
   },
   "public-chile-presence": {
     "name": "VMS Chili",
-    "description": "Data Vessel Monitoring System (VMS) disediakan oleh fisheries and aquaculture regulator (SERNAPESCA) pemerintah Chili. Data VMS Chili dapat difilter untuk kapal penangkap ikan skala kecil (&lt;18 meter) dan kapal penangkap ikan industri (&gt; 18 meter). Perhatikan bahwa beberapa kapal berukuran &lt;18 meter tetapi dianggap industri karena terdaftar dalam penangkapan kuota industri. SERNAPESCA juga menggunakan peta kami untuk memvisualisasikan dan melacak posisi kapal untuk armadanya, termasuk kapal yang terlibat dalam akuakultur. Data dikumpulkan menggunakan VMS Chili melalui satelit dan penerima terestrial dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya di peta Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi 'aktivitas penangkapan ikan yang terlihat.' Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah 'aktivitas memancing', 'memancing', dan 'upaya penangkapan ikan', sebagai 'terlihat jelas' dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang 'aktivitas penangkapan ikan yang terlihat' harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
+    "description": "This layer uses the Vessel Monitoring System (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). The data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. Click on a carrier vessel’s position to view the vessel’s complete track.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -824,6 +839,23 @@
     "name": "Marine Protection Zone",
     "description": "90% of EEZ",
     "schema": {}
+  },
+  "public-panama-carrier-presence": {
+    "name": "Panama VMS",
+    "description": "This layer uses the Vessel Monitoring System (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). The data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. Click on a carrier vessel’s position to view the vessel’s complete track.",
+    "schema": {
+      "id": "id",
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shipname": "shipname",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "distance_from_shore_m": "distance_from_shore_m",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
   },
   "public-panama-fishing-effort": {
     "name": "VMS Panama",
