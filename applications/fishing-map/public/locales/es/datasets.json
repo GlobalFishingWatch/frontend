@@ -248,6 +248,19 @@
     "description": "25 nm de búfer alrededor de las islas recomendando circunnavegar",
     "schema": {}
   },
+  "public-brazil-opentuna-fishing-vessels": {
+    "name": "Brazil Open Tuna VMS (Fishing vessels)",
+    "description": "Dataset for VMS Brazil (Public)",
+    "schema": {
+      "id": "id",
+      "code": "code",
+      "source": "source",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-brazil-opentuna-presence": {
     "name": "Brazil Open Tuna VMS",
     "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por ATLANTIC'S ALLIANCE FOR SOSTENIBLE TUNA, un grupo de empresas atuneras privadas brasileñas que decidieron ser transparentes, más información aquí. Los datos se recopilan utilizando su Sistema de Monitoreo de Embarcaciones (VMS) a través de satélites, incluida la identificación, ubicación, velocidad y rumbo de la embarcación. La información que se muestra representa la presencia del barco.",
@@ -331,6 +344,19 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-ecuador-fishing-vessels": {
+    "name": "Ecuador VMS (Fishing vessels)",
+    "description": "Dataset for VMS Ecuador (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "nationalId": "nationalId",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-eez-areas": {
