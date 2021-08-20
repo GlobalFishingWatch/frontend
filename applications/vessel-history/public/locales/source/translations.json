@@ -2,7 +2,6 @@
   "common": {
     "activity": "activity",
     "AIS": "AIS",
-    "any": "Any",
     "from": "from",
     "info": "info",
     "map": "map",
@@ -11,7 +10,10 @@
     "since": "since",
     "timeRange": "time range",
     "to": "to",
+    "typeToSeach": "Type to search",
+    "typeToSearch": "Type to search",
     "unknown": "Unknown",
+    "any": "Any",
     "currentTimeRange": "current time range",
     "high": "High",
     "low": "Low",
@@ -45,6 +47,8 @@
     "minuteAbbreviated": "{{count}}m",
     "minuteAbbreviated_plural": "{{count}}m",
     "nextPort": "Next port traveled",
+    "nSelected": "{{count}} selected",
+    "nSelected_plural": "{{count}} selected",
     "port": "Port",
     "portAction": "Docked",
     "portAt": "Docked at {{port}}",
@@ -106,10 +110,10 @@
       "label": "Events in these MPAs"
     },
     "portVisits": {
-      "inputEnd": "ports",
-      "inputStart": "Port visits in",
       "inThesePortStates": "Events in these port States",
-      "title": "Port Visits"
+      "title": "Port Visits",
+      "inputEnd": "ports",
+      "inputStart": "Port visits in"
     },
     "rfmos": {
       "label": "Events in these RFMOS"

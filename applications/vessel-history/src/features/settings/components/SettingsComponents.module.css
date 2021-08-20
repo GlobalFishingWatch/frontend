@@ -22,3 +22,6 @@
 .settingsField.inlineRow > div input {
   text-align: center;
 }
+.multiSelectRegions li {
+  overflow: hidden;
+}

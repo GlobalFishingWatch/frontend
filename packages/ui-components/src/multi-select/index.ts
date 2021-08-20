@@ -17,6 +17,16 @@ export type MultiSelectOnChange = (
   selectedOptions: MultiSelectOption[]
 ) => void
 /**
+ * Callback on filtering options
+ * @param {MultiSelectOption} options - The list of options available
+ * @param {string} [filter] - The text entered by the user to filter on
+ */
+export type MultiSelectOnFilter = (
+  allOptions: MultiSelectOption[],
+  filteredOptions: MultiSelectOption[],
+  filter?: string
+) => MultiSelectOption[]
+/**
  * Callback on removing all options
  */
 export type MultiSelectOnRemove = (event: React.MouseEvent) => void

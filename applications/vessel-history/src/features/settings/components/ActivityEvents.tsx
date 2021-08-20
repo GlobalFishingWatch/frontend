@@ -2,6 +2,10 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { MultiSelect, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import {
+  MultiSelectOnFilter,
+  MultiSelectOption,
+} from '@globalfishingwatch/ui-components/dist/multi-select'
 import { SettingEventSectionName, SettingsEvents } from '../settings.slice'
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
@@ -14,16 +18,21 @@ interface SettingsProps {
   minDistance: number
   maxDistance: number
 }
-
+interface MpaAutocompleteProps {
+  placeholder: string
+  onFilterOptions: MultiSelectOnFilter
+}
+const truncateLabels = (option: MultiSelectOption) => ({
+  ...option,
+  label: option.label.slice(0, 55),
+})
 const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { settings, section } = props
   const { t } = useTranslation()
   const { setSettingOptions, setSetting } = useSettingsConnect()
 
-  const { EEZ_REGIONS, RFMOS_REGIONS, MPAS_REGIONS, getOptions } = useSettingsRegionsConnect(
-    section,
-    settings
-  )
+  const { anyOption, EEZ_REGIONS, RFMOS_REGIONS, MPAS_REGIONS, getOptions } =
+    useSettingsRegionsConnect(section, settings)
 
   const eez = useMemo(
     () => getOptions(EEZ_REGIONS, 'eezs', settings.eezs),
@@ -34,9 +43,28 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
     [RFMOS_REGIONS, settings.rfmos, getOptions]
   )
   const mpa = useMemo(
-    () => getOptions(MPAS_REGIONS, 'mpas', settings.mpas),
+    () => getOptions(MPAS_REGIONS.map(truncateLabels), 'mpas', settings.mpas),
     [MPAS_REGIONS, settings.mpas, getOptions]
   )
+
+  const mpaAutocomplete: MpaAutocompleteProps = useMemo(
+    () => ({
+      placeholder: !mpa.selected?.length
+        ? (t(`common.typeToSearch`, 'Type to search') as string)
+        : mpa.selected.length > 1
+        ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
+        : mpa.selected[0].label,
+
+      onFilterOptions: (allOptions, filteredOptions, filter) => {
+        if (filter && filter?.length >= 3) {
+          return filteredOptions
+        }
+        return [anyOption, ...mpa.selected.filter((option) => option !== anyOption)]
+      },
+    }),
+    [anyOption, mpa, t]
+  )
+
   return (
     <div>
       <div className={styles.settingsField}>
@@ -75,10 +103,12 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         <MultiSelect
           onCleanClick={mpa.onClean}
           selectedOptions={mpa.selected}
-          placeholderDisplayAll={true}
+          onFilterOptions={mpaAutocomplete.onFilterOptions}
           onSelect={mpa.onSelect}
           onRemove={mpa.onRemove}
           options={mpa.options}
+          placeholder={mpaAutocomplete.placeholder}
+          className={styles.multiSelectRegions}
         ></MultiSelect>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>

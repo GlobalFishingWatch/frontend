@@ -109,9 +109,6 @@ export const useSettingsRegionsConnect = (
       ]
       return {
         options,
-        selected: selectedOptions,
-        onSelect: (option: MultiSelectOption) => onSelectRegion(option, selectedOptions, field),
-
         onClean: () => setSettingOptions(section, field, []),
         onRemove: (option: MultiSelectOption) =>
           setSettingOptions(
@@ -119,12 +116,15 @@ export const useSettingsRegionsConnect = (
             field,
             selectedOptions.filter((o) => o.id !== option.id)
           ),
+        onSelect: (option: MultiSelectOption) => onSelectRegion(option, selectedOptions, field),
+        selected: selectedOptions,
       }
     },
     [anyOption, section, onSelectRegion, setSettingOptions]
   )
 
   return {
+    anyOption,
     EEZ_REGIONS,
     RFMOS_REGIONS,
     MPAS_REGIONS,
