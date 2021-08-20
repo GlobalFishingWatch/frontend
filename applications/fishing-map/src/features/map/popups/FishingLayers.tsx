@@ -61,10 +61,10 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
         ? eventsRelatedDatasets.map((d) => d.id)
         : []
 
-    if (vesselRelatedDataset && trackRelatedDataset) {
+    if (vesselRelatedDataset || trackRelatedDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: trackRelatedDataset.id,
-        infoDatasetId: vesselRelatedDataset.id,
+        trackDatasetId: trackRelatedDataset?.id,
+        infoDatasetId: vesselRelatedDataset?.id,
         ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
       })
       upsertDataviewInstance(vesselDataviewInstance)

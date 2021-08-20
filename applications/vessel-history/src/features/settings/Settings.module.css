@@ -2,20 +2,19 @@
   height: 100%;
 }
 
-.settingsContainer header {
-  height: 70px;
+.settingsHeader {
+  height: var(--header-height);
   background: #fff;
   box-shadow: 0 1px 2px 0 rgba(22, 63, 137, 0.2), 0 2px 10px 0 rgba(1, 37, 91, 0.15);
   display: flex;
+  align-items: center;
 }
 
-.settingsContainer header h1 {
+.settingsHeader h1 {
   display: inline-block;
   color: #22447e;
-  font: var(--font-M);
-  letter-spacing: 0;
-  line-height: 2.4rem;
-  margin: 1rem;
+  font: var(--font-L);
+  margin: var(--space-XS);
 }
 
 .settingsContainer ul {

@@ -13,6 +13,7 @@ import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
+import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {
@@ -77,7 +78,9 @@ function ContextAreaSection(): React.ReactElement {
         )}
       </div>
       {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.id} dataview={dataview} onToggle={onToggleLayer(dataview)} />
+        <LayerPanelContainer key={dataview.id} dataview={dataview}>
+          <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+        </LayerPanelContainer>
       ))}
     </div>
   )

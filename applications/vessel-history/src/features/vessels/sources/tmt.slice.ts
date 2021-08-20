@@ -9,20 +9,31 @@ interface TMTVesselSourceId extends VesselSourceId {
   id: string
 }
 
-// Using today as fallback when both firstSeen and endDate are missing
 const today = DateTime.now().toUTC().toISO()
 
-const sortValuesByDate = (a: ValueItem, b: ValueItem) =>
-  (a.firstSeen || a.endDate || today) >= (b.firstSeen || b.endDate || today) ? -1 : 1
+const getSortDate = (value: ValueItem) =>
+  // most recent value active now using today as
+  // fallback when endDate not present
+  value.firstSeen && !value.endDate
+    ? today
+    : // or using endDate, then firstDate
+      value.endDate ?? value.firstSeen ?? ''
+
+const sortValuesByDate = (a: ValueItem, b: ValueItem) => {
+  return getSortDate(a) >= getSortDate(b) ? -1 : 1
+}
+
 const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem: ValueItem[]) => {
   return valueItem.slice().shift()?.value || undefined
 }
-const sortAuthorizations: (authorizations: Authorization[]) => Authorization[] = (authorizations: Authorization[]) => {
+
+const sortAuthorizations: (authorizations: Authorization[]) => Authorization[] = (
+  authorizations: Authorization[]
+) => {
   return authorizations.sort((a, b) => {
-    return (a.endDate > b.endDate ? 1 : -1)
+    return a.endDate > b.endDate ? 1 : -1
   })
 }
-
 
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
@@ -85,7 +96,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     operator: {
       byCount: [],
       byDate: vesselOperations.sort(sortValuesByDate),
-    }
+    },
   }
 
   const vessel: VesselWithHistory = {

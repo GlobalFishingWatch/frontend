@@ -14,6 +14,7 @@ import styles from './User.module.css'
 import { GUEST_USER_TYPE, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'
 import UserWorkspaces from './UserWorkspaces'
+import UserWorkspacesPrivate from './UserWorkspacesPrivate'
 import UserDatasets from './UserDatasets'
 import UserInfo from './UserInfo'
 
@@ -25,7 +26,7 @@ function User() {
 
   useEffect(() => {
     if (userLogged && userData?.id) {
-      dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
+      dispatch(fetchWorkspacesThunk())
     }
   }, [dispatch, userData?.id, userLogged])
 
@@ -53,6 +54,7 @@ function User() {
   return (
     <div className={styles.container}>
       <UserInfo />
+      <UserWorkspacesPrivate />
       <UserWorkspaces />
       <UserDatasets datasetCategory={DatasetCategory.Environment} />
       <UserDatasets datasetCategory={DatasetCategory.Context} />

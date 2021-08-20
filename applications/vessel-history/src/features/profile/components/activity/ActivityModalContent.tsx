@@ -1,10 +1,11 @@
 import React, { Fragment, useMemo } from 'react'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFishing'
 import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsLoitering'
 import ActivityModalContentDetailsEncounter from './ActivityModalContentDetailsEncounter'
 import styles from './ActivityModalDetails.module.css'
+import ActivityModalContentDetailsPortVisit from './ActivityModalContentDetailsPortVisit'
 
 interface ActivityModalContentProps {
   event: RenderedEvent
@@ -29,6 +30,12 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
           <ActivityModalContentDetailsEncounter
             event={event}
           ></ActivityModalContentDetailsEncounter>
+        )
+      case EventTypes.Port:
+        return (
+          <ActivityModalContentDetailsPortVisit
+            event={event}
+          ></ActivityModalContentDetailsPortVisit>
         )
       default:
         return <Fragment />

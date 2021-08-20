@@ -18,10 +18,11 @@ import { PRESENCE_POC_ID, selectDatasets } from 'features/datasets/datasets.slic
 import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
+  selectWorkspaceDataviews,
 } from 'features/workspace/workspace.selectors'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { selectActivityCategoryFn } from 'features/app/app.selectors'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID } from 'data/workspaces'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { selectThinningConfig } from 'features/resources/resources.selectors'
 import { selectAllDataviews } from './dataviews.slice'
 
@@ -259,4 +260,36 @@ export const selectActiveDataviews = createSelector(
     ...(activeEnvironmentalDataviews || []),
     ...(activeContextAreasDataviews || []),
   ]
+)
+
+export const selectAllDataviewsInWorkspace = createSelector(
+  [selectAllDataviews, selectWorkspaceDataviews, selectWorkspaceDataviewInstances],
+  (dataviews = [], workspaceDataviews, workspaceDataviewInstances) => {
+    return dataviews?.filter((dataview) => {
+      if (DEFAULT_DATAVIEW_IDS.includes(dataview.id)) {
+        return true
+      }
+      if (workspaceDataviews?.some((d) => d.id === dataview.id)) {
+        return true
+      }
+      if (workspaceDataviewInstances?.some((d) => d.dataviewId === dataview.id)) {
+        return true
+      }
+      return false
+    })
+  }
+)
+
+export const selectAvailableFishingDataviews = createSelector(
+  [selectAllDataviewsInWorkspace],
+  (dataviews) => {
+    return dataviews?.filter((d) => d.category === DataviewCategory.Fishing)
+  }
+)
+
+export const selectAvailablePresenceDataviews = createSelector(
+  [selectAllDataviewsInWorkspace],
+  (dataviews) => {
+    return dataviews?.filter((d) => d.category === DataviewCategory.Presence)
+  }
 )

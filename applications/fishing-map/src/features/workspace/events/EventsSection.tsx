@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { selectEventsDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
+import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './EventsLayerPanel'
 
-function EnvironmentalLayerSection(): React.ReactElement | null {
+function EventsLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
   const dataviews = useSelector(selectEventsDataviews)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
@@ -21,10 +22,12 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
         <h2 className={styles.sectionTitle}>{t('common.events', 'Events')}</h2>
       </div>
       {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.id} dataview={dataview} />
+        <LayerPanelContainer key={dataview.id} dataview={dataview}>
+          <LayerPanel dataview={dataview} />
+        </LayerPanelContainer>
       ))}
     </div>
   )
 }
 
-export default EnvironmentalLayerSection
+export default EventsLayerSection

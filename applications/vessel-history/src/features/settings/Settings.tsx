@@ -55,7 +55,7 @@ const Settings: React.FC = (): React.ReactElement => {
 
   return (
     <div className={styles.settingsContainer}>
-      <header>
+      <header className={styles.settingsHeader}>
         <IconButton
           type="border"
           size="default"
