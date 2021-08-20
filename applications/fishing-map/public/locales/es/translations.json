@@ -340,6 +340,7 @@
     "save": "Guardar el mapa actual",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
     "saveLogin": "Necesita <1>iniciar sesión</1> para guardar la vista actual (gratis y toma 2 minutos)",
+    "privateTitle_plural": "Private workspaces",
     "title_plural": "Espacios de trabajo"
   }
 }
