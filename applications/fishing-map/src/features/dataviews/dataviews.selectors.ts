@@ -21,7 +21,7 @@ import {
   selectWorkspaceDataviews,
 } from 'features/workspace/workspace.selectors'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
-import { selectActivityCategoryFn } from 'features/app/app.selectors'
+import { selectActivityCategoryFn, selectWorkspaceStateProperty } from 'features/app/app.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { selectThinningConfig } from 'features/resources/resources.selectors'
 import { selectAllDataviews } from './dataviews.slice'
@@ -82,8 +82,12 @@ export const selectAllDataviewInstancesResolved = createSelector(
  * Injects app-specific logic by using getDataviewsForResourceQuerying's callback
  */
 export const selectDataviewsForResourceQuerying = createSelector(
-  [selectAllDataviewInstancesResolved, selectThinningConfig],
-  (dataviewInstances, thinningConfig) => {
+  [
+    selectAllDataviewInstancesResolved,
+    selectThinningConfig,
+    selectWorkspaceStateProperty('timebarGraph'),
+  ],
+  (dataviewInstances, thinningConfig, timebarGraph) => {
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
       [Generators.Type.Track]: ([info, track, ...events]) => {
         const trackWithThinning = track
@@ -95,7 +99,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
           trackWithThinning.query = [...(track.query || []), ...thinningQuery]
         }
 
-        // TODO change original dataview
+        // TODO change original dataview to remove ',speed' from fields
         const trackWithoutSpeed = trackWithThinning
         const query = trackWithoutSpeed.query || []
         const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
@@ -107,49 +111,23 @@ export const selectDataviewsForResourceQuerying = createSelector(
           trackWithoutSpeed.query = query
         }
 
-        let trackSpeed
-        if (/* timebar req speed  && */ fieldsQueryIndex > -1) {
-          trackSpeed = { ...trackWithoutSpeed }
-          const trackSpeedQuery = [...query]
-          trackSpeedQuery[fieldsQueryIndex] = {
+        let trackGraph
+        if (timebarGraph !== 'none' && fieldsQueryIndex > -1) {
+          trackGraph = { ...trackWithoutSpeed }
+          const trackGraphQuery = [...query]
+          trackGraphQuery[fieldsQueryIndex] = {
             id: 'fields',
-            value: 'speed',
+            value: timebarGraph,
           }
-          trackSpeed.query = trackSpeedQuery
+          trackGraph.query = trackGraphQuery
         }
 
-        return [trackWithoutSpeed, info, ...events, ...(trackSpeed ? [trackSpeed] : [])]
+        return [trackWithoutSpeed, info, ...events, ...(trackGraph ? [trackGraph] : [])]
       },
     }
     return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)
   }
 )
-
-//  // TODO change original dataview
-//  const trackWithoutSpeed = trackWithThinning
-//  const query = trackWithoutSpeed.query || []
-//  const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
-//  if (fieldsQueryIndex > -1) {
-//    // query[fieldsQueryIndex] = {
-//    //   id: 'fields',
-//    //   value: 'lonlat,timestamp',
-//    // }
-//    // trackWithoutSpeed.query = query
-//  }
-
-//  let trackSpeed
-//  if (/* timebar req speed  && */ fieldsQueryIndex > -1) {
-//    trackSpeed = { ...trackWithoutSpeed }
-//    const trackSpeedQuery = [...query]
-//    trackSpeedQuery[fieldsQueryIndex] = {
-//      id: 'fields',
-//      value: 'speed',
-//    }
-//    trackSpeed.query = trackSpeedQuery
-//  }
-
-//  return [trackWithoutSpeed, info, ...events, ...(trackSpeed ? [trackSpeed] : [])]
-// }
 
 export const selectDataviewInstancesResolved = createSelector(
   [selectDataviewsForResourceQuerying, selectActivityCategoryFn],
