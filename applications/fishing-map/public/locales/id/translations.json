@@ -322,6 +322,7 @@
     "nationalId": "ID Nasional",
     "origin": "Asal",
     "registeredGearType": "Jenis peralatan terdaftar",
+    "shiptype": "Ship type",
     "source": "Sumber",
     "transmission_plural": "Transmisi",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",

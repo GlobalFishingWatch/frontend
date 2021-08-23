@@ -111,7 +111,7 @@
   },
   "private-indonesia-presence": {
     "name": "VMS Indonesia (Presence)",
-    "description": "Presence",
+    "description": "VMS data for Indonesia is not currently available for the period from July 2020 to date.\nThis layer of Global Fishing Watch uses data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. The data is collected using their Vessel Monitoring System (VMS) via satellites and terrestrial receivers, and contains vessel identities, gear type, location, speed, direction and more. The presence is determined by taking one position per day per vessel from the positions transmitted by VMS. \n",
     "schema": {
       "lat": "lat",
       "lon": "lon",

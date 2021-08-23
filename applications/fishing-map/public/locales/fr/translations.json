@@ -322,6 +322,7 @@
     "nationalId": "Identifiant national",
     "origin": "Origine",
     "registeredGearType": "Type d'équipement enregistré",
+    "shiptype": "Ship type",
     "source": "Source",
     "transmission_plural": "Transmissions",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
