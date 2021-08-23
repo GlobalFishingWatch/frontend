@@ -6,17 +6,20 @@
     "info": "Infos",
     "map": "carte",
     "offlineAccess": "accès hors ligne",
-    "offlineAccessEmptyState": "The vessels you save for offline access will appear here.",
-    "Other": "Other",
+    "offlineAccessEmptyState": "Les navires que vous économisez pour un accès hors ligne apparaîtront ici.",
+    "Other": "Autre",
     "since": "depuis le",
     "timeRange": "intervalle de temps",
     "to": "à",
+    "typeToSeach": "Entrez un texte pour rechercher des navires",
+    "typeToSearch": "Entrez un texte pour rechercher des navires",
     "unknown": "Inconnu",
+    "any": "Quelconque",
     "currentTimeRange": "intervalle de temps actuel",
     "high": "High",
     "low": "Low",
     "medium": "Medium",
-    "in": "in",
+    "in": "dans",
     "commingSoon": "à venir!",
     "historyFor": "historique pour",
     "previous": "Précédent"
@@ -24,55 +27,57 @@
   "event": {
     "authStatus": "Statut d'autorisation",
     "avgSpeed": "Vitesse moyenne",
-    "confidence": "Confidence",
+    "confidence": "Confiance",
     "distance": "Distance",
     "distancePort": "Distance du port",
     "distanceShore": "Distance de la côte",
     "duration": "Durée",
-    "encounter": "encounter",
-    "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
-    "end": "End",
-    "fishing": "fishing",
-    "fishingAction": "Fishing in {{regionName}}",
+    "encounter": "rencontre",
+    "encounterActionWith": "Rencontre avec {{vessel}} en {{regionName}}",
+    "end": "Fin",
+    "fishing": "pêche",
+    "fishingAction": "Pêche en {{regionName}}",
     "formatDistanceKm": "{{value}} km",
-    "formatSpeedKnots": "{{value}} knots",
+    "formatSpeedKnots": "{{value}} noeuds",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_plural": "{{count}}h",
-    "internationalWaters": "International Waters",
-    "loitering": "Loitering",
-    "loiteringAction": "Loitering in {{regionName}}",
-    "medianSpeed": "Median Speed",
+    "internationalWaters": "Eaux internationales",
+    "loitering": "Dérive",
+    "loiteringAction": "Dérive dans {{regionName}}",
+    "medianSpeed": "Vitesse moyenne",
     "minuteAbbreviated": "{{count}}m",
     "minuteAbbreviated_plural": "{{count}}m",
-    "nextPort": "Next port traveled",
+    "nextPort": "Port suivant voyagé",
+    "nSelected": "{{count}} sélectionnés",
+    "nSelected_plural": "{{count}} sélectionné",
     "port": "Port",
     "portAction": "Docked",
     "portAt": "Docked at {{port}}",
     "position": "Position",
     "psma": "PSMA",
-    "psmaIncluded": "Included Since {{value}}",
-    "psmaNotIncluded": "Not included",
-    "start": "Start",
-    "unknown": "Unknown event",
-    "avgDuration": "Avg Duration",
-    "endDistancePort": "End distance from port",
-    "endDistanceShore": "End distance from shore",
-    "startDistancePort": "Start distance from port",
-    "startDistanceShore": "Start distance from shore",
-    "vesselInvolved": "Vessel involved in the event",
-    "knots": "knots",
-    "maxCoords": "Max coordinates",
-    "minCoords": "Min coordinates",
-    "encounterAnotherVessel": "another vessel",
-    "diffHours": "{{ diff }} hours",
-    "fishingEvent": "Fishing in {{ regionName }}",
-    "fishingGroup": "{{ count }} Fishing events in {{ regionName }}",
-    "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
-    "noDescription": "No description found"
+    "psmaIncluded": "Inclus depuis {{value}}",
+    "psmaNotIncluded": "Non inclus",
+    "start": "Début",
+    "unknown": "Événement inconnu",
+    "avgDuration": "Durée moyenne",
+    "endDistancePort": "Fin - Distance du port",
+    "endDistanceShore": "Fin - Distance de la côte",
+    "startDistancePort": "Départ - Distance du port",
+    "startDistanceShore": "Départ - Distance de la côte",
+    "vesselInvolved": "Navire participant à l'événement",
+    "knots": "nœuds",
+    "maxCoords": "Coordonnées max",
+    "minCoords": "coordonnées min",
+    "encounterAnotherVessel": "un autre navire",
+    "diffHours": "{{ diff }} heures",
+    "fishingEvent": "Pêche en {{ regionName }}",
+    "fishingGroup": "{{ count }} événements de pêche en {{ regionName }}",
+    "fishingGroup_plural": "{{ count }} événements de pêche en {{ regionName }}",
+    "noDescription": "Aucune description trouvée"
   },
   "map": {
-    "loading": "Map loading",
-    "toggleLayers": "Toggle layers"
+    "loading": "Chargement de la carte",
+    "toggleLayers": "Activer/désactiver les calques"
   },
   "search": {
     "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
@@ -86,43 +91,45 @@
     "selected": "slectionns"
   },
   "settings": {
-    "distance": "DISTANCE TRAVELLED",
-    "duration": "DURATION",
+    "duration": "DURÉE",
     "eezs": {
-      "label": "Events in these EEZs"
+      "label": "Événements dans ces ZEEs"
     },
     "encounters": {
-      "title": "Encounter Events"
+      "title": "Rencontres"
     },
     "fishingEvents": {
-      "title": "Fishing Events"
+      "title": "Événements de pêche"
     },
-    "hours": "hours",
-    "kms": "kms",
+    "hours": "heures",
+    "km": "km",
     "loiteringEvents": {
-      "title": "Loitering Events"
+      "title": "Événements de dérive"
     },
     "longerThan": "Longer than",
     "mpas": {
-      "label": "Events in these MPAs"
+      "label": "Événements dans ces APMs"
     },
     "portVisits": {
+      "inThesePortStates": "Événements dans ces États du port",
+      "title": "Visites du Port",
       "inputEnd": "ports",
-      "inputStart": "Port visits in",
-      "title": "Port Visits"
+      "inputStart": "Visites du port en"
     },
     "rfmos": {
-      "label": "Events in these RFMOS"
+      "label": "Événements dans ces RFMOs"
     },
-    "title": "Settings"
+    "title": "Paramètres",
+    "kms": "kms",
+    "distance": "DISTANCE VOYÉE"
   },
   "vessel": {
-    "aisTransmission_plural": "AIS Transmissions",
+    "aisTransmission_plural": "Transmissions de l'AIS",
     "authorization_plural": "autorisations",
     "callsign": "signe d'appel",
-    "encounteredVessel": "Encountered Vessel",
+    "encounteredVessel": "Navire rencontré",
     "flag": "Drapeau",
-    "formatValues": "{{quantity}} values",
+    "formatValues": "{{quantity}} valeurs",
     "historyLabelByField": "Historique de {{label}} pour {{vesselName}}",
     "imo": "imo",
     "mmsi": "mmsi",
@@ -134,7 +141,7 @@
     "saveForOfflineView": "enregistrer le vaisseau pour une vue hors ligne",
     "source": "source",
     "transmission_plural": "transmissions",
-    "historicalValues": "historical values",
+    "historicalValues": "valeurs historiques",
     "name": "Nom",
     "previousNames": "noms précédents",
     "builtYear": "année de construction",
@@ -159,12 +166,12 @@
     "type_plural": "types",
     "iuuStatus": "IUU Status",
     "iuuStatusOptions": {
-      "0": "Not listed",
-      "1": "previously listed",
-      "2": "currently listed"
+      "0": "Non listé",
+      "1": "listé précédemment",
+      "2": "actuellement listée"
     }
   },
   "layer": {
-    "toggleVisibility": "Toggle layer visibility"
+    "toggleVisibility": "Afficher/cacher calque"
   }
 }
