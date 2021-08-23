@@ -180,6 +180,11 @@ function ActivityLayerPanel({
               />
               <DatasetSchemaField
                 dataview={dataview}
+                field={'shiptype'}
+                label={t('vessel.shiptype', 'Ship type')}
+              />
+              <DatasetSchemaField
+                dataview={dataview}
                 field={'origin'}
                 label={t('vessel.origin', 'Origin')}
               />

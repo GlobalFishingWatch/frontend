@@ -10,6 +10,7 @@ export type SupportedDatasetSchema =
   | 'flag'
   | 'geartype'
   | 'fleet'
+  | 'shiptype'
   | 'origin'
   | 'vessel_type'
   | 'qf_detect'
