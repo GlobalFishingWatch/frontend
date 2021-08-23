@@ -1,5 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
+import GFWAPI from '@globalfishingwatch/api-client'
+import { APISearch } from '@globalfishingwatch/api-types'
 import {
   asyncInitialState,
   AsyncReducer,
@@ -19,9 +21,8 @@ export const fetchPsmaThunk = createAsyncThunk(
   'psma/fetch',
   async (_, { rejectWithValue }) => {
     try {
-      // TODO Replace with the fetch of the psma from the endpoint when ready
-      const mockedPsma = await import('./psma.mock')
-      const psma = uniqBy([...mockedPsma.default], 'iso3')
+      const psmaResult = await GFWAPI.fetch<APISearch<Psma>>(`/v1/psma-countries`)
+      const psma = uniqBy(psmaResult.entries, 'iso3')
       return psma.map((item) => ({ ...item, id: item.iso3 })) as Psma[]
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
