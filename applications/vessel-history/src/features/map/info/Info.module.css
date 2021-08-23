@@ -46,6 +46,8 @@
   overflow: hidden;
   font-size: 16px !important;
   padding-top: 13px;
+  max-height: 400px;
+  min-height: 50px;
 }
 
 .footer .label {

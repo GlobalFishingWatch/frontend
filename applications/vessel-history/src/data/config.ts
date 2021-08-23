@@ -7,6 +7,13 @@ export const WORKSPACE_ENV =
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
 
+export const FLY_EFFECTS = {
+  noFly: 0, // just change the center
+  softFly: 1, // fly to without effects
+  fly: 2 // nice fly to moving the camera
+}
+// enable / disable the effect for switch events in the map
+export const ENABLE_FLYTO = FLY_EFFECTS.fly
 export const DEBUG_MODE =
   ((process.env.REACT_APP_DEBUG_MODE ?? false) as boolean) ||
   (WORKSPACE_ENV === 'production' ? false : true)
