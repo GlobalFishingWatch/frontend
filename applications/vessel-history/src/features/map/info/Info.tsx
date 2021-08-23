@@ -1,26 +1,25 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 import ResizePanel from 'react-resize-panel'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist/events'
-import { RenderedEvent, selectEvents, selectEventsWithRenderingInfo } from 'features/vessels/activity/vessels-activity.selectors'
-import useViewport from 'features/map/map-viewport.hooks'
+import { RenderedEvent, selectEvents } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
 import { cheapDistance } from 'utils/vessel'
 import { selectHighlightedEvent, setHighlightedEvent } from '../map.slice'
 import styles from './Info.module.css'
 
-
 interface InfoProps {
   map: any
-  onEventChange: (event: RenderedEvent, pitch: number, bearing: number) => void
+  onEventChange: (event: RenderedEvent, pitch: number, bearing: number, padding: number) => void
 }
 
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
+  const [height, setHeight] = useState(0)
   const events: RenderedEvent[] = useSelector(selectEvents)
   const eventsMap: string[] = useMemo(() => events.map(e => e.id), [events])
   const highlightedEvent = useSelector(selectHighlightedEvent)
@@ -39,9 +38,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
           nextEvent.position.lon - events[actualEventIndex].position.lon, 
           nextEvent.position.lat - events[actualEventIndex].position.lat
         ) * pitch * -1;
-        props.onEventChange(nextEvent, pitch, bearing)
+        props.onEventChange(nextEvent, pitch, bearing, height)
       }
-    }, [dispatch, events, eventsMap, props]
+    }, [dispatch, events, eventsMap, height, props]
   )
 
   useEffect(() => {
@@ -57,7 +56,10 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     <Fragment>
       {selectedEvent && (
         <ResizePanel direction="n" containerClass={styles.infoContainer} handleClass={styles.handler} style={{height: '50px'}}>
-          <div className={cx(styles.footer, styles.panel)}>
+          <div className={cx(styles.footer, styles.panel)} ref={el => {
+            if (!el) return;
+            setHeight(el.getBoundingClientRect().height + 19) // I add the parent padding
+          }}>
             <div className={styles.eventSelector}> 
               <IconButton icon="arrow-left" type="map-tool" size="small" onClick={() => changeVesselEvent(highlightedEvent, 'prev')}></IconButton>
               <span className={styles.coords}>

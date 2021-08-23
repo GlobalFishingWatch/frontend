@@ -6,7 +6,7 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS } from 'data/config'
+import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
@@ -209,6 +209,11 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
 export const selectEvents = createSelector(
   [selectEventsWithRenderingInfo],
   (events) => events.flat().sort((a, b) => (a.start > b.start ? -1 : 1))
+)
+
+export const selectMapEvents = createSelector(
+  [selectEvents],
+  (events) => events.filter(event => event.start >= DEFAULT_WORKSPACE.start)
 )
 
 export const selectFilteredEvents = createSelector(
