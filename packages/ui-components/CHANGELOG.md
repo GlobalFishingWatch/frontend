@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 10.2.0
+
+### Minor Changes
+
+- b5bfe9fb: Added onFilterOptions to MultiSelect
+
 ## 10.1.2
 
 ### Patch Changes
