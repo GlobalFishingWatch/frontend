@@ -46,13 +46,13 @@ const Map = (): ReactElement => {
       if (centetingMap){
         clearTimeout(centetingMap)
       }
-      const currentPitch = mapRef.current.getMap().getPitch()
-      const currentBearing = mapRef.current.getMap().getBearing()
+      const currentPitch = mapRef?.current?.getMap().getPitch()
+      const currentBearing = mapRef?.current?.getMap().getBearing()
       centetingMap = setTimeout(() => {
         setMapCoordinates({
           latitude: mapRef.current?.getMap().getCenter().lat,
           longitude: mapRef.current?.getMap().getCenter().lng,
-          zoom: 8,
+          zoom: mapRef.current.getMap().getZoom(),
           pitch: currentPitch,
           bearing: currentBearing
         })
@@ -87,8 +87,8 @@ const Map = (): ReactElement => {
         ],
         pitch,
         bearing,
-        zoom: 8,
-        speed: 0.4, // make the flying slow
+        zoom: mapRef.current.getMap().getZoom(),
+        speed: mapRef.current.getMap().getZoom() / 25, // make the flying slow
         curve: 1.5, // change the speed at which it zooms out
         essential: true // this animation is considered essential with respect to prefers-reduced-motion
       })
