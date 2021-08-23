@@ -1,35 +1,69 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { MultiSelect, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
-import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
-import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
-import { SettingsEvents } from '../settings.slice'
-import { useApplySettingsConnect } from '../settings.hooks'
+import {
+  MultiSelectOnFilter,
+  MultiSelectOption,
+} from '@globalfishingwatch/ui-components/dist/multi-select'
+import { SettingEventSectionName, SettingsEvents } from '../settings.slice'
+import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
 
 interface SettingsProps {
   settings: SettingsEvents
-  section: string
+  section: SettingEventSectionName
   minDuration: number
   maxDuration: number
   minDistance: number
   maxDistance: number
 }
-
+interface MpaAutocompleteProps {
+  placeholder: string
+  onFilterOptions: MultiSelectOnFilter
+}
+const truncateLabels = (option: MultiSelectOption) => ({
+  ...option,
+  label: option.label.slice(0, 55),
+})
 const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { settings, section } = props
   const { t } = useTranslation()
-  const { setSettingOptions, setSetting } = useApplySettingsConnect()
-  const EEZ_OPTIONS: SelectOption[] = useSelector(selectEEZs) ?? []
-  const RFMOS_OPTIONS: MultiSelectOption[] = useSelector(selectRFMOs) ?? []
-  const MPAS_OPTIONS: MultiSelectOption[] = useSelector(selectMPAs) ?? []
+  const { setSettingOptions, setSetting } = useSettingsConnect()
 
-  const eezs = EEZ_OPTIONS.filter((option) => settings.eezs?.includes(option.id))
-  const rfmos = RFMOS_OPTIONS.filter((option) => settings.rfmos?.includes(option.id))
-  const mpas = MPAS_OPTIONS.filter((option) => settings.mpas?.includes(option.id))
+  const { anyOption, EEZ_REGIONS, RFMOS_REGIONS, MPAS_REGIONS, getOptions } =
+    useSettingsRegionsConnect(section, settings)
+
+  const eez = useMemo(
+    () => getOptions(EEZ_REGIONS, 'eezs', settings.eezs),
+    [EEZ_REGIONS, settings.eezs, getOptions]
+  )
+  const rfmo = useMemo(
+    () => getOptions(RFMOS_REGIONS, 'rfmos', settings.rfmos),
+    [RFMOS_REGIONS, settings.rfmos, getOptions]
+  )
+  const mpa = useMemo(
+    () => getOptions(MPAS_REGIONS.map(truncateLabels), 'mpas', settings.mpas),
+    [MPAS_REGIONS, settings.mpas, getOptions]
+  )
+
+  const mpaAutocomplete: MpaAutocompleteProps = useMemo(
+    () => ({
+      placeholder: !mpa.selected?.length
+        ? (t(`common.typeToSearch`, 'Type to search') as string)
+        : mpa.selected.length > 1
+        ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
+        : mpa.selected[0].label,
+
+      onFilterOptions: (allOptions, filteredOptions, filter) => {
+        if (filter && filter?.length >= 3) {
+          return filteredOptions
+        }
+        return [anyOption, ...mpa.selected.filter((option) => option !== anyOption)]
+      },
+    }),
+    [anyOption, mpa, t]
+  )
 
   return (
     <div>
@@ -39,18 +73,12 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
-          selectedOptions={eezs}
+          selectedOptions={eez.selected}
           placeholderDisplayAll={true}
-          onCleanClick={() => setSettingOptions(section, 'eezs', [])}
-          onSelect={(selected) => setSettingOptions(section, 'eezs', [...eezs, selected])}
-          onRemove={(option) =>
-            setSettingOptions(
-              section,
-              'eezs',
-              eezs.filter((o) => o.id !== option.id)
-            )
-          }
-          options={EEZ_OPTIONS}
+          onCleanClick={eez.onClean}
+          onSelect={eez.onSelect}
+          onRemove={eez.onRemove}
+          options={eez.options}
         ></MultiSelect>
       </div>
       <div className={styles.settingsField}>
@@ -60,19 +88,11 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         </label>
         <MultiSelect
           onCleanClick={() => setSettingOptions(section, 'rfmos', [])}
-          selectedOptions={rfmos}
+          selectedOptions={rfmo.selected}
           placeholderDisplayAll={true}
-          onSelect={(selected: MultiSelectOption) =>
-            setSettingOptions(section, 'rfmos', [...rfmos, selected])
-          }
-          onRemove={(option) =>
-            setSettingOptions(
-              section,
-              'rfmos',
-              rfmos.filter((o) => o.id !== option.id)
-            )
-          }
-          options={RFMOS_OPTIONS}
+          onSelect={rfmo.onSelect}
+          onRemove={rfmo.onRemove}
+          options={rfmo.options}
         ></MultiSelect>
       </div>
       <div className={styles.settingsField}>
@@ -81,20 +101,14 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
-          onCleanClick={() => setSettingOptions(section, 'mpas', [])}
-          selectedOptions={mpas}
-          placeholderDisplayAll={true}
-          onSelect={(selected: MultiSelectOption) =>
-            setSettingOptions(section, 'mpas', [...mpas, selected])
-          }
-          onRemove={(option) =>
-            setSettingOptions(
-              section,
-              'mpas',
-              mpas.filter((o) => o.id !== option.id)
-            )
-          }
-          options={MPAS_OPTIONS}
+          onCleanClick={mpa.onClean}
+          selectedOptions={mpa.selected}
+          onFilterOptions={mpaAutocomplete.onFilterOptions}
+          onSelect={mpa.onSelect}
+          onRemove={mpa.onRemove}
+          options={mpa.options}
+          placeholder={mpaAutocomplete.placeholder}
+          className={styles.multiSelectRegions}
         ></MultiSelect>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
@@ -105,7 +119,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText
           type="number"
-          value={settings.duration ?? 0}
+          value={settings.duration}
           min={props.minDuration}
           max={props.maxDuration}
           onChange={(event) => setSetting(section, 'duration', parseInt(event.currentTarget.value))}
@@ -114,18 +128,37 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
-          {t('settings.distance', 'DISTANCE TRAVELLED')}
+          {t('event.distanceShore', 'Distance from shore')}
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText
           type="number"
-          value={settings.distance ?? 0}
+          value={settings.distanceShoreLonger}
           min={props.minDistance}
           max={props.maxDistance}
-          onChange={(event) => setSetting(section, 'distance', parseInt(event.currentTarget.value))}
+          onChange={(event) =>
+            setSetting(section, 'distanceShoreLonger', parseInt(event.currentTarget.value))
+          }
         ></InputText>
-        <span>{t('settings.kms', 'kms')}</span>
+        <span>{t('settings.km', 'km')}</span>
+      </div>
+      <div className={cx(styles.settingsField, styles.inlineRow)}>
+        <label>
+          {t('event.distancePort', 'Distance from port')}
+          <IconButton type="default" size="tiny" icon="info"></IconButton>
+        </label>
+        <span>{t('settings.longerThan', 'Longer than')}</span>
+        <InputText
+          type="number"
+          value={settings.distancePortLonger}
+          min={props.minDistance}
+          max={props.maxDistance}
+          onChange={(event) =>
+            setSetting(section, 'distancePortLonger', parseInt(event.currentTarget.value))
+          }
+        ></InputText>
+        <span>{t('settings.km', 'km')}</span>
       </div>
     </div>
   )
