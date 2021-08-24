@@ -356,6 +356,7 @@ function Search() {
                         callsign,
                         geartype,
                         origin,
+                        matricula,
                         dataset,
                         firstTransmissionDate,
                         lastTransmissionDate,
@@ -418,6 +419,12 @@ function Search() {
                                 <div className={styles.property}>
                                   <label>{t('vessel.origin', 'Origin')}</label>
                                   <span>{formatInfoField(origin, 'fleet')}</span>
+                                </div>
+                              )}
+                              {matricula && (
+                                <div className={styles.property}>
+                                  <label>{t('vessel.matricula', 'Matricula')}</label>
+                                  <span>{formatInfoField(matricula, 'fleet')}</span>
                                 </div>
                               )}
                               {firstTransmissionDate && lastTransmissionDate && (

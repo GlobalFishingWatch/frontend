@@ -318,6 +318,7 @@
     "loading": "Loading vessel track",
     "loadingInfo": "Loading vessel info",
     "login": "You need to <1>login</1> to see more details",
+    "matricula": "Matricula",
     "mmsi": "MMSI",
     "nationalId": "National Id",
     "origin": "Origin",
