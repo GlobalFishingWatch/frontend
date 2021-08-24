@@ -46,6 +46,18 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "full-panama-fishing-vessels": {
+    "name": "Panama VMS",
+    "description": "Dataset for VMS Panama (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "full-peru-fishing-vessels": {
     "name": "Peru VMS",
     "description": "Dataset for VMS Peru (Public)",
@@ -135,6 +147,23 @@
   },
   "private-panama-fishing-vessels": {
     "name": "Panama Private VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Panama (Private)",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "flag",
+      "length": "length",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "vesel_type": "vesel_type",
+      "net_tonnage": "net_tonnage",
+      "gross_tonnage": "gross_tonnage",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-panama-non-fishing-vessels": {
+    "name": "Panama Private VMS (Non Fishing Vessels)",
     "description": "Dataset for VMS Panama (Private)",
     "schema": {
       "id": "id",
