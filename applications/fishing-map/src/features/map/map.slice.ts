@@ -15,7 +15,10 @@ import {
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.selectors'
 import {
   selectEventsDataviews,
   selectActivityDataviews,
@@ -29,6 +32,8 @@ export type ExtendedFeatureVessel = {
   id: string
   hours: number
   dataset: Dataset
+  infoDataset?: Dataset
+  trackDataset?: Dataset
   [key: string]: any
 }
 
@@ -36,7 +41,7 @@ export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
 export type ApiViirsStats = { detect_id: string; qf_detect: number; radiance: number }
 
-export type ExtendedFeatureEvent = ApiEvent<ExtendedEventVessel> & { dataset: Dataset }
+export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 
 export type SliceExtendedFeature = ExtendedFeature & {
   event?: ExtendedFeatureEvent
@@ -178,27 +183,28 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       // Grab related dataset to fetch info from and prepare tracks
-      const infoDatasets = await Promise.all(
-        topHoursVesselsDatasets.map(async (dataset) => {
-          const infoDatasetId = getRelatedDatasetByType(
-            dataset,
-            DatasetTypes.Vessels,
-            userLogged
-          )?.id
-          if (infoDatasetId) {
-            let infoDataset = selectDatasetById(infoDatasetId)(state)
-            if (!infoDataset) {
-              // It needs to be request when it hasn't been loaded yet
-              const action = await dispatch(fetchDatasetByIdThunk(infoDatasetId))
-              if (fetchDatasetByIdThunk.fulfilled.match(action)) {
-                infoDataset = action.payload
-              }
-            }
-            return infoDataset
+      const allInfoDatasets = await Promise.all(
+        topHoursVesselsDatasets.flatMap(async (dataset) => {
+          const infoDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Vessels)
+          if (!infoDatasets) {
+            return []
           }
+          return await Promise.all(
+            infoDatasets.flatMap(async ({ id }) => {
+              let infoDataset = selectDatasetById(id)(state)
+              if (!infoDataset) {
+                // It needs to be request when it hasn't been loaded yet
+                const action = await dispatch(fetchDatasetByIdThunk(id))
+                if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+                  infoDataset = action.payload
+                }
+              }
+              return (infoDataset || []) as Dataset
+            })
+          )
         })
       )
-
+      const infoDatasets = allInfoDatasets.flatMap((d) => d || [])
       let vesselsInfo: Vessel[] = []
       if (infoDatasets?.length) {
         const infoDataset = infoDatasets[0]
@@ -249,7 +255,19 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
               return vessels.map((vessel) => {
                 const vesselInfo = vesselsInfo?.find((entry) => entry.id === vessel.id)
                 if (!vesselInfo) return vessel
-                return { ...vesselInfo, ...vessel }
+                const infoDataset = selectDatasetById(vesselInfo.dataset as string)(state)
+                const trackDatasetId = getRelatedDatasetByType(
+                  vessel.dataset,
+                  DatasetTypes.Tracks,
+                  userLogged
+                )?.id
+                const trackDataset = selectDatasetById(trackDatasetId as string)(state)
+                return {
+                  ...vesselInfo,
+                  ...vessel,
+                  infoDataset,
+                  trackDataset,
+                }
               })
             })
             .sort((a, b) => b.hours - a.hours),
