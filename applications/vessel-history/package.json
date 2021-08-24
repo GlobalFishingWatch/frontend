@@ -48,7 +48,6 @@
     "react-i18next": "^11.8.12",
     "react-image-gallery": "^1.1.1",
     "react-redux": "^7.2.2",
-    "react-resize-panel": "^0.3.5",
     "react-scripts": "4.0.3",
     "react-sticky-el": "^2.0.5",
     "react-virtualized-auto-sizer": "^1.0.5",
