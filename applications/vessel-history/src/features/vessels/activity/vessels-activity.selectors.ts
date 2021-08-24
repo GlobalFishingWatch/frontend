@@ -213,11 +213,14 @@ export const selectEvents = createSelector(
 
 export const selectMapEvents = createSelector(
   [selectEvents],
-  (events) => events.filter(event => event.start >= DEFAULT_WORKSPACE.start)
+  (events) => {
+    const startDate = DateTime.fromISO(DEFAULT_WORKSPACE.start, { zone: 'utc' }).toMillis()
+    return events.filter(event => event.start >= startDate)
+  }
 )
 
 export const selectFilteredEvents = createSelector(
-  [selectEvents, selectFilters],
+  [selectMapEvents, selectFilters],
   (events, filters) => {
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
