@@ -47,6 +47,89 @@ import useRulers from './rulers/rulers.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
+const currentsGeneratorsConfig = [
+  {
+    id: 'mergedAnimatedHeatmap',
+    type: 'HEATMAP_ANIMATED',
+    sublayers: [
+      {
+        id: 'fishing-ais',
+        datasets: ['public-global-fishing-effort:v20201001'],
+        colorRamp: 'teal',
+        colorRampWhiteEnd: true,
+        visible: true,
+        legend: {
+          label: 'Apparent fishing effort',
+          unit: 'hours',
+          color: '#00FFBC',
+        },
+        interactionType: 'fishing-effort',
+      },
+      {
+        id: 'highlight-vms-with-ecuador',
+        datasets: [
+          'public-chile-fishing-effort:v20200331',
+          'public-indonesia-fishing-effort:v20200320',
+          'public-panama-fishing-effort:v20200331',
+          'public-peru-fishing-effort:v20200324',
+          'public-ecuador-fishing-effort:v20210612',
+        ],
+        colorRamp: 'orange',
+        colorRampWhiteEnd: true,
+        visible: true,
+        legend: {
+          label: 'Apparent fishing effort',
+          unit: 'hours',
+          color: '#FFAA0D',
+        },
+        interactionType: 'fishing-effort',
+      },
+    ],
+    mode: 'compare',
+    interval: ['hour', 'day', '10days'],
+    visible: true,
+    debug: false,
+    debugLabels: false,
+  },
+  {
+    id: 'currents',
+    type: 'HEATMAP_ANIMATED_CURRENTS_POC',
+    // color: '#FF6854',
+    // breaks: [25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5],
+    // colorRamp: 'red',
+    visible: true,
+    sublayers: [
+      {
+        id: 'currents',
+        // colorRamp: 'red',
+        // colorRampWhiteEnd: false,
+        visible: true,
+        // breaks: [25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5],
+        datasets: ['public-current-um-global4km', 'public-current-vm-global4km'],
+        // legend: {
+        //   label: 'Water Temperature Ascension',
+        //   unit: '℃',
+        //   color: '#FF6854',
+        // },
+      },
+    ],
+    maxZoom: 8,
+    mode: 'currents',
+    // aggregationOperation: 'avg',
+    interactive: false,
+    breaksMultiplier: 100,
+    // interval: 'none',
+    // debug: false,
+    // debugLabels: false,
+  },
+  {
+    id: 'basemap',
+    type: 'BASEMAP',
+    basemap: 'basemap_default',
+    visible: true,
+  },
+]
+
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
 // TODO: Abstract this away
@@ -75,12 +158,18 @@ const MapWrapper = (): React.ReactElement | null => {
   const map = useMapInstance()
   const { t } = useTranslation()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
 
+  const finalGeneratorsConfig = currentsGeneratorsConfig
+
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
+  const { style, loading: layerComposerLoading } = useLayerComposer(
+    finalGeneratorsConfig as any,
+    globalConfig
+  )
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
@@ -231,7 +320,7 @@ const MapWrapper = (): React.ReactElement | null => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
-
+  console.log(style)
   return (
     <div className={styles.container}>
       {<MapScreenshot map={map} />}

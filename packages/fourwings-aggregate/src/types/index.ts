@@ -18,6 +18,8 @@ export enum SublayerCombinationMode {
   // Returns raw values as a string in the format AAAABBBBCCCC (where A, B, C, 3 sublayers), and where BBBB is
   // sublayer 0 + sublayer 1 and CCCC is sublayer 0 + sublayer 1 + sublayer 2. Used for extruded layer.
   Cumulative = 'cumulative',
+  // Currents with U and V vectors
+  Currents__POC = 'currents',
 }
 
 export enum AggregationOperation {

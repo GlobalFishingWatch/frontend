@@ -11,6 +11,7 @@ import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'
+import HeatmapAnimatedCurrentsPOCGenerator from './heatmap/currents_poc'
 
 export { HEATMAP_COLOR_RAMPS, COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
 export { DEFAULT_HEATMAP_INTERVALS } from './heatmap/heatmap-animated'
@@ -27,6 +28,7 @@ const GeneratorConfig = {
   [Type.TileCluster]: new TileClusterGenerator(),
   [Type.UserContext]: new UserContextGenerator(),
   [Type.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
+  [Type.HeatmapAnimatedCurrentsPOC]: new HeatmapAnimatedCurrentsPOCGenerator(),
   [Type.Heatmap]: new HeatmapGenerator(),
   [Type.Track]: new TrackGenerator(),
   [Type.VesselEvents]: new VesselEventsGenerator(),

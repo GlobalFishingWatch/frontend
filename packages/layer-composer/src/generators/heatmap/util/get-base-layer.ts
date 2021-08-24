@@ -1,9 +1,11 @@
 import { ExtendedLayer, Group } from '../../../types'
-import { Type } from '../../types'
+import { HeatmapAnimatedCurrentsPOCGeneratorConfig, Type } from '../../types'
 import { HEATMAP_MODE_LAYER_TYPE } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 
-function getBaseLayers(config: GlobalHeatmapAnimatedGeneratorConfig): ExtendedLayer {
+function getBaseLayers(
+  config: GlobalHeatmapAnimatedGeneratorConfig | HeatmapAnimatedCurrentsPOCGeneratorConfig
+): ExtendedLayer {
   return {
     id: '_',
     source: '_',
@@ -11,7 +13,7 @@ function getBaseLayers(config: GlobalHeatmapAnimatedGeneratorConfig): ExtendedLa
     type: HEATMAP_MODE_LAYER_TYPE[config.mode] as any,
     metadata: {
       group: Group.Heatmap,
-      generatorType: Type.HeatmapAnimated,
+      generatorType: Type.HeatmapAnimatedCurrentsPOC,
       generatorId: config.id,
     },
   }

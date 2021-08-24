@@ -26,6 +26,8 @@ import {
   TileAggregationParams,
 } from './types'
 
+const RAD_TO_DEG = 180 / Math.PI
+
 const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {
   const col = cell % numCols
   const row = Math.floor(cell / numCols)
@@ -238,6 +240,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     sublayerVisibility,
     aggregationOperation,
   } = options
+
   if (sublayerCombinationMode === SublayerCombinationMode.None && sublayerCount > 1) {
     throw new Error('Multiple sublayers but no proper combination mode set')
   }
@@ -292,6 +295,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   let datasetsHighestRealValueIndex
   let realValuesSum = 0
   let literalValuesStr = '['
+  let allSublayerValues = []
   let cumulativeValuesPaddedStrings = []
 
   const numRows = intArray[FEATURE_ROW_INDEX]
@@ -442,6 +446,9 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
             literalValuesStr += ','
           }
         }
+        if (sublayerCombinationMode === SublayerCombinationMode.Currents__POC) {
+          allSublayerValues.push(realValueAtFrameForDataset)
+        }
 
         const quantizedTail = tail - quantizeOffset
 
@@ -468,6 +475,14 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
             finalValue = literalValuesStr
           } else if (sublayerCombinationMode === SublayerCombinationMode.Cumulative) {
             finalValue = getCumulativeValue(realValuesSum, cumulativeValuesPaddedStrings)
+          } else if (sublayerCombinationMode === SublayerCombinationMode.Currents__POC) {
+            const [u, v] = allSublayerValues
+            const force = Math.round(Math.sqrt(u * u + v * v))
+            const angle = Math.round(180 + ((RAD_TO_DEG * Math.atan2(v, u)) % 360))
+            const paddedStrings = [force, angle]
+              .map((v) => Math.round(v).toString().padStart(6, '0'))
+              .join('')
+            finalValue = paddedStrings
           }
           writeValueToFeature(quantizedTail, finalValue as string | number, currentFeature)
         }
@@ -480,6 +495,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
           datasetsHighestRealValue = Number.NEGATIVE_INFINITY
           realValuesSum = 0
           cumulativeValuesPaddedStrings = []
+          allSublayerValues = []
           literalValuesStr = '['
         }
 

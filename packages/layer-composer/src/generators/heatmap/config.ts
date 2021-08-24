@@ -16,6 +16,7 @@ export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombi
   [HeatmapAnimatedMode.Bivariate]: SublayerCombinationMode.Bivariate,
   [HeatmapAnimatedMode.Blob]: SublayerCombinationMode.Literal,
   [HeatmapAnimatedMode.Extruded]: SublayerCombinationMode.Cumulative,
+  [HeatmapAnimatedMode.Currents__POC]: SublayerCombinationMode.Currents__POC,
 }
 
 export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
@@ -24,6 +25,7 @@ export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
   [HeatmapAnimatedMode.Bivariate]: 'fill',
   [HeatmapAnimatedMode.Blob]: 'heatmap',
   [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
+  [HeatmapAnimatedMode.Currents__POC]: 'circle',
 }
 
 export const GRID_AREA_BY_ZOOM_LEVEL = [

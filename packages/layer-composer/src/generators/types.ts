@@ -15,6 +15,7 @@ export enum Type {
   GL = 'GL',
   Heatmap = 'HEATMAP',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
+  HeatmapAnimatedCurrentsPOC = 'HEATMAP_ANIMATED_CURRENTS_POC',
   Track = 'TRACK',
   VesselEvents = 'VESSEL_EVENTS',
   Rulers = 'RULERS',
@@ -314,6 +315,26 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   breaksMultiplier?: number
 }
 
+export interface HeatmapAnimatedCurrentsPOCGeneratorConfig extends GeneratorConfig {
+  type: Type.HeatmapAnimatedCurrentsPOC
+  sublayers: HeatmapAnimatedGeneratorSublayer[]
+  mode: HeatmapAnimatedMode.Currents__POC
+  // tilesAPI?: string
+  // breaksAPI?: string
+  maxZoom?: number
+  // debug?: boolean
+  // debugLabels?: boolean
+  // datasetsStart?: string
+  // datasetsEnd?: string
+  interactive?: boolean
+  // /**
+  //  * Defines a fixed or a supported list of intervals in an Array format
+  //  */
+  // interval?: Interval | Interval[]
+  // aggregationOperation?: AggregationOperation
+  // breaksMultiplier?: number
+}
+
 export type AnyGeneratorConfig =
   | BackgroundGeneratorConfig
   | BasemapGeneratorConfig
@@ -440,4 +461,6 @@ export enum HeatmapAnimatedMode {
   Extruded = 'extruded',
   // Just show raw value ffor 1 sublayer
   Single = 'single',
+  //
+  Currents__POC = 'currents',
 }

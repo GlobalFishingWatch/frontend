@@ -11,62 +11,27 @@ import {
   HeatmapAnimatedGeneratorConfig,
   MergedGeneratorConfig,
   HeatmapAnimatedMode,
-  HeatmapAnimatedGeneratorSublayer,
 } from '../types'
-import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
-import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
-import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
+import { memoizeByLayerId, memoizeCache } from '../../utils'
+import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, Interval } from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
-import { getSourceId, toURLArray } from './util'
+import {
+  getSourceId,
+  getSubLayersDatasets,
+  getSubLayersVisible,
+  getSubLayerVisible,
+  getTilesUrl,
+  serializeBaseSourceParams,
+} from './util'
 import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
-
-const getTilesUrl = (config: HeatmapAnimatedGeneratorConfig): string => {
-  if (config.tilesAPI) {
-    return isUrlAbsolute(config.tilesAPI) ? config.tilesAPI : API_GATEWAY + config.tilesAPI
-  }
-  return `${API_GATEWAY}/${API_GATEWAY_VERSION}/${API_ENDPOINTS.tiles}`
-}
-
-const getSubLayersDatasets = (sublayers: HeatmapAnimatedGeneratorSublayer[]): string[] => {
-  return sublayers?.map((sublayer) => {
-    const sublayerDatasets = [...sublayer.datasets]
-    return sublayerDatasets.sort((a, b) => a.localeCompare(b)).join(',')
-  })
-}
-
-const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
-  sublayer.visible === false ? false : true
-const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
-  sublayers.map(getSubLayerVisible)
-
-const serializeBaseSourceParams = (params: any) => {
-  const serialized = {
-    ...params,
-    singleFrame: params.singleFrame ? 'true' : 'false',
-    filters: toURLArray('filters', params.filters),
-    datasets: toURLArray('datasets', params.datasets),
-    delta: params.delta.toString(),
-    quantizeOffset: params.quantizeOffset.toString(),
-    sublayerVisibility: JSON.stringify(params.sublayerVisibility),
-    sublayerCount: params.sublayerCount.toString(),
-    interactive: params.interactive ? 'true' : 'false',
-  }
-  if (params['date-range']) {
-    serialized['date-range'] = params['date-range'].join(',')
-  }
-  if (params.sublayerBreaks) {
-    serialized.sublayerBreaks = JSON.stringify(params.sublayerBreaks)
-  }
-  return serialized
-}
 
 // This also defines the priority order, so remember to keep it ascendent
 export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['hour', 'day', '10days']
@@ -173,7 +138,6 @@ class HeatmapAnimatedGenerator {
       // we can't return layers until breaks data is loaded
       return []
     }
-
     if (
       config.mode === HeatmapAnimatedMode.Compare ||
       config.mode === HeatmapAnimatedMode.Bivariate ||
