@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 5.2.1
+
+### Patch Changes
+
+- 905c8894: add matricula in vessel types
+
 ## 5.2.0
 
 ### Minor Changes
