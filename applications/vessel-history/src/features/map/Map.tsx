@@ -135,7 +135,7 @@ const Map = (): ReactElement => {
         ></InteractiveMap>
       )}
       <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
-      <Info map={mapRef} onEventChange={onEventChange}></Info>
+      <Info onEventChange={onEventChange}></Info>
     </div>
   )
 }

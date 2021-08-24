@@ -12,7 +12,6 @@ import { selectHighlightedEvent, setHighlightedEvent } from '../map.slice'
 import styles from './Info.module.css'
 
 interface InfoProps {
-  map: any
   onEventChange: (event: RenderedEvent, pitch: number, bearing: number, padding: number) => void
 }
 
