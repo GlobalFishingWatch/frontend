@@ -1,11 +1,11 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 import ResizePanel from 'react-resize-panel'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist/events'
-import { RenderedEvent, selectEvents } from 'features/vessels/activity/vessels-activity.selectors'
+import { RenderedEvent, selectMapEvents } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
 import { cheapDistance } from 'utils/vessel'
@@ -20,7 +20,7 @@ interface InfoProps {
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const [height, setHeight] = useState(0)
-  const events: RenderedEvent[] = useSelector(selectEvents)
+  const events: RenderedEvent[] = useSelector(selectMapEvents)
   const eventsMap: string[] = useMemo(() => events.map(e => e.id), [events])
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent | undefined>(undefined)
@@ -33,7 +33,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         dispatch(setHighlightedEvent({id: eventsMap[nextPosition] } as ApiEvent))
         const distance = Math.floor(cheapDistance(nextEvent.position, events[actualEventIndex].position) * 10)
         const pitch = Math.min(distance * 4, 60)
-        //const bearing = nextEvent.position.lat > events[actualEventIndex].position.lat ? 1 : -1
+
         const bearing = Math.atan2(
           nextEvent.position.lon - events[actualEventIndex].position.lon, 
           nextEvent.position.lat - events[actualEventIndex].position.lat

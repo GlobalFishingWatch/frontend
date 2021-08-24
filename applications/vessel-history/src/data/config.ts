@@ -13,7 +13,7 @@ export const FLY_EFFECTS = {
   fly: 2 // nice fly to moving the camera
 }
 // enable / disable the effect for switch events in the map
-export const ENABLE_FLYTO = FLY_EFFECTS.fly
+export const ENABLE_FLYTO = FLY_EFFECTS.softFly
 export const DEBUG_MODE =
   ((process.env.REACT_APP_DEBUG_MODE ?? false) as boolean) ||
   (WORKSPACE_ENV === 'production' ? false : true)
