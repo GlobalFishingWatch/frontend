@@ -1,6 +1,7 @@
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 
 export const isFishingDataview = (dataview: UrlDataviewInstance) =>
   dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID ||
@@ -18,7 +19,7 @@ export const getSourcesOptionsInDataview = (
   datasetType = DatasetTypes.Fourwings
 ) => {
   const datasets = dataview?.datasets?.filter((d) => d.type === datasetType)
-  const sourceOptions = datasets?.map((d) => ({ id: d.id, label: d.name })) || []
+  const sourceOptions = datasets?.map((d) => ({ id: d.id, label: getDatasetLabel(d) })) || []
   return sourceOptions.sort((a, b) => a.label.localeCompare(b.label))
 }
 

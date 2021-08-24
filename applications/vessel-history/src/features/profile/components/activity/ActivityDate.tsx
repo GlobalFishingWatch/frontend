@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { DateTime } from 'luxon'
 import I18nDate from 'features/i18n/i18nDate'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import styles from './Activity.module.css'
 
 interface ActivityDateProps {
@@ -13,10 +13,10 @@ const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement =>
   return (
     <Fragment>
       {event.start && event.end && (
-        <div className={styles.date}>
+        <label className={styles.date}>
           <I18nDate date={event.start as number} format={DateTime.DATETIME_SHORT} /> -{' '}
           {event.durationDescription}
-        </div>
+        </label>
       )}
     </Fragment>
   )

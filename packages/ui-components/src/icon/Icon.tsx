@@ -25,6 +25,7 @@ import { ReactComponent as EventEncounter } from '../assets/icons/event-encounte
 import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
 import { ReactComponent as EventFishing } from '../assets/icons/event-fishing.svg'
 import { ReactComponent as EventPort } from '../assets/icons/event-port.svg'
+import { ReactComponent as EventPortVisit } from '../assets/icons/event-port-visit.svg'
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
@@ -39,6 +40,7 @@ import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
 import { ReactComponent as Pin } from '../assets/icons/pin.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
+import { ReactComponent as Private } from '../assets/icons/private.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
 import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
 import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
@@ -82,6 +84,7 @@ export const IconComponents = {
   'event-loitering': EventLoitering,
   'event-fishing': EventFishing,
   'event-port': EventPort,
+  'event-port-visit': EventPortVisit,
   feedback: Feedback,
   'filter-off': FilterOff,
   'filter-on': FilterOn,
@@ -96,6 +99,7 @@ export const IconComponents = {
   minus: Minus,
   pin: Pin,
   plus: Plus,
+  private: Private,
   publish: Publish,
   'remove-from-map': RemoveFromMap,
   ruler: Ruler,

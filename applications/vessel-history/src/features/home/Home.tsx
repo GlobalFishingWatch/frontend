@@ -24,7 +24,6 @@ import {
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
 
-
 interface LoaderProps {
   invert?: boolean
   timeout?: number
@@ -106,7 +105,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           {!query && (
             <IconButton
               type="default"
-              size="default"
+              size="medium"
               icon="search"
               className={styles.searchButton}
             ></IconButton>
@@ -115,16 +114,25 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         {!query && (
           <div>
             <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
-            <div className={styles.offlineVessels}>
-              {offlineVessels.map((vessel, index) => (
-                <VesselListItem
-                  key={index}
-                  vessel={vessel}
-                  saved={vessel.savedOn}
-                  onDeleteClick={() => dispatchDeleteOfflineVessel(vessel.profileId)}
-                />
-              ))}
-            </div>
+            {offlineVessels.length > 0 ? (
+              <div className={styles.offlineVessels}>
+                {offlineVessels.map((vessel, index) => (
+                  <VesselListItem
+                    key={index}
+                    vessel={vessel}
+                    saved={vessel.savedOn}
+                    onDeleteClick={() => dispatchDeleteOfflineVessel(vessel.profileId)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className={styles.offlineAccessEmptyState}>
+                {t(
+                  'common.offlineAccessEmptyState',
+                  'The vessels you save for offline access will appear here.'
+                )}
+              </div>
+            )}
           </div>
         )}
         {query && (
@@ -145,6 +153,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               {totalResults > 0 && !searching && vessels.length < totalResults && (
                 <div className={styles.listFooter}>
                   <Button
+                    className={styles.loadMoreBtn}
                     onClick={() => fetchResults({ query, offset: offset + RESULTS_PER_PAGE })}
                   >
                     {t('search.loadMore', 'LOAD MORE')}

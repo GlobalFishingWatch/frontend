@@ -26,51 +26,78 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
 
   return (
     <Fragment>
-      <Modal title={t(`filters.title` as any, 'Filter events')} isOpen={isModalOpen} onClose={closeModal}>
-          <div className={styles.filterSelector}>
-            <Switch className={styles.filterSwitch} onClick={() => setFilter('portVisits', !isPortVisitActive) } active={isPortVisitActive}></Switch>{t(`settings.portVisits.title` as any, 'Port Visits')}
-          </div>
-          <div className={styles.filterSelector}>
-            <Switch className={styles.filterSwitch} onClick={() => setFilter('fishingEvents', !isFishingEventsActive) } active={isFishingEventsActive}></Switch>{t(`settings.fishingEvents.title` as any, 'Fishing Events')}
-          </div>
-          <div className={styles.filterSelector}>
-            <Switch className={styles.filterSwitch} onClick={() => setFilter('encounters', !isEncountersActive) } active={isEncountersActive}></Switch>{t(`settings.encounters.title` as any, 'Encounters')}
-          </div>
-          <div className={styles.filterSelector}>
-            <Switch className={styles.filterSwitch} onClick={() => setFilter('loiteringEvents', !isLoiteringEventsActive) } active={isLoiteringEventsActive}></Switch>{t(`settings.loiteringEvents.title` as any, 'Loitering Events')}
-          </div>
-          <br/>
-          <InputDate 
-            value={start} 
-            onChange={(e) => {
-              if (e.target.value !== start) {
-                setDate('start', e.target.value )
-              }
-            }}
-            onRemove={() => {
-              setDate('start', DEFAULT_WORKSPACE.start)
-            }}
-            label={t(`filters.start` as any, 'Start')}
-            max={DEFAULT_WORKSPACE.end} />
-          <InputDate 
-            value={end} 
-            onChange={(e) => {
-              if (e.target.value !== end) {
-                setDate('end', e.target.value )
-              }
-            }}
-            onRemove={() => {
-              setDate('end', DEFAULT_WORKSPACE.end)
-            }}
-            label={t(`filters.start` as any, 'End')} 
-            max={DEFAULT_WORKSPACE.end} />
+      <Modal
+        title={t(`filters.title` as any, 'Filter events')}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      >
+        <div className={styles.filterSelector}>
+          <Switch
+            className={styles.filterSwitch}
+            onClick={() => setFilter('portVisits', !isPortVisitActive)}
+            active={isPortVisitActive}
+          ></Switch>
+          {t(`settings.portVisits.title` as any, 'Port Visits')}
+        </div>
+        <div className={styles.filterSelector}>
+          <Switch
+            className={styles.filterSwitch}
+            onClick={() => setFilter('fishingEvents', !isFishingEventsActive)}
+            active={isFishingEventsActive}
+          ></Switch>
+          {t(`settings.fishingEvents.title` as any, 'Fishing Events')}
+        </div>
+        <div className={styles.filterSelector}>
+          <Switch
+            className={styles.filterSwitch}
+            onClick={() => setFilter('encounters', !isEncountersActive)}
+            active={isEncountersActive}
+          ></Switch>
+          {t(`settings.encounters.title` as any, 'Encounters')}
+        </div>
+        <div className={styles.filterSelector}>
+          <Switch
+            className={styles.filterSwitch}
+            onClick={() => setFilter('loiteringEvents', !isLoiteringEventsActive)}
+            active={isLoiteringEventsActive}
+          ></Switch>
+          {t(`settings.loiteringEvents.title` as any, 'Loitering Events')}
+        </div>
+        <br />
+        <InputDate
+          value={start}
+          onChange={(e) => {
+            if (e.target.value !== start) {
+              setDate('start', e.target.value)
+            }
+          }}
+          onRemove={() => {
+            setDate('start', DEFAULT_WORKSPACE.start)
+          }}
+          label={t(`filters.start` as any, 'Start')}
+          max={DEFAULT_WORKSPACE.end}
+        />
+        <br />
+        <InputDate
+          value={end}
+          onChange={(e) => {
+            if (e.target.value !== end) {
+              setDate('end', e.target.value)
+            }
+          }}
+          onRemove={() => {
+            setDate('end', DEFAULT_WORKSPACE.end)
+          }}
+          label={t(`filters.start` as any, 'End')}
+          max={DEFAULT_WORKSPACE.end}
+        />
       </Modal>
       <div className={styles.filters}>
         <IconButton
           icon={filtered ? 'filter-on' : 'filter-off'}
-          size="small"
+          size="medium"
           type="solid"
-          onClick={() => openModal() }
+          onClick={() => openModal()}
         ></IconButton>
       </div>
     </Fragment>

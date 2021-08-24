@@ -1,5 +1,23 @@
 # @globalfishingwatch/dataviews-client
 
+## 12.1.1
+
+### Patch Changes
+
+- fix info param filter
+
+## 12.1.0
+
+### Minor Changes
+
+- fix dataviews editor build
+
+## 12.0.1
+
+### Patch Changes
+
+- 556bf4ea: ensure vesselId is present for info endpoints
+
 ## 12.0.0
 
 ### Patch Changes

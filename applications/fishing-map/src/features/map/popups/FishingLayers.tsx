@@ -1,16 +1,12 @@
 import React from 'react'
 import { event as uaEvent } from 'react-ga'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-} from 'features/datasets/datasets.selectors'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
@@ -20,7 +16,6 @@ import {
 import { PRESENCE_POC_INTERACTION } from 'features/datasets/datasets.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
-import { isUserLogged } from 'features/user/user.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
@@ -33,42 +28,22 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { fishingInteractionStatus } = useClickedEventConnect()
-  const userLogged = useSelector(isUserLogged)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    const vesselRelatedDataset = getRelatedDatasetByType(
-      vessel.dataset,
-      DatasetTypes.Vessels,
-      userLogged
-    )
-
-    if (!vesselRelatedDataset) {
-      console.warn('Missing info related dataset for', vessel)
-    }
-    const trackRelatedDataset = getRelatedDatasetByType(
-      vessel.dataset,
-      DatasetTypes.Tracks,
-      userLogged
-    )
-    if (!trackRelatedDataset) {
-      console.warn('Missing track related dataset for', vessel)
-    }
-
-    const eventsRelatedDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
-
+    const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
     const eventsDatasetsId =
-      eventsRelatedDatasets && eventsRelatedDatasets?.length
-        ? eventsRelatedDatasets.map((d) => d.id)
+      vesselEventsDatasets && vesselEventsDatasets?.length
+        ? vesselEventsDatasets.map((d) => d.id)
         : []
 
-    if (vesselRelatedDataset && trackRelatedDataset) {
-      const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: trackRelatedDataset.id,
-        infoDatasetId: vesselRelatedDataset.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-      })
-      upsertDataviewInstance(vesselDataviewInstance)
-    }
+    const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
+      trackDatasetId: vessel.trackDataset?.id,
+      infoDatasetId: vessel.infoDataset?.id,
+      ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+    })
+
+    upsertDataviewInstance(vesselDataviewInstance)
+
     uaEvent({
       category: 'Tracks',
       action: 'Click in vessel from grid cell panel',

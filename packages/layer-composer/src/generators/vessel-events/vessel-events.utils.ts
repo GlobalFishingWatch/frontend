@@ -11,6 +11,7 @@ const EVENTS_COLORS: Dictionary<string> = {
   unmatched: '#CE2C54',
   loitering: '#cfa9f9',
   port: '#99EEFF',
+  port_visit: '#99EEFF',
   fishing: '#ffffff',
 }
 

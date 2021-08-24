@@ -94,6 +94,15 @@ export const resolveDataviewDatasetResource = (
 
   if (!datasetConfig) return {}
 
+  // Clean resources when mandatory vesselId is missing
+  // needed for vessels with no info datasets (zebraX)
+  if (datasetConfig.endpoint === EndpointId.Vessel) {
+    const vesselID = datasetConfig.params?.find((q) => q.id === 'vesselId')?.value
+    if (!vesselID) {
+      return {}
+    }
+  }
+
   const url = resolveEndpoint(dataset, datasetConfig)
 
   if (!url) return {}

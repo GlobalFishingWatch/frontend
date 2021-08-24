@@ -9,6 +9,7 @@ import { getSourcesSelectedInDataview } from 'features/workspace/activity/activi
 import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { isGuestUser, selectUserGroupsClean } from 'features/user/user.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -114,15 +115,17 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
       const sourcesInDataview = getSourcesSelectedInDataview(dataview)
       return sourcesInDataview.map((source) => {
+        const dataset = { id: source.id, name: source.label }
         return {
           id: `Data: ${source.id}`,
-          label: `Data: ${t(`datasets:${source.id.split(':')[0]}.name` as any)}`,
+          label: `Data: ${getDatasetLabel(dataset)}`,
         }
       })
     } else {
+      const dataset = dataview.datasets?.[0]
       return {
         id: `Data: ${dataview.id}`,
-        label: `Data: ${t(`datasets:${dataview.datasets?.[0]?.id.split(':')[0]}.name` as any)}`,
+        label: `Data: ${dataset ? getDatasetLabel(dataset) : dataview.name}`,
       }
     }
   })

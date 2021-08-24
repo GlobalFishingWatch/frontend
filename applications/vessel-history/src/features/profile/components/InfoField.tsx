@@ -34,7 +34,7 @@ interface ListItemProps {
   value?: string
   valuesHistory?: ValueItem[]
   vesselName: string
-  hideSince?: ConstrainBooleanParameters
+  hideSince?: boolean
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -53,10 +53,6 @@ const InfoField: React.FC<ListItemProps> = ({
   )
   const closeModal = useCallback(() => setModalOpen(false), [])
 
-  const current: ValueItem = {
-    value,
-    firstSeen: valuesHistory.slice().shift()?.firstSeen ?? valuesHistory.slice().shift()?.endDate,
-  }
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
 
   return (
@@ -77,7 +73,6 @@ const InfoField: React.FC<ListItemProps> = ({
           </p>
         )}
         <InfoFieldHistory
-          current={current}
           label={label}
           history={valuesHistory}
           isOpen={modalOpen}

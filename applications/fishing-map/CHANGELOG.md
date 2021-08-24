@@ -1,5 +1,71 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.35
+
+### Patch Changes
+
+- Updated dependencies [905c8894]
+  - @globalfishingwatch/api-types@5.2.1
+
+## 1.1.34
+
+### Patch Changes
+
+- Updated dependencies [d5c40e3f]
+  - @globalfishingwatch/api-types@5.2.0
+
+## 1.1.33
+
+### Patch Changes
+
+- Updated dependencies [b5bfe9fb]
+  - @globalfishingwatch/ui-components@10.2.0
+
+## 1.1.32
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@12.1.1
+
+## 1.1.31
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@12.1.0
+
+## 1.1.30
+
+### Patch Changes
+
+- Updated dependencies [556bf4ea]
+  - @globalfishingwatch/dataviews-client@12.0.1
+
+## 1.1.29
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@10.1.2
+
+## 1.1.28
+
+### Patch Changes
+
+- Updated dependencies [eae1524c]
+  - @globalfishingwatch/ui-components@10.1.1
+
+## 1.1.27
+
+### Patch Changes
+
+- Updated dependencies [5fccc9f4]
+- Updated dependencies [06bbf6b9]
+  - @globalfishingwatch/api-types@5.1.0
+  - @globalfishingwatch/layer-composer@9.1.0
+  - @globalfishingwatch/ui-components@10.1.0
+
 ## 1.1.26
 
 ### Patch Changes

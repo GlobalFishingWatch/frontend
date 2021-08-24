@@ -13,7 +13,7 @@ import Tooltip from '../tooltip'
 import InputText from '../input-text'
 import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
-import { MultiSelectOption, MultiSelectOnChange } from './index'
+import { MultiSelectOption, MultiSelectOnChange, MultiSelectOnFilter } from './index'
 
 interface MultiSelectProps {
   label?: string
@@ -23,6 +23,7 @@ interface MultiSelectProps {
   selectedOptions?: MultiSelectOption[]
   disabled?: boolean
   disabledMsg?: string
+  onFilterOptions?: MultiSelectOnFilter
   onSelect: MultiSelectOnChange
   onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
@@ -70,6 +71,7 @@ function MultiSelect(props: MultiSelectProps) {
     onCleanClick,
     disabled = false,
     disabledMsg = '',
+    onFilterOptions,
   } = props
 
   const handleRemove = useCallback(
@@ -104,7 +106,17 @@ function MultiSelect(props: MultiSelectProps) {
   )
 
   const [inputValue, setInputValue] = useState('')
-  const filteredItems = useMemo(() => getItemsFiltered(options, inputValue), [options, inputValue])
+  const handleFilter = useMemo(
+    () =>
+      // apply onFilter callback when provided otherwise just use
+      // items filtered with default callback getItemsFiltered
+      onFilterOptions ?? ((_: MultiSelectOption[], filtered: MultiSelectOption[]) => filtered),
+    [onFilterOptions]
+  )
+  const filteredItems = useMemo(
+    () => handleFilter(options, getItemsFiltered(options, inputValue), inputValue),
+    [handleFilter, options, inputValue]
+  )
 
   const { getDropdownProps } = useMultipleSelection({ selectedItems: selectedOptions })
   const {

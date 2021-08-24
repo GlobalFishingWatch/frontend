@@ -18,7 +18,7 @@ import { updateLocation } from 'routes/routes.actions'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { SUPPORT_EMAIL } from 'data/config'
+import { PRIVATE_SUFIX, SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
 import ActivitySection from './activity/ActivitySection'
@@ -151,7 +151,12 @@ function Workspace() {
       {(locationCategory === WorkspaceCategories.MarineManager ||
         locationCategory === WorkspaceCategories.FishingActivity) &&
         workspace?.name &&
-        !readOnly && <h2 className={styles.title}>{workspace.name}</h2>}
+        !readOnly && (
+          <h2 className={styles.title}>
+            {workspace.id.startsWith(PRIVATE_SUFIX) && '🔒 '}
+            {workspace.name}
+          </h2>
+        )}
       <ActivitySection />
       <VesselsSection />
       <EventsSection />

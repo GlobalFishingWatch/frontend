@@ -1,21 +1,44 @@
-import { intersection, lowerCase } from 'lodash'
-import { Dataset, Dataview, EventTypes } from '@globalfishingwatch/api-types'
+import { intersection, lowerCase, uniq } from 'lodash'
+import { Dataset, Dataview, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
+import { getDatasetNameTranslated } from 'features/i18n/utils'
 
 export type SupportedDatasetSchema =
   | 'flag'
   | 'geartype'
   | 'fleet'
+  | 'shiptype'
   | 'origin'
   | 'vessel_type'
   | 'qf_detect'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
+export const isPrivateDataset = (dataset: Partial<Dataset>) =>
+  (dataset?.id || '').includes(PRIVATE_SUFIX)
+
 export const removeDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[0] : ''
+}
+
+export const getDatasetLabel = (dataset: { id: string; name?: string }): string => {
+  const { id, name = '' } = dataset || {}
+  if (!id) return name || ''
+  const label = getDatasetNameTranslated(dataset)
+  return isPrivateDataset(dataset) ? `🔒 ${label}` : label
+}
+
+export const getDatasetsInDataviews = (
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+) => {
+  return uniq(
+    dataviews?.flatMap((dataviews) => {
+      if (!dataviews.datasetsConfig) return []
+      return dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+    })
+  )
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
@@ -95,16 +118,15 @@ export const getCommonSchemaFieldsInDataview = (
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
   )
-
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
   const datasetId = activeDatasets?.[0]?.id?.split(':')[0]
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
         const label = t(
           `datasets:${datasetId}.schema.${schema}.enum.${field}`,
-          capitalize(lowerCase(field))
+          t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
         )
-        return { id: field, label: label || capitalize(lowerCase(field)) }
+        return { id: field, label: label }
       })
     : []
   return commonSchemaFields.sort(sortFields)

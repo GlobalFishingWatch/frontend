@@ -18,6 +18,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import LocalStorageLoginLink from 'routes/LoginLink'
@@ -53,6 +54,7 @@ import {
   selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
 } from './search.selectors'
+import TransmissionsTimeline from './TransmissionsTimeline'
 
 function Search() {
   const { t } = useTranslation()
@@ -354,6 +356,7 @@ function Search() {
                         callsign,
                         geartype,
                         origin,
+                        matricula,
                         dataset,
                         firstTransmissionDate,
                         lastTransmissionDate,
@@ -373,7 +376,9 @@ function Search() {
                           key={id}
                         >
                           <Fragment>
-                            <div className={styles.name}>{shipname || EMPTY_FIELD_PLACEHOLDER}</div>
+                            <div className={styles.name}>
+                              {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
+                            </div>
                             <div className={styles.properties}>
                               <div className={styles.property}>
                                 <label>{t('vessel.flag', 'Flag')}</label>
@@ -416,19 +421,29 @@ function Search() {
                                   <span>{formatInfoField(origin, 'fleet')}</span>
                                 </div>
                               )}
-                              {firstTransmissionDate && lastTransmissionDate && (
+                              {matricula && (
                                 <div className={styles.property}>
+                                  <label>{t('vessel.matricula', 'Matricula')}</label>
+                                  <span>{formatInfoField(matricula, 'fleet')}</span>
+                                </div>
+                              )}
+                              {firstTransmissionDate && lastTransmissionDate && (
+                                <div className={cx(styles.property, styles.fullWidth)}>
                                   <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
                                   <span>
                                     from <I18nDate date={firstTransmissionDate} /> to{' '}
                                     <I18nDate date={lastTransmissionDate} />
                                   </span>
+                                  <TransmissionsTimeline
+                                    firstTransmissionDate={firstTransmissionDate}
+                                    lastTransmissionDate={lastTransmissionDate}
+                                  />
                                 </div>
                               )}
-                              {dataset?.name && (
+                              {dataset && (
                                 <div className={styles.property}>
                                   <label>{t('vessel.source', 'Source')}</label>
-                                  <span>{dataset.name}</span>
+                                  <span>{getDatasetLabel(dataset)}</span>
                                 </div>
                               )}
                             </div>

@@ -1,11 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { removeDatasetVersion } from 'features/datasets/datasets.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
 import Title from '../common/Title'
@@ -16,8 +15,6 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
-  const { t } = useTranslation()
-
   const layerActive = dataview?.config?.visible ?? true
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
@@ -26,8 +23,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     return <DatasetNotFound dataview={dataview} />
   }
 
-  const datasetId = removeDatasetVersion(dataset?.id)
-  const title = datasetId ? t(`datasets:${datasetId}.name` as any) : dataset.name
+  const title = getDatasetLabel(dataset)
   const TitleComponent = (
     <Title
       title={title}

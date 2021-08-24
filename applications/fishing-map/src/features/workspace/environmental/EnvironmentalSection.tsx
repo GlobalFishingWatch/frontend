@@ -13,6 +13,7 @@ import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
+import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 import UserTrackLayerPanel from './UserTrackLayerPanel'
 
@@ -48,6 +49,10 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
     []
   )
 
+  if (readOnly && !hasVisibleDataviews) {
+    return null
+  }
+
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
@@ -80,17 +85,13 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
       {dataviews.length > 0 ? (
         dataviews?.map((dataview) =>
           dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
-            <UserTrackLayerPanel
-              key={dataview.id}
-              dataview={dataview}
-              onToggle={onToggleLayer(dataview)}
-            />
+            <LayerPanelContainer key={dataview.id} dataview={dataview}>
+              <UserTrackLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+            </LayerPanelContainer>
           ) : (
-            <EnvironmentalLayerPanel
-              key={dataview.id}
-              dataview={dataview}
-              onToggle={onToggleLayer(dataview)}
-            />
+            <LayerPanelContainer key={dataview.id} dataview={dataview}>
+              <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+            </LayerPanelContainer>
           )
         )
       ) : (

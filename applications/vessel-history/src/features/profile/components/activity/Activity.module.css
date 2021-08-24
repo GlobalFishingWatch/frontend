@@ -1,6 +1,12 @@
 .activityContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--header-height) - var(--tabs-height));
+}
+
+.activityListContainer {
   padding: var(--space-XS);
-  height: calc(100vh - 180px);
+  flex: 1;
 }
 
 .divider {
@@ -106,4 +112,8 @@
 
 .spinnerFull {
   height: calc(100vh - 110px);
+}
+
+.eventIcon.port_visit {
+  background-color: #99eeff;
 }

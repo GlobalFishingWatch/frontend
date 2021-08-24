@@ -1,15 +1,24 @@
 {
   "common": {
     "activity": "activity",
-    "currentTimeRange": "current time range",
+    "AIS": "AIS",
     "from": "from",
     "info": "info",
     "map": "map",
     "offlineAccess": "offline access",
+    "offlineAccessEmptyState": "The vessels you save for offline access will appear here.",
+    "Other": "Other",
     "since": "since",
     "timeRange": "time range",
     "to": "to",
+    "typeToSeach": "Type to search",
+    "typeToSearch": "Type to search",
     "unknown": "Unknown",
+    "any": "Any",
+    "currentTimeRange": "current time range",
+    "high": "High",
+    "low": "Low",
+    "medium": "Medium",
     "in": "in",
     "commingSoon": "coming soon!",
     "historyFor": "history for",
@@ -18,6 +27,7 @@
   "event": {
     "authStatus": "Authorization status",
     "avgSpeed": "Avg Speed",
+    "confidence": "Confidence",
     "distance": "Distance",
     "distancePort": "Distance from port",
     "distanceShore": "Distance from shore",
@@ -38,10 +48,15 @@
     "minuteAbbreviated": "{{count}}m",
     "minuteAbbreviated_plural": "{{count}}m",
     "nextPort": "Next port traveled",
+    "nSelected": "{{count}} selected",
+    "nSelected_plural": "{{count}} selected",
     "port": "Port",
-    "portAction": "Docked for",
-    "portAt": "Docked at {{port}} for",
+    "portAction": "Docked",
+    "portAt": "Docked at {{port}}",
     "position": "Position",
+    "psma": "PSMA",
+    "psmaIncluded": "Included Since {{value}}",
+    "psmaNotIncluded": "Not included",
     "start": "Start",
     "unknown": "Unknown event",
     "avgDuration": "Avg Duration",
@@ -76,7 +91,6 @@
     "selected": "selected"
   },
   "settings": {
-    "distance": "DISTANCE TRAVELLED",
     "duration": "DURATION",
     "eezs": {
       "label": "Events in these EEZs"
@@ -88,7 +102,7 @@
       "title": "Fishing Events"
     },
     "hours": "hours",
-    "kms": "kms",
+    "km": "km",
     "loiteringEvents": {
       "title": "Loitering Events"
     },
@@ -97,14 +111,17 @@
       "label": "Events in these MPAs"
     },
     "portVisits": {
+      "inThesePortStates": "Events in these port States",
+      "title": "Port Visits",
       "inputEnd": "ports",
-      "inputStart": "Port visits in",
-      "title": "Port Visits"
+      "inputStart": "Port visits in"
     },
     "rfmos": {
       "label": "Events in these RFMOS"
     },
-    "title": "Settings"
+    "title": "Settings",
+    "kms": "kms",
+    "distance": "DISTANCE TRAVELLED"
   },
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",

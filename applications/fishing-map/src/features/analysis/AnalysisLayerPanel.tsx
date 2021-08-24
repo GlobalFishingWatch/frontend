@@ -9,7 +9,7 @@ import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import layerPanelStyles from 'features/workspace/shared/LayerPanel.module.css'
-import { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import { getDatasetLabel, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import styles from './AnalysisLayerPanel.module.css'
 
 const allAvailableProperties = ['dataset', 'source', 'flag']
@@ -28,7 +28,7 @@ function AnalysisLayerPanel({ dataview, hiddenProperties, availableFields }: Lay
   const presenceDataview = isPresenceDataview(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
 
-  let datasetName = dataset ? t(`datasets:${dataset?.id}.name` as any) : dataview.name || ''
+  let datasetName = dataset ? getDatasetLabel(dataset) : dataview.name || ''
   if (fishignDataview || presenceDataview) {
     datasetName = presenceDataview
       ? t(`common.presence`, 'Vessel presence')

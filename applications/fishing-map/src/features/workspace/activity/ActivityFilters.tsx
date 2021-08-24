@@ -43,6 +43,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const flagFiltersSupported = isDataviewSchemaSupported(dataview, 'flag')
   const gearTypeFilters = getFiltersBySchema(dataview, 'geartype')
   const fleetFilters = getFiltersBySchema(dataview, 'fleet')
+  const shiptypeFilters = getFiltersBySchema(dataview, 'shiptype')
   const originFilters = getFiltersBySchema(dataview, 'origin')
   const vesselFilters = getFiltersBySchema(dataview, 'vessel_type')
   const qfDectectionFilters = getFiltersBySchema(dataview, 'qf_detect')
@@ -208,6 +209,20 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           onSelect={(selection) => onSelectFilterClick('fleet', selection)}
           onRemove={(selection, rest) => onRemoveFilterClick('fleet', rest)}
           onCleanClick={() => onCleanFilterClick('fleet')}
+        />
+      )}
+      {shiptypeFilters.active && (
+        <MultiSelect
+          disabled={shiptypeFilters.disabled}
+          disabledMsg={shiptypeFilters.tooltip}
+          label={t('vessel.shiptype', 'Ship type')}
+          placeholder={getPlaceholderBySelections(shiptypeFilters.optionsSelected)}
+          options={shiptypeFilters.options}
+          selectedOptions={shiptypeFilters.optionsSelected}
+          className={styles.multiSelect}
+          onSelect={(selection) => onSelectFilterClick('shiptype', selection)}
+          onRemove={(selection, rest) => onRemoveFilterClick('shiptype', rest)}
+          onCleanClick={() => onCleanFilterClick('shiptype')}
         />
       )}
       {originFilters.active && (

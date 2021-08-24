@@ -110,6 +110,11 @@
   white-space: nowrap;
 }
 
+.fullWidth {
+  margin-right: unset;
+  width: 100%;
+}
+
 .searchSuggestion {
   display: flex;
   padding: var(--space-S);

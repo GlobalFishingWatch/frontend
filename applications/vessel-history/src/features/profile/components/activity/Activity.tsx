@@ -5,10 +5,13 @@ import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { VesselWithHistory } from 'types'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
-import { selectFilteredEvents } from 'features/vessels/activity/vessels-activity.selectors'
+import {
+  RenderedEvent,
+  selectFilteredEvents,
+} from 'features/vessels/activity/vessels-activity.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
+import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -34,10 +37,11 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   useEffect(() => {
     dispatch(fetchRegionsThunk())
+    dispatch(fetchPsmaThunk())
   }, [dispatch])
 
   return (
-    <Fragment>
+    <div className={styles.activityContainer}>
       <ActivityFilters></ActivityFilters>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
@@ -75,7 +79,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
           </div>
         </Fragment>
       )}
-    </Fragment>
+    </div>
   )
 }
 

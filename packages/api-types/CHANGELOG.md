@@ -1,5 +1,24 @@
 # @globalfishingwatch/api-types
 
+## 5.2.1
+
+### Patch Changes
+
+- 905c8894: add matricula in vessel types
+
+## 5.2.0
+
+### Minor Changes
+
+- d5c40e3f: add dataset definition in vessel type
+
+## 5.1.0
+
+### Minor Changes
+
+- 5fccc9f4: Added port visit event
+- 06bbf6b9: Modified port visit event
+
 ## 5.0.0
 
 ### Major Changes

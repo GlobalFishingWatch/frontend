@@ -30,8 +30,6 @@ type LayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-const showDebugVesselId = process.env.NODE_ENV === 'development'
-
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -68,11 +66,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
-  const vesselId = showDebugVesselId
-    ? (infoResource?.datasetConfig?.params?.find((p) => p.id === 'vesselId')?.value as string) ||
-      dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
-      ''
-    : ''
+  const vesselId =
+    (infoResource?.datasetConfig?.params?.find((p) => p.id === 'vesselId')?.value as string) ||
+    dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
+    ''
   const vesselTitle = vesselLabel || vesselId
 
   const TitleComponent = (
@@ -99,7 +96,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       return <I18nFlag iso={fieldValue} />
     }
     if (field.id === 'geartype') {
-      return t(`vessel.gearTypes.${fieldValue}` as any, EMPTY_FIELD_PLACEHOLDER)
+      if (!fieldValue) return EMPTY_FIELD_PLACEHOLDER
+      const fieldValueSplit = fieldValue.split('|')
+      if (fieldValueSplit.length > 1) {
+        return fieldValueSplit
+          .map((field) => t(`vessel.gearTypes.${field}` as any, field))
+          .join(', ')
+      }
+      return t(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
     }
     if (field.id === 'mmsi') {
       return (
@@ -120,6 +124,86 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     ? dataview.infoConfig?.fields.filter((field) => field.guest)
     : dataview.infoConfig?.fields
 
+  const TrackIconComponent = trackLoading ? (
+    <IconButton
+      loading
+      className={styles.loadingIcon}
+      size="small"
+      tooltip={t('vessel.loading', 'Loading vessel track')}
+    />
+  ) : (
+    <Fragment>
+      <Color
+        dataview={dataview}
+        open={colorOpen}
+        onColorClick={changeTrackColor}
+        onToggleClick={onToggleColorOpen}
+        onClickOutside={closeExpandedContainer}
+      />
+      <FitBounds hasError={trackError} trackResource={trackResource} />
+    </Fragment>
+  )
+
+  const InfoIconComponent = infoLoading ? (
+    <IconButton
+      loading
+      className={styles.loadingIcon}
+      size="small"
+      tooltip={t('vessel.loadingInfo', 'Loading vessel info')}
+    />
+  ) : (
+    <ExpandedContainer
+      visible={infoOpen}
+      onClickOutside={closeExpandedContainer}
+      component={
+        <ul className={styles.infoContent}>
+          {infoFields?.map((field: any) => {
+            const value = infoResource?.data?.[field.id as keyof Vessel]
+            if (!value && !field.mandatory) return null
+            const fieldValues = Array.isArray(value) ? value : [value]
+            return (
+              <li key={field.id} className={styles.infoContentItem}>
+                <label>{t(`vessel.${field.id}` as any)}</label>
+                {fieldValues.map((fieldValue, i) => (
+                  <span key={field.id + fieldValue}>
+                    {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
+                    {/* Field values separator */}
+                    {i < fieldValues.length - 1 ? ', ' : ''}
+                  </span>
+                ))}
+              </li>
+            )
+          })}
+          {guestUser && (
+            <li className={styles.infoLogin}>
+              <Trans i18nKey="vessel.login">
+                You need to
+                <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
+                to see more details
+              </Trans>
+            </li>
+          )}
+        </ul>
+      }
+    >
+      <IconButton
+        size="small"
+        icon={infoError ? 'warning' : 'info'}
+        type={infoError ? 'warning' : 'default'}
+        disabled={infoError}
+        tooltip={
+          infoError
+            ? t('errors.vesselLoading', 'There was an error loading the vessel details')
+            : infoOpen
+            ? t('layer.infoClose', 'Hide info')
+            : t('layer.infoOpen', 'Show info')
+        }
+        onClick={onToggleInfoOpen}
+        tooltipPlacement="top"
+      />
+    </ExpandedContainer>
+  )
+
   return (
     <div
       className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
@@ -133,87 +217,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           <Fragment>
-            {layerActive && !infoLoading ? (
-              trackLoading ? (
-                <IconButton
-                  loading
-                  className={styles.loadingIcon}
-                  size="small"
-                  tooltip={t('vessel.loading', 'Loading vessel track')}
-                />
-              ) : (
-                <Fragment>
-                  <Color
-                    dataview={dataview}
-                    open={colorOpen}
-                    onColorClick={changeTrackColor}
-                    onToggleClick={onToggleColorOpen}
-                    onClickOutside={closeExpandedContainer}
-                  />
-                  <FitBounds hasError={trackError} trackResource={trackResource} />
-                </Fragment>
-              )
-            ) : null}
-            {infoLoading ? (
-              <IconButton
-                loading
-                className={styles.loadingIcon}
-                size="small"
-                tooltip={t('vessel.loadingInfo', 'Loading vessel info')}
-              />
-            ) : (
-              <ExpandedContainer
-                visible={infoOpen}
-                onClickOutside={closeExpandedContainer}
-                component={
-                  <ul className={styles.infoContent}>
-                    {infoFields?.map((field: any) => {
-                      const value = infoResource?.data?.[field.id as keyof Vessel]
-                      if (!value && !field.mandatory) return null
-                      const fieldValues = Array.isArray(value) ? value : [value]
-                      return (
-                        <li key={field.id} className={styles.infoContentItem}>
-                          <label>{t(`vessel.${field.id}` as any)}</label>
-                          {fieldValues.map((fieldValue, i) => (
-                            <span key={field.id + fieldValue}>
-                              {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
-                              {/* Field values separator */}
-                              {i < fieldValues.length - 1 ? ', ' : ''}
-                            </span>
-                          ))}
-                        </li>
-                      )
-                    })}
-                    {guestUser && (
-                      <li className={styles.infoLogin}>
-                        <Trans i18nKey="vessel.login">
-                          You need to
-                          <LocalStorageLoginLink className={styles.link}>
-                            login
-                          </LocalStorageLoginLink>
-                          to see more details
-                        </Trans>
-                      </li>
-                    )}
-                  </ul>
-                }
-              >
-                <IconButton
-                  size="small"
-                  icon={infoError ? 'warning' : 'info'}
-                  type={infoError ? 'warning' : 'default'}
-                  tooltip={
-                    infoError
-                      ? t('errors.vesselLoading', 'There was an error loading the vessel details')
-                      : infoOpen
-                      ? t('layer.infoClose', 'Hide info')
-                      : t('layer.infoOpen', 'Show info')
-                  }
-                  onClick={onToggleInfoOpen}
-                  tooltipPlacement="top"
-                />
-              </ExpandedContainer>
-            )}
+            {layerActive && !infoLoading && TrackIconComponent}
+            {infoResource && InfoIconComponent}
             <Remove dataview={dataview} />
           </Fragment>
         </div>

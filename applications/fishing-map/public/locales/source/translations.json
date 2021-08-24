@@ -22,8 +22,8 @@
     "analysis": "Create an analysis for this area",
     "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
     "apparentFishing": "Apparent Fishing Effort",
-    "category": "Category",
     "cancel": "Cancel",
+    "category": "Category",
     "comingSoon": "coming soon!",
     "confirm": "Confirm",
     "context_area_plural": "Context areas",
@@ -35,6 +35,7 @@
     "description": "Description",
     "detection": "Detection",
     "detection_plural": "Detections",
+    "dismiss": "Dissmiss",
     "environment": "Environment",
     "events": "Events",
     "feedback": "Feedback",
@@ -44,6 +45,7 @@
     "hour_plural": "hours",
     "in": "in",
     "layerList": "Layer list",
+    "learnMore": "Learn more",
     "loggedAs": "Logged as",
     "login": "Log in",
     "logout": "Log out",
@@ -64,7 +66,7 @@
     "update": "Update",
     "vessel": "Vessel",
     "vessel_plural": "Vessels",
-    "viirs": "VIIRS",
+    "viirs": "Night light detections (VIIRS)",
     "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
@@ -92,6 +94,7 @@
     "requiredFields": "Required fields {{fields}}",
     "timeNameField": "Time name field",
     "title": "Dataset",
+    "title_plural": "Datasets",
     "typePoints": " Points",
     "typePointsDescription": "Display one or multiple positions sized by any quantitative value in your dataset.",
     "typePolygons": " Polygons",
@@ -100,8 +103,7 @@
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
     "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContext": "Upload new context areas",
-    "uploadNewEnviroment": "Upload new environment dataset",
-    "title_plural": "Datasets"
+    "uploadNewEnviroment": "Upload new environment dataset"
   },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",
@@ -303,6 +305,7 @@
       "set_gillnets": "Set Gillnet",
       "set_longlines": "Set Longline",
       "squid_jigger": "Squid Jigger",
+      "squid_jiggers": "Gear Squid Jiggers",
       "trawlers": "Trawler",
       "trollers": "Troller",
       "tuna_purse_seines": "Tuna Purse Seine"
@@ -315,10 +318,12 @@
     "loading": "Loading vessel track",
     "loadingInfo": "Loading vessel info",
     "login": "You need to <1>login</1> to see more details",
+    "matricula": "Matricula",
     "mmsi": "MMSI",
     "nationalId": "National Id",
     "origin": "Origin",
     "registeredGearType": "Registered Gear Type",
+    "shiptype": "Ship type",
     "source": "Source",
     "transmission_plural": "Transmissions",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
@@ -337,6 +342,7 @@
     "save": "Save the current view",
     "saved": "Current view was saved and it's available in your user profile",
     "saveLogin": "You need to login to save views",
+    "privateTitle_plural": "Private workspaces",
     "title_plural": "Workspaces"
   }
 }

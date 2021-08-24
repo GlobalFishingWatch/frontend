@@ -10,10 +10,12 @@ export interface Vessel {
   shipname: string
   firstTransmissionDate: string
   lastTransmissionDate: string
+  dataset?: string
   imo?: string
   mmsi?: string
   callsign?: string
   fleet?: string
+  matricula?: string
   origin?: string
   type?: string
   geartype?: string

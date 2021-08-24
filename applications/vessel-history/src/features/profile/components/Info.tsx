@@ -18,7 +18,7 @@ import {
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
-import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.slice'
+import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.selectors'
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
