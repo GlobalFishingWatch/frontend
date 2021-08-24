@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 5.2.0
+
+### Minor Changes
+
+- d5c40e3f: add dataset definition in vessel type
+
 ## 5.1.0
 
 ### Minor Changes
