@@ -54,6 +54,7 @@ import {
   selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
 } from './search.selectors'
+import TransmissionsTimeline from './TransmissionsTimeline'
 
 function Search() {
   const { t } = useTranslation()
@@ -420,12 +421,16 @@ function Search() {
                                 </div>
                               )}
                               {firstTransmissionDate && lastTransmissionDate && (
-                                <div className={styles.property}>
+                                <div className={cx(styles.property, styles.fullWidth)}>
                                   <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
                                   <span>
                                     from <I18nDate date={firstTransmissionDate} /> to{' '}
                                     <I18nDate date={lastTransmissionDate} />
                                   </span>
+                                  <TransmissionsTimeline
+                                    firstTransmissionDate={firstTransmissionDate}
+                                    lastTransmissionDate={lastTransmissionDate}
+                                  />
                                 </div>
                               )}
                               {dataset && (
