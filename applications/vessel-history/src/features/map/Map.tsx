@@ -55,6 +55,7 @@ const Map = (): ReactElement => {
             latitude: mapRef.current?.getMap().getCenter().lat,
             longitude: mapRef.current?.getMap().getCenter().lng,
             zoom: mapRef.current.getMap().getZoom(),
+
             pitch: currentPitch,
             bearing: currentBearing
           })
@@ -64,12 +65,13 @@ const Map = (): ReactElement => {
                 mapRef.current?.getMap().getCenter().lng,
                 mapRef.current?.getMap().getCenter().lat
               ],
-              duration: 2000 + currentPitch * 10 + currentBearing * 10,
+              zoom: mapRef.current.getMap().getZoom() + 1,
+              duration: 2000 + (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500),
               pitch: 0,
               bearing: 0,
             })
-          }, 100)
-        }, 100)
+          }, 50)
+        }, 50)
         mapRef?.current?.getMap().fire('flyend');
       }
     });
@@ -83,7 +85,7 @@ const Map = (): ReactElement => {
 
   const onEventChange = useCallback(
     (nextEvent: RenderedEvent, pitch: number, bearing: number, padding: number) => {
-      const currentZoom = mapRef.current.getMap().getZoom()
+      const currentZoom = mapRef.current.getMap().getZoom() - 1
       if (ENABLE_FLYTO) {
         mapRef.current.getMap().flyTo({
           center: [
@@ -97,7 +99,7 @@ const Map = (): ReactElement => {
             bottom: padding
           },
           speed: currentZoom / 20, // make the flying slow
-          curve: (ENABLE_FLYTO === FLY_EFFECTS.fly ? 1.5 : 3.5), // change the speed at which it zooms out
+          curve: (ENABLE_FLYTO === FLY_EFFECTS.fly ? 1.5 : 2.5), // change the speed at which it zooms out
           essential: true // this animation is considered essential with respect to prefers-reduced-motion
         })
         mapRef?.current?.getMap().fire('flystart')

@@ -6,7 +6,7 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
+import { EVENTS_COLORS, WORKSPACE_START_DATE } from 'data/config'
 import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
@@ -212,10 +212,10 @@ export const selectEvents = createSelector(
 )
 
 export const selectMapEvents = createSelector(
-  [selectEvents],
-  (events) => {
-    const startDate = DateTime.fromISO(DEFAULT_WORKSPACE.start, { zone: 'utc' }).toMillis()
-    return events.filter(event => event.start >= startDate)
+  [selectEvents, selectFilters],
+  (events, filters) => {
+    const startDate = DateTime.fromISO(filters.start, { zone: 'utc' })
+    return events.filter(event => event.start >= startDate.toMillis())
   }
 )
 
