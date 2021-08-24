@@ -3,45 +3,41 @@ import cx from 'classnames'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { getEncounterStatus } from 'features/vessels/activity/vessels-activity.utils'
+import { Voyage } from 'features/vessels/voyages/voyages.selectors'
 import ActivityDate from './ActivityDate'
+import ActivityEvent from './ActivityEvent'
+import ActivityVoyage, { RenderedVoyage } from './ActivityVoyage'
 import styles from './Activity.module.css'
 
 interface EventProps {
-  event: RenderedEvent
+  event: RenderedEvent | RenderedVoyage
   onInfoClick?: (event: RenderedEvent) => void
-  onMapClick?: (event: RenderedEvent) => void
+  onMapClick?: (event: RenderedEvent | Voyage) => void
+  onToggleClick?: (event: RenderedVoyage) => void
 }
 
 const ActivityItem: React.FC<EventProps> = ({
   event,
   onInfoClick = () => {},
   onMapClick = () => {},
+  onToggleClick = () => {},
 }): React.ReactElement => {
   return (
     <Fragment>
-      <div className={styles.event}>
-        <div
-          className={cx(styles.eventIcon, styles[event.type], styles[getEncounterStatus(event)])}
-        >
-          {event.type === 'encounter' && <Icon icon="event-encounter" type="default" />}
-          {event.type === 'loitering' && <Icon icon="event-loitering" type="default" />}
-          {event.type === 'fishing' && <Icon icon="event-fishing" type="default" />}
-          {event.type === 'port_visit' && <Icon icon="event-port-visit" type="default" />}
-        </div>
-        <div className={styles.eventData}>
-          <ActivityDate event={event} />
-          <div className={styles.description}>{event.description}</div>
-        </div>
-        <div className={styles.actions}>
-          <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>
-          <IconButton
-            icon="view-on-map"
-            size="small"
-            onClick={() => onMapClick(event)}
-          ></IconButton>
-        </div>
-      </div>
-      <div className={styles.divider}></div>
+      {event.type === 'voyage' && (
+        <ActivityVoyage
+          event={event}
+          onMapClick={onMapClick}
+          onToggleClick={onToggleClick}
+        ></ActivityVoyage>
+      )}
+      {event.type !== 'voyage' && (
+        <ActivityEvent
+          event={event}
+          onMapClick={onMapClick}
+          onInfoClick={onInfoClick}
+        ></ActivityEvent>
+      )}
     </Fragment>
   )
 }
