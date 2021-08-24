@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+import { range } from 'lodash'
 import { CURRENT_YEAR, FIRST_YEAR_OF_DATA } from 'data/config'
 import styles from './TransmissionsTimeline.module.css'
 
@@ -8,9 +9,7 @@ type TransmissionsTimelineProps = {
   lastTransmissionDate: string
 }
 
-const YEARS_SICE_FIRST_YEAR_OF_DATA: number[] = new Array(
-  CURRENT_YEAR - FIRST_YEAR_OF_DATA + 1
-).fill(undefined)
+const AVAILABLE_YEARS = range(FIRST_YEAR_OF_DATA, CURRENT_YEAR + 1)
 
 function TransmissionsTimeline({
   firstTransmissionDate,
@@ -20,15 +19,14 @@ function TransmissionsTimeline({
   const lastYear = parseInt(lastTransmissionDate.slice(0, 4))
   return (
     <div className={styles.timelineContainer}>
-      {YEARS_SICE_FIRST_YEAR_OF_DATA.map((_, i) => {
-        const year = FIRST_YEAR_OF_DATA + i
+      {AVAILABLE_YEARS.map((year) => {
         const yearWithTransmissions = year >= firstYear && year <= lastYear
         return (
           <div
             key={year}
             className={cx(styles.year, { [styles.highlighted]: yearWithTransmissions })}
           >
-            {year.toString().slice(2, 4)}
+            {year.toString().slice(2)}
           </div>
         )
       })}
