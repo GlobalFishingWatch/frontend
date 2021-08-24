@@ -26,7 +26,7 @@ function TransmissionsTimeline({
             key={year}
             className={cx(styles.year, { [styles.highlighted]: yearWithTransmissions })}
           >
-            {year.toString().slice(2)}
+            {year === firstYear || year === lastYear ? year : '‎'}
           </div>
         )
       })}
