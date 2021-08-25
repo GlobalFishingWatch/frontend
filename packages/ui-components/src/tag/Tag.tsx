@@ -8,7 +8,7 @@ import styles from './Tag.module.css'
 
 interface TagProps {
   className?: string
-  children: string
+  children: string | React.ReactNode
   color?: string
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement

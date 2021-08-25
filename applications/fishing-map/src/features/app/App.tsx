@@ -35,10 +35,12 @@ import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import DownloadModal from 'features/download/DownloadModal'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
 import useLocalStorage from 'hooks/use-local-storage'
+import { selectDownloadArea, setDownloadArea } from 'features/download/download.slice'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -83,6 +85,7 @@ function App(): React.ReactElement {
   const narrowSidebar = workspaceLocation && !analysisQuery
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
   const { editorActive, dispatchToggleEditorMenu } = useEditorMenu()
+  const downloadArea = useSelector(selectDownloadArea)
 
   const locationIsMarineManager =
     useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
@@ -236,6 +239,9 @@ function App(): React.ReactElement {
         >
           <EditorMenu />
         </Modal>
+      )}
+      {downloadArea && (
+        <DownloadModal isOpen={true} onClose={() => dispatch(setDownloadArea(null))} />
       )}
       {welcomePopupOpen && !readOnly && (
         <Suspense fallback={null}>

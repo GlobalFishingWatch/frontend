@@ -107,6 +107,10 @@
     "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset"
   },
+  "download": {
+    "action": "Download visible activity layers for this area",
+    "title": "Download - Activity"
+  },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",
     "datasetNotFound": "Dataset not found",
