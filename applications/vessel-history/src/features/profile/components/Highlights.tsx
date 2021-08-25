@@ -1,17 +1,15 @@
 import React, { Fragment, useCallback, useState } from 'react'
-// import cx from 'classnames'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-// import { VesselWithHistory } from 'types'
 import { selectActivityHighlightEvents } from 'features/vessels/activity/vessels-highlight.selectors'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
-// import styles from './activity/Activity.'
 import styles from './activity/Activity.module.css'
 
 // interface HighlightsProps {
@@ -32,8 +30,11 @@ const Highlights: React.FC = (): React.ReactElement => {
   const closeModal = useCallback(() => setIsOpen(false), [])
 
   return (
-    <div className={styles.activityContainer}>
-      <h1>Activity Highlights {!eventsLoading && `(${events.length})`}</h1>
+    <div className={cx(styles.activityContainer, styles.highlightsContainer)}>
+      <div className={styles.divider}></div>
+      <h2 className={styles.highlights}>
+        Activity Highlights {!eventsLoading && `(${events.length})`}
+      </h2>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>
@@ -68,7 +69,9 @@ const Highlights: React.FC = (): React.ReactElement => {
               </AutoSizer>
             )}
             {events && events.length === 0 && (
-              <div>No events found that match your highlighting criteria</div>
+              <div className={styles.noEvents}>
+                {t('events.noHighlights', 'No events found for your highlighting criteria')}
+              </div>
             )}
           </div>
         </Fragment>

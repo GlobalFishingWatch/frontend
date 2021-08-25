@@ -117,3 +117,16 @@
 .eventIcon.port_visit {
   background-color: #99eeff;
 }
+
+.highlightsContainer {
+}
+
+.highlights {
+  font: var(--font-S);
+  color: #fc5d5f;
+  text-transform: uppercase;
+}
+
+.noEvents {
+  font: var(--font-S);
+}
