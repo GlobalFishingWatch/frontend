@@ -12,10 +12,6 @@ import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
 
-// interface HighlightsProps {
-//   vessel?: VesselWithHistory
-// }
-
 const Highlights: React.FC = (): React.ReactElement => {
   const { t } = useTranslation()
   const eventsLoading = useSelector(selectResourcesLoading)
@@ -33,9 +29,10 @@ const Highlights: React.FC = (): React.ReactElement => {
     <div className={cx(styles.activityContainer, styles.highlightsContainer)}>
       <div className={styles.divider}></div>
       <h2 className={styles.highlights}>
-        Activity Highlights {!eventsLoading && `(${events.length})`}
+        {t('events.activityHighlights', 'Activity Highlights')}
+        {!eventsLoading && events.length > 0 && ` (${events.length})`}
       </h2>
-      {eventsLoading && <Spinner className={styles.spinnerFull} />}
+      {eventsLoading && <Spinner className={styles.spinnerMed} />}
       {!eventsLoading && (
         <Fragment>
           <Modal title={selectedEvent?.description ?? ''} isOpen={isModalOpen} onClose={closeModal}>

@@ -18,7 +18,7 @@
   margin: 10px 0 15px;
 }
 
-.divider::before {
+.itemsDivider::before {
   margin-right: 9px;
   background: #fff url('../../../../assets/icons/vessel.svg') no-repeat 15px;
   content: '';
@@ -119,6 +119,7 @@
 }
 
 .highlightsContainer {
+  min-height: calc(var(--size-L) * 2);
 }
 
 .highlights {
@@ -129,4 +130,9 @@
 
 .noEvents {
   font: var(--font-S);
+}
+
+.spinnerMed {
+  margin-top: var(--space-M);
+  height: var(--size-M);
 }
