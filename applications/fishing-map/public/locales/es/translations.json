@@ -78,6 +78,7 @@
     "dragFilePlaceholder": "Arrastra y suelta un archivo comprimido o geojson aquí o haz clic para seleccionarlo",
     "dragFilePlaceholderCSV": "Arrastra y suelta un archivo CSV aquí o haz clic para seleccionarlo",
     "edit": "Modificar los datos",
+    "emptyFilters": "No filters available",
     "emptyState": "Sus datos aparecerán aquí",
     "featuresNameField": "Campo para nombrar cada área",
     "file": "Archivo",
