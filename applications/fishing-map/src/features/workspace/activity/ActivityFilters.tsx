@@ -183,7 +183,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           onCleanClick={() => onCleanFilterClick('flag')}
         />
       )}
-      {gearTypeFilters.active && (
+      {gearTypeFilters.active && gearTypeFilters.options.length > 1 && (
         <MultiSelect
           disabled={gearTypeFilters.disabled}
           disabledMsg={gearTypeFilters.tooltip}
@@ -197,7 +197,8 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           onCleanClick={() => onCleanFilterClick('geartype')}
         />
       )}
-      {fleetFilters.active && (
+      {/* Checking options length to avoid showing a selector with only one option which doesn't do anything */}
+      {fleetFilters.active && fleetFilters.options.length > 1 && (
         <MultiSelect
           disabled={fleetFilters.disabled}
           disabledMsg={fleetFilters.tooltip}
@@ -211,7 +212,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           onCleanClick={() => onCleanFilterClick('fleet')}
         />
       )}
-      {shiptypeFilters.active && (
+      {shiptypeFilters.active && shiptypeFilters.options.length > 1 && (
         <MultiSelect
           disabled={shiptypeFilters.disabled}
           disabledMsg={shiptypeFilters.tooltip}
@@ -225,7 +226,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           onCleanClick={() => onCleanFilterClick('shiptype')}
         />
       )}
-      {originFilters.active && (
+      {originFilters.active && originFilters.options.length > 1 && (
         <MultiSelect
           disabled={originFilters.disabled}
           disabledMsg={originFilters.tooltip}
@@ -239,7 +240,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           onCleanClick={() => onCleanFilterClick('origin')}
         />
       )}
-      {vesselFilters.active && (
+      {vesselFilters.active && vesselFilters.options.length > 1 && (
         <MultiSelect
           disabled={vesselFilters.disabled}
           disabledMsg={vesselFilters.tooltip}
@@ -253,7 +254,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           onCleanClick={() => onCleanFilterClick('vessel_type')}
         />
       )}
-      {qfDectectionFilters.active && (
+      {qfDectectionFilters.active && qfDectectionFilters.options.length > 1 && (
         <MultiSelect
           disabled={qfDectectionFilters.disabled}
           disabledMsg={qfDectectionFilters.tooltip}
