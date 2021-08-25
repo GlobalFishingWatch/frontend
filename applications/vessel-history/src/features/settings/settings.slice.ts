@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 
 export type SettingsEvents = {
-  eezs?: string
+  eezs?: string[]
   rfmos?: string[]
   mpas?: string[]
   duration?: number

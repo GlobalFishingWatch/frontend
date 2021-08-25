@@ -21,6 +21,7 @@ export interface RenderedEvent extends ActivityEvent {
   descriptionGeneric: string
   regionDescription: string
   durationDescription: string
+  duration: number
 }
 
 export const selectEventsForTracks = createSelector(
@@ -127,9 +128,12 @@ export const selectEventsWithRenderingInfo = createSelector(
             description = t('event.unknown', 'Unknown event')
             descriptionGeneric = t('event.unknown', 'Unknown event')
         }
-        const duration = DateTime.fromMillis(event.end as number)
-          .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
-          .toObject()
+        const durationDiff = DateTime.fromMillis(event.end as number).diff(
+          DateTime.fromMillis(event.start as number),
+          ['hours', 'minutes']
+        )
+
+        const duration = durationDiff.toObject()
 
         const durationDescription = [
           duration.hours && duration.hours > 0
@@ -157,6 +161,7 @@ export const selectEventsWithRenderingInfo = createSelector(
           descriptionGeneric,
           regionDescription,
           durationDescription,
+          duration: durationDiff.hours,
         }
       })
     })
