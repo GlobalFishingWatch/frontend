@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 5.3.0
+
+### Minor Changes
+
+- 5b01cd38: add casco vessel type definition
+
 ## 5.2.1
 
 ### Patch Changes
