@@ -78,6 +78,7 @@
     "dragFilePlaceholder": "Glissez et déposez un fichier shapefile ou un geojson ici ou cliquez pour le sélectionner",
     "dragFilePlaceholderCSV": "Glissez et déposez un fichier CSV ici ou cliquez pour le sélectionner",
     "edit": "Modifier le jeu de données",
+    "emptyFilters": "No filters available",
     "emptyState": "Vos jeux de données apparaîtront ici",
     "featuresNameField": "Champ de nom pour chaque zone",
     "file": "Fichier",
