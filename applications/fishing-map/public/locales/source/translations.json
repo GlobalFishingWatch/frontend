@@ -78,6 +78,7 @@
     "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
     "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
+    "emptyFilters": "No filters available",
     "emptyState": "Your datasets will appear here",
     "featuresNameField": "Features name field",
     "file": "File",
