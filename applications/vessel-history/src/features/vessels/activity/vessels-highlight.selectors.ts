@@ -37,8 +37,10 @@ const filterActivityEvent = (event: RenderedEvent, filter: SettingsEvents) =>
   (matchAnyRegion(event.eezs, filter.eezs) ||
     // any rfmo is matched
     matchAnyRegion(event.rfmos, filter.rfmos) ||
-    // todo: any mpa is matched
-    false) &&
+    // any mpa is matched (VERIFY/CONFIRM IF THIS IS CORRECT)
+    matchAnyRegion(event.regions.mpant, filter.mpas) ||
+    matchAnyRegion(event.regions.mparu, filter.mpas) ||
+    matchAnyRegion(event.regions.mregion, filter.mpas)) &&
   matchDurationLonger(event.duration, filter.duration) &&
   matchAnyDistanceLonger(
     [
