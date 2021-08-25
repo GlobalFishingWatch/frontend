@@ -1,0 +1,4 @@
+.info {
+  display: flex;
+  gap: var(--space-S);
+}
