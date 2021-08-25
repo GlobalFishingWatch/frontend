@@ -22,6 +22,9 @@
     "goToBookmark": "Go to your bookmarked time range",
     "deleteBookmark": "Delete time range bookmark"
   },
+  "trackEvents": {
+    "events": "events"
+  },
   "dragLabel": "Drag to change the time range",
   "lastUpdate": "Last update",
   "setBookmark": "Bookmark current time range",

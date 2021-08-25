@@ -265,6 +265,7 @@ const TimebarWrapper = () => {
                   {syncedTracksEvents && (
                     <TimebarTracksEvents
                       key="events"
+                      labels={labels?.trackEvents}
                       preselectedEventId={highlightedEvent?.id}
                       tracksEvents={syncedTracksEvents}
                       onEventClick={onEventClick}
