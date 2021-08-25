@@ -8,8 +8,8 @@
       "fleet": {
         "keyword": "fleet",
         "enum": {
-          "industry": "industry",
-          "small_fisheries": "small_fisheries"
+          "industry": "industrial",
+          "small_fisheries": "artisanal"
         }
       },
       "source": "source",
@@ -232,7 +232,7 @@
         "keyword": "Flota",
         "enum": {
           "industrial": "Industrial",
-          "artisanal": "Artesanal",
+          "artisanal": "Artisanal",
           "not defined": "No definido"
         }
       },
@@ -352,7 +352,7 @@
       "fleet": {
         "keyword": "flota",
         "enum": {
-          "chile_vms_small_fisheries": "Pequeña pesca",
+          "chile_vms_small_fisheries": "artisanal",
           "chile_vms_industry": "Industria"
         }
       },
@@ -365,7 +365,7 @@
   },
   "public-chile-presence": {
     "name": "VMS Chile",
-    "description": "Esta capa utiliza el Sistema de Monitoreo de Embarcaciones (VMS) recibido por el sistema VMS de Chile vía satélite y contiene identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más.\nCada punto de la capa de datos de la embarcación del transportista representa una posición de los transportistas, pero no se muestran todas las posiciones. Las posiciones de los buques de transporte se muestran una vez al día. Haga clic en la posición de una embarcación de transporte para ver la ruta completa de la embarcación. ",
+    "description": "Esta capa utiliza el Sistema de Monitoreo de Embarcaciones (VMS) recibido por el sistema VMS de Chile vía satélite y contiene identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más.\nCada punto de la capa de datos de la embarcación transportista, industrial, acuicultura o artisanal representa una posición de las embarcaciones, pero no se muestran todas las posiciones. Las posiciones de las embarcaciones se muestran una posición por hora. Haga clic en la posición de una embarcación para ver la trayectoria completa de la embarcación.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -373,7 +373,7 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Pequeña pesca",
+          "chile_vms_small_fisheries": "artisanal",
           "chile_vms_industry": "Industria",
           "chile_vms_aquaculture": "Acuicultura",
           "chile_vms_transport": "Transporte"
