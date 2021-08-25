@@ -23,7 +23,7 @@
     "deleteBookmark": "Eliminar marcador de intervalo de tiempo"
   },
   "trackEvents": {
-    "events": "eventos"
+    "events": "events"
   },
   "dragLabel": "Arrastre para cambiar el rango de tiempo",
   "lastUpdate": "Última actualización",
