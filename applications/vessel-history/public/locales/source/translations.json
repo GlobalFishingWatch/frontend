@@ -11,9 +11,9 @@
     "since": "since",
     "timeRange": "time range",
     "to": "to",
-    "typeToSeach": "Type to search",
     "typeToSearch": "Type to search",
     "unknown": "Unknown",
+    "typeToSeach": "Type to search",
     "any": "Any",
     "currentTimeRange": "current time range",
     "high": "High",
@@ -74,6 +74,10 @@
     "fishingGroup": "{{ count }} Fishing events in {{ regionName }}",
     "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
     "noDescription": "No description found"
+  },
+  "events": {
+    "activityHighlights": "Activity Highlights",
+    "noHighlights": "No events found for your highlighting criteria"
   },
   "map": {
     "loading": "Map loading",

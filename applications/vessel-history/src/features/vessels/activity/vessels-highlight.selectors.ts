@@ -1,7 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { EventTypes } from '@globalfishingwatch/api-types/dist'
+import { Anchorage, EventTypes } from '@globalfishingwatch/api-types/dist'
 import { anyRegion } from 'features/regions/regions.slice'
-import { selectSettings, SettingsEvents } from 'features/settings/settings.slice'
+import {
+  selectSettings,
+  SettingsEvents,
+  SettingsPortVisits,
+} from 'features/settings/settings.slice'
 import { RenderedEvent, selectEventsWithRenderingInfo } from './vessels-activity.selectors'
 
 const isAnyFilterSet = (filter: SettingsEvents) =>
@@ -57,6 +61,29 @@ const filterActivityEvent = (event: RenderedEvent, filter: SettingsEvents) =>
     filter.distancePortLonger
   )
 
+const isAnyPortFilterSet = (filter: SettingsPortVisits) =>
+  (filter.flags !== undefined && filter.flags.length > 0) ||
+  filter.duration !== undefined ||
+  filter.distanceShoreLonger !== undefined
+
+const matchAnyPortFlag = (port: Anchorage | undefined, regions: string[] = []) =>
+  port === undefined || matchAnyRegion([port.flag], regions)
+
+const filterPortEvent = (event: RenderedEvent, filter: SettingsPortVisits) =>
+  isAnyPortFilterSet(filter) &&
+  // any port country is matched
+  (matchAnyPortFlag(event.port_visit?.startAnchorage, filter.flags) ||
+    matchAnyPortFlag(event.port_visit?.intermediateAnchorage, filter.flags) ||
+    matchAnyPortFlag(event.port_visit?.endAnchorage, filter.flags)) &&
+  matchDurationLonger(event.duration, filter.duration) &&
+  matchAnyDistanceLonger(
+    [
+      event.distances.startDistanceFromShoreKm ?? event.distances.endDistanceFromShoreKm,
+      event.distances.endDistanceFromShoreKm,
+    ],
+    filter.distanceShoreLonger
+  )
+
 export const selectActivityHighlightEvents = createSelector(
   [selectEventsWithRenderingInfo, selectSettings],
   (events, settings) => {
@@ -64,7 +91,7 @@ export const selectActivityHighlightEvents = createSelector(
       encounter: (event) => filterActivityEvent(event, settings.encounters),
       fishing: (event) => filterActivityEvent(event, settings.fishingEvents),
       loitering: (event) => filterActivityEvent(event, settings.loiteringEvents),
-      port_visit: undefined,
+      port_visit: (event) => filterPortEvent(event, settings.portVisits),
       gap: undefined,
     }
     return events
