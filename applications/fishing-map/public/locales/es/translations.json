@@ -262,7 +262,8 @@
     "graphOptions": {
       "depth": "Profundidad $t(common.comingSoon)",
       "none": "Ninguna",
-      "speed": "Velocidad"
+      "speed": "Velocidad",
+      "speedDisabled": "Not available with more than 1 vessel selected"
     },
     "presenceDisabled": "Selecciona al menos una capa de presencia",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
