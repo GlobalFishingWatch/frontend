@@ -118,7 +118,15 @@ export const selectDataviewsForResourceQuerying = createSelector(
           }
         }
 
-        return [trackWithoutSpeed, info, ...events, ...(trackGraph ? [trackGraph] : [])]
+        // Clean resources when mandatory vesselId is missing
+        // needed for vessels with no info datasets (zebraX)
+        const vesselId = info.query?.find((q) => q.id === 'vesselId')?.value
+        return [
+          trackWithoutSpeed,
+          ...events,
+          ...(vesselId ? [info] : []),
+          ...(trackGraph ? [trackGraph] : []),
+        ]
       },
     }
     return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)
