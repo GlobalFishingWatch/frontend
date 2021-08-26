@@ -100,27 +100,22 @@ export const selectDataviewsForResourceQuerying = createSelector(
           trackWithThinning.query = [...(track.query || []), ...thinningQuery]
         }
 
-        // TODO change original dataview to remove ',speed' from fields
         const trackWithoutSpeed = trackWithThinning
-        const query = trackWithoutSpeed.query || []
+        const query = [...(trackWithoutSpeed.query || [])]
         const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
-        if (fieldsQueryIndex > -1) {
-          query[fieldsQueryIndex] = {
-            id: 'fields',
-            value: 'lonlat,timestamp',
-          }
-          trackWithoutSpeed.query = query
-        }
-
         let trackGraph
-        if (timebarGraph !== TimebarGraphs.None && fieldsQueryIndex > -1) {
+        if (timebarGraph !== TimebarGraphs.None) {
           trackGraph = { ...trackWithoutSpeed }
-          const trackGraphQuery = [...query]
-          trackGraphQuery[fieldsQueryIndex] = {
+          const fieldsQuery = {
             id: 'fields',
             value: timebarGraph,
           }
-          trackGraph.query = trackGraphQuery
+          if (fieldsQueryIndex > -1) {
+            query[fieldsQueryIndex] = fieldsQuery
+            trackGraph.query = query
+          } else {
+            trackGraph.query = [...query, fieldsQuery]
+          }
         }
 
         return [trackWithoutSpeed, info, ...events, ...(trackGraph ? [trackGraph] : [])]
