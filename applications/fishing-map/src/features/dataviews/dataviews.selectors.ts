@@ -21,9 +21,10 @@ import {
   selectWorkspaceDataviews,
 } from 'features/workspace/workspace.selectors'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
-import { selectActivityCategoryFn } from 'features/app/app.selectors'
+import { selectActivityCategoryFn, selectWorkspaceStateProperty } from 'features/app/app.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { selectThinningConfig } from 'features/resources/resources.selectors'
+import { TimebarGraphs } from 'types'
 import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
@@ -82,8 +83,12 @@ export const selectAllDataviewInstancesResolved = createSelector(
  * Injects app-specific logic by using getDataviewsForResourceQuerying's callback
  */
 export const selectDataviewsForResourceQuerying = createSelector(
-  [selectAllDataviewInstancesResolved, selectThinningConfig],
-  (dataviewInstances, thinningConfig) => {
+  [
+    selectAllDataviewInstancesResolved,
+    selectThinningConfig,
+    selectWorkspaceStateProperty('timebarGraph'),
+  ],
+  (dataviewInstances, thinningConfig, timebarGraph) => {
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
       [Generators.Type.Track]: ([info, track, ...events]) => {
         const trackWithThinning = track
@@ -94,13 +99,31 @@ export const selectDataviewsForResourceQuerying = createSelector(
           }))
           trackWithThinning.query = [...(track.query || []), ...thinningQuery]
         }
-        // Clean resources when mandatory vesselId is missing
-        // needed for vessels with no info datasets (zebraX)
-        const vesselID = info.query?.find((q) => q.id === 'vesselId')?.value
-        if (!vesselID) {
-          return [trackWithThinning, ...events]
+
+        // TODO change original dataview to remove ',speed' from fields
+        const trackWithoutSpeed = trackWithThinning
+        const query = trackWithoutSpeed.query || []
+        const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
+        if (fieldsQueryIndex > -1) {
+          query[fieldsQueryIndex] = {
+            id: 'fields',
+            value: 'lonlat,timestamp',
+          }
+          trackWithoutSpeed.query = query
         }
-        return [trackWithThinning, info, ...events]
+
+        let trackGraph
+        if (timebarGraph !== TimebarGraphs.None && fieldsQueryIndex > -1) {
+          trackGraph = { ...trackWithoutSpeed }
+          const trackGraphQuery = [...query]
+          trackGraphQuery[fieldsQueryIndex] = {
+            id: 'fields',
+            value: timebarGraph,
+          }
+          trackGraph.query = trackGraphQuery
+        }
+
+        return [trackWithoutSpeed, info, ...events, ...(trackGraph ? [trackGraph] : [])]
       },
     }
     return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)

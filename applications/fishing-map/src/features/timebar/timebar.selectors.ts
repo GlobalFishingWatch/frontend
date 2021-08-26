@@ -68,7 +68,7 @@ export const selectTracksData = createSelector(
 
 export const selectTracksGraphs = createSelector(
   [selectActiveVesselsDataviews, selectTimebarGraph, selectResources],
-  (vesselDataviews, timebarGraph, resources) => {
+  (vesselDataviews, timebarGraphType, resources) => {
     if (!vesselDataviews || vesselDataviews.length > 2 || !resources) return
 
     const graphs = vesselDataviews.flatMap((dataview) => {
@@ -77,12 +77,22 @@ export const selectTracksGraphs = createSelector(
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
 
-      const segmentsWithCurrentFeature = track.data?.map((segment) => {
-        return segment.flatMap((pt) => {
-          const value = (pt as any)[timebarGraph]
+      const { url: graphUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks, {
+        id: 'fields',
+        value: timebarGraphType,
+      })
+      if (!graphUrl) return []
+      const graphData = resources[graphUrl] as Resource<TrackResourceData>
+      if (!graphData?.data) return []
+
+      const segmentsWithCurrentFeature = track.data?.map((trackSegment, trackSegmentIndex) => {
+        const graphSegment = graphData?.data?.[trackSegmentIndex]
+        return trackSegment.flatMap((trackSegmentPoint, trackSegmentPointIndex) => {
+          const graphSegmentPoint = graphSegment?.[trackSegmentPointIndex]
+          const value = (graphSegmentPoint as any)?.[timebarGraphType]
           if (!value) return []
           return {
-            date: pt.timestamp,
+            date: trackSegmentPoint.timestamp,
             value,
           }
         })
