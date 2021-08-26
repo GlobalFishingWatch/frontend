@@ -41,7 +41,9 @@ RUN yarn build
 FROM appsoa/docker-alpine-htpasswd as htpasswd
 ARG BASIC_AUTH_USER=gfw
 ARG BASIC_AUTH_PASS=default
-RUN htpasswd -Bbn "${BASIC_AUTH_USER}" "${BASIC_AUTH_PASS}" > /tmp/.htpasswd
+ENV BASIC_AUTH_USER $BASIC_AUTH_USER
+ENV BASIC_AUTH_PASS $BASIC_AUTH_PASS
+RUN htpasswd -Bbn "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" > /home/.htpasswd
 
 #################################################################################
 # Actual application to run
@@ -52,8 +54,8 @@ FROM nginx:stable-alpine as production
 RUN apk -U upgrade
 
 COPY nginx/nginx.conf /etc/nginx/nginx.template
-COPY --from=htpasswd /tmp/.htpasswd /tmp/.htpasswd
-RUN cat /tmp/.htpasswd >> /etc/nginx/.htpasswd
+COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
+RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
 COPY entrypoint.sh entrypoint.sh
 COPY --from=build /app/build/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]

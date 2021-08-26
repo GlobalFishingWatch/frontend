@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.0.7
+
+### Patch Changes
+
+- 72ca7097: add cluster events literal translations
+
 ## 2.0.6
 
 ### Patch Changes
