@@ -21,13 +21,13 @@ const isAnyFilterSet = (filter: SettingsEvents) =>
 
 const matchDurationLonger = (duration: number, durationLongerThan?: number) =>
   durationLongerThan === undefined ||
-  (durationLongerThan !== undefined && durationLongerThan >= 0 && duration >= durationLongerThan)
+  (durationLongerThan !== undefined && durationLongerThan >= 0 && duration > durationLongerThan)
 
 const matchAnyDistanceLonger = (eventDistances: number[], distanceLongerThan?: number) =>
   distanceLongerThan === undefined ||
   (distanceLongerThan !== undefined &&
     distanceLongerThan >= 0 &&
-    Math.max(...eventDistances) >= distanceLongerThan)
+    Math.max(...eventDistances) > distanceLongerThan)
 
 const matchAnyRegion = (eventRegions: string[] = [], regions: string[] = []) =>
   // when there are regions defined to highlight

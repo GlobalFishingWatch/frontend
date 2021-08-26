@@ -3330,7 +3330,7 @@ Array [
       "startDistanceFromPortKm": 0,
       "startDistanceFromShoreKm": 0.1,
     },
-    "duration": 4,
+    "duration": 4.01,
     "durationDescription": "3h 16m",
     "end": 1577836799999,
     "id": "port_visit-2134",

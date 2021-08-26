@@ -160,7 +160,7 @@ describe('selectActivityHighlightEvents', () => {
             const last = portVisitEvents.slice(-1).pop()
             return {
               ...last,
-              duration: 4,
+              duration: 4.01,
               distances: {
                 ...last?.distances,
                 startDistanceFromShoreKm: 0.1,
