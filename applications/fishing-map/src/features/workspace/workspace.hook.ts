@@ -72,7 +72,7 @@ export const useDataviewInstancesConnect = () => {
   )
 
   const upsertDataviewInstance = useCallback(
-    (dataviewInstance: Partial<UrlDataviewInstance>[] | Partial<UrlDataviewInstance>[]) => {
+    (dataviewInstance: Partial<UrlDataviewInstance>[] | Partial<UrlDataviewInstance>) => {
       const newDataviewInstances = Array.isArray(dataviewInstance)
         ? dataviewInstance
         : [dataviewInstance]
