@@ -3,7 +3,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
-export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel'
+export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel' | 'searchType'
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
@@ -16,6 +16,7 @@ export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {
   q?: string
+  searchType?: string
   version?: string
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string

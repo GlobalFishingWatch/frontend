@@ -81,6 +81,9 @@
     "toggleLayers": "Toggle layers"
   },
   "search": {
+    "title": "Search",
+    "basic": "basic",
+    "advanced": "advanced",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
     "loadMore": "Load More",
     "noMore": "No more results",

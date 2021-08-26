@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useRef } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
-import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
+import { Spinner, IconButton, Button, Choice } from '@globalfishingwatch/ui-components'
 import { RESULTS_PER_PAGE } from 'data/constants'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
@@ -22,6 +22,9 @@ import {
   selectSearching,
 } from 'features/search/search.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { SearchType } from 'features/search/search.slice'
+import AdvancedSearch from 'features/search/AdvancedSearch'
+import { ChoiceOption } from '../../../../../packages/ui-components/dist/choice'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -38,6 +41,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const dispatch = useDispatch()
   const searching = useSelector(selectSearching)
   const query = useSelector(selectQueryParam('q'))
+  const searchType = useSelector(selectQueryParam('searchType'))
   const vessels = useSelector(selectSearchResults)
   const offset = useSelector(selectSearchOffset)
   const totalResults = useSelector(selectSearchTotalResults)
@@ -72,6 +76,23 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     fetchResults({ query: query, offset: 0 })
   }, [fetchResults, query])
 
+  const searchOptions = useMemo(() => {
+    return [
+      {
+        id: 'basic' as SearchType,
+        title: t('search.basic', 'Basic'),
+      },
+      {
+        id: 'advanced' as SearchType,
+        title: t('search.advanced', 'Advanced'),
+      },
+    ]
+  }, [t])
+
+  const onSearchOptionChange = (option: ChoiceOption, e: React.MouseEvent<Element, MouseEvent>) => {
+    dispatchQueryParams({ searchType: option.id })
+  }
+
   return (
     <div className={styles.homeContainer}>
       {!query && (
@@ -92,27 +113,42 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </header>
       )}
       <div className={styles.search}>
-        <div className={cx(styles.searchbar, query ? styles.searching : '', styles.inputContainer)}>
-          <DebounceInput
-            debounceTimeout={500}
-            autoFocus
-            type="search"
-            role="search"
-            placeholder="Search vessels by name, MMSI, IMO"
-            aria-label="Search vessels"
-            className={styles.input}
-            onChange={onInputChange}
-            value={query}
+        <div className={styles.title}>
+          <h2>{t('search.title', 'Search')}</h2>
+          <Choice
+            options={searchOptions}
+            activeOption={searchType}
+            onOptionClick={onSearchOptionChange}
+            size="small"
           />
-          {!query && (
-            <IconButton
-              type="default"
-              size="medium"
-              icon="search"
-              className={styles.searchButton}
-            ></IconButton>
-          )}
         </div>
+        {searchType === 'advanced' ? (
+          <AdvancedSearch />
+        ) : (
+          <div
+            className={cx(styles.searchbar, query ? styles.searching : '', styles.inputContainer)}
+          >
+            <DebounceInput
+              debounceTimeout={500}
+              autoFocus
+              type="search"
+              role="search"
+              placeholder="Search vessels by name, MMSI, IMO"
+              aria-label="Search vessels"
+              className={styles.input}
+              onChange={onInputChange}
+              value={query}
+            />
+            {!query && (
+              <IconButton
+                type="default"
+                size="medium"
+                icon="search"
+                className={styles.searchButton}
+              ></IconButton>
+            )}
+          </div>
+        )}
         {!query && (
           <div>
             <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
