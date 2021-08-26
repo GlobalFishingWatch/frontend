@@ -920,6 +920,10 @@ const flags = [
     label: 'Chinese Taipei',
   },
   {
+    id: 'TWN',
+    label: 'Taiwan',
+  },
+  {
     id: 'TZA',
     label: 'Tanzania',
   },
