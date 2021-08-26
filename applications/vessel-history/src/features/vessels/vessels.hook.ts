@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselAPISource } from 'types'
 
