@@ -72,31 +72,35 @@ export const useDataviewInstancesConnect = () => {
   )
 
   const upsertDataviewInstance = useCallback(
-    (dataviewInstance: Partial<UrlDataviewInstance>) => {
-      const currentDataviewInstance = urlDataviewInstances?.find(
-        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
-      )
-      if (currentDataviewInstance) {
-        const dataviewInstances = urlDataviewInstances.map((urlDataviewInstance) => {
-          if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
-          return {
-            ...urlDataviewInstance,
-            ...dataviewInstance,
-            config: {
-              ...urlDataviewInstance.config,
-              ...dataviewInstance.config,
-            },
-          }
-        })
-        dispatchQueryParams({ dataviewInstances })
-      } else {
-        dispatchQueryParams({
-          dataviewInstances: [
+    (dataviewInstance: Partial<UrlDataviewInstance>[] | Partial<UrlDataviewInstance>[]) => {
+      const newDataviewInstances = Array.isArray(dataviewInstance)
+        ? dataviewInstance
+        : [dataviewInstance]
+      let dataviewInstances = urlDataviewInstances || []
+      newDataviewInstances.forEach((dataviewInstance) => {
+        const currentDataviewInstance = urlDataviewInstances?.find(
+          (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
+        )
+        if (currentDataviewInstance) {
+          dataviewInstances = dataviewInstances.map((urlDataviewInstance) => {
+            if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
+            return {
+              ...urlDataviewInstance,
+              ...dataviewInstance,
+              config: {
+                ...urlDataviewInstance.config,
+                ...dataviewInstance.config,
+              },
+            }
+          })
+        } else {
+          dataviewInstances = [
             ...createDataviewsInstances([dataviewInstance], allDataviews),
-            ...(urlDataviewInstances || []),
-          ],
-        })
-      }
+            ...dataviewInstances,
+          ]
+        }
+      })
+      dispatchQueryParams({ dataviewInstances })
     },
     [dispatchQueryParams, urlDataviewInstances, allDataviews]
   )

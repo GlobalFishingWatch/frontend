@@ -132,14 +132,16 @@ function ActivitySection(): React.ReactElement {
           dataview.id !== dataview2.id &&
           dataview.config?.type === Generators.Type.HeatmapAnimated
       )
-      dataviewsToDisable?.forEach((dataview) => {
-        upsertDataviewInstance({
-          id: dataview.id,
-          config: {
-            visible: false,
-          },
-        })
-      })
+      if (dataviewsToDisable) {
+        upsertDataviewInstance(
+          dataviewsToDisable?.map((dataview) => ({
+            id: dataview.id,
+            config: {
+              visible: false,
+            },
+          }))
+        )
+      }
       uaEvent({
         category: 'Activity data',
         action: 'Click on bivariate option',
