@@ -17,6 +17,7 @@ import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.sel
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 import { useTimebarVisualisation } from './timebar.hooks'
+import { selectTracksGraphsLoading } from './timebar.selectors'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
@@ -29,6 +30,7 @@ const TimebarSettings = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
   const activityCategory = useSelector(selectActivityCategory)
+  const graphsLoading = useSelector(selectTracksGraphsLoading)
 
   const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = useMemo(
     () => [
@@ -101,6 +103,7 @@ const TimebarSettings = () => {
       <IconButton
         icon={optionsPanelOpen ? 'close' : 'settings'}
         type="map-tool"
+        loading={graphsLoading}
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
           optionsPanelOpen

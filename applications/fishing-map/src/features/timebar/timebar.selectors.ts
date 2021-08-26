@@ -66,37 +66,62 @@ export const selectTracksData = createSelector(
   }
 )
 
-export const selectTracksGraphs = createSelector(
+export const selectTracksGraphsResources = createSelector(
   [selectActiveVesselsDataviews, selectTimebarGraph, selectResources],
   (vesselDataviews, timebarGraphType, resources) => {
-    if (!vesselDataviews || vesselDataviews.length > 2 || !resources) return
+    if (!vesselDataviews || !resources) return
 
-    const graphs = vesselDataviews.flatMap((dataview) => {
+    const trackGraphResources = vesselDataviews.flatMap((dataview) => {
       const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       if (!url) return []
-      const track = resources[url] as Resource<TrackResourceData>
-      if (!track?.data) return []
+      const trackResource = resources[url] as Resource<TrackResourceData>
+      if (!trackResource?.data) return []
 
       const { url: graphUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks, {
         id: 'fields',
         value: timebarGraphType,
       })
       if (!graphUrl) return []
-      const graphData = resources[graphUrl] as Resource<TrackResourceData>
-      if (!graphData?.data) return []
 
-      const segmentsWithCurrentFeature = track.data?.map((trackSegment, trackSegmentIndex) => {
-        const graphSegment = graphData?.data?.[trackSegmentIndex]
-        return trackSegment.flatMap((trackSegmentPoint, trackSegmentPointIndex) => {
-          const graphSegmentPoint = graphSegment?.[trackSegmentPointIndex]
-          const value = (graphSegmentPoint as any)?.[timebarGraphType]
-          if (!value) return []
-          return {
-            date: trackSegmentPoint.timestamp,
-            value,
-          }
-        })
-      })
+      const graphResource = resources[graphUrl] as Resource<TrackResourceData>
+      return { dataview, trackResource, graphResource }
+    })
+    return trackGraphResources
+  }
+)
+
+export const selectTracksGraphsLoading = createSelector(
+  [selectTracksGraphsResources],
+  (trackResources) => {
+    if (!trackResources) return false
+    return trackResources.some(
+      ({ trackResource, graphResource }) =>
+        trackResource?.status === ResourceStatus.Loading ||
+        graphResource?.status === ResourceStatus.Loading
+    )
+  }
+)
+
+export const selectTracksGraphs = createSelector(
+  [selectTracksGraphsResources, selectTimebarGraph],
+  (tracksGraphsResources, timebarGraphType) => {
+    if (!tracksGraphsResources || tracksGraphsResources.length > 2) return
+
+    const graphs = tracksGraphsResources.flatMap(({ dataview, trackResource, graphResource }) => {
+      const segmentsWithCurrentFeature = trackResource.data?.map(
+        (trackSegment, trackSegmentIndex) => {
+          const graphSegment = graphResource?.data?.[trackSegmentIndex]
+          return trackSegment.flatMap((trackSegmentPoint, trackSegmentPointIndex) => {
+            const graphSegmentPoint = graphSegment?.[trackSegmentPointIndex]
+            const value = (graphSegmentPoint as any)?.[timebarGraphType]
+            if (!value) return []
+            return {
+              date: trackSegmentPoint.timestamp,
+              value,
+            }
+          })
+        }
+      )
       return {
         color: dataview.config?.color || '',
         segmentsWithCurrentFeature,
@@ -113,7 +138,6 @@ const selectEventsForTracks = createSelector(
   (trackDataviews, resources, visibleEvents) => {
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-      // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
