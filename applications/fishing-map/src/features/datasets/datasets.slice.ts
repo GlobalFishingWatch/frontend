@@ -12,7 +12,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { LATEST_CARRIER_DATASET_ID } from 'data/config'
+import { LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
@@ -118,7 +118,7 @@ export const createDatasetThunk = createAsyncThunk<
     const datasetWithFilePath = {
       ...dataset,
       description: dataset.description || dataset.name,
-      id: `${kebabCase(dataset.name)}-${Date.now()}`,
+      id: `${PUBLIC_SUFIX}-${kebabCase(dataset.name)}-${Date.now()}`,
       source: DATASETS_USER_SOURCE_ID,
       configuration: {
         ...dataset.configuration,
