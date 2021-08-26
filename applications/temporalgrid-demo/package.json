@@ -1,14 +1,14 @@
 {
   "name": "@globalfishingwatchapp/temporalgrid-demo",
-  "version": "0.7.129",
+  "version": "0.7.130",
   "private": true,
   "dependencies": {
-    "@globalfishingwatch/layer-composer": "9.2.0",
-    "@globalfishingwatch/react-hooks": "13.0.0",
+    "@globalfishingwatch/layer-composer": "9.2.1",
+    "@globalfishingwatch/react-hooks": "14.0.0",
     "@globalfishingwatch/react-map-gl": "5.2.9-gfw.17",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
     "@globalfishingwatch/pbf": "^1.0.11",
-    "@globalfishingwatch/timebar": "2.0.7",
+    "@globalfishingwatch/timebar": "2.0.8",
     "@mapbox/tilebelt": "^1.0.2",
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.3.1",

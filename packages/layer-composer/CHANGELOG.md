@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 9.2.1
+
+### Patch Changes
+
+- 28d7d17c: fix missing encounter vessel name
+
 ## 9.2.0
 
 ### Minor Changes
