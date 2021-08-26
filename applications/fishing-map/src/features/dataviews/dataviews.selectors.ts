@@ -24,6 +24,7 @@ import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { selectActivityCategoryFn, selectWorkspaceStateProperty } from 'features/app/app.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { selectThinningConfig } from 'features/resources/resources.selectors'
+import { TimebarGraphs } from 'types'
 import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
@@ -112,7 +113,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
         }
 
         let trackGraph
-        if (timebarGraph !== 'none' && fieldsQueryIndex > -1) {
+        if (timebarGraph !== TimebarGraphs.None && fieldsQueryIndex > -1) {
           trackGraph = { ...trackWithoutSpeed }
           const trackGraphQuery = [...query]
           trackGraphQuery[fieldsQueryIndex] = {

@@ -157,7 +157,6 @@ export const resolveResourcesFromDatasetConfigs = (
   return dataviews
     .filter((dataview) => dataview.config?.type === Generators.Type.Track)
     .flatMap((dataview) => {
-      console.log(dataview)
       if (!dataview.datasetsConfig) return []
       return dataview.datasetsConfig.flatMap((datasetConfig) => {
         const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
