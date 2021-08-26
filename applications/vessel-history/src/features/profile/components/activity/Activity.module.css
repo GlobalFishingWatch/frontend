@@ -122,12 +122,24 @@
   min-height: calc(var(--size-L) * 2);
 }
 
+.highlightsContainer:not(.noData) {
+  height: calc(100vh - var(--header-height));
+}
+
+.highlightsListContainer {
+  padding: 0;
+}
+
 .highlights {
   font: var(--font-S);
   color: #fc5d5f;
   text-transform: uppercase;
+  line-height: var(--size-M);
 }
-
+.settingsLink {
+  position: absolute;
+  right: var(--space-XS);
+}
 .noEvents {
   font: var(--font-S);
 }

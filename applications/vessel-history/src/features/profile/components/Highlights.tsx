@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+import Link from 'redux-first-router-link'
+import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { selectActivityHighlightEvents } from 'features/vessels/activity/vessels-highlight.selectors'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
@@ -26,19 +27,31 @@ const Highlights: React.FC = (): React.ReactElement => {
   const closeModal = useCallback(() => setIsOpen(false), [])
 
   return (
-    <div className={cx(styles.activityContainer, styles.highlightsContainer)}>
+    <div
+      className={cx(
+        styles.activityContainer,
+        styles.highlightsContainer,
+        events.length === 0 ? styles.noData : {}
+      )}
+    >
       <div className={styles.divider}></div>
-      <h2 className={styles.highlights}>
-        {t('events.activityHighlights', 'Activity Highlights')}
-        {!eventsLoading && events.length > 0 && ` (${events.length})`}
-      </h2>
+      <div>
+        <Link className={styles.settingsLink} to={['settings']}>
+          <IconButton type="default" size="default" icon="settings"></IconButton>
+        </Link>
+        <h2 className={styles.highlights}>
+          {t('events.activityHighlights', 'Activity Highlights')}
+          {!eventsLoading && events.length > 0 && ` (${events.length})`}
+        </h2>
+      </div>
+
       {eventsLoading && <Spinner className={styles.spinnerMed} />}
       {!eventsLoading && (
         <Fragment>
           <Modal title={selectedEvent?.description ?? ''} isOpen={isModalOpen} onClose={closeModal}>
             {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
           </Modal>
-          <div className={styles.activityContainer}>
+          <div className={cx(styles.activityListContainer, styles.highlightsListContainer)}>
             {events && events.length > 0 && (
               <AutoSizer disableWidth={true}>
                 {({ width, height }) => (
