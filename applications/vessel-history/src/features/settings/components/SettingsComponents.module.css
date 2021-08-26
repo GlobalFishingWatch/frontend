@@ -16,9 +16,12 @@
 }
 
 .settingsField.inlineRow > div {
-  width: 60px;
+  width: 7rem;
 }
 
 .settingsField.inlineRow > div input {
   text-align: center;
+}
+.multiSelectRegions li {
+  overflow: hidden;
 }

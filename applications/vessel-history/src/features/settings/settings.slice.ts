@@ -6,11 +6,20 @@ export type SettingsEvents = {
   rfmos?: string[]
   mpas?: string[]
   duration?: number
-  distance?: number
+  distanceShoreLonger?: number
+  distancePortLonger?: number
 }
 export type SettingsPortVisits = {
-  ports?: number
+  flags?: string[]
+  duration?: number
+  distanceShoreLonger?: number
 }
+
+export type SettingEventSectionName =
+  | 'fishingEvents'
+  | 'encounters'
+  | 'loiteringEvents'
+  | 'portVisits'
 
 export type Settings = {
   fishingEvents: SettingsEvents

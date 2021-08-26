@@ -1,5 +1,6 @@
 export default TracksEvents;
-declare function TracksEvents({ tracksEvents, preselectedEventId, onEventClick, onEventHover }: {
+declare function TracksEvents({ labels, tracksEvents, preselectedEventId, onEventClick, onEventHover }: {
+    labels: any;
     tracksEvents: any;
     preselectedEventId: any;
     onEventClick: any;
@@ -11,6 +12,7 @@ declare namespace TracksEvents {
         const preselectedEventId: any;
         const onEventClick: any;
         const onEventHover: any;
+        const labels: any;
     }
     namespace defaultProps {
         export function onEventClick_1(): void;
@@ -19,5 +21,9 @@ declare namespace TracksEvents {
         export { onEventHover_1 as onEventHover };
         const preselectedEventId_1: any;
         export { preselectedEventId_1 as preselectedEventId };
+        export namespace labels_1 {
+            const events: string;
+        }
+        export { labels_1 as labels };
     }
 }

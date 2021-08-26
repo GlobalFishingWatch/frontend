@@ -45,7 +45,7 @@ steps:
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        '--cache=true',
+        '--cache=$_USE_DOCKER_CACHE',
         '--build-arg',
         'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
         '--build-arg',

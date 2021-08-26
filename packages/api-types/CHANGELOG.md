@@ -1,5 +1,23 @@
 # @globalfishingwatch/api-types
 
+## 5.3.0
+
+### Minor Changes
+
+- 5b01cd38: add casco vessel type definition
+
+## 5.2.1
+
+### Patch Changes
+
+- 905c8894: add matricula in vessel types
+
+## 5.2.0
+
+### Minor Changes
+
+- d5c40e3f: add dataset definition in vessel type
+
 ## 5.1.0
 
 ### Minor Changes

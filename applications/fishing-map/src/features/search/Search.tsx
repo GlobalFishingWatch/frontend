@@ -54,6 +54,7 @@ import {
   selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
 } from './search.selectors'
+import TransmissionsTimeline from './TransmissionsTimeline'
 
 function Search() {
   const { t } = useTranslation()
@@ -355,6 +356,8 @@ function Search() {
                         callsign,
                         geartype,
                         origin,
+                        casco,
+                        matricula,
                         dataset,
                         firstTransmissionDate,
                         lastTransmissionDate,
@@ -407,6 +410,18 @@ function Search() {
                                     : EMPTY_FIELD_PLACEHOLDER}
                                 </span>
                               </div>
+                              {matricula && (
+                                <div className={styles.property}>
+                                  <label>{t('vessel.matricula', 'Matricula')}</label>
+                                  <span>{matricula}</span>
+                                </div>
+                              )}
+                              {casco && (
+                                <div className={styles.property}>
+                                  <label>{t('vessel.casco', 'Casco')}</label>
+                                  <span>{casco}</span>
+                                </div>
+                              )}
                               {fleet && (
                                 <div className={styles.property}>
                                   <label>{t('vessel.fleet', 'Fleet')}</label>
@@ -420,12 +435,16 @@ function Search() {
                                 </div>
                               )}
                               {firstTransmissionDate && lastTransmissionDate && (
-                                <div className={styles.property}>
+                                <div className={cx(styles.property, styles.fullWidth)}>
                                   <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
                                   <span>
                                     from <I18nDate date={firstTransmissionDate} /> to{' '}
                                     <I18nDate date={lastTransmissionDate} />
                                   </span>
+                                  <TransmissionsTimeline
+                                    firstTransmissionDate={firstTransmissionDate}
+                                    lastTransmissionDate={lastTransmissionDate}
+                                  />
                                 </div>
                               )}
                               {dataset && (

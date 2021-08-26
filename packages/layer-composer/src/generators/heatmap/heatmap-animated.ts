@@ -136,7 +136,13 @@ class HeatmapAnimatedGenerator {
         interactive: interactiveSource,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
-        baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd]
+        baseSourceParams['date-range'] =
+          timeChunks.interval === 'hour'
+            ? [timeChunk.start, timeChunk.dataEnd]
+            : [
+                DateTime.fromISO(timeChunk.start).toISODate(),
+                DateTime.fromISO(timeChunk.dataEnd).toISODate(),
+              ]
       }
       const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
 
@@ -254,7 +260,6 @@ class HeatmapAnimatedGenerator {
         timeChunks,
         aggregationOperation: finalConfig.aggregationOperation,
         multiplier: finalConfig.breaksMultiplier,
-
       },
     }
 

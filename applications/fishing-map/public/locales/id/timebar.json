@@ -22,6 +22,9 @@
     "goToBookmark": "Pergi ke rentang waktu yang Anda tandai",
     "deleteBookmark": "Hapus penanda rentang waktu"
   },
+  "trackEvents": {
+    "events": "events"
+  },
   "dragLabel": "Seret untuk mengubah rentang waktu",
   "lastUpdate": "Pembaharuan terakhir",
   "setBookmark": "Tandai rentang waktu saat ini",

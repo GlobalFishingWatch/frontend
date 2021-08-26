@@ -22,6 +22,9 @@
     "goToBookmark": "Ir al rango de tiempo marcado",
     "deleteBookmark": "Eliminar marcador de intervalo de tiempo"
   },
+  "trackEvents": {
+    "events": "events"
+  },
   "dragLabel": "Arrastre para cambiar el rango de tiempo",
   "lastUpdate": "Última actualización",
   "setBookmark": "Rango de tiempo actual del marcador",

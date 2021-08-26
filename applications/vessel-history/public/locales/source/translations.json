@@ -11,7 +11,11 @@
     "since": "since",
     "timeRange": "time range",
     "to": "to",
+    "typeToSeach": "Type to search",
+    "typeToSearch": "Type to search",
     "unknown": "Unknown",
+    "unknownName": "Unknown name",
+    "any": "Any",
     "currentTimeRange": "current time range",
     "high": "High",
     "low": "Low",
@@ -45,6 +49,8 @@
     "minuteAbbreviated": "{{count}}m",
     "minuteAbbreviated_plural": "{{count}}m",
     "nextPort": "Next port traveled",
+    "nSelected": "{{count}} selected",
+    "nSelected_plural": "{{count}} selected",
     "port": "Port",
     "portAction": "Docked",
     "portAt": "Docked at {{port}}",
@@ -86,7 +92,6 @@
     "selected": "selected"
   },
   "settings": {
-    "distance": "DISTANCE TRAVELLED",
     "duration": "DURATION",
     "eezs": {
       "label": "Events in these EEZs"
@@ -98,7 +103,7 @@
       "title": "Fishing Events"
     },
     "hours": "hours",
-    "kms": "kms",
+    "km": "km",
     "loiteringEvents": {
       "title": "Loitering Events"
     },
@@ -107,14 +112,17 @@
       "label": "Events in these MPAs"
     },
     "portVisits": {
+      "inThesePortStates": "Events in these port States",
+      "title": "Port Visits",
       "inputEnd": "ports",
-      "inputStart": "Port visits in",
-      "title": "Port Visits"
+      "inputStart": "Port visits in"
     },
     "rfmos": {
       "label": "Events in these RFMOS"
     },
-    "title": "Settings"
+    "title": "Settings",
+    "kms": "kms",
+    "distance": "DISTANCE TRAVELLED"
   },
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",

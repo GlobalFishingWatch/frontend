@@ -45,14 +45,17 @@ export const DEFAULT_TIME_RANGE = {
 
 export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
 
+export const FIRST_YEAR_OF_DATA = 2012
+export const CURRENT_YEAR = new Date().getFullYear()
+
 export const DEFAULT_WORKSPACE = {
   ...DEFAULT_VIEWPORT,
   query: undefined,
   readOnly: false,
   daysFromLatest: undefined,
   sidebarOpen: true,
-  availableStart: new Date(Date.UTC(2012, 0, 1)).toISOString(),
-  availableEnd: new Date(Date.UTC(new Date().getFullYear(), 11, 31)).toISOString(),
+  availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
+  availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.Heatmap,
   visibleEvents: 'all',

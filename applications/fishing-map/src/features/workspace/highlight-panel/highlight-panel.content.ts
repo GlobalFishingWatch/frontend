@@ -15,17 +15,17 @@ export type HighlighPanelConfig = {
 
 const highlightPanelConfig: HighlighPanelConfig = {
   dataviewInstanceId: 'highlight-vms-with-ecuador',
-  imageUrl: 'https://seatechaquariums.com/wp-content/uploads/2015/01/fish-facts-624x390.jpg',
+  imageUrl: 'https://globalfishingwatch.org/wp-content/uploads/ecuador-map-highlight@2x.jpg',
   learnMoreUrl: 'http://www.globalfishingwatch.org',
   en: {
-    title: 'Ecuador VMS now available!',
+    title: 'Ecuador VMS data is now available',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip',
+      'The vessel monitoring system (VMS) data is provided by the National Directorate of Aquatic Spaces of Ecuador. It is possible to track the position and activity of 1,200+ vessels comprising Ecuador’s industrial and artisanal fishing fleets.',
   },
   es: {
-    title: 'Ecuador VMS ahora disponible',
+    title: 'Datos VMS de Ecuador están ahora disponibles',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip',
+      'Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Dirección Nacional de los Espacios Acuáticos del Ecuador. Es posible rastrear la posición y actividad  de más de 1.200 embarcaciones de las flotas pesqueras industriales y artesanales de Ecuador.',
   },
 }
 

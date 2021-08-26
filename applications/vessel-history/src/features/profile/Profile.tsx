@@ -7,6 +7,7 @@ import { Point, Segment } from '@globalfishingwatch/data-transforms'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
+import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
@@ -183,6 +184,11 @@ const Profile: React.FC = (props): React.ReactElement => {
     return q ? { type: HOME, replaceQuery: true, query: { q } } : { type: HOME }
   }, [q])
 
+  const shipName = useMemo(() => {
+    const gfwVesselName = vessel?.history.shipname.byDate.find(name => name.source === VesselAPISource.GFW)
+    return gfwVesselName ? gfwVesselName.value : vessel?.shipname
+  }, [vessel])
+
   return (
     <Fragment>
       <header className={styles.header}>
@@ -196,7 +202,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         </Link>
         {vessel && (
           <h1>
-            {vessel.shipname}
+            {shipName ?? t('common.unknownName', 'Unknown name')}
             {vessel.history.shipname.byDate.length > 1 && (
               <p>
                 {t('vessel.plusPreviousValuesByField', defaultPreviousNames, {

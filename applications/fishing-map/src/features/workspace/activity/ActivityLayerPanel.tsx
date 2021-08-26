@@ -134,7 +134,7 @@ function ActivityLayerPanel({
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (fishingDataview || presenceDataview) && !readOnly && (
+          {layerActive && (fishingDataview || presenceDataview) && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
@@ -177,6 +177,11 @@ function ActivityLayerPanel({
                 dataview={dataview}
                 field={'fleet'}
                 label={t('layer.fleet_plural', 'Fleets')}
+              />
+              <DatasetSchemaField
+                dataview={dataview}
+                field={'shiptype'}
+                label={t('vessel.shiptype', 'Ship type')}
               />
               <DatasetSchemaField
                 dataview={dataview}

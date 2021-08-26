@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // Use this tool to convert a protobuf tile to an 4wings intArray
 
 import * as fs from 'fs'

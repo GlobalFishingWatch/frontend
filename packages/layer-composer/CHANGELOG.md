@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 9.2.0
+
+### Minor Changes
+
+- use only dates in heatmap-animated requests to improve cache chances
+
 ## 9.1.0
 
 ### Minor Changes
