@@ -1,15 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit'
-import {
-  DatasetTypes,
-  DataviewCategory,
-  DataviewInstance,
-  EndpointId,
-} from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
   getGeneratorConfig,
   mergeWorkspaceUrlDataviewInstances,
+  DatasetConfigsTransforms,
+  getDataviewsForResourceQuerying,
+  resolveResourcesFromDatasetConfigs,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
@@ -21,23 +19,6 @@ import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
 import { BACKGROUND_LAYER, OFFLINE_LAYERS, APP_THINNING, THINNING_LEVELS } from './dataviews.config'
-
-export const selectDataviews = createSelector([selectAllDataviews], (dataviews) => {
-  const thinningConfig = THINNING_LEVELS[APP_THINNING]
-  const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-    id,
-    value,
-  }))
-  return dataviews?.map((dataview) => {
-    return {
-      ...dataview,
-      datasetsConfig: dataview.datasetsConfig?.map((datasetConfig) => {
-        if (datasetConfig.endpoint !== EndpointId.Tracks) return datasetConfig
-        return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
-      }),
-    }
-  })
-})
 
 const defaultBasemapDataview = {
   id: 'basemap',
@@ -51,7 +32,7 @@ export const selectDefaultOfflineDataviewsGenerators = createSelector([], () => 
   return BACKGROUND_LAYER.concat(OFFLINE_LAYERS)
 })
 
-export const selectBasemapDataview = createSelector([selectDataviews], (dataviews) => {
+export const selectBasemapDataview = createSelector([selectAllDataviews], (dataviews) => {
   const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
   return basemapDataview || defaultBasemapDataview
 })
@@ -76,13 +57,36 @@ export const selectDataviewInstancesMerged = createSelector(
   }
 )
 
+/**
+ * Calls getDataviewsForResourceQuerying to prepare track dataviews' datasetConfigs.
+ * Injects app-specific logic by using getDataviewsForResourceQuerying's callback
+ */
+export const selectDataviewsForResourceQuerying = createSelector(
+  [selectDataviewInstancesMerged],
+  (dataviewInstances) => {
+    const thinningConfig = THINNING_LEVELS[APP_THINNING]
+    const datasetConfigsTransforms: DatasetConfigsTransforms = {
+      [Generators.Type.Track]: ([info, track, ...events]) => {
+        const trackWithThinning = track
+        const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+          id,
+          value,
+        }))
+        trackWithThinning.query = [...(track.query || []), ...thinningQuery]
+        return [trackWithThinning, info, ...events]
+      },
+    }
+    return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)
+  }
+)
+
 export const selectDataviewInstancesResolved = createSelector(
   [
     selectDataviewsStatus,
-    selectDataviews,
+    selectAllDataviews,
     selectDatasets,
     selectDatasetsStatus,
-    selectDataviewInstancesMerged,
+    selectDataviewsForResourceQuerying,
   ],
   (
     dataviewsStatus,
@@ -102,6 +106,13 @@ export const selectDataviewInstancesResolved = createSelector(
       datasets
     )
     return dataviewInstancesResolved
+  }
+)
+
+export const selectDataviewsResourceQueries = createSelector(
+  [selectDataviewInstancesResolved],
+  (dataviews) => {
+    return resolveResourcesFromDatasetConfigs(dataviews)
   }
 )
 
