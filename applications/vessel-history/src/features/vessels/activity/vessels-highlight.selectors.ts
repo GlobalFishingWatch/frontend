@@ -8,26 +8,25 @@ import {
 } from 'features/settings/settings.slice'
 import { RenderedEvent, selectEventsWithRenderingInfo } from './vessels-activity.selectors'
 
+const isNullOrUndefined = (value: any) => value !== undefined && value !== null
+
 const isAnyRegionFilterSet = (filter: SettingsEvents) =>
-  (filter.eezs !== undefined && filter.eezs.length > 0) ||
-  (filter.rfmos !== undefined && filter.rfmos.length > 0) ||
-  (filter.mpas !== undefined && filter.mpas.length > 0)
+  (isNullOrUndefined(filter.eezs) && (filter.eezs ?? []).length > 0) ||
+  (isNullOrUndefined(filter.rfmos) && (filter.rfmos ?? []).length > 0) ||
+  (isNullOrUndefined(filter.mpas) && (filter.mpas || []).length > 0)
 
 const isAnyFilterSet = (filter: SettingsEvents) =>
   isAnyRegionFilterSet(filter) ||
-  filter.duration !== undefined ||
-  filter.distanceShoreLonger !== undefined ||
-  filter.distancePortLonger !== undefined
+  isNullOrUndefined(filter.duration) ||
+  isNullOrUndefined(filter.distanceShoreLonger) ||
+  isNullOrUndefined(filter.distancePortLonger)
 
-const matchDurationLonger = (duration: number, durationLongerThan?: number) =>
-  durationLongerThan === undefined ||
-  (durationLongerThan !== undefined && durationLongerThan >= 0 && duration > durationLongerThan)
-
-const matchAnyDistanceLonger = (eventDistances: number[], distanceLongerThan?: number) =>
-  distanceLongerThan === undefined ||
-  (distanceLongerThan !== undefined &&
-    distanceLongerThan >= 0 &&
-    Math.max(...eventDistances) > distanceLongerThan)
+const matchAnyValueLonger = (value: number[], longerThan?: number | null) =>
+  longerThan === undefined ||
+  (Number.isFinite(longerThan) &&
+    longerThan !== null &&
+    longerThan >= 0 &&
+    Math.max(...value) > longerThan)
 
 const matchAnyRegion = (eventRegions: string[] = [], regions: string[] = []) =>
   // when there are regions defined to highlight
@@ -50,15 +49,15 @@ const filterActivityEvent = (event: RenderedEvent, filter: SettingsEvents) =>
         matchAnyRegion(event.regions.mpant, filter.mpas) ||
         matchAnyRegion(event.regions.mparu, filter.mpas) ||
         matchAnyRegion(event.regions.mregion, filter.mpas)))) &&
-  matchDurationLonger(event.duration, filter.duration) &&
-  matchAnyDistanceLonger(
+  matchAnyValueLonger([event.duration], filter.duration) &&
+  matchAnyValueLonger(
     [
       event.distances.startDistanceFromShoreKm ?? event.distances.endDistanceFromShoreKm,
       event.distances.endDistanceFromShoreKm,
     ],
     filter.distanceShoreLonger
   ) &&
-  matchAnyDistanceLonger(
+  matchAnyValueLonger(
     [
       event.distances.startDistanceFromPortKm ?? event.distances.endDistanceFromPortKm,
       event.distances.endDistanceFromPortKm,
@@ -67,15 +66,15 @@ const filterActivityEvent = (event: RenderedEvent, filter: SettingsEvents) =>
   )
 
 const isAnyFlagFilterSet = (filter: SettingsPortVisits) =>
-  filter.flags !== undefined && filter.flags.length > 0
+  isNullOrUndefined(filter.flags) && (filter.flags ?? []).length > 0
 
 const isAnyPortFilterSet = (filter: SettingsPortVisits) =>
-  (filter.flags !== undefined && filter.flags.length > 0) ||
-  filter.duration !== undefined ||
-  filter.distanceShoreLonger !== undefined
+  isAnyFlagFilterSet(filter) ||
+  isNullOrUndefined(filter.duration) ||
+  isNullOrUndefined(filter.distanceShoreLonger)
 
 const matchAnyPortFlag = (port: Anchorage | undefined, regions: string[] = []) =>
-  port === undefined || matchAnyRegion([port.flag], regions)
+  port === undefined || port === null || matchAnyRegion([port.flag], regions)
 
 const filterPortEvent = (event: RenderedEvent, filter: SettingsPortVisits) =>
   isAnyPortFilterSet(filter) &&
@@ -87,8 +86,8 @@ const filterPortEvent = (event: RenderedEvent, filter: SettingsPortVisits) =>
       (matchAnyPortFlag(event.port_visit?.startAnchorage, filter.flags) ||
         matchAnyPortFlag(event.port_visit?.intermediateAnchorage, filter.flags) ||
         matchAnyPortFlag(event.port_visit?.endAnchorage, filter.flags)))) &&
-  matchDurationLonger(event.duration, filter.duration) &&
-  matchAnyDistanceLonger(
+  matchAnyValueLonger([event.duration], filter.duration) &&
+  matchAnyValueLonger(
     [
       event.distances.startDistanceFromShoreKm ?? event.distances.endDistanceFromShoreKm,
       event.distances.endDistanceFromShoreKm,
