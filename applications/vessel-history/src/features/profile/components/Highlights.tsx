@@ -5,8 +5,13 @@ import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import Link from 'redux-first-router-link'
-import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { selectActivityHighlightEvents } from 'features/vessels/activity/vessels-highlight.selectors'
+import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectActivityHighlightEvents,
+  selectAnyHighlightsSettingDefined,
+} from 'features/vessels/activity/vessels-highlight.selectors'
+import { SETTINGS } from 'routes/routes'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from './activity/ActivityModalContent'
@@ -14,9 +19,11 @@ import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
 
 const Highlights: React.FC = (): React.ReactElement => {
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const eventsLoading = useSelector(selectResourcesLoading)
   const events = useSelector(selectActivityHighlightEvents)
+  const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
 
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
@@ -25,13 +32,14 @@ const Highlights: React.FC = (): React.ReactElement => {
     setIsOpen(true)
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
+  const navigateToSettings = useCallback(() => dispatch({ type: SETTINGS }), [dispatch])
 
   return (
     <div
       className={cx(
         styles.activityContainer,
         styles.highlightsContainer,
-        events.length === 0 ? styles.noData : {}
+        !anyHighlightsSettingDefined || events.length === 0 ? styles.noData : {}
       )}
     >
       <div className={styles.divider}></div>
@@ -41,49 +49,74 @@ const Highlights: React.FC = (): React.ReactElement => {
         </Link>
         <h2 className={styles.highlights}>
           {t('events.activityHighlights', 'Activity Highlights')}
-          {!eventsLoading && events.length > 0 && ` (${events.length})`}
+          {anyHighlightsSettingDefined &&
+            !eventsLoading &&
+            events.length > 0 &&
+            ` (${events.length})`}
         </h2>
       </div>
-
-      {eventsLoading && <Spinner className={styles.spinnerMed} />}
-      {!eventsLoading && (
+      {!anyHighlightsSettingDefined && (
+        <div className={styles.noSettingsContainer}>
+          {t(
+            'events.noHighlitingSettingsMessage',
+            "You've not defined the highlight settings yet. " +
+              'Please click Settings to configure the activity of interest.'
+          )}
+          <Button type="secondary" onClick={navigateToSettings} className={styles.settings}>
+            <Icon type="default" icon="settings" className={styles.iconInButton}></Icon>
+            {t('events.highlitingSettings', 'settings')}
+          </Button>
+        </div>
+      )}
+      {anyHighlightsSettingDefined && (
         <Fragment>
-          <Modal title={selectedEvent?.description ?? ''} isOpen={isModalOpen} onClose={closeModal}>
-            {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
-          </Modal>
-          <div className={cx(styles.activityListContainer, styles.highlightsListContainer)}>
-            {events && events.length > 0 && (
-              <AutoSizer disableWidth={true}>
-                {({ width, height }) => (
-                  <List
-                    width={width}
-                    height={height}
-                    itemCount={events.length}
-                    itemData={events}
-                    itemSize={() => 79}
-                  >
-                    {({ index, style }) => {
-                      const event = events[index]
-                      return (
-                        <div style={style}>
-                          <ActivityItem
-                            key={index}
-                            event={event}
-                            onInfoClick={(event) => openModal(event)}
-                          />
-                        </div>
-                      )
-                    }}
-                  </List>
+          {eventsLoading && <Spinner className={styles.spinnerMed} />}
+          {!eventsLoading && (
+            <Fragment>
+              <Modal
+                title={selectedEvent?.description ?? ''}
+                isOpen={isModalOpen}
+                onClose={closeModal}
+              >
+                {selectedEvent && (
+                  <ActivityModalContent event={selectedEvent}></ActivityModalContent>
                 )}
-              </AutoSizer>
-            )}
-            {events && events.length === 0 && (
-              <div className={styles.noEvents}>
-                {t('events.noHighlights', 'No events found for your highlighting criteria')}
+              </Modal>
+              <div className={cx(styles.activityListContainer, styles.highlightsListContainer)}>
+                {events && events.length > 0 && (
+                  <AutoSizer disableWidth={true}>
+                    {({ width, height }) => (
+                      <List
+                        width={width}
+                        height={height}
+                        itemCount={events.length}
+                        itemData={events}
+                        itemSize={() => 79}
+                      >
+                        {({ index, style }) => {
+                          const event = events[index]
+                          return (
+                            <div style={style}>
+                              <ActivityItem
+                                key={index}
+                                event={event}
+                                onInfoClick={(event) => openModal(event)}
+                              />
+                            </div>
+                          )
+                        }}
+                      </List>
+                    )}
+                  </AutoSizer>
+                )}
+                {events && events.length === 0 && (
+                  <div>
+                    {t('events.noHighlights', 'No events found for your highlighting criteria')}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </Fragment>
+          )}
         </Fragment>
       )}
     </div>

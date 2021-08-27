@@ -77,7 +77,9 @@
   },
   "events": {
     "activityHighlights": "Activity Highlights",
-    "noHighlights": "No events found for your highlighting criteria"
+    "highlitingSettings": "settings",
+    "noHighlights": "No events found for your highlighting criteria",
+    "noHighlitingSettingsMessage": "missing_translation"
   },
   "map": {
     "loading": "Map loading",

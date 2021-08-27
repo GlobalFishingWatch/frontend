@@ -115,3 +115,12 @@ export const selectActivityHighlightEvents = createSelector(
       .sort((a, b) => (a.start > b.start ? -1 : 1))
   }
 )
+
+export const selectAnyHighlightsSettingDefined = createSelector([selectSettings], (settings) => {
+  return (
+    isAnyFilterSet(settings.fishingEvents) ||
+    isAnyFilterSet(settings.encounters) ||
+    isAnyFilterSet(settings.loiteringEvents) ||
+    isAnyPortFilterSet(settings.portVisits)
+  )
+})

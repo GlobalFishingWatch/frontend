@@ -120,6 +120,8 @@
 
 .highlightsContainer {
   min-height: calc(var(--size-L) * 2);
+  height: fit-content;
+  font: var(--font-S);
 }
 
 .highlightsContainer:not(.noData) {
@@ -136,12 +138,26 @@
   text-transform: uppercase;
   line-height: var(--size-M);
 }
+
+.noSettingsContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* font: var(--font-S); */
+}
+.noSettingsContainer button {
+  margin: var(--space-M);
+}
+button .iconInButton {
+  margin-right: var(--space-XS);
+}
+
 .settingsLink {
   position: absolute;
   right: var(--space-XS);
 }
 .noEvents {
-  font: var(--font-S);
+  /* font: var(--font-S); */
 }
 
 .spinnerMed {
