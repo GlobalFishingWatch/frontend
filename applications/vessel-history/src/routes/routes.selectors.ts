@@ -88,3 +88,15 @@ export const selectUrlTimeRange = createSelector(
     end: new Date(end).getTime(),
   })
 )
+
+export const selectAdvancedSearchMMSI = selectQueryParam<string>('MMSI')
+export const selectAdvancedSearchIMO = selectQueryParam<string>('IMO')
+export const selectAdvancedSearchFields = createSelector(
+  [selectAdvancedSearchMMSI, selectAdvancedSearchIMO],
+  (mmsi, imo) => {
+    return {
+      mmsi,
+      imo,
+    }
+  }
+)

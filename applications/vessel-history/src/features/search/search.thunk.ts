@@ -1,20 +1,63 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
-import GFWAPI from '@globalfishingwatch/api-client'
+import GFWAPI, {
+  AdvancedSearchQueryField,
+  getAdvancedSearchQuery,
+} from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
 import { CachedVesselSearch } from './search.slice'
 
-const fetchData = async (query: string, offset: number, signal?: AbortSignal | null) => {
-  const endpoint = true ? 'search' : 'advanced-search'
+const fetchData = async (
+  query: string,
+  offset: number,
+  signal?: AbortSignal | null,
+  advancedSearch?: Record<string, any>
+) => {
+  const endpoint = advancedSearch ? 'advanced-search' : 'search'
+
+  let advancedQuery
+  if (advancedSearch) {
+    const fields: AdvancedSearchQueryField[] = [
+      {
+        key: 'shipname',
+        value: query,
+      },
+      {
+        key: 'mmsi',
+        value: advancedSearch.mmsi,
+      },
+      {
+        key: 'imo',
+        value: advancedSearch.imo,
+      },
+      // {
+      //   key: 'fleet',
+      //   value: filters.fleets,
+      // },
+      // {
+      //   key: 'origin',
+      //   value: filters.origins,
+      // },
+      // {
+      //   key: 'lastTransmissionDate',
+      //   value: filters.activeAfterDate,
+      // },
+      // {
+      //   key: 'firstTransmissionDate',
+      //   value: filters.activeBeforeDate,
+      // },
+    ]
+    advancedQuery = getAdvancedSearchQuery(fields)
+  }
 
   const urlQuery = stringify({
     datasets: BASE_DATASET,
     limit: RESULTS_PER_PAGE,
     offset,
-    query,
-    useTMT: true,
+    query: advancedQuery || query,
+    useTMT: !advancedQuery,
   })
 
   const url = `/v1/vessels/${endpoint}?${urlQuery}`
@@ -64,12 +107,16 @@ const searchNeedsFetch = (
 export type VesselSearchThunk = {
   query: string
   offset: number
+  advancedSearch: Record<string, any>
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/vessels',
-  async ({ query, offset }: VesselSearchThunk, { rejectWithValue, getState, signal }) => {
-    const searchData = await fetchData(query, offset, signal)
+  async (
+    { query, offset, advancedSearch }: VesselSearchThunk,
+    { rejectWithValue, getState, signal }
+  ) => {
+    const searchData = await fetchData(query, offset, signal, advancedSearch)
     return searchData
   },
   {

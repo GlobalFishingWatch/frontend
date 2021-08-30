@@ -72,7 +72,9 @@ export const getAdvancedSearchQuery = (fields: AdvancedSearchQueryField[]) => {
   ).map((fields) => fields.map(getFieldQuery))
 
   const query = [
-    `(${fieldsQueriesCombinedWithOR.join(' OR ')})`,
+    ...(fieldsQueriesCombinedWithOR.length
+      ? [`(${fieldsQueriesCombinedWithOR.join(' OR ')})`]
+      : []),
     ...fieldsQueriesCombinedWithAND,
   ].join(' AND ')
   return query
