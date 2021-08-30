@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 3.1.0
+
+### Minor Changes
+
+- 8396e437: Move advanced query logic to api-client
+
 ## 3.0.0
 
 ### Patch Changes
