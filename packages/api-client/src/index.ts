@@ -5,3 +5,8 @@ export {
   FetchOptions,
 } from './api-client'
 export { ACCESS_TOKEN_STRING, getAccessTokenFromUrl, removeAccessTokenFromUrl } from './utils/url'
+export {
+  getAdvancedSearchQuery,
+  AdvancedSearchQueryField,
+  AdvancedSearchQueryFieldKey,
+} from './utils/search'
