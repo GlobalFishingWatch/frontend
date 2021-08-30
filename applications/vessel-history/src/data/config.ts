@@ -7,11 +7,20 @@ export const WORKSPACE_ENV =
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
 
+export const FLY_EFFECTS = {
+  noFly: 0, // just change the center
+  softFly: 1, // fly to without effects
+  fly: 2 // nice fly to moving the camera
+}
+// enable / disable the effect for switch events in the map
+export const ENABLE_FLYTO = FLY_EFFECTS.softFly //maybe we can move this to the settings
 export const DEBUG_MODE =
   ((process.env.REACT_APP_DEBUG_MODE ?? false) as boolean) ||
   (WORKSPACE_ENV === 'production' ? false : true)
 
 export const FULL_SUFIX = 'full'
+export const WORKSPACE_START_DATE = new Date();
+WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 12);
 
 export const DEFAULT_WORKSPACE: AppState = {
   zoom: 3,
@@ -26,7 +35,7 @@ export const DEFAULT_WORKSPACE: AppState = {
   fishingPositions: 15,
   longitude: -35.97144,
   project: '1',
-  start: '2017-12-01T00:00:00.000Z',
+  start: WORKSPACE_START_DATE.toISOString(),
   end: DateTime.utc().toISO(),
   timebarMode: 'speed',
   filterMode: 'speed',

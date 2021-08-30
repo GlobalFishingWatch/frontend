@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
-import GFWAPI from '@globalfishingwatch/api-client'
+import GFWAPI, {
+  getAdvancedSearchQuery,
+  AdvancedSearchQueryField,
+  AdvancedSearchQueryFieldKey,
+} from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import {
   Dataset,
@@ -92,74 +96,52 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
         )
 
-        const querySearchFields = [
+        const fields: AdvancedSearchQueryField[] = [
           {
-            field: 'shipname',
-            operator: 'LIKE',
-            transformation: (value: string) => `%${value.toUpperCase()}%`,
+            key: 'shipname',
+            value: query,
+            combinedWithOR: true,
           },
+          ...(fieldsAllowed.includes('mmsi')
+            ? [
+                {
+                  key: 'mmsi' as AdvancedSearchQueryFieldKey,
+                  value: query,
+                  combinedWithOR: true,
+                },
+              ]
+            : []),
+          ...(fieldsAllowed.includes('imo')
+            ? [
+                {
+                  key: 'imo' as AdvancedSearchQueryFieldKey,
+                  value: query,
+                  combinedWithOR: true,
+                },
+              ]
+            : []),
           {
-            field: 'mmsi',
-            operator: '=',
-            condition: (field: string) => fieldsAllowed.includes(field),
-          },
-          {
-            field: 'imo',
-            operator: '=',
-            condition: (field: string) => fieldsAllowed.includes(field),
-          },
-        ]
-
-        const querySearch = querySearchFields
-          .filter(({ field, condition }) => (condition ? condition(field) : true))
-          .map(
-            ({ field, operator, transformation }) =>
-              `${field} ${operator} '${transformation ? transformation(query) : query}'`
-          )
-          .join(' OR ')
-
-        const queryFiltersFields = [
-          {
-            field: 'flag',
-            operator: 'IN',
+            key: 'flag',
             value: filters.flags,
-            transformation: (value: any): string =>
-              `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
           },
           {
-            field: 'fleet',
-            operator: 'IN',
+            key: 'fleet',
             value: filters.fleets,
-            transformation: (value: any): string =>
-              `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
           },
           {
-            field: 'origin',
-            operator: 'IN',
+            key: 'origin',
             value: filters.origins,
-            transformation: (value: any): string =>
-              `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
           },
           {
-            field: 'lastTransmissionDate',
-            operator: '>=',
-            value: filters?.activeAfterDate,
+            key: 'lastTransmissionDate',
+            value: filters.activeAfterDate,
           },
           {
-            field: 'firstTransmissionDate',
-            operator: '<=',
-            value: filters?.activeBeforeDate,
+            key: 'firstTransmissionDate',
+            value: filters.activeBeforeDate,
           },
         ]
-
-        const queryFilters = queryFiltersFields
-          .filter(({ value }) => value !== undefined && value !== '')
-          .map(
-            ({ field, operator, transformation, value }) =>
-              `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
-          )
-
-        advancedQuery = [`(${querySearch})`, ...queryFilters].join(' AND ')
+        advancedQuery = getAdvancedSearchQuery(fields)
       }
 
       const datasetConfig = {

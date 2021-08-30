@@ -96,15 +96,16 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
               const vesselLabel = getVesselLabel(vessel, true)
+              const interactionAllowed = [
+                ...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
+                PRESENCE_POC_INTERACTION,
+              ].includes(feature.temporalgrid?.sublayerInteractionType || '')
+              const hasDatasets =
+                vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
               return (
                 <button
                   key={i}
-                  disabled={
-                    ![
-                      ...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-                      PRESENCE_POC_INTERACTION,
-                    ].includes(feature.temporalgrid?.sublayerInteractionType || '')
-                  }
+                  disabled={!interactionAllowed || !hasDatasets}
                   className={styles.vesselRow}
                   onClick={() => onVesselClick(vessel)}
                 >

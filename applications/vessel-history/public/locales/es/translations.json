@@ -152,7 +152,7 @@
     "length": "longitud",
     "operator": "operador",
     "owner": "propietario",
-    "type": "tipo",
+    "type": "vessel type",
     "grossTonnage_plural": "tonelajes brutos",
     "builtYear_plural": "años construidos",
     "callsign_plural": "signaturas",

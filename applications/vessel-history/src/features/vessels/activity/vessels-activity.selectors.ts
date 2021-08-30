@@ -6,7 +6,7 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS } from 'data/config'
+import { EVENTS_COLORS, WORKSPACE_START_DATE } from 'data/config'
 import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
@@ -137,8 +137,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-                count: Math.round(duration.minutes as number),
-              })
+              count: Math.round(duration.minutes as number),
+            })
             : '',
         ].join(' ')
 
@@ -206,8 +206,21 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
   return regionsDescription ?? ''
 }
 
+export const selectEvents = createSelector(
+  [selectEventsWithRenderingInfo],
+  (events) => events.flat().sort((a, b) => (a.start > b.start ? -1 : 1))
+)
+
+export const selectMapEvents = createSelector(
+  [selectEvents, selectFilters],
+  (events, filters) => {
+    const startDate = DateTime.fromISO(filters.start, { zone: 'utc' })
+    return events.filter(event => event.start >= startDate.toMillis())
+  }
+)
+
 export const selectFilteredEvents = createSelector(
-  [selectEventsWithRenderingInfo, selectFilters],
+  [selectMapEvents, selectFilters],
   (events, filters) => {
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
@@ -221,7 +234,6 @@ export const selectFilteredEvents = createSelector(
     const interval = Interval.fromDateTimes(startDate, endDate)
 
     return events
-      .flat()
       .filter((event: RenderedEvent) => {
         if (
           !interval.contains(DateTime.fromMillis(event.start as number)) &&
@@ -244,7 +256,7 @@ export const selectFilteredEvents = createSelector(
 
         return true
       })
-      .sort((a, b) => (a.start > b.start ? -1 : 1))
+
   }
 )
 
