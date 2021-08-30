@@ -16,7 +16,8 @@ import {
 import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
-import { useTimebarVisualisation } from './timebar.hooks'
+import { useTimebarVisualisationConnect } from './timebar.hooks'
+import { selectTracksGraphsLoading } from './timebar.selectors'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
@@ -27,18 +28,28 @@ const TimebarSettings = () => {
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
-  const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
+  const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activityCategory = useSelector(selectActivityCategory)
+  const graphsLoading = useSelector(selectTracksGraphsLoading)
+  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length < 2
 
   const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = useMemo(
     () => [
       {
         id: 'speed',
         label: t('timebarSettings.graphOptions.speed', 'Speed'),
+        tooltip: timebarGraphEnabled
+          ? ''
+          : t(
+              'timebarSettings.graphOptions.speedDisabled',
+              'Not available with more than 1 vessel selected'
+            ),
+        disabled: !timebarGraphEnabled,
       },
       {
         id: 'depth',
         label: t('timebarSettings.graphOptions.depth', 'Depth (Coming soon)'),
+        tooltip: t('common.comingSoon', 'Coming soon'),
         disabled: true,
       },
       {
@@ -46,7 +57,7 @@ const TimebarSettings = () => {
         label: t('timebarSettings.graphOptions.none', 'None'),
       },
     ],
-    [t]
+    [timebarGraphEnabled, t]
   )
 
   const openOptions = () => {
@@ -95,12 +106,12 @@ const TimebarSettings = () => {
     ? t('timebarSettings.showFishingEffort', 'Show fishing hours graph')
     : t('timebarSettings.showPresence', 'Show presence graph')
 
-  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
   return (
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
       <IconButton
         icon={optionsPanelOpen ? 'close' : 'settings'}
         type="map-tool"
+        loading={graphsLoading}
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
           optionsPanelOpen

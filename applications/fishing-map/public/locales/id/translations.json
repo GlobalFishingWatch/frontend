@@ -262,7 +262,8 @@
     "graphOptions": {
       "depth": "Depth $t(common.comingSoon)",
       "none": "None",
-      "speed": "Speed"
+      "speed": "Speed",
+      "speedDisabled": "Not available with more than 1 vessel selected"
     },
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Tutup pengaturan timebar",

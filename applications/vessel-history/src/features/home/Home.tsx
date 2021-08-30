@@ -23,6 +23,7 @@ import {
 } from 'features/search/search.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
+import LanguageToggle from './LanguageToggle'
 
 interface LoaderProps {
   invert?: boolean
@@ -87,6 +88,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           <Link to={['settings']}>
             <IconButton type="default" size="default" icon="settings"></IconButton>
           </Link>
+          <LanguageToggle />
         </header>
       )}
       <div className={styles.search}>

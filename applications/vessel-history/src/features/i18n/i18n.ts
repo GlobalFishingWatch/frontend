@@ -6,7 +6,7 @@ import { Locale } from 'types'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
-  { id: Locale.es, label: 'Español' },
+  // { id: Locale.es, label: 'Español' },
   { id: Locale.fr, label: 'Français' },
 ]
 

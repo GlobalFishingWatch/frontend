@@ -24,10 +24,12 @@ import {
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveVesselsDataviews,
+  selectDataviewsResourceQueries,
+} from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
 import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
@@ -118,6 +120,8 @@ const Profile: React.FC = (props): React.ReactElement => {
         latitude: latitude as number,
         longitude: longitude as number,
         zoom: DEFAULT_VESSEL_MAP_ZOOM,
+        pitch: 0,
+        bearing: 0
       })
     } else {
       alert('The vessel has no activity in your selected timerange')

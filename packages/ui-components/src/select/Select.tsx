@@ -50,7 +50,7 @@ function Select(props: SelectProps) {
   } = useSelect<SelectOption | null>({
     items: options,
     onSelectedItemChange: ({ selectedItem }) => {
-      if (!disabled && selectedItem) {
+      if (!disabled && selectedItem && !selectedItem.disabled) {
         handleChange(selectedItem)
         selectItem(null)
       }
