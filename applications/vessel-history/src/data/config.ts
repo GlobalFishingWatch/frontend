@@ -10,7 +10,7 @@ export const WORKSPACE_ENV =
 export const FLY_EFFECTS = {
   noFly: 0, // just change the center
   softFly: 1, // fly to without effects
-  fly: 2 // nice fly to moving the camera
+  fly: 2, // nice fly to moving the camera
 }
 // enable / disable the effect for switch events in the map
 export const ENABLE_FLYTO = FLY_EFFECTS.softFly //maybe we can move this to the settings
@@ -19,8 +19,11 @@ export const DEBUG_MODE =
   (WORKSPACE_ENV === 'production' ? false : true)
 
 export const FULL_SUFIX = 'full'
-export const WORKSPACE_START_DATE = new Date();
-WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 12);
+export const WORKSPACE_START_DATE = new Date()
+WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 12)
+
+export const FIRST_YEAR_OF_DATA = 2012
+export const CURRENT_YEAR = new Date().getFullYear()
 
 export const DEFAULT_WORKSPACE: AppState = {
   zoom: 3,
@@ -43,6 +46,8 @@ export const DEFAULT_WORKSPACE: AppState = {
   maxDistanceFromPort: 10000,
   importView: false,
   satellite: '',
+  availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
+  availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
 }
 
 export const DEFAULT_VIEWPORT = {

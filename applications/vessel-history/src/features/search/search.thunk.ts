@@ -17,6 +17,8 @@ const fetchData = async (
 ) => {
   const endpoint = advancedSearch ? 'advanced-search' : 'search'
 
+  console.log(advancedSearch)
+
   let advancedQuery
   if (advancedSearch) {
     const fields: AdvancedSearchQueryField[] = [
@@ -32,22 +34,18 @@ const fetchData = async (
         key: 'imo',
         value: advancedSearch.imo,
       },
-      // {
-      //   key: 'fleet',
-      //   value: filters.fleets,
-      // },
-      // {
-      //   key: 'origin',
-      //   value: filters.origins,
-      // },
-      // {
-      //   key: 'lastTransmissionDate',
-      //   value: filters.activeAfterDate,
-      // },
-      // {
-      //   key: 'firstTransmissionDate',
-      //   value: filters.activeBeforeDate,
-      // },
+      {
+        key: 'flag',
+        value: advancedSearch.flags.map((f: string) => ({ id: f })),
+      },
+      {
+        key: 'lastTransmissionDate',
+        value: advancedSearch.lastTransmissionDate,
+      },
+      {
+        key: 'firstTransmissionDate',
+        value: advancedSearch.firstTransmissionDate,
+      },
     ]
     advancedQuery = getAdvancedSearchQuery(fields)
   }

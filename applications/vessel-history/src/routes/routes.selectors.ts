@@ -91,12 +91,33 @@ export const selectUrlTimeRange = createSelector(
 
 export const selectAdvancedSearchMMSI = selectQueryParam<string>('MMSI')
 export const selectAdvancedSearchIMO = selectQueryParam<string>('IMO')
+export const selectAdvancedSearchCallsign = selectQueryParam<string>('callsign')
+export const selectAdvancedSearchRawFlags = selectQueryParam<string>('flags')
+export const selectAdvancedSearchFlags = createSelector(
+  [selectAdvancedSearchRawFlags],
+  (rawFlags) => {
+    return rawFlags ? rawFlags.split(',') : []
+  }
+)
+export const selectLastTransmissionDate = selectQueryParam<string>('lastTransmissionDate')
+export const selectFirstTransmissionDate = selectQueryParam<string>('firstTransmissionDate')
 export const selectAdvancedSearchFields = createSelector(
-  [selectAdvancedSearchMMSI, selectAdvancedSearchIMO],
-  (mmsi, imo) => {
+  [
+    selectAdvancedSearchMMSI,
+    selectAdvancedSearchIMO,
+    selectAdvancedSearchCallsign,
+    selectAdvancedSearchFlags,
+    selectLastTransmissionDate,
+    selectFirstTransmissionDate,
+  ],
+  (mmsi, imo, callsign, flags, lastTransmissionDate, firstTransmissionDate) => {
     return {
       mmsi,
       imo,
+      callsign,
+      flags,
+      lastTransmissionDate,
+      firstTransmissionDate,
     }
   }
 )
