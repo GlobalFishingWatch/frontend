@@ -9,7 +9,7 @@ import {
 } from './__mocks__/selectEventsWithRenderingInfo.mock'
 
 describe('selectActivityHighlightEvents', () => {
-  const cases: [string, RenderedEvent[][], Settings, number][] = [
+  const cases: [string, RenderedEvent[][], Partial<Settings>, number][] = [
     [
       'fishing events taking place in any eez',
       [...loiteringAndEncounterEvents, ...portVisitEvents, ...fishingEvents] as any,
@@ -17,6 +17,22 @@ describe('selectActivityHighlightEvents', () => {
         ...emptySettings,
         fishingEvents: {
           eezs: [anyRegion.id],
+        },
+      },
+      9,
+    ],
+    [
+      'fishing events taking place in any eez with settings in null',
+      [...loiteringAndEncounterEvents, ...portVisitEvents, ...fishingEvents] as any,
+      {
+        ...emptySettings,
+        fishingEvents: {
+          eezs: [anyRegion.id],
+          mpas: [],
+          rfmos: [],
+          distancePortLonger: null,
+          distanceShoreLonger: null,
+          duration: null,
         },
       },
       9,

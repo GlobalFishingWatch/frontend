@@ -8,20 +8,21 @@ import {
 } from 'features/settings/settings.slice'
 import { RenderedEvent, selectEventsWithRenderingInfo } from './vessels-activity.selectors'
 
-const isNullOrUndefined = (value: any) => value !== undefined && value !== null
+const isNullOrUndefined = (value: any) => value === undefined || value === null
 
 const isAnyRegionFilterSet = (filter: SettingsEvents) =>
-  (isNullOrUndefined(filter.eezs) && (filter.eezs ?? []).length > 0) ||
-  (isNullOrUndefined(filter.rfmos) && (filter.rfmos ?? []).length > 0) ||
-  (isNullOrUndefined(filter.mpas) && (filter.mpas || []).length > 0)
+  (!isNullOrUndefined(filter.eezs) && (filter.eezs ?? []).length > 0) ||
+  (!isNullOrUndefined(filter.rfmos) && (filter.rfmos ?? []).length > 0) ||
+  (!isNullOrUndefined(filter.mpas) && (filter.mpas || []).length > 0)
 
 const isAnyFilterSet = (filter: SettingsEvents) =>
   isAnyRegionFilterSet(filter) ||
-  isNullOrUndefined(filter.duration) ||
-  isNullOrUndefined(filter.distanceShoreLonger) ||
-  isNullOrUndefined(filter.distancePortLonger)
+  !isNullOrUndefined(filter.duration) ||
+  !isNullOrUndefined(filter.distanceShoreLonger) ||
+  !isNullOrUndefined(filter.distancePortLonger)
 
-const matchAnyValueLonger = (value: number[], longerThan?: number | null) =>
+const matchAnyValueLonger = (value: number[], longerThan?: number) =>
+  isNullOrUndefined(longerThan) ||
   longerThan === undefined ||
   (Number.isFinite(longerThan) &&
     longerThan !== null &&
@@ -66,12 +67,12 @@ const filterActivityEvent = (event: RenderedEvent, filter: SettingsEvents) =>
   )
 
 const isAnyFlagFilterSet = (filter: SettingsPortVisits) =>
-  isNullOrUndefined(filter.flags) && (filter.flags ?? []).length > 0
+  !isNullOrUndefined(filter.flags) && (filter.flags ?? []).length > 0
 
 const isAnyPortFilterSet = (filter: SettingsPortVisits) =>
   isAnyFlagFilterSet(filter) ||
-  isNullOrUndefined(filter.duration) ||
-  isNullOrUndefined(filter.distanceShoreLonger)
+  !isNullOrUndefined(filter.duration) ||
+  !isNullOrUndefined(filter.distanceShoreLonger)
 
 const matchAnyPortFlag = (port: Anchorage | undefined, regions: string[] = []) =>
   port === undefined || port === null || matchAnyRegion([port.flag], regions)
