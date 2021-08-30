@@ -93,6 +93,18 @@ describe('selectActivityHighlightEvents', () => {
       5,
     ],
     [
+      'fishing events filtered by duration > 5 inside FINNISH EEZ',
+      [...loiteringAndEncounterEvents, ...portVisitEvents, ...fishingEvents] as any,
+      {
+        ...emptySettings,
+        fishingEvents: {
+          eezs: [5676],
+          duration: 5,
+        },
+      },
+      5,
+    ],
+    [
       'fishing events filtered by duration > 5 and distance from shore > 20 inside FINNISH EEZ',
       [...loiteringAndEncounterEvents, ...portVisitEvents, ...fishingEvents] as any,
       {

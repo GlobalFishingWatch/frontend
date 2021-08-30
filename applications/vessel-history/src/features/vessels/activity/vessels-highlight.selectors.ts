@@ -34,7 +34,7 @@ const matchAnyRegion = (eventRegions: string[] = [], regions: string[] = []) =>
   // if ANY option was selected and the event is assigned to one region at least
   (regions.includes(anyRegion.id) && eventRegions.length > 0) ||
   // or at least one of the selected regions is assigned to the event
-  regions.filter((e) => eventRegions.includes(e)).length > 0
+  regions.filter((e) => eventRegions.includes(`${e}`)).length > 0
 
 const filterActivityEvent = (event: RenderedEvent, filter: SettingsEvents) =>
   isAnyFilterSet(filter) &&
