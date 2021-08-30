@@ -13,7 +13,6 @@
     "to": "to",
     "typeToSearch": "Type to search",
     "unknown": "Unknown",
-    "typeToSeach": "Type to search",
     "any": "Any",
     "currentTimeRange": "current time range",
     "high": "High",
@@ -79,7 +78,7 @@
     "activityHighlights": "Activity Highlights",
     "highlitingSettings": "settings",
     "noHighlights": "No events found for your highlighting criteria",
-    "noHighlitingSettingsMessage": "missing_translation"
+    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
   },
   "map": {
     "loading": "Map loading",
