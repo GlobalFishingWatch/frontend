@@ -78,6 +78,7 @@
     "dragFilePlaceholder": "Arrastra y suelta un archivo comprimido o geojson aquí o haz clic para seleccionarlo",
     "dragFilePlaceholderCSV": "Arrastra y suelta un archivo CSV aquí o haz clic para seleccionarlo",
     "edit": "Modificar los datos",
+    "emptyFilters": "No filters available",
     "emptyState": "Sus datos aparecerán aquí",
     "featuresNameField": "Campo para nombrar cada área",
     "file": "Archivo",
@@ -261,7 +262,8 @@
     "graphOptions": {
       "depth": "Profundidad $t(common.comingSoon)",
       "none": "Ninguna",
-      "speed": "Velocidad"
+      "speed": "Velocidad",
+      "speedDisabled": "Not available with more than 1 vessel selected"
     },
     "presenceDisabled": "Selecciona al menos una capa de presencia",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
@@ -284,6 +286,7 @@
     "callsign": "Señal distintiva de llamada",
     "capacity": "Capacidad",
     "carrier": "Embarcación de transporte",
+    "casco": "Casco",
     "donor": "Embarcación donante",
     "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",

@@ -10,6 +10,7 @@ import {
 import { RootState } from 'store'
 import { selectUrlMapZoomQuery, getDateRange } from 'routes/routes.selectors'
 import { Range } from 'types'
+import { selectFilters } from 'features/profile/filters/filters.slice'
 
 export interface MapState {
   generatorsConfig: AnyGeneratorConfig[]
@@ -72,7 +73,8 @@ export const selectHighlightedTime = (state: RootState) => state.map.highlighted
 export const selectHighlightedEvent = (state: RootState) => state.map.highlightedEvent
 
 export const selectGlobalGeneratorsConfig = createSelector(
-  [selectUrlMapZoomQuery, getDateRange],
+  // TODO sync filters and url for dates
+  [selectUrlMapZoomQuery, selectFilters],
   (zoom, { start, end }) => ({
     zoom,
     start,

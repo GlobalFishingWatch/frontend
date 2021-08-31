@@ -78,6 +78,7 @@
     "dragFilePlaceholder": "Seret dan jatuhkan shapefile atau geojson yang terkompresi di sini atau klik untuk memilihnya",
     "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
+    "emptyFilters": "No filters available",
     "emptyState": "Dataset Anda akan muncul di sini",
     "featuresNameField": "Fitur kolom nama",
     "file": "Berkas",
@@ -261,7 +262,8 @@
     "graphOptions": {
       "depth": "Depth $t(common.comingSoon)",
       "none": "None",
-      "speed": "Speed"
+      "speed": "Speed",
+      "speedDisabled": "Not available with more than 1 vessel selected"
     },
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Tutup pengaturan timebar",
@@ -284,6 +286,7 @@
     "callsign": "Callsign",
     "capacity": "Kapasitas",
     "carrier": "Pembawa",
+    "casco": "Casco",
     "donor": "Kapal donor",
     "firstTransmissionDate": "Tanggal transmisi pertama",
     "flag": "Bendera",

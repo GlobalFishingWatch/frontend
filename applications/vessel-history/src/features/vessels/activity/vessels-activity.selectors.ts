@@ -2,11 +2,11 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
 import {
   resolveDataviewDatasetResource,
-  resolveDataviewEventsResources,
+  resolveDataviewDatasetResources,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS } from 'data/config'
+import { EVENTS_COLORS, WORKSPACE_START_DATE } from 'data/config'
 import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
@@ -31,7 +31,7 @@ export const selectEventsForTracks = createSelector(
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      const eventsResources = resolveDataviewEventsResources(dataview)
+      const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
       const tracksResourceResolved =
@@ -211,8 +211,12 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
   return regionsDescription ?? ''
 }
 
+export const selectEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
+  events.flat().sort((a, b) => (a.start > b.start ? -1 : 1))
+)
+
 export const selectFilteredEvents = createSelector(
-  [selectEventsWithRenderingInfo, selectFilters],
+  [selectEvents, selectFilters],
   (events, filters) => {
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
@@ -225,31 +229,28 @@ export const selectFilteredEvents = createSelector(
     const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
     const interval = Interval.fromDateTimes(startDate, endDate)
 
-    return events
-      .flat()
-      .filter((event: RenderedEvent) => {
-        if (
-          !interval.contains(DateTime.fromMillis(event.start as number)) &&
-          !interval.contains(DateTime.fromMillis(event.end as number))
-        ) {
-          return false
-        }
-        if (event.type === 'fishing') {
-          return filters.fishingEvents
-        }
-        if (event.type === 'loitering') {
-          return filters.loiteringEvents
-        }
-        if (event.type === 'encounter') {
-          return filters.encounters
-        }
-        if (event.type === 'port_visit') {
-          return filters.portVisits
-        }
+    return events.filter((event: RenderedEvent) => {
+      if (
+        !interval.contains(DateTime.fromMillis(event.start as number)) &&
+        !interval.contains(DateTime.fromMillis(event.end as number))
+      ) {
+        return false
+      }
+      if (event.type === 'fishing') {
+        return filters.fishingEvents
+      }
+      if (event.type === 'loitering') {
+        return filters.loiteringEvents
+      }
+      if (event.type === 'encounter') {
+        return filters.encounters
+      }
+      if (event.type === 'port_visit') {
+        return filters.portVisits
+      }
 
-        return true
-      })
-      .sort((a, b) => (a.start > b.start ? -1 : 1))
+      return true
+    })
   }
 )
 

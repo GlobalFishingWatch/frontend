@@ -1,6 +1,7 @@
 :root {
   --header-height: calc(70px + 4rem);
 }
+
 .mapControls {
   display: flex;
   flex-direction: column;
@@ -24,7 +25,6 @@
 
 .loadingBtn {
   transform: scale(0);
-  height: 0;
   pointer-events: none;
   transition: transform 0.3s 0.5s, border 0.3s 0s;
   margin-bottom: 0;
@@ -34,7 +34,6 @@
 .visible {
   transform: scale(1);
   border: var(--border-white);
-  height: var(--size-M);
 }
 
 .layersModalPortal .layersModalOverlay {

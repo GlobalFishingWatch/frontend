@@ -56,6 +56,7 @@ export const getVesselDataviewInstance = (
     id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
+      type: Generators.Type.Track,
       color: DEFAULT_TRACK_COLOR,
       pointsToSegmentsSwitchLevel: null,
       event: {

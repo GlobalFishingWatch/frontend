@@ -82,6 +82,7 @@ const MapControls = ({
               {/* <Rulers /> */}
               <IconButton
                 type="map-tool"
+                size="medium"
                 tooltip={t('map.loading', 'Map loading')}
                 loading={mapLoading}
                 className={cx(styles.loadingBtn, {

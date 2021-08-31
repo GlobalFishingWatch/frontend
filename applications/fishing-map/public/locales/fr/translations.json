@@ -78,6 +78,7 @@
     "dragFilePlaceholder": "Glissez et déposez un fichier shapefile ou un geojson ici ou cliquez pour le sélectionner",
     "dragFilePlaceholderCSV": "Glissez et déposez un fichier CSV ici ou cliquez pour le sélectionner",
     "edit": "Modifier le jeu de données",
+    "emptyFilters": "No filters available",
     "emptyState": "Vos jeux de données apparaîtront ici",
     "featuresNameField": "Champ de nom pour chaque zone",
     "file": "Fichier",
@@ -261,7 +262,8 @@
     "graphOptions": {
       "depth": "Profondeur",
       "none": "Aucun",
-      "speed": "Vitesse"
+      "speed": "Vitesse",
+      "speedDisabled": "Not available with more than 1 vessel selected"
     },
     "presenceDisabled": "Sélectionnez au moins un calque de présence",
     "settings_close": "Fermer les paramètres de la barre de temps",
@@ -284,6 +286,7 @@
     "callsign": "Indicatif",
     "capacity": "Capacité",
     "carrier": "Transporteur",
+    "casco": "Casco",
     "donor": "Navire donneur",
     "firstTransmissionDate": "Première date de transmission",
     "flag": "Pavillon",

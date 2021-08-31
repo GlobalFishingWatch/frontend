@@ -1,5 +1,12 @@
 # @globalfishingwatch/ui-components
 
+## 11.0.0
+
+### Patch Changes
+
+- 25440a9f: fix disabled select option
+  - @globalfishingwatch/react-hooks@14.0.0
+
 ## 10.2.0
 
 ### Minor Changes

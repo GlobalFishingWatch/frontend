@@ -7,6 +7,7 @@ import { Point, Segment } from '@globalfishingwatch/data-transforms'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
+import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
@@ -23,10 +24,12 @@ import {
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveVesselsDataviews,
+  selectDataviewsResourceQueries,
+} from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
 import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
@@ -117,6 +120,8 @@ const Profile: React.FC = (props): React.ReactElement => {
         latitude: latitude as number,
         longitude: longitude as number,
         zoom: DEFAULT_VESSEL_MAP_ZOOM,
+        pitch: 0,
+        bearing: 0
       })
     } else {
       alert('The vessel has no activity in your selected timerange')
@@ -181,6 +186,11 @@ const Profile: React.FC = (props): React.ReactElement => {
     return q ? { type: HOME, replaceQuery: true, query: { q } } : { type: HOME }
   }, [q])
 
+  const shipName = useMemo(() => {
+    const gfwVesselName = vessel?.history.shipname.byDate.find(name => name.source === VesselAPISource.GFW)
+    return gfwVesselName ? gfwVesselName.value : vessel?.shipname
+  }, [vessel])
+
   return (
     <Fragment>
       <header className={styles.header}>
@@ -194,7 +204,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         </Link>
         {vessel && (
           <h1>
-            {vessel.shipname}
+            {shipName ?? t('common.unknownName', 'Unknown name')}
             {vessel.history.shipname.byDate.length > 1 && (
               <p>
                 {t('vessel.plusPreviousValuesByField', defaultPreviousNames, {
