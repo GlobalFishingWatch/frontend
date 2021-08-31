@@ -44,8 +44,8 @@ const Map = (): ReactElement => {
     let flying = false
     let centetingMap: ReturnType<typeof setTimeout>
     mapRef?.current?.getMap().on('moveend', (e: any) => {
-      if(flying) {
-        if (centetingMap){
+      if (flying) {
+        if (centetingMap) {
           clearTimeout(centetingMap)
         }
         const currentPitch = mapRef?.current?.getMap().getPitch()
@@ -57,30 +57,32 @@ const Map = (): ReactElement => {
             zoom: mapRef.current.getMap().getZoom(),
 
             pitch: currentPitch,
-            bearing: currentBearing
+            bearing: currentBearing,
           })
           setTimeout(() => {
             mapRef?.current?.getMap().easeTo({
               center: [
                 mapRef.current?.getMap().getCenter().lng,
-                mapRef.current?.getMap().getCenter().lat
+                mapRef.current?.getMap().getCenter().lat,
               ],
               zoom: mapRef.current.getMap().getZoom() + 1,
-              duration: 2000 + (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500),
+              duration:
+                2000 +
+                (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500),
               pitch: 0,
               bearing: 0,
             })
           }, 50)
         }, 50)
-        mapRef?.current?.getMap().fire('flyend');
+        mapRef?.current?.getMap().fire('flyend')
       }
-    });
-    mapRef?.current?.getMap().on('flystart', function(){
+    })
+    mapRef?.current?.getMap().on('flystart', function () {
       flying = true
-    });
-    mapRef?.current?.getMap().on('flyend', function(){
+    })
+    mapRef?.current?.getMap().on('flyend', function () {
       flying = false
-    });
+    })
   }
 
   const onEventChange = useCallback(
@@ -88,36 +90,38 @@ const Map = (): ReactElement => {
       const currentZoom = mapRef.current.getMap().getZoom() - 1
       if (ENABLE_FLYTO) {
         mapRef.current.getMap().flyTo({
-          center: [
-            nextEvent.position.lon,
-            nextEvent.position.lat,
-          ],
-          pitch: (ENABLE_FLYTO === FLY_EFFECTS.fly ? pitch : 0),
-          bearing: (ENABLE_FLYTO === FLY_EFFECTS.fly ? bearing : 0),
+          center: [nextEvent.position.lon, nextEvent.position.lat],
+          pitch: ENABLE_FLYTO === FLY_EFFECTS.fly ? pitch : 0,
+          bearing: ENABLE_FLYTO === FLY_EFFECTS.fly ? bearing : 0,
           zoom: currentZoom,
           padding: {
-            bottom: padding
+            bottom: padding,
           },
           speed: currentZoom / 20, // make the flying slow
-          curve: (ENABLE_FLYTO === FLY_EFFECTS.fly ? 1.5 : 2.5), // change the speed at which it zooms out
-          essential: true // this animation is considered essential with respect to prefers-reduced-motion
+          curve: ENABLE_FLYTO === FLY_EFFECTS.fly ? 1.5 : 2.5, // change the speed at which it zooms out
+          essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         })
         mapRef?.current?.getMap().fire('flystart')
-        dispatchQueryParams({'latitude': nextEvent.position.lat, 'longitude': nextEvent.position.lon})
+        dispatchQueryParams({ latitude: nextEvent.position.lat, longitude: nextEvent.position.lon })
       } else {
         //with this change we will center the event in the available map on the screen
-        const coordinates = mapRef.current.getMap().project([nextEvent.position.lon, nextEvent.position.lat]);
-        const offsetCoordinates = mapRef.current.getMap().unproject([coordinates.x, coordinates.y + (padding / 2)]);
+        const coordinates = mapRef.current
+          .getMap()
+          .project([nextEvent.position.lon, nextEvent.position.lat])
+        const offsetCoordinates = mapRef.current
+          .getMap()
+          .unproject([coordinates.x, coordinates.y + padding / 2])
         setMapCoordinates({
           latitude: offsetCoordinates.lat,
           longitude: offsetCoordinates.lng,
           zoom: currentZoom,
           pitch: 0,
-          bearing: 0
+          bearing: 0,
         })
       }
-    }, [dispatchQueryParams, setMapCoordinates])
-  
+    },
+    [dispatchQueryParams, setMapCoordinates]
+  )
 
   return (
     <div className={styles.container}>
