@@ -899,8 +899,8 @@
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "Zebrax",
-    "description": "Zebra X Presence",
+    "name": "Coastal Fisheries Indonesia",
+    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat ZebraX yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
