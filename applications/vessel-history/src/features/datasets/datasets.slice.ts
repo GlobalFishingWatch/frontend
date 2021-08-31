@@ -16,7 +16,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
     return dataset
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${id} - ${e.message}`,

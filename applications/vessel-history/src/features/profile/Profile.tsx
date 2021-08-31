@@ -121,7 +121,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         longitude: longitude as number,
         zoom: DEFAULT_VESSEL_MAP_ZOOM,
         pitch: 0,
-        bearing: 0
+        bearing: 0,
       })
     } else {
       alert('The vessel has no activity in your selected timerange')
@@ -187,7 +187,9 @@ const Profile: React.FC = (props): React.ReactElement => {
   }, [q])
 
   const shipName = useMemo(() => {
-    const gfwVesselName = vessel?.history.shipname.byDate.find(name => name.source === VesselAPISource.GFW)
+    const gfwVesselName = vessel?.history.shipname.byDate.find(
+      (name) => name.source === VesselAPISource.GFW
+    )
     return gfwVesselName ? gfwVesselName.value : vessel?.shipname
   }, [vessel])
 
