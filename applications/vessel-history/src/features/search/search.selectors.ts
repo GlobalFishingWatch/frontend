@@ -33,6 +33,5 @@ export const selectSearchTotalResults = createSelector([selectSearchMetadata], (
 })
 
 export const selectSearching = createSelector([selectSearchMetadata], (metadata) => {
-  console.log('selectSearching', metadata)
   return (metadata && metadata.searching) || false
 })

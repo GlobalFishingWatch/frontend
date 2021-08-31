@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
+import cx from 'classnames'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button, Choice } from '@globalfishingwatch/ui-components'
@@ -116,7 +117,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </header>
       )}
       <div className={styles.search}>
-        <div className={styles.title}>
+        <div className={cx(styles.title, styles.content)}>
           <h2>{t('search.title', 'Search')}</h2>
           <Choice
             options={searchOptions}
@@ -125,12 +126,14 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             size="small"
           />
         </div>
-        {searchType === 'advanced' ? <AdvancedSearch /> : <SimpleSearch />}
+        <div className={styles.content}>
+          {searchType === 'advanced' ? <AdvancedSearch /> : <SimpleSearch />}
+        </div>
         {!query && (
           <div>
-            <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
+            <h2 className={styles.offlineTitle}>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
             {offlineVessels.length > 0 ? (
-              <div className={styles.offlineVessels}>
+              <div className={styles.content}>
                 {offlineVessels.map((vessel, index) => (
                   <VesselListItem
                     key={index}
@@ -159,7 +162,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                 </SearchPlaceholder>
               )}
               {(!searching || offset > 0) && vessels.length > 0 && (
-                <div className={styles.offlineVessels}>
+                <div className={styles.content}>
                   {vessels.map((vessel: VesselSearch, index) => (
                     <VesselListItem key={index} vessel={vessel} />
                   ))}

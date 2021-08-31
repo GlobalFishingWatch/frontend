@@ -82,7 +82,7 @@ const getSearchNeedsFetch = (
   offset: number,
   metadata: CachedVesselSearch | null
 ): boolean => {
-  if (query.length <= SEARCH_MIN_CHARACTERS) {
+  if (query.length < SEARCH_MIN_CHARACTERS) {
     return false
   }
   if (!metadata) {
@@ -122,6 +122,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       const { search } = getState() as RootState
       const metadata: CachedVesselSearch = search.queries[serializedQuery]
       const searchNeedsFetch = getSearchNeedsFetch(serializedQuery, offset, metadata)
+      debugger
       return searchNeedsFetch
     },
   }

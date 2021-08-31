@@ -27,8 +27,11 @@
   font-size: 1.4rem;
   letter-spacing: 0;
   line-height: 2rem;
-  margin: 2rem 1.5rem 0;
   text-transform: uppercase;
+}
+
+.offlineTitle {
+  margin: 2rem 1.5rem 0;
 }
 
 .offlineAccessEmptyState {
@@ -37,7 +40,7 @@
   margin: 0 1.5rem;
 }
 
-.offlineVessels {
+.content {
   padding: 1.5rem;
 }
 
@@ -68,4 +71,11 @@
 
 .loadMoreBtn {
   width: 100%;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: var(--border);
 }

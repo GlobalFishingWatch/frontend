@@ -17,6 +17,7 @@ import {
 import { getFlags } from 'utils/flags'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { fetchVesselSearchThunk } from './search.thunk'
+import styles from './AdvancedSearch.module.css'
 
 const AdvancedSearch: React.FC = () => {
   const dispatch = useDispatch()
@@ -76,72 +77,87 @@ const AdvancedSearch: React.FC = () => {
 
   return (
     <div>
-      <InputText
-        onChange={onMainQueryChange}
-        value={query}
-        label="name"
-        autoFocus
-        // disabled={!basicSearchAllowed}
-        // className={styles.input}
-        // loading={
-        //   searchStatus === AsyncReducerStatus.Loading || searchStatus === AsyncReducerStatus.Aborted
-        // }
-        // placeholder={t('search.placeholder', 'Type to search vessels')}
-      />
-      <InputText onChange={setQueryParam} value={MMSI} label="MMSI" placeholder="..." />
-      <InputText onChange={setQueryParam} value={IMO} label="IMO" placeholder="..." />
-      <InputText onChange={setQueryParam} value={callsign} label="callsign" placeholder="..." />
-      <MultiSelect
-        label="Flag States"
-        // placeholder={getPlaceholderBySelections(flags)}
-        options={allFlagOptions}
-        selectedOptions={flagOptions}
-        // className={styles.row}
-        onSelect={(filter) => {
-          onFlagChange([...(flagOptions || []), filter])
-        }}
-        onRemove={(_, rest) => {
-          onFlagChange(rest)
-        }}
-        onCleanClick={() => {
-          onFlagChange(null)
-        }}
-      />
-      <InputDate
-        value={lastTransmissionDate}
-        max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
-        min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-        // label={t('common.active_after', 'Active after')}
-        label="Active after"
-        onChange={(e) => {
-          console.log(e.target.id, e.target.value)
-          if (e.target.value !== lastTransmissionDate) {
-            setQueryParam(e, 'lastTransmissionDate')
-          }
-        }}
-        onRemove={(e) => {
-          if (lastTransmissionDate !== '') {
-            setQueryParam(e, 'lastTransmissionDate', '')
-          }
-        }}
-      />
-      <InputDate
-        value={firstTransmissionDate}
-        max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
-        min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-        label="Active before"
-        onChange={(e) => {
-          console.log(e.target.id, e.target.value)
-          if (e.target.value !== firstTransmissionDate) {
-            setQueryParam(e, 'firstTransmissionDate')
-          }
-        }}
-        onRemove={(e) => {
-          if (firstTransmissionDate !== '') {
-            setQueryParam(e, 'firstTransmissionDate', '')
-          }
-        }}
-      />
+      <div className={styles.row}>
+        <InputText
+          onChange={onMainQueryChange}
+          value={query}
+          label="name"
+          autoFocus
+          className={styles.half}
+        />
+        <InputText
+          onChange={setQueryParam}
+          className={styles.thirdOfHalf}
+          value={MMSI}
+          label="MMSI"
+        />
+        <InputText
+          onChange={setQueryParam}
+          className={styles.thirdOfHalf}
+          value={IMO}
+          label="IMO"
+        />
+        <InputText
+          onChange={setQueryParam}
+          className={styles.thirdOfHalf}
+          value={callsign}
+          label="callsign"
+        />
+      </div>
+      <div className={styles.row}>
+        <MultiSelect
+          label="Flag States"
+          className={styles.full}
+          options={allFlagOptions}
+          selectedOptions={flagOptions}
+          onSelect={(filter) => {
+            onFlagChange([...(flagOptions || []), filter])
+          }}
+          onRemove={(_, rest) => {
+            onFlagChange(rest)
+          }}
+          onCleanClick={() => {
+            onFlagChange(null)
+          }}
+        />
+      </div>
+      <div className={styles.row}>
+        <InputDate
+          value={lastTransmissionDate}
+          className={styles.half}
+          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
+          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
+          // label={t('common.active_after', 'Active after')}
+          label="Active after"
+          onChange={(e) => {
+            if (e.target.value !== lastTransmissionDate) {
+              setQueryParam(e, 'lastTransmissionDate')
+            }
+          }}
+          onRemove={(e) => {
+            if (lastTransmissionDate !== '') {
+              setQueryParam(e, 'lastTransmissionDate', '')
+            }
+          }}
+        />
+        <InputDate
+          value={firstTransmissionDate}
+          className={styles.half}
+          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
+          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
+          label="Active before"
+          onChange={(e) => {
+            if (e.target.value !== firstTransmissionDate) {
+              setQueryParam(e, 'firstTransmissionDate')
+            }
+          }}
+          onRemove={(e) => {
+            if (firstTransmissionDate !== '') {
+              setQueryParam(e, 'firstTransmissionDate', '')
+            }
+          }}
+        />
+      </div>
     </div>
   )
 }
