@@ -50,10 +50,10 @@ export const selectDefaultBasemapGenerator = createSelector(
 export const selectDataviewInstancesMerged = createSelector(
   [selectVesselDataview, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (vesselDataview, dataviews, urlDataviewInstances) => {
-    return mergeWorkspaceUrlDataviewInstances(
-      [...dataviews, vesselDataview ?? []] as DataviewInstance<any>[],
-      urlDataviewInstances
-    )
+    const dataviewsToMerge: DataviewInstance<any>[] = vesselDataview
+      ? [...dataviews, vesselDataview]
+      : dataviews
+    return mergeWorkspaceUrlDataviewInstances(dataviewsToMerge, urlDataviewInstances)
   }
 )
 
