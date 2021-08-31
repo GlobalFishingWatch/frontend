@@ -126,7 +126,6 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       const { search } = getState() as RootState
       const metadata: CachedVesselSearch = search.queries[serializedQuery]
       const searchNeedsFetch = getSearchNeedsFetch(serializedQuery, offset, metadata)
-      debugger
       return searchNeedsFetch
     },
   }
