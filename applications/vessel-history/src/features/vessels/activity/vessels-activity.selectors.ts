@@ -6,7 +6,7 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS, WORKSPACE_START_DATE } from 'data/config'
+import { EVENTS_COLORS } from 'data/config'
 import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
