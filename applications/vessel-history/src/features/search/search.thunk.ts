@@ -25,6 +25,10 @@ export const getSerializedQuery = (query: string, advancedSearch?: Record<string
       value: advancedSearch.imo,
     },
     {
+      key: 'callsign',
+      value: advancedSearch.callsign,
+    },
+    {
       key: 'flag',
       value: advancedSearch.flags.map((f: string) => ({ id: f })),
     },
