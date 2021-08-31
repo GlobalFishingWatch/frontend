@@ -97,9 +97,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     dispatchQueryParams({ searchType: option.id })
   }
 
+  const showHeader = searchType === 'advanced' || !query
+
   return (
     <div className={styles.homeContainer}>
-      {!query && (
+      {showHeader && (
         <header>
           <Logo className={styles.logo}></Logo>
           <IconButton
