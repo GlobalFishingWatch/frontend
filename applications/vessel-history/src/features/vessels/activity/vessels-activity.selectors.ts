@@ -165,7 +165,7 @@ export const selectEventsWithRenderingInfo = createSelector(
         }
       })
     })
-    return eventsWithRenderingInfo
+    return eventsWithRenderingInfo.flat()
   }
 )
 
@@ -212,7 +212,7 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
 }
 
 export const selectEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
-  events.flat().sort((a, b) => (a.start > b.start ? -1 : 1))
+  events.sort((a, b) => (a.start > b.start ? -1 : 1))
 )
 
 export const selectFilteredEvents = createSelector(

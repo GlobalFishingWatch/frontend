@@ -1,15 +1,15 @@
 import { anyRegion } from 'features/regions/regions.slice'
 import { Settings } from 'features/settings/settings.slice'
 import { RenderedEvent } from './vessels-activity.selectors'
-import { selectActivityHighlightEvents } from './vessels-highlight.selectors'
+import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 import { fishingEvents, emptySettings } from './__mocks__/highlight.mock'
 import {
   loiteringAndEncounterEvents,
   portVisitEvents,
 } from './__mocks__/selectEventsWithRenderingInfo.mock'
 
-describe('selectActivityHighlightEvents', () => {
-  const cases: [string, RenderedEvent[][], Partial<Settings>, number][] = [
+describe('filterActivityHighlightEvents', () => {
+  const cases: [string, RenderedEvent[], Settings, number][] = [
     [
       'fishing events taking place in any eez',
       [...loiteringAndEncounterEvents, ...portVisitEvents, ...fishingEvents] as any,
@@ -34,7 +34,7 @@ describe('selectActivityHighlightEvents', () => {
           distanceShoreLonger: null,
           duration: null,
         },
-      },
+      } as any,
       9,
     ],
     [
@@ -236,12 +236,12 @@ describe('selectActivityHighlightEvents', () => {
 
   test.each(cases)(
     'highlights %p',
-    (testCaseDescription, selectEventsWithRenderingInfo, selectSettings, expectedCount) => {
-      const result = selectActivityHighlightEvents.resultFunc(
-        selectEventsWithRenderingInfo,
-        selectSettings
-      )
+    (_, selectEventsWithRenderingInfo, selectSettings, expectedCount) => {
+      const result = filterActivityHighlightEvents(selectEventsWithRenderingInfo, selectSettings)
+      const startTimes = result.map((event) => event.start)
+
       expect(result.length).toEqual(expectedCount)
+      expect(startTimes).toEqual(startTimes.sort((a, b) => (a > b ? -1 : 1)))
       expect(result).toMatchSnapshot()
     }
   )

@@ -1,19 +1,14 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import Link from 'redux-first-router-link'
 import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectActivityHighlightEvents,
-  selectAnyHighlightsSettingDefined,
-} from 'features/vessels/activity/vessels-highlight.selectors'
 import { SETTINGS } from 'routes/routes'
-import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import { useActivityHighlightsConnect } from 'features/vessels/activity/vessel-highlight.hooks'
 import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
@@ -21,9 +16,11 @@ import styles from './activity/Activity.module.css'
 const Highlights: React.FC = (): React.ReactElement => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const eventsLoading = useSelector(selectResourcesLoading)
-  const events = useSelector(selectActivityHighlightEvents)
-  const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
+  const {
+    highlightedEvents: events,
+    highlightsSettingDefined: anyHighlightsSettingDefined,
+    loading,
+  } = useActivityHighlightsConnect()
 
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
@@ -39,7 +36,7 @@ const Highlights: React.FC = (): React.ReactElement => {
       className={cx(
         styles.activityContainer,
         styles.highlightsContainer,
-        !anyHighlightsSettingDefined || events.length === 0 ? styles.noData : {}
+        !anyHighlightsSettingDefined || (events && events.length === 0) ? styles.noData : {}
       )}
     >
       <div className={styles.divider}></div>
@@ -50,7 +47,8 @@ const Highlights: React.FC = (): React.ReactElement => {
         <h2 className={styles.highlights}>
           {t('events.activityHighlights', 'Activity Highlights')}
           {anyHighlightsSettingDefined &&
-            !eventsLoading &&
+            !loading &&
+            events &&
             events.length > 0 &&
             ` (${events.length})`}
         </h2>
@@ -70,8 +68,8 @@ const Highlights: React.FC = (): React.ReactElement => {
       )}
       {anyHighlightsSettingDefined && (
         <Fragment>
-          {eventsLoading && <Spinner className={styles.spinnerMed} />}
-          {!eventsLoading && (
+          {(loading || !events) && <Spinner className={styles.spinnerMed} />}
+          {!loading && (
             <Fragment>
               <Modal
                 title={selectedEvent?.description ?? ''}
