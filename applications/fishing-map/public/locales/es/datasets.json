@@ -899,8 +899,8 @@
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "Zebrax",
-    "description": "Zebra X Presence",
+    "name": "Pesquerías costeras de Indonesia",
+    "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por Rare, Aruna y AP2HI. Los datos se recopilan mediante dispositivos de ZebraX que rastrean la ubicación y la velocidad. La información mostrada representa la presencia de la embarcación.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
