@@ -137,8 +137,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-              count: Math.round(duration.minutes as number),
-            })
+                count: Math.round(duration.minutes as number),
+              })
             : '',
         ].join(' ')
 
@@ -206,21 +206,12 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
   return regionsDescription ?? ''
 }
 
-export const selectEvents = createSelector(
-  [selectEventsWithRenderingInfo],
-  (events) => events.flat().sort((a, b) => (a.start > b.start ? -1 : 1))
-)
-
-export const selectMapEvents = createSelector(
-  [selectEvents, selectFilters],
-  (events, filters) => {
-    const startDate = DateTime.fromISO(filters.start, { zone: 'utc' })
-    return events.filter(event => event.start >= startDate.toMillis())
-  }
+export const selectEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
+  events.flat().sort((a, b) => (a.start > b.start ? -1 : 1))
 )
 
 export const selectFilteredEvents = createSelector(
-  [selectMapEvents, selectFilters],
+  [selectEvents, selectFilters],
   (events, filters) => {
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
@@ -233,30 +224,28 @@ export const selectFilteredEvents = createSelector(
     const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
     const interval = Interval.fromDateTimes(startDate, endDate)
 
-    return events
-      .filter((event: RenderedEvent) => {
-        if (
-          !interval.contains(DateTime.fromMillis(event.start as number)) &&
-          !interval.contains(DateTime.fromMillis(event.end as number))
-        ) {
-          return false
-        }
-        if (event.type === 'fishing') {
-          return filters.fishingEvents
-        }
-        if (event.type === 'loitering') {
-          return filters.loiteringEvents
-        }
-        if (event.type === 'encounter') {
-          return filters.encounters
-        }
-        if (event.type === 'port_visit') {
-          return filters.portVisits
-        }
+    return events.filter((event: RenderedEvent) => {
+      if (
+        !interval.contains(DateTime.fromMillis(event.start as number)) &&
+        !interval.contains(DateTime.fromMillis(event.end as number))
+      ) {
+        return false
+      }
+      if (event.type === 'fishing') {
+        return filters.fishingEvents
+      }
+      if (event.type === 'loitering') {
+        return filters.loiteringEvents
+      }
+      if (event.type === 'encounter') {
+        return filters.encounters
+      }
+      if (event.type === 'port_visit') {
+        return filters.portVisits
+      }
 
-        return true
-      })
-
+      return true
+    })
   }
 )
 

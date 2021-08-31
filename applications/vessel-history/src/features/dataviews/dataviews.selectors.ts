@@ -57,12 +57,42 @@ export const selectDataviewInstancesMerged = createSelector(
   }
 )
 
+export const selectDataviewInstancesResolved = createSelector(
+  [
+    selectDataviewsStatus,
+    selectAllDataviews,
+    selectDatasets,
+    selectDatasetsStatus,
+    selectDataviewInstancesMerged,
+  ],
+  (
+    dataviewsStatus,
+    dataviews,
+    datasets,
+    datasetsStatus,
+    dataviewInstances
+  ): UrlDataviewInstance[] => {
+    if (
+      dataviewsStatus !== AsyncReducerStatus.Finished ||
+      datasetsStatus !== AsyncReducerStatus.Finished
+    ) {
+      return []
+    }
+    const dataviewInstancesResolved = resolveDataviews(
+      dataviewInstances as UrlDataviewInstance[],
+      dataviews,
+      datasets
+    )
+    return dataviewInstancesResolved
+  }
+)
+
 /**
  * Calls getDataviewsForResourceQuerying to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getDataviewsForResourceQuerying's callback
  */
 export const selectDataviewsForResourceQuerying = createSelector(
-  [selectDataviewInstancesMerged],
+  [selectDataviewInstancesResolved],
   (dataviewInstances) => {
     const thinningConfig = THINNING_LEVELS[APP_THINNING]
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
@@ -80,44 +110,15 @@ export const selectDataviewsForResourceQuerying = createSelector(
   }
 )
 
-export const selectDataviewInstancesResolved = createSelector(
-  [
-    selectDataviewsStatus,
-    selectAllDataviews,
-    selectDatasets,
-    selectDatasetsStatus,
-    selectDataviewsForResourceQuerying,
-  ],
-  (
-    dataviewsStatus,
-    dataviews,
-    datasets,
-    datasetsStatus,
-    dataviewInstances
-  ): UrlDataviewInstance[] => {
-    if (
-      dataviewsStatus !== AsyncReducerStatus.Finished ||
-      datasetsStatus !== AsyncReducerStatus.Finished
-    )
-      return []
-    const dataviewInstancesResolved = resolveDataviews(
-      dataviewInstances as UrlDataviewInstance[],
-      dataviews,
-      datasets
-    )
-    return dataviewInstancesResolved
-  }
-)
-
 export const selectDataviewsResourceQueries = createSelector(
-  [selectDataviewInstancesResolved],
+  [selectDataviewsForResourceQuerying],
   (dataviews) => {
     return resolveResourcesFromDatasetConfigs(dataviews)
   }
 )
 
 export const selectDataviewInstancesByType = (type: Generators.Type) => {
-  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+  return createSelector([selectDataviewsForResourceQuerying], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }

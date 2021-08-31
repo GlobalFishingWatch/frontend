@@ -6,7 +6,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import {
-  selectDataviewInstancesResolved,
+  selectDataviewsForResourceQuerying,
   selectDefaultBasemapGenerator,
   selectDefaultOfflineDataviewsGenerators,
 } from 'features/dataviews/dataviews.selectors'
@@ -56,7 +56,12 @@ const getGeneratorsConfig = ({
 }
 
 const selectMapGeneratorsConfig = createSelector(
-  [selectDataviewInstancesResolved, selectResources, selectHighlightedTime, selectHighlightedEvent],
+  [
+    selectDataviewsForResourceQuerying,
+    selectResources,
+    selectHighlightedTime,
+    selectHighlightedEvent,
+  ],
   (dataviews = [], resources, highlightedTime, highlightedEvent) => {
     return getGeneratorsConfig({
       dataviews,
