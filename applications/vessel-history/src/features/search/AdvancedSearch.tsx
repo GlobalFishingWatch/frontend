@@ -89,18 +89,21 @@ const AdvancedSearch: React.FC = () => {
         />
         <InputText
           onChange={setQueryParam}
+          id="MMSI"
           className={styles.thirdOfHalf}
           value={MMSI}
           label={t('search.MMSI', 'MMSI')}
         />
         <InputText
           onChange={setQueryParam}
+          id="IMO"
           className={styles.thirdOfHalf}
           value={IMO}
           label={t('search.IMO', 'IMO')}
         />
         <InputText
           onChange={setQueryParam}
+          id="callsign"
           className={styles.thirdOfHalf}
           value={callsign}
           label={t('search.callsign', 'Callsign')}
