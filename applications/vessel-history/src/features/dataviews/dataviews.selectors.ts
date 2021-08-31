@@ -118,7 +118,7 @@ export const selectDataviewsResourceQueries = createSelector(
 )
 
 export const selectDataviewInstancesByType = (type: Generators.Type) => {
-  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+  return createSelector([selectDataviewsForResourceQuerying], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }
