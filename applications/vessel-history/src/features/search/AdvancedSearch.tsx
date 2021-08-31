@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
 import MultiSelect, { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
@@ -20,6 +21,7 @@ import { fetchVesselSearchThunk } from './search.thunk'
 import styles from './AdvancedSearch.module.css'
 
 const AdvancedSearch: React.FC = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const query = useSelector(selectUrlQuery)
   const MMSI = useSelector(selectAdvancedSearchMMSI)
@@ -81,7 +83,7 @@ const AdvancedSearch: React.FC = () => {
         <InputText
           onChange={onMainQueryChange}
           value={query}
-          label="name"
+          label={t('search.shipname', 'Name')}
           autoFocus
           className={styles.half}
         />
@@ -89,24 +91,24 @@ const AdvancedSearch: React.FC = () => {
           onChange={setQueryParam}
           className={styles.thirdOfHalf}
           value={MMSI}
-          label="MMSI"
+          label={t('search.MMSI', 'MMSI')}
         />
         <InputText
           onChange={setQueryParam}
           className={styles.thirdOfHalf}
           value={IMO}
-          label="IMO"
+          label={t('search.IMO', 'IMO')}
         />
         <InputText
           onChange={setQueryParam}
           className={styles.thirdOfHalf}
           value={callsign}
-          label="callsign"
+          label={t('search.callsign', 'Callsign')}
         />
       </div>
       <div className={styles.row}>
         <MultiSelect
-          label="Flag States"
+          label={t('search.flagState', 'Flag states')}
           className={styles.full}
           options={allFlagOptions}
           selectedOptions={flagOptions}
@@ -127,8 +129,7 @@ const AdvancedSearch: React.FC = () => {
           className={styles.half}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-          // label={t('common.active_after', 'Active after')}
-          label="Active after"
+          label={t('search.activeAfter', 'Active after')}
           onChange={(e) => {
             if (e.target.value !== lastTransmissionDate) {
               setQueryParam(e, 'lastTransmissionDate')
@@ -145,7 +146,7 @@ const AdvancedSearch: React.FC = () => {
           className={styles.half}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-          label="Active before"
+          label={t('search.activeBefore', 'Active before')}
           onChange={(e) => {
             if (e.target.value !== firstTransmissionDate) {
               setQueryParam(e, 'firstTransmissionDate')

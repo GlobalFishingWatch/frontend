@@ -2,6 +2,7 @@ import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import { useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectUrlQuery } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -9,6 +10,7 @@ import styles from './SimpleSearch.module.css'
 import { fetchVesselSearchThunk } from './search.thunk'
 
 const SimpleSearch: React.FC = () => {
+  const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useDispatch()
   const query = useSelector(selectUrlQuery)
@@ -36,7 +38,7 @@ const SimpleSearch: React.FC = () => {
         autoFocus
         type="search"
         role="search"
-        placeholder="Search vessels by name, MMSI, IMO"
+        placeholder={t('search.placeholder')}
         aria-label="Search vessels"
         className={styles.input}
         onChange={onInputChange}
