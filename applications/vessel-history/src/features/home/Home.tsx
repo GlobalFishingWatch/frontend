@@ -1,7 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useRef, useMemo } from 'react'
-import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { DebounceInput } from 'react-debounce-input'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { VesselSearch } from '@globalfishingwatch/api-types'
@@ -14,7 +12,11 @@ import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
-import { selectAdvancedSearchFields, selectQueryParam } from 'routes/routes.selectors'
+import {
+  selectAdvancedSearchFields,
+  selectQueryParam,
+  selectSearchType,
+} from 'routes/routes.selectors'
 import { fetchVesselSearchThunk } from 'features/search/search.thunk'
 import {
   selectSearchOffset,
@@ -25,6 +27,7 @@ import {
 import { useLocationConnect } from 'routes/routes.hook'
 import { SearchType } from 'features/search/search.slice'
 import AdvancedSearch from 'features/search/AdvancedSearch'
+import SimpleSearch from 'features/search/SimpleSearch'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -41,7 +44,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const dispatch = useDispatch()
   const searching = useSelector(selectSearching)
   const query = useSelector(selectQueryParam('q'))
-  const searchType = useSelector(selectQueryParam('searchType'))
+  const searchType = useSelector(selectSearchType)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
   const vessels = useSelector(selectSearchResults)
   const offset = useSelector(selectSearchOffset)
@@ -55,15 +58,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     dispatchFetchOfflineVessels()
   }, [dispatchFetchOfflineVessels])
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({ q: e.target.value })
-  }
-
   const fetchResults = useCallback(
     (offset = 0) => {
       if (promiseRef.current) {
         promiseRef.current.abort()
       }
+      const advancedSearchParams = searchType === 'advanced' ? advancedSearch : null
       // To ensure the pending action isn't overwritted by the abort above
       // and we miss the loading intermediate state
       setTimeout(() => {
@@ -71,17 +71,13 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           fetchVesselSearchThunk({
             query,
             offset,
-            ...((searchType === 'advanced' ? { advancedSearch } : {}) as any),
+            ...((advancedSearchParams ? { advancedSearchParams } : {}) as any),
           })
         )
       }, 100)
     },
     [dispatch, query, advancedSearch, searchType]
   )
-
-  useEffect(() => {
-    fetchResults()
-  }, [fetchResults])
 
   const searchOptions = useMemo(() => {
     return [
@@ -129,33 +125,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             size="small"
           />
         </div>
-        {searchType === 'advanced' ? (
-          <AdvancedSearch />
-        ) : (
-          <div
-            className={cx(styles.searchbar, query ? styles.searching : '', styles.inputContainer)}
-          >
-            <DebounceInput
-              debounceTimeout={500}
-              autoFocus
-              type="search"
-              role="search"
-              placeholder="Search vessels by name, MMSI, IMO"
-              aria-label="Search vessels"
-              className={styles.input}
-              onChange={onInputChange}
-              value={query}
-            />
-            {!query && (
-              <IconButton
-                type="default"
-                size="medium"
-                icon="search"
-                className={styles.searchButton}
-              ></IconButton>
-            )}
-          </div>
-        )}
+        {searchType === 'advanced' ? <AdvancedSearch /> : <SimpleSearch />}
         {!query && (
           <div>
             <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>

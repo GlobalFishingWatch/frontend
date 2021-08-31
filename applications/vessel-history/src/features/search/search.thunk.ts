@@ -9,53 +9,52 @@ import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/cons
 import { RootState } from 'store'
 import { CachedVesselSearch } from './search.slice'
 
+export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
+  if (!advancedSearch) return query
+  const fields: AdvancedSearchQueryField[] = [
+    {
+      key: 'shipname',
+      value: query,
+    },
+    {
+      key: 'mmsi',
+      value: advancedSearch.mmsi,
+    },
+    {
+      key: 'imo',
+      value: advancedSearch.imo,
+    },
+    {
+      key: 'flag',
+      value: advancedSearch.flags.map((f: string) => ({ id: f })),
+    },
+    {
+      key: 'lastTransmissionDate',
+      value: advancedSearch.lastTransmissionDate,
+    },
+    {
+      key: 'firstTransmissionDate',
+      value: advancedSearch.firstTransmissionDate,
+    },
+  ]
+  return getAdvancedSearchQuery(fields)
+}
+
 const fetchData = async (
   query: string,
   offset: number,
   signal?: AbortSignal | null,
   advancedSearch?: Record<string, any>
 ) => {
+  const serializedQuery = getSerializedQuery(query, advancedSearch)
   const endpoint = advancedSearch ? 'advanced-search' : 'search'
-
-  console.log(advancedSearch)
-
-  let advancedQuery
-  if (advancedSearch) {
-    const fields: AdvancedSearchQueryField[] = [
-      {
-        key: 'shipname',
-        value: query,
-      },
-      {
-        key: 'mmsi',
-        value: advancedSearch.mmsi,
-      },
-      {
-        key: 'imo',
-        value: advancedSearch.imo,
-      },
-      {
-        key: 'flag',
-        value: advancedSearch.flags.map((f: string) => ({ id: f })),
-      },
-      {
-        key: 'lastTransmissionDate',
-        value: advancedSearch.lastTransmissionDate,
-      },
-      {
-        key: 'firstTransmissionDate',
-        value: advancedSearch.firstTransmissionDate,
-      },
-    ]
-    advancedQuery = getAdvancedSearchQuery(fields)
-  }
 
   const urlQuery = stringify({
     datasets: BASE_DATASET,
     limit: RESULTS_PER_PAGE,
     offset,
-    query: advancedQuery || query,
-    useTMT: !advancedQuery,
+    query: serializedQuery,
+    useTMT: !advancedSearch,
   })
 
   const url = `/v1/vessels/${endpoint}?${urlQuery}`
@@ -78,7 +77,7 @@ const fetchData = async (
       return null
     })
 }
-const searchNeedsFetch = (
+const getSearchNeedsFetch = (
   query: string,
   offset: number,
   metadata: CachedVesselSearch | null
@@ -105,7 +104,7 @@ const searchNeedsFetch = (
 export type VesselSearchThunk = {
   query: string
   offset: number
-  advancedSearch: Record<string, any>
+  advancedSearch?: Record<string, any>
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
@@ -118,11 +117,12 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     return searchData
   },
   {
-    condition: ({ query, offset }, { getState, extra }) => {
+    condition: ({ query, offset, advancedSearch }, { getState, extra }) => {
+      const serializedQuery = getSerializedQuery(query, advancedSearch)
       const { search } = getState() as RootState
-      const metadata: CachedVesselSearch = search.queries[query]
-
-      return searchNeedsFetch(query, offset, metadata)
+      const metadata: CachedVesselSearch = search.queries[serializedQuery]
+      const searchNeedsFetch = getSearchNeedsFetch(serializedQuery, offset, metadata)
+      return searchNeedsFetch
     },
   }
 )

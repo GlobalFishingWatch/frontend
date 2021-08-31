@@ -1,13 +1,22 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
-import { selectQueryParam } from 'routes/routes.selectors'
+import {
+  selectAdvancedSearchFields,
+  selectQueryParam,
+  selectSearchType,
+} from 'routes/routes.selectors'
+import { getSerializedQuery } from './search.thunk'
 
 export const selectVesselsFound = (state: RootState) => state.search.queries
 
 export const selectSearchMetadata = createSelector(
-  [selectVesselsFound, selectQueryParam('q')],
-  (search, query: string) => {
-    return search && search[query] !== undefined ? search[query] : null
+  [selectVesselsFound, selectQueryParam('q'), selectAdvancedSearchFields, selectSearchType],
+  (search, query: string, advancedSearch, searchType) => {
+    const serializedQuery = getSerializedQuery(
+      query,
+      searchType === 'advanced' ? advancedSearch : undefined
+    )
+    return search && search[serializedQuery] !== undefined ? search[serializedQuery] : null
   }
 )
 
@@ -24,5 +33,6 @@ export const selectSearchTotalResults = createSelector([selectSearchMetadata], (
 })
 
 export const selectSearching = createSelector([selectSearchMetadata], (metadata) => {
+  console.log('selectSearching', metadata)
   return (metadata && metadata.searching) || false
 })

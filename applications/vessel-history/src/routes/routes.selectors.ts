@@ -89,6 +89,7 @@ export const selectUrlTimeRange = createSelector(
   })
 )
 
+export const selectSearchType = selectQueryParam<string>('searchType')
 export const selectAdvancedSearchMMSI = selectQueryParam<string>('MMSI')
 export const selectAdvancedSearchIMO = selectQueryParam<string>('IMO')
 export const selectAdvancedSearchCallsign = selectQueryParam<string>('callsign')

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
@@ -43,6 +43,10 @@ const AdvancedSearch: React.FC = () => {
       })
     )
   }, [dispatch, query, advancedSearch])
+
+  useEffect(() => {
+    fetchResults()
+  }, [fetchResults])
 
   const { dispatchQueryParams } = useLocationConnect()
 
