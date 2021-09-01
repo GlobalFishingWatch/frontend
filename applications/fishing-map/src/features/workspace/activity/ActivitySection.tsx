@@ -28,12 +28,7 @@ import {
 } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import {
-  DEFAULT_FISHING_DATAVIEW_ID,
-  DEFAULT_PRESENCE_DATAVIEW_ID,
-  DEFAULT_VIIRS_DATAVIEW_ID,
-} from 'data/workspaces'
-import { getDatasetNameTranslated } from 'features/i18n/utils'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
@@ -178,42 +173,19 @@ function ActivitySection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const fishingOptions = useMemo(() => {
     const options = fishingDataviews.map((dataview) => {
-      const option = { id: dataview.id, label: dataview.name }
-      if (dataview.id === DEFAULT_FISHING_DATAVIEW_ID) {
-        option.label = t('common.apparentFishing', 'Apparent Fishing Effort')
-      } else {
-        const activeDatasets = dataview.datasets?.filter((d) =>
-          dataview.config?.datasets.includes(d.id)
-        )
-        if (activeDatasets && activeDatasets.length === 1) {
-          option.label = getDatasetNameTranslated(activeDatasets[0])
-        }
-      }
-
+      const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
       return option
     })
     return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [fishingDataviews, t])
+  }, [fishingDataviews])
 
   const presenceOptions = useMemo(() => {
     const options = presenceDataviews.map((dataview) => {
-      const option = { id: dataview.id, label: dataview.name }
-      if (dataview.id === DEFAULT_PRESENCE_DATAVIEW_ID) {
-        option.label = t('common.presence', 'Fishing presence')
-      } else if (dataview.id === DEFAULT_VIIRS_DATAVIEW_ID) {
-        option.label = t('common.viirs', 'Night light detections (VIIRS)')
-      } else {
-        const activeDatasets = dataview.datasets?.filter((d) =>
-          dataview.config?.datasets.includes(d.id)
-        )
-        if (activeDatasets && activeDatasets.length === 1) {
-          option.label = getDatasetNameTranslated(activeDatasets[0])
-        }
-      }
+      const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
       return option
     })
     return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [presenceDataviews, t])
+  }, [presenceDataviews])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>

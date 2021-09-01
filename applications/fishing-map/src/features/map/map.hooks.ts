@@ -23,7 +23,7 @@ import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { PRESENCE_POC_INTERACTION } from 'features/datasets/datasets.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
@@ -355,20 +355,7 @@ export const parseMapTooltipEvent = (
       return []
     }
 
-    let title = dataview.name || dataview.id.toString()
-    if (
-      dataview.category === DataviewCategory.Context ||
-      dataview.category === DataviewCategory.Events
-    ) {
-      const dataset = dataview.datasets?.[0]
-      if (dataset) {
-        if (dataview.config?.type === Generators.Type.UserContext) {
-          title = dataset.name
-        } else {
-          title = getDatasetLabel(dataset)
-        }
-      }
-    }
+    const title = getDatasetTitleByDataview(dataview, true)
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,
