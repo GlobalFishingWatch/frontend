@@ -11,7 +11,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
-import { selectDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getRelatedDatasetByType,
@@ -32,7 +32,7 @@ type UserContextLayersProps = {
 function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLayersProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const datasets = useSelector(selectDatasets)
+  const datasets = useSelector(selectAllDatasets)
   const { apiEventStatus } = useClickedEventConnect()
   const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()

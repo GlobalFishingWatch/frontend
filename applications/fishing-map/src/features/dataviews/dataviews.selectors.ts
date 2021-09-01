@@ -14,7 +14,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generator
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { PRESENCE_POC_ID, selectDatasets } from 'features/datasets/datasets.slice'
+import { PRESENCE_POC_ID, selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
@@ -70,7 +70,7 @@ export const selectDataviewInstancesMerged = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMerged, selectAllDataviews, selectDatasets],
+  [selectDataviewInstancesMerged, selectAllDataviews, selectAllDatasets],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
