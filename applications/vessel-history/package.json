@@ -111,6 +111,7 @@
     "eslint-plugin-react-hooks": "4.2.0",
     "husky": "^7.0.0",
     "i18next-parser": "^3.7.0",
+    "identity-obj-proxy": "^3.0.0",
     "imagemin-lint-staged": "^0.4.0",
     "lint-staged": "^11.1.0",
     "prettier": "2.3.0",
@@ -158,7 +159,14 @@
     ]
   },
   "jest": {
+    "moduleNameMapper": {
+      "workerize-loader(\\?.*)?!(.*)": "identity-obj-proxy"
+    },
     "transform": {
+      "^.+\\.bak\\.[t]sx?$": "ts-jest",
+      "workerize-loader(\\?.*)?!(.*)": "./workerize-jest.js",
+      "^.+\\.[jt]sx?$": "babel-jest",
+      "^.+\\.[jt]s?$": "babel-jest",
       "^.+\\.js$": "babel-jest"
     },
     "transformIgnorePatterns": [],
