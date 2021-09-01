@@ -159,7 +159,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^workerize-loader(\\?.*)?!(.*)/([^/]*).worker$": "$2/__mocks__/$3.worker.ts"
+      "^workerize-loader(\\?.*)?!(.*)/([^/]*)$": "$2/__mocks__/$3"
     },
     "transform": {
       "^.+\\.[t]sx?$": "ts-jest",
