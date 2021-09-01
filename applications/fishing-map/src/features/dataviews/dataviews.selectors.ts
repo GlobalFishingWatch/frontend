@@ -92,7 +92,8 @@ export const selectDataviewsForResourceQuerying = createSelector(
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
       [Generators.Type.Track]: ([info, track, ...events]) => {
         const trackWithThinning = track
-        if (thinningConfig && !track.datasetId.includes(PRESENCE_POC_ID)) {
+        const isPOCDataset = track.datasetId.includes(PRESENCE_POC_ID)
+        if (thinningConfig && !isPOCDataset) {
           const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
             id,
             value,
@@ -120,7 +121,9 @@ export const selectDataviewsForResourceQuerying = createSelector(
 
         // Clean resources when mandatory vesselId is missing
         // needed for vessels with no info datasets (zebraX)
-        const vesselId = info.query?.find((q) => q.id === 'vesselId')?.value
+        const vesselId =
+          info.query?.find((q) => q.id === 'vesselId')?.value ||
+          info.params?.find((q) => q.id === 'vesselId')?.value
         return [
           trackWithoutSpeed,
           ...events,
