@@ -75,7 +75,7 @@ exports[`<VesselListItem /> shows source API in environments others than product
         <label>
           source
         </label>
-        GFW+TMT
+        AIS+Other
       </div>
       <div>
         <label>
