@@ -4,7 +4,7 @@ import {
   DatasetTypes,
   Dataview,
   DataviewDatasetConfig,
-  DataviewDatasetConfigParams,
+  DataviewDatasetConfigParam,
   DataviewInstance,
   EndpointId,
   Resource,
@@ -174,7 +174,7 @@ export const resolveResourcesFromDatasetConfigs = (
 export const resolveDataviewDatasetResources = (
   dataview: UrlDataviewInstance,
   datasetTypeOrId: DatasetTypes | DatasetTypes[] | string,
-  queryParamFilter?: DataviewDatasetConfigParams
+  queryParamFilter?: DataviewDatasetConfigParam
 ): Resource[] => {
   const isArray = Array.isArray(datasetTypeOrId)
   const isType = isArray || Object.values(DatasetTypes).includes(datasetTypeOrId as DatasetTypes)
@@ -216,7 +216,7 @@ export const resolveDataviewDatasetResources = (
 export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
   datasetTypeOrId: DatasetTypes | DatasetTypes[] | string,
-  queryParamFilter?: DataviewDatasetConfigParams
+  queryParamFilter?: DataviewDatasetConfigParam
 ): Resource => {
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId, queryParamFilter)[0] || {}
 }

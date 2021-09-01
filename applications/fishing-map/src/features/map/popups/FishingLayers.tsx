@@ -1,6 +1,8 @@
 import React from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { DateTime, Interval } from 'luxon'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
@@ -13,9 +15,16 @@ import {
   TooltipEventFeature,
   useClickedEventConnect,
 } from 'features/map/map.hooks'
-import { PRESENCE_POC_INTERACTION } from 'features/datasets/datasets.slice'
+import {
+  PRESENCE_POC_ID,
+  PRESENCE_POC_INTERACTION,
+  PRESENCE_POC_MAX_DAYS,
+  PRESENCE_POC_PRICE_PER_DAY,
+  USE_PRESENCE_POC,
+} from 'features/datasets/datasets.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import { selectTimeRange } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
@@ -28,8 +37,35 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { fishingInteractionStatus } = useClickedEventConnect()
+  const timeRange = useSelector(selectTimeRange)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
+    if (USE_PRESENCE_POC && vessel.trackDataset?.id.includes(PRESENCE_POC_ID)) {
+      const interval = Interval.fromDateTimes(
+        DateTime.fromISO(timeRange.start).toUTC(),
+        DateTime.fromISO(timeRange.end).toUTC()
+      ).toDuration('days').days
+      if (interval > PRESENCE_POC_MAX_DAYS) {
+        alert(
+          t(
+            'errors.maxVesselPresenceTimerange',
+            'Presence vessels has a limited timerange of 180days. \n'
+          )
+        )
+        return
+      } else {
+        const cost = PRESENCE_POC_PRICE_PER_DAY * interval
+        const validationRun = window.confirm(
+          `${t('map.runningExpensiveVesselQuery', {
+            cost: cost.toFixed(2),
+            defaultValue: 'Running this query will cost around {{cost}} $. Are you sure to run it?',
+          })}`
+        )
+        if (!validationRun) {
+          return
+        }
+      }
+    }
     const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
     const eventsDatasetsId =
       vesselEventsDatasets && vesselEventsDatasets?.length
@@ -40,6 +76,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
       trackDatasetId: vessel.trackDataset?.id,
       infoDatasetId: vessel.infoDataset?.id,
       ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+      timeRange,
     })
 
     upsertDataviewInstance(vesselDataviewInstance)
