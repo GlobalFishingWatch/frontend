@@ -331,7 +331,7 @@
     "shiptype": "Ship type",
     "source": "Fuente",
     "transmission_plural": "Transmisión",
-    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
+    "unkwownVesselByGeartype": "{{gearType}} desconocida",
     "vesselType_plural": "Tipos de embarcaciones",
     "widthRange": "Rango de ancho"
   },
