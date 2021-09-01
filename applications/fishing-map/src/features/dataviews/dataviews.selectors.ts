@@ -1,5 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance, DataviewCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DataviewInstance,
+  DataviewCategory,
+  DatasetTypes,
+  Dataset,
+} from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
@@ -298,9 +303,14 @@ export const selectActiveDataviews = createSelector(
 )
 
 export const selectAllDataviewsInWorkspace = createSelector(
-  [selectAllDataviews, selectWorkspaceDataviews, selectWorkspaceDataviewInstances],
-  (dataviews = [], workspaceDataviews, workspaceDataviewInstances) => {
-    return dataviews?.filter((dataview) => {
+  [
+    selectAllDataviews,
+    selectWorkspaceDataviews,
+    selectWorkspaceDataviewInstances,
+    selectAllDatasets,
+  ],
+  (dataviews = [], workspaceDataviews, workspaceDataviewInstances, datasets) => {
+    const allWorkspaceDataviews = dataviews?.filter((dataview) => {
       if (DEFAULT_DATAVIEW_IDS.includes(dataview.id)) {
         return true
       }
@@ -311,6 +321,15 @@ export const selectAllDataviewsInWorkspace = createSelector(
         return true
       }
       return false
+    })
+    return allWorkspaceDataviews.map((dataview) => {
+      const dataviewDatasets: Dataset[] = (dataview.datasetsConfig || [])?.flatMap(
+        (datasetConfig) => {
+          const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
+          return dataset || []
+        }
+      )
+      return { ...dataview, datasets: dataviewDatasets }
     })
   }
 )
