@@ -5,6 +5,7 @@ import {
   Dataview,
   DataviewCategory,
   DataviewDatasetConfig,
+  DataviewDatasetConfigParam,
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
@@ -18,6 +19,8 @@ import {
   TEMPLATE_USER_TRACK_ID,
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { Range } from 'features/timebar/timebar.slice'
+import { PRESENCE_POC_ID, USE_PRESENCE_POC } from 'features/datasets/datasets.slice'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -31,10 +34,11 @@ type VesselInstanceDatasets = {
   trackDatasetId?: string
   infoDatasetId?: string
   eventsDatasetsId?: string[]
+  timeRange?: Range
 }
 export const getVesselDataviewInstance = (
   vessel: { id: string },
-  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
+  { trackDatasetId, infoDatasetId, eventsDatasetsId, timeRange }: VesselInstanceDatasets
 ): DataviewInstance<Generators.Type> => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (infoDatasetId) {
@@ -45,8 +49,16 @@ export const getVesselDataviewInstance = (
     })
   }
   if (trackDatasetId) {
+    let query: DataviewDatasetConfigParam[] = []
+    if (USE_PRESENCE_POC && trackDatasetId.includes(PRESENCE_POC_ID) && timeRange) {
+      query = [
+        { id: 'startDate', value: timeRange.start },
+        { id: 'endDate', value: timeRange.end },
+      ]
+    }
     datasetsConfig.push({
       datasetId: trackDatasetId,
+      query,
       params: [{ id: 'vesselId', value: vessel.id }],
       endpoint: EndpointId.Tracks,
     })
