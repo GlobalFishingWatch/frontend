@@ -160,11 +160,10 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "workerize-loader(\\?.*)?!(.*)": "identity-obj-proxy"
+      "^workerize-loader(\\?.*)?!(.*)/([^/]*).worker$": "$2/__mocks__/$3.worker.ts"
     },
     "transform": {
-      "^.+\\.bak\\.[t]sx?$": "ts-jest",
-      "workerize-loader(\\?.*)?!(.*)": "./workerize-jest.js",
+      "^.+\\.[t]sx?$": "ts-jest",
       "^.+\\.[jt]sx?$": "babel-jest",
       "^.+\\.[jt]s?$": "babel-jest",
       "^.+\\.js$": "babel-jest"
