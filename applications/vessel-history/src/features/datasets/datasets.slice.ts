@@ -61,7 +61,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
       }
       return datasets
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
