@@ -33,10 +33,10 @@ import useViewport from 'features/map/map-viewport.hooks'
 import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { resetFilters } from 'features/event-filters/filters.slice'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
-import { resetFilters } from './filters/filters.slice'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()

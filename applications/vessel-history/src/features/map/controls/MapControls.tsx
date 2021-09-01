@@ -8,6 +8,8 @@ import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
+import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
+import EventFilters from 'features/event-filters/EventFilters'
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -26,9 +28,13 @@ const MapControls = ({
   }, [])
 
   const [extendedControls] = useState(true)
+  const [isModalOpen, setIsOpen] = useState(false)
   const [showLayersPopup, setShowLayersPopup] = useState(false)
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
-
+  const filtered = useSelector(selectFilterUpdated)
+  const setModalOpen = useCallback((isOpen) => {
+    setIsOpen(isOpen)
+  }, [])
   const layerTitle = (dataview: UrlDataviewInstance) => {
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
     return t(`datasets:${dataset?.id}.name` as any, dataset?.name)
@@ -40,6 +46,7 @@ const MapControls = ({
 
   return (
     <Fragment>
+      <EventFilters isModalOpen={isModalOpen} onCloseModal={(isOpen) => setModalOpen(isOpen)}></EventFilters>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
@@ -49,8 +56,15 @@ const MapControls = ({
                 type="map-tool"
                 size="medium"
                 data-tip-pos="left"
-                aria-label={t('map.toggleLayers', 'Toggle layers')}
+                tooltip={t('map.toggleLayers', 'Toggle layers')}
                 onClick={() => setShowLayersPopup(!showLayersPopup)}
+              />
+              <IconButton
+                type="map-tool"
+                icon={filtered ? 'filter-on' : 'filter-off'}
+                size="medium"
+                tooltip={t('map.filters', 'Filter events')}
+                onClick={() => setModalOpen(true)}
               />
               {showLayersPopup && (
                 <Modal

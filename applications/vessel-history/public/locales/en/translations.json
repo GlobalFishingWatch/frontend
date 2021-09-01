@@ -76,6 +76,7 @@
     "noDescription": "No description found"
   },
   "map": {
+    "filters": "Filter events",
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"
   },
