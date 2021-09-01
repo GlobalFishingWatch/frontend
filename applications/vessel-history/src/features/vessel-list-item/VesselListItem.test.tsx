@@ -42,7 +42,7 @@ describe('<VesselListItem />', () => {
       </I18nextProvider>
     )
     expect(component.getAllByText('source').length).toBe(1)
-    expect(component.getAllByText('GFW+TMT').length).toBe(1)
+    expect(component.getAllByText('AIS+Other').length).toBe(1)
     expect(component.asFragment()).toMatchSnapshot()
   })
 

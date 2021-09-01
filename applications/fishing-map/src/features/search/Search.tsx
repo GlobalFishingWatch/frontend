@@ -357,6 +357,7 @@ function Search() {
                         geartype,
                         origin,
                         casco,
+                        nationalId,
                         matricula,
                         dataset,
                         firstTransmissionDate,
@@ -414,6 +415,12 @@ function Search() {
                                 <div className={styles.property}>
                                   <label>{t('vessel.matricula', 'Matricula')}</label>
                                   <span>{matricula}</span>
+                                </div>
+                              )}
+                              {nationalId && (
+                                <div className={styles.property}>
+                                  <label>{t('vessel.nationalId', 'National Id')}</label>
+                                  <span>{nationalId}</span>
                                 </div>
                               )}
                               {casco && (

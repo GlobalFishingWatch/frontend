@@ -24,7 +24,7 @@ export const createOfflineVesselThunk = createAsyncThunk<
   try {
     db.vessels.add(vessel, vessel.profileId)
     return vessel
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
@@ -43,7 +43,7 @@ export const deleteOfflineVesselThunk = createAsyncThunk<
     }
     await db.vessels.delete(profileId)
     return { ...result }
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${profileId} - ${e.message}`,
@@ -66,7 +66,7 @@ export const fetchOfflineVesselsThunk = createAsyncThunk<
     } else {
       return await db.vessels.toArray()
     }
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
@@ -84,7 +84,7 @@ export const fetchOfflineVesselByIdThunk = createAsyncThunk<
       throw new Error('Vessel not found')
     }
     return result
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${profileId} - ${e.message}`,
@@ -102,7 +102,7 @@ export const updateOfflineVesselThunk = createAsyncThunk<
   try {
     await db.vessels.put(vessel, vessel.profileId)
     return vessel
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${vessel.profileId} - ${e.message}`,

@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 9.2.2
+
+### Patch Changes
+
+- fix typo
+
 ## 9.2.1
 
 ### Patch Changes
