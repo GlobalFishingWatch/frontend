@@ -22,7 +22,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
       }
       return dataviews
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
