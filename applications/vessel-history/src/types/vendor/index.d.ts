@@ -2,7 +2,7 @@
 
 declare module 'classnames'
 declare module 'formatcoords'
-declare module 'workerize-loader!*' {
+declare module 'workerize-loader*' {
   type AnyFunction = (...args: any[]) => any
   type Async<F extends AnyFunction> = (...args: Parameters<F>) => Promise<ReturnType<F>>
 

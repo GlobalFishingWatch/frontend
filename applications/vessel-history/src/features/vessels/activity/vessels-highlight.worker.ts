@@ -113,3 +113,5 @@ export function isAnyHighlightsSettingDefined(settings: Settings) {
     isAnyPortFilterSet(settings.portVisits)
   )
 }
+const mod = { filterActivityHighlightEvents, isAnyHighlightsSettingDefined }
+export default mod

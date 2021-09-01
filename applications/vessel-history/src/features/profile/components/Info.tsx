@@ -44,9 +44,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
     useOfflineVesselsAPI()
 
-  useEffect(() => {
-    dispatchFetchOfflineVessel(vesselProfileId)
-  }, [vesselProfileId, dispatchFetchOfflineVessel])
+  // useEffect(() => {
+  //   dispatchFetchOfflineVessel(vesselProfileId)
+  // }, [vesselProfileId, dispatchFetchOfflineVessel])
 
   const onDeleteClick = async (data: OfflineVessel) => {
     setLoading(true)
