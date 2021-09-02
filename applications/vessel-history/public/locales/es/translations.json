@@ -81,11 +81,22 @@
     "toggleLayers": "Toggle layers"
   },
   "search": {
+    "title": "Search",
+    "basic": "basic",
+    "advanced": "advanced",
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
     "loadMore": "Cargar más",
     "noMore": "No hay más resultados",
     "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
-    "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques"
+    "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
+    "placeholder": "Search vessels by name, MMSI, IMO",
+    "shipname": "Name",
+    "MMSI": "MMSI",
+    "IMO": "IMO",
+    "callsign": "Callsign",
+    "flagState": "Flag States",
+    "activeAfter": "active After",
+    "activeBefore": "active before"
   },
   "selects": {
     "allSelected": "todos",
