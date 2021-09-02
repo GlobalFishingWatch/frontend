@@ -11,7 +11,6 @@
     "since": "desde",
     "timeRange": "período",
     "to": "hasta",
-    "typeToSeach": "Type to search",
     "typeToSearch": "Type to search",
     "unknown": "Unknown",
     "unknownName": "Unknown name",
@@ -75,6 +74,12 @@
     "fishingGroup": "{{ count }} Fishing events in {{ regionName }}",
     "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
     "noDescription": "No description found"
+  },
+  "events": {
+    "activityHighlights": "Activity Highlights",
+    "highlitingSettings": "settings",
+    "noHighlights": "No events found for your highlighting criteria",
+    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
   },
   "map": {
     "loading": "Map loading",
