@@ -159,3 +159,18 @@ registerRoute(
     ],
   })
 )
+
+// Cache map resources
+registerRoute(
+  ({ url }) =>
+    url.origin === 'https://raw.githubusercontent.com' &&
+    url.pathname.match(/^\/GlobalFishingWatch\/map-gl-sprites/),
+  new StaleWhileRevalidate({
+    cacheName: 'map-resources',
+    plugins: [
+      new BackgroundSyncPlugin('map-resources-bg-sync', {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
+  })
+)
