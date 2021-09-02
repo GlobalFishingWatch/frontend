@@ -11,7 +11,6 @@
     "since": "depuis le",
     "timeRange": "intervalle de temps",
     "to": "à",
-    "typeToSeach": "Entrez un texte pour rechercher des navires",
     "typeToSearch": "Entrez un texte pour rechercher des navires",
     "unknown": "Inconnu",
     "unknownName": "Unknown name",
@@ -75,6 +74,12 @@
     "fishingGroup": "{{ count }} événements de pêche en {{ regionName }}",
     "fishingGroup_plural": "{{ count }} événements de pêche en {{ regionName }}",
     "noDescription": "Aucune description trouvée"
+  },
+  "events": {
+    "activityHighlights": "Activity Highlights",
+    "highlitingSettings": "settings",
+    "noHighlights": "No events found for your highlighting criteria",
+    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
   },
   "map": {
     "loading": "Chargement de la carte",
