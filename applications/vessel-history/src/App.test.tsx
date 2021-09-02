@@ -1,18 +1,14 @@
 import { Provider } from 'react-redux'
-import React from 'react'
 import { render } from '@testing-library/react'
-import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
+import { useGFWAuthentication } from 'routes/routes.hook'
 import store from './store'
 import App from './App'
 
-jest.mock('@globalfishingwatch/react-hooks/dist/use-login')
+jest.mock('routes/routes.hook')
 jest.useFakeTimers()
 
 describe('<App />', () => {
-  const assignMock = jest.fn()
-  const mockGFWLogin: jest.Mock = useGFWLogin as jest.Mock
-  delete window['location']
-  window.location = { assign: assignMock }
+  const mockGFWAuthentication: jest.Mock = useGFWAuthentication as jest.Mock
 
   const gfwLoginDefault = {
     loading: true,
@@ -26,7 +22,7 @@ describe('<App />', () => {
   })
 
   it('renders splash screen while loading', () => {
-    mockGFWLogin.mockReturnValue(gfwLoginDefault)
+    mockGFWAuthentication.mockReturnValue(gfwLoginDefault)
     const component = render(
       <Provider store={store}>
         <App />
@@ -37,17 +33,8 @@ describe('<App />', () => {
     expect(component.asFragment()).toMatchSnapshot()
   })
 
-  it('redirects to login screen when not logged', () => {
-    mockGFWLogin.mockReturnValue({ ...gfwLoginDefault, loading: false })
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    )
-    expect(assignMock).toHaveBeenCalled()
-  })
   it('renders home screen when not loading', () => {
-    mockGFWLogin.mockReturnValue({
+    mockGFWAuthentication.mockReturnValue({
       ...gfwLoginDefault,
       loading: false,
       logged: true,
