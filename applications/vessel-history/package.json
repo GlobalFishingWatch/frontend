@@ -162,8 +162,7 @@
       "^workerize-loader(\\?.*)?!(.*)/([^/]*)$": "$2/__mocks__/$3"
     },
     "transform": {
-      "^.+\\.[t]sx?$": "ts-jest",
-      "^.+\\.[j]sx?$": "babel-jest"
+      "^.+\\.[jt]sx?$": "babel-jest"
     },
     "transformIgnorePatterns": [],
     "collectCoverageFrom": [
