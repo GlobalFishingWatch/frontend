@@ -82,6 +82,7 @@
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
   },
   "map": {
+    "filters": "Filter events",
     "loading": "Chargement de la carte",
     "toggleLayers": "Activer/désactiver les calques"
   },
