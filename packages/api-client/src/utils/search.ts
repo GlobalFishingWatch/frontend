@@ -5,6 +5,7 @@ export type AdvancedSearchQueryFieldKey =
   | 'shipname'
   | 'mmsi'
   | 'imo'
+  | 'callsign'
   | 'flag'
   | 'fleet'
   | 'origin'
@@ -34,6 +35,9 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: '=',
   },
   imo: {
+    operator: '=',
+  },
+  callsign: {
     operator: '=',
   },
   flag: {
@@ -67,12 +71,14 @@ export const getAdvancedSearchQuery = (fields: AdvancedSearchQueryField[]) => {
   }
 
   const [fieldsQueriesCombinedWithOR, fieldsQueriesCombinedWithAND] = partition(
-    fields.filter((field) => field.value !== undefined && field.value !== ''),
+    fields.filter((field) => field.value !== undefined && field.value !== '' && field.value.length),
     (field) => field.combinedWithOR
   ).map((fields) => fields.map(getFieldQuery))
 
   const query = [
-    `(${fieldsQueriesCombinedWithOR.join(' OR ')})`,
+    ...(fieldsQueriesCombinedWithOR.length
+      ? [`(${fieldsQueriesCombinedWithOR.join(' OR ')})`]
+      : []),
     ...fieldsQueriesCombinedWithAND,
   ].join(' AND ')
   return query
