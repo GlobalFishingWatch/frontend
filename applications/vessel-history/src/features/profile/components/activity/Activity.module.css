@@ -18,7 +18,7 @@
   margin: 10px 0 15px;
 }
 
-.divider::before {
+.itemsDivider::before {
   margin-right: 9px;
   background: #fff url('../../../../assets/icons/vessel.svg') no-repeat 15px;
   content: '';
@@ -116,4 +116,51 @@
 
 .eventIcon.port_visit {
   background-color: #9ef;
+}
+
+.highlightsContainer {
+  min-height: calc(var(--size-L) * 2);
+  height: fit-content;
+  font: var(--font-S);
+}
+
+.highlightsContainer:not(.noData) {
+  height: calc(100vh - var(--header-height));
+}
+
+.highlightsListContainer {
+  padding: 0;
+}
+
+.highlights {
+  font: var(--font-S);
+  color: #fc5d5f;
+  text-transform: uppercase;
+  line-height: var(--size-M);
+}
+
+.noSettingsContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* font: var(--font-S); */
+}
+.noSettingsContainer button {
+  margin: var(--space-M);
+}
+button .iconInButton {
+  margin-right: var(--space-XS);
+}
+
+.settingsLink {
+  position: absolute;
+  right: var(--space-XS);
+}
+.noEvents {
+  /* font: var(--font-S); */
+}
+
+.spinnerMed {
+  margin-top: var(--space-M);
+  height: var(--size-M);
 }

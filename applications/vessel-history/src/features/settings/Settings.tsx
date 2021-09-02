@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { redirect } from 'redux-first-router'
+import { history } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { HOME } from 'routes/routes'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { selectSettings } from './settings.slice'
 import FishingEvents from './components/FishingEvents'
@@ -45,9 +44,9 @@ const Settings: React.FC = (): React.ReactElement => {
     if (selectedOption) {
       setSelectedOption('')
     } else {
-      dispatch(redirect({ type: HOME }))
+      history().goBack()
     }
-  }, [dispatch, selectedOption])
+  }, [selectedOption])
 
   useEffect(() => {
     dispatch(fetchRegionsThunk())

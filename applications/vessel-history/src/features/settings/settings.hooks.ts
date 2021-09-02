@@ -43,7 +43,7 @@ export const useSettingsConnect = () => {
     const key = section as keyof Settings
     const newSettings = {
       ...settings[key],
-      [field]: value,
+      [field]: value >= 0 ? value : undefined,
     }
     mergeSettings(section, newSettings)
   }
