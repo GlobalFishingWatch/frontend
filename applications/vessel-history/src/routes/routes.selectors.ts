@@ -21,6 +21,10 @@ export const getLocationType = createSelector([selectLocation], (location) => {
   return location.type
 })
 
+export const getLocationQuery = createSelector([selectLocation], (location) => {
+  return location.query
+})
+
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
 
 export const selectVesselId = createSelector([selectLocationPayload], (payload) => {

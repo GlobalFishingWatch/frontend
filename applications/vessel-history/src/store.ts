@@ -13,6 +13,7 @@ import psmaReducer from './features/psma/psma.slice'
 import regionsReducer from './features/regions/regions.slice'
 import resourcesReducer from './features/resources/resources.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
+import userReducer from './features/user/user.slice'
 
 const {
   reducer: location,
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
   regions: regionsReducer,
   resources: resourcesReducer,
   workspace: workspaceReducer,
+  user: userReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
@@ -47,8 +49,21 @@ const defaultMiddlewareOptions: any = {
     ],
   },
 }
-
 const store = configureStore({
+  devTools: {
+    stateSanitizer: (state: any) => {
+      if (!state.resources) return state
+      const serializedResources = Object.entries(state.resources).map(([key, value]: any) => [
+        key,
+        { ...value, data: 'NOT_SERIALIZED' },
+      ])
+
+      return {
+        ...state,
+        resources: Object.fromEntries(serializedResources),
+      }
+    },
+  },
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware(defaultMiddlewareOptions)

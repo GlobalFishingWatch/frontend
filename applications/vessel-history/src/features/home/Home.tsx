@@ -109,7 +109,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             size="default"
             icon="logout"
             onClick={async () => {
-              dispatch(logoutUserThunk({ redirectToLogin: true }))
+              dispatch(logoutUserThunk({ loginRedirect: true }))
             }}
           ></IconButton>
           <Link to={['settings']}>
