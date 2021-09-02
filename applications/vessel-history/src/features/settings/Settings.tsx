@@ -52,7 +52,6 @@ const Settings: React.FC = (): React.ReactElement => {
     dispatch(fetchRegionsThunk())
   }, [dispatch])
 
-  // console.log(history().goBack())
   return (
     <div className={styles.settingsContainer}>
       <header className={styles.settingsHeader}>
