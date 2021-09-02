@@ -1,5 +1,17 @@
 # @globalfishingwatch/api-types
 
+## 5.3.1
+
+### Patch Changes
+
+- 998b9274: add nationalId in vessel type definition
+
+## 5.3.0
+
+### Minor Changes
+
+- 5b01cd38: add casco vessel type definition
+
 ## 5.2.1
 
 ### Patch Changes

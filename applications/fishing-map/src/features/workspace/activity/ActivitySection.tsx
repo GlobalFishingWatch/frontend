@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
-import { EndpointId } from '@globalfishingwatch/api-types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -34,7 +33,7 @@ import {
   DEFAULT_PRESENCE_DATAVIEW_ID,
   DEFAULT_VIIRS_DATAVIEW_ID,
 } from 'data/workspaces'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { getDatasetNameTranslated } from 'features/i18n/utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
@@ -133,14 +132,16 @@ function ActivitySection(): React.ReactElement {
           dataview.id !== dataview2.id &&
           dataview.config?.type === Generators.Type.HeatmapAnimated
       )
-      dataviewsToDisable?.forEach((dataview) => {
-        upsertDataviewInstance({
-          id: dataview.id,
-          config: {
-            visible: false,
-          },
-        })
-      })
+      if (dataviewsToDisable) {
+        upsertDataviewInstance(
+          dataviewsToDisable?.map((dataview) => ({
+            id: dataview.id,
+            config: {
+              visible: false,
+            },
+          }))
+        )
+      }
       uaEvent({
         category: 'Activity data',
         action: 'Click on bivariate option',
@@ -181,11 +182,11 @@ function ActivitySection(): React.ReactElement {
       if (dataview.id === DEFAULT_FISHING_DATAVIEW_ID) {
         option.label = t('common.apparentFishing', 'Apparent Fishing Effort')
       } else {
-        const datasetId = dataview.datasetsConfig?.find(
-          (d) => d.endpoint === EndpointId.FourwingsTiles
-        )?.datasetId
-        if (datasetId) {
-          option.label = getDatasetLabel({ id: datasetId })
+        const activeDatasets = dataview.datasets?.filter((d) =>
+          dataview.config?.datasets.includes(d.id)
+        )
+        if (activeDatasets && activeDatasets.length === 1) {
+          option.label = getDatasetNameTranslated(activeDatasets[0])
         }
       }
 
@@ -202,11 +203,11 @@ function ActivitySection(): React.ReactElement {
       } else if (dataview.id === DEFAULT_VIIRS_DATAVIEW_ID) {
         option.label = t('common.viirs', 'Night light detections (VIIRS)')
       } else {
-        const datasetId = dataview.datasetsConfig?.find(
-          (d) => d.endpoint === EndpointId.FourwingsTiles
-        )?.datasetId
-        if (datasetId) {
-          option.label = getDatasetLabel({ id: datasetId })
+        const activeDatasets = dataview.datasets?.filter((d) =>
+          dataview.config?.datasets.includes(d.id)
+        )
+        if (activeDatasets && activeDatasets.length === 1) {
+          option.label = getDatasetNameTranslated(activeDatasets[0])
         }
       }
       return option

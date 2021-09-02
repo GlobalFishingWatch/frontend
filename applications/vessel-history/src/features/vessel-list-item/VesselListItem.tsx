@@ -5,6 +5,7 @@ import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { VesselSearch as Vessel } from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
+import { useVesselsConnect } from 'features/vessels/vessels.hook'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
@@ -19,6 +20,8 @@ interface ListItemProps {
 const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
   const { vessel, onDeleteClick } = props
+  const { formatSource } = useVesselsConnect()
+
   if (!vessel) {
     return <div></div>
   }
@@ -67,7 +70,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
         {SHOW_VESSEL_API_SOURCE && (
           <div>
             <label>{t('vessel.source', 'source')}</label>
-            {sourceAPI.join('+') ?? DEFAULT_EMPTY_VALUE}
+            {sourceAPI.map(source => formatSource(source)).join('+') ?? DEFAULT_EMPTY_VALUE}
           </div>
         )}
         <div>

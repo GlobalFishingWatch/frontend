@@ -254,10 +254,10 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
                 const vesselInfo = vesselsInfo?.find((entry) => entry.id === vessel.id)
-                if (!vesselInfo) return vessel
-                const infoDataset = selectDatasetById(vesselInfo.dataset as string)(state)
+                const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
+                const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
-                  vessel.dataset,
+                  trackFromRelatedDataset,
                   DatasetTypes.Tracks,
                   userLogged
                 )?.id

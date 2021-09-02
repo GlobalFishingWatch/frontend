@@ -134,7 +134,7 @@ function ActivityLayerPanel({
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (fishingDataview || presenceDataview) && !readOnly && (
+          {layerActive && (fishingDataview || presenceDataview) && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}

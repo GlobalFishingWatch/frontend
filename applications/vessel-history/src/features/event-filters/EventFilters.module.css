@@ -1,0 +1,8 @@
+.filterSelector {
+  display: flex;
+  align-items: center;
+}
+
+.filterSwitch {
+  margin-right: 10px;
+}

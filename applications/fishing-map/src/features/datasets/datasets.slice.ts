@@ -12,13 +12,15 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { LATEST_CARRIER_DATASET_ID } from 'data/config'
+import { LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
 export const USE_PRESENCE_POC = process.env.REACT_APP_USE_PRESENCE_POC === 'true'
 export const PRESENCE_POC_INTERACTION = 'presence-POC' as HeatmapAnimatedInteractionType
 export const PRESENCE_POC_ID = 'global-presence-tracks'
+export const PRESENCE_POC_MAX_DAYS = 180
+export const PRESENCE_POC_PRICE_PER_DAY = 0.012
 
 const parsePresencePOCDataset = (dataset: Dataset) => {
   if (USE_PRESENCE_POC && dataset.id.includes(PRESENCE_POC_ID)) {
@@ -118,7 +120,7 @@ export const createDatasetThunk = createAsyncThunk<
     const datasetWithFilePath = {
       ...dataset,
       description: dataset.description || dataset.name,
-      id: `${kebabCase(dataset.name)}-${Date.now()}`,
+      id: `${PUBLIC_SUFIX}-${kebabCase(dataset.name)}-${Date.now()}`,
       source: DATASETS_USER_SOURCE_ID,
       configuration: {
         ...dataset.configuration,

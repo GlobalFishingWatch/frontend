@@ -1,5 +1,17 @@
 # @globalfishingwatch/timebar
 
+## 2.0.8
+
+### Patch Changes
+
+- 567ee29e: fix protpypes false positives
+
+## 2.0.7
+
+### Patch Changes
+
+- 72ca7097: add cluster events literal translations
+
 ## 2.0.6
 
 ### Patch Changes

@@ -1,14 +1,14 @@
-import { Filters } from 'features/profile/filters/filters.slice'
+import { Filters } from 'features/event-filters/filters.slice'
 import { selectFilteredEvents, RenderedEvent } from './vessels-activity.selectors'
 import {
   loiteringAndEncounterEvents,
   portVisitEvents,
 } from './__mocks__/selectEventsWithRenderingInfo.mock'
 
-jest.mock('features/profile/filters/filters.slice')
+jest.mock('features/event-filters/filters.slice')
 
 describe('selectFilteredEvents', () => {
-  const cases: [string, string, string, RenderedEvent[][], Filters, number][] = [
+  const cases: [string, string, string, RenderedEvent[], Filters, number][] = [
     [
       'encounters',
       '2019-01-01',

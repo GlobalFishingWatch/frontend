@@ -76,7 +76,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
             {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
           </Modal>
           <div className={styles.activityContainer}>
-            {events && events.length > 0 && (
+            {events && events.length > 0 ? (
               <AutoSizer disableWidth={true}>
                 {({ width, height }) => (
                   <List
@@ -102,6 +102,8 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                   </List>
                 )}
               </AutoSizer>
+            ) : (
+              <p>No events results, try change the filters</p>
             )}
           </div>
         </Fragment>

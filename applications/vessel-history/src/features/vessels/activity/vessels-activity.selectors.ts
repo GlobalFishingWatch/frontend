@@ -2,12 +2,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
 import {
   resolveDataviewDatasetResource,
-  resolveDataviewEventsResources,
+  resolveDataviewDatasetResources,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from 'data/config'
-import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
+import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
 import { ActivityEvent, Regions } from 'types/activity'
@@ -21,6 +21,7 @@ export interface RenderedEvent extends ActivityEvent {
   descriptionGeneric: string
   regionDescription: string
   durationDescription: string
+  duration: number
 }
 
 export const selectEventsForTracks = createSelector(
@@ -30,7 +31,7 @@ export const selectEventsForTracks = createSelector(
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      const eventsResources = resolveDataviewEventsResources(dataview)
+      const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
       const tracksResourceResolved =
@@ -127,9 +128,12 @@ export const selectEventsWithRenderingInfo = createSelector(
             description = t('event.unknown', 'Unknown event')
             descriptionGeneric = t('event.unknown', 'Unknown event')
         }
-        const duration = DateTime.fromMillis(event.end as number)
-          .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
-          .toObject()
+        const durationDiff = DateTime.fromMillis(event.end as number).diff(
+          DateTime.fromMillis(event.start as number),
+          ['hours', 'minutes']
+        )
+
+        const duration = durationDiff.toObject()
 
         const durationDescription = [
           duration.hours && duration.hours > 0
@@ -137,8 +141,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-                count: Math.round(duration.minutes as number),
-              })
+              count: Math.round(duration.minutes as number),
+            })
             : '',
         ].join(' ')
 
@@ -157,10 +161,11 @@ export const selectEventsWithRenderingInfo = createSelector(
           descriptionGeneric,
           regionDescription,
           durationDescription,
+          duration: durationDiff.hours,
         }
       })
     })
-    return eventsWithRenderingInfo
+    return eventsWithRenderingInfo.flat()
   }
 )
 
@@ -206,8 +211,12 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
   return regionsDescription ?? ''
 }
 
+export const selectEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
+  events.sort((a, b) => (a.start > b.start ? -1 : 1))
+)
+
 export const selectFilteredEvents = createSelector(
-  [selectEventsWithRenderingInfo, selectFilters],
+  [selectEvents, selectFilters],
   (events, filters) => {
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
@@ -220,31 +229,28 @@ export const selectFilteredEvents = createSelector(
     const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
     const interval = Interval.fromDateTimes(startDate, endDate)
 
-    return events
-      .flat()
-      .filter((event: RenderedEvent) => {
-        if (
-          !interval.contains(DateTime.fromMillis(event.start as number)) &&
-          !interval.contains(DateTime.fromMillis(event.end as number))
-        ) {
-          return false
-        }
-        if (event.type === 'fishing') {
-          return filters.fishingEvents
-        }
-        if (event.type === 'loitering') {
-          return filters.loiteringEvents
-        }
-        if (event.type === 'encounter') {
-          return filters.encounters
-        }
-        if (event.type === 'port_visit') {
-          return filters.portVisits
-        }
+    return events.filter((event: RenderedEvent) => {
+      if (
+        !interval.contains(DateTime.fromMillis(event.start as number)) &&
+        !interval.contains(DateTime.fromMillis(event.end as number))
+      ) {
+        return false
+      }
+      if (event.type === 'fishing') {
+        return filters.fishingEvents
+      }
+      if (event.type === 'loitering') {
+        return filters.loiteringEvents
+      }
+      if (event.type === 'encounter') {
+        return filters.encounters
+      }
+      if (event.type === 'port_visit') {
+        return filters.portVisits
+      }
 
-        return true
-      })
-      .sort((a, b) => (a.start > b.start ? -1 : 1))
+      return true
+    })
   }
 )
 

@@ -1,0 +1,22 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-S);
+}
+
+.row > div:not(:last-child) {
+  margin-right: 2rem;
+}
+
+.full {
+  flex: 1 1 0;
+}
+
+.half {
+  flex: 6 1 0;
+}
+
+.thirdOfHalf {
+  flex: 2 1 0;
+}

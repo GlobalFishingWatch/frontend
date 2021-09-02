@@ -1,7 +1,7 @@
 import { WorkspaceViewport } from '@globalfishingwatch/api-types/dist'
 import { AppDispatch, RootState } from 'store'
 import { QueryParams } from 'types'
-import { ROUTE_TYPES, HOME } from './routes'
+import { ROUTE_TYPES, HOME, PROFILE } from './routes'
 import { selectCurrentLocation, selectLocationPayload } from './routes.selectors'
 
 export interface UpdateQueryParamsAction {
@@ -26,6 +26,10 @@ export function updateLocation(
 
 export function updateQueryParams(query: QueryParams): UpdateQueryParamsAction {
   return { type: HOME, query }
+}
+
+export function updateProfileParams(query: QueryParams): UpdateQueryParamsAction {
+  return { type: PROFILE, query }
 }
 
 // Why this works the other way around ? with the dispatch and getState firt in params ??

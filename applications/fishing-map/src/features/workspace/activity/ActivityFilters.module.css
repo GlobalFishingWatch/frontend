@@ -34,6 +34,11 @@
   opacity: 1;
 }
 
+.placeholder {
+  padding: var(--space-S);
+  color: var(--color-secondary-blue);
+}
+
 .active {
   opacity: 1;
 }
