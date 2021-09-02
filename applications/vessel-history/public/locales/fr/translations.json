@@ -7,7 +7,7 @@
     "map": "carte",
     "offlineAccess": "accès hors ligne",
     "offlineAccessEmptyState": "Les navires que vous économisez pour un accès hors ligne apparaîtront ici.",
-    "other": "Autre",
+    "other": "Other",
     "since": "depuis le",
     "timeRange": "intervalle de temps",
     "to": "à",
@@ -81,11 +81,22 @@
     "toggleLayers": "Activer/désactiver les calques"
   },
   "search": {
+    "title": "Search",
+    "basic": "basic",
+    "advanced": "advanced",
     "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
     "loadMore": "Charger plus",
     "noMore": "Aucun résultat supplémentaire",
     "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser MMSI, IMO ou Call Sign",
-    "notAllowed": "Recherche non autorisée"
+    "notAllowed": "Recherche non autorisée",
+    "placeholder": "Search vessels by name, MMSI, IMO",
+    "shipname": "Name",
+    "MMSI": "MMSI",
+    "IMO": "IMO",
+    "callsign": "Callsign",
+    "flagState": "Flag States",
+    "activeAfter": "active After",
+    "activeBefore": "active before"
   },
   "selects": {
     "allSelected": "Tous",
