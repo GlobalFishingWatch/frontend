@@ -2,12 +2,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
 import {
   resolveDataviewDatasetResource,
-  resolveDataviewEventsResources,
+  // resolveDataviewEventsResources,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from 'data/config'
-import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
+import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
 import { ActivityEvent, Regions } from 'types/activity'
