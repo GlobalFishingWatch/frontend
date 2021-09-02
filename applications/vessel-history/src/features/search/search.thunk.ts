@@ -58,7 +58,7 @@ const fetchData = async (
     limit: RESULTS_PER_PAGE,
     offset,
     query: serializedQuery,
-    useTMT: !advancedSearch,
+    useTMT: true,
   })
 
   const url = `/v1/vessels/${endpoint}?${urlQuery}`
