@@ -99,29 +99,13 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
 
     if (datasets.length > 0) {
-      console.log(['fetchVessel', vesselProfileId, datasets])
       fetchVessel()
-      console.log(['resetFilters', vesselProfileId])
       dispatch(resetFilters())
     }
   }, [dispatch, vesselProfileId, datasets])
 
-  console.log({
-    vesselDataview,
-    trackUrl,
-    trackResource,
-    vesselLoaded,
-    vesselDataviewLoaded,
-    resourceQueries,
-  })
   useEffect(() => {
     if (resourceQueries && resourceQueries.length > 0) {
-      console.log([
-        'fetchResourceThunk',
-        {
-          resourceQueries,
-        },
-      ])
       resourceQueries.forEach((resourceQuery) => {
         dispatch(fetchResourceThunk(resourceQuery))
       })

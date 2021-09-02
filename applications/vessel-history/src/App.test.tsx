@@ -6,7 +6,6 @@ import store from './store'
 import App from './App'
 
 jest.mock('@globalfishingwatch/react-hooks/dist/use-login')
-// jest.mock('workerize-loader!features/vessels/activity/vessels-highlight.worker')
 jest.useFakeTimers()
 
 describe('<App />', () => {
