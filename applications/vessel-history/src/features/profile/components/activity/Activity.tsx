@@ -10,6 +10,7 @@ import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
+import { t } from 'features/i18n/i18n'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -40,8 +41,6 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   )
 
   const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
-    // let voyagesRanges = []
-    console.log(expandedVoyages)
     return eventsList
       .map((event) => {
         if (event.type === 'voyage') {
@@ -66,6 +65,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
         )
       })
   }, [eventsList, expandedVoyages])
+
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -116,7 +116,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                 )}
               </AutoSizer>
             ) : (
-              <p>No events results, try change the filters</p>
+              <p>{t('events.noResults', 'No events found. Try changing the current filters.')}</p>
             )}
           </div>
         </Fragment>
