@@ -6,6 +6,7 @@ exports[`<App /> renders splash screen while loading 1`] = `
 <DocumentFragment>
   <div
     class="container"
+    data-testid="splash"
   >
     <div
       class="splash"

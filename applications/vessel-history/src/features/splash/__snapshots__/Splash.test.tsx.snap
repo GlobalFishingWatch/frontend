@@ -2,28 +2,43 @@
 
 exports[`Splash renders correctly 1`] = `
 <div
-  className="container"
+  class="container"
+  data-testid="splash"
 >
   <div
-    className="splash"
+    class="splash"
   >
     <img
       alt="Vessel History"
-      className="vhLogo"
+      class="vhLogo"
       src="splash-screen-image@2x.png"
     />
+    <div>
+      <div>
+        Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials
+      </div>
+      <div
+        class="buttons"
+      >
+        <button
+          class="Button-module_button__XL0aF Button-module_default__2ltQA Button-module_default__2ltQA"
+        >
+          Log in
+        </button>
+      </div>
+    </div>
   </div>
   <div
-    className="secondary"
+    class="secondary"
   >
     <img
       alt="Trygg Mat Tracking"
-      className="tmtLogo"
+      class="tmtLogo"
       src="tmt_logo_final_full_colour@2x.png"
     />
     <svg
       aria-label="Global Fishing Watch "
-      className="Logo-module_container__3qEvx gfwLogo"
+      class="Logo-module_container__3qEvx gfwLogo"
       height="60"
       viewBox="20 0 200 60"
       width="200"
@@ -32,7 +47,7 @@ exports[`Splash renders correctly 1`] = `
       <g
         aria-hidden="true"
         fill="none"
-        fillRule="evenodd"
+        fill-rule="evenodd"
         focusable="false"
       >
         <path
@@ -44,7 +59,7 @@ exports[`Splash renders correctly 1`] = `
           fill="#E84427"
         />
         <text
-          className="Logo-module_mainBrand__3OqxN Logo-module_default__2NdMB"
+          class="Logo-module_mainBrand__3OqxN Logo-module_default__2NdMB"
           x="52"
           y="37"
         >

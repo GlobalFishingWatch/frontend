@@ -7,8 +7,8 @@ import { SPLASH_TIMEOUT } from 'data/constants'
 import Profile from 'features/profile/Profile'
 import Splash from 'features/splash/Splash'
 import Settings from 'features/settings/Settings'
-import './App.css'
 import { useUser } from 'features/user/user.hooks'
+import './App.css'
 
 function App() {
   const { loading, logged, authorized } = useUser()
