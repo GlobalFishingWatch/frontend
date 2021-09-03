@@ -72,3 +72,5 @@ export const EVENTS_COLORS: Record<string, string> = {
 }
 
 export const DEFAULT_EMPTY_VALUE = ' --- '
+
+export const AUTHORIZED_USER_GROUPS = ['VV-African-Pilot', 'Admin-group', 'GFW']
