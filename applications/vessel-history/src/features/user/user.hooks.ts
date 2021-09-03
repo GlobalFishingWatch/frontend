@@ -19,7 +19,7 @@ export const useUser = () => {
     window.location.assign(GFWAPI.getLoginUrl(location))
   }, [])
 
-  const logout = useCallback(() => dispatch(logoutUserThunk({ redirectToLogin: true })), [dispatch])
+  const logout = useCallback(() => dispatch(logoutUserThunk({ redirectTo: 'home' })), [dispatch])
 
   return { loading, logged, user, authorized, login, logout }
 }

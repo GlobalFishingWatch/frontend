@@ -3,14 +3,17 @@ import GFWAPI from '@globalfishingwatch/api-client'
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async ({ redirectToLogin }: { redirectToLogin: boolean } = { redirectToLogin: false }) => {
+  async ({ redirectTo }: { redirectTo?: 'gfw-login' | 'home' } = { redirectTo: undefined }) => {
     try {
       await GFWAPI.logout()
     } catch (e) {
       console.warn(e)
     }
-    if (redirectToLogin) {
+    if (redirectTo === 'gfw-login') {
       window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    }
+    if (redirectTo === 'home') {
+      window.location.href = window.location.toString()
     }
   }
 )
