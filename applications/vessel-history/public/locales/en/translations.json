@@ -95,7 +95,7 @@
     "noMore": "No more results",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign",
     "notAllowed": "Search not allowed",
-    "placeholder": "Search vessels by name, MMSI, IMO",
+    "placeholder": "Search vessels by name, MMSI, IMO or Call Sign",
     "shipname": "Name",
     "MMSI": "MMSI",
     "IMO": "IMO",
