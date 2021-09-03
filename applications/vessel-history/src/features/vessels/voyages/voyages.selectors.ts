@@ -20,7 +20,7 @@ export interface Voyage {
   from?: ActivityEvent
   to?: ActivityEvent
   type: 'voyage'
-  start?: number
+  start: number
   end?: number
 }
 
@@ -34,12 +34,12 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
             ...(index > 0
               ? {
                   from: all[index - 1],
-                  start: all[index - 1].start ?? all[index - 1].end,
+                  start: all[index - 1].end ?? all[index - 1].start,
                 }
               : {}),
             type: 'voyage',
             to: port,
-            end: port.end ?? port.start,
+            end: port.start ?? port.end,
           } as Voyage)
       )
     if (voyages.length === 0) return []
@@ -97,10 +97,14 @@ export const selectFilteredEventsByVoyages = createSelector(
         type: 'voyage',
         start: voyage.start ?? 0,
         end: voyage.end ?? new Date().getTime(),
+        sortField: voyage.end ?? new Date().getTime(),
       }))
     // .sort((a, b) =>
     //   (a.from?.start ?? a.to?.start ?? 0) > (b.from?.start ?? b.to?.start ?? 0) ? -1 : 1
     // )
-    return [...filteredEvents, ...filteredVoyages].sort((a, b) => (a.end > b.end ? -1 : 1))
+
+    return [...filteredEvents.map((x) => ({ ...x, sortField: x.start })), ...filteredVoyages].sort(
+      (a, b) => (a.sortField > b.sortField ? -1 : 1)
+    )
   }
 )

@@ -25,33 +25,48 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   const eventsLoading = useSelector(selectResourcesLoading)
   const eventsList = useSelector(selectFilteredEventsByVoyages)
-  const [expandedVoyages, setExpandedVoyages] = useState<string[]>([])
+  const [expandedVoyages, setExpandedVoyages] = useState<
+    Record<number, RenderedVoyage | undefined>
+  >([])
 
   const toggleVoyage = useCallback(
     (voyage: RenderedVoyage) => {
-      const start = `${voyage.start ?? 0}`
-      const index = expandedVoyages.indexOf(start)
-      if (index >= 0) {
-        setExpandedVoyages(expandedVoyages.filter((item) => item !== start))
+      // const index = expandedVoyages[voyage.start]
+      if (expandedVoyages[voyage.start]) {
+        setExpandedVoyages({ ...expandedVoyages, [voyage.start]: undefined })
       } else {
-        setExpandedVoyages(expandedVoyages.concat([start]))
+        setExpandedVoyages({ ...expandedVoyages, [voyage.start]: voyage })
       }
+      // console.log(expandedVoyages)
     },
     [expandedVoyages]
   )
 
   const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
     // let voyagesRanges = []
-    return eventsList.map((event) => {
-      if (event.type === 'voyage') {
-        return {
-          ...event,
-          status: expandedVoyages.includes(`${event.start}`) ? 'expanded' : 'collapsed',
-        } as RenderedVoyage
-      } else {
-        return event as RenderedEvent
-      }
-    })
+    console.log(expandedVoyages)
+    return eventsList
+      .map((event) => {
+        if (event.type === 'voyage') {
+          return {
+            ...event,
+            status: expandedVoyages[event.start] ? 'expanded' : 'collapsed',
+          } as RenderedVoyage
+        } else {
+          return event as RenderedEvent
+        }
+      })
+      .filter((event) => {
+        return (
+          event.type === 'voyage' ||
+          Object.values(expandedVoyages).find(
+            (voyage) =>
+              voyage !== undefined &&
+              ((voyage.start < event.start && (voyage.end ?? new Date().getTime()) > event.start) ||
+                (voyage.start <= event.end && (voyage.end ?? new Date().getTime()) >= event.end))
+          )
+        )
+      })
   }, [eventsList, expandedVoyages])
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
