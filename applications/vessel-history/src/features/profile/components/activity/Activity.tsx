@@ -75,6 +75,13 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const closeModal = useCallback(() => setIsOpen(false), [])
 
   useEffect(() => {
+    const [lastVoyage] = events.filter((event) => event.type === 'voyage')
+    if (lastVoyage)
+      setExpandedVoyages({ [(lastVoyage as RenderedVoyage).start]: lastVoyage as RenderedVoyage })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     dispatch(fetchRegionsThunk())
     dispatch(fetchPsmaThunk())
   }, [dispatch])
