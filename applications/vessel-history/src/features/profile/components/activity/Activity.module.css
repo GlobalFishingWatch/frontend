@@ -49,6 +49,10 @@
   margin-top: var(--space-XS);
 }
 
+.event.voyage .eventData .description {
+  text-transform: capitalize;
+}
+
 .eventIcon {
   position: relative;
   width: 31px;

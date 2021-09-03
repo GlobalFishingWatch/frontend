@@ -2,7 +2,7 @@ import { Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { Voyage } from 'features/vessels/voyages/voyages.selectors'
 import styles from './Activity.module.css'
@@ -28,21 +28,30 @@ const ActivityVoyage: React.FC<EventProps> = ({
   const voyageLabel = useMemo(() => {
     const parts: string[] = []
 
-    if (event.from) {
+    if (event.from && event.to) {
       parts.push(
         `${t('common.from', 'from')} ${formatI18nDate(event.start ?? 0, {
           format: DateTime.DATETIME_FULL,
         })}`
       )
-    }
-    if (event.to) {
       parts.push(
         `${t('common.to', 'to')} ${formatI18nDate(event.end ?? 0, {
           format: DateTime.DATETIME_FULL,
         })}`
       )
+    } else if (!event.to) {
+      parts.push(t('event.currentVoyage' as any, 'Ongoing Voyage') as string)
+      parts.push(
+        `${t('common.from', 'from')} ${formatI18nDate(event.start ?? 0, {
+          format: DateTime.DATETIME_FULL,
+        })}`
+      )
     } else {
-      parts.splice(0, 0, t('event.currentVoyage' as any, 'Current Voyage') as string)
+      parts.push(
+        `${t('common.to', 'to')} ${formatI18nDate(event.end ?? 0, {
+          format: DateTime.DATETIME_FULL,
+        })}`
+      )
     }
 
     return parts.join(' - ')
@@ -50,7 +59,7 @@ const ActivityVoyage: React.FC<EventProps> = ({
 
   return (
     <Fragment>
-      <div className={styles.event}>
+      <div className={cx(styles.event, styles.voyage)}>
         <div className={styles.eventData}>
           <div className={styles.description}>{voyageLabel}</div>
         </div>
