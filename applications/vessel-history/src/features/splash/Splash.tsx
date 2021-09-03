@@ -17,7 +17,7 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
   }, [])
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="splash">
       <div className={styles.splash}>
         <img src={vesselHistoryLogo} className={styles.vhLogo} alt="Vessel History" />
         {!intro && user && !authorized && (
