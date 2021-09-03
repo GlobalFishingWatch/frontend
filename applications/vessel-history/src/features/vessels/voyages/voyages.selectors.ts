@@ -1,19 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
-import {
-  resolveDataviewDatasetResource,
-  // resolveDataviewEventsResources,
-  selectResources,
-} from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS } from 'data/config'
-import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
-import { t } from 'features/i18n/i18n'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
-import { ActivityEvent, Regions } from 'types/activity'
-import { selectEEZs, selectRFMOs } from 'features/regions/regions.selectors'
-import { getEEZName } from 'utils/region-name-transform'
-import { Region } from 'features/regions/regions.slice'
+import { EventTypes } from '@globalfishingwatch/api-types'
+import { selectFilters } from 'features/event-filters/filters.slice'
+import { ActivityEvent } from 'types/activity'
 import { selectEventsForTracks, selectFilteredEvents } from '../activity/vessels-activity.selectors'
 
 export interface Voyage {
@@ -25,43 +14,36 @@ export interface Voyage {
 }
 
 export const selectVoyages = createSelector([selectEventsForTracks], (eventsForTrack) => {
-  return eventsForTrack.map(({ data }) => {
-    const voyages: Voyage[] = (data || [])
-      .filter((event: ActivityEvent) => event.type === EventTypes.Port)
-      .map(
-        (port, index, all) =>
-          ({
-            ...(index > 0
-              ? {
-                  from: all[index - 1],
-                  start: all[index - 1].end ?? all[index - 1].start,
-                }
-              : {}),
-            type: 'voyage',
-            to: port,
-            end: port.start ?? port.end,
-          } as Voyage)
-      )
-    if (voyages.length === 0) return []
+  return eventsForTrack
+    .map(({ data }) => {
+      const voyages: Voyage[] = (data || [])
+        .filter((event: ActivityEvent) => event.type === EventTypes.Port)
+        .map(
+          (port, index, all) =>
+            ({
+              ...(index > 0
+                ? {
+                    from: all[index - 1],
+                    start: all[index - 1].end ?? all[index - 1].start,
+                  }
+                : {}),
+              type: 'voyage',
+              to: port,
+              end: port.start ?? port.end,
+            } as Voyage)
+        )
+      if (voyages.length === 0) return []
 
-    const last = voyages[voyages.length - 1]
-    return voyages.concat([
-      {
-        from: last.to,
-        start: last.to?.start ?? last.to?.end,
-        type: 'voyage',
-      } as Voyage,
-    ])
-    // .reduce(
-    //   (prev: Voyage[], current: ActivityEvent) => {
-    //     const last = prev.slice(-1).pop() || {}
-    //     const rest = prev.slice(0, prev.length - 1)
-
-    //     return [...rest, { ...last, type: 'voyage', to: current }, { type: 'voyage', from: current }]
-    //   },
-    //   [{type: 'voyage'}]
-    // )
-  })
+      const last = voyages[voyages.length - 1]
+      return voyages.concat([
+        {
+          from: last.to,
+          start: last.to?.start ?? last.to?.end,
+          type: 'voyage',
+        } as Voyage,
+      ])
+    })
+    .flat()
 })
 
 export const selectFilteredEventsByVoyages = createSelector(
@@ -79,7 +61,6 @@ export const selectFilteredEventsByVoyages = createSelector(
     const interval = Interval.fromDateTimes(startDate, endDate)
 
     const filteredVoyages = voyages
-      .flat()
       .filter((voyage) => {
         if (
           !interval.contains(DateTime.fromMillis((voyage.from?.start ?? 0) as number)) &&
@@ -99,9 +80,15 @@ export const selectFilteredEventsByVoyages = createSelector(
         end: voyage.end ?? new Date().getTime(),
         sortField: voyage.end ?? new Date().getTime(),
       }))
-    // .sort((a, b) =>
-    //   (a.from?.start ?? a.to?.start ?? 0) > (b.from?.start ?? b.to?.start ?? 0) ? -1 : 1
-    // )
+      .map((voyage) => ({
+        ...voyage,
+        visible:
+          filteredEvents.filter(
+            (event) =>
+              (voyage.start < event.start && voyage.end > event.start) ||
+              (voyage.start <= event.end && voyage.end >= event.end)
+          ).length > 0,
+      }))
 
     return [...filteredEvents.map((x) => ({ ...x, sortField: x.start })), ...filteredVoyages].sort(
       (a, b) => (a.sortField > b.sortField ? -1 : 1)

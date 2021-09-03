@@ -64,7 +64,7 @@ export const selectEventsForTracks = createSelector(
 
         return resources[url].data as ActivityEvent[]
       })
-      return { dataview, data }
+      return { dataview, data: data as ActivityEvent[] }
     })
     return vesselsEvents
   }
@@ -141,8 +141,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-              count: Math.round(duration.minutes as number),
-            })
+                count: Math.round(duration.minutes as number),
+              })
             : '',
         ].join(' ')
 

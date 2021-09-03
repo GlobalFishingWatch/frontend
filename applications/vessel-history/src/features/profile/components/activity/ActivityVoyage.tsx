@@ -9,6 +9,7 @@ import styles from './Activity.module.css'
 
 export interface RenderedVoyage extends Voyage {
   status: 'collapsed' | 'expanded'
+  visible: boolean
 }
 
 interface EventProps {

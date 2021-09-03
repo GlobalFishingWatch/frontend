@@ -31,13 +31,10 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   const toggleVoyage = useCallback(
     (voyage: RenderedVoyage) => {
-      // const index = expandedVoyages[voyage.start]
-      if (expandedVoyages[voyage.start]) {
-        setExpandedVoyages({ ...expandedVoyages, [voyage.start]: undefined })
-      } else {
-        setExpandedVoyages({ ...expandedVoyages, [voyage.start]: voyage })
-      }
-      // console.log(expandedVoyages)
+      setExpandedVoyages({
+        ...expandedVoyages,
+        [voyage.start]: expandedVoyages[voyage.start] ? undefined : voyage,
+      })
     },
     [expandedVoyages]
   )
@@ -58,12 +55,13 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
       })
       .filter((event) => {
         return (
-          event.type === 'voyage' ||
+          (event.type === 'voyage' && event.visible) ||
           Object.values(expandedVoyages).find(
             (voyage) =>
               voyage !== undefined &&
               ((voyage.start < event.start && (voyage.end ?? new Date().getTime()) > event.start) ||
-                (voyage.start <= event.end && (voyage.end ?? new Date().getTime()) >= event.end))
+                (voyage.start <= (event as RenderedEvent).end &&
+                  (voyage.end ?? new Date().getTime()) >= (event as RenderedEvent).end))
           )
         )
       })
