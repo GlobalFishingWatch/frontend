@@ -29,9 +29,28 @@ describe('Splash', () => {
     jest.clearAllMocks()
   })
 
-  it('renders correctly', async () => {
-    const user = { ...userDefault, logged: true }
+  it('renders correctly for auth user', async () => {
+    const user = { ...userDefault, logged: true, authorized: true, user: { id: '1', name: 'foo' } }
+    mockUseUser.mockReturnValue(user)
 
+    const component = render(<Splash />)
+    const splashElement = await waitFor(() => component.getByTestId('splash'))
+    expect(splashElement).toMatchSnapshot()
+    expect(splashElement).toBeInTheDocument()
+  })
+
+  it('renders not logged in message', async () => {
+    const user = { ...userDefault }
+    mockUseUser.mockReturnValue(user)
+
+    const component = render(<Splash />)
+    const splashElement = await waitFor(() => component.getByTestId('splash'))
+    expect(splashElement).toMatchSnapshot()
+    expect(splashElement).toBeInTheDocument()
+  })
+
+  it('renders not authorized in message', async () => {
+    const user = { ...userDefault, logged: true, authorized: false, user: { id: '1', name: 'foo' } }
     mockUseUser.mockReturnValue(user)
 
     const component = render(<Splash />)
