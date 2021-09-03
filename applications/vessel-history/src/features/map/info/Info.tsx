@@ -26,11 +26,15 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const eventsMap: string[] = useMemo(() => events.map((e) => e.id), [events])
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent | undefined>(undefined)
+  const [prevDisabled, setPrevDisabled] = useState(false)
+  const [nextDisabled, setNextDisabled] = useState(false)
 
   const changeVesselEvent = useCallback(
     (actualEventId, direction) => {
       const actualEventIndex = eventsMap.indexOf(actualEventId.id)
       const nextPosition = direction === 'prev' ? actualEventIndex + 1 : actualEventIndex - 1
+      setPrevDisabled(nextPosition <= eventsMap.length)
+      setNextDisabled(nextPosition >= 0)
       if (nextPosition >= 0 && nextPosition < eventsMap.length) {
         const nextEvent = events[nextPosition]
         dispatch(setHighlightedEvent({ id: eventsMap[nextPosition] } as ApiEvent))
@@ -58,7 +62,15 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     } else {
       setSelectedEvent(undefined)
     }
-  }, [highlightedEvent, dispatch, events, selectedEvent])
+  }, [highlightedEvent, events])
+
+  useMemo(() => {
+    if (highlightedEvent) {
+      const actualEventIndex = eventsMap.indexOf(highlightedEvent.id)
+      setPrevDisabled(actualEventIndex === eventsMap.length)
+      setNextDisabled(actualEventIndex === 0)
+    }
+  }, [eventsMap, highlightedEvent])
 
   return (
     <Fragment>
@@ -82,7 +94,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             <div className={styles.eventSelector}>
               <IconButton
                 icon="arrow-left"
-                type="map-tool"
+                disabled={prevDisabled}
+                type={prevDisabled ? 'invert' : 'map-tool'}
                 size="small"
                 onClick={() => changeVesselEvent(highlightedEvent, 'prev')}
               ></IconButton>
@@ -97,7 +110,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               </span>
               <IconButton
                 icon="arrow-right"
-                type="map-tool"
+                disabled={nextDisabled}
+                type={nextDisabled ? 'invert' : 'map-tool'}
                 size="small"
                 onClick={() => changeVesselEvent(highlightedEvent, 'next')}
               ></IconButton>

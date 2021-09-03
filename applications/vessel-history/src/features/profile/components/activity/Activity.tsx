@@ -15,7 +15,6 @@ import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { setHighlightedEvent } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import useViewport from 'features/map/map-viewport.hooks'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -40,20 +39,12 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
 
-  const {  setMapCoordinates } = useViewport()
   const { dispatchQueryParams } = useLocationConnect()
   const selectEventOnMap = useCallback((event: RenderedEvent) => {
     dispatch(setHighlightedEvent({id: event.id} as ApiEvent))
     dispatchQueryParams({ latitude: event.position.lat, longitude: event.position.lon })
-    setMapCoordinates({
-      latitude: event.position.lat,
-      longitude: event.position.lon,
-      zoom: 8,
-      pitch: 0,
-      bearing: 0,
-    })
     props.onMoveToMap()
-  }, [dispatch, dispatchQueryParams, props, setMapCoordinates])
+  }, [dispatch, dispatchQueryParams, props])
 
   useEffect(() => {
     dispatch(fetchRegionsThunk())

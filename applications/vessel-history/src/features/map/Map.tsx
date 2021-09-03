@@ -8,6 +8,7 @@ import Info from 'features/map/info/Info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
+import { selectUrlViewport } from 'routes/routes.selectors'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
@@ -15,7 +16,6 @@ import MapControls from './controls/MapControls'
 import useMapEvents from './map-events.hooks'
 import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
-import { selectUrlViewport } from 'routes/routes.selectors'
 
 const Map = (): ReactElement => {
   const map = useMapInstance()
