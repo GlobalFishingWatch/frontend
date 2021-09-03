@@ -34,7 +34,6 @@
     "days_plural": "Jours",
     "description": "Libellé",
     "detection": "Détection",
-    "detection_plural": "Détections",
     "dismiss": "Dissmiss",
     "environment": "Environnement",
     "events": "Évènements",
@@ -67,7 +66,8 @@
     "vessel": "Navire",
     "vessel_plural": "Navires",
     "viirs": "Night light detections (VIIRS)",
-    "welcomePopupDisable": "Ne plus afficher"
+    "welcomePopupDisable": "Ne plus afficher",
+    "detection_plural": "Détections"
   },
   "dataset": {
     "addContext": "Ajouter un calque de référence",
@@ -115,6 +115,7 @@
     "genericShort": "Quelque chose s'est mal passé",
     "invalidRange": "Le minimum doit être inférieur au maximum",
     "latestCarrierNotFound": "Dernier jeu de données transporteur introuvable",
+    "maxVesselPresenceTimerange": "Presence vessels has a limited timerange of 180days.",
     "notSupportedBy": "Non pris en charge par {{list}}",
     "pageNotFound": "Page introuvable",
     "privateView": "Ceci est une vue privée",
@@ -225,6 +226,7 @@
     "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "rulers_add": "Mesurer des distances",
     "rulers_remove": "Supprimer toutes les mesures",
+    "runningExpensiveVesselQuery": "Running this query will cost around {{cost}} $. Are you sure to run it?",
     "search": "Rechercher des zones",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
@@ -341,11 +343,11 @@
     "emptyStateVessels": "Les navires sélectionnés dans la recherche ou en cliquant sur la carte de chaleur apparaîtront ici.",
     "nameInput": "Nom de la vue",
     "new": "Nouvelle vue",
+    "privateTitle_plural": "Private workspaces",
     "remove": "Supprimer la vue",
     "save": "Enregistrer la vue actuelle",
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil",
     "saveLogin": "Vous devez vous connecter pour enregistrer les vues (gratuit, 2 minutes)",
-    "privateTitle_plural": "Private workspaces",
     "title_plural": "Vues"
   }
 }
