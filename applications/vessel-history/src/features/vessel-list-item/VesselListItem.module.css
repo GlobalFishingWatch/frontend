@@ -33,14 +33,14 @@
   margin-bottom: 1.5rem;
 }
 
-.remove {
+.vesselItemWrapper .remove {
   position: absolute;
   right: var(--space-S);
   background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
 }
 
-.remove:focus:not(:disabled),
-.remove:active:not(:disabled),
-.remove:hover:not(:disabled) {
+.vesselItemWrapper .remove:focus:not(:disabled),
+.vesselItemWrapper .remove:active:not(:disabled),
+.vesselItemWrapper .remove:hover:not(:disabled) {
   background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
 }
