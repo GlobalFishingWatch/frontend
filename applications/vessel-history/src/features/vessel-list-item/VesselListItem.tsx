@@ -30,7 +30,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const sourceAPI = getVesselAPISource(vessel)
 
   return (
-    <Fragment>
+    <div className={styles.vesselItemWrapper}>
       {props.saved && onDeleteClick && (
         <IconButton
           type="warning"
@@ -103,7 +103,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           )}
         </div>
       </Link>
-    </Fragment>
+    </div>
   )
 }
 
