@@ -82,6 +82,7 @@
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
   },
   "map": {
+    "filters": "Filter events",
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"
   },
@@ -190,5 +191,13 @@
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
+  },
+  "user": {
+    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
+    "notAuthorized": "Only some specific registered users can use this product",
+    "login": "Log in",
+    "loggedInAs": "logged in as",
+    "requestAccess": "Request Access",
+    "switchAccount": "Switch account"
   }
 }

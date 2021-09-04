@@ -52,14 +52,17 @@ export const fetchUserThunk = createAsyncThunk(
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async ({ loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false }) => {
+  async ({ redirectTo }: { redirectTo?: 'gfw-login' | 'home' } = { redirectTo: undefined }) => {
     try {
       await GFWAPI.logout()
     } catch (e) {
       console.warn(e)
     }
-    if (loginRedirect) {
-      redirectToLogin()
+    if (redirectTo === 'gfw-login') {
+      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    }
+    if (redirectTo === 'home') {
+      window.location.href = window.location.toString()
     }
   }
 )

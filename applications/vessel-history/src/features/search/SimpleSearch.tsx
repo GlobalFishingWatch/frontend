@@ -38,7 +38,7 @@ const SimpleSearch: React.FC = () => {
         autoFocus
         type="search"
         role="search"
-        placeholder={t('search.placeholder')}
+        placeholder={t('search.placeholder', 'Search vessels by name, MMSI, IMO')}
         aria-label="Search vessels"
         className={styles.input}
         onChange={onInputChange}

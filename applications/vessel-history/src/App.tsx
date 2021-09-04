@@ -7,15 +7,12 @@ import { SPLASH_TIMEOUT } from 'data/constants'
 import Profile from 'features/profile/Profile'
 import Splash from 'features/splash/Splash'
 import Settings from 'features/settings/Settings'
-import { useGFWAuthentication, useReplaceLoginUrl } from 'routes/routes.hook'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { useUser } from 'features/user/user.hooks'
 import './App.css'
 import { fetchUserThunk } from 'features/user/user.slice'
 
-function App(): React.ReactElement {
-  useReplaceLoginUrl()
-  const dispatch = useAppDispatch()
-  const { loading } = useGFWAuthentication()
+function App() {
+  const { loading, logged, authorized } = useUser()
   const [minLoading, setMinLoading] = useState(true)
 
   // Splash screen is shown at least one second
@@ -26,12 +23,8 @@ function App(): React.ReactElement {
 
   const locationType = useSelector(getLocationType)
 
-  useEffect(() => {
-    dispatch(fetchUserThunk())
-  }, [dispatch])
-
-  if (loading || minLoading) {
-    return <Splash />
+  if (loading || minLoading || !logged || !authorized) {
+    return <Splash intro={minLoading} />
   }
   if (locationType === SETTINGS) {
     return <Settings />

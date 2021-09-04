@@ -30,10 +30,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const sourceAPI = getVesselAPISource(vessel)
 
   return (
-    <Link
-      to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId ?? 'NA']}
-      className={styles.vesselItem}
-    >
+    <Fragment>
       {props.saved && onDeleteClick && (
         <IconButton
           type="warning"
@@ -43,65 +40,70 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           onClick={onDeleteClick}
         ></IconButton>
       )}
-      <h3>{vessel?.shipname ?? DEFAULT_EMPTY_VALUE}</h3>
-      <div className={styles.identifiers}>
-        <div>
-          <label>{t('vessel.flag', 'flag')}</label>
-          {flagLabel ?? DEFAULT_EMPTY_VALUE}
-        </div>
-        {vessel.mmsi && (
+      <Link
+        to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId ?? 'NA']}
+        className={styles.vesselItem}
+      >
+        <h3>{vessel?.shipname ?? DEFAULT_EMPTY_VALUE}</h3>
+        <div className={styles.identifiers}>
           <div>
-            <label>{t('vessel.mmsi', 'mmsi')}</label>
-            {vessel.mmsi}
+            <label>{t('vessel.flag', 'flag')}</label>
+            {flagLabel ?? DEFAULT_EMPTY_VALUE}
           </div>
-        )}
-        {vessel.imo && vessel.imo !== '0' && (
+          {vessel.mmsi && (
+            <div>
+              <label>{t('vessel.mmsi', 'mmsi')}</label>
+              {vessel.mmsi}
+            </div>
+          )}
+          {vessel.imo && vessel.imo !== '0' && (
+            <div>
+              <label>{t('vessel.imo', 'imo')}</label>
+              {vessel.imo}
+            </div>
+          )}
+          {vessel.callsign && (
+            <div>
+              <label>{t('vessel.callsign', 'callsign')}</label>
+              {vessel.callsign}
+            </div>
+          )}
+          {SHOW_VESSEL_API_SOURCE && (
+            <div>
+              <label>{t('vessel.source', 'source')}</label>
+              {sourceAPI.map((source) => formatSource(source)).join('+') ?? DEFAULT_EMPTY_VALUE}
+            </div>
+          )}
           <div>
-            <label>{t('vessel.imo', 'imo')}</label>
-            {vessel.imo}
+            <label>{t('vessel.transmission_plural', 'transmissions')}</label>
+            {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
+              <Fragment>
+                {t('common.from', 'from')}{' '}
+                {vessel.firstTransmissionDate ? (
+                  <I18nDate date={vessel.firstTransmissionDate} />
+                ) : (
+                  DEFAULT_EMPTY_VALUE
+                )}{' '}
+                {t('common.to', 'to')}{' '}
+                {vessel.lastTransmissionDate ? (
+                  <I18nDate date={vessel.lastTransmissionDate} />
+                ) : (
+                  DEFAULT_EMPTY_VALUE
+                )}
+              </Fragment>
+            ) : (
+              DEFAULT_EMPTY_VALUE
+            )}
           </div>
-        )}
-        {vessel.callsign && (
-          <div>
-            <label>{t('vessel.callsign', 'callsign')}</label>
-            {vessel.callsign}
-          </div>
-        )}
-        {SHOW_VESSEL_API_SOURCE && (
-          <div>
-            <label>{t('vessel.source', 'source')}</label>
-            {sourceAPI.map(source => formatSource(source)).join('+') ?? DEFAULT_EMPTY_VALUE}
-          </div>
-        )}
-        <div>
-          <label>{t('vessel.transmission_plural', 'transmissions')}</label>
-          {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
-            <Fragment>
-              {t('common.from', 'from')}{' '}
-              {vessel.firstTransmissionDate ? (
-                <I18nDate date={vessel.firstTransmissionDate} />
-              ) : (
-                DEFAULT_EMPTY_VALUE
-              )}{' '}
-              {t('common.to', 'to')}{' '}
-              {vessel.lastTransmissionDate ? (
-                <I18nDate date={vessel.lastTransmissionDate} />
-              ) : (
-                DEFAULT_EMPTY_VALUE
-              )}
-            </Fragment>
-          ) : (
-            DEFAULT_EMPTY_VALUE
+          {props.saved && (
+            <div>
+              <label>{t('vessel.savedOn', 'saved on')}</label>
+              {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
+            </div>
           )}
         </div>
-        {props.saved && (
-          <div>
-            <label>{t('vessel.savedOn', 'saved on')}</label>
-            {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
-          </div>
-        )}
-      </div>
-    </Link>
+      </Link>
+    </Fragment>
   )
 }
 

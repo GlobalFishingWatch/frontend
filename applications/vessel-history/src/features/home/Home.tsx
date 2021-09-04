@@ -8,7 +8,6 @@ import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button, Choice } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { RESULTS_PER_PAGE } from 'data/constants'
-import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
@@ -29,6 +28,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { SearchType } from 'features/search/search.slice'
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import SimpleSearch from 'features/search/SimpleSearch'
+import { useUser } from 'features/user/user.hooks'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -43,6 +43,7 @@ interface LoaderProps {
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const { logout } = useUser()
   const searching = useSelector(selectSearching)
   const query = useSelector(selectQueryParam('q'))
   const searchType = useSelector(selectSearchType)
@@ -104,14 +105,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       {showHeader && (
         <header>
           <Logo className={styles.logo}></Logo>
-          <IconButton
-            type="default"
-            size="default"
-            icon="logout"
-            onClick={async () => {
-              dispatch(logoutUserThunk({ loginRedirect: true }))
-            }}
-          ></IconButton>
+          <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
           <Link to={['settings']}>
             <IconButton type="default" size="default" icon="settings"></IconButton>
           </Link>

@@ -7,7 +7,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from 'data/config'
-import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
+import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
 import { ActivityEvent, Regions } from 'types/activity'
@@ -141,8 +141,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-                count: Math.round(duration.minutes as number),
-              })
+              count: Math.round(duration.minutes as number),
+            })
             : '',
         ].join(' ')
 
