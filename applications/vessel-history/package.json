@@ -7,7 +7,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "CI=true react-scripts test --passWithNoTests",
-    "test:watch": "i18n_DEBUG=true react-scripts test --passWithNoTests",
+    "test:watch": "react-scripts test --passWithNoTests",
     "test:coverage": "CI=true react-scripts test --passWithNoTests --coverage",
     "eject": "react-scripts eject",
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
