@@ -446,31 +446,31 @@
     "description": "Zona ekonomi eksklusif (ZEE) membentang hingga 200 mil laut dari pantai suatu negara. Flanders Marine Institute (2019). Batas Maritim Geodatabase: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11. Sumber: marineregions.org.",
     "schema": {}
   },
-  "public-fd-chlorophyl-ascension-v2": {
-    "name": "Konsentrasi klorofil-a",
-    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+  "public-fd-chlorophyl-ascension-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-caribe-v2": {
-    "name": "Konsentrasi klorofil-a",
-    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+  "public-fd-chlorophyl-caribe-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-galapagos-v2": {
-    "name": "Konsentrasi klorofil-a",
-    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+  "public-fd-chlorophyl-galapagos-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-mediterranean-v2": {
+  "public-fd-chlorophyl-mediterranean-v3": {
     "name": "Clorophyl Mediterranean",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
@@ -478,33 +478,25 @@
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-niue-v2": {
-    "name": "Konsentrasi klorofil-a",
-    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+  "public-fd-chlorophyl-niue-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-palau-v2": {
-    "name": "Konsentrasi klorofil-a",
-    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+  "public-fd-chlorophyl-palau-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-tristan-v2": {
-    "name": "Konsentrasi klorofil-a",
-    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-ascension-v2": {
-    "name": "Salinitas",
-    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+  "public-fd-chlorophyl-tristan-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -512,37 +504,29 @@
   },
   "public-fd-salinity-ascension-v3": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-caribe-v2": {
-    "name": "Salinitas",
-    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
   "public-fd-salinity-caribe-v3": {
-    "name": "Salinity Caribe",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-salinity-galapagos-v2": {
-    "name": "Salinitas",
-    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+  "public-fd-salinity-galapagos-v3": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-salinity-mediterranean-v2": {
+  "public-fd-salinity-mediterranean-v3": {
     "name": "Salinity Mediterranean",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
@@ -550,79 +534,55 @@
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-salinity-niue-v2": {
-    "name": "Salinitas",
-    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
   "public-fd-salinity-niue-v3": {
-    "name": "Salinity Niue",
+    "name": "Salinity",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-palau-v2": {
-    "name": "Salinitas",
-    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
   "public-fd-salinity-palau-v3": {
-    "name": "Salinity Palau",
+    "name": "Salinity",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-tristan-v2": {
-    "name": "Salinitas",
-    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
   "public-fd-salinity-tristan-v3": {
-    "name": "Salinity Tristan",
+    "name": "Salinity",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-ascension-v2": {
-    "name": "Suhu permukaan laut",
+  "public-fd-water-temperature-ascension-v3": {
+    "name": "Sea surface temperature",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-caribe-v2": {
+  "public-fd-water-temperature-caribe-v3": {
     "name": "Water temperature Caribe with data of 2020",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-galapagos-v2": {
-    "name": "Suhu permukaan laut",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+  "public-fd-water-temperature-galapagos-v3": {
+    "name": "Sea surface temperature",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-mediterranean-v2": {
+  "public-fd-water-temperature-mediterranean-v3": {
     "name": "Water temperature Mediterranean",
     "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
@@ -630,25 +590,25 @@
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-niue-v2": {
-    "name": "Suhu permukaan laut",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+  "public-fd-water-temperature-niue-v3": {
+    "name": "Sea surface temperature",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-palau-v2": {
-    "name": "Suhu permukaan laut",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+  "public-fd-water-temperature-palau-v3": {
+    "name": "Sea surface temperature",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-tristan-v2": {
-    "name": "Suhu permukaan laut",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+  "public-fd-water-temperature-tristan-v3": {
+    "name": "Sea surface temperature",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
