@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 3.1.1
+
+### Patch Changes
+
+- b706fcb3: do not send empty multi select array
+
 ## 3.1.0
 
 ### Minor Changes

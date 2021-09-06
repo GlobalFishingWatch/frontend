@@ -1,5 +1,5 @@
 import { ReactElement, useCallback, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
@@ -8,6 +8,7 @@ import Info from 'features/map/info/Info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
+import { selectUrlViewport } from 'routes/routes.selectors'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
@@ -19,12 +20,12 @@ import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 const Map = (): ReactElement => {
   const map = useMapInstance()
   const mapRef = useRef<any>(null)
+  const dispatch = useDispatch()
   const { selectVesselEventOnClick } = useMapEvents()
   const { dispatchQueryParams } = useLocationConnect()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const resourcesLoading = useSelector(selectResourcesLoading) ?? false
-
   const { style, loading: layerComposerLoading } = useLayerComposer(
     generatorsConfig,
     globalConfig,
@@ -38,6 +39,25 @@ const Map = (): ReactElement => {
     selectVesselEventOnClick,
     style?.metadata as ExtendedStyleMeta,
     map
+  )
+  
+  const url = useSelector(selectUrlViewport)
+
+  const onMapResize = useCallback(() => {
+    if (url && mapRef){
+      const {latitude, longitude} = url
+      if (mapRef.current?.getMap().getCenter().lat !== latitude) {
+        // avoid to center in every resize (if happen)
+        setMapCoordinates({
+          latitude,
+          longitude,
+          bearing: 0,
+          pitch: 0,
+          zoom: 8
+        })
+      }
+    }
+    },[setMapCoordinates, url]
   )
 
   if (ENABLE_FLYTO) {
@@ -134,6 +154,7 @@ const Map = (): ReactElement => {
           {...viewport}
           onViewportChange={onViewportChange}
           onClick={onMapClick}
+          onResize={onMapResize}
           mapStyle={style}
           mapOptions={mapOptions}
         ></InteractiveMap>

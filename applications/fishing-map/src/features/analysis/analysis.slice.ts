@@ -58,7 +58,7 @@ export const createReportThunk = createAsyncThunk<
       body: payload as any,
     })
     return createdReport
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })

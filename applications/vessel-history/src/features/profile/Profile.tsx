@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { Point, Segment } from '@globalfishingwatch/data-transforms'
@@ -33,10 +33,10 @@ import useViewport from 'features/map/map-viewport.hooks'
 import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { resetFilters } from 'features/event-filters/filters.slice'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
-import { resetFilters } from './filters/filters.slice'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
@@ -45,31 +45,19 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
-  const vesselProfileId = useSelector(selectVesselProfileId)
-  const vesselStatus = useSelector(selectVesselsStatus)
+  const vesselProfileId = useSelector(selectVesselProfileId, shallowEqual)
+  const vesselStatus = useSelector(selectVesselsStatus, shallowEqual)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
-  const vessel = useSelector(selectVesselById(vesselProfileId))
-  const datasets = useSelector(selectDatasets)
-  const resourceQueries = useSelector(selectDataviewsResourceQueries)
-  const [vesselDataview] = useSelector(selectActiveVesselsDataviews) ?? []
+  const vessel = useSelector(selectVesselById(vesselProfileId), shallowEqual)
+  const datasets = useSelector(selectDatasets, shallowEqual)
+  const resourceQueries = useSelector(selectDataviewsResourceQueries, shallowEqual)
+  const [vesselDataview] = useSelector(selectActiveVesselsDataviews, shallowEqual) ?? []
   const { url: trackUrl = '' } = vesselDataview
     ? resolveDataviewDatasetResource(vesselDataview, DatasetTypes.Tracks)
     : { url: '' }
-  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl), shallowEqual)
   const vesselLoaded = useMemo(() => !!vessel, [vessel])
   const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
-
-  useEffect(() => {
-    if (resourceQueries) {
-      resourceQueries.forEach((resourceQuery) => {
-        dispatch(fetchResourceThunk(resourceQuery))
-      })
-    }
-  }, [dispatch, resourceQueries])
-
-  useEffect(() => {
-    dispatch(resetFilters())
-  }, [dispatch, vesselProfileId])
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -109,8 +97,20 @@ const Profile: React.FC = (props): React.ReactElement => {
         }
       }
     }
-    fetchVessel()
+
+    if (datasets.length > 0) {
+      fetchVessel()
+      dispatch(resetFilters())
+    }
   }, [dispatch, vesselProfileId, datasets])
+
+  useEffect(() => {
+    if (resourceQueries && resourceQueries.length > 0) {
+      resourceQueries.forEach((resourceQuery) => {
+        dispatch(fetchResourceThunk(resourceQuery))
+      })
+    }
+  }, [dispatch, resourceQueries])
 
   const onFitLastPosition = useCallback(() => {
     if (!trackResource?.data || trackResource?.data.length === 0) return
@@ -148,7 +148,8 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'activity',
         title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
         content: vessel ? (
-          <Activity vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
+          <Activity vessel={vessel} lastPosition={lastPosition} 
+            lastPortVisit={lastPortVisit} onMoveToMap={() => setActiveTab(tabs?.[2]) }/>
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
         ),

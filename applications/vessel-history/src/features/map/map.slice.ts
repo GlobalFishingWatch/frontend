@@ -8,9 +8,9 @@ import {
   BasemapGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { RootState } from 'store'
-import { selectUrlMapZoomQuery, getDateRange } from 'routes/routes.selectors'
+import { selectUrlMapZoomQuery } from 'routes/routes.selectors'
 import { Range } from 'types'
-import { selectFilters } from 'features/profile/filters/filters.slice'
+import { selectFilters } from 'features/event-filters/filters.slice'
 
 export interface MapState {
   generatorsConfig: AnyGeneratorConfig[]

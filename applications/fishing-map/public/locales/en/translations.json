@@ -34,7 +34,6 @@
     "days_plural": "days",
     "description": "Description",
     "detection": "Detection",
-    "detection_plural": "Detections",
     "dismiss": "Dissmiss",
     "environment": "Environment",
     "events": "Events",
@@ -67,7 +66,8 @@
     "vessel": "Vessel",
     "vessel_plural": "Vessels",
     "viirs": "Night light detections (VIIRS)",
-    "welcomePopupDisable": "Don't show again"
+    "welcomePopupDisable": "Don't show again",
+    "detection_plural": "Detections"
   },
   "dataset": {
     "addContext": "Add reference layer",
@@ -115,6 +115,7 @@
     "genericShort": "Something went wrong",
     "invalidRange": "Min has to be lower than max value.",
     "latestCarrierNotFound": "Latest carrier dataset not found.",
+    "maxVesselPresenceTimerange": "Presence vessels has a limited timerange of 180days.",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found.",
     "privateView": "This is a private workspace.",
@@ -225,6 +226,7 @@
     "mapLoadingWait": "Please wait until map loads.",
     "rulers_add": "Measure distance",
     "rulers_remove": "Remove measured distances",
+    "runningExpensiveVesselQuery": "Running this query will cost around {{cost}} $. Are you sure to run it?",
     "search": "Search areas",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
@@ -341,11 +343,11 @@
     "emptyStateVessels": "Search for vessels or add them from the map.",
     "nameInput": "Workspace name",
     "new": "New workspace",
+    "privateTitle_plural": "Private workspaces",
     "remove": "Remove workspace",
     "save": "Save the current workspace",
     "saved": "The current workspace has been saved and it's available in your profile.",
     "saveLogin": "Register and login to save workspace views (free, 2 minutes)",
-    "privateTitle_plural": "Private workspaces",
     "title_plural": "Workspaces"
   }
 }

@@ -6,8 +6,8 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS, WORKSPACE_START_DATE } from 'data/config'
-import { Filters, initialState, selectFilters } from 'features/profile/filters/filters.slice'
+import { EVENTS_COLORS } from 'data/config'
+import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
 import { ActivityEvent, Regions } from 'types/activity'
@@ -21,6 +21,7 @@ export interface RenderedEvent extends ActivityEvent {
   descriptionGeneric: string
   regionDescription: string
   durationDescription: string
+  duration: number
 }
 
 export const selectEventsForTracks = createSelector(
@@ -127,9 +128,12 @@ export const selectEventsWithRenderingInfo = createSelector(
             description = t('event.unknown', 'Unknown event')
             descriptionGeneric = t('event.unknown', 'Unknown event')
         }
-        const duration = DateTime.fromMillis(event.end as number)
-          .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
-          .toObject()
+        const durationDiff = DateTime.fromMillis(event.end as number).diff(
+          DateTime.fromMillis(event.start as number),
+          ['hours', 'minutes']
+        )
+
+        const duration = durationDiff.toObject()
 
         const durationDescription = [
           duration.hours && duration.hours > 0
@@ -137,8 +141,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-                count: Math.round(duration.minutes as number),
-              })
+              count: Math.round(duration.minutes as number),
+            })
             : '',
         ].join(' ')
 
@@ -157,10 +161,11 @@ export const selectEventsWithRenderingInfo = createSelector(
           descriptionGeneric,
           regionDescription,
           durationDescription,
+          duration: durationDiff.hours,
         }
       })
     })
-    return eventsWithRenderingInfo
+    return eventsWithRenderingInfo.flat()
   }
 )
 
@@ -207,7 +212,7 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
 }
 
 export const selectEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
-  events.flat().sort((a, b) => (a.start > b.start ? -1 : 1))
+  events.sort((a, b) => (a.start > b.start ? -1 : 1))
 )
 
 export const selectFilteredEvents = createSelector(

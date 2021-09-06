@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/vessel-history",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
@@ -13,7 +13,7 @@
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^3.0.0",
+    "@globalfishingwatch/api-client": "3.1.1",
     "@globalfishingwatch/api-types": "5.3.1",
     "@globalfishingwatch/data-transforms": "^1.4.1",
     "@globalfishingwatch/dataviews-client": "^13.0.0",
@@ -69,7 +69,8 @@
     "workbox-range-requests": "^5.1.3",
     "workbox-routing": "^5.1.3",
     "workbox-strategies": "^5.1.3",
-    "workbox-streams": "^5.1.3"
+    "workbox-streams": "^5.1.3",
+    "workerize-loader": "^1.3.0"
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "^1.6.1",
@@ -157,8 +158,11 @@
     ]
   },
   "jest": {
+    "moduleNameMapper": {
+      "^workerize-loader(\\?.*)?!(.*)/([^/]*)$": "$2/__mocks__/$3"
+    },
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.[jt]sx?$": "babel-jest"
     },
     "transformIgnorePatterns": [],
     "collectCoverageFrom": [

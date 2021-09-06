@@ -50,6 +50,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '4h 56m',
+    duration: 4.95,
   },
   {
     id: 'loitering-3031',
@@ -100,6 +101,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '5h 26m',
+    duration: 5.45,
   },
   {
     id: 'loitering-3030',
@@ -150,6 +152,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '1h 58m',
+    duration: 1.99,
   },
   {
     id: 'loitering-3029',
@@ -200,6 +203,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '19h 55m',
+    duration: 19.95,
   },
   {
     id: 'loitering-3028',
@@ -250,6 +254,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '43h 14m',
+    duration: 43.24,
   },
   {
     id: 'loitering-3027',
@@ -300,6 +305,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '3h 5m',
+    duration: 3.01,
   },
   {
     id: 'loitering-3026',
@@ -350,6 +356,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: ' 59m',
+    duration: 0.99,
   },
   {
     id: 'loitering-3025',
@@ -400,6 +407,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '2h 59m',
+    duration: 2.99,
   },
   {
     id: 'loitering-3024',
@@ -450,6 +458,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '4h 60m',
+    duration: 5,
   },
   {
     id: 'loitering-3023',
@@ -500,6 +509,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'Loitering',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '1h 58m',
+    duration: 1.99,
   },
   {
     id: 'encounter-1',
@@ -596,6 +606,7 @@ export const loiteringAndEncounterEvents = [
     descriptionGeneric: 'encounter',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '20h 50m',
+    duration: 20.9,
   },
   {
     id: 'loitering-3022',
@@ -2877,6 +2888,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '2h 34m',
+    duration: 2.5,
   },
   {
     id: 'port_visit-1588',
@@ -2959,6 +2971,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '4h 57m',
+    duration: 4.98,
   },
   {
     id: 'port_visit-1587',
@@ -3041,6 +3054,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '5h 40m',
+    duration: 5.6,
   },
   {
     id: 'port_visit-1586',
@@ -3123,6 +3137,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '6h 12m',
+    duration: 6.2,
   },
   {
     id: 'port_visit-2132',
@@ -3205,6 +3220,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '3h 20m',
+    duration: 3.33,
   },
   {
     id: 'port_visit-2131',
@@ -3287,6 +3303,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '196h 10m',
+    duration: 196.06,
   },
   {
     id: 'port_visit-2130',
@@ -3369,6 +3386,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '2h 8m',
+    duration: 2.1,
   },
   {
     id: 'port_visit-2129',
@@ -3451,6 +3469,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '5h 3m',
+    duration: 5,
   },
   {
     id: 'port_visit-2128',
@@ -3533,6 +3552,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '12h 4m',
+    duration: 12,
   },
   {
     id: 'port_visit-2135',
@@ -3615,6 +3635,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '2h 3m',
+    duration: 2,
   },
   {
     id: 'port_visit-2134',
@@ -3697,6 +3718,7 @@ export const portVisitEvents = [
     descriptionGeneric: 'Port',
     regionDescription: 'Norwegian EEZ',
     durationDescription: '3h 16m',
+    duration: 3,
   },
 ]
 

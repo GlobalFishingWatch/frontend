@@ -1,19 +1,22 @@
-import React, { Fragment, useCallback, useEffect, useRef } from 'react'
-import cx from 'classnames'
+import React, { Fragment, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { DebounceInput } from 'react-debounce-input'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
+import cx from 'classnames'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
-import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
+import { Spinner, IconButton, Button, Choice } from '@globalfishingwatch/ui-components'
+import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { RESULTS_PER_PAGE } from 'data/constants'
-import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
-import { selectQueryParam } from 'routes/routes.selectors'
+import {
+  selectAdvancedSearchFields,
+  selectQueryParam,
+  selectSearchType,
+} from 'routes/routes.selectors'
 import { fetchVesselSearchThunk } from 'features/search/search.thunk'
 import {
   selectSearchOffset,
@@ -22,6 +25,10 @@ import {
   selectSearching,
 } from 'features/search/search.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { SearchType } from 'features/search/search.slice'
+import AdvancedSearch from 'features/search/AdvancedSearch'
+import SimpleSearch from 'features/search/SimpleSearch'
+import { useUser } from 'features/user/user.hooks'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -36,8 +43,11 @@ interface LoaderProps {
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const { logout } = useUser()
   const searching = useSelector(selectSearching)
   const query = useSelector(selectQueryParam('q'))
+  const searchType = useSelector(selectSearchType)
+  const advancedSearch = useSelector(selectAdvancedSearchFields)
   const vessels = useSelector(selectSearchResults)
   const offset = useSelector(selectSearchOffset)
   const totalResults = useSelector(selectSearchTotalResults)
@@ -50,41 +60,52 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     dispatchFetchOfflineVessels()
   }, [dispatchFetchOfflineVessels])
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({ q: e.target.value })
-  }
-
   const fetchResults = useCallback(
-    (params) => {
+    (offset = 0) => {
       if (promiseRef.current) {
         promiseRef.current.abort()
       }
+      const advancedSearchParams = searchType === 'advanced' ? advancedSearch : null
       // To ensure the pending action isn't overwritted by the abort above
       // and we miss the loading intermediate state
       setTimeout(() => {
-        promiseRef.current = dispatch(fetchVesselSearchThunk(params))
+        promiseRef.current = dispatch(
+          fetchVesselSearchThunk({
+            query,
+            offset,
+            ...((advancedSearchParams ? { advancedSearchParams } : {}) as any),
+          })
+        )
       }, 100)
     },
-    [dispatch]
+    [dispatch, query, advancedSearch, searchType]
   )
 
-  useEffect(() => {
-    fetchResults({ query: query, offset: 0 })
-  }, [fetchResults, query])
+  const searchOptions = useMemo(() => {
+    return [
+      {
+        id: 'basic' as SearchType,
+        title: t('search.basic', 'Basic'),
+      },
+      {
+        id: 'advanced' as SearchType,
+        title: t('search.advanced', 'Advanced'),
+      },
+    ]
+  }, [t])
+
+  const onSearchOptionChange = (option: ChoiceOption, e: React.MouseEvent<Element, MouseEvent>) => {
+    dispatchQueryParams({ searchType: option.id })
+  }
+
+  const showHeader = searchType === 'advanced' || !query
 
   return (
     <div className={styles.homeContainer}>
-      {!query && (
+      {showHeader && (
         <header>
           <Logo className={styles.logo}></Logo>
-          <IconButton
-            type="default"
-            size="default"
-            icon="logout"
-            onClick={async () => {
-              dispatch(logoutUserThunk({ redirectToLogin: true }))
-            }}
-          ></IconButton>
+          <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
           <Link to={['settings']}>
             <IconButton type="default" size="default" icon="settings"></IconButton>
           </Link>
@@ -92,32 +113,23 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </header>
       )}
       <div className={styles.search}>
-        <div className={cx(styles.searchbar, query ? styles.searching : '', styles.inputContainer)}>
-          <DebounceInput
-            debounceTimeout={500}
-            autoFocus
-            type="search"
-            role="search"
-            placeholder="Search vessels by name, MMSI, IMO"
-            aria-label="Search vessels"
-            className={styles.input}
-            onChange={onInputChange}
-            value={query}
+        <div className={cx(styles.title, styles.content)}>
+          <h2>{t('search.title', 'Search')}</h2>
+          <Choice
+            options={searchOptions}
+            activeOption={searchType}
+            onOptionClick={onSearchOptionChange}
+            size="small"
           />
-          {!query && (
-            <IconButton
-              type="default"
-              size="medium"
-              icon="search"
-              className={styles.searchButton}
-            ></IconButton>
-          )}
+        </div>
+        <div className={styles.content}>
+          {searchType === 'advanced' ? <AdvancedSearch /> : <SimpleSearch />}
         </div>
         {!query && (
           <div>
-            <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
+            <h2 className={styles.offlineTitle}>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
             {offlineVessels.length > 0 ? (
-              <div className={styles.offlineVessels}>
+              <div className={styles.content}>
                 {offlineVessels.map((vessel, index) => (
                   <VesselListItem
                     key={index}
@@ -146,7 +158,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                 </SearchPlaceholder>
               )}
               {(!searching || offset > 0) && vessels.length > 0 && (
-                <div className={styles.offlineVessels}>
+                <div className={styles.content}>
                   {vessels.map((vessel: VesselSearch, index) => (
                     <VesselListItem key={index} vessel={vessel} />
                   ))}
@@ -156,7 +168,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                 <div className={styles.listFooter}>
                   <Button
                     className={styles.loadMoreBtn}
-                    onClick={() => fetchResults({ query, offset: offset + RESULTS_PER_PAGE })}
+                    onClick={() => fetchResults(offset + RESULTS_PER_PAGE)}
                   >
                     {t('search.loadMore', 'LOAD MORE')}
                   </Button>

@@ -15,18 +15,14 @@ import {
   TooltipEventFeature,
   useClickedEventConnect,
 } from 'features/map/map.hooks'
-import {
-  PRESENCE_POC_ID,
-  PRESENCE_POC_INTERACTION,
-  PRESENCE_POC_MAX_DAYS,
-  PRESENCE_POC_PRICE_PER_DAY,
-  USE_PRESENCE_POC,
-} from 'features/datasets/datasets.slice'
+import { PRESENCE_POC_ID, PRESENCE_POC_INTERACTION } from 'features/datasets/datasets.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { selectTimeRange } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectDebugOptions } from 'features/debug/debug.slice'
+import { PRESENCE_POC_MAX_DAYS, PRESENCE_POC_PRICE_PER_DAY } from 'data/config'
 import styles from './Popup.module.css'
 
 type FishingTooltipRowProps = {
@@ -38,9 +34,10 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { fishingInteractionStatus } = useClickedEventConnect()
   const timeRange = useSelector(selectTimeRange)
+  const debugOptions = useSelector(selectDebugOptions)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    if (USE_PRESENCE_POC && vessel.trackDataset?.id.includes(PRESENCE_POC_ID)) {
+    if (debugOptions.presenceTrackPOC && vessel.trackDataset?.id.includes(PRESENCE_POC_ID)) {
       const interval = Interval.fromDateTimes(
         DateTime.fromISO(timeRange.start).toUTC(),
         DateTime.fromISO(timeRange.end).toUTC()
@@ -76,7 +73,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
       trackDatasetId: vessel.trackDataset?.id,
       infoDatasetId: vessel.infoDataset?.id,
       ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-      timeRange,
+      ...(debugOptions.presenceTrackPOC && { timeRange }),
     })
 
     upsertDataviewInstance(vesselDataviewInstance)
