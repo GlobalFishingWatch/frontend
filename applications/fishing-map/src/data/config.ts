@@ -7,7 +7,6 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
   (process.env.REACT_APP_WORKSPACE_ENV || process.env.NODE_ENV) === 'production'
 
-export const USE_PRESENCE_POC = process.env.REACT_APP_USE_PRESENCE_POC === 'true'
 export const PRESENCE_POC_MAX_DAYS = 180
 export const PRESENCE_POC_PRICE_PER_DAY = 0.012
 

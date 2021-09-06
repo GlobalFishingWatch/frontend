@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { USE_PRESENCE_POC } from 'data/config'
+import { IS_PRODUCTION } from 'data/config'
 import { RootState } from 'store'
 
 export enum DebugOption {
@@ -24,7 +24,7 @@ const initialState: DebugState = {
     debug: false,
     thinning: true,
     extruded: false,
-    presenceTrackPOC: USE_PRESENCE_POC,
+    presenceTrackPOC: !IS_PRODUCTION,
   },
 }
 
