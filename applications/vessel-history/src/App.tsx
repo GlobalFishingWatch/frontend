@@ -9,7 +9,6 @@ import Splash from 'features/splash/Splash'
 import Settings from 'features/settings/Settings'
 import { useUser } from 'features/user/user.hooks'
 import './App.css'
-import { fetchUserThunk } from 'features/user/user.slice'
 
 function App() {
   const { loading, logged, authorized } = useUser()
