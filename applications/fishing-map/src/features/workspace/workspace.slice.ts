@@ -20,6 +20,7 @@ import { selectCustomWorkspace, selectDaysFromLatest } from 'features/app/app.se
 import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import { isGuestUser } from 'features/user/user.selectors'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -62,6 +63,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const daysFromLatest = selectDaysFromLatest(state)
+    const guestUser = isGuestUser(state)
 
     try {
       let workspace = workspaceId
@@ -111,7 +113,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...(workspace.dataviewInstances || []),
           ...(urlDataviewInstances || []),
         ]
-        const datasets = getDatasetsInDataviews(dataviewInstances)
+        const datasets = getDatasetsInDataviews(dataviewInstances, guestUser)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasets))
         signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
