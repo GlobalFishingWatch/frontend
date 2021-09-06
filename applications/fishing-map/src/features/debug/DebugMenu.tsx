@@ -19,6 +19,7 @@ const DebugMenu: React.FC = () => {
       <section>
         <div className={styles.header}>
           <Switch
+            id="option_blob"
             active={debugOptions.blob}
             onClick={() => dispatch(toggleOption(DebugOption.Blob))}
           />
@@ -30,6 +31,7 @@ const DebugMenu: React.FC = () => {
         </p>
         <div className={styles.header}>
           <Switch
+            id="option_extruded"
             active={debugOptions.extruded}
             onClick={() => dispatch(toggleOption(DebugOption.Extruded))}
           />
@@ -38,6 +40,7 @@ const DebugMenu: React.FC = () => {
         <p>Renders fishing activity as stacked 3D bars. Will disable interaction on this layer.</p>
         <div className={styles.header}>
           <Switch
+            id="option_debug"
             active={debugOptions.debug}
             onClick={() => dispatch(toggleOption(DebugOption.Debug))}
           />
@@ -46,14 +49,16 @@ const DebugMenu: React.FC = () => {
         <p>Displays info on tiles useful for debugging.</p>
         <div className={styles.header}>
           <Switch
+            id="option_thinning"
             active={debugOptions.thinning}
             onClick={() => dispatch(toggleOption(DebugOption.Thinning))}
           />
-          <label htmlFor="option_debug">Track thinning</label>
+          <label htmlFor="option_thinning">Track thinning</label>
         </div>
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
         <div className={styles.header}>
           <Switch
+            id="option_labels"
             active={basemapDataviewInstance?.config?.labels}
             onClick={() => {
               if (basemapDataviewInstance?.id) {
@@ -66,7 +71,7 @@ const DebugMenu: React.FC = () => {
               }
             }}
           />
-          <label htmlFor="option_debug">Basemap labels</label>
+          <label htmlFor="option_labels">Basemap labels</label>
         </div>
         <p>Show or hide basemap labels</p>
         {USE_PRESENCE_POC && (

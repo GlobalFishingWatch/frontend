@@ -7,6 +7,7 @@ import styles from './Switch.module.css'
 import { SwitchEvent } from '.'
 
 interface SwitchProps {
+  id?: string
   active: boolean
   disabled?: boolean
   onClick: (event: SwitchEvent) => void
@@ -18,6 +19,7 @@ interface SwitchProps {
 
 function Switch(props: SwitchProps) {
   const {
+    id,
     active = false,
     disabled = false,
     color,
@@ -37,6 +39,7 @@ function Switch(props: SwitchProps) {
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
+        id={id}
         type="button"
         role="switch"
         aria-checked={active}
