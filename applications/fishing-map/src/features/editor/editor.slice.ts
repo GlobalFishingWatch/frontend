@@ -38,7 +38,7 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
         category !== 'vessels'
     )
     return filteredDataviews
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: e.message,
