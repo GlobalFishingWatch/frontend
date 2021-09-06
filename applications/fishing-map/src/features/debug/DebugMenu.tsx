@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBasemapDataviewInstance } from 'features/dataviews/dataviews.selectors'
+import { USE_PRESENCE_POC } from 'data/config'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
 
@@ -68,6 +69,22 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_debug">Basemap labels</label>
         </div>
         <p>Show or hide basemap labels</p>
+        {USE_PRESENCE_POC && (
+          <Fragment>
+            <div className={styles.header}>
+              <Switch
+                id="option_presence_track"
+                active={debugOptions.presenceTrackPOC}
+                onClick={() => dispatch(toggleOption(DebugOption.PresenceTrackPOC))}
+              />
+              <label htmlFor="option_presence_track">Presence tracks</label>
+            </div>
+            <p>
+              Allows interaction with presence layer to render tracks using the new proof of concept
+              API
+            </p>
+          </Fragment>
+        )}
       </section>
       <hr className={styles.separation} />
       <section>
