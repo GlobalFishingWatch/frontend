@@ -98,11 +98,10 @@ const Profile: React.FC = (props): React.ReactElement => {
       }
     }
 
-    if (datasets.length > 0) {
+    if (!vessel && datasets.length > 0) {
       fetchVessel()
-      dispatch(resetFilters())
     }
-  }, [dispatch, vesselProfileId, datasets])
+  }, [dispatch, vesselProfileId, datasets, vessel])
 
   useEffect(() => {
     if (resourceQueries && resourceQueries.length > 0) {
@@ -148,8 +147,12 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'activity',
         title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
         content: vessel ? (
-          <Activity vessel={vessel} lastPosition={lastPosition} 
-            lastPortVisit={lastPortVisit} onMoveToMap={() => setActiveTab(tabs?.[2]) }/>
+          <Activity
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
+            onMoveToMap={() => setActiveTab(tabs?.[2])}
+          />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
         ),
