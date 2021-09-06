@@ -1,5 +1,6 @@
+import React, { Fragment } from 'react'
 import { Provider } from 'react-redux'
-import { render, waitFor, screen, act } from '@testing-library/react'
+import { render, waitFor, act } from '@testing-library/react'
 import { I18nextProvider } from 'react-i18next'
 import i18n from 'features/i18n/__mocks__/i18n'
 import { useUser } from 'features/user/user.hooks'
@@ -7,6 +8,12 @@ import store from './store'
 import App from './App'
 
 jest.mock('features/user/user.hooks')
+// This is to setup i18n provider for the test
+render(
+  <I18nextProvider i18n={i18n as any}>
+    <Fragment />
+  </I18nextProvider>
+)
 
 describe('<App />', () => {
   const mockUser: jest.Mock = useUser as jest.Mock
@@ -31,9 +38,7 @@ describe('<App />', () => {
     mockUser.mockReturnValue(gfwLoginDefault)
     const component = render(
       <Provider store={store}>
-        <I18nextProvider i18n={i18n as any}>
-          <App />
-        </I18nextProvider>
+        <App />
       </Provider>
     )
     const splashElement = await waitFor(() => component.getByTestId('splash'))
@@ -51,15 +56,13 @@ describe('<App />', () => {
     })
     const component = render(
       <Provider store={store}>
-        <I18nextProvider i18n={i18n as any}>
-          <App />
-        </I18nextProvider>
+        <App />
       </Provider>
     )
     act(() => {
       jest.runAllTimers() // trigger setTimeout
     })
-    await waitFor(() => screen.getByTestId('home'))
+    await waitFor(() => component.getByTestId('home'))
     expect(component.asFragment()).toMatchSnapshot()
   })
 })
