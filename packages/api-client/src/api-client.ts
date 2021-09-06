@@ -252,19 +252,30 @@ export class GFWAPI {
         const {
           method = 'GET',
           body = null,
-          headers = {},
+          // headers = {},
           responseType = 'json',
           requestType = 'json',
           signal,
           dataset = this.dataset,
-          local = false,
         } = options
+
+        let { headers = {}, local = false } = options
         if (this.debug) {
           console.log(`GFWAPI: Fetching URL: ${url}`)
         }
-        const fetchUrl = isUrlAbsolute(url)
+        let fetchUrl = isUrlAbsolute(url)
           ? url
           : this.baseUrl + (dataset ? `/datasets/${this.dataset}` : '') + url
+        if (fetchUrl.match('https://gateway.api.dev.globalfishingwatch.org/v1/events')) {
+          fetchUrl = fetchUrl.replace(
+            'https://gateway.api.dev.globalfishingwatch.org',
+            'http://localhost:3012'
+          )
+          headers = {
+            permissions: JSON.stringify([{ type: 'dataset', value: '*', action: 'read' }]),
+          } as any
+          local = true
+        }
         const data = await fetch(fetchUrl, {
           method,
           signal,
