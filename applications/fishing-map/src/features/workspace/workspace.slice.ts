@@ -121,7 +121,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
 
       return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ error: e as AsyncError })
     }
   },
@@ -158,7 +158,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
               },
             } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
           )
-        } catch (e) {
+        } catch (e: any) {
           // Means we already have a workspace with this name
           if (e.status === 400) {
             return await saveWorkspace(tries + 1)

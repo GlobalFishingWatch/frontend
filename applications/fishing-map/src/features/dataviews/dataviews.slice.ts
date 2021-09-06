@@ -11,7 +11,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
     try {
       const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${id}`)
       return dataview
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
     }
   }
@@ -37,7 +37,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
       }
       return dataviews
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
@@ -57,7 +57,7 @@ export const createDataviewThunk = createAsyncThunk<
     })
 
     return createdDataview
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
@@ -77,7 +77,7 @@ export const updateDataviewThunk = createAsyncThunk<
         body: partialDataview as any,
       })
       return dataview
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   },

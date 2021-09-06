@@ -44,7 +44,7 @@ export const fetchUserThunk = createAsyncThunk(
 
     try {
       return await GFWAPI.login({ accessToken })
-    } catch (e) {
+    } catch (e: any) {
       return await fetchGuestUser()
     }
   }
@@ -55,7 +55,7 @@ export const logoutUserThunk = createAsyncThunk(
   async ({ loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false }) => {
     try {
       await GFWAPI.logout()
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
     }
     if (loginRedirect) {
