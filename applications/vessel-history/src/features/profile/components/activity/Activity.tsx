@@ -15,6 +15,8 @@ import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { setHighlightedEvent } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import useViewport from 'features/map/map-viewport.hooks'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -30,7 +32,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   const eventsLoading = useSelector(selectResourcesLoading)
   const events = useSelector(selectFilteredEvents)
-
+  const { setMapCoordinates } = useViewport()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -42,9 +44,9 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const { dispatchQueryParams } = useLocationConnect()
   const selectEventOnMap = useCallback((event: RenderedEvent) => {
     dispatch(setHighlightedEvent({id: event.id} as ApiEvent))
-    dispatchQueryParams({ latitude: event.position.lat, longitude: event.position.lon })
+    setMapCoordinates({ latitude: event.position.lat, longitude: event.position.lon, zoom: DEFAULT_VESSEL_MAP_ZOOM, bearing: 0, pitch: 0 })
     props.onMoveToMap()
-  }, [dispatch, dispatchQueryParams, props])
+  }, [dispatch, props, setMapCoordinates])
 
   useEffect(() => {
     dispatch(fetchRegionsThunk())
@@ -78,8 +80,8 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                           <ActivityItem
                             key={index}
                             event={event}
-                            onMapClick={(event) => selectEventOnMap(event)}
-                            onInfoClick={(event) => openModal(event)}
+                            onMapClick={selectEventOnMap}
+                            onInfoClick={openModal}
                           />
                         </div>
                       )
