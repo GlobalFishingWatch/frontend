@@ -24,6 +24,26 @@ export interface RenderedEvent extends ActivityEvent {
   duration: number
 }
 
+export const selectEventsResources = createSelector(
+  [selectActiveTrackDataviews, selectResources],
+  (trackDataviews, resources) => {
+    return trackDataviews
+      .map((dataview) => {
+        return resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map(
+          (eventResource) => {
+            console.log({ url: eventResource.url, status: resources[eventResource.url].status })
+            return resources[eventResource.url]
+          }
+        )
+      })
+      .flat()
+  }
+)
+
+export const selectEventsLoading = createSelector([selectEventsResources], (resources) =>
+  resources.map((resource) => resource.status).includes(ResourceStatus.Loading)
+)
+
 export const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {

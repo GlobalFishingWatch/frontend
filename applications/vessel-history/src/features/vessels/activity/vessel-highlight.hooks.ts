@@ -3,10 +3,13 @@ import { shallowEqual, useSelector } from 'react-redux'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import createActivityHighlightsWorker from 'workerize-loader!./vessels-highlight.worker'
 import { selectSettings, Settings } from 'features/settings/settings.slice'
-import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectAnyHighlightsSettingDefined } from './vessels-highlight.selectors'
 import * as ActivityHighlightsWorker from './vessels-highlight.worker'
-import { RenderedEvent, selectEventsWithRenderingInfo } from './vessels-activity.selectors'
+import {
+  RenderedEvent,
+  selectEventsLoading,
+  selectEventsWithRenderingInfo,
+} from './vessels-activity.selectors'
 
 const { filterActivityHighlightEvents } =
   createActivityHighlightsWorker<typeof ActivityHighlightsWorker>()
@@ -15,7 +18,7 @@ export const useActivityHighlightsConnect = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [highlightedEvents, setHighlightedEvents] = useState<RenderedEvent[] | undefined>([])
 
-  const eventsLoading = useSelector(selectResourcesLoading)
+  const eventsLoading = useSelector(selectEventsLoading)
   const allEvents = useSelector(selectEventsWithRenderingInfo, shallowEqual)
   const settings = useSelector(selectSettings, shallowEqual)
   const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
