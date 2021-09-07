@@ -1,11 +1,181 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<App /> renders home screen when not loading 1`] = `<DocumentFragment />`;
+exports[`<App /> renders home screen when not loading 1`] = `
+<DocumentFragment>
+  <div
+    class="homeContainer"
+    data-testid="home"
+  >
+    <header>
+      <svg
+        aria-label="Global Fishing Watch "
+        class="Logo-module_container__3qEvx logo"
+        height="60"
+        viewBox="20 0 200 60"
+        width="200"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g
+          aria-hidden="true"
+          fill="none"
+          fill-rule="evenodd"
+          focusable="false"
+        >
+          <path
+            d="M23.1 27.83c-.08.16-2.25 4.5.57 8.76.83 1.25 1.76 2.24 4.1 3.8 3.38 2.26 7.42 6.16 8.4 8.45.1.21.36.59-.06.83-.73.41-1.75.31-2.16.25l-.12-.02c-4.75-.88-14.5-5-13.8-13.8.18-2.21.98-4.87 3.07-8.27zm9.92-8.64c.7-.08 2.98-.15 3.08.08.07.17-.83.5-.87.52-5.22 1.98-6.97 3.16-7.22 3.3-3.3 2.01-4.71 4.35-4.82 4.57 1.48-3.1 5.2-7.93 9.83-8.47z"
+            fill="#8ABBC7"
+          />
+          <path
+            d="M40.45 19.2l.64 1.16a17.1 17.1 0 011.52 3.94c.27 1.1.39 2.23.31 3.37a9.39 9.39 0 01-1.72 4.84 12.9 12.9 0 01-3.29 3.2 20.3 20.3 0 01-7.02 3.08c-.4.09-.8.16-1.2.19a3.39 3.39 0 01-1.3-.17c-.43-.17-.5-.43-.28-.83a13.43 13.43 0 012.53-3.4 35.39 35.39 0 015.48-4.56c.76-.53 1.5-1.06 2.15-1.7a8.5 8.5 0 002.55-4.63 8.37 8.37 0 00-.24-3.89l-.18-.59.05-.02zm.64 16.43c.5.03.64.28.4.72-.35.64-.9 1.04-1.6 1.21-.68.16-1.35.13-2.02-.02-.42-.09-.83-.23-1.24-.35l-.11-.06.12-.08c1.02-.53 2.07-.97 3.19-1.26.4-.1.83-.18 1.26-.16zM30.73 10.07c.92.2 1.75.61 2.54 1.11.87.56 1.65 1.21 2.4 1.92a29.78 29.78 0 014.2 5.18l.01.07-.18-.16a14.79 14.79 0 00-3.6-2.45c-1.01-.5-2.06-.9-3.11-1.3-.58-.23-1.16-.44-1.7-.75a1.82 1.82 0 01-.75-.76c-.15-.32-.07-.6.23-.78l.35-.18c-.28-.14-.53-.24-.75-.38-.2-.13-.38-.29-.55-.45a.77.77 0 01-.21-.64c.02-.24.13-.38.35-.46.26-.08.52-.03.77.03z"
+            fill="#E84427"
+          />
+          <text
+            class="Logo-module_mainBrand__3OqxN Logo-module_default__2NdMB"
+            x="52"
+            y="37"
+          >
+            Global Fishing Watch
+          </text>
+        </g>
+      </svg>
+      <button
+        class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_defaultSize__1OZDe"
+      >
+        <svg
+          aria-hidden="true"
+          class="Icon-module_default__2Pvfr"
+          height="20"
+          width="20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10.9 15.67c0 .33-.25.6-.56.64l-.1.01h-6a.65.65 0 01-.65-.55V4.8c0-.32.24-.6.55-.64h6.1a.65.65 0 01.1 1.29H4.89v9.56h5.35c.33 0 .6.24.65.56v.1zm-3.63-5.43c0 .33.24.6.56.65h6.36l-1.7 1.71a.65.65 0 00.83.99l.08-.07 2.82-2.82a.65.65 0 00.07-.84l-.07-.08-2.82-2.82a.65.65 0 00-.98.84l.06.08L14.2 9.6H7.92c-.35 0-.65.3-.65.65z"
+          />
+        </svg>
+      </button>
+      <a
+        to="settings"
+      >
+        <button
+          class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_defaultSize__1OZDe"
+        >
+          <svg
+            aria-hidden="true"
+            class="Icon-module_default__2Pvfr"
+            height="20"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M11.18 2.8h.06l.14.01c.3.07.52.29.63.61l.03.13.2 1.45.24.12.12.07.12.07.23.15 1.44-.57.11-.03c.34-.06.64.05.84.31l.07.1 1.36 2.36.06.11c.13.34.06.7-.19.92l-.09.07-1.17.91v.82l1.2.92.09.09c.25.26.28.6.14.93l-.06.11-1.36 2.35-.08.1c-.21.26-.52.34-.86.26l-.13-.03-1.38-.55-.2.13-.28.17-.13.07-.08.04-.23 1.53-.04.14a.83.83 0 01-.68.53H8.44l-.14-.01c-.3-.07-.52-.29-.63-.61l-.03-.13-.2-1.45-.24-.12-.12-.07-.12-.07-.23-.15-1.44.57-.11.03a.83.83 0 01-.84-.31l-.07-.1-1.36-2.36-.06-.11a.82.82 0 01.19-.92l.09-.07 1.17-.92v-.8l-1.2-.92-.09-.09c-.25-.26-.28-.6-.14-.93l.06-.11L4.29 5.2l.08-.1c.21-.26.52-.34.86-.26l.13.03 1.38.55.2-.13.28-.17.13-.07.08-.04.23-1.53.04-.14c.12-.3.37-.49.68-.53h2.8zm-.2 1.1H8.7l-.27 1.87-.3.12c-.17.07-.38.18-.61.33l-.18.11-.46.32-1.76-.7-1.16 2 1.5 1.16-.04.31c-.02.1-.03.24-.03.43V10l.01.42.02.17.03.31-1.49 1.16 1.16 1.99 1.78-.7.24.18a5 5 0 00.59.39l.2.1.5.23.27 1.86h2.28l.27-1.88.3-.12c.17-.07.38-.18.61-.33l.18-.11.46-.32 1.76.7 1.16-2-1.5-1.16.04-.31c.02-.1.03-.24.03-.43V10l-.01-.42-.02-.17-.03-.31 1.49-1.16-1.16-1.99-1.78.7-.24-.18a5 5 0 00-.59-.39l-.2-.1-.5-.23-.27-1.86zM9.84 7.1c.8 0 1.48.3 2.05.85.56.57.84 1.26.84 2.05 0 .8-.28 1.48-.84 2.05a2.8 2.8 0 01-2.05.84 2.8 2.8 0 01-2.05-.84A2.8 2.8 0 016.95 10c0-.8.28-1.48.84-2.05a2.8 2.8 0 012.05-.84zm0 1.1c-.5 0-.91.18-1.27.53A1.7 1.7 0 008.05 10c0 .5.17.91.52 1.27.36.35.77.52 1.27.52s.91-.17 1.27-.52c.35-.36.52-.77.52-1.27s-.17-.91-.52-1.27a1.7 1.7 0 00-1.27-.52z"
+            />
+          </svg>
+        </button>
+      </a>
+      <button
+        class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_defaultSize__1OZDe button"
+      >
+        en
+      </button>
+    </header>
+    <div
+      class="search"
+    >
+      <div
+        class="title content"
+      >
+        <h2>
+          Search
+        </h2>
+        <div
+          class="Choice-module_Choice__2F2vX"
+        >
+          <ul
+            class="Choice-module_list__1ERsZ"
+            role="radiogroup"
+          >
+            <li
+              aria-checked="true"
+              aria-controls="basic"
+              class="Choice-module_option__1xmln"
+              role="radio"
+              tabindex="0"
+            >
+              <button
+                class="Button-module_button__XL0aF Button-module_secondary__1czot Button-module_small__20Sil Choice-module_optionButton__2xVIX Choice-module_optionActive__1feaj"
+              >
+                Basic
+              </button>
+            </li>
+            <li
+              aria-checked="false"
+              aria-controls="advanced"
+              class="Choice-module_option__1xmln"
+              role="radio"
+              tabindex="1"
+            >
+              <button
+                class="Button-module_button__XL0aF Button-module_secondary__1czot Button-module_small__20Sil Choice-module_optionButton__2xVIX"
+              >
+                Advanced
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        class="content"
+      >
+        <div
+          class="searchbar inputContainer"
+        >
+          <input
+            aria-label="Search vessels"
+            class="input"
+            placeholder="Search vessels by name, MMSI, IMO"
+            role="search"
+            type="search"
+            value=""
+          />
+          <button
+            class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_mediumSize__1xT0g searchButton"
+          >
+            <svg
+              aria-hidden="true"
+              class="Icon-module_default__2Pvfr"
+              height="20"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 4.35a4.65 4.65 0 013.715 7.447l3.245 3.243a.65.65 0 01-.84.988l-.08-.068-3.243-3.245A4.65 4.65 0 119 4.35zm0 1.3a3.35 3.35 0 100 6.7 3.35 3.35 0 000-6.7z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div>
+        <h2
+          class="offlineTitle"
+        >
+          OFFLINE ACCESS
+        </h2>
+        <div
+          class="offlineAccessEmptyState"
+        >
+          The vessels you save for offline access will appear here.
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
 
 exports[`<App /> renders splash screen while loading 1`] = `
 <DocumentFragment>
   <div
     class="container"
+    data-testid="splash"
   >
     <div
       class="splash"

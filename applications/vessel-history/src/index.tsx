@@ -1,5 +1,5 @@
 import { render } from 'react-dom'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -14,7 +14,9 @@ render(
   <React.StrictMode>
     <RecoilRoot>
       <Provider store={store}>
-        <App />
+        <Suspense fallback={<div></div>}>
+          <App />
+        </Suspense>
       </Provider>
     </RecoilRoot>
   </React.StrictMode>,

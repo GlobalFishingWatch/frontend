@@ -1,18 +1,22 @@
+import React, { Fragment } from 'react'
 import { Provider } from 'react-redux'
-import React from 'react'
-import { render } from '@testing-library/react'
-import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
+import { render, waitFor, act } from '@testing-library/react'
+import { I18nextProvider } from 'react-i18next'
+import i18n from 'features/i18n/__mocks__/i18n'
+import { useUser } from 'features/user/user.hooks'
 import store from './store'
 import App from './App'
 
-jest.mock('@globalfishingwatch/react-hooks/dist/use-login')
-jest.useFakeTimers()
+jest.mock('features/user/user.hooks')
+// This is to setup i18n provider for the test
+render(
+  <I18nextProvider i18n={i18n as any}>
+    <Fragment />
+  </I18nextProvider>
+)
 
 describe('<App />', () => {
-  const assignMock = jest.fn()
-  const mockGFWLogin: jest.Mock = useGFWLogin as jest.Mock
-  delete window['location']
-  window.location = { assign: assignMock }
+  const mockUser: jest.Mock = useUser as jest.Mock
 
   const gfwLoginDefault = {
     loading: true,
@@ -21,44 +25,44 @@ describe('<App />', () => {
     error: null,
   }
 
+  beforeEach(() => {
+    jest.useFakeTimers()
+    jest.clearAllTimers()
+  })
+
   afterEach(() => {
     jest.clearAllMocks()
   })
 
-  it('renders splash screen while loading', () => {
-    mockGFWLogin.mockReturnValue(gfwLoginDefault)
+  it('renders splash screen while loading', async () => {
+    mockUser.mockReturnValue(gfwLoginDefault)
     const component = render(
       <Provider store={store}>
         <App />
       </Provider>
     )
-
-    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000)
+    const splashElement = await waitFor(() => component.getByTestId('splash'))
+    expect(splashElement).toBeInTheDocument()
     expect(component.asFragment()).toMatchSnapshot()
   })
 
-  it('redirects to login screen when not logged', () => {
-    mockGFWLogin.mockReturnValue({ ...gfwLoginDefault, loading: false })
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    )
-    expect(assignMock).toHaveBeenCalled()
-  })
-  it('renders home screen when not loading', () => {
-    mockGFWLogin.mockReturnValue({
+  it('renders home screen when not loading', async () => {
+    mockUser.mockReturnValue({
       ...gfwLoginDefault,
       loading: false,
       logged: true,
+      authorized: true,
+      user: { id: '1', name: 'foo' },
     })
     const component = render(
       <Provider store={store}>
         <App />
       </Provider>
     )
-    jest.runAllTimers()
-    component.rerender()
+    act(() => {
+      jest.runAllTimers() // trigger setTimeout
+    })
+    await waitFor(() => component.getByTestId('home'))
     expect(component.asFragment()).toMatchSnapshot()
   })
 })

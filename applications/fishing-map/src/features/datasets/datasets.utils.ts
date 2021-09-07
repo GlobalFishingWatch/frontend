@@ -31,12 +31,14 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
 }
 
 export const getDatasetsInDataviews = (
-  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  guestUser = false
 ) => {
   return uniq(
     dataviews?.flatMap((dataviews) => {
       if (!dataviews.datasetsConfig) return []
-      return dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+      const datasetIds = dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+      return guestUser ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX)) : datasetIds
     })
   )
 }

@@ -122,12 +122,9 @@ export const useHighlightEventConnect = () => {
   )
 }
 
-export const useTimebarVisualisation = () => {
+export const useTimebarVisualisationConnect = () => {
   const dispatch = useDispatch()
-  const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
-  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
-  const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
   const { dispatchQueryParams } = useLocationConnect()
   const dispatchTimebarVisualisation = useCallback(
@@ -139,6 +136,17 @@ export const useTimebarVisualisation = () => {
     },
     [dispatchQueryParams, dispatch]
   )
+
+  return { timebarVisualisation, dispatchTimebarVisualisation }
+}
+
+// Used to automate the behave depending on vessels or activity state
+// should be instanciated only once to avoid doing it more than needed
+export const useTimebarVisualisation = () => {
+  const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
+  const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
+  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
   useEffect(() => {
     if (timebarVisualisation === TimebarVisualisations.Heatmap) {

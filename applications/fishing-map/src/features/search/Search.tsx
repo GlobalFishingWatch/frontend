@@ -356,6 +356,8 @@ function Search() {
                         callsign,
                         geartype,
                         origin,
+                        casco,
+                        nationalId,
                         matricula,
                         dataset,
                         firstTransmissionDate,
@@ -409,6 +411,24 @@ function Search() {
                                     : EMPTY_FIELD_PLACEHOLDER}
                                 </span>
                               </div>
+                              {matricula && (
+                                <div className={styles.property}>
+                                  <label>{t('vessel.matricula', 'Matricula')}</label>
+                                  <span>{matricula}</span>
+                                </div>
+                              )}
+                              {nationalId && (
+                                <div className={styles.property}>
+                                  <label>{t('vessel.nationalId', 'National Id')}</label>
+                                  <span>{nationalId}</span>
+                                </div>
+                              )}
+                              {casco && (
+                                <div className={styles.property}>
+                                  <label>{t('vessel.casco', 'Casco')}</label>
+                                  <span>{casco}</span>
+                                </div>
+                              )}
                               {fleet && (
                                 <div className={styles.property}>
                                   <label>{t('vessel.fleet', 'Fleet')}</label>
@@ -419,12 +439,6 @@ function Search() {
                                 <div className={styles.property}>
                                   <label>{t('vessel.origin', 'Origin')}</label>
                                   <span>{formatInfoField(origin, 'fleet')}</span>
-                                </div>
-                              )}
-                              {matricula && (
-                                <div className={styles.property}>
-                                  <label>{t('vessel.matricula', 'Matricula')}</label>
-                                  <span>{formatInfoField(matricula, 'fleet')}</span>
                                 </div>
                               )}
                               {firstTransmissionDate && lastTransmissionDate && (

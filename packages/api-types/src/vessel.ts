@@ -15,7 +15,9 @@ export interface Vessel {
   mmsi?: string
   callsign?: string
   fleet?: string
+  casco?: string
   matricula?: string
+  nationalId?: string
   origin?: string
   type?: string
   geartype?: string

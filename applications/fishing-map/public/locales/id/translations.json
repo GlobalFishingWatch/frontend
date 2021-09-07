@@ -34,7 +34,6 @@
     "days_plural": "hari",
     "description": "Deskripsi",
     "detection": "Detection",
-    "detection_plural": "Detections",
     "dismiss": "Dissmiss",
     "environment": "Lingkungan",
     "events": "Acara",
@@ -67,7 +66,8 @@
     "vessel": "Kapal",
     "vessel_plural": "Kapal",
     "viirs": "Night light detections (VIIRS)",
-    "welcomePopupDisable": "Don't show again"
+    "welcomePopupDisable": "Don't show again",
+    "detection_plural": "Detections"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
@@ -78,6 +78,7 @@
     "dragFilePlaceholder": "Seret dan jatuhkan shapefile atau geojson yang terkompresi di sini atau klik untuk memilihnya",
     "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
+    "emptyFilters": "No filters available",
     "emptyState": "Dataset Anda akan muncul di sini",
     "featuresNameField": "Fitur kolom nama",
     "file": "Berkas",
@@ -114,6 +115,7 @@
     "genericShort": "Ada yang tidak beres",
     "invalidRange": "Min. harus lebih rendah dari nilai maks",
     "latestCarrierNotFound": "Dataset operator terbaru tidak ditemukan",
+    "maxVesselPresenceTimerange": "Presence vessels has a limited timerange of 180days.",
     "notSupportedBy": "Tidak didukung oleh {{list}}",
     "pageNotFound": "Halaman tidak ditemukan",
     "privateView": "Ini adalah tampilan pribadi",
@@ -224,6 +226,7 @@
     "mapLoadingWait": "Harap tunggu sampai peta dimuat",
     "rulers_add": "Tambahkan penggaris",
     "rulers_remove": "Hapus semua penggaris",
+    "runningExpensiveVesselQuery": "Running this query will cost around {{cost}} $. Are you sure to run it?",
     "search": "Area pencarian",
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
@@ -261,7 +264,8 @@
     "graphOptions": {
       "depth": "Depth $t(common.comingSoon)",
       "none": "None",
-      "speed": "Speed"
+      "speed": "Speed",
+      "speedDisabled": "Not available with more than 1 vessel selected"
     },
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Tutup pengaturan timebar",
@@ -284,6 +288,7 @@
     "callsign": "Callsign",
     "capacity": "Kapasitas",
     "carrier": "Pembawa",
+    "casco": "Casco",
     "donor": "Kapal donor",
     "firstTransmissionDate": "Tanggal transmisi pertama",
     "flag": "Bendera",
@@ -338,11 +343,11 @@
     "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
     "nameInput": "Nama ruang kerja",
     "new": "Ruang kerja baru",
+    "privateTitle_plural": "Private workspaces",
     "remove": "Hapus ruang kerja",
     "save": "Simpan tampilan saat ini",
     "saved": "Tampilan saat ini telah disimpan dan tersedia di profil Anda",
     "saveLogin": "Anda harus masuk untuk menyimpan tampilan (gratis, 2 menit)",
-    "privateTitle_plural": "Private workspaces",
     "title_plural": "Ruang kerja"
   }
 }

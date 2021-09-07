@@ -1,5 +1,4 @@
 import { FeatureCollection } from 'geojson'
-import { StringUnitLength } from 'luxon'
 import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
@@ -142,7 +141,7 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
   /**
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
-  color?: StringUnitLength
+  color?: string
 }
 
 export type TileClusterEventType = 'encounter' | 'loitering' | 'port'

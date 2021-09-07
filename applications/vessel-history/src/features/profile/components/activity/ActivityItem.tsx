@@ -41,7 +41,7 @@ const ActivityItem: React.FC<EventProps> = ({
           ></IconButton>
         </div>
       </div>
-      <div className={styles.divider}></div>
+      <div className={cx(styles.divider, styles.itemsDivider)}></div>
     </Fragment>
   )
 }

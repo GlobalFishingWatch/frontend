@@ -1,8 +1,9 @@
-import React, { Fragment, useMemo, useCallback } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { ValueItem, VesselAPISource } from 'types'
+import { useVesselsConnect } from 'features/vessels/vessels.hook'
+import { ValueItem } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
@@ -28,15 +29,8 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     return `${label} History for ${vesselName}`
   }, [label, vesselName])
 
-  const formatSource = useCallback(
-    (source?: VesselAPISource) =>
-      source
-        ? source === VesselAPISource.GFW
-          ? t('common.AIS', 'AIS')
-          : t('common.Other', 'Other')
-        : DEFAULT_EMPTY_VALUE,
-    [t]
-  )
+  const { formatSource } = useVesselsConnect()
+  
   if (history.length < 1) {
     return <div></div>
   }

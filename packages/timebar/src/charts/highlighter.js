@@ -121,12 +121,13 @@ Highlighter.propTypes = {
   hoverEnd: PropTypes.string,
   activity: PropTypes.arrayOf(
     PropTypes.shape({
-      segmentsWithCurrentFeature: PropTypes.arrayOf(
+      segmentsWithCurrentFeature: PropTypes.array,
+      /* arrayOf but removed as were reporting false positives
         PropTypes.shape({
           date: PropTypes.number,
           value: PropTypes.number,
         })
-      ),
+      */
       maxValue: PropTypes.number,
     })
   ),

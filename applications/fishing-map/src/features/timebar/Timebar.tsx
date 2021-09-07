@@ -14,6 +14,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
+  useTimebarVisualisationConnect,
   useHighlightEventConnect,
   useDisableHighlightTimeConnect,
 } from 'features/timebar/timebar.hooks'
@@ -56,12 +57,13 @@ const TimebarHighlighterWrapper = ({ activity }: any) => {
 }
 
 const TimebarWrapper = () => {
+  useTimebarVisualisation()
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
-  const { timebarVisualisation } = useTimebarVisualisation()
+  const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
@@ -265,6 +267,7 @@ const TimebarWrapper = () => {
                   {syncedTracksEvents && (
                     <TimebarTracksEvents
                       key="events"
+                      labels={labels?.trackEvents}
                       preselectedEventId={highlightedEvent?.id}
                       tracksEvents={syncedTracksEvents}
                       onEventClick={onEventClick}

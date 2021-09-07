@@ -12,16 +12,15 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { LATEST_CARRIER_DATASET_ID } from 'data/config'
+import { LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
-export const USE_PRESENCE_POC = process.env.REACT_APP_USE_PRESENCE_POC === 'true'
 export const PRESENCE_POC_INTERACTION = 'presence-POC' as HeatmapAnimatedInteractionType
 export const PRESENCE_POC_ID = 'global-presence-tracks'
 
 const parsePresencePOCDataset = (dataset: Dataset) => {
-  if (USE_PRESENCE_POC && dataset.id.includes(PRESENCE_POC_ID)) {
+  if (dataset.id.includes(PRESENCE_POC_ID)) {
     const pocDataset = {
       ...dataset,
       endpoints: dataset.endpoints?.map((endpoint) => {
@@ -46,7 +45,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
     return parsePresencePOCDataset(dataset)
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${id} - ${e.message}`,
@@ -87,7 +86,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
       }
       return datasets.map(parsePresencePOCDataset)
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
@@ -118,7 +117,7 @@ export const createDatasetThunk = createAsyncThunk<
     const datasetWithFilePath = {
       ...dataset,
       description: dataset.description || dataset.name,
-      id: `${kebabCase(dataset.name)}-${Date.now()}`,
+      id: `${PUBLIC_SUFIX}-${kebabCase(dataset.name)}-${Date.now()}`,
       source: DATASETS_USER_SOURCE_ID,
       configuration: {
         ...dataset.configuration,
@@ -133,7 +132,7 @@ export const createDatasetThunk = createAsyncThunk<
     })
 
     return createdDataset
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
@@ -153,7 +152,7 @@ export const updateDatasetThunk = createAsyncThunk<
         body: partialDataset as any,
       })
       return updatedDataset
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   },
@@ -179,7 +178,7 @@ export const deleteDatasetThunk = createAsyncThunk<
       method: 'DELETE',
     })
     return { ...dataset, id }
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
@@ -194,7 +193,7 @@ export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${LATEST_CARRIER_DATASET_ID}`)
     return dataset
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${LATEST_CARRIER_DATASET_ID} - ${e.message}`,

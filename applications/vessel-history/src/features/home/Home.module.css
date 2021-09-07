@@ -27,8 +27,11 @@
   font-size: 1.4rem;
   letter-spacing: 0;
   line-height: 2rem;
-  margin: 2rem 1.5rem 0;
   text-transform: uppercase;
+}
+
+.offlineTitle {
+  margin: 2rem 1.5rem 0;
 }
 
 .offlineAccessEmptyState {
@@ -37,44 +40,7 @@
   margin: 0 1.5rem;
 }
 
-.searchbar {
-  height: 70px;
-  width: 100%;
-  background-color: lightgray;
-  display: flex;
-}
-
-.searchbar input {
-  flex: 1;
-  color: var(--color-primary-blue);
-  padding: 0 var(--space-S);
-  border: 0;
-}
-
-.searchbar input::placeholder {
-  color: var(--color-secondary-blue);
-}
-
-.searchbar.searching {
-  background: #fff;
-  box-shadow: 0 1px 2px 0 rgba(22, 63, 137, 0.2), 0 2px 10px 0 rgba(1, 37, 91, 0.15);
-}
-
-.searching input {
-  background: #fff;
-  color: var(--color-primary-blue);
-  flex: 1;
-  opacity: 1;
-  font-size: 2.1rem;
-  letter-spacing: 0;
-  line-height: 2.4rem;
-}
-
-.searchButton {
-  background: rgba(22, 63, 137, 0.1);
-}
-
-.offlineVessels {
+.content {
   padding: 1.5rem;
 }
 
@@ -91,17 +57,6 @@
   position: relative;
 }
 
-.inputContainer {
-  display: flex;
-  align-items: center;
-  padding: var(--space-XS);
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
-  z-index: 1;
-  position: relative;
-  border-bottom: var(--border);
-}
-
 .searchResults {
   flex: 1;
   overflow-y: auto;
@@ -116,4 +71,11 @@
 
 .loadMoreBtn {
   width: 100%;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: var(--border);
 }

@@ -62,13 +62,14 @@ export const getVesselEventsGeojson = (
         timestamp: event.start,
         start: getDateTimeDate(event.start).toUTC().toISO(),
         end: getDateTimeDate(event.end).toUTC().toISO(),
-        ...(isEncounterEvent &&
-          showAuthorizationStatus && {
+        ...(isEncounterEvent && {
+          encounterVesselId: event.encounter?.vessel?.id,
+          encounterVesselName: event.encounter?.vessel?.name,
+          ...(showAuthorizationStatus && {
             authorized,
             authorizationStatus,
-            encounterVesselId: event.encounter?.vessel?.id,
-            encounterVesselName: event.encounter?.vessel?.name,
           }),
+        }),
         icon: `${iconsPrefix}${event.type}`,
         color:
           isEncounterEvent && showAuthorizationStatus
@@ -171,13 +172,14 @@ export const getVesselEventsSegmentsGeojson = (
             vesselId: event.vessel.id,
             vesselName: event.vessel.name,
           }),
-          ...(isEncounterEvent &&
-            showAuthorizationStatus && {
+          ...(isEncounterEvent && {
+            encounterVesselId: event.encounter?.vessel.id,
+            encounterVesselName: event.encounter?.vessel.name,
+            ...(showAuthorizationStatus && {
               authorized,
               authorizationStatus,
-              encounterVesselId: event.encounter?.vessel.id,
-              encounterVesselName: event.encounter?.vessel.name,
             }),
+          }),
         },
       }
     })

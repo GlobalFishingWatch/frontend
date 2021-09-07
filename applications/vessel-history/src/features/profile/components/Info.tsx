@@ -22,6 +22,7 @@ import { selectEventsForTracks } from 'features/vessels/activity/vessels-activit
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
+import Highlights from './Highlights'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -75,8 +76,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     [vessel]
   )
 
-  const authorizations: Authorization[] = vessel?.authorizations?.length ? 
-    Array.from(new Map(vessel.authorizations.map(item => [item.source, item])).values()) : []
+  const authorizations: Authorization[] = vessel?.authorizations?.length
+    ? Array.from(new Map(vessel.authorizations.map((item) => [item.source, item])).values())
+    : []
   const [imageLoading, setImageLoading] = useState(true)
   return (
     <Fragment>
@@ -162,18 +164,10 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                     {auth.source}{' '}
                     <Fragment>
                       {t('common.from', 'from')}{' '}
-                        {auth.startDate ? (
-                          <I18nDate date={auth.startDate} />
-                        ) : (
-                          DEFAULT_EMPTY_VALUE
-                        )}{' '}
-                        {t('common.to', 'to')}{' '}
-                        {auth.endDate ? (
-                          <I18nDate date={auth.endDate} />
-                        ) : (
-                          DEFAULT_EMPTY_VALUE
-                        )}
-                      </Fragment>
+                      {auth.startDate ? <I18nDate date={auth.startDate} /> : DEFAULT_EMPTY_VALUE}{' '}
+                      {t('common.to', 'to')}{' '}
+                      {auth.endDate ? <I18nDate date={auth.endDate} /> : DEFAULT_EMPTY_VALUE}
+                    </Fragment>
                   </p>
                 ))}
                 {!vessel.authorizations?.length && (
@@ -219,15 +213,19 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   ) : (
                     DEFAULT_EMPTY_VALUE
                   )}
-                  
                 </div>
               </div>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.iuuStatus}
-                value={vessel.iuuStatus !== undefined ? 
-                  t(`vessel.iuuStatusOptions.${vessel.iuuStatus}` as any, vessel.iuuStatus.toString()) 
-                  : DEFAULT_EMPTY_VALUE}
+                value={
+                  vessel.iuuStatus !== undefined
+                    ? t(
+                        `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                        vessel.iuuStatus.toString()
+                      )
+                    : DEFAULT_EMPTY_VALUE
+                }
                 valuesHistory={[]}
               ></InfoField>
             </div>
@@ -262,6 +260,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             </Button>
           )}
         </div>
+        <Highlights></Highlights>
       </div>
     </Fragment>
   )
