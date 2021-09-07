@@ -43,6 +43,7 @@ const SimpleSearch: React.FC = () => {
         className={styles.input}
         onChange={onInputChange}
         value={query}
+        spellCheck={false}
       />
       {!query && (
         <IconButton

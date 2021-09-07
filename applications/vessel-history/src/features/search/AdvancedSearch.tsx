@@ -86,6 +86,7 @@ const AdvancedSearch: React.FC = () => {
           label={t('search.shipname', 'Name')}
           autoFocus
           className={styles.half}
+          spellCheck={false}
         />
         <InputText
           onChange={setQueryParam}
@@ -93,6 +94,7 @@ const AdvancedSearch: React.FC = () => {
           className={styles.thirdOfHalf}
           value={MMSI}
           label={t('search.MMSI', 'MMSI')}
+          spellCheck={false}
         />
         <InputText
           onChange={setQueryParam}
@@ -100,6 +102,7 @@ const AdvancedSearch: React.FC = () => {
           className={styles.thirdOfHalf}
           value={IMO}
           label={t('search.IMO', 'IMO')}
+          spellCheck={false}
         />
         <InputText
           onChange={setQueryParam}
@@ -107,6 +110,7 @@ const AdvancedSearch: React.FC = () => {
           className={styles.thirdOfHalf}
           value={callsign}
           label={t('search.callsign', 'Callsign')}
+          spellCheck={false}
         />
       </div>
       <div className={styles.row}>
