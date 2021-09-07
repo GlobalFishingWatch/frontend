@@ -4,7 +4,11 @@ import { ValueItem, VesselAPISource, VesselFieldsHistory, VesselWithHistory } fr
 type VesselFieldKey = keyof VesselWithHistory
 
 export const formatVesselProfileId = (dataset: string, gfwId: string, tmtId: string) => {
-  return `${dataset ?? 'NA'}_${gfwId ?? 'NA'}_${tmtId ?? 'NA'}`
+  return [
+    decodeURIComponent(dataset ?? 'NA'),
+    decodeURIComponent(gfwId ?? 'NA'),
+    decodeURIComponent(tmtId ?? 'NA'),
+  ].join('_')
 }
 
 const getFieldPriority = (field: VesselFieldKey): VesselAPISource[] => {
