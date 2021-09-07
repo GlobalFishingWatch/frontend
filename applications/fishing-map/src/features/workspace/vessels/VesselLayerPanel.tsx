@@ -25,6 +25,7 @@ import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.ut
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { isGuestUser } from 'features/user/user.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -123,6 +124,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           {formatInfoField(fieldValue, field.type)}
         </a>
       )
+    }
+    if (field.id === 'dataset') {
+      return getDatasetLabel({ id: fieldValue })
     }
     return formatInfoField(fieldValue, field.type)
   }

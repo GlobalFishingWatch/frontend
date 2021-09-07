@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { orderBy } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
-import { selectDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   selectContextAreasDataviews,
   selectEnvironmentalDataviews,
@@ -86,7 +86,7 @@ export const selectUserWorkspacesPrivate = createSelector(
 )
 
 export const selectUserDatasets = createSelector(
-  [selectDatasets, selectUserId],
+  [selectAllDatasets, selectUserId],
   (datasets, userId) => datasets?.filter((d) => d.ownerId === userId)
 )
 

@@ -3,7 +3,7 @@ import { uniqBy } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { FULL_SUFIX } from 'data/config'
-import { selectDatasets } from './datasets.slice'
+import { selectAllDatasets } from './datasets.slice'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
@@ -16,7 +16,7 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   })
 
 export const selectDatasetsByType = (type: DatasetTypes) => {
-  return createSelector([selectDatasets], (datasets) => {
+  return createSelector([selectAllDatasets], (datasets) => {
     return uniqBy(
       datasets.flatMap((dataset) => {
         if (dataset.type === type) return dataset

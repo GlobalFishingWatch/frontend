@@ -38,5 +38,5 @@ export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearT
       gearType: vessel.registeredGearType,
     })}`
   }
-  return `${t('common.unknown', 'Unknown')} ${t('common.vessel', 'Vessel')}`
+  return t('common.unknownVessel', 'Unknown vessel')
 }
