@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
+import React, { Fragment, useState, useEffect, useMemo, useCallback, lazy } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
@@ -34,6 +34,7 @@ import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/reso
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { resetFilters } from 'features/event-filters/filters.slice'
+import { selectHighlightedEvent } from 'features/map/map.slice'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
@@ -55,9 +56,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   const { url: trackUrl = '' } = vesselDataview
     ? resolveDataviewDatasetResource(vesselDataview, DatasetTypes.Tracks)
     : { url: '' }
-  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl), shallowEqual)
-  const vesselLoaded = useMemo(() => !!vessel, [vessel])
-  const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
+  
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -112,33 +111,15 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
   }, [dispatch, resourceQueries])
 
-  const onFitLastPosition = useCallback(() => {
-    if (!trackResource?.data || trackResource?.data.length === 0) return
-    const { latitude, longitude } = (trackResource?.data.flat().slice(-1) as Segment).pop() as Point
-    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
-      setMapCoordinates({
-        latitude: latitude as number,
-        longitude: longitude as number,
-        zoom: DEFAULT_VESSEL_MAP_ZOOM,
-        pitch: 0,
-        bearing: 0,
-      })
-    } else {
-      alert('The vessel has no activity in your selected timerange')
-    }
-  }, [setMapCoordinates, trackResource])
-
-  useEffect(() => {
-    if (!vesselLoaded || !vesselDataviewLoaded || !trackUrl) return
-    onFitLastPosition()
-  }, [vesselLoaded, vesselDataviewLoaded, trackUrl, onFitLastPosition])
+  //const Map = lazy(() => import(`features/map/Map`))
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(undefined)
 
   const tabs: Tab[] = useMemo(
     () => [
       {
         id: 'info',
         title: t('common.info', 'INFO').toLocaleUpperCase(),
-        content: vessel ? (
+        content: vessel && (activeTab?.id === 'info' || !activeTab) ? (
           <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
@@ -147,7 +128,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       {
         id: 'activity',
         title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
-        content: vessel ? (
+        content: vessel && activeTab?.id === 'activity' ? (
           <Activity vessel={vessel} lastPosition={lastPosition} 
             lastPortVisit={lastPortVisit} onMoveToMap={() => setActiveTab(tabs?.[2]) }/>
         ) : (
@@ -157,7 +138,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       {
         id: 'map',
         title: t('common.map', 'MAP').toLocaleUpperCase(),
-        content: vessel ? (
+        content: vessel && activeTab?.id === 'map' ? (
           <div className={styles.mapContainer}>
             <Map />
           </div>
@@ -166,10 +147,8 @@ const Profile: React.FC = (props): React.ReactElement => {
         ),
       },
     ],
-    [t, vessel, lastPosition, lastPortVisit, loading]
+    [t, vessel, activeTab, lastPosition, lastPortVisit, loading]
   )
-
-  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
 
   const defaultPreviousNames = useMemo(() => {
     return `+${vessel?.history.shipname.byDate.length} previous ${t(
@@ -193,7 +172,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     )
     return gfwVesselName ? gfwVesselName.value : vessel?.shipname
   }, [vessel])
-
+  console.log(activeTab?.id as string ?? tabs?.[0].id)
   return (
     <Fragment>
       <header className={styles.header}>
@@ -227,7 +206,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       <div className={styles.profileContainer}>
         <Tabs
           tabs={tabs}
-          activeTab={activeTab?.id as string}
+          activeTab={activeTab?.id as string ?? tabs?.[0].id}
           onTabClick={(tab: Tab) => setActiveTab(tab)}
         ></Tabs>
       </div>
