@@ -27,10 +27,6 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
             value={relatedVessel.name}
           />
           <ActivityModalContentField label={t('vessel.flag', 'Flag')} value={relatedVessel.flag} />
-          <ActivityModalContentField
-            label={t('event.nextPort', 'Next port traveled')}
-            value={relatedVessel.nextPort?.label}
-          />
         </div>
       )}
 
@@ -46,12 +42,6 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
                 })
               : DEFAULT_EMPTY_VALUE
           }
-        />
-      )}
-      {event.encounter && (
-        <ActivityModalContentField
-          label={t('event.authStatus', 'Authorization status')}
-          value={event.encounter.authorizationStatus}
         />
       )}
     </Fragment>
