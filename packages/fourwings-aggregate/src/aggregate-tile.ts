@@ -310,7 +310,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   let indexInCell = 0
 
   // We need to pad with n values (n === delta) to generate "overflow" frames
-  // in the case of a sum, add zeroes which will get added to the running sunm with no effect
+  // in the case of a sum, add zeroes which will get added to the running sum with no effect
   // in the case of avg, us NaN as a flag to not take the value into account
   const padValue = aggregationOperation === AggregationOperation.Avg ? NaN : 0
   for (let i = FEATURE_CELLS_START_INDEX; i < intArray.length; i++) {
@@ -336,6 +336,8 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
       featureIntArrays.push(merged)
     }
   }
+
+  console.log(intArray, featureIntArrays)
 
   if (singleFrame) {
     for (let i = 2; i < intArray.length; i++) {
@@ -483,6 +485,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
               .map((v) => Math.round(v).toString().padStart(6, '0'))
               .join('')
             finalValue = paddedStrings
+            // finalValue = angle
           }
           writeValueToFeature(quantizedTail, finalValue as string | number, currentFeature)
         }
@@ -533,6 +536,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
       features: featuresInteractive,
     }
   }
+  console.log(geoJSONs)
   return geoJSONs
 }
 

@@ -33,7 +33,7 @@ class HeatmapAnimatedCurrentsPOCGenerator {
       interval: '10days',
       filters,
       datasets,
-      aggregationOperation: AggregationOperation.Avg,
+      aggregationOperation: AggregationOperation.Sum,
       sublayerCombinationMode: SublayerCombinationMode.Currents__POC,
       sublayerVisibility: visible,
       sublayerCount: config.sublayers.length,
@@ -61,16 +61,53 @@ class HeatmapAnimatedCurrentsPOCGenerator {
   }
   _getStyleLayers = (config: HeatmapAnimatedCurrentsPOCGeneratorConfig) => {
     // const pickValueAt = timeChunk.frame.toString()
-    const pickValueAt = FRAME.toString()
-    // const exprPick = ['coalesce', ['get', pickValueAt], 0]
-    const baseSlice = ['slice', ['get', pickValueAt]]
+    const exprPick = ['coalesce', ['get', '0'], '0000000000']
+    const baseSlice = ['slice', exprPick]
+    const forceSlice = ['to-number', [...baseSlice, 0, 6]]
+    const angleSlice = ['to-number', [...baseSlice, 6, 12]]
+    const radius = ['/', ['-', forceSlice, 380], 10]
+    const scale = ['+', ['/', ['-', forceSlice, 380], 800], 0.5]
+    const color =
+      // [
+      //   'coalesce',
+      [
+        'interpolate',
+        ['linear'],
+        angleSlice,
+        200,
+        'red',
+        210,
+        'orange',
+        220,
+        'yellow',
+        230,
+        'green',
+        240,
+        'blue',
+      ]
+    //   'red',
+    // ]
     const baseLayer = getBaseLayers(config)
+    baseLayer.type = 'symbol'
     baseLayer.id = config.id
     baseLayer.source = config.id
     baseLayer.paint = {
-      'circle-color': 'red',
-      'circle-radius': ['to-number', [...baseSlice, 0, 6]],
+      // 'circle-color': color as any,
+      // 'circle-radius': radius as any,
     }
+
+    baseLayer.layout = {
+      'icon-allow-overlap': true,
+      'icon-image': 'arrow',
+      'icon-size': scale as any,
+      'icon-rotate': angleSlice as any,
+    }
+
+    console.log(baseLayer)
+
+    baseLayer.metadata.interactive = true
+    //   uniqueFeatureInteraction: true,
+    // },
 
     return [baseLayer]
   }

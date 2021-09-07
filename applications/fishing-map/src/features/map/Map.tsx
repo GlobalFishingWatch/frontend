@@ -48,49 +48,49 @@ import useRulers from './rulers/rulers.hooks'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const currentsGeneratorsConfig = [
-  {
-    id: 'mergedAnimatedHeatmap',
-    type: 'HEATMAP_ANIMATED',
-    sublayers: [
-      {
-        id: 'fishing-ais',
-        datasets: ['public-global-fishing-effort:v20201001'],
-        colorRamp: 'teal',
-        colorRampWhiteEnd: true,
-        visible: true,
-        legend: {
-          label: 'Apparent fishing effort',
-          unit: 'hours',
-          color: '#00FFBC',
-        },
-        interactionType: 'fishing-effort',
-      },
-      {
-        id: 'highlight-vms-with-ecuador',
-        datasets: [
-          'public-chile-fishing-effort:v20200331',
-          'public-indonesia-fishing-effort:v20200320',
-          'public-panama-fishing-effort:v20200331',
-          'public-peru-fishing-effort:v20200324',
-          'public-ecuador-fishing-effort:v20210612',
-        ],
-        colorRamp: 'orange',
-        colorRampWhiteEnd: true,
-        visible: true,
-        legend: {
-          label: 'Apparent fishing effort',
-          unit: 'hours',
-          color: '#FFAA0D',
-        },
-        interactionType: 'fishing-effort',
-      },
-    ],
-    mode: 'compare',
-    interval: ['hour', 'day', '10days'],
-    visible: true,
-    debug: false,
-    debugLabels: false,
-  },
+  // {
+  //   id: 'mergedAnimatedHeatmap',
+  //   type: 'HEATMAP_ANIMATED',
+  //   sublayers: [
+  //     {
+  //       id: 'fishing-ais',
+  //       datasets: ['public-global-fishing-effort:v20201001'],
+  //       colorRamp: 'teal',
+  //       colorRampWhiteEnd: true,
+  //       visible: true,
+  //       legend: {
+  //         label: 'Apparent fishing effort',
+  //         unit: 'hours',
+  //         color: '#00FFBC',
+  //       },
+  //       interactionType: 'fishing-effort',
+  //     },
+  //     {
+  //       id: 'highlight-vms-with-ecuador',
+  //       datasets: [
+  //         'public-chile-fishing-effort:v20200331',
+  //         'public-indonesia-fishing-effort:v20200320',
+  //         'public-panama-fishing-effort:v20200331',
+  //         'public-peru-fishing-effort:v20200324',
+  //         'public-ecuador-fishing-effort:v20210612',
+  //       ],
+  //       colorRamp: 'orange',
+  //       colorRampWhiteEnd: true,
+  //       visible: true,
+  //       legend: {
+  //         label: 'Apparent fishing effort',
+  //         unit: 'hours',
+  //         color: '#FFAA0D',
+  //       },
+  //       interactionType: 'fishing-effort',
+  //     },
+  //   ],
+  //   mode: 'compare',
+  //   interval: ['hour', 'day', '10days'],
+  //   visible: true,
+  //   debug: false,
+  //   debugLabels: false,
+  // },
   {
     id: 'currents',
     type: 'HEATMAP_ANIMATED_CURRENTS_POC',
@@ -100,12 +100,25 @@ const currentsGeneratorsConfig = [
     visible: true,
     sublayers: [
       {
-        id: 'currents',
+        id: 'currents_um',
         // colorRamp: 'red',
         // colorRampWhiteEnd: false,
         visible: true,
         // breaks: [25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5],
-        datasets: ['public-current-um-global4km', 'public-current-vm-global4km'],
+        datasets: ['public-current-um-global4km'],
+        // legend: {
+        //   label: 'Water Temperature Ascension',
+        //   unit: '℃',
+        //   color: '#FF6854',
+        // },
+      },
+      {
+        id: 'currents_vm',
+        // colorRamp: 'red',
+        // colorRampWhiteEnd: false,
+        visible: true,
+        // breaks: [25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5],
+        datasets: ['public-current-vm-global4km'],
         // legend: {
         //   label: 'Water Temperature Ascension',
         //   unit: '℃',
@@ -116,7 +129,7 @@ const currentsGeneratorsConfig = [
     maxZoom: 8,
     mode: 'currents',
     // aggregationOperation: 'avg',
-    interactive: false,
+    interactive: true,
     breaksMultiplier: 100,
     // interval: 'none',
     // debug: false,
@@ -202,6 +215,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const currentClickCallback = useMemo(() => {
     const clickEvent = (event: any) => {
+      console.log(event)
       uaEvent({
         category: 'Environmental data',
         action: `Click in grid cell`,
