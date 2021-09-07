@@ -49,7 +49,8 @@ const Settings: React.FC = (): React.ReactElement => {
   }, [selectedOption])
 
   useEffect(() => {
-    dispatch(fetchRegionsThunk())
+    // Find a better place to call required thunks
+    // dispatch(fetchRegionsThunk())
   }, [dispatch])
 
   return (

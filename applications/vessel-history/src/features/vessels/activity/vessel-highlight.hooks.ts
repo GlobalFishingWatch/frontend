@@ -24,6 +24,14 @@ export const useActivityHighlightsConnect = () => {
   const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
 
   useEffect(() => {
+    console.log('allEvents changed', allEvents)
+  }, [allEvents])
+
+  useEffect(() => {
+    console.log('settings changed', settings)
+  }, [settings])
+
+  useEffect(() => {
     const computeHighlightedEvents = async (events: RenderedEvent[], settings: Settings) => {
       setLoading(true)
       setHighlightedEvents(undefined)

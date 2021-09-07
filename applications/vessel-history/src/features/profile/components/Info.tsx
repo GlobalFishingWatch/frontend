@@ -44,9 +44,11 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
     useOfflineVesselsAPI()
 
-  useEffect(() => {
-    dispatchFetchOfflineVessel(vesselProfileId)
-  }, [vesselProfileId, dispatchFetchOfflineVessel])
+  // TODO Commented to analyse multiple callbacks to highlights selector
+  //
+  // useEffect(() => {
+  //   dispatchFetchOfflineVessel(vesselProfileId)
+  // }, [vesselProfileId, dispatchFetchOfflineVessel])
 
   const onDeleteClick = async (data: OfflineVessel) => {
     setLoading(true)

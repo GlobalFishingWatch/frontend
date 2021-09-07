@@ -61,6 +61,8 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   useEffect(() => {
     const fetchVessel = async () => {
+      console.log('Profile.clearVesselDataview')
+
       dispatch(clearVesselDataview(null))
       const [dataset, gfwId] = (
         Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
@@ -92,6 +94,7 @@ const Profile: React.FC = (props): React.ReactElement => {
                 ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
               }
             )
+            console.log('Profile.upsertVesselDataview')
             dispatch(upsertVesselDataview(vesselDataviewInstance))
           }
         }
@@ -99,6 +102,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
 
     if (!vessel && datasets.length > 0) {
+      console.log('Profile.fetchVessel')
       fetchVessel()
     }
   }, [dispatch, vesselProfileId, datasets, vessel])

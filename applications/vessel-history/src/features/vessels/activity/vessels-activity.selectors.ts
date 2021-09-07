@@ -27,21 +27,17 @@ export interface RenderedEvent extends ActivityEvent {
 export const selectEventsResources = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
-    return trackDataviews
-      .map((dataview) => {
-        return resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map(
-          (eventResource) => {
-            console.log({ url: eventResource.url, status: resources[eventResource.url].status })
-            return resources[eventResource.url]
-          }
-        )
+    return trackDataviews.flatMap((dataview) => {
+      return resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((eventResource) => {
+        console.log({ url: eventResource.url, status: resources[eventResource.url]?.status })
+        return resources[eventResource.url]
       })
-      .flat()
+    })
   }
 )
 
 export const selectEventsLoading = createSelector([selectEventsResources], (resources) =>
-  resources.map((resource) => resource.status).includes(ResourceStatus.Loading)
+  resources.flatMap((resource) => resource?.status || []).includes(ResourceStatus.Loading)
 )
 
 export const selectEventsForTracks = createSelector(
@@ -95,8 +91,6 @@ export const selectEventsWithRenderingInfo = createSelector(
   (eventsForTrack, eezs, rfmos) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
       return (data || []).map((event: ActivityEvent, index) => {
-        // const vesselName = event.vessel.name || event.vessel.id
-
         const regionDescription = getEventRegionDescription(event, eezs, rfmos)
 
         let description = ''
@@ -126,7 +120,7 @@ export const selectEventsWithRenderingInfo = createSelector(
                 name,
                 ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : []),
               ].join(', ')
-              description = t('event.portAt', { port: portLabel })
+              description = t('event.portAt', 'Port visit at {{port}}', { port: portLabel })
             } else {
               description = t('event.portAction')
             }
@@ -161,8 +155,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-              count: Math.round(duration.minutes as number),
-            })
+                count: Math.round(duration.minutes as number),
+              })
             : '',
         ].join(' ')
 
@@ -175,12 +169,12 @@ export const selectEventsWithRenderingInfo = createSelector(
 
         return {
           ...event,
-          color,
-          colorLabels,
-          description,
-          descriptionGeneric,
-          regionDescription,
-          durationDescription,
+          color: '#ff99ff',
+          colorLabels: 'colorLabels',
+          description: 'event description',
+          descriptionGeneric: 'descriptionGeneric',
+          regionDescription: 'regionDescription',
+          durationDescription: 'durationDescription',
           duration: durationDiff.hours,
         }
       })
