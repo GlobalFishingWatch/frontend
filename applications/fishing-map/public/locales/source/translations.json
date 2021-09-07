@@ -107,7 +107,16 @@
   },
   "download": {
     "action": "Download visible activity layers for this area",
-    "title": "Download - Activity"
+    "title": "Download - Activity",
+    "area": "Area",
+    "timeRange": "Time Range",
+    "format": "Format",
+    "groupActivityBy": "Group activity by",
+    "temporalResolution": "Temporal resolution",
+    "daily": "Daily",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "spatialResolution": "Spatial resolution"
   },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",

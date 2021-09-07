@@ -3,8 +3,6 @@ import { TooltipEventFeature } from 'features/map/map.hooks'
 import { RootState } from 'store'
 
 export type DownloadArea = {
-  areaId: string
-  sourceId: string
   feature: TooltipEventFeature
 }
 

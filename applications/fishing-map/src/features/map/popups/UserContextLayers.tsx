@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { groupBy } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
@@ -14,6 +14,7 @@ import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.sel
 import { getEventLabel } from 'utils/analytics'
 import { setDownloadArea } from 'features/download/download.slice'
 import useMapInstance from '../map-context.hooks'
+import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
 type UserContextLayersProps = {
@@ -62,12 +63,12 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-      const areaId = feature.properties?.gfw_id
-      const sourceId = feature.source
-      dispatch(setDownloadArea({ areaId, sourceId, feature }))
-      highlightArea(areaId, sourceId)
+      batch(() => {
+        dispatch(setDownloadArea({ feature }))
+        dispatch(setClickedEvent(null))
+      })
     },
-    [highlightArea]
+    [dispatch]
   )
 
   const featuresByType = groupBy(features, 'layerId')

@@ -293,15 +293,13 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-      const areaId = feature.properties?.gfw_id
-      const sourceId = feature.source
       batch(() => {
-        dispatch(setDownloadArea({ areaId, sourceId, feature }))
+        dispatch(setDownloadArea({ feature }))
         dispatch(setClickedEvent(null))
       })
-      highlightArea(areaId, sourceId)
+      cleanFeatureState('highlight')
     },
-    [dispatch, highlightArea]
+    [cleanFeatureState, dispatch]
   )
 
   const featuresByType = groupBy(features, 'layerId')

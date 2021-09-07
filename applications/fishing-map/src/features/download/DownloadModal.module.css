@@ -1,3 +1,9 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
 .info {
   display: flex;
   gap: var(--space-S);
