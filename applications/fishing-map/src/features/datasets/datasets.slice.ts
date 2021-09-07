@@ -270,7 +270,7 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 export const { setDatasetModal, setDatasetCategory, setEditingDatasetId } = datasetSlice.actions
 
 export const {
-  selectAll: selectDatasets,
+  selectAll: selectAllDatasets,
   selectById,
   selectIds,
 } = entityAdapter.getSelectors<RootState>((state) => state.datasets)
