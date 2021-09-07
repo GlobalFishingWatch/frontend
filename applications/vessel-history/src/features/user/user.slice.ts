@@ -55,7 +55,7 @@ export const logoutUserThunk = createAsyncThunk(
   async ({ redirectTo }: { redirectTo?: 'gfw-login' | 'home' } = { redirectTo: undefined }) => {
     try {
       await GFWAPI.logout()
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
     }
     if (redirectTo === 'gfw-login') {

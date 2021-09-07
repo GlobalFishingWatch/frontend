@@ -283,7 +283,7 @@ export const fetchDataset =
       ]
       dispatch(setDataset({ editorId, dataset, defaultParams }))
       dispatch(setDatasetEndpoint({ editorId, endpoint: 'track', dataset: dataset.id }))
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
     }
   }

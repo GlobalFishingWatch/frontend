@@ -7,7 +7,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "CI=true react-scripts test --passWithNoTests",
-    "test:watch": "i18n_DEBUG=true react-scripts test --passWithNoTests",
+    "test:watch": "react-scripts test --passWithNoTests",
     "test:coverage": "CI=true react-scripts test --passWithNoTests --coverage",
     "eject": "react-scripts eject",
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
@@ -109,6 +109,7 @@
     "eslint-plugin-jsx-a11y": "6.4.1",
     "eslint-plugin-react": "7.24.0",
     "eslint-plugin-react-hooks": "4.2.0",
+    "fake-indexeddb": "^3.1.3",
     "husky": "^7.0.0",
     "i18next-parser": "^3.7.0",
     "imagemin-lint-staged": "^0.4.0",

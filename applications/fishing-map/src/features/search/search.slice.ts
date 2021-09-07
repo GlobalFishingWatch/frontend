@@ -189,7 +189,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           },
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message } as AsyncError)
     }
   }

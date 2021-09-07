@@ -27,7 +27,7 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 | ---------------------------- | ------ | ------ |
 | Default (used on new layers) | 125    | 223    |
 
-### Marine Manager - Caribe
+### Marine Manager - Caribe (Guyana)
 
 | Layer name                         | Dev id | Pro id |
 | ---------------------------------- | ------ | ------ |

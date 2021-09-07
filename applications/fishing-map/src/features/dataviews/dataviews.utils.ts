@@ -20,7 +20,7 @@ import {
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { Range } from 'features/timebar/timebar.slice'
-import { PRESENCE_POC_ID, USE_PRESENCE_POC } from 'features/datasets/datasets.slice'
+import { PRESENCE_POC_ID } from 'features/datasets/datasets.slice'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -50,7 +50,7 @@ export const getVesselDataviewInstance = (
   }
   if (trackDatasetId) {
     let query: DataviewDatasetConfigParam[] = []
-    if (USE_PRESENCE_POC && trackDatasetId.includes(PRESENCE_POC_ID) && timeRange) {
+    if (trackDatasetId.includes(PRESENCE_POC_ID) && timeRange) {
       query = [
         { id: 'startDate', value: timeRange.start },
         { id: 'endDate', value: timeRange.end },
