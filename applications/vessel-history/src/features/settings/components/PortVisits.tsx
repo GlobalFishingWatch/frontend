@@ -21,7 +21,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { settings, section } = props
   const { t } = useTranslation()
   const { setSetting } = useSettingsConnect()
-  const { COUNTRIES, getOptions } = useSettingsRegionsConnect('portVisits', settings)
+  const { COUNTRIES, getOptions } = useSettingsRegionsConnect('portVisits')
 
   const flags = useMemo(
     () =>

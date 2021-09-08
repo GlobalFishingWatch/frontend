@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 11.1.0
+
+### Minor Changes
+
+- 7d2fcfc3: not mount every tab ui-component until used
+
 ## 11.0.1
 
 ### Patch Changes

@@ -1,6 +1,7 @@
 steps:
   # Push production image to GCR
   - name: 'gcr.io/kaniko-project/executor:latest'
+    id: 'Build production image'
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
@@ -42,6 +43,7 @@ steps:
       ]
 
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'Run tests'
     args:
       [
         'run',
@@ -51,6 +53,7 @@ steps:
       ]
 
   - name: 'gcr.io/kaniko-project/executor:latest'
+    id: 'Build nginx server image'
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
@@ -92,6 +95,7 @@ steps:
       ]
 
   - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Deploy to cloud run'
     entrypoint: 'bash'
     args:
       - '-eEuo'
@@ -100,8 +104,5 @@ steps:
       - |-
         gcloud beta run deploy fishing-map-`echo $BRANCH_NAME | sed -r 's,/,-,g' | awk '{print tolower($0)}'` --project $_RUN_PROJECT --image gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
         --region $_RUN_REGION --platform managed --set-env-vars BASIC_AUTH=$_BASIC_AUTH --allow-unauthenticated
-
-images:
-  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA'
 
 timeout: 1800s
