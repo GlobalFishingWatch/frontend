@@ -1,5 +1,5 @@
 import { ReactElement, useCallback, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
@@ -20,7 +20,6 @@ import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 const Map = (): ReactElement => {
   const map = useMapInstance()
   const mapRef = useRef<any>(null)
-  const dispatch = useDispatch()
   const { selectVesselEventOnClick } = useMapEvents()
   const { dispatchQueryParams } = useLocationConnect()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
@@ -40,12 +39,12 @@ const Map = (): ReactElement => {
     style?.metadata as ExtendedStyleMeta,
     map
   )
-  
+
   const url = useSelector(selectUrlViewport)
 
   const onMapResize = useCallback(() => {
-    if (url && mapRef){
-      const {latitude, longitude} = url
+    if (url && mapRef) {
+      const { latitude, longitude } = url
       if (mapRef.current?.getMap().getCenter().lat !== latitude) {
         // avoid to center in every resize (if happen)
         setMapCoordinates({
@@ -53,12 +52,11 @@ const Map = (): ReactElement => {
           longitude,
           bearing: 0,
           pitch: 0,
-          zoom: 8
+          zoom: 8,
         })
       }
     }
-    },[setMapCoordinates, url]
-  )
+  }, [setMapCoordinates, url])
 
   if (ENABLE_FLYTO) {
     let flying = false

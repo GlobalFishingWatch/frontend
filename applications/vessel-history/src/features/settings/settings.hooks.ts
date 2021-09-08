@@ -54,20 +54,17 @@ export const useSettingsConnect = () => {
   }
 }
 
-export const useSettingsRegionsConnect = (
-  section: SettingEventSectionName,
-  settings: SettingsEvents
-) => {
+const onlyUnique = (value: Region, index: number, self: Region[]) => {
+  return self.map((item) => item.id).indexOf(value.id) === index
+}
+
+export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
   const { t } = useTranslation()
   const { setSettingOptions } = useSettingsConnect()
 
-  const onlyUnique = useCallback((value: Region, index: number, self: Region[]) => {
-    return self.map((item) => item.id).indexOf(value.id) === index
-  }, [])
-
-  const EEZ_REGIONS: Region[] = useSelector(selectEEZs)
-  const RFMOS_REGIONS: Region[] = useSelector(selectRFMOs).filter(onlyUnique)
-  const MPAS_REGIONS: Region[] = useSelector(selectMPAs)
+  const EEZ_REGIONS = useSelector(selectEEZs)
+  const RFMOS_REGIONS = useSelector(selectRFMOs)?.filter(onlyUnique)
+  const MPAS_REGIONS = useSelector(selectMPAs)
   const COUNTRIES: Region[] = flags
 
   const anyOption: MultiSelectOption<string> = useMemo(
@@ -96,7 +93,11 @@ export const useSettingsRegionsConnect = (
   )
 
   const getOptions = useCallback(
-    (availableOptions: MultiSelectOption[], field: string, selected?: string | string[]) => {
+    (
+      availableOptions: MultiSelectOption[] | undefined = [],
+      field: string,
+      selected?: string | string[]
+    ) => {
       const allOptions = [anyOption, ...availableOptions]
       const selectedOptions = allOptions.filter((option) => selected?.includes(option.id))
       const options = [
