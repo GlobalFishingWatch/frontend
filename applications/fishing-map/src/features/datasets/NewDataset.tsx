@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'lodash'
 import { useSelector } from 'react-redux'
 import { parse as parseCSV } from 'papaparse'
+import { Feature } from 'geojson'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import {
@@ -56,7 +57,8 @@ function NewDataset(): React.ReactElement {
     useState<DatasetGeometryType | undefined>(undefined)
   const [datasetGeometryTypeConfirmed, setDatasetGeometryTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
-  const [fileData, setFileData] = useState<FeatureCollectionWithFilename | CSV | undefined>()
+  const [fileData, setFileData] =
+    useState<Feature | FeatureCollectionWithFilename | CSV | undefined>()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
@@ -89,7 +91,7 @@ function NewDataset(): React.ReactElement {
           setFile(file)
         }
 
-        let geojson: FeatureCollectionWithFilename | undefined = undefined
+        let geojson: Feature | FeatureCollectionWithFilename | undefined = undefined
         if (isZip) {
           try {
             const shpjs = await import('shpjs').then((module) => module.default)
@@ -119,7 +121,8 @@ function NewDataset(): React.ReactElement {
           // Set disableInteraction flag when not all features are polygons
           if (datasetCategory === 'context') {
             if (
-              !geojson.features.every((feature) =>
+              (geojson.type === 'Feature' && geojson.geometry.type === 'Polygon') ||
+              !(geojson as FeatureCollectionWithFilename).features?.every((feature) =>
                 ['Polygon', 'MultiPolygon'].includes(feature.geometry.type)
               )
             ) {
