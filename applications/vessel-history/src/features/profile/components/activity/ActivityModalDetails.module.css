@@ -16,7 +16,14 @@
 .oneColumnField {
   flex-basis: 100%;
 }
+
 .row {
   flex-basis: 100%;
   display: flex;
+}
+
+.help {
+  font-size: 1rem;
+  padding: var(--space-S);
+  color: var(--color-secondary-blue);
 }
