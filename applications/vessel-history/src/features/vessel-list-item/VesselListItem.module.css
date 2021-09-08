@@ -33,13 +33,14 @@
   margin-bottom: 1.5rem;
 }
 
-.vesselItem .remove {
-  float: right;
+.vesselItemWrapper .remove {
+  position: absolute;
+  right: var(--space-S);
   background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
 }
 
-.vesselItem .remove:focus:not(:disabled),
-.vesselItem .remove:active:not(:disabled),
-.vesselItem .remove:hover:not(:disabled) {
+.vesselItemWrapper .remove:focus:not(:disabled),
+.vesselItemWrapper .remove:active:not(:disabled),
+.vesselItemWrapper .remove:hover:not(:disabled) {
   background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
 }

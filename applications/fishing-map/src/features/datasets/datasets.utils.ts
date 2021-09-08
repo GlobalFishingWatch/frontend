@@ -5,6 +5,11 @@ import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
+import {
+  DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_PRESENCE_DATAVIEW_ID,
+  DEFAULT_VIIRS_DATAVIEW_ID,
+} from 'data/workspaces'
 
 export type SupportedDatasetSchema =
   | 'flag'
@@ -30,13 +35,45 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
   return isPrivateDataset(dataset) ? `🔒 ${label}` : label
 }
 
+export const getDatasetTitleByDataview = (
+  dataview: Dataview | UrlDataviewInstance,
+  showPrivateIcon = false
+): string => {
+  const dataviewInstance = {
+    ...dataview,
+    dataviewId: (dataview as UrlDataviewInstance).dataviewId || dataview.id,
+  }
+  const hasDatasetsConfig = dataview.config?.datasets?.length > 0
+  const activeDatasets = hasDatasetsConfig
+    ? dataview.datasets?.filter((d) => dataview.config?.datasets?.includes(d.id))
+    : dataview.datasets
+  let datasetTitle = dataview.name || ''
+  if (dataviewInstance.dataviewId === DEFAULT_FISHING_DATAVIEW_ID) {
+    datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
+  } else if (dataviewInstance.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID) {
+    datasetTitle = t(`common.presence`, 'Vessel presence')
+  } else if (dataviewInstance.dataviewId === DEFAULT_VIIRS_DATAVIEW_ID) {
+    datasetTitle = t(`common.viirs`, 'Night light detections (VIIRS)')
+  } else if (activeDatasets) {
+    if (hasDatasetsConfig && activeDatasets?.length !== 1) {
+      return datasetTitle
+    }
+    datasetTitle = showPrivateIcon
+      ? getDatasetLabel(activeDatasets[0])
+      : getDatasetNameTranslated(activeDatasets[0])
+  }
+  return datasetTitle
+}
+
 export const getDatasetsInDataviews = (
-  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  guestUser = false
 ) => {
   return uniq(
     dataviews?.flatMap((dataviews) => {
       if (!dataviews.datasetsConfig) return []
-      return dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+      const datasetIds = dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+      return guestUser ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX)) : datasetIds
     })
   )
 }

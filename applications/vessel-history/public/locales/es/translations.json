@@ -75,16 +75,34 @@
     "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
     "noDescription": "No description found"
   },
+  "events": {
+    "activityHighlights": "Activity Highlights",
+    "highlitingSettings": "settings",
+    "noHighlights": "No events found for your highlighting criteria",
+    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
+  },
   "map": {
+    "filters": "Filter events",
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"
   },
   "search": {
+    "title": "Search",
+    "basic": "basic",
+    "advanced": "advanced",
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
     "loadMore": "Cargar más",
     "noMore": "No hay más resultados",
     "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
-    "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques"
+    "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
+    "placeholder": "Search vessels by name, MMSI, IMO",
+    "shipname": "Name",
+    "MMSI": "MMSI",
+    "IMO": "IMO",
+    "callsign": "Callsign",
+    "flagState": "Flag States",
+    "activeAfter": "active After",
+    "activeBefore": "active before"
   },
   "selects": {
     "allSelected": "todos",
@@ -173,5 +191,13 @@
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
+  },
+  "user": {
+    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
+    "notAuthorized": "Only some specific registered users can use this product",
+    "login": "Log in",
+    "loggedInAs": "logged in as",
+    "requestAccess": "Request Access",
+    "switchAccount": "Switch account"
   }
 }

@@ -8,6 +8,7 @@ import Info from 'features/map/info/Info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
+import { selectUrlViewport } from 'routes/routes.selectors'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
@@ -24,7 +25,6 @@ const Map = (): ReactElement => {
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const resourcesLoading = useSelector(selectResourcesLoading) ?? false
-
   const { style, loading: layerComposerLoading } = useLayerComposer(
     generatorsConfig,
     globalConfig,
@@ -39,6 +39,24 @@ const Map = (): ReactElement => {
     style?.metadata as ExtendedStyleMeta,
     map
   )
+
+  const url = useSelector(selectUrlViewport)
+
+  const onMapResize = useCallback(() => {
+    if (url && mapRef) {
+      const { latitude, longitude } = url
+      if (mapRef.current?.getMap().getCenter().lat !== latitude) {
+        // avoid to center in every resize (if happen)
+        setMapCoordinates({
+          latitude,
+          longitude,
+          bearing: 0,
+          pitch: 0,
+          zoom: 8,
+        })
+      }
+    }
+  }, [setMapCoordinates, url])
 
   if (ENABLE_FLYTO) {
     let flying = false
@@ -134,6 +152,7 @@ const Map = (): ReactElement => {
           {...viewport}
           onViewportChange={onViewportChange}
           onClick={onMapClick}
+          onResize={onMapResize}
           mapStyle={style}
           mapOptions={mapOptions}
         ></InteractiveMap>

@@ -1,5 +1,17 @@
 # @globalfishingwatch/ui-components
 
+## 11.1.0
+
+### Minor Changes
+
+- 7d2fcfc3: not mount every tab ui-component until used
+
+## 11.0.1
+
+### Patch Changes
+
+- 74932493: allow switch id to use with htmlFor
+
 ## 11.0.0
 
 ### Patch Changes

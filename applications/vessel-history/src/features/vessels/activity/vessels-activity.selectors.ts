@@ -14,6 +14,8 @@ import { ActivityEvent, Regions } from 'types/activity'
 import { selectEEZs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
+import { selectSettings } from 'features/settings/settings.slice'
+import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
 export interface RenderedEvent extends ActivityEvent {
   color: string
@@ -23,6 +25,23 @@ export interface RenderedEvent extends ActivityEvent {
   durationDescription: string
   duration: number
 }
+
+export const selectEventsResources = createSelector(
+  [selectActiveTrackDataviews, selectResources],
+  (trackDataviews, resources) => {
+    return trackDataviews.flatMap((dataview) => {
+      return resolveDataviewDatasetResources(dataview, DatasetTypes.Events).flatMap(
+        (eventResource) => {
+          return resources[eventResource.url] || []
+        }
+      )
+    })
+  }
+)
+
+export const selectEventsLoading = createSelector([selectEventsResources], (resources) =>
+  resources.map((resource) => resource?.status).includes(ResourceStatus.Loading)
+)
 
 export const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources],
@@ -72,7 +91,7 @@ export const selectEventsForTracks = createSelector(
 
 export const selectEventsWithRenderingInfo = createSelector(
   [selectEventsForTracks, selectEEZs, selectRFMOs],
-  (eventsForTrack, eezs, rfmos) => {
+  (eventsForTrack, eezs = [], rfmos = []) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
       return (data || []).map((event: ActivityEvent, index) => {
         // const vesselName = event.vessel.name || event.vessel.id
@@ -166,6 +185,12 @@ export const selectEventsWithRenderingInfo = createSelector(
       })
     })
     return eventsWithRenderingInfo.flat()
+  }
+)
+export const selectFilteredActivityHighlightEvents = createSelector(
+  [selectEventsWithRenderingInfo, selectSettings],
+  (eventsWithRenderingInfo, settings) => {
+    return filterActivityHighlightEvents(eventsWithRenderingInfo, settings)
   }
 )
 

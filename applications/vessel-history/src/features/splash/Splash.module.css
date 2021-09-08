@@ -10,16 +10,17 @@
   align-items: center;
   justify-content: center;
   color: var(--primary-text-color);
-  font-size: 3px;
-  text-indent: -99999999em;
   position: relative;
   transform: translateZ(0);
+  text-align: center;
+  font: var(--font-XS);
 }
 
 .splash::before,
 .splash::after {
   position: absolute;
   content: '';
+  pointer-events: none;
 }
 
 .splash::before {
@@ -71,4 +72,16 @@
 .tmtLogo {
   max-height: 100%;
   max-width: 50%;
+}
+
+.buttons {
+  margin-top: 2rem;
+}
+
+.buttons > button:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.user {
+  font-weight: bold;
 }

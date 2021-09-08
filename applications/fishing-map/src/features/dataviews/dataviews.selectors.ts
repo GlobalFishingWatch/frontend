@@ -1,5 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance, DataviewCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DataviewInstance,
+  DataviewCategory,
+  DatasetTypes,
+  Dataset,
+} from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
@@ -14,7 +19,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generator
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { PRESENCE_POC_ID, selectDatasets } from 'features/datasets/datasets.slice'
+import { PRESENCE_POC_ID, selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
@@ -70,7 +75,7 @@ export const selectDataviewInstancesMerged = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMerged, selectAllDataviews, selectDatasets],
+  [selectDataviewInstancesMerged, selectAllDataviews, selectAllDatasets],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
@@ -122,8 +127,8 @@ export const selectDataviewsForResourceQuerying = createSelector(
         // Clean resources when mandatory vesselId is missing
         // needed for vessels with no info datasets (zebraX)
         const vesselId =
-          info.query?.find((q) => q.id === 'vesselId')?.value ||
-          info.params?.find((q) => q.id === 'vesselId')?.value
+          info?.query?.find((q) => q.id === 'vesselId')?.value ||
+          info?.params?.find((q) => q.id === 'vesselId')?.value
         return [
           trackWithoutSpeed,
           ...events,
@@ -298,9 +303,14 @@ export const selectActiveDataviews = createSelector(
 )
 
 export const selectAllDataviewsInWorkspace = createSelector(
-  [selectAllDataviews, selectWorkspaceDataviews, selectWorkspaceDataviewInstances],
-  (dataviews = [], workspaceDataviews, workspaceDataviewInstances) => {
-    return dataviews?.filter((dataview) => {
+  [
+    selectAllDataviews,
+    selectWorkspaceDataviews,
+    selectWorkspaceDataviewInstances,
+    selectAllDatasets,
+  ],
+  (dataviews = [], workspaceDataviews, workspaceDataviewInstances, datasets) => {
+    const allWorkspaceDataviews = dataviews?.filter((dataview) => {
       if (DEFAULT_DATAVIEW_IDS.includes(dataview.id)) {
         return true
       }
@@ -311,6 +321,15 @@ export const selectAllDataviewsInWorkspace = createSelector(
         return true
       }
       return false
+    })
+    return allWorkspaceDataviews.map((dataview) => {
+      const dataviewDatasets: Dataset[] = (dataview.datasetsConfig || [])?.flatMap(
+        (datasetConfig) => {
+          const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
+          return dataset || []
+        }
+      )
+      return { ...dataview, datasets: dataviewDatasets }
     })
   }
 )

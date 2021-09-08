@@ -194,5 +194,13 @@
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
+  },
+  "user": {
+    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
+    "notAuthorized": "Only some specific registered users can use this product",
+    "login": "Log in",
+    "loggedInAs": "logged in as",
+    "requestAccess": "Request Access",
+    "switchAccount": "Switch account"
   }
 }

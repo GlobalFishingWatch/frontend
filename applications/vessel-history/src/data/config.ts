@@ -20,7 +20,7 @@ export const DEBUG_MODE =
 
 export const FULL_SUFIX = 'full'
 export const WORKSPACE_START_DATE = new Date()
-WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 12)
+WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 6)
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = new Date().getFullYear()
@@ -72,3 +72,5 @@ export const EVENTS_COLORS: Record<string, string> = {
 }
 
 export const DEFAULT_EMPTY_VALUE = ' --- '
+
+export const AUTHORIZED_USER_GROUPS = ['VV-African-Pilot', 'Admin-group', 'GFW']

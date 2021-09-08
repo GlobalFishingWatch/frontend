@@ -63,11 +63,18 @@ const MapControls = ({
   const [modalOpen, setModalOpen] = useState(false)
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
+  const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const domElement = useRef<HTMLElement>()
-  const { loading, downloadImage, previewImage, previewImageLoading, generatePreviewImage } =
-    useDownloadDomElementAsImage(domElement.current, false)
+  const {
+    loading,
+    previewImage,
+    downloadImage,
+    resetPreviewImage,
+    previewImageLoading,
+    generatePreviewImage,
+  } = useDownloadDomElementAsImage(domElement.current, false)
 
   useEffect(() => {
     if (!domElement.current) {
@@ -98,18 +105,22 @@ const MapControls = ({
 
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })
-    setTimeout(() => {
+    setModalOpen(true)
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => {
       if (domElement.current) {
         domElement.current.classList.add('printing')
         setInlineStyles(domElement.current)
-        // leave some time to apply the styles
-        setTimeout(() => {
+        resetPreviewImage()
+        // leave some time to apply the styles and timebar to re-render
+        timeoutRef.current = setTimeout(() => {
           generatePreviewImage()
-          setModalOpen(true)
-        }, 100)
+        }, 400)
       }
     }, 100)
-  }, [dispatchQueryParams, generatePreviewImage])
+  }, [dispatchQueryParams, resetPreviewImage, generatePreviewImage])
 
   const handleModalClose = useCallback(() => {
     if (domElement.current) {
@@ -224,7 +235,7 @@ const MapControls = ({
         contentClassName={styles.previewContainer}
       >
         <div className={styles.previewPlaceholder}>
-          {previewImageLoading ? (
+          {previewImageLoading || !previewImage ? (
             <Spinner />
           ) : (
             <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />

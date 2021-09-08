@@ -37,6 +37,10 @@ export const useDownloadDomElementAsImage = (
     }
   }, [domElement])
 
+  const resetPreviewImage = useCallback(() => {
+    setPreviewImage('')
+  }, [])
+
   const generatePreviewImage = useCallback(async () => {
     try {
       setPreviewImageLoading(true)
@@ -101,6 +105,7 @@ export const useDownloadDomElementAsImage = (
     downloadImage,
     getCanvas,
     previewImage,
+    resetPreviewImage,
     generatePreviewImage,
     previewImageLoading,
   }

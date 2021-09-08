@@ -7,6 +7,7 @@ import {
   Resource,
   ResourceStatus,
   TrackResourceData,
+  Vessel,
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
@@ -180,11 +181,13 @@ export interface RenderedEvent extends ApiEvent {
 }
 
 export const selectEventsWithRenderingInfo = createSelector(
-  [selectEventsForTracks],
-  (eventsForTrack) => {
+  [selectEventsForTracks, selectResources],
+  (eventsForTrack, resources) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
+      const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+      const infoResource = resources[infoUrl] as Resource<Vessel>
       return (data || []).map((event: ApiEvent, index) => {
-        const vesselName = event.vessel.name || event.vessel.id
+        const vesselName = infoResource.data?.shipname || 'unknown vessel'
 
         let description
         let descriptionGeneric
