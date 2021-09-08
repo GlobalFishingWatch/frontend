@@ -127,8 +127,8 @@ export const selectDataviewsForResourceQuerying = createSelector(
         // Clean resources when mandatory vesselId is missing
         // needed for vessels with no info datasets (zebraX)
         const vesselId =
-          info.query?.find((q) => q.id === 'vesselId')?.value ||
-          info.params?.find((q) => q.id === 'vesselId')?.value
+          info?.query?.find((q) => q.id === 'vesselId')?.value ||
+          info?.params?.find((q) => q.id === 'vesselId')?.value
         return [
           trackWithoutSpeed,
           ...events,
