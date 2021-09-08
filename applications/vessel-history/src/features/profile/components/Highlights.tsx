@@ -1,4 +1,5 @@
 import React, { Fragment, useCallback, useState } from 'react'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -7,8 +8,12 @@ import Link from 'redux-first-router-link'
 import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { SETTINGS } from 'routes/routes'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { useActivityHighlightsConnect } from 'features/vessels/activity/vessel-highlight.hooks'
+import {
+  RenderedEvent,
+  selectEventsLoading,
+  selectFilteredActivityHighlightEvents,
+} from 'features/vessels/activity/vessels-activity.selectors'
+import { selectAnyHighlightsSettingDefined } from 'features/vessels/activity/vessels-highlight.selectors'
 import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
@@ -16,11 +21,9 @@ import styles from './activity/Activity.module.css'
 const Highlights: React.FC = (): React.ReactElement => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const {
-    highlightedEvents: events,
-    highlightsSettingDefined: anyHighlightsSettingDefined,
-    loading,
-  } = useActivityHighlightsConnect()
+  const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
+  const events = useSelector(selectFilteredActivityHighlightEvents)
+  const loading = useSelector(selectEventsLoading)
 
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
@@ -33,11 +36,9 @@ const Highlights: React.FC = (): React.ReactElement => {
 
   return (
     <div
-      className={cx(
-        styles.activityContainer,
-        styles.highlightsContainer,
-        !anyHighlightsSettingDefined || (events && events.length === 0) ? styles.noData : {}
-      )}
+      className={cx(styles.activityContainer, styles.highlightsContainer, {
+        [styles.noData]: anyHighlightsSettingDefined || (events && events.length === 0),
+      })}
     >
       <div className={styles.divider}></div>
       <div>
