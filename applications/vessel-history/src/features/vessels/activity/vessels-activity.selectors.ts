@@ -26,6 +26,23 @@ export interface RenderedEvent extends ActivityEvent {
   duration: number
 }
 
+export const selectEventsResources = createSelector(
+  [selectActiveTrackDataviews, selectResources],
+  (trackDataviews, resources) => {
+    return trackDataviews.flatMap((dataview) => {
+      return resolveDataviewDatasetResources(dataview, DatasetTypes.Events).flatMap(
+        (eventResource) => {
+          return resources[eventResource.url] || []
+        }
+      )
+    })
+  }
+)
+
+export const selectEventsLoading = createSelector([selectEventsResources], (resources) =>
+  resources.map((resource) => resource?.status).includes(ResourceStatus.Loading)
+)
+
 export const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
@@ -143,8 +160,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-              count: Math.round(duration.minutes as number),
-            })
+                count: Math.round(duration.minutes as number),
+              })
             : '',
         ].join(' ')
 
