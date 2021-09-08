@@ -118,7 +118,10 @@
     "daily": "Daily",
     "monthly": "Monthly",
     "yearly": "Yearly",
-    "spatialResolution": "Spatial resolution"
+    "spatialResolution": "Spatial resolution",
+    "yearlyNotAvailable": "Your time range is shorter than 1 year",
+    "monthlyNotAvailable": "Your time range is shorter than 1 month",
+    "highResNotAvailable": "Your area is too big"
   },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",

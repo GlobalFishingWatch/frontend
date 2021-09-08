@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import area from '@turf/area'
+import type { Placement } from 'tippy.js'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { Choice, Tag } from '@globalfishingwatch/ui-components/dist'
 import { selectDownloadArea } from 'features/download/download.slice'
@@ -40,8 +41,22 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
     const endDateTime = DateTime.fromISO(end)
     const duration = endDateTime.diff(startDateTime, ['years', 'months'])
     filteredTemporalResolutionOptions = filteredTemporalResolutionOptions.map((option) => {
-      if (option.id === TemporalResolution.Yearly && duration?.years < 1) option.disabled = true
-      if (option.id === TemporalResolution.Monthly && duration?.months < 1) option.disabled = true
+      if (option.id === TemporalResolution.Yearly && duration?.years < 1) {
+        return {
+          ...option,
+          disabled: true,
+          tooltip: t('download.yearlyNotAvailable', 'Your time range is shorter than 1 year'),
+          tooltipPlacement: 'top',
+        }
+      }
+      if (option.id === TemporalResolution.Monthly && duration?.months < 1) {
+        return {
+          ...option,
+          disabled: true,
+          tooltip: t('download.monthlyNotAvailable', 'Your time range is shorter than 1 month'),
+          tooltipPlacement: 'top',
+        }
+      }
       return option
     })
   }
@@ -53,7 +68,14 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
   const areaIsTooBigForHighRes =
     area(downloadArea?.feature.geometry as any) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
   const filteredSpatialResolutionOptions = spatialResolutionOptions.map((option) => {
-    if (option.id === SpatialResolution.High && areaIsTooBigForHighRes) option.disabled = true
+    if (option.id === SpatialResolution.High && areaIsTooBigForHighRes) {
+      return {
+        ...option,
+        disabled: true,
+        tooltip: t('download.highResNotAvailable', 'Your area is too big'),
+        tooltipPlacement: 'top' as Placement,
+      }
+    }
     return option
   })
   const [spatialResolution, setSpatialResolution] = useState(filteredSpatialResolutionOptions[0].id)

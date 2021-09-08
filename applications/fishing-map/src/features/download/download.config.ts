@@ -38,6 +38,8 @@ export const formatOptions: ChoiceOption[] = [
     id: Format.NetCDF,
     title: 'netcdf',
     disabled: true,
+    tooltip: t('common.comingSoon', 'Coming Soon!'),
+    tooltipPlacement: 'top',
   },
 ]
 
@@ -86,4 +88,4 @@ export const spatialResolutionOptions: ChoiceOption[] = [
   },
 ]
 
-export const MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION = 1000000000000
+export const MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION = 25000000000000
