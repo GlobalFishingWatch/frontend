@@ -134,6 +134,7 @@ exports[`<App /> renders home screen when not loading 1`] = `
             class="input"
             placeholder="Search vessels by name, MMSI, IMO"
             role="search"
+            spellcheck="false"
             type="search"
             value=""
           />
