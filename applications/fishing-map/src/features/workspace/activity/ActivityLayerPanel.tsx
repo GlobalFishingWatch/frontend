@@ -5,18 +5,13 @@ import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import {
-  DEFAULT_FISHING_DATAVIEW_ID,
-  DEFAULT_PRESENCE_DATAVIEW_ID,
-  DEFAULT_VIIRS_DATAVIEW_ID,
-} from 'data/workspaces'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import { getDatasetNameTranslated } from 'features/i18n/utils'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -91,22 +86,12 @@ function ActivityLayerPanel({
     setFiltersOpen(false)
   }
 
-  const activeDatasets = dataview.datasets?.filter((d) => dataview.config?.datasets.includes(d.id))
-  let datasetName = dataview.name || ''
+  const datasetTitle = getDatasetTitleByDataview(dataview)
   const fishingDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
-  if (dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID) {
-    datasetName = t(`common.apparentFishing`, 'Apparent Fishing Effort')
-  } else if (dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID) {
-    datasetName = t(`common.presence`, 'Vessel presence')
-  } else if (dataview.dataviewId === DEFAULT_VIIRS_DATAVIEW_ID) {
-    datasetName = t(`common.viirs`, 'Night light detections (VIIRS)')
-  } else if (activeDatasets && activeDatasets.length === 1) {
-    datasetName = getDatasetNameTranslated(activeDatasets[0])
-  }
   const TitleComponent = (
     <Title
-      title={datasetName}
+      title={datasetTitle}
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
@@ -128,8 +113,8 @@ function ActivityLayerPanel({
           className={styles.switch}
           dataview={dataview}
         />
-        {datasetName.length > 24 ? (
-          <Tooltip content={datasetName}>{TitleComponent}</Tooltip>
+        {datasetTitle.length > 24 ? (
+          <Tooltip content={datasetTitle}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}

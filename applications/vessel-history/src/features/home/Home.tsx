@@ -101,7 +101,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const showHeader = searchType === 'advanced' || !query
 
   return (
-    <div className={styles.homeContainer}>
+    <div className={styles.homeContainer} data-testid="home">
       {showHeader && (
         <header>
           <Logo className={styles.logo}></Logo>
