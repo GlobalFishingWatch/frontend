@@ -25,7 +25,6 @@ export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {
   q?: string
-  searchType?: string
   version?: string
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string

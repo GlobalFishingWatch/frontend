@@ -1,9 +1,12 @@
+.vesselItemWrapper {
+  border-bottom: var(--border);
+  padding-top: 1.5rem;
+}
+
 .vesselItem {
   cursor: pointer;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(22, 63, 137, 0.1);
 }
+
 .vesselItem h3 {
   color: #163f89;
   font-size: 1.8rem;

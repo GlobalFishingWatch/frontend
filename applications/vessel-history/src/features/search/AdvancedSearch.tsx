@@ -78,9 +78,10 @@ const AdvancedSearch: React.FC = () => {
   )
 
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.row}>
         <InputText
+          inputSize="small"
           onChange={onMainQueryChange}
           value={query}
           label={t('search.shipname', 'Name')}
@@ -88,6 +89,7 @@ const AdvancedSearch: React.FC = () => {
           className={styles.half}
         />
         <InputText
+          inputSize="small"
           onChange={setQueryParam}
           id="MMSI"
           className={styles.thirdOfHalf}
@@ -95,6 +97,7 @@ const AdvancedSearch: React.FC = () => {
           label={t('search.MMSI', 'MMSI')}
         />
         <InputText
+          inputSize="small"
           onChange={setQueryParam}
           id="IMO"
           className={styles.thirdOfHalf}
@@ -102,6 +105,7 @@ const AdvancedSearch: React.FC = () => {
           label={t('search.IMO', 'IMO')}
         />
         <InputText
+          inputSize="small"
           onChange={setQueryParam}
           id="callsign"
           className={styles.thirdOfHalf}

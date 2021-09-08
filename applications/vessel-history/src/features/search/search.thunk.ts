@@ -51,7 +51,6 @@ const fetchData = async (
   advancedSearch?: Record<string, any>
 ) => {
   const serializedQuery = getSerializedQuery(query, advancedSearch)
-  const endpoint = advancedSearch ? 'advanced-search' : 'search'
 
   const urlQuery = stringify({
     datasets: BASE_DATASET,
@@ -61,7 +60,7 @@ const fetchData = async (
     useTMT: true,
   })
 
-  const url = `/v1/vessels/${endpoint}?${urlQuery}`
+  const url = `/v1/vessels/advanced-search?${urlQuery}`
 
   return await GFWAPI.fetch<any>(url, {
     signal,

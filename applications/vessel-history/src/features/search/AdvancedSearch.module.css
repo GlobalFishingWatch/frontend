@@ -1,7 +1,15 @@
+.container {
+  padding: 1.5rem;
+  border-bottom: var(--border);
+}
+
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.row:not(:first-child) {
   margin-top: var(--space-S);
 }
 
