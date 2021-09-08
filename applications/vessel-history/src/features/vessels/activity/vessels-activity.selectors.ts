@@ -14,6 +14,8 @@ import { ActivityEvent, Regions } from 'types/activity'
 import { selectEEZs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
+import { selectSettings } from 'features/settings/settings.slice'
+import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
 export interface RenderedEvent extends ActivityEvent {
   color: string
@@ -88,7 +90,7 @@ export const selectEventsForTracks = createSelector(
 
 export const selectEventsWithRenderingInfo = createSelector(
   [selectEventsForTracks, selectEEZs, selectRFMOs],
-  (eventsForTrack, eezs, rfmos) => {
+  (eventsForTrack, eezs = [], rfmos = []) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
       return (data || []).map((event: ActivityEvent, index) => {
         const regionDescription = getEventRegionDescription(event, eezs, rfmos)
@@ -169,17 +171,23 @@ export const selectEventsWithRenderingInfo = createSelector(
 
         return {
           ...event,
-          color: '#ff99ff',
-          colorLabels: 'colorLabels',
-          description: 'event description',
-          descriptionGeneric: 'descriptionGeneric',
-          regionDescription: 'regionDescription',
-          durationDescription: 'durationDescription',
+          color,
+          colorLabels,
+          description,
+          descriptionGeneric,
+          regionDescription,
+          durationDescription,
           duration: durationDiff.hours,
         }
       })
     })
     return eventsWithRenderingInfo.flat()
+  }
+)
+export const selectFilteredActivityHighlightEvents = createSelector(
+  [selectEventsWithRenderingInfo, selectSettings],
+  (eventsWithRenderingInfo, settings) => {
+    return filterActivityHighlightEvents(eventsWithRenderingInfo, settings)
   }
 )
 
