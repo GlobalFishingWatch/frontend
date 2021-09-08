@@ -30,6 +30,7 @@ import { selectActivityCategoryFn, selectWorkspaceStateProperty } from 'features
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { selectThinningConfig } from 'features/resources/resources.selectors'
 import { TimebarGraphs } from 'types'
+import { RootState } from 'store'
 import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
@@ -91,7 +92,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
   [
     selectAllDataviewInstancesResolved,
     selectThinningConfig,
-    selectWorkspaceStateProperty('timebarGraph'),
+    (state: RootState) => selectWorkspaceStateProperty('timebarGraph')(state),
   ],
   (dataviewInstances, thinningConfig, timebarGraph) => {
     const datasetConfigsTransforms: DatasetConfigsTransforms = {

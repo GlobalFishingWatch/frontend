@@ -3,10 +3,11 @@ import { selectVisibleEvents } from 'features/app/app.selectors'
 import { ThinningLevels, THINNING_LEVELS } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { isGuestUser } from 'features/user/user.selectors'
+import { RootState } from 'store'
 import { selectResources } from './resources.slice'
 
 export const selectVisibleResources = createSelector(
-  [selectResources, selectVisibleEvents],
+  [selectResources, (state: RootState) => selectVisibleEvents(state)],
   (resources, visibleEvents) => {
     if (visibleEvents === 'all') {
       return resources

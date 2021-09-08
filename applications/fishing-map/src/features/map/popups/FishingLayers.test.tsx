@@ -1,13 +1,13 @@
 import { Fragment, Suspense } from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import { Dataset } from '@globalfishingwatch/api-types/dist'
+import { Dataset, DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import datasets from 'features/datasets/datasets.mock'
 import store from 'store'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { TooltipEventFeature } from '../map.hooks'
-import HeatmapTooltipRow from './HeatmapLayers'
+import HeatmapTooltipRow from './FishingLayers'
 
 jest.mock('features/workspace/workspace.selectors')
 jest.mock('features/workspace/workspace.hook')
@@ -15,6 +15,7 @@ jest.mock('features/workspace/workspace.hook')
 describe('HeatmapTooltipRow', () => {
   const feature: TooltipEventFeature = {
     title: 'Some tooltip title',
+    category: DataviewCategory.Fishing,
     color: 'cyan',
     unit: 'meters',
     source: 'my unit test',

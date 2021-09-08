@@ -175,6 +175,9 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     },
+    "moduleNameMapper": {
+      "^workerize-loader(\\?.*)?!(.*)/([^/]*)$": "$2/__mocks__/$3"
+    },
     "transformIgnorePatterns": [],
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
