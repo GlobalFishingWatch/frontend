@@ -41,6 +41,8 @@ const initialState: RegionsState = {
   ...asyncInitialState,
 }
 
+const sortRegionAlphabetically = (a: Region, b: Region) => (a.label < b.label ? -1 : 1)
+
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
   async (_, { rejectWithValue }) => {
@@ -60,9 +62,9 @@ export const fetchRegionsThunk = createAsyncThunk(
         options
       )
       const result: Regions[] = [
-        { id: MarineRegionType.eez, data: eezs },
-        { id: MarineRegionType.mpa, data: mpas },
-        { id: MarineRegionType.rfmo, data: rfmos },
+        { id: MarineRegionType.eez, data: eezs.sort(sortRegionAlphabetically) },
+        { id: MarineRegionType.mpa, data: mpas.sort(sortRegionAlphabetically) },
+        { id: MarineRegionType.rfmo, data: rfmos.sort(sortRegionAlphabetically) },
       ]
       return result
     } catch (e: any) {
