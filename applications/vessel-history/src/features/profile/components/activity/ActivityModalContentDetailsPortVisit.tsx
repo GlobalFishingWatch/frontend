@@ -48,6 +48,7 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
         : t('event.psmaNotIncluded', 'Not included'),
     [psmaDate, psmaDateFormatted, t]
   )
+  const confidenceLevel = useMemo(() => event.port_visit?.confidence || 0, [event.port_visit?.confidence])
 
   const confidence = useMemo(() => {
     const level =
@@ -56,6 +57,8 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
         : undefined
     return level ? t(`common.${level}` as any, level) : undefined
   }, [event.port_visit?.confidence, t])
+
+  const help = ''
 
   const ports = useMemo(
     () =>
@@ -75,10 +78,22 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
         <ActivityModalContentField
           label={t('event.confidence', 'Confidence')}
           value={confidence ?? DEFAULT_EMPTY_VALUE}
+          help={help}
         />
         <ActivityModalContentField label={t('event.psma', 'PSMA')} value={psmaDescription} />
       </div>
       <ActivityModalContentDetails event={event} />
+      {[2,3,4].includes(confidenceLevel) && (
+        <div className={styles.help}>
+            <p>{t(`event.confidenceHelp.help${confidenceLevel.toString()}` as any)}</p>
+            <ol>
+              {[3,4].includes(confidenceLevel) && <li>{t('event.confidenceHelp.portEntry', 'PORT ENTRY: vessel that was not in port gets within 3km of anchorage point')}</li>}
+              <li>{t('event.confidenceHelp.portStop', 'PORT STOP: begin: speed < 0.2 knots; end: speed > 0.5 knots')}</li>
+              <li>{t('event.confidenceHelp.portGap', 'PORT GAP: AIS gap > 4 hours; start is recorded 4 hours after the last message before the gap; end at next message after gap.')}</li>
+              {[3,4].includes(confidenceLevel) && <li>{t('event.confidenceHelp.portExit', 'PORT_EXIT: vessel that was in port moves more than 4km from anchorage point')}</li>}
+            </ol>
+        </div>
+      )}
     </Fragment>
   )
 }
