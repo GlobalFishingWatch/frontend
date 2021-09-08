@@ -32,7 +32,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { setSettingOptions, setSetting } = useSettingsConnect()
 
   const { anyOption, EEZ_REGIONS, RFMOS_REGIONS, MPAS_REGIONS, getOptions } =
-    useSettingsRegionsConnect(section, settings)
+    useSettingsRegionsConnect(section)
 
   const eez = useMemo(
     () => getOptions(EEZ_REGIONS, 'eezs', settings.eezs),
@@ -43,7 +43,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
     [RFMOS_REGIONS, settings.rfmos, getOptions]
   )
   const mpa = useMemo(
-    () => getOptions(MPAS_REGIONS.map(truncateLabels), 'mpas', settings.mpas),
+    () => getOptions(MPAS_REGIONS?.map(truncateLabels), 'mpas', settings.mpas),
     [MPAS_REGIONS, settings.mpas, getOptions]
   )
 
