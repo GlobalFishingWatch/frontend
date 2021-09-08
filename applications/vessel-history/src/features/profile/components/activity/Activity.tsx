@@ -14,7 +14,6 @@ import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { setHighlightedEvent } from 'features/map/map.slice'
-import { useLocationConnect } from 'routes/routes.hook'
 import useViewport from 'features/map/map-viewport.hooks'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import ActivityItem from './ActivityItem'
@@ -41,7 +40,6 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
 
-  const { dispatchQueryParams } = useLocationConnect()
   const selectEventOnMap = useCallback((event: RenderedEvent) => {
     dispatch(setHighlightedEvent({id: event.id} as ApiEvent))
     setMapCoordinates({ latitude: event.position.lat, longitude: event.position.lon, zoom: DEFAULT_VESSEL_MAP_ZOOM, bearing: 0, pitch: 0 })

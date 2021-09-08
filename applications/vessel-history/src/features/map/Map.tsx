@@ -171,7 +171,6 @@ const Map: React.FC = (): React.ReactElement => {
           onViewportChange={onViewportChange}
           onClick={onMapClick}
           onLoad={onMapLoad}
-          //onResize={onMapResize}
           mapStyle={style}
           mapOptions={mapOptions}
         ></InteractiveMap>
