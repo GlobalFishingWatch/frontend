@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useRef } from 'react'
 import cx from 'classnames'
 import Button from '../button'
 import styles from './Tabs.module.css'
@@ -8,10 +8,15 @@ interface TabsProps {
   tabs: Tab[]
   activeTab?: string
   onTabClick?: (tab: Tab, e: React.MouseEvent) => void
+  mountAllTabsOnLoad?: boolean
 }
 
-function Tabs({ activeTab, tabs, onTabClick }: TabsProps) {
+function Tabs({ activeTab, tabs, onTabClick, mountAllTabsOnLoad = false }: TabsProps) {
   const activeTabId = activeTab || tabs?.[0]?.id
+  const activedTabs = useRef([activeTabId])
+  if (!activedTabs.current.includes(activeTabId)) {
+    activedTabs.current.push(activeTabId)
+  }
   return (
     <div className={styles.container}>
       <ul className={styles.header} role="tablist">
@@ -37,20 +42,23 @@ function Tabs({ activeTab, tabs, onTabClick }: TabsProps) {
           )
         })}
       </ul>
-      {tabs.map((tab, index) => {
+      {tabs.map((tab) => {
         const tabSelected = activeTabId === tab.id
-        return (
-          // eslint-disable-next-line jsx-a11y/role-supports-aria-props
-          <div
-            key={tab.id}
-            id={tab.id}
-            role="tabpanel"
-            aria-expanded={tabSelected}
-            className={cx(styles.content, { [styles.contentActive]: tabSelected })}
-          >
-            {tab.content}
-          </div>
-        )
+        if (mountAllTabsOnLoad || tabSelected || activedTabs.current.includes(tab.id)) {
+          return (
+            // eslint-disable-next-line jsx-a11y/role-supports-aria-props
+            <div
+              key={tab.id}
+              id={tab.id}
+              role="tabpanel"
+              aria-expanded={tabSelected}
+              className={cx(styles.content, { [styles.contentActive]: tabSelected })}
+            >
+              {tab.content}
+            </div>
+          )
+        }
+        return null
       })}
     </div>
   )
