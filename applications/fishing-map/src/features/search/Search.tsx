@@ -284,7 +284,6 @@ function Search() {
             <label className={styles.title}>{t('search.title', 'Search')}</label>
             <Choice
               options={searchOptions}
-              disabledTooltip={t('search.advancedDisabled')}
               activeOption={activeSearchOption}
               onOptionClick={onSearchOptionChange}
               size="small"
