@@ -1,9 +1,7 @@
-import React, { Fragment, useState, useEffect, useMemo, useCallback, lazy } from 'react'
+import React, { Fragment, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import { Point, Segment } from '@globalfishingwatch/data-transforms'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
@@ -24,17 +22,11 @@ import {
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import {
-  selectActiveVesselsDataviews,
-  selectDataviewsResourceQueries,
-} from 'features/dataviews/dataviews.selectors'
+import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
-import useViewport from 'features/map/map-viewport.hooks'
-import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
+import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { resetFilters } from 'features/event-filters/filters.slice'
-import { selectHighlightedEvent } from 'features/map/map.slice'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
@@ -42,7 +34,6 @@ import Activity from './components/activity/Activity'
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { setMapCoordinates } = useViewport()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
@@ -52,11 +43,6 @@ const Profile: React.FC = (props): React.ReactElement => {
   const vessel = useSelector(selectVesselById(vesselProfileId), shallowEqual)
   const datasets = useSelector(selectDatasets, shallowEqual)
   const resourceQueries = useSelector(selectDataviewsResourceQueries, shallowEqual)
-  const [vesselDataview] = useSelector(selectActiveVesselsDataviews, shallowEqual) ?? []
-  const { url: trackUrl = '' } = vesselDataview
-    ? resolveDataviewDatasetResource(vesselDataview, DatasetTypes.Tracks)
-    : { url: '' }
-  
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -111,15 +97,14 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
   }, [dispatch, resourceQueries])
 
-  //const Map = lazy(() => import(`features/map/Map`))
-  const [activeTab, setActiveTab] = useState<Tab | undefined>(undefined)
+  
 
   const tabs: Tab[] = useMemo(
     () => [
       {
         id: 'info',
         title: t('common.info', 'INFO').toLocaleUpperCase(),
-        content: vessel && (activeTab?.id === 'info' || !activeTab) ? (
+        content: vessel ? (
           <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
@@ -128,7 +113,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       {
         id: 'activity',
         title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
-        content: vessel && activeTab?.id === 'activity' ? (
+        content: vessel ? (
           <Activity vessel={vessel} lastPosition={lastPosition} 
             lastPortVisit={lastPortVisit} onMoveToMap={() => setActiveTab(tabs?.[2]) }/>
         ) : (
@@ -138,7 +123,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       {
         id: 'map',
         title: t('common.map', 'MAP').toLocaleUpperCase(),
-        content: vessel && activeTab?.id === 'map' ? (
+        content: vessel ? (
           <div className={styles.mapContainer}>
             <Map />
           </div>
@@ -147,8 +132,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         ),
       },
     ],
-    [t, vessel, activeTab, lastPosition, lastPortVisit, loading]
+    [t, vessel, lastPosition, lastPortVisit, loading]
   )
+
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
 
   const defaultPreviousNames = useMemo(() => {
     return `+${vessel?.history.shipname.byDate.length} previous ${t(
@@ -172,7 +159,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     )
     return gfwVesselName ? gfwVesselName.value : vessel?.shipname
   }, [vessel])
-  console.log(activeTab?.id as string ?? tabs?.[0].id)
+
   return (
     <Fragment>
       <header className={styles.header}>
@@ -206,7 +193,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       <div className={styles.profileContainer}>
         <Tabs
           tabs={tabs}
-          activeTab={activeTab?.id as string ?? tabs?.[0].id}
+          activeTab={activeTab?.id as string}
           onTabClick={(tab: Tab) => setActiveTab(tab)}
         ></Tabs>
       </div>
