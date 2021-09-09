@@ -47,6 +47,7 @@ export interface ActivityEvent<Vessel = EventVessel> extends ApiEvent<Vessel> {
   boundingBox: number[]
   distances: Distances
   fishing: Fishing
+  timestamp?: number
 }
 export interface ActivityEventGroup {
   event_type: EventTypes

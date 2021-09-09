@@ -38,7 +38,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
     (voyage: RenderedVoyage) => {
       setExpandedVoyages({
         ...expandedVoyages,
-        [voyage.start]: expandedVoyages[voyage.start] ? undefined : voyage,
+        [voyage.timestamp]: expandedVoyages[voyage.timestamp] ? undefined : voyage,
       })
     },
     [expandedVoyages]
@@ -50,7 +50,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
         if (event.type === 'voyage') {
           return {
             ...event,
-            status: expandedVoyages[event.start] ? 'expanded' : 'collapsed',
+            status: expandedVoyages[event.timestamp] ? 'expanded' : 'collapsed',
           } as RenderedVoyage
         } else {
           return event as RenderedEvent
@@ -62,9 +62,9 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
           Object.values(expandedVoyages).find(
             (voyage) =>
               voyage !== undefined &&
-              ((voyage.start < event.start && (voyage.end ?? new Date().getTime()) > event.start) ||
-                (voyage.start <= (event as RenderedEvent).end &&
-                  (voyage.end ?? new Date().getTime()) >= (event as RenderedEvent).end))
+              // event timestamp or start is inside the voyage
+              voyage.start <= (event.timestamp ?? event.start) &&
+              voyage.end >= (event.timestamp ?? event.start)
           )
         )
       })
@@ -91,7 +91,9 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   useEffect(() => {
     const [lastVoyage] = events.filter((event) => event.type === 'voyage')
     if (lastVoyage)
-      setExpandedVoyages({ [(lastVoyage as RenderedVoyage).start]: lastVoyage as RenderedVoyage })
+      setExpandedVoyages({
+        [(lastVoyage as RenderedVoyage).timestamp]: lastVoyage as RenderedVoyage,
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

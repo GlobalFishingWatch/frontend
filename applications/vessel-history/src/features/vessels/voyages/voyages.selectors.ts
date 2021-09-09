@@ -5,12 +5,16 @@ import { selectFilters } from 'features/event-filters/filters.slice'
 import { ActivityEvent } from 'types/activity'
 import { selectEventsForTracks, selectFilteredEvents } from '../activity/vessels-activity.selectors'
 
+enum EventTypeVoyage {
+  Voyage = 'voyage',
+}
 export interface Voyage {
   from?: ActivityEvent
   to?: ActivityEvent
-  type: 'voyage'
+  type: EventTypeVoyage
   start: number
-  end?: number
+  end: number
+  timestamp: number
 }
 
 export const selectVoyages = createSelector([selectEventsForTracks], (eventsForTrack) => {
@@ -30,6 +34,7 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
               type: 'voyage',
               to: port,
               end: port.start ?? port.end,
+              timestamp: (port.start ?? port.end) as number,
             } as Voyage)
         )
       if (voyages.length === 0) return []
@@ -38,7 +43,8 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
       return voyages.concat([
         {
           from: last.to,
-          start: last.to?.start ?? last.to?.end,
+          start: last.to?.end ?? last.to?.start,
+          timestamp: new Date().getTime(),
           type: 'voyage',
         } as Voyage,
       ])
@@ -46,6 +52,14 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
     .flat()
 })
 
+const eventTypePriority: Record<EventTypes | EventTypeVoyage, number> = {
+  voyage: 1,
+  port_visit: 7,
+  fishing: 3,
+  encounter: 4,
+  loitering: 5,
+  gap: 6,
+}
 export const selectFilteredEventsByVoyages = createSelector(
   [selectFilteredEvents, selectVoyages, selectFilters],
   (filteredEvents, voyages, filters) => {
@@ -60,7 +74,7 @@ export const selectFilteredEventsByVoyages = createSelector(
     const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
     const interval = Interval.fromDateTimes(startDate, endDate)
 
-    const filteredVoyages = voyages
+    const filteredVoyages: Voyage[] = voyages
       .filter((voyage) => {
         if (
           !interval.contains(DateTime.fromMillis((voyage.from?.start ?? 0) as number)) &&
@@ -75,10 +89,9 @@ export const selectFilteredEventsByVoyages = createSelector(
       })
       .map((voyage) => ({
         ...voyage,
-        type: 'voyage',
+        type: EventTypeVoyage.Voyage,
         start: voyage.start ?? 0,
         end: voyage.end ?? new Date().getTime(),
-        sortField: voyage.end ?? new Date().getTime(),
       }))
       .map((voyage) => ({
         ...voyage,
@@ -90,8 +103,12 @@ export const selectFilteredEventsByVoyages = createSelector(
           ).length > 0,
       }))
 
-    return [...filteredEvents.map((x) => ({ ...x, sortField: x.start })), ...filteredVoyages].sort(
-      (a, b) => (a.sortField > b.sortField ? -1 : 1)
+    return [...filteredEvents, ...filteredVoyages].sort(
+      (a, b) =>
+        // Sort by event timestamp first
+        (b.timestamp ?? (b.start as number)) - (a.timestamp ?? (a.start as number)) ||
+        // if equal then sort by event type priority (voyages first)
+        eventTypePriority[a.type] - eventTypePriority[b.type]
     )
   }
 )

@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
+import { upperFirst } from 'lodash'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
@@ -93,9 +94,10 @@ export const selectEventsWithRenderingInfo = createSelector(
   [selectEventsForTracks, selectEEZs, selectRFMOs],
   (eventsForTrack, eezs = [], rfmos = []) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
-      return (data || []).map((event: ActivityEvent, index) => {
-        // const vesselName = event.vessel.name || event.vessel.id
-
+      const portExitEvents = (data || [])
+        .filter((event) => event.type === EventTypes.Port)
+        .map((event) => ({ ...event, timestamp: event.end as number, id: `${event.id}-exit` }))
+      return (data || []).concat(portExitEvents).map((event: ActivityEvent, index) => {
         const regionDescription = getEventRegionDescription(event, eezs, rfmos)
 
         let description = ''
@@ -120,14 +122,18 @@ export const selectEventsWithRenderingInfo = createSelector(
             const { name, flag } = event.port_visit?.intermediateAnchorage ??
               event.port_visit?.startAnchorage ??
               event.port_visit?.endAnchorage ?? { name: undefined, flag: undefined }
+
+            const portType = event.id.endsWith('-exit') ? 'exited' : 'entered'
             if (name) {
               const portLabel = [
                 name,
                 ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : []),
               ].join(', ')
-              description = t('event.portAt', { port: portLabel })
+              description = t(`event.${portType}PortAt`, `${upperFirst(portType)} Port {{port}}`, {
+                port: portLabel,
+              })
             } else {
-              description = t('event.portAction')
+              description = t(`event.${portType}portAction`, `${upperFirst(portType)} Port`)
             }
             descriptionGeneric = t('event.port')
             break
@@ -181,6 +187,7 @@ export const selectEventsWithRenderingInfo = createSelector(
           regionDescription,
           durationDescription,
           duration: durationDiff.hours,
+          timestamp: event.timestamp ?? (event.start as number),
         }
       })
     })
