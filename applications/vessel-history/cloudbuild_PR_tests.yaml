@@ -1,0 +1,13 @@
+steps:
+  - name: 'node:12'
+    entrypoint: 'yarn'
+    id: 'install dependencies'
+    dir: 'applications/vessel-history'
+    args: ['install']
+  - name: 'node:12'
+    entrypoint: 'yarn'
+    id: 'tests'
+    dir: 'applications/vessel-history'
+    args: ['test']
+
+timeout: 300s
