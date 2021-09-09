@@ -4,13 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { Voyage } from 'features/vessels/voyages/voyages.selectors'
+import { RenderedVoyage } from 'types/voyage'
 import styles from './Activity.module.css'
-
-export interface RenderedVoyage extends Voyage {
-  status: 'collapsed' | 'expanded'
-  visible: boolean
-}
 
 interface EventProps {
   event: RenderedVoyage

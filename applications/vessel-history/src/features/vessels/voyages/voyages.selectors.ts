@@ -3,19 +3,8 @@ import { DateTime, Interval } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { ActivityEvent } from 'types/activity'
+import { Voyage, EventTypeVoyage } from 'types/voyage'
 import { selectEventsForTracks, selectFilteredEvents } from '../activity/vessels-activity.selectors'
-
-export enum EventTypeVoyage {
-  Voyage = 'voyage',
-}
-export interface Voyage {
-  from?: ActivityEvent
-  to?: ActivityEvent
-  type: EventTypeVoyage
-  start: number
-  end: number
-  timestamp: number
-}
 
 export const selectVoyages = createSelector([selectEventsForTracks], (eventsForTrack) => {
   return eventsForTrack
@@ -31,7 +20,7 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
                     start: all[index - 1].end ?? all[index - 1].start,
                   }
                 : {}),
-              type: 'voyage',
+              type: EventTypeVoyage.Voyage,
               to: port,
               end: port.start ?? port.end,
               timestamp: (port.start ?? port.end) as number,
@@ -45,7 +34,7 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
           from: last.to,
           start: last.to?.end ?? last.to?.start,
           timestamp: new Date().getTime(),
-          type: 'voyage',
+          type: EventTypeVoyage.Voyage,
         } as Voyage,
       ])
     })

@@ -10,17 +10,14 @@ import { RenderedEvent } from 'features/vessels/activity/vessels-activity.select
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
-import {
-  EventTypeVoyage,
-  selectFilteredEventsByVoyages,
-} from 'features/vessels/voyages/voyages.selectors'
+import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
+import { EventTypeVoyage, RenderedVoyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
 import { setHighlightedEvent } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
-import { RenderedVoyage } from './ActivityVoyage'
 interface ActivityProps {
   vessel: VesselWithHistory | null
   lastPosition: any
