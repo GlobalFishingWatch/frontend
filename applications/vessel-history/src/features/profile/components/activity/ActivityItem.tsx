@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { RenderedVoyage, Voyage } from 'types/voyage'
+import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
 import ActivityEvent from './ActivityEvent'
 import ActivityVoyage from './ActivityVoyage'
 
@@ -19,14 +19,14 @@ const ActivityItem: React.FC<EventProps> = ({
 }): React.ReactElement => {
   return (
     <Fragment>
-      {event.type === 'voyage' && (
+      {event.type === EventTypeVoyage.Voyage && (
         <ActivityVoyage
           event={event}
           onMapClick={onMapClick}
           onToggleClick={onToggleClick}
         ></ActivityVoyage>
       )}
-      {event.type !== 'voyage' && (
+      {event.type !== EventTypeVoyage.Voyage && (
         <ActivityEvent
           event={event}
           onMapClick={onMapClick}

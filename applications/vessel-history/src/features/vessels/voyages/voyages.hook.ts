@@ -25,7 +25,7 @@ function useVoyagesConnect() {
   const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
     return eventsList
       .map((event) => {
-        if (event.type === 'voyage') {
+        if (event.type === EventTypeVoyage.Voyage) {
           return {
             ...event,
             status: expandedVoyages[event.timestamp] ? 'expanded' : 'collapsed',
@@ -36,7 +36,7 @@ function useVoyagesConnect() {
       })
       .filter((event) => {
         return (
-          (event.type === 'voyage' && event.visible) ||
+          (event.type === EventTypeVoyage.Voyage && event.visible) ||
           Object.values(expandedVoyages).find(
             (voyage) =>
               voyage !== undefined &&
