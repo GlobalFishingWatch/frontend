@@ -43,12 +43,13 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
 
 const eventTypePriority: Record<EventTypes | EventTypeVoyage, number> = {
   voyage: 1,
-  port_visit: 7,
-  fishing: 3,
-  encounter: 4,
-  loitering: 5,
-  gap: 6,
+  fishing: 2,
+  encounter: 3,
+  loitering: 4,
+  gap: 5,
+  port_visit: 6,
 }
+
 export const selectFilteredEventsByVoyages = createSelector(
   [selectFilteredEvents, selectVoyages, selectFilters],
   (filteredEvents, voyages, filters) => {
