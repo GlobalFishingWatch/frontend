@@ -5,7 +5,7 @@ import { selectFilters } from 'features/event-filters/filters.slice'
 import { ActivityEvent } from 'types/activity'
 import { selectEventsForTracks, selectFilteredEvents } from '../activity/vessels-activity.selectors'
 
-enum EventTypeVoyage {
+export enum EventTypeVoyage {
   Voyage = 'voyage',
 }
 export interface Voyage {

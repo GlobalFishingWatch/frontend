@@ -10,7 +10,10 @@ import { RenderedEvent } from 'features/vessels/activity/vessels-activity.select
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
-import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
+import {
+  EventTypeVoyage,
+  selectFilteredEventsByVoyages,
+} from 'features/vessels/voyages/voyages.selectors'
 import { t } from 'features/i18n/i18n'
 import { setHighlightedEvent } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -89,7 +92,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   )
 
   useEffect(() => {
-    const [lastVoyage] = events.filter((event) => event.type === 'voyage')
+    const [lastVoyage] = events.filter((event) => event.type === EventTypeVoyage.Voyage)
     if (lastVoyage)
       setExpandedVoyages({
         [(lastVoyage as RenderedVoyage).timestamp]: lastVoyage as RenderedVoyage,
