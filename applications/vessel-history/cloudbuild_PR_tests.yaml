@@ -36,4 +36,4 @@ steps:
         'test',
       ]
 
-timeout: 300s
+timeout: 450s
