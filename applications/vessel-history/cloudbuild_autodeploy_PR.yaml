@@ -7,10 +7,6 @@ steps:
     entrypoint: 'yarn'
     id: 'build monorepo packages'
     args: ['build']
-  # - name: 'node:12'
-  #   entrypoint: 'yarn'
-  #   id: 'test'
-  #   args: ['test:vessel-history']
   - name: 'node:12'
     entrypoint: 'bash'
     id: 'copy packages to app'
