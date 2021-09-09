@@ -13,20 +13,9 @@ export interface Position {
 }
 
 export interface Regions {
-  arg: any[]
   eez: string[]
-  fao: string[]
-  hsp: any[]
-  kkp: any[]
-  vme: string[]
-  ames: string[]
   rfmo: string[]
-  mpant: any[]
-  mparu: any[]
-  ocean: string[]
-  other: any[]
-  mregion: string[]
-  majorFao: string[]
+  mpa: any[]
 }
 
 export interface Distances {

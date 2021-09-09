@@ -12,7 +12,7 @@ import { Filters, initialState, selectFilters } from 'features/event-filters/fil
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
 import { ActivityEvent, Regions } from 'types/activity'
-import { selectEEZs, selectRFMOs } from 'features/regions/regions.selectors'
+import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
 import { selectSettings } from 'features/settings/settings.slice'
@@ -91,14 +91,14 @@ export const selectEventsForTracks = createSelector(
 )
 
 export const selectEventsWithRenderingInfo = createSelector(
-  [selectEventsForTracks, selectEEZs, selectRFMOs],
-  (eventsForTrack, eezs = [], rfmos = []) => {
+  [selectEventsForTracks, selectEEZs, selectRFMOs, selectMPAs],
+  (eventsForTrack, eezs = [], rfmos = [], mpas = []) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
       const portExitEvents = (data || [])
         .filter((event) => event.type === EventTypes.Port)
         .map((event) => ({ ...event, timestamp: event.end as number, id: `${event.id}-exit` }))
       return (data || []).concat(portExitEvents).map((event: ActivityEvent, index) => {
-        const regionDescription = getEventRegionDescription(event, eezs, rfmos)
+        const regionDescription = getEventRegionDescription(event, eezs, rfmos, mpas)
 
         let description = ''
         let descriptionGeneric = ''
@@ -201,7 +201,12 @@ export const selectFilteredActivityHighlightEvents = createSelector(
   }
 )
 
-const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: Region[]) => {
+const getEventRegionDescription = (
+  event: ActivityEvent,
+  eezs: Region[],
+  rfmos: Region[],
+  mpas: Region[]
+) => {
   const getRegionNamesByType = (regionType: string, values: string[]) => {
     switch (regionType) {
       case 'eez':
@@ -218,14 +223,17 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
             .filter((value) => value.length > 0)
             .join(', ')
         )
-      case 'ocean':
-        return t('event.internationalWaters', 'International Waters') //values.map((ocean) => ocean).join(', ')
+      case 'mpa':
+        return values
+          .map((mpaId) => mpas.find((eez) => eez.id.toString() === mpaId)?.label ?? '')
+          .filter((value) => value.length > 0)
+          .join(', ')
       default:
         return values.join(', ')
     }
   }
 
-  const regionsDescription = (['eez', 'rfmo', 'ocean'] as (keyof Regions)[])
+  const regionsDescription = (['eez', 'rfmo', 'mpa'] as (keyof Regions)[])
     // use only regions with values
     .filter((regionType) => event?.regions && event?.regions[regionType].length > 0)
     // take only the first found
