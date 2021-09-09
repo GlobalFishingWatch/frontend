@@ -1,20 +1,19 @@
-import React, { Fragment, useCallback, useEffect, useState, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
-import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { VesselWithHistory } from 'types'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
-import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
 import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
 import { setHighlightedEvent } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -28,47 +27,15 @@ interface ActivityProps {
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
 
-  const eventsLoading = useSelector(selectResourcesLoading)
-  const eventsList = useSelector(selectFilteredEventsByVoyages)
-  const [expandedVoyages, setExpandedVoyages] = useState<
-    Record<number, RenderedVoyage | undefined>
-  >([])
-
-  const toggleVoyage = useCallback(
-    (voyage: RenderedVoyage) => {
-      setExpandedVoyages({
-        ...expandedVoyages,
-        [voyage.timestamp]: expandedVoyages[voyage.timestamp] ? undefined : voyage,
-      })
-    },
-    [expandedVoyages]
-  )
-
-  const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
-    return eventsList
-      .map((event) => {
-        if (event.type === 'voyage') {
-          return {
-            ...event,
-            status: expandedVoyages[event.timestamp] ? 'expanded' : 'collapsed',
-          } as RenderedVoyage
-        } else {
-          return event as RenderedEvent
-        }
-      })
-      .filter((event) => {
-        return (
-          (event.type === 'voyage' && event.visible) ||
-          Object.values(expandedVoyages).find(
-            (voyage) =>
-              voyage !== undefined &&
-              // event timestamp or start is inside the voyage
-              voyage.start <= (event.timestamp ?? event.start) &&
-              voyage.end >= (event.timestamp ?? event.start)
-          )
-        )
-      })
-  }, [eventsList, expandedVoyages])
+  const {
+    eventsLoading,
+    events,
+    toggleVoyage,
+  }: {
+    eventsLoading: boolean
+    events: (RenderedEvent | RenderedVoyage)[]
+    toggleVoyage: (voyage: RenderedVoyage) => void
+  } = useVoyagesConnect()
 
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
@@ -90,15 +57,6 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
     },
     [dispatch, dispatchQueryParams, props]
   )
-
-  useEffect(() => {
-    const [lastVoyage] = events.filter((event) => event.type === EventTypeVoyage.Voyage)
-    if (lastVoyage)
-      setExpandedVoyages({
-        [(lastVoyage as RenderedVoyage).timestamp]: lastVoyage as RenderedVoyage,
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     dispatch(fetchRegionsThunk())

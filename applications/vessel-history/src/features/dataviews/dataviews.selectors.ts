@@ -106,10 +106,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
         return [trackWithThinning, info, ...events]
       },
     }
-    return getDataviewsForResourceQuerying(
-      dataviewInstances || [],
-      datasetConfigsTransforms
-    ) as UrlDataviewInstance[]
+    return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)
   }
 )
 
