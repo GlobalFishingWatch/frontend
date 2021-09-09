@@ -60,7 +60,7 @@ const ActivityVoyage: React.FC<EventProps> = ({
   return (
     <Fragment>
       <div className={cx(styles.event, styles.voyage)}>
-        <div className={styles.eventData}>
+        <div className={styles.eventData} onClick={() => onToggleClick(event)}>
           <div className={styles.description}>{voyageLabel}</div>
         </div>
         <div className={styles.actions}>
