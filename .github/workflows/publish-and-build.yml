@@ -79,7 +79,7 @@ jobs:
 
       - name: Trigger vessel-history build
         run: |-
-          gcloud -q beta builds triggers run --branch=develop ui-vessel-history-push-to-develop
+          gcloud -q beta builds triggers run --branch=develop ui-vessel-viewer-push-to-develop
         env:
           # Force docker build to not use cached layers
           # so it executes npm install and download the
