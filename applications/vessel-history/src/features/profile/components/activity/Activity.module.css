@@ -162,9 +162,6 @@ button .iconInButton {
   position: absolute;
   right: var(--space-XS);
 }
-.noEvents {
-  /* font: var(--font-S); */
-}
 
 .spinnerMed {
   margin-top: var(--space-M);

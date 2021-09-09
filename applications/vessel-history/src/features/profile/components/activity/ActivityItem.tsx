@@ -1,13 +1,8 @@
 import { Fragment } from 'react'
-import cx from 'classnames'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { getEncounterStatus } from 'features/vessels/activity/vessels-activity.utils'
-import { Voyage } from 'features/vessels/voyages/voyages.selectors'
-import ActivityDate from './ActivityDate'
+import { RenderedVoyage, Voyage } from 'types/voyage'
 import ActivityEvent from './ActivityEvent'
-import ActivityVoyage, { RenderedVoyage } from './ActivityVoyage'
-import styles from './Activity.module.css'
+import ActivityVoyage from './ActivityVoyage'
 
 interface EventProps {
   event: RenderedEvent | RenderedVoyage

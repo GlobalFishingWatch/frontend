@@ -11,7 +11,7 @@ import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
-import { EventTypeVoyage, RenderedVoyage } from 'types/voyage'
+import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
 import { setHighlightedEvent } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -80,7 +80,10 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   const { dispatchQueryParams } = useLocationConnect()
   const selectEventOnMap = useCallback(
-    (event: RenderedEvent) => {
+    (event: RenderedEvent | Voyage) => {
+      // TODO Define what's the expected behavior when clicking a voyage map icon
+      if (event.type === EventTypeVoyage.Voyage) return
+
       dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
       dispatchQueryParams({ latitude: event.position.lat, longitude: event.position.lon })
       props.onMoveToMap()

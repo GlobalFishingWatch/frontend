@@ -35,8 +35,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import Info from './components/Info'
-import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
+import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
@@ -148,8 +148,12 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'activity',
         title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
         content: vessel ? (
-          <Activity vessel={vessel} lastPosition={lastPosition} 
-            lastPortVisit={lastPortVisit} onMoveToMap={() => setActiveTab(tabs?.[2]) }/>
+          <Activity
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
+            onMoveToMap={() => setActiveTab(tabs?.[2])}
+          />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
         ),
