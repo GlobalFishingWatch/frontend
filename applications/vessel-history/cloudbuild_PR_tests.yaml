@@ -1,0 +1,39 @@
+steps:
+  # Push build image to GCR
+  - name: 'gcr.io/kaniko-project/executor:latest'
+    id: 'build base image & push to GCR'
+    args:
+      [
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
+        '--cache=true',
+        '--build-arg',
+        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
+        '--build-arg',
+        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
+        '--build-arg',
+        'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
+        '--build-arg',
+        'REACT_APP_LIMITED_ACCESS_USER=$_REACT_APP_LIMITED_ACCESS_USER',
+        '--build-arg',
+        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+        '--build-arg',
+        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--target',
+        'base',
+        '-f',
+        './applications/vessel-history/Dockerfile',
+        '-c',
+        './applications/vessel-history',
+      ]
+  # Run tests using base image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'tests'
+    args:
+      [
+        'run',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
+        'yarn',
+        'test',
+      ]
+
+timeout: 450s

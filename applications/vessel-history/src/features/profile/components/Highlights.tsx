@@ -37,7 +37,7 @@ const Highlights: React.FC = (): React.ReactElement => {
   return (
     <div
       className={cx(styles.activityContainer, styles.highlightsContainer, {
-        [styles.noData]: anyHighlightsSettingDefined || (events && events.length === 0),
+        [styles.noData]: !anyHighlightsSettingDefined || (events && events.length === 0),
       })}
     >
       <div className={styles.divider}></div>

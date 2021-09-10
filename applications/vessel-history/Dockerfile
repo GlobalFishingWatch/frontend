@@ -1,7 +1,7 @@
 #################################################################################
 # Step to build the application assets
 #################################################################################
-FROM node:12 AS build
+FROM node:12 AS base
 RUN mkdir -p /app
 WORKDIR /app
 
@@ -19,14 +19,16 @@ ENV REACT_APP_GOOGLE_TAG_MANAGER_KEY=${REACT_APP_GOOGLE_TAG_MANAGER_KEY}
 ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
 RUN npm install --unsafe-perm
 
-# Build the application assets
-ENV NODE_ENV=production
 COPY ./src /app/src
 COPY ./public /app/public
 COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
+
+# Build the application assets
+FROM base as build
+ENV NODE_ENV=production
 # override node_modules inside image with
 # generated versions from the monorepo
 COPY ./node_modules/@globalfishingwatch /tmp/@globalfishingwatch

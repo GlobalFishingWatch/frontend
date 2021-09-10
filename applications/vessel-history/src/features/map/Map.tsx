@@ -1,14 +1,18 @@
-import { ReactElement, useCallback, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useCallback, useMemo, useRef } from 'react'
+import { shallowEqual, useSelector } from 'react-redux'
 import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
-import { selectResourcesLoading } from 'features/resources/resources.slice'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { Point, Segment } from '@globalfishingwatch/data-transforms'
+import { selectResourceByUrl, selectResourcesLoading } from 'features/resources/resources.slice'
+import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectVesselById } from 'features/vessels/vessels.slice'
 import Info from 'features/map/info/Info'
-import { useLocationConnect } from 'routes/routes.hook'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
-import { selectUrlViewport } from 'routes/routes.selectors'
+import { DEFAULT_VESSEL_MAP_ZOOM, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
+import { selectVesselProfileId } from 'routes/routes.selectors'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
@@ -16,12 +20,13 @@ import MapControls from './controls/MapControls'
 import useMapEvents from './map-events.hooks'
 import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import { selectHighlightedEvent } from './map.slice'
 
-const Map = (): ReactElement => {
+const Map: React.FC = (): React.ReactElement => {
   const map = useMapInstance()
   const mapRef = useRef<any>(null)
+  const highlightedEvent = useSelector(selectHighlightedEvent)
   const { selectVesselEventOnClick } = useMapEvents()
-  const { dispatchQueryParams } = useLocationConnect()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const resourcesLoading = useSelector(selectResourcesLoading) ?? false
@@ -40,23 +45,34 @@ const Map = (): ReactElement => {
     map
   )
 
-  const url = useSelector(selectUrlViewport)
+  const vesselProfileId = useSelector(selectVesselProfileId, shallowEqual)
+  const vessel = useSelector(selectVesselById(vesselProfileId), shallowEqual)
+  const [vesselDataview] = useSelector(selectActiveVesselsDataviews, shallowEqual) ?? []
+  const { url: trackUrl = '' } = vesselDataview
+    ? resolveDataviewDatasetResource(vesselDataview, DatasetTypes.Tracks)
+    : { url: '' }
+  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl), shallowEqual)
+  const vesselLoaded = useMemo(() => !!vessel, [vessel])
+  const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
 
-  const onMapResize = useCallback(() => {
-    if (url && mapRef) {
-      const { latitude, longitude } = url
-      if (mapRef.current?.getMap().getCenter().lat !== latitude) {
-        // avoid to center in every resize (if happen)
-        setMapCoordinates({
-          latitude,
-          longitude,
-          bearing: 0,
-          pitch: 0,
-          zoom: 8,
-        })
-      }
+  const onFitLastPosition = useCallback(() => {
+    if (!trackResource?.data || trackResource?.data.length === 0) return
+    const { latitude, longitude } = (trackResource?.data.flat().slice(-1) as Segment).pop() as Point
+    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+      setMapCoordinates({
+        latitude: latitude as number,
+        longitude: longitude as number,
+        zoom: DEFAULT_VESSEL_MAP_ZOOM,
+        pitch: 0,
+        bearing: 0,
+      })
     }
-  }, [setMapCoordinates, url])
+  }, [setMapCoordinates, trackResource])
+
+  const onMapLoad = useCallback(() => {
+    if (!vesselLoaded || !vesselDataviewLoaded || !trackUrl || highlightedEvent) return
+    onFitLastPosition()
+  }, [vesselLoaded, vesselDataviewLoaded, trackUrl, highlightedEvent, onFitLastPosition])
 
   if (ENABLE_FLYTO) {
     let flying = false
@@ -69,29 +85,29 @@ const Map = (): ReactElement => {
         const currentPitch = mapRef?.current?.getMap().getPitch()
         const currentBearing = mapRef?.current?.getMap().getBearing()
         centetingMap = setTimeout(() => {
-          setMapCoordinates({
-            latitude: mapRef.current?.getMap().getCenter().lat,
-            longitude: mapRef.current?.getMap().getCenter().lng,
-            zoom: mapRef.current.getMap().getZoom(),
-
-            pitch: currentPitch,
-            bearing: currentBearing,
+          mapRef?.current?.getMap().easeTo({
+            center: [
+              mapRef.current?.getMap().getCenter().lng,
+              mapRef.current?.getMap().getCenter().lat,
+            ],
+            zoom: mapRef.current.getMap().getZoom() + 1,
+            duration:
+              1000 +
+              (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500),
+            pitch: 0,
+            bearing: 0,
           })
           setTimeout(() => {
-            mapRef?.current?.getMap().easeTo({
-              center: [
-                mapRef.current?.getMap().getCenter().lng,
-                mapRef.current?.getMap().getCenter().lat,
-              ],
-              zoom: mapRef.current.getMap().getZoom() + 1,
-              duration:
-                2000 +
-                (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500),
+            setMapCoordinates({
+              latitude: mapRef.current?.getMap().getCenter().lat,
+              longitude: mapRef.current?.getMap().getCenter().lng,
+              zoom: mapRef.current.getMap().getZoom(),
+  
               pitch: 0,
               bearing: 0,
             })
-          }, 50)
-        }, 50)
+          }, 1002 + (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500))
+        }, 1)
         mapRef?.current?.getMap().fire('flyend')
       }
     })
@@ -120,7 +136,7 @@ const Map = (): ReactElement => {
           essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         })
         mapRef?.current?.getMap().fire('flystart')
-        dispatchQueryParams({ latitude: nextEvent.position.lat, longitude: nextEvent.position.lon })
+        //dispatchQueryParams({ latitude: nextEvent.position.lat, longitude: nextEvent.position.lon })
       } else {
         //with this change we will center the event in the available map on the screen
         const coordinates = mapRef.current
@@ -138,7 +154,7 @@ const Map = (): ReactElement => {
         })
       }
     },
-    [dispatchQueryParams, setMapCoordinates]
+    [setMapCoordinates]
   )
 
   return (
@@ -149,10 +165,12 @@ const Map = (): ReactElement => {
           ref={mapRef}
           width="100%"
           height="100%"
-          {...viewport}
+          zoom={viewport.zoom}
+          latitude={viewport.latitude}
+          longitude={viewport.longitude}
           onViewportChange={onViewportChange}
           onClick={onMapClick}
-          onResize={onMapResize}
+          onLoad={onMapLoad}
           mapStyle={style}
           mapOptions={mapOptions}
         ></InteractiveMap>
