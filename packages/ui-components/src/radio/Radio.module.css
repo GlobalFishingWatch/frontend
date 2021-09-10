@@ -63,6 +63,7 @@
   color: var(--color-primary-blue);
   text-transform: none;
   max-width: calc(100% - 2rem);
+  line-height: 1;
 }
 
 .disabled .Label {
