@@ -62,6 +62,7 @@
   opacity: var(--opacity-secondary);
   color: var(--color-primary-blue);
   text-transform: none;
+  max-width: calc(100% - 2rem);
 }
 
 .disabled .Label {
