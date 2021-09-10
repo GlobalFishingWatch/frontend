@@ -200,7 +200,7 @@ const getEventRegionDescription = (
   rfmos: Region[],
   mpas: Region[]
 ) => {
-  const getRegionNamesByType = (regionType: string, values: RegionId[]) => {
+  const getRegionNamesByType = (regionType: string, values: string[]) => {
     switch (regionType) {
       case 'eez':
         return values
@@ -218,7 +218,7 @@ const getEventRegionDescription = (
         )
       case 'mpa':
         return values
-          .map((mpaId) => mpas.find((eez) => eez.id.toString() === mpaId)?.label ?? '')
+          .map((mpaId) => mpas.find((mpa) => mpa.id.toString() === mpaId)?.label ?? '')
           .filter((value) => value.length > 0)
           .join(', ')
       default:
