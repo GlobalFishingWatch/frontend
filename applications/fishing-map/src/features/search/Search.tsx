@@ -13,6 +13,7 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { Button, Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
+import TransmissionsTimeline from '@globalfishingwatch/ui-components/dist/transmissionsTimeline'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -26,6 +27,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import I18nFlag from 'features/i18n/i18nFlag'
+import { FIRST_YEAR_OF_DATA } from 'data/config'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -54,7 +56,6 @@ import {
   selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
 } from './search.selectors'
-import TransmissionsTimeline from './TransmissionsTimeline'
 
 function Search() {
   const { t } = useTranslation()
@@ -451,6 +452,7 @@ function Search() {
                                   <TransmissionsTimeline
                                     firstTransmissionDate={firstTransmissionDate}
                                     lastTransmissionDate={lastTransmissionDate}
+                                    firstYearOfData={FIRST_YEAR_OF_DATA}
                                   />
                                 </div>
                               )}
