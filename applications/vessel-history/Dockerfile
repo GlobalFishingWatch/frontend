@@ -28,7 +28,9 @@ COPY ./tsconfig.json /app/tsconfig.json
 
 # Build the application assets
 FROM base as build
-ENV NODE_ENV=production
+ENV REACT_APP_WORKSPACE_ENV=${REACT_APP_WORKSPACE_ENV}
+ENV NODE_ENV=$REACT_APP_WORKSPACE_ENV
+
 # override node_modules inside image with
 # generated versions from the monorepo
 COPY ./node_modules/@globalfishingwatch /tmp/@globalfishingwatch
