@@ -41,7 +41,9 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
         ),
       }
     })
-  }, [dataview])
+    // Updating tabs when t changes to ensure the content is updated on lang change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataview, t])
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
   const handleClick = useCallback(

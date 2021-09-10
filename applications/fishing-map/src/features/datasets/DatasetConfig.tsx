@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
+import Radio from '@globalfishingwatch/ui-components/dist/radio'
 import {
   AnyDatasetConfiguration,
   DatasetCategory,
@@ -103,12 +104,12 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         />
       )}
       {datasetCategory === DatasetCategory.Environment && datasetGeometryType === 'polygons' && (
-        <div className={styles.row}>
+        <div className={cx(styles.row, styles.input)}>
           <label className={styles.selectLabel}>
             {t('dataset.colorByValue', 'Color features by value')}
           </label>
           <Select
-            className={cx(styles.selectShort, styles.input)}
+            className={styles.selectShort}
             placeholder={t('selects.placeholder', 'Select an option')}
             containerClassName={styles.selectContainer}
             options={fieldsOptions}
@@ -215,23 +216,37 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
               onDatasetFieldChange({ timestamp: undefined })
             }}
           />
-          <Select
-            label={`${t('dataset.individualIdField', 'Individual ID field')} (${t(
-              'common.optional',
-              'Optional'
-            )})`}
-            placeholder={t('selects.placeholder', 'Select an option')}
-            options={fieldsOptions}
-            selectedOption={fieldsOptions.find(({ id }) => id === metadata.configuration?.id)}
-            onSelect={(selected) => {
-              onDatasetFieldChange({ id: selected.id })
-            }}
-            onRemove={() => {
-              onDatasetFieldChange({ id: undefined })
-            }}
-          />
+          <div className={styles.input}>
+            <Select
+              label={`${t('dataset.individualIdField', 'Individual ID field')} (${t(
+                'common.optional',
+                'Optional'
+              )})`}
+              placeholder={t('selects.placeholder', 'Select an option')}
+              options={fieldsOptions}
+              selectedOption={fieldsOptions.find(({ id }) => id === metadata.configuration?.id)}
+              onSelect={(selected) => {
+                onDatasetFieldChange({ id: selected.id })
+              }}
+              onRemove={() => {
+                onDatasetFieldChange({ id: undefined })
+              }}
+            />
+          </div>
         </Fragment>
       )}
+      <div className={styles.input}>
+        <Radio
+          label={t(
+            'dataset.uploadPublic' as any,
+            'Allow other users to see this dataset when you share a workspace'
+          )}
+          active={metadata.public === true}
+          onClick={(e) => {
+            onDatasetFieldChange({ public: !metadata.public })
+          }}
+        />
+      </div>
     </div>
   )
 }
