@@ -13,7 +13,7 @@ import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selecto
 import { ActivityEvent, Regions } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
-import { Region } from 'features/regions/regions.slice'
+import { Region, RegionId } from 'features/regions/regions.slice'
 import { selectSettings } from 'features/settings/settings.slice'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
@@ -200,7 +200,7 @@ const getEventRegionDescription = (
   rfmos: Region[],
   mpas: Region[]
 ) => {
-  const getRegionNamesByType = (regionType: string, values: string[]) => {
+  const getRegionNamesByType = (regionType: string, values: RegionId[]) => {
     switch (regionType) {
       case 'eez':
         return values
@@ -236,7 +236,9 @@ const getEventRegionDescription = (
       (regionType) =>
         `${getRegionNamesByType(
           regionType,
-          event?.regions[regionType].filter((x: string) => x.length > 0)
+          event?.regions[regionType]
+            .map((regionId) => `${regionId}`)
+            .filter((x: string) => x.length > 0)
         )}`
     )
     .pop()
