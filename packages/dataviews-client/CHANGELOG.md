@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 13.0.0
+
+### Major Changes
+
+- fa078d98: generic dataviews dataset resources helpers
+
 ## 12.1.1
 
 ### Patch Changes

@@ -42,7 +42,7 @@ export const selectViewport = createSelector(
   }
 )
 
-const selectTimeRange = createSelector(
+export const selectTimeRange = createSelector(
   [selectUrlTimeRange, selectWorkspaceTimeRange],
   (urlTimerange, workspaceTimerange) => {
     return {

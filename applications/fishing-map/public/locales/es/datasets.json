@@ -6,10 +6,10 @@
       "id": "id",
       "flag": "flag",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "Flota",
         "enum": {
-          "industry": "industry",
-          "small_fisheries": "small_fisheries"
+          "industry": "industrial",
+          "small_fisheries": "artisanal"
         }
       },
       "source": "source",
@@ -31,23 +31,8 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "full-panama-carrier-vessels": {
-    "name": "VMS de Panamá (Buques de transporte)",
-    "description": "Dataset for VMS Panama - Carriers (Public)",
-    "schema": {
-      "id": "id",
-      "flag": "flag",
-      "mmsi": "mmsi",
-      "source": "source",
-      "callsign": "callsign",
-      "shipname": "shipname",
-      "normalizedShipname": "normalizedShipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
-    }
-  },
   "full-panama-fishing-vessels": {
-    "name": "Panama VMS",
+    "name": "VMS de Panamá",
     "description": "Dataset for VMS Panama (Public)",
     "schema": {
       "id": "id",
@@ -59,7 +44,7 @@
     }
   },
   "full-peru-fishing-vessels": {
-    "name": "VMS de Perú (Barcos pesqueros)",
+    "name": "Peru VMS (Fishing Vessels)",
     "description": "Dataset for VMS Peru (Public)",
     "schema": {
       "id": "id",
@@ -121,6 +106,43 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-indonesia-fishing-effort": {
+    "name": "Indonesia VMS",
+    "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "hours": "hours",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "Purse Seine Group (2 boat) Small Pelagics": "Purse Seine Group (2 boat) Small Pelagics",
+          "Purse Seine Group (2 boat) Big Pelagics": "Purse Seine Group (2 boat) Big Pelagics",
+          "Cast Nets": "Cast Nets",
+          "Pots": "Pots",
+          "Anchored gillnets": "Anchored gillnets",
+          "Lampara Seine Nets": "Lampara Seine Nets",
+          "Shrimp net": "Shrimp net",
+          "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
+          "Basic longline": "Basic longline",
+          "Pole-and-line": "Pole-and-line",
+          "Hand Line Tuna": "Hand Line Tuna",
+          "Handline": "Handline",
+          "Purse Seine Small Pelagics": "Purse Seine Small Pelagics",
+          "Stick-Held lift net": "Stick-Held lift net",
+          "Oceanic gillnet": "Oceanic gillnet",
+          "Longline Tuna": "Longline Tuna",
+          "Fish net/dragnet": "Fish net/dragnet",
+          "Squid hooking": "Squid hooking"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "private-indonesia-presence": {
     "name": "VMS Indonesia (Presencia)",
     "description": "Presencia",
@@ -128,6 +150,26 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "Cast Nets": "Cast Nets",
+          "Anchored gillnets": "Anchored gillnets",
+          "Shrimp net": "Shrimp net",
+          "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
+          "Transporter": "Transporter",
+          "Basic longline": "Basic longline",
+          "Pole-and-line": "Pole-and-line",
+          "Hand Line Tuna": "Hand Line Tuna",
+          "Handline": "Handline",
+          "Purse Seine Small Pelagics": "Purse Seine Small Pelagics",
+          "Stick-Held lift net": "Stick-Held lift net",
+          "Longline Tuna": "Longline Tuna",
+          "Oceanic gillnet": "Oceanic gillnet",
+          "Fish net/dragnet": "Fish net/dragnet",
+          "Squid hooking": "Squid hooking"
+        }
+      },
       "vessel_id": "vessel_id"
     }
   },
@@ -163,7 +205,7 @@
     }
   },
   "private-panama-non-fishing-vessels": {
-    "name": "Panama Private VMS (Non Fishing Vessels)",
+    "name": "VMS de Panamá (Sin buques de pesca)",
     "description": "Dataset for VMS Panama (Private)",
     "schema": {
       "id": "id",
@@ -308,10 +350,10 @@
       "lon": "lon",
       "flag": "marca",
       "fleet": {
-        "keyword": "flota",
+        "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Pequeña pesca",
-          "chile_vms_industry": "Industria"
+          "chile_vms_small_fisheries": "Artisanal",
+          "chile_vms_industry": "Industrial"
         }
       },
       "hours": "horas",
@@ -323,7 +365,7 @@
   },
   "public-chile-presence": {
     "name": "VMS Chile",
-    "description": "Esta capa utiliza el Sistema de Monitoreo de Embarcaciones (VMS) recibido por el sistema VMS de Chile vía satélite y contiene identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más.\nCada punto de la capa de datos de la embarcación del transportista representa una posición de los transportistas, pero no se muestran todas las posiciones. Las posiciones de los buques de transporte se muestran una vez al día. Haga clic en la posición de una embarcación de transporte para ver la ruta completa de la embarcación. ",
+    "description": "Esta capa utiliza el Sistema de Monitoreo de Embarcaciones (VMS) recibido por el sistema VMS de Chile vía satélite y contiene identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más.\nCada punto de la capa de datos de la embarcación transportista, industrial, acuicultura o artisanal representa una posición de las embarcaciones, pero no se muestran todas las posiciones. Las posiciones de las embarcaciones se muestran una posición por hora. Haga clic en la posición de una embarcación para ver la trayectoria completa de la misma.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -331,8 +373,8 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Pequeña pesca",
-          "chile_vms_industry": "Industria",
+          "chile_vms_small_fisheries": "Artisanal",
+          "chile_vms_industry": "Industrial",
           "chile_vms_aquaculture": "Acuicultura",
           "chile_vms_transport": "Transporte"
         }
@@ -384,6 +426,7 @@
       "source": "source",
       "shipname": "shipname",
       "nationalId": "nationalId",
+      "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -403,211 +446,171 @@
     "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200MN), versión 11. Fuente: marineregions.org",
     "schema": {}
   },
-  "public-fd-chlorophyl-ascension-v2": {
-    "name": "Concentración de clorofila",
-    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
-    "schema": {
-      "flag": "bandera",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-caribe-v2": {
-    "name": "Concentración de clorofila",
-    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
-    "schema": {
-      "flag": "bandera",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-galapagos-v2": {
-    "name": "Concentración de clorofila",
-    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
-    "schema": {
-      "flag": "bandera",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-mediterranean-v2": {
-    "name": "Concentración de clorofila",
-    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+  "public-fd-chlorophyl-ascension-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-niue-v2": {
-    "name": "Concentración de clorofila",
-    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+  "public-fd-chlorophyl-caribe-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
-      "flag": "bandera",
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-palau-v2": {
-    "name": "Concentración de clorofila",
-    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+  "public-fd-chlorophyl-galapagos-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
-      "flag": "bandera",
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-chlorophyl-tristan-v2": {
-    "name": "Concentración de clorofila",
-    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+  "public-fd-chlorophyl-mediterranean-v3": {
+    "name": "Clorophyl Mediterranean",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
-      "flag": "bandera",
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-salinity-ascension-v2": {
-    "name": "Salinidad",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, pacífico y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, huracanes y monzones. Fuente: HYCOM.",
+  "public-fd-chlorophyl-niue-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
-      "flag": "bandera",
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-palau-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-tristan-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
   "public-fd-salinity-ascension-v3": {
     "name": "Salinidad",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, pacífico y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, huracanes y monzones. Fuente: Servicio de Vigilancia Marina de Copernicus de la UE.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-caribe-v2": {
-    "name": "Salinidad",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, pacífico y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, huracanes y monzones. Fuente: HYCOM.",
-    "schema": {
-      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
   "public-fd-salinity-caribe-v3": {
-    "name": "Salinidad Caribe",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, pacífico y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, huracanes y monzones. Fuente: Servicio de Vigilancia Marina de Copernicus de la UE.",
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-salinity-galapagos-v2": {
-    "name": "Salinidad",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
-    "schema": {
-      "flag": "bandera",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-mediterranean-v2": {
-    "name": "Salinidad",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones. Fuente: HYCOM.",
+  "public-fd-salinity-galapagos-v3": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-salinity-niue-v2": {
-    "name": "Salinidad",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
-    "schema": {
-      "flag": "bandera",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-niue-v3": {
-    "name": "Salinity Niue",
+  "public-fd-salinity-mediterranean-v3": {
+    "name": "Salinity Mediterranean",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-salinity-palau-v2": {
-    "name": "Salinidad",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
+  "public-fd-salinity-niue-v3": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
-      "flag": "bandera",
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
   "public-fd-salinity-palau-v3": {
-    "name": "Salinidad Palau",
+    "name": "Salinity",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, pacífico y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, huracanes y monzones. Fuente: Servicio de Vigilancia Marina de Copernicus de la UE.",
     "schema": {
       "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-tristan-v2": {
-    "name": "Salinidad",
-    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
-    "schema": {
-      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
   "public-fd-salinity-tristan-v3": {
-    "name": "Salinidad Tristán",
+    "name": "Salinity",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, pacífico y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, huracanes y monzones. Fuente: Servicio de Vigilancia Marina de Copernicus de la UE.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-ascension-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM",
-    "schema": {
-      "flag": "bandera",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-caribe-v2": {
-    "name": "Temperatura de la superficie del mar con datos del 2020",
-    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
-    "schema": {
-      "flag": "bandera",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-galapagos-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
-    "schema": {
-      "flag": "bandera",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-mediterranean-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+  "public-fd-water-temperature-ascension-v3": {
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-niue-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+  "public-fd-water-temperature-caribe-v3": {
+    "name": "Water temperature Caribe with data of 2020",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
-      "flag": "bandera",
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-palau-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+  "public-fd-water-temperature-galapagos-v3": {
+    "name": "Sea surface temperature",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
-      "flag": "bandera",
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
-  "public-fd-water-temperature-tristan-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+  "public-fd-water-temperature-mediterranean-v3": {
+    "name": "Water temperature Mediterranean",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
-      "flag": "bandera",
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-niue-v3": {
+    "name": "Sea surface temperature",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-palau-v3": {
+    "name": "Sea surface temperature",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-tristan-v3": {
+    "name": "Sea surface temperature",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "schema": {
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
@@ -856,8 +859,8 @@
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "Indonesia Zebrax",
-    "description": "Zebra X Presence",
+    "name": "Pesquerías costeras de Indonesia",
+    "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por Rare, Aruna y AP2HI. Los datos se recopilan mediante dispositivos de ZebraX que rastrean la ubicación y la velocidad. La información mostrada representa la presencia de la embarcación.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -874,6 +877,64 @@
     "name": "Áreas de interés",
     "description": "La extensión completa del área de interes del Mediterraneo y del Mar Negro. Fuente: Global Fishing Watch.",
     "schema": {}
+  },
+  "public-mexico-fishing-effort": {
+    "name": "VMS de Mexico",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "hours": "hours",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-mexico-fishing-vessels": {
+    "name": "VMS de Mexico (Buques de pesca)",
+    "description": "Dataset for VMS Mexico (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "nationalId": "nationalId",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-mexico-presence": {
+    "name": "Mexico VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing",
+          "international traffic": "international traffic",
+          "national traffic": "national traffic",
+          "tug": "tug",
+          "boat": "boat",
+          "auxiliary": "auxiliary"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
   },
   "public-mpa-all": {
     "name": "AMPs (Fuente: WDPA)",
@@ -895,23 +956,6 @@
     "description": "90% de la ZEE",
     "schema": {}
   },
-  "public-panama-carrier-presence": {
-    "name": "Panama VMS",
-    "description": "Esta capa utiliza los datos del Sistema de Monitoreo de Buques (VMS) proporcionados por la Autoridad Panameña de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panamá vía satélite y contienen identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más. Cada punto de la capa de datos de la embarcación del transportista representa una posición de los transportistas, pero no se muestran todas las posiciones. Las posiciones de los buques de transporte se muestran una vez al día. Haga clic en la posición de una embarcación de transporte para ver la ruta completa de la embarcación.",
-    "schema": {
-      "id": "id",
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "shipname": "shipname",
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "distance_from_port_m": "distance_from_port_m",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "distance_from_shore_m": "distance_from_shore_m",
-      "firstTransmissionDate": "firstTransmissionDate"
-    }
-  },
   "public-panama-fishing-effort": {
     "name": "VMS de Panamá",
     "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
@@ -927,12 +971,10 @@
     }
   },
   "public-panama-fishing-vessels": {
-    "name": "VMS de Panamá  (Buques de pesca)",
+    "name": "VMS de Panamá (Buques de pesca)",
     "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
     "schema": {
       "id": "id",
-      "flag": "bandera",
-      "source": "source",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -959,6 +1001,25 @@
         "enum": {
           "PER": "Por",
           "Foreign": "Extranjero"
+        }
+      },
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "drifting_longlines": "drifting_longlines",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
+          "set_longlines": "set_longlines",
+          "purse_seines": "purse_seines",
+          "trawlers": "trawlers",
+          "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
+          "pots_and_traps": "pots_and_traps",
+          "set_gillnets": "set_gillnets",
+          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
+          "fishing": "fishing",
+          "driftnets|set_gillnets": "driftnets|set_gillnets",
+          "fishing|purse_seines": "fishing|purse_seines",
+          "drifting_longlines|trawlers": "drifting_longlines|trawlers"
         }
       },
       "vessel_id": "i_id",

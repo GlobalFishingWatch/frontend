@@ -2,7 +2,12 @@ import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import { DatasetTypes, ResourceStatus, Vessel } from '@globalfishingwatch/api-types'
+import {
+  Vessel,
+  DatasetTypes,
+  ResourceStatus,
+  DataviewDatasetConfigParam,
+} from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Segment } from '@globalfishingwatch/data-transforms'
@@ -20,6 +25,7 @@ import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.ut
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { isGuestUser } from 'features/user/user.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -67,7 +73,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
   const vesselId =
-    (infoResource?.datasetConfig?.params?.find((p) => p.id === 'vesselId')?.value as string) ||
+    (infoResource?.datasetConfig?.params?.find(
+      (p: DataviewDatasetConfigParam) => p.id === 'vesselId'
+    )?.value as string) ||
     dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
     ''
   const vesselTitle = vesselLabel || vesselId
@@ -116,6 +124,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           {formatInfoField(fieldValue, field.type)}
         </a>
       )
+    }
+    if (field.id === 'dataset') {
+      return getDatasetLabel({ id: fieldValue })
     }
     return formatInfoField(fieldValue, field.type)
   }

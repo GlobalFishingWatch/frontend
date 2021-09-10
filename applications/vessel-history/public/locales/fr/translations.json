@@ -7,14 +7,13 @@
     "map": "carte",
     "offlineAccess": "accès hors ligne",
     "offlineAccessEmptyState": "Les navires que vous économisez pour un accès hors ligne apparaîtront ici.",
-    "Other": "Autre",
+    "other": "Autre",
     "since": "depuis le",
     "timeRange": "intervalle de temps",
     "to": "à",
-    "typeToSeach": "Entrez un texte pour rechercher des navires",
     "typeToSearch": "Entrez un texte pour rechercher des navires",
     "unknown": "Inconnu",
-    "unknownName": "Unknown name",
+    "unknownName": "Nom inconnu",
     "any": "Quelconque",
     "currentTimeRange": "intervalle de temps actuel",
     "high": "High",
@@ -52,8 +51,8 @@
     "nSelected": "{{count}} sélectionnés",
     "nSelected_plural": "{{count}} sélectionné",
     "port": "Port",
-    "portAction": "Docked",
-    "portAt": "Docked at {{port}}",
+    "portAction": "Visites du Port",
+    "portAt": "Visite du port à {{port}}",
     "position": "Position",
     "psma": "PSMA",
     "psmaIncluded": "Inclus depuis {{value}}",
@@ -76,16 +75,34 @@
     "fishingGroup_plural": "{{ count }} événements de pêche en {{ regionName }}",
     "noDescription": "Aucune description trouvée"
   },
+  "events": {
+    "activityHighlights": "Activity Highlights",
+    "highlitingSettings": "paramètres",
+    "noHighlights": "Aucun événement trouvé pour vos critères de surbrillance",
+    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
+  },
   "map": {
+    "filters": "Filter events",
     "loading": "Chargement de la carte",
     "toggleLayers": "Activer/désactiver les calques"
   },
   "search": {
-    "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
+    "title": "Search",
+    "basic": "Basique",
+    "advanced": "Avancé",
+    "description": "Recherche par nom de navire ou code d'identification (OMI, MMSI, Indicatif, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
     "loadMore": "Charger plus",
     "noMore": "Aucun résultat supplémentaire",
-    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser MMSI, IMO ou Call Sign",
-    "notAllowed": "Recherche non autorisée"
+    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser Nom, MMSI, OMI ou Indicatif",
+    "notAllowed": "Recherche non autorisée",
+    "placeholder": "Recherche par Nom, OMI, Indicatif ou MMSI",
+    "shipname": "Nom de navire",
+    "MMSI": "MMSI",
+    "IMO": "OMI",
+    "callsign": "Callsign",
+    "flagState": "Flag States",
+    "activeAfter": "active After",
+    "activeBefore": "active before"
   },
   "selects": {
     "allSelected": "Tous",
@@ -132,7 +149,7 @@
     "flag": "Drapeau",
     "formatValues": "{{quantity}} valeurs",
     "historyLabelByField": "Historique de {{label}} pour {{vesselName}}",
-    "imo": "imo",
+    "imo": "omi",
     "mmsi": "mmsi",
     "noAuthorizations": "Aucune autorisation trouvée",
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} précédentes",
@@ -152,7 +169,7 @@
     "length": "Longueur",
     "operator": "opérateur",
     "owner": "Propriétaire",
-    "type": "Type de type",
+    "type": "vessel type",
     "grossTonnage_plural": "tonnages bruts",
     "builtYear_plural": "années construites",
     "callsign_plural": "panneaux d'appel",
@@ -174,5 +191,13 @@
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
+  },
+  "user": {
+    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
+    "notAuthorized": "Only some specific registered users can use this product",
+    "login": "Log in",
+    "loggedInAs": "logged in as",
+    "requestAccess": "Request Access",
+    "switchAccount": "Switch account"
   }
 }

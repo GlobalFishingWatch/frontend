@@ -1,5 +1,12 @@
 # @globalfishingwatch/react-hooks
 
+## 14.0.0
+
+### Patch Changes
+
+- Updated dependencies [fa078d98]
+  - @globalfishingwatch/dataviews-client@13.0.0
+
 ## 13.0.0
 
 ### Patch Changes

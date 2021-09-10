@@ -1,5 +1,6 @@
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { VesselAPISource } from 'types'
+import { Position } from 'types/activity'
 
 export function getVesselAPISource(vessel: VesselSearch): VesselAPISource[] {
   const source = []
@@ -13,4 +14,10 @@ export function getVesselValueSource(gfwValue: any, tmtValue: any): VesselAPISou
   if (gfwValue) source.push(VesselAPISource.GFW)
   if (tmtValue) source.push(VesselAPISource.TMT)
   return source
+}
+
+export const cheapDistance = (coordA: Position, coordB: Position) => {
+  const longitudeΔ = coordA.lon - coordB.lon
+  const latitudeΔ = coordA.lat - coordB.lat
+  return Math.sqrt(longitudeΔ * longitudeΔ + latitudeΔ * latitudeΔ)
 }

@@ -55,7 +55,7 @@ export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
-export const selectUrlQuery = selectQueryParam<string>('q')
+export const selectUrlQuery = selectQueryParam<string>('q') || ''
 export const selectUrlDataviewInstances =
   selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 
@@ -87,4 +87,38 @@ export const selectUrlTimeRange = createSelector(
     start: new Date(start).getTime(),
     end: new Date(end).getTime(),
   })
+)
+
+export const selectSearchType = selectQueryParam<string>('searchType')
+export const selectAdvancedSearchMMSI = selectQueryParam<string>('MMSI') || ''
+export const selectAdvancedSearchIMO = selectQueryParam<string>('IMO') || ''
+export const selectAdvancedSearchCallsign = selectQueryParam<string>('callsign') || ''
+export const selectAdvancedSearchRawFlags = selectQueryParam<string>('flags')
+export const selectAdvancedSearchFlags = createSelector(
+  [selectAdvancedSearchRawFlags],
+  (rawFlags) => {
+    return rawFlags ? rawFlags.split(',') : []
+  }
+)
+export const selectLastTransmissionDate = selectQueryParam<string>('lastTransmissionDate')
+export const selectFirstTransmissionDate = selectQueryParam<string>('firstTransmissionDate')
+export const selectAdvancedSearchFields = createSelector(
+  [
+    selectAdvancedSearchMMSI,
+    selectAdvancedSearchIMO,
+    selectAdvancedSearchCallsign,
+    selectAdvancedSearchFlags,
+    selectLastTransmissionDate,
+    selectFirstTransmissionDate,
+  ],
+  (mmsi, imo, callsign, flags, lastTransmissionDate, firstTransmissionDate) => {
+    return {
+      mmsi,
+      imo,
+      callsign,
+      flags,
+      lastTransmissionDate,
+      firstTransmissionDate,
+    }
+  }
 )

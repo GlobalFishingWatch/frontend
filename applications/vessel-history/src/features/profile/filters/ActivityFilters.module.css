@@ -2,12 +2,3 @@
   text-align: right;
   padding: var(--space-S) var(--space-S) var(--space-XS) var(--space-S);
 }
-
-.filterSelector {
-  display: flex;
-  align-items: center;
-}
-
-.filterSwitch {
-  margin-right: 10px;
-}

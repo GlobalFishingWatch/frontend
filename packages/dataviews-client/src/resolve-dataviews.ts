@@ -4,6 +4,7 @@ import {
   DatasetTypes,
   Dataview,
   DataviewDatasetConfig,
+  DataviewDatasetConfigParam,
   DataviewInstance,
   EndpointId,
   Resource,
@@ -68,87 +69,156 @@ export const mergeWorkspaceUrlDataviewInstances = (
   return [...urlDataviews.new, ...workspaceDataviewInstancesMerged]
 }
 
-export const resolveDataviewDatasetResource = (
+const getDatasetConfigsByDatasetType = (
   dataview: UrlDataviewInstance,
-  typeOrId: DatasetTypes | DatasetTypes[] | string
-): {
-  dataset?: Dataset
-  datasetConfig?: DataviewDatasetConfig
-  url?: string
-} => {
-  const isArray = Array.isArray(typeOrId)
-  const isType = isArray || Object.values(DatasetTypes).includes(typeOrId as DatasetTypes)
+  type: DatasetTypes
+): DataviewDatasetConfig[] => {
+  const availableDatasets = dataview.datasets || []
+  const availableDatasetConfigs = dataview.datasetsConfig || []
+  const datasets = availableDatasets.filter((dataset) => dataset.type === type)
+  const datasetIds = datasets.map((dataset) => dataset.id)
+  const datasetConfigs = availableDatasetConfigs.filter((datasetConfig) =>
+    datasetIds.includes(datasetConfig.datasetId)
+  )
+  return datasetConfigs
+}
+
+const getDatasetConfigByDatasetType = (
+  dataview: UrlDataviewInstance,
+  type: DatasetTypes
+): DataviewDatasetConfig => {
+  return getDatasetConfigsByDatasetType(dataview, type)[0]
+}
+
+/**
+ * Collect only necessary datasetConfigs for track dataviews
+ */
+const getTrackDataviewDatasetConfigs = (
+  dataviewInstance: UrlDataviewInstance
+): DataviewDatasetConfig[] => {
+  const info = getDatasetConfigByDatasetType(dataviewInstance, DatasetTypes.Vessels)
+
+  const trackDatasetType =
+    dataviewInstance.datasets && dataviewInstance.datasets?.[0]?.type === DatasetTypes.UserTracks
+      ? DatasetTypes.UserTracks
+      : DatasetTypes.Tracks
+  const track = { ...getDatasetConfigByDatasetType(dataviewInstance, trackDatasetType) }
+
+  const events = getDatasetConfigsByDatasetType(dataviewInstance, DatasetTypes.Events).filter(
+    (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
+  ) // Loitering
+
+  return [info, track, ...events]
+}
+
+export type DatasetConfigsTransforms = Partial<
+  Record<Generators.Type, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
+>
+
+/**
+ * Prepare dataviews for querying resources, by altering datasetConfigs
+ * - Filter out non track dvs
+ * - Add thinning query params
+ * - Add extra dataset config for track speed, if needed
+ * - Filter events dataset configs
+ */
+export const getDataviewsForResourceQuerying = (
+  dataviewInstances: UrlDataviewInstance[],
+  datasetConfigsTransform?: DatasetConfigsTransforms
+) => {
+  if (!dataviewInstances) return []
+  const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
+    let preparedDatasetConfigs
+    switch (dataviewInstance.config?.type) {
+      case Generators.Type.Track:
+        preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
+        preparedDatasetConfigs =
+          datasetConfigsTransform?.[Generators.Type.Track]?.(preparedDatasetConfigs)
+        break
+
+      default:
+        return dataviewInstance
+    }
+    const preparedDataview = {
+      ...dataviewInstance,
+      datasetsConfig: preparedDatasetConfigs,
+    }
+    return preparedDataview
+  })
+  return preparedDataviewsInstances
+}
+
+/**
+ * Collect available datasetConfigs from dataviews and prepare resource
+ */
+export const resolveResourcesFromDatasetConfigs = (
+  dataviews: UrlDataviewInstance[]
+): Resource[] => {
+  return dataviews
+    .filter((dataview) => dataview.config?.type === Generators.Type.Track)
+    .flatMap((dataview) => {
+      if (!dataview.datasetsConfig) return []
+      return dataview.datasetsConfig.flatMap((datasetConfig) => {
+        const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
+        if (!dataset) return []
+        const url = resolveEndpoint(dataset, datasetConfig)
+        if (!url) return []
+        return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
+      })
+    })
+}
+
+/**
+ * Get resources for a dataview
+ */
+export const resolveDataviewDatasetResources = (
+  dataview: UrlDataviewInstance,
+  datasetTypeOrId: DatasetTypes | DatasetTypes[] | string,
+  queryParamFilter?: DataviewDatasetConfigParam
+): Resource[] => {
+  const isArray = Array.isArray(datasetTypeOrId)
+  const isType = isArray || Object.values(DatasetTypes).includes(datasetTypeOrId as DatasetTypes)
   let types: DatasetTypes[]
   if (isType) {
-    types = isArray ? (typeOrId as DatasetTypes[]) : [typeOrId as DatasetTypes]
+    types = isArray ? (datasetTypeOrId as DatasetTypes[]) : [datasetTypeOrId as DatasetTypes]
   }
 
-  const dataset = isType
-    ? dataview.datasets?.find((dataset) => types.includes(dataset.type))
-    : dataview.datasets?.find((dataset) => dataset.id === typeOrId)
+  const dataviewDatasets = dataview.datasets || []
 
-  if (!dataset) return {}
-  const datasetConfig = dataview?.datasetsConfig?.find(
-    (datasetConfig) => datasetConfig.datasetId === dataset.id
+  const datasets = isType
+    ? dataviewDatasets.filter((dataset) => types.includes(dataset.type))
+    : dataviewDatasets.filter((dataset) => dataset.id === datasetTypeOrId)
+
+  const dataviewDatasetConfigs = (dataview.datasetsConfig || []).filter((datasetConfig) =>
+    queryParamFilter
+      ? datasetConfig.query?.find(
+          (q) => q.id === queryParamFilter.id && q.value === queryParamFilter.value
+        )
+      : true
   )
 
-  if (!datasetConfig) return {}
-
-  // Clean resources when mandatory vesselId is missing
-  // needed for vessels with no info datasets (zebraX)
-  if (datasetConfig.endpoint === EndpointId.Vessel) {
-    const vesselID = datasetConfig.params?.find((q) => q.id === 'vesselId')?.value
-    if (!vesselID) {
-      return {}
-    }
-  }
-
-  const url = resolveEndpoint(dataset, datasetConfig)
-
-  if (!url) return {}
-
-  return { dataset, datasetConfig, url }
-}
-
-export const resolveDataviewResourceByDatasetType = (
-  dataview: UrlDataviewInstance<Generators.Type>,
-  datasetType: DatasetTypes
-): Resource | undefined => {
-  const { url, dataset, datasetConfig } = resolveDataviewDatasetResource(dataview, datasetType)
-  if (url && dataset && datasetConfig) {
-    return {
-      dataviewId: dataview.dataviewId as number,
-      url: url,
-      dataset: dataset,
-      datasetConfig: datasetConfig,
-    }
-  }
-}
-
-// Workaround to support multiple resource for the same dataset type (fishing, loitering...)
-// Ideally we move the `resolveDataviewDatasetResource` method to support it natively
-export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): Resource[] => {
-  if (!dataview.datasetsConfig?.length) {
-    return []
-  }
-  const dataviews = dataview.datasetsConfig?.flatMap((datasetConfig) => {
-    if (datasetConfig.endpoint !== EndpointId.Events) {
-      return []
-    }
-    const vesselID = datasetConfig.query?.find((q) => q.id === 'vessels')?.value
-    if (!vesselID) {
-      return []
-    }
-    const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
-    if (!dataset) {
-      return []
-    }
-    return { ...dataview, datasets: [dataset], datasetsConfig: [datasetConfig] }
+  const resources = datasets.flatMap((dataset) => {
+    const datasetDatasetConfigs = dataviewDatasetConfigs.filter(
+      (datasetConfig) => datasetConfig.datasetId === dataset.id
+    )
+    const datasetResources = datasetDatasetConfigs.flatMap((datasetConfig) => {
+      const url = resolveEndpoint(dataset, datasetConfig)
+      if (!url) return []
+      return [
+        { dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number } as Resource,
+      ]
+    })
+    return datasetResources
   })
-  const resources = dataviews?.flatMap(
-    (dataview) => resolveDataviewResourceByDatasetType(dataview, DatasetTypes.Events) ?? []
-  )
   return resources
+}
+
+export const resolveDataviewDatasetResource = (
+  dataview: UrlDataviewInstance,
+  datasetTypeOrId: DatasetTypes | DatasetTypes[] | string,
+  queryParamFilter?: DataviewDatasetConfigParam
+): Resource => {
+  return resolveDataviewDatasetResources(dataview, datasetTypeOrId, queryParamFilter)[0] || {}
 }
 
 /**

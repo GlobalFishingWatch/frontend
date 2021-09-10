@@ -8,6 +8,7 @@ export const upperFirst = (text: string) =>
   text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()
 
 export const formatInfoField = (fieldValue: string, type: string) => {
+  if (!fieldValue) return EMPTY_FIELD_PLACEHOLDER
   if (type === 'name') return fieldValue.replace(/\b(?![LXIVCDM]+\b)([A-Z,Ñ]+)\b/g, upperFirst)
   if (type === 'fleet') {
     const fleetClean = fieldValue.replaceAll('_', ' ')
@@ -37,5 +38,5 @@ export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearT
       gearType: vessel.registeredGearType,
     })}`
   }
-  return `${t('common.unknown', 'Unknown')} ${t('common.vessel', 'Vessel')}`
+  return t('common.unknownVessel', 'Unknown vessel')
 }

@@ -2,88 +2,96 @@
 
 exports[`<VesselListItem /> does not show source API in production environment 1`] = `
 <DocumentFragment>
-  <a
-    class="vesselItem"
-    to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
+  <div
+    class="vesselItemWrapper"
   >
-    <h3>
-      DON TITO
-    </h3>
-    <div
-      class="identifiers"
+    <a
+      class="vesselItem"
+      to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
     >
-      <div>
-        <label>
-          flag
-        </label>
-        Chile
+      <h3>
+        DON TITO
+      </h3>
+      <div
+        class="identifiers"
+      >
+        <div>
+          <label>
+            flag
+          </label>
+          Chile
+        </div>
+        <div>
+          <label>
+            mmsi
+          </label>
+          725000410
+        </div>
+        <div>
+          <label>
+            callsign
+          </label>
+          CB5527
+        </div>
+        <div>
+          <label>
+            transmissions
+          </label>
+          from Jan 19, 2012 to Dec 13, 2020
+        </div>
       </div>
-      <div>
-        <label>
-          mmsi
-        </label>
-        725000410
-      </div>
-      <div>
-        <label>
-          callsign
-        </label>
-        CB5527
-      </div>
-      <div>
-        <label>
-          transmissions
-        </label>
-        from Jan 19, 2012 to Dec 13, 2020
-      </div>
-    </div>
-  </a>
+    </a>
+  </div>
 </DocumentFragment>
 `;
 
 exports[`<VesselListItem /> shows source API in environments others than production 1`] = `
 <DocumentFragment>
-  <a
-    class="vesselItem"
-    to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
+  <div
+    class="vesselItemWrapper"
   >
-    <h3>
-      DON TITO
-    </h3>
-    <div
-      class="identifiers"
+    <a
+      class="vesselItem"
+      to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
     >
-      <div>
-        <label>
-          flag
-        </label>
-        Chile
+      <h3>
+        DON TITO
+      </h3>
+      <div
+        class="identifiers"
+      >
+        <div>
+          <label>
+            flag
+          </label>
+          Chile
+        </div>
+        <div>
+          <label>
+            mmsi
+          </label>
+          725000410
+        </div>
+        <div>
+          <label>
+            callsign
+          </label>
+          CB5527
+        </div>
+        <div>
+          <label>
+            source
+          </label>
+          AIS+Other
+        </div>
+        <div>
+          <label>
+            transmissions
+          </label>
+          from Jan 19, 2012 to Dec 13, 2020
+        </div>
       </div>
-      <div>
-        <label>
-          mmsi
-        </label>
-        725000410
-      </div>
-      <div>
-        <label>
-          callsign
-        </label>
-        CB5527
-      </div>
-      <div>
-        <label>
-          source
-        </label>
-        GFW+TMT
-      </div>
-      <div>
-        <label>
-          transmissions
-        </label>
-        from Jan 19, 2012 to Dec 13, 2020
-      </div>
-    </div>
-  </a>
+    </a>
+  </div>
 </DocumentFragment>
 `;

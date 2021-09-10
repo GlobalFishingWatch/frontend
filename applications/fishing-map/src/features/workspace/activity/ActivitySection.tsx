@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
-import { EndpointId } from '@globalfishingwatch/api-types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -29,12 +28,7 @@ import {
 } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import {
-  DEFAULT_FISHING_DATAVIEW_ID,
-  DEFAULT_PRESENCE_DATAVIEW_ID,
-  DEFAULT_VIIRS_DATAVIEW_ID,
-} from 'data/workspaces'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
@@ -133,14 +127,16 @@ function ActivitySection(): React.ReactElement {
           dataview.id !== dataview2.id &&
           dataview.config?.type === Generators.Type.HeatmapAnimated
       )
-      dataviewsToDisable?.forEach((dataview) => {
-        upsertDataviewInstance({
-          id: dataview.id,
-          config: {
-            visible: false,
-          },
-        })
-      })
+      if (dataviewsToDisable) {
+        upsertDataviewInstance(
+          dataviewsToDisable?.map((dataview) => ({
+            id: dataview.id,
+            config: {
+              visible: false,
+            },
+          }))
+        )
+      }
       uaEvent({
         category: 'Activity data',
         action: 'Click on bivariate option',
@@ -177,42 +173,19 @@ function ActivitySection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const fishingOptions = useMemo(() => {
     const options = fishingDataviews.map((dataview) => {
-      const option = { id: dataview.id, label: dataview.name }
-      if (dataview.id === DEFAULT_FISHING_DATAVIEW_ID) {
-        option.label = t('common.apparentFishing', 'Apparent Fishing Effort')
-      } else {
-        const datasetId = dataview.datasetsConfig?.find(
-          (d) => d.endpoint === EndpointId.FourwingsTiles
-        )?.datasetId
-        if (datasetId) {
-          option.label = getDatasetLabel({ id: datasetId })
-        }
-      }
-
+      const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
       return option
     })
     return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [fishingDataviews, t])
+  }, [fishingDataviews])
 
   const presenceOptions = useMemo(() => {
     const options = presenceDataviews.map((dataview) => {
-      const option = { id: dataview.id, label: dataview.name }
-      if (dataview.id === DEFAULT_PRESENCE_DATAVIEW_ID) {
-        option.label = t('common.presence', 'Fishing presence')
-      } else if (dataview.id === DEFAULT_VIIRS_DATAVIEW_ID) {
-        option.label = t('common.viirs', 'Night light detections (VIIRS)')
-      } else {
-        const datasetId = dataview.datasetsConfig?.find(
-          (d) => d.endpoint === EndpointId.FourwingsTiles
-        )?.datasetId
-        if (datasetId) {
-          option.label = getDatasetLabel({ id: datasetId })
-        }
-      }
+      const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
       return option
     })
     return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [presenceDataviews, t])
+  }, [presenceDataviews])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>

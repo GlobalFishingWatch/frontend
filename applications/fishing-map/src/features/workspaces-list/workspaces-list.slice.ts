@@ -45,7 +45,7 @@ export const fetchWorkspacesThunk = createAsyncThunk<
         return [...workspaces, defaultWorkspace]
       }
       return workspaces
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({
         status: e.status || e.code,
         message: `${ids || userId} - ${e.message}`,
@@ -133,7 +133,7 @@ export const createWorkspaceThunk = createAsyncThunk<
         body: parsedWorkspace as any,
       })
       return newWorkspace
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   },
@@ -162,7 +162,7 @@ export const updateWorkspaceThunk = createAsyncThunk<
         body: { ...workspace } as any,
       })
       return updatedWorkspace
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   },
@@ -188,7 +188,7 @@ export const deleteWorkspaceThunk = createAsyncThunk<
       method: 'DELETE',
     })
     return { ...workspace, id }
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })

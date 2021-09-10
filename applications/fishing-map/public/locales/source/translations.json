@@ -34,7 +34,6 @@
     "days_plural": "days",
     "description": "Description",
     "detection": "Detection",
-    "detection_plural": "Detections",
     "dismiss": "Dissmiss",
     "environment": "Environment",
     "events": "Events",
@@ -63,11 +62,13 @@
     "seeDefault": "See default view",
     "share": "Share the current view",
     "unknown": "Unknown",
+    "unknownVessel": "Unknown vessel",
     "update": "Update",
     "vessel": "Vessel",
     "vessel_plural": "Vessels",
     "viirs": "Night light detections (VIIRS)",
-    "welcomePopupDisable": "Don't show again"
+    "welcomePopupDisable": "Don't show again",
+    "detection_plural": "Detections"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -78,6 +79,7 @@
     "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
     "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
+    "emptyFilters": "No filters available",
     "emptyState": "Your datasets will appear here",
     "featuresNameField": "Features name field",
     "file": "File",
@@ -130,6 +132,7 @@
     "genericShort": "Something went wrong",
     "invalidRange": "Min has to be lower than max value",
     "latestCarrierNotFound": "Latest carrier dataset not found",
+    "maxVesselPresenceTimerange": "Presence vessels has a limited timerange of 180days.",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
@@ -240,6 +243,7 @@
     "mapLoadingWait": "Please wait until map loads",
     "rulers_add": "Add rulers",
     "rulers_remove": "Remove all rulers",
+    "runningExpensiveVesselQuery": "Running this query will cost around {{cost}} $. Are you sure to run it?",
     "search": "Search areas",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
@@ -277,7 +281,8 @@
     "graphOptions": {
       "depth": "Depth $t(common.comingSoon)",
       "none": "None",
-      "speed": "Speed"
+      "speed": "Speed",
+      "speedDisabled": "Not available with more than 1 vessel selected"
     },
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Close timebar settings",
@@ -301,6 +306,7 @@
     "capacity": "Capacity",
     "carrier": "Carrier",
     "casco": "Casco",
+    "dataset": "Source",
     "donor": "Donor vessel",
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
@@ -343,7 +349,7 @@
     "shiptype": "Ship type",
     "source": "Source",
     "transmission_plural": "Transmissions",
-    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
+    "unkwownVesselByGeartype": "Unknown {{gearType}}",
     "vesselType_plural": "Vessel types",
     "widthRange": "Width range"
   },
@@ -355,11 +361,11 @@
     "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
     "nameInput": "Workspace name",
     "new": "New Workspace",
+    "privateTitle_plural": "Private workspaces",
     "remove": "Remove workspace",
     "save": "Save the current view",
     "saved": "Current view was saved and it's available in your user profile",
     "saveLogin": "You need to login to save views",
-    "privateTitle_plural": "Private workspaces",
     "title_plural": "Workspaces"
   }
 }

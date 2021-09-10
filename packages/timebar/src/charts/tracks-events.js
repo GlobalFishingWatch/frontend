@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import dayjs from 'dayjs'
-import { max } from 'lodash'
 import { DEFAULT_CSS_TRANSITION, DEFAULT_FULL_DATE_FORMAT } from '../constants'
 import ImmediateContext from '../immediateContext'
 import { TimelineContext } from '../components/timeline'
@@ -24,7 +23,7 @@ const ICONS = {
   fishing: null,
 }
 
-const Tooltip = ({ highlightedEvent, outerScale }) => {
+const Tooltip = ({ highlightedEvent, outerScale, labels }) => {
   if (!highlightedEvent) {
     return null
   }
@@ -36,7 +35,9 @@ const Tooltip = ({ highlightedEvent, outerScale }) => {
   const start = dayjs(highlightedEvent.start).utc()
 
   const description = highlightedEvent.aggregated
-    ? `${highlightedEvent.descriptionGeneric} (${highlightedEvent.aggregatedNum} events)`
+    ? `${highlightedEvent.descriptionGeneric} (${highlightedEvent.aggregatedNum} ${
+        labels.events || 'events'
+      })`
     : highlightedEvent.description
 
   return (
@@ -68,10 +69,16 @@ Tooltip.propTypes = {
     aggregatedNum: PropTypes.number,
   }),
   outerScale: PropTypes.func.isRequired,
+  labels: PropTypes.shape({
+    events: PropTypes.string.isRequired,
+  }),
 }
 
 Tooltip.defaultProps = {
   highlightedEvent: null,
+  labels: {
+    events: 'events',
+  },
 }
 
 // height with just one track
@@ -145,7 +152,7 @@ const getFilteredEvents = (tracksEvents, outerStartMs, outerEndMs) => {
   })
 }
 
-const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventHover }) => {
+const TracksEvents = ({ labels, tracksEvents, preselectedEventId, onEventClick, onEventHover }) => {
   const { immediate } = useContext(ImmediateContext)
   const {
     outerScale,
@@ -248,7 +255,7 @@ const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventH
       {tooltipContainer &&
         highlightedEvent &&
         ReactDOM.createPortal(
-          <Tooltip highlightedEvent={highlightedEvent} outerScale={outerScale} />,
+          <Tooltip labels={labels} highlightedEvent={highlightedEvent} outerScale={outerScale} />,
           tooltipContainer
         )}
     </Fragment>
@@ -272,12 +279,18 @@ TracksEvents.propTypes = {
   preselectedEventId: PropTypes.string,
   onEventClick: PropTypes.func,
   onEventHover: PropTypes.func,
+  labels: PropTypes.shape({
+    events: PropTypes.string,
+  }),
 }
 
 TracksEvents.defaultProps = {
   onEventClick: () => {},
   onEventHover: () => {},
   preselectedEventId: null,
+  labels: {
+    events: 'events',
+  },
 }
 
 export default TracksEvents
