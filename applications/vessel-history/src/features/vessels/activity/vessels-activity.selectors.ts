@@ -13,7 +13,7 @@ import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selecto
 import { ActivityEvent, Regions } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
-import { Region, RegionId } from 'features/regions/regions.slice'
+import { Region } from 'features/regions/regions.slice'
 import { selectSettings } from 'features/settings/settings.slice'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
