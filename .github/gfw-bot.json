@@ -5,7 +5,7 @@
     "watch": ["applications/fishing-map/**/*"]
   },
   "vessel-history": {
-    "cloudbuildTaskId": "vessel-history-autodeploy-bot",
+    "cloudbuildTaskId": "ui-vessel-viewer-autodeploy-bot",
     "auto": false,
     "watch": ["applications/vessel-history/**/*"]
   }
