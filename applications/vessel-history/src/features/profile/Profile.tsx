@@ -27,6 +27,7 @@ import { selectDatasets } from 'features/datasets/datasets.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
+import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
@@ -37,12 +38,13 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
-  const vesselProfileId = useSelector(selectVesselProfileId, shallowEqual)
-  const vesselStatus = useSelector(selectVesselsStatus, shallowEqual)
+  const vesselProfileId = useSelector(selectVesselProfileId)
+  const vesselStatus = useSelector(selectVesselsStatus)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
-  const vessel = useSelector(selectVesselById(vesselProfileId), shallowEqual)
-  const datasets = useSelector(selectDatasets, shallowEqual)
-  const resourceQueries = useSelector(selectDataviewsResourceQueries, shallowEqual)
+  const vessel = useSelector(selectVesselById(vesselProfileId))
+  const datasets = useSelector(selectDatasets)
+  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -90,14 +92,12 @@ const Profile: React.FC = (props): React.ReactElement => {
   }, [dispatch, vesselProfileId, datasets])
 
   useEffect(() => {
-    if (resourceQueries && resourceQueries.length > 0) {
+    if (vesselDataviewLoaded && resourceQueries && resourceQueries.length > 0) {
       resourceQueries.forEach((resourceQuery) => {
         dispatch(fetchResourceThunk(resourceQuery))
       })
     }
-  }, [dispatch, resourceQueries])
-
-  
+  }, [dispatch, loading, resourceQueries, vessel, vesselDataviewLoaded])
 
   const tabs: Tab[] = useMemo(
     () => [
@@ -114,8 +114,12 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'activity',
         title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
         content: vessel ? (
-          <Activity vessel={vessel} lastPosition={lastPosition} 
-            lastPortVisit={lastPortVisit} onMoveToMap={() => setActiveTab(tabs?.[2]) }/>
+          <Activity
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
+            onMoveToMap={() => setActiveTab(tabs?.[2])}
+          />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
         ),
