@@ -1,9 +1,7 @@
-import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
+import React, { Fragment, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import { Point, Segment } from '@globalfishingwatch/data-transforms'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
@@ -24,15 +22,10 @@ import {
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import {
-  selectActiveVesselsDataviews,
-  selectDataviewsResourceQueries,
-} from 'features/dataviews/dataviews.selectors'
+import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
-import useViewport from 'features/map/map-viewport.hooks'
-import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
+import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
@@ -41,7 +34,6 @@ import styles from './Profile.module.css'
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { setMapCoordinates } = useViewport()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
@@ -51,13 +43,6 @@ const Profile: React.FC = (props): React.ReactElement => {
   const vessel = useSelector(selectVesselById(vesselProfileId), shallowEqual)
   const datasets = useSelector(selectDatasets, shallowEqual)
   const resourceQueries = useSelector(selectDataviewsResourceQueries, shallowEqual)
-  const [vesselDataview] = useSelector(selectActiveVesselsDataviews, shallowEqual) ?? []
-  const { url: trackUrl = '' } = vesselDataview
-    ? resolveDataviewDatasetResource(vesselDataview, DatasetTypes.Tracks)
-    : { url: '' }
-  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl), shallowEqual)
-  const vesselLoaded = useMemo(() => !!vessel, [vessel])
-  const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -112,26 +97,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
   }, [dispatch, resourceQueries])
 
-  const onFitLastPosition = useCallback(() => {
-    if (!trackResource?.data || trackResource?.data.length === 0) return
-    const { latitude, longitude } = (trackResource?.data.flat().slice(-1) as Segment).pop() as Point
-    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
-      setMapCoordinates({
-        latitude: latitude as number,
-        longitude: longitude as number,
-        zoom: DEFAULT_VESSEL_MAP_ZOOM,
-        pitch: 0,
-        bearing: 0,
-      })
-    } else {
-      alert('The vessel has no activity in your selected timerange')
-    }
-  }, [setMapCoordinates, trackResource])
-
-  useEffect(() => {
-    if (!vesselLoaded || !vesselDataviewLoaded || !trackUrl) return
-    onFitLastPosition()
-  }, [vesselLoaded, vesselDataviewLoaded, trackUrl, onFitLastPosition])
+  
 
   const tabs: Tab[] = useMemo(
     () => [
