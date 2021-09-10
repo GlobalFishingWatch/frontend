@@ -25,15 +25,19 @@
   overflow: hidden;
 }
 
-.identifiers div {
+.identifiers > div {
   float: left;
-  opacity: 0.65;
+  opacity: var(--opacity-secondary);
   color: #163f89;
   font-size: 1.4rem;
   letter-spacing: 0;
   line-height: 1.7rem;
   margin-right: 3rem;
   margin-bottom: 1.5rem;
+}
+
+.fullWidth {
+  width: 100%;
 }
 
 .vesselItemWrapper .remove {
