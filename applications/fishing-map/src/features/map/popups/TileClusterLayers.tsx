@@ -5,7 +5,7 @@ import { stringify } from 'qs'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
+import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types/dist'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
@@ -21,12 +21,30 @@ import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useViewport from '../map-viewport.hooks'
-import { ExtendedEventVessel } from '../map.slice'
+import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
 type UserContextLayersProps = {
   features: TooltipEventFeature[]
   showFeaturesDetails: boolean
+}
+
+const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEvent | undefined => {
+  if (!event) return event
+  const carrierVessel: EventVessel =
+    event.vessel.type === 'carrier' ? event.vessel : (event.encounter?.vessel as EventVessel)
+  const encounterVessel: EventVessel | undefined =
+    event.vessel.type === 'fishing' ? event.vessel : (event.encounter?.vessel as EventVessel)
+  return {
+    ...event,
+    vessel: carrierVessel,
+    ...(event.encounter && {
+      encounter: {
+        ...event.encounter,
+        vessel: encounterVessel,
+      },
+    }),
+  }
 }
 
 function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLayersProps) {
@@ -71,20 +89,23 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
   return (
     <Fragment>
       {features.map((feature, index) => {
+        const event = parseEvent(feature.event)
         const linkParams = {
           ...viewport,
           dataset: carrierLatest?.id,
-          vessel: feature.event?.vessel?.id,
-          ...(feature.event && { timestamp: new Date(feature.event.start).getTime() }),
+          ...(event && {
+            vessel: event.vessel.id,
+            timestamp: new Date(event.start).getTime(),
+          }),
           start,
           end,
         }
         const isEventInDatasetRange =
-          feature.event !== undefined &&
+          event !== undefined &&
           carrierLatest?.endDate !== undefined &&
           carrierLatest?.startDate !== undefined &&
-          feature.event.start >= carrierLatest.startDate &&
-          feature.event.end <= carrierLatest.endDate
+          event.start >= carrierLatest.startDate &&
+          event.end <= carrierLatest.endDate
 
         const urlLink = `${CARRIER_PORTAL_URL}/?${stringify(linkParams)}`
         let linkTooltip = ''
@@ -97,6 +118,7 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
             'This event happened outside the timerange of the Carrier Vessel Portal data'
           )
         }
+
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
@@ -108,31 +130,29 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                     <div className={styles.loading}>
                       <Spinner size="small" />
                     </div>
-                  ) : feature.event ? (
+                  ) : event ? (
                     <div className={styles.rowContainer}>
                       <span className={styles.rowText}>
-                        <I18nDate date={feature.event?.start as string} />
+                        <I18nDate date={event.start as string} />
                       </span>
                       <div className={styles.flex}>
-                        {feature.event?.vessel && (
+                        {event.vessel && (
                           <div className={styles.rowColum}>
                             <p className={styles.rowTitle}>{t('vessel.carrier', 'Carrier')}</p>
                             <div className={styles.centered}>
                               <span className={styles.rowText}>
-                                {formatInfoField(feature.event?.vessel?.name, 'name')}
+                                {formatInfoField(event.vessel?.name, 'name')}
                               </span>
                               <IconButton
                                 icon="pin"
                                 size="small"
                                 tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
-                                onClick={() =>
-                                  onPinClick(feature.event?.vessel as ExtendedEventVessel)
-                                }
+                                onClick={() => onPinClick(event.vessel as ExtendedEventVessel)}
                               />
                             </div>
                           </div>
                         )}
-                        {feature.event.encounter?.vessel && (
+                        {event.encounter?.vessel && (
                           <div className={styles.row}>
                             <div className={styles.rowColum}>
                               <span className={styles.rowTitle}>
@@ -140,16 +160,14 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                               </span>
                               <div className={styles.centered}>
                                 <span className={styles.rowText}>
-                                  {formatInfoField(feature.event.encounter?.vessel?.name, 'name')}
+                                  {formatInfoField(event.encounter?.vessel?.name, 'name')}
                                 </span>
                                 <IconButton
                                   icon="pin"
                                   size="small"
                                   tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
                                   onClick={() =>
-                                    onPinClick(
-                                      feature.event?.encounter?.vessel as ExtendedEventVessel
-                                    )
+                                    onPinClick(event.encounter?.vessel as ExtendedEventVessel)
                                   }
                                 />
                               </div>
