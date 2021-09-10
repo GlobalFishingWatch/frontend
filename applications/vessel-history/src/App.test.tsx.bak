@@ -1,3 +1,7 @@
+// TODO: Fix this test error
+//     Test suite failed to run
+//     TypeError: Cannot read property 'forwardRef' of undefined
+//  and remove the bak extension to include this test in the run
 import React, { Fragment } from 'react'
 import { Provider } from 'react-redux'
 import { render, waitFor, act } from '@testing-library/react'
