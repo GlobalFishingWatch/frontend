@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
+import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
 import MultiSelect, { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
+import { Button } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectAdvancedSearchCallsign,
@@ -47,10 +49,6 @@ const AdvancedSearch: React.FC = () => {
     )
   }, [dispatch, query, advancedSearch])
 
-  useEffect(() => {
-    fetchResults()
-  }, [fetchResults])
-
   const { dispatchQueryParams } = useLocationConnect()
 
   const setQueryParam = useCallback(
@@ -58,9 +56,8 @@ const AdvancedSearch: React.FC = () => {
       dispatchQueryParams({
         [key || e.target.id]: value ?? e.target.value,
       })
-      fetchResults()
     },
-    [dispatchQueryParams, fetchResults]
+    [dispatchQueryParams]
   )
 
   const onMainQueryChange = useCallback(
@@ -165,6 +162,11 @@ const AdvancedSearch: React.FC = () => {
             }
           }}
         />
+      </div>
+      <div className={cx(styles.row, styles.flexEnd)}>
+        <Button className={styles.cta} onClick={fetchResults}>
+          {t('search.title', 'Search')}
+        </Button>
       </div>
     </div>
   )

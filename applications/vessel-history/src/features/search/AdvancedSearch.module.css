@@ -28,3 +28,11 @@
 .thirdOfHalf {
   flex: 2 1 0;
 }
+
+.flexEnd {
+  justify-content: flex-end;
+}
+
+.cta {
+  min-width: 20rem;
+}
