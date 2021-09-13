@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.47
+
+### Patch Changes
+
+- Updated dependencies [16cf0830]
+  - @globalfishingwatch/react-hooks@14.0.1
+
 ## 1.1.46
 
 ### Patch Changes
