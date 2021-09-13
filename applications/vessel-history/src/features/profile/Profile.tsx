@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
@@ -29,8 +29,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
 import Info from './components/Info'
-import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
+import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
