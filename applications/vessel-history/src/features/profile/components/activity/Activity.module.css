@@ -43,14 +43,23 @@
   line-height: var(--space-S);
 }
 
+.event .eventData {
+  height: var(--size-S);
+}
+
 .event .eventData .description {
   font: var(--font-XS);
   line-height: var(--space-S);
   margin-top: var(--space-XS);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: calc(100vw - var(--size-S) * 4.5);
 }
 
 .event.voyage .eventData .description {
   text-transform: capitalize;
+  width: calc(100vw - var(--size-S) * 3.5);
 }
 
 .eventIcon {
@@ -105,7 +114,7 @@
 }
 
 .event .actions {
-  min-width: 56px;
+  min-width: var(--size-S);
   margin-right: 0;
   margin-left: auto;
   text-align: right;
@@ -148,8 +157,6 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-
-  /* font: var(--font-S); */
 }
 .noSettingsContainer button {
   margin: var(--space-M);
