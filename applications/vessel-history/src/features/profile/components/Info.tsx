@@ -137,7 +137,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.geartype}
-                hideTMTDate={true}
+                value={vessel.geartype}
                 valuesHistory={vessel.history.geartype.byDate}
               ></InfoField>
               <InfoField
