@@ -1,11 +1,12 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react'
+import React, { useCallback, useState, useEffect, useMemo, lazy } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
+import InteractiveMap from 'react-map-gl'
+import type { MapRequest } from 'react-map-gl'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
-import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
@@ -41,11 +42,14 @@ import { getEventLabel } from 'utils/analytics'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
-import { SliceInteractionEvent } from './map.slice'
-import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
 import useRulers from './rulers/rulers.hooks'
+import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
+import { SliceInteractionEvent } from './map.slice'
+// import MapDraw from './MapDraw'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+
+// const InteractiveMap = lazy(() => import(/* webpackChunkName: "ReactMapGl" */ 'react-map-gl'))
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 

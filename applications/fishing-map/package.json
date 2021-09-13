@@ -30,7 +30,6 @@
     "@globalfishingwatch/ocean-areas": "0.2.6",
     "@globalfishingwatch/pbf": "1.0.11",
     "@globalfishingwatch/react-hooks": "14.0.0",
-    "@globalfishingwatch/react-map-gl": "5.2.9-gfw.17",
     "@globalfishingwatch/timebar": "2.0.8",
     "@globalfishingwatch/ui-components": "11.1.1",
     "@reduxjs/toolkit": "1.5.0",
@@ -72,6 +71,7 @@
     "react-ga": "3.3.0",
     "react-html-parser": "2.0.2",
     "react-i18next": "11.11.4",
+    "react-map-gl": "^5.3.17",
     "react-redux": "7.2.4",
     "react-scripts": "4.0.3",
     "react-spring": "8.0.27",
@@ -88,6 +88,7 @@
     "viewport-mercator-project": "7.0.3"
   },
   "devDependencies": {
+    "@craco/craco": "^6.2.0",
     "@globalfishingwatch/linting": "1.7.0",
     "@testing-library/jest-dom": "5.11.5",
     "@testing-library/react": "11.1.0",
