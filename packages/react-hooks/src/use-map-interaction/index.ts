@@ -1,5 +1,5 @@
 import type { Geometry } from 'geojson'
-import { MapEvent } from 'react-map-gl'
+import type { MapEvent } from 'react-map-gl'
 import {
   ContextLayerType,
   HeatmapAnimatedInteractionType,
