@@ -39,9 +39,9 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 ## See also
 
-### Mapbox GL / react-map-gl forks
+### Mapbox GL fork
 
-We maintain our own forks of <a href="https://github.com/GlobalFishingWatch/react-map-gl/">react-map-gl</a> and <a href="https://github.com/GlobalFishingWatch/mapbox-gl-js/">Mapbox GL</a> to handle gridded temporal data (see `temporalgrid` branches on both repos)
+We maintain our own forks of <a href="https://github.com/GlobalFishingWatch/mapbox-gl-js/">Mapbox GL</a> to handle gridded temporal data (see `temporalgrid` branches on both repos)
 
 ### LayerComposer / Dataviews / Workspaces
 
@@ -117,7 +117,6 @@ yarn changesets
 ```
 
 and follow the steps to generate a changeset release, once merged to develop the github action will deploy to npm automatically.
-
 
 ### API DOCS
 
