@@ -125,6 +125,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.imo}
                 value={vessel.imo}
+                hideTMTDate={true}
                 valuesHistory={vessel.history.imo.byDate}
               ></InfoField>
               <InfoField
@@ -136,25 +137,28 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.geartype}
-                value={vessel.geartype}
+                hideTMTDate={true}
                 valuesHistory={vessel.history.geartype.byDate}
               ></InfoField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.length}
                 value={vessel.length}
+                hideTMTDate={true}
                 valuesHistory={vessel.history.length.byDate}
               ></InfoField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.grossTonnage}
                 value={vessel.grossTonnage}
+                hideTMTDate={true}
                 valuesHistory={vessel.history.grossTonnage.byDate}
               ></InfoField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.depth}
                 value={vessel.depth}
+                hideTMTDate={true}
                 valuesHistory={vessel.history.depth.byDate}
               ></InfoField>
               <div className={styles.identifierField}>
@@ -177,6 +181,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.builtYear}
+                hideTMTDate={true}
                 value={vessel.builtYear}
               ></InfoField>
               <InfoField
