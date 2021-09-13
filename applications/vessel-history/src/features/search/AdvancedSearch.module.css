@@ -1,22 +1,42 @@
+.container {
+  padding: 1.5rem;
+  border-bottom: var(--border);
+}
+
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.row:not(:first-child) {
   margin-top: var(--space-S);
 }
 
 .row > div:not(:last-child) {
-  margin-right: 2rem;
+  margin-right: var(--space-S);
 }
 
 .full {
   flex: 1 1 0;
 }
 
-.half {
-  flex: 6 1 0;
+.width6ch {
+  width: calc(6ch + var(--space-M));
 }
 
-.thirdOfHalf {
-  flex: 2 1 0;
+.width7ch {
+  width: calc(7ch + var(--space-M));
+}
+
+.width8ch {
+  width: calc(8ch + var(--space-M));
+}
+
+.flexEnd {
+  justify-content: flex-end;
+}
+
+.cta {
+  min-width: 20rem;
 }

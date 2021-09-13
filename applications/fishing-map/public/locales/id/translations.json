@@ -83,7 +83,8 @@
     "emptyState": "Dataset Anda akan muncul di sini",
     "featuresNameField": "Fitur kolom nama",
     "file": "Berkas",
-    "fileNotAllowed": "(Hanya berkas .zip atau .json yang diizinkan)",
+    "onlyCsvAllowed": "(Only .csv files are allowed)",
+    "onlyZipAndJsonAllowed": "(Only .zip or .json files are allowed)",
     "hint": "Cari tahu lebih lanjut tentang format yang didukung",
     "importing": "Dataset sedang diimpor",
     "individualIdField": "Bidang ID individu",
@@ -104,6 +105,7 @@
     "typeTracks": " Tracks",
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
     "uploadLogin": "Anda perlu <1> masuk </1> untuk mengunggah dataset (gratis, 2 menit)",
+    "uploadPublic": "Allow other users to see this dataset when you share a workspace",
     "uploadNewContext": "Unggah layer referensi baru",
     "uploadNewEnviroment": "Unggah dataset lingkungan baru"
   },

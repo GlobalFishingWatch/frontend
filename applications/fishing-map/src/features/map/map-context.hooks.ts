@@ -1,24 +1,34 @@
 import { useContext } from 'react'
+import { MapContext } from 'react-map-gl'
+import type { ExtraState, ViewportProps, WebMercatorViewport } from 'react-map-gl'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
-import type {
-  EventManager,
-  ContextViewportChangeHandler,
-  ContextViewStateChangeHandler,
-  WebMercatorViewport,
-} from '@globalfishingwatch/react-map-gl'
-import { _MapContext } from '@globalfishingwatch/react-map-gl'
+
+export type ViewportChangeHandler = (viewState: ViewportProps) => void
+
+export type ContextViewportChangeHandler = (
+  viewState: ViewportProps,
+  interactionState: ExtraState,
+  oldViewState: ViewportProps
+) => void
+
+export interface ViewStateChangeInfo {
+  viewState: ViewportProps
+}
+
+export type ViewStateChangeHandler = (info: ViewStateChangeInfo) => void
 
 export type ForkedContext = {
   viewport?: WebMercatorViewport
   map?: Map // need to overwrite types here to use '@globalfishingwatch/mapbox-gl' Map type
+  container: HTMLElement | null
   mapContainer: HTMLElement | null
-  onViewStateChange?: ContextViewStateChangeHandler
+  onViewStateChange?: ViewStateChangeHandler
   onViewportChange?: ContextViewportChangeHandler
   isDragging: boolean
-  eventManager?: EventManager
+  eventManager?: any
 }
 
-const MapContext = _MapContext as React.Context<ForkedContext>
+// const MapContext = _MapContext as React.Context<ForkedContext>
 export { MapContext }
 
 export function useMapContext() {

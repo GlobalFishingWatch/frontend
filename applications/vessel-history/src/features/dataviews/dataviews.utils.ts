@@ -26,6 +26,8 @@ type VesselInstanceDatasets = {
   infoDatasetId: string
   eventsDatasetsId?: string[]
 }
+export const getVesselDataviewInstanceId = (vesselId: string) => `${VESSEL_LAYER_PREFIX}${vesselId}`
+
 export const getVesselDataviewInstance = (
   vessel: { id: string },
   { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
@@ -53,7 +55,7 @@ export const getVesselDataviewInstance = (
     })
   }
   const vesselDataviewInstance = {
-    id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
+    id: getVesselDataviewInstanceId(vessel.id),
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       type: Generators.Type.Track,

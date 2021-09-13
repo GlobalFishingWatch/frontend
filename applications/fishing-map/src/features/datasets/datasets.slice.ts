@@ -96,14 +96,14 @@ export const fetchAllDatasetsThunk = createAsyncThunk('datasets/all', (_, { disp
   return dispatch(fetchDatasetsByIdsThunk([]))
 })
 
-export type CreateDataset = { dataset: Partial<Dataset>; file: File }
+export type CreateDataset = { dataset: Partial<Dataset>; file: File; createAsPublic: boolean }
 export const createDatasetThunk = createAsyncThunk<
   Dataset,
   CreateDataset,
   {
     rejectValue: AsyncError
   }
->('datasets/create', async ({ dataset, file }, { rejectWithValue }) => {
+>('datasets/create', async ({ dataset, file, createAsPublic }, { rejectWithValue }) => {
   try {
     const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
       method: 'POST',
@@ -112,12 +112,14 @@ export const createDatasetThunk = createAsyncThunk<
       } as any,
     })
     await fetch(url, { method: 'PUT', body: file })
+
     // API needs to have the value in lowercase
     const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
+    const id = `${kebabCase(dataset.name)}-${Date.now()}`
     const datasetWithFilePath = {
       ...dataset,
       description: dataset.description || dataset.name,
-      id: `${PUBLIC_SUFIX}-${kebabCase(dataset.name)}-${Date.now()}`,
+      id: createAsPublic ? `${PUBLIC_SUFIX}-${id}` : id,
       source: DATASETS_USER_SOURCE_ID,
       configuration: {
         ...dataset.configuration,

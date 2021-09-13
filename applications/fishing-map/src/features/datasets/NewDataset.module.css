@@ -52,6 +52,7 @@
 }
 
 .modalContainer {
+  height: 54rem;
   display: flex;
   flex-direction: column;
 }

@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
-import { ViewportProps } from '@globalfishingwatch/react-map-gl'
+import type { ViewportProps } from 'react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
 import { LngLatBounds } from '@globalfishingwatch/mapbox-gl'
 import { Bbox, MapCoordinates } from 'types'
@@ -59,7 +59,9 @@ export default function useViewport(): UseViewport {
 
   const onViewportChange = useCallback((viewport: ViewportProps) => {
     const { latitude, longitude, zoom } = viewport
-    setViewport({ latitude, longitude, zoom })
+    if (latitude && longitude && zoom) {
+      setViewport({ latitude, longitude, zoom })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

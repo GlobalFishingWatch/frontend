@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { BBox } from '@turf/turf'
-import InteractiveMap from '@globalfishingwatch/react-map-gl'
+import { InteractiveMap } from 'react-map-gl'
 import { getOceanAreaName, OceanArea, searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 // In projects we could use '@globalfishingwatch/ocean-areas/dist/data' but doesn't work in the sandbox
 import oceanAreas from 'data/ocean-areas'

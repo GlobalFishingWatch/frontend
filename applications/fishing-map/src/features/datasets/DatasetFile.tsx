@@ -25,6 +25,11 @@ const TRANSLATIONS_BY_TYPE: Record<DatasetGeometryType, string> = {
   tracks: 'dataset.dragFilePlaceholderCSV',
   points: '',
 }
+const ERRORS_BY_TYPE: Record<DatasetGeometryType, string> = {
+  polygons: 'dataset.onlyZipAndJsonAllowed',
+  tracks: 'dataset.onlyCsvAllowed',
+  points: '',
+}
 
 const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className = '' }) => {
   const accept = type ? ACCEPT_FILES_BY_TYPE[type] : ACCEPT_FILES_BY_TYPE.polygons
@@ -63,7 +68,10 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
       )}
       {fileRejections.length > 0 && (
         <p className={cx(styles.fileText, styles.warning)}>
-          {t('dataset.fileNotAllowed', '(Only .zip or .json files are allowed)')}
+          {t(
+            (ERRORS_BY_TYPE[type as DatasetGeometryType] as any) || 'dataset.onlyZipAndJsonAllowed',
+            '(Only .zip or .json files are allowed)'
+          )}
         </p>
       )}
     </div>

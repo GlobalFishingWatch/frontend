@@ -83,7 +83,8 @@
     "emptyState": "Your datasets will appear here.",
     "featuresNameField": "Field to name each area",
     "file": "File",
-    "fileNotAllowed": "(.zip or .json files currently supported)",
+    "onlyCsvAllowed": "(Only .csv files are allowed)",
+    "onlyZipAndJsonAllowed": "(Only .zip or .json files are allowed)",
     "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
     "individualIdField": "Individual ID field",
@@ -104,6 +105,7 @@
     "typeTracks": " Tracks",
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
     "uploadLogin": "Register and <1>login</1> to upload datasets (free, 2 minutes)",
+    "uploadPublic": "Allow other users to see this dataset when you share a workspace",
     "uploadNewContext": "Upload new reference layer",
     "uploadNewEnviroment": "Upload new environment dataset"
   },
