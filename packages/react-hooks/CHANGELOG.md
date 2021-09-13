@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 14.0.1
+
+### Patch Changes
+
+- 16cf0830: update react-map-gl typing
+
 ## 14.0.0
 
 ### Patch Changes
