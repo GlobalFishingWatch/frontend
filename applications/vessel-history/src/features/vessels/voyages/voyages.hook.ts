@@ -29,9 +29,6 @@ function useVoyagesConnect() {
           return {
             ...event,
             status: expandedVoyages[event.timestamp] ? 'expanded' : 'collapsed',
-            // Mark voyages when they have events to display (no events by default)
-            hasEventsToDisplay:
-              (allEvents[index + 1]?.type ?? EventTypeVoyage.Voyage) !== EventTypeVoyage.Voyage,
           } as RenderedVoyage
         } else {
           return event as RenderedEvent
@@ -39,7 +36,7 @@ function useVoyagesConnect() {
       })
       .filter((event) => {
         return (
-          (event.type === EventTypeVoyage.Voyage && event.visible) ||
+          event.type === EventTypeVoyage.Voyage ||
           Object.values(expandedVoyages).find(
             (voyage) =>
               voyage !== undefined &&

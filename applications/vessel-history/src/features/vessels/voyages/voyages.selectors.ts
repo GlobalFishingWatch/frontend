@@ -85,12 +85,11 @@ export const selectFilteredEventsByVoyages = createSelector(
       }))
       .map((voyage) => ({
         ...voyage,
-        visible:
-          filteredEvents.filter(
-            (event) =>
-              (voyage.start < event.start && voyage.end > event.start) ||
-              (voyage.start <= event.end && voyage.end >= event.end)
-          ).length > 0,
+        eventsQuantity: filteredEvents.filter(
+          (event) =>
+            (voyage.start < event.start && voyage.end > event.start) ||
+            (voyage.start <= event.end && voyage.end >= event.end)
+        ).length,
       }))
 
     return [...filteredEvents, ...filteredVoyages].sort(

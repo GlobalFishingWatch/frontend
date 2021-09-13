@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
@@ -52,28 +52,31 @@ const ActivityVoyage: React.FC<EventProps> = ({
     return parts.join(' - ')
   }, [event.from, event.start, event.to, event.end, t])
 
+  const hasEvents = useMemo(() => event.eventsQuantity > 0, [event.eventsQuantity])
+  const onToggle = useCallback(
+    () => (hasEvents ? onToggleClick(event) : {}),
+    [hasEvents, onToggleClick, event]
+  )
+  const onMap = useCallback(
+    () => (hasEvents ? onMapClick(event) : {}),
+    [hasEvents, onMapClick, event]
+  )
   return (
     <Fragment>
       <div className={cx(styles.event, styles.voyage)}>
-        <div className={styles.eventData} onClick={() => onToggleClick(event)}>
+        <div className={styles.eventData} onClick={onToggle}>
           <div className={styles.description}>{voyageLabel}</div>
         </div>
-        <div className={styles.actions}>
-          {event.hasEventsToDisplay && (
-            <Fragment>
-              <IconButton
-                icon={event.status === 'expanded' ? 'arrow-top' : 'arrow-down'}
-                size="small"
-                onClick={() => onToggleClick(event)}
-              ></IconButton>
-              <IconButton
-                icon="view-on-map"
-                size="small"
-                onClick={() => onMapClick(event)}
-              ></IconButton>
-            </Fragment>
-          )}
-        </div>
+        {hasEvents && (
+          <div className={styles.actions}>
+            <IconButton
+              icon={event.status === 'expanded' ? 'arrow-top' : 'arrow-down'}
+              size="small"
+              onClick={onToggle}
+            ></IconButton>
+            <IconButton icon="view-on-map" size="small" onClick={onMap}></IconButton>
+          </div>
+        )}
       </div>
       <div className={styles.divider}></div>
     </Fragment>
