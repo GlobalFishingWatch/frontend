@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 11.1.2
+
+### Patch Changes
+
+- 81c99e75: [WIP] Vessel Viewer search changes
+
 ## 11.1.1
 
 ### Patch Changes
