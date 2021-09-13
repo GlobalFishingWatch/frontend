@@ -42,7 +42,7 @@ const InfoField: React.FC<ListItemProps> = ({
   label,
   valuesHistory = [],
   vesselName,
-  hideTMTDate = true,
+  hideTMTDate = false,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
