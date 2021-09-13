@@ -16,4 +16,5 @@ export interface Voyage {
 export interface RenderedVoyage extends Voyage {
   status: 'collapsed' | 'expanded'
   visible: boolean
+  hasEventsToDisplay?: boolean
 }

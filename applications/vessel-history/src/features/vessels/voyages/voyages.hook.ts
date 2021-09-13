@@ -24,11 +24,14 @@ function useVoyagesConnect() {
 
   const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
     return eventsList
-      .map((event) => {
+      .map((event, index, allEvents) => {
         if (event.type === EventTypeVoyage.Voyage) {
           return {
             ...event,
             status: expandedVoyages[event.timestamp] ? 'expanded' : 'collapsed',
+            // Mark voyages when they have events to display (no events by default)
+            hasEventsToDisplay:
+              (allEvents[index + 1]?.type ?? EventTypeVoyage.Voyage) !== EventTypeVoyage.Voyage,
           } as RenderedVoyage
         } else {
           return event as RenderedEvent

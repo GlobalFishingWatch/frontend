@@ -59,16 +59,20 @@ const ActivityVoyage: React.FC<EventProps> = ({
           <div className={styles.description}>{voyageLabel}</div>
         </div>
         <div className={styles.actions}>
-          <IconButton
-            icon={event.status === 'expanded' ? 'arrow-top' : 'arrow-down'}
-            size="small"
-            onClick={() => onToggleClick(event)}
-          ></IconButton>
-          <IconButton
-            icon="view-on-map"
-            size="small"
-            onClick={() => onMapClick(event)}
-          ></IconButton>
+          {event.hasEventsToDisplay && (
+            <Fragment>
+              <IconButton
+                icon={event.status === 'expanded' ? 'arrow-top' : 'arrow-down'}
+                size="small"
+                onClick={() => onToggleClick(event)}
+              ></IconButton>
+              <IconButton
+                icon="view-on-map"
+                size="small"
+                onClick={() => onMapClick(event)}
+              ></IconButton>
+            </Fragment>
+          )}
         </div>
       </div>
       <div className={styles.divider}></div>
