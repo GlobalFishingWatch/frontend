@@ -1,16 +1,10 @@
 import { useContext } from 'react'
-import { MapContext, ViewportProps, WebMercatorViewport } from 'react-map-gl'
+import { MapContext } from 'react-map-gl'
+import type { ExtraState, ViewportProps, WebMercatorViewport } from 'react-map-gl'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 
 export type ViewportChangeHandler = (viewState: ViewportProps) => void
-export interface ExtraState {
-  inTransition?: boolean | undefined
-  isDragging?: boolean | undefined
-  isHovering?: boolean | undefined
-  isPanning?: boolean | undefined
-  isRotating?: boolean | undefined
-  isZooming?: boolean | undefined
-}
+
 export type ContextViewportChangeHandler = (
   viewState: ViewportProps,
   interactionState: ExtraState,

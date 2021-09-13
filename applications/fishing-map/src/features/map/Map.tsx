@@ -1,10 +1,9 @@
-import React, { useCallback, useState, useEffect, useMemo, lazy } from 'react'
+import React, { Suspense, useCallback, useState, useEffect, useMemo, lazy } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import InteractiveMap from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -49,7 +48,7 @@ import { SliceInteractionEvent } from './map.slice'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
-// const InteractiveMap = lazy(() => import(/* webpackChunkName: "ReactMapGl" */ 'react-map-gl'))
+const InteractiveMap = lazy(() => import(/* webpackChunkName: "ReactMapGl" */ 'react-map-gl'))
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
@@ -238,68 +237,73 @@ const MapWrapper = (): React.ReactElement | null => {
 
   return (
     <div className={styles.container}>
-      {<MapScreenshot map={map} />}
-      {style && (
-        <InteractiveMap
-          disableTokenWarning={true}
-          width="100%"
-          height="100%"
-          zoom={viewport.zoom}
-          latitude={viewport.latitude}
-          longitude={viewport.longitude}
-          pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={onViewportChange}
-          mapStyle={style}
-          transformRequest={transformRequest}
-          onResize={setMapBounds}
-          getCursor={rulersEditing ? getRulersCursor : getCursor}
-          interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
-          clickRadius={clickRadiusScale(viewport.zoom)}
-          onClick={currentClickCallback}
-          onHover={currentMapHoverCallback}
-          onError={handleError}
-          onMouseOut={resetHoverState}
-          transitionDuration={viewport.transitionDuration}
-        >
-          {clickedEvent && (
-            <PopupWrapper
-              type="click"
-              event={clickedTooltipEvent}
-              onClose={closePopup}
-              closeOnClick={false}
-              closeButton
-            />
-          )}
-          {hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
-            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude &&
-            !clickedEvent && (
-              <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
+      <Suspense fallback={null}>
+        {<MapScreenshot map={map} />}
+        {style && (
+          <InteractiveMap
+            disableTokenWarning={true}
+            width="100%"
+            height="100%"
+            zoom={viewport.zoom}
+            latitude={viewport.latitude}
+            longitude={viewport.longitude}
+            pitch={debugOptions.extruded ? 40 : 0}
+            onViewportChange={onViewportChange}
+            mapStyle={style}
+            transformRequest={transformRequest}
+            onResize={setMapBounds}
+            getCursor={rulersEditing ? getRulersCursor : getCursor}
+            interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
+            clickRadius={clickRadiusScale(viewport.zoom)}
+            onClick={currentClickCallback}
+            onHover={currentMapHoverCallback}
+            onError={handleError}
+            onMouseOut={resetHoverState}
+            transitionDuration={viewport.transitionDuration}
+          >
+            {clickedEvent && (
+              <PopupWrapper
+                type="click"
+                event={clickedTooltipEvent}
+                onClose={closePopup}
+                closeOnClick={false}
+                closeButton
+              />
             )}
-          <MapInfo center={hoveredEvent} />
-        </InteractiveMap>
-      )}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
-      {legendsTranslated?.map((legend: any) => {
-        const legendDomElement = document.getElementById(legend.id as string)
-        if (legendDomElement) {
-          return createPortal(
-            <MapLegend
-              layer={legend}
-              className={styles.legend}
-              currentValueClassName={styles.currentValue}
-              labelComponent={
-                <Tooltip
-                  content={t('map.legend_help', 'Approximated grid cell area at the Equator')}
-                >
-                  <span className={styles.legendLabel}>{legend.label}</span>
-                </Tooltip>
-              }
-            />,
-            legendDomElement
-          )
-        }
-        return null
-      })}
+            {hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
+              hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude &&
+              !clickedEvent && (
+                <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
+              )}
+            <MapInfo center={hoveredEvent} />
+          </InteractiveMap>
+        )}
+        <MapControls
+          onMouseEnter={resetHoverState}
+          mapLoading={!mapLoaded || layerComposerLoading}
+        />
+        {legendsTranslated?.map((legend: any) => {
+          const legendDomElement = document.getElementById(legend.id as string)
+          if (legendDomElement) {
+            return createPortal(
+              <MapLegend
+                layer={legend}
+                className={styles.legend}
+                currentValueClassName={styles.currentValue}
+                labelComponent={
+                  <Tooltip
+                    content={t('map.legend_help', 'Approximated grid cell area at the Equator')}
+                  >
+                    <span className={styles.legendLabel}>{legend.label}</span>
+                  </Tooltip>
+                }
+              />,
+              legendDomElement
+            )
+          }
+          return null
+        })}
+      </Suspense>
     </div>
   )
 }
