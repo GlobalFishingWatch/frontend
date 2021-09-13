@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
+import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
 import MultiSelect, { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
+import { Button } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectAdvancedSearchCallsign,
@@ -47,10 +49,6 @@ const AdvancedSearch: React.FC = () => {
     )
   }, [dispatch, query, advancedSearch])
 
-  useEffect(() => {
-    fetchResults()
-  }, [fetchResults])
-
   const { dispatchQueryParams } = useLocationConnect()
 
   const setQueryParam = useCallback(
@@ -58,9 +56,8 @@ const AdvancedSearch: React.FC = () => {
       dispatchQueryParams({
         [key || e.target.id]: value ?? e.target.value,
       })
-      fetchResults()
     },
-    [dispatchQueryParams, fetchResults]
+    [dispatchQueryParams]
   )
 
   const onMainQueryChange = useCallback(
@@ -78,33 +75,37 @@ const AdvancedSearch: React.FC = () => {
   )
 
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.row}>
         <InputText
+          inputSize="small"
           onChange={onMainQueryChange}
           value={query}
           label={t('search.shipname', 'Name')}
           autoFocus
-          className={styles.half}
+          className={styles.full}
         />
         <InputText
+          inputSize="small"
           onChange={setQueryParam}
           id="MMSI"
-          className={styles.thirdOfHalf}
+          className={styles.width8ch}
           value={MMSI}
           label={t('search.MMSI', 'MMSI')}
         />
         <InputText
+          inputSize="small"
           onChange={setQueryParam}
           id="IMO"
-          className={styles.thirdOfHalf}
+          className={styles.width7ch}
           value={IMO}
           label={t('search.IMO', 'IMO')}
         />
         <InputText
+          inputSize="small"
           onChange={setQueryParam}
           id="callsign"
-          className={styles.thirdOfHalf}
+          className={styles.width6ch}
           value={callsign}
           label={t('search.callsign', 'Callsign')}
         />
@@ -129,7 +130,7 @@ const AdvancedSearch: React.FC = () => {
       <div className={styles.row}>
         <InputDate
           value={lastTransmissionDate}
-          className={styles.half}
+          className={styles.full}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('search.activeAfter', 'Active after')}
@@ -146,7 +147,7 @@ const AdvancedSearch: React.FC = () => {
         />
         <InputDate
           value={firstTransmissionDate}
-          className={styles.half}
+          className={styles.full}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('search.activeBefore', 'Active before')}
@@ -161,6 +162,11 @@ const AdvancedSearch: React.FC = () => {
             }
           }}
         />
+      </div>
+      <div className={cx(styles.row, styles.flexEnd)}>
+        <Button className={styles.cta} onClick={fetchResults}>
+          {t('search.title', 'Search')}
+        </Button>
       </div>
     </div>
   )

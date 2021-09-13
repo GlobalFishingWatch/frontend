@@ -2,9 +2,9 @@ import React, { Fragment } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { VesselSearch as Vessel } from '@globalfishingwatch/api-types'
-import { DEFAULT_EMPTY_VALUE } from 'data/config'
+import { DEFAULT_EMPTY_VALUE, FIRST_YEAR_OF_DATA } from 'data/config'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
@@ -74,7 +74,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               {sourceAPI.map((source) => formatSource(source)).join('+') ?? DEFAULT_EMPTY_VALUE}
             </div>
           )}
-          <div>
+          <div className={styles.fullWidth}>
             <label>{t('vessel.transmission_plural', 'transmissions')}</label>
             {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
               <Fragment>
@@ -93,6 +93,13 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               </Fragment>
             ) : (
               DEFAULT_EMPTY_VALUE
+            )}
+            {vessel.firstTransmissionDate && vessel.lastTransmissionDate && (
+              <TransmissionsTimeline
+                firstTransmissionDate={vessel.firstTransmissionDate}
+                lastTransmissionDate={vessel.lastTransmissionDate}
+                firstYearOfData={FIRST_YEAR_OF_DATA}
+              />
             )}
           </div>
           {props.saved && (

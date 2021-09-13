@@ -24,8 +24,6 @@ export type SearchSlice = {
   queries: CachedQuerySearch
 }
 
-export type SearchType = 'basic' | 'advanced'
-
 const initialState: SearchSlice = {
   status: AsyncReducerStatus.Idle,
   queries: {},
