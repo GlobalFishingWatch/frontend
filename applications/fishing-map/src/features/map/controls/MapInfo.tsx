@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
-import ScaleControl from 'react-map-gl/dist/es6/components/scale-control'
+import { ScaleControl } from 'react-map-gl'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
