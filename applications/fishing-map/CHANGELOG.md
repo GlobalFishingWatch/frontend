@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.48
+
+### Patch Changes
+
+- 81c99e75: [WIP] Vessel Viewer search changes
+- Updated dependencies [81c99e75]
+  - @globalfishingwatch/ui-components@11.1.2
+
 ## 1.1.47
 
 ### Patch Changes

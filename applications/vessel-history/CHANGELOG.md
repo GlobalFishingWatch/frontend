@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/vessel-history
 
+## 1.0.10
+
+### Patch Changes
+
+- 81c99e75: [WIP] Vessel Viewer search changes
+- Updated dependencies [81c99e75]
+  - @globalfishingwatch/ui-components@11.1.2
+
 ## 1.0.9
 
 ### Patch Changes
