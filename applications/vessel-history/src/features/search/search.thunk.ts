@@ -60,7 +60,7 @@ const fetchData = async (
     useTMT: true,
   })
 
-  const url = `/v1/vessels/advanced-search?${urlQuery}`
+  const url = `/v1/vessels/advanced-search-tmt?${urlQuery}`
 
   return await GFWAPI.fetch<any>(url, {
     signal,
