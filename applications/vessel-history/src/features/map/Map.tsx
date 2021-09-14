@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
-import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
+import { InteractiveMap } from 'react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
@@ -22,6 +22,10 @@ import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 import { selectHighlightedEvent } from './map.slice'
 
+const mapOptions: any = {
+  customAttribution: '© Copyright Global Fishing Watch 2020',
+}
+
 const Map: React.FC = (): React.ReactElement => {
   const map = useMapInstance()
   const mapRef = useRef<any>(null)
@@ -35,9 +39,6 @@ const Map: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
-  const mapOptions = {
-    customAttribution: '© Copyright Global Fishing Watch 2020',
-  }
 
   const onMapClick = useMapClick(
     selectVesselEventOnClick,
@@ -102,7 +103,7 @@ const Map: React.FC = (): React.ReactElement => {
               latitude: mapRef.current?.getMap().getCenter().lat,
               longitude: mapRef.current?.getMap().getCenter().lng,
               zoom: mapRef.current.getMap().getZoom(),
-  
+
               pitch: 0,
               bearing: 0,
             })
@@ -172,7 +173,7 @@ const Map: React.FC = (): React.ReactElement => {
           onClick={onMapClick}
           onLoad={onMapLoad}
           mapStyle={style}
-          //mapOptions={mapOptions}
+          mapOptions={mapOptions}
         ></InteractiveMap>
       )}
       <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
