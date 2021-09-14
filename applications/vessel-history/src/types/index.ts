@@ -69,6 +69,7 @@ export interface VesselFieldsHistory {
 export interface VesselWithHistory extends Vessel {
   history: VesselFieldsHistory
   iuuStatus?: number
+  vesselType?: string
 }
 
 export enum VesselAPISource {
@@ -158,6 +159,7 @@ export type GFWDetail = {
   dataset: string
   geartype: string
   normalized_shipname: string
+  vesselType: string
 }
 
 export enum Locale {
