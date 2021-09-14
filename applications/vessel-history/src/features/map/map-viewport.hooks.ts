@@ -49,13 +49,16 @@ const viewportState = atom<MapCoordinates>({
 export default function useViewport(): UseViewport {
   const [viewport, setViewport] = useRecoilState(viewportState)
 
-  const setMapCoordinates = useCallback((viewport: SetMapCoordinatesArgs) => {
-    setViewport({ ...viewport })
+  const setMapCoordinates = useCallback((coordinates: SetMapCoordinatesArgs) => {
+    setViewport((viewport) => ({ ...viewport, ...coordinates }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   const onViewportChange = useCallback((viewport: ViewportProps) => {
     const { latitude, longitude, zoom } = viewport
-    setViewport({ latitude, longitude, zoom })
+    if (latitude && longitude && zoom) {
+      setViewport({ latitude, longitude, zoom })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

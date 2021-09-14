@@ -172,7 +172,7 @@ const Map: React.FC = (): React.ReactElement => {
           onClick={onMapClick}
           onLoad={onMapLoad}
           mapStyle={style}
-          mapOptions={mapOptions}
+          //mapOptions={mapOptions}
         ></InteractiveMap>
       )}
       <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
