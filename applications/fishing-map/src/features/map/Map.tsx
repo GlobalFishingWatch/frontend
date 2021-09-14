@@ -44,8 +44,8 @@ import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
-import { SliceInteractionEvent } from './map.slice'
-// import MapDraw from './MapDraw'
+import { selectDrawMode, SliceInteractionEvent } from './map.slice'
+import MapDraw from './MapDraw'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
@@ -185,6 +185,7 @@ const MapWrapper = (): React.ReactElement | null => {
   }, [mapLegends, t])
 
   const debugOptions = useSelector(selectDebugOptions)
+  const drawMode = useSelector(selectDrawMode)
 
   const mapLoaded = useMapLoaded()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
@@ -192,7 +193,9 @@ const MapWrapper = (): React.ReactElement | null => {
   const getCursor = useCallback(
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
-      if (state.isHovering && hoveredTooltipEvent) {
+      if (drawMode === 'draw') {
+        return 'pointer'
+      } else if (state.isHovering && hoveredTooltipEvent) {
         // Workaround to fix cluster events duplicated, only working for encounters and needs
         // TODO if wanted to scale it to other layers
         const clusterConfig = dataviews.find((d) => d.config?.type === Generators.Type.TileCluster)
@@ -217,7 +220,7 @@ const MapWrapper = (): React.ReactElement | null => {
       }
       return 'grab'
     },
-    [hoveredTooltipEvent, encounterSourceLoaded, dataviews]
+    [drawMode, hoveredTooltipEvent, dataviews, encounterSourceLoaded]
   )
 
   useEffect(() => {
@@ -274,6 +277,7 @@ const MapWrapper = (): React.ReactElement | null => {
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
+          <MapDraw />
         </InteractiveMap>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />

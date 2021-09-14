@@ -226,6 +226,7 @@
   "layer": {
     "add": "Add layer",
     "color_change": "Change color",
+    "drawPolygon": "Draw a layer",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
     "flagState_other": "Flag States",

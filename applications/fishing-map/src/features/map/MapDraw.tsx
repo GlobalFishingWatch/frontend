@@ -1,20 +1,23 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Editor, EditingMode, DrawPolygonMode } from 'react-map-gl-draw'
+import { useSelector } from 'react-redux'
+import { selectDrawMode } from './map.slice'
 
-type MapDrawProps = {
-  mode: 'edit' | 'draw'
-}
+function MapDraw() {
+  const mode = useSelector(selectDrawMode)
 
-function MapDraw({ mode }: MapDrawProps) {
-  return (
-    <Editor
-      clickRadius={12}
-      mode={mode === 'edit' ? EditingMode : DrawPolygonMode}
-      onSelect={(select: any) => {
-        console.log(select)
-      }}
-    />
-  )
+  const editorMode = useMemo(() => {
+    if (mode === 'disabled') {
+      return
+    }
+    return mode === 'edit' ? new EditingMode() : new DrawPolygonMode()
+  }, [mode])
+
+  if (!editorMode) {
+    return null
+  }
+
+  return <Editor clickRadius={12} mode={editorMode} />
 }
 
 export default MapDraw
