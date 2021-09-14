@@ -146,6 +146,10 @@
   padding: 0;
 }
 
+.highlightsListContainer .event .eventData .description {
+  width: calc(100vw - var(--size-S) * 4.7);
+}
+
 .highlights {
   font: var(--font-S);
   color: #fc5d5f;
