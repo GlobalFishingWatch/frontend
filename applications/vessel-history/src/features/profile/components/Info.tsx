@@ -106,7 +106,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.type}
-                value={vessel.type}
+                value={vessel.vesselType}
                 valuesHistory={vessel.history.vesselType.byDate}
               ></InfoField>
               <InfoField
