@@ -34,7 +34,7 @@ export interface DataviewCreation<T = any> {
 
 export interface DataviewInfoConfigField {
   id: string
-  type: 'flag' | 'number' | 'date'
+  type: 'flag' | 'number' | 'date' | 'fleet' | 'string'
   mandatory?: boolean
   guest?: boolean
 }

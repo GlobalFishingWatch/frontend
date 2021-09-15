@@ -152,6 +152,7 @@
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
     "port": "Port",
     "portAction": "Docked for",
+    "port_visit": "Port visit",
     "portAt": "Docked at {{port}} for",
     "seeInCVP": "See in Carrier Vessel Portal",
     "unknown": "Unknown event"
