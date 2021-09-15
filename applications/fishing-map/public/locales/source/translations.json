@@ -349,6 +349,7 @@
     "nameInput": "Workspace name",
     "new": "New Workspace",
     "privateTitle_plural": "Private workspaces",
+    "uploadPublic": "Allow other users to see this workspace",
     "remove": "Remove workspace",
     "save": "Save the current view",
     "saved": "Current view was saved and it's available in your user profile",

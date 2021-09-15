@@ -1,0 +1,14 @@
+.modal {
+  height: 20rem;
+}
+
+.input {
+  margin-bottom: var(--space-M);
+}
+
+.footer {
+  margin-top: var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

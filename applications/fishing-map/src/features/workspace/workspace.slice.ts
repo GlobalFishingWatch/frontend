@@ -138,7 +138,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
 export const saveCurrentWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
-  async (defaultName: string, { dispatch, getState }) => {
+  async (
+    { name: defaultName, createAsPublic }: { name: string; createAsPublic: boolean },
+    { dispatch, getState }
+  ) => {
     const state = getState() as RootState
     const mergedWorkspace = selectCustomWorkspace(state)
 
@@ -155,8 +158,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
               body: {
                 ...mergedWorkspace,
                 name,
-                // TODO make this optional for admins
-                public: false,
+                public: createAsPublic,
               },
             } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
           )
