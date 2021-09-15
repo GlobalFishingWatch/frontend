@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
@@ -22,6 +22,7 @@ import {
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
 import { PROFILE } from 'routes/routes'
+import { useSearchConnect } from 'features/search/search.hooks'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -37,6 +38,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { logout } = useUser()
+  const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchConnect()
   const searching = useSelector(selectSearching)
   const query = useSelector(selectQueryParam('q'))
   const advancedSearch = useSelector(selectAdvancedSearchFields)
@@ -45,18 +47,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const totalResults = useSelector(selectSearchTotalResults)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
-  const [selectedVessels, setSelectedVessels] = useState<number[]>([])
-
-  const onVesselClick = useCallback(
-    (index) => () => {
-      if (selectedVessels.includes(index)) {
-        setSelectedVessels(selectedVessels.filter((i) => index !== i))
-      } else {
-        setSelectedVessels([...selectedVessels, index])
-      }
-    },
-    [selectedVessels]
-  )
 
   const promiseRef = useRef<any>()
 
@@ -64,8 +54,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     dispatchFetchOfflineVessels()
   }, [dispatchFetchOfflineVessels])
 
-  const onOfflineVesselClick = useCallback(
-    (vessel) => () => {
+  const openVesselProfile = useCallback(
+    (vessel) => {
       dispatch(
         redirect({
           type: PROFILE,
@@ -78,8 +68,24 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         })
       )
     },
-    [dispatch, redirect]
+    [dispatch]
   )
+  const onOpenVesselProfile = useCallback(
+    (vessel) => () => openVesselProfile(vessel),
+    [openVesselProfile]
+  )
+
+  const onSeeVesselClick = useCallback(() => {
+    const selectedVessel = vessels[selectedVessels[0]]
+    if (selectedVessel) openVesselProfile(selectedVessel)
+  }, [openVesselProfile, selectedVessels, vessels])
+
+  const onMergeVesselClick = useCallback(() => {
+    // TODO Implement logic to pass other selected vessels to Profile for merging
+    const selectedVessel = vessels[selectedVessels[0]]
+    if (selectedVessel) openVesselProfile(selectedVessel)
+  }, [openVesselProfile, selectedVessels, vessels])
+
   const fetchResults = useCallback(
     (offset = 0) => {
       if (promiseRef.current) {
@@ -100,7 +106,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         )
       }, 100)
     },
-    [dispatch, query, advancedSearch]
+    [setSelectedVessels, dispatch, query, advancedSearch]
   )
 
   return (
@@ -126,7 +132,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                     vessel={vessel}
                     saved={vessel.savedOn}
                     onDeleteClick={() => dispatchDeleteOfflineVessel(vessel.profileId)}
-                    onVesselClick={onOfflineVesselClick(vessel)}
+                    onVesselClick={onOpenVesselProfile(vessel)}
                   />
                 ))}
               </div>
@@ -158,6 +164,20 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                       selected={selectedVessels.includes(index)}
                     />
                   ))}
+                  {selectedVessels.length > 0 && (
+                    <div className={styles.bottomActions}>
+                      {selectedVessels.length === 1 && (
+                        <Button className={styles.seeVesselBtn} onClick={onSeeVesselClick}>
+                          {t('search.seeVessel', 'See Vessel')}
+                        </Button>
+                      )}
+                      {selectedVessels.length > 1 && (
+                        <Button className={styles.mergeVesselBtn} onClick={onMergeVesselClick}>
+                          {t('search.mergeSelectedVessels', 'Merge Selected Vessels')}
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
               {totalResults > 0 && !searching && vessels.length < totalResults && (

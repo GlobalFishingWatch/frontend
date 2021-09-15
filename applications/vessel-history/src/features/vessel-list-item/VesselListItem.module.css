@@ -66,6 +66,7 @@
 
 .vesselItemWrapper .selectVessel {
   float: right;
+  background: var(--color-border-thick);
 }
 
 .vesselItemWrapper .remove:focus:not(:disabled),

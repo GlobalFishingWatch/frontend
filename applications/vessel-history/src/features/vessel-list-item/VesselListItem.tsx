@@ -113,7 +113,12 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
             ></IconButton>
           )}
           {selected && (
-            <IconButton icon="tick" size="default" className={styles.selectVessel}></IconButton>
+            <IconButton
+              icon="tick"
+              size="default"
+              className={styles.selectVessel}
+              onClick={onClick}
+            ></IconButton>
           )}
         </div>
       </div>
