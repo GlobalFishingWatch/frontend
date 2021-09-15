@@ -1,10 +1,15 @@
 .vesselItemWrapper {
   border-bottom: var(--border);
-  padding-top: 1.5rem;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.selected {
+  background-color: var(--color-terthiary-blue);
 }
 
 .vesselItem {
   cursor: pointer;
+  flex-grow: 1;
 }
 
 .vesselItem h3 {
@@ -19,6 +24,19 @@
   float: right;
   background-color: rgba(22, 63, 137, 0.1);
   color: #fa5e5e;
+}
+
+.vesselItemDetails {
+  display: flex;
+}
+
+.vesselItemActions {
+  position: absolute;
+  right: var(--space-S);
+}
+
+.selected .vesselItemActions {
+  align-self: center;
 }
 
 .identifiers {
@@ -44,6 +62,10 @@
   position: absolute;
   right: var(--space-S);
   background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
+}
+
+.vesselItemWrapper .selectVessel {
+  float: right;
 }
 
 .vesselItemWrapper .remove:focus:not(:disabled),
