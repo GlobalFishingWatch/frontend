@@ -49,7 +49,6 @@
 
 .event .eventData .description {
   font: var(--font-XS);
-  line-height: var(--space-S);
   margin-top: var(--space-XS);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -144,6 +143,10 @@
 
 .highlightsListContainer {
   padding: 0;
+}
+
+.highlightsListContainer .event .eventData .description {
+  width: calc(100vw - var(--size-S) * 4.7);
 }
 
 .highlights {
