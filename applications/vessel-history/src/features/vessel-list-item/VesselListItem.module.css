@@ -1,3 +1,7 @@
+:root {
+  --vessel-item-width: 100%;
+}
+
 .vesselItemWrapper {
   border-bottom: var(--border);
   padding: 1.5rem 1.5rem 0 1.5rem;
@@ -9,7 +13,7 @@
 
 .vesselItem {
   cursor: pointer;
-  flex-grow: 1;
+  width: calc(var(--vessel-item-width) - var(--size-M));
 }
 
 .vesselItem h3 {
@@ -28,11 +32,16 @@
 
 .vesselItemDetails {
   display: flex;
+  flex-wrap: wrap;
+  width: var(--vessel-item-width);
 }
 
 .vesselItemActions {
-  position: absolute;
-  right: var(--space-S);
+  width: var(--size-S);
+}
+.vesselItemFooter {
+  width: var(--vessel-item-width);
+  margin-bottom: 1.5rem;
 }
 
 .selected .vesselItemActions {
@@ -57,6 +66,9 @@
 .fullWidth {
   width: 100%;
 }
+.identifiers > div.fullWidth {
+  margin-bottom: 0;
+}
 
 .vesselItemWrapper .remove {
   position: absolute;
@@ -65,7 +77,6 @@
 }
 
 .vesselItemWrapper .selectVessel {
-  float: right;
   background: var(--color-border-thick);
 }
 

@@ -86,20 +86,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               ) : (
                 DEFAULT_EMPTY_VALUE
               )}
-              {vessel.firstTransmissionDate && vessel.lastTransmissionDate && (
-                <TransmissionsTimeline
-                  firstTransmissionDate={vessel.firstTransmissionDate}
-                  lastTransmissionDate={vessel.lastTransmissionDate}
-                  firstYearOfData={FIRST_YEAR_OF_DATA}
-                />
-              )}
             </div>
-            {props.saved && (
-              <div>
-                <label>{t('vessel.savedOn', 'saved on')}</label>
-                {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
-              </div>
-            )}
           </div>
         </div>
         <div className={styles.vesselItemActions}>
@@ -119,6 +106,21 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               className={styles.selectVessel}
               onClick={onClick}
             ></IconButton>
+          )}
+        </div>
+        <div className={styles.vesselItemFooter}>
+          {vessel.firstTransmissionDate && vessel.lastTransmissionDate && (
+            <TransmissionsTimeline
+              firstTransmissionDate={vessel.firstTransmissionDate}
+              lastTransmissionDate={vessel.lastTransmissionDate}
+              firstYearOfData={FIRST_YEAR_OF_DATA}
+            />
+          )}
+          {props.saved && (
+            <div>
+              <label>{t('vessel.savedOn', 'saved on')}</label>
+              {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
+            </div>
           )}
         </div>
       </div>
