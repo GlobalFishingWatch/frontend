@@ -6,7 +6,7 @@ import { TooltipTypes } from '../types/types'
 import styles from './Switch.module.css'
 import { SwitchEvent } from '.'
 
-interface SwitchProps {
+export interface SwitchProps {
   id?: string
   active: boolean
   disabled?: boolean

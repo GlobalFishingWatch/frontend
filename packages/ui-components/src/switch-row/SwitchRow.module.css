@@ -1,0 +1,16 @@
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  margin-bottom: var(--space-M);
+}
+
+.switch {
+  margin-right: var(--space-XS);
+}
+
+.label {
+  cursor: pointer;
+}
