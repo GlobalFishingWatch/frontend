@@ -12,5 +12,11 @@
 }
 
 .label {
+  line-height: 1;
   cursor: pointer;
+  width: calc(100% - 2.4rem);
+}
+
+.labelDisabled {
+  pointer-events: none;
 }

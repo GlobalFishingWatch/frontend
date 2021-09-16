@@ -14,7 +14,10 @@ function SwitchRow(props: SwitchRowProps) {
   return (
     <div className={cx(styles.row, className)}>
       <Switch className={styles.switch} {...rest} />
-      <label className={styles.label} onClick={rest.onClick as any}>
+      <label
+        className={cx(styles.label, { [styles.labelDisabled]: rest.disabled })}
+        onClick={rest.onClick as any}
+      >
         {label}
       </label>
     </div>
