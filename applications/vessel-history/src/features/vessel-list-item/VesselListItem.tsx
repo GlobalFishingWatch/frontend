@@ -2,6 +2,7 @@ import React, { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
+import { event as uaEvent } from 'react-ga'
 import { IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { VesselSearch as Vessel } from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE, FIRST_YEAR_OF_DATA } from 'data/config'
@@ -15,6 +16,7 @@ interface ListItemProps {
   saved?: string
   vessel: Vessel
   selected?: boolean
+  index: number
   onDeleteClick?: () => void
   onVesselClick?: (vessel: Vessel) => void
 }
@@ -25,10 +27,18 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const { formatSource } = useVesselsConnect()
   const onClick = useCallback(() => onVesselClick(vessel), [onVesselClick, vessel])
 
+  const trackEvent = useCallback(() => {
+    uaEvent({
+      category: 'Search Vessel VV',
+      action: 'Clicks a vessel from result list',
+      label: JSON.stringify({ position: props.index + 1 }),
+    })
+    },[props.index]
+  )
+
   if (!vessel) {
     return <div></div>
   }
-
   const flagLabel = getFlagById(vessel.flag)?.label
   const sourceAPI = getVesselAPISource(vessel)
 

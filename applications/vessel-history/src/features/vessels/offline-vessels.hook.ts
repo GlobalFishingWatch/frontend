@@ -1,4 +1,6 @@
 import { useCallback } from 'react'
+import { event as uaEvent } from 'react-ga'
+import { DateTime, Interval } from 'luxon'
 import { AsyncError } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { OfflineVessel } from 'types/vessel'
@@ -67,8 +69,17 @@ export const useOfflineVesselsAPI = () => {
   )
 
   const dispatchDeleteOfflineVessel = useCallback(
-    (id: string) => {
-      dispatch(deleteOfflineVesselThunk(id))
+    (offlineVessel: OfflineVessel, page: string) => {
+      const now = DateTime.now()
+      const savedOn = DateTime.fromISO(offlineVessel.savedOn);
+      const i = Interval.fromDateTimes(savedOn, now);
+      uaEvent({
+        category: 'Offline Access',
+        action: 'Remove saved vessel for offline view',
+        label: JSON.stringify({ page }),
+        value: Math.floor(i.length('days'))
+      })
+      dispatch(deleteOfflineVesselThunk(offlineVessel.profileId))
     },
     [dispatch]
   )

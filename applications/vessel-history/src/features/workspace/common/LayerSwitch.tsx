@@ -1,4 +1,5 @@
 import { Ref, forwardRef } from 'react'
+import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -21,6 +22,11 @@ const LayerSwitch = (
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = [true, 'true', 1].includes((dataview?.config?.visible ?? true) as any)
   const onToggleLayerActive = () => {
+    uaEvent({
+      category: 'Vessel Detail MAP Tab',
+      action: 'Change context layers',
+      label: JSON.stringify({[dataview?.id]: !layerActive})
+    })
     upsertDataviewInstance({
       id: dataview.id,
       config: {

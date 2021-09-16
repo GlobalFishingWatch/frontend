@@ -1,6 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import Link from 'redux-first-router-link'
 import { redirect } from 'redux-first-router'
 import { VesselSearch } from '@globalfishingwatch/api-types'
@@ -101,6 +102,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const fetchResults = useCallback(
     (offset = 0) => {
+
       if (promiseRef.current) {
         promiseRef.current.abort()
       }
@@ -121,6 +123,15 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     },
     [setSelectedVessels, dispatch, query, advancedSearch]
   )
+  const trackEvent = useCallback(() => {
+    uaEvent({
+      category: 'Highlight Events',
+      action: 'Start highlight events configurations',
+      label: JSON.stringify({
+        page: 'home'
+      })
+    })
+  }, [])
 
   useEffect(() => {
     setSelectedVessels([])
@@ -131,7 +142,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       <header>
         <Logo className={styles.logo}></Logo>
         <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
-        <Link to={['settings']}>
+        <Link to={['settings']} onClick={trackEvent}>
           <IconButton type="default" size="default" icon="settings"></IconButton>
         </Link>
         <LanguageToggle />
@@ -146,10 +157,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                 {offlineVessels.map((vessel, index) => (
                   <VesselListItem
                     key={index}
+                    index={index}
                     vessel={vessel}
                     saved={vessel.savedOn}
-                    onDeleteClick={() => dispatchDeleteOfflineVessel(vessel.profileId)}
                     onVesselClick={onOpenVesselProfile(vessel)}
+                    onDeleteClick={() => dispatchDeleteOfflineVessel(vessel, 'home')}
                   />
                 ))}
               </div>
@@ -177,6 +189,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                     <VesselListItem
                       key={index}
                       vessel={vessel}
+                      index={index}
                       onVesselClick={onVesselClick(index)}
                       selected={selectedVessels.includes(index)}
                     />
