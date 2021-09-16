@@ -23,6 +23,16 @@ type NewWorkspaceModalProps = {
   onCreate?: () => void
 }
 
+const formatTimerangeBoundary = (
+  boundary: string | undefined,
+  dateFormat: Intl.DateTimeFormatOptions
+) => {
+  if (!boundary) return ''
+  return formatI18nDate(boundary, {
+    format: dateFormat,
+  }).replace(/[.,]/g, '')
+}
+
 function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps) {
   const [name, setName] = useState('')
   const [createAsPublic, setCreateAsPublic] = useState(true)
@@ -38,16 +48,8 @@ function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps
       const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
       const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
       const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
-      const start = formatI18nDate(timerange.start as string, {
-        format: dateFormat,
-      })
-        .replace(',', '')
-        .replace('.', '')
-      const end = formatI18nDate(timerange.end as string, {
-        format: dateFormat,
-      })
-        .replace(',', '')
-        .replace('.', '')
+      const start = formatTimerangeBoundary(timerange.start, dateFormat)
+      const end = formatTimerangeBoundary(timerange.end, dateFormat)
 
       const defaultName = isDefaultWorkspace
         ? `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`

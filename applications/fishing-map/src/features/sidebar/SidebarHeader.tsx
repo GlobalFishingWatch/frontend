@@ -41,14 +41,14 @@ function SaveWorkspaceButton() {
 
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
 
-  const onCloseCreateWorkspace = () => {
+  const onCloseCreateWorkspace = useCallback(() => {
     setShowWorkspaceCreateModal(false)
-  }
+  }, [])
 
-  const onSaveCreateWorkspace = () => {
+  const onSaveCreateWorkspace = useCallback(() => {
     copyToClipboard(window.location.href)
     onCloseCreateWorkspace()
-  }
+  }, [copyToClipboard, onCloseCreateWorkspace])
 
   const updateWorkspace = async (workspaceId: string) => {
     const dispatchedAction = await dispatch(updatedCurrentWorkspaceThunk(workspaceId))
