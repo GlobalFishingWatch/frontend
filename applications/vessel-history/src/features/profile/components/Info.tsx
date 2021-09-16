@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
@@ -29,6 +30,7 @@ interface InfoProps {
   vessel: VesselWithHistory | null
   lastPosition: any
   lastPortVisit: any
+  onMoveToMap: () => void
 }
 
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
@@ -56,12 +58,20 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   const onDeleteClick = async (data: OfflineVessel) => {
     setLoading(true)
-    await dispatchDeleteOfflineVessel(data.profileId)
+    await dispatchDeleteOfflineVessel(data, 'vessel detail')
     setLoading(false)
   }
 
   const onSaveClick = async (data: VesselWithHistory) => {
     setLoading(true)
+    uaEvent({
+      category: 'Offline Access',
+      action: 'Save vessel for offline view',
+      label: JSON.stringify({
+        gfw: vesselId,
+        tmt: vesselTmtId
+      })
+    })
     await dispatchCreateOfflineVessel({
       vessel: {
         ...data,
@@ -279,7 +289,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             </Button>
           )}
         </div>
-        <Highlights></Highlights>
+        <Highlights onMoveToMap={props.onMoveToMap}></Highlights>
       </div>
     </Fragment>
   )

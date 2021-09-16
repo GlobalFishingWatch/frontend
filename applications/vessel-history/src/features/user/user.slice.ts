@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { RootState } from 'store'
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',

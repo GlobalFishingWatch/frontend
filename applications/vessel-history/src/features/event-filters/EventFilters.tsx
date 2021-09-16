@@ -8,12 +8,14 @@ import { selectEnd, selectFilter, selectStart } from './filters.slice'
 import styles from './EventFilters.module.css'
 
 interface ModalProps {
+  tab: 'ACTIVITY' | 'MAP'
   isModalOpen: boolean
   onCloseModal: (close: boolean) => void
 }
 
 const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
+  const tab = props.tab
   const { setFilter, setDate } = useApplyFiltersConnect()
   const isModalOpen = props.isModalOpen
   const closeModal = useCallback(() => props.onCloseModal(false), [props])
@@ -33,7 +35,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter('portVisits', !isPortVisitActive)}
+          onClick={() => setFilter(tab, 'portVisits', !isPortVisitActive)}
           active={isPortVisitActive}
         ></Switch>
         {t(`settings.portVisits.title` as any, 'Port Visits')}
@@ -41,7 +43,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter('fishingEvents', !isFishingEventsActive)}
+          onClick={() => setFilter(tab, 'fishingEvents', !isFishingEventsActive)}
           active={isFishingEventsActive}
         ></Switch>
         {t(`settings.fishingEvents.title` as any, 'Fishing Events')}
@@ -49,7 +51,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter('encounters', !isEncountersActive)}
+          onClick={() => setFilter(tab, 'encounters', !isEncountersActive)}
           active={isEncountersActive}
         ></Switch>
         {t(`settings.encounters.title` as any, 'Encounters')}
@@ -57,7 +59,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter('loiteringEvents', !isLoiteringEventsActive)}
+          onClick={() => setFilter(tab, 'loiteringEvents', !isLoiteringEventsActive)}
           active={isLoiteringEventsActive}
         ></Switch>
         {t(`settings.loiteringEvents.title` as any, 'Loitering Events')}
@@ -67,11 +69,11 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
         value={start}
         onChange={(e) => {
           if (e.target.value !== start) {
-            setDate('start', e.target.value)
+            setDate(tab, 'start', e.target.value)
           }
         }}
         onRemove={() => {
-          setDate('start', DEFAULT_WORKSPACE.start)
+          setDate(tab, 'start', DEFAULT_WORKSPACE.start)
         }}
         label={t(`filters.start` as any, 'Start')}
         max={DEFAULT_WORKSPACE.end}
@@ -81,11 +83,11 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
         value={end}
         onChange={(e) => {
           if (e.target.value !== end) {
-            setDate('end', e.target.value)
+            setDate(tab, 'end', e.target.value)
           }
         }}
         onRemove={() => {
-          setDate('end', DEFAULT_WORKSPACE.end)
+          setDate(tab, 'end', DEFAULT_WORKSPACE.end)
         }}
         label={t(`filters.start` as any, 'End')}
         max={DEFAULT_WORKSPACE.end}
