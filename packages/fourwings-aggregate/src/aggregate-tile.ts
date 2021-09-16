@@ -251,6 +251,13 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
       'must provide as many breaks arrays as number of datasets when using compare and bivariate modes'
     )
   }
+  if (sublayerCombinationMode === SublayerCombinationMode.Delta) {
+    if (sublayerCount !== 2) throw new Error('delta combinationMode requires exactly two datasets')
+    if (sublayerBreaks) {
+      if (sublayerBreaks.length !== 2)
+        throw new Error('delta combinationMode requires exactly two breaks array')
+    }
+  }
   if (
     sublayerBreaks &&
     sublayerBreaks.length !== 1 &&
@@ -462,6 +469,8 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
             )
           } else if (sublayerCombinationMode === SublayerCombinationMode.Add) {
             finalValue = getValue(realValuesSum, sublayerBreaks)
+          } else if (sublayerCombinationMode === SublayerCombinationMode.Delta) {
+            finalValue = getDeltaValue(currentAggregatedValues, sublayerBreaks)
           } else if (sublayerCombinationMode === SublayerCombinationMode.Bivariate) {
             finalValue = getBivariateValue(currentAggregatedValues, sublayerBreaks)
           } else if (sublayerCombinationMode === SublayerCombinationMode.Literal) {
