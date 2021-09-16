@@ -27,7 +27,6 @@
     "previous": "previous"
   },
   "event": {
-    "authStatus": "Authorization status",
     "avgSpeed": "Avg Speed",
     "confidence": "Confidence",
     "distance": "Distance",
@@ -49,18 +48,19 @@
     "medianSpeed": "Median Speed",
     "minuteAbbreviated": "{{count}}m",
     "minuteAbbreviated_plural": "{{count}}m",
-    "nextPort": "Next port traveled",
     "nSelected": "{{count}} selected",
     "nSelected_plural": "{{count}} selected",
     "port": "Port",
-    "portAction": "Port visit",
-    "portAt": "Port visit at {{port}}",
     "position": "Position",
     "psma": "PSMA",
     "psmaIncluded": "Included Since {{value}}",
     "psmaNotIncluded": "Not included",
     "start": "Start",
     "unknown": "Unknown event",
+    "authStatus": "Authorization status",
+    "nextPort": "Next port traveled",
+    "portAction": "Port visit",
+    "portAt": "Port visit at {{port}}",
     "avgDuration": "Avg Duration",
     "endDistancePort": "End distance from port",
     "endDistanceShore": "End distance from shore",
@@ -101,20 +101,22 @@
   "search": {
     "activeAfter": "active After",
     "activeBefore": "active before",
-    "advanced": "advanced",
-    "basic": "basic",
     "callsign": "Callsign",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
     "flagState": "Flag States",
     "IMO": "IMO",
     "loadMore": "Load More",
+    "mergeSelectedVessels": "Merge Selected Vessels",
     "MMSI": "MMSI",
     "noMore": "No more results",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign",
     "notAllowed": "Search not allowed",
-    "placeholder": "Search vessels by name, MMSI, IMO",
+    "seeVessel": "See Vessel",
     "shipname": "Name",
-    "title": "Search"
+    "title": "Search",
+    "advanced": "advanced",
+    "basic": "basic",
+    "placeholder": "Search vessels by name, MMSI, IMO"
   },
   "selects": {
     "allSelected": "All",
@@ -152,6 +154,14 @@
     "title": "Settings",
     "kms": "kms",
     "distance": "DISTANCE TRAVELLED"
+  },
+  "user": {
+    "loggedInAs": "logged in as",
+    "login": "Log in",
+    "notAuthorized": "Only some specific registered users can use this product",
+    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
+    "requestAccess": "Request Access",
+    "switchAccount": "Switch account"
   },
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",
@@ -203,13 +213,5 @@
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
-  },
-  "user": {
-    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
-    "notAuthorized": "Only some specific registered users can use this product",
-    "login": "Log in",
-    "loggedInAs": "logged in as",
-    "requestAccess": "Request Access",
-    "switchAccount": "Switch account"
   }
 }
