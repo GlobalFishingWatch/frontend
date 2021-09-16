@@ -109,6 +109,10 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     [setSelectedVessels, dispatch, query, advancedSearch]
   )
 
+  useEffect(() => {
+    setSelectedVessels([])
+  }, [setSelectedVessels, vessels])
+
   return (
     <div className={styles.homeContainer} data-testid="home">
       <header>
