@@ -8,13 +8,22 @@ import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-are
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import SwitchRow from '@globalfishingwatch/ui-components/dist/switch-row'
 import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import {
+  selectWorkspace,
+  selectWorkspaceDataviewInstances,
+} from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectViewport } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import { PRIVATE_SUFIX } from 'data/config'
+import {
+  selectAllDataviewsInWorkspace,
+  selectDataviewInstancesMerged,
+} from 'features/dataviews/dataviews.selectors'
 import styles from './NewWorkspaceModal.module.css'
 
 type NewWorkspaceModalProps = {
@@ -35,13 +44,17 @@ const formatTimerangeBoundary = (
 
 function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps) {
   const [name, setName] = useState('')
-  const [createAsPublic, setCreateAsPublic] = useState(true)
   const [loading, setLoading] = useState(false)
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const viewport = useSelector(selectViewport)
   const timerange = useTimerangeConnect()
   const workspace = useSelector(selectWorkspace)
+  const dataviewsInWorkspace = useSelector(selectDataviewInstancesMerged)
+  const workspaceDatasets = getDatasetsInDataviews(dataviewsInWorkspace || [])
+  const privateDatasets = workspaceDatasets.filter((d) => d.includes(PRIVATE_SUFIX))
+  const containsPrivateDatasets = privateDatasets.length > 0
+  const [createAsPublic, setCreateAsPublic] = useState(containsPrivateDatasets ? false : true)
 
   useEffect(() => {
     if (isOpen) {
@@ -103,7 +116,10 @@ function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps
         disabled={containsPrivateDatasets}
         tooltip={
           containsPrivateDatasets
-            ? t('workspace.uploadPublicDisabled' as any, 'The workspace is using private datasets')
+            ? `${t(
+                'workspace.uploadPublicDisabled' as any,
+                'The workspace is using private datasets'
+              )} (${privateDatasets.join(',')})`
             : ''
         }
         onClick={() => setCreateAsPublic(!createAsPublic)}
