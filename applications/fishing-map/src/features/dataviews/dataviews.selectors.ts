@@ -97,7 +97,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
       [Generators.Type.Track]: ([info, track, ...events]) => {
         const trackWithThinning = track
-        const isPOCDataset = track.datasetId.includes(PRESENCE_POC_ID)
+        const isPOCDataset = track.datasetId?.includes(PRESENCE_POC_ID)
         if (thinningConfig && !isPOCDataset) {
           const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
             id,
