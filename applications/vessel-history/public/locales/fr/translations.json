@@ -14,6 +14,8 @@
     "typeToSearch": "Entrez un texte pour rechercher des navires",
     "unknown": "Inconnu",
     "unknownName": "Nom inconnu",
+    "voyageFrom": "Voyage From",
+    "voyage": "Voyage",
     "any": "Quelconque",
     "currentTimeRange": "intervalle de temps actuel",
     "high": "High",
@@ -79,7 +81,8 @@
     "activityHighlights": "Activity Highlights",
     "highlitingSettings": "paramètres",
     "noHighlights": "Aucun événement trouvé pour vos critères de surbrillance",
-    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
+    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
+    "noResults": "No events found. Try changing the current filters."
   },
   "map": {
     "filters": "Filter events",
@@ -87,22 +90,22 @@
     "toggleLayers": "Activer/désactiver les calques"
   },
   "search": {
-    "title": "Search",
-    "basic": "Basique",
+    "activeAfter": "active After",
+    "activeBefore": "active before",
     "advanced": "Avancé",
+    "basic": "Basique",
+    "callsign": "Callsign",
     "description": "Recherche par nom de navire ou code d'identification (OMI, MMSI, Indicatif, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
+    "flagState": "Flag States",
+    "IMO": "OMI",
     "loadMore": "Charger plus",
+    "MMSI": "MMSI",
     "noMore": "Aucun résultat supplémentaire",
     "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser Nom, MMSI, OMI ou Indicatif",
     "notAllowed": "Recherche non autorisée",
     "placeholder": "Recherche par Nom, OMI, Indicatif ou MMSI",
     "shipname": "Nom de navire",
-    "MMSI": "MMSI",
-    "IMO": "OMI",
-    "callsign": "Callsign",
-    "flagState": "Flag States",
-    "activeAfter": "active After",
-    "activeBefore": "active before"
+    "title": "Search"
   },
   "selects": {
     "allSelected": "Tous",

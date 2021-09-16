@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useMemo } from 'react'
+import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
@@ -48,6 +48,7 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
         : t('event.psmaNotIncluded', 'Not included'),
     [psmaDate, psmaDateFormatted, t]
   )
+  const confidenceLevel = useMemo(() => event.port_visit?.confidence || 0, [event.port_visit?.confidence])
 
   const confidence = useMemo(() => {
     const level =
@@ -57,6 +58,7 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
     return level ? t(`common.${level}` as any, level) : undefined
   }, [event.port_visit?.confidence, t])
 
+  const [showHelp, setShowHelp] = useState(false)
   const ports = useMemo(
     () =>
       Array.from(
@@ -72,13 +74,25 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
     <Fragment>
       <div className={styles.row}>
         <ActivityModalContentField label={t('event.port', 'Port')} value={ports} />
-        <ActivityModalContentField
-          label={t('event.confidence', 'Confidence')}
-          value={confidence ?? DEFAULT_EMPTY_VALUE}
-        />
         <ActivityModalContentField label={t('event.psma', 'PSMA')} value={psmaDescription} />
       </div>
       <ActivityModalContentDetails event={event} />
+      <ActivityModalContentField
+        label={t('event.confidence', 'Confidence')}
+        value={confidence ?? DEFAULT_EMPTY_VALUE}
+        onHelpClick={() => setShowHelp(!showHelp)}
+      />
+      {[2,3,4].includes(confidenceLevel) && showHelp && (
+        <div className={styles.help}>
+            <p>{t(`event.confidenceHelp.help${confidenceLevel.toString()}` as any)}</p>
+            <ol>
+              {[3,4].includes(confidenceLevel) && <li>{t('event.confidenceHelp.portEntry', 'PORT ENTRY: vessel that was not in port gets within 3km of anchorage point')}</li>}
+              <li>{t('event.confidenceHelp.portStop', 'PORT STOP: begin: speed < 0.2 knots; end: speed > 0.5 knots')}</li>
+              <li>{t('event.confidenceHelp.portGap', 'PORT GAP: AIS gap > 4 hours; start is recorded 4 hours after the last message before the gap; end at next message after gap.')}</li>
+              {[3,4].includes(confidenceLevel) && <li>{t('event.confidenceHelp.portExit', 'PORT EXIT: vessel that was in port moves more than 4km from anchorage point')}</li>}
+            </ol>
+        </div>
+      )}
     </Fragment>
   )
 }

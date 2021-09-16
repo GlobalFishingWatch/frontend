@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 5.3.2
+
+### Patch Changes
+
+- 30b3034b: add dataview info config types
+
 ## 5.3.1
 
 ### Patch Changes

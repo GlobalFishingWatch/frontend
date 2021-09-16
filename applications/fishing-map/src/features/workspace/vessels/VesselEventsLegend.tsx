@@ -9,6 +9,7 @@ import { selectVisibleEvents } from 'features/app/app.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { useLocationConnect } from 'routes/routes.hook'
+import { upperFirst } from 'utils/info'
 import layerStyles from './VesselSection.module.css'
 
 type VesselEventsLegendProps = {
@@ -83,7 +84,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                 }
               />
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
-                {t(`event.${eventType}` as any, eventType)}
+                {upperFirst(t(`event.${eventType}` as any, eventType))}
               </label>
             </li>
           )

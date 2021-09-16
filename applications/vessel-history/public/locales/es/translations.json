@@ -14,6 +14,8 @@
     "typeToSearch": "Type to search",
     "unknown": "Unknown",
     "unknownName": "Unknown name",
+    "voyageFrom": "Voyage From",
+    "voyage": "Voyage",
     "any": "Any",
     "currentTimeRange": "período actual",
     "high": "High",
@@ -79,7 +81,8 @@
     "activityHighlights": "Activity Highlights",
     "highlitingSettings": "settings",
     "noHighlights": "No events found for your highlighting criteria",
-    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest."
+    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
+    "noResults": "No events found. Try changing the current filters."
   },
   "map": {
     "filters": "Filter events",
@@ -87,22 +90,22 @@
     "toggleLayers": "Toggle layers"
   },
   "search": {
-    "title": "Search",
-    "basic": "basic",
+    "activeAfter": "active After",
+    "activeBefore": "active before",
     "advanced": "advanced",
+    "basic": "basic",
+    "callsign": "Callsign",
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
+    "flagState": "Flag States",
+    "IMO": "IMO",
     "loadMore": "Cargar más",
+    "MMSI": "MMSI",
     "noMore": "No hay más resultados",
     "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
     "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
     "placeholder": "Search vessels by name, MMSI, IMO",
     "shipname": "Name",
-    "MMSI": "MMSI",
-    "IMO": "IMO",
-    "callsign": "Callsign",
-    "flagState": "Flag States",
-    "activeAfter": "active After",
-    "activeBefore": "active before"
+    "title": "Search"
   },
   "selects": {
     "allSelected": "todos",
