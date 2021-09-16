@@ -6,7 +6,7 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
-import Radio from '@globalfishingwatch/ui-components/dist/radio'
+import SwitchRow from '@globalfishingwatch/ui-components/dist/switch-row'
 import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
@@ -97,12 +97,16 @@ function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps
         className={styles.input}
         onChange={(e) => setName(e.target.value)}
       />
-      <Radio
+      <SwitchRow
         label={t('workspace.uploadPublic' as any, 'Allow other users to see this workspace')}
         active={createAsPublic}
-        onClick={() => {
-          setCreateAsPublic(!createAsPublic)
-        }}
+        disabled={containsPrivateDatasets}
+        tooltip={
+          containsPrivateDatasets
+            ? t('workspace.uploadPublicDisabled' as any, 'The workspace is using private datasets')
+            : ''
+        }
+        onClick={() => setCreateAsPublic(!createAsPublic)}
       />
       <div className={styles.footer}>
         <Button loading={loading} disabled={!name} onClick={onCreateWorkspaceClick}>

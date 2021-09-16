@@ -350,6 +350,7 @@
     "new": "New Workspace",
     "privateTitle_plural": "Private workspaces",
     "uploadPublic": "Allow other users to see this workspace",
+    "uploadPublicDisabled": "The workspace is using private datasets",
     "remove": "Remove workspace",
     "save": "Save the current view",
     "saved": "Current view was saved and it's available in your user profile",
