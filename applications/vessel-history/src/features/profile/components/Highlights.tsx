@@ -7,8 +7,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import Link from 'redux-first-router-link'
 import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
-import useViewport from 'features/map/map-viewport.hooks'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { SETTINGS } from 'routes/routes'
 import {
@@ -17,9 +16,6 @@ import {
   selectFilteredActivityHighlightEvents,
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectAnyHighlightsSettingDefined } from 'features/vessels/activity/vessels-highlight.selectors'
-import { setHighlightedEvent } from 'features/map/map.slice'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
-import { EventTypeVoyage, Voyage } from 'types/voyage'
 import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
@@ -34,7 +30,6 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
   const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
   const events = useSelector(selectFilteredActivityHighlightEvents)
   const loading = useSelector(selectEventsLoading)
-  const { setMapCoordinates } = useViewport()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -54,24 +49,6 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
     })
   }, [])
 
-  const selectEventOnMap = useCallback(
-    (event: RenderedEvent | Voyage) => {
-      // TODO Define what's the expected behavior when clicking a voyage map icon
-      if (event.type === EventTypeVoyage.Voyage) return
-      
-      dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
-
-      setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
-        zoom: DEFAULT_VESSEL_MAP_ZOOM,
-        bearing: 0,
-        pitch: 0,
-      })
-      props.onMoveToMap()
-    },
-    [dispatch, props]
-  )
   useEffect(() => {
     if (!loading) {
       const countEvents = {
@@ -154,7 +131,6 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
                               <ActivityItem
                                 key={index}
                                 event={event}
-                                onMapClick={selectEventOnMap}
                                 onInfoClick={openModal}
                               />
                             </div>

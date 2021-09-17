@@ -69,18 +69,7 @@ export const useOfflineVesselsAPI = () => {
   )
 
   const dispatchDeleteOfflineVessel = useCallback(
-    (offlineVessel: OfflineVessel, page: string) => {
-      const now = DateTime.now()
-      const savedOn = DateTime.fromISO(offlineVessel.savedOn);
-      const i = Interval.fromDateTimes(savedOn, now);
-      uaEvent({
-        category: 'Offline Access',
-        action: 'Remove saved vessel for offline view',
-        label: JSON.stringify({ page }),
-        value: Math.floor(i.length('days'))
-      })
-      dispatch(deleteOfflineVesselThunk(offlineVessel.profileId))
-    },
+    (offlineVessel: OfflineVessel) => dispatch(deleteOfflineVesselThunk(offlineVessel.profileId)),
     [dispatch]
   )
 
