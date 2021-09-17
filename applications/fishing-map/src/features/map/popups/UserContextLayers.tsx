@@ -12,7 +12,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
-import { setDownloadArea } from 'features/download/download.slice'
+import { setDownloadGeometry } from 'features/download/download.slice'
 import useMapInstance from '../map-context.hooks'
 import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -64,7 +64,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
         return
       }
       batch(() => {
-        dispatch(setDownloadArea({ feature }))
+        dispatch(setDownloadGeometry(feature))
         dispatch(setClickedEvent(null))
       })
     },

@@ -16,7 +16,7 @@ import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
 import { selectSidebarOpen } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
-import { setDownloadArea } from 'features/download/download.slice'
+import { selectDownloadAreaId, setDownloadGeometry } from 'features/download/download.slice'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
@@ -294,7 +294,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         return
       }
       batch(() => {
-        dispatch(setDownloadArea({ feature }))
+        dispatch(setDownloadGeometry(feature))
         dispatch(setClickedEvent(null))
       })
       cleanFeatureState('highlight')

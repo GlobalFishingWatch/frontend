@@ -8,7 +8,7 @@ export enum Format {
 }
 
 export enum GroupBy {
-  Vessel = 'vessel',
+  Vessel = 'vessel_id',
   GearType = 'gearType',
   Flag = 'flag',
   FlagAndGearType = 'flagAndGearType',
