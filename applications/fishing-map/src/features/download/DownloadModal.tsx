@@ -2,7 +2,7 @@ import React, { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useDispatch, useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
@@ -48,6 +48,7 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
   const downloadStatus = useSelector(selectDownloadStatus)
+  const [duration, setDuration] = useState<Duration | undefined>()
 
   const [format, setFormat] = useState(formatOptions[0].id as Format)
   const [groupBy, setGroupBy] = useState(groupByOptions[0].id as GroupBy)
@@ -57,9 +58,9 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
   if (start && end) {
     const startDateTime = DateTime.fromISO(start)
     const endDateTime = DateTime.fromISO(end)
-    const duration = endDateTime.diff(startDateTime, ['years', 'months'])
+    !duration && setDuration(endDateTime.diff(startDateTime, ['years', 'months']))
     filteredTemporalResolutionOptions = filteredTemporalResolutionOptions.map((option) => {
-      if (option.id === TemporalResolution.Yearly && duration?.years < 1) {
+      if (option.id === TemporalResolution.Yearly && duration?.years && duration.years < 1) {
         return {
           ...option,
           disabled: true,
@@ -67,7 +68,7 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
           tooltipPlacement: 'top',
         }
       }
-      if (option.id === TemporalResolution.Monthly && duration?.months < 1) {
+      if (option.id === TemporalResolution.Monthly && duration?.months && duration.months < 1) {
         return {
           ...option,
           disabled: true,
@@ -211,6 +212,12 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
           className={styles.downloadBtn}
           onClick={onDownloadClick}
           loading={downloadStatus === AsyncReducerStatus.LoadingCreate}
+          disabled={!duration || duration.years > 1}
+          tooltip={
+            duration && duration.years > 3
+              ? t('download.timerangeTooLong', 'The maximum time range is 3 years')
+              : ''
+          }
         >
           {downloadStatus === AsyncReducerStatus.Finished ? (
             <Icon icon="tick" />
