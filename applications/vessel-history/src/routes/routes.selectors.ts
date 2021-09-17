@@ -138,3 +138,5 @@ export const selectHasSearch = createSelector(
     return query || advancedSearch
   }
 )
+
+export const selectUrlAkaVesselQuery = selectQueryParam<string[]>('aka')

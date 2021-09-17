@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react'
-import Link from 'redux-first-router-link'
+import React, { Fragment, useCallback } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
@@ -14,13 +14,16 @@ import styles from './VesselListItem.module.css'
 interface ListItemProps {
   saved?: string
   vessel: Vessel
+  selected?: boolean
   onDeleteClick?: () => void
+  onVesselClick?: (vessel: Vessel) => void
 }
 
 const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
-  const { vessel, onDeleteClick } = props
+  const { vessel, onDeleteClick, onVesselClick = () => {}, selected = false } = props
   const { formatSource } = useVesselsConnect()
+  const onClick = useCallback(() => onVesselClick(vessel), [onVesselClick, vessel])
 
   if (!vessel) {
     return <div></div>
@@ -30,78 +33,89 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const sourceAPI = getVesselAPISource(vessel)
 
   return (
-    <div className={styles.vesselItemWrapper}>
-      {props.saved && onDeleteClick && (
-        <IconButton
-          type="warning"
-          size="default"
-          icon="delete"
-          className={styles.remove}
-          onClick={onDeleteClick}
-        ></IconButton>
-      )}
-      <Link
-        to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId ?? 'NA']}
-        className={styles.vesselItem}
-      >
-        <h3>{vessel?.shipname ?? DEFAULT_EMPTY_VALUE}</h3>
-        <div className={styles.identifiers}>
-          <div>
-            <label>{t('vessel.flag', 'flag')}</label>
-            {flagLabel ?? DEFAULT_EMPTY_VALUE}
-          </div>
-          {vessel.mmsi && (
+    <div className={cx([styles.vesselItemWrapper, selected ? styles.selected : {}])}>
+      <div className={styles.vesselItemDetails}>
+        <div className={styles.vesselItem} onClick={onClick}>
+          <h3>{vessel?.shipname ?? DEFAULT_EMPTY_VALUE}</h3>
+          <div className={styles.identifiers}>
             <div>
-              <label>{t('vessel.mmsi', 'mmsi')}</label>
-              {vessel.mmsi}
+              <label>{t('vessel.flag', 'flag')}</label>
+              {flagLabel ?? DEFAULT_EMPTY_VALUE}
             </div>
-          )}
-          {vessel.imo && vessel.imo !== '0' && (
-            <div>
-              <label>{t('vessel.imo', 'imo')}</label>
-              {vessel.imo}
-            </div>
-          )}
-          {vessel.callsign && (
-            <div>
-              <label>{t('vessel.callsign', 'callsign')}</label>
-              {vessel.callsign}
-            </div>
-          )}
-          {SHOW_VESSEL_API_SOURCE && (
-            <div>
-              <label>{t('vessel.source', 'source')}</label>
-              {sourceAPI.map((source) => formatSource(source)).join('+') ?? DEFAULT_EMPTY_VALUE}
-            </div>
-          )}
-          <div className={styles.fullWidth}>
-            <label>{t('vessel.transmission_plural', 'transmissions')}</label>
-            {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
-              <Fragment>
-                {t('common.from', 'from')}{' '}
-                {vessel.firstTransmissionDate ? (
-                  <I18nDate date={vessel.firstTransmissionDate} />
-                ) : (
-                  DEFAULT_EMPTY_VALUE
-                )}{' '}
-                {t('common.to', 'to')}{' '}
-                {vessel.lastTransmissionDate ? (
-                  <I18nDate date={vessel.lastTransmissionDate} />
-                ) : (
-                  DEFAULT_EMPTY_VALUE
-                )}
-              </Fragment>
-            ) : (
-              DEFAULT_EMPTY_VALUE
+            {vessel.mmsi && (
+              <div>
+                <label>{t('vessel.mmsi', 'mmsi')}</label>
+                {vessel.mmsi}
+              </div>
             )}
-            {vessel.firstTransmissionDate && vessel.lastTransmissionDate && (
-              <TransmissionsTimeline
-                firstTransmissionDate={vessel.firstTransmissionDate}
-                lastTransmissionDate={vessel.lastTransmissionDate}
-                firstYearOfData={FIRST_YEAR_OF_DATA}
-              />
+            {vessel.imo && vessel.imo !== '0' && (
+              <div>
+                <label>{t('vessel.imo', 'imo')}</label>
+                {vessel.imo}
+              </div>
             )}
+            {vessel.callsign && (
+              <div>
+                <label>{t('vessel.callsign', 'callsign')}</label>
+                {vessel.callsign}
+              </div>
+            )}
+            {SHOW_VESSEL_API_SOURCE && (
+              <div>
+                <label>{t('vessel.source', 'source')}</label>
+                {sourceAPI.map((source) => formatSource(source)).join('+') ?? DEFAULT_EMPTY_VALUE}
+              </div>
+            )}
+            <div className={styles.fullWidth}>
+              <label>{t('vessel.transmission_plural', 'transmissions')}</label>
+              {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
+                <Fragment>
+                  {t('common.from', 'from')}{' '}
+                  {vessel.firstTransmissionDate ? (
+                    <I18nDate date={vessel.firstTransmissionDate} />
+                  ) : (
+                    DEFAULT_EMPTY_VALUE
+                  )}{' '}
+                  {t('common.to', 'to')}{' '}
+                  {vessel.lastTransmissionDate ? (
+                    <I18nDate date={vessel.lastTransmissionDate} />
+                  ) : (
+                    DEFAULT_EMPTY_VALUE
+                  )}
+                </Fragment>
+              ) : (
+                DEFAULT_EMPTY_VALUE
+              )}
+            </div>
           </div>
+        </div>
+        <div className={styles.vesselItemActions}>
+          {props.saved && onDeleteClick && (
+            <IconButton
+              type="warning"
+              size="default"
+              icon="delete"
+              className={styles.remove}
+              onClick={onDeleteClick}
+            ></IconButton>
+          )}
+          {selected && (
+            <IconButton
+              icon="tick"
+              size="default"
+              className={styles.selectVessel}
+              onClick={onClick}
+            ></IconButton>
+          )}
+        </div>
+        <div className={styles.vesselItemFooter}>
+          {vessel.firstTransmissionDate && vessel.lastTransmissionDate && (
+            <TransmissionsTimeline
+              firstTransmissionDate={vessel.firstTransmissionDate}
+              lastTransmissionDate={vessel.lastTransmissionDate}
+              firstYearOfData={FIRST_YEAR_OF_DATA}
+            />
+          )}
           {props.saved && (
             <div>
               <label>{t('vessel.savedOn', 'saved on')}</label>
@@ -109,7 +123,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
             </div>
           )}
         </div>
-      </Link>
+      </div>
     </div>
   )
 }

@@ -7,7 +7,11 @@ import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
-import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
+import {
+  selectQueryParam,
+  selectUrlAkaVesselQuery,
+  selectVesselProfileId,
+} from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import {
   clearVesselDataview,
@@ -28,6 +32,7 @@ import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
+import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -39,12 +44,17 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
   const vesselProfileId = useSelector(selectVesselProfileId)
+  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const vesselStatus = useSelector(selectVesselsStatus)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
   const vessel = useSelector(selectVesselById(vesselProfileId))
   const datasets = useSelector(selectDatasets)
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
+  const isMergedVesselsView = useMemo(
+    () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
+    [akaVesselProfileIds]
+  )
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -71,13 +81,18 @@ const Profile: React.FC = (props): React.ReactElement => {
                 ? eventsRelatedDatasets.map((d) => d.id)
                 : []
 
+            // Only merge with vessels of the same dataset that the main vessel
+            const akaVesselsIds = (akaVesselProfileIds ?? [])
+              .map((vesselProfileId) => parseVesselProfileId(vesselProfileId))
+              .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id)
             const vesselDataviewInstance = getVesselDataviewInstance(
               { id: gfwId },
               {
                 trackDatasetId: trackDatasetId as string,
                 infoDatasetId: dataset,
                 ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-              }
+              },
+              akaVesselsIds as { id: string }[]
             )
             dispatch(upsertVesselDataview(vesselDataviewInstance))
           }
@@ -89,7 +104,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       fetchVessel()
       dispatch(resetFilters())
     }
-  }, [dispatch, vesselProfileId, datasets])
+  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
 
   useEffect(() => {
     if (vesselDataviewLoaded && resourceQueries && resourceQueries.length > 0) {
@@ -178,6 +193,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         {vessel && (
           <h1>
             {shipName ?? t('common.unknownName', 'Unknown name')}
+            {isMergedVesselsView &&
+              ` (${t('vessel.nVesselsMerged', '{{count}} merged', {
+                count: akaVesselProfileIds.length + 1,
+              })})`}
             {vessel.history.shipname.byDate.length > 1 && (
               <p>
                 {t('vessel.plusPreviousValuesByField', defaultPreviousNames, {

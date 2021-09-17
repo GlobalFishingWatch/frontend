@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
+import { redirect } from 'redux-first-router'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
@@ -24,6 +25,9 @@ import {
 } from 'features/search/search.selectors'
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
+import { PROFILE } from 'routes/routes'
+import { useSearchConnect } from 'features/search/search.hooks'
+import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -39,6 +43,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { logout } = useUser()
+  const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchConnect()
   const searching = useSelector(selectSearching)
   const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
@@ -48,16 +53,59 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const totalResults = useSelector(selectSearchTotalResults)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
+
   const promiseRef = useRef<any>()
 
   useEffect(() => {
     dispatchFetchOfflineVessels()
   }, [dispatchFetchOfflineVessels])
 
+  const openVesselProfile = useCallback(
+    (vessel, aka: string[] = []) => {
+      dispatch(
+        redirect({
+          type: PROFILE,
+          payload: {
+            dataset: vessel.dataset ?? 'NA',
+            vesselID: vessel.id ?? 'NA',
+            tmtID: vessel.vesselMatchId ?? 'NA',
+          },
+          query: {
+            aka: aka as any,
+          },
+        })
+      )
+    },
+    [dispatch]
+  )
+  const onOpenVesselProfile = useCallback(
+    (vessel) => () => openVesselProfile(vessel),
+    [openVesselProfile]
+  )
+
+  const onSeeVesselClick = useCallback(() => {
+    const selectedVessel = vessels[selectedVessels[0]]
+    if (selectedVessel) openVesselProfile(selectedVessel)
+  }, [openVesselProfile, selectedVessels, vessels])
+
+  const onMergeVesselClick = useCallback(() => {
+    const selectedVessel = vessels[selectedVessels[0]]
+    const akaVessels = selectedVessels
+      .slice(1)
+      .map((index) => vessels[index])
+      .map((akaVessel) =>
+        formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
+      )
+    if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
+  }, [openVesselProfile, selectedVessels, vessels])
+
   const fetchResults = useCallback(
     (offset = 0) => {
       if (promiseRef.current) {
         promiseRef.current.abort()
+      }
+      if (offset === 0) {
+        setSelectedVessels([])
       }
       // To ensure the pending action isn't overwritted by the abort above
       // and we miss the loading intermediate state
@@ -71,8 +119,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         )
       }, 100)
     },
-    [dispatch, query, advancedSearch]
+    [setSelectedVessels, dispatch, query, advancedSearch]
   )
+
+  useEffect(() => {
+    setSelectedVessels([])
+  }, [setSelectedVessels, vessels])
 
   return (
     <div className={styles.homeContainer} data-testid="home">
@@ -97,6 +149,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                     vessel={vessel}
                     saved={vessel.savedOn}
                     onDeleteClick={() => dispatchDeleteOfflineVessel(vessel.profileId)}
+                    onVesselClick={onOpenVesselProfile(vessel)}
                   />
                 ))}
               </div>
@@ -121,8 +174,27 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               {(!searching || offset > 0) && vessels.length > 0 && (
                 <div className={styles.content}>
                   {vessels.map((vessel: VesselSearch, index) => (
-                    <VesselListItem key={index} vessel={vessel} />
+                    <VesselListItem
+                      key={index}
+                      vessel={vessel}
+                      onVesselClick={onVesselClick(index)}
+                      selected={selectedVessels.includes(index)}
+                    />
                   ))}
+                  {selectedVessels.length > 0 && (
+                    <div className={styles.bottomActions}>
+                      {selectedVessels.length === 1 && (
+                        <Button className={styles.seeVesselBtn} onClick={onSeeVesselClick}>
+                          {t('search.seeVessel', 'See Vessel')}
+                        </Button>
+                      )}
+                      {selectedVessels.length > 1 && (
+                        <Button className={styles.mergeVesselBtn} onClick={onMergeVesselClick}>
+                          {t('search.mergeSelectedVessels', 'Merge Selected Vessels')}
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
               {totalResults > 0 && !searching && vessels.length < totalResults && (

@@ -7,6 +7,13 @@ export const formatVesselProfileId = (dataset: string, gfwId: string, tmtId: str
   return `${dataset ?? 'NA'}_${gfwId ?? 'NA'}_${tmtId ?? 'NA'}`
 }
 
+export const parseVesselProfileId = (vesselProfileId: string) => {
+  const [dataset, id, vesselMatchId] = vesselProfileId
+    .split('_')
+    .map((value) => (value.toLowerCase() === 'na' ? undefined : value))
+  return { dataset, id, vesselMatchId }
+}
+
 const getFieldPriority = (field: VesselFieldKey): VesselAPISource[] => {
   return [VesselAPISource.GFW, VesselAPISource.TMT]
 }
