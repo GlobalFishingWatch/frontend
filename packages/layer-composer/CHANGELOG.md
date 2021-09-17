@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 9.2.3
+
+### Patch Changes
+
+- 52d30f29: ensure api param {{ is replaced by {
+
 ## 9.2.2
 
 ### Patch Changes
