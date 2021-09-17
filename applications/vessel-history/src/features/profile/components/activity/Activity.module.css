@@ -113,10 +113,8 @@
 }
 
 .event .actions {
-  min-width: var(--size-S);
-  margin-right: 0;
   margin-left: auto;
-  text-align: right;
+  display: flex;
 }
 
 .event .actions.oneIcon {

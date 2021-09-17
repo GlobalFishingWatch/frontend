@@ -11,7 +11,11 @@ import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
-import { selectAdvancedSearchFields, selectQueryParam } from 'routes/routes.selectors'
+import {
+  selectAdvancedSearchFields,
+  selectHasSearch,
+  selectUrlQuery,
+} from 'routes/routes.selectors'
 import { fetchVesselSearchThunk } from 'features/search/search.thunk'
 import {
   selectSearchOffset,
@@ -40,8 +44,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { logout } = useUser()
   const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchConnect()
   const searching = useSelector(selectSearching)
-  const query = useSelector(selectQueryParam('q'))
+  const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
+  const hasSearch = useSelector(selectHasSearch)
   const vessels = useSelector(selectSearchResults)
   const offset = useSelector(selectSearchOffset)
   const totalResults = useSelector(selectSearchTotalResults)
@@ -125,7 +130,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       </header>
       <div className={styles.search}>
         <AdvancedSearch />
-        {!query && (
+        {!hasSearch && (
           <div className={styles.content}>
             <h2 className={styles.offlineTitle}>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
             {offlineVessels.length > 0 ? (
@@ -150,7 +155,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             )}
           </div>
         )}
-        {query && (
+        {hasSearch && (
           <Fragment>
             <div className={styles.searchResults}>
               {searching && offset === 0 && (
