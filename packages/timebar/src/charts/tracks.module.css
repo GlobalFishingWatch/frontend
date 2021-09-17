@@ -11,3 +11,44 @@
   border-radius: 99px;
   box-shadow: 0 0 0 1px var(--timebar-main-background-color);
 }
+
+.loading {
+  width: 100%;
+  position: absolute;
+  margin: 0 auto;
+  padding: 0.5px;
+}
+
+.loadingBar {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  bottom: 0;
+  left: 0;
+  background: #fff;
+  width: 0;
+  animation: borealisBar 2s linear infinite;
+}
+
+@keyframes borealisBar {
+  0% {
+    left: 0%;
+    right: 100%;
+    width: 0%;
+  }
+  10% {
+    left: 0%;
+    right: 75%;
+    width: 25%;
+  }
+  90% {
+    right: 0%;
+    left: 75%;
+    width: 25%;
+  }
+  100% {
+    left: 100%;
+    right: 0%;
+    width: 0%;
+  }
+}

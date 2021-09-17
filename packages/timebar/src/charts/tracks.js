@@ -53,17 +53,19 @@ const getCoords = (tracks, outerScale) => {
       color: track.color,
       segmentsOffsetY: track.segmentsOffsetY,
     }
-    coordTrack.segments = track.segments.map((segment, id) => {
-      if (!outerScale) {
-        return { id }
-      }
-      const x = outerScale(segment.start)
-      return {
-        id,
-        x,
-        width: outerScale(segment.end) - x,
-      }
-    })
+    coordTrack.segments = !track.segments
+      ? null
+      : track.segments.map((segment, id) => {
+          if (!outerScale) {
+            return { id }
+          }
+          const x = outerScale(segment.start)
+          return {
+            id,
+            x,
+            width: outerScale(segment.end) - x,
+          }
+        })
     coordTracks.push(coordTrack)
   })
   return coordTracks
@@ -81,13 +83,29 @@ const Tracks = ({ tracks }) => {
         const y = getTrackY(tracks.length, i, graphHeight)
         return (
           <div key={i}>
-            <Segments
-              segments={track.segments}
-              color={track.color}
-              immediate={immediate}
-              y={y}
-              segmentsOffsetY={track.segmentsOffsetY}
-            />
+            {track.segments ? (
+              <Segments
+                segments={track.segments}
+                color={track.color}
+                immediate={immediate}
+                y={y}
+                segmentsOffsetY={track.segmentsOffsetY}
+              />
+            ) : (
+              <div
+                style={{
+                  top: track.segmentsOffsetY ? y + i : y,
+                }}
+                className={styles.loading}
+              >
+                <div
+                  className={styles.loadingBar}
+                  style={{
+                    backgroundColor: track.color,
+                  }}
+                />
+              </div>
+            )}
           </div>
         )
       })}
