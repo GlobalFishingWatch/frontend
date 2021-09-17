@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { InputDate, Modal, Switch } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { useApplyFiltersConnect } from './filters.hooks'
-import { selectEnd, selectFilter, selectStart } from './filters.slice'
+import { availableEventFilters, selectEnd, selectFilter, selectStart } from './filters.slice'
 import styles from './EventFilters.module.css'
 
 interface ModalProps {
@@ -26,6 +27,17 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const start = useSelector(selectStart).slice(0, 10) as string
   const end = useSelector(selectEnd).slice(0, 10) as string
 
+  const trackAndSetFilter = useCallback(
+    (tab: 'MAP' | 'ACTIVITY', filter: availableEventFilters, value: boolean) => {
+      uaEvent({
+        category: 'Vessel Detail ACTIVITY or MAP Tab',
+        action: 'Click Filter Icon - Event type',
+        label: JSON.stringify({ [filter]: value, tab: tab })
+      })
+      setFilter(filter, value)
+    },
+  [setFilter])
+
   return (
     <Modal
       title={t(`filters.title` as any, 'Filter events')}
@@ -35,7 +47,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter(tab, 'portVisits', !isPortVisitActive)}
+          onClick={() => trackAndSetFilter(tab, 'portVisits', !isPortVisitActive)}
           active={isPortVisitActive}
         ></Switch>
         {t(`settings.portVisits.title` as any, 'Port Visits')}
@@ -43,7 +55,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter(tab, 'fishingEvents', !isFishingEventsActive)}
+          onClick={() => trackAndSetFilter(tab, 'fishingEvents', !isFishingEventsActive)}
           active={isFishingEventsActive}
         ></Switch>
         {t(`settings.fishingEvents.title` as any, 'Fishing Events')}
@@ -51,7 +63,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter(tab, 'encounters', !isEncountersActive)}
+          onClick={() => trackAndSetFilter(tab, 'encounters', !isEncountersActive)}
           active={isEncountersActive}
         ></Switch>
         {t(`settings.encounters.title` as any, 'Encounters')}
@@ -59,7 +71,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter(tab, 'loiteringEvents', !isLoiteringEventsActive)}
+          onClick={() => trackAndSetFilter(tab, 'loiteringEvents', !isLoiteringEventsActive)}
           active={isLoiteringEventsActive}
         ></Switch>
         {t(`settings.loiteringEvents.title` as any, 'Loitering Events')}
@@ -69,11 +81,11 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
         value={start}
         onChange={(e) => {
           if (e.target.value !== start) {
-            setDate(tab, 'start', e.target.value)
+            setDate('start', e.target.value)
           }
         }}
         onRemove={() => {
-          setDate(tab, 'start', DEFAULT_WORKSPACE.start)
+          setDate('start', DEFAULT_WORKSPACE.start)
         }}
         label={t(`filters.start` as any, 'Start')}
         max={DEFAULT_WORKSPACE.end}
@@ -83,11 +95,11 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
         value={end}
         onChange={(e) => {
           if (e.target.value !== end) {
-            setDate(tab, 'end', e.target.value)
+            setDate('end', e.target.value)
           }
         }}
         onRemove={() => {
-          setDate(tab, 'end', DEFAULT_WORKSPACE.end)
+          setDate('end', DEFAULT_WORKSPACE.end)
         }}
         label={t(`filters.start` as any, 'End')}
         max={DEFAULT_WORKSPACE.end}

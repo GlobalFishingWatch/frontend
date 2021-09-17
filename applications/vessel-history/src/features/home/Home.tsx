@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import Link from 'redux-first-router-link'
 import { redirect } from 'redux-first-router'
+import { DateTime, Interval } from 'luxon'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
@@ -123,7 +124,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     },
     [setSelectedVessels, dispatch, query, advancedSearch]
   )
-  const trackEvent = useCallback(() => {
+  const trackOpenSettings = useCallback(() => {
     uaEvent({
       category: 'Highlight Events',
       action: 'Start highlight events configurations',
@@ -132,6 +133,19 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       })
     })
   }, [])
+
+  const trackRemoveOffline = useCallback((offlineVessel) => {
+    const now = DateTime.now()
+    const savedOn = DateTime.fromISO(offlineVessel.savedOn);
+    const i = Interval.fromDateTimes(savedOn, now);
+    uaEvent({
+      category: 'Offline Access',
+      action: 'Remove saved vessel for offline view',
+      label: JSON.stringify({ page: 'home' }),
+      value: Math.floor(i.length('days'))
+    })
+    dispatchDeleteOfflineVessel(offlineVessel)
+  }, [dispatchDeleteOfflineVessel])
 
   useEffect(() => {
     setSelectedVessels([])
@@ -142,7 +156,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       <header>
         <Logo className={styles.logo}></Logo>
         <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
-        <Link to={['settings']} onClick={trackEvent}>
+        <Link to={['settings']} onClick={trackOpenSettings}>
           <IconButton type="default" size="default" icon="settings"></IconButton>
         </Link>
         <LanguageToggle />
@@ -161,7 +175,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                     vessel={vessel}
                     saved={vessel.savedOn}
                     onVesselClick={onOpenVesselProfile(vessel)}
-                    onDeleteClick={() => dispatchDeleteOfflineVessel(vessel, 'home')}
+                    onDeleteClick={() => trackRemoveOffline(vessel)}
                   />
                 ))}
               </div>

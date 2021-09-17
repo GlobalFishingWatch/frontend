@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import {
   selectFilters,
   updateFilters,
@@ -11,7 +10,6 @@ export const useApplyFiltersConnect = () => {
   const filters = useSelector(selectFilters)
 
   const setFilter = (
-    tab: 'MAP' | 'ACTIVITY',
     filter: availableEventFilters,
     value: boolean
   ) => {
@@ -19,18 +17,10 @@ export const useApplyFiltersConnect = () => {
       ...filters,
       [filter]: value,
     }
-
     dispatch(updateFilters(newFilters))
-
-    uaEvent({
-      category: 'Vessel Detail ACTIVITY or MAP Tab',
-      action: 'Click Filter Icon - Event type',
-      label: JSON.stringify({ [filter]: value, tab: tab })
-    })
   }
 
   const setDate = (
-    tab: 'MAP' | 'ACTIVITY',
     filter: 'start' | 'end',
     value: string
   ) => {
@@ -39,11 +29,6 @@ export const useApplyFiltersConnect = () => {
       [filter]: value,
     }
     dispatch(updateFilters(newFilters))
-    uaEvent({
-      category: 'Vessel Detail ACTIVITY or MAP Tab',
-      action: 'Click Filter Icon - Change dates',
-      label: JSON.stringify({ start: newFilters.start, end: newFilters.end, tab: tab })
-    })
   }
 
   const resetFilters = () => {
