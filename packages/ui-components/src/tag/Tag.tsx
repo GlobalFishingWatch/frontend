@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
-import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
+import IconButton from '../icon-button'
 import Tooltip from '../tooltip'
 import { TooltipTypes } from '../types/types'
 import styles from './Tag.module.css'

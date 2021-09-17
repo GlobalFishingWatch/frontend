@@ -1,6 +1,6 @@
 import React, { useCallback, memo } from 'react'
 import cx from 'classnames'
-import Tag from '@globalfishingwatch/ui-components/src/tag'
+import Tag from '../tag'
 import styles from './TagList.module.css'
 import { TagItem, TagListOnRemove } from './index'
 

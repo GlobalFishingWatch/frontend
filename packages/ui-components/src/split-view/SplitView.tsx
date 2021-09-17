@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect, memo, useMemo } from 'react'
 import cx from 'classnames'
-import useSmallScreen from '@globalfishingwatch/react-hooks/dist/use-small-screen'
 import Icon from '../icon'
 import Choice from '../choice'
+import useSmallScreen from './use-small-screen'
 import styles from './SplitView.module.css'
 
 interface SplitViewProps {

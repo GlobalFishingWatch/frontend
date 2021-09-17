@@ -22,7 +22,7 @@
     "start": "run-p prerender start:js start:css",
     "start:js": "rollup -c ./rollup.config.js -w",
     "start:css": "postcss src/base.css -o dist/base.css -w",
-    "build": "yarn clean && run-p build:js build:css build:css-min",
+    "build": "yarn clean && yarn build:js && yarn build:css && yarn build:css-min",
     "build:js": "cross-env NODE_ENV=production rollup -c rollup.config.js",
     "build:css": "postcss src/base.css -o dist/base.css",
     "build:css-min": "cross-env NODE_ENV=production postcss src/base.css -o dist/base.min.css ",
@@ -68,7 +68,6 @@
   },
   "peerDependencies": {
     "@globalfishingwatch/layer-composer": "^10.0.0",
-    "@globalfishingwatch/react-hooks": "^15.0.0",
     "downshift": "^6.0.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.1"
