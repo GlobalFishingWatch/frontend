@@ -119,7 +119,7 @@ export const selectAdvancedSearchFields = createSelector(
       lastTransmissionDate,
       firstTransmissionDate,
     ].filter((field) => field && field.length)
-    if (!hasFields) return undefined
+    if (!hasFields.length) return undefined
 
     return {
       mmsi,
