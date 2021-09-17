@@ -69,7 +69,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                 </div>
                 {(hasGFWValues || !hideTMTDate) && (
                   <div className={styles.identifierField}>
-                    {!hideTMTDate || historyValue.source === VesselAPISource.GFW && 
+                    {(!hideTMTDate || historyValue.source === VesselAPISource.GFW) && 
                       <div>
                         {historyValue.firstSeen && (
                           <div>
