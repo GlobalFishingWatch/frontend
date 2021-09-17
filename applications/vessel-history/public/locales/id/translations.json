@@ -27,9 +27,17 @@
     "previous": "previous"
   },
   "event": {
-    "authStatus": "Authorization status",
     "avgSpeed": "Avg Speed",
     "confidence": "Confidence",
+    "confidenceHelp": {
+      "help2": "Low confidence. Only a port stop OR gap was identified based on AIS transmission.",
+      "help3": "Medium confidence. A port entry and a port stop OR gap; OR a port stop OR gap followed by a port exit was identified based on AIS transmission.",
+      "help4": "High confidence. A port entry, AND port stop or port gap, AND a port exit was identified based on AIS transmission.",
+      "portEntry": "PORT ENTRY: vessel that was not in port gets within 3km of anchorage point",
+      "portExit": "PORT EXIT: vessel that was in port moves more than 4km from anchorage point",
+      "portGap": "PORT GAP: AIS gap > 4 hours; start is recorded 4 hours after the last message before the gap; end at next message after gap.",
+      "portStop": "PORT STOP: begin: speed < 0.2 knots; end: speed > 0.5 knots"
+    },
     "distance": "Distance",
     "distancePort": "Distance from port",
     "distanceShore": "Distance from shore",
@@ -49,18 +57,19 @@
     "medianSpeed": "Median Speed",
     "minuteAbbreviated": "{{count}}m",
     "minuteAbbreviated_plural": "{{count}}m",
-    "nextPort": "Next port traveled",
     "nSelected": "{{count}} selected",
     "nSelected_plural": "{{count}} selected",
     "port": "Port",
-    "portAction": "Port visit",
-    "portAt": "Port visit at {{port}}",
     "position": "Position",
     "psma": "PSMA",
     "psmaIncluded": "Included Since {{value}}",
     "psmaNotIncluded": "Not included",
     "start": "Start",
     "unknown": "Unknown event",
+    "authStatus": "Authorization status",
+    "nextPort": "Next port traveled",
+    "portAction": "Port visit",
+    "portAt": "Port visit at {{port}}",
     "avgDuration": "Avg Duration",
     "endDistancePort": "End distance from port",
     "endDistanceShore": "End distance from shore",
@@ -75,16 +84,7 @@
     "fishingEvent": "Fishing in {{ regionName }}",
     "fishingGroup": "{{ count }} Fishing events in {{ regionName }}",
     "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
-    "noDescription": "No description found",
-    "confidenceHelp": {
-      "help2": "Low confidence. Only a port stop OR gap was identified based on AIS transmission.",
-      "help3": "Medium confidence. A port entry and a port stop OR gap; OR a port stop OR gap followed by a port exit was identified based on AIS transmission.",
-      "help4": "High confidence. A port entry, AND port stop or port gap, AND a port exit was identified based on AIS transmission.",
-      "portEntry": "PORT ENTRY: vessel that was not in port gets within 3km of anchorage point",
-      "portExit": "PORT EXIT: vessel that was in port moves more than 4km from anchorage point",
-      "portGap": "PORT GAP: AIS gap > 4 hours; start is recorded 4 hours after the last message before the gap; end at next message after gap.",
-      "portStop": "PORT STOP: begin: speed < 0.2 knots; end: speed > 0.5 knots"
-    }
+    "noDescription": "No description found"
   },
   "events": {
     "activityHighlights": "Activity Highlights",
@@ -101,20 +101,22 @@
   "search": {
     "activeAfter": "active After",
     "activeBefore": "active before",
-    "advanced": "advanced",
-    "basic": "basic",
     "callsign": "Callsign",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
     "flagState": "Flag States",
     "IMO": "IMO",
     "loadMore": "Load More",
+    "mergeSelectedVessels": "Merge Selected Vessels",
     "MMSI": "MMSI",
     "noMore": "No more results",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign",
     "notAllowed": "Search not allowed",
-    "placeholder": "Search vessels by name, MMSI, IMO",
+    "seeVessel": "See Vessel",
     "shipname": "Name",
-    "title": "Search"
+    "title": "Search",
+    "advanced": "advanced",
+    "basic": "basic",
+    "placeholder": "Search vessels by name, MMSI, IMO"
   },
   "selects": {
     "allSelected": "All",
@@ -153,6 +155,14 @@
     "kms": "kms",
     "distance": "DISTANCE TRAVELLED"
   },
+  "user": {
+    "loggedInAs": "logged in as",
+    "login": "Log in",
+    "notAuthorized": "Only some specific registered users can use this product",
+    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
+    "requestAccess": "Request Access",
+    "switchAccount": "Switch account"
+  },
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",
     "authorization_plural": "authorizations",
@@ -164,6 +174,9 @@
     "imo": "imo",
     "mmsi": "mmsi",
     "noAuthorizations": "No authorizations found",
+    "nVesselsMerged": "{{count}} merged",
+    "nVesselsMerged_plural": "{{count}} merged",
+    "offlineStillNotAllowedOnMergedVessels": "OFFLINE VIEW NOT ALLOWED ON MERGED VESSELS",
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
     "readyForOfflineView": "READY FOR OFFLINE VIEW",
     "remove": "Remove",
@@ -203,13 +216,5 @@
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
-  },
-  "user": {
-    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
-    "notAuthorized": "Only some specific registered users can use this product",
-    "login": "Log in",
-    "loggedInAs": "logged in as",
-    "requestAccess": "Request Access",
-    "switchAccount": "Switch account"
   }
 }
