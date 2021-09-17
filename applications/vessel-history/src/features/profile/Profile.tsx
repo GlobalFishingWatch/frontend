@@ -51,6 +51,10 @@ const Profile: React.FC = (props): React.ReactElement => {
   const datasets = useSelector(selectDatasets)
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
+  const isMergedVesselsView = useMemo(
+    () => akaVesselProfileIds.length > 0,
+    [akaVesselProfileIds.length]
+  )
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -189,6 +193,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         {vessel && (
           <h1>
             {shipName ?? t('common.unknownName', 'Unknown name')}
+            {isMergedVesselsView &&
+              ` (${t('vessel.nVesselsMerged', '{{count}} merged', {
+                count: akaVesselProfileIds.length + 1,
+              })})`}
             {vessel.history.shipname.byDate.length > 1 && (
               <p>
                 {t('vessel.plusPreviousValuesByField', defaultPreviousNames, {
