@@ -27,6 +27,7 @@ import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
 import { PROFILE } from 'routes/routes'
 import { useSearchConnect } from 'features/search/search.hooks'
+import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -60,7 +61,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   }, [dispatchFetchOfflineVessels])
 
   const openVesselProfile = useCallback(
-    (vessel) => {
+    (vessel, aka: string[] = []) => {
       dispatch(
         redirect({
           type: PROFILE,
@@ -69,7 +70,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             vesselID: vessel.id ?? 'NA',
             tmtID: vessel.vesselMatchId ?? 'NA',
           },
-          query: {},
+          query: {
+            aka: aka as any,
+          },
         })
       )
     },
@@ -86,9 +89,14 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   }, [openVesselProfile, selectedVessels, vessels])
 
   const onMergeVesselClick = useCallback(() => {
-    // TODO Implement logic to pass other selected vessels to Profile for merging
     const selectedVessel = vessels[selectedVessels[0]]
-    if (selectedVessel) openVesselProfile(selectedVessel)
+    const akaVessels = selectedVessels
+      .slice(1)
+      .map((index) => vessels[index])
+      .map((akaVessel) =>
+        formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
+      )
+    if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
   }, [openVesselProfile, selectedVessels, vessels])
 
   const fetchResults = useCallback(

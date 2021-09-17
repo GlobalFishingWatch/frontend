@@ -12,15 +12,21 @@ export type WorkspaceAdvancedSearchParam =
   | 'lastTransmissionDate'
   | 'lastTransmissionDate'
   | 'firstTransmissionDate'
+export type WorkspaceMergeVesselsParam = 'aka'
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
   | WorkspaceStateProperty
   | WorkspaceAdvancedSearchParam
+  | WorkspaceMergeVesselsParam
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
+export type WorkspaceMergeVessels = {
+  aka?: string[]
+}
+
 export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {
@@ -29,7 +35,10 @@ export type WorkspaceState = {
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string
 }
-export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState
+export type QueryParams = Partial<WorkspaceViewport> &
+  Partial<WorkspaceTimeRange> &
+  Partial<WorkspaceMergeVessels> &
+  WorkspaceState
 
 export type CoordinatePosition = {
   latitude: number

@@ -15,6 +15,7 @@ import { OfflineVessel } from 'types/vessel'
 import {
   selectDataset,
   selectTmtId,
+  selectUrlAkaVesselQuery,
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
@@ -40,9 +41,14 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vesselTmtId = useSelector(selectTmtId)
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
+  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const offlineVessel = useSelector(selectCurrentOfflineVessel)
   const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
     useOfflineVesselsAPI()
+  const isMergedVesselsView = useMemo(
+    () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
+    [akaVesselProfileIds]
+  )
 
   useEffect(() => {
     dispatchFetchOfflineVessel(vesselProfileId)
@@ -254,7 +260,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               />
             </Fragment>
           )}
-          {vessel && !offlineVessel && (
+          {vessel && !isMergedVesselsView && !offlineVessel && (
             <Button
               className={styles.saveButton}
               type="secondary"
@@ -262,6 +268,14 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               onClick={() => onSaveClick(vessel)}
             >
               {t('vessel.saveForOfflineView', 'SAVE VESSEL FOR OFFLINE VIEW')}
+            </Button>
+          )}
+          {isMergedVesselsView && (
+            <Button className={styles.saveButton} type="secondary" disabled={true}>
+              {t(
+                'vessel.offlineStillNotAllowedOnMergedVessels',
+                'OFFLINE VIEW NOT ALLOWED ON MERGED VESSELS'
+              )}
             </Button>
           )}
         </div>
