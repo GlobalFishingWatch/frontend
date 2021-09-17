@@ -34,7 +34,6 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   const hasGFWValues = useMemo(() => {
     return history.some(value => value.source === VesselAPISource.GFW)
   }, [history])
-  console.log(hasGFWValues)
   const { formatSource } = useVesselsConnect()
   
   if (history.length < 1) {
