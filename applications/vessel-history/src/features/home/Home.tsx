@@ -61,7 +61,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   }, [dispatchFetchOfflineVessels])
 
   const openVesselProfile = useCallback(
-    (vessel, aka?: string[]) => {
+    (vessel, aka: string[] = []) => {
       dispatch(
         redirect({
           type: PROFILE,
@@ -71,7 +71,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             tmtID: vessel.vesselMatchId ?? 'NA',
           },
           query: {
-            ...((aka !== undefined ? { aka } : {}) as any),
+            aka: aka as any,
           },
         })
       )
