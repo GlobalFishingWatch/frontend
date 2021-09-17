@@ -71,6 +71,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: none;
 }
 
 .eventIcon.fishing {
@@ -159,9 +160,11 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .noSettingsContainer button {
   margin: var(--space-M);
 }
+
 button .iconInButton {
   margin-right: var(--space-XS);
 }
