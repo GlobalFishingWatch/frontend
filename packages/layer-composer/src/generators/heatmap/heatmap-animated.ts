@@ -105,7 +105,7 @@ class HeatmapAnimatedGenerator {
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
     const visible = getSubLayersVisible(config.sublayers)
 
-    const tilesUrl = getTilesUrl(config)
+    const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource =

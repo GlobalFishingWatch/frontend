@@ -202,11 +202,14 @@ export function getGeneratorConfig(
           },
         ]
 
+        const { url: tilesAPI } = resolveDataviewDatasetResource(dataview, DatasetTypes.Fourwings)
+
         environmentalConfig = {
           sublayers,
           maxZoom: 8,
           mode: Generators.HeatmapAnimatedMode.Single,
           aggregationOperation: AggregationOperation.Avg,
+          tilesAPI,
           interactive: true,
           breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
           interval: dataview.config?.interval || 'month',

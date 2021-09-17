@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { memoize, uniqBy, without, kebabCase } from 'lodash'
 import { stringify } from 'qs'
-import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetCategory, EndpointId, UploadResponse } from '@globalfishingwatch/api-types'
 import { HeatmapAnimatedInteractionType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
@@ -18,14 +18,31 @@ export const DATASETS_USER_SOURCE_ID = 'user'
 
 export const PRESENCE_POC_INTERACTION = 'presence-POC' as HeatmapAnimatedInteractionType
 export const PRESENCE_POC_ID = 'global-presence-tracks'
+export const EE_POC_ID = 'public-ee-poc'
 
-const parsePresencePOCDataset = (dataset: Dataset) => {
+const parsePOCsDatasets = (dataset: Dataset) => {
   if (dataset.id.includes(PRESENCE_POC_ID)) {
     const pocDataset = {
       ...dataset,
       endpoints: dataset.endpoints?.map((endpoint) => {
-        if (endpoint.id === 'carriers-tracks') {
+        if (endpoint.id === EndpointId.Tracks) {
           return { ...endpoint, pathTemplate: '/prototype/vessels/{{vesselId}}/tracks' }
+        }
+        return endpoint
+      }),
+    }
+    return pocDataset
+  }
+  if (dataset.id.includes(EE_POC_ID)) {
+    const pocDataset = {
+      ...dataset,
+      endpoints: dataset.endpoints?.map((endpoint) => {
+        if (endpoint.id === EndpointId.FourwingsTiles) {
+          return {
+            ...endpoint,
+            pathTemplate:
+              'https://dev-api-4wings-tiler-gee-poc-jzzp2ui3wq-uc.a.run.app/v1/4wings/tile/heatmap/{z}/{x}/{y}',
+          }
         }
         return endpoint
       }),
@@ -44,7 +61,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
-    return parsePresencePOCDataset(dataset)
+    return parsePOCsDatasets(dataset)
   } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
@@ -85,7 +102,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         const mockedDatasets = await import('./datasets.mock')
         datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
       }
-      return datasets.map(parsePresencePOCDataset)
+      return datasets.map(parsePOCsDatasets)
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
