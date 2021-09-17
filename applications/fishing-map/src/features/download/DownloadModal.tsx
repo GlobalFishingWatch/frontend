@@ -7,10 +7,10 @@ import area from '@turf/area'
 import type { Placement } from 'tippy.js'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components/dist'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { Dataset } from '@globalfishingwatch/api-types'
 import {
-  CreateDownload,
-  createDownloadThunk,
+  DownloadActivityParams,
+  downloadActivityThunk,
   DownloadGeometry,
   resetDownloadStatus,
   selectDownloadAreaName,
@@ -21,8 +21,6 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
-import { selectUserData } from 'features/user/user.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { DateRange } from 'features/analysis/analysis.slice'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -47,7 +45,6 @@ type DownloadModalProps = {
 function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
   const { t } = useTranslation()
   const dataviews = useSelector(selectActiveActivityDataviews) || []
-  const userData = useSelector(selectUserData)
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
   const downloadStatus = useSelector(selectDownloadStatus)
@@ -117,16 +114,23 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
       })
       .filter((dataview) => dataview.datasets.length > 0)
 
-    const createDownload: CreateDownload = {
+    const downloadParams: DownloadActivityParams = {
       dateRange: timerange as DateRange,
       dataviews: downloadDataviews,
       geometry: downloadAreaGeometry as DownloadGeometry,
+      areaName: downloadAreaName,
       format,
       temporalResolution,
       spatialResolution,
       groupBy,
     }
-    await dispatch(createDownloadThunk(createDownload))
+
+    try {
+      await dispatch(downloadActivityThunk(downloadParams))
+    } catch (e: any) {
+      console.warn(e)
+    }
+
     uaEvent({
       category: 'Download',
       action: `Activity download`,
@@ -137,6 +141,7 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
           .flat(),
       ]),
     })
+
     timeoutRef.current = setTimeout(() => {
       dispatch(resetDownloadStatus(undefined))
     }, 5000)
@@ -219,9 +224,3 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
 }
 
 export default DownloadModal
-function checkExistPermissionInList(
-  permissions: import('@globalfishingwatch/api-types/dist').UserPermission[] | undefined,
-  permission: { type: string; value: string; action: string }
-) {
-  throw new Error('Function not implemented.')
-}

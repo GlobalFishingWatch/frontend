@@ -2,7 +2,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { Feature, Polygon } from 'geojson'
 import { stringify } from 'qs'
-import fileSaver from 'file-saver'
+import { saveAs } from 'file-saver'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { TooltipEventFeature } from 'features/map/map.hooks'
@@ -47,36 +47,38 @@ const initialState: DownloadState = {
   },
 }
 
-export type CreateDownload = {
+export type DownloadActivityParams = {
   dateRange: DateRange
   dataviews: {
     filters: Record<string, any>
     datasets: string[]
   }[]
   geometry: DownloadGeometry
+  areaName: string
   format: Format
   spatialResolution: SpatialResolution
   temporalResolution: TemporalResolution
   groupBy: GroupBy
 }
 
-export const createDownloadThunk = createAsyncThunk<
+export const downloadActivityThunk = createAsyncThunk<
   DownloadActivity,
-  CreateDownload,
+  DownloadActivityParams,
   {
     rejectValue: AsyncError
   }
->('download/create', async (createDownload: CreateDownload, { rejectWithValue }) => {
+>('download/create', async (params: DownloadActivityParams, { rejectWithValue }) => {
   try {
     const {
       dateRange,
       dataviews,
       geometry,
+      areaName,
       format,
       spatialResolution,
       temporalResolution,
       groupBy,
-    } = createDownload
+    } = params
     const fromDate = DateTime.fromISO(dateRange.start).toUTC().toISODate()
     const toDate = DateTime.fromISO(dateRange.end).toUTC().toISODate()
 
@@ -88,17 +90,23 @@ export const createDownloadThunk = createAsyncThunk<
       spatialResolution,
       temporalResolution,
       groupBy,
-      token: GFWAPI.getToken(),
     }
 
-    const createdDownload = await GFWAPI.fetch<DownloadActivity>(
+    const fileName = `${downloadParams.datasets} - ${downloadParams['date-range']} - ${areaName}.zip`
+
+    const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
       `/v1/4wings/report?${stringify(downloadParams, { arrayFormat: 'indices' })}`,
       {
         method: 'POST',
         body: { geojson: geometry } as any,
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${GFWAPI.getToken()}`,
+        },
       }
-    )
-
+    ).then((blob) => {
+      saveAs(blob as any, fileName)
+    })
     return createdDownload
   } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
@@ -132,7 +140,7 @@ const { slice: downloadSlice } = createAsyncSlice<DownloadState, DownloadActivit
     },
   },
   thunks: {
-    createThunk: createDownloadThunk,
+    createThunk: downloadActivityThunk,
   },
 })
 

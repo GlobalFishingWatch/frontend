@@ -3,7 +3,7 @@ import { t } from 'features/i18n/i18n'
 
 export enum Format {
   Csv = 'csv',
-  GeoTIFF = 'tiff',
+  GeoTIFF = 'tif',
   NetCDF = 'netcdf',
 }
 
