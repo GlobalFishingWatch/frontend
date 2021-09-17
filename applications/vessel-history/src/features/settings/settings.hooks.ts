@@ -28,18 +28,18 @@ export const useSettingsConnect = () => {
       ...settings,
       [settingType]: updatedSectionSettings,
     }
-    console.log(settingType)
     if (settingType !== 'portVisits') {
+      const setting = newSettings[settingType as keyof Settings] as SettingsEvents
       uaEvent({
         category: 'Highlight Events',
         action: `Configure ${settingType} events highlights`,
         label: JSON.stringify({
-          eez: newSettings.fishingEvents.eezs?.[0] === '0-any' ? 'any' : newSettings.fishingEvents.eezs?.length || 0,
-          mpa: newSettings.fishingEvents.mpas?.[0] === '0-any' ? 'any' : newSettings.fishingEvents.mpas?.length || 0,
-          rfmo: newSettings.fishingEvents.rfmos?.[0] === '0-any' ? 'any' : newSettings.fishingEvents.rfmos?.length || 0,
-          duration: newSettings.fishingEvents.duration,
-          distance_from_shore: newSettings.fishingEvents.distanceShoreLonger,
-          distance_from_port: newSettings.fishingEvents.distancePortLonger,
+          eez: setting.eezs?.[0] === '0-any' ? 'any' : setting.eezs?.length || 0,
+          mpa: setting.mpas?.[0] === '0-any' ? 'any' : setting.mpas?.length || 0,
+          rfmo: setting.rfmos?.[0] === '0-any' ? 'any' : setting.rfmos?.length || 0,
+          duration: setting.duration,
+          distance_from_shore: setting.distanceShoreLonger,
+          distance_from_port: setting.distancePortLonger,
         })
       })
     } else {

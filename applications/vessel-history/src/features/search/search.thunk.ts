@@ -149,7 +149,6 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     { query, offset, advancedSearch }: VesselSearchThunk,
     { rejectWithValue, getState, signal }
   ) => {
-    //const vessels = useSelector(selectSearchResults)
     const searchData = await fetchData(query, offset, signal, advancedSearch)
     trackData({ query: query, ...advancedSearch }, searchData, 5)
 

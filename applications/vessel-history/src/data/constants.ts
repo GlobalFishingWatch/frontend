@@ -1,7 +1,7 @@
 export const BASE_URL = process.env.NODE_ENV === 'production' ? '/vessel-history' : ''
 
 export const SPLASH_TIMEOUT = 1000
-export const RESULTS_PER_PAGE = 5
+export const RESULTS_PER_PAGE = 25
 export const SEARCH_MIN_CHARACTERS = 3
 // TODO: Remove this and load searchable datasets from dataview
 export const BASE_DATASET =
