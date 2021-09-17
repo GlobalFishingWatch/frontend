@@ -43,7 +43,7 @@ export const getVesselDataviewInstance = (
   const datasetsConfig: DataviewDatasetConfig[] = [
     {
       datasetId: trackDatasetId,
-      params: [{ id: 'vesselId', value: vessel.id }],
+      params: [{ id: 'vesselId', value: akaVesselsIds }],
       endpoint: EndpointId.Tracks,
     },
     {
