@@ -30,6 +30,7 @@ const MapControls = ({
   const [extendedControls] = useState(true)
   const [isModalOpen, setIsOpen] = useState(false)
   const [showLayersPopup, setShowLayersPopup] = useState(false)
+  const [showMPAInfo, setShowMPAInfo] = useState(false)
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const filtered = useSelector(selectFilterUpdated)
   const setModalOpen = useCallback((isOpen) => {
@@ -81,13 +82,38 @@ const MapControls = ({
                     <div className={styles.contextLayers}>
                       {!!layers &&
                         layers.map((layer) => (
-                          <LayerSwitch
-                            key={layer.id}
-                            className={styles.contextLayer}
-                            classNameActive={styles.active}
-                            dataview={layer}
-                            title={layerTitle(layer)}
-                          />
+                          <div className={styles.layerContainer}>
+                            <LayerSwitch
+                              key={layer.id}
+                              className={styles.contextLayer}
+                              classNameActive={styles.active}
+                              dataview={layer}
+                              title={layerTitle(layer)}
+                            />
+                            {layer.id === 'context-layer-mpa' && (
+                              <div>
+
+                                <IconButton
+                                  icon='info'
+                                  type='default'
+                                  size="small"
+                                  //loading={datasetImporting}
+                                  className={styles.infoIcon}
+                                  //tooltip={tooltip}
+                                  tooltipPlacement="left"
+                                  onClick={() =>setShowMPAInfo(true)}
+                                />
+                                <Modal
+                                  isOpen={showMPAInfo}
+                                  onClose={() =>setShowMPAInfo(false)}
+                                  title={layerTitle(layer)}
+                                  >
+                                    {t('map.descriptionMPA', 'Marine protected areas (MPAs)...')}
+      
+                                </Modal>
+                              </div>
+                            )}
+                          </div>
                         ))}
                     </div>
                   </div>
