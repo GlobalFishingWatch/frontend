@@ -52,8 +52,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
   const isMergedVesselsView = useMemo(
-    () => akaVesselProfileIds.length > 0,
-    [akaVesselProfileIds.length]
+    () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
+    [akaVesselProfileIds]
   )
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const Profile: React.FC = (props): React.ReactElement => {
                 : []
 
             // Only merge with vessels of the same dataset that the main vessel
-            const akaVesselsIds = akaVesselProfileIds
+            const akaVesselsIds = (akaVesselProfileIds ?? [])
               .map((vesselProfileId) => parseVesselProfileId(vesselProfileId))
               .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id)
             const vesselDataviewInstance = getVesselDataviewInstance(

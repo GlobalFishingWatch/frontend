@@ -46,8 +46,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
     useOfflineVesselsAPI()
   const isMergedVesselsView = useMemo(
-    () => akaVesselProfileIds.length > 0,
-    [akaVesselProfileIds.length]
+    () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
+    [akaVesselProfileIds]
   )
 
   useEffect(() => {
