@@ -2,6 +2,7 @@ import { FeatureCollection } from 'geojson'
 import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { Group } from '..'
 import { Interval } from './heatmap/util/time-chunks'
 
 export enum Type {
@@ -297,6 +298,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   mode?: HeatmapAnimatedMode
+  group?: Group
   tilesAPI?: string
   breaksAPI?: string
   maxZoom?: number
