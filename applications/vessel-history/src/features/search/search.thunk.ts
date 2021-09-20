@@ -111,18 +111,18 @@ export type VesselSearchThunk = {
   advancedSearch?: Record<string, any>
 }
 
-const trackData = async (
+const trackData = (
   query: any,
   results: SearchResults | null,
   actualResults: number
 ) => {
-  const vessels = results?.vessels.slice(0, 5).map(vessel => {
-    return {
-      gfw: vessel.id,
-      tmt: vessel.vesselMatchId
-    }
-  })
   if (!query.offset || query.offset === 0) {
+    const vessels = results?.vessels.slice(0, 5).map(vessel => {
+      return {
+        gfw: vessel.id,
+        tmt: vessel.vesselMatchId
+      }
+    })
     uaEvent({
       category: 'Search Vessel VV',
       action: 'Click Search',
