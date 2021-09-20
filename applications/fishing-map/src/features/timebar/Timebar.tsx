@@ -37,6 +37,7 @@ import {
   selectEventsWithRenderingInfo,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarTracksEventsNew from './charts/TimebarTracksEvents'
 import styles from './Timebar.module.css'
 
 export const TIMEBAR_HEIGHT = 72
@@ -239,6 +240,7 @@ const TimebarWrapper = () => {
                         onEventClick={onEventClick}
                         onEventHover={onEventHover}
                       />
+                      <TimebarTracksEventsNew tracks={tracksEvents} />
                     </Fragment>
                   )}
                 </Fragment>

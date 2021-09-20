@@ -229,6 +229,7 @@ const TracksEvents = ({ labels, tracksEvents, preselectedEventId, onEventClick, 
                 data-type={event.type}
                 style={{
                   background: event.color || 'white',
+                  opacity: 0.5,
                   left: `${event.x1}px`,
                   width: `${event.width}px`,
                   ...(event.height && { height: `${event.height}px` }),
