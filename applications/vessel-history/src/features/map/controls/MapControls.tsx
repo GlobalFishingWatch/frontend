@@ -109,9 +109,7 @@ const MapControls = ({
                                   icon='info'
                                   type='default'
                                   size="small"
-                                  //loading={datasetImporting}
                                   className={styles.infoIcon}
-                                  //tooltip={tooltip}
                                   tooltipPlacement="left"
                                   onClick={() =>setShowMPAInfo(true)}
                                 />
