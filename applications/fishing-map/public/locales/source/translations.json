@@ -350,9 +350,10 @@
     "new": "New Workspace",
     "privateTitle_plural": "Private workspaces",
     "uploadPublic": "Allow other users to see this workspace",
-    "uploadPublicDisabled": "The workspace is using private datasets",
+    "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
     "remove": "Remove workspace",
     "save": "Save the current view",
+    "saveAsNew": "Save as new workspace",
     "saved": "Current view was saved and it's available in your user profile",
     "saveLogin": "You need to login to save views",
     "title_plural": "Workspaces"

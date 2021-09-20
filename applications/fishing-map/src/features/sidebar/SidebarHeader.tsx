@@ -1,12 +1,10 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
-import { updatedCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -15,11 +13,9 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isWorkspaceLocation, selectLocationCategory } from 'routes/routes.selectors'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { WorkspaceCategories } from 'data/workspaces'
 import { selectReadOnly } from 'features/app/app.selectors'
-import { selectUserData } from 'features/user/user.slice'
-import { isGuestUser, selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
+import { isGuestUser } from 'features/user/user.selectors'
 import { useLoginRedirect } from 'routes/routes.hook'
 import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import { useClipboardNotification } from './sidebar.hooks'
@@ -30,16 +26,11 @@ function SaveWorkspaceButton() {
   const [showWorkspaceCreateModal, setShowWorkspaceCreateModal] = useState(false)
   const { onLoginClick } = useLoginRedirect()
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const guestUser = useSelector(isGuestUser)
-  const hasEditPermission = useSelector(selectUserWorkspaceEditPermissions)
-  const userData = useSelector(selectUserData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const workspace = useSelector(selectWorkspace)
-
-  const isOwnerWorkspace = workspace?.ownerId === userData?.id
 
   const onCloseCreateWorkspace = useCallback(() => {
     setShowWorkspaceCreateModal(false)
@@ -50,38 +41,9 @@ function SaveWorkspaceButton() {
     onCloseCreateWorkspace()
   }, [copyToClipboard, onCloseCreateWorkspace])
 
-  const updateWorkspace = async (workspaceId: string) => {
-    const dispatchedAction = await dispatch(updatedCurrentWorkspaceThunk(workspaceId))
-    if (updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
-      uaEvent({
-        category: 'Workspace Management',
-        action: 'Edit current workspace',
-        label: dispatchedAction.payload?.name ?? 'Unknown',
-      })
-      copyToClipboard(window.location.href)
-    } else {
-      console.warn('Error saving workspace', dispatchedAction.payload)
-    }
-  }
-
   const onSaveClick = async () => {
     if (!showClipboardNotification) {
-      if (workspace && workspace.id !== DEFAULT_WORKSPACE_ID) {
-        if (isOwnerWorkspace) {
-          updateWorkspace(workspace.id)
-        } else if (hasEditPermission) {
-          const overwrite = window.confirm(
-            `You are not the creator of this workspace! \nClick OK to overwrite it or Cancel if you want to save it as a new one \n\n ⚠️ With admin power comes admin responsability (B.Parker)`
-          )
-          if (overwrite) {
-            updateWorkspace(workspace.id)
-          } else {
-            setShowWorkspaceCreateModal(true)
-          }
-        }
-      } else {
-        setShowWorkspaceCreateModal(true)
-      }
+      setShowWorkspaceCreateModal(true)
     }
   }
 
@@ -130,7 +92,7 @@ function SaveWorkspaceButton() {
         <NewWorkspaceModal
           isOpen={showWorkspaceCreateModal}
           onClose={onCloseCreateWorkspace}
-          onCreate={onSaveCreateWorkspace}
+          onFinish={onSaveCreateWorkspace}
         />
       )}
     </Fragment>

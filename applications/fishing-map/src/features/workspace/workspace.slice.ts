@@ -193,13 +193,12 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 
 export const updatedCurrentWorkspaceThunk = createAsyncThunk(
   'workspace/updatedCurrent',
-  async (workspaceId: string, { dispatch, getState }) => {
+  async (workspace: WorkspaceUpsert<WorkspaceState>, { dispatch, getState }) => {
     const state = getState() as RootState
     const version = selectVersion(state)
-    const workspace = selectCustomWorkspace(state)
 
     const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-      `/${version}/workspaces/${workspaceId}`,
+      `/${version}/workspaces/${workspace.id}`,
       {
         method: 'PATCH',
         body: workspace,

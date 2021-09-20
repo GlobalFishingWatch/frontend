@@ -1,5 +1,5 @@
 .modal {
-  height: 20rem;
+  height: auto;
 }
 
 .input {
@@ -11,4 +11,10 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: var(--space-M);
+}
+
+.adminWarning {
+  margin-top: var(--space-M);
+  color: var(--color-secondary-blue);
 }

@@ -7,29 +7,28 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import SwitchRow from '@globalfishingwatch/ui-components/dist/switch-row'
-import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
-  selectWorkspace,
-  selectWorkspaceDataviewInstances,
-} from 'features/workspace/workspace.selectors'
+  saveCurrentWorkspaceThunk,
+  updatedCurrentWorkspaceThunk,
+} from 'features/workspace/workspace.slice'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectViewport } from 'features/app/app.selectors'
+import { selectCustomWorkspace, selectViewport } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { PRIVATE_SUFIX } from 'data/config'
-import {
-  selectAllDataviewsInWorkspace,
-  selectDataviewInstancesMerged,
-} from 'features/dataviews/dataviews.selectors'
+import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
+import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
+import { selectUserData } from 'features/user/user.slice'
+import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
 import styles from './NewWorkspaceModal.module.css'
 
 type NewWorkspaceModalProps = {
   isOpen: boolean
   onClose: () => void
-  onCreate?: () => void
+  onFinish?: () => void
 }
 
 const formatTimerangeBoundary = (
@@ -42,42 +41,78 @@ const formatTimerangeBoundary = (
   }).replace(/[.,]/g, '')
 }
 
-function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps) {
+function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps) {
   const [name, setName] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [createLoading, setCreateLoading] = useState(false)
+  const [updateLoading, setUpdateLoading] = useState(false)
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const viewport = useSelector(selectViewport)
   const timerange = useTimerangeConnect()
+  const userData = useSelector(selectUserData)
   const workspace = useSelector(selectWorkspace)
+  const currentWorkspace = useSelector(selectCustomWorkspace)
   const dataviewsInWorkspace = useSelector(selectDataviewInstancesMerged)
+  const hasEditPermission = useSelector(selectUserWorkspaceEditPermissions)
   const workspaceDatasets = getDatasetsInDataviews(dataviewsInWorkspace || [])
   const privateDatasets = workspaceDatasets.filter((d) => d.includes(PRIVATE_SUFIX))
   const containsPrivateDatasets = privateDatasets.length > 0
-  const [createAsPublic, setCreateAsPublic] = useState(containsPrivateDatasets ? false : true)
+
+  const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
+  const isOwnerWorkspace = workspace?.ownerId === userData?.id
+  const hasWorkspaceDefined = workspace !== null && !isDefaultWorkspace
+  const showSaveAsNew = hasWorkspaceDefined && (isOwnerWorkspace || hasEditPermission)
+  const showOverWriteWarning = hasWorkspaceDefined && !isOwnerWorkspace && hasEditPermission
+  const initialCreateAsPublic = showSaveAsNew
+    ? workspace?.id.includes(PUBLIC_SUFIX) || false
+    : !containsPrivateDatasets
+  const [createAsPublic, setCreateAsPublic] = useState(initialCreateAsPublic)
+  const allowUpdate = showSaveAsNew ? createAsPublic === initialCreateAsPublic : true
 
   useEffect(() => {
     if (isOpen) {
-      const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
-      const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
-      const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
-      const start = formatTimerangeBoundary(timerange.start, dateFormat)
-      const end = formatTimerangeBoundary(timerange.end, dateFormat)
+      let workspaceName = workspace?.name
+      if (isDefaultWorkspace || (!showSaveAsNew && !hasEditPermission)) {
+        const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
+        const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
+        const start = formatTimerangeBoundary(timerange.start, dateFormat)
+        const end = formatTimerangeBoundary(timerange.end, dateFormat)
+        workspaceName = `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`
+      }
 
-      const defaultName = isDefaultWorkspace
-        ? `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`
-        : workspace?.name
-
-      if (defaultName) {
-        setName(defaultName)
+      if (workspaceName) {
+        setName(workspaceName)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
+  const updateWorkspace = async () => {
+    if (currentWorkspace) {
+      setUpdateLoading(true)
+      const dispatchedAction = await dispatch(
+        updatedCurrentWorkspaceThunk({ ...currentWorkspace, name })
+      )
+      if (updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
+        uaEvent({
+          category: 'Workspace Management',
+          action: 'Edit current workspace',
+          label: dispatchedAction.payload?.name ?? 'Unknown',
+        })
+
+        setUpdateLoading(false)
+        if (onFinish) {
+          onFinish()
+        }
+      } else {
+        console.warn('Error updating workspace', dispatchedAction.payload)
+      }
+    }
+  }
+
   const onCreateWorkspaceClick = async () => {
     if (name) {
-      setLoading(true)
+      setCreateLoading(true)
       const dispatchedAction = await dispatch(saveCurrentWorkspaceThunk({ name, createAsPublic }))
       if (saveCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
         uaEvent({
@@ -85,9 +120,9 @@ function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps
           action: 'Save current workspace',
           label: dispatchedAction.payload?.name ?? 'Unknown',
         })
-        setLoading(false)
-        if (onCreate) {
-          onCreate()
+        setCreateLoading(false)
+        if (onFinish) {
+          onFinish()
         }
       } else {
         console.warn('Error saving workspace', dispatchedAction.payload)
@@ -97,7 +132,7 @@ function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps
 
   return (
     <Modal
-      title={t('workspace.save', 'Save the current view')}
+      title={t('workspace.save', 'Save the current workspace')}
       isOpen={isOpen}
       shouldCloseOnEsc={true}
       contentClassName={styles.modal}
@@ -110,24 +145,53 @@ function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps
         className={styles.input}
         onChange={(e) => setName(e.target.value)}
       />
-      <SwitchRow
-        label={t('workspace.uploadPublic' as any, 'Allow other users to see this workspace')}
-        active={createAsPublic}
-        disabled={containsPrivateDatasets}
-        tooltip={
-          containsPrivateDatasets
-            ? `${t(
-                'workspace.uploadPublicDisabled' as any,
-                'The workspace is using private datasets'
-              )} (${privateDatasets.join(',')})`
-            : ''
-        }
-        onClick={() => setCreateAsPublic(!createAsPublic)}
-      />
+      {workspace?.id && (
+        <SwitchRow
+          label={t('workspace.uploadPublic' as any, 'Allow other users to see this workspace')}
+          active={createAsPublic}
+          disabled={containsPrivateDatasets}
+          tooltip={
+            containsPrivateDatasets
+              ? `${t(
+                  'workspace.uploadPublicDisabled' as any,
+                  "This workspace can't be shared publicly because it contains private datasets"
+                )}: ${privateDatasets.join(', ')}`
+              : ''
+          }
+          onClick={() => setCreateAsPublic(!createAsPublic)}
+        />
+      )}
+      {showOverWriteWarning && (
+        <div className={styles.adminWarning}>
+          <p>You are not the creator of this workspace and clicking SAVE will overwrite it</p>
+          <p>⚠️ With admin power comes admin responsability (B.Parker)</p>
+        </div>
+      )}
       <div className={styles.footer}>
-        <Button loading={loading} disabled={!name} onClick={onCreateWorkspaceClick}>
-          {t('common.confirm', 'Confirm') as string}
-        </Button>
+        {showSaveAsNew && (
+          <Button
+            type={allowUpdate ? 'secondary' : 'default'}
+            loading={createLoading}
+            disabled={!name}
+            onClick={onCreateWorkspaceClick}
+          >
+            {t('workspace.saveAsNew', 'Save as new') as string}
+          </Button>
+        )}
+        {isDefaultWorkspace || (!isOwnerWorkspace && !hasEditPermission) ? (
+          <Button loading={createLoading} disabled={!name} onClick={onCreateWorkspaceClick}>
+            {t('common.save', 'Save') as string}
+          </Button>
+        ) : (
+          <Button
+            loading={updateLoading}
+            disabled={!name || !allowUpdate}
+            tooltip={!allowUpdate ? 'Changing workspace visibility requires saves as new' : ''}
+            onClick={updateWorkspace}
+          >
+            {t('common.save', 'Save') as string}
+          </Button>
+        )}
       </div>
     </Modal>
   )
