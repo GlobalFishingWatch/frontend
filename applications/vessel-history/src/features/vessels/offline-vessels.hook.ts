@@ -1,6 +1,4 @@
 import { useCallback } from 'react'
-import { event as uaEvent } from 'react-ga'
-import { DateTime, Interval } from 'luxon'
 import { AsyncError } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { OfflineVessel } from 'types/vessel'

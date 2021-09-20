@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { event as uaEvent } from 'react-ga'
-import { useSelector } from 'react-redux'
 import GFWAPI, {
   AdvancedSearchQueryField,
   getAdvancedSearchQuery,
@@ -11,7 +10,6 @@ import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/cons
 import { RootState } from 'store'
 import { SearchResults } from 'types'
 import { CachedVesselSearch } from './search.slice'
-import { selectSearchResults } from './search.selectors'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
   const fields: AdvancedSearchQueryField[] = [
