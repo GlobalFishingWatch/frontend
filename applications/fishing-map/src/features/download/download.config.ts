@@ -43,40 +43,6 @@ export const formatOptions: ChoiceOption[] = [
   },
 ]
 
-export const groupByOptions: ChoiceOption[] = [
-  {
-    id: GroupBy.Vessel,
-    title: t('common.vessel', 'Vessel'),
-  },
-  {
-    id: GroupBy.Flag,
-    title: t('vessel.flag', 'Flag'),
-  },
-  {
-    id: GroupBy.GearType,
-    title: t('vessel.geartype', 'Gear Type'),
-  },
-  {
-    id: GroupBy.FlagAndGearType,
-    title: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
-  },
-]
-
-export const temporalResolutionOptions: ChoiceOption[] = [
-  {
-    id: TemporalResolution.Daily,
-    title: t('download.daily', 'Daily'),
-  },
-  {
-    id: TemporalResolution.Monthly,
-    title: t('download.monthly', 'Monthly'),
-  },
-  {
-    id: TemporalResolution.Yearly,
-    title: t('download.yearly', 'Yearly'),
-  },
-]
-
 export const spatialResolutionOptions: ChoiceOption[] = [
   {
     id: SpatialResolution.Low,

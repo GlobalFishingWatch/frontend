@@ -1,13 +1,14 @@
-import React, { Fragment, useRef, useState } from 'react'
+import React, { Fragment, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useDispatch, useSelector } from 'react-redux'
-import { DateTime, Duration } from 'luxon'
+import { DateTime } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components/dist'
 import { Dataset } from '@globalfishingwatch/api-types'
+import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import {
   DownloadActivityParams,
   downloadActivityThunk,
@@ -31,8 +32,6 @@ import {
   TemporalResolution,
   SpatialResolution,
   formatOptions,
-  groupByOptions,
-  temporalResolutionOptions,
   spatialResolutionOptions,
   MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
 } from './download.config'
@@ -48,37 +47,82 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
   const downloadStatus = useSelector(selectDownloadStatus)
-  const [duration, setDuration] = useState<Duration | undefined>()
-
   const [format, setFormat] = useState(formatOptions[0].id as Format)
+  const { start, end, timerange } = useTimerangeConnect()
+
+  const groupByOptions: ChoiceOption[] = useMemo(
+    () => [
+      {
+        id: GroupBy.Vessel,
+        title: t('common.vessel', 'Vessel'),
+      },
+      {
+        id: GroupBy.Flag,
+        title: t('vessel.flag', 'Flag'),
+      },
+      {
+        id: GroupBy.GearType,
+        title: t('vessel.geartype', 'Gear Type'),
+      },
+      {
+        id: GroupBy.FlagAndGearType,
+        title: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
+      },
+    ],
+    [t]
+  )
   const [groupBy, setGroupBy] = useState(groupByOptions[0].id as GroupBy)
 
-  const { start, end, timerange } = useTimerangeConnect()
-  let filteredTemporalResolutionOptions = temporalResolutionOptions
-  if (start && end) {
-    const startDateTime = DateTime.fromISO(start)
-    const endDateTime = DateTime.fromISO(end)
-    !duration && setDuration(endDateTime.diff(startDateTime, ['years', 'months']))
-    filteredTemporalResolutionOptions = filteredTemporalResolutionOptions.map((option) => {
-      if (option.id === TemporalResolution.Yearly && duration?.years && duration.years < 1) {
-        return {
-          ...option,
-          disabled: true,
-          tooltip: t('download.yearlyNotAvailable', 'Your time range is shorter than 1 year'),
-          tooltipPlacement: 'top',
+  const temporalResolutionOptions: ChoiceOption[] = useMemo(
+    () => [
+      {
+        id: TemporalResolution.Daily,
+        title: t('download.daily', 'Daily'),
+      },
+      {
+        id: TemporalResolution.Monthly,
+        title: t('download.monthly', 'Monthly'),
+      },
+      {
+        id: TemporalResolution.Yearly,
+        title: t('download.yearly', 'Yearly'),
+      },
+    ],
+    [t]
+  )
+
+  const duration = useMemo(() => {
+    if (start && end) {
+      const startDateTime = DateTime.fromISO(start)
+      const endDateTime = DateTime.fromISO(end)
+      return endDateTime.diff(startDateTime, ['years', 'months'])
+    }
+  }, [end, start])
+
+  const filteredTemporalResolutionOptions: ChoiceOption[] = useMemo(
+    () =>
+      temporalResolutionOptions.map((option) => {
+        if (option.id === TemporalResolution.Yearly && duration && duration.years < 1) {
+          return {
+            ...option,
+            disabled: true,
+            tooltip: t('download.yearlyNotAvailable', 'Your time range is shorter than 1 year'),
+            tooltipPlacement: 'top',
+          }
         }
-      }
-      if (option.id === TemporalResolution.Monthly && duration?.months && duration.months < 1) {
-        return {
-          ...option,
-          disabled: true,
-          tooltip: t('download.monthlyNotAvailable', 'Your time range is shorter than 1 month'),
-          tooltipPlacement: 'top',
+        if (option.id === TemporalResolution.Monthly && duration && duration.months < 1) {
+          return {
+            ...option,
+            disabled: true,
+            tooltip: t('download.monthlyNotAvailable', 'Your time range is shorter than 1 month'),
+            tooltipPlacement: 'top',
+          }
         }
-      }
-      return option
-    })
-  }
+        return option
+      }),
+    [duration, t, temporalResolutionOptions]
+  )
+
   const [temporalResolution, setTemporalResolution] = useState(
     filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
