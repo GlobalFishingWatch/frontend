@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
+import { Feature, Polygon } from 'geojson'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components/dist'
 import { Dataset } from '@globalfishingwatch/api-types'
@@ -130,7 +131,7 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
   const downloadAreaGeometry = useSelector(selectDownloadGeometry)
   const downloadAreaName = useSelector(selectDownloadAreaName)
   const areaIsTooBigForHighRes =
-    area(downloadAreaGeometry as any) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
+    area(downloadAreaGeometry as Feature<Polygon>) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
   const filteredSpatialResolutionOptions = spatialResolutionOptions.map((option) => {
     if (option.id === SpatialResolution.High && areaIsTooBigForHighRes) {
       return {
