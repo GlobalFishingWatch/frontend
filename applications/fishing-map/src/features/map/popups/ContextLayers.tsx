@@ -17,6 +17,7 @@ import { Bbox } from 'types'
 import { selectSidebarOpen } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { setDownloadGeometry } from 'features/download/download.slice'
+import { isGFWUser } from 'features/user/user.slice'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
@@ -48,6 +49,8 @@ function FeatureRow({
   const context = useMapContext()
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
+  const gfwUser = useSelector(isGFWUser)
+  console.log('gfwUser', gfwUser)
 
   const handleReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>) => {
@@ -84,13 +87,15 @@ function FeatureRow({
         <span className={styles.rowText}>{label}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
-            <IconButton
-              icon="download"
-              disabled={!reportEnabled}
-              tooltip={t('download.action', 'Download visible activity layers for this area')}
-              onClick={handleDownloadClick}
-              size="small"
-            />
+            {gfwUser && (
+              <IconButton
+                icon="download"
+                disabled={!reportEnabled}
+                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                onClick={handleDownloadClick}
+                size="small"
+              />
+            )}
             <IconButton
               icon="report"
               disabled={!reportEnabled}
@@ -125,13 +130,15 @@ function FeatureRow({
       <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
         <div className={styles.rowActions}>
-          <IconButton
-            icon="download"
-            disabled={!reportEnabled}
-            tooltip={t('download.action', 'Download visible activity layers for this area')}
-            onClick={handleDownloadClick}
-            size="small"
-          />
+          {gfwUser && (
+            <IconButton
+              icon="download"
+              disabled={!reportEnabled}
+              tooltip={t('download.action', 'Download visible activity layers for this area')}
+              onClick={handleDownloadClick}
+              size="small"
+            />
+          )}
           <IconButton
             icon="report"
             disabled={!reportEnabled}
@@ -162,13 +169,15 @@ function FeatureRow({
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
-            <IconButton
-              icon="download"
-              disabled={!reportEnabled}
-              tooltip={t('download.action', 'Download visible activity layers for this area')}
-              onClick={handleDownloadClick}
-              size="small"
-            />
+            {gfwUser && (
+              <IconButton
+                icon="download"
+                disabled={!reportEnabled}
+                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                onClick={handleDownloadClick}
+                size="small"
+              />
+            )}
             <IconButton
               icon="report"
               disabled={!reportEnabled}
@@ -204,13 +213,15 @@ function FeatureRow({
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
-            <IconButton
-              icon="download"
-              disabled={!reportEnabled}
-              tooltip={t('download.action', 'Download visible activity layers for this area')}
-              onClick={handleDownloadClick}
-              size="small"
-            />
+            {gfwUser && (
+              <IconButton
+                icon="download"
+                disabled={!reportEnabled}
+                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                onClick={handleDownloadClick}
+                size="small"
+              />
+            )}
             <IconButton
               icon="report"
               disabled={!reportEnabled}
