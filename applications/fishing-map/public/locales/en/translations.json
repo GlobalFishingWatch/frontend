@@ -352,7 +352,7 @@
     "remove": "Remove workspace",
     "save": "Save the current workspace",
     "saved": "The current workspace has been saved and it's available in your profile.",
-    "saveLogin": "Register and login to save workspace views (free, 2 minutes)",
+    "saveLogin": "Register and login to save workspaces (free, 2 minutes)",
     "title_plural": "Workspaces"
   }
 }
