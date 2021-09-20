@@ -10,7 +10,6 @@ import { RootState } from 'store'
 import { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
-  if (!advancedSearch) return query
   const fields: AdvancedSearchQueryField[] = [
     {
       key: 'shipname',
@@ -18,27 +17,27 @@ export const getSerializedQuery = (query: string, advancedSearch?: Record<string
     },
     {
       key: 'mmsi',
-      value: advancedSearch.mmsi,
+      value: advancedSearch?.mmsi,
     },
     {
       key: 'imo',
-      value: advancedSearch.imo,
+      value: advancedSearch?.imo,
     },
     {
       key: 'callsign',
-      value: advancedSearch.callsign,
+      value: advancedSearch?.callsign,
     },
     {
       key: 'flag',
-      value: advancedSearch.flags.map((f: string) => ({ id: f })),
+      value: advancedSearch?.flags?.map((f: string) => ({ id: f })),
     },
     {
       key: 'lastTransmissionDate',
-      value: advancedSearch.lastTransmissionDate,
+      value: advancedSearch?.lastTransmissionDate,
     },
     {
       key: 'firstTransmissionDate',
-      value: advancedSearch.firstTransmissionDate,
+      value: advancedSearch?.firstTransmissionDate,
     },
   ]
   return getAdvancedSearchQuery(fields)
