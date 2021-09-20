@@ -1,4 +1,3 @@
-import { AdvancedSearchQueryField } from '@globalfishingwatch/api-client'
 import { Vessel, Authorization, VesselSearch } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
