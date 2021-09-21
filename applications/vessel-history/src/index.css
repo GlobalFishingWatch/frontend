@@ -7,7 +7,7 @@
   --color-primary-green-border: rgba(var(--primary-green-rgb), var(--opacity-border));
   --header-height: 5rem;
   --tabs-height: 4rem;
-  --base-font-size: 15px;
+  --base-font-size: 12px;
 }
 
 html {

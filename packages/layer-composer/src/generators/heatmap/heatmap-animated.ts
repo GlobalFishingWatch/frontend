@@ -15,6 +15,7 @@ import {
 } from '../types'
 import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
+import { Group } from '../..'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, Interval } from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
@@ -105,7 +106,7 @@ class HeatmapAnimatedGenerator {
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
     const visible = getSubLayersVisible(config.sublayers)
 
-    const tilesUrl = getTilesUrl(config)
+    const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource =
@@ -260,6 +261,7 @@ class HeatmapAnimatedGenerator {
         timeChunks,
         aggregationOperation: finalConfig.aggregationOperation,
         multiplier: finalConfig.breaksMultiplier,
+        group: config.group || Group.Heatmap,
       },
     }
 

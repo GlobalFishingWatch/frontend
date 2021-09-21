@@ -1,13 +1,18 @@
-import React, { Fragment, useState, useEffect, useMemo } from 'react'
+import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
-import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
+import {
+  selectQueryParam,
+  selectUrlAkaVesselQuery,
+  selectVesselProfileId,
+} from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import {
   clearVesselDataview,
@@ -27,9 +32,11 @@ import { selectDatasets } from 'features/datasets/datasets.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
+import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
+import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import Info from './components/Info'
-import styles from './Profile.module.css'
 import Activity from './components/activity/Activity'
+import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
@@ -37,12 +44,18 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
-  const vesselProfileId = useSelector(selectVesselProfileId, shallowEqual)
-  const vesselStatus = useSelector(selectVesselsStatus, shallowEqual)
+  const vesselProfileId = useSelector(selectVesselProfileId)
+  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
+  const vesselStatus = useSelector(selectVesselsStatus)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
-  const vessel = useSelector(selectVesselById(vesselProfileId), shallowEqual)
-  const datasets = useSelector(selectDatasets, shallowEqual)
-  const resourceQueries = useSelector(selectDataviewsResourceQueries, shallowEqual)
+  const vessel = useSelector(selectVesselById(vesselProfileId))
+  const datasets = useSelector(selectDatasets)
+  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
+  const isMergedVesselsView = useMemo(
+    () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
+    [akaVesselProfileIds]
+  )
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -69,13 +82,18 @@ const Profile: React.FC = (props): React.ReactElement => {
                 ? eventsRelatedDatasets.map((d) => d.id)
                 : []
 
+            // Only merge with vessels of the same dataset that the main vessel
+            const akaVesselsIds = (akaVesselProfileIds ?? [])
+              .map((vesselProfileId) => parseVesselProfileId(vesselProfileId))
+              .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id)
             const vesselDataviewInstance = getVesselDataviewInstance(
               { id: gfwId },
               {
                 trackDatasetId: trackDatasetId as string,
                 infoDatasetId: dataset,
                 ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-              }
+              },
+              akaVesselsIds as { id: string }[]
             )
             dispatch(upsertVesselDataview(vesselDataviewInstance))
           }
@@ -87,17 +105,22 @@ const Profile: React.FC = (props): React.ReactElement => {
       fetchVessel()
       dispatch(resetFilters())
     }
-  }, [dispatch, vesselProfileId, datasets])
+  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
+
+  const  trackEvent = useCallback(() => {
+    uaEvent({
+      category: 'Vessel Detail',
+      action: 'Click to go back to search'
+    })
+  }, [])
 
   useEffect(() => {
-    if (resourceQueries && resourceQueries.length > 0) {
+    if (vesselDataviewLoaded && resourceQueries && resourceQueries.length > 0) {
       resourceQueries.forEach((resourceQuery) => {
         dispatch(fetchResourceThunk(resourceQuery))
       })
     }
-  }, [dispatch, resourceQueries])
-
-  
+  }, [dispatch, loading, resourceQueries, vessel, vesselDataviewLoaded])
 
   const tabs: Tab[] = useMemo(
     () => [
@@ -105,7 +128,12 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'info',
         title: t('common.info', 'INFO').toLocaleUpperCase(),
         content: vessel ? (
-          <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
+          <Info 
+            vessel={vessel} 
+            lastPosition={lastPosition} 
+            lastPortVisit={lastPortVisit} 
+            onMoveToMap={() => setActiveTab(tabs?.[2])}
+          />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
         ),
@@ -114,8 +142,12 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'activity',
         title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
         content: vessel ? (
-          <Activity vessel={vessel} lastPosition={lastPosition} 
-            lastPortVisit={lastPortVisit} onMoveToMap={() => setActiveTab(tabs?.[2]) }/>
+          <Activity
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
+            onMoveToMap={() => setActiveTab(tabs?.[2])}
+          />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
         ),
@@ -163,7 +195,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   return (
     <Fragment>
       <header className={styles.header}>
-        <Link to={backLink}>
+        <Link to={backLink} onClick={trackEvent}>
           <IconButton
             type="border"
             size="default"
@@ -174,6 +206,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         {vessel && (
           <h1>
             {shipName ?? t('common.unknownName', 'Unknown name')}
+            {isMergedVesselsView &&
+              ` (${t('vessel.nVesselsMerged', '{{count}} merged', {
+                count: akaVesselProfileIds.length + 1,
+              })})`}
             {vessel.history.shipname.byDate.length > 1 && (
               <p>
                 {t('vessel.plusPreviousValuesByField', defaultPreviousNames, {
@@ -194,7 +230,22 @@ const Profile: React.FC = (props): React.ReactElement => {
         <Tabs
           tabs={tabs}
           activeTab={activeTab?.id as string}
-          onTabClick={(tab: Tab) => setActiveTab(tab)}
+          onTabClick={(tab: Tab) => {
+            setActiveTab(tab)
+            if (tab.id === 'activity') {
+              uaEvent({
+                category: 'Vessel Detail ACTIVITY Tab',
+                action: 'See Activity Tab',
+              })
+            }
+            if (tab.id === 'map') {
+              uaEvent({
+                category: 'Vessel Detail MAP Tab',
+                action: 'See MAP Tab',
+                label: 'global tab'
+              })
+            }
+          }}
         ></Tabs>
       </div>
     </Fragment>

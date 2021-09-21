@@ -1,5 +1,17 @@
 # @globalfishingwatch/ui-components
 
+## 11.1.2
+
+### Patch Changes
+
+- 81c99e75: [WIP] Vessel Viewer search changes
+
+## 11.1.1
+
+### Patch Changes
+
+- 1bb0f2b6: fix radio label width
+
 ## 11.1.0
 
 ### Minor Changes

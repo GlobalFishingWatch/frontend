@@ -44,6 +44,7 @@ COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
+COPY ./craco.config.js /app/craco.config.js
 RUN yarn build
 
 #################################################################################

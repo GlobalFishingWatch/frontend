@@ -1,5 +1,57 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.52
+
+### Patch Changes
+
+- Updated dependencies [06a4320f]
+  - @globalfishingwatch/layer-composer@9.3.0
+
+## 1.1.51
+
+### Patch Changes
+
+- Updated dependencies [287bd34d]
+  - @globalfishingwatch/timebar@2.1.0
+
+## 1.1.50
+
+### Patch Changes
+
+- Updated dependencies [4de42baa]
+- Updated dependencies [52d30f29]
+  - @globalfishingwatch/dataviews-client@13.1.0
+  - @globalfishingwatch/layer-composer@9.2.3
+
+## 1.1.49
+
+### Patch Changes
+
+- Updated dependencies [30b3034b]
+  - @globalfishingwatch/api-types@5.3.2
+
+## 1.1.48
+
+### Patch Changes
+
+- 81c99e75: [WIP] Vessel Viewer search changes
+- Updated dependencies [81c99e75]
+  - @globalfishingwatch/ui-components@11.1.2
+
+## 1.1.47
+
+### Patch Changes
+
+- Updated dependencies [16cf0830]
+  - @globalfishingwatch/react-hooks@14.0.1
+
+## 1.1.46
+
+### Patch Changes
+
+- Updated dependencies [1bb0f2b6]
+  - @globalfishingwatch/ui-components@11.1.1
+
 ## 1.1.45
 
 ### Patch Changes

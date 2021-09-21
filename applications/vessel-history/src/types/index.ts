@@ -1,9 +1,9 @@
-import { Vessel, Authorization } from '@globalfishingwatch/api-types'
+import { Vessel, Authorization, VesselSearch } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
-export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel' | 'searchType'
+export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel'
 export type WorkspaceAdvancedSearchParam =
   | 'IMO'
   | 'MMSI'
@@ -12,25 +12,33 @@ export type WorkspaceAdvancedSearchParam =
   | 'lastTransmissionDate'
   | 'lastTransmissionDate'
   | 'firstTransmissionDate'
+export type WorkspaceMergeVesselsParam = 'aka'
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
   | WorkspaceStateProperty
   | WorkspaceAdvancedSearchParam
+  | WorkspaceMergeVesselsParam
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
+export type WorkspaceMergeVessels = {
+  aka?: string[]
+}
+
 export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {
   q?: string
-  searchType?: string
   version?: string
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string
 }
-export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState
+export type QueryParams = Partial<WorkspaceViewport> &
+  Partial<WorkspaceTimeRange> &
+  Partial<WorkspaceMergeVessels> &
+  WorkspaceState
 
 export type CoordinatePosition = {
   latitude: number
@@ -70,6 +78,7 @@ export interface VesselFieldsHistory {
 export interface VesselWithHistory extends Vessel {
   history: VesselFieldsHistory
   iuuStatus?: number
+  vesselType?: string
 }
 
 export enum VesselAPISource {
@@ -159,6 +168,7 @@ export type GFWDetail = {
   dataset: string
   geartype: string
   normalized_shipname: string
+  vesselType: string
 }
 
 export enum Locale {
@@ -184,3 +194,11 @@ export type Range = {
 
 // minX, minY, maxX, maxY
 export type Bbox = [number, number, number, number]
+
+export interface SearchResults {
+  vessels: Array<VesselSearch>
+  query: string
+  offset: number
+  total: number
+  searching: boolean
+}

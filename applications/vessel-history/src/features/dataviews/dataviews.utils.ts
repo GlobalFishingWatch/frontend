@@ -26,14 +26,24 @@ type VesselInstanceDatasets = {
   infoDatasetId: string
   eventsDatasetsId?: string[]
 }
+export const getVesselDataviewInstanceId = (vesselId: string) => `${VESSEL_LAYER_PREFIX}${vesselId}`
+
 export const getVesselDataviewInstance = (
   vessel: { id: string },
-  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
+  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets,
+  akaVessels: { id: string }[] = []
 ): DataviewInstance<Generators.Type> => {
+  // Build list of unique vessel ids to merge
+  // sorted alphabetically so that regardless of the order
+  // in which the user selected the vessels
+  // the request url is the same
+  const akaVesselsIds = Array.from(
+    new Set([vessel.id].concat(akaVessels.map((v) => v.id)).sort((a, b) => (a > b ? 1 : -1)))
+  ).join(',')
   const datasetsConfig: DataviewDatasetConfig[] = [
     {
       datasetId: trackDatasetId,
-      params: [{ id: 'vesselId', value: vessel.id }],
+      params: [{ id: 'vesselId', value: akaVesselsIds }],
       endpoint: EndpointId.Tracks,
     },
     {
@@ -46,14 +56,14 @@ export const getVesselDataviewInstance = (
     eventsDatasetsId.forEach((eventDatasetId) => {
       datasetsConfig.push({
         datasetId: eventDatasetId,
-        query: [{ id: 'vessels', value: vessel.id }],
+        query: [{ id: 'vessels', value: akaVesselsIds }],
         params: [],
         endpoint: EndpointId.Events,
       })
     })
   }
   const vesselDataviewInstance = {
-    id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
+    id: getVesselDataviewInstanceId(vessel.id),
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       type: Generators.Type.Track,

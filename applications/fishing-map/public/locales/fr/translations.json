@@ -83,7 +83,8 @@
     "emptyState": "Vos jeux de données apparaîtront ici",
     "featuresNameField": "Champ de nom pour chaque zone",
     "file": "Fichier",
-    "fileNotAllowed": "(Seuls les fichiers .zip ou .json sont autorisés)",
+    "onlyCsvAllowed": "(Only .csv files are allowed)",
+    "onlyZipAndJsonAllowed": "(Only .zip or .json files are allowed)",
     "hint": "En savoir plus sur les formats pris en charge",
     "importing": "Le jeu de données est en cours d'importation",
     "individualIdField": "Champ ID Individuel",
@@ -104,6 +105,7 @@
     "typeTracks": "Trajectoires",
     "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou navires.",
     "uploadLogin": "Inscrivez-vous et  <1>connectez-vous</1> pour télécharger des jeux de données (gratuit, 2 minutes)",
+    "uploadPublic": "Allow other users to see this dataset when you share a workspace",
     "uploadNewContext": "Ajouter de nouveux calques de référence",
     "uploadNewEnviroment": "Ajouter un nouveau jeu de données d'environnement"
   },
@@ -150,6 +152,7 @@
     "notInCVP": "Événement non disponible.",
     "port": "Port",
     "portAction": "À quai pendant",
+    "port_visit": "Port visit",
     "portAt": "Ancré à {{port}} pendant",
     "seeInCVP": "Voir dans le Carrier Vessel Portal",
     "unknown": "Événement inconnu"

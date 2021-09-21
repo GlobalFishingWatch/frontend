@@ -107,6 +107,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     callsign: extractValue(vesselHistory.callsign.byDate),
     flag: extractValue(vesselHistory.flag.byDate) || '',
     type: extractValue(vesselHistory.vesselType.byDate),
+    vesselType: extractValue(vesselHistory.vesselType.byDate),
     geartype: extractValue(vesselHistory.geartype.byDate),
     length: extractValue(vesselHistory.length.byDate),
     depth: extractValue(vesselHistory.depth.byDate),

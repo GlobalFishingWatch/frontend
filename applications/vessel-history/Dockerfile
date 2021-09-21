@@ -25,10 +25,22 @@ COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
+COPY ./craco.config.js /app/craco.config.js
 
 # Build the application assets
 FROM base as build
-ENV NODE_ENV=production
+ARG REACT_APP_GOOGLE_TAG_MANAGER_KEY=""
+ARG REACT_APP_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
+ARG REACT_APP_LIMITED_ACCESS_USER=false
+ARG REACT_APP_WORKSPACE_ENV=development
+ARG GENERATE_SOURCEMAP=false
+
+ENV REACT_APP_GOOGLE_TAG_MANAGER_KEY=${REACT_APP_GOOGLE_TAG_MANAGER_KEY}
+ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
+ENV REACT_APP_LIMITED_ACCESS_USER=${REACT_APP_LIMITED_ACCESS_USER}
+ENV REACT_APP_WORKSPACE_ENV=${REACT_APP_WORKSPACE_ENV}
+ENV NODE_ENV=$REACT_APP_WORKSPACE_ENV
+
 # override node_modules inside image with
 # generated versions from the monorepo
 COPY ./node_modules/@globalfishingwatch /tmp/@globalfishingwatch

@@ -47,6 +47,9 @@ import { useAnalytics } from './analytics.hooks'
 const Map = lazy(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
 const Timebar = lazy(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
+/* Using any to avoid Typescript complaining about the value */
+const MapContextProvider: any = MapContext.Provider
+
 declare global {
   interface Window {
     gtag: any
@@ -197,8 +200,7 @@ function App(): React.ReactElement {
   }
 
   return (
-    /* Value as null as there is no needed to set a default value but Typescript complains */
-    <MapContext.Provider value={null as any}>
+    <MapContextProvider>
       {/* <RecoilizeDebugger /> */}
       <Suspense fallback={null}>
         <SplitView
@@ -251,7 +253,7 @@ function App(): React.ReactElement {
           </Modal>
         </Suspense>
       )}
-    </MapContext.Provider>
+    </MapContextProvider>
   )
 }
 

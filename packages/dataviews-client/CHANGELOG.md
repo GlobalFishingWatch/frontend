@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 13.1.0
+
+### Minor Changes
+
+- 4de42baa: resolve tilesAPI for env datasets instead of hardcoded in layer-composer
+
 ## 13.0.0
 
 ### Major Changes

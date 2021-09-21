@@ -83,7 +83,8 @@
     "emptyState": "Your datasets will appear here",
     "featuresNameField": "Features name field",
     "file": "File",
-    "fileNotAllowed": "(Only .zip or .json files are allowed)",
+    "onlyCsvAllowed": "(Only .csv files are allowed)",
+    "onlyZipAndJsonAllowed": "(Only .zip or .json files are allowed)",
     "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
     "individualIdField": "Individual ID field",
@@ -104,6 +105,7 @@
     "typeTracks": " Tracks",
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
     "uploadLogin": "You need to <1>login</1> to upload datasets",
+    "uploadPublic": "Allow other users to see this dataset when you share a workspace",
     "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset"
   },
@@ -150,6 +152,7 @@
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
     "port": "Port",
     "portAction": "Docked for",
+    "port_visit": "Port visit",
     "portAt": "Docked at {{port}} for",
     "seeInCVP": "See in Carrier Vessel Portal",
     "unknown": "Unknown event"

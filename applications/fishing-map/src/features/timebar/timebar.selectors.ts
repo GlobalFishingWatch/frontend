@@ -29,7 +29,7 @@ type TimebarTrackSegment = {
 }
 
 export type TimebarTrack = {
-  segments: TimebarTrackSegment[]
+  segments?: TimebarTrackSegment[]
   color: string
 }
 
@@ -37,15 +37,17 @@ export const selectTracksData = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
     if (!trackDataviews || !resources) return
-
     const tracksSegments: (TimebarTrack | null)[] = trackDataviews.flatMap((dataview) => {
+      const timebarTrack = {
+        color: dataview.config?.color || '',
+      }
       const { url } = resolveDataviewDatasetResource(dataview, [
         DatasetTypes.Tracks,
         DatasetTypes.UserTracks,
       ])
-      if (!url) return null
+      if (!url) return timebarTrack
       const track = resources[url] as Resource<TrackResourceData>
-      if (!track?.data) return null
+      if (!track?.data) return timebarTrack
 
       const segments = (track.data as any).features
         ? geoJSONToSegments(track.data as any)
@@ -58,8 +60,8 @@ export const selectTracksData = createSelector(
         }
       })
       return {
+        ...timebarTrack,
         segments: trackSegments,
-        color: dataview.config?.color || '',
         segmentsOffsetY: track.dataset.type === DatasetTypes.UserTracks,
       }
     })

@@ -44,7 +44,7 @@
   position: relative;
   padding-left: 0.5rem;
   font: var(--font-S);
-  text-transform: capitalize;
+  text-transform: none;
 }
 
 .eventLegendCheckbox:not(:checked) + .eventLegendLabel {

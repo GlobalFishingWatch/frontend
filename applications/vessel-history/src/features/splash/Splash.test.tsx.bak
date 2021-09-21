@@ -1,3 +1,7 @@
+// TODO: Fix this test error
+//     Test suite failed to run
+//     TypeError: Cannot read property 'forwardRef' of undefined
+//  and remove the bak extension to include this test in the run
 import { render, waitFor } from '@testing-library/react'
 import { useTranslation } from 'react-i18next'
 import { useUser } from 'features/user/user.hooks'

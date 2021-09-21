@@ -46,14 +46,14 @@ export enum Group {
   BasemapFill = 'basemapFill', // Landmass
   OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as EEZ, RFMOs, etc
   OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
-  OutlinePolygonsBackground = 'OutlinePolygonsBackground', // Polygons  that need to be rendered below landmass
+  OutlinePolygonsBackground = 'outlinePolygonsBackground', // Polygons  that need to be rendered below landmass
   OutlinePolygonsHighlighted = 'outlinePolygonsHighlighted', // Context layers with selected features
   Default = 'default', // Default stack position when group is not specified
   Point = 'point', // Events, etc
   Track = 'track', // Tracks
   TrackHighlightedEvent = 'trackHighlightedEvent', // Fixed highlight section normally used for a event duration
   TrackHighlighted = 'trackHighlighted', // Highlighted sections of tracks
-  BasemapForeground = 'BasemapForeground', // Graticule labels, bathymetry labels, etc
+  BasemapForeground = 'basemapForeground', // Graticule labels, bathymetry labels, etc
   Cluster = 'cluster', // Cluster circles
   Tool = 'tool', // Tools such as rulers, etc
   Label = 'label', // All non-basemap layers labels

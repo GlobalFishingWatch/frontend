@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
-import MapGL from '@globalfishingwatch/react-map-gl'
+import MapGL from 'react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 
 const transformRequest = (url, resourceType) => {

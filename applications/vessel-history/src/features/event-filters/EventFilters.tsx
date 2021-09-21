@@ -1,19 +1,22 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { InputDate, Modal, Switch } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { useApplyFiltersConnect } from './filters.hooks'
-import { selectEnd, selectFilter, selectStart } from './filters.slice'
+import { availableEventFilters, selectEnd, selectFilter, selectStart } from './filters.slice'
 import styles from './EventFilters.module.css'
 
 interface ModalProps {
+  tab: 'ACTIVITY' | 'MAP'
   isModalOpen: boolean
   onCloseModal: (close: boolean) => void
 }
 
 const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
+  const tab = props.tab
   const { setFilter, setDate } = useApplyFiltersConnect()
   const isModalOpen = props.isModalOpen
   const closeModal = useCallback(() => props.onCloseModal(false), [props])
@@ -24,6 +27,17 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const start = useSelector(selectStart).slice(0, 10) as string
   const end = useSelector(selectEnd).slice(0, 10) as string
 
+  const trackAndSetFilter = useCallback(
+    (tab: 'MAP' | 'ACTIVITY', filter: availableEventFilters, value: boolean) => {
+      uaEvent({
+        category: 'Vessel Detail ACTIVITY or MAP Tab',
+        action: 'Click Filter Icon - Event type',
+        label: JSON.stringify({ [filter]: value, tab: tab })
+      })
+      setFilter(filter, value)
+    },
+  [setFilter])
+
   return (
     <Modal
       title={t(`filters.title` as any, 'Filter events')}
@@ -33,7 +47,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter('portVisits', !isPortVisitActive)}
+          onClick={() => trackAndSetFilter(tab, 'portVisits', !isPortVisitActive)}
           active={isPortVisitActive}
         ></Switch>
         {t(`settings.portVisits.title` as any, 'Port Visits')}
@@ -41,7 +55,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter('fishingEvents', !isFishingEventsActive)}
+          onClick={() => trackAndSetFilter(tab, 'fishingEvents', !isFishingEventsActive)}
           active={isFishingEventsActive}
         ></Switch>
         {t(`settings.fishingEvents.title` as any, 'Fishing Events')}
@@ -49,7 +63,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter('encounters', !isEncountersActive)}
+          onClick={() => trackAndSetFilter(tab, 'encounters', !isEncountersActive)}
           active={isEncountersActive}
         ></Switch>
         {t(`settings.encounters.title` as any, 'Encounters')}
@@ -57,7 +71,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       <div className={styles.filterSelector}>
         <Switch
           className={styles.filterSwitch}
-          onClick={() => setFilter('loiteringEvents', !isLoiteringEventsActive)}
+          onClick={() => trackAndSetFilter(tab, 'loiteringEvents', !isLoiteringEventsActive)}
           active={isLoiteringEventsActive}
         ></Switch>
         {t(`settings.loiteringEvents.title` as any, 'Loitering Events')}

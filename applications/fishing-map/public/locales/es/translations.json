@@ -83,7 +83,8 @@
     "emptyState": "Sus datos aparecerán aquí",
     "featuresNameField": "Campo para nombrar cada área",
     "file": "Archivo",
-    "fileNotAllowed": "(Sólo se permiten archivos .zip o .json)",
+    "onlyCsvAllowed": "(Only .csv files are allowed)",
+    "onlyZipAndJsonAllowed": "(Only .zip or .json files are allowed)",
     "hint": "Más información sobre los formatos compatibles",
     "importing": "Se están importando los datos",
     "individualIdField": "Campo ID Individual",
@@ -104,6 +105,7 @@
     "typeTracks": " Pistas",
     "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o embarcaciones.",
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir datos (gratis y toma 2 minutos)",
+    "uploadPublic": "Allow other users to see this dataset when you share a workspace",
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental"
   },
@@ -150,6 +152,7 @@
     "notInCVP": "Evento no disponible",
     "port": "Puerto",
     "portAction": "Atracado durante",
+    "port_visit": "Port visit",
     "portAt": "Atracado a {{port}} durante",
     "seeInCVP": "Ver en el Carrier Vessel Portal",
     "unknown": "Evento desconocido"

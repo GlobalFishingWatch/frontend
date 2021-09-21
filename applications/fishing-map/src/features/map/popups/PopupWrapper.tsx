@@ -2,8 +2,8 @@ import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
-import type { Anchor } from '@globalfishingwatch/mapbox-gl'
-import { Popup } from '@globalfishingwatch/react-map-gl'
+import { Popup } from 'react-map-gl'
+import type { PositionType } from 'react-map-gl/src/utils/dynamic-position'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TooltipEvent } from 'features/map/map.hooks'
@@ -26,7 +26,7 @@ type PopupWrapperProps = {
   closeOnClick?: boolean
   className?: string
   onClose?: () => void
-  anchor?: Anchor
+  anchor?: PositionType
   type?: 'hover' | 'click'
 }
 function PopupWrapper({

@@ -1,11 +1,13 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import Link from 'redux-first-router-link'
 import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { SETTINGS } from 'routes/routes'
 import {
@@ -18,13 +20,16 @@ import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
 
-const Highlights: React.FC = (): React.ReactElement => {
+interface HighlightsProps {
+  onMoveToMap: () => void
+}
+
+const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
   const events = useSelector(selectFilteredActivityHighlightEvents)
   const loading = useSelector(selectEventsLoading)
-
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -34,6 +39,33 @@ const Highlights: React.FC = (): React.ReactElement => {
   const closeModal = useCallback(() => setIsOpen(false), [])
   const navigateToSettings = useCallback(() => dispatch({ type: SETTINGS }), [dispatch])
 
+  const trackEvent = useCallback(() => {
+    uaEvent({
+      category: 'Highlight Events',
+      action: 'Start highlight events configurations',
+      label: JSON.stringify({
+        page: 'vessel detail'
+      })
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!loading) {
+      const countEvents = {
+        [EventTypes.Port as string]: 0,
+        [EventTypes.Fishing as string]: 0,
+        [EventTypes.Loitering as string]: 0,
+        [EventTypes.Encounter as string]: 0,
+      }
+      events.forEach(event => countEvents[event.type as string]++)
+      uaEvent({
+        category: 'Highlight Events',
+        action: 'Display highlight events',
+        label: JSON.stringify(countEvents)
+      })
+    }
+  }, [events, loading])
+
   return (
     <div
       className={cx(styles.activityContainer, styles.highlightsContainer, {
@@ -42,7 +74,7 @@ const Highlights: React.FC = (): React.ReactElement => {
     >
       <div className={styles.divider}></div>
       <div>
-        <Link className={styles.settingsLink} to={['settings']}>
+        <Link className={styles.settingsLink} to={['settings']} onClick={trackEvent}>
           <IconButton type="default" size="default" icon="settings"></IconButton>
         </Link>
         <h2 className={styles.highlights}>
@@ -83,7 +115,7 @@ const Highlights: React.FC = (): React.ReactElement => {
               </Modal>
               <div className={cx(styles.activityListContainer, styles.highlightsListContainer)}>
                 {events && events.length > 0 && (
-                  <AutoSizer disableWidth={true}>
+                  <AutoSizer disableWidth={false}>
                     {({ width, height }) => (
                       <List
                         width={width}
@@ -99,7 +131,7 @@ const Highlights: React.FC = (): React.ReactElement => {
                               <ActivityItem
                                 key={index}
                                 event={event}
-                                onInfoClick={(event) => openModal(event)}
+                                onInfoClick={openModal}
                               />
                             </div>
                           )

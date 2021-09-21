@@ -10,7 +10,7 @@ function getBaseLayers(config: GlobalHeatmapAnimatedGeneratorConfig): ExtendedLa
     'source-layer': 'temporalgrid',
     type: HEATMAP_MODE_LAYER_TYPE[config.mode] as any,
     metadata: {
-      group: Group.Heatmap,
+      group: config.group || Group.Heatmap,
       generatorType: Type.HeatmapAnimated,
       generatorId: config.id,
     },

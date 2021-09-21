@@ -180,6 +180,12 @@ Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
+          "endDate": "2021-08-17T09:08:00Z",
+          "firstSeen": "2013-05-14T03:31:40Z",
+          "source": "GFW",
+          "value": "some vessel type",
+        },
+        Object {
           "endDate": "",
           "firstSeen": "1991-02-02T00:00:00.000Z",
           "source": "TMT",
@@ -199,6 +205,7 @@ Object {
   "origin": undefined,
   "owner": undefined,
   "shipname": "MARIA MARIA 2",
-  "type": "Fishing Vessel",
+  "type": "some vessel type",
+  "vesselType": "some vessel type",
 }
 `;

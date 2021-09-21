@@ -9,7 +9,7 @@
         "keyword": "Flota",
         "enum": {
           "industry": "industrial",
-          "small_fisheries": "artisanal"
+          "small_fisheries": "Artesanal"
         }
       },
       "source": "source",
@@ -54,7 +54,7 @@
         "keyword": "fleet",
         "enum": {
           "industrial": "industrial",
-          "artisanal": "artisanal",
+          "artisanal": "Artesanal",
           "not defined": "not defined"
         }
       },
@@ -352,7 +352,7 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Artisanal",
+          "chile_vms_small_fisheries": "Artesanal",
           "chile_vms_industry": "Industrial"
         }
       },
@@ -361,6 +361,26 @@
       "elevation_m": "altitud_m",
       "distance_from_port_m": "distancia_de_puerto_m",
       "distance_from_shore_m": "distancia_de_oro_m"
+    }
+  },
+  "public-chile-fishing-vessels": {
+    "name": "VMS de Chile (Buques de pesca)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industry": "industry",
+          "small_fisheries": "small_fisheries"
+        }
+      },
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionData": "firstTransmissionData",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-chile-presence": {
@@ -373,7 +393,7 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Artisanal",
+          "chile_vms_small_fisheries": "Artesanal",
           "chile_vms_industry": "Industrial",
           "chile_vms_aquaculture": "Acuicultura",
           "chile_vms_transport": "Transporte"
@@ -625,6 +645,8 @@
     "schema": {
       "id": "id",
       "dataset": "dataset",
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -736,6 +758,8 @@
           "drifting_longlines": "drifting_longlines"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -775,6 +799,8 @@
           "Purse Seine Support Vessel": "Purse Seine Support Vessel"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -991,7 +1017,7 @@
         "keyword": "flota",
         "enum": {
           "industrial": "industrial",
-          "artisanal": "artisanal",
+          "artisanal": "Artesanal",
           "not defined": "no definido"
         }
       },

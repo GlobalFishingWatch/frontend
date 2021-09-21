@@ -38,6 +38,7 @@ import DatasetTypeSelect from './DatasetTypeSelect'
 
 export type DatasetMetadata = {
   name: string
+  public: boolean
   description?: string
   category: DatasetCategory
   type: DatasetTypes
@@ -132,6 +133,7 @@ function NewDataset(): React.ReactElement {
 
           setMetadata((metadata) => ({
             ...metadata,
+            public: true,
             name: metadataName,
             type: DatasetTypes.Context,
             category: datasetCategory,
@@ -154,6 +156,7 @@ function NewDataset(): React.ReactElement {
         setMetadata({
           ...metadata,
           name: metadataName,
+          public: true,
           type: DatasetTypes.UserTracks,
           category: datasetCategory,
           fields: meta?.fields,
@@ -175,16 +178,19 @@ function NewDataset(): React.ReactElement {
     // TODO insert fields validation here
     setMetadata((meta) => {
       let error = ''
-      const newMetadata =
-        field.hasOwnProperty('name') || field.hasOwnProperty('description')
-          ? { ...meta, ...(field as DatasetMetadata) }
-          : {
-              ...(meta as DatasetMetadata),
-              configuration: {
-                ...meta?.configuration,
-                ...(field as AnyDatasetConfiguration),
-              },
-            }
+      const isRootMetaField =
+        field.hasOwnProperty('name') ||
+        field.hasOwnProperty('description') ||
+        field.hasOwnProperty('public')
+      const newMetadata = isRootMetaField
+        ? { ...meta, ...(field as DatasetMetadata) }
+        : {
+            ...(meta as DatasetMetadata),
+            configuration: {
+              ...meta?.configuration,
+              ...(field as AnyDatasetConfiguration),
+            },
+          }
       const { min, max } =
         (newMetadata.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
         {}
@@ -285,12 +291,12 @@ function NewDataset(): React.ReactElement {
         label: userTrackGeoJSONFile?.name ?? file.name,
       })
       setLoading(true)
-
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {
           ...metadata,
         },
         file: userTrackGeoJSONFile || file,
+        createAsPublic: metadata?.public ?? true,
       })
       setLoading(false)
 
