@@ -1,4 +1,5 @@
 import GFWAPI from '@globalfishingwatch/api-client'
+import { Authorization } from '@globalfishingwatch/api-types/dist'
 import { TMTDetail, ValueItem, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
@@ -10,6 +11,9 @@ interface TMTVesselSourceId extends VesselSourceId {
 const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem: ValueItem[]) => {
   return valueItem.slice().shift()?.value || undefined
 }
+
+const sortAuthorization = (a: Authorization, b: Authorization) =>
+  a.originalStartDate > b.originalStartDate ? 1 : -1
 
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
@@ -91,7 +95,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     owner: extractValue(vesselHistory.owner.byDate),
     operator: extractValue(vesselHistory.operator.byDate),
     builtYear: extractValue(vesselHistory.builtYear.byDate),
-    authorizations: authorisationList ? authorisationList.reverse() : [],
+    authorizations: authorisationList ? authorisationList.sort(sortAuthorization) : [],
     iuuStatus: iuuStatus,
     firstTransmissionDate: '',
     lastTransmissionDate: '',

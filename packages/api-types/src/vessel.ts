@@ -2,6 +2,8 @@ export interface Authorization {
   source: string
   startDate: string
   endDate: string
+  originalStartDate: number
+  originalEndDate: number
 }
 
 export interface Vessel {
