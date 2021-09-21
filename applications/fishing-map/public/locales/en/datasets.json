@@ -269,6 +269,54 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-peru-fishing-vessels": {
+    "name": "Private Peru VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Peru (Private)",
+    "schema": {
+      "id": "id",
+      "beam": "beam",
+      "flag": "flag",
+      "casco": {
+        "keyword": "casco",
+        "enum": {
+          "ACERO NAVAL": "ACERO NAVAL",
+          "MADERA": "MADERA",
+          "N/E": "N/E",
+          "NONE": "NONE",
+          "FIBRA DE VIDRIO": "FIBRA DE VIDRIO"
+        }
+      },
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "ssvid": "ssvid",
+      "width": "width",
+      "length": "length",
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "Peru": "Peru",
+          "Foreign": "Foreign"
+        }
+      },
+      "source": "source",
+      "regimen": "regimen",
+      "capacity": "capacity",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "chdSpecies": "chdSpecies",
+      "nationalId": "nationalId",
+      "resolution": "resolution",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-peru-presence": {
     "name": "Peru VMS Presence",
     "description": "This layer of Global Fishing Watch uses data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector, (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. The data is collected using their Vessel Monitoring System (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by VMS. \n",
