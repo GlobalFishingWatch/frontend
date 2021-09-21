@@ -69,7 +69,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
       <div className={styles.viewsHeader}>
         <label>
           {datasetCategory === DatasetCategory.Context
-            ? t('common.context_area_plural', 'Context areas')
+            ? t('common.context_area_other', 'Context areas')
             : t('common.environment', 'Environment')}
         </label>
         <Button disabled={loading} type="secondary" onClick={onNewDatasetClick}>

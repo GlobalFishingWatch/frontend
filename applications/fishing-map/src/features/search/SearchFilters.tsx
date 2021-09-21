@@ -64,7 +64,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
     <div className={cx(className)}>
       {sourceOptions && sourceOptions.length > 0 && (
         <MultiSelect
-          label={t('layer.source_plural', 'Sources')}
+          label={t('layer.source_other', 'Sources')}
           placeholder={getPlaceholderBySelections(sources)}
           options={sourceOptions}
           selectedOptions={sources}
@@ -125,7 +125,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
         </div>
       )}
       <MultiSelect
-        label={t('layer.flagState_plural', 'Flag States')}
+        label={t('layer.flagState_other', 'Flag States')}
         placeholder={getPlaceholderBySelections(flags)}
         options={flagOptions}
         selectedOptions={flags}

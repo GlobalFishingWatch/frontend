@@ -443,7 +443,7 @@ function Search() {
                               )}
                               {firstTransmissionDate && lastTransmissionDate && (
                                 <div className={cx(styles.property, styles.fullWidth)}>
-                                  <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
+                                  <label>{t('vessel.transmission_other', 'Transmissions')}</label>
                                   <span>
                                     from <I18nDate date={firstTransmissionDate} /> to{' '}
                                     <I18nDate date={lastTransmissionDate} />

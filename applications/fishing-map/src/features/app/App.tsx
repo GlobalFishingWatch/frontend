@@ -188,7 +188,7 @@ function App(): React.ReactElement {
 
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
-    if (locationType === WORKSPACES_LIST) return t('workspace.title_plural', 'Workspaces')
+    if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
     if (isAnalysing) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
   }, [isAnalysing, locationType])

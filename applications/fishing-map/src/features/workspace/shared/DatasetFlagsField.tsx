@@ -27,7 +27,7 @@ function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldP
 
   return (
     <div className={styles.filter}>
-      <label>{t('layer.flagState_plural', 'Flag States')}</label>
+      <label>{t('layer.flagState_other', 'Flag States')}</label>
       <TagList
         tags={fishingFiltersOptions}
         color={dataview.config?.color}

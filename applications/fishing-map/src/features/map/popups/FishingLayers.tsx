@@ -121,11 +121,11 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
           <div className={styles.vesselsTable}>
             <div className={styles.vesselsHeader}>
               <label className={styles.vesselsHeaderLabel}>
-                {t('common.vessel_plural', 'Vessels')}
+                {t('common.vessel_other', 'Vessels')}
               </label>
               <label className={styles.vesselsHeaderLabel}>
-                {feature.temporalgrid?.unit === 'hours' && t('common.hour_plural', 'hours')}
-                {feature.temporalgrid?.unit === 'days' && t('common.days_plural', 'days')}
+                {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
+                {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
               </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
