@@ -58,13 +58,13 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   const onDeleteClick = async (data: OfflineVessel) => {
     const now = DateTime.now()
-    const savedOn = DateTime.fromISO(data.savedOn);
-    const i = Interval.fromDateTimes(savedOn, now);
+    const savedOn = DateTime.fromISO(data.savedOn)
+    const i = Interval.fromDateTimes(savedOn, now)
     uaEvent({
       category: 'Offline Access',
       action: 'Remove saved vessel for offline view',
       label: JSON.stringify({ page: 'vessel detail' }),
-      value: Math.floor(i.length('days'))
+      value: Math.floor(i.length('days')),
     })
     setLoading(true)
     await dispatchDeleteOfflineVessel(data)
@@ -78,8 +78,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       action: 'Save vessel for offline view',
       label: JSON.stringify({
         gfw: vesselId,
-        tmt: vesselTmtId
-      })
+        tmt: vesselTmtId,
+      }),
     })
     await dispatchCreateOfflineVessel({
       vessel: {
@@ -109,7 +109,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     <Fragment>
       <div className={styles.infoContainer}>
         {vessel && (
-          <Fragment>
+          <div className={styles.imageAndFields}>
             {imageList.length > 0 && (
               <ImageGallery
                 items={imageList}
@@ -259,7 +259,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 valuesHistory={[]}
               ></InfoField>
             </div>
-          </Fragment>
+          </div>
         )}
         <div className={styles.actions}>
           {vessel && offlineVessel && (
