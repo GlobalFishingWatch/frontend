@@ -211,6 +211,15 @@ const getBivariateValue = (realValues: number[], breaks?: number[][]) => {
   }
 }
 
+const getDeltaValue = (realValues: number[], breaks?: number[][]) => {
+  const delta = realValues[1] - realValues[0]
+  if (delta === 0) return undefined
+  if (breaks) {
+    return getBucketIndex(breaks[0], delta)
+  }
+  return delta
+}
+
 const getLiteralValues = (realValues: number[], sublayerCount: number) => {
   if (sublayerCount === 1) return realValues
   return `[${realValues.join(',')}]`
@@ -252,10 +261,12 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     )
   }
   if (sublayerCombinationMode === SublayerCombinationMode.Delta) {
-    if (sublayerCount !== 2) throw new Error('delta combinationMode requires exactly two datasets')
+    if (sublayerCount !== 2) throw new Error('delta combinationMode requires sublayer count === 2')
     if (sublayerBreaks) {
-      if (sublayerBreaks.length !== 2)
-        throw new Error('delta combinationMode requires exactly two breaks array')
+      if (sublayerBreaks.length !== 1)
+        throw new Error(
+          'delta combinationMode requires exactly one breaks array to generate a diverging scale'
+        )
     }
   }
   if (
@@ -469,10 +480,10 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
             )
           } else if (sublayerCombinationMode === SublayerCombinationMode.Add) {
             finalValue = getValue(realValuesSum, sublayerBreaks)
-          } else if (sublayerCombinationMode === SublayerCombinationMode.Delta) {
-            finalValue = getDeltaValue(currentAggregatedValues, sublayerBreaks)
           } else if (sublayerCombinationMode === SublayerCombinationMode.Bivariate) {
             finalValue = getBivariateValue(currentAggregatedValues, sublayerBreaks)
+          } else if (sublayerCombinationMode === SublayerCombinationMode.Delta) {
+            finalValue = getDeltaValue(currentAggregatedValues, sublayerBreaks)
           } else if (sublayerCombinationMode === SublayerCombinationMode.Literal) {
             finalValue = literalValuesStr
           } else if (sublayerCombinationMode === SublayerCombinationMode.Cumulative) {
