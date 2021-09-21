@@ -4,7 +4,8 @@
   "private": true,
   "homepage": "/",
   "scripts": {
-    "start": "PORT=3003 craco start",
+    "start": "yarn start:i18n & cross-env PORT=3003 craco start",
+    "start:i18n": "yarn --cwd ../../packages/i18n-labels serve",
     "build": "craco build",
     "lint": "yarn linst:js && yarn lint:css",
     "lint:js": "eslint src -c .eslintrc.js --ext .js,jsx,ts,tsx --fix",

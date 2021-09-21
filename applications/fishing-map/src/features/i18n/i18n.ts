@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
 import { PATH_BASENAME } from 'routes/routes'
+import { WORKSPACE_ENV } from 'data/workspaces'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
@@ -12,12 +13,11 @@ export const LocaleLabels = [
   { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
 
-// TODO use dev before merging
-const GITHUB_LABELS_BRANCH =
-  process.env.REACT_APP_WORKSPACE_ENV === 'development' ? 'shared-i18n-labels' : 'master'
-export const SHARED_LABELS_PATH = process.env.i18n_USE_LOCAL_SHARED
-  ? 'http://localhost:8000'
-  : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${GITHUB_LABELS_BRANCH}/packages/i18n-labels`
+const GITHUB_LABELS_BRANCH = 'master'
+export const SHARED_LABELS_PATH =
+  WORKSPACE_ENV === 'development'
+    ? 'http://localhost:8000' // ensure this matches with the package config and it is running
+    : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${GITHUB_LABELS_BRANCH}/packages/i18n-labels`
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
@@ -34,9 +34,7 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     backend: {
-      loadPath: (lngs: any, namespaces: any) => {
-        console.log(namespaces)
-        console.log(lngs)
+      loadPath: (lngs: string[], namespaces: string[]) => {
         if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
           return `${SHARED_LABELS_PATH}/{{lng}}/{{ns}}.json`
         }
