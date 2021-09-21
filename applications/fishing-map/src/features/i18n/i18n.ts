@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
 import { PATH_BASENAME } from 'routes/routes'
+import { WORKSPACE_ENV } from 'data/workspaces'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
@@ -12,7 +13,7 @@ export const LocaleLabels = [
   { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
 
-const GITHUB_LABELS_BRANCH = 'master'
+const GITHUB_LABELS_BRANCH = WORKSPACE_ENV === 'development' ? 'develop' : 'master'
 export const SHARED_LABELS_PATH =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
