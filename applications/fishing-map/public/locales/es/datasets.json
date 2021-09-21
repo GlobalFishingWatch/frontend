@@ -9,7 +9,7 @@
         "keyword": "Flota",
         "enum": {
           "industry": "industrial",
-          "small_fisheries": "artisanal"
+          "small_fisheries": "Artesanal"
         }
       },
       "source": "source",
@@ -54,7 +54,7 @@
         "keyword": "fleet",
         "enum": {
           "industrial": "industrial",
-          "artisanal": "artisanal",
+          "artisanal": "Artesanal",
           "not defined": "not defined"
         }
       },
@@ -352,7 +352,7 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Artisanal",
+          "chile_vms_small_fisheries": "Artesanal",
           "chile_vms_industry": "Industrial"
         }
       },
@@ -373,7 +373,7 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Artisanal",
+          "chile_vms_small_fisheries": "Artesanal",
           "chile_vms_industry": "Industrial",
           "chile_vms_aquaculture": "Acuicultura",
           "chile_vms_transport": "Transporte"
@@ -991,7 +991,7 @@
         "keyword": "flota",
         "enum": {
           "industrial": "industrial",
-          "artisanal": "artisanal",
+          "artisanal": "Artesanal",
           "not defined": "no definido"
         }
       },
