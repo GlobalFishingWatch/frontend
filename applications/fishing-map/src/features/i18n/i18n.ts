@@ -17,7 +17,7 @@ const GITHUB_LABELS_BRANCH =
   process.env.REACT_APP_WORKSPACE_ENV === 'development' ? 'shared-i18n-labels' : 'master'
 export const SHARED_LABELS_PATH = process.env.i18n_USE_LOCAL_SHARED
   ? 'http://localhost:8000'
-  : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${GITHUB_LABELS_BRANCH}/packages/i18n-labels/src`
+  : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${GITHUB_LABELS_BRANCH}/packages/i18n-labels`
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 

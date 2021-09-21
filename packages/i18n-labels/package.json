@@ -1,5 +1,5 @@
 {
-  "name": "i18n",
+  "name": "@globalfishingwatch/i18n-labels",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT"
