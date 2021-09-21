@@ -12,13 +12,14 @@ export const LocaleLabels = [
   { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
 
-// TODO find beter var names
-const COMMON_JSON_BRANCH =
-  process.env.REACT_APP_WORKSPACE_ENV === 'development' ? 'i18n-labels' : 'master'
-export const COMMON_JSON_PATH = process.env.i18n_USE_LOCAL_SHARED
+// TODO use dev before merging
+const GITHUB_LABELS_BRANCH =
+  process.env.REACT_APP_WORKSPACE_ENV === 'development' ? 'shared-i18n-labels' : 'master'
+export const SHARED_LABELS_PATH = process.env.i18n_USE_LOCAL_SHARED
   ? 'http://localhost:8000'
-  : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${COMMON_JSON_BRANCH}/packages/i18-labels/src`
-export const COMMON_NAMESPACES = ['flags', 'datasets', 'timebar']
+  : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${GITHUB_LABELS_BRANCH}/packages/i18n-labels/src`
+
+export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
 i18n
   // load translation using http -> see /public/locales
@@ -36,8 +37,8 @@ i18n
       loadPath: (lngs: any, namespaces: any) => {
         console.log(namespaces)
         console.log(lngs)
-        if (namespaces.some((namespace: string) => COMMON_NAMESPACES.includes(namespace))) {
-          return `${COMMON_JSON_PATH}/{{lng}}/{{ns}}.json`
+        if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
+          return `${SHARED_LABELS_PATH}/{{lng}}/{{ns}}.json`
         }
         return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`
       },
