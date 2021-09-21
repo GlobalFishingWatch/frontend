@@ -58,13 +58,13 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   const onDeleteClick = async (data: OfflineVessel) => {
     const now = DateTime.now()
-    const savedOn = DateTime.fromISO(data.savedOn);
-    const i = Interval.fromDateTimes(savedOn, now);
+    const savedOn = DateTime.fromISO(data.savedOn)
+    const i = Interval.fromDateTimes(savedOn, now)
     uaEvent({
       category: 'Offline Access',
       action: 'Remove saved vessel for offline view',
       label: JSON.stringify({ page: 'vessel detail' }),
-      value: Math.floor(i.length('days'))
+      value: Math.floor(i.length('days')),
     })
     setLoading(true)
     await dispatchDeleteOfflineVessel(data)
@@ -78,8 +78,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       action: 'Save vessel for offline view',
       label: JSON.stringify({
         gfw: vesselId,
-        tmt: vesselTmtId
-      })
+        tmt: vesselTmtId,
+      }),
     })
     await dispatchCreateOfflineVessel({
       vessel: {
@@ -150,7 +150,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.imo}
                 value={vessel.imo}
-                hideTMTDate={true}
                 valuesHistory={vessel.history.imo.byDate}
               ></InfoField>
               <InfoField
@@ -169,21 +168,18 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.length}
                 value={vessel.length}
-                hideTMTDate={true}
                 valuesHistory={vessel.history.length.byDate}
               ></InfoField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.grossTonnage}
                 value={vessel.grossTonnage}
-                hideTMTDate={true}
                 valuesHistory={vessel.history.grossTonnage.byDate}
               ></InfoField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.depth}
                 value={vessel.depth}
-                hideTMTDate={true}
                 valuesHistory={vessel.history.depth.byDate}
               ></InfoField>
               <div className={styles.identifierField}>
@@ -206,7 +202,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.builtYear}
-                hideTMTDate={true}
                 value={vessel.builtYear}
               ></InfoField>
               <InfoField

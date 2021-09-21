@@ -35,7 +35,6 @@ interface ListItemProps {
   value?: string
   valuesHistory?: ValueItem[]
   vesselName: string
-  hideTMTDate?: boolean
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -43,23 +42,20 @@ const InfoField: React.FC<ListItemProps> = ({
   label,
   valuesHistory = [],
   vesselName,
-  hideTMTDate = false,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)
-  const openModal = useCallback(
-    () => {
-      if (valuesHistory.length > 0) {
-        setModalOpen(true)
-        uaEvent({
-          category: 'Vessel Detail INFO Tab',
-          action: 'Vessel detail INFO tab is open and user click in the history by each field',
-          label: JSON.stringify({[label]: valuesHistory.length}),
-        })
-      } 
-    }, [label, valuesHistory.length]
-  )
+  const openModal = useCallback(() => {
+    if (valuesHistory.length > 0) {
+      setModalOpen(true)
+      uaEvent({
+        category: 'Vessel Detail INFO Tab',
+        action: 'Vessel detail INFO tab is open and user click in the history by each field',
+        label: JSON.stringify({ [label]: valuesHistory.length }),
+      })
+    }
+  }, [label, valuesHistory.length])
   const closeModal = useCallback(() => setModalOpen(false), [])
 
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
@@ -85,7 +81,6 @@ const InfoField: React.FC<ListItemProps> = ({
           label={label}
           history={valuesHistory}
           isOpen={modalOpen}
-          hideTMTDate={hideTMTDate}
           onClose={closeModal}
           vesselName={vesselName}
         ></InfoFieldHistory>
