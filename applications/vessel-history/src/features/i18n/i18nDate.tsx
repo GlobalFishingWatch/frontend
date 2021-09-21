@@ -55,13 +55,13 @@ const I18nDate = ({ date, format = DateTime.DATE_MED }: Dates) => {
 
 export const I18nSpecialDate = ({ date, format = DateTime.DATE_MED }: TMTDate) => {
   let parsedDate, tokensFormat
-  if (date.toString().match(/\d{4}0{4}$/)) {
+  if (date.toString().match(/^\d{4}0{4}$/)) {
     parsedDate = date.toString().replace(/(\d{4})(0{2})(0{2})$/, '$1-01-01')
     tokensFormat = 'yyyy'
-  } else if (date.toString().match(/\d{6}0{2}$/)) {
+  } else if (date.toString().match(/^\d{6}0{2}$/)) {
     parsedDate = date.toString().replace(/(\d{4})(\d{2})(0{2})$/, '$1-$2-01')
     tokensFormat = 'LLL, yyyy'
-  } else if (date.toString().match(/\d{8}$/)) {
+  } else if (date.toString().match(/^\d{8}$/)) {
     parsedDate = date.toString().replace(/(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3')
   }
 
