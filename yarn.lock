@@ -13131,10 +13131,10 @@ i18next-http-backend@^1.2.1:
   dependencies:
     cross-fetch "3.1.4"
 
-i18next-parser@4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/i18next-parser/-/i18next-parser-4.5.0.tgz#fcf4be598b66fced1cfda44133a033b3d6069e01"
-  integrity sha512-qh08oIa4jVeK6VJlgUbyorw+cdOxHM6Y/jXXAbCmm6qGFej5KClHeOMe18DRhhwkHRm43QHXnLgzV3G1YgMsRQ==
+i18next-parser@4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/i18next-parser/-/i18next-parser-4.7.0.tgz#18471cc92074a31bdc132044d0a6084b02b22cd7"
+  integrity sha512-oRPNf68ibfrheEdbcT7Vp769Es/qKPR20Eg3hPcGesOn/XSJ3faMCtyy0FBSdmiof16/jD535UxAobERW2HreQ==
   dependencies:
     broccoli-plugin "^4.0.5"
     cheerio "^1.0.0-rc.2"
@@ -13175,10 +13175,10 @@ i18next-parser@^3.7.0:
     vinyl-fs "^3.0.2"
     vue-template-compiler "^2.6.11"
 
-i18next@20.6.1:
-  version "20.6.1"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-20.6.1.tgz#535e5f6e5baeb685c7d25df70db63bf3cc0aa345"
-  integrity sha512-yCMYTMEJ9ihCwEQQ3phLo7I/Pwycf8uAx+sRHwwk5U9Aui/IZYgQRyMqXafQOw5QQ7DM1Z+WyEXWIqSuJHhG2A==
+i18next@21.0.1:
+  version "21.0.1"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.0.1.tgz#6b20df6135579c54c2f401590be4ea444b37a40f"
+  integrity sha512-t2qKY5tO9FPCS9TBajVRQ/FSCf8AAolLP6O2YCUGyR3qLeznlpPnrmzLmQo+Aqe/W3cY/znaV1d6AEIEVxcCAg==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
@@ -20018,7 +20018,15 @@ react-html-parser@2.0.2:
   dependencies:
     htmlparser2 "^3.9.0"
 
-react-i18next@11.11.4, react-i18next@^11.8.12:
+react-i18next@11.12.0:
+  version "11.12.0"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.12.0.tgz#2a053321b9b7a876d5baa7af55a12d986117bffc"
+  integrity sha512-M9BT+hqVG03ywrl+L7CK74ugK+4jIo7AeKJ17+g9BoqJz2+/aVbs8SIVXT4KMQ1rjIdcw+GcSRDy1CXjcz6tLQ==
+  dependencies:
+    "@babel/runtime" "^7.14.5"
+    html-parse-stringify "^3.0.1"
+
+react-i18next@^11.8.12:
   version "11.11.4"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.11.4.tgz#f6f9a1c827e7a5271377de2bf14db04cb1c9e5ce"
   integrity sha512-ayWFlu8Sc7GAxW1PzMaPtzq+yiozWMxs0P1WeITNVzXAVRhC0Httkzw/IiODBta6seJRBCLrtUeFUSXhAIxlRg==
