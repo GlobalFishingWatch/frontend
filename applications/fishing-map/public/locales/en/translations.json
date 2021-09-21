@@ -98,7 +98,7 @@
     "timeNameField": "Time name field",
     "title": "Dataset",
     "title_plural": "Datasets",
-    "typePoints": " Points",
+    "typePoints": "Points (coming soon)",
     "typePointsDescription": "Display one or multiple positions sized by any quantitative value in your dataset.",
     "typePolygons": " Polygons",
     "typePolygonsDescription": "Display one or multiple areas coloured by any quantitative value in your dataset.",
