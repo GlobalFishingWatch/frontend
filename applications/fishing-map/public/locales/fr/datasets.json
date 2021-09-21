@@ -363,6 +363,26 @@
       "distance_from_shore_m": "distance_de_rivage_m"
     }
   },
+  "public-chile-fishing-vessels": {
+    "name": "VMS Chile (Fishing vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industry": "industry",
+          "small_fisheries": "small_fisheries"
+        }
+      },
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionData": "firstTransmissionData",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-chile-presence": {
     "name": "Chile VMS",
     "description": "This layer uses the Vessel Monitoring System (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). The data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. Click on a carrier vessel’s position to view the vessel’s complete track.",
@@ -625,6 +645,8 @@
     "schema": {
       "id": "id",
       "dataset": "dataset",
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -736,6 +758,8 @@
           "drifting_longlines": "drifting_longlines"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -775,6 +799,8 @@
           "Purse Seine Support Vessel": "Purse Seine Support Vessel"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
