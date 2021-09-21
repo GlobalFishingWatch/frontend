@@ -1505,18 +1505,6 @@
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.1"
 
-"@globalfishingwatch/react-map-gl@5.2.9-gfw.17":
-  version "5.2.9-gfw.17"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-map-gl/-/react-map-gl-5.2.9-gfw.17.tgz#765588d07ba3b2a83a3a86151f6d54fd9af95dee"
-  integrity sha512-+iPRP9/x3G+lQEdmVI+oRxSJTxY6tGUHe+yVCcGIxfEVe8g1PxCqzneuBM1vwa/JsehQc02adRuqIrgw0Uh50A==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    "@types/react-map-gl" "^5.2.9"
-    mjolnir.js "^2.4.0"
-    prop-types "^15.7.2"
-    resize-observer-polyfill "^1.5.1"
-    viewport-mercator-project "^6.2.3 || ^7.0.1"
-
 "@google-cloud/functions-framework@^1.6.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@google-cloud/functions-framework/-/functions-framework-1.9.0.tgz#97c7fa8a59dc941a3efb796ba8a0ebfbc4d6f59f"
@@ -5649,7 +5637,7 @@
     "@types/react" "*"
     "@types/viewport-mercator-project" "*"
 
-"@types/react-map-gl@^5.2.7", "@types/react-map-gl@^5.2.9":
+"@types/react-map-gl@^5.2.7":
   version "5.2.10"
   resolved "https://registry.yarnpkg.com/@types/react-map-gl/-/react-map-gl-5.2.10.tgz#adac497807dea4e134377039e5abb14c4160bd03"
   integrity sha512-9NPlPnBOXoa8gpyhnYhhpUNYFs/pDIwmLJhcwepOgYRvjgKMDIFHnc0mZycfTRMpF6SrMcFaSObI67Fu2f0Kng==
@@ -20018,7 +20006,7 @@ react-error-overlay@^6.0.9:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
   integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
 
-react-ga@3.3.0:
+react-ga@3.3.0, react-ga@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-3.3.0.tgz#c91f407198adcb3b49e2bc5c12b3fe460039b3ca"
   integrity sha512-o8RScHj6Lb8cwy3GMrVH6NJvL+y0zpJvKtc0+wmH7Bt23rszJmnqEQxRbyrqUzk9DTJIHoP42bfO5rswC9SWBQ==
@@ -24148,7 +24136,7 @@ vfile@^4.0.0:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
-viewport-mercator-project@7.0.3, "viewport-mercator-project@^6.2.3 || ^7.0.1", viewport-mercator-project@^7.0.1:
+viewport-mercator-project@7.0.3, viewport-mercator-project@^7.0.1:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/viewport-mercator-project/-/viewport-mercator-project-7.0.3.tgz#6c7cf15cbfd490003d99d68ff5cbb2443237c79a"
   integrity sha512-5nSgVK8jKTSKzOvsa8TSSd2IeQCpHfSNiBOOOMQLvzlxgWD0YoF4xRmyZio3GaLtKSE+50UB892X3R1SAMbaww==

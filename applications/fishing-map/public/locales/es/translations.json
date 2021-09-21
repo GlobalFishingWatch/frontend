@@ -152,6 +152,7 @@
     "notInCVP": "Evento no disponible",
     "port": "Puerto",
     "portAction": "Atracado durante",
+    "port_visit": "Port visit",
     "portAt": "Atracado a {{port}} durante",
     "seeInCVP": "Ver en el Carrier Vessel Portal",
     "unknown": "Evento desconocido"

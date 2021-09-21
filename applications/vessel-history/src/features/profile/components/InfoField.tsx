@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import I18nDate from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
@@ -34,7 +35,7 @@ interface ListItemProps {
   value?: string
   valuesHistory?: ValueItem[]
   vesselName: string
-  hideSince?: boolean
+  hideTMTDate?: boolean
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -42,14 +43,22 @@ const InfoField: React.FC<ListItemProps> = ({
   label,
   valuesHistory = [],
   vesselName,
-  hideSince = true,
+  hideTMTDate = false,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)
   const openModal = useCallback(
-    () => valuesHistory.length > 0 && setModalOpen(true),
-    [valuesHistory.length]
+    () => {
+      if (valuesHistory.length > 0) {
+        setModalOpen(true)
+        uaEvent({
+          category: 'Vessel Detail INFO Tab',
+          action: 'Vessel detail INFO tab is open and user click in the history by each field',
+          label: JSON.stringify({[label]: valuesHistory.length}),
+        })
+      } 
+    }, [label, valuesHistory.length]
   )
   const closeModal = useCallback(() => setModalOpen(false), [])
 
@@ -67,7 +76,7 @@ const InfoField: React.FC<ListItemProps> = ({
             })}
           </button>
         )}
-        {!hideSince && valuesHistory.length === 1 && since && (
+        {valuesHistory.length === 1 && since && (
           <p className={styles.rangeLabel}>
             {t('common.since', 'Since')} <I18nDate date={since} />
           </p>
@@ -76,6 +85,7 @@ const InfoField: React.FC<ListItemProps> = ({
           label={label}
           history={valuesHistory}
           isOpen={modalOpen}
+          hideTMTDate={hideTMTDate}
           onClose={closeModal}
           vesselName={vesselName}
         ></InfoFieldHistory>

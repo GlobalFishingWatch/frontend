@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.1.0
+
+### Minor Changes
+
+- 287bd34d: Add support for loading status in track chart
+
 ## 2.0.8
 
 ### Patch Changes

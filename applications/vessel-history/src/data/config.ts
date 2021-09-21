@@ -1,3 +1,4 @@
+import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
 import { AppState } from 'types/redux.types'
 
@@ -6,7 +7,7 @@ export const WORKSPACE_ENV =
   (process.env.REACT_APP_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
-
+export const IS_PRODUCTION = WORKSPACE_ENV !== 'production'
 export const FLY_EFFECTS = {
   noFly: 0, // just change the center
   softFly: 1, // fly to without effects
@@ -74,3 +75,8 @@ export const EVENTS_COLORS: Record<string, string> = {
 export const DEFAULT_EMPTY_VALUE = ' --- '
 
 export const AUTHORIZED_USER_GROUPS = ['VV-African-Pilot', 'Admin-group', 'GFW']
+
+export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
+export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
+  ? {}
+  : { debug: true }

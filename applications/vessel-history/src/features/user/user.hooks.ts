@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { intersection } from 'lodash'
+import { event as uaEvent } from 'react-ga'
 import { useDispatch } from 'react-redux'
 import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -19,7 +20,13 @@ export const useUser = () => {
     window.location.assign(GFWAPI.getLoginUrl(location))
   }, [])
 
-  const logout = useCallback(() => dispatch(logoutUserThunk({ redirectTo: 'home' })), [dispatch])
+  const logout = useCallback(() => {
+    uaEvent({
+      category: 'General VV features',
+      action: 'Logout',
+    })
+    dispatch(logoutUserThunk({ redirectTo: 'home' }))
+  }, [dispatch])
 
   return { loading, logged, user, authorized, login, logout }
 }

@@ -49,7 +49,6 @@
 
 .event .eventData .description {
   font: var(--font-XS);
-  line-height: var(--space-S);
   margin-top: var(--space-XS);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -72,6 +71,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: none;
 }
 
 .eventIcon.fishing {
@@ -114,10 +114,8 @@
 }
 
 .event .actions {
-  min-width: var(--size-S);
-  margin-right: 0;
   margin-left: auto;
-  text-align: right;
+  display: flex;
 }
 
 .event .actions.oneIcon {
@@ -146,6 +144,10 @@
   padding: 0;
 }
 
+.highlightsListContainer .event .eventData .description {
+  width: calc(100vw - var(--size-S) * 4.7);
+}
+
 .highlights {
   font: var(--font-S);
   color: #fc5d5f;
@@ -158,9 +160,11 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .noSettingsContainer button {
   margin: var(--space-M);
 }
+
 button .iconInButton {
   margin-right: var(--space-XS);
 }

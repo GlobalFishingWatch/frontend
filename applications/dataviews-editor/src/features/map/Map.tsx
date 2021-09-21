@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import ReactMapGL from '@globalfishingwatch/react-map-gl'
+import ReactMapGL from 'react-map-gl'
 import { useWorkspace, useDataviews, useLayerComposer } from '@globalfishingwatch/react-hooks'
 import { useTimeConnect } from 'features/timebar/timebar.hooks'
 import { selectAddedDataviews } from 'features/dataviews/dataviews.selectors'

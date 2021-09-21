@@ -22,7 +22,7 @@ export default function gridded(
     const pickValueAt = timeChunk.frame.toString()
     // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
     const exprPick = ['coalesce', ['get', pickValueAt], 0]
-    
+
     const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 
     const paint = {
@@ -48,7 +48,7 @@ export default function gridded(
           'fill-opacity': config.debug ? 0.5 : 0,
         },
         metadata: {
-          group: Group.Heatmap,
+          group: config.group || Group.Heatmap,
           generatorType: Type.HeatmapAnimated,
           generatorId: config.id,
           interactive: true,
@@ -74,7 +74,7 @@ export default function gridded(
         },
         metadata: {
           interactive: false,
-          group: Group.Heatmap,
+          group: config.group || Group.Heatmap,
         },
       })
     }
@@ -91,7 +91,7 @@ export default function gridded(
           'fill-outline-color': exprDebugOutline as any,
         },
         metadata: {
-          group: Group.Heatmap,
+          group: config.group || Group.Heatmap,
         },
       })
     }

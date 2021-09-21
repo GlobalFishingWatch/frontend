@@ -40,10 +40,6 @@
   margin: 0 1.5rem;
 }
 
-.content {
-  padding: 0 1.5rem;
-}
-
 .loader {
   margin-top: 5rem;
 }
@@ -78,4 +74,18 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--border);
+}
+
+.bottomActions {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  background: var(--color-white);
+  padding: var(--space-S);
+  border-top: var(--border);
+}
+.bottomActions > button {
+  flex-grow: 1;
 }

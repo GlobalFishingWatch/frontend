@@ -23,29 +23,32 @@ function useVoyagesConnect() {
   )
 
   const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
-    return eventsList
-      .map((event, index, allEvents) => {
-        if (event.type === EventTypeVoyage.Voyage) {
-          return {
-            ...event,
-            status: expandedVoyages[event.timestamp] ? 'expanded' : 'collapsed',
-          } as RenderedVoyage
-        } else {
-          return event as RenderedEvent
-        }
-      })
-      .filter((event) => {
-        return (
-          event.type === EventTypeVoyage.Voyage ||
-          Object.values(expandedVoyages).find(
-            (voyage) =>
-              voyage !== undefined &&
-              // event timestamp or start is inside the voyage
-              voyage.start <= (event.timestamp ?? event.start) &&
-              voyage.end >= (event.timestamp ?? event.start)
+    const hasVoyages =
+      eventsList.filter((event) => event.type === EventTypeVoyage.Voyage).length > 0
+    const eventsListParsed = eventsList.map((event) => {
+      if (event.type === EventTypeVoyage.Voyage) {
+        return {
+          ...event,
+          status: expandedVoyages[event.timestamp] ? 'expanded' : 'collapsed',
+        } as RenderedVoyage
+      } else {
+        return event as RenderedEvent
+      }
+    })
+    return hasVoyages
+      ? eventsListParsed.filter((event) => {
+          return (
+            event.type === EventTypeVoyage.Voyage ||
+            Object.values(expandedVoyages).find(
+              (voyage) =>
+                voyage !== undefined &&
+                // event timestamp or start is inside the voyage
+                voyage.start <= (event.timestamp ?? event.start) &&
+                voyage.end >= (event.timestamp ?? event.start)
+            )
           )
-        )
-      })
+        })
+      : eventsListParsed
   }, [eventsList, expandedVoyages])
 
   useEffect(() => {

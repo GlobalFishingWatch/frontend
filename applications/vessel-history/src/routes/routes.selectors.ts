@@ -111,6 +111,16 @@ export const selectAdvancedSearchFields = createSelector(
     selectFirstTransmissionDate,
   ],
   (mmsi, imo, callsign, flags, lastTransmissionDate, firstTransmissionDate) => {
+    const hasFields = [
+      mmsi,
+      imo,
+      callsign,
+      flags,
+      lastTransmissionDate,
+      firstTransmissionDate,
+    ].filter((field) => field && field.length)
+    if (!hasFields.length) return undefined
+
     return {
       mmsi,
       imo,
@@ -121,3 +131,12 @@ export const selectAdvancedSearchFields = createSelector(
     }
   }
 )
+
+export const selectHasSearch = createSelector(
+  [selectUrlQuery, selectAdvancedSearchFields],
+  (query, advancedSearch) => {
+    return query || advancedSearch
+  }
+)
+
+export const selectUrlAkaVesselQuery = selectQueryParam<string[]>('aka')

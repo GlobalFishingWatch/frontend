@@ -1,5 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
@@ -33,6 +34,11 @@ const MapControls = ({
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const filtered = useSelector(selectFilterUpdated)
   const setModalOpen = useCallback((isOpen) => {
+    uaEvent({
+      category: 'Vessel Detail ACTIVITY or MAP Tab',
+      action: 'Open filters',
+      label: JSON.stringify({tab: 'MAP'})
+    })
     setIsOpen(isOpen)
   }, [])
   const layerTitle = (dataview: UrlDataviewInstance) => {
@@ -46,7 +52,7 @@ const MapControls = ({
 
   return (
     <Fragment>
-      <EventFilters isModalOpen={isModalOpen} onCloseModal={(isOpen) => setModalOpen(isOpen)}></EventFilters>
+      <EventFilters tab="MAP" isModalOpen={isModalOpen} onCloseModal={(isOpen) => setModalOpen(isOpen)}></EventFilters>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
@@ -57,7 +63,13 @@ const MapControls = ({
                 size="medium"
                 data-tip-pos="left"
                 tooltip={t('map.toggleLayers', 'Toggle layers')}
-                onClick={() => setShowLayersPopup(!showLayersPopup)}
+                onClick={() => {
+                  setShowLayersPopup(!showLayersPopup)
+                  uaEvent({
+                    category: 'Vessel Detail MAP Tab',
+                    action: 'Open context layer',
+                  })
+                }}
               />
               <IconButton
                 type="map-tool"

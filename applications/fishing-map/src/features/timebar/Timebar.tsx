@@ -35,8 +35,6 @@ import {
   selectTracksData,
   selectTracksGraphs,
   selectEventsWithRenderingInfo,
-  TimebarTrack,
-  RenderedEvent,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
@@ -197,39 +195,6 @@ const TimebarWrapper = () => {
       : null
   }, [timebarVisualisation, showGraph, tracksGraphs])
 
-  const { syncedTracks, syncedTracksEvents } = useMemo<{
-    syncedTracks: (TimebarTrack | null)[] | undefined
-    syncedTracksEvents: RenderedEvent[][]
-  }>(() => {
-    if (!tracks || !tracks.filter(Boolean).length) {
-      return {
-        syncedTracks: [],
-        syncedTracksEvents: [],
-      }
-    }
-
-    if (tracks.length !== tracksEvents.length) {
-      console.warn('tracks and tracks events dont have the same length')
-      return {
-        syncedTracks: [],
-        syncedTracksEvents: [],
-      }
-    }
-
-    const syncedTracks = []
-    const syncedTracksEvents = []
-    for (let i = 0; i < tracks.length; i++) {
-      if (tracks[i] && tracksEvents[i]) {
-        syncedTracks.push(tracks[i])
-        syncedTracksEvents.push(tracksEvents[i])
-      }
-    }
-    return {
-      syncedTracks: syncedTracks,
-      syncedTracksEvents: syncedTracksEvents,
-    }
-  }, [tracks, tracksEvents])
-
   if (!start || !end) return null
 
   return (
@@ -258,21 +223,23 @@ const TimebarWrapper = () => {
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
             {timebarVisualisation === TimebarVisualisations.Vessel &&
-              (syncedTracks && syncedTracks.length <= MAX_TIMEBAR_VESSELS ? (
+              (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
                 <Fragment>
-                  <TimebarTracks key="tracks" tracks={syncedTracks} />
+                  <TimebarTracks key="tracks" tracks={tracks} />
                   {showGraph && tracksGraphs && (
                     <TimebarActivity key="trackActivity" graphTracks={tracksGraphs} />
                   )}
-                  {syncedTracksEvents && (
-                    <TimebarTracksEvents
-                      key="events"
-                      labels={labels?.trackEvents}
-                      preselectedEventId={highlightedEvent?.id}
-                      tracksEvents={syncedTracksEvents}
-                      onEventClick={onEventClick}
-                      onEventHover={onEventHover}
-                    />
+                  {tracksEvents && (
+                    <Fragment>
+                      <TimebarTracksEvents
+                        key="events"
+                        labels={labels?.trackEvents}
+                        preselectedEventId={highlightedEvent?.id}
+                        tracksEvents={tracksEvents}
+                        onEventClick={onEventClick}
+                        onEventHover={onEventHover}
+                      />
+                    </Fragment>
                   )}
                 </Fragment>
               ) : (
