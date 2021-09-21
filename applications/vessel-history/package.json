@@ -4,7 +4,8 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
-    "start": "craco start",
+    "start": "yarn start:i18n & cross-env PORT=3003 craco start",
+    "start:i18n": "yarn --cwd ../../packages/i18n-labels serve",
     "build": "craco build",
     "test": "CI=true craco test --passWithNoTests",
     "test:watch": "craco test --passWithNoTests",
