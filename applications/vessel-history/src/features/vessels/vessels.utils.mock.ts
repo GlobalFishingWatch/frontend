@@ -30,9 +30,14 @@ export const tmtVessel: TMTDetail = {
     mmsi: [],
     name: [
       {
-        value: 'MARIA MADRE II',
-        firstSeen: '1991-02-02T00:00:00.000Z',
-        endDate: '2013-05-14T03:31:40Z',
+        value: 'MAAAARIA',
+        originalFirstSeen: 19710000,
+        originalEndDate: 19720000,
+      },
+      {
+        value: 'MAR',
+        originalFirstSeen: 19800100,
+        originalEndDate: 19810100,
       },
       {
         value: 'MARIA MARIA',
@@ -40,14 +45,9 @@ export const tmtVessel: TMTDetail = {
         endDate: '1991-02-02T00:00:00.000Z',
       },
       {
-        value: 'MAR',
-        firstSeen: '',
-        endDate: '',
-      },
-      {
-        value: 'MAAAARIA',
-        firstSeen: '1971-02-02T00:00:00.000Z',
-        endDate: '1981-02-02T00:00:00.000Z',
+        value: 'MARIA MADRE II',
+        firstSeen: '1991-02-02T00:00:00.000Z',
+        endDate: '2013-05-14T03:31:40Z',
       },
     ],
     ircs: [{ value: 'IRNZ' }],

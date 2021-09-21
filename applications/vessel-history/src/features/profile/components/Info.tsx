@@ -9,7 +9,7 @@ import { Authorization } from '@globalfishingwatch/api-types'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselWithHistory } from 'types'
-import I18nDate from 'features/i18n/i18nDate'
+import I18nDate, { I18nSpecialDate } from 'features/i18n/i18nDate'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { OfflineVessel } from 'types/vessel'
@@ -58,13 +58,13 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   const onDeleteClick = async (data: OfflineVessel) => {
     const now = DateTime.now()
-    const savedOn = DateTime.fromISO(data.savedOn);
-    const i = Interval.fromDateTimes(savedOn, now);
+    const savedOn = DateTime.fromISO(data.savedOn)
+    const i = Interval.fromDateTimes(savedOn, now)
     uaEvent({
       category: 'Offline Access',
       action: 'Remove saved vessel for offline view',
       label: JSON.stringify({ page: 'vessel detail' }),
-      value: Math.floor(i.length('days'))
+      value: Math.floor(i.length('days')),
     })
     setLoading(true)
     await dispatchDeleteOfflineVessel(data)
@@ -78,8 +78,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       action: 'Save vessel for offline view',
       label: JSON.stringify({
         gfw: vesselId,
-        tmt: vesselTmtId
-      })
+        tmt: vesselTmtId,
+      }),
     })
     await dispatchCreateOfflineVessel({
       vessel: {
@@ -193,9 +193,17 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                     {auth.source}{' '}
                     <Fragment>
                       {t('common.from', 'from')}{' '}
-                      {auth.startDate ? <I18nDate date={auth.startDate} /> : DEFAULT_EMPTY_VALUE}{' '}
+                      {auth.startDate ?? auth.originalStartDate ? (
+                        <I18nSpecialDate date={auth.startDate ?? auth.originalStartDate} />
+                      ) : (
+                        DEFAULT_EMPTY_VALUE
+                      )}{' '}
                       {t('common.to', 'to')}{' '}
-                      {auth.endDate ? <I18nDate date={auth.endDate} /> : DEFAULT_EMPTY_VALUE}
+                      {auth.endDate ?? auth.originalEndDate ? (
+                        <I18nSpecialDate date={auth.endDate ?? auth.originalEndDate} />
+                      ) : (
+                        DEFAULT_EMPTY_VALUE
+                      )}
                     </Fragment>
                   </p>
                 ))}

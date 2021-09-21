@@ -48,18 +48,16 @@ const InfoField: React.FC<ListItemProps> = ({
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)
-  const openModal = useCallback(
-    () => {
-      if (valuesHistory.length > 0) {
-        setModalOpen(true)
-        uaEvent({
-          category: 'Vessel Detail INFO Tab',
-          action: 'Vessel detail INFO tab is open and user click in the history by each field',
-          label: JSON.stringify({[label]: valuesHistory.length}),
-        })
-      } 
-    }, [label, valuesHistory.length]
-  )
+  const openModal = useCallback(() => {
+    if (valuesHistory.length > 0) {
+      setModalOpen(true)
+      uaEvent({
+        category: 'Vessel Detail INFO Tab',
+        action: 'Vessel detail INFO tab is open and user click in the history by each field',
+        label: JSON.stringify({ [label]: valuesHistory.length }),
+      })
+    }
+  }, [label, valuesHistory.length])
   const closeModal = useCallback(() => setModalOpen(false), [])
 
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])

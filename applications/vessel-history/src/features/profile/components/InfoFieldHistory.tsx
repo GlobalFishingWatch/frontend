@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
-import { ValueItem, VesselAPISource } from 'types'
-import I18nDate from 'features/i18n/i18nDate'
+import { ValueItem } from 'types'
+import HistoryDate from './HistoryDate'
 import { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 
@@ -30,15 +30,8 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   const defaultTitle = useMemo(() => {
     return `${label} History for ${vesselName}`
   }, [label, vesselName])
-  
-  const hasGFWValues = useMemo(() => {
-    return history.some(value => value.source === VesselAPISource.GFW)
-  }, [history])
+
   const { formatSource } = useVesselsConnect()
-  
-  if (history.length < 1) {
-    return <div></div>
-  }
 
   return (
     <Fragment>
@@ -54,9 +47,9 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
           <div>
             <div className={styles.historyItem}>
               <label className={styles.identifierField}>{t(`vessel.${label}` as any, label)}</label>
-              {(hasGFWValues || !hideTMTDate) && (
+              {!hideTMTDate && (
                 <label className={styles.identifierField}>
-                  {t('common.timeRange', 'time range')} 
+                  {t('common.timeRange', 'time range')}
                 </label>
               )}
               <label className={styles.identifierField}>{t(`vessel.source`, 'source')}</label>
@@ -67,31 +60,24 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                 <div className={styles.identifierField}>
                   {historyValue.value ? historyValue.value : DEFAULT_EMPTY_VALUE}
                 </div>
-                {(hasGFWValues || !hideTMTDate) && (
+                {!hideTMTDate && (
                   <div className={styles.identifierField}>
-                    {(!hideTMTDate || historyValue.source === VesselAPISource.GFW) && 
-                      <div>
-                        {historyValue.firstSeen && (
-                          <div>
-                          <span className={styles.rangeLabel}>{t('common.from', 'From')}: </span>
-                            <span className={styles.rangeValue}>
-                              <I18nDate date={historyValue.firstSeen} />
-                              </span>
-                          </div>
-                          )}
-                        {historyValue.endDate && (
-                          <div>
-                          <span className={styles.rangeLabel}>{t('common.to', 'To')}: </span>
-                            <span className={styles.rangeValue}>
-                            <I18nDate date={historyValue.endDate} />
-                            </span>
-                            </div>
-                            )}
-                        {!historyValue.firstSeen && !historyValue.endDate && (
-                          <Fragment>{DEFAULT_EMPTY_VALUE}</Fragment>
-                        )}
+                    <div>
+                      <HistoryDate
+                        date={historyValue.firstSeen}
+                        originalDate={historyValue.originalFirstSeen}
+                        label={t('common.from', 'From')}
+                      />
+                      <HistoryDate
+                        date={historyValue.endDate}
+                        originalDate={historyValue.originalEndDate}
+                        label={t('common.to', 'To')}
+                      />
+                      {!historyValue.firstSeen &&
+                        !historyValue.endDate &&
+                        !historyValue.originalFirstSeen &&
+                        !historyValue.originalEndDate && <Fragment>{DEFAULT_EMPTY_VALUE}</Fragment>}
                     </div>
-                    }
                   </div>
                 )}
                 <div className={styles.identifierField}>{formatSource(historyValue.source)}</div>
