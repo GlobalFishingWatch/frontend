@@ -391,7 +391,7 @@
     }
   },
   "public-chile-all-vessels": {
-    "name": "Chile VMS (all Vessels)",
+    "name": "VMS de Chile (Todos los buques)",
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
