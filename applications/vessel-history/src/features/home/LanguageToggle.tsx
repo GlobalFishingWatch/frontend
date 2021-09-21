@@ -1,5 +1,6 @@
 import { Fragment, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Locale } from 'types'
@@ -11,6 +12,11 @@ const LanguageToggle: React.FC = () => {
   const [open, setOpen] = useState(false)
   const toggleLanguage = useCallback(
     (lang: Locale) => {
+      uaEvent({
+        category: 'General VV features',
+        action: 'Change language',
+        label: lang
+      })
       i18n.changeLanguage(lang)
       setOpen(false)
     },

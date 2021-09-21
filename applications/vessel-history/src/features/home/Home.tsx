@@ -1,8 +1,10 @@
 import React, { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import Link from 'redux-first-router-link'
 import { redirect } from 'redux-first-router'
+import { DateTime, Interval } from 'luxon'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
@@ -101,6 +103,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const fetchResults = useCallback(
     (offset = 0) => {
+
       if (promiseRef.current) {
         promiseRef.current.abort()
       }
@@ -121,6 +124,28 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     },
     [setSelectedVessels, dispatch, query, advancedSearch]
   )
+  const trackOpenSettings = useCallback(() => {
+    uaEvent({
+      category: 'Highlight Events',
+      action: 'Start highlight events configurations',
+      label: JSON.stringify({
+        page: 'home'
+      })
+    })
+  }, [])
+
+  const trackRemoveOffline = useCallback((offlineVessel) => {
+    const now = DateTime.now()
+    const savedOn = DateTime.fromISO(offlineVessel.savedOn);
+    const i = Interval.fromDateTimes(savedOn, now);
+    uaEvent({
+      category: 'Offline Access',
+      action: 'Remove saved vessel for offline view',
+      label: JSON.stringify({ page: 'home' }),
+      value: Math.floor(i.length('days'))
+    })
+    dispatchDeleteOfflineVessel(offlineVessel)
+  }, [dispatchDeleteOfflineVessel])
 
   useEffect(() => {
     setSelectedVessels([])
@@ -131,7 +156,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       <header>
         <Logo className={styles.logo}></Logo>
         <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
-        <Link to={['settings']}>
+        <Link to={['settings']} onClick={trackOpenSettings}>
           <IconButton type="default" size="default" icon="settings"></IconButton>
         </Link>
         <LanguageToggle />
@@ -146,10 +171,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                 {offlineVessels.map((vessel, index) => (
                   <VesselListItem
                     key={index}
+                    index={index}
                     vessel={vessel}
                     saved={vessel.savedOn}
-                    onDeleteClick={() => dispatchDeleteOfflineVessel(vessel.profileId)}
                     onVesselClick={onOpenVesselProfile(vessel)}
+                    onDeleteClick={() => trackRemoveOffline(vessel)}
                   />
                 ))}
               </div>
@@ -177,6 +203,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                     <VesselListItem
                       key={index}
                       vessel={vessel}
+                      index={index}
                       onVesselClick={onVesselClick(index)}
                       selected={selectedVessels.includes(index)}
                     />

@@ -15,6 +15,7 @@ interface ListItemProps {
   saved?: string
   vessel: Vessel
   selected?: boolean
+  index: number
   onDeleteClick?: () => void
   onVesselClick?: (vessel: Vessel) => void
 }
@@ -28,7 +29,6 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   if (!vessel) {
     return <div></div>
   }
-
   const flagLabel = getFlagById(vessel.flag)?.label
   const sourceAPI = getVesselAPISource(vessel)
 

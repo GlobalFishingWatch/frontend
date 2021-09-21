@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
+import { event as uaEvent } from 'react-ga'
 import GFWAPI, {
   AdvancedSearchQueryField,
   getAdvancedSearchQuery,
@@ -7,6 +8,7 @@ import GFWAPI, {
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
+import { SearchResults } from 'types'
 import { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
@@ -109,6 +111,35 @@ export type VesselSearchThunk = {
   advancedSearch?: Record<string, any>
 }
 
+const trackData = (
+  query: any,
+  results: SearchResults | null,
+  actualResults: number
+) => {
+  if (!query.offset || query.offset === 0) {
+    const vessels = results?.vessels.slice(0, 5).map(vessel => {
+      return {
+        gfw: vessel.id,
+        tmt: vessel.vesselMatchId
+      }
+    })
+    uaEvent({
+      category: 'Search Vessel VV',
+      action: 'Click Search',
+      label: JSON.stringify({ ...query, vessels }),
+      value: results?.total
+    })
+  } else {
+    uaEvent({
+      category: 'Search Vessel VV',
+      action: 'Click Load More',
+      label: actualResults.toString(),
+      value: results?.total
+    })
+  }
+
+}
+
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/vessels',
   async (
@@ -116,6 +147,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     { rejectWithValue, getState, signal }
   ) => {
     const searchData = await fetchData(query, offset, signal, advancedSearch)
+    trackData({ query: query, ...advancedSearch }, searchData, 5)
+
     return searchData
   },
   {

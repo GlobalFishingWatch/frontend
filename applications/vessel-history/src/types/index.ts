@@ -1,4 +1,4 @@
-import { Vessel, Authorization } from '@globalfishingwatch/api-types'
+import { Vessel, Authorization, VesselSearch } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -196,3 +196,11 @@ export type Range = {
 
 // minX, minY, maxX, maxY
 export type Bbox = [number, number, number, number]
+
+export interface SearchResults {
+  vessels: Array<VesselSearch>
+  query: string
+  offset: number
+  total: number
+  searching: boolean
+}

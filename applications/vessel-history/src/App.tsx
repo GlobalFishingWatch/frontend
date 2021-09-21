@@ -8,9 +8,11 @@ import Profile from 'features/profile/Profile'
 import Splash from 'features/splash/Splash'
 import Settings from 'features/settings/Settings'
 import { useUser } from 'features/user/user.hooks'
+import { useAnalytics } from 'features/app/analytics.hooks'
 import './App.css'
 
 function App() {
+  useAnalytics()
   const { loading, logged, authorized } = useUser()
   const [minLoading, setMinLoading] = useState(true)
 

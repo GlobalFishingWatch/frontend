@@ -56,7 +56,6 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                 <div className={styles.identifierField}>
                   {historyValue.value ? historyValue.value : DEFAULT_EMPTY_VALUE}
                 </div>
-
                 <div className={styles.identifierField}>
                   <div>
                     <HistoryDate

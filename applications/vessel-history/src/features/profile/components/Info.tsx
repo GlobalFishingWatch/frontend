@@ -1,9 +1,10 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
-import { DateTime } from 'luxon'
+import { DateTime, Interval } from 'luxon'
 import { Authorization } from '@globalfishingwatch/api-types'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
@@ -29,6 +30,7 @@ interface InfoProps {
   vessel: VesselWithHistory | null
   lastPosition: any
   lastPortVisit: any
+  onMoveToMap: () => void
 }
 
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
@@ -55,13 +57,30 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   }, [vesselProfileId, dispatchFetchOfflineVessel])
 
   const onDeleteClick = async (data: OfflineVessel) => {
+    const now = DateTime.now()
+    const savedOn = DateTime.fromISO(data.savedOn);
+    const i = Interval.fromDateTimes(savedOn, now);
+    uaEvent({
+      category: 'Offline Access',
+      action: 'Remove saved vessel for offline view',
+      label: JSON.stringify({ page: 'vessel detail' }),
+      value: Math.floor(i.length('days'))
+    })
     setLoading(true)
-    await dispatchDeleteOfflineVessel(data.profileId)
+    await dispatchDeleteOfflineVessel(data)
     setLoading(false)
   }
 
   const onSaveClick = async (data: VesselWithHistory) => {
     setLoading(true)
+    uaEvent({
+      category: 'Offline Access',
+      action: 'Save vessel for offline view',
+      label: JSON.stringify({
+        gfw: vesselId,
+        tmt: vesselTmtId
+      })
+    })
     await dispatchCreateOfflineVessel({
       vessel: {
         ...data,
@@ -279,7 +298,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             </Button>
           )}
         </div>
-        <Highlights></Highlights>
+        <Highlights onMoveToMap={props.onMoveToMap}></Highlights>
       </div>
     </Fragment>
   )

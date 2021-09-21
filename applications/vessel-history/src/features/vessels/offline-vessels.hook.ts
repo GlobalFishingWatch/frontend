@@ -67,9 +67,7 @@ export const useOfflineVesselsAPI = () => {
   )
 
   const dispatchDeleteOfflineVessel = useCallback(
-    (id: string) => {
-      dispatch(deleteOfflineVesselThunk(id))
-    },
+    (offlineVessel: OfflineVessel) => dispatch(deleteOfflineVesselThunk(offlineVessel.profileId)),
     [dispatch]
   )
 

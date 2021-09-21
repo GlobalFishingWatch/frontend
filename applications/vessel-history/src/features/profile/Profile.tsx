@@ -1,4 +1,5 @@
-import React, { Fragment, useState, useEffect, useMemo } from 'react'
+import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
@@ -106,6 +107,13 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
   }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
 
+  const  trackEvent = useCallback(() => {
+    uaEvent({
+      category: 'Vessel Detail',
+      action: 'Click to go back to search'
+    })
+  }, [])
+
   useEffect(() => {
     if (vesselDataviewLoaded && resourceQueries && resourceQueries.length > 0) {
       resourceQueries.forEach((resourceQuery) => {
@@ -120,7 +128,12 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'info',
         title: t('common.info', 'INFO').toLocaleUpperCase(),
         content: vessel ? (
-          <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
+          <Info 
+            vessel={vessel} 
+            lastPosition={lastPosition} 
+            lastPortVisit={lastPortVisit} 
+            onMoveToMap={() => setActiveTab(tabs?.[2])}
+          />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
         ),
@@ -182,7 +195,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   return (
     <Fragment>
       <header className={styles.header}>
-        <Link to={backLink}>
+        <Link to={backLink} onClick={trackEvent}>
           <IconButton
             type="border"
             size="default"
@@ -217,7 +230,22 @@ const Profile: React.FC = (props): React.ReactElement => {
         <Tabs
           tabs={tabs}
           activeTab={activeTab?.id as string}
-          onTabClick={(tab: Tab) => setActiveTab(tab)}
+          onTabClick={(tab: Tab) => {
+            setActiveTab(tab)
+            if (tab.id === 'activity') {
+              uaEvent({
+                category: 'Vessel Detail ACTIVITY Tab',
+                action: 'See Activity Tab',
+              })
+            }
+            if (tab.id === 'map') {
+              uaEvent({
+                category: 'Vessel Detail MAP Tab',
+                action: 'See MAP Tab',
+                label: 'global tab'
+              })
+            }
+          }}
         ></Tabs>
       </div>
     </Fragment>
