@@ -4,7 +4,6 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
 import { PATH_BASENAME } from 'routes/routes'
-import { WORKSPACE_ENV } from 'data/workspaces'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
@@ -15,8 +14,8 @@ export const LocaleLabels = [
 
 const GITHUB_LABELS_BRANCH = 'master'
 export const SHARED_LABELS_PATH =
-  WORKSPACE_ENV === 'development'
-    ? 'http://localhost:8000' // ensure this matches with the package config and it is running
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8000'
     : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${GITHUB_LABELS_BRANCH}/packages/i18n-labels`
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
