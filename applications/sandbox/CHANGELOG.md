@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.6.10
+
+### Patch Changes
+
+- @globalfishingwatch/api-client@4.0.0
+
 ## 0.6.9
 
 ### Patch Changes

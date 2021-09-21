@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 6.0.0
+
+### Major Changes
+
+- aa3cf308: Added originalStartDate and originalEndDate to Authorization
+
 ## 5.3.2
 
 ### Patch Changes
