@@ -270,7 +270,7 @@
     }
   },
   "private-peru-fishing-vessels": {
-    "name": "Private Peru VMS (Fishing Vessels)",
+    "name": "VMS de Peru (Buques de pesca)",
     "description": "Dataset for VMS Peru (Private)",
     "schema": {
       "id": "id",
