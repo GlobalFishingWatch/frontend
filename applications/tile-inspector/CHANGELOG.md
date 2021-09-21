@@ -1,5 +1,14 @@
 # tile-inspector
 
+## 0.1.90
+
+### Patch Changes
+
+- @globalfishingwatch/api-client@4.0.0
+- @globalfishingwatch/layer-composer@10.0.0
+- @globalfishingwatch/react-hooks@15.0.0
+- @globalfishingwatch/ui-components@12.0.0
+
 ## 0.1.89
 
 ### Patch Changes

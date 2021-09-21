@@ -1,5 +1,12 @@
 # @globalfishingwatch/ui-components
 
+## 12.0.0
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@10.0.0
+- @globalfishingwatch/react-hooks@15.0.0
+
 ## 11.1.2
 
 ### Patch Changes
