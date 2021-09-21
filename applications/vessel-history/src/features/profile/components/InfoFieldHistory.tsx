@@ -12,6 +12,7 @@ interface ListItemProps {
   history: ValueItem[]
   isOpen: boolean
   label: VesselFieldLabel
+  hideTMTDate: boolean
   vesselName: string
   onClose?: () => void
 }
@@ -20,6 +21,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   history,
   isOpen,
   label,
+  hideTMTDate,
   vesselName,
   onClose = () => void 0,
 }): React.ReactElement => {
@@ -45,9 +47,11 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
           <div>
             <div className={styles.historyItem}>
               <label className={styles.identifierField}>{t(`vessel.${label}` as any, label)}</label>
-              <label className={styles.identifierField}>
-                {t('common.timeRange', 'time range')}
-              </label>
+              {!hideTMTDate && (
+                <label className={styles.identifierField}>
+                  {t('common.timeRange', 'time range')}
+                </label>
+              )}
               <label className={styles.identifierField}>{t(`vessel.source`, 'source')}</label>
             </div>
 
@@ -56,24 +60,26 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                 <div className={styles.identifierField}>
                   {historyValue.value ? historyValue.value : DEFAULT_EMPTY_VALUE}
                 </div>
-                <div className={styles.identifierField}>
-                  <div>
-                    <HistoryDate
-                      date={historyValue.firstSeen}
-                      originalDate={historyValue.originalFirstSeen}
-                      label={t('common.from', 'From')}
-                    />
-                    <HistoryDate
-                      date={historyValue.endDate}
-                      originalDate={historyValue.originalEndDate}
-                      label={t('common.to', 'To')}
-                    />
-                    {!historyValue.firstSeen &&
-                      !historyValue.endDate &&
-                      !historyValue.originalFirstSeen &&
-                      !historyValue.originalEndDate && <Fragment>{DEFAULT_EMPTY_VALUE}</Fragment>}
+                {!hideTMTDate && (
+                  <div className={styles.identifierField}>
+                    <div>
+                      <HistoryDate
+                        date={historyValue.firstSeen}
+                        originalDate={historyValue.originalFirstSeen}
+                        label={t('common.from', 'From')}
+                      />
+                      <HistoryDate
+                        date={historyValue.endDate}
+                        originalDate={historyValue.originalEndDate}
+                        label={t('common.to', 'To')}
+                      />
+                      {!historyValue.firstSeen &&
+                        !historyValue.endDate &&
+                        !historyValue.originalFirstSeen &&
+                        !historyValue.originalEndDate && <Fragment>{DEFAULT_EMPTY_VALUE}</Fragment>}
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className={styles.identifierField}>{formatSource(historyValue.source)}</div>
               </div>
             ))}

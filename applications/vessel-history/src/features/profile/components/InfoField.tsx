@@ -35,6 +35,7 @@ interface ListItemProps {
   value?: string
   valuesHistory?: ValueItem[]
   vesselName: string
+  hideTMTDate?: boolean
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -42,6 +43,7 @@ const InfoField: React.FC<ListItemProps> = ({
   label,
   valuesHistory = [],
   vesselName,
+  hideTMTDate = false,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
@@ -81,6 +83,7 @@ const InfoField: React.FC<ListItemProps> = ({
           label={label}
           history={valuesHistory}
           isOpen={modalOpen}
+          hideTMTDate={hideTMTDate}
           onClose={closeModal}
           vesselName={vesselName}
         ></InfoFieldHistory>
