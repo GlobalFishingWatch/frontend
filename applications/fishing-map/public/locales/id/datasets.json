@@ -390,6 +390,17 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-chile-all-vessels": {
+    "name": "Chile VMS (all Vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-chile-fishing-effort": {
     "name": "VMS Chili",
     "description": "Data Vessel Monitoring System VMS) disediakan oleh fisheries and aquaculture regulator (SERNAPESCA) pemerintah Chili. Data VMS Chili dapat difilter untuk kapal penangkap ikan skala kecil (&lt;18 meter) dan kapal penangkap ikan industri (&gt; 18 meter). Perhatikan bahwa beberapa kapal berukuran &lt;18 meter tetapi dianggap industri karena terdaftar dalam penangkapan kuota industri. SERNAPESCA juga menggunakan peta kami untuk memvisualisasikan dan melacak posisi kapal untuk armadanya, termasuk kapal yang terlibat dalam akuakultur. Data dikumpulkan menggunakan VMS Chili melalui satelit dan penerima terestrial dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya di peta Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi 'aktivitas penangkapan ikan yang terlihat.' Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah 'aktivitas memancing', 'memancing', dan 'upaya penangkapan ikan', sebagai 'terlihat jelas' dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang 'aktivitas penangkapan ikan yang terlihat' harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
