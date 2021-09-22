@@ -45,6 +45,7 @@
     "duration": "Durée",
     "encounter": "rencontre",
     "encounterActionWith": "Rencontre avec {{vessel}} en {{regionName}}",
+    "encounterActionWithNoRegion": "Encounter with {{vessel}}",
     "end": "Fin",
     "fishing": "pêche",
     "fishingAction": "Pêche en {{regionName}}",
@@ -95,10 +96,10 @@
     "noResults": "No events found. Try changing the current filters."
   },
   "map": {
+    "descriptionMPA": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "filters": "Filter events",
     "loading": "Chargement de la carte",
-    "toggleLayers": "Activer/désactiver les calques",
-    "descriptionMPA": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021."
+    "toggleLayers": "Activer/désactiver les calques"
   },
   "search": {
     "activeAfter": "active After",
