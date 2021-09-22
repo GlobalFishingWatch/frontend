@@ -34,7 +34,7 @@
     "days_plural": "días",
     "description": "Descripción",
     "detection": "Detección",
-    "dismiss": "Dismiss",
+    "dismiss": "Cancelar",
     "environment": "Datos ambientales",
     "events": "Eventos",
     "feedback": "Comentarios",
@@ -83,8 +83,8 @@
     "emptyState": "Sus datos aparecerán aquí",
     "featuresNameField": "Campo para nombrar cada área",
     "file": "Archivo",
-    "onlyCsvAllowed": "(Only .csv files are allowed)",
-    "onlyZipAndJsonAllowed": "(Only .zip or .json files are allowed)",
+    "onlyCsvAllowed": "Solo se permiten archivos .csv",
+    "onlyZipAndJsonAllowed": "(Sólo se permiten archivos .zip o .json)",
     "hint": "Más información sobre los formatos compatibles",
     "importing": "Se están importando los datos",
     "individualIdField": "Campo ID Individual",
@@ -105,7 +105,7 @@
     "typeTracks": " Pistas",
     "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o embarcaciones.",
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir datos (gratis y toma 2 minutos)",
-    "uploadPublic": "Allow other users to see this dataset when you share a workspace",
+    "uploadPublic": "Permitir a otros usuarios ver este conjunto de datos cuando comparta un espacio de trabajo",
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental"
   },
@@ -152,7 +152,7 @@
     "notInCVP": "Evento no disponible",
     "port": "Puerto",
     "portAction": "Atracado durante",
-    "port_visit": "Port visit",
+    "port_visit": "Visita a puerto",
     "portAt": "Atracado a {{port}} durante",
     "seeInCVP": "Ver en el Carrier Vessel Portal",
     "unknown": "Evento desconocido"
@@ -315,7 +315,7 @@
       "set_gillnets": "Redes de enmalle",
       "set_longlines": "Palangres",
       "squid_jigger": "Jigger calamar",
-      "squid_jiggers": "Gear Squid Jiggers",
+      "squid_jiggers": "Jiggers de calamar",
       "trawlers": "Red de arrastre",
       "trollers": "Curricaneros",
       "tuna_purse_seines": "Red de cerco atunera"
@@ -341,6 +341,8 @@
     "widthRange": "Rango de ancho"
   },
   "workspace": {
+    "create": "Create as new",
+    "createNeeded": "Changing workspace visibility requires creating a new one",
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "editName": "Modificar el nombre del espacio de trabajo",
     "emptyState": "Sus espacios de trabajo aparecerán aquí",
@@ -349,8 +351,12 @@
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
     "privateTitle_plural": "Espacios de trabajo privados",
+    "update": "Update",
+    "uploadPublic": "Allow other users to see this workspace",
+    "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
     "remove": "Eliminar el espacio de trabajo",
     "save": "Guardar el mapa actual",
+    "saveAsNew": "Save as new workspace",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
     "saveLogin": "Necesita <1>iniciar sesión</1> para guardar la vista actual (gratis y toma 2 minutos)",
     "title_plural": "Espacios de trabajo"
