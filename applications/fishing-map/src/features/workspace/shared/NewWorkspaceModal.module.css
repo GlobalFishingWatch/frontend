@@ -10,8 +10,12 @@
   margin-top: var(--space-M);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: var(--space-M);
+}
+
+.footer button:only-child {
+  margin-left: auto;
 }
 
 .adminWarning {

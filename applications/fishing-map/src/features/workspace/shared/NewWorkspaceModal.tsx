@@ -61,18 +61,18 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
   const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
   const hasWorkspaceDefined = workspace !== null && !isDefaultWorkspace
-  const showSaveAsNew = hasWorkspaceDefined && (isOwnerWorkspace || hasEditPermission)
+  const allowUpdate = hasWorkspaceDefined && (isOwnerWorkspace || hasEditPermission)
   const showOverWriteWarning = hasWorkspaceDefined && !isOwnerWorkspace && hasEditPermission
-  const initialCreateAsPublic = showSaveAsNew
+  const initialCreateAsPublic = allowUpdate
     ? workspace?.id.includes(PUBLIC_SUFIX) || false
     : !containsPrivateDatasets
   const [createAsPublic, setCreateAsPublic] = useState(initialCreateAsPublic)
-  const allowUpdate = showSaveAsNew ? createAsPublic === initialCreateAsPublic : true
+  const visibilityChanged = allowUpdate ? createAsPublic !== initialCreateAsPublic : false
 
   useEffect(() => {
     if (isOpen) {
       let workspaceName = workspace?.name
-      if (isDefaultWorkspace || (!showSaveAsNew && !hasEditPermission)) {
+      if (isDefaultWorkspace || !allowUpdate) {
         const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
         const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
         const start = formatTimerangeBoundary(timerange.start, dateFormat)
@@ -110,7 +110,7 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
     }
   }
 
-  const onCreateWorkspaceClick = async () => {
+  const createWorkspace = async () => {
     if (name) {
       setCreateLoading(true)
       const dispatchedAction = await dispatch(saveCurrentWorkspaceThunk({ name, createAsPublic }))
@@ -161,37 +161,33 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
           onClick={() => setCreateAsPublic(!createAsPublic)}
         />
       )}
-      {showOverWriteWarning && (
+      {showOverWriteWarning && allowUpdate && (
         <div className={styles.adminWarning}>
           <p>You are not the creator of this workspace and clicking SAVE will overwrite it</p>
           <p>⚠️ With admin power comes admin responsability (B.Parker)</p>
         </div>
       )}
       <div className={styles.footer}>
-        {showSaveAsNew && (
-          <Button
-            type={allowUpdate ? 'secondary' : 'default'}
-            loading={createLoading}
-            disabled={!name}
-            onClick={onCreateWorkspaceClick}
-          >
-            {t('workspace.saveAsNew', 'Save as new') as string}
-          </Button>
-        )}
-        {isDefaultWorkspace || (!isOwnerWorkspace && !hasEditPermission) ? (
-          <Button loading={createLoading} disabled={!name} onClick={onCreateWorkspaceClick}>
-            {t('common.save', 'Save') as string}
-          </Button>
-        ) : (
+        {allowUpdate && (
           <Button
             loading={updateLoading}
-            disabled={!name || !allowUpdate}
-            tooltip={!allowUpdate ? 'Changing workspace visibility requires saves as new' : ''}
+            disabled={!name || visibilityChanged}
+            tooltip={
+              visibilityChanged
+                ? t(
+                    'workspace.createNeeded',
+                    'Changing workspace visibility requires creating a new one'
+                  )
+                : ''
+            }
             onClick={updateWorkspace}
           >
-            {t('common.save', 'Save') as string}
+            {t('workspace.update', 'Update workspace') as string}
           </Button>
         )}
+        <Button loading={createLoading} disabled={!name} onClick={createWorkspace}>
+          {t('workspace.create', 'Create new workspace') as string}
+        </Button>
       </div>
     </Modal>
   )
