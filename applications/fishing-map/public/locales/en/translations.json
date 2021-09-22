@@ -341,7 +341,7 @@
     "widthRange": "Width range"
   },
   "workspace": {
-    "create": "Create as new",
+    "create": "Create new workspace",
     "createNeeded": "Changing workspace visibility requires creating a new one",
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
     "editName": "Edit workspace name",
@@ -351,7 +351,7 @@
     "nameInput": "Workspace name",
     "new": "New workspace",
     "privateTitle_plural": "Private workspaces",
-    "update": "Update",
+    "update": "Update workspace",
     "uploadPublic": "Allow other users to see this workspace",
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
     "remove": "Remove workspace",
