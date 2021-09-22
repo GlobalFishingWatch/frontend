@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 6.0.1
+
+### Patch Changes
+
+- f5264a92: [WIP] Fishing map/download activity popup
+
 ## 6.0.0
 
 ### Major Changes
