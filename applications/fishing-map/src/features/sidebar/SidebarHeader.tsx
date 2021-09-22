@@ -59,6 +59,7 @@ function SaveWorkspaceButton() {
         disabled={!showLoginLink}
         tooltip={t('workspace.saveLogin', 'You need to login to save views')}
         tooltipPlacement="bottom"
+        className="print-hidden"
         onClick={onLoginClick}
         onMouseEnter={() => {
           setShowLoginLink(true)
