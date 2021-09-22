@@ -5,15 +5,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
-import { Feature, Polygon } from 'geojson'
+import { Geometry, MultiPolygon, Polygon } from 'geojson'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components/dist'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import {
+  clearDownloadGeometry,
   DownloadActivityParams,
   downloadActivityThunk,
-  DownloadGeometry,
   resetDownloadStatus,
   selectDownloadAreaName,
   selectDownloadGeometry,
@@ -32,23 +32,18 @@ import {
   GroupBy,
   TemporalResolution,
   SpatialResolution,
-  formatOptions,
-  spatialResolutionOptions,
   MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
+  SPATIAL_RESOLUTION_OPTIONS,
+  FORMAT_OPTIONS,
 } from './download.config'
 
-type DownloadModalProps = {
-  isOpen?: boolean
-  onClose: () => void
-}
-
-function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
+function DownloadModal() {
   const { t } = useTranslation()
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
   const downloadStatus = useSelector(selectDownloadStatus)
-  const [format, setFormat] = useState(formatOptions[0].id as Format)
+  const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)
   const { start, end, timerange } = useTimerangeConnect()
 
   const groupByOptions: ChoiceOption[] = useMemo(
@@ -130,9 +125,12 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
 
   const downloadAreaGeometry = useSelector(selectDownloadGeometry)
   const downloadAreaName = useSelector(selectDownloadAreaName)
-  const areaIsTooBigForHighRes =
-    area(downloadAreaGeometry as Feature<Polygon>) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
-  const filteredSpatialResolutionOptions = spatialResolutionOptions.map((option) => {
+  const areaIsTooBigForHighRes = useMemo(() => {
+    return downloadAreaGeometry
+      ? area(downloadAreaGeometry as Polygon | MultiPolygon) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
+      : false
+  }, [downloadAreaGeometry])
+  const filteredSpatialResolutionOptions = SPATIAL_RESOLUTION_OPTIONS.map((option) => {
     if (option.id === SpatialResolution.High && areaIsTooBigForHighRes) {
       return {
         ...option,
@@ -163,7 +161,7 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
     const downloadParams: DownloadActivityParams = {
       dateRange: timerange as DateRange,
       dataviews: downloadDataviews,
-      geometry: downloadAreaGeometry as DownloadGeometry,
+      geometry: downloadAreaGeometry as Geometry,
       areaName: downloadAreaName,
       format,
       temporalResolution,
@@ -189,14 +187,18 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
     })
 
     timeoutRef.current = setTimeout(() => {
-      dispatch(resetDownloadStatus(undefined))
-    }, 5000)
+      dispatch(resetDownloadStatus())
+    }, 1000)
+  }
+
+  const onClose = () => {
+    dispatch(clearDownloadGeometry())
   }
 
   return (
     <Modal
       title={t('download.title', 'Download - Activity')}
-      isOpen={isOpen}
+      isOpen={downloadAreaGeometry !== undefined}
       onClose={onClose}
       contentClassName={styles.modalContent}
     >
@@ -216,7 +218,7 @@ function DownloadModal({ isOpen = false, onClose }: DownloadModalProps) {
         <div>
           <label>{t('download.format', 'Format')}</label>
           <Choice
-            options={formatOptions}
+            options={FORMAT_OPTIONS}
             size="small"
             activeOption={format}
             onOptionClick={(option) => setFormat(option.id as Format)}

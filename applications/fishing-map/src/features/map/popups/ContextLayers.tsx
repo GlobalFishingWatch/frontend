@@ -50,7 +50,6 @@ function FeatureRow({
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const gfwUser = useSelector(isGFWUser)
-  console.log('gfwUser', gfwUser)
 
   const handleReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>) => {

@@ -1,50 +1,29 @@
-import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { Feature, Polygon } from 'geojson'
+import { Geometry } from 'geojson'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { RootState } from 'store'
-import {
-  AsyncError,
-  asyncInitialState,
-  AsyncReducer,
-  AsyncReducerStatus,
-  createAsyncSlice,
-} from 'utils/async-slice'
+import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { transformFilters } from 'features/analysis/analysis.utils'
 import { DateRange } from 'features/analysis/analysis.slice'
-import { Bbox } from 'types'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './download.config'
 
-export type DownloadArea = {
-  feature: TooltipEventFeature
+export interface DownloadState {
+  geometry: Geometry | undefined
+  name: string
+  id: string
+  status: AsyncReducerStatus
 }
-
-export type DownloadGeometry = Feature<Polygon>
-
-export interface DownloadState extends AsyncReducer<DownloadActivity> {
-  area: {
-    geometry: DownloadGeometry | undefined
-    bounds: Bbox | undefined
-    name: string
-    id: string
-  }
-}
-// type DownloadState = {
-//   area: DownloadArea | null
-// }
 
 const initialState: DownloadState = {
-  ...asyncInitialState,
-  area: {
-    geometry: undefined,
-    bounds: undefined,
-    name: '',
-    id: '',
-  },
+  geometry: undefined,
+  name: '',
+  id: '',
+  status: AsyncReducerStatus.Idle,
 }
 
 export type DownloadActivityParams = {
@@ -53,7 +32,7 @@ export type DownloadActivityParams = {
     filters: Record<string, any>
     datasets: string[]
   }[]
-  geometry: DownloadGeometry
+  geometry: Geometry
   areaName: string
   format: Format
   spatialResolution: SpatialResolution
@@ -113,7 +92,7 @@ export const downloadActivityThunk = createAsyncThunk<
   }
 })
 
-const { slice: downloadSlice } = createAsyncSlice<DownloadState, DownloadActivity>({
+const downloadSlice = createSlice({
   name: 'download',
   initialState,
   reducers: {
@@ -121,36 +100,38 @@ const { slice: downloadSlice } = createAsyncSlice<DownloadState, DownloadActivit
       state.status = AsyncReducerStatus.Idle
     },
     clearDownloadGeometry: (state) => {
-      state.area.geometry = undefined
-      state.area.name = ''
-      state.area.bounds = undefined
+      state.geometry = undefined
+      state.name = ''
       state.status = AsyncReducerStatus.Idle
     },
-    setDownloadGeometry: (
-      state,
-      action: PayloadAction<{
-        geometry: DownloadGeometry | undefined
-        value: string
-        bounds: [number, number, number, number]
-      }>
-    ) => {
-      state.area.geometry = action.payload.geometry
-      state.area.bounds = action.payload.bounds
-      state.area.name = action.payload.value
+    setDownloadGeometry: (state, action: PayloadAction<TooltipEventFeature>) => {
+      state.geometry = action.payload.geometry as Geometry
+      state.name = action.payload.value
     },
   },
-  thunks: {
-    createThunk: downloadActivityThunk,
+  extraReducers: (builder) => {
+    builder.addCase(downloadActivityThunk.pending, (state) => {
+      state.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(downloadActivityThunk.fulfilled, (state) => {
+      state.status = AsyncReducerStatus.Finished
+    })
+    builder.addCase(downloadActivityThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.status = AsyncReducerStatus.Aborted
+      } else {
+        state.status = AsyncReducerStatus.Error
+      }
+    })
   },
 })
 
 export const { resetDownloadStatus, clearDownloadGeometry, setDownloadGeometry } =
   downloadSlice.actions
 
-export const selectDownloadGeometry = (state: RootState) => state.download.area.geometry
-export const selectDownloadBounds = (state: RootState) => state.download.area.bounds
-export const selectDownloadAreaName = (state: RootState) => state.download.area.name
-export const selectDownloadAreaId = (state: RootState) => state.download.area.id
+export const selectDownloadGeometry = (state: RootState) => state.download.geometry
+export const selectDownloadAreaName = (state: RootState) => state.download.name
+export const selectDownloadAreaId = (state: RootState) => state.download.id
 export const selectDownloadStatus = (state: RootState) => state.download.status
 
 export default downloadSlice.reducer

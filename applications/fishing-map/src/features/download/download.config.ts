@@ -25,7 +25,7 @@ export enum SpatialResolution {
   High = 'high',
 }
 
-export const formatOptions: ChoiceOption[] = [
+export const FORMAT_OPTIONS: ChoiceOption[] = [
   {
     id: Format.Csv,
     title: 'csv',
@@ -43,7 +43,7 @@ export const formatOptions: ChoiceOption[] = [
   },
 ]
 
-export const spatialResolutionOptions: ChoiceOption[] = [
+export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   {
     id: SpatialResolution.Low,
     title: '0.1º',
@@ -54,4 +54,4 @@ export const spatialResolutionOptions: ChoiceOption[] = [
   },
 ]
 
-export const MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION = 25000000000000
+export const MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION = 25000000000000 //Bigger than the biggest EEZ (Russia)
