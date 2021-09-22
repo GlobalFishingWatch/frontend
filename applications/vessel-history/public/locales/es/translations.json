@@ -24,7 +24,8 @@
     "in": "in",
     "commingSoon": "muy pronto!",
     "historyFor": "historial para",
-    "previous": "anteriones"
+    "previous": "anteriones",
+    "events": "Events"
   },
   "event": {
     "avgSpeed": "Avg Speed",
