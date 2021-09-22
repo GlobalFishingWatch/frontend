@@ -45,6 +45,7 @@
     border-bottom: none;
     border-right: var(--border);
     width: 33%;
+    overflow-y: auto;
   }
   .full,
   .width6ch,
