@@ -16,6 +16,7 @@ type PrintSize = {
 
 // TODO: review why it isn't always render propertly, disabled for now
 export const isPrintSupported = false
+export const MAP_IMAGE_DEBOUNCE = 800
 // const browser = getParser(window.navigator.userAgent)
 // export const isPrintSupported = browser.satisfies({
 //   chrome: '>22',
@@ -67,7 +68,7 @@ function MapScreenshot({ map }: { map?: Map }) {
           setScreenshotImage(image)
         })
       }
-    }, 800)
+    }, MAP_IMAGE_DEBOUNCE)
 
     if (map && idle && !rulersEditing) {
       onMapIdle()
