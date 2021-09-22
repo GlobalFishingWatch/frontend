@@ -103,7 +103,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const fetchResults = useCallback(
     (offset = 0) => {
-
       if (promiseRef.current) {
         promiseRef.current.abort()
       }
@@ -129,23 +128,26 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       category: 'Highlight Events',
       action: 'Start highlight events configurations',
       label: JSON.stringify({
-        page: 'home'
-      })
+        page: 'home',
+      }),
     })
   }, [])
 
-  const trackRemoveOffline = useCallback((offlineVessel) => {
-    const now = DateTime.now()
-    const savedOn = DateTime.fromISO(offlineVessel.savedOn);
-    const i = Interval.fromDateTimes(savedOn, now);
-    uaEvent({
-      category: 'Offline Access',
-      action: 'Remove saved vessel for offline view',
-      label: JSON.stringify({ page: 'home' }),
-      value: Math.floor(i.length('days'))
-    })
-    dispatchDeleteOfflineVessel(offlineVessel)
-  }, [dispatchDeleteOfflineVessel])
+  const trackRemoveOffline = useCallback(
+    (offlineVessel) => {
+      const now = DateTime.now()
+      const savedOn = DateTime.fromISO(offlineVessel.savedOn)
+      const i = Interval.fromDateTimes(savedOn, now)
+      uaEvent({
+        category: 'Offline Access',
+        action: 'Remove saved vessel for offline view',
+        label: JSON.stringify({ page: 'home' }),
+        value: Math.floor(i.length('days')),
+      })
+      dispatchDeleteOfflineVessel(offlineVessel)
+    },
+    [dispatchDeleteOfflineVessel]
+  )
 
   useEffect(() => {
     setSelectedVessels([])
@@ -211,12 +213,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   {selectedVessels.length > 0 && (
                     <div className={styles.bottomActions}>
                       {selectedVessels.length === 1 && (
-                        <Button className={styles.seeVesselBtn} onClick={onSeeVesselClick}>
+                        <Button className={styles.bottomActionsBtn} onClick={onSeeVesselClick}>
                           {t('search.seeVessel', 'See Vessel')}
                         </Button>
                       )}
                       {selectedVessels.length > 1 && (
-                        <Button className={styles.mergeVesselBtn} onClick={onMergeVesselClick}>
+                        <Button className={styles.bottomActionsBtn} onClick={onMergeVesselClick}>
                           {t('search.mergeSelectedVessels', 'Merge Selected Vessels')}
                         </Button>
                       )}

@@ -109,7 +109,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     <Fragment>
       <div className={styles.infoContainer}>
         {vessel && (
-          <Fragment>
+          <div className={styles.imageAndFields}>
             {imageList.length > 0 && (
               <ImageGallery
                 items={imageList}
@@ -267,7 +267,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 valuesHistory={[]}
               ></InfoField>
             </div>
-          </Fragment>
+          </div>
         )}
         <div className={styles.actions}>
           {vessel && offlineVessel && (
