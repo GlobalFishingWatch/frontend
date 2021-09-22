@@ -341,8 +341,8 @@
     "widthRange": "Rango de ancho"
   },
   "workspace": {
-    "create": "Create as new",
-    "createNeeded": "Changing workspace visibility requires creating a new one",
+    "create": "Crear nuevo",
+    "createNeeded": "Cambiar la visibilidad del espacio de trabajo requiere crear uno nuevo",
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "editName": "Modificar el nombre del espacio de trabajo",
     "emptyState": "Sus espacios de trabajo aparecerán aquí",
@@ -351,12 +351,12 @@
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
     "privateTitle_plural": "Espacios de trabajo privados",
-    "update": "Update",
-    "uploadPublic": "Allow other users to see this workspace",
-    "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
+    "update": "Actualizar",
+    "uploadPublic": "Permitir a otros usuarios ver este espacio de trabajo",
+    "uploadPublicDisabled": "Este espacio de trabajo no puede ser compartido públicamente porque contiene datos privados",
     "remove": "Eliminar el espacio de trabajo",
     "save": "Guardar el mapa actual",
-    "saveAsNew": "Save as new workspace",
+    "saveAsNew": "Guardar nuevo",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
     "saveLogin": "Necesita <1>iniciar sesión</1> para guardar la vista actual (gratis y toma 2 minutos)",
     "title_plural": "Espacios de trabajo"
