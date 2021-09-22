@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 15.0.1
+
+### Patch Changes
+
+- 1faa75c7: Add geometry on user context layers interaction
+
 ## 15.0.0
 
 ### Patch Changes

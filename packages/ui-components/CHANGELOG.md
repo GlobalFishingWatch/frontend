@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 12.1.1
+
+### Patch Changes
+
+- f5264a92: [WIP] Fishing map/download activity popup
+
 ## 12.1.0
 
 ### Minor Changes

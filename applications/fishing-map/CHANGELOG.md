@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.55
+
+### Patch Changes
+
+- f5264a92: [WIP] Fishing map/download activity popup
+- Updated dependencies [f5264a92]
+- Updated dependencies [1faa75c7]
+  - @globalfishingwatch/api-types@6.0.1
+  - @globalfishingwatch/ui-components@12.1.1
+  - @globalfishingwatch/react-hooks@15.0.1
+
 ## 1.1.54
 
 ### Patch Changes
