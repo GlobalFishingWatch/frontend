@@ -5,7 +5,6 @@ import { event as uaEvent } from 'react-ga'
 import Link from 'redux-first-router-link'
 import { redirect } from 'redux-first-router'
 import { DateTime, Interval } from 'luxon'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
@@ -50,8 +49,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const totalResults = useSelector(selectSearchTotalResults)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
-
-  // useEffect(() => GFWAPI.setConfig({ ...GFWAPI.getConfig(), debug: true }))
 
   useEffect(() => {
     dispatchFetchOfflineVessels()
@@ -135,7 +132,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           <IconButton type="default" size="default" icon="settings"></IconButton>
         </Link>
         <LanguageToggle />
-        <button onClick={() => GFWAPI.setToken('97yfghuwe')}>invalidate token</button>
       </header>
       <div className={styles.search}>
         <AdvancedSearch />
