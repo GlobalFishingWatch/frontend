@@ -232,6 +232,7 @@
     "flagState_other": "Flag States",
     "fleet_other": "Fleets",
     "gearType_other": "Gear types",
+    "name": "Layer name",
     "infoClose": "Hide info",
     "infoOpen": "Show info",
     "qf": "Quality signal",

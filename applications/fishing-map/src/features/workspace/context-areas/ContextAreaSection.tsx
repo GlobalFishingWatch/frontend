@@ -28,8 +28,8 @@ function ContextAreaSection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onDrawClick = useCallback(() => {
-    dispatchSetDrawMode(drawMode === 'draw' ? 'edit' : 'draw')
-  }, [drawMode, dispatchSetDrawMode])
+    dispatchSetDrawMode('draw')
+  }, [dispatchSetDrawMode])
 
   const onAddClick = useCallback(() => {
     uaEvent({

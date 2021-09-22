@@ -24,6 +24,7 @@ import useViewport from 'features/map/map-viewport.hooks'
 import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
+import { selectDrawMode } from 'features/map/map.slice'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -67,6 +68,7 @@ const TimebarWrapper = () => {
   const tracks = useSelector(selectTracksData)
   const tracksGraphs = useSelector(selectTracksGraphs)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
+  const drawMode = useSelector(selectDrawMode)
 
   const dispatch = useDispatch()
 
@@ -195,7 +197,7 @@ const TimebarWrapper = () => {
       : null
   }, [timebarVisualisation, showGraph, tracksGraphs])
 
-  if (!start || !end) return null
+  if (!start || !end || drawMode !== 'disabled') return null
 
   return (
     <div>

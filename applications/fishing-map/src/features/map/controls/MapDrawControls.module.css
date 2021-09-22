@@ -1,0 +1,24 @@
+.container {
+  padding: var(--space-S) var(--space-M);
+  left: 50%;
+  position: absolute;
+  bottom: var(--space-L);
+  transform: translateX(-50%);
+  background-color: var(--color-off-white);
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-L);
+}
+
+.flex {
+  display: flex;
+}
+
+.input {
+  width: 20rem;
+  margin-right: var(--space-M);
+}
+
+.button + .button {
+  margin-left: var(--space-M);
+}

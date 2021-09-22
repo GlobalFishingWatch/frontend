@@ -40,6 +40,7 @@ import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
 import useLocalStorage from 'hooks/use-local-storage'
+import { selectDrawMode } from 'features/map/map.slice'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -76,6 +77,7 @@ function App(): React.ReactElement {
   useAnalytics()
   useReplaceLoginUrl()
   const dispatch = useAppDispatch()
+  const drawMode = useSelector(selectDrawMode)
   const sidebarOpen = useSelector(selectSidebarOpen)
   const readOnly = useSelector(selectReadOnly)
   const { dispatchQueryParams } = useLocationConnect()
@@ -112,7 +114,6 @@ function App(): React.ReactElement {
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const showToggle = useSelector(isWorkspaceLocation)
   const userLogged = useSelector(isUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
   const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -205,8 +206,8 @@ function App(): React.ReactElement {
       {/* <RecoilizeDebugger /> */}
       <Suspense fallback={null}>
         <SplitView
-          isOpen={sidebarOpen}
-          showToggle={showToggle}
+          isOpen={sidebarOpen && drawMode === 'disabled'}
+          showToggle={workspaceLocation}
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}

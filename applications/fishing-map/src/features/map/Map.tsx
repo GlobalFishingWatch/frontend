@@ -36,6 +36,7 @@ import {
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
+import MapDrawControls from 'features/map/controls/MapDrawControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
@@ -281,6 +282,7 @@ const MapWrapper = (): React.ReactElement | null => {
         </InteractiveMap>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
+      <MapDrawControls />
       {legendsTranslated?.map((legend: any) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {
