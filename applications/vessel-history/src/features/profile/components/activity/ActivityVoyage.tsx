@@ -52,7 +52,7 @@ const ActivityVoyage: React.FC<EventProps> = ({
     }
 
     return parts.join(' ')
-  }, [event, t])
+  }, [event.from, event.start, event.to, event.end, event.eventsQuantity, t])
 
   const hasEvents = useMemo(() => event.eventsQuantity > 0, [event.eventsQuantity])
   const onToggle = useCallback(
