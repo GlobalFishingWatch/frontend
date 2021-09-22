@@ -105,16 +105,22 @@ export const selectEventsWithRenderingInfo = createSelector(
         switch (event.type) {
           case EventTypes.Encounter:
             if (event.encounter) {
-              description = t(
-                'event.encounterActionWith',
-                'had an encounter with {{vessel}} in {{regionName}}',
-                {
-                  vessel:
-                    event.encounter.vessel.name ??
-                    t('event.encounterAnotherVessel', 'another vessel'),
-                  regionName: regionDescription,
-                }
-              )
+              description = regionDescription
+                ? t(
+                    'event.encounterActionWith',
+                    'had an encounter with {{vessel}} in {{regionName}}',
+                    {
+                      vessel:
+                        event.encounter.vessel.name ??
+                        t('event.encounterAnotherVessel', 'another vessel'),
+                      regionName: regionDescription,
+                    }
+                  )
+                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
+                    vessel:
+                      event.encounter.vessel.name ??
+                      t('event.encounterAnotherVessel', 'another vessel'),
+                  })
             }
             descriptionGeneric = t('event.encounter')
             break
@@ -215,14 +221,10 @@ const getEventRegionDescription = (
           .filter((value) => value.length > 0)
           .join(', ')
       case 'rfmo':
-        return (
-          t('event.internationalWaters', 'International Waters') +
-          ': ' +
-          values
-            .map((regionId) => rfmos.find((rfmo) => rfmo.id.toString() === regionId)?.label ?? '')
-            .filter((value) => value.length > 0)
-            .join(', ')
-        )
+        return values
+          .map((regionId) => rfmos.find((rfmo) => rfmo.id.toString() === regionId)?.label ?? '')
+          .filter((value) => value.length > 0)
+          .join(', ')
       case 'mpa':
         return values
           .map((mpaId) => mpas.find((mpa) => mpa.id.toString() === mpaId)?.label ?? '')
@@ -233,11 +235,10 @@ const getEventRegionDescription = (
     }
   }
 
-  const regionsDescription = (['eez', 'rfmo', 'mpa'] as (keyof Regions)[])
+  const regionsDescription = (['mpa', 'eez', 'rfmo'] as (keyof Regions)[])
     // use only regions with values
     .filter((regionType) => event?.regions && event?.regions[regionType].length > 0)
-    // take only the first found
-    .slice(0, 1)
+
     // retrieve its corresponding names
     .map(
       (regionType) =>
@@ -248,7 +249,8 @@ const getEventRegionDescription = (
             .filter((x: string) => x.length > 0)
         )}`
     )
-    .pop()
+    // combine all the regions with commas
+    .join(', ')
 
   return regionsDescription ?? ''
 }
