@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  min-height: 100%;
+}
+
+.info {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.downloadBtn {
+  margin-top: auto;
+  margin-left: auto;
+}

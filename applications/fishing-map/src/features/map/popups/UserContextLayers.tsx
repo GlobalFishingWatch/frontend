@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { groupBy } from 'lodash'
-import { useSelector } from 'react-redux'
+import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
@@ -12,7 +12,9 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
-import useMapInstance from '../map-context.hooks'
+import { setDownloadGeometry } from 'features/download/download.slice'
+import useMapInstance, { useMapContext } from '../map-context.hooks'
+import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
 type UserContextLayersProps = {
@@ -22,6 +24,8 @@ type UserContextLayersProps = {
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const context = useMapContext()
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
@@ -54,6 +58,21 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
     [dispatchQueryParams, highlightArea]
   )
 
+  const onDownloadClick = useCallback(
+    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
+      context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+      if (!feature.properties?.gfw_id) {
+        console.warn('No gfw_id available in the feature to analyze', feature)
+        return
+      }
+      batch(() => {
+        dispatch(setDownloadGeometry(feature))
+        dispatch(setClickedEvent(null))
+      })
+    },
+    [dispatch]
+  )
+
   const featuresByType = groupBy(features, 'layerId')
   return (
     <Fragment>
@@ -76,20 +95,32 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                   {showFeaturesDetails && (
                     <div className={styles.rowActions}>
                       {isContextArea && (
-                        <IconButton
-                          icon="report"
-                          disabled={!hasAnalysisLayers}
-                          tooltip={
-                            hasAnalysisLayers
-                              ? t('common.analysis', 'Create an analysis for this area')
-                              : t(
-                                  'common.analysisNotAvailable',
-                                  'Toggle an activity or environmenet layer on to analyse in in this area'
-                                )
-                          }
-                          onClick={() => onReportClick && onReportClick(feature)}
-                          size="small"
-                        />
+                        <Fragment>
+                          <IconButton
+                            icon="download"
+                            disabled={!hasAnalysisLayers}
+                            tooltip={t(
+                              'download.action',
+                              'Download visible activity layers for this area'
+                            )}
+                            onClick={(e) => onDownloadClick && onDownloadClick(e, feature)}
+                            size="small"
+                          />
+                          <IconButton
+                            icon="report"
+                            disabled={!hasAnalysisLayers}
+                            tooltip={
+                              hasAnalysisLayers
+                                ? t('common.analysis', 'Create an analysis for this area')
+                                : t(
+                                    'common.analysisNotAvailable',
+                                    'Toggle an activity or environmenet layer on to analyse in in this area'
+                                  )
+                            }
+                            onClick={() => onReportClick && onReportClick(feature)}
+                            size="small"
+                          />
+                        </Fragment>
                       )}
                     </div>
                   )}

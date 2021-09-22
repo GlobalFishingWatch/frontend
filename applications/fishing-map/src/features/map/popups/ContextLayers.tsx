@@ -16,6 +16,8 @@ import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
 import { selectSidebarOpen } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
+import { setDownloadGeometry } from 'features/download/download.slice'
+import { isGFWUser } from 'features/user/user.slice'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
@@ -32,6 +34,7 @@ interface FeatureRowProps {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
   onReportClick?: (feature: TooltipEventFeature) => void
+  onDownloadClick?: (feature: TooltipEventFeature) => void
   reportEnabled?: boolean
 }
 
@@ -39,12 +42,14 @@ function FeatureRow({
   feature,
   showFeaturesDetails = false,
   onReportClick,
+  onDownloadClick,
   reportEnabled = true,
 }: FeatureRowProps) {
   const { t } = useTranslation()
   const context = useMapContext()
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
+  const gfwUser = useSelector(isGFWUser)
 
   const handleReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>) => {
@@ -59,6 +64,16 @@ function FeatureRow({
     [context.eventManager, dispatchQueryParams, feature, isSidebarOpen, onReportClick]
   )
 
+  const handleDownloadClick = useCallback(
+    (ev: React.MouseEvent<Element, MouseEvent>) => {
+      context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+      if (onDownloadClick) {
+        onDownloadClick(feature)
+      }
+    },
+    [context.eventManager, feature, onDownloadClick]
+  )
+
   if (!feature.value) return null
   const { gfw_id } = feature.properties
 
@@ -71,6 +86,15 @@ function FeatureRow({
         <span className={styles.rowText}>{label}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
+            {gfwUser && (
+              <IconButton
+                icon="download"
+                disabled={!reportEnabled}
+                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                onClick={handleDownloadClick}
+                size="small"
+              />
+            )}
             <IconButton
               icon="report"
               disabled={!reportEnabled}
@@ -105,6 +129,15 @@ function FeatureRow({
       <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
         <div className={styles.rowActions}>
+          {gfwUser && (
+            <IconButton
+              icon="download"
+              disabled={!reportEnabled}
+              tooltip={t('download.action', 'Download visible activity layers for this area')}
+              onClick={handleDownloadClick}
+              size="small"
+            />
+          )}
           <IconButton
             icon="report"
             disabled={!reportEnabled}
@@ -135,6 +168,15 @@ function FeatureRow({
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
+            {gfwUser && (
+              <IconButton
+                icon="download"
+                disabled={!reportEnabled}
+                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                onClick={handleDownloadClick}
+                size="small"
+              />
+            )}
             <IconButton
               icon="report"
               disabled={!reportEnabled}
@@ -170,6 +212,15 @@ function FeatureRow({
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
+            {gfwUser && (
+              <IconButton
+                icon="download"
+                disabled={!reportEnabled}
+                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                onClick={handleDownloadClick}
+                size="small"
+              />
+            )}
             <IconButton
               icon="report"
               disabled={!reportEnabled}
@@ -246,6 +297,21 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
     [dispatch, dispatchQueryParams, fitMapBounds, highlightArea]
   )
 
+  const onDownloadClick = useCallback(
+    (feature: TooltipEventFeature) => {
+      if (!feature.properties?.gfw_id) {
+        console.warn('No gfw_id available in the feature to analyze', feature)
+        return
+      }
+      batch(() => {
+        dispatch(setDownloadGeometry(feature))
+        dispatch(setClickedEvent(null))
+      })
+      cleanFeatureState('highlight')
+    },
+    [cleanFeatureState, dispatch]
+  )
+
   const featuresByType = groupBy(features, 'layerId')
 
   return (
@@ -266,6 +332,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                 feature={feature}
                 showFeaturesDetails={showFeaturesDetails}
                 onReportClick={onReportClick}
+                onDownloadClick={onDownloadClick}
                 reportEnabled={hasAnalysisLayers}
               />
             ))}
