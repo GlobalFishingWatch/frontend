@@ -1,6 +1,10 @@
 import { useEffect } from 'react'
 import { initialize as uaInitialize, set as uaSet, pageview, event as uaEvent } from 'react-ga'
-import { GOOGLE_UNIVERSAL_ANALYTICS_ID, GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/config'
+import {
+  GOOGLE_UNIVERSAL_ANALYTICS_ID,
+  GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
+  IS_PRODUCTION,
+} from 'data/config'
 import { useUser } from 'features/user/user.hooks'
 
 export const useAnalytics = () => {
@@ -43,6 +47,8 @@ export const useAnalytics = () => {
           userLanguage: user.language,
         },
       })
+      // TODO Ensure this is not tracked when refreshing the token
+      // before searching
       uaEvent({
         category: 'User',
         action: 'Login',

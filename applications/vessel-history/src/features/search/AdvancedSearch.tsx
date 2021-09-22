@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
@@ -9,23 +9,21 @@ import { Button } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectAdvancedSearchCallsign,
-  selectAdvancedSearchFields,
   selectAdvancedSearchFlags,
   selectAdvancedSearchIMO,
   selectAdvancedSearchMMSI,
   selectFirstTransmissionDate,
   selectLastTransmissionDate,
-  selectUrlQuery,
 } from 'routes/routes.selectors'
 import { getFlags } from 'utils/flags'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { fetchVesselSearchThunk } from './search.thunk'
+import { useSearchConnect } from './search.hooks'
 import styles from './AdvancedSearch.module.css'
 
 const AdvancedSearch: React.FC = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const query = useSelector(selectUrlQuery)
+
+  const { query, fetchResults } = useSearchConnect()
   const MMSI = useSelector(selectAdvancedSearchMMSI)
   const IMO = useSelector(selectAdvancedSearchIMO)
   const callsign = useSelector(selectAdvancedSearchCallsign)
@@ -38,17 +36,6 @@ const AdvancedSearch: React.FC = () => {
     return flags.map((id) => ({ id, label: allFlagOptions.find((f) => f.id === id)?.label || '' }))
   }, [flags, allFlagOptions])
 
-  const advancedSearch = useSelector(selectAdvancedSearchFields)
-  const fetchResults = useCallback(() => {
-    dispatch(
-      fetchVesselSearchThunk({
-        query,
-        offset: 0,
-        advancedSearch,
-      })
-    )
-  }, [dispatch, query, advancedSearch])
-
   const { dispatchQueryParams } = useLocationConnect()
 
   const setQueryParam = useCallback(
@@ -58,6 +45,13 @@ const AdvancedSearch: React.FC = () => {
       })
     },
     [dispatchQueryParams]
+  )
+
+  const onSearchClick = useCallback(
+    (e) => {
+      fetchResults()
+    },
+    [fetchResults]
   )
 
   const onMainQueryChange = useCallback(
@@ -164,7 +158,7 @@ const AdvancedSearch: React.FC = () => {
         />
       </div>
       <div className={cx(styles.row, styles.flexEnd)}>
-        <Button className={styles.cta} onClick={fetchResults}>
+        <Button className={styles.cta} onClick={onSearchClick}>
           {t('search.title', 'Search')}
         </Button>
       </div>

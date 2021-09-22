@@ -1,10 +1,11 @@
-import React, { Fragment, useCallback, useEffect, useRef } from 'react'
+import React, { Fragment, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import Link from 'redux-first-router-link'
 import { redirect } from 'redux-first-router'
 import { DateTime, Interval } from 'luxon'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
@@ -13,12 +14,7 @@ import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
-import {
-  selectAdvancedSearchFields,
-  selectHasSearch,
-  selectUrlQuery,
-} from 'routes/routes.selectors'
-import { fetchVesselSearchThunk } from 'features/search/search.thunk'
+import { selectHasSearch } from 'routes/routes.selectors'
 import {
   selectSearchOffset,
   selectSearchResults,
@@ -28,7 +24,7 @@ import {
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
 import { PROFILE } from 'routes/routes'
-import { useSearchConnect } from 'features/search/search.hooks'
+import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
@@ -45,10 +41,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { logout } = useUser()
-  const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchConnect()
+  const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchResultsConnect()
+  const { fetchResults } = useSearchConnect({ onNewSearch: () => setSelectedVessels([]) })
   const searching = useSelector(selectSearching)
-  const query = useSelector(selectUrlQuery)
-  const advancedSearch = useSelector(selectAdvancedSearchFields)
   const hasSearch = useSelector(selectHasSearch)
   const vessels = useSelector(selectSearchResults)
   const offset = useSelector(selectSearchOffset)
@@ -56,7 +51,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
 
-  const promiseRef = useRef<any>()
+  // useEffect(() => GFWAPI.setConfig({ ...GFWAPI.getConfig(), debug: true }))
 
   useEffect(() => {
     dispatchFetchOfflineVessels()
@@ -101,28 +96,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
   }, [openVesselProfile, selectedVessels, vessels])
 
-  const fetchResults = useCallback(
-    (offset = 0) => {
-      if (promiseRef.current) {
-        promiseRef.current.abort()
-      }
-      if (offset === 0) {
-        setSelectedVessels([])
-      }
-      // To ensure the pending action isn't overwritted by the abort above
-      // and we miss the loading intermediate state
-      setTimeout(() => {
-        promiseRef.current = dispatch(
-          fetchVesselSearchThunk({
-            query,
-            offset,
-            ...((advancedSearch ? { advancedSearch } : {}) as any),
-          })
-        )
-      }, 100)
-    },
-    [setSelectedVessels, dispatch, query, advancedSearch]
-  )
   const trackOpenSettings = useCallback(() => {
     uaEvent({
       category: 'Highlight Events',
@@ -162,6 +135,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           <IconButton type="default" size="default" icon="settings"></IconButton>
         </Link>
         <LanguageToggle />
+        <button onClick={() => GFWAPI.setToken('97yfghuwe')}>invalidate token</button>
       </header>
       <div className={styles.search}>
         <AdvancedSearch />

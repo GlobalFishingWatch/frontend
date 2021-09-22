@@ -1,9 +1,14 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { fetchUserThunk } from 'features/user/user.slice'
+import { selectAdvancedSearchFields, selectUrlQuery } from 'routes/routes.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { fetchVesselSearchThunk } from './search.thunk'
 
 // Maximum number of vessels that can be merged
 const LIMIT_VESSELS_MERGE_TO = 3
 
-export const useSearchConnect = () => {
+export const useSearchResultsConnect = () => {
   const [selectedVessels, setSelectedVessels] = useState<number[]>([])
   const isVesselsMergeEnabled = useMemo(
     () => selectedVessels.length < LIMIT_VESSELS_MERGE_TO,
@@ -26,5 +31,52 @@ export const useSearchConnect = () => {
     selectedVessels,
     setSelectedVessels,
     onVesselClick,
+  }
+}
+
+type useSearchConnectParams = {
+  onNewSearch?: () => void
+}
+const defaultParams = {
+  onNewSearch: () => {},
+}
+
+export const useSearchConnect = (params: useSearchConnectParams = defaultParams) => {
+  const { onNewSearch = () => {} } = params
+  const dispatch = useAppDispatch()
+  const query = useSelector(selectUrlQuery)
+  const advancedSearch = useSelector(selectAdvancedSearchFields)
+
+  const promiseRef = useRef<any>()
+
+  const fetchResults = useCallback(
+    (offset = 0) => {
+      if (promiseRef.current) {
+        promiseRef.current.abort()
+      }
+      if (offset === 0) {
+        onNewSearch()
+      }
+      // To ensure the pending action isn't overwritted by the abort above
+      // and we miss the loading intermediate state
+      setTimeout(() => {
+        // Ensure user is logged in before searching
+        dispatch(fetchUserThunk())
+        promiseRef.current = dispatch(
+          fetchVesselSearchThunk({
+            query,
+            offset,
+            advancedSearch,
+          })
+        )
+      }, 100)
+    },
+    [onNewSearch, dispatch, query, advancedSearch]
+  )
+
+  return {
+    query,
+    advancedSearch,
+    fetchResults,
   }
 }

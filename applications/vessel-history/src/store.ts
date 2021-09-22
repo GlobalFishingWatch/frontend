@@ -12,6 +12,7 @@ import datasetsReducer from './features/datasets/datasets.slice'
 import psmaReducer from './features/psma/psma.slice'
 import regionsReducer from './features/regions/regions.slice'
 import resourcesReducer from './features/resources/resources.slice'
+import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 
 const {
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   psma: psmaReducer,
   regions: regionsReducer,
   resources: resourcesReducer,
+  user: userReducer,
   workspace: workspaceReducer,
 })
 
