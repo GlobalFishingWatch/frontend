@@ -258,7 +258,7 @@ function DownloadModal() {
         <Button
           className={styles.downloadBtn}
           onClick={onDownloadClick}
-          loading={downloadStatus === AsyncReducerStatus.LoadingCreate}
+          loading={downloadStatus === AsyncReducerStatus.Loading}
           disabled={!duration || duration.years > 1}
           tooltip={
             duration && duration.years > 3
