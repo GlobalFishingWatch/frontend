@@ -109,6 +109,24 @@
     "uploadNewContext": "Upload new reference layer",
     "uploadNewEnviroment": "Upload new environment dataset"
   },
+  "download": {
+    "action": "Download visible activity layers for this area",
+    "title": "Download - Activity",
+    "cta": "Download",
+    "area": "Area",
+    "timeRange": "Time Range",
+    "format": "Format",
+    "groupActivityBy": "Group activity by",
+    "temporalResolution": "Temporal resolution",
+    "timerangeTooLong": "The maximum time range is 3 years",
+    "daily": "Daily",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "spatialResolution": "Spatial resolution",
+    "yearlyNotAvailable": "Your time range is shorter than 1 year",
+    "monthlyNotAvailable": "Your time range is shorter than 1 month",
+    "highResNotAvailable": "Your area is too big"
+  },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",
     "datasetNotFound": "Dataset not found",

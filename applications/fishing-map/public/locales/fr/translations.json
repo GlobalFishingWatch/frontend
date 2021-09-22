@@ -109,6 +109,24 @@
     "uploadNewContext": "Ajouter de nouveux calques de référence",
     "uploadNewEnviroment": "Ajouter un nouveau jeu de données d'environnement"
   },
+  "download": {
+    "action": "Download visible activity layers for this area",
+    "title": "Download - Activity",
+    "cta": "Download",
+    "area": "Area",
+    "timeRange": "Time Range",
+    "format": "Format",
+    "groupActivityBy": "Group activity by",
+    "temporalResolution": "Temporal resolution",
+    "timerangeTooLong": "The maximum time range is 3 years",
+    "daily": "Daily",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "spatialResolution": "Spatial resolution",
+    "yearlyNotAvailable": "Your time range is shorter than 1 year",
+    "monthlyNotAvailable": "Your time range is shorter than 1 month",
+    "highResNotAvailable": "Your area is too big"
+  },
   "errors": {
     "contactUs": "Veuillez <1>nous contacter</1> pour signaler le problème.",
     "datasetNotFound": "Jeu de données introuvable",
