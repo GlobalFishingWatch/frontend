@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 12.1.0
+
+### Minor Changes
+
+- a6914cd3: new switch-row component
+
 ## 12.0.0
 
 ### Patch Changes
