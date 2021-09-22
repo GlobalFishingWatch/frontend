@@ -25,7 +25,7 @@ type UserContextLayersProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const context = useMapContext()
+  const { eventManager } = useMapContext()
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
@@ -40,7 +40,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
   )
 
   const onReportClick = useCallback(
-    (feature: TooltipEventFeature) => {
+    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
+      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
       if (!feature.properties?.gfw_id) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
@@ -55,12 +56,12 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
         label: getEventLabel([feature.title ?? '', feature.value ?? '']),
       })
     },
-    [dispatchQueryParams, highlightArea]
+    [dispatchQueryParams, highlightArea, eventManager]
   )
 
   const onDownloadClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
       if (!feature.properties?.gfw_id) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
@@ -70,7 +71,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
         dispatch(setClickedEvent(null))
       })
     },
-    [dispatch]
+    [dispatch, eventManager]
   )
 
   const featuresByType = groupBy(features, 'layerId')
@@ -103,7 +104,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                               'download.action',
                               'Download visible activity layers for this area'
                             )}
-                            onClick={(e) => onDownloadClick && onDownloadClick(e, feature)}
+                            onClick={(e) => onDownloadClick(e, feature)}
                             size="small"
                           />
                           <IconButton
@@ -117,7 +118,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                                     'Toggle an activity or environmenet layer on to analyse in in this area'
                                   )
                             }
-                            onClick={() => onReportClick && onReportClick(feature)}
+                            onClick={(e) => onReportClick(e, feature)}
                             size="small"
                           />
                         </Fragment>
