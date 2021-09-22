@@ -109,6 +109,24 @@
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental"
   },
+  "download": {
+    "action": "Download visible activity layers for this area",
+    "title": "Download - Activity",
+    "cta": "Download",
+    "area": "Area",
+    "timeRange": "Time Range",
+    "format": "Format",
+    "groupActivityBy": "Group activity by",
+    "temporalResolution": "Temporal resolution",
+    "timerangeTooLong": "The maximum time range is 3 years",
+    "daily": "Daily",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "spatialResolution": "Spatial resolution",
+    "yearlyNotAvailable": "Your time range is shorter than 1 year",
+    "monthlyNotAvailable": "Your time range is shorter than 1 month",
+    "highResNotAvailable": "Your area is too big"
+  },
   "errors": {
     "contactUs": "Por favor <1>póngase en contacto con nosotros</1> para informar del problema.",
     "datasetNotFound": "No se pudo encontrar esos datos",
