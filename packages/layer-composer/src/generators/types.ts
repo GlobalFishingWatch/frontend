@@ -32,6 +32,8 @@ export interface GlobalGeneratorConfig {
   end?: string
   zoom?: number
   token?: string
+  timeCompareStart?: string
+  timeCompareEnd?: string
 }
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
@@ -435,6 +437,8 @@ export enum HeatmapAnimatedMode {
   Compare = 'compare',
   // Place values on a 2D bivariate scale where the two axis represent the two sublayers. Works only with 2 sublayers
   Bivariate = 'bivariate',
+  // Compare between two time periods. Applies to all visible activity layers.
+  TimeCompare = 'timeCompare',
   // Uses a MGL heatmap layer to represent values with smooth translations between grid points. Works only with 1 sublayer
   Blob = 'blob',
   // Represents value in 3D stacked bars. Works with 0 - n sublayers

@@ -3,8 +3,11 @@ import { DateTime } from 'luxon'
 import {
   GeomType,
   TileAggregationSourceParams,
+  TileAggregationSourceParamsSerialized,
+  TileAggregationDateRange,
   AggregationOperation,
   VALUE_MULTIPLIER,
+  TileAggregationComparisonDateRange,
 } from '@globalfishingwatch/fourwings-aggregate'
 import {
   Type,
@@ -24,10 +27,17 @@ import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
 import { getSourceId, toURLArray } from './util'
 import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
+import griddedTimeCompare from './modes/gridded-time-compare'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
+
+export const SQUARE_GRID_MODES = [
+  HeatmapAnimatedMode.Compare,
+  HeatmapAnimatedMode.Bivariate,
+  HeatmapAnimatedMode.Single,
+]
 
 const getTilesUrl = (config: HeatmapAnimatedGeneratorConfig): string => {
   if (config.tilesAPI) {
@@ -36,11 +46,27 @@ const getTilesUrl = (config: HeatmapAnimatedGeneratorConfig): string => {
   return `${API_GATEWAY}/${API_GATEWAY_VERSION}/${API_ENDPOINTS.tiles}`
 }
 
-const getSubLayersDatasets = (sublayers: HeatmapAnimatedGeneratorSublayer[]): string[] => {
-  return sublayers?.map((sublayer) => {
+const getSubLayersDatasets = (
+  sublayers: HeatmapAnimatedGeneratorSublayer[],
+  merge = false
+): string[] => {
+  const sublayersDatasets = sublayers?.map((sublayer) => {
     const sublayerDatasets = [...sublayer.datasets]
     return sublayerDatasets.sort((a, b) => a.localeCompare(b)).join(',')
   })
+  return merge ? [sublayersDatasets.join(',')] : sublayersDatasets
+}
+
+const getSubLayersFilters = (
+  sublayers: HeatmapAnimatedGeneratorSublayer[],
+  merge = false
+): string[] => {
+  const sublayersFilters = sublayers.map((sublayer) => sublayer.filter || '')
+  if (!merge) return sublayersFilters
+  if (!sublayersFilters.every((f) => f === sublayersFilters[0])) {
+    throw new Error('Distinct sublayer filters not supported yet with time compare mode')
+  }
+  return [sublayersFilters[0]]
 }
 
 const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
@@ -48,9 +74,13 @@ const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
 const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
   sublayers.map(getSubLayerVisible)
 
-const serializeBaseSourceParams = (params: any) => {
-  const serialized = {
-    ...params,
+const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
+  const serialized: TileAggregationSourceParamsSerialized = {
+    id: params.id,
+    aggregationOperation: params.aggregationOperation,
+    sublayerCombinationMode: params.sublayerCombinationMode,
+    geomType: params.geomType,
+    interval: params.interval,
     singleFrame: params.singleFrame ? 'true' : 'false',
     filters: toURLArray('filters', params.filters),
     datasets: toURLArray('datasets', params.datasets),
@@ -63,9 +93,14 @@ const serializeBaseSourceParams = (params: any) => {
   if (params['date-range']) {
     serialized['date-range'] = params['date-range'].join(',')
   }
+  if (params['comparison-range']) {
+    serialized['comparison-range'] = params['comparison-range'].join(',')
+  }
   if (params.sublayerBreaks) {
     serialized.sublayerBreaks = JSON.stringify(params.sublayerBreaks)
   }
+
+  console.log(params)
   return serialized
 }
 
@@ -102,23 +137,37 @@ class HeatmapAnimatedGenerator {
       return []
     }
 
-    const datasets = getSubLayersDatasets(config.sublayers)
-    const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
+    const datasets = getSubLayersDatasets(
+      config.sublayers,
+      config.mode === HeatmapAnimatedMode.TimeCompare
+    )
+    const filters = getSubLayersFilters(
+      config.sublayers,
+      config.mode === HeatmapAnimatedMode.TimeCompare
+    )
+
     const visible = getSubLayersVisible(config.sublayers)
 
     const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
-    const interactiveSource =
-      config.interactive &&
-      (config.mode === HeatmapAnimatedMode.Compare ||
-        config.mode === HeatmapAnimatedMode.Bivariate ||
-        config.mode === HeatmapAnimatedMode.Single)
+    const interactiveSource = config.interactive && SQUARE_GRID_MODES.includes(config.mode)
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
+    const sublayerBreaks =
+      config.mode === HeatmapAnimatedMode.TimeCompare
+        ? // TODO
+          [[-7000, -3000, -1000, -500, -100, 0, 100, 500, 1000, 3000, 7000]]
+        : breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * config.breaksMultiplier))
 
-    const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
+    const sourceTimeChunks =
+      config.mode === HeatmapAnimatedMode.TimeCompare
+        ? [timeChunks.chunks.find((t) => t.active) || timeChunks.chunks[0]]
+        : timeChunks.chunks
+
+    const sources = sourceTimeChunks.flatMap((timeChunk: TimeChunk) => {
+      const id = getSourceId(config.id, timeChunk)
       const baseSourceParams: TileAggregationSourceParams = {
-        id: getSourceId(config.id, timeChunk),
+        id,
         singleFrame: false,
         geomType,
         // Set a minimum of 1 to avoid empty frames. See error thrown in getStyle() for edge case
@@ -131,20 +180,32 @@ class HeatmapAnimatedGenerator {
         sublayerCombinationMode,
         sublayerVisibility: visible,
         sublayerCount: config.sublayers.length,
-        sublayerBreaks: breaks.map((sublayerBreaks) =>
-          sublayerBreaks.map((b) => b * config.breaksMultiplier)
-        ),
+        sublayerBreaks,
         interactive: interactiveSource,
       }
-      if (timeChunk.start && timeChunk.dataEnd) {
-        baseSourceParams['date-range'] =
-          timeChunks.interval === 'hour'
-            ? [timeChunk.start, timeChunk.dataEnd]
-            : [
-                DateTime.fromISO(timeChunk.start).toISODate(),
-                DateTime.fromISO(timeChunk.dataEnd).toISODate(),
-              ]
+
+      const getDateForInterval = (date: string) =>
+        timeChunks.interval === 'hour' ? date : DateTime.fromISO(date as string).toISODate()
+
+      if (
+        config.mode === HeatmapAnimatedMode.TimeCompare &&
+        config.start &&
+        config.end &&
+        config.timeCompareStart &&
+        config.timeCompareEnd
+      ) {
+        baseSourceParams['comparison-range'] = [
+          config.start,
+          config.end,
+          config.timeCompareStart,
+          config.timeCompareEnd,
+        ].map((d) => getDateForInterval(d)) as TileAggregationComparisonDateRange // TODO not sure why using map makes casting needed
+      } else if (timeChunk.start && timeChunk.dataEnd) {
+        baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].map((d) =>
+          getDateForInterval(d)
+        ) as TileAggregationDateRange
       }
+
       const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
 
       const sourceParams = [serializedBaseSourceParams]
@@ -175,16 +236,14 @@ class HeatmapAnimatedGenerator {
       return []
     }
 
-    if (
-      config.mode === HeatmapAnimatedMode.Compare ||
-      config.mode === HeatmapAnimatedMode.Bivariate ||
-      config.mode === HeatmapAnimatedMode.Single
-    ) {
-      return getGriddedLayers(config, timeChunks, breaks)
+    if (SQUARE_GRID_MODES.includes(config.mode)) {
+      return getGriddedLayers(config, timeChunks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
       return getBlobLayer(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
       return getExtrudedLayer(config, timeChunks, breaks)
+    } else if (config.mode === HeatmapAnimatedMode.TimeCompare) {
+      return griddedTimeCompare(config, timeChunks)
     }
   }
 

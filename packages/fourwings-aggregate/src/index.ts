@@ -14,5 +14,8 @@ export {
   AggregationOperation,
   TileAggregationParams,
   TileAggregationSourceParams,
+  TileAggregationSourceParamsSerialized,
+  TileAggregationDateRange,
+  TileAggregationComparisonDateRange,
 } from './types'
 export * from './constants'

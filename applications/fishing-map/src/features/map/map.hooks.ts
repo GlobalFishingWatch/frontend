@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
+import { DateTime } from 'luxon'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
@@ -63,18 +64,24 @@ export const useGeneratorsConnect = () => {
   const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
+  const debugOptions = useSelector(selectDebugOptions)
 
   return useMemo(() => {
+    const globalConfig: Generators.GlobalGeneratorConfig = {
+      zoom: viewport.zoom,
+      start,
+      end,
+      token: GFWAPI.getToken(),
+    }
+    if (debugOptions.timeCompare && start && end) {
+      globalConfig.timeCompareStart = DateTime.fromISO(start).toUTC().plus({ years: 1 }).toISO()
+      globalConfig.timeCompareEnd = DateTime.fromISO(end).toUTC().plus({ years: 1 }).toISO()
+    }
     return {
       generatorsConfig,
-      globalConfig: {
-        zoom: viewport.zoom,
-        start,
-        end,
-        token: GFWAPI.getToken(),
-      },
+      globalConfig,
     }
-  }, [generatorsConfig, viewport.zoom, start, end])
+  }, [generatorsConfig, viewport.zoom, start, end, debugOptions])
 }
 
 export const useClickedEventConnect = () => {

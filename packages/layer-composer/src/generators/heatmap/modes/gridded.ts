@@ -6,14 +6,12 @@ import { Type } from '../../types'
 import { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
 import { getLayerId, getSourceId } from '../util'
-import { Breaks } from '../util/fetch-breaks'
 
 export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid_interactive'
 
 export default function gridded(
   config: GlobalHeatmapAnimatedGeneratorConfig,
-  timeChunks: TimeChunks,
-  breaks: Breaks
+  timeChunks: TimeChunks
 ) {
   const { colorRampBaseExpression } = getColorRampBaseExpression(config)
 

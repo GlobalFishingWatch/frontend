@@ -59,13 +59,23 @@ export interface TileAggregationParams extends BaseTileAggregationParams {
   z: number
 }
 
+export type TileAggregationDateRange = [string, string]
+export type TileAggregationComparisonDateRange = [string, string, string, string]
+
 export interface TileAggregationSourceParams extends BaseTileAggregationParams {
   id: string
   interval: string
   filters: string[]
   datasets: string[]
-  ['date-range']?: [string, string]
+  ['date-range']?: TileAggregationDateRange
+  ['comparison-range']?: TileAggregationComparisonDateRange
 }
+
+export type TileAggregationSourceParamsSerialized = Partial<
+  {
+    [key in keyof TileAggregationSourceParams]: string
+  }
+>
 
 export type CellAggregationParams = {
   rawValues: string

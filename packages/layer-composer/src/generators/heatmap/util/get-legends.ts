@@ -32,6 +32,7 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
 // Gets MGL layer paint configuration from base color ramp(s)
 export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   const colorRamps = getSublayersColorRamps(config)
+  console.log(colorRamps)
   const expressions = colorRamps.map((originalColorRamp, colorRampIndex) => {
     const legend = [...Array(originalColorRamp.length)].flatMap((_, bucketIndex) => [
       // offset each dataset by 10 + add actual bucket value

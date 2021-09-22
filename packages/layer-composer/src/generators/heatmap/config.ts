@@ -14,6 +14,7 @@ export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombi
   [HeatmapAnimatedMode.Single]: SublayerCombinationMode.None,
   [HeatmapAnimatedMode.Compare]: SublayerCombinationMode.Max,
   [HeatmapAnimatedMode.Bivariate]: SublayerCombinationMode.Bivariate,
+  [HeatmapAnimatedMode.TimeCompare]: SublayerCombinationMode.Delta,
   [HeatmapAnimatedMode.Blob]: SublayerCombinationMode.Literal,
   [HeatmapAnimatedMode.Extruded]: SublayerCombinationMode.Cumulative,
 }
@@ -22,6 +23,7 @@ export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
   [HeatmapAnimatedMode.Single]: 'fill',
   [HeatmapAnimatedMode.Compare]: 'fill',
   [HeatmapAnimatedMode.Bivariate]: 'fill',
+  [HeatmapAnimatedMode.TimeCompare]: 'fill',
   [HeatmapAnimatedMode.Blob]: 'heatmap',
   [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
 }

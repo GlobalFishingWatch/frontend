@@ -46,7 +46,6 @@ const getCommonIntervals = (datasets: Dataset[]) => {
 
 type DataviewsGeneratorConfigsParams = {
   debug?: boolean
-  timeRange?: { start: string; end: string }
   highlightedTime?: { start: string; end: string }
   highlightedEvent?: ApiEvent
   mergedActivityGeneratorId?: string
@@ -393,6 +392,9 @@ export function getDataviewsGeneratorConfigs(
         type: Generators.Type.HeatmapAnimated,
         sublayers: activitySublayers,
         mode: heatmapAnimatedMode,
+        // TODO add compare dates
+        // TODO merge datasets     |  ..or in generator?
+        // TODO merge color ramps  |
         ...(interval && { interval }),
       },
     }

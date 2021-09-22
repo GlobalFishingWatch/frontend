@@ -64,6 +64,8 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Extruded
   } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
     heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Blob
+  } else if (debugOptions.timeCompare) {
+    heatmapAnimatedMode = Generators.HeatmapAnimatedMode.TimeCompare
   }
 
   const generatorOptions = {
