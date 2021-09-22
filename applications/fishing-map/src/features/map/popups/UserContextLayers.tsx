@@ -13,7 +13,7 @@ import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { setDownloadGeometry } from 'features/download/download.slice'
-import useMapInstance from '../map-context.hooks'
+import useMapInstance, { useMapContext } from '../map-context.hooks'
 import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
@@ -25,6 +25,7 @@ type UserContextLayersProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const context = useMapContext()
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
@@ -58,7 +59,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
   )
 
   const onDownloadClick = useCallback(
-    (feature: TooltipEventFeature) => {
+    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
+      context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
       if (!feature.properties?.gfw_id) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
@@ -101,7 +103,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                               'download.action',
                               'Download visible activity layers for this area'
                             )}
-                            onClick={() => onDownloadClick && onDownloadClick(feature)}
+                            onClick={(e) => onDownloadClick && onDownloadClick(e, feature)}
                             size="small"
                           />
                           <IconButton
