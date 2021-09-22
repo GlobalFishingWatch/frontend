@@ -74,7 +74,7 @@ const AdvancedSearch: React.FC = () => {
         <InputText
           inputSize="small"
           onChange={onMainQueryChange}
-          value={query}
+          value={query ?? ''}
           label={t('search.shipname', 'Name')}
           autoFocus
           className={styles.full}
@@ -84,7 +84,7 @@ const AdvancedSearch: React.FC = () => {
           onChange={setQueryParam}
           id="MMSI"
           className={styles.width8ch}
-          value={MMSI}
+          value={MMSI ?? ''}
           label={t('search.MMSI', 'MMSI')}
         />
         <InputText
@@ -92,7 +92,7 @@ const AdvancedSearch: React.FC = () => {
           onChange={setQueryParam}
           id="IMO"
           className={styles.width7ch}
-          value={IMO}
+          value={IMO ?? ''}
           label={t('search.IMO', 'IMO')}
         />
         <InputText
@@ -100,7 +100,7 @@ const AdvancedSearch: React.FC = () => {
           onChange={setQueryParam}
           id="callsign"
           className={styles.width6ch}
-          value={callsign}
+          value={callsign ?? ''}
           label={t('search.callsign', 'Callsign')}
         />
       </div>
@@ -123,7 +123,7 @@ const AdvancedSearch: React.FC = () => {
       </div>
       <div className={styles.row}>
         <InputDate
-          value={lastTransmissionDate}
+          value={lastTransmissionDate ?? ''}
           className={styles.full}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
@@ -140,7 +140,7 @@ const AdvancedSearch: React.FC = () => {
           }}
         />
         <InputDate
-          value={firstTransmissionDate}
+          value={firstTransmissionDate ?? ''}
           className={styles.full}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
