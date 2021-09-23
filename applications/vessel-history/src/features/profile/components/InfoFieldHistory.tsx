@@ -4,8 +4,8 @@ import { Modal } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
 import { ValueItem } from 'types'
+import { VesselFieldLabel } from 'types/vessel'
 import HistoryDate from './HistoryDate'
-import { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 
 interface ListItemProps {
@@ -31,7 +31,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     return `${label} History for ${vesselName}`
   }, [label, vesselName])
 
-  const { formatSource } = useVesselsConnect()
+  const { formatSource } = useVesselsConnect(label)
 
   return (
     <Fragment>

@@ -12,7 +12,7 @@ import { VesselWithHistory } from 'types'
 import I18nDate, { I18nSpecialDate } from 'features/i18n/i18nDate'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
-import { OfflineVessel } from 'types/vessel'
+import { OfflineVessel, VesselFieldLabel } from 'types/vessel'
 import {
   selectDataset,
   selectTmtId,
@@ -21,7 +21,7 @@ import {
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.selectors'
-import InfoField, { VesselFieldLabel } from './InfoField'
+import InfoField from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
