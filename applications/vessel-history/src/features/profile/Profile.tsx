@@ -9,7 +9,6 @@ import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
-  selectQueryParam,
   selectSearchableQueryParams,
   selectUrlAkaVesselQuery,
   selectVesselProfileId,
