@@ -695,7 +695,7 @@
   },
   "public-fisheries-restricted-areas": {
     "name": "Zonas de pesca restringida (Fuente: FAO)",
-    "description": "Las zonas de pesca restringidas son areas definidas geográficamente en donde algunas actividades específicas de pesca están temporalmente prohibidas o restringidas con el objetivo de mejorar los patrones de explotación y conservar poblaciones específicas, así como también hábitats delicados de los fondos marinos. Fuente: FAO.",
+    "description": "",
     "schema": {}
   },
   "public-global-carrier-vessels": {
@@ -960,7 +960,7 @@
   },
   "public-mediterranean-area-of-interest-1": {
     "name": "Áreas de interés",
-    "description": "La extensión completa del área de interes del Mediterraneo y del Mar Negro. Fuente: Global Fishing Watch.",
+    "description": "",
     "schema": {}
   },
   "public-mexico-fishing-effort": {
