@@ -20,7 +20,7 @@ import LayerPanel from './ContextAreaLayerPanel'
 function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
-  const { drawMode, dispatchSetDrawMode } = useMapDrawConnect()
+  const { dispatchSetDrawMode } = useMapDrawConnect()
 
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectContextAreasDataviews)
@@ -61,7 +61,7 @@ function ContextAreaSection(): React.ReactElement {
         {!readOnly && (
           <Fragment>
             <IconButton
-              icon={drawMode === 'draw' ? 'edit' : 'plus'}
+              icon="draw"
               type="border"
               size="medium"
               tooltip={t('layer.drawPolygon', 'Draw a layer')}

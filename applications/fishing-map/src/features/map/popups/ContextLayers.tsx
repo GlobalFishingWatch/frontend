@@ -52,7 +52,7 @@ function FeatureRow({
   const gfwUser = useSelector(isGFWUser)
 
   const handleReportClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>) => {
+    (ev: React.MouseEvent) => {
       context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
       if (onReportClick) {
         onReportClick(feature)
