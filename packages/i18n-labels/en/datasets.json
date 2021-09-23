@@ -695,7 +695,7 @@
   },
   "public-fisheries-restricted-areas": {
     "name": "Fisheries restricted areas (Source: FAO)",
-    "description": "",
+    "description": "Fisheries restricted areas (FRAs) are geographically defined areas in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. Source: FAO.",
     "schema": {}
   },
   "public-global-carrier-vessels": {
@@ -960,7 +960,7 @@
   },
   "public-mediterranean-area-of-interest-1": {
     "name": "Area of interest",
-    "description": "",
+    "description": "The full extent of the Mediterranean and Black Sea area of interest. Source: Global Fishing Watch.",
     "schema": {}
   },
   "public-mexico-fishing-effort": {
@@ -1160,12 +1160,12 @@
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "Depth ~200 meters",
-    "description": "",
+    "description": "Depth ~200 meters (650 feet). Source: RSPB.",
     "schema": {}
   },
   "public-tristan-seamounts-3000-1618586349746": {
     "name": "Depth ~3000 meters",
-    "description": "",
+    "description": "Depth ~3000 meters (9840 feet). Source: RSPB.",
     "schema": {}
   },
   "public-tristan-seamounts-existing-1618586378121": {
