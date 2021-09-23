@@ -46,6 +46,8 @@
     "hour_one": "Hour",
     "hour_other": "hours",
     "in": "in",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
     "layerList": "Layer list",
     "learnMore": "Learn more",
     "loggedAs": "Logged as",

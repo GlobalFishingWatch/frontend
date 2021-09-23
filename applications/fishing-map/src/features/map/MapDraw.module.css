@@ -29,3 +29,14 @@
 .button + .button {
   margin-left: var(--space-M);
 }
+
+.popup {
+  background: var(--color-white);
+  color: var(--color-primary-blue);
+  box-shadow: var(--box-shadow);
+  max-width: 40vw;
+}
+
+.popupContent {
+  padding: var(--space-S);
+}
