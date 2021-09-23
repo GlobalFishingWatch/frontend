@@ -10,7 +10,6 @@ export type WorkspaceAdvancedSearchParam =
   | 'callsign'
   | 'flags'
   | 'lastTransmissionDate'
-  | 'lastTransmissionDate'
   | 'firstTransmissionDate'
 export type WorkspaceMergeVesselsParam = 'aka'
 

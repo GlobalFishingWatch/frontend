@@ -48,6 +48,18 @@ export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
     return query[param]
   })
 
+export const selectSearchableQueryParams = createSelector(
+  [selectLocationQuery],
+  (query) => ({
+    q: query['q'],
+    MMSI: query['MMSI'],
+    callsign: query['callsign'],
+    flags: query['flags'],
+    lastTransmissionDate: query['lastTransmissionDate'],
+    firstTransmissionDate: query['firstTransmissionDate'],
+  } as any)
+)
+
 //export const selectDataviewsQuery = selectQueryParam<any[]>('workspaceDataviews')
 
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
