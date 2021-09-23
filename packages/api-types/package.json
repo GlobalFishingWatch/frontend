@@ -5,8 +5,8 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "ISC",
-  "main": "dist",
-  "typings": "dist",
+  "main": "dist/index.js",
+  "typings": "dist/index.js",
   "directories": {
     "src": "src",
     "dist": "dist"

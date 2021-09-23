@@ -71,6 +71,7 @@ function MapDraw() {
   }, [selectedFeatureIndex])
 
   const closeDraw = useCallback(() => {
+    setLayerName('')
     dispatchSetDrawMode('disabled')
   }, [dispatchSetDrawMode])
 
@@ -97,6 +98,7 @@ function MapDraw() {
         category: DatasetCategory.Context,
         configuration: {
           format: 'geojson',
+          geometryType: 'draw',
         } as DatasetConfiguration,
       }
       const { payload, error } = await dispatchCreateDataset({
@@ -110,7 +112,6 @@ function MapDraw() {
         addDataviewFromDatasetToWorkspace(payload)
       }
       setLoading(false)
-      setLayerName('')
       closeDraw()
     }
   }, [addDataviewFromDatasetToWorkspace, closeDraw, dispatchCreateDataset, layerName])
