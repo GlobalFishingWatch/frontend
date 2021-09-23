@@ -24,7 +24,7 @@ function App() {
 
   const locationType = useSelector(getLocationType)
 
-  if (loading || minLoading || !logged || !authorized) {
+  if (((loading || minLoading) && !logged) || !authorized) {
     return <Splash intro={minLoading} />
   }
   if (locationType === SETTINGS) {
