@@ -40,10 +40,6 @@ const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> 
               : DEFAULT_EMPTY_VALUE
           }
         />
-        <ActivityModalContentField
-          label={t('event.position', 'Position')}
-          value={`${toFixed(event.position.lat, 4)}, ${toFixed(event.position.lon, 4)}`}
-        />
       </div>
 
       <ActivityModalContentDetails event={event} />
