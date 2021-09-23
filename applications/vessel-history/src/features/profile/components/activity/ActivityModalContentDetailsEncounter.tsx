@@ -27,6 +27,8 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
             value={relatedVessel.name}
           />
           <ActivityModalContentField label={t('vessel.flag', 'Flag')} value={relatedVessel.flag} />
+          <ActivityModalContentField label={t('vessel.mmsi', 'Mmsi')} value={relatedVessel.ssvid} />
+          <ActivityModalContentField label={t('vessel.type', 'Vessel Type')} value={relatedVessel.type} />
         </div>
       )}
 
