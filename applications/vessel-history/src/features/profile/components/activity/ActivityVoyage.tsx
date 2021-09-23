@@ -22,37 +22,36 @@ const ActivityVoyage: React.FC<EventProps> = ({
 
   const voyageLabel = useMemo(() => {
     const parts: string[] = []
-    const { from, to, start, end, eventsQuantity } = event
 
-    if (from && to) {
+    if (event.from && event.to) {
       parts.push(
-        `${t('common.from', 'from')} ${formatI18nDate(start ?? 0, {
+        `${t('common.from', 'from')} ${formatI18nDate(event.start ?? 0, {
           format: DateTime.DATE_FULL,
         })}`
       )
       parts.push(
-        `${t('common.to', 'to')} ${formatI18nDate(end ?? 0, {
+        `${t('common.to', 'to')} ${formatI18nDate(event.end ?? 0, {
           format: DateTime.DATE_FULL,
         })}`
       )
-      parts.push(`(${eventsQuantity} ${t('common.events', 'Events')})`)
+      parts.push(`(${event.eventsQuantity} ${t('common.events', 'Events')})`)
     } else if (!event.to) {
       parts.push(t('event.currentVoyage' as any, 'Ongoing Voyage') as string)
       parts.push(
-        `${t('common.from', 'from')} ${formatI18nDate(start ?? 0, {
+        `${t('common.from', 'from')} ${formatI18nDate(event.start ?? 0, {
           format: DateTime.DATE_FULL,
         })}`
       )
     } else {
       parts.push(
-        `${t('common.to', 'to')} ${formatI18nDate(end ?? 0, {
+        `${t('common.to', 'to')} ${formatI18nDate(event.end ?? 0, {
           format: DateTime.DATE_FULL,
         })}`
       )
     }
 
     return parts.join(' ')
-  }, [event.from, event.start, event.to, event.end, event.eventsQuantity, t])
+  }, [event, t])
 
   const hasEvents = useMemo(() => event.eventsQuantity > 0, [event.eventsQuantity])
   const onToggle = useCallback(
