@@ -63,7 +63,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
             {SHOW_VESSEL_API_SOURCE && (
               <div>
                 <label>{t('vessel.source', 'source')}</label>
-                {sourceAPI.map((source) => formatSource(source)).join('+') ?? DEFAULT_EMPTY_VALUE}
+                {sourceAPI.map((source) => formatSource(source)).join(' + ') ?? DEFAULT_EMPTY_VALUE}
               </div>
             )}
             <div className={styles.fullWidth}>
