@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
 import { PATH_BASENAME } from 'routes/routes'
+import { WORKSPACE_ENV } from 'data/workspaces'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
@@ -11,6 +12,14 @@ export const LocaleLabels = [
   { id: Locale.fr, label: 'Français' },
   { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
+
+const GITHUB_LABELS_BRANCH = WORKSPACE_ENV === 'development' ? 'develop' : 'master'
+export const SHARED_LABELS_PATH =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8000'
+    : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${GITHUB_LABELS_BRANCH}/packages/i18n-labels`
+
+export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
 i18n
   // load translation using http -> see /public/locales
@@ -25,7 +34,12 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     backend: {
-      loadPath: `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: (lngs: string[], namespaces: string[]) => {
+        if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
+          return `${SHARED_LABELS_PATH}/{{lng}}/{{ns}}.json`
+        }
+        return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`
+      },
     },
     ns: ['translations', 'flags', 'datasets', 'timebar'],
     defaultNS: 'translations',

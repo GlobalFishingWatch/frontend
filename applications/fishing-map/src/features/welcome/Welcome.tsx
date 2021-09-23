@@ -32,7 +32,7 @@ const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: We
     console.warn('Missing welcome modal content by category')
     return null
   }
-  const welcomeModalContent = welcomeModal[(i18n.language as Locale) || Locale.en]
+  const welcomeModalContent = welcomeModal[i18n.language as Locale] || welcomeModal[Locale.en]
   if (!welcomeModalContent) {
     console.warn('Missing every welcome modal content by languages')
     return null

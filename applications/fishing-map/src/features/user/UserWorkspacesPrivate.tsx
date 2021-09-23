@@ -38,7 +38,7 @@ function UserWorkspacesPrivate() {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t('workspace.privateTitle_plural', 'Private workspaces')}</label>
+        <label>{t('workspace.privateTitle_other', 'Private workspaces')}</label>
       </div>
       <ul>
         {workspaces.map((workspace) => {

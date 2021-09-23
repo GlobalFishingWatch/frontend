@@ -4,7 +4,8 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
-    "start": "craco start",
+    "start": "yarn start:i18n & cross-env PORT=3003 craco start",
+    "start:i18n": "yarn --cwd ../../packages/i18n-labels serve",
     "build": "craco build",
     "test": "CI=true craco test --passWithNoTests",
     "test:watch": "craco test --passWithNoTests",
@@ -18,6 +19,7 @@
     "@globalfishingwatch/data-transforms": "^1.4.1",
     "@globalfishingwatch/dataviews-client": "^14.0.0",
     "@globalfishingwatch/layer-composer": "10.0.0",
+    "@globalfishingwatch/frontend": "GlobalFishingWatch/frontend",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
     "@globalfishingwatch/pbf": "^1.0.11",
     "@globalfishingwatch/react-hooks": "^15.0.1",

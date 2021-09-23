@@ -184,7 +184,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     <Fragment>
       {showSourceFilter && (
         <MultiSelect
-          label={t('layer.source_plural', 'Sources')}
+          label={t('layer.source_other', 'Sources')}
           placeholder={getPlaceholderBySelections(sourcesSelected)}
           options={allSourceOptions}
           selectedOptions={sourcesSelected}
@@ -194,7 +194,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
       )}
       {flagFiltersSupported && (
         <MultiSelect
-          label={t('layer.flagState_plural', 'Flag States')}
+          label={t('layer.flagState_other', 'Flag States')}
           placeholder={getPlaceholderBySelections(flagOptions)}
           options={flags}
           selectedOptions={flagOptions}
@@ -208,7 +208,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         <MultiSelect
           disabled={gearTypeFilters.disabled}
           disabledMsg={gearTypeFilters.tooltip}
-          label={t('layer.gearType_plural', 'Gear types')}
+          label={t('layer.gearType_other', 'Gear types')}
           placeholder={getPlaceholderBySelections(gearTypeFilters.optionsSelected)}
           options={gearTypeFilters.options}
           selectedOptions={gearTypeFilters.optionsSelected}
@@ -265,7 +265,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         <MultiSelect
           disabled={vesselFilters.disabled}
           disabledMsg={vesselFilters.tooltip}
-          label={t('vessel.vesselType_plural', 'Vessel types')}
+          label={t('vessel.vesselType_other', 'Vessel types')}
           placeholder={getPlaceholderBySelections(vesselFilters.optionsSelected)}
           options={vesselFilters.options}
           selectedOptions={vesselFilters.optionsSelected}

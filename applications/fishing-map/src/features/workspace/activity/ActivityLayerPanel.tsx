@@ -156,12 +156,12 @@ function ActivityLayerPanel({
               <DatasetSchemaField
                 dataview={dataview}
                 field={'geartype'}
-                label={t('layer.gearType_plural', 'Gear types')}
+                label={t('layer.gearType_other', 'Gear types')}
               />
               <DatasetSchemaField
                 dataview={dataview}
                 field={'fleet'}
-                label={t('layer.fleet_plural', 'Fleets')}
+                label={t('layer.fleet_other', 'Fleets')}
               />
               <DatasetSchemaField
                 dataview={dataview}
@@ -176,7 +176,7 @@ function ActivityLayerPanel({
               <DatasetSchemaField
                 dataview={dataview}
                 field={'vessel_type'}
-                label={t('vessel.vesselType_plural', 'Vessel types')}
+                label={t('vessel.vesselType_other', 'Vessel types')}
               />
             </div>
           </div>
