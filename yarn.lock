@@ -1469,10 +1469,6 @@
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.0.1.tgz#23069e8c59b389d5597a62c07a2010594b3775cc"
   integrity sha512-XuW8ieyLihfUJMI518eCM0QhvgxU6SS6GqWyiAqO4QPHcn7Euo8W8atB1rK108KQ4IJsW0HICKgdtZaIvLIeaA==
 
-"@globalfishingwatch/frontend@GlobalFishingWatch/frontend#shared-i18n-labels":
-  version "0.0.1"
-  resolved "https://codeload.github.com/GlobalFishingWatch/frontend/tar.gz/695381b2e266a4d4bd2156cc1c9af82c3fd3a902"
-
 "@globalfishingwatch/map-convert@github:GlobalFishingWatch/map-convert":
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
