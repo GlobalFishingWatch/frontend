@@ -6,6 +6,11 @@ import { useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { DatasetCategory, DatasetConfiguration, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  useAddDataviewFromDatasetToWorkspace,
+  useDatasetsAPI,
+} from 'features/datasets/datasets.hook'
 import { useMapDrawConnect } from './map-draw.hooks'
 import styles from './MapDraw.module.css'
 import { useMapControl } from './map-context.hooks'
@@ -26,11 +31,14 @@ type EditorSelect = {
 function MapDraw() {
   const { t } = useTranslation()
   const editorRef = useRef<any>(null)
+  const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState<number | null>(null)
   const hasFeatureSelected = selectedFeatureIndex !== null
   const { drawMode, dispatchSetDrawMode } = useMapDrawConnect()
   const { containerRef } = useMapControl()
+  const { dispatchCreateDataset } = useDatasetsAPI()
+  const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
   const onUpdate = useCallback(
     (e: EditorUpdate) => {
@@ -66,13 +74,46 @@ function MapDraw() {
     dispatchSetDrawMode('disabled')
   }, [dispatchSetDrawMode])
 
-  const onSaveClick = useCallback(() => {
-    console.log('DOIT')
-    console.log(layerName)
-    console.log(editorRef.current.getFeatures())
-    setLayerName('')
-    closeDraw()
-  }, [closeDraw, layerName])
+  const onSaveClick = useCallback(async () => {
+    const features = editorRef.current.getFeatures()
+    if (features.length > 0) {
+      setLoading(true)
+      const file = new File(
+        [
+          JSON.stringify({
+            type: 'FeatureCollection',
+            features: features,
+          }),
+        ],
+        `${layerName}.json`,
+        {
+          type: 'application/json',
+        }
+      )
+      const dataset = {
+        name: layerName,
+        public: true,
+        type: DatasetTypes.Context,
+        category: DatasetCategory.Context,
+        configuration: {
+          format: 'geojson',
+        } as DatasetConfiguration,
+      }
+      const { payload, error } = await dispatchCreateDataset({
+        dataset,
+        file,
+        createAsPublic: true,
+      })
+      if (error) {
+        console.warn(error)
+      } else if (payload) {
+        addDataviewFromDatasetToWorkspace(payload)
+      }
+      setLoading(false)
+      setLayerName('')
+      closeDraw()
+    }
+  }, [addDataviewFromDatasetToWorkspace, closeDraw, dispatchCreateDataset, layerName])
 
   const editorMode = useMemo(() => {
     if (drawMode === 'disabled') {
@@ -136,6 +177,7 @@ function MapDraw() {
           </Button>
           <Button
             className={styles.button}
+            loading={loading}
             disabled={!layerName || !hasFeaturesDrawn}
             tooltip={saveTooltip}
             onClick={onSaveClick}
