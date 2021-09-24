@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { flags } from 'data/flags';
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { RootState } from 'store'
@@ -48,20 +49,6 @@ export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
     return query[param]
   })
 
-export const selectSearchableQueryParams = createSelector(
-  [selectLocationQuery],
-  (query) => ({
-    q: query['q'],
-    MMSI: query['MMSI'],
-    callsign: query['callsign'],
-    flags: query['flags'],
-    lastTransmissionDate: query['lastTransmissionDate'],
-    firstTransmissionDate: query['firstTransmissionDate'],
-  } as any)
-)
-
-//export const selectDataviewsQuery = selectQueryParam<any[]>('workspaceDataviews')
-
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
 export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
@@ -101,8 +88,8 @@ export const selectUrlTimeRange = createSelector(
   })
 )
 
-export const selectAdvancedSearchMMSI = selectQueryParam<string>('MMSI') || ''
-export const selectAdvancedSearchIMO = selectQueryParam<string>('IMO') || ''
+export const selectAdvancedSearchMMSI = selectQueryParam<string>('mmsi') || ''
+export const selectAdvancedSearchIMO = selectQueryParam<string>('imo') || ''
 export const selectAdvancedSearchCallsign = selectQueryParam<string>('callsign') || ''
 export const selectAdvancedSearchRawFlags = selectQueryParam<string>('flags')
 export const selectAdvancedSearchFlags = createSelector(
@@ -152,3 +139,12 @@ export const selectHasSearch = createSelector(
 )
 
 export const selectUrlAkaVesselQuery = selectQueryParam<string[]>('aka')
+
+export const selectSearchableQueryParams = createSelector(
+  [selectAdvancedSearchFields, selectUrlQuery],
+  (filters, query) => ({
+    q: query,
+    ...filters,
+    flags: filters?.flags.join(',')
+  } as any)
+)
