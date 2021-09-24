@@ -111,7 +111,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
             ) : (
               <div>
                 {isGFWVessel && <p className={styles.emptyState}>{t('events.noResults', 'No events found. Try changing the current filters.')}</p>}
-                {!hasGFisGFWVesselWEvents && <p className={styles.emptyState}>{t('events.noData', 'There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.')}</p>}
+                {!isGFWVessel && <p className={styles.emptyState}>{t('events.noData', 'There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.')}</p>}
               </div>
             )}
           </div>
