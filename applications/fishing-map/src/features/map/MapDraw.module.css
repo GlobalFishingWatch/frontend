@@ -21,6 +21,14 @@
   display: flex;
 }
 
+.shortInput {
+  width: 12rem;
+}
+
+.shortInput + .shortInput {
+  margin-left: var(--space-M);
+}
+
 .input {
   width: 20rem;
   margin-right: var(--space-M);
@@ -39,4 +47,10 @@
 
 .popupContent {
   padding: var(--space-S);
+  padding-bottom: 1px;
+}
+
+.confirmBtn {
+  margin-top: var(--space-S);
+  width: 100%;
 }

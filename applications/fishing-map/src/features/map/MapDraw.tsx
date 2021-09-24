@@ -7,7 +7,6 @@ import { FeatureOf, Polygon } from '@nebula.gl/edit-modes'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { DatasetCategory, DatasetConfiguration, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   useAddDataviewFromDatasetToWorkspace,
   useDatasetsAPI,
@@ -15,11 +14,18 @@ import {
 import { useMapDrawConnect } from './map-draw.hooks'
 import { useMapControl } from './map-context.hooks'
 import styles from './MapDraw.module.css'
+import {
+  getDrawDatasetDefinition,
+  getFeaturesPrecisionRounded,
+  getFileWithFeatures,
+  updateFeaturePointByIndex,
+} from './map.draw.utils'
 
-type Feature = FeatureOf<Polygon>
+export type DrawFeature = FeatureOf<Polygon>
+export type DrawPointPosition = [number, number]
 
 type EditorUpdate = {
-  data: Feature[]
+  data: DrawFeature[]
   editType: 'addFeature' | 'addPosition' | 'finishMovePosition'
   editContext: {
     editHandleIndex: number
@@ -27,10 +33,10 @@ type EditorUpdate = {
 }
 
 type EditorSelect = {
-  mapCoords: number[]
-  screenCoords: number[]
+  mapCoords: [number, number]
+  screenCoords: [number, number]
   selectedEditHandleIndex: number
-  selectedFeature: Feature
+  selectedFeature: DrawFeature
   selectedFeatureIndex: number
 }
 
@@ -39,16 +45,18 @@ function MapDraw() {
   const editorRef = useRef<any>(null)
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
-  const [features, setFeatures] = useState<Feature[] | undefined>()
+  const [features, setFeatures] = useState<DrawFeature[] | undefined>()
+  const [newPointLatitude, setNewPointLatitude] = useState<number | undefined>()
+  const [newPointLongitude, setNewPointLongitude] = useState<number | undefined>()
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState<number | null>(null)
   const [selectedEditHandleIndex, setSelectedEditHandleIndex] = useState<number | null>(null)
-  const hasFeatureSelected = selectedFeatureIndex !== null
   const { drawMode, dispatchSetDrawMode } = useMapDrawConnect()
   const { containerRef } = useMapControl()
   const { dispatchCreateDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
-  const currentFeature: Feature | null =
+  const hasFeatureSelected = selectedFeatureIndex !== null
+  const currentFeature: DrawFeature | null =
     selectedFeatureIndex !== null && features !== undefined
       ? features?.[selectedFeatureIndex]
       : null
@@ -57,55 +65,44 @@ function MapDraw() {
       ? currentFeature.geometry.coordinates?.[0]?.[selectedEditHandleIndex]
       : null
 
-  const updatePointPosition = useCallback(
-    (features: Feature[], coordinateType: 'latitude' | 'longitude', coordinateValue: number) => {
-      const newFeatures = features?.map((feature, index) => {
-        if (index !== selectedFeatureIndex) {
-          return feature
-        }
-        return {
-          ...feature,
-          geometry: {
-            ...feature.geometry,
-            coordinates: feature.geometry.coordinates.map((coordinates) => {
-              const isLastCoordinate = selectedFeatureIndex === coordinates.length - 1
-              return coordinates.map((point, index) => {
-                if (index === selectedEditHandleIndex || (isLastCoordinate && index === 0)) {
-                  return coordinateType === 'latitude'
-                    ? [point[0], coordinateValue]
-                    : [coordinateValue, point[1]]
-                }
-                return point
-              })
-            }),
-          },
-        } as Feature
-      })
-      if (newFeatures && newFeatures.length) {
-        setFeatures(newFeatures)
-      }
-    },
-    [selectedEditHandleIndex, selectedFeatureIndex]
-  )
-  const onHandleLatitudeChange = useCallback(
-    (e) => {
-      const latitude = parseFloat(e.target.value)
-      if (features && latitude > -90 && latitude < 90) {
-        updatePointPosition(features, 'latitude', latitude)
-      }
-    },
-    [features, updatePointPosition]
-  )
+  const onHandleLatitudeChange = useCallback((e) => {
+    const latitude = parseFloat(e.target.value)
+    if (latitude > -90 && latitude < 90) {
+      setNewPointLatitude(latitude)
+    }
+  }, [])
 
-  const onHandleLongitudeChange = useCallback(
-    (e) => {
-      const longitude = parseFloat(e.target.value)
-      if (features && longitude > -90 && longitude < 90) {
-        updatePointPosition(features, 'longitude', longitude)
-      }
-    },
-    [features, updatePointPosition]
-  )
+  const onHandleLongitudeChange = useCallback((e) => {
+    const longitude = parseFloat(e.target.value)
+    if (longitude > -90 && longitude < 90) {
+      setNewPointLongitude(longitude)
+    }
+  }, [])
+
+  const onConfirmNewPointPosition = useCallback(() => {
+    if (features && selectedFeatureIndex !== null && selectedEditHandleIndex !== null) {
+      const newPointPosition = [
+        newPointLongitude || currentEditHandle?.[0],
+        newPointLatitude || currentEditHandle?.[1],
+      ] as DrawPointPosition
+      const newFeatures = updateFeaturePointByIndex(
+        features,
+        selectedFeatureIndex,
+        selectedEditHandleIndex,
+        newPointPosition
+      )
+      setFeatures(newFeatures)
+      setNewPointLatitude(undefined)
+      setNewPointLongitude(undefined)
+    }
+  }, [
+    features,
+    newPointLatitude,
+    newPointLongitude,
+    currentEditHandle,
+    selectedEditHandleIndex,
+    selectedFeatureIndex,
+  ])
 
   const onEditorSelect = useCallback((e: EditorSelect) => {
     setSelectedFeatureIndex(e.selectedFeatureIndex)
@@ -114,7 +111,7 @@ function MapDraw() {
 
   const onEditorUpdate = useCallback(
     (e: EditorUpdate) => {
-      setFeatures(e.data)
+      setFeatures(getFeaturesPrecisionRounded(e.data))
       if (e.editType === 'addFeature') {
         dispatchSetDrawMode('edit')
       }
@@ -143,41 +140,27 @@ function MapDraw() {
     }
   }, [features, selectedFeatureIndex])
 
-  const closeDraw = useCallback(() => {
+  const resetState = useCallback(() => {
     setLayerName('')
     setFeatures(undefined)
+    setSelectedFeatureIndex(null)
+    setSelectedEditHandleIndex(null)
+    setNewPointLatitude(undefined)
+    setNewPointLongitude(undefined)
+  }, [])
+
+  const closeDraw = useCallback(() => {
+    resetState()
     dispatchSetDrawMode('disabled')
-  }, [dispatchSetDrawMode])
+  }, [dispatchSetDrawMode, resetState])
 
   const createDataset = useCallback(
-    async (features: Feature[], name) => {
+    async (features: DrawFeature[], name) => {
       if (features && features.length > 0) {
         setLoading(true)
-        const file = new File(
-          [
-            JSON.stringify({
-              type: 'FeatureCollection',
-              features: features,
-            }),
-          ],
-          `${name}.json`,
-          {
-            type: 'application/json',
-          }
-        )
-        const dataset = {
-          name,
-          public: true,
-          type: DatasetTypes.Context,
-          category: DatasetCategory.Context,
-          configuration: {
-            format: 'geojson',
-            geometryType: 'draw',
-          } as DatasetConfiguration,
-        }
         const { payload, error } = await dispatchCreateDataset({
-          dataset,
-          file,
+          dataset: getDrawDatasetDefinition(name),
+          file: getFileWithFeatures(name, features),
           createAsPublic: true,
         })
         if (error) {
@@ -237,18 +220,29 @@ function MapDraw() {
           captureClick
         >
           <div className={styles.popupContent}>
-            <label>{t('common.latitude', 'Latitude')}</label>
-            <InputText
-              value={currentEditHandle[1]}
-              onChange={onHandleLatitudeChange}
-              inputSize="small"
-            />
-            <label>{t('common.longitude', 'longitude')}</label>
-            <InputText
-              value={currentEditHandle[0]}
-              onChange={onHandleLongitudeChange}
-              inputSize="small"
-            />
+            <div className={styles.flex}>
+              <InputText
+                step="0.01"
+                type="number"
+                inputSize="small"
+                value={newPointLatitude || currentEditHandle[1]}
+                label={t('common.latitude', 'Latitude')}
+                onChange={onHandleLatitudeChange}
+                className={styles.shortInput}
+              />
+              <InputText
+                step="0.01"
+                type="number"
+                className={styles.shortInput}
+                value={newPointLongitude || currentEditHandle[0]}
+                label={t('common.longitude', 'longitude')}
+                onChange={onHandleLongitudeChange}
+                inputSize="small"
+              />
+            </div>
+            <Button onClick={onConfirmNewPointPosition} className={styles.confirmBtn}>
+              {t('common.confirm', 'Confirm')}
+            </Button>
           </div>
         </Popup>
       )}
