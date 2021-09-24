@@ -240,7 +240,7 @@ function FeatureRow({
       </div>
     )
   }
-  return <div key={`${feature.value || gfw_id}`}>{feature.value}</div>
+  return <div key={`${feature.value || gfw_id}`}>{feature.value ?? feature.title}</div>
 }
 
 type ContextTooltipRowProps = {
