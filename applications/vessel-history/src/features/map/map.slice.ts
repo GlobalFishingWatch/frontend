@@ -16,6 +16,7 @@ export interface MapState {
   generatorsConfig: AnyGeneratorConfig[]
   highlightedTime?: Range
   highlightedEvent?: ApiEvent
+  highlightedEventMap?: ApiEvent
 }
 
 const initialState: MapState = {
@@ -54,6 +55,10 @@ export const mapSlice = createSlice({
     },
     setHighlightedEvent: (state, action: PayloadAction<ApiEvent | undefined>) => {
       state.highlightedEvent = action.payload
+      state.highlightedEventMap = action.payload ? {
+        ...action.payload,
+        id: action.payload.id.replace('-exit', '')
+      } : undefined
     },
     disableHighlightedTime: (state) => {
       state.highlightedTime = undefined
@@ -71,6 +76,7 @@ export const { updateGenerator, setHighlightedTime, setHighlightedEvent, disable
 export const selectGeneratorsConfig = (state: RootState) => state.map.generatorsConfig
 export const selectHighlightedTime = (state: RootState) => state.map.highlightedTime
 export const selectHighlightedEvent = (state: RootState) => state.map.highlightedEvent
+export const selectHighlightedEventMap = (state: RootState) => state.map.highlightedEventMap
 
 export const selectGlobalGeneratorsConfig = createSelector(
   // TODO sync filters and url for dates
