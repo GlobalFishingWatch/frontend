@@ -58,8 +58,8 @@ export const downloadActivityThunk = createAsyncThunk<
       temporalResolution,
       groupBy,
     } = params
-    const fromDate = DateTime.fromISO(dateRange.start).toUTC().toISODate()
-    const toDate = DateTime.fromISO(dateRange.end).toUTC().toISODate()
+    const fromDate = DateTime.fromISO(dateRange.start).toUTC()
+    const toDate = DateTime.fromISO(dateRange.end).toUTC()
 
     const downloadParams = {
       datasets: dataviews.map(({ datasets }) => datasets.join(',')),
