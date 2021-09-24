@@ -182,7 +182,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
 
   const backLink = useMemo(() => {
-    return query ? { type: HOME, replaceQuery: true, query: query } : { type: HOME }
+    return query ? { type: HOME, replaceQuery: true, query } : { type: HOME }
   }, [query])
 
   const shipName = useMemo(() => {
