@@ -39,6 +39,7 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
           icon="info"
           size="medium"
           type="solid"
+          tooltip={t('events.activityDataReference', 'Activity Data Reference')}
           onClick={() => setShowFiltersInfo(true)}
         />
         <IconButton

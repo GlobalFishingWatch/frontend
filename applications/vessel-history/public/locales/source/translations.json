@@ -90,8 +90,8 @@
     "noDescription": "No description found"
   },
   "events": {
+    "activityDataReference": "Activity Data Reference",
     "activityEventsDescription": "All activity data is estimated through algorithms by Global Fishing Watch (GFW). Data caveats can be found in the FAQ here",
-    "activityFilters": "Activity Filters",
     "activityHighlights": "Activity Highlights",
     "encounterEvents": "Encounter Events",
     "encounterEventsDescription": "Encounters may indicate potential transshipment activity between two vessels that both appear on AIS. Encounters are estimated using AIS data, including distance between the two vessels, vessel speeds, and duration in a given area. <1></1>An encounter is defined as when two vessels, a carrier vessel and encountered fishing vessel, are detected on AIS data as within 500 meters for at least two hours and traveling at a median speed &lt;2 knots, while at least 10 km from a coastal anchorage.",
@@ -104,7 +104,9 @@
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
     "noResults": "No events found. Try changing the current filters.",
     "portVisitEvents": "Port Visits",
-    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
+    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate.",
+    "eventsHelp": "Activity Data Reference",
+    "activityFilters": "Activity Filters"
   },
   "map": {
     "descriptionMPA": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",

@@ -19,7 +19,7 @@ const EventFiltersHelp: React.FC<ModalProps> = ({
     <Modal
       isOpen={isModalOpen}
       onClose={closeModal}
-      title={t('events.activityFilters', 'Activity Filters')}
+      title={t('events.activityDataReference', 'Activity Data Reference')}
       className={styles.filtersInfo}
     >
       <p>
