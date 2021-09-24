@@ -2,8 +2,8 @@ import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { t } from 'features/i18n/i18n'
 
 export enum Format {
-  Csv = 'csv',
   GeoTIFF = 'tif',
+  Csv = 'csv',
   NetCDF = 'netcdf',
 }
 
@@ -27,12 +27,12 @@ export enum SpatialResolution {
 
 export const FORMAT_OPTIONS: ChoiceOption[] = [
   {
-    id: Format.Csv,
-    title: 'csv',
-  },
-  {
     id: Format.GeoTIFF,
     title: 'geotiff',
+  },
+  {
+    id: Format.Csv,
+    title: 'csv',
   },
   {
     id: Format.NetCDF,

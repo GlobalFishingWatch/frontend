@@ -71,7 +71,7 @@ export const downloadActivityThunk = createAsyncThunk<
       groupBy,
     }
 
-    const fileName = `${downloadParams.datasets} - ${downloadParams['date-range']} - ${areaName}.zip`
+    const fileName = `${areaName} - ${downloadParams['date-range']}.zip`
 
     const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
       `/v1/4wings/report?${stringify(downloadParams, { arrayFormat: 'indices' })}`,
