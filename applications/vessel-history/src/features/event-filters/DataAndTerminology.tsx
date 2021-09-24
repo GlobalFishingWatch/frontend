@@ -8,7 +8,7 @@ interface ModalProps {
   onCloseModal: (close: boolean) => void
 }
 
-const EventFiltersHelp: React.FC<ModalProps> = ({
+const DataAndTerminology: React.FC<ModalProps> = ({
   isModalOpen,
   onCloseModal,
 }): React.ReactElement => {
@@ -98,4 +98,4 @@ const EventFiltersHelp: React.FC<ModalProps> = ({
   )
 }
 
-export default EventFiltersHelp
+export default DataAndTerminology

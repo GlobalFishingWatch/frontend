@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
 import EventFilters from 'features/event-filters/EventFilters'
-import EventFiltersHelp from 'features/event-filters/EventFiltersHelp'
+import DataAndTerminology from 'features/event-filters/DataAndTerminology'
 import styles from './ActivityFilters.module.css'
 
 const ActivityFilters: React.FC = (): React.ReactElement => {
@@ -30,10 +30,10 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
         onCloseModal={(isOpen) => setModalOpen(isOpen)}
       ></EventFilters>
 
-      <EventFiltersHelp
+      <DataAndTerminology
         isModalOpen={showFiltersInfo}
         onCloseModal={(isOpen) => setShowFiltersInfo(isOpen)}
-      ></EventFiltersHelp>
+      ></DataAndTerminology>
       <div className={styles.filters}>
         <IconButton
           icon="info"

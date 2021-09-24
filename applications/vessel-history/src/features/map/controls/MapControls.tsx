@@ -11,7 +11,7 @@ import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.sele
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
 import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
 import EventFilters from 'features/event-filters/EventFilters'
-import EventFiltersHelp from 'features/event-filters/EventFiltersHelp'
+import DataAndTerminology from 'features/event-filters/DataAndTerminology'
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -60,10 +60,10 @@ const MapControls = ({
         isModalOpen={isModalOpen}
         onCloseModal={(isOpen) => setModalOpen(isOpen)}
       ></EventFilters>
-      <EventFiltersHelp
+      <DataAndTerminology
         isModalOpen={showFiltersInfo}
         onCloseModal={(isOpen) => setShowFiltersInfo(isOpen)}
-      ></EventFiltersHelp>
+      ></DataAndTerminology>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
