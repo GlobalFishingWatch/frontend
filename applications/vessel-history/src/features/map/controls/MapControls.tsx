@@ -11,6 +11,7 @@ import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.sele
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
 import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
 import EventFilters from 'features/event-filters/EventFilters'
+import DataAndTerminology from 'features/event-filters/DataAndTerminology'
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -32,13 +33,14 @@ const MapControls = ({
   const [isModalOpen, setIsOpen] = useState(false)
   const [showLayersPopup, setShowLayersPopup] = useState(false)
   const [showMPAInfo, setShowMPAInfo] = useState(false)
+  const [showFiltersInfo, setShowFiltersInfo] = useState(false)
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const filtered = useSelector(selectFilterUpdated)
   const setModalOpen = useCallback((isOpen) => {
     uaEvent({
       category: 'Vessel Detail ACTIVITY or MAP Tab',
       action: 'Open filters',
-      label: JSON.stringify({tab: 'MAP'})
+      label: JSON.stringify({ tab: 'MAP' }),
     })
     setIsOpen(isOpen)
   }, [])
@@ -53,11 +55,26 @@ const MapControls = ({
 
   return (
     <Fragment>
-      <EventFilters tab="MAP" isModalOpen={isModalOpen} onCloseModal={(isOpen) => setModalOpen(isOpen)}></EventFilters>
+      <EventFilters
+        tab="MAP"
+        isModalOpen={isModalOpen}
+        onCloseModal={(isOpen) => setModalOpen(isOpen)}
+      ></EventFilters>
+      <DataAndTerminology
+        isModalOpen={showFiltersInfo}
+        onCloseModal={(isOpen) => setShowFiltersInfo(isOpen)}
+      ></DataAndTerminology>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
             <Fragment>
+              <IconButton
+                type="map-tool"
+                icon={filtered ? 'filter-on' : 'filter-off'}
+                size="medium"
+                tooltip={t('map.filters', 'Filter events')}
+                onClick={() => setModalOpen(true)}
+              />
               <IconButton
                 icon="layers"
                 type="map-tool"
@@ -73,11 +90,11 @@ const MapControls = ({
                 }}
               />
               <IconButton
-                type="map-tool"
-                icon={filtered ? 'filter-on' : 'filter-off'}
+                icon="info"
                 size="medium"
-                tooltip={t('map.filters', 'Filter events')}
-                onClick={() => setModalOpen(true)}
+                type="map-tool"
+                tooltip={t('common.dataAndTerminology', 'Data and Terminology')}
+                onClick={() => setShowFiltersInfo(true)}
               />
               {showLayersPopup && (
                 <Modal
@@ -104,22 +121,20 @@ const MapControls = ({
                             />
                             {layer.id === 'context-layer-mpa' && (
                               <div>
-
                                 <IconButton
-                                  icon='info'
-                                  type='default'
+                                  icon="info"
+                                  type="default"
                                   size="small"
                                   className={styles.infoIcon}
                                   tooltipPlacement="left"
-                                  onClick={() =>setShowMPAInfo(true)}
+                                  onClick={() => setShowMPAInfo(true)}
                                 />
                                 <Modal
                                   isOpen={showMPAInfo}
-                                  onClose={() =>setShowMPAInfo(false)}
+                                  onClose={() => setShowMPAInfo(false)}
                                   title={layerTitle(layer)}
-                                  >
-                                    {t('map.descriptionMPA', 'Marine protected areas (MPAs)...')}
-      
+                                >
+                                  {t('map.descriptionMPA', 'Marine protected areas (MPAs)...')}
                                 </Modal>
                               </div>
                             )}
