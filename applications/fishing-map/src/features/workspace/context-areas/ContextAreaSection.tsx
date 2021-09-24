@@ -14,6 +14,7 @@ import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { isGFWUser } from 'features/user/user.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ContextAreaLayerPanel'
 
@@ -23,6 +24,7 @@ function ContextAreaSection(): React.ReactElement {
   const { dispatchSetDrawMode } = useMapDrawConnect()
 
   const readOnly = useSelector(selectReadOnly)
+  const gfwUser = useSelector(isGFWUser)
   const dataviews = useSelector(selectContextAreasDataviews)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
@@ -60,15 +62,17 @@ function ContextAreaSection(): React.ReactElement {
         <h2 className={styles.sectionTitle}>{t('common.context_area_other', 'Context areas')}</h2>
         {!readOnly && (
           <Fragment>
-            <IconButton
-              icon="draw"
-              type="border"
-              size="medium"
-              tooltip={t('layer.drawPolygon', 'Draw a layer')}
-              tooltipPlacement="top"
-              className="print-hidden"
-              onClick={onDrawClick}
-            />
+            {gfwUser && (
+              <IconButton
+                icon="draw"
+                type="border"
+                size="medium"
+                tooltip={t('layer.drawPolygon', 'Draw a layer')}
+                tooltipPlacement="top"
+                className="print-hidden"
+                onClick={onDrawClick}
+              />
+            )}
             <TooltipContainer
               visible={newDatasetOpen}
               onClickOutside={() => {
