@@ -20,7 +20,7 @@ const DataAndTerminology: React.FC<ModalProps> = ({
       isOpen={isModalOpen}
       onClose={closeModal}
       title={t('common.dataAndTerminology', 'Data and Terminology')}
-      className={styles.filtersInfo}
+      className={styles.container}
     >
       <p>
         {t(

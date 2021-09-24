@@ -1,11 +1,11 @@
-.filtersInfo {
+.container {
   height: 90vh;
 }
 
-.filtersInfo p {
+.container p {
   margin-bottom: var(--space-M);
   font: var(--font-S);
 }
-.filtersInfo a {
+.container a {
   text-decoration: underline;
 }
