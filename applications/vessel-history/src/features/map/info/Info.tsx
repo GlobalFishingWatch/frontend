@@ -31,7 +31,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   const changeVesselEvent = useCallback(
     (actualEventId, direction) => {
-      console.log(actualEventId.id)
       const actualEventIndex = eventsMap.indexOf(actualEventId.id)
       const nextPosition = direction === 'prev' ? actualEventIndex + 1 : actualEventIndex - 1
       setPrevDisabled(nextPosition <= eventsMap.length)
