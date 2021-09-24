@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
-import styles from './EventFiltersHelp.module.css'
+import styles from './DataAndTerminology.module.css'
 
 interface ModalProps {
   isModalOpen: boolean
