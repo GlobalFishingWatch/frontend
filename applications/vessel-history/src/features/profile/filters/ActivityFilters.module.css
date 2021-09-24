@@ -2,3 +2,16 @@
   text-align: right;
   padding: var(--space-S) var(--space-S) var(--space-XS) var(--space-S);
 }
+.filters > * {
+  margin-left: var(--space-S);
+}
+.filtersInfo {
+  height: 90vh;
+}
+
+.filtersInfo .eventsLabel {
+  font-weight: bold;
+}
+.filtersInfo p {
+  margin-bottom: var(--space-M);
+}
