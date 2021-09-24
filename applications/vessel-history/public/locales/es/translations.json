@@ -2,7 +2,9 @@
   "common": {
     "activity": "actividad",
     "AIS": "AIS",
+    "events": "Events",
     "from": "desde",
+    "GFW": "GFW",
     "info": "info",
     "map": "mapa",
     "offlineAccess": "acceso sin conexión",
@@ -24,8 +26,7 @@
     "in": "in",
     "commingSoon": "muy pronto!",
     "historyFor": "historial para",
-    "previous": "anteriones",
-    "events": "Events"
+    "previous": "anteriones"
   },
   "event": {
     "avgSpeed": "Avg Speed",
@@ -53,7 +54,6 @@
     "formatSpeedKnots": "{{value}} knots",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_plural": "{{count}}h",
-    "internationalWaters": "International Waters",
     "loitering": "Loitering",
     "loiteringAction": "Loitering in {{regionName}}",
     "medianSpeed": "Median Speed",
@@ -68,6 +68,7 @@
     "psmaNotIncluded": "Not included",
     "start": "Start",
     "unknown": "Unknown event",
+    "internationalWaters": "International Waters",
     "authStatus": "Authorization status",
     "nextPort": "Next port traveled",
     "portAction": "Port visit",
