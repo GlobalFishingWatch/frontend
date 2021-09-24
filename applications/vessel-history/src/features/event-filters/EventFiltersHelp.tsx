@@ -19,7 +19,7 @@ const EventFiltersHelp: React.FC<ModalProps> = ({
     <Modal
       isOpen={isModalOpen}
       onClose={closeModal}
-      title={t('events.activityDataReference', 'Activity Data Reference')}
+      title={t('common.dataAndTerminology', 'Data and Terminology')}
       className={styles.filtersInfo}
     >
       <p>
@@ -41,11 +41,19 @@ const EventFiltersHelp: React.FC<ModalProps> = ({
           The algorithm classifies each AIS broadcast data point for these vessels as either
           “apparently fishing” or “not fishing” and shows the former on our fishing activity heat
           map. You can find more detail in our Technology page:{' '}
-          <a href="https://globalfishingwatch.org/our-technology/">
+          <a
+            href="https://globalfishingwatch.org/our-technology/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             https://globalfishingwatch.org/our-technology/
           </a>{' '}
           and Dataset page:{' '}
-          <a href="https://globalfishingwatch.org/datasets-and-code/">
+          <a
+            href="https://globalfishingwatch.org/datasets-and-code/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             https://globalfishingwatch.org/datasets-and-code/
           </a>
           .

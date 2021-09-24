@@ -93,7 +93,7 @@ const MapControls = ({
                 icon="info"
                 size="medium"
                 type="map-tool"
-                tooltip={t('events.activityDataReference', 'Activity Data Reference')}
+                tooltip={t('common.dataAndTerminology', 'Data and Terminology')}
                 onClick={() => setShowFiltersInfo(true)}
               />
               {showLayersPopup && (

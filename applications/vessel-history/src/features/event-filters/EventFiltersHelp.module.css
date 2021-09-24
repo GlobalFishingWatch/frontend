@@ -8,3 +8,6 @@
 .filtersInfo p {
   margin-bottom: var(--space-M);
 }
+.filtersInfo a {
+  text-decoration: underline;
+}

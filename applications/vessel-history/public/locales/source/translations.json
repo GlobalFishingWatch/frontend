@@ -2,6 +2,7 @@
   "common": {
     "activity": "activity",
     "AIS": "AIS",
+    "dataAndTerminology": "Data and Terminology",
     "events": "Events",
     "from": "from",
     "GFW": "GFW",
@@ -90,7 +91,6 @@
     "noDescription": "No description found"
   },
   "events": {
-    "activityDataReference": "Activity Data Reference",
     "activityEventsDescription": "All activity data is estimated through algorithms by Global Fishing Watch (GFW). Data caveats can be found in the FAQ here",
     "activityHighlights": "Activity Highlights",
     "encounterEvents": "Encounter Events",
