@@ -83,14 +83,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
           }}
         >
           <div className={cx(styles.footer, styles.panel)}>
-            <div className={styles.switcher}>
-              <IconButton
-                size="tiny"
-                icon={expanded ? 'compare' : 'split'}
-                type="border"
-                onClick={() => setExpanded(!expanded)}
-              ></IconButton>
-            </div>
             <div className={styles.eventSelector}>
               <IconButton
                 icon="arrow-left"
@@ -116,13 +108,22 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 onClick={() => changeVesselEvent(highlightedEvent, 'next')}
               ></IconButton>
             </div>
-            <div className={cx(styles.footerArea)}>
-              <div className={cx(styles.footerAreaContent)}>
-                <div className={styles.eventData}>
-                  <ActivityDate event={selectedEvent} className={styles.dateFormat} />
-                  <div className={styles.description}>{selectedEvent.description}</div>
+            <div className={styles.footerArea}>
+              <div className={styles.footerAreaContent}>
+                <div className={styles.footerAreaTitle}>
+                  <div className={styles.eventData}>
+                    <ActivityDate event={selectedEvent} className={styles.dateFormat} />
+                    <div className={styles.description}>{selectedEvent.description}</div>
+                  </div>
+                  <div className={styles.switcher}>
+                    <IconButton
+                      size="small"
+                      icon={expanded ? 'close' : 'info'}
+                      type="border"
+                      onClick={() => setExpanded(!expanded)}
+                    ></IconButton>
+                  </div>
                 </div>
-
                 <ActivityModalContent event={selectedEvent}></ActivityModalContent>
               </div>
             </div>

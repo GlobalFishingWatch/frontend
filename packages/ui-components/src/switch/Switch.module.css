@@ -13,7 +13,7 @@
   box-shadow: var(--box-shadow-highlight);
 }
 
-.switch:disabled {
+.switch.disabled {
   cursor: not-allowed;
 }
 
@@ -41,12 +41,12 @@
   background-color: var(--color-white);
 }
 
-.switch:not(:disabled):not([aria-checked='true']):hover,
-.switch:not(:disabled):not([aria-checked='true']):focus {
+.switch:not(.disabled):not([aria-checked='true']):hover,
+.switch:not(.disabled):not([aria-checked='true']):focus {
   border: 0.1rem solid var(--color-secondary-blue);
 }
 
-.switch:not(:disabled):not([aria-checked='true']):hover .nib,
-.switch:not(:disabled):not([aria-checked='true']):focus .nib {
+.switch:not(.disabled):not([aria-checked='true']):hover .nib,
+.switch:not(.disabled):not([aria-checked='true']):focus .nib {
   background-color: var(--color-primary-blue);
 }

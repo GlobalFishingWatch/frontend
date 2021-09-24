@@ -24,19 +24,20 @@
     "in": "in",
     "commingSoon": "coming soon!",
     "historyFor": "history for",
-    "previous": "previous"
+    "previous": "previous",
+    "events": "Events"
   },
   "event": {
     "avgSpeed": "Avg Speed",
     "confidence": "Confidence",
     "confidenceHelp": {
-      "help2": "Low confidence. Only a port stop OR gap was identified based on AIS transmission.",
-      "help3": "Medium confidence. A port entry and a port stop OR gap; OR a port stop OR gap followed by a port exit was identified based on AIS transmission.",
-      "help4": "High confidence. A port entry, AND port stop or port gap, AND a port exit was identified based on AIS transmission.",
       "portEntry": "PORT ENTRY: vessel that was not in port gets within 3km of anchorage point",
       "portExit": "PORT EXIT: vessel that was in port moves more than 4km from anchorage point",
       "portGap": "PORT GAP: AIS gap > 4 hours; start is recorded 4 hours after the last message before the gap; end at next message after gap.",
-      "portStop": "PORT STOP: begin: speed < 0.2 knots; end: speed > 0.5 knots"
+      "portStop": "PORT STOP: begin: speed < 0.2 knots; end: speed > 0.5 knots",
+      "help2": "Low confidence. Only a port stop OR gap was identified based on AIS transmission.",
+      "help3": "Medium confidence. A port entry and a port stop OR gap; OR a port stop OR gap followed by a port exit was identified based on AIS transmission.",
+      "help4": "High confidence. A port entry, AND port stop or port gap, AND a port exit was identified based on AIS transmission."
     },
     "distance": "Distance",
     "distancePort": "Distance from port",
@@ -44,6 +45,7 @@
     "duration": "Duration",
     "encounter": "encounter",
     "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
+    "encounterActionWithNoRegion": "Encounter with {{vessel}}",
     "end": "End",
     "fishing": "fishing",
     "fishingAction": "Fishing in {{regionName}}",
@@ -94,6 +96,7 @@
     "noResults": "No events found. Try changing the current filters."
   },
   "map": {
+    "descriptionMPA": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "filters": "Filter events",
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"

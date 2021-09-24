@@ -73,22 +73,6 @@ export const dataviewInstances: DataviewInstance<Generators.Type>[] = [
     dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
   },
   {
-    id: 'context-layer-mpa-no-take',
-    config: {
-      color: '#F4511F',
-      visible: false,
-    },
-    dataviewId: DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
-  },
-  {
-    id: 'context-layer-mpa-restricted',
-    config: {
-      color: '#F09300',
-      visible: false,
-    },
-    dataviewId: DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
-  },
-  {
     id: 'context-layer-mpa',
     config: {
       color: '#1AFF6B',

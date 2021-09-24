@@ -108,6 +108,7 @@ const getExtendedFeatures = (
           return [temporalGridExtendedFeature]
         })
       case Generators.Type.Context:
+      case Generators.Type.UserContext:
         return {
           ...extendedFeature,
           gfwId: feature.properties?.gfw_id,

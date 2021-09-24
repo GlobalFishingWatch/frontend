@@ -88,7 +88,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                     height={height}
                     itemCount={events.length}
                     itemData={events}
-                    itemSize={() => 79}
+                    itemSize={() => 60}
                   >
                     {({ index, style }) => {
                       const event = events[index]
@@ -108,7 +108,9 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                 )}
               </AutoSizer>
             ) : (
-              <p>{t('events.noResults', 'No events found. Try changing the current filters.')}</p>
+              <p className={styles.emptyState}>
+                {t('events.noResults', 'No events found. Try changing the current filters.')}
+              </p>
             )}
           </div>
         </Fragment>

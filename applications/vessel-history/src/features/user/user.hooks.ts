@@ -1,16 +1,30 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { intersection } from 'lodash'
 import { event as uaEvent } from 'react-ga'
-import { useDispatch } from 'react-redux'
-import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { useSelector, useDispatch } from 'react-redux'
+import GFWAPI, { getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import { AUTHORIZED_USER_GROUPS } from 'data/config'
 import { BASE_URL } from 'data/constants'
-import { logoutUserThunk } from './user.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import {
+  fetchUserThunk,
+  logoutUserThunk,
+  selectUserData,
+  selectUserLogged,
+  selectUserStatus,
+} from './user.slice'
 
 export const useUser = () => {
   const dispatch = useDispatch()
-  const { loading, logged, user } = useGFWLogin(GFWAPI)
+
+  const logged = useSelector(selectUserLogged)
+  const user = useSelector(selectUserData)
+  const status = useSelector(selectUserStatus)
+
+  const accessToken = getAccessTokenFromUrl()
+  const token = GFWAPI.getToken()
+  const refreshToken = GFWAPI.getRefreshToken()
+
   const authorized = useMemo(() => {
     return user && intersection(user.groups, AUTHORIZED_USER_GROUPS).length > 0
   }, [user])
@@ -28,5 +42,16 @@ export const useUser = () => {
     dispatch(logoutUserThunk({ redirectTo: 'home' }))
   }, [dispatch])
 
-  return { loading, logged, user, authorized, login, logout }
+  useEffect(() => {
+    if (!logged && (token || refreshToken || accessToken)) dispatch(fetchUserThunk())
+  }, [accessToken, dispatch, logged, refreshToken, token])
+
+  return {
+    loading: status !== AsyncReducerStatus.Finished,
+    logged,
+    user,
+    authorized,
+    login,
+    logout,
+  }
 }

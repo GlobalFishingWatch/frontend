@@ -51,7 +51,7 @@ function ContextAreaSection(): React.ReactElement {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.context_area_plural', 'Context areas')}</h2>
+        <h2 className={styles.sectionTitle}>{t('common.context_area_other', 'Context areas')}</h2>
         {!readOnly && (
           <TooltipContainer
             visible={newDatasetOpen}

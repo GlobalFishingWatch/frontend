@@ -172,7 +172,7 @@ function UserWorkspaces() {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t('workspace.title_plural', 'Workspaces')}</label>
+        <label>{t('workspace.title_other', 'Workspaces')}</label>
         <TooltipContainer
           visible={workspaceTemplatesOpen}
           onClickOutside={() => {

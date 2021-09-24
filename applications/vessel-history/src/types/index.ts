@@ -89,6 +89,8 @@ export interface ValueItem<T = string> {
   value: T
   firstSeen?: string
   endDate?: string
+  originalFirstSeen?: number
+  originalEndDate?: number
   source?: VesselAPISource
 }
 export type BuiltYear = ValueItem

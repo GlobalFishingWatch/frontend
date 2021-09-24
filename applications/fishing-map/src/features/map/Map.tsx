@@ -177,7 +177,7 @@ const MapWrapper = (): React.ReactElement | null => {
             })
           : ''
         if (legend.unit === 'hours') {
-          label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
+          label = `${t('common.hour_other', 'hours')} / ${gridAreaFormatted}²`
         }
       }
       return { ...legend, label }

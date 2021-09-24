@@ -23,7 +23,7 @@ function DatasetFilterSource({ dataview }: DatasetFilterSourceProps) {
       ...nonVmsSources,
       {
         id: 'vms-grouped',
-        label: `VMS (${vmsSources.length} ${t('common.country_plural', 'countries')})`,
+        label: `VMS (${vmsSources.length} ${t('common.country_other', 'countries')})`,
         tooltip: vmsSources.map((source) => source.label).join(', '),
       },
     ]

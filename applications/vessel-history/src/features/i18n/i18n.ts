@@ -10,6 +10,12 @@ export const LocaleLabels = [
   { id: Locale.fr, label: 'Français' },
 ]
 
+const PACKAGE_NAMESPACES = ['flags']
+export const SHARED_LABELS_PATH =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8000'
+    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels`
+
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -22,6 +28,14 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
+    backend: {
+      loadPath: (lngs: string[], namespaces: string[]) => {
+        if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
+          return `${SHARED_LABELS_PATH}/{{lng}}/{{ns}}.json`
+        }
+        return `/locales/{{lng}}/{{ns}}.json`
+      },
+    },
     ns: ['translations', 'flags'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,

@@ -43,12 +43,11 @@ function Analysis() {
   const { t } = useTranslation()
   const { onLoginClick } = useLoginRedirect()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const { start, end } = useTimerangeConnect()
+  const { start, end, timerange } = useTimerangeConnect()
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const { timerange } = useTimerangeConnect()
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const userData = useSelector(selectUserData)

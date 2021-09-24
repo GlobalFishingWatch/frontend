@@ -12,7 +12,6 @@ type ActiveChoiceProperties = {
 interface ChoiceProps {
   options: ChoiceOption[]
   activeOption: string
-  disabledTooltip?: string
   onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
   size?: 'default' | 'small'
   className?: string
@@ -22,7 +21,6 @@ function Choice({
   activeOption,
   options,
   onOptionClick,
-  disabledTooltip,
   size = 'default',
   className = '',
 }: ChoiceProps) {
@@ -85,8 +83,9 @@ function Choice({
                   [styles.optionActive]: optionSelected,
                   [styles.disabled]: option.disabled,
                 })}
+                tooltip={option.tooltip}
+                tooltipPlacement={option.tooltipPlacement}
                 type="secondary"
-                tooltip={option.disabled ? disabledTooltip : ''}
                 onClick={(e) => !option.disabled && onOptionClickHandle(option, e)}
                 size={size}
               >

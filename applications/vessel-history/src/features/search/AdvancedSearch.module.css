@@ -1,5 +1,6 @@
 .container {
   padding: 1.5rem;
+  background: var(--color-white);
   border-bottom: var(--border);
 }
 
@@ -7,14 +8,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--space-S);
+  flex-wrap: wrap;
 }
 
 .row:not(:first-child) {
   margin-top: var(--space-S);
-}
-
-.row > div:not(:last-child) {
-  margin-right: var(--space-S);
 }
 
 .full {
@@ -39,4 +38,19 @@
 
 .cta {
   min-width: 20rem;
+}
+
+@media only screen and (min-width: 1000px) {
+  .container {
+    border-bottom: none;
+    border-right: var(--border);
+    width: 33%;
+    overflow-y: auto;
+  }
+  .full,
+  .width6ch,
+  .width7ch,
+  .width8ch {
+    min-width: 100%;
+  }
 }

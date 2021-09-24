@@ -53,7 +53,7 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
     return null
   }
 
-  const highlightContent = HighlightConfig[(i18n.language as Locale) || Locale.en]
+  const highlightContent = HighlightConfig[i18n.language as Locale] || HighlightConfig[Locale.en]
   if (!highlightContent) {
     console.warn('Missing every welcome modal content by languages')
     return null
