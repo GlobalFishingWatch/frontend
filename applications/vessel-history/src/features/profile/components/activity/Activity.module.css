@@ -145,7 +145,12 @@
 }
 
 .highlightsListContainer .event .eventData .description {
-  width: calc(100vw - var(--size-S) * 4.7);
+  width: calc(100vw - var(--size-S) * 5.7);
+}
+
+.highlightsListContainer .event {
+  margin: 0;
+  padding: 0;
 }
 
 .highlights {
