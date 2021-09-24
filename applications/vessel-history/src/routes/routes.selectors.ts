@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { flags } from 'data/flags';
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { RootState } from 'store'
