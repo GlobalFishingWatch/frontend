@@ -2,11 +2,9 @@
   height: 90vh;
 }
 
-.filtersInfo .eventsLabel {
-  font-weight: bold;
-}
 .filtersInfo p {
   margin-bottom: var(--space-M);
+  font: var(--font-S);
 }
 .filtersInfo a {
   text-decoration: underline;

@@ -28,8 +28,8 @@ const EventFiltersHelp: React.FC<ModalProps> = ({
           'All activity data is estimated through algorithms by Global Fishing Watch (GFW). Data caveats can be found in the FAQ here'
         )}
       </p>
+      <label>{t('events.fishingEvents', 'Fishing Events')}</label>
       <p>
-        <span className={styles.eventsLabel}>{t('events.fishingEvents', 'Fishing Events')}: </span>
         <Trans i18nKey="events.fishingEventsDescription">
           When there is a consistent series of AIS points estimated as indicating apparent fishing
           activity the points are grouped into 'Fishing Events'. <br />
@@ -59,10 +59,8 @@ const EventFiltersHelp: React.FC<ModalProps> = ({
           .
         </Trans>
       </p>
+      <label>{t('events.encounterEvents', 'Encounter Events')}</label>
       <p>
-        <span className={styles.eventsLabel}>
-          {t('events.encounterEvents', 'Encounter Events')}:{' '}
-        </span>
         <Trans i18nKey="events.encounterEventsDescription">
           Encounters may indicate potential transshipment activity between two vessels that both
           appear on AIS. Encounters are estimated using AIS data, including distance between the two
@@ -72,10 +70,8 @@ const EventFiltersHelp: React.FC<ModalProps> = ({
           at a median speed &lt;2 knots, while at least 10 km from a coastal anchorage.
         </Trans>
       </p>
+      <label>{t('events.loiteringEvents', 'Loitering Events')}</label>
       <p>
-        <span className={styles.eventsLabel}>
-          {t('events.loiteringEvents', 'Loitering Events')}:{' '}
-        </span>
         <Trans i18nKey="events.loiteringEventsDescription">
           Loitering is when a single vessel exhibits behavior indicative of a potential encounter
           event. Loitering is also estimated using AIS data, including vessel speed, duration in a
@@ -87,8 +83,8 @@ const EventFiltersHelp: React.FC<ModalProps> = ({
           encounter events.
         </Trans>
       </p>
+      <label>{t('events.portVisitEvents', 'Port Visits')}</label>
       <p>
-        <span className={styles.eventsLabel}>{t('events.portVisitEvents', 'Port Visits')}: </span>
         <Trans i18nKey="events.portVisitEventsDescription">
           A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This
           means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5
