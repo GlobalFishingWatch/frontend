@@ -94,7 +94,8 @@
     "highlitingSettings": "paramètres",
     "noHighlights": "Aucun événement trouvé pour vos critères de surbrillance",
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
-    "noResults": "No events found. Try changing the current filters."
+    "noResults": "No events found. Try changing the current filters.",
+    "noData": "There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source."
   },
   "map": {
     "descriptionMPA": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
