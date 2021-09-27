@@ -5,3 +5,6 @@
 .filters > * {
   margin-left: var(--space-S);
 }
+.dataAndTerminologyContainer {
+  height: 90vh;
+}
