@@ -194,7 +194,7 @@ const MapWrapper = (): React.ReactElement | null => {
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
       if (drawMode === 'draw') {
-        return 'pointer'
+        return 'copy'
       } else if (state.isHovering && hoveredTooltipEvent) {
         // Workaround to fix cluster events duplicated, only working for encounters and needs
         // TODO if wanted to scale it to other layers
