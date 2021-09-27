@@ -12,7 +12,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
-import { setDownloadGeometry } from 'features/download/download.slice'
+import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import useMapInstance, { useMapContext } from '../map-context.hooks'
 import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -67,7 +67,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
         return
       }
       batch(() => {
-        dispatch(setDownloadGeometry(feature))
+        dispatch(setDownloadActivityGeometry(feature))
         dispatch(setClickedEvent(null))
       })
     },
@@ -101,7 +101,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                             icon="download"
                             disabled={!hasAnalysisLayers}
                             tooltip={t(
-                              'download.action',
+                              'download.activityAction',
                               'Download visible activity layers for this area'
                             )}
                             onClick={(e) => onDownloadClick(e, feature)}

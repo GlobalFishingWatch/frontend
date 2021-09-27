@@ -16,7 +16,7 @@ import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
 import { selectSidebarOpen } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
-import { setDownloadGeometry } from 'features/download/download.slice'
+import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -90,7 +90,10 @@ function FeatureRow({
               <IconButton
                 icon="download"
                 disabled={!reportEnabled}
-                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                tooltip={t(
+                  'download.activityAction',
+                  'Download visible activity layers for this area'
+                )}
                 onClick={handleDownloadClick}
                 size="small"
               />
@@ -133,7 +136,10 @@ function FeatureRow({
             <IconButton
               icon="download"
               disabled={!reportEnabled}
-              tooltip={t('download.action', 'Download visible activity layers for this area')}
+              tooltip={t(
+                'download.activityAction',
+                'Download visible activity layers for this area'
+              )}
               onClick={handleDownloadClick}
               size="small"
             />
@@ -172,7 +178,10 @@ function FeatureRow({
               <IconButton
                 icon="download"
                 disabled={!reportEnabled}
-                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                tooltip={t(
+                  'download.activityAction',
+                  'Download visible activity layers for this area'
+                )}
                 onClick={handleDownloadClick}
                 size="small"
               />
@@ -216,7 +225,10 @@ function FeatureRow({
               <IconButton
                 icon="download"
                 disabled={!reportEnabled}
-                tooltip={t('download.action', 'Download visible activity layers for this area')}
+                tooltip={t(
+                  'download.activityAction',
+                  'Download visible activity layers for this area'
+                )}
                 onClick={handleDownloadClick}
                 size="small"
               />
@@ -304,7 +316,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         return
       }
       batch(() => {
-        dispatch(setDownloadGeometry(feature))
+        dispatch(setDownloadActivityGeometry(feature))
         dispatch(setClickedEvent(null))
       })
       cleanFeatureState('highlight')

@@ -35,7 +35,8 @@ import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import DownloadModal from 'features/download/DownloadModal'
+import DownloadActivityModal from 'features/download/DownloadActivityModal'
+import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
@@ -241,7 +242,10 @@ function App(): React.ReactElement {
         </Modal>
       )}
       <Suspense fallback={null}>
-        <DownloadModal />
+        <DownloadActivityModal />
+      </Suspense>
+      <Suspense fallback={null}>
+        <DownloadTrackModal />
       </Suspense>
       {welcomePopupOpen && !readOnly && (
         <Suspense fallback={null}>

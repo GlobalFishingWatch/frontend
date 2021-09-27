@@ -115,8 +115,11 @@
     "uploadNewEnviroment": "Upload new environment dataset"
   },
   "download": {
-    "action": "Download visible activity layers for this area",
-    "title": "Download - Activity",
+    "title": "Download",
+    "activity": "Activity",
+    "activityAction": "Download visible activity layers for this area",
+    "track": "Vessel Track",
+    "trackAction": "Download vessel track",
     "cta": "Download",
     "area": "Area",
     "timeRange": "Time Range",

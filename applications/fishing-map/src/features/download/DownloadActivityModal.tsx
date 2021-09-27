@@ -11,14 +11,14 @@ import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components/dis
 import { Dataset } from '@globalfishingwatch/api-types'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import {
-  clearDownloadGeometry,
+  clearDownloadActivityGeometry,
   DownloadActivityParams,
   downloadActivityThunk,
-  resetDownloadStatus,
-  selectDownloadAreaName,
-  selectDownloadGeometry,
-  selectDownloadStatus,
-} from 'features/download/download.slice'
+  resetDownloadActivityStatus,
+  selectDownloadActivityAreaName,
+  selectDownloadActivityGeometry,
+  selectDownloadActivityStatus,
+} from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -35,14 +35,14 @@ import {
   MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
   SPATIAL_RESOLUTION_OPTIONS,
   FORMAT_OPTIONS,
-} from './download.config'
+} from './downloadActivity.config'
 
-function DownloadModal() {
+function DownloadActivityModal() {
   const { t } = useTranslation()
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
-  const downloadStatus = useSelector(selectDownloadStatus)
+  const downloadStatus = useSelector(selectDownloadActivityStatus)
   const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)
   const { start, end, timerange } = useTimerangeConnect()
 
@@ -123,8 +123,8 @@ function DownloadModal() {
     filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
 
-  const downloadAreaGeometry = useSelector(selectDownloadGeometry)
-  const downloadAreaName = useSelector(selectDownloadAreaName)
+  const downloadAreaGeometry = useSelector(selectDownloadActivityGeometry)
+  const downloadAreaName = useSelector(selectDownloadActivityAreaName)
   const areaIsTooBigForHighRes = useMemo(() => {
     return downloadAreaGeometry
       ? area(downloadAreaGeometry as Polygon | MultiPolygon) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
@@ -187,17 +187,17 @@ function DownloadModal() {
     })
 
     timeoutRef.current = setTimeout(() => {
-      dispatch(resetDownloadStatus())
+      dispatch(resetDownloadActivityStatus())
     }, 1000)
   }
 
   const onClose = () => {
-    dispatch(clearDownloadGeometry())
+    dispatch(clearDownloadActivityGeometry())
   }
 
   return (
     <Modal
-      title={t('download.title', 'Download - Activity')}
+      title={`${t('download.title', 'Download')} - ${t('download.activity', 'Activity')}`}
       isOpen={downloadAreaGeometry !== undefined}
       onClose={onClose}
       contentClassName={styles.modalContent}
@@ -269,7 +269,7 @@ function DownloadModal() {
           {downloadStatus === AsyncReducerStatus.Finished ? (
             <Icon icon="tick" />
           ) : (
-            t('download.cta', 'Download')
+            t('download.title', 'Download')
           )}
         </Button>
       </div>
@@ -277,4 +277,4 @@ function DownloadModal() {
   )
 }
 
-export default DownloadModal
+export default DownloadActivityModal
