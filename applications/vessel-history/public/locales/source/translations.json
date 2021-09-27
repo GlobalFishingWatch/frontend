@@ -194,9 +194,12 @@
     "encounteredVessel": "Encountered Vessel",
     "flag": "flag",
     "formatValues": "{{quantity}} values",
+    "geartypeDescription": "Likely gear type of vessel as defined by Global Fishing Watch. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class, see more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> . The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
     "historyLabelByField": "{{label}} history for {{vesselName}}",
     "imo": "imo",
+    "iuuStatusDescription": "[TDB] IUU status description to be defined",
     "mmsi": "mmsi",
+    "nameDescription": "Name of vessel as transmitted on AIS or as identified by Other source during specified time period.",
     "noAuthorizations": "No authorizations found",
     "nVesselsMerged": "{{count}} merged",
     "nVesselsMerged_plural": "{{count}} merged",
@@ -209,6 +212,7 @@
     "source": "source",
     "transmission_plural": "transmissions",
     "type": "vessel type",
+    "vesselTypeDescription": "For vessel type sourced from Global Fishing Watch additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
     "historicalValues": "historical values",
     "name": "name",
     "previousNames": "previous names",
@@ -238,6 +242,7 @@
       "2": "currently listed"
     }
   },
+  "{{helpText}}": "{{helpText}}",
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
   }
