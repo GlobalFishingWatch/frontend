@@ -63,12 +63,12 @@
     "nSelected": "{{count}} sélectionnés",
     "nSelected_plural": "{{count}} sélectionné",
     "port": "Port",
-    "position": "Position",
     "psma": "PSMA",
     "psmaIncluded": "Inclus depuis {{value}}",
     "psmaNotIncluded": "Non inclus",
     "start": "Début",
     "unknown": "Événement inconnu",
+    "position": "Position",
     "internationalWaters": "Eaux internationales",
     "authStatus": "Statut d'autorisation",
     "nextPort": "Port suivant voyagé",
@@ -100,12 +100,12 @@
     "highlitingSettings": "paramètres",
     "loiteringEvents": "Loitering Events",
     "loiteringEventsDescription": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is also estimated using AIS data, including vessel speed, duration in a given location, and distance from shore. <1></1>Loitering occurs when a carrier vessel travels at average speed of &lt;2 knots.<3></3>Due to the individual definitions of loitering events and encounter events, it is possible for a loitering event to overlap with encounter events and to encompass one or more encounter events.",
+    "noData": "There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.",
     "noHighlights": "Aucun événement trouvé pour vos critères de surbrillance",
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
     "noResults": "No events found. Try changing the current filters.",
     "portVisitEvents": "Port Visits",
-    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate.",
-    "noData": "There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source."
+    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
   },
   "map": {
     "descriptionMPA": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
@@ -138,8 +138,14 @@
     "selected": "slectionns"
   },
   "settings": {
+    "distancePort": "Distance from port",
+    "distancePortDescription": "Highlight all {{eventType}} that had a distance from port longer than the value configured. Example if you configure 8 km, you will see all {{eventType}} with distance more or equal to 8 km. Distance from port is will be highlighted if either the start or end position is more or equal to the specified distance. Ports include all GFW identified anchorages (for more details on anchorage including its definition here)",
+    "distanceShore": "Distance from shore",
+    "distanceShoreDescription": "Highlight all {{eventType}} that had a distance longer than the value configured. Example if you configure 8 km, you will see all {{eventType}} with distance more or equal to 8 km from the shore. Distance from shore will be highlighted if either the start or end position is more or equal to the specified distance.",
     "duration": "DURÉE",
+    "durationDescription": "Highlight all {{eventType}} that had a duration longer than the value configured. Example if you configure 5 hours, you will see all {{eventType}} with duration more or equal to 5 hours",
     "eezs": {
+      "description": "Highlight all {{eventType}} events that may have occured inside an EEZ. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the bounding box of the EEZ. For example, if you select Argentina EEZ and Chile EEZ under the {{eventType}} Events activity highlights, you will see all {{eventType}} events where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Argentina EEZ OR the Chile EEZ. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the EEZ. Please investigate the highlighted events further on the map.",
       "label": "Événements dans ces ZEEs"
     },
     "encounters": {
@@ -155,15 +161,18 @@
     },
     "longerThan": "Supérieure à",
     "mpas": {
+      "description": "Highlight all {{eventType}} that occurred inside an MPA. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the MPA. For example, if you select Galápagos and Ascension Island, you will see all {{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Galápagos OR Ascension Island MPA. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the MPA. Please invesitage highlighted event further on the map.",
       "label": "Événements dans ces APMs"
     },
     "portVisits": {
       "inThesePortStates": "Événements dans ces États du port",
+      "inThesePortStatesDescription": "Highlight all {{eventType}} that may have occured in a port State. A port visit occurs when a vessel transits to an anchorage, and the port State is assigned based on the Exclusive Economic Zone (EEZ) the anchorage is within. Anchorages are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate:<3>https://globalfishingwatch.org/datasets-and-code-anchorages/</3> . Please investigate the highlighted events further on the map.",
       "title": "Visites du Port",
       "inputEnd": "ports",
       "inputStart": "Visites du port en"
     },
     "rfmos": {
+      "description": "Highlight all {{eventType}} that occurred inside and RFMO. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the RFMO. Example if you select IOTC and WCPFC, you will see all{{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of IOTC OR WCPFC. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the RFMO. Please invesitage highlighted event further on the map.",
       "label": "Événements dans ces RFMOs"
     },
     "title": "Paramètres",
@@ -199,6 +208,7 @@
     "saveForOfflineView": "enregistrer le vaisseau pour une vue hors ligne",
     "source": "source",
     "transmission_plural": "transmissions",
+    "type": "vessel type",
     "historicalValues": "valeurs historiques",
     "name": "Nom",
     "previousNames": "noms précédents",
@@ -209,7 +219,6 @@
     "length": "Longueur",
     "operator": "opérateur",
     "owner": "Propriétaire",
-    "type": "vessel type",
     "grossTonnage_plural": "tonnages bruts",
     "builtYear_plural": "années construites",
     "callsign_plural": "panneaux d'appel",
