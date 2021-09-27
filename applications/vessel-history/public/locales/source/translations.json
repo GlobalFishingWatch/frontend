@@ -208,6 +208,7 @@
     "saveForOfflineView": "save vessel for offline view",
     "source": "source",
     "transmission_plural": "transmissions",
+    "transmissionRange": "{{transmissions}} AIS transmissions from {{start}} to {{end}}",
     "type": "vessel type",
     "historicalValues": "historical values",
     "name": "name",
