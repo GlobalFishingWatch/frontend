@@ -32,7 +32,6 @@ const DataAndTerminology: React.FC<ModalProps> = ({
         size={size}
         type={type}
         className={className}
-        tooltip={title ?? t('common.dataAndTerminology', 'Data and Terminology')}
         onClick={() => setShowModal(true)}
       />
       <Modal
