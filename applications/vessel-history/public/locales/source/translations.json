@@ -199,7 +199,6 @@
     "imo": "imo",
     "iuuStatusDescription": "[TDB] IUU status description to be defined",
     "mmsi": "mmsi",
-    "nameDescription": "Name of vessel as transmitted on AIS or as identified by Other source during specified time period.",
     "noAuthorizations": "No authorizations found",
     "nVesselsMerged": "{{count}} merged",
     "nVesselsMerged_plural": "{{count}} merged",
@@ -242,7 +241,6 @@
       "2": "currently listed"
     }
   },
-  "{{helpText}}": "{{helpText}}",
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
   }
