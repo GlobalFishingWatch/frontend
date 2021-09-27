@@ -94,6 +94,7 @@ function MapDraw() {
       setFeatures(newFeatures)
       setNewPointLatitude(undefined)
       setNewPointLongitude(undefined)
+      setSelectedEditHandleIndex(null)
     }
   }, [
     features,
@@ -279,6 +280,7 @@ function MapDraw() {
             loading={loading}
             disabled={!layerName || !hasFeaturesDrawn}
             tooltip={saveTooltip}
+            tooltipPlacement="top"
             onClick={onSaveClick}
           >
             {t('common.save', 'Save')}
