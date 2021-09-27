@@ -23,7 +23,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   label,
   hideTMTDate,
   vesselName,
-  onClose = () => void 0,
+  onClose = () => {},
 }): React.ReactElement => {
   const { t } = useTranslation()
 
@@ -35,7 +35,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
 
   return (
     <Fragment>
-      {history.length && (
+      {history.length > 0 && (
         <Modal
           title={t('vessel.historyLabelByField', defaultTitle, {
             label: t(`vessel.${label}` as any, label),
