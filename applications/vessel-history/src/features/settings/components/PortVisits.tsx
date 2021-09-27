@@ -50,8 +50,19 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
                 i18nKey="settings.portVisits.inThesePortStatesDescription"
                 values={{ eventType }}
               >
-                Highlight all {{ eventType }} that occurred in ports inside these states. Please
-                investigate highlighted event further on the map.
+                Highlight all {{ eventType }} that may have occured in a port State. A port visit
+                occurs when a vessel transits to an anchorage, and the port State is assigned based
+                on the Exclusive Economic Zone (EEZ) the anchorage is within. Anchorages are based
+                upon the Global Fishing Watch anchorages dataset, a global database of anchorage
+                locations where vessels congregate:
+                <a
+                  href="https://globalfishingwatch.org/datasets-and-code-anchorages/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  https://globalfishingwatch.org/datasets-and-code-anchorages/
+                </a>{' '}
+                . Please investigate the highlighted events further on the map.
               </Trans>
             </DataAndTerminology>
           </label>
