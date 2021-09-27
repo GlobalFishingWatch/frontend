@@ -1,10 +1,12 @@
 import { Fragment, useCallback, useState } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components/dist/icon-button'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import styles from './DataAndTerminology.module.css'
 
 interface ModalProps {
+  containerClassName?: string
   className?: string
   title?: string
   size?: IconButtonSize
@@ -14,6 +16,7 @@ interface ModalProps {
 const DataAndTerminology: React.FC<ModalProps> = ({
   children,
   className,
+  containerClassName,
   title,
   size = 'default',
   type = 'border',
@@ -36,7 +39,7 @@ const DataAndTerminology: React.FC<ModalProps> = ({
         isOpen={showModal}
         onClose={closeModal}
         title={title ?? t('common.dataAndTerminology', 'Data and Terminology')}
-        className={styles.container}
+        className={cx(styles.container, containerClassName)}
       >
         {children}
       </Modal>

@@ -86,6 +86,7 @@ const MapControls = ({
                 }}
               />
               <DataAndTerminology
+                containerClassName={styles.dataAndTerminologyContainer}
                 size="medium"
                 type="map-tool"
                 title={t('common.dataAndTerminology', 'Data and Terminology')}

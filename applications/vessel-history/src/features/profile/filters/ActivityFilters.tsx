@@ -31,6 +31,7 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
       ></EventFilters>
       <div className={styles.filters}>
         <DataAndTerminology
+          containerClassName={styles.dataAndTerminologyContainer}
           size="medium"
           type="solid"
           title={t('common.dataAndTerminology', 'Data and Terminology')}
