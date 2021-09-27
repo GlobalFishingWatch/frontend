@@ -1,21 +1,9 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
-import { Placement } from 'tippy.js'
-import Tooltip from '../tooltip'
-import { TooltipTypes } from '../types/types'
-import styles from './Switch.module.css'
-import { SwitchEvent } from '.'
 
-export interface SwitchProps {
-  id?: string
-  active: boolean
-  disabled?: boolean
-  onClick: (event: SwitchEvent) => void
-  color?: string
-  tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
-  className?: string
-}
+import Tooltip from '../tooltip'
+import styles from './Switch.module.css'
+import { SwitchProps } from '.'
 
 function Switch(props: SwitchProps) {
   const {

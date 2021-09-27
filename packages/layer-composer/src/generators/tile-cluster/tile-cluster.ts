@@ -1,9 +1,9 @@
 import { AnyLayer } from '@globalfishingwatch/mapbox-gl'
 import { Type, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
-import { API_GATEWAY } from '../../layer-composer'
-import { Group } from '../..'
+import { API_GATEWAY } from '../../config'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/background'
+import { Group } from '../../types'
 
 const MAX_ZOOM_TO_CLUSTER_POINTS = 4
 

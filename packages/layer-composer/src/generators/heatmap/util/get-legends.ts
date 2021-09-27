@@ -1,11 +1,7 @@
 import { LayerMetadataLegend, LegendType } from '../../../types'
 import { ColorRampId, ColorRampsIds, HeatmapAnimatedMode } from '../../types'
-import {
-  HEATMAP_DEFAULT_MAX_ZOOM,
-  HEATMAP_COLOR_RAMPS,
-  GRID_AREA_BY_ZOOM_LEVEL,
-  HEATMAP_COLORS_BY_ID,
-} from '../config'
+import { HEATMAP_DEFAULT_MAX_ZOOM, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
+import { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID } from '../colors'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToString } from './colors'
 import { Breaks } from './fetch-breaks'

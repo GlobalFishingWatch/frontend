@@ -1,7 +1,7 @@
 import React, { useRef, forwardRef, useImperativeHandle, memo, Ref } from 'react'
 import cx from 'classnames'
 import Icon from '../icon'
-import { Spinner } from '..'
+import Spinner from '../spinner'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'

@@ -14,10 +14,15 @@ import {
   HeatmapAnimatedGeneratorSublayer,
 } from '../types'
 import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
-import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
-import { Group } from '../..'
-import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
-import { TimeChunk, TimeChunks, getActiveTimeChunks, Interval } from './util/time-chunks'
+import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
+import { Group } from '../../types'
+import {
+  API_ENDPOINTS,
+  DEFAULT_HEATMAP_INTERVALS,
+  HEATMAP_DEFAULT_MAX_ZOOM,
+  HEATMAP_MODE_COMBINATION,
+} from './config'
+import { TimeChunk, TimeChunks, getActiveTimeChunks } from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
@@ -68,9 +73,6 @@ const serializeBaseSourceParams = (params: any) => {
   }
   return serialized
 }
-
-// This also defines the priority order, so remember to keep it ascendent
-export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['hour', 'day', '10days']
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,

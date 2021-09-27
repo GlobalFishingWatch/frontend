@@ -4,7 +4,20 @@ import Solid from './Solid'
 import ColorRamp from './ColorRamp'
 import Bivariate from './Bivariate'
 import styles from './MapLegend.module.css'
-import { LegendLayer, LegendLayerBivariate } from '.'
+import {
+  LayerMetadataLegend,
+  LayerMetadataLegendBivariate,
+} from '@globalfishingwatch/layer-composer'
+
+type UILayer = {
+  color: string
+  generatorId: string
+  generatorType: string
+}
+
+export type LegendLayer = LayerMetadataLegend & UILayer
+
+export type LegendLayerBivariate = LayerMetadataLegendBivariate & UILayer
 
 interface MapLegendProps {
   className?: string

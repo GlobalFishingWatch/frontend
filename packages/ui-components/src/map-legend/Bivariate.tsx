@@ -3,7 +3,8 @@ import cx from 'classnames'
 import styles from './Bivariate.module.css'
 import legendStyles from './MapLegend.module.css'
 import BivariateArrows from './Bivariate-arrows'
-import { LegendLayerBivariate, roundLegendNumber, formatLegendValue } from './'
+import { roundLegendNumber, formatLegendValue } from './map-legend.utils'
+import { LegendLayerBivariate } from './MapLegend'
 
 type BivariateLegendProps = {
   layer: LegendLayerBivariate

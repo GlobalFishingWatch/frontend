@@ -21,6 +21,7 @@ class BasemapGenerator {
     })
     return styleSources
   }
+
   _getStyleLayers = (config: BasemapGeneratorConfig): Layer[] => {
     return [...layers[config.basemap], ...(config.labels ? layers[BasemapType.Labels] : [])]
   }

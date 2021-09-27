@@ -1,7 +1,7 @@
 import { AnyLayer, Layer, CirclePaint, LinePaint, FillPaint } from '@globalfishingwatch/mapbox-gl'
 import { Type, ContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
-import { API_GATEWAY } from '../../layer-composer'
+import { API_GATEWAY } from '../../config'
 import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
 import {
   DEFAULT_LINE_COLOR,

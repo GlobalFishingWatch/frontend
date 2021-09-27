@@ -1,5 +1,5 @@
 import { Group } from '../../../types'
-import { HEATMAP_COLOR_RAMPS } from '../config'
+import { HEATMAP_COLOR_RAMPS } from '../colors'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { getLayerId, getSourceId } from '../util'
 import { Breaks } from '../util/fetch-breaks'

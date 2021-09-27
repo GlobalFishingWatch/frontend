@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './ColorBar.module.css'
-import { ColorBarOption, FillColorBarOptions } from './index'
+import { ColorBarOption, FillColorBarOptions } from './color-bar-options'
 
 interface ColorBarProps {
   onColorClick?: (color: ColorBarOption, e: React.MouseEvent) => void

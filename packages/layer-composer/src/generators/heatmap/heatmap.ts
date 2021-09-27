@@ -3,13 +3,10 @@ import type { FillLayer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
-import { API_GATEWAY } from '../../layer-composer'
+import { API_GATEWAY } from '../../config'
 import fetchStats from './util/fetch-stats'
-import {
-  HEATMAP_COLOR_RAMPS,
-  HEATMAP_DEFAULT_MAX_ZOOM,
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
-} from './config'
+import { HEATMAP_DEFAULT_MAX_ZOOM, COLOR_RAMP_DEFAULT_NUM_STEPS } from './config'
+import { HEATMAP_COLOR_RAMPS } from './colors'
 import { StatsByZoom } from './types'
 import getBreaks from './util/get-breaks'
 import { toURLArray } from './util'

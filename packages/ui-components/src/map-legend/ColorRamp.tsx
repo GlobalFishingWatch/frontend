@@ -2,7 +2,8 @@ import React, { Fragment, memo, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 import styles from './MapLegend.module.css'
-import { formatLegendValue, LegendLayer, parseLegendNumber, roundLegendNumber } from '.'
+import { formatLegendValue, parseLegendNumber, roundLegendNumber } from './map-legend.utils'
+import { LegendLayer } from './MapLegend'
 
 type ColorRampLegendProps = {
   layer: LegendLayer

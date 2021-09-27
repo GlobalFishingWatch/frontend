@@ -1,10 +1,10 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../layer-composer'
+import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../config'
 import { API_ENDPOINTS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { HeatmapAnimatedMode } from '../../types'
 import { isUrlAbsolute } from '../../../utils'
-import { Interval } from './time-chunks'
+import { Interval } from '../types'
 import { toURLArray } from '.'
 
 export type Breaks = number[][]

@@ -1,4 +1,8 @@
+// month only supported in environmental layers
+export type Interval = 'month' | '10days' | 'day' | 'hour'
+
 export type GeomGl = 'heatmap' | 'fill' | 'fill-extrusion' | 'symbol'
+
 export type HeatmapGeomGL = {
   [key: string]: GeomGl
 }

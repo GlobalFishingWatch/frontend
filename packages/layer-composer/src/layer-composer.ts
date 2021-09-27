@@ -18,21 +18,7 @@ import {
   GlobalGeneratorConfigExtended,
 } from './generators/types'
 import { isConfigVisible } from './generators/utils'
-
-export const DEFAULT_CONFIG = {
-  version: 8,
-  glyphs:
-    'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-glyphs/master/_output/{fontstack}/{range}.pbf?raw=true',
-  sprite: 'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites',
-}
-
-export const API_GATEWAY_VERSION =
-  process.env.API_GATEWAY_VERSION || process.env.REACT_APP_API_GATEWAY_VERSION || 'v1'
-
-export const API_GATEWAY =
-  process.env.API_GATEWAY ||
-  process.env.REACT_APP_API_GATEWAY ||
-  'https://gateway.api.dev.globalfishingwatch.org'
+import { DEFAULT_STYLE } from './config'
 
 class LayerComposer {
   version: number
@@ -45,9 +31,9 @@ class LayerComposer {
   }
 
   constructor(params?: LayerComposerOptions) {
-    this.version = (params && params.version) || DEFAULT_CONFIG.version
-    this.glyphs = (params && params.glyphs) || DEFAULT_CONFIG.glyphs
-    this.sprite = (params && params.sprite) || DEFAULT_CONFIG.sprite
+    this.version = (params && params.version) || DEFAULT_STYLE.version
+    this.glyphs = (params && params.glyphs) || DEFAULT_STYLE.glyphs
+    this.sprite = (params && params.sprite) || DEFAULT_STYLE.sprite
     this.generators = (params && params.generators) || Generators
 
     // Used to cache results and always return the latest style in promises

@@ -1,9 +1,7 @@
 import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
-import { DEFAULT_HEATMAP_INTERVALS } from '../heatmap-animated'
+import { DEFAULT_HEATMAP_INTERVALS } from '../config'
+import { Interval } from '../types'
 import { getSourceId } from '.'
-
-// month only supported in environmental layers
-export type Interval = 'month' | '10days' | 'day' | 'hour'
 
 export type TimeChunk = {
   id: string

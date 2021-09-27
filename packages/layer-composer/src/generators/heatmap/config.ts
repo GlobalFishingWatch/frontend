@@ -1,6 +1,6 @@
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { ColorRampsIds, HeatmapAnimatedMode } from '../types'
-import { getColorRampByOpacitySteps, getMixedOpacityToWhiteColorRamp } from './util/colors'
+import { HeatmapAnimatedMode } from '../types'
+import { Interval } from './types'
 
 export const API_ENDPOINTS = {
   tiles: '4wings/tile/heatmap/{z}/{x}/{y}',
@@ -9,6 +9,9 @@ export const API_ENDPOINTS = {
 }
 
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12
+
+// This also defines the priority order, so remember to keep it ascendent
+export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['hour', 'day', '10days']
 
 export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombinationMode> = {
   [HeatmapAnimatedMode.Single]: SublayerCombinationMode.None,
@@ -31,38 +34,5 @@ export const GRID_AREA_BY_ZOOM_LEVEL = [
   2000000, 500000, 125000, 30000, 7500,
 ]
 
-export const HEATMAP_COLORS_BY_ID = {
-  teal: '#00FFBC',
-  magenta: '#FF64CE',
-  lilac: '#9CA4FF',
-  salmon: '#FFAE9B',
-  sky: '#00EEFF',
-  red: '#FF6854',
-  yellow: '#FFEA00',
-  green: '#A6FF59',
-  orange: '#FFAA0D',
-}
-
 export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10
 export const COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE = [7, 3]
-
-export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
-  teal: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.teal),
-  teal_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.teal),
-  magenta: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.magenta),
-  magenta_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.magenta),
-  lilac: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.lilac),
-  lilac_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.lilac),
-  salmon: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.salmon),
-  salmon_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.salmon),
-  sky: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.sky),
-  sky_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.sky),
-  red: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.red),
-  red_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.red),
-  yellow: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.yellow),
-  yellow_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.yellow),
-  green: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.green),
-  green_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.green),
-  orange: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.orange),
-  orange_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.orange),
-}

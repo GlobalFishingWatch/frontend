@@ -1,10 +1,11 @@
 import { zip, flatten } from 'lodash'
 import type { AnyLayer, FillLayer, LineLayer, Expression } from '@globalfishingwatch/mapbox-gl'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/context'
 import { Type, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
-import { API_GATEWAY } from '../../layer-composer'
-import { DEFAULT_CONTEXT_SOURCE_LAYER, HEATMAP_COLOR_RAMPS } from '..'
+import { API_GATEWAY } from '../../config'
+import { HEATMAP_COLOR_RAMPS } from '../heatmap/colors'
 import {
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
