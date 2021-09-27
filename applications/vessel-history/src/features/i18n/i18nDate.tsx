@@ -71,3 +71,7 @@ export const I18nSpecialDate = ({ date, format = DateTime.DATE_MED }: TMTDate) =
 }
 
 export default I18nDate
+
+export const I18nDateAsString = (date: string , format = DateTime.DATE_MED) => {
+  return useI18nDate(date, format)
+}
