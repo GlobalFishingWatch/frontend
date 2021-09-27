@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
 import EventFilters from 'features/event-filters/EventFilters'
-import DataAndTerminology from 'features/event-filters/DataAndTerminology'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import ActivityDataAndTerminology from '../components/activity/ActivityDataAndTerminology'
 import styles from './ActivityFilters.module.css'
 
 const ActivityFilters: React.FC = (): React.ReactElement => {
   const { t } = useTranslation()
   const [isModalOpen, setIsOpen] = useState(false)
-  const [showFiltersInfo, setShowFiltersInfo] = useState(false)
   const setModalOpen = useCallback((isOpen) => {
     uaEvent({
       category: 'Vessel Detail ACTIVITY or MAP Tab',
@@ -29,19 +29,14 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
         isModalOpen={isModalOpen}
         onCloseModal={(isOpen) => setModalOpen(isOpen)}
       ></EventFilters>
-
-      <DataAndTerminology
-        isModalOpen={showFiltersInfo}
-        onCloseModal={(isOpen) => setShowFiltersInfo(isOpen)}
-      ></DataAndTerminology>
       <div className={styles.filters}>
-        <IconButton
-          icon="info"
+        <DataAndTerminology
           size="medium"
           type="solid"
-          tooltip={t('common.dataAndTerminology', 'Data and Terminology')}
-          onClick={() => setShowFiltersInfo(true)}
-        />
+          title={t('common.dataAndTerminology', 'Data and Terminology')}
+        >
+          <ActivityDataAndTerminology />
+        </DataAndTerminology>
         <IconButton
           icon={filtered ? 'filter-on' : 'filter-off'}
           size="medium"

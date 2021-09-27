@@ -1,27 +1,11 @@
-import { useCallback } from 'react'
+import React, { Fragment } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { Modal } from '@globalfishingwatch/ui-components'
-import styles from './DataAndTerminology.module.css'
 
-interface ModalProps {
-  isModalOpen: boolean
-  onCloseModal: (close: boolean) => void
-}
-
-const DataAndTerminology: React.FC<ModalProps> = ({
-  isModalOpen,
-  onCloseModal,
-}): React.ReactElement => {
+const ActivityDataAndTerminology = (): React.ReactElement => {
   const { t } = useTranslation()
-  const closeModal = useCallback(() => onCloseModal(false), [onCloseModal])
 
   return (
-    <Modal
-      isOpen={isModalOpen}
-      onClose={closeModal}
-      title={t('common.dataAndTerminology', 'Data and Terminology')}
-      className={styles.container}
-    >
+    <Fragment>
       <p>
         {t(
           'events.activityEventsDescription',
@@ -94,8 +78,8 @@ const DataAndTerminology: React.FC<ModalProps> = ({
           dataset, a global database of anchorage locations where vessels congregate.
         </Trans>
       </p>
-    </Modal>
+    </Fragment>
   )
 }
 
-export default DataAndTerminology
+export default ActivityDataAndTerminology

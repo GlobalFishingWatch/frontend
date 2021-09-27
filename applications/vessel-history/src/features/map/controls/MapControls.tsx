@@ -11,7 +11,8 @@ import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.sele
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
 import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
 import EventFilters from 'features/event-filters/EventFilters'
-import DataAndTerminology from 'features/event-filters/DataAndTerminology'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -33,7 +34,6 @@ const MapControls = ({
   const [isModalOpen, setIsOpen] = useState(false)
   const [showLayersPopup, setShowLayersPopup] = useState(false)
   const [showMPAInfo, setShowMPAInfo] = useState(false)
-  const [showFiltersInfo, setShowFiltersInfo] = useState(false)
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const filtered = useSelector(selectFilterUpdated)
   const setModalOpen = useCallback((isOpen) => {
@@ -60,10 +60,6 @@ const MapControls = ({
         isModalOpen={isModalOpen}
         onCloseModal={(isOpen) => setModalOpen(isOpen)}
       ></EventFilters>
-      <DataAndTerminology
-        isModalOpen={showFiltersInfo}
-        onCloseModal={(isOpen) => setShowFiltersInfo(isOpen)}
-      ></DataAndTerminology>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
@@ -89,13 +85,13 @@ const MapControls = ({
                   })
                 }}
               />
-              <IconButton
-                icon="info"
+              <DataAndTerminology
                 size="medium"
                 type="map-tool"
-                tooltip={t('common.dataAndTerminology', 'Data and Terminology')}
-                onClick={() => setShowFiltersInfo(true)}
-              />
+                title={t('common.dataAndTerminology', 'Data and Terminology')}
+              >
+                <ActivityDataAndTerminology />
+              </DataAndTerminology>
               {showLayersPopup && (
                 <Modal
                   isOpen={showLayersPopup}
