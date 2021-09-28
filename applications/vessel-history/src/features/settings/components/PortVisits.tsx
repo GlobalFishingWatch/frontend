@@ -67,6 +67,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
             </DataAndTerminology>
           </label>
           <MultiSelect
+            placeholder={t('selects.none', 'None')}
             selectedOptions={flags.selected}
             placeholderDisplayAll={true}
             onCleanClick={flags.onClean}
