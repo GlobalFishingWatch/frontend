@@ -18,6 +18,10 @@
   padding: 0 var(--space-S);
 }
 
+.event .eventData {
+  overflow: hidden;
+}
+
 .event .eventData .date {
   font-size: 1rem;
   line-height: var(--space-S);
