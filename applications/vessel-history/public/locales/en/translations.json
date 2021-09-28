@@ -210,6 +210,7 @@
     "saveForOfflineView": "save vessel for offline view",
     "source": "source",
     "transmission_plural": "transmissions",
+    "transmissionRange": "{{transmissions}} AIS transmissions from {{start}} to {{end}}",
     "type": "vessel type",
     "vesselTypeDescription": "For vessel type sourced from Global Fishing Watch additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
     "historicalValues": "historical values",
