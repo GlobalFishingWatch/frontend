@@ -124,7 +124,8 @@
   },
   "selects": {
     "allSelected": "All",
-    "selected": "selected"
+    "selected": "selected",
+    "none": "None"
   },
   "settings": {
     "duration": "DURATION",

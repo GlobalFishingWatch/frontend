@@ -91,6 +91,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           </DataAndTerminology>
         </label>
         <MultiSelect
+          placeholder={t('selects.none', 'None')}
           selectedOptions={eez.selected}
           placeholderDisplayAll={true}
           onCleanClick={eez.onClean}
@@ -119,6 +120,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           </DataAndTerminology>
         </label>
         <MultiSelect
+          placeholder={t('selects.none', 'None')}
           onCleanClick={() => setSettingOptions(section, 'rfmos', [])}
           selectedOptions={rfmo.selected}
           placeholderDisplayAll={true}
