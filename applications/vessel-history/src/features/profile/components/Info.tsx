@@ -101,9 +101,14 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     [vessel]
   )
 
-  const authorizations: Authorization[] = vessel?.authorizations?.length
-    ? Array.from(new Map(vessel.authorizations.map((item) => [item.source, item])).values())
+  console.log(vessel?.authorizations)
+  const sortAuths = vessel?.authorizations?.sort((a: Authorization, b: Authorization) => {
+    return a.originalEndDate - b.originalEndDate
+  }) || []
+  const authorizations: Authorization[] = sortAuths?.length
+    ? Array.from(new Map(sortAuths.map((item) => [item.source, item])).values())
     : []
+    console.log(authorizations)
   const [imageLoading, setImageLoading] = useState(true)
   return (
     <Fragment>
