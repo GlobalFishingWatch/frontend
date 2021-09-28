@@ -12,7 +12,7 @@ type TitleProps = {
 }
 
 const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
-  const { dataview, className, classNameActive, title, onToggle = () => {} } = props
+  const { dataview, className, classNameActive, title, onToggle } = props
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true
 
@@ -23,7 +23,9 @@ const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
         visible: !layerActive,
       },
     })
-    onToggle()
+    if (onToggle) {
+      onToggle()
+    }
   }
   return (
     <h3

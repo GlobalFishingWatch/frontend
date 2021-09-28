@@ -1,8 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import Button from '@globalfishingwatch/ui-components/dist/button'
+import Spinner from '@globalfishingwatch/ui-components/src/spinner'
+import Button from '@globalfishingwatch/ui-components/src/button'
 import Search from 'features/search/Search'
 import {
   selectWorkspaceStatus,

@@ -34,7 +34,7 @@ function ActivityLayerPanel({
   dataview,
   showBorder,
   isOpen,
-  onToggle = () => {},
+  onToggle,
 }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
@@ -67,7 +67,9 @@ function ActivityLayerPanel({
   }
 
   const onLayerSwitchToggle = () => {
-    onToggle()
+    if (onToggle) {
+      onToggle()
+    }
     disableBivariate()
   }
 

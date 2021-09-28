@@ -4,7 +4,7 @@ import { event as uaEvent } from 'react-ga'
 import MultiSelect, {
   MultiSelectOnChange,
   MultiSelectOption,
-} from '@globalfishingwatch/ui-components/dist/multi-select'
+} from '@globalfishingwatch/ui-components/src/multi-select'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import Switch from '@globalfishingwatch/ui-components/dist/switch'
+import Switch from '@globalfishingwatch/ui-components/src/switch'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from '../workspace.hook'
 

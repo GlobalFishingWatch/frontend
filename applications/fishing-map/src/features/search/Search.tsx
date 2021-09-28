@@ -7,13 +7,13 @@ import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
+import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
+import InputText from '@globalfishingwatch/ui-components/src/input-text'
+import Spinner from '@globalfishingwatch/ui-components/src/spinner'
+import useDebounce from '@globalfishingwatch/react-hooks/src/use-debounce'
 import { Button, Choice, Icon } from '@globalfishingwatch/ui-components'
-import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
-import TransmissionsTimeline from '@globalfishingwatch/ui-components/dist/transmissionsTimeline'
+import { ChoiceOption } from '@globalfishingwatch/ui-components/src/choice'
+import TransmissionsTimeline from '@globalfishingwatch/ui-components/src/transmissionsTimeline'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -330,179 +330,172 @@ function Search() {
               {(searchStatus === AsyncReducerStatus.Loading ||
                 searchStatus === AsyncReducerStatus.Aborted) &&
               searchPagination.loading === false ? null : basicSearchAllowed ? (
-                <Fragment>
-                  <ul {...getMenuProps()} className={styles.searchResults}>
-                    {searchQuery &&
-                      searchSuggestion &&
-                      searchSuggestion !== searchQuery &&
-                      !searchSuggestionClicked && (
-                        <li className={cx(styles.searchSuggestion)}>
-                          {t('search.suggestion', 'Did you mean')}{' '}
-                          <button onClick={onSuggestionClick} className={styles.suggestion}>
-                            {' '}
-                            {searchSuggestion}{' '}
-                          </button>{' '}
-                          ?
-                        </li>
-                      )}
-                    {searchResults?.map((entry, index: number) => {
-                      const {
-                        id,
-                        shipname,
-                        flag,
-                        fleet,
-                        mmsi,
-                        imo,
-                        callsign,
-                        geartype,
-                        origin,
-                        casco,
-                        nationalId,
-                        matricula,
-                        dataset,
-                        firstTransmissionDate,
-                        lastTransmissionDate,
-                      } = entry
-                      const isInWorkspace = vesselDataviews?.some(
-                        (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
-                      )
-                      const isSelected = vesselsSelected?.some((vessel) => vessel.id === id)
-                      return (
-                        <li
-                          {...getItemProps({ item: entry, index })}
-                          className={cx(styles.searchResult, {
-                            [styles.highlighted]: highlightedIndex === index,
-                            [styles.inWorkspace]: isInWorkspace,
-                            [styles.selected]: isSelected,
-                          })}
-                          key={id}
-                        >
-                          <Fragment>
-                            <div className={styles.name}>
-                              {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
-                            </div>
-                            <div className={styles.properties}>
-                              <div className={styles.property}>
-                                <label>{t('vessel.flag', 'Flag')}</label>
-                                <span>
-                                  <I18nFlag iso={flag} />
-                                </span>
-                              </div>
-                              <div className={styles.property}>
-                                <label>{t('vessel.mmsi', 'MMSI')}</label>
-                                <span>{mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
-                              </div>
-                              <div className={styles.property}>
-                                <label>{t('vessel.imo', 'IMO')}</label>
-                                <span>{imo || EMPTY_FIELD_PLACEHOLDER}</span>
-                              </div>
-                              <div className={styles.property}>
-                                <label>{t('vessel.callsign', 'Callsign')}</label>
-                                <span>{callsign || EMPTY_FIELD_PLACEHOLDER}</span>
-                              </div>
-                              <div className={styles.property}>
-                                <label>{t('vessel.geartype', 'Gear Type')}</label>
-                                <span>
-                                  {geartype !== undefined
-                                    ? t(
-                                        `vessel.gearTypes.${geartype}` as any,
-                                        EMPTY_FIELD_PLACEHOLDER
-                                      )
-                                    : EMPTY_FIELD_PLACEHOLDER}
-                                </span>
-                              </div>
-                              {matricula && (
-                                <div className={styles.property}>
-                                  <label>{t('vessel.matricula', 'Matricula')}</label>
-                                  <span>{matricula}</span>
-                                </div>
-                              )}
-                              {nationalId && (
-                                <div className={styles.property}>
-                                  <label>{t('vessel.nationalId', 'National Id')}</label>
-                                  <span>{nationalId}</span>
-                                </div>
-                              )}
-                              {casco && (
-                                <div className={styles.property}>
-                                  <label>{t('vessel.casco', 'Casco')}</label>
-                                  <span>{casco}</span>
-                                </div>
-                              )}
-                              {fleet && (
-                                <div className={styles.property}>
-                                  <label>{t('vessel.fleet', 'Fleet')}</label>
-                                  <span>{formatInfoField(fleet, 'fleet')}</span>
-                                </div>
-                              )}
-                              {origin && (
-                                <div className={styles.property}>
-                                  <label>{t('vessel.origin', 'Origin')}</label>
-                                  <span>{formatInfoField(origin, 'fleet')}</span>
-                                </div>
-                              )}
-                              {firstTransmissionDate && lastTransmissionDate && (
-                                <div className={cx(styles.property, styles.fullWidth)}>
-                                  <label>{t('vessel.transmission_other', 'Transmissions')}</label>
-                                  <span>
-                                    from <I18nDate date={firstTransmissionDate} /> to{' '}
-                                    <I18nDate date={lastTransmissionDate} />
-                                  </span>
-                                  <TransmissionsTimeline
-                                    firstTransmissionDate={firstTransmissionDate}
-                                    lastTransmissionDate={lastTransmissionDate}
-                                    firstYearOfData={FIRST_YEAR_OF_DATA}
-                                  />
-                                </div>
-                              )}
-                              {dataset && (
-                                <div className={styles.property}>
-                                  <label>{t('vessel.source', 'Source')}</label>
-                                  <span>{getDatasetLabel(dataset)}</span>
-                                </div>
-                              )}
-                            </div>
-                            {isSelected && (
-                              <span className={styles.alreadyAddedMsg}>
-                                <Icon icon="tick" />
-                                {t('search.vesselSelected', 'Vessel selected')}
-                              </span>
-                            )}
-                            {isInWorkspace && (
-                              <span className={styles.alreadyAddedMsg}>
-                                <Icon icon="tick" />
-                                {t(
-                                  'search.vesselAlreadyInWorkspace',
-                                  'This vessel is already in your workspace'
-                                )}
-                              </span>
-                            )}
-                          </Fragment>
-                        </li>
-                      )
-                    })}
-                    {hasMoreResults && (
-                      <li className={styles.spinner} ref={ref}>
-                        <Spinner inline size="small" />
+                <ul {...getMenuProps()} className={styles.searchResults}>
+                  {searchQuery &&
+                    searchSuggestion &&
+                    searchSuggestion !== searchQuery &&
+                    !searchSuggestionClicked && (
+                      <li className={cx(styles.searchSuggestion)}>
+                        {t('search.suggestion', 'Did you mean')}{' '}
+                        <button onClick={onSuggestionClick} className={styles.suggestion}>
+                          {' '}
+                          {searchSuggestion}{' '}
+                        </button>{' '}
+                        ?
                       </li>
                     )}
+                  {searchResults?.map((entry, index: number) => {
+                    const {
+                      id,
+                      shipname,
+                      flag,
+                      fleet,
+                      mmsi,
+                      imo,
+                      callsign,
+                      geartype,
+                      origin,
+                      casco,
+                      nationalId,
+                      matricula,
+                      dataset,
+                      firstTransmissionDate,
+                      lastTransmissionDate,
+                    } = entry
+                    const isInWorkspace = vesselDataviews?.some(
+                      (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
+                    )
+                    const isSelected = vesselsSelected?.some((vessel) => vessel.id === id)
+                    return (
+                      <li
+                        {...getItemProps({ item: entry, index })}
+                        className={cx(styles.searchResult, {
+                          [styles.highlighted]: highlightedIndex === index,
+                          [styles.inWorkspace]: isInWorkspace,
+                          [styles.selected]: isSelected,
+                        })}
+                        key={id}
+                      >
+                        <div className={styles.name}>
+                          {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
+                        </div>
+                        <div className={styles.properties}>
+                          <div className={styles.property}>
+                            <label>{t('vessel.flag', 'Flag')}</label>
+                            <span>
+                              <I18nFlag iso={flag} />
+                            </span>
+                          </div>
+                          <div className={styles.property}>
+                            <label>{t('vessel.mmsi', 'MMSI')}</label>
+                            <span>{mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
+                          </div>
+                          <div className={styles.property}>
+                            <label>{t('vessel.imo', 'IMO')}</label>
+                            <span>{imo || EMPTY_FIELD_PLACEHOLDER}</span>
+                          </div>
+                          <div className={styles.property}>
+                            <label>{t('vessel.callsign', 'Callsign')}</label>
+                            <span>{callsign || EMPTY_FIELD_PLACEHOLDER}</span>
+                          </div>
+                          <div className={styles.property}>
+                            <label>{t('vessel.geartype', 'Gear Type')}</label>
+                            <span>
+                              {geartype !== undefined
+                                ? t(`vessel.gearTypes.${geartype}` as any, EMPTY_FIELD_PLACEHOLDER)
+                                : EMPTY_FIELD_PLACEHOLDER}
+                            </span>
+                          </div>
+                          {matricula && (
+                            <div className={styles.property}>
+                              <label>{t('vessel.matricula', 'Matricula')}</label>
+                              <span>{matricula}</span>
+                            </div>
+                          )}
+                          {nationalId && (
+                            <div className={styles.property}>
+                              <label>{t('vessel.nationalId', 'National Id')}</label>
+                              <span>{nationalId}</span>
+                            </div>
+                          )}
+                          {casco && (
+                            <div className={styles.property}>
+                              <label>{t('vessel.casco', 'Casco')}</label>
+                              <span>{casco}</span>
+                            </div>
+                          )}
+                          {fleet && (
+                            <div className={styles.property}>
+                              <label>{t('vessel.fleet', 'Fleet')}</label>
+                              <span>{formatInfoField(fleet, 'fleet')}</span>
+                            </div>
+                          )}
+                          {origin && (
+                            <div className={styles.property}>
+                              <label>{t('vessel.origin', 'Origin')}</label>
+                              <span>{formatInfoField(origin, 'fleet')}</span>
+                            </div>
+                          )}
+                          {firstTransmissionDate && lastTransmissionDate && (
+                            <div className={cx(styles.property, styles.fullWidth)}>
+                              <label>{t('vessel.transmission_other', 'Transmissions')}</label>
+                              <span>
+                                from <I18nDate date={firstTransmissionDate} /> to{' '}
+                                <I18nDate date={lastTransmissionDate} />
+                              </span>
+                              <TransmissionsTimeline
+                                firstTransmissionDate={firstTransmissionDate}
+                                lastTransmissionDate={lastTransmissionDate}
+                                firstYearOfData={FIRST_YEAR_OF_DATA}
+                              />
+                            </div>
+                          )}
+                          {dataset && (
+                            <div className={styles.property}>
+                              <label>{t('vessel.source', 'Source')}</label>
+                              <span>{getDatasetLabel(dataset)}</span>
+                            </div>
+                          )}
+                        </div>
+                        {isSelected && (
+                          <span className={styles.alreadyAddedMsg}>
+                            <Icon icon="tick" />
+                            {t('search.vesselSelected', 'Vessel selected')}
+                          </span>
+                        )}
+                        {isInWorkspace && (
+                          <span className={styles.alreadyAddedMsg}>
+                            <Icon icon="tick" />
+                            {t(
+                              'search.vesselAlreadyInWorkspace',
+                              'This vessel is already in your workspace'
+                            )}
+                          </span>
+                        )}
+                      </li>
+                    )
+                  })}
+                  {hasMoreResults && (
+                    <li className={styles.spinner} ref={ref}>
+                      <Spinner inline size="small" />
+                    </li>
+                  )}
 
-                    {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
-                    {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
-                      <SearchNoResultsState />
-                    )}
-                    {searchStatus === AsyncReducerStatus.Error && (
-                      <p className={styles.error}>
-                        {searchStatusCode === 404
-                          ? t(
-                              'search.noResults',
-                              "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-                            )
-                          : t('errors.genericShort', 'Something went wrong')}
-                      </p>
-                    )}
-                  </ul>
-                </Fragment>
+                  {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
+                  {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
+                    <SearchNoResultsState />
+                  )}
+                  {searchStatus === AsyncReducerStatus.Error && (
+                    <p className={styles.error}>
+                      {searchStatusCode === 404
+                        ? t(
+                            'search.noResults',
+                            "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
+                          )
+                        : t('errors.genericShort', 'Something went wrong')}
+                    </p>
+                  )}
+                </ul>
               ) : (
                 <SearchNotAllowed />
               )}

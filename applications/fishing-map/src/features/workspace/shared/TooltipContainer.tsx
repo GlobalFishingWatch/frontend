@@ -19,6 +19,7 @@ export function TooltipListContainer({
   return <ul className={styles.listContainer}>{children}</ul>
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const onClickOutSideFallback = () => {}
 
 function TooltipContainer({

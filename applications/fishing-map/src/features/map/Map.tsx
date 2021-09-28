@@ -9,17 +9,17 @@ import type { MapRequest } from 'react-map-gl'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
+import useLayerComposer from '@globalfishingwatch/react-hooks/src/use-layer-composer'
 import {
   useMapClick,
   useMapHover,
   useSimpleMapHover,
   useFeatureState,
   InteractionEventCallback,
-} from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+} from '@globalfishingwatch/react-hooks/src/use-map-interaction'
 import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
-import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import useMapLegend from '@globalfishingwatch/react-hooks/src/use-map-legend'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/src/generators'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'

@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { TagList } from '@globalfishingwatch/ui-components'
-import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
+import { TagItem } from '@globalfishingwatch/ui-components/src/tag-list'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type AnalysisFilterProps = {

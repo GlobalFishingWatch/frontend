@@ -1,9 +1,11 @@
 import { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components/src/miniglobe'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
-import { Interval, quantizeOffsetToDate } from '@globalfishingwatch/layer-composer'
+import { quantizeOffsetToDate } from '@globalfishingwatch/layer-composer'
 import { filterByViewport } from 'features/map/map.utils'
-const flatMap = require('array.prototype.flatmap')
+import { Interval } from '@globalfishingwatch/layer-composer/src/generators'
+
+import flatMap from 'array.prototype.flatmap'
 
 const objectEntries =
   Object?.entries ||

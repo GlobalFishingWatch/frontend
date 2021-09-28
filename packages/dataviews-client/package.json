@@ -19,7 +19,7 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "start": "rollup -c ./rollup.config.js -w",
+    "watch": "rollup -c ./rollup.config.js -w",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
     "prepare": "yarn build"

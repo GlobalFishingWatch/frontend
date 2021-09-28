@@ -20,8 +20,7 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "start:watch": "rollup -c ./rollup.config.js -w",
-    "start": "run-p start:watch types:watch",
+    "watch": "rollup -c ./rollup.config.js -w",
     "types:watch": "tsc src/index.js --declaration --allowJs --emitDeclarationOnly --outDir types -w >/dev/null || true",
     "types": "tsc src/index.js --declaration --allowJs --emitDeclarationOnly --outDir types >/dev/null || true",
     "clean": "rimraf dist/*",
@@ -52,7 +51,7 @@
     "@babel/preset-react": "^7.0.0",
     "@mapbox/geojsonhint": "^3.0.0",
     "@mapbox/mapbox-gl-style-spec": "^13.7.2",
-    "@svgr/rollup": "^5.1.0",
+    "@svgr/rollup": "^5.5.0",
     "autoprefixer": "^9.5.0",
     "babel-eslint": "10.x",
     "babel-loader": "8.0.6",

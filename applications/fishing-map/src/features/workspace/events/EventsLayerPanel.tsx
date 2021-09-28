@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
+import Tooltip from '@globalfishingwatch/ui-components/src/tooltip'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'

@@ -15,8 +15,8 @@ import {
   DatasetConfigsTransforms,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
-import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/src/generators'
+import { Type } from '@globalfishingwatch/layer-composer/src/generators/types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'

@@ -12,11 +12,11 @@ import {
 import { format } from 'd3-format'
 import { min, max } from 'lodash'
 import { DateTime } from 'luxon'
-import { Interval } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import { toFixed } from 'utils/shared'
 import styles from './AnalysisGraph.module.css'
+import { Interval } from '@globalfishingwatch/layer-composer/src/generators'
 
 export interface GraphData {
   date: string
@@ -100,11 +100,12 @@ const AnalysisGraphTooltip = (props: any) => {
       case 'month':
         formattedLabel = date.toFormat('LLLL y')
         break
-      case '10days':
+      case '10days': {
         const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
         const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
         formattedLabel = `${timeRangeStart} - ${timeRangeEnd}`
         break
+      }
       case 'day':
         formattedLabel = date.toLocaleString(DateTime.DATE_MED)
         break

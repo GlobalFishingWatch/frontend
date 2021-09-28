@@ -2,15 +2,15 @@ import { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
-import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import SwitchRow from '@globalfishingwatch/ui-components/dist/switch-row'
+import InputText from '@globalfishingwatch/ui-components/src/input-text'
+import SwitchRow from '@globalfishingwatch/ui-components/src/switch-row'
 import {
   AnyDatasetConfiguration,
   DatasetCategory,
   DatasetGeometryType,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import Select from '@globalfishingwatch/ui-components/dist/select'
+import Select from '@globalfishingwatch/ui-components/src/select'
 import { capitalize } from 'utils/shared'
 import { DatasetMetadata } from './NewDataset'
 import styles from './NewDataset.module.css'

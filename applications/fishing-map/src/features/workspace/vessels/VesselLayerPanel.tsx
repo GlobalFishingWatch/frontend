@@ -9,7 +9,7 @@ import {
   DataviewDatasetConfigParam,
 } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/src/color-bar'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import {
   resolveDataviewDatasetResource,

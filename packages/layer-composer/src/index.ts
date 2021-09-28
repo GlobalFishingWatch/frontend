@@ -1,7 +1,7 @@
 export { default } from './layer-composer'
 export { default as sort, convertLegacyGroups } from './transforms/sort/sort'
 export { default as getInteractiveLayerIds } from './transforms/getInteractiveLayerIds'
-export * as Generators from './generators/types'
+export * from './generators/types'
 export {
   DEFAULT_HEATMAP_INTERVALS,
   TEMPORALGRID_SOURCE_LAYER,

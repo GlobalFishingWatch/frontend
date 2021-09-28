@@ -9,8 +9,8 @@ import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import {
   TimeChunk,
   TimeChunks,
-} from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
+} from '@globalfishingwatch/layer-composer/src/generators/heatmap/util/time-chunks'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components/src/miniglobe'
 import { MapboxEvent, MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useMapBounds, mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'

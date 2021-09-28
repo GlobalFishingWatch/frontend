@@ -6,10 +6,10 @@ import { DateTime } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
 import { Geometry, MultiPolygon, Polygon } from 'geojson'
-import Modal from '@globalfishingwatch/ui-components/dist/modal'
+import Modal from '@globalfishingwatch/ui-components/src/modal'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components/dist'
 import { Dataset } from '@globalfishingwatch/api-types'
-import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
+import { ChoiceOption } from '@globalfishingwatch/ui-components/src/choice'
 import {
   clearDownloadActivityGeometry,
   DownloadActivityParams,

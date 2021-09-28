@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import Button from '@globalfishingwatch/ui-components/dist/button'
+import Button from '@globalfishingwatch/ui-components/src/button'
 import { Dataview } from '@globalfishingwatch/api-types/dist'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'

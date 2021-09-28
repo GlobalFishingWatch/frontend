@@ -1,4 +1,4 @@
-import { GeneratorType } from './types'
+import { Type } from './types'
 import BackgroundGenerator, { DEFAULT_BACKGROUND_COLOR } from './background/background'
 import BaseMapGenerator from './basemap/basemap'
 import GLStyleGenerator from './gl/gl'
@@ -16,9 +16,9 @@ export { COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
 export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
 export { DEFAULT_HEATMAP_INTERVALS } from './heatmap/config'
 export { CONFIG_BY_INTERVAL } from './heatmap/util/time-chunks'
-export { Interval } from './heatmap/types'
+export * from './heatmap/types'
 export { TEMPORALGRID_SOURCE_LAYER } from './heatmap/modes/gridded'
-export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType }
+export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER, Type as GeneratorType }
 
 const GeneratorConfig = {
   [Type.Background]: new BackgroundGenerator(),

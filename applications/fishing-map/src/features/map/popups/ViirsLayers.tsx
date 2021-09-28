@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { groupBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import Spinner from '@globalfishingwatch/ui-components/src/spinner'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'

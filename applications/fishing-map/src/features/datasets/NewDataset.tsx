@@ -6,8 +6,8 @@ import { lowerCase } from 'lodash'
 import { useSelector } from 'react-redux'
 import { parse as parseCSV } from 'papaparse'
 import { Feature } from 'geojson'
-import Modal from '@globalfishingwatch/ui-components/dist/modal'
-import Button from '@globalfishingwatch/ui-components/dist/button'
+import Modal from '@globalfishingwatch/ui-components/src/modal'
+import Button from '@globalfishingwatch/ui-components/src/button'
 import {
   AnyDatasetConfiguration,
   DatasetCategory,
@@ -181,9 +181,9 @@ function NewDataset(): React.ReactElement {
     setMetadata((meta) => {
       let error = ''
       const isRootMetaField =
-        field.hasOwnProperty('name') ||
-        field.hasOwnProperty('description') ||
-        field.hasOwnProperty('public')
+        Object.prototype.hasOwnProperty.call(field, 'name') ||
+        Object.prototype.hasOwnProperty.call(field, 'description') ||
+        Object.prototype.hasOwnProperty.call(field, 'public')
       const newMetadata = isRootMetaField
         ? { ...meta, ...(field as DatasetMetadata) }
         : {
@@ -356,12 +356,10 @@ function NewDataset(): React.ReactElement {
     >
       <div className={styles.modalContent}>
         {promptForGeometryType ? (
-          <Fragment>
-            <DatasetTypeSelect
-              onDatasetTypeChange={onDatasetTypeChange}
-              currentType={datasetGeometryType}
-            />
-          </Fragment>
+          <DatasetTypeSelect
+            onDatasetTypeChange={onDatasetTypeChange}
+            currentType={datasetGeometryType}
+          />
         ) : (
           <Fragment>
             {/* eslint-disable-next-line  */}

@@ -14,7 +14,7 @@ import {
   VesselSearch,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
+import { MultiSelectOption } from '@globalfishingwatch/ui-components/src/multi-select'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'

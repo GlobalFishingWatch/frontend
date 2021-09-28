@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
-import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/src/generators/types'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {

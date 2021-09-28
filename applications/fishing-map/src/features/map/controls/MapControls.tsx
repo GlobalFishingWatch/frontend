@@ -13,7 +13,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
+import useDebounce from '@globalfishingwatch/react-hooks/src/use-debounce'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import Rulers from 'features/map/rulers/Rulers'

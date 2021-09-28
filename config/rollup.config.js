@@ -8,7 +8,7 @@ import svgr from '@svgr/rollup'
 import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
 import { terser } from 'rollup-plugin-terser'
-import { getPackages } from '@lerna/project'
+// import { getPackages } from '@lerna/project'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultConfig = {
@@ -20,12 +20,12 @@ const prepareConfig = async (customConfig = {}) => {
     ...defaultConfig,
     ...customConfig,
   }
-  const gfwPackages = await getPackages(__dirname).then((packages) =>
-    packages.flatMap(({ name }) => {
-      //support relative imports too
-      return name.includes('globalfishingwatchapp') ? [] : [name, `${name}/**/*`]
-    })
-  )
+  // const gfwPackages = await getPackages(__dirname).then((packages) =>
+  //   packages.flatMap(({ name }) => {
+  //     //support relative imports too
+  //     return name.includes('globalfishingwatchapp') ? [] : [name, `${name}/**/*`]
+  //   })
+  // )
 
   return {
     input: config.input,
@@ -44,7 +44,7 @@ const prepareConfig = async (customConfig = {}) => {
       'lodash',
       'downshift',
       'luxon',
-      ...gfwPackages,
+      // ...gfwPackages,
       ...(customConfig.external || []),
     ],
     plugins: [

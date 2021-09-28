@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import Spinner from '@globalfishingwatch/ui-components/src/spinner'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'

@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
-import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
+import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
+import Logo, { SubBrands } from '@globalfishingwatch/ui-components/src/logo'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,

@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Modal from '@globalfishingwatch/ui-components/dist/modal'
+import Modal from '@globalfishingwatch/ui-components/src/modal'
 import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'

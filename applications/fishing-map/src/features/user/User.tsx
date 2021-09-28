@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import Spinner from '@globalfishingwatch/ui-components/src/spinner'
 import { DatasetCategory } from '@globalfishingwatch/api-types/dist'
 import EditDataset from 'features/datasets/EditDataset'
 import {

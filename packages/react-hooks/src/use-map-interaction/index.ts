@@ -2,8 +2,8 @@ import type { Geometry } from 'geojson'
 import {
   ContextLayerType,
   HeatmapAnimatedInteractionType,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { Interval } from '@globalfishingwatch/layer-composer/dist/generators'
+} from '@globalfishingwatch/layer-composer/src/generators/types'
+import { Interval } from '@globalfishingwatch/layer-composer/src/generators'
 
 export { useMapHover, useSimpleMapHover, useMapClick, useFeatureState } from './use-map-interaction'
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
+import Tooltip from '@globalfishingwatch/ui-components/src/tooltip'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { isFishingDataview, isPresenceDataview } from 'features/workspace/activity/activity.utils'

@@ -3,8 +3,8 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
-import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
+import Tooltip from '@globalfishingwatch/ui-components/src/tooltip'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/src/color-bar'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
@@ -29,10 +29,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function UserTrackLayerPanel({
-  dataview,
-  onToggle = () => {},
-}: LayerPanelProps): React.ReactElement {
+function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)

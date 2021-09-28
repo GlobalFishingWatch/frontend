@@ -10,7 +10,7 @@ import {
   Resource,
 } from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/src/generators'
 import { resolveEndpoint } from '.'
 
 export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {

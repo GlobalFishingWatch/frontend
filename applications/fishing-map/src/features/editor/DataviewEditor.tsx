@@ -8,17 +8,17 @@ import {
   DataviewConfig,
   EndpointId,
 } from '@globalfishingwatch/api-types/dist'
-import Button from '@globalfishingwatch/ui-components/dist/button'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import Choice from '@globalfishingwatch/ui-components/dist/choice'
-import Select from '@globalfishingwatch/ui-components/dist/select'
-import MultiSelect from '@globalfishingwatch/ui-components/dist/multi-select'
+import Button from '@globalfishingwatch/ui-components/src/button'
+import Spinner from '@globalfishingwatch/ui-components/src/spinner'
+import InputText from '@globalfishingwatch/ui-components/src/input-text'
+import Choice from '@globalfishingwatch/ui-components/src/choice'
+import Select from '@globalfishingwatch/ui-components/src/select'
+import MultiSelect from '@globalfishingwatch/ui-components/src/multi-select'
 import {
   GeneratorType,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-} from '@globalfishingwatch/layer-composer/dist/generators'
-import ColorBar, { FillColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
+} from '@globalfishingwatch/layer-composer/src/generators'
+import ColorBar, { FillColorBarOptions } from '@globalfishingwatch/ui-components/src/color-bar'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'

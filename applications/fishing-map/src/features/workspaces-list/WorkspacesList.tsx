@@ -132,7 +132,12 @@ function WorkspacesList() {
                     )}
                     {active &&
                       (isExternalLink ? (
-                        <a target="_blank" href={linkTo as string} className={styles.link} rel="noreferrer">
+                        <a
+                          target="_blank"
+                          href={linkTo as string}
+                          className={styles.link}
+                          rel="noreferrer"
+                        >
                           {i18nCta || cta}
                         </a>
                       ) : (

@@ -1,5 +1,5 @@
 import type { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components/src/miniglobe'
 
 export const filterByViewport = (features: MapboxGeoJSONFeature[], bounds: MiniglobeBounds) => {
   if (!bounds) {

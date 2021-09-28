@@ -10,7 +10,7 @@
     "decoders"
   ],
   "scripts": {
-    "start": "yarn build",
+    "watch": "yarn build",
     "build": "yarn clean && yarn build:all",
     "build:all": "yarn build:prepare && yarn build:prepare && yarn build:pb:vessels:js && yarn build:pb:vessels:ts && yarn build:pb:4wings-tile:js && yarn build:pb:4wings-tile:ts",
     "build:prepare": "mkdir -p decoders",

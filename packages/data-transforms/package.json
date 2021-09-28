@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "rollup -c ./rollup.config.js -w",
+    "watch": "rollup -c ./rollup.config.js -w",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "test": "jest",
     "clean": "rimraf dist/*",

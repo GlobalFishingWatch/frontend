@@ -3,7 +3,7 @@ import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { Group } from '..'
-import { Interval } from './heatmap/util/time-chunks'
+import { Interval } from './heatmap/types'
 
 export enum Type {
   Background = 'BACKGROUND',
@@ -20,10 +20,24 @@ export enum Type {
   Rulers = 'RULERS',
 }
 
+export type GeneratorType =
+  | 'BACKGROUND'
+  | 'USER_CONTEXT'
+  | 'TILE_CLUSTER'
+  | 'CONTEXT'
+  | 'BASEMAP'
+  | 'CARTO_POLYGONS'
+  | 'GL'
+  | 'HEATMAP'
+  | 'HEATMAP_ANIMATED'
+  | 'TRACK'
+  | 'VESSEL_EVENTS'
+  | 'RULERS'
+
 export interface GeneratorFeature {
   id: string
   layerId: string
-  generator: Type
+  generator: GeneratorType
   isCluster?: boolean
 }
 
@@ -55,7 +69,7 @@ export interface GeneratorMetadata {
 export interface GeneratorConfig {
   id: string
   data?: AnyData
-  type: Type | string
+  type: GeneratorType | string
   visible?: boolean
   opacity?: number
   metadata?: GeneratorMetadata
@@ -71,7 +85,7 @@ export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfigExtended
  * A solid color background layer
  */
 export interface BasemapGeneratorConfig extends GeneratorConfig {
-  type: Type.Basemap
+  type: 'BASEMAP'
   /**
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
@@ -83,7 +97,7 @@ export interface BasemapGeneratorConfig extends GeneratorConfig {
  * A solid color background layer
  */
 export interface BackgroundGeneratorConfig extends GeneratorConfig {
-  type: Type.Background
+  type: 'BACKGROUND'
   /**
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
@@ -94,7 +108,7 @@ export interface BackgroundGeneratorConfig extends GeneratorConfig {
  * Layers created by user uploading their own shapefile
  */
 export interface UserContextGeneratorConfig extends GeneratorConfig {
-  type: Type.UserContext
+  type: 'USER_CONTEXT'
   /**
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
@@ -125,7 +139,7 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
  * Contextual layers provided by GFW
  */
 export interface ContextGeneratorConfig extends GeneratorConfig {
-  type: Type.Context
+  type: 'CONTEXT'
   /**
    * Id for the layers dictionary, see CONTEXT_LAYERS from /generators/context/context-layers
    */
@@ -149,7 +163,7 @@ export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
  * Layers created by user uploading their own shapefile
  */
 export interface TileClusterGeneratorConfig extends GeneratorConfig {
-  type: Type.TileCluster
+  type: 'TILE_CLUSTER'
   /**
    * Defines the maximum zoom that returns clusters
    */
@@ -185,7 +199,7 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
  */
 export interface GlGeneratorConfig extends GeneratorConfig {
   id: string
-  type: Type.GL
+  type: 'GL'
   sources?: AnySourceData[]
   layers?: Layer[]
 }
@@ -194,7 +208,7 @@ export interface GlGeneratorConfig extends GeneratorConfig {
  * Renders outlined polygons for our CARTO tables library, typically context layers. Takes care of instanciating CARTO anonymous maps/layergroupid (hence asynchronous). cartoTableId should be provided but will fallback to base generator id in case it's not.
  */
 export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
-  type: Type.CartoPolygons
+  type: 'CARTO_POLYGONS'
   cartoTableId?: string
   baseUrl?: string
   selectedFeatures?: any
@@ -211,7 +225,7 @@ export type TrackGeneratorConfigData = FeatureCollection | Segment[] | null
  * Renders a vessel track that can be filtered by time. Will use `start` and `end` from the global generator config, if set
  */
 export interface TrackGeneratorConfig extends GeneratorConfig {
-  type: Type.Track
+  type: 'TRACK'
   /**
    * A GeoJSON made of one or more LineStrings. Features should have `coordinateProperties` set in order to filter by time
    */
@@ -245,7 +259,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
 }
 
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {
-  type: Type.VesselEvents
+  type: 'VESSEL_EVENTS'
   data: RawEvent[]
   color?: string
   event?: {
@@ -267,7 +281,7 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
  * Renders rulers showing a distance between two points, using great circle if needed
  */
 export interface RulersGeneratorConfig extends GeneratorConfig {
-  type: Type.Rulers
+  type: 'RULERS'
   /**
    * An array defining rulers with start and end coordinates, and an isNew flag
    */
@@ -275,7 +289,7 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
 }
 
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
-  type: Type.Heatmap
+  type: 'HEATMAP'
   // Types needed but already in GlobalGeneratorConfig
   // start: string
   // end: string
@@ -295,7 +309,7 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
-  type: Type.HeatmapAnimated
+  type: 'HEATMAP_ANIMATED'
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   mode?: HeatmapAnimatedMode
   group?: Group

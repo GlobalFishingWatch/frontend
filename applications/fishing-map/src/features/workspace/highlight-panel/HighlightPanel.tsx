@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import Button from '@globalfishingwatch/ui-components/dist/button'
+import Button from '@globalfishingwatch/ui-components/src/button'
 import useLocalStorage from 'hooks/use-local-storage'
 import { Locale } from 'types'
 import useMapInstance from 'features/map/map-context.hooks'

@@ -109,7 +109,7 @@ function PopupWrapper({
                 />
               )
             // TODO: merge UserContextTooltipSection and ContextTooltipSection
-            case DataviewCategory.Context:
+            case DataviewCategory.Context: {
               const userContextFeatures = features.filter(
                 (feature) => feature.type === Generators.Type.UserContext
               )
@@ -128,6 +128,7 @@ function PopupWrapper({
                   />
                 </Fragment>
               )
+            }
 
             case DataviewCategory.Vessels:
               return <VesselEventsLayers key={featureCategory} features={features} />

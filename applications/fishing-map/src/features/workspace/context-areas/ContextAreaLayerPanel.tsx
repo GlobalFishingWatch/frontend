@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/src/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -22,7 +22,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)

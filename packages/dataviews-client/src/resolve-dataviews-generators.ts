@@ -23,7 +23,7 @@ import type {
   ColorRampsIds,
   HeatmapAnimatedGeneratorSublayer,
   HeatmapAnimatedInteractionType,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
+} from '@globalfishingwatch/layer-composer/src/generators/types'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import {
   resolveDataviewDatasetResource,

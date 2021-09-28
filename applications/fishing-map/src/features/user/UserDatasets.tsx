@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
-import Button from '@globalfishingwatch/ui-components/dist/button'
-import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import Button from '@globalfishingwatch/ui-components/src/button'
+import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import Spinner from '@globalfishingwatch/ui-components/src/spinner'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import {
   deleteDatasetThunk,

@@ -1,11 +1,11 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import ColorBar, {
   ColorBarOption,
   FillColorBarOptions,
   LineColorBarOptions,
-} from '@globalfishingwatch/ui-components/dist/color-bar'
+} from '@globalfishingwatch/ui-components/src/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import ExpandedContainer from '../shared/ExpandedContainer'
 

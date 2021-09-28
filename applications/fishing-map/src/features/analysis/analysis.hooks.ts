@@ -12,12 +12,12 @@ import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggr
 import {
   TimeChunk,
   TimeChunks,
-} from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
+} from '@globalfishingwatch/layer-composer/src/generators/heatmap/util/time-chunks'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { MapboxEvent } from '@globalfishingwatch/mapbox-gl'
-import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/src/use-map-interaction'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/dist'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/src/generators'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'

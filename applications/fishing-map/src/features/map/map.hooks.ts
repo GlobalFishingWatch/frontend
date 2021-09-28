@@ -9,13 +9,13 @@ import {
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/src/generators/types'
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import {
   TemporalGridFeature,
   useFeatureState,
-} from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+} from '@globalfishingwatch/react-hooks/src/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
