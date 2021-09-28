@@ -14,6 +14,9 @@ import { RootState } from 'store'
 import { AppActions, AppState } from 'types/redux.types'
 import { UpdateQueryParamsAction } from './routes.actions'
 
+export const PATH_BASENAME =
+  process.env.REACT_APP_WORKSPACE_ENV === 'production' ? '/vessel-viewer' : ''
+
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
@@ -70,6 +73,7 @@ const decodeWorkspace = (queryString: string) => {
 }
 
 const routesOptions: Options = {
+  basename: PATH_BASENAME,
   querySerializer: {
     stringify: encodeWorkspace,
     parse: decodeWorkspace,

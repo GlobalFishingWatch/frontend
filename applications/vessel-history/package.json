@@ -3,6 +3,7 @@
   "version": "1.0.15",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
+  "homepage": "/",
   "scripts": {
     "start": "yarn start:i18n & cross-env PORT=3003 craco start",
     "start:i18n": "yarn --cwd ../../packages/i18n-labels serve",
