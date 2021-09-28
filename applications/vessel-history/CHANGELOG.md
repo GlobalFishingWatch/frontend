@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/vessel-history
 
+## 1.0.16
+
+### Patch Changes
+
+- ec34c600: added amount of transmissions
+- Updated dependencies [ec34c600]
+  - @globalfishingwatch/api-types@6.1.0
+
 ## 1.0.15
 
 ### Patch Changes
