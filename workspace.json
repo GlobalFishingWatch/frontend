@@ -71,25 +71,7 @@
     "fishing-map": {
       "root": "applications/fishing-map",
       "sourceRoot": "applications/fishing-map/src",
-      "type": "application",
-      "targets": {
-        "start": {
-          "executor": "@nrwl/workspace:run-commands",
-          "options": {
-            "command": "node ../../node_modules/.bin/craco start",
-            "cwd": "applications/fishing-map"
-          }
-        },
-        "build": {
-          "executor": "@nrwl/workspace:run-commands",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "command": "node ../../node_modules/.bin/craco build",
-            "cwd": "applications/fishing-map",
-            "outputPath": "applications/fishing-map/dist"
-          }
-        }
-      }
+      "type": "application"
     },
     "sandbox": {
       "root": "applications/sandbox",
@@ -110,6 +92,13 @@
       "root": "applications/vessel-history",
       "sourceRoot": "applications/vessel-history/src",
       "type": "application"
+    }
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
     }
   }
 }
