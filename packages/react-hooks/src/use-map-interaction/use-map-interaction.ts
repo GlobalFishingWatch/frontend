@@ -38,7 +38,7 @@ const getExtendedFeatures = (
     const generatorId = feature.layer.metadata?.generatorId ?? null
 
     // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
-    let generatorMetadata
+    let generatorMetadata: any
     if (metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
       generatorMetadata = metadata?.generatorsMetadata[generatorId]
     } else {
@@ -82,9 +82,11 @@ const getExtendedFeatures = (
           quantizeOffset: activeTimeChunk.quantizeOffset,
           sublayerCount: numSublayers,
           aggregationOperation: generatorMetadata?.aggregationOperation,
+          sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
           multiplier: generatorMetadata?.multiplier,
         })
-        if (!values || !values.filter((v: number) => v > 0).length) return []
+
+        if (!values || !values.filter((v: number) => v !== 0).length) return []
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
         const sublayers = generatorMetadata?.sublayers
         return values.flatMap((value: any, i: number) => {
@@ -95,6 +97,7 @@ const getExtendedFeatures = (
               sublayerIndex: i,
               sublayerId: sublayers[i].id,
               sublayerInteractionType: sublayers[i].interactionType,
+              sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
               visible: visibleSublayers[i] === true,
               col: properties._col as number,
               row: properties._row as number,

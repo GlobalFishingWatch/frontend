@@ -18,6 +18,7 @@ import {
   useFeatureState,
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
@@ -308,16 +309,34 @@ export const parseMapTooltipEvent = (
 ) => {
   if (!event || !event.features) return null
 
+  const baseEvent = {
+    point: event.point,
+    latitude: event.latitude,
+    longitude: event.longitude,
+  }
+
+  // We don't want to show anything else when hovering a comparison point
+  if (event.features[0]?.temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.Delta) {
+    return {
+      ...baseEvent,
+      features: [
+        {
+          category: DataviewCategory.Comparison,
+          value: event.features[0]?.value,
+          visible: true,
+          unit: 'hours',
+        },
+      ],
+    }
+  }
+
   const clusterFeature = event.features.find(
     (f) => f.generatorType === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
   )
-
   // We don't want to show anything else when hovering a cluster point
   if (clusterFeature) {
     return {
-      point: event.point,
-      latitude: event.latitude,
-      longitude: event.longitude,
+      ...baseEvent,
       features: [
         {
           type: clusterFeature.generatorType,
@@ -399,9 +418,7 @@ export const parseMapTooltipEvent = (
 
   if (!tooltipEventFeatures.length) return null
   return {
-    point: event.point,
-    latitude: event.latitude,
-    longitude: event.longitude,
+    ...baseEvent,
     features: tooltipEventFeatures,
   }
 }

@@ -29,6 +29,9 @@ import { getSourceId, toURLArray } from './util'
 import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
 import griddedTimeCompare from './modes/gridded-time-compare'
 
+export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid'
+export const TEMPORALGRID_SOURCE_LAYER_INTERACTIVE = 'temporalgrid_interactive'
+
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
@@ -38,6 +41,8 @@ export const SQUARE_GRID_MODES = [
   HeatmapAnimatedMode.Bivariate,
   HeatmapAnimatedMode.Single,
 ]
+
+const INTERACTION_MODES = [...SQUARE_GRID_MODES, HeatmapAnimatedMode.TimeCompare]
 
 const getTilesUrl = (config: HeatmapAnimatedGeneratorConfig): string => {
   if (config.tilesAPI) {
@@ -151,7 +156,7 @@ class HeatmapAnimatedGenerator {
     const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
-    const interactiveSource = config.interactive && SQUARE_GRID_MODES.includes(config.mode)
+    const interactiveSource = config.interactive && INTERACTION_MODES.includes(config.mode)
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
     const sublayerBreaks =
       config.mode === HeatmapAnimatedMode.TimeCompare
@@ -319,6 +324,7 @@ class HeatmapAnimatedGenerator {
         visibleSublayers: getSubLayersVisible(finalConfig.sublayers),
         timeChunks,
         aggregationOperation: finalConfig.aggregationOperation,
+        sublayerCombinationMode: HEATMAP_MODE_COMBINATION[config.mode],
         multiplier: finalConfig.breaksMultiplier,
         group: config.group || Group.Heatmap,
       },

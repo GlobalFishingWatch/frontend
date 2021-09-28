@@ -5,6 +5,7 @@ import {
   HeatmapAnimatedInteractionType,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Interval } from '@globalfishingwatch/layer-composer/dist/generators'
+import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 
 export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction'
 
@@ -12,6 +13,7 @@ export type TemporalGridFeature = {
   sublayerIndex: number
   sublayerId: string
   sublayerInteractionType: HeatmapAnimatedInteractionType
+  sublayerCombinationMode: SublayerCombinationMode
   visible: boolean
   col: number
   row: number

@@ -84,6 +84,7 @@ export type CellAggregationParams = {
   quantizeOffset: number
   sublayerCount: number
   aggregationOperation?: AggregationOperation
+  sublayerCombinationMode?: SublayerCombinationMode
   multiplier?: number
 }
 

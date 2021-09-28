@@ -1,13 +1,16 @@
 import { Layer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
-import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import {
+  GlobalHeatmapAnimatedGeneratorConfig,
+  TEMPORALGRID_SOURCE_LAYER,
+} from '../heatmap-animated'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
 import { Group } from '../../../types'
-import { Type } from '../../types'
 import { getColorRampBaseExpression } from '../util/get-legends'
-import getBaseLayer from '../util/get-base-layer'
+import getBaseLayer, {
+  getBaseInteractionHoverLayer,
+  getBaseInteractionLayer,
+} from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
-
-export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid_interactive'
 
 export default function gridded(
   config: GlobalHeatmapAnimatedGeneratorConfig,
@@ -36,45 +39,14 @@ export default function gridded(
     const chunkLayers: Layer[] = [chunkMainLayer]
 
     if (config.interactive && timeChunk.active) {
-      chunkLayers.push({
-        id: getLayerId(config.id, timeChunk, 'interaction'),
-        source: getSourceId(config.id, timeChunk),
-        'source-layer': TEMPORALGRID_SOURCE_LAYER,
-        type: 'fill',
-        paint: {
-          'fill-color': 'pink',
-          'fill-opacity': config.debug ? 0.5 : 0,
-        },
-        metadata: {
-          group: config.group || Group.Heatmap,
-          generatorType: Type.HeatmapAnimated,
-          generatorId: config.id,
-          interactive: true,
-          uniqueFeatureInteraction: true,
-        },
-      })
-      chunkLayers.push({
-        id: getLayerId(config.id, timeChunk, 'interaction_hover'),
-        source: getSourceId(config.id, timeChunk),
-        'source-layer': TEMPORALGRID_SOURCE_LAYER,
-        type: 'line',
-        paint: {
-          'line-color': 'white',
-          'line-width': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            4,
-            ['boolean', ['feature-state', 'click'], false],
-            4,
-            0,
-          ],
-          'line-offset': -2,
-        },
-        metadata: {
-          interactive: false,
-          group: config.group || Group.Heatmap,
-        },
-      })
+      const interactionLayer = getBaseInteractionLayer(config)
+      interactionLayer.id = getLayerId(config.id, timeChunk, 'interaction')
+      interactionLayer.source = chunkMainLayer.source
+      chunkLayers.push(interactionLayer)
+      const interactionHoverLayer = getBaseInteractionHoverLayer(config)
+      interactionHoverLayer.id = getLayerId(config.id, timeChunk, 'interaction_hover')
+      interactionHoverLayer.source = chunkMainLayer.source
+      chunkLayers.push(interactionHoverLayer)
     }
 
     if (config.debug) {
@@ -82,7 +54,7 @@ export default function gridded(
       chunkLayers.push({
         id: getLayerId(config.id, timeChunk, 'debug'),
         source: getSourceId(config.id, timeChunk),
-        'source-layer': 'temporalgrid',
+        'source-layer': TEMPORALGRID_SOURCE_LAYER,
         type: 'fill',
         paint: {
           'fill-color': 'transparent',
@@ -99,7 +71,7 @@ export default function gridded(
         id: getLayerId(config.id, timeChunk, 'debug_labels'),
         type: 'symbol',
         source: getSourceId(config.id, timeChunk),
-        'source-layer': 'temporalgrid',
+        'source-layer': TEMPORALGRID_SOURCE_LAYER,
         layout: {
           'text-field': exprDebugText,
           'text-font': ['Roboto Mono Light'],

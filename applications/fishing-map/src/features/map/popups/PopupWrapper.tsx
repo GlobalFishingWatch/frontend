@@ -19,6 +19,7 @@ import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
+import ComparisonRow from './ComparisonRow'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -43,6 +44,7 @@ function PopupWrapper({
   if (!event) return null
 
   const visibleFeatures = event.features.filter((feature) => feature.visible)
+  console.log(visibleFeatures)
   const featureByCategory = groupBy(
     visibleFeatures.sort(
       (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
@@ -64,6 +66,8 @@ function PopupWrapper({
       <div className={styles.content}>
         {Object.entries(featureByCategory).map(([featureCategory, features]) => {
           switch (featureCategory) {
+            case DataviewCategory.Comparison:
+              return <ComparisonRow feature={features[0]} />
             case DataviewCategory.Fishing:
               return features.map((feature, i) => (
                 <FishingTooltipRow

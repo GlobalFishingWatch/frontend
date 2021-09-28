@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBasemapDataviewInstance } from 'features/dataviews/dataviews.selectors'
+import { useMapStyle } from 'features/map/map.hooks'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
 
@@ -13,6 +14,12 @@ const DebugMenu: React.FC = () => {
   const locationQuery = useSelector(selectLocationQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const basemapDataviewInstance = useSelector(selectBasemapDataviewInstance)
+  // Not sure why, but it seems this hook returns an outdated style
+  const style = useMapStyle()
+  useEffect(() => {
+    console.log(style)
+    console.log(locationQuery)
+  }, [])
   return (
     <div className={styles.row}>
       <section>
@@ -103,6 +110,13 @@ const DebugMenu: React.FC = () => {
           className={styles.editor}
           defaultValue={JSON.stringify(locationQuery, undefined, 2)}
         />
+      </section>
+      <hr className={styles.separation} />
+      <section>
+        <div className={styles.header}>
+          <label>Current map GL style</label>
+        </div>
+        <textarea className={styles.editor} defaultValue={JSON.stringify(style, undefined, 2)} />
       </section>
     </div>
   )

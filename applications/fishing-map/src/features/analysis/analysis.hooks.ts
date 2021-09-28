@@ -7,7 +7,10 @@ import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
-import { quantizeOffsetToDate, TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
+import {
+  quantizeOffsetToDate,
+  TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
+} from '@globalfishingwatch/layer-composer'
 import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
 import {
   TimeChunk,
@@ -163,7 +166,7 @@ export const useFilteredTimeSeries = () => {
           const chunks = (metadata as any).timeChunks as TimeChunks
           const allChunksFeatures = chunks.chunks.flatMap((chunk: TimeChunk) => {
             const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
-              sourceLayer: TEMPORALGRID_SOURCE_LAYER,
+              sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
             })
             return sourceFeatures
           })

@@ -1,5 +1,9 @@
+import { Layer } from '@globalfishingwatch/mapbox-gl'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import getBaseLayer from '../util/get-base-layer'
+import getBaseLayer, {
+  getBaseInteractionHoverLayer,
+  getBaseInteractionLayer,
+} from '../util/get-base-layers'
 import { TimeChunks } from '../util/time-chunks'
 import { getLayerId, getSourceId } from '../util'
 import { getColorRampBaseExpression } from '../util/get-legends'
@@ -57,5 +61,17 @@ export default function griddedTimeCompare(
   }
   mainLayer.paint = paint
 
-  return [mainLayer]
+  const layers: Layer[] = [mainLayer]
+  if (config.interactive && timeChunk.active) {
+    const interactionLayer = getBaseInteractionLayer(config)
+    interactionLayer.id = getLayerId(config.id, timeChunk, 'interaction')
+    interactionLayer.source = mainLayer.source
+    layers.push(interactionLayer)
+    const interactionHoverLayer = getBaseInteractionHoverLayer(config)
+    interactionHoverLayer.id = getLayerId(config.id, timeChunk, 'interaction_hover')
+    interactionHoverLayer.source = mainLayer.source
+    layers.push(interactionHoverLayer)
+  }
+
+  return layers
 }

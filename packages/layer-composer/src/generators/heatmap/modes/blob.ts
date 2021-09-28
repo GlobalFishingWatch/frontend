@@ -2,7 +2,7 @@ import { zip } from 'lodash'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunks } from '../util/time-chunks'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
-import getBaseLayer from '../util/get-base-layer'
+import getBaseLayer from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
 import { Breaks } from '../util/fetch-breaks'
 

@@ -1,5 +1,5 @@
 import { VALUE_MULTIPLIER } from './constants'
-import { AggregationOperation, CellAggregationParams } from './types'
+import { AggregationOperation, SublayerCombinationMode, CellAggregationParams } from './types'
 import { getCellValues, getCellArrayIndex, getRealValues } from './util'
 
 const aggregateCell = ({
@@ -9,6 +9,7 @@ const aggregateCell = ({
   quantizeOffset,
   sublayerCount,
   aggregationOperation = AggregationOperation.Sum,
+  sublayerCombinationMode = SublayerCombinationMode.Max,
   multiplier = VALUE_MULTIPLIER,
 }: CellAggregationParams) => {
   if (!rawValues) return null
@@ -46,6 +47,10 @@ const aggregateCell = ({
   }
 
   const realValues = getRealValues(aggregatedValues, multiplier)
+
+  if (sublayerCombinationMode === SublayerCombinationMode.Delta) {
+    return [realValues[1] - realValues[0]]
+  }
 
   return realValues
 }
