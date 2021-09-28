@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 6.1.0
+
+### Minor Changes
+
+- ec34c600: added amount of transmissions
+
 ## 6.0.1
 
 ### Patch Changes
