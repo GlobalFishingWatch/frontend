@@ -38,6 +38,7 @@
     "@turf/boolean-overlap": "6.5.0",
     "@turf/boolean-point-in-polygon": "6.5.0",
     "@turf/center": "6.5.0",
+    "@turf/kinks": "^6.5.0",
     "@turf/simplify": "6.5.0",
     "@turf/union": "6.5.0",
     "@types/react-html-parser": "2.0.2",

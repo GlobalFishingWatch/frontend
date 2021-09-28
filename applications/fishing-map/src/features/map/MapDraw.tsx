@@ -46,8 +46,8 @@ function MapDraw() {
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [features, setFeatures] = useState<DrawFeature[] | undefined>()
-  const [newPointLatitude, setNewPointLatitude] = useState<number | undefined>()
-  const [newPointLongitude, setNewPointLongitude] = useState<number | undefined>()
+  const [newPointLatitude, setNewPointLatitude] = useState<number | string | undefined>()
+  const [newPointLongitude, setNewPointLongitude] = useState<number | string | undefined>()
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState<number | null>(null)
   const [selectedEditHandleIndex, setSelectedEditHandleIndex] = useState<number | null>(null)
   const { drawMode, dispatchSetDrawMode } = useMapDrawConnect()
@@ -66,25 +66,35 @@ function MapDraw() {
       : null
 
   const onHandleLatitudeChange = useCallback((e) => {
-    const latitude = parseFloat(e.target.value)
-    if (latitude > -90 && latitude < 90) {
-      setNewPointLatitude(latitude)
+    if (e.target.value) {
+      const latitude = parseFloat(e.target.value)
+      if (latitude > -90 && latitude < 90) {
+        setNewPointLatitude(latitude)
+      }
+    } else {
+      setNewPointLatitude('')
     }
   }, [])
 
   const onHandleLongitudeChange = useCallback((e) => {
-    const longitude = parseFloat(e.target.value)
-    if (longitude > -90 && longitude < 90) {
-      setNewPointLongitude(longitude)
+    if (e.target.value) {
+      const longitude = parseFloat(e.target.value)
+      if (longitude > -180 && longitude < 180) {
+        setNewPointLongitude(longitude)
+      }
+    } else {
+      setNewPointLongitude('')
     }
   }, [])
 
+  const editingPointLatitude =
+    newPointLatitude !== undefined ? newPointLatitude : currentEditHandle?.[1]
+  const editingPointLongitude =
+    newPointLongitude !== undefined ? newPointLongitude : currentEditHandle?.[0]
+
   const onConfirmNewPointPosition = useCallback(() => {
     if (features && selectedFeatureIndex !== null && selectedEditHandleIndex !== null) {
-      const newPointPosition = [
-        newPointLongitude || currentEditHandle?.[0],
-        newPointLatitude || currentEditHandle?.[1],
-      ] as DrawPointPosition
+      const newPointPosition = [editingPointLongitude, editingPointLatitude] as DrawPointPosition
       const newFeatures = updateFeaturePointByIndex(
         features,
         selectedFeatureIndex,
@@ -98,11 +108,10 @@ function MapDraw() {
     }
   }, [
     features,
-    newPointLatitude,
-    newPointLongitude,
-    currentEditHandle,
-    selectedEditHandleIndex,
     selectedFeatureIndex,
+    selectedEditHandleIndex,
+    editingPointLatitude,
+    editingPointLongitude,
   ])
 
   const onEditorSelect = useCallback((e: EditorSelect) => {
@@ -141,14 +150,18 @@ function MapDraw() {
     }
   }, [features, selectedFeatureIndex])
 
-  const resetState = useCallback(() => {
-    setLayerName('')
-    setFeatures(undefined)
-    setSelectedFeatureIndex(null)
+  const resetEditHandler = useCallback(() => {
     setSelectedEditHandleIndex(null)
     setNewPointLatitude(undefined)
     setNewPointLongitude(undefined)
   }, [])
+
+  const resetState = useCallback(() => {
+    setLayerName('')
+    setFeatures(undefined)
+    setSelectedFeatureIndex(null)
+    resetEditHandler()
+  }, [resetEditHandler])
 
   const closeDraw = useCallback(() => {
     resetState()
@@ -216,7 +229,7 @@ function MapDraw() {
           longitude={currentEditHandle[0]}
           closeButton={true}
           closeOnClick={true}
-          onClose={() => setSelectedEditHandleIndex(null)}
+          onClose={resetEditHandler}
           className={cx(styles.popup)}
           captureClick
         >
@@ -226,7 +239,7 @@ function MapDraw() {
                 step="0.01"
                 type="number"
                 inputSize="small"
-                value={newPointLatitude || currentEditHandle[1]}
+                value={editingPointLatitude}
                 label={t('common.latitude', 'Latitude')}
                 onChange={onHandleLatitudeChange}
                 className={styles.shortInput}
@@ -235,13 +248,22 @@ function MapDraw() {
                 step="0.01"
                 type="number"
                 className={styles.shortInput}
-                value={newPointLongitude || currentEditHandle[0]}
+                value={editingPointLongitude}
                 label={t('common.longitude', 'longitude')}
                 onChange={onHandleLongitudeChange}
                 inputSize="small"
               />
             </div>
-            <Button onClick={onConfirmNewPointPosition} className={styles.confirmBtn}>
+            <Button
+              disabled={
+                editingPointLatitude === undefined ||
+                editingPointLatitude === '' ||
+                editingPointLongitude === undefined ||
+                editingPointLongitude === ''
+              }
+              onClick={onConfirmNewPointPosition}
+              className={styles.confirmBtn}
+            >
               {t('common.confirm', 'Confirm')}
             </Button>
           </div>
