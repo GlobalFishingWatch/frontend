@@ -44,8 +44,9 @@ import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
-import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import MapDraw from './MapDraw'
+import { selectDrawMode, SliceInteractionEvent } from './map.slice'
+import { selectIsMapDrawing } from './map.selectors'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
@@ -78,6 +79,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const { t } = useTranslation()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const drawMode = useSelector(selectDrawMode)
+  const isMapDrawing = useSelector(selectIsMapDrawing)
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
 
@@ -245,6 +247,7 @@ const MapWrapper = (): React.ReactElement | null => {
           disableTokenWarning={true}
           width="100%"
           height="100%"
+          keyboard={!isMapDrawing}
           zoom={viewport.zoom}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
@@ -255,13 +258,11 @@ const MapWrapper = (): React.ReactElement | null => {
           onResize={setMapBounds}
           getCursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={
-            rulersEditing || drawMode !== 'disabled'
-              ? undefined
-              : style?.metadata?.interactiveLayerIds
+            rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
           }
           clickRadius={clickRadiusScale(viewport.zoom)}
-          onClick={drawMode !== 'disabled' ? undefined : currentClickCallback}
-          onHover={drawMode !== 'disabled' ? undefined : currentMapHoverCallback}
+          onClick={isMapDrawing ? undefined : currentClickCallback}
+          onHover={isMapDrawing ? undefined : currentMapHoverCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
           transitionDuration={viewport.transitionDuration}
