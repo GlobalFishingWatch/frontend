@@ -9,7 +9,7 @@ import { useVesselsConnect } from 'features/vessels/vessels.hook'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
-import { formatI18nDate, I18nDateAsString } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './VesselListItem.module.css'
 interface ListItemProps {
   saved?: string
@@ -72,8 +72,8 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
                 <Fragment>
                   {t('vessel.transmissionRange', '{{transmissions}} AIS transmissions from {{start}} to {{end}}', {
                     transmissions: vessel.posCount,
-                    start: vessel.firstTransmissionDate ? I18nDateAsString(vessel.firstTransmissionDate) :  DEFAULT_EMPTY_VALUE,
-                    end: vessel.lastTransmissionDate ? I18nDateAsString(vessel.lastTransmissionDate) :  DEFAULT_EMPTY_VALUE,
+                    start: vessel.firstTransmissionDate ? formatI18nDate(vessel.firstTransmissionDate) :  DEFAULT_EMPTY_VALUE,
+                    end: vessel.lastTransmissionDate ? formatI18nDate(vessel.lastTransmissionDate) :  DEFAULT_EMPTY_VALUE,
                   })}
                 </Fragment>
               ) : (
