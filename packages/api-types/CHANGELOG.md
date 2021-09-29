@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 6.2.0
+
+### Minor Changes
+
+- 2ea27a38: support draw geometryType in dataset configuration
+
 ## 6.1.0
 
 ### Minor Changes
