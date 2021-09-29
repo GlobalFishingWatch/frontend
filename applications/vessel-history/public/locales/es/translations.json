@@ -135,7 +135,8 @@
   },
   "selects": {
     "allSelected": "todos",
-    "selected": "seleccionado"
+    "selected": "seleccionado",
+    "none": "None"
   },
   "settings": {
     "distancePort": "Distance from port",
