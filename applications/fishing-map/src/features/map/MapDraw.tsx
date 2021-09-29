@@ -45,9 +45,9 @@ function MapDraw() {
   const editorRef = useRef<any>(null)
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
-  const [features, setFeatures] = useState<DrawFeature[] | undefined>()
-  const [newPointLatitude, setNewPointLatitude] = useState<number | string | undefined>()
-  const [newPointLongitude, setNewPointLongitude] = useState<number | string | undefined>()
+  const [features, setFeatures] = useState<DrawFeature[] | null>(null)
+  const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
+  const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState<number | null>(null)
   const [selectedEditHandleIndex, setSelectedEditHandleIndex] = useState<number | null>(null)
   const { drawMode, dispatchSetDrawMode } = useMapDrawConnect()
@@ -57,9 +57,7 @@ function MapDraw() {
 
   const hasFeatureSelected = selectedFeatureIndex !== null
   const currentFeature: DrawFeature | null =
-    selectedFeatureIndex !== null && features !== undefined
-      ? features?.[selectedFeatureIndex]
-      : null
+    selectedFeatureIndex !== null && features !== null ? features?.[selectedFeatureIndex] : null
   const currentEditHandle =
     currentFeature && selectedEditHandleIndex
       ? currentFeature.geometry.coordinates?.[0]?.[selectedEditHandleIndex]
@@ -87,10 +85,9 @@ function MapDraw() {
     }
   }, [])
 
-  const editingPointLatitude =
-    newPointLatitude !== undefined ? newPointLatitude : currentEditHandle?.[1]
+  const editingPointLatitude = newPointLatitude !== null ? newPointLatitude : currentEditHandle?.[1]
   const editingPointLongitude =
-    newPointLongitude !== undefined ? newPointLongitude : currentEditHandle?.[0]
+    newPointLongitude !== null ? newPointLongitude : currentEditHandle?.[0]
 
   const onConfirmNewPointPosition = useCallback(() => {
     if (features && selectedFeatureIndex !== null && selectedEditHandleIndex !== null) {
@@ -102,8 +99,8 @@ function MapDraw() {
         newPointPosition
       )
       setFeatures(newFeatures)
-      setNewPointLatitude(undefined)
-      setNewPointLongitude(undefined)
+      setNewPointLatitude(null)
+      setNewPointLongitude(null)
       setSelectedEditHandleIndex(null)
     }
   }, [
@@ -152,13 +149,13 @@ function MapDraw() {
 
   const resetEditHandler = useCallback(() => {
     setSelectedEditHandleIndex(null)
-    setNewPointLatitude(undefined)
-    setNewPointLongitude(undefined)
+    setNewPointLatitude(null)
+    setNewPointLongitude(null)
   }, [])
 
   const resetState = useCallback(() => {
     setLayerName('')
-    setFeatures(undefined)
+    setFeatures(null)
     setSelectedFeatureIndex(null)
     resetEditHandler()
   }, [resetEditHandler])
@@ -202,7 +199,7 @@ function MapDraw() {
     return drawMode === 'edit' ? new EditingMode() : new DrawPolygonMode()
   }, [drawMode])
 
-  const hasFeaturesDrawn = features !== undefined && features.length > 0
+  const hasFeaturesDrawn = features !== null && features.length > 0
   let saveTooltip = ''
 
   if (!layerName) {
@@ -214,14 +211,21 @@ function MapDraw() {
   return (
     <Fragment>
       {editorMode && (
-        <Editor
-          ref={editorRef}
-          clickRadius={12}
-          features={features}
-          mode={editorMode}
-          onUpdate={onEditorUpdate}
-          onSelect={onEditorSelect}
-        />
+        <div
+          className={cx({
+            [styles.editor]: drawMode === 'edit',
+            [styles.editing]: selectedFeatureIndex !== null,
+          })}
+        >
+          <Editor
+            ref={editorRef}
+            clickRadius={12}
+            features={features}
+            mode={editorMode}
+            onUpdate={onEditorUpdate}
+            onSelect={onEditorSelect}
+          />
+        </div>
       )}
       {editorMode && currentEditHandle && (
         <Popup
@@ -256,9 +260,9 @@ function MapDraw() {
             </div>
             <Button
               disabled={
-                editingPointLatitude === undefined ||
+                editingPointLatitude === null ||
                 editingPointLatitude === '' ||
-                editingPointLongitude === undefined ||
+                editingPointLongitude === null ||
                 editingPointLongitude === ''
               }
               onClick={onConfirmNewPointPosition}
