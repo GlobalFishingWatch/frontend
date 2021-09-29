@@ -138,13 +138,13 @@ const workspace: Workspace<WorkspaceState> = {
     //   },
     //   dataviewId: 96,
     // },
-    // {
-    //   id: 'context-layer-high-seas',
-    //   config: {
-    //     visible: false,
-    //   },
-    //   dataviewId: 97,
-    // },
+    {
+      id: 'context-layer-high-seas',
+      config: {
+        visible: false,
+      },
+      dataviewId: 97,
+    },
   ],
 }
 

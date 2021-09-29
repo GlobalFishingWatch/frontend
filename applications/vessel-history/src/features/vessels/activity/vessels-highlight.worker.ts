@@ -100,7 +100,7 @@ export function filterActivityHighlightEvents(events: RenderedEvent[], settings:
   return events.filter((event: RenderedEvent) => {
     const filterByTypeSettings = filterByEventType[event.type]
     return filterByTypeSettings && filterByTypeSettings(event)
-  })
+  }).sort((a, b) => (b.timestamp as number) - (a.timestamp as number))
 }
 
 export function isAnyHighlightsSettingDefined(settings: Settings) {

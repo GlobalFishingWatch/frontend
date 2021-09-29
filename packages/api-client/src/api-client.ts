@@ -203,7 +203,7 @@ export class GFWAPI {
         this.setToken(token)
         this.status = 'idle'
         return token
-      } catch (e) {
+      } catch (e: any) {
         this.status = 'idle'
         e.status = 401
         throw e
@@ -318,7 +318,7 @@ export class GFWAPI {
             }
           })
         return data
-      } catch (e) {
+      } catch (e: any) {
         // 401 = not authenticated => trying to refresh the token
         // 403 = not authorized => trying to refresh the token
         // 401 + refreshError = true => refresh token failed
@@ -391,7 +391,7 @@ export class GFWAPI {
           if (this.debug) {
             console.log(`GFWAPI: access-token valid, tokens ready`)
           }
-        } catch (e) {
+        } catch (e: any) {
           if (!this.getToken() && !this.getRefreshToken()) {
             const msg = isUnauthorizedError(e)
               ? 'Invalid access token'
@@ -442,7 +442,7 @@ export class GFWAPI {
           resolve(user)
           this.status = 'idle'
           return user
-        } catch (e) {
+        } catch (e: any) {
           const msg = isUnauthorizedError(e)
             ? 'Invalid refresh token'
             : 'Error trying to refreshing the token'

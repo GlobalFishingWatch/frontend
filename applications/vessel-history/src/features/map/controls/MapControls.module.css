@@ -86,3 +86,6 @@
 .layerContainer .infoIcon {
   margin-left: auto;
 }
+.dataAndTerminologyContainer {
+  height: 90vh;
+}

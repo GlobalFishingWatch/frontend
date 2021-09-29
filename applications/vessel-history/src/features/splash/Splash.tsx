@@ -9,7 +9,7 @@ import styles from './Splash.module.css'
 
 const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
   const { t } = useTranslation()
-  const { login, logout, user, authorized } = useUser()
+  const { loading, login, logout, user, authorized } = useUser()
 
   const requestAccess = useCallback(() => {
     window.location.href =
@@ -33,7 +33,7 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
             </div>
           </div>
         )}
-        {!intro && !user && (
+        {!intro && !loading && !user && (
           <div>
             <div>
               {t(

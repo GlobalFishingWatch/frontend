@@ -9,7 +9,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
-  selectQueryParam,
+  selectSearchableQueryParams,
   selectUrlAkaVesselQuery,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
@@ -43,7 +43,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   const { t } = useTranslation()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
-  const q = useSelector(selectQueryParam('q'))
+  const query = useSelector(selectSearchableQueryParams)
   const vesselProfileId = useSelector(selectVesselProfileId)
   const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const vesselStatus = useSelector(selectVesselsStatus)
@@ -182,8 +182,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
 
   const backLink = useMemo(() => {
-    return q ? { type: HOME, replaceQuery: true, query: { q } } : { type: HOME }
-  }, [q])
+    return query ? { type: HOME, replaceQuery: true, query } : { type: HOME }
+  }, [query])
 
   const shipName = useMemo(() => {
     const gfwVesselName = vessel?.history.shipname.byDate.find(
