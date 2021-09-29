@@ -1,5 +1,6 @@
 import React, { Fragment, useCallback, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
+import kinks from '@turf/kinks'
 import { Editor, EditingMode, DrawPolygonMode } from 'react-map-gl-draw'
 import { useTranslation } from 'react-i18next'
 import { Popup } from 'react-map-gl'
@@ -15,6 +16,8 @@ import { useMapDrawConnect } from './map-draw.hooks'
 import { useMapControl } from './map-context.hooks'
 import styles from './MapDraw.module.css'
 import {
+  featureStyle,
+  FeatureStyle,
   getDrawDatasetDefinition,
   getFeaturesPrecisionRounded,
   getFileWithFeatures,
@@ -192,6 +195,29 @@ function MapDraw() {
     }
   }, [createDataset, features, layerName])
 
+  const overLapInFeatures = useMemo(() => {
+    if (!features) {
+      return []
+    }
+    return features.map((feature) => kinks(feature.geometry).features.length > 0)
+  }, [features])
+  const hasOverLapInFeatures = overLapInFeatures.some(Boolean)
+
+  const customFeatureStyle = useCallback(
+    (style: FeatureStyle) => {
+      if (hasOverLapInFeatures && overLapInFeatures[style.index]) {
+        return {
+          stroke: 'rgb(360, 62, 98)',
+          strokeWidth: 2,
+          fill: 'rgb(360, 62, 98)',
+          fillOpacity: 0.3,
+        }
+      }
+      return featureStyle(style)
+    },
+    [hasOverLapInFeatures, overLapInFeatures]
+  )
+
   const editorMode = useMemo(() => {
     if (drawMode === 'disabled') {
       return
@@ -206,6 +232,8 @@ function MapDraw() {
     saveTooltip = t('layer.nameRequired', 'Layer name is required')
   } else if (!hasFeaturesDrawn) {
     saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
+  } else if (hasOverLapInFeatures) {
+    saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
   }
 
   return (
@@ -222,6 +250,7 @@ function MapDraw() {
             clickRadius={12}
             features={features}
             mode={editorMode}
+            featureStyle={customFeatureStyle}
             onUpdate={onEditorUpdate}
             onSelect={onEditorSelect}
           />
@@ -304,7 +333,7 @@ function MapDraw() {
           <Button
             className={styles.button}
             loading={loading}
-            disabled={!layerName || !hasFeaturesDrawn}
+            disabled={!layerName || !hasFeaturesDrawn || hasOverLapInFeatures}
             tooltip={saveTooltip}
             tooltipPlacement="top"
             onClick={onSaveClick}

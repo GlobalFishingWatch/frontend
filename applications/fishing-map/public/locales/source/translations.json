@@ -235,6 +235,7 @@
     "fleet_other": "Fleets",
     "gearType_other": "Gear types",
     "geometryRequired": "Draw a polygon is required",
+    "geometryError": "Some polygons have self-intersections",
     "name": "Layer name",
     "nameRequired": "Layer name is required",
     "infoClose": "Hide info",
