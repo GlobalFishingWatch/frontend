@@ -216,6 +216,11 @@
       "0": "Not listed",
       "1": "previously listed",
       "2": "currently listed"
+    },
+    "authorizations": {
+      "rmfoRegistry": "RFMO Registry",
+      "authPeriod": "Authorization period",
+      "source": "Data source"
     }
   },
   "layer": {

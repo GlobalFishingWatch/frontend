@@ -7,6 +7,7 @@ import { I18nSpecialDate } from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselFieldLabel } from 'types/vessel'
 import styles from './Info.module.css'
+import HistoryDate from './HistoryDate'
 
 interface ListItemProps {
   label: VesselFieldLabel
@@ -14,7 +15,7 @@ interface ListItemProps {
   vesselName: string
 }
 
-const AutorizationsField: React.FC<ListItemProps> = ({
+const AuthorizationsField: React.FC<ListItemProps> = ({
   label,
   authorizations = [],
   vesselName,
@@ -86,24 +87,30 @@ const AutorizationsField: React.FC<ListItemProps> = ({
             onClose={closeModal}
           >
             <div>
+              <div className={styles.historyItem}>
+                <label className={styles.identifierField}>{t('vessel.authorizations.rmfoRegistry', 'RMFO REGISTRY')}</label>
+                <label className={styles.identifierField}>{t('vessel.authorizations.authPeriod', 'AUTHORIZATION PEROID')}</label>
+                <label className={styles.identifierField}>{t('vessel.authorizations.source', 'DATA SOURCE')}</label>
+              </div>
               {sortedAuthorizations?.reverse().map((auth, index) => (
-                <p key={index}>
-                  {auth.source}{' '}
-                  <Fragment>
-                    {t('common.from', 'from')}{' '}
-                    {auth.startDate ?? auth.originalStartDate ? (
-                      <I18nSpecialDate date={auth.startDate ?? auth.originalStartDate} />
-                    ) : (
-                      DEFAULT_EMPTY_VALUE
-                    )}{' '}
-                    {t('common.to', 'to')}{' '}
-                    {auth.endDate ?? auth.originalEndDate ? (
-                      <I18nSpecialDate date={auth.endDate ?? auth.originalEndDate} />
-                    ) : (
-                      DEFAULT_EMPTY_VALUE
-                    )}
-                  </Fragment>
-                </p>
+                <div className={styles.historyItem} key={index}>
+                  <div className={styles.identifierField}>
+                    {auth.source}
+                  </div>
+                  <div className={styles.identifierField}>
+                    <HistoryDate
+                      date={auth.startDate}
+                      originalDate={auth.originalStartDate}
+                      label={t('common.from', 'From')}
+                    />
+                    <HistoryDate
+                      date={auth.endDate}
+                      originalDate={auth.originalEndDate}
+                      label={t('common.to', 'To')}
+                    />
+                  </div>
+                  <div className={styles.identifierField}>{t('common.other', 'Other')}</div>
+                </div>
               ))}
             </div>
           </Modal>
@@ -113,4 +120,4 @@ const AutorizationsField: React.FC<ListItemProps> = ({
   )
 }
 
-export default AutorizationsField
+export default AuthorizationsField
