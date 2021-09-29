@@ -28,13 +28,6 @@ div.identifierField label {
   opacity: var(--opacity-secondary);
 }
 
-.historyItemField {
-  font: var(--font-S);
-  line-height: 1.7rem;
-  padding: var(--space-XS);
-  min-height: var(--size-M);
-}
-
 .moreValues {
   display: block;
   cursor: pointer;
@@ -56,7 +49,6 @@ div.identifierField label {
 .historyItem {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
 }
 
 .rangeLabel {
