@@ -44,8 +44,9 @@ import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
-import { SliceInteractionEvent } from './map.slice'
-// import MapDraw from './MapDraw'
+import MapDraw from './MapDraw'
+import { selectDrawMode, SliceInteractionEvent } from './map.slice'
+import { selectIsMapDrawing } from './map.selectors'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
@@ -77,6 +78,8 @@ const MapWrapper = (): React.ReactElement | null => {
   const map = useMapInstance()
   const { t } = useTranslation()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+  const drawMode = useSelector(selectDrawMode)
+  const isMapDrawing = useSelector(selectIsMapDrawing)
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
 
@@ -192,7 +195,9 @@ const MapWrapper = (): React.ReactElement | null => {
   const getCursor = useCallback(
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
-      if (state.isHovering && hoveredTooltipEvent) {
+      if (drawMode === 'draw') {
+        return 'crosshair'
+      } else if (state.isHovering && hoveredTooltipEvent) {
         // Workaround to fix cluster events duplicated, only working for encounters and needs
         // TODO if wanted to scale it to other layers
         const clusterConfig = dataviews.find((d) => d.config?.type === Generators.Type.TileCluster)
@@ -217,7 +222,7 @@ const MapWrapper = (): React.ReactElement | null => {
       }
       return 'grab'
     },
-    [hoveredTooltipEvent, encounterSourceLoaded, dataviews]
+    [drawMode, hoveredTooltipEvent, dataviews, encounterSourceLoaded]
   )
 
   useEffect(() => {
@@ -242,6 +247,7 @@ const MapWrapper = (): React.ReactElement | null => {
           disableTokenWarning={true}
           width="100%"
           height="100%"
+          keyboard={!isMapDrawing}
           zoom={viewport.zoom}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
@@ -251,10 +257,12 @@ const MapWrapper = (): React.ReactElement | null => {
           transformRequest={transformRequest}
           onResize={setMapBounds}
           getCursor={rulersEditing ? getRulersCursor : getCursor}
-          interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
+          interactiveLayerIds={
+            rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
+          }
           clickRadius={clickRadiusScale(viewport.zoom)}
-          onClick={currentClickCallback}
-          onHover={currentMapHoverCallback}
+          onClick={isMapDrawing ? undefined : currentClickCallback}
+          onHover={isMapDrawing ? undefined : currentMapHoverCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
           transitionDuration={viewport.transitionDuration}
@@ -274,6 +282,7 @@ const MapWrapper = (): React.ReactElement | null => {
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
+          <MapDraw />
         </InteractiveMap>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
