@@ -24,7 +24,7 @@ import InfoField from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
-import AutorizationsField from './AutorizationsField'
+import AuthorizationsField from './AuthorizationsField'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -214,11 +214,11 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 hideTMTDate={true}
                 valuesHistory={vessel.history.depth.byDate}
               ></InfoField>
-              <AutorizationsField
+              <AuthorizationsField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.authorizations}
                 authorizations={vessel?.authorizations}
-              ></AutorizationsField>
+              ></AuthorizationsField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.builtYear}
