@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
 import { DateTime, Interval } from 'luxon'
@@ -133,6 +133,19 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 label={VesselFieldLabel.type}
                 value={vessel.vesselType}
                 valuesHistory={vessel.history.vesselType.byDate}
+                helpText={
+                  <Trans i18nKey="vessel.vesselTypeDescription">
+                    For vessel type sourced from Global Fishing Watch additional research and
+                    analysis is conducted in addition to using the original AIS data to identify the
+                    most likely value. Vessel types from GFW include fishing vessels, carrier
+                    vessels, and support vessels. The vessel classification for fishing vessel is
+                    estimated using known registry information in combination with a convolutional
+                    neural network used to estimate vessel class. The vessel classifcation for
+                    carrier vessels is estimated using a cumulation of known registry information,
+                    manual review, and vessel class. All support vessels in the Vessel Viewer are
+                    considered Purse Seine Support Vessels based on internal review.
+                  </Trans>
+                }
               ></InfoField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
@@ -164,6 +177,24 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 label={VesselFieldLabel.geartype}
                 value={vessel.geartype}
                 valuesHistory={vessel.history.geartype.byDate}
+                helpText={
+                  <Trans i18nKey="vessel.geartypeDescription">
+                    Likely gear type of vessel as defined by Global Fishing Watch. The vessel
+                    classification for fishing vessel is estimated using known registry information
+                    in combination with a convolutional neural network used to estimate vessel
+                    class, see more information here:
+                    <a
+                      href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      https://globalfishingwatch.org/datasets-and-code-vessel-identity/
+                    </a>{' '}
+                    . The vessel classifcation for carrier vessels is estimated using a cumulation
+                    of known registry information. All support vessels in the Vessel Viewer are
+                    considered Purse Seine Support Vessels based on internal review.
+                  </Trans>
+                }
               ></InfoField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
@@ -265,6 +296,11 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                     : DEFAULT_EMPTY_VALUE
                 }
                 valuesHistory={[]}
+                helpText={
+                  <Trans i18nKey="vessel.iuuStatusDescription">
+                    [TDB] IUU status description to be defined
+                  </Trans>
+                }
               ></InfoField>
             </div>
           </div>

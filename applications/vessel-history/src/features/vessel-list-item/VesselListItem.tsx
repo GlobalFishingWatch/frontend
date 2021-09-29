@@ -9,7 +9,7 @@ import { useVesselsConnect } from 'features/vessels/vessels.hook'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
-import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './VesselListItem.module.css'
 interface ListItemProps {
   saved?: string
@@ -70,18 +70,11 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               <label>{t('vessel.transmission_plural', 'transmissions')}</label>
               {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
                 <Fragment>
-                  {t('common.from', 'from')}{' '}
-                  {vessel.firstTransmissionDate ? (
-                    <I18nDate date={vessel.firstTransmissionDate} />
-                  ) : (
-                    DEFAULT_EMPTY_VALUE
-                  )}{' '}
-                  {t('common.to', 'to')}{' '}
-                  {vessel.lastTransmissionDate ? (
-                    <I18nDate date={vessel.lastTransmissionDate} />
-                  ) : (
-                    DEFAULT_EMPTY_VALUE
-                  )}
+                  {t('vessel.transmissionRange', '{{transmissions}} AIS transmissions from {{start}} to {{end}}', {
+                    transmissions: vessel.posCount,
+                    start: vessel.firstTransmissionDate ? formatI18nDate(vessel.firstTransmissionDate) :  DEFAULT_EMPTY_VALUE,
+                    end: vessel.lastTransmissionDate ? formatI18nDate(vessel.lastTransmissionDate) :  DEFAULT_EMPTY_VALUE,
+                  })}
                 </Fragment>
               ) : (
                 DEFAULT_EMPTY_VALUE
@@ -118,6 +111,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           )}
           {props.saved && (
             <div>
+
               <label>{t('vessel.savedOn', 'saved on')}</label>
               {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
             </div>

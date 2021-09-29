@@ -13,27 +13,32 @@ interface DatasetFileProps {
   onFileLoaded: (fileInfo: File, type?: DatasetGeometryType) => void
 }
 
+type DatasetGeometryTypesSupported = Extract<DatasetGeometryType, 'polygons' | 'tracks' | 'points'>
+
 const POLYGONS_ACCEPT = '.zip, .json, .geojson'
 const TRACKS_ACCEPT = '.csv'
-const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryType, string> = {
+const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
   polygons: POLYGONS_ACCEPT,
   tracks: TRACKS_ACCEPT,
   points: '',
 }
-const TRANSLATIONS_BY_TYPE: Record<DatasetGeometryType, string> = {
+const TRANSLATIONS_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
   polygons: 'dataset.dragFilePlaceholder',
   tracks: 'dataset.dragFilePlaceholderCSV',
   points: '',
 }
-const ERRORS_BY_TYPE: Record<DatasetGeometryType, string> = {
+const ERRORS_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
   polygons: 'dataset.onlyZipAndJsonAllowed',
   tracks: 'dataset.onlyCsvAllowed',
   points: '',
 }
 
 const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className = '' }) => {
-  const accept = type ? ACCEPT_FILES_BY_TYPE[type] : ACCEPT_FILES_BY_TYPE.polygons
-  const translationKey = type ? TRANSLATIONS_BY_TYPE[type] : TRANSLATIONS_BY_TYPE.polygons
+  const supportedType = type as DatasetGeometryTypesSupported
+  const accept = supportedType ? ACCEPT_FILES_BY_TYPE[supportedType] : ACCEPT_FILES_BY_TYPE.polygons
+  const translationKey = supportedType
+    ? TRANSLATIONS_BY_TYPE[supportedType]
+    : TRANSLATIONS_BY_TYPE.polygons
   const filesSupportedIcon =
     accept === POLYGONS_ACCEPT ? <FilesSupportedPolygonsIcon /> : <FilesSupportedTracksIcon />
   const { t } = useTranslation()
@@ -69,7 +74,8 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
       {fileRejections.length > 0 && (
         <p className={cx(styles.fileText, styles.warning)}>
           {t(
-            (ERRORS_BY_TYPE[type as DatasetGeometryType] as any) || 'dataset.onlyZipAndJsonAllowed',
+            (ERRORS_BY_TYPE[type as DatasetGeometryTypesSupported] as any) ||
+              'dataset.onlyZipAndJsonAllowed',
             '(Only .zip or .json files are allowed)'
           )}
         </p>

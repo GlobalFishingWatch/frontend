@@ -18,6 +18,11 @@
   padding: 0 var(--space-S);
 }
 
+.event .eventData {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .event .eventData .date {
   font-size: 1rem;
   line-height: var(--space-S);
@@ -145,7 +150,12 @@
 }
 
 .highlightsListContainer .event .eventData .description {
-  width: calc(100vw - var(--size-S) * 4.7);
+  width: calc(100vw - var(--size-S) * 5.7);
+}
+
+.highlightsListContainer .event {
+  margin: 0;
+  padding: 0;
 }
 
 .highlights {

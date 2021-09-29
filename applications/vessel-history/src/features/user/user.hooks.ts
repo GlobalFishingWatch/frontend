@@ -47,7 +47,7 @@ export const useUser = () => {
   }, [accessToken, dispatch, logged, refreshToken, token])
 
   return {
-    loading: status !== AsyncReducerStatus.Finished,
+    loading: status !== AsyncReducerStatus.Finished && status !== AsyncReducerStatus.Idle,
     logged,
     user,
     authorized,
