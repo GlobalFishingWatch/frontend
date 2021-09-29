@@ -15,6 +15,7 @@ import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { isGFWUser } from 'features/user/user.slice'
+import { useLocationConnect } from 'routes/routes.hook'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ContextAreaLayerPanel'
 
@@ -22,6 +23,7 @@ function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const { dispatchSetDrawMode } = useMapDrawConnect()
+  const { dispatchQueryParams } = useLocationConnect()
 
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(isGFWUser)
@@ -31,7 +33,8 @@ function ContextAreaSection(): React.ReactElement {
 
   const onDrawClick = useCallback(() => {
     dispatchSetDrawMode('draw')
-  }, [dispatchSetDrawMode])
+    dispatchQueryParams({ sidebarOpen: false })
+  }, [dispatchQueryParams, dispatchSetDrawMode])
 
   const onAddClick = useCallback(() => {
     uaEvent({

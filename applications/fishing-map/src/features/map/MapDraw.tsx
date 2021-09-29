@@ -8,6 +8,7 @@ import { FeatureOf, Polygon } from '@nebula.gl/edit-modes'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   useAddDataviewFromDatasetToWorkspace,
   useDatasetsAPI,
@@ -54,6 +55,8 @@ function MapDraw() {
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState<number | null>(null)
   const [selectedEditHandleIndex, setSelectedEditHandleIndex] = useState<number | null>(null)
   const { drawMode, dispatchSetDrawMode } = useMapDrawConnect()
+
+  const { dispatchQueryParams } = useLocationConnect()
   const { containerRef } = useMapControl()
   const { dispatchCreateDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
@@ -166,7 +169,8 @@ function MapDraw() {
   const closeDraw = useCallback(() => {
     resetState()
     dispatchSetDrawMode('disabled')
-  }, [dispatchSetDrawMode, resetState])
+    dispatchQueryParams({ sidebarOpen: true })
+  }, [dispatchQueryParams, dispatchSetDrawMode, resetState])
 
   const createDataset = useCallback(
     async (features: DrawFeature[], name) => {
