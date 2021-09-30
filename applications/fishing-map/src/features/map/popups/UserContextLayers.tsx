@@ -92,7 +92,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
               const isContextArea = feature.layerId.includes(CONTEXT_LAYER_PREFIX)
               return (
                 <div className={styles.row} key={`${feature.value}-${gfw_id}-${index}}`}>
-                  <span className={styles.rowText}>{feature.value ?? feature.title}</span>
+                  <span className={styles.rowText}>{feature.value}</span>
                   {showFeaturesDetails && (
                     <div className={styles.rowActions}>
                       {isContextArea && (

@@ -178,22 +178,19 @@ export const useCarrierLatestConnect = () => {
   }
 }
 
-export const useAutoRefreshImportingDataset = (
-  dataset?: Dataset,
-  refreshTimeout = DATASET_REFRESH_TIMEOUT
-) => {
+export const useAutoRefreshImportingDataset = (dataset?: Dataset) => {
   const { dispatchFetchDataset } = useDatasetsAPI()
   useEffect(() => {
     let timeOut: any
     if (dataset && dataset.status === DatasetStatus.Importing) {
       timeOut = setTimeout(() => {
         dispatchFetchDataset(dataset.id)
-      }, refreshTimeout)
+      }, DATASET_REFRESH_TIMEOUT)
     }
     return () => {
       if (timeOut) {
         clearTimeout(timeOut)
       }
     }
-  }, [dataset, dispatchFetchDataset, refreshTimeout])
+  }, [dataset, dispatchFetchDataset])
 }

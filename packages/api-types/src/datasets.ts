@@ -61,7 +61,7 @@ export enum DatasetStatus {
   Error = 'error',
 }
 
-export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
+export type DatasetGeometryType = 'polygons' | 'tracks' | 'points'
 
 export interface DatasetConfiguration {
   index?: string
