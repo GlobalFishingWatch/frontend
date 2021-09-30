@@ -26,3 +26,17 @@ export const getDateFormatString = ({ locale = i18n.language, upper = false } = 
     })
     .join('')
 }
+
+export const removeDatasetVersion = (datasetId: string) => {
+  return datasetId ? datasetId?.split(':')[0] : ''
+}
+
+export const getDatasetNameTranslated = (dataset: { id: string; name?: string }): string => {
+  return t(`datasets:${removeDatasetVersion(dataset.id)}.name`, dataset.name)
+}
+export const getDatasetDescriptionTranslated = (dataset: {
+  id: string
+  description?: string
+}): string => {
+  return t(`datasets:${removeDatasetVersion(dataset.id)}.description`, dataset.description)
+}

@@ -7,7 +7,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'en',
 
   // have a common namespace used around the full app
-  ns: ['translations', 'flags'],
+  ns: ['translations', 'flags', 'datasets'],
   defaultNS: 'translations',
 
   debug: process.env.i18n_DEBUG === 'true',
