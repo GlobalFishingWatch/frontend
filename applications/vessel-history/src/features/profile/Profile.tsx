@@ -34,6 +34,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
 import { parseVesselProfileId } from 'features/vessels/vessels.utils'
+import { setHighlightedEvent } from 'features/map/map.slice'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -104,13 +105,14 @@ const Profile: React.FC = (props): React.ReactElement => {
     if (datasets.length > 0) {
       fetchVessel()
       dispatch(resetFilters())
+      dispatch(setHighlightedEvent(undefined))
     }
   }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
 
-  const  trackEvent = useCallback(() => {
+  const trackEvent = useCallback(() => {
     uaEvent({
       category: 'Vessel Detail',
-      action: 'Click to go back to search'
+      action: 'Click to go back to search',
     })
   }, [])
 
@@ -128,10 +130,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'info',
         title: t('common.info', 'INFO').toLocaleUpperCase(),
         content: vessel ? (
-          <Info 
-            vessel={vessel} 
-            lastPosition={lastPosition} 
-            lastPortVisit={lastPortVisit} 
+          <Info
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
             onMoveToMap={() => setActiveTab(tabs?.[2])}
           />
         ) : (
@@ -242,7 +244,7 @@ const Profile: React.FC = (props): React.ReactElement => {
               uaEvent({
                 category: 'Vessel Detail MAP Tab',
                 action: 'See MAP Tab',
-                label: 'global tab'
+                label: 'global tab',
               })
             }
           }}
