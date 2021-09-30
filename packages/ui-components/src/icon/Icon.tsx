@@ -2,7 +2,6 @@ import React, { memo } from 'react'
 import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import Tooltip from '../tooltip'
-import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
@@ -18,7 +17,6 @@ import { ReactComponent as Close } from '../assets/icons/close.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
 import { ReactComponent as Compare } from '../assets/icons/compare.svg'
-import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Download } from '../assets/icons/download.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
@@ -63,7 +61,6 @@ import { ReactComponent as Warning } from '../assets/icons/warning.svg'
 import styles from './Icon.module.css'
 
 export const IconComponents = {
-  'add-polygon': AddPolygon,
   'arrow-down': ArrowDown,
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
@@ -79,7 +76,6 @@ export const IconComponents = {
   'color-picker': ColorPicker,
   'color-picker-filled': ColorPickerFilled,
   compare: Compare,
-  draw: Draw,
   delete: Delete,
   download: Download,
   edit: Edit,

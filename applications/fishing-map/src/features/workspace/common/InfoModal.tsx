@@ -74,20 +74,6 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
     }`
   }
 
-  if (dataset?.configuration?.geometryType === 'draw') {
-    return datasetImporting || datasetError ? (
-      <IconButton
-        size="small"
-        icon={'info'}
-        type={datasetError ? 'warning' : 'default'}
-        loading={datasetImporting}
-        className={className}
-        tooltip={tooltip}
-        tooltipPlacement="top"
-      />
-    ) : null
-  }
-
   return (
     <Fragment>
       <IconButton

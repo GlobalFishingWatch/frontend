@@ -112,6 +112,7 @@ function App(): React.ReactElement {
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+  const showToggle = useSelector(isWorkspaceLocation)
   const userLogged = useSelector(isUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
   const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -205,7 +206,7 @@ function App(): React.ReactElement {
       <Suspense fallback={null}>
         <SplitView
           isOpen={sidebarOpen}
-          showToggle={workspaceLocation}
+          showToggle={showToggle}
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}
