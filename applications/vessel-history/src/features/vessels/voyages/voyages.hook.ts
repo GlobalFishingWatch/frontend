@@ -11,6 +11,7 @@ function useVoyagesConnect() {
   const [expandedVoyages, setExpandedVoyages] = useState<
     Record<number, RenderedVoyage | undefined>
   >([])
+  const [expandedByDefaultInitialized, setExpandedByDefaultInitialized] = useState(false)
 
   const toggleVoyage = useCallback(
     (voyage: RenderedVoyage) => {
@@ -52,13 +53,18 @@ function useVoyagesConnect() {
   }, [eventsList, expandedVoyages])
 
   useEffect(() => {
+    if (!expandedByDefaultInitialized || events.length === 0) return
+
     const [lastVoyage] = events.filter((event) => event.type === EventTypeVoyage.Voyage)
-    if (lastVoyage)
+    if (lastVoyage) {
       setExpandedVoyages({
         [(lastVoyage as RenderedVoyage).timestamp]: lastVoyage as RenderedVoyage,
       })
+      setExpandedByDefaultInitialized(true)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [events, expandedVoyages])
+
   return { eventsLoading, events, toggleVoyage }
 }
 
