@@ -12,7 +12,7 @@ export enum SublayerCombinationMode {
   // Returns a bucket index depending on sublayer with highest value + position on sublayer color ramp
   Max = 'max',
   // Returns a bucket index depending on delta value between two sublayers
-  Delta = 'delta',
+  TimeCompare = 'timecompare',
   // Returns a bucket index depending on a 2D color ramp
   Bivariate = 'bivariate',
   // Returns raw values that can be decoded with JSON.parse (number or array of numbers). Used for interaction layer

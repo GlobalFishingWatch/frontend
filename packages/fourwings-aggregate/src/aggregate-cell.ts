@@ -48,7 +48,7 @@ const aggregateCell = ({
 
   const realValues = getRealValues(aggregatedValues, multiplier)
 
-  if (sublayerCombinationMode === SublayerCombinationMode.Delta) {
+  if (sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
     return [realValues[1] - realValues[0]]
   }
 

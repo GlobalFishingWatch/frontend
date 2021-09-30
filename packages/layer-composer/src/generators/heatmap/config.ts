@@ -14,7 +14,7 @@ export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombi
   [HeatmapAnimatedMode.Single]: SublayerCombinationMode.None,
   [HeatmapAnimatedMode.Compare]: SublayerCombinationMode.Max,
   [HeatmapAnimatedMode.Bivariate]: SublayerCombinationMode.Bivariate,
-  [HeatmapAnimatedMode.TimeCompare]: SublayerCombinationMode.Delta,
+  [HeatmapAnimatedMode.TimeCompare]: SublayerCombinationMode.TimeCompare,
   [HeatmapAnimatedMode.Blob]: SublayerCombinationMode.Literal,
   [HeatmapAnimatedMode.Extruded]: SublayerCombinationMode.Cumulative,
 }

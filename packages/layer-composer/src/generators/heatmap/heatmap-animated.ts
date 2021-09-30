@@ -184,7 +184,8 @@ class HeatmapAnimatedGenerator {
         aggregationOperation: config.aggregationOperation,
         sublayerCombinationMode,
         sublayerVisibility: visible,
-        sublayerCount: config.sublayers.length,
+        sublayerCount:
+          config.mode === HeatmapAnimatedMode.TimeCompare ? 2 : config.sublayers.length,
         sublayerBreaks,
         interactive: interactiveSource,
       }

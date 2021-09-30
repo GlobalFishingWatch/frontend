@@ -68,6 +68,7 @@ export const useGeneratorsConnect = () => {
   const debugOptions = useSelector(selectDebugOptions)
 
   return useMemo(() => {
+    const compareWithAfter = true
     const globalConfig: Generators.GlobalGeneratorConfig = {
       zoom: viewport.zoom,
       start,
@@ -75,8 +76,15 @@ export const useGeneratorsConnect = () => {
       token: GFWAPI.getToken(),
     }
     if (debugOptions.timeCompare && start && end) {
-      globalConfig.timeCompareStart = DateTime.fromISO(start).toUTC().plus({ years: 1 }).toISO()
-      globalConfig.timeCompareEnd = DateTime.fromISO(end).toUTC().plus({ years: 1 }).toISO()
+      if (compareWithAfter) {
+        globalConfig.timeCompareStart = DateTime.fromISO(start).toUTC().plus({ years: 1 }).toISO()
+        globalConfig.timeCompareEnd = DateTime.fromISO(end).toUTC().plus({ years: 1 }).toISO()
+      } else {
+        globalConfig.start = DateTime.fromISO(start).toUTC().plus({ years: 1 }).toISO()
+        globalConfig.end = DateTime.fromISO(end).toUTC().plus({ years: 1 }).toISO()
+        globalConfig.timeCompareStart = start
+        globalConfig.timeCompareEnd = end
+      }
     }
     return {
       generatorsConfig,
@@ -316,7 +324,9 @@ export const parseMapTooltipEvent = (
   }
 
   // We don't want to show anything else when hovering a comparison point
-  if (event.features[0]?.temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.Delta) {
+  if (
+    event.features[0]?.temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare
+  ) {
     return {
       ...baseEvent,
       features: [
@@ -325,7 +335,7 @@ export const parseMapTooltipEvent = (
           value: event.features[0]?.value,
           visible: true,
           unit: 'hours',
-        },
+        } as TooltipEventFeature,
       ],
     }
   }

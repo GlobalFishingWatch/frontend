@@ -6,7 +6,7 @@ import {
   CONFIG_BY_INTERVAL,
   Interval,
 } from '@globalfishingwatch/layer-composer'
-import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
+import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
@@ -80,7 +80,10 @@ const getExtendedFeatures = (
           frame,
           delta: Math.max(1, timeChunks.deltaInIntervalUnits),
           quantizeOffset: activeTimeChunk.quantizeOffset,
-          sublayerCount: numSublayers,
+          sublayerCount:
+            generatorMetadata?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare
+              ? 2
+              : numSublayers,
           aggregationOperation: generatorMetadata?.aggregationOperation,
           sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
           multiplier: generatorMetadata?.multiplier,
