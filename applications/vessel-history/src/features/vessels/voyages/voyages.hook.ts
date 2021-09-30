@@ -53,12 +53,14 @@ function useVoyagesConnect() {
   }, [eventsList, expandedVoyages])
 
   useEffect(() => {
-    if (!expandedByDefaultInitialized || events.length === 0) return
+    if (expandedByDefaultInitialized || events.length === 0) return
 
-    const [lastVoyage] = events.filter((event) => event.type === EventTypeVoyage.Voyage)
+    const lastVoyage = events.find(
+      (event) => event.type === EventTypeVoyage.Voyage
+    ) as RenderedVoyage
     if (lastVoyage) {
       setExpandedVoyages({
-        [(lastVoyage as RenderedVoyage).timestamp]: lastVoyage as RenderedVoyage,
+        [lastVoyage.timestamp]: lastVoyage as RenderedVoyage,
       })
       setExpandedByDefaultInitialized(true)
     }
