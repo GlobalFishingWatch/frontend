@@ -54,8 +54,6 @@ export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 
 export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 176 : 268
 
 export const DEFAULT_EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
-export const DEFAULT_MPA_NO_TAKE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 99 : 179
-export const DEFAULT_MPA_RESTRICTED_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 100 : 180
 export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 
@@ -65,7 +63,7 @@ export const dataviewInstances: DataviewInstance<Generators.Type>[] = [
     dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
   },
   {
-    id: 'context-layer-eez',
+    id: 'public-eez-areas',
     config: {
       color: '#069688',
       visible: true,
@@ -73,7 +71,7 @@ export const dataviewInstances: DataviewInstance<Generators.Type>[] = [
     dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
   },
   {
-    id: 'context-layer-mpa',
+    id: 'public-wdpa-may-2021-marine',
     config: {
       color: '#1AFF6B',
       visible: false,
@@ -81,7 +79,7 @@ export const dataviewInstances: DataviewInstance<Generators.Type>[] = [
     dataviewId: DEFAULT_MPA_DATAVIEW_ID,
   },
   {
-    id: 'context-layer-rfmo',
+    id: 'public-tuna-rfmo',
     config: {
       color: '#6b67e5',
       visible: false,
