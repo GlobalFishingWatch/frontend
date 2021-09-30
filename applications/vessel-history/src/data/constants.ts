@@ -1,4 +1,5 @@
-export const BASE_URL = process.env.NODE_ENV === 'production' ? '/vessel-history' : ''
+export const BASE_URL =
+  process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/vessel-viewer' : '')
 
 export const SPLASH_TIMEOUT = 1000
 export const RESULTS_PER_PAGE = 25
