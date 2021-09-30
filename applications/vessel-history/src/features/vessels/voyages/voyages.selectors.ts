@@ -4,6 +4,7 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { ActivityEvent } from 'types/activity'
 import { Voyage, EventTypeVoyage } from 'types/voyage'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectEventsForTracks, selectFilteredEvents } from '../activity/vessels-activity.selectors'
 
 export const selectVoyages = createSelector([selectEventsForTracks], (eventsForTrack) => {
@@ -56,11 +57,15 @@ export const selectFilteredEventsByVoyages = createSelector(
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
-    const startDate = DateTime.fromISO(filters.start, { zone: 'utc' })
+    const startDate = DateTime.fromISO(filters.start ?? DEFAULT_WORKSPACE.availableStart, {
+      zone: 'utc',
+    })
 
     // Setting the time to 23:59:59.99 so the events in that same day
     //  are also displayed
-    const endDateUTC = DateTime.fromISO(filters.end, { zone: 'utc' }).toISODate()
+    const endDateUTC = DateTime.fromISO(filters.end ?? DEFAULT_WORKSPACE.availableEnd, {
+      zone: 'utc',
+    }).toISODate()
     const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
     const interval = Interval.fromDateTimes(startDate, endDate)
 
