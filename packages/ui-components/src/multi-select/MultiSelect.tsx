@@ -223,7 +223,7 @@ function MultiSelect(props: MultiSelectProps) {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={
-              placeholder || getPlaceholderBySelections(selectedOptions, placeholderDisplayAll)
+              getPlaceholderBySelections(selectedOptions, placeholderDisplayAll) || placeholder
             }
             className={multiSelectStyles.input}
           />
