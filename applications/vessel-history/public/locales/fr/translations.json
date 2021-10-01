@@ -241,7 +241,10 @@
       "0": "Non listé",
       "1": "listé précédemment",
       "2": "actuellement listée"
-    }
+    },
+    "authorizations": "authorizations",
+    "rmfoRegistry": "RFMO Registry",
+    "authPeriod": "Authorization period"
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
