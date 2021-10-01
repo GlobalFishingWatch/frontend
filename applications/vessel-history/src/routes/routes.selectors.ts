@@ -81,10 +81,7 @@ export const getDateRange = createSelector(
  */
 export const selectUrlTimeRange = createSelector(
   [selectUrlStartQuery, selectUrlEndQuery],
-  (start, end) => ({
-    start: new Date(start).getTime(),
-    end: new Date(end).getTime(),
-  })
+  (start, end) => ({ start, end })
 )
 
 export const selectAdvancedSearchMMSI = selectQueryParam<string>('mmsi') || ''
@@ -141,9 +138,10 @@ export const selectUrlAkaVesselQuery = selectQueryParam<string[]>('aka')
 
 export const selectSearchableQueryParams = createSelector(
   [selectAdvancedSearchFields, selectUrlQuery],
-  (filters, query) => ({
-    q: query,
-    ...filters,
-    flags: filters?.flags.join(',')
-  } as any)
+  (filters, query) =>
+    ({
+      q: query,
+      ...filters,
+      flags: filters?.flags.join(','),
+    } as any)
 )

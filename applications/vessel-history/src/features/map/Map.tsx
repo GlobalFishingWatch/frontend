@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
 import { InteractiveMap } from 'react-map-gl'
+import { DateTime } from 'luxon'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
@@ -13,13 +14,14 @@ import { DEFAULT_VESSEL_MAP_ZOOM, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
 import { selectVesselProfileId } from 'routes/routes.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { EventTypeVoyage, RenderedVoyage } from 'types/voyage'
+import { EventTypeVoyage } from 'types/voyage'
+import { Range } from 'types'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
 import useMapEvents from './map-events.hooks'
-import { selectHighlightedEvent, setHighlightedEvent } from './map.slice'
+import { selectHighlightedEvent, setHighlightedEvent, setVoyageTime } from './map.slice'
 import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
@@ -42,13 +44,7 @@ const Map: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
-  const {
-    eventsLoading,
-    events,
-  }: {
-    eventsLoading: boolean
-    events: (RenderedEvent | RenderedVoyage)[]
-  } = useVoyagesConnect()
+  const { eventsLoading, events, getVoyageByEvent } = useVoyagesConnect()
 
   const onMapClick = useMapClick(
     selectVesselEventOnClick,
@@ -65,9 +61,17 @@ const Map: React.FC = (): React.ReactElement => {
   const onMapLoad = useCallback(() => {
     if (!vesselLoaded || !vesselDataviewLoaded || eventsLoading || highlightedEvent) return
 
-    const lastEvent = events.find((event) => event.type !== EventTypeVoyage.Voyage) as RenderedEvent
-    if (lastEvent) {
+    const lastEvent =
+      (events.find((event) => event.type !== EventTypeVoyage.Voyage) as RenderedEvent) || undefined
+    const lastVoyage = getVoyageByEvent(lastEvent)
+    if (lastEvent && lastVoyage) {
       dispatch(setHighlightedEvent({ id: lastEvent.id } as ApiEvent))
+      dispatch(
+        setVoyageTime({
+          start: DateTime.fromMillis(lastVoyage.start).toUTC().toISO(),
+          end: DateTime.fromMillis(lastVoyage.end).toUTC().toISO(),
+        } as Range)
+      )
       setMapCoordinates({
         latitude: lastEvent.position.lat,
         longitude: lastEvent.position.lon,
@@ -82,6 +86,7 @@ const Map: React.FC = (): React.ReactElement => {
     eventsLoading,
     highlightedEvent,
     events,
+    getVoyageByEvent,
     dispatch,
     setMapCoordinates,
   ])

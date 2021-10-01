@@ -24,8 +24,9 @@ function useVoyagesConnect() {
   )
 
   const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
-    const hasVoyages =
-      eventsList.filter((event) => event.type === EventTypeVoyage.Voyage).length > 0
+    const hasVoyages = !!eventsList.find((event) => event.type === EventTypeVoyage.Voyage)
+    if (!hasVoyages) return eventsList as RenderedEvent[]
+
     const eventsListParsed = eventsList.map((event) => {
       if (event.type === EventTypeVoyage.Voyage) {
         return {
@@ -36,20 +37,19 @@ function useVoyagesConnect() {
         return event as RenderedEvent
       }
     })
-    return hasVoyages
-      ? eventsListParsed.filter((event) => {
-          return (
-            event.type === EventTypeVoyage.Voyage ||
-            Object.values(expandedVoyages).find(
-              (voyage) =>
-                voyage !== undefined &&
-                // event timestamp or start is inside the voyage
-                voyage.start <= (event.timestamp ?? event.start) &&
-                voyage.end >= (event.timestamp ?? event.start)
-            )
-          )
-        })
-      : eventsListParsed
+
+    return eventsListParsed.filter((event) => {
+      return (
+        event.type === EventTypeVoyage.Voyage ||
+        Object.values(expandedVoyages).find(
+          (voyage) =>
+            voyage !== undefined &&
+            // event timestamp or start is inside the voyage
+            voyage.start <= (event.timestamp ?? event.start) &&
+            voyage.end >= (event.timestamp ?? event.start)
+        )
+      )
+    })
   }, [eventsList, expandedVoyages])
 
   useEffect(() => {
@@ -67,7 +67,19 @@ function useVoyagesConnect() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events, expandedVoyages])
 
-  return { eventsLoading, events, toggleVoyage }
+  const getVoyageByEvent = useCallback(
+    (event: RenderedEvent) => {
+      return events.find(
+        (voyage) =>
+          voyage.type === EventTypeVoyage.Voyage &&
+          (event?.timestamp ?? event?.start) >= voyage.start &&
+          (event?.timestamp ?? event?.start) <= voyage.end
+      ) as RenderedVoyage
+    },
+    [events]
+  )
+
+  return { eventsLoading, events, getVoyageByEvent, toggleVoyage }
 }
 
 export default useVoyagesConnect

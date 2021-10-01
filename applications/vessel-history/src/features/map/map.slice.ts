@@ -1,6 +1,5 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
   AnyGeneratorConfig,
@@ -8,15 +7,14 @@ import {
   BasemapGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { RootState } from 'store'
-import { selectUrlMapZoomQuery } from 'routes/routes.selectors'
 import { Range } from 'types'
-import { selectFilters } from 'features/event-filters/filters.slice'
 
 export interface MapState {
   generatorsConfig: AnyGeneratorConfig[]
   highlightedTime?: Range
   highlightedEvent?: ApiEvent
   highlightedEventMap?: ApiEvent
+  voyageTime?: Range
 }
 
 const initialState: MapState = {
@@ -53,40 +51,44 @@ export const mapSlice = createSlice({
     setHighlightedTime: (state, action: PayloadAction<Range>) => {
       state.highlightedTime = action.payload
     },
+    setVoyageTime: (state, action: PayloadAction<Range>) => {
+      state.voyageTime = action.payload
+    },
     setHighlightedEvent: (state, action: PayloadAction<ApiEvent | undefined>) => {
       state.highlightedEvent = action.payload
-      state.highlightedEventMap = action.payload ? {
-        ...action.payload,
-        id: action.payload.id.replace('-exit', '')
-      } : undefined
+      state.highlightedEventMap = action.payload
+        ? {
+            ...action.payload,
+            id: action.payload.id.replace('-exit', ''),
+          }
+        : undefined
     },
     disableHighlightedTime: (state) => {
       state.highlightedTime = undefined
+    },
+    disableVoyageTime: (state) => {
+      state.voyageTime = undefined
     },
   },
 })
 
 // createSlice generates for us actions that we can use to modify the store by calling dispatch, or using the useDispatch hook
-export const { updateGenerator, setHighlightedTime, setHighlightedEvent, disableHighlightedTime } =
-  mapSlice.actions
+export const {
+  updateGenerator,
+  setHighlightedTime,
+  setVoyageTime,
+  setHighlightedEvent,
+  disableHighlightedTime,
+  disableVoyageTime,
+} = mapSlice.actions
 
 // This is a simple selector that just picks a portion of the stor for consumption by either a component,
 // or a more complex memoized selector. Memoized selectors and/or that need to access several slices,
 // should go into a distiinct [feature].selectors.ts file (use createSelector from RTK)
 export const selectGeneratorsConfig = (state: RootState) => state.map.generatorsConfig
 export const selectHighlightedTime = (state: RootState) => state.map.highlightedTime
+export const selectMapVoyageTime = (state: RootState) => state.map.voyageTime
 export const selectHighlightedEvent = (state: RootState) => state.map.highlightedEvent
 export const selectHighlightedEventMap = (state: RootState) => state.map.highlightedEventMap
-
-export const selectGlobalGeneratorsConfig = createSelector(
-  // TODO sync filters and url for dates
-  [selectUrlMapZoomQuery, selectFilters],
-  (zoom, { start, end }) => ({
-    zoom,
-    start,
-    end,
-    token: GFWAPI.getToken(),
-  })
-)
 
 export default mapSlice.reducer
