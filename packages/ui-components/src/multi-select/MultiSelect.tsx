@@ -32,9 +32,10 @@ interface MultiSelectProps {
 
 const getPlaceholderBySelections = (
   selections: MultiSelectOption[],
-  displayAll: boolean
+  displayAll: boolean,
+  placeholder?: string
 ): string => {
-  if (!selections?.length) return 'Select an option'
+  if (!selections?.length) return placeholder ?? 'Select an option'
   return displayAll
     ? selections
         .map((elem: MultiSelectOption) => {
@@ -222,9 +223,7 @@ function MultiSelect(props: MultiSelectProps) {
             })}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={
-              getPlaceholderBySelections(selectedOptions, placeholderDisplayAll) || placeholder
-            }
+            placeholder={getPlaceholderBySelections(selectedOptions, placeholderDisplayAll)}
             className={multiSelectStyles.input}
           />
         </div>
