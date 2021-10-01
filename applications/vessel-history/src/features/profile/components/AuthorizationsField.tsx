@@ -8,7 +8,6 @@ import { VesselFieldLabel } from 'types/vessel'
 import { ValueItem } from 'types'
 import InfoFieldHistory from './InfoFieldHistory'
 import styles from './Info.module.css'
-import HistoryDate from './HistoryDate'
 
 interface ListItemProps {
   label: VesselFieldLabel
@@ -43,15 +42,15 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
     ? Array.from(new Map(sortedAuthorizations.map((item) => [item.source, item])).values())
     : []
   
-    const authsHistory = useMemo(
-          () =>
-            sortedAuthorizations?.reverse().map((auth) => ({
-              ...auth,
-              originalFirstSeen: auth.originalStartDate,
-              value: auth.source,
-            })) as ValueItem[],
-          [sortedAuthorizations]
-        )
+  const authsHistory = useMemo(
+    () =>
+      sortedAuthorizations?.reverse().map((auth) => ({
+        ...auth,
+        originalFirstSeen: auth.originalStartDate,
+        value: auth.source,
+      })) as ValueItem[],
+    [sortedAuthorizations]
+  )
 
   return (
     <div className={styles.identifierField}>
