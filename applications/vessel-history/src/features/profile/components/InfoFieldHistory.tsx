@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, ReactNode, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
@@ -12,6 +12,11 @@ interface ListItemProps {
   history: ValueItem[]
   isOpen: boolean
   label: VesselFieldLabel
+  columnHeaders?: {
+    field?: ReactNode
+    dates?: ReactNode
+    source?: ReactNode
+  }
   hideTMTDate: boolean
   vesselName: string
   onClose?: () => void
@@ -21,6 +26,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   history,
   isOpen,
   label,
+  columnHeaders,
   hideTMTDate,
   vesselName,
   onClose = () => void 0,
@@ -46,13 +52,17 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
         >
           <div>
             <div className={styles.historyItem}>
-              <label className={styles.identifierField}>{t(`vessel.${label}` as any, label)}</label>
+              <label className={styles.identifierField}>
+                {columnHeaders?.field ?? t(`vessel.${label}` as any, label)}
+              </label>
               {!hideTMTDate && (
                 <label className={styles.identifierField}>
-                  {t('common.timeRange', 'time range')}
+                  {columnHeaders?.dates ?? t('common.timeRange', 'time range')}
                 </label>
               )}
-              <label className={styles.identifierField}>{t(`vessel.source`, 'source')}</label>
+              <label className={styles.identifierField}>
+                {columnHeaders?.source ?? t(`vessel.source`, 'source')}
+              </label>
             </div>
 
             {history.map((historyValue: ValueItem, index) => (

@@ -2,12 +2,12 @@ import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { Authorization } from '@globalfishingwatch/api-types/dist'
-import { Modal } from '@globalfishingwatch/ui-components'
 import { I18nSpecialDate } from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselFieldLabel } from 'types/vessel'
+import { ValueItem } from 'types'
+import InfoFieldHistory from './InfoFieldHistory'
 import styles from './Info.module.css'
-import HistoryDate from './HistoryDate'
 
 interface ListItemProps {
   label: VesselFieldLabel
@@ -35,16 +35,22 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
   }, [label, authorizations.length])
   const closeModal = useCallback(() => setModalOpen(false), [])
 
-  const defaultTitle = useMemo(() => {
-    return `${label} History for ${vesselName}`
-  }, [label, vesselName])
-
   const sortedAuthorizations = [...authorizations].sort((a: Authorization, b: Authorization) => {
     return a.originalEndDate - b.originalEndDate
   })
   const auths: Authorization[] = sortedAuthorizations.length
     ? Array.from(new Map(sortedAuthorizations.map((item) => [item.source, item])).values())
     : []
+  
+    const authsHistory = useMemo(
+          () =>
+            sortedAuthorizations?.reverse().map((auth) => ({
+              ...auth,
+              originalFirstSeen: auth.originalStartDate,
+              value: auth.source,
+            })) as ValueItem[],
+          [sortedAuthorizations]
+        )
 
   return (
     <div className={styles.identifierField}>
@@ -68,9 +74,7 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
           </Fragment>
         </p>
       ))}
-      {!auths?.length && (
-        <p>{t('vessel.noAuthorizations', 'No authorizations found')}</p>
-      )}
+      {!auths?.length && <p>{t('vessel.noAuthorizations', 'No authorizations found')}</p>}
       {sortedAuthorizations.length > 0 && (
         <div>
           <button className={styles.moreValues} onClick={openModal}>
@@ -78,42 +82,18 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
               quantity: sortedAuthorizations.length,
             })}
           </button>
-          <Modal
-            title={t('vessel.historyLabelByField', defaultTitle, {
-              label: t(`vessel.${label}` as any, label),
-              vesselName,
-            })}
-            isOpen={modalOpen}
-            onClose={closeModal}
-          >
-            <div>
-              <div className={styles.historyItem}>
-                <label className={styles.identifierField}>{t('vessel.authorizations.rmfoRegistry', 'RMFO REGISTRY')}</label>
-                <label className={styles.identifierField}>{t('vessel.authorizations.authPeriod', 'AUTHORIZATION PEROID')}</label>
-                <label className={styles.identifierField}>{t('vessel.authorizations.source', 'DATA SOURCE')}</label>
-              </div>
-              {sortedAuthorizations?.reverse().map((auth, index) => (
-                <div className={styles.historyItem} key={index}>
-                  <div className={styles.identifierField}>
-                    {auth.source}
-                  </div>
-                  <div className={styles.identifierField}>
-                    <HistoryDate
-                      date={auth.startDate}
-                      originalDate={auth.originalStartDate}
-                      label={t('common.from', 'From')}
-                    />
-                    <HistoryDate
-                      date={auth.endDate}
-                      originalDate={auth.originalEndDate}
-                      label={t('common.to', 'To')}
-                    />
-                  </div>
-                  <div className={styles.identifierField}>{t('common.other', 'Other')}</div>
-                </div>
-              ))}
-            </div>
-          </Modal>
+          <InfoFieldHistory
+            label={label}
+            columnHeaders={{
+              field: t('vessel.rmfoRegistry', 'RMFO Registry'),
+              dates: t('vessel.authPeriod', 'Dates'),
+            }}
+            history={authsHistory}
+             isOpen={modalOpen}
+            hideTMTDate={false}
+             onClose={closeModal}
+             vesselName={vesselName}
+            ></InfoFieldHistory>
         </div>
       )}
     </div>
