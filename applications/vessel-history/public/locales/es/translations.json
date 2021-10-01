@@ -108,7 +108,6 @@
     "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
   },
   "map": {
-    "descriptionMPA": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "filters": "Filter events",
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"
