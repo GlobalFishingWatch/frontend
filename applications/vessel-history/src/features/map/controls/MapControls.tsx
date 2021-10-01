@@ -34,7 +34,7 @@ const MapControls = ({
   const [extendedControls] = useState(true)
   const [isModalOpen, setIsOpen] = useState(false)
   const [showLayersPopup, setShowLayersPopup] = useState(false)
-  const [showMPAInfo, setShowMPAInfo] = useState<{ [key: string]: boolean }>({})
+  const [showLayerInfo, setShowLayerInfo] = useState<{ [key: string]: boolean }>({})
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const filtered = useSelector(selectFilterUpdated)
   const setModalOpen = useCallback((isOpen) => {
@@ -113,7 +113,6 @@ const MapControls = ({
                               dataview={layer}
                               title={getDatasetNameTranslated(layer)}
                             />
-
                             <div>
                               <IconButton
                                 icon="info"
@@ -121,18 +120,16 @@ const MapControls = ({
                                 size="small"
                                 className={styles.infoIcon}
                                 tooltipPlacement="left"
-                                onClick={() => setShowMPAInfo({ ...showMPAInfo, [layer.id]: true })}
+                                onClick={() => setShowLayerInfo({ ...showLayerInfo, [layer.id]: true })}
                               />
-
                               <Modal
-                                isOpen={showMPAInfo[layer.id.toString()]}
-                                onClose={() => setShowMPAInfo({ ...showMPAInfo, [layer.id]: false })}
+                                isOpen={showLayerInfo[layer.id.toString()]}
+                                onClose={() => setShowLayerInfo({ ...showLayerInfo, [layer.id]: false })}
                                 title={getDatasetNameTranslated(layer)}
                               >
                                 {getDatasetDescriptionTranslated(layer)}
                               </Modal>
                             </div>
-
                           </div>
                         ))}
                     </div>
