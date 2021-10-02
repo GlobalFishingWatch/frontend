@@ -13,6 +13,7 @@ import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { setDownloadGeometry } from 'features/download/download.slice'
+import { isGFWUser } from 'features/user/user.slice'
 import useMapInstance, { useMapContext } from '../map-context.hooks'
 import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -29,6 +30,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
+  const gfwUser = useSelector(isGFWUser)
 
   const highlightArea = useCallback(
     (source: string, id: string) => {
@@ -97,16 +99,18 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                     <div className={styles.rowActions}>
                       {isContextArea && (
                         <Fragment>
-                          <IconButton
-                            icon="download"
-                            disabled={!hasAnalysisLayers}
-                            tooltip={t(
-                              'download.action',
-                              'Download visible activity layers for this area'
-                            )}
-                            onClick={(e) => onDownloadClick(e, feature)}
-                            size="small"
-                          />
+                          {gfwUser && (
+                            <IconButton
+                              icon="download"
+                              disabled={!hasAnalysisLayers}
+                              tooltip={t(
+                                'download.action',
+                                'Download visible activity layers for this area'
+                              )}
+                              onClick={(e) => onDownloadClick(e, feature)}
+                              size="small"
+                            />
+                          )}
                           <IconButton
                             icon="report"
                             disabled={!hasAnalysisLayers}
