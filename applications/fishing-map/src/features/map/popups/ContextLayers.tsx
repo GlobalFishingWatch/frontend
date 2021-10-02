@@ -1,15 +1,11 @@
 import React, { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { batch, useDispatch, useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import bbox from '@turf/bbox'
-import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
@@ -17,10 +13,11 @@ import { Bbox } from 'types'
 import { selectSidebarOpen } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { setDownloadGeometry } from 'features/download/download.slice'
-import { isGFWUser } from 'features/user/user.slice'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
+import ContextLayersRow from './ContextLayersRow'
+import { useHighlightArea } from './ContextLayers.hooks'
 
 const TunaRfmoLinksById: Record<string, string> = {
   CCSBT: 'https://www.ccsbt.org/',
@@ -35,7 +32,6 @@ interface FeatureRowProps {
   showFeaturesDetails: boolean
   onReportClick?: (feature: TooltipEventFeature) => void
   onDownloadClick?: (feature: TooltipEventFeature) => void
-  reportEnabled?: boolean
 }
 
 function FeatureRow({
@@ -43,13 +39,10 @@ function FeatureRow({
   showFeaturesDetails = false,
   onReportClick,
   onDownloadClick,
-  reportEnabled = true,
 }: FeatureRowProps) {
-  const { t } = useTranslation()
   const context = useMapContext()
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
-  const gfwUser = useSelector(isGFWUser)
 
   const handleReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>) => {
@@ -81,163 +74,63 @@ function FeatureRow({
   if (['mpa', 'mpa-restricted', 'mpa-no-take'].includes(feature.generatorContextLayer as string)) {
     const { wdpa_pid } = feature.properties
     const label = `${feature.value} - ${feature.properties.desig}`
+    const id = `${label}-${gfw_id}`
     return (
-      <div className={styles.row} key={`${label}-${gfw_id}`}>
-        <span className={styles.rowText}>{label}</span>
-        {showFeaturesDetails && (
-          <div className={styles.rowActions}>
-            {gfwUser && (
-              <IconButton
-                icon="download"
-                disabled={!reportEnabled}
-                tooltip={t('download.action', 'Download visible activity layers for this area')}
-                onClick={handleDownloadClick}
-                size="small"
-              />
-            )}
-            <IconButton
-              icon="report"
-              disabled={!reportEnabled}
-              tooltip={
-                reportEnabled
-                  ? t('common.analysis', 'Create an analysis for this area')
-                  : t(
-                      'common.analysisNotAvailable',
-                      'Toggle an activity or environmenet layer on to analyse in in this area'
-                    )
-              }
-              onClick={handleReportClick}
-              size="small"
-            />
-            {wdpa_pid && (
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`https://www.protectedplanet.net/${wdpa_pid}`}
-              >
-                <IconButton icon="info" tooltip="See more" size="small" />
-              </a>
-            )}
-          </div>
-        )}
-      </div>
+      <ContextLayersRow
+        id={id}
+        label={label}
+        showFeaturesDetails={showFeaturesDetails}
+        linkHref={wdpa_pid ? `https://www.protectedplanet.net/${wdpa_pid}` : undefined}
+        handleDownloadClick={handleDownloadClick}
+        handleReportClick={handleReportClick}
+      />
     )
   }
   if (feature.generatorContextLayer === 'tuna-rfmo') {
+    const label = feature.value
+    const id = `${feature.value}-${gfw_id}`
     const link = TunaRfmoLinksById[feature.value]
     return (
-      <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
-        <span className={styles.rowText}>{feature.value}</span>
-        <div className={styles.rowActions}>
-          {gfwUser && (
-            <IconButton
-              icon="download"
-              disabled={!reportEnabled}
-              tooltip={t('download.action', 'Download visible activity layers for this area')}
-              onClick={handleDownloadClick}
-              size="small"
-            />
-          )}
-          <IconButton
-            icon="report"
-            disabled={!reportEnabled}
-            tooltip={
-              reportEnabled
-                ? t('common.analysis', 'Create an analysis for this area')
-                : t(
-                    'common.analysisNotAvailable',
-                    'Toggle an activity or environmenet layer on to analyse in in this area'
-                  )
-            }
-            onClick={handleReportClick}
-            size="small"
-          />
-          {showFeaturesDetails && link && (
-            <a target="_blank" rel="noopener noreferrer" href={link}>
-              <IconButton icon="info" tooltip="See more" size="small" />
-            </a>
-          )}
-        </div>
-      </div>
+      <ContextLayersRow
+        id={id}
+        label={label}
+        showFeaturesDetails={showFeaturesDetails}
+        linkHref={link}
+        handleDownloadClick={handleDownloadClick}
+        handleReportClick={handleReportClick}
+      />
     )
   }
   if (feature.generatorContextLayer === 'eez-areas') {
+    const label = feature.value
     const { mrgid } = feature.properties
+    const id = `${mrgid}-${gfw_id}`
+    const link = `https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`
     return (
-      <div className={styles.row} key={`${mrgid}-${gfw_id}`}>
-        <span className={styles.rowText}>{feature.value}</span>
-        {showFeaturesDetails && (
-          <div className={styles.rowActions}>
-            {gfwUser && (
-              <IconButton
-                icon="download"
-                disabled={!reportEnabled}
-                tooltip={t('download.action', 'Download visible activity layers for this area')}
-                onClick={handleDownloadClick}
-                size="small"
-              />
-            )}
-            <IconButton
-              icon="report"
-              disabled={!reportEnabled}
-              tooltip={
-                reportEnabled
-                  ? t('common.analysis', 'Create an analysis for this area')
-                  : t(
-                      'common.analysisNotAvailable',
-                      'Toggle an activity or environmenet layer on to analyse in in this area'
-                    )
-              }
-              onClick={handleReportClick}
-              size="small"
-            />
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`}
-            >
-              <IconButton icon="info" tooltip="See more" size="small" />
-            </a>
-          </div>
-        )}
-      </div>
+      <ContextLayersRow
+        id={id}
+        label={label}
+        showFeaturesDetails={showFeaturesDetails}
+        linkHref={link}
+        handleDownloadClick={handleDownloadClick}
+        handleReportClick={handleReportClick}
+      />
     )
   }
   if (
     feature.generatorContextLayer === 'wpp-nri' ||
     feature.generatorContextLayer === 'high-seas'
   ) {
+    const label = feature.value
+    const id = `${feature.value}-${gfw_id}`
     return (
-      <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
-        <span className={styles.rowText}>{feature.value}</span>
-        {showFeaturesDetails && (
-          <div className={styles.rowActions}>
-            {gfwUser && (
-              <IconButton
-                icon="download"
-                disabled={!reportEnabled}
-                tooltip={t('download.action', 'Download visible activity layers for this area')}
-                onClick={handleDownloadClick}
-                size="small"
-              />
-            )}
-            <IconButton
-              icon="report"
-              disabled={!reportEnabled}
-              tooltip={
-                reportEnabled
-                  ? t('common.analysis', 'Create an analysis for this area')
-                  : t(
-                      'common.analysisNotAvailable',
-                      'Toggle an activity or environmenet layer on to analyse it in this area'
-                    )
-              }
-              onClick={handleReportClick}
-              size="small"
-            />
-          </div>
-        )}
-      </div>
+      <ContextLayersRow
+        id={id}
+        label={label}
+        showFeaturesDetails={showFeaturesDetails}
+        handleDownloadClick={handleDownloadClick}
+        handleReportClick={handleReportClick}
+      />
     )
   }
   return <div key={`${feature.value || gfw_id}`}>{feature.value}</div>
@@ -251,18 +144,10 @@ type ContextTooltipRowProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const dispatch = useDispatch()
   const fitMapBounds = useMapFitBounds()
-  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchQueryParams } = useLocationConnect()
-  const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
 
-  const highlightArea = useCallback(
-    (source: string, id: string) => {
-      cleanFeatureState('highlight')
-      const featureState = { source, sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER, id }
-      updateFeatureState([featureState], 'highlight')
-    },
-    [cleanFeatureState, updateFeatureState]
-  )
+  const highlightArea = useHighlightArea()
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
@@ -333,7 +218,6 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                 showFeaturesDetails={showFeaturesDetails}
                 onReportClick={onReportClick}
                 onDownloadClick={onDownloadClick}
-                reportEnabled={hasAnalysisLayers}
               />
             ))}
           </div>
