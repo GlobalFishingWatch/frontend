@@ -89,6 +89,10 @@ const getExtendedFeatures = (
           multiplier: generatorMetadata?.multiplier,
         })
 
+        if (debug) {
+          console.log(properties.rawValues)
+        }
+
         if (!values || !values.filter((v: number) => v !== 0).length) return []
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
         const sublayers = generatorMetadata?.sublayers

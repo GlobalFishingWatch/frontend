@@ -50,8 +50,6 @@ export default function griddedTimeCompare(
   // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
   const exprPick = ['coalesce', ['get', pickValueAt], 0]
 
-  console.log(colorRampBaseExpression)
-
   const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 
   const paint = {

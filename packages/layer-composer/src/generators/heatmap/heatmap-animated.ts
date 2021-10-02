@@ -105,7 +105,6 @@ const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
     serialized.sublayerBreaks = JSON.stringify(params.sublayerBreaks)
   }
 
-  console.log(params)
   return serialized
 }
 
