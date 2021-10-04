@@ -17,7 +17,7 @@ import { DEBUG_MODE, DEFAULT_WORKSPACE } from 'data/config'
 import { Range } from 'types'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
 import { selectFilters } from 'features/event-filters/filters.slice'
-import { selectHighlightedEventMap, selectHighlightedTime, selectMapVoyageTime } from './map.slice'
+import { selectHighlightedEvent, selectHighlightedTime, selectMapVoyageTime } from './map.slice'
 
 /**
  * get the start and end dates in timestamp format
@@ -74,7 +74,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectDataviewsForResourceQuerying,
     selectResources,
     selectHighlightedTime,
-    selectHighlightedEventMap,
+    selectHighlightedEvent,
     selectMapVoyageTime,
   ],
   (dataviews = [], resources, highlightedTime, highlightedEvent, voyageTime) => {

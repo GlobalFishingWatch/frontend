@@ -11,7 +11,9 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
   return eventsForTrack
     .map(({ data }) => {
       const voyages: Voyage[] = (data || [])
-        .filter((event: ActivityEvent) => event.type === EventTypes.Port)
+        .filter(
+          (event: ActivityEvent) => event.type === EventTypes.Port && event.id.endsWith('-exit')
+        )
         .map(
           (port, index, all) =>
             ({
@@ -23,8 +25,10 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
                 : {}),
               type: EventTypeVoyage.Voyage,
               to: port,
-              end: port.start ?? port.end,
-              timestamp: (port.start ?? port.end) as number,
+              // Important: Substracting 1ms to not overlap with range of the previous voyage
+              end: ((port.start ?? port.end) as number) - 1,
+              // Important: Substracting 1ms to not overlap with timestamp port visit events on sorting
+              timestamp: ((port.start ?? port.end) as number) - 1,
             } as Voyage)
         )
       if (voyages.length === 0) return []

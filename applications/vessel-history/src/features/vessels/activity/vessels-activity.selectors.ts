@@ -4,7 +4,6 @@ import { upperFirst } from 'lodash'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
-  selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
@@ -15,6 +14,7 @@ import { ActivityEvent, Regions } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
+import { selectResources } from 'features/resources/resources.slice'
 import { selectSettings } from 'features/settings/settings.slice'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
@@ -94,10 +94,7 @@ export const selectEventsWithRenderingInfo = createSelector(
   [selectEventsForTracks, selectEEZs, selectRFMOs, selectMPAs],
   (eventsForTrack, eezs = [], rfmos = [], mpas = []) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
-      const portExitEvents = (data || [])
-        .filter((event) => event.type === EventTypes.Port)
-        .map((event) => ({ ...event, timestamp: event.end as number, id: `${event.id}-exit` }))
-      return (data || []).concat(portExitEvents).map((event: ActivityEvent, index) => {
+      return (data || []).map((event: ActivityEvent, index) => {
         const regionDescription = getEventRegionDescription(event, eezs, rfmos, mpas)
 
         let description = ''
@@ -256,7 +253,7 @@ const getEventRegionDescription = (
 }
 
 export const selectEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
-  events.sort((a, b) => (a.start > b.start ? -1 : 1))
+  events.sort((a, b) => ((a.timestamp ?? a.start) > (b.timestamp ?? a.start) ? -1 : 1))
 )
 
 export const selectFilteredEvents = createSelector(
