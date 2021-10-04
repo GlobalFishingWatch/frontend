@@ -2,16 +2,18 @@ import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'reac
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
+import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist/events'
-import {
-  RenderedEvent,
-  selectFilteredEvents,
-} from 'features/vessels/activity/vessels-activity.selectors'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
 import { cheapDistance } from 'utils/vessel'
-import { selectHighlightedEvent, setHighlightedEvent } from '../map.slice'
+import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
+import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
+import { EventTypeVoyage } from 'types/voyage'
+import { Range } from 'types'
+import { selectHighlightedEvent, setHighlightedEvent, setVoyageTime } from '../map.slice'
 import styles from './Info.module.css'
 
 interface InfoProps {
@@ -22,7 +24,13 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const [expanded, setExpanded] = useState(false)
   const [height, setHeight] = useState(0)
-  const events: RenderedEvent[] = useSelector(selectFilteredEvents)
+  const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages)
+  const { getVoyageByEvent } = useVoyagesConnect()
+  const events: RenderedEvent[] = useMemo(
+    () => eventsWithVoyages.filter((event) => event.type !== EventTypeVoyage.Voyage),
+    [eventsWithVoyages]
+  ) as RenderedEvent[]
+
   const eventsMap: string[] = useMemo(() => events.map((e) => e.id), [events])
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent | undefined>(undefined)
@@ -38,6 +46,15 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       if (nextPosition >= 0 && nextPosition < eventsMap.length) {
         const nextEvent = events[nextPosition]
         dispatch(setHighlightedEvent({ id: eventsMap[nextPosition] } as ApiEvent))
+        const voyage = getVoyageByEvent(nextEvent)
+        if (voyage) {
+          dispatch(
+            setVoyageTime({
+              start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
+              end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+            } as Range)
+          )
+        }
         const distance = Math.floor(
           cheapDistance(nextEvent.position, events[actualEventIndex].position) * 10
         )
@@ -52,7 +69,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         props.onEventChange(nextEvent, pitch, bearing, height)
       }
     },
-    [dispatch, events, eventsMap, height, props]
+    [dispatch, events, eventsMap, getVoyageByEvent, height, props]
   )
 
   useEffect(() => {
