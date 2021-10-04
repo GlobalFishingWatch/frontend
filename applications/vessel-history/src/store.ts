@@ -51,6 +51,20 @@ const defaultMiddlewareOptions: any = {
 }
 
 const store = configureStore({
+  devTools: {
+    stateSanitizer: (state: any) => {
+      if (!state.resources) return state
+      const serializedResources = Object.entries(state.resources).map(([key, value]: any) => [
+        key,
+        { ...value, data: 'NOT_SERIALIZED' },
+      ])
+
+      return {
+        ...state,
+        resources: Object.fromEntries(serializedResources),
+      }
+    },
+  },
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware(defaultMiddlewareOptions)
