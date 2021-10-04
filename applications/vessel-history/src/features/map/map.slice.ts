@@ -51,7 +51,7 @@ export const mapSlice = createSlice({
     setHighlightedTime: (state, action: PayloadAction<Range>) => {
       state.highlightedTime = action.payload
     },
-    setVoyageTime: (state, action: PayloadAction<Range>) => {
+    setVoyageTime: (state, action: PayloadAction<Range | undefined>) => {
       state.voyageTime = action.payload
     },
     setHighlightedEvent: (state, action: PayloadAction<ApiEvent | undefined>) => {

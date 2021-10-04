@@ -34,7 +34,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
 import { parseVesselProfileId } from 'features/vessels/vessels.utils'
-import { setHighlightedEvent } from 'features/map/map.slice'
+import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -106,6 +106,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       fetchVessel()
       dispatch(resetFilters())
       dispatch(setHighlightedEvent(undefined))
+      dispatch(setVoyageTime(undefined))
     }
   }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
 

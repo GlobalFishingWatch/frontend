@@ -1,12 +1,25 @@
+import { DateTime } from 'luxon'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { selectHighlightedEvent, setHighlightedEvent } from './map.slice'
+import { ApiEvent } from '@globalfishingwatch/api-types/dist'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
+import { Range } from 'types'
+import { Voyage } from 'types/voyage'
+import {
+  selectHighlightedEvent,
+  selectMapVoyageTime,
+  setHighlightedEvent,
+  setVoyageTime,
+} from './map.slice'
 
 export default function useMapEvents() {
   const dispatch = useDispatch()
   const highlightedEvent = useSelector(selectHighlightedEvent)
+  const currentVoyageTime = useSelector(selectMapVoyageTime)
+  const { getVoyageByEvent } = useVoyagesConnect()
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
@@ -24,7 +37,32 @@ export default function useMapEvents() {
     [dispatch, highlightedEvent?.id]
   )
 
+  const highlightEvent = useCallback(
+    (event: RenderedEvent) => {
+      if (!event?.id) return
+      dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
+
+      const voyage = getVoyageByEvent(event)
+      if (!voyage) return
+      const voyageTimes = {
+        start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
+        end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+      } as Range
+      if (
+        voyageTimes.start === currentVoyageTime?.start &&
+        voyageTimes.end === currentVoyageTime?.end
+      )
+        return
+
+      dispatch(setVoyageTime(voyageTimes))
+    },
+    [currentVoyageTime?.end, currentVoyageTime?.start, dispatch, getVoyageByEvent]
+  )
+
+  const highlightVoyage = useCallback((Voyage: Voyage) => {}, [])
   return {
+    highlightEvent,
+    highlightVoyage,
     selectVesselEventOnClick,
   }
 }

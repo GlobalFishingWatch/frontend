@@ -1,22 +1,20 @@
-import { DateTime } from 'luxon'
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { ApiEvent } from '@globalfishingwatch/api-types/dist'
-import { VesselWithHistory, Range } from 'types'
+import { VesselWithHistory } from 'types'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
-import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
-import useViewport from 'features/map/map-viewport.hooks'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { selectVesselId } from 'routes/routes.selectors'
+import useMapEvents from 'features/map/map-events.hooks'
+import useViewport from 'features/map/map-viewport.hooks'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -30,9 +28,8 @@ interface ActivityProps {
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
 
-  const { eventsLoading, events, toggleVoyage, getVoyageByEvent } = useVoyagesConnect()
+  const { eventsLoading, events, toggleVoyage } = useVoyagesConnect()
 
-  const { setMapCoordinates } = useViewport()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -40,32 +37,27 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
     setIsOpen(true)
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
+  const { highlightEvent } = useMapEvents()
+  const { viewport, setMapCoordinates } = useViewport()
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
       // TODO Define what's the expected behavior when clicking a voyage map icon
       if (event.type === EventTypeVoyage.Voyage) return
 
-      dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
-      const voyage = getVoyageByEvent(event)
-      if (voyage) {
-        dispatch(
-          setVoyageTime({
-            start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
-            end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
-          } as Range)
-        )
-      }
+      highlightEvent(event)
+
       setMapCoordinates({
         latitude: event.position.lat,
         longitude: event.position.lon,
-        zoom: DEFAULT_VESSEL_MAP_ZOOM,
+        zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
         bearing: 0,
         pitch: 0,
       })
+
       props.onMoveToMap()
     },
-    [dispatch, props, setMapCoordinates]
+    [highlightEvent, props, setMapCoordinates, viewport.zoom]
   )
   const isGFWVessel = useSelector(selectVesselId)
   useEffect(() => {
