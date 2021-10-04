@@ -48,6 +48,26 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
     [MPAS_REGIONS, settings.mpas, getOptions]
   )
 
+  const eezPlaceholder = useMemo(
+    () =>
+      !eez.selected?.length
+        ? (t('selects.none', 'None') as string)
+        : eez.selected.length > 1
+        ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
+        : eez.selected[0].label,
+    [eez.selected, t]
+  )
+
+  const rfmoPlaceholder = useMemo(
+    () =>
+      !rfmo.selected?.length
+        ? (t('selects.none', 'None') as string)
+        : rfmo.selected.length > 1
+        ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
+        : rfmo.selected[0].label,
+    [rfmo.selected, t]
+  )
+
   const mpaAutocomplete: MpaAutocompleteProps = useMemo(
     () => ({
       placeholder: !mpa.selected?.length
@@ -91,7 +111,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           </DataAndTerminology>
         </label>
         <MultiSelect
-          placeholder={t('selects.none', 'None')}
+          placeholder={eezPlaceholder}
           selectedOptions={eez.selected}
           placeholderDisplayAll={true}
           onCleanClick={eez.onClean}
@@ -120,7 +140,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           </DataAndTerminology>
         </label>
         <MultiSelect
-          placeholder={t('selects.none', 'None')}
+          placeholder={rfmoPlaceholder}
           onCleanClick={() => setSettingOptions(section, 'rfmos', [])}
           selectedOptions={rfmo.selected}
           placeholderDisplayAll={true}
