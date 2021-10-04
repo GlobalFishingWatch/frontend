@@ -1,17 +1,18 @@
+import { DateTime } from 'luxon'
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
-import { VesselWithHistory } from 'types'
+import { VesselWithHistory, Range } from 'types'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
-import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
+import { EventTypeVoyage, Voyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
-import { setHighlightedEvent } from 'features/map/map.slice'
+import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import useViewport from 'features/map/map-viewport.hooks'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
@@ -29,15 +30,7 @@ interface ActivityProps {
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
 
-  const {
-    eventsLoading,
-    events,
-    toggleVoyage,
-  }: {
-    eventsLoading: boolean
-    events: (RenderedEvent | RenderedVoyage)[]
-    toggleVoyage: (voyage: RenderedVoyage) => void
-  } = useVoyagesConnect()
+  const { eventsLoading, events, toggleVoyage, getVoyageByEvent } = useVoyagesConnect()
 
   const { setMapCoordinates } = useViewport()
   const [isModalOpen, setIsOpen] = useState(false)
@@ -54,6 +47,15 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
       if (event.type === EventTypeVoyage.Voyage) return
 
       dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
+      const voyage = getVoyageByEvent(event)
+      if (voyage) {
+        dispatch(
+          setVoyageTime({
+            start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
+            end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+          } as Range)
+        )
+      }
       setMapCoordinates({
         latitude: event.position.lat,
         longitude: event.position.lon,
@@ -110,8 +112,19 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
               </AutoSizer>
             ) : (
               <div>
-                {isGFWVessel && <p className={styles.emptyState}>{t('events.noResults', 'No events found. Try changing the current filters.')}</p>}
-                {!isGFWVessel && <p className={styles.emptyState}>{t('events.noData', 'There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.')}</p>}
+                {isGFWVessel && (
+                  <p className={styles.emptyState}>
+                    {t('events.noResults', 'No events found. Try changing the current filters.')}
+                  </p>
+                )}
+                {!isGFWVessel && (
+                  <p className={styles.emptyState}>
+                    {t(
+                      'events.noData',
+                      'There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.'
+                    )}
+                  </p>
+                )}
               </div>
             )}
           </div>
