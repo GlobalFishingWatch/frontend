@@ -54,7 +54,8 @@
   "peerDependencies": {
     "@globalfishingwatch/api-client": "^4.0.0",
     "@globalfishingwatch/api-types": "^6.0.0",
-    "@globalfishingwatch/layer-composer": "^10.0.0"
+    "@globalfishingwatch/layer-composer": "^10.0.0",
+    "lodash": "^4.17.21"
   },
   "gitHead": "dd9006c455eb7ee9f20cbdc62854d9a16bfc94c1"
 }
