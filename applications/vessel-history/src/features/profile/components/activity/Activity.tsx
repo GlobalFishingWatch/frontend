@@ -37,27 +37,29 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
     setIsOpen(true)
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
-  const { highlightEvent } = useMapEvents()
+  const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
       // TODO Define what's the expected behavior when clicking a voyage map icon
-      if (event.type === EventTypeVoyage.Voyage) return
+      if (event.type === EventTypeVoyage.Voyage) {
+        highlightVoyage(event)
+      } else {
+        highlightEvent(event)
 
-      highlightEvent(event)
-
-      setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
-        zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
-        bearing: 0,
-        pitch: 0,
-      })
+        setMapCoordinates({
+          latitude: event.position.lat,
+          longitude: event.position.lon,
+          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+          bearing: 0,
+          pitch: 0,
+        })
+      }
 
       props.onMoveToMap()
     },
-    [highlightEvent, props, setMapCoordinates, viewport.zoom]
+    [highlightEvent, highlightVoyage, props, setMapCoordinates, viewport.zoom]
   )
   const isGFWVessel = useSelector(selectVesselId)
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
-import { EventTypeVoyage, RenderedVoyage } from 'types/voyage'
+import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
 import { RenderedEvent } from '../activity/vessels-activity.selectors'
 import { selectFilteredEventsByVoyages } from './voyages.selectors'
 
@@ -79,7 +79,19 @@ function useVoyagesConnect() {
     [events]
   )
 
-  return { eventsLoading, events, getVoyageByEvent, toggleVoyage }
+  const getLastEventInVoyage = useCallback(
+    (voyage: Voyage) => {
+      return events.find(
+        (event) =>
+          event.type !== EventTypeVoyage.Voyage &&
+          (event?.timestamp ?? event?.start) >= voyage.start &&
+          (event?.timestamp ?? event?.start) <= voyage.end
+      ) as RenderedEvent
+    },
+    [events]
+  )
+
+  return { eventsLoading, events, getLastEventInVoyage, getVoyageByEvent, toggleVoyage }
 }
 
 export default useVoyagesConnect

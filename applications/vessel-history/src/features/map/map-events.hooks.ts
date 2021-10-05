@@ -8,18 +8,21 @@ import { RenderedEvent } from 'features/vessels/activity/vessels-activity.select
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { Range } from 'types'
 import { Voyage } from 'types/voyage'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import {
   selectHighlightedEvent,
   selectMapVoyageTime,
   setHighlightedEvent,
   setVoyageTime,
 } from './map.slice'
+import useViewport from './map-viewport.hooks'
 
 export default function useMapEvents() {
   const dispatch = useDispatch()
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const currentVoyageTime = useSelector(selectMapVoyageTime)
-  const { getVoyageByEvent } = useVoyagesConnect()
+  const { getVoyageByEvent, getLastEventInVoyage } = useVoyagesConnect()
+  const { viewport, setMapCoordinates } = useViewport()
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
@@ -59,7 +62,44 @@ export default function useMapEvents() {
     [currentVoyageTime?.end, currentVoyageTime?.start, dispatch, getVoyageByEvent]
   )
 
-  const highlightVoyage = useCallback((Voyage: Voyage) => {}, [])
+  const highlightVoyage = useCallback(
+    (voyage: Voyage) => {
+      if (!voyage) return
+      const voyageTimes = {
+        start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
+        end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+      } as Range
+      if (
+        voyageTimes.start === currentVoyageTime?.start &&
+        voyageTimes.end === currentVoyageTime?.end
+      )
+        return
+
+      const lastEvent = getLastEventInVoyage(voyage)
+      if (lastEvent) {
+        dispatch(setHighlightedEvent({ id: lastEvent.id } as ApiEvent))
+
+        setMapCoordinates({
+          latitude: lastEvent.position.lat,
+          longitude: lastEvent.position.lon,
+          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+          bearing: 0,
+          pitch: 0,
+        })
+      }
+
+      dispatch(setVoyageTime(voyageTimes))
+    },
+    [
+      currentVoyageTime?.end,
+      currentVoyageTime?.start,
+      dispatch,
+      getLastEventInVoyage,
+      setMapCoordinates,
+      viewport.zoom,
+    ]
+  )
+
   return {
     highlightEvent,
     highlightVoyage,
