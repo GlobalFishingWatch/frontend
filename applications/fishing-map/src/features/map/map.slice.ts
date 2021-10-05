@@ -241,7 +241,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   ? vesselsInfoResponse
                   : (vesselsInfoResponse as any)?.entries
               vesselsInfo = vesselsInfoList || []
-            } catch (e) {
+            } catch (e: any) {
               console.warn(e)
             }
           }
