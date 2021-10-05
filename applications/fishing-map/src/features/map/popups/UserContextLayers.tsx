@@ -1,17 +1,10 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { groupBy } from 'lodash'
-import { batch, useDispatch } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import { getEventLabel } from 'utils/analytics'
-import { setDownloadGeometry } from 'features/download/download.slice'
-import { useMapContext } from '../map-context.hooks'
-import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
-import { useHighlightArea } from './ContextLayers.hooks'
+import { useContextInteractions } from './ContextLayers.hooks'
 
 type UserContextLayersProps = {
   features: TooltipEventFeature[]
@@ -19,46 +12,7 @@ type UserContextLayersProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
-  const dispatch = useDispatch()
-  const { eventManager } = useMapContext()
-  const { dispatchQueryParams } = useLocationConnect()
-
-  const highlightArea = useHighlightArea()
-
-  const onReportClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-      if (!feature.properties?.gfw_id) {
-        console.warn('No gfw_id available in the feature to analyze', feature)
-        return
-      }
-      const areaId = feature.properties?.gfw_id
-      const sourceId = feature.source
-      dispatchQueryParams({ analysis: { areaId, sourceId } })
-      highlightArea(sourceId, areaId)
-      uaEvent({
-        category: 'Analysis',
-        action: `Open analysis panel`,
-        label: getEventLabel([feature.title ?? '', feature.value ?? '']),
-      })
-    },
-    [dispatchQueryParams, highlightArea, eventManager]
-  )
-
-  const onDownloadClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-      if (!feature.properties?.gfw_id) {
-        console.warn('No gfw_id available in the feature to analyze', feature)
-        return
-      }
-      batch(() => {
-        dispatch(setDownloadGeometry(feature))
-        dispatch(setClickedEvent(null))
-      })
-    },
-    [dispatch, eventManager]
-  )
+  const { onReportClick, onDownloadClick } = useContextInteractions()
 
   const featuresByType = groupBy(features, 'layerId')
   return (
@@ -75,11 +29,12 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
             )}
             {featureByType.map((feature, index) => {
               const { gfw_id } = feature.properties
-              const label = feature.value
-              const id = `${feature.value}-${gfw_id}-${index}}`
+              const label = feature.value ?? feature.title
+              const id = `${feature.value}-${gfw_id}}`
               return (
                 <ContextLayersRow
                   id={id}
+                  key={`${id}-${index}`}
                   label={label}
                   showFeaturesDetails={showFeaturesDetails}
                   handleDownloadClick={(e) => onDownloadClick(e, feature)}
