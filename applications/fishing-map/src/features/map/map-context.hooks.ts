@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { MapContext } from 'react-map-gl'
+import { MapContext, _useMapControl } from 'react-map-gl'
 import type { ExtraState, ViewportProps, WebMercatorViewport } from 'react-map-gl'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 
@@ -39,4 +39,14 @@ export function useMapContext() {
 export default function useMapInstance() {
   const { map } = useMapContext()
   return map
+}
+
+const CaptureControlProps = {
+  captureScroll: true,
+  captureDrag: true,
+  captureClick: true,
+  capturePointerMove: true,
+}
+export function useMapControl(props = CaptureControlProps) {
+  return _useMapControl(props)
 }
