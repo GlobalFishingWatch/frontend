@@ -189,7 +189,11 @@ function AnalysisItem({
         <Fragment>
           <h3 className={styles.commonTitle}>
             {description.map((d) =>
-              d.strong ? <strong>{d.label}</strong> : <span>{d.label}</span>
+              d.strong ? (
+                <strong key={d.label}>{d.label}</strong>
+              ) : (
+                <span key={d.label}>{d.label}</span>
+              )
             )}
             .
           </h3>

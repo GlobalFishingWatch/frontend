@@ -32,7 +32,7 @@ function CountryFlag(props: CountryFlag) {
   let flag = null
   try {
     flag = countryflag(iso)
-  } catch (e) {
+  } catch (e: any) {
     console.warn('Country flag error, incorrect iso code for:', iso)
   }
   if (!flag) return null

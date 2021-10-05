@@ -34,7 +34,7 @@ export const routesMap: RoutesMap = {
 
 const parseAppWorkspace = (queryString: string) => {
   return parseWorkspace(queryString, {
-    analysis: (analysis) => ({
+    analysis: (analysis: any) => ({
       ...analysis,
       bounds: analysis.bounds?.map((bound: string) => parseFloat(bound)),
     }),

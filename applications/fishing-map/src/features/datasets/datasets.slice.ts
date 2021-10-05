@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { memoize, uniqBy, without, kebabCase } from 'lodash'
+import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset, DatasetCategory, EndpointId, UploadResponse } from '@globalfishingwatch/api-types'
 import { HeatmapAnimatedInteractionType } from '@globalfishingwatch/layer-composer/dist/generators/types'
@@ -75,6 +75,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
   async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
     const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
+
     try {
       const workspacesParams = {
         ...(uniqIds?.length && { ids: uniqIds }),
@@ -85,10 +86,12 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
-      const relatedDatasetsIds = initialDatasets.flatMap(
-        (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
+      const relatedDatasetsIds = uniq(
+        initialDatasets.flatMap(
+          (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
+        )
       )
-      const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...ids).join(',')
+      const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...existingIds).join(',')
       const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
       const relatedDatasets = await GFWAPI.fetch<Dataset[]>(
         `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
