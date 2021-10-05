@@ -68,65 +68,42 @@ function FeatureRow({
   )
 
   if (!feature.value) return null
-  const { gfw_id } = feature.properties
 
-  // ContextLayerType.MPA but enums doesn't work in CRA for now
-  if (['mpa', 'mpa-restricted', 'mpa-no-take'].includes(feature.generatorContextLayer as string)) {
-    const { wdpa_pid } = feature.properties
-    const label = `${feature.value} - ${feature.properties.desig}`
-    const id = `${label}-${gfw_id}`
+  const { generatorContextLayer } = feature
+  const { gfw_id } = feature.properties
+  const isGFWLayer =
+    ['mpa', 'mpa-restricted', 'mpa-no-take'].includes(generatorContextLayer as string) ||
+    generatorContextLayer === 'tuna-rfmo' ||
+    generatorContextLayer === 'eez-areas' ||
+    generatorContextLayer === 'wpp-nri' ||
+    generatorContextLayer === 'high-seas'
+
+  if (isGFWLayer) {
+    let id = gfw_id
+    let label = feature.value
+    let linkHref = undefined
+    // ContextLayerType.MPA but enums doesn't work in CRA for now
+    if (['mpa', 'mpa-restricted', 'mpa-no-take'].includes(generatorContextLayer as string)) {
+      const { wdpa_pid } = feature.properties
+      label = `${feature.value} - ${feature.properties.desig}`
+      id = `${label}-${gfw_id}`
+      linkHref = wdpa_pid ? `https://www.protectedplanet.net/${wdpa_pid}` : undefined
+    } else if (generatorContextLayer === 'tuna-rfmo') {
+      id = `${feature.value}-${gfw_id}`
+      linkHref = TunaRfmoLinksById[feature.value]
+    } else if (generatorContextLayer === 'eez-areas') {
+      const { mrgid } = feature.properties
+      id = `${mrgid}-${gfw_id}`
+      linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`
+    } else if (generatorContextLayer === 'wpp-nri' || generatorContextLayer === 'high-seas') {
+      id = `${feature.value}-${gfw_id}`
+    }
+
     return (
       <ContextLayersRow
         id={id}
         label={label}
-        showFeaturesDetails={showFeaturesDetails}
-        linkHref={wdpa_pid ? `https://www.protectedplanet.net/${wdpa_pid}` : undefined}
-        handleDownloadClick={handleDownloadClick}
-        handleReportClick={handleReportClick}
-      />
-    )
-  }
-  if (feature.generatorContextLayer === 'tuna-rfmo') {
-    const label = feature.value
-    const id = `${feature.value}-${gfw_id}`
-    const link = TunaRfmoLinksById[feature.value]
-    return (
-      <ContextLayersRow
-        id={id}
-        label={label}
-        showFeaturesDetails={showFeaturesDetails}
-        linkHref={link}
-        handleDownloadClick={handleDownloadClick}
-        handleReportClick={handleReportClick}
-      />
-    )
-  }
-  if (feature.generatorContextLayer === 'eez-areas') {
-    const label = feature.value
-    const { mrgid } = feature.properties
-    const id = `${mrgid}-${gfw_id}`
-    const link = `https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`
-    return (
-      <ContextLayersRow
-        id={id}
-        label={label}
-        showFeaturesDetails={showFeaturesDetails}
-        linkHref={link}
-        handleDownloadClick={handleDownloadClick}
-        handleReportClick={handleReportClick}
-      />
-    )
-  }
-  if (
-    feature.generatorContextLayer === 'wpp-nri' ||
-    feature.generatorContextLayer === 'high-seas'
-  ) {
-    const label = feature.value
-    const id = `${feature.value}-${gfw_id}`
-    return (
-      <ContextLayersRow
-        id={id}
-        label={label}
+        linkHref={linkHref}
         showFeaturesDetails={showFeaturesDetails}
         handleDownloadClick={handleDownloadClick}
         handleReportClick={handleReportClick}
