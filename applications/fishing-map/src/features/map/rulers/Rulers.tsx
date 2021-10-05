@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import useMapInstance from '../map-context.hooks'
+import { selectIsMapDrawing } from '../map.selectors'
 import {
   toggleRulersEditing,
   resetRulers,
@@ -17,6 +18,7 @@ import styles from './Rulers.module.css'
 const Rulers = () => {
   const { t } = useTranslation()
   const editing = useSelector(selectEditing)
+  const isMapDrawing = useSelector(selectIsMapDrawing)
   const numRulers = useSelector(selectNumRulers)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 
@@ -39,6 +41,7 @@ const Rulers = () => {
     <div className={styles.container}>
       <IconButton
         icon="ruler"
+        disabled={isMapDrawing}
         type="map-tool"
         tooltip={editing ? '' : t('map.rulers_add', 'Add rulers')}
         className={cx({ [styles.active]: editing })}

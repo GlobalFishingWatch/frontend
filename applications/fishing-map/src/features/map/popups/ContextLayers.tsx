@@ -45,7 +45,7 @@ function FeatureRow({
   const { dispatchQueryParams } = useLocationConnect()
 
   const handleReportClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>) => {
+    (ev: React.MouseEvent) => {
       context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
       if (onReportClick) {
         onReportClick(feature)
@@ -133,7 +133,7 @@ function FeatureRow({
       />
     )
   }
-  return <div key={`${feature.value || gfw_id}`}>{feature.value}</div>
+  return <div key={`${feature.value || gfw_id}`}>{feature.value ?? feature.title}</div>
 }
 
 type ContextTooltipRowProps = {

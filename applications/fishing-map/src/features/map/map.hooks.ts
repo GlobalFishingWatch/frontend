@@ -411,7 +411,7 @@ export const useMapStyle = () => {
   let style: Style
   try {
     style = map.getStyle()
-  } catch (e) {
+  } catch (e: any) {
     return null
   }
 

@@ -111,7 +111,7 @@ export default class DataviewsClient {
                     url: resolvedUrl,
                     datasetConfig: datasetParams,
                   })
-                } catch (e) {
+                } catch (e: any) {
                   console.error(
                     'Could not use pathTemplate, maybe a datasetParam endpoint config is missing?'
                   )

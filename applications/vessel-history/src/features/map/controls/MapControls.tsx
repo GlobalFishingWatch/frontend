@@ -3,8 +3,6 @@ import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
@@ -18,7 +16,7 @@ import styles from './MapControls.module.css'
 
 const MapControls = ({
   mapLoading = false,
-  onMouseEnter = () => { },
+  onMouseEnter = () => {},
 }: {
   mapLoading?: boolean
   onMouseEnter?: () => void
@@ -120,11 +118,15 @@ const MapControls = ({
                                 size="small"
                                 className={styles.infoIcon}
                                 tooltipPlacement="left"
-                                onClick={() => setShowLayerInfo({ ...showLayerInfo, [layer.id]: true })}
+                                onClick={() =>
+                                  setShowLayerInfo({ ...showLayerInfo, [layer.id]: true })
+                                }
                               />
                               <Modal
                                 isOpen={showLayerInfo[layer.id.toString()]}
-                                onClose={() => setShowLayerInfo({ ...showLayerInfo, [layer.id]: false })}
+                                onClose={() =>
+                                  setShowLayerInfo({ ...showLayerInfo, [layer.id]: false })
+                                }
                                 title={getDatasetNameTranslated(layer)}
                               >
                                 {getDatasetDescriptionTranslated(layer)}

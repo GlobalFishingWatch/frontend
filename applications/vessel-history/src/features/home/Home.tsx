@@ -2,7 +2,6 @@ import React, { Fragment, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import Link from 'redux-first-router-link'
 import { redirect } from 'redux-first-router'
 import { DateTime, Interval } from 'luxon'
 import { VesselSearch } from '@globalfishingwatch/api-types'
@@ -22,9 +21,10 @@ import {
 } from 'features/search/search.selectors'
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
-import { PROFILE } from 'routes/routes'
+import { PROFILE, SETTINGS } from 'routes/routes'
 import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -42,6 +42,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { logout } = useUser()
   const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchResultsConnect()
   const { fetchResults } = useSearchConnect({ onNewSearch: () => setSelectedVessels([]) })
+  const { dispatchLocation } = useLocationConnect()
   const searching = useSelector(selectSearching)
   const hasSearch = useSelector(selectHasSearch)
   const vessels = useSelector(selectSearchResults)
@@ -93,7 +94,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
   }, [openVesselProfile, selectedVessels, vessels])
 
-  const trackOpenSettings = useCallback(() => {
+  const onSettingsClick = useCallback(() => {
+    dispatchLocation(SETTINGS)
     uaEvent({
       category: 'Highlight Events',
       action: 'Start highlight events configurations',
@@ -101,7 +103,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         page: 'home',
       }),
     })
-  }, [])
+  }, [dispatchLocation])
 
   const trackRemoveOffline = useCallback(
     (offlineVessel) => {
@@ -128,9 +130,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       <header>
         <Logo className={styles.logo}></Logo>
         <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
-        <Link to={['settings']} onClick={trackOpenSettings}>
-          <IconButton type="default" size="default" icon="settings"></IconButton>
-        </Link>
+        <IconButton
+          onClick={onSettingsClick}
+          type="default"
+          size="default"
+          icon="settings"
+        ></IconButton>
         <LanguageToggle />
       </header>
       <div className={styles.search}>

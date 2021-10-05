@@ -35,7 +35,7 @@ async function preRender(components: typeof componentsList) {
     try {
       await writeFile(path, html)
       console.info(`Wrote ${path}`)
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
     }
   }
