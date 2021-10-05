@@ -24,7 +24,7 @@ export const formatI18nNumber = (
       maximumFractionDigits: number < 10 ? 2 : 0,
       ...(typeof options === 'object' && { ...options }),
     }).format(parsedNumber)
-  } catch (e) {
+  } catch (e: any) {
     console.warn(e)
     return number
   }

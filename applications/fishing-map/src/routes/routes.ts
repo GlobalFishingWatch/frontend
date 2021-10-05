@@ -195,7 +195,7 @@ const decoder = (str: string, decoder?: any, charset?: string, type?: string) =>
   // utf-8
   try {
     return decodeURIComponent(strWithoutPlus)
-  } catch (e) {
+  } catch (e: any) {
     return strWithoutPlus
   }
 }
