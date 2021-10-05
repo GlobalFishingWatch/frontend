@@ -7,7 +7,7 @@ export const WORKSPACE_ENV =
   (process.env.REACT_APP_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
-export const IS_PRODUCTION = WORKSPACE_ENV !== 'production'
+export const IS_PRODUCTION = WORKSPACE_ENV === 'production'
 export const FLY_EFFECTS = {
   noFly: 0, // just change the center
   softFly: 1, // fly to without effects
