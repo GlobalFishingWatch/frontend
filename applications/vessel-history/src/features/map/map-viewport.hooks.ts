@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { fitBounds } from 'viewport-mercator-project'
+import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import debounce from 'lodash/debounce'
 import { ViewportProps } from 'react-map-gl'
@@ -12,7 +12,10 @@ import { selectViewport } from 'features/app/app.selectors'
 import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
-type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom' | 'pitch' | 'bearing'>
+type SetMapCoordinatesArgs = Pick<
+  ViewportProps,
+  'latitude' | 'longitude' | 'zoom' | 'pitch' | 'bearing'
+>
 type UseViewport = {
   viewport: MapCoordinates
   onViewportChange: (viewport: ViewportProps) => void
