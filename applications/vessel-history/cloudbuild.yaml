@@ -11,8 +11,6 @@ steps:
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
         '--cache=$_USE_DOCKER_CACHE',
         '--build-arg',
-        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
-        '--build-arg',
         'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
         '--build-arg',
         'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
@@ -50,8 +48,6 @@ steps:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
         '--cache=$_USE_DOCKER_CACHE',
-        '--build-arg',
-        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
         '--build-arg',
         'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
         '--build-arg',
