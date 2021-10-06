@@ -45,6 +45,7 @@ function DownloadTrackModal() {
 
     try {
       await dispatch(downloadTrackThunk(downloadParams))
+      onClose()
     } catch (e: any) {
       console.warn(e)
     }
