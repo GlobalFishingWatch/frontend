@@ -6,8 +6,9 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
+import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { cheapDistance } from 'utils/vessel'
-import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
+// import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
 import { EventTypeVoyage } from 'types/voyage'
 import { selectHighlightedEvent } from '../map.slice'
 import useMapEvents from '../map-events.hooks'
@@ -20,7 +21,9 @@ interface InfoProps {
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const [expanded, setExpanded] = useState(false)
   const [height, setHeight] = useState(0)
-  const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages)
+  // const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages)
+  const { events: eventsWithVoyages } = useVoyagesConnect()
+
   const events: RenderedEvent[] = useMemo(
     () => eventsWithVoyages.filter((event) => event.type !== EventTypeVoyage.Voyage),
     [eventsWithVoyages]

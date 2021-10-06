@@ -81,14 +81,14 @@ function useVoyagesConnect() {
 
   const getLastEventInVoyage = useCallback(
     (voyage: Voyage) => {
-      return events.find(
+      return eventsList.find(
         (event) =>
-          event.type !== EventTypeVoyage.Voyage &&
+          event?.type !== EventTypeVoyage.Voyage &&
           (event?.timestamp ?? event?.start) >= voyage.start &&
           (event?.timestamp ?? event?.start) <= voyage.end
       ) as RenderedEvent
     },
-    [events]
+    [eventsList]
   )
 
   return { eventsLoading, events, getLastEventInVoyage, getVoyageByEvent, toggleVoyage }
