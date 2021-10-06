@@ -28,10 +28,10 @@ const initialState: DownloadActivityState = {
 
 export type DownloadActivityParams = {
   dateRange: DateRange
-  dataviews: {
-    filters: Record<string, any>
+  dataview: {
     datasets: string[]
-  }[]
+    filters?: Record<string, any>
+  }
   geometry: Geometry
   areaName: string
   format: Format
@@ -50,7 +50,7 @@ export const downloadActivityThunk = createAsyncThunk<
   try {
     const {
       dateRange,
-      dataviews,
+      dataview,
       geometry,
       areaName,
       format,
@@ -62,8 +62,8 @@ export const downloadActivityThunk = createAsyncThunk<
     const toDate = DateTime.fromISO(dateRange.end).toUTC()
 
     const downloadActivityParams = {
-      datasets: dataviews.map(({ datasets }) => datasets.join(',')),
-      filters: dataviews.map(({ filters }) => transformFilters(filters)),
+      datasets: [dataview.datasets.join(',')],
+      filters: [dataview.filters && transformFilters(dataview.filters)],
       'date-range': [fromDate, toDate].join(','),
       format,
       spatialResolution,

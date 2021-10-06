@@ -158,22 +158,24 @@ function DownloadActivityModal() {
       })
       .filter((dataview) => dataview.datasets.length > 0)
 
-    const downloadParams: DownloadActivityParams = {
-      dateRange: timerange as DateRange,
-      dataviews: downloadDataviews,
-      geometry: downloadAreaGeometry as Geometry,
-      areaName: downloadAreaName,
-      format,
-      temporalResolution,
-      spatialResolution,
-      groupBy,
-    }
+    downloadDataviews.forEach((dataview) => {
+      const downloadParams: DownloadActivityParams = {
+        dateRange: timerange as DateRange,
+        geometry: downloadAreaGeometry as Geometry,
+        areaName: downloadAreaName,
+        dataview,
+        format,
+        temporalResolution,
+        spatialResolution,
+        groupBy,
+      }
 
-    try {
-      await dispatch(downloadActivityThunk(downloadParams))
-    } catch (e: any) {
-      console.warn(e)
-    }
+      try {
+        dispatch(downloadActivityThunk(downloadParams))
+      } catch (e: any) {
+        console.warn(e)
+      }
+    })
 
     uaEvent({
       category: 'Download',
