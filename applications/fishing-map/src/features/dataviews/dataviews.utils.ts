@@ -14,9 +14,10 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client/dist'
 import {
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
   TEMPLATE_CONTEXT_DATAVIEW_ID,
-  DEFAULT_FISHING_DATAVIEW_ID,
+  FISHING_DATAVIEW_ID,
   TEMPLATE_VESSEL_DATAVIEW_ID,
   TEMPLATE_USER_TRACK_ID,
+  VESSEL_PRESENCE_DATAVIEW_ID,
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { Range } from 'features/timebar/timebar.slice'
