@@ -43,7 +43,7 @@ export const downloadTrackThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('download/create', async (params: DownloadTrackParams, { rejectWithValue }) => {
+>('downloadTrack/create', async (params: DownloadTrackParams, { rejectWithValue }) => {
   try {
     const { dateRange, datasets, format, vesselId, vesselName } = params
     const fromDate = DateTime.fromISO(dateRange.start).toUTC().toString()

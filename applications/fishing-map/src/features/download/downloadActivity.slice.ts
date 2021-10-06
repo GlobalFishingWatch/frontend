@@ -46,7 +46,7 @@ export const downloadActivityThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('download/create', async (params: DownloadActivityParams, { rejectWithValue }) => {
+>('downloadActivity/create', async (params: DownloadActivityParams, { rejectWithValue }) => {
   try {
     const {
       dateRange,
