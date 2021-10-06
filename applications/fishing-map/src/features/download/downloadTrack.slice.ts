@@ -66,9 +66,6 @@ export const downloadTrackThunk = createAsyncThunk<
       {
         method: 'GET',
         responseType: 'blob',
-        headers: {
-          Authorization: `Bearer ${GFWAPI.getToken()}`,
-        },
       }
     ).then((blob) => {
       saveAs(blob as any, fileName)
