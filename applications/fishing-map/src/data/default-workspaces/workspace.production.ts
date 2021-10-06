@@ -12,6 +12,7 @@ import {
   VIIRS_DATAVIEW_ID,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  DEFAULT_HIGH_SEAS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -122,6 +123,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: RFMO_DATAVIEW_ID,
+    },
+    {
+      id: 'context-layer-high-seas',
+      config: {
+        visible: false,
+      },
+      dataviewId: DEFAULT_HIGH_SEAS_DATAVIEW_ID,
     },
   ],
 }
