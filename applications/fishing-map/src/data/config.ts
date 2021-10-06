@@ -7,9 +7,6 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
   (process.env.REACT_APP_WORKSPACE_ENV || process.env.NODE_ENV) === 'production'
 
-export const PRESENCE_POC_MAX_DAYS = 180
-export const PRESENCE_POC_PRICE_PER_DAY = 0.012
-
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
   process.env.REACT_APP_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'

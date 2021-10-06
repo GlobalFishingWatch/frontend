@@ -24,11 +24,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import { PRESENCE_POC_INTERACTION } from 'features/datasets/datasets.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
-import { isGuestUser } from 'features/user/user.selectors'
-import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -80,13 +77,11 @@ export const useGeneratorsConnect = () => {
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
-  const guestUser = useSelector(isGuestUser)
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
-  const debugOptions = useSelector(selectDebugOptions)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
@@ -179,14 +174,8 @@ export const useClickedEventConnect = () => {
         if (!feature.temporalgrid?.visible) {
           return false
         }
-        const hasSubLayerInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
           feature.temporalgrid.sublayerInteractionType
-        )
-        const isPresencePOCFeature =
-          feature.temporalgrid.sublayerInteractionType === PRESENCE_POC_INTERACTION
-        return (
-          hasSubLayerInteraction ||
-          (debugOptions.presenceTrackPOC && isPresencePOCFeature && !guestUser)
         )
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
