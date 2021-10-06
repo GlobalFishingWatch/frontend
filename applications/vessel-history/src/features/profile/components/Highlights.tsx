@@ -72,7 +72,7 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
       })}
     >
       <div className={styles.divider}></div>
-      <div>
+      <div className={styles.settingsLinkContainer}>
         <IconButton
           onClick={onSettingsClick}
           className={styles.settingsLink}
