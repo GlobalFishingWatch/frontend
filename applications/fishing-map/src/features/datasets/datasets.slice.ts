@@ -2,7 +2,6 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset, DatasetCategory, EndpointId, UploadResponse } from '@globalfishingwatch/api-types'
-import { HeatmapAnimatedInteractionType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
@@ -14,26 +13,13 @@ import {
 import { RootState } from 'store'
 import { LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
 
+export const PRESENCE_DATASET_ID = 'public-global-presence'
+export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
 export const DATASETS_USER_SOURCE_ID = 'user'
-
-export const PRESENCE_POC_INTERACTION = 'presence-POC' as HeatmapAnimatedInteractionType
-export const PRESENCE_POC_ID = 'global-presence-tracks'
-export const EE_POC_ID = 'public-ee-poc'
+export const EARTH_ENGINE_POC_ID = 'public-ee-poc'
 
 const parsePOCsDatasets = (dataset: Dataset) => {
-  if (dataset.id.includes(PRESENCE_POC_ID)) {
-    const pocDataset = {
-      ...dataset,
-      endpoints: dataset.endpoints?.map((endpoint) => {
-        if (endpoint.id === EndpointId.Tracks) {
-          return { ...endpoint, pathTemplate: '/prototype/vessels/{{vesselId}}/tracks' }
-        }
-        return endpoint
-      }),
-    }
-    return pocDataset
-  }
-  if (dataset.id.includes(EE_POC_ID)) {
+  if (dataset.id.includes(EARTH_ENGINE_POC_ID)) {
     const pocDataset = {
       ...dataset,
       endpoints: dataset.endpoints?.map((endpoint) => {

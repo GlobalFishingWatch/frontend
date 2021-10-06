@@ -3,7 +3,6 @@ import { RootState } from 'store'
 
 export enum DebugOption {
   Blob = 'blob',
-  PresenceTrackPOC = 'presenceTrackPOC',
   Extruded = 'extruded',
   Debug = 'debug',
   Thinning = 'thinning',
@@ -23,7 +22,6 @@ const initialState: DebugState = {
     debug: false,
     thinning: true,
     extruded: false,
-    presenceTrackPOC: false,
   },
 }
 

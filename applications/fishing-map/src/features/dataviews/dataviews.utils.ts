@@ -5,7 +5,6 @@ import {
   Dataview,
   DataviewCategory,
   DataviewDatasetConfig,
-  DataviewDatasetConfigParam,
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
@@ -14,13 +13,12 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client/dist'
 import {
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
   TEMPLATE_CONTEXT_DATAVIEW_ID,
-  DEFAULT_FISHING_DATAVIEW_ID,
+  FISHING_DATAVIEW_ID,
   TEMPLATE_VESSEL_DATAVIEW_ID,
   TEMPLATE_USER_TRACK_ID,
+  VESSEL_PRESENCE_DATAVIEW_ID,
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
-import { Range } from 'features/timebar/timebar.slice'
-import { PRESENCE_POC_ID } from 'features/datasets/datasets.slice'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -34,32 +32,24 @@ type VesselInstanceDatasets = {
   trackDatasetId?: string
   infoDatasetId?: string
   eventsDatasetsId?: string[]
-  timeRange?: Range
 }
-export const getVesselDataviewInstance = (
-  vessel: { id: string },
-  { trackDatasetId, infoDatasetId, eventsDatasetsId, timeRange }: VesselInstanceDatasets
-): DataviewInstance<Generators.Type> => {
+
+const getVesselDataviewInstanceDatasetConfig = (
+  vesselId: string,
+  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
+) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (infoDatasetId) {
     datasetsConfig.push({
       datasetId: infoDatasetId,
-      params: [{ id: 'vesselId', value: vessel.id }],
+      params: [{ id: 'vesselId', value: vesselId }],
       endpoint: EndpointId.Vessel,
     })
   }
   if (trackDatasetId) {
-    let query: DataviewDatasetConfigParam[] = []
-    if (trackDatasetId.includes(PRESENCE_POC_ID) && timeRange) {
-      query = [
-        { id: 'startDate', value: timeRange.start },
-        { id: 'endDate', value: timeRange.end },
-      ]
-    }
     datasetsConfig.push({
       datasetId: trackDatasetId,
-      query,
-      params: [{ id: 'vesselId', value: vessel.id }],
+      params: [{ id: 'vesselId', value: vesselId }],
       endpoint: EndpointId.Tracks,
     })
   }
@@ -67,12 +57,19 @@ export const getVesselDataviewInstance = (
     eventsDatasetsId.forEach((eventDatasetId) => {
       datasetsConfig.push({
         datasetId: eventDatasetId,
-        query: [{ id: 'vessels', value: vessel.id }],
+        query: [{ id: 'vessels', value: vesselId }],
         params: [],
         endpoint: EndpointId.Events,
       })
     })
   }
+  return datasetsConfig
+}
+
+export const getVesselDataviewInstance = (
+  vessel: { id: string },
+  datasets: VesselInstanceDatasets
+): DataviewInstance<Generators.Type> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     // TODO find the way to use different vessel dataviews, for example
@@ -81,7 +78,22 @@ export const getVesselDataviewInstance = (
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
-    datasetsConfig,
+    datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
+  }
+  return vesselDataviewInstance
+}
+
+export const getPresenceVesselDataviewInstance = (
+  vessel: { id: string },
+  datasets: VesselInstanceDatasets
+): DataviewInstance<Generators.Type> => {
+  const vesselDataviewInstance = {
+    id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
+    dataviewId: VESSEL_PRESENCE_DATAVIEW_ID,
+    config: {
+      colorCyclingType: 'line' as ColorCyclingType,
+    },
+    datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
   }
   return vesselDataviewInstance
 }
@@ -92,7 +104,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> 
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
-    dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+    dataviewId: FISHING_DATAVIEW_ID,
   }
 }
 

@@ -231,6 +231,7 @@
     "add": "Add layer",
     "color_change": "Change color",
     "drawPolygon": "Draw a layer",
+    "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
     "flagState_other": "Flag States",
