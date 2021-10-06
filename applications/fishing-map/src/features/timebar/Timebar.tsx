@@ -119,7 +119,7 @@ const TimebarWrapper = () => {
             } else {
               dispatch(setHighlightedTime({ start, end }))
             }
-          } catch (e) {
+          } catch (e: any) {
             console.log(clientX)
             console.warn(e)
           }

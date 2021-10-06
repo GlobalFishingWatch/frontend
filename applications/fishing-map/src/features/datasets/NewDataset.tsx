@@ -54,12 +54,14 @@ function NewDataset(): React.ReactElement {
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
-  const [datasetGeometryType, setDatasetGeometryType] =
-    useState<DatasetGeometryType | undefined>(undefined)
+  const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | undefined>(
+    undefined
+  )
   const [datasetGeometryTypeConfirmed, setDatasetGeometryTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
-  const [fileData, setFileData] =
-    useState<Feature | FeatureCollectionWithFilename | CSV | undefined>()
+  const [fileData, setFileData] = useState<
+    Feature | FeatureCollectionWithFilename | CSV | undefined
+  >()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
@@ -99,14 +101,14 @@ function NewDataset(): React.ReactElement {
             const fileData = await readBlobAs(file, 'arrayBuffer')
             // TODO support multiple files in shapefile
             geojson = (await shpjs(fileData)) as FeatureCollectionWithFilename
-          } catch (e) {
+          } catch (e: any) {
             console.warn('Error reading file:', e)
           }
         } else {
           const fileData = await readBlobAs(file, 'text')
           try {
             geojson = JSON.parse(fileData)
-          } catch (e) {
+          } catch (e: any) {
             console.warn('Error reading file:', e)
           }
         }

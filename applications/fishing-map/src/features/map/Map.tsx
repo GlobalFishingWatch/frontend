@@ -135,8 +135,9 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] =
-    useState<SliceInteractionEvent | null>(null)
+  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
+    null
+  )
   const onMapHover = useMapHover(
     setHoveredEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,

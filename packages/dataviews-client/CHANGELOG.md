@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 14.1.0
+
+### Minor Changes
+
+- 3f49c561: moved parse/stringify workspace to dv-client
+
 ## 14.0.0
 
 ### Patch Changes

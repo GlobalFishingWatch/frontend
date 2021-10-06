@@ -19,7 +19,7 @@ export const useDownloadDomElementAsImage = (
       try {
         const node = await import('html2canvas')
         html2canvasRef.current = node.default
-      } catch (e) {
+      } catch (e: any) {
         console.warn(e)
         setError('Error importing html2canvas dependency')
       }
@@ -31,7 +31,7 @@ export const useDownloadDomElementAsImage = (
       } else {
         console.warn('DOM element to use in html2canvas')
       }
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
       throw e
     }
@@ -47,7 +47,7 @@ export const useDownloadDomElementAsImage = (
       const canvas = await getCanvas()
       setPreviewImage(canvas.toDataURL())
       setPreviewImageLoading(false)
-    } catch (e) {
+    } catch (e: any) {
       setPreviewImageLoading(false)
     }
   }, [getCanvas])
@@ -72,7 +72,7 @@ export const useDownloadDomElementAsImage = (
               return false
             }
           })
-        } catch (e) {
+        } catch (e: any) {
           setError('Something went wrong generating the screenshot, please try again')
           setLoading(false)
           return false

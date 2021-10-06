@@ -33,6 +33,16 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
       ),
     [COUNTRIES, settings.flags, getOptions]
   )
+
+  const flagsPlaceholder = useMemo(
+    () =>
+      !flags.selected?.length
+        ? (t('selects.none', 'None') as string)
+        : flags.selected.length > 1
+        ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
+        : flags.selected[0].label,
+    [flags.selected, t]
+  )
   const eventType = useMemo(() => t(`settings.${section}.title`), [section, t])
 
   return (
@@ -67,6 +77,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
             </DataAndTerminology>
           </label>
           <MultiSelect
+            placeholder={flagsPlaceholder}
             selectedOptions={flags.selected}
             placeholderDisplayAll={true}
             onCleanClick={flags.onClean}

@@ -5,11 +5,10 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
 import { DateTime, Interval } from 'luxon'
-import { Authorization } from '@globalfishingwatch/api-types'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselWithHistory } from 'types'
-import I18nDate, { I18nSpecialDate } from 'features/i18n/i18nDate'
+import I18nDate from 'features/i18n/i18nDate'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { OfflineVessel, VesselFieldLabel } from 'types/vessel'
@@ -25,6 +24,7 @@ import InfoField from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
+import AuthorizationsField from './AuthorizationsField'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -101,9 +101,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     [vessel]
   )
 
-  const authorizations: Authorization[] = vessel?.authorizations?.length
-    ? Array.from(new Map(vessel.authorizations.map((item) => [item.source, item])).values())
-    : []
   const [imageLoading, setImageLoading] = useState(true)
   return (
     <Fragment>
@@ -217,31 +214,11 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 hideTMTDate={true}
                 valuesHistory={vessel.history.depth.byDate}
               ></InfoField>
-              <div className={styles.identifierField}>
-                <label>{t('vessel.authorization_plural', 'authorizations')}</label>
-                {authorizations?.map((auth, index) => (
-                  <p key={index}>
-                    {auth.source}{' '}
-                    <Fragment>
-                      {t('common.from', 'from')}{' '}
-                      {auth.startDate ?? auth.originalStartDate ? (
-                        <I18nSpecialDate date={auth.startDate ?? auth.originalStartDate} />
-                      ) : (
-                        DEFAULT_EMPTY_VALUE
-                      )}{' '}
-                      {t('common.to', 'to')}{' '}
-                      {auth.endDate ?? auth.originalEndDate ? (
-                        <I18nSpecialDate date={auth.endDate ?? auth.originalEndDate} />
-                      ) : (
-                        DEFAULT_EMPTY_VALUE
-                      )}
-                    </Fragment>
-                  </p>
-                ))}
-                {!vessel.authorizations?.length && (
-                  <p>{t('vessel.noAuthorizations', 'No authorizations found')}</p>
-                )}
-              </div>
+              <AuthorizationsField
+                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                label={VesselFieldLabel.authorizations}
+                authorizations={vessel?.authorizations}
+              ></AuthorizationsField>
               <InfoField
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.builtYear}
@@ -290,9 +267,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 value={
                   vessel.iuuStatus !== undefined
                     ? t(
-                        `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
-                        vessel.iuuStatus.toString()
-                      )
+                      `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                      vessel.iuuStatus.toString()
+                    )
                     : DEFAULT_EMPTY_VALUE
                 }
                 valuesHistory={[]}

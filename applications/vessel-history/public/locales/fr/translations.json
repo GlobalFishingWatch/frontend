@@ -2,8 +2,8 @@
   "common": {
     "activity": "Activité",
     "AIS": "AIS",
-    "dataAndTerminology": "Data and Terminology",
-    "events": "Events",
+    "dataAndTerminology": "Données et terminologie",
+    "events": "Évènements",
     "from": "de",
     "GFW": "GFW",
     "info": "Infos",
@@ -21,9 +21,9 @@
     "voyage": "Voyage",
     "any": "Quelconque",
     "currentTimeRange": "intervalle de temps actuel",
-    "high": "High",
-    "low": "Low",
-    "medium": "Medium",
+    "high": "Haut",
+    "low": "Bas",
+    "medium": "Moyen",
     "in": "dans",
     "commingSoon": "à venir!",
     "historyFor": "historique pour",
@@ -47,7 +47,7 @@
     "duration": "Durée",
     "encounter": "rencontre",
     "encounterActionWith": "Rencontre avec {{vessel}} en {{regionName}}",
-    "encounterActionWithNoRegion": "Encounter with {{vessel}}",
+    "encounterActionWithNoRegion": "Rencontre avec {{vessel}}",
     "end": "Fin",
     "fishing": "pêche",
     "fishingAction": "Pêche en {{regionName}}",
@@ -108,18 +108,17 @@
     "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
   },
   "map": {
-    "descriptionMPA": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "filters": "Filter events",
     "loading": "Chargement de la carte",
     "toggleLayers": "Activer/désactiver les calques"
   },
   "search": {
-    "activeAfter": "active After",
-    "activeBefore": "active before",
-    "callsign": "Callsign",
+    "activeAfter": "Actif après",
+    "activeBefore": "Actif avant",
+    "callsign": "Indicatif",
     "description": "Recherche par nom de navire ou code d'identification (OMI, MMSI, Indicatif, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
-    "flagState": "Flag States",
-    "IMO": "OMI",
+    "flagState": "Etat du pavillon",
+    "IMO": "IMO",
     "loadMore": "Charger plus",
     "mergeSelectedVessels": "Merge Selected Vessels",
     "MMSI": "MMSI",
@@ -128,14 +127,15 @@
     "notAllowed": "Recherche non autorisée",
     "seeVessel": "See Vessel",
     "shipname": "Nom de navire",
-    "title": "Search",
+    "title": "Recherche",
     "advanced": "Avancé",
     "basic": "Basique",
     "placeholder": "Recherche par Nom, OMI, Indicatif ou MMSI"
   },
   "selects": {
     "allSelected": "Tous",
-    "selected": "slectionns"
+    "selected": "slectionns",
+    "none": "None"
   },
   "settings": {
     "distancePort": "Distance from port",
@@ -240,7 +240,10 @@
       "0": "Non listé",
       "1": "listé précédemment",
       "2": "actuellement listée"
-    }
+    },
+    "authorizations": "authorizations",
+    "rmfoRegistry": "RFMO Registry",
+    "authPeriod": "Authorization period"
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
