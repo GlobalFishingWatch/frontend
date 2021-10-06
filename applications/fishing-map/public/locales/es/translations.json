@@ -118,7 +118,9 @@
   },
   "download": {
     "action": "Descargar capas de actividad visibles para esta área",
-    "title": "Descargar - Actividad",
+    "activity": "Actividad",
+    "track": "Trayectoria de embarcación",
+    "title": "Descargar",
     "cta": "Descargar",
     "area": "Área",
     "timeRange": "Rango de tiempo",

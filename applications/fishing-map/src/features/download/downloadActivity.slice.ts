@@ -10,16 +10,16 @@ import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { transformFilters } from 'features/analysis/analysis.utils'
 import { DateRange } from 'features/analysis/analysis.slice'
-import { Format, GroupBy, SpatialResolution, TemporalResolution } from './download.config'
+import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
-export interface DownloadState {
+export interface DownloadActivityState {
   geometry: Geometry | undefined
   name: string
   id: string
   status: AsyncReducerStatus
 }
 
-const initialState: DownloadState = {
+const initialState: DownloadActivityState = {
   geometry: undefined,
   name: '',
   id: '',
@@ -46,7 +46,7 @@ export const downloadActivityThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('download/create', async (params: DownloadActivityParams, { rejectWithValue }) => {
+>('downloadActivity/create', async (params: DownloadActivityParams, { rejectWithValue }) => {
   try {
     const {
       dateRange,
@@ -61,7 +61,7 @@ export const downloadActivityThunk = createAsyncThunk<
     const fromDate = DateTime.fromISO(dateRange.start).toUTC()
     const toDate = DateTime.fromISO(dateRange.end).toUTC()
 
-    const downloadParams = {
+    const downloadActivityParams = {
       datasets: dataviews.map(({ datasets }) => datasets.join(',')),
       filters: dataviews.map(({ filters }) => transformFilters(filters)),
       'date-range': [fromDate, toDate].join(','),
@@ -71,10 +71,10 @@ export const downloadActivityThunk = createAsyncThunk<
       groupBy,
     }
 
-    const fileName = `${areaName} - ${downloadParams['date-range']}.zip`
+    const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`
 
     const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
-      `/v1/4wings/report?${stringify(downloadParams, { arrayFormat: 'indices' })}`,
+      `/v1/4wings/report?${stringify(downloadActivityParams, { arrayFormat: 'indices' })}`,
       {
         method: 'POST',
         body: { geojson: geometry } as any,
@@ -92,19 +92,19 @@ export const downloadActivityThunk = createAsyncThunk<
   }
 })
 
-const downloadSlice = createSlice({
-  name: 'download',
+const downloadActivitySlice = createSlice({
+  name: 'downloadActivity',
   initialState,
   reducers: {
-    resetDownloadStatus: (state) => {
+    resetDownloadActivityStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
     },
-    clearDownloadGeometry: (state) => {
+    clearDownloadActivityGeometry: (state) => {
       state.geometry = undefined
       state.name = ''
       state.status = AsyncReducerStatus.Idle
     },
-    setDownloadGeometry: (state, action: PayloadAction<TooltipEventFeature>) => {
+    setDownloadActivityGeometry: (state, action: PayloadAction<TooltipEventFeature>) => {
       state.geometry = action.payload.geometry as Geometry
       state.name = action.payload.value
     },
@@ -126,12 +126,15 @@ const downloadSlice = createSlice({
   },
 })
 
-export const { resetDownloadStatus, clearDownloadGeometry, setDownloadGeometry } =
-  downloadSlice.actions
+export const {
+  resetDownloadActivityStatus,
+  clearDownloadActivityGeometry,
+  setDownloadActivityGeometry,
+} = downloadActivitySlice.actions
 
-export const selectDownloadGeometry = (state: RootState) => state.download.geometry
-export const selectDownloadAreaName = (state: RootState) => state.download.name
-export const selectDownloadAreaId = (state: RootState) => state.download.id
-export const selectDownloadStatus = (state: RootState) => state.download.status
+export const selectDownloadActivityGeometry = (state: RootState) => state.downloadActivity.geometry
+export const selectDownloadActivityAreaName = (state: RootState) => state.downloadActivity.name
+export const selectDownloadActivityAreaId = (state: RootState) => state.downloadActivity.id
+export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
 
-export default downloadSlice.reducer
+export default downloadActivitySlice.reducer
