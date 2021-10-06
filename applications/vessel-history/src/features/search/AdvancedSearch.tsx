@@ -24,8 +24,8 @@ const AdvancedSearch: React.FC = () => {
   const { t } = useTranslation()
 
   const { query, fetchResults } = useSearchConnect()
-  const MMSI = useSelector(selectAdvancedSearchMMSI)
-  const IMO = useSelector(selectAdvancedSearchIMO)
+  const mmsi = useSelector(selectAdvancedSearchMMSI)
+  const imo = useSelector(selectAdvancedSearchIMO)
   const callsign = useSelector(selectAdvancedSearchCallsign)
   const flags = useSelector(selectAdvancedSearchFlags)
   const lastTransmissionDate = useSelector(selectLastTransmissionDate)
@@ -82,17 +82,17 @@ const AdvancedSearch: React.FC = () => {
         <InputText
           inputSize="small"
           onChange={setQueryParam}
-          id="MMSI"
+          id="mmsi"
           className={styles.width8ch}
-          value={MMSI ?? ''}
+          value={mmsi ?? ''}
           label={t('search.MMSI', 'MMSI')}
         />
         <InputText
           inputSize="small"
           onChange={setQueryParam}
-          id="IMO"
+          id="imo"
           className={styles.width7ch}
-          value={IMO ?? ''}
+          value={imo ?? ''}
           label={t('search.IMO', 'IMO')}
         />
         <InputText

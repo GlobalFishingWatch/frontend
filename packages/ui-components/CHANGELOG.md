@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 12.2.0
+
+### Minor Changes
+
+- f98659b5: draw and add polygon icons
+
 ## 12.1.1
 
 ### Patch Changes

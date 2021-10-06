@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { fitBounds } from 'viewport-mercator-project'
+import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import type { ViewportProps } from 'react-map-gl'

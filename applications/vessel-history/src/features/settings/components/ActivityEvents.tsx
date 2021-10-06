@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { MultiSelect, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { MultiSelect, InputText } from '@globalfishingwatch/ui-components'
 import {
   MultiSelectOnFilter,
   MultiSelectOption,
 } from '@globalfishingwatch/ui-components/dist/multi-select'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import { SettingEventSectionName, SettingsEvents } from '../settings.slice'
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
@@ -47,6 +48,26 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
     [MPAS_REGIONS, settings.mpas, getOptions]
   )
 
+  const eezPlaceholder = useMemo(
+    () =>
+      !eez.selected?.length
+        ? (t('selects.none', 'None') as string)
+        : eez.selected.length > 1
+        ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
+        : eez.selected[0].label,
+    [eez.selected, t]
+  )
+
+  const rfmoPlaceholder = useMemo(
+    () =>
+      !rfmo.selected?.length
+        ? (t('selects.none', 'None') as string)
+        : rfmo.selected.length > 1
+        ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
+        : rfmo.selected[0].label,
+    [rfmo.selected, t]
+  )
+
   const mpaAutocomplete: MpaAutocompleteProps = useMemo(
     () => ({
       placeholder: !mpa.selected?.length
@@ -65,14 +86,32 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
     [anyOption, mpa, t]
   )
 
+  const eventType = useMemo(() => t(`settings.${section}.title`), [section, t])
   return (
     <div>
       <div className={styles.settingsField}>
         <label>
           {t('settings.eezs.label', 'Events in these EEZs')}
-          <IconButton type="default" size="tiny" icon="info"></IconButton>
+          <DataAndTerminology
+            size="tiny"
+            type="default"
+            title={t('settings.eezs.label', 'Events in these EEZs')}
+          >
+            <Trans i18nKey="settings.eezs.description" values={{ eventType }}>
+              Highlight all {{ eventType }} that may have occured inside an EEZ. We calculate a
+              bounding box for the event location based on the minimum and maximum coordinates and
+              verify if it overlaps with the bounding box of the EEZ. For example, if you select
+              Argentina EEZ and Chile EEZ under the {{ eventType }} activity highlights, you will
+              see all {{ eventType }} where the bounding box created by minimum and maximum
+              coordinates of the events overlapped with the minimum and maximum coordinates of the
+              Argentina EEZ OR the Chile EEZ. Because a bounding box method is used, it is possible
+              the actual track coordinates do not overlap with the EEZ. Please investigate the
+              highlighted events further on the map.
+            </Trans>
+          </DataAndTerminology>
         </label>
         <MultiSelect
+          placeholder={eezPlaceholder}
           selectedOptions={eez.selected}
           placeholderDisplayAll={true}
           onCleanClick={eez.onClean}
@@ -84,9 +123,24 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       <div className={styles.settingsField}>
         <label>
           {t('settings.rfmos.label', 'Events in these RFMOS')}
-          <IconButton type="default" size="tiny" icon="info"></IconButton>
+          <DataAndTerminology
+            size="tiny"
+            type="default"
+            title={t('settings.rfmos.label', 'Events in these RFMOS')}
+          >
+            <Trans i18nKey="settings.rfmos.description" values={{ eventType }}>
+              Highlight all {{ eventType }} that occurred inside and RFMO. We calculate a bounding
+              box for the event location based on the minimum and maximum coordinates and verify if
+              it overlaps with the RFMO. Example if you select IOTC and WCPFC, you will see all
+              {{ eventType }} where the bounding box created by minimum and maximum coordinates of
+              the events overlapped with the minimum and maximum coordinates of IOTC OR WCPFC.
+              Because a bounding box method is used, it is possible the actual track coordinates do
+              not overlap with the RFMO. Please invesitage highlighted event further on the map.
+            </Trans>
+          </DataAndTerminology>
         </label>
         <MultiSelect
+          placeholder={rfmoPlaceholder}
           onCleanClick={() => setSettingOptions(section, 'rfmos', [])}
           selectedOptions={rfmo.selected}
           placeholderDisplayAll={true}
@@ -98,7 +152,22 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       <div className={styles.settingsField}>
         <label>
           {t('settings.mpas.label', 'Events in these MPAs')}
-          <IconButton type="default" size="tiny" icon="info"></IconButton>
+          <DataAndTerminology
+            size="tiny"
+            type="default"
+            title={t('settings.mpas.label', 'Events in these MPAs')}
+          >
+            <Trans i18nKey="settings.mpas.description" values={{ eventType }}>
+              Highlight all {{ eventType }} that occurred inside an MPA. We calculate a bounding box
+              for the event location based on the minimum and maximum coordinates and verify if it
+              overlaps with the MPA. For example, if you select Galápagos and Ascension Island, you
+              will see all {{ eventType }} where the bounding box created by minimum and maximum
+              coordinates of the events overlapped with the minimum and maximum coordinates of the
+              Galápagos OR Ascension Island MPA. Because a bounding box method is used, it is
+              possible the actual track coordinates do not overlap with the MPA. Please invesitage
+              highlighted event further on the map.
+            </Trans>
+          </DataAndTerminology>
         </label>
         <MultiSelect
           onCleanClick={mpa.onClean}
@@ -114,7 +183,13 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
           {t('settings.duration', 'DURATION')}
-          <IconButton type="default" size="tiny" icon="info"></IconButton>
+          <DataAndTerminology size="tiny" type="default" title={t('settings.duration', 'Duration')}>
+            <Trans i18nKey="settings.durationDescription" values={{ eventType }}>
+              Highlight all {{ eventType }} that had a duration longer than the value configured.
+              Example if you configure 5 hours, you will see all {{ eventType }} with duration more
+              or equal to 5 hours
+            </Trans>
+          </DataAndTerminology>
         </label>
         <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText
@@ -129,7 +204,18 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
           {t('event.distanceShore', 'Distance from shore')}
-          <IconButton type="default" size="tiny" icon="info"></IconButton>
+          <DataAndTerminology
+            size="tiny"
+            type="default"
+            title={t('settings.distanceShore', 'Distance from shore')}
+          >
+            <Trans i18nKey="settings.distanceShoreDescription" values={{ eventType }}>
+              Highlight all {{ eventType }} that had a distance longer than the value configured.
+              Example if you configure 8 km, you will see all {{ eventType }} with distance more or
+              equal to 8 km from the shore. Distance from shore will be highlighted if either the
+              start or end position is more or equal to the specified distance.
+            </Trans>
+          </DataAndTerminology>
         </label>
         <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText
@@ -146,7 +232,20 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
           {t('event.distancePort', 'Distance from port')}
-          <IconButton type="default" size="tiny" icon="info"></IconButton>
+          <DataAndTerminology
+            size="tiny"
+            type="default"
+            title={t('settings.distancePort', 'Distance from port')}
+          >
+            <Trans i18nKey="settings.distancePortDescription" values={{ eventType }}>
+              Highlight all {{ eventType }} that had a distance from port longer than the value
+              configured. Example if you configure 8 km, you will see all {{ eventType }} with
+              distance more or equal to 8 km. Distance from port is will be highlighted if either
+              the start or end position is more or equal to the specified distance. Ports include
+              all GFW identified anchorages (for more details on anchorage including its definition
+              here)
+            </Trans>
+          </DataAndTerminology>
         </label>
         <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText

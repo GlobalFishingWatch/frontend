@@ -5,6 +5,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { ValueItem } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import InfoFieldHistory from './InfoFieldHistory'
 import styles from './Info.module.css'
 
@@ -14,6 +15,7 @@ interface ListItemProps {
   valuesHistory?: ValueItem[]
   vesselName: string
   hideTMTDate?: boolean
+  helpText?: React.ReactNode
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -22,6 +24,7 @@ const InfoField: React.FC<ListItemProps> = ({
   valuesHistory = [],
   vesselName,
   hideTMTDate = false,
+  helpText,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
@@ -39,10 +42,16 @@ const InfoField: React.FC<ListItemProps> = ({
   const closeModal = useCallback(() => setModalOpen(false), [])
 
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
-
   return (
     <div className={styles.identifierField}>
-      <label>{t(`vessel.${label}` as any, label)}</label>
+      <label>
+        {t(`vessel.${label}` as any, label)}
+        {helpText && (
+          <DataAndTerminology size="tiny" type="default" title={t(`vessel.${label}` as any, label)}>
+            {helpText}
+          </DataAndTerminology>
+        )}
+      </label>
       <div>
         <div onClick={openModal}>{value}</div>
         {valuesHistory.length > 0 && (

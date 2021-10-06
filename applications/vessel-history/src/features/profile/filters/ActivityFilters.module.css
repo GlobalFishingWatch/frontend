@@ -2,3 +2,9 @@
   text-align: right;
   padding: var(--space-S) var(--space-S) var(--space-XS) var(--space-S);
 }
+.filters > * {
+  margin-left: var(--space-S);
+}
+.dataAndTerminologyContainer {
+  height: 90vh;
+}

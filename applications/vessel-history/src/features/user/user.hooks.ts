@@ -43,11 +43,13 @@ export const useUser = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (!logged && (token || refreshToken || accessToken)) dispatch(fetchUserThunk())
+    if (!logged && (token || refreshToken || accessToken)) {
+      dispatch(fetchUserThunk())
+    }
   }, [accessToken, dispatch, logged, refreshToken, token])
 
   return {
-    loading: status !== AsyncReducerStatus.Finished,
+    loading: status !== AsyncReducerStatus.Finished && status !== AsyncReducerStatus.Idle,
     logged,
     user,
     authorized,

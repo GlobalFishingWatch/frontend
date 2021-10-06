@@ -81,8 +81,12 @@
 .layerContainer {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .layerContainer .infoIcon {
   margin-left: auto;
+}
+.dataAndTerminologyContainer {
+  height: 90vh;
 }

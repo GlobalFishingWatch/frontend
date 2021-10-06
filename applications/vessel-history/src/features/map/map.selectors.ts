@@ -16,7 +16,7 @@ import { ResourcesState, selectResources } from 'features/resources/resources.sl
 import { DEBUG_MODE, DEFAULT_WORKSPACE } from 'data/config'
 import { Range } from 'types'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
-import { selectHighlightedEvent, selectHighlightedTime } from './map.slice'
+import { selectHighlightedEventMap, selectHighlightedTime } from './map.slice'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -60,7 +60,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectDataviewsForResourceQuerying,
     selectResources,
     selectHighlightedTime,
-    selectHighlightedEvent,
+    selectHighlightedEventMap,
   ],
   (dataviews = [], resources, highlightedTime, highlightedEvent) => {
     return getGeneratorsConfig({

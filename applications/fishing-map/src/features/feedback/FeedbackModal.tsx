@@ -167,7 +167,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       setLoading(false)
       setInitialFeedbackStateWithUserData()
       onClose()
-    } catch (e) {
+    } catch (e: any) {
       setLoading(false)
       console.error('Error: ', e)
     }

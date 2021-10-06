@@ -5,10 +5,8 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import Link from 'redux-first-router-link'
 import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { SETTINGS } from 'routes/routes'
 import {
   RenderedEvent,
@@ -16,6 +14,7 @@ import {
   selectFilteredActivityHighlightEvents,
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectAnyHighlightsSettingDefined } from 'features/vessels/activity/vessels-highlight.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
@@ -25,7 +24,6 @@ interface HighlightsProps {
 }
 
 const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
-  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
   const events = useSelector(selectFilteredActivityHighlightEvents)
@@ -37,17 +35,18 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
     setIsOpen(true)
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
-  const navigateToSettings = useCallback(() => dispatch({ type: SETTINGS }), [dispatch])
+  const { dispatchLocation } = useLocationConnect()
 
-  const trackEvent = useCallback(() => {
+  const onSettingsClick = useCallback(() => {
+    dispatchLocation(SETTINGS)
     uaEvent({
       category: 'Highlight Events',
       action: 'Start highlight events configurations',
       label: JSON.stringify({
-        page: 'vessel detail'
-      })
+        page: 'vessel detail',
+      }),
     })
-  }, [])
+  }, [dispatchLocation])
 
   useEffect(() => {
     if (!loading) {
@@ -57,11 +56,11 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
         [EventTypes.Loitering as string]: 0,
         [EventTypes.Encounter as string]: 0,
       }
-      events.forEach(event => countEvents[event.type as string]++)
+      events.forEach((event) => countEvents[event.type as string]++)
       uaEvent({
         category: 'Highlight Events',
         action: 'Display highlight events',
-        label: JSON.stringify(countEvents)
+        label: JSON.stringify(countEvents),
       })
     }
   }, [events, loading])
@@ -74,9 +73,13 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
     >
       <div className={styles.divider}></div>
       <div>
-        <Link className={styles.settingsLink} to={['settings']} onClick={trackEvent}>
-          <IconButton type="default" size="default" icon="settings"></IconButton>
-        </Link>
+        <IconButton
+          onClick={onSettingsClick}
+          className={styles.settingsLink}
+          type="default"
+          size="default"
+          icon="settings"
+        />
         <h2 className={styles.highlights}>
           {t('events.activityHighlights', 'Activity Highlights')}
           {anyHighlightsSettingDefined &&
@@ -93,7 +96,7 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
             "You've not defined the highlight settings yet. " +
               'Please click Settings to configure the activity of interest.'
           )}
-          <Button type="secondary" onClick={navigateToSettings} className={styles.settings}>
+          <Button type="secondary" onClick={onSettingsClick} className={styles.settings}>
             <Icon type="default" icon="settings" className={styles.iconInButton}></Icon>
             {t('events.highlitingSettings', 'settings')}
           </Button>
@@ -128,11 +131,7 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
                           const event = events[index]
                           return (
                             <div style={style}>
-                              <ActivityItem
-                                key={index}
-                                event={event}
-                                onInfoClick={openModal}
-                              />
+                              <ActivityItem key={index} event={event} onInfoClick={openModal} />
                             </div>
                           )
                         }}

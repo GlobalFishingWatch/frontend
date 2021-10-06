@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
@@ -15,6 +15,7 @@ import { setHighlightedEvent } from 'features/map/map.slice'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import useViewport from 'features/map/map-viewport.hooks'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { selectVesselId } from 'routes/routes.selectors'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -64,7 +65,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
     },
     [dispatch, props, setMapCoordinates]
   )
-
+  const isGFWVessel = useSelector(selectVesselId)
   useEffect(() => {
     dispatch(fetchRegionsThunk())
     dispatch(fetchPsmaThunk())
@@ -108,9 +109,10 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                 )}
               </AutoSizer>
             ) : (
-              <p className={styles.emptyState}>
-                {t('events.noResults', 'No events found. Try changing the current filters.')}
-              </p>
+              <div>
+                {isGFWVessel && <p className={styles.emptyState}>{t('events.noResults', 'No events found. Try changing the current filters.')}</p>}
+                {!isGFWVessel && <p className={styles.emptyState}>{t('events.noData', 'There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.')}</p>}
+              </div>
             )}
           </div>
         </Fragment>

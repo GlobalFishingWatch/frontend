@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import { parse } from 'qs'
 import GFWAPI, { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
+import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { QueryParams } from 'types'
 import useLocalStorage from 'hooks/use-local-storage'
 import {
@@ -10,7 +11,7 @@ import {
   selectLocationType,
 } from 'routes/routes.selectors'
 // import { initialDispatch } from 'store'
-import { parseWorkspace, ROUTE_TYPES } from './routes'
+import { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 
 export const CALLBACK_URL_KEY = 'CallbackUrl'

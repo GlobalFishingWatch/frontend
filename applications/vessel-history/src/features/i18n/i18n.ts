@@ -3,6 +3,7 @@ import Backend from 'i18next-http-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
+import { PATH_BASENAME } from 'routes/routes'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
@@ -10,7 +11,7 @@ export const LocaleLabels = [
   { id: Locale.fr, label: 'Français' },
 ]
 
-const PACKAGE_NAMESPACES = ['flags']
+const PACKAGE_NAMESPACES = ['flags', 'datasets']
 export const SHARED_LABELS_PATH =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
@@ -33,10 +34,10 @@ i18n
         if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
           return `${SHARED_LABELS_PATH}/{{lng}}/{{ns}}.json`
         }
-        return `/locales/{{lng}}/{{ns}}.json`
+        return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`
       },
     },
-    ns: ['translations', 'flags'],
+    ns: ['translations', 'flags', 'datasets'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
     supportedLngs: Object.values(Locale),
@@ -52,6 +53,9 @@ i18n
     },
   })
 
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.setAttribute('lang', lng)
+})
 const t = i18n.t.bind(i18n)
 
 export { t }

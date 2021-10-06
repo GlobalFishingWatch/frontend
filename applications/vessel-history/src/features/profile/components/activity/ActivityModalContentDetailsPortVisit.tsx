@@ -62,11 +62,7 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
   const ports = useMemo(
     () =>
       Array.from(
-        new Set([
-          formatPort(event.port_visit?.startAnchorage),
-          formatPort(event.port_visit?.intermediateAnchorage),
-          formatPort(event.port_visit?.endAnchorage),
-        ])
+        formatPort(event.port_visit?.intermediateAnchorage)
       ),
     [event.port_visit, formatPort]
   )
