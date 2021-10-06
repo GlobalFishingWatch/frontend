@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { selectAdvancedSearchFields, selectUrlQuery } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -20,6 +21,11 @@ export const useSearchResultsConnect = () => {
       if (selectedVessels.includes(index)) {
         setSelectedVessels(selectedVessels.filter((i) => index !== i))
       } else if (isVesselsMergeEnabled) {
+        uaEvent({
+          category: 'Search Vessel VV',
+          action: 'Select vessel from result list',
+          label: JSON.stringify({ position: index })
+        })
         setSelectedVessels([...selectedVessels, index])
       }
     },
@@ -38,11 +44,11 @@ type useSearchConnectParams = {
   onNewSearch?: () => void
 }
 const defaultParams = {
-  onNewSearch: () => {},
+  onNewSearch: () => { },
 }
 
 export const useSearchConnect = (params: useSearchConnectParams = defaultParams) => {
-  const { onNewSearch = () => {} } = params
+  const { onNewSearch = () => { } } = params
   const dispatch = useAppDispatch()
   const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)

@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
@@ -34,14 +34,47 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
   const loading = useSelector(selectEventsLoading)
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
-  const openModal = useCallback((event: RenderedEvent) => {
-    setSelectedEvent(event)
-    setIsOpen(true)
-  }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { dispatchLocation } = useLocationConnect()
   const { highlightEvent } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
+
+  const openModal = useCallback((event: RenderedEvent, index: number) => {
+    setSelectedEvent(event)
+    setIsOpen(true)
+    uaEvent({
+      category: 'Highlight Events',
+      action: 'Select one vessel from highlights section',
+      label: JSON.stringify({
+        position: index,
+        click: 'info'
+      }),
+    })
+  }, [])
+
+  const onMapClick = useCallback((event: RenderedEvent | Voyage, index: number) => {
+    uaEvent({
+      category: 'Highlight Events',
+      action: 'Select one vessel from highlights section',
+      label: JSON.stringify({
+        position: index,
+        click: 'map'
+      }),
+    })
+    if (event.type !== EventTypeVoyage.Voyage) {
+      highlightEvent(event)
+
+      setMapCoordinates({
+        latitude: event.position.lat,
+        longitude: event.position.lon,
+        zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+        bearing: 0,
+        pitch: 0,
+      })
+
+      props.onMoveToMap()
+    }
+  }, [highlightEvent, props, setMapCoordinates, viewport.zoom])
 
   const onSettingsClick = useCallback(() => {
     dispatchLocation(SETTINGS)
@@ -54,27 +87,9 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
     })
   }, [dispatchLocation])
 
-  const selectEventOnMap = useCallback(
-    (event: RenderedEvent | Voyage) => {
-      if (event.type !== EventTypeVoyage.Voyage) {
-        highlightEvent(event)
 
-        setMapCoordinates({
-          latitude: event.position.lat,
-          longitude: event.position.lon,
-          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
-          bearing: 0,
-          pitch: 0,
-        })
-
-        props.onMoveToMap()
-      }
-    },
-    [highlightEvent, props, setMapCoordinates, viewport.zoom]
-  )
-
-  useEffect(() => {
-    if (!loading) {
+  const countEvents = useMemo(() => {
+    if (events.length) {
       const countEvents = {
         [EventTypes.Port as string]: 0,
         [EventTypes.Fishing as string]: 0,
@@ -82,13 +97,21 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
         [EventTypes.Encounter as string]: 0,
       }
       events.forEach((event) => countEvents[event.type as string]++)
+      return countEvents;
+    }
+    return null
+  }, [events])
+  
+  useEffect(() => {
+    if (countEvents){
       uaEvent({
         category: 'Highlight Events',
         action: 'Display highlight events',
         label: JSON.stringify(countEvents),
       })
+
     }
-  }, [events, loading])
+  }, [countEvents])
 
   return (
     <div
@@ -156,11 +179,11 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
                           const event = events[index]
                           return (
                             <div style={style}>
-                              <ActivityItem
-                                key={index}
-                                event={event}
-                                onInfoClick={openModal}
-                                onMapClick={selectEventOnMap}
+                              <ActivityItem 
+                                key={index} 
+                                event={event} 
+                                onInfoClick={() => openModal(event, index)} 
+                                onMapClick={() => onMapClick(event, index)} 
                               />
                             </div>
                           )

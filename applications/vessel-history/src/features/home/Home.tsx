@@ -85,6 +85,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const onMergeVesselClick = useCallback(() => {
     const selectedVessel = vessels[selectedVessels[0]]
+    uaEvent({
+      category: 'Search Vessel VV',
+      action: 'Merge vessels',
+      label: JSON.stringify(selectedVessels),
+    })
     const akaVessels = selectedVessels
       .slice(1)
       .map((index) => vessels[index])
