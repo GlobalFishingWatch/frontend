@@ -117,9 +117,11 @@
     "uploadNewEnviroment": "Subir un nuevo dato ambiental"
   },
   "download": {
-    "action": "Descargar capas de actividad visibles para esta área",
-    "title": "Descargar - Actividad",
-    "cta": "Descargar",
+    "title": "Download",
+    "activity": "Activity",
+    "activityAction": "Download visible activity layers for this area",
+    "track": "Vessel Track",
+    "trackAction": "Download vessel track",
     "area": "Área",
     "timeRange": "Rango de tiempo",
     "format": "Formato",
