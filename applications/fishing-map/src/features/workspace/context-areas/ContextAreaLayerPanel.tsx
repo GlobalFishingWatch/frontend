@@ -51,7 +51,7 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
   const isUserLayer = !guestUser && dataset?.ownerType === 'user'
 
-  useAutoRefreshImportingDataset(dataset)
+  useAutoRefreshImportingDataset(dataset, 5000)
 
   if (!dataset) {
     return <DatasetNotFound dataview={dataview} />

@@ -17,3 +17,4 @@ export {
 } from './resolve-dataviews-generators'
 export { default as resolveEndpoint } from './resolve-endpoint'
 export * from './resources'
+export * from './url-workspace'

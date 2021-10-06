@@ -54,9 +54,12 @@ export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
   features: SliceExtendedFeature[]
 }
 
+export type DrawMode = 'edit' | 'draw' | 'disabled'
+
 type MapState = {
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
+  drawMode: DrawMode
   fishingStatus: AsyncReducerStatus
   viirsStatus: AsyncReducerStatus
   apiEventStatus: AsyncReducerStatus
@@ -65,6 +68,7 @@ type MapState = {
 const initialState: MapState = {
   clicked: null,
   hovered: null,
+  drawMode: 'disabled',
   fishingStatus: AsyncReducerStatus.Idle,
   viirsStatus: AsyncReducerStatus.Idle,
   apiEventStatus: AsyncReducerStatus.Idle,
@@ -237,7 +241,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   ? vesselsInfoResponse
                   : (vesselsInfoResponse as any)?.entries
               vesselsInfo = vesselsInfoList || []
-            } catch (e) {
+            } catch (e: any) {
               console.warn(e)
             }
           }
@@ -395,6 +399,9 @@ const slice = createSlice({
   name: 'map',
   initialState,
   reducers: {
+    setDrawMode: (state, action: PayloadAction<DrawMode>) => {
+      state.drawMode = action.payload
+    },
     setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
@@ -474,9 +481,10 @@ const slice = createSlice({
 })
 
 export const selectClickedEvent = (state: RootState) => state.map.clicked
+export const selectDrawMode = (state: RootState) => state.map.drawMode
 export const selectFishingInteractionStatus = (state: RootState) => state.map.fishingStatus
 export const selectViirsInteractionStatus = (state: RootState) => state.map.viirsStatus
 export const selectApiEventStatus = (state: RootState) => state.map.apiEventStatus
 
-export const { setClickedEvent } = slice.actions
+export const { setClickedEvent, setDrawMode } = slice.actions
 export default slice.reducer

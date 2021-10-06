@@ -56,13 +56,13 @@ const processStatus = (response: Response): Promise<Response> => {
         authError = await response.text().then((text) => {
           try {
             return JSON.parse(text)?.error
-          } catch (e) {
+          } catch (e: any) {
             return response.statusText
           }
         })
       }
       return reject({ status, message: authError || statusText })
-    } catch (e) {
+    } catch (e: any) {
       return reject({ status, message: statusText })
     }
   })
@@ -203,7 +203,7 @@ export class GFWAPI {
         this.setToken(token)
         this.status = 'idle'
         return token
-      } catch (e) {
+      } catch (e: any) {
         this.status = 'idle'
         e.status = 401
         throw e
@@ -241,7 +241,7 @@ export class GFWAPI {
         // and don't wait for the login request itselft
         try {
           await this.logging
-        } catch (e) {
+        } catch (e: any) {
           if (this.debug) {
             console.log(`Fetch resource executed without login headers in url: ${url}`)
           }
@@ -306,7 +306,7 @@ export class GFWAPI {
                       })
                     }
                   )
-                } catch (e) {
+                } catch (e: any) {
                   console.warn(
                     '@globalfishingwatch/pbf is a mandatory external dependency when using vessel response decoding'
                   )
@@ -318,7 +318,7 @@ export class GFWAPI {
             }
           })
         return data
-      } catch (e) {
+      } catch (e: any) {
         // 401 = not authenticated => trying to refresh the token
         // 403 = not authorized => trying to refresh the token
         // 401 + refreshError = true => refresh token failed
@@ -332,7 +332,7 @@ export class GFWAPI {
               if (this.debug) {
                 console.log(`GFWAPI: Token refresh worked! trying to fetch again ${url}`)
               }
-            } catch (e) {
+            } catch (e: any) {
               if (this.debug) {
                 console.warn(`GFWAPI: Error fetching ${url}`, e)
               }
@@ -353,7 +353,7 @@ export class GFWAPI {
           throw e
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Error fetching ${url}`, e)
       }
@@ -370,7 +370,7 @@ export class GFWAPI {
         false
       )
       return user
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
       throw new Error('Error trying to get user data')
     }
@@ -391,7 +391,7 @@ export class GFWAPI {
           if (this.debug) {
             console.log(`GFWAPI: access-token valid, tokens ready`)
           }
-        } catch (e) {
+        } catch (e: any) {
           if (!this.getToken() && !this.getRefreshToken()) {
             const msg = isUnauthorizedError(e)
               ? 'Invalid access token'
@@ -418,7 +418,7 @@ export class GFWAPI {
           resolve(user)
           this.status = 'idle'
           return user
-        } catch (e) {
+        } catch (e: any) {
           if (this.debug) {
             console.warn('GFWAPI: Token expired, trying to refresh', e)
           }
@@ -442,7 +442,7 @@ export class GFWAPI {
           resolve(user)
           this.status = 'idle'
           return user
-        } catch (e) {
+        } catch (e: any) {
           const msg = isUnauthorizedError(e)
             ? 'Invalid refresh token'
             : 'Error trying to refreshing the token'
@@ -477,7 +477,7 @@ export class GFWAPI {
         console.log(`GFWAPI: Logout invalid session api OK`)
       }
       return true
-    } catch (e) {
+    } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Logout invalid session fail`)
       }

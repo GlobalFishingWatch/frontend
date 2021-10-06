@@ -3,8 +3,6 @@ import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
@@ -13,6 +11,7 @@ import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.
 import EventFilters from 'features/event-filters/EventFilters'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
+import { getDatasetDescriptionTranslated, getDatasetNameTranslated } from 'features/i18n/utils'
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -33,7 +32,7 @@ const MapControls = ({
   const [extendedControls] = useState(true)
   const [isModalOpen, setIsOpen] = useState(false)
   const [showLayersPopup, setShowLayersPopup] = useState(false)
-  const [showMPAInfo, setShowMPAInfo] = useState(false)
+  const [showLayerInfo, setShowLayerInfo] = useState<{ [key: string]: boolean }>({})
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const filtered = useSelector(selectFilterUpdated)
   const setModalOpen = useCallback((isOpen) => {
@@ -44,10 +43,6 @@ const MapControls = ({
     })
     setIsOpen(isOpen)
   }, [])
-  const layerTitle = (dataview: UrlDataviewInstance) => {
-    const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-    return t(`datasets:${dataset?.id}.name` as any, dataset?.name)
-  }
 
   const handleCloseShowLayers = useCallback(() => {
     setShowLayersPopup(false)
@@ -114,27 +109,29 @@ const MapControls = ({
                               className={styles.contextLayer}
                               classNameActive={styles.active}
                               dataview={layer}
-                              title={layerTitle(layer)}
+                              title={getDatasetNameTranslated(layer)}
                             />
-                            {layer.id === 'context-layer-mpa' && (
-                              <div>
-                                <IconButton
-                                  icon="info"
-                                  type="default"
-                                  size="small"
-                                  className={styles.infoIcon}
-                                  tooltipPlacement="left"
-                                  onClick={() => setShowMPAInfo(true)}
-                                />
-                                <Modal
-                                  isOpen={showMPAInfo}
-                                  onClose={() => setShowMPAInfo(false)}
-                                  title={layerTitle(layer)}
-                                >
-                                  {t('map.descriptionMPA', 'Marine protected areas (MPAs)...')}
-                                </Modal>
-                              </div>
-                            )}
+                            <div>
+                              <IconButton
+                                icon="info"
+                                type="default"
+                                size="small"
+                                className={styles.infoIcon}
+                                tooltipPlacement="left"
+                                onClick={() =>
+                                  setShowLayerInfo({ ...showLayerInfo, [layer.id]: true })
+                                }
+                              />
+                              <Modal
+                                isOpen={showLayerInfo[layer.id.toString()]}
+                                onClose={() =>
+                                  setShowLayerInfo({ ...showLayerInfo, [layer.id]: false })
+                                }
+                                title={getDatasetNameTranslated(layer)}
+                              >
+                                {getDatasetDescriptionTranslated(layer)}
+                              </Modal>
+                            </div>
                           </div>
                         ))}
                     </div>

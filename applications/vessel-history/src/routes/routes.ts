@@ -9,10 +9,8 @@ import {
   NavigationAction,
 } from 'redux-first-router'
 import { stringify, parse } from 'qs'
-import { Dictionary, Middleware } from '@reduxjs/toolkit'
-import { RootState } from 'store'
+import { Dictionary } from '@reduxjs/toolkit'
 import { AppActions, AppState } from 'types/redux.types'
-import { UpdateQueryParamsAction } from './routes.actions'
 
 export const PATH_BASENAME =
   process.env.REACT_APP_WORKSPACE_ENV === 'production' ? '/vessel-viewer' : ''
@@ -23,7 +21,7 @@ export const PROFILE = 'PROFILE'
 export const WORKSPACE_ROUTES = [HOME, PROFILE]
 export const SETTINGS = 'SETTINGS'
 
-export type ROUTE_TYPES = typeof HOME | typeof PROFILE
+export type ROUTE_TYPES = typeof HOME | typeof PROFILE | typeof SETTINGS
 
 const thunk = async (
   dispatch: Dispatch<AppActions | NavigationAction>,
@@ -85,28 +83,5 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
   longitude: (s) => parseFloat(s),
   zoom: (s) => parseFloat(s),
 }
-
-export const routerQueryMiddleware: Middleware =
-  ({ getState }: { getState: () => RootState }) =>
-  (next) =>
-  (action: UpdateQueryParamsAction) => {
-    const routesActions = Object.keys(routesMap)
-    // check if action type matches a route type
-    const isRouterAction = routesActions.includes(action.type)
-    if (!isRouterAction) {
-      next(action)
-    } else {
-      const newAction: UpdateQueryParamsAction = { ...action }
-
-      const prevQuery = getState().location.query || {}
-      if (newAction.replaceQuery !== true) {
-        newAction.query = {
-          ...prevQuery,
-          ...newAction.query,
-        }
-      }
-      next(newAction)
-    }
-  }
 
 export default connectRoutes(routesMap, routesOptions)

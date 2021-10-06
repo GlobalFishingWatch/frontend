@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/dataviews-client",
-  "version": "14.0.0",
+  "version": "14.1.0",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -54,7 +54,8 @@
   "peerDependencies": {
     "@globalfishingwatch/api-client": "^4.0.0",
     "@globalfishingwatch/api-types": "^6.0.0",
-    "@globalfishingwatch/layer-composer": "^10.0.0"
+    "@globalfishingwatch/layer-composer": "^10.0.0",
+    "lodash": "^4.17.21"
   },
   "gitHead": "dd9006c455eb7ee9f20cbdc62854d9a16bfc94c1"
 }
