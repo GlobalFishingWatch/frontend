@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.59
+
+### Patch Changes
+
+- 3ce2cbbd: Allow GFW users to download vessel tracks
+
 ## 1.1.58
 
 ### Patch Changes
