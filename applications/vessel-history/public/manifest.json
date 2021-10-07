@@ -7,6 +7,7 @@
   "display": "standalone",
   "orientation": "any",
   "start_url": "/",
+  "scope": "/vessel-viewer",
   "background_color": "#fff",
   "theme_color": "#163f89",
   "icons": [
