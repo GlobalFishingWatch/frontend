@@ -15,9 +15,10 @@ import {
   DownloadActivityParams,
   downloadActivityThunk,
   resetDownloadActivityStatus,
+  selectDownloadActivityLoading,
+  selectDownloadActivityFinished,
   selectDownloadActivityAreaName,
   selectDownloadActivityGeometry,
-  selectDownloadActivityStatus,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -25,7 +26,6 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import { DateRange } from 'features/analysis/analysis.slice'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -42,7 +42,8 @@ function DownloadActivityModal() {
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
-  const downloadStatus = useSelector(selectDownloadActivityStatus)
+  const downloadLoading = useSelector(selectDownloadActivityLoading)
+  const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)
   const { start, end, timerange } = useTimerangeConnect()
 
@@ -158,7 +159,7 @@ function DownloadActivityModal() {
       })
       .filter((dataview) => dataview.datasets.length > 0)
 
-    downloadDataviews.forEach((dataview) => {
+    const downloadPromises = downloadDataviews.map((dataview) => {
       const downloadParams: DownloadActivityParams = {
         dateRange: timerange as DateRange,
         geometry: downloadAreaGeometry as Geometry,
@@ -170,12 +171,10 @@ function DownloadActivityModal() {
         groupBy,
       }
 
-      try {
-        dispatch(downloadActivityThunk(downloadParams))
-      } catch (e: any) {
-        console.warn(e)
-      }
+      return dispatch(downloadActivityThunk(downloadParams))
     })
+
+    await Promise.allSettled(downloadPromises)
 
     uaEvent({
       category: 'Download',
@@ -260,7 +259,7 @@ function DownloadActivityModal() {
         <Button
           className={styles.downloadBtn}
           onClick={onDownloadClick}
-          loading={downloadStatus === AsyncReducerStatus.Loading}
+          loading={downloadLoading}
           disabled={!duration || duration.years > 1}
           tooltip={
             duration && duration.years > 3
@@ -268,11 +267,7 @@ function DownloadActivityModal() {
               : ''
           }
         >
-          {downloadStatus === AsyncReducerStatus.Finished ? (
-            <Icon icon="tick" />
-          ) : (
-            t('download.title', 'Download')
-          )}
+          {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
         </Button>
       </div>
     </Modal>
