@@ -4,13 +4,16 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { ActivityEvent } from 'types/activity'
 import { Voyage, EventTypeVoyage } from 'types/voyage'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectEventsForTracks, selectFilteredEvents } from '../activity/vessels-activity.selectors'
 
 export const selectVoyages = createSelector([selectEventsForTracks], (eventsForTrack) => {
   return eventsForTrack
     .map(({ data }) => {
       const voyages: Voyage[] = (data || [])
-        .filter((event: ActivityEvent) => event.type === EventTypes.Port)
+        .filter(
+          (event: ActivityEvent) => event.type === EventTypes.Port && event.id.endsWith('-exit')
+        )
         .map(
           (port, index, all) =>
             ({
@@ -22,8 +25,10 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
                 : {}),
               type: EventTypeVoyage.Voyage,
               to: port,
-              end: port.start ?? port.end,
-              timestamp: (port.start ?? port.end) as number,
+              // Important: Substracting 1ms to not overlap with range of the previous voyage
+              end: ((port.start ?? port.end) as number) - 1,
+              // Important: Substracting 1ms to not overlap with timestamp port visit events on sorting
+              timestamp: ((port.start ?? port.end) as number) - 1,
             } as Voyage)
         )
       if (voyages.length === 0) return []
@@ -56,11 +61,15 @@ export const selectFilteredEventsByVoyages = createSelector(
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
-    const startDate = DateTime.fromISO(filters.start, { zone: 'utc' })
+    const startDate = DateTime.fromISO(filters.start ?? DEFAULT_WORKSPACE.availableStart, {
+      zone: 'utc',
+    })
 
     // Setting the time to 23:59:59.99 so the events in that same day
     //  are also displayed
-    const endDateUTC = DateTime.fromISO(filters.end, { zone: 'utc' }).toISODate()
+    const endDateUTC = DateTime.fromISO(filters.end ?? DEFAULT_WORKSPACE.availableEnd, {
+      zone: 'utc',
+    }).toISODate()
     const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
     const interval = Interval.fromDateTimes(startDate, endDate)
 

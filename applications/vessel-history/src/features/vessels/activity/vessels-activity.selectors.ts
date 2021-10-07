@@ -4,10 +4,9 @@ import { upperFirst } from 'lodash'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
-  selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS } from 'data/config'
+import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
@@ -15,6 +14,7 @@ import { ActivityEvent, Regions } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
+import { selectResources } from 'features/resources/resources.slice'
 import { selectSettings } from 'features/settings/settings.slice'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
@@ -94,10 +94,7 @@ export const selectEventsWithRenderingInfo = createSelector(
   [selectEventsForTracks, selectEEZs, selectRFMOs, selectMPAs],
   (eventsForTrack, eezs = [], rfmos = [], mpas = []) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
-      const portExitEvents = (data || [])
-        .filter((event) => event.type === EventTypes.Port)
-        .map((event) => ({ ...event, timestamp: event.end as number, id: `${event.id}-exit` }))
-      return (data || []).concat(portExitEvents).map((event: ActivityEvent, index) => {
+      return (data || []).map((event: ActivityEvent, index) => {
         const regionDescription = getEventRegionDescription(event, eezs, rfmos, mpas)
 
         let description = ''
@@ -256,7 +253,7 @@ const getEventRegionDescription = (
 }
 
 export const selectEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
-  events.sort((a, b) => (a.start > b.start ? -1 : 1))
+  events.sort((a, b) => ((a.timestamp ?? a.start) > (b.timestamp ?? a.start) ? -1 : 1))
 )
 
 export const selectFilteredEvents = createSelector(
@@ -265,11 +262,15 @@ export const selectFilteredEvents = createSelector(
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
-    const startDate = DateTime.fromISO(filters.start, { zone: 'utc' })
+    const startDate = DateTime.fromISO(filters.start ?? DEFAULT_WORKSPACE.availableStart, {
+      zone: 'utc',
+    })
 
     // Setting the time to 23:59:59.99 so the events in that same day
     //  are also displayed
-    const endDateUTC = DateTime.fromISO(filters.end, { zone: 'utc' }).toISODate()
+    const endDateUTC = DateTime.fromISO(filters.end ?? DEFAULT_WORKSPACE.availableEnd, {
+      zone: 'utc',
+    }).toISODate()
     const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
     const interval = Interval.fromDateTimes(startDate, endDate)
 
@@ -300,7 +301,7 @@ export const selectFilteredEvents = createSelector(
 
 export const selectFilterUpdated = createSelector([selectFilters], (filters) => {
   const keys1 = Object.keys(initialState.filters)
-  const keys2 = Object.keys(filters)
+  const keys2 = Object.keys(filters).filter((key) => filters[key as keyof Filters] !== undefined)
   if (keys1.length !== keys2.length) {
     return true
   }

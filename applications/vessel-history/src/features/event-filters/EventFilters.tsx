@@ -24,19 +24,20 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const isFishingEventsActive = useSelector(selectFilter('fishingEvents'))
   const isEncountersActive = useSelector(selectFilter('encounters'))
   const isLoiteringEventsActive = useSelector(selectFilter('loiteringEvents'))
-  const start = useSelector(selectStart).slice(0, 10) as string
-  const end = useSelector(selectEnd).slice(0, 10) as string
+  const start = useSelector(selectStart)?.slice(0, 10) as string
+  const end = useSelector(selectEnd)?.slice(0, 10) as string
 
   const trackAndSetFilter = useCallback(
     (tab: 'MAP' | 'ACTIVITY', filter: availableEventFilters, value: boolean) => {
       uaEvent({
         category: 'Vessel Detail ACTIVITY or MAP Tab',
         action: 'Click Filter Icon - Event type',
-        label: JSON.stringify({ [filter]: value, tab: tab })
+        label: JSON.stringify({ [filter]: value, tab: tab }),
       })
       setFilter(filter, value)
     },
-  [setFilter])
+    [setFilter]
+  )
 
   return (
     <Modal
@@ -85,7 +86,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
           }
         }}
         onRemove={() => {
-          setDate('start', DEFAULT_WORKSPACE.start)
+          setDate('start', undefined)
         }}
         label={t(`filters.start` as any, 'Start')}
         max={DEFAULT_WORKSPACE.end}
@@ -99,7 +100,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
           }
         }}
         onRemove={() => {
-          setDate('end', DEFAULT_WORKSPACE.end)
+          setDate('end', undefined)
         }}
         label={t(`filters.start` as any, 'End')}
         max={DEFAULT_WORKSPACE.end}

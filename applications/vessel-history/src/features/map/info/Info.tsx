@@ -1,17 +1,16 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { Fragment, useCallback, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { ApiEvent } from '@globalfishingwatch/api-types/dist/events'
-import {
-  RenderedEvent,
-  selectFilteredEvents,
-} from 'features/vessels/activity/vessels-activity.selectors'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
 import { cheapDistance } from 'utils/vessel'
-import { selectHighlightedEvent, setHighlightedEvent } from '../map.slice'
+import { EventTypeVoyage } from 'types/voyage'
+import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
+import { selectHighlightedEvent } from '../map.slice'
+import useMapEvents from '../map-events.hooks'
 import styles from './Info.module.css'
 
 interface InfoProps {
@@ -19,58 +18,59 @@ interface InfoProps {
 }
 
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
-  const dispatch = useDispatch()
   const [expanded, setExpanded] = useState(false)
   const [height, setHeight] = useState(0)
-  const events: RenderedEvent[] = useSelector(selectFilteredEvents)
+  const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages)
+
+  const events: RenderedEvent[] = useMemo(
+    () => eventsWithVoyages.filter((event) => event.type !== EventTypeVoyage.Voyage),
+    [eventsWithVoyages]
+  ) as RenderedEvent[]
+
   const eventsMap: string[] = useMemo(() => events.map((e) => e.id), [events])
   const highlightedEvent = useSelector(selectHighlightedEvent)
-  const [selectedEvent, setSelectedEvent] = useState<RenderedEvent | undefined>(undefined)
-  const [prevDisabled, setPrevDisabled] = useState(false)
-  const [nextDisabled, setNextDisabled] = useState(false)
+  const { highlightEvent } = useMapEvents()
+
+  const currentEventIndex = useMemo(
+    () => eventsMap.indexOf(highlightedEvent?.id ?? ''),
+    [eventsMap, highlightedEvent?.id]
+  )
+
+  const { prevDisabled, nextDisabled } = useMemo(() => {
+    return {
+      prevDisabled: !highlightedEvent || currentEventIndex === eventsMap.length - 1,
+      nextDisabled: !highlightedEvent || currentEventIndex === 0,
+    }
+  }, [currentEventIndex, eventsMap.length, highlightedEvent])
 
   const changeVesselEvent = useCallback(
-    (actualEventId, direction) => {
-      const actualEventIndex = eventsMap.indexOf(actualEventId.id)
-      const nextPosition = direction === 'prev' ? actualEventIndex + 1 : actualEventIndex - 1
-      setPrevDisabled(nextPosition <= eventsMap.length)
-      setNextDisabled(nextPosition >= 0)
+    (direction) => {
+      const nextPosition = direction === 'prev' ? currentEventIndex + 1 : currentEventIndex - 1
       if (nextPosition >= 0 && nextPosition < eventsMap.length) {
         const nextEvent = events[nextPosition]
-        dispatch(setHighlightedEvent({ id: eventsMap[nextPosition] } as ApiEvent))
+        highlightEvent(nextEvent)
+
         const distance = Math.floor(
-          cheapDistance(nextEvent.position, events[actualEventIndex].position) * 10
+          cheapDistance(nextEvent.position, events[currentEventIndex].position) * 10
         )
         const pitch = Math.min(distance * 4, 60)
         const bearing =
           Math.atan2(
-            nextEvent.position.lon - events[actualEventIndex].position.lon,
-            nextEvent.position.lat - events[actualEventIndex].position.lat
+            nextEvent.position.lon - events[currentEventIndex].position.lon,
+            nextEvent.position.lat - events[currentEventIndex].position.lat
           ) *
           pitch *
           -1
         props.onEventChange(nextEvent, pitch, bearing, height)
       }
     },
-    [dispatch, events, eventsMap, height, props]
+    [currentEventIndex, events, eventsMap.length, height, highlightEvent, props]
   )
 
-  useEffect(() => {
-    const event = events.find((e) => e.id === highlightedEvent?.id)
-    if (event) {
-      setSelectedEvent(event)
-    } else {
-      setSelectedEvent(undefined)
-    }
-  }, [highlightedEvent, events])
-
-  useMemo(() => {
-    if (highlightedEvent) {
-      const actualEventIndex = eventsMap.indexOf(highlightedEvent.id)
-      setPrevDisabled(actualEventIndex === eventsMap.length)
-      setNextDisabled(actualEventIndex === 0)
-    }
-  }, [eventsMap, highlightedEvent])
+  const selectedEvent = useMemo(
+    () => events.find((e) => e.id === highlightedEvent?.id),
+    [events, highlightedEvent?.id]
+  )
 
   return (
     <Fragment>
@@ -89,7 +89,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 disabled={prevDisabled}
                 type={prevDisabled ? 'invert' : 'map-tool'}
                 size="small"
-                onClick={() => changeVesselEvent(highlightedEvent, 'prev')}
+                onClick={() => changeVesselEvent('prev')}
               ></IconButton>
               <span className={styles.coords}>
                 {formatcoords(selectedEvent.position.lat, selectedEvent.position.lon).format(
@@ -105,7 +105,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 disabled={nextDisabled}
                 type={nextDisabled ? 'invert' : 'map-tool'}
                 size="small"
-                onClick={() => changeVesselEvent(highlightedEvent, 'next')}
+                onClick={() => changeVesselEvent('next')}
               ></IconButton>
             </div>
             <div className={styles.footerArea}>

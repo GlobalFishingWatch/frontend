@@ -7,11 +7,11 @@ import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
-import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
 import EventFilters from 'features/event-filters/EventFilters'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
 import { getDatasetDescriptionTranslated, getDatasetNameTranslated } from 'features/i18n/utils'
+import EventFiltersButton from 'features/event-filters/EventFiltersButton'
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -34,7 +34,6 @@ const MapControls = ({
   const [showLayersPopup, setShowLayersPopup] = useState(false)
   const [showLayerInfo, setShowLayerInfo] = useState<{ [key: string]: boolean }>({})
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
-  const filtered = useSelector(selectFilterUpdated)
   const setModalOpen = useCallback((isOpen) => {
     uaEvent({
       category: 'Vessel Detail ACTIVITY or MAP Tab',
@@ -59,13 +58,11 @@ const MapControls = ({
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
             <Fragment>
-              <IconButton
-                type="map-tool"
-                icon={filtered ? 'filter-on' : 'filter-off'}
-                size="medium"
-                tooltip={t('map.filters', 'Filter events')}
+              <EventFiltersButton
+                type="default"
+                className={styles['map-tool']}
                 onClick={() => setModalOpen(true)}
-              />
+              ></EventFiltersButton>
               <IconButton
                 icon="layers"
                 type="map-tool"
