@@ -15,6 +15,10 @@ import {
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectAnyHighlightsSettingDefined } from 'features/vessels/activity/vessels-highlight.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import useMapEvents from 'features/map/map-events.hooks'
+import useViewport from 'features/map/map-viewport.hooks'
+import { EventTypeVoyage, Voyage } from 'types/voyage'
 import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
@@ -36,6 +40,8 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { dispatchLocation } = useLocationConnect()
+  const { highlightEvent } = useMapEvents()
+  const { viewport, setMapCoordinates } = useViewport()
 
   const onSettingsClick = useCallback(() => {
     dispatchLocation(SETTINGS)
@@ -47,6 +53,25 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
       }),
     })
   }, [dispatchLocation])
+
+  const selectEventOnMap = useCallback(
+    (event: RenderedEvent | Voyage) => {
+      if (event.type !== EventTypeVoyage.Voyage) {
+        highlightEvent(event)
+
+        setMapCoordinates({
+          latitude: event.position.lat,
+          longitude: event.position.lon,
+          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+          bearing: 0,
+          pitch: 0,
+        })
+
+        props.onMoveToMap()
+      }
+    },
+    [highlightEvent, props, setMapCoordinates, viewport.zoom]
+  )
 
   useEffect(() => {
     if (!loading) {
@@ -131,7 +156,12 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
                           const event = events[index]
                           return (
                             <div style={style}>
-                              <ActivityItem key={index} event={event} onInfoClick={openModal} />
+                              <ActivityItem
+                                key={index}
+                                event={event}
+                                onInfoClick={openModal}
+                                onMapClick={selectEventOnMap}
+                              />
                             </div>
                           )
                         }}

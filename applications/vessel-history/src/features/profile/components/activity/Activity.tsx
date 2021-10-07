@@ -42,7 +42,6 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
-      // TODO Define what's the expected behavior when clicking a voyage map icon
       if (event.type === EventTypeVoyage.Voyage) {
         highlightVoyage(event)
       } else {
