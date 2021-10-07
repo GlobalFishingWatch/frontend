@@ -14,3 +14,8 @@ div.modalContent {
 .content a {
   text-decoration: underline;
 }
+
+.subtitle {
+  font: var(--font-S);
+  text-transform: uppercase;
+}

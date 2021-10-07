@@ -1,6 +1,7 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
 import ReactHtmlParser from 'react-html-parser'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import Tabs, { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
@@ -8,6 +9,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types/dist'
 import { getDatasetDescriptionTranslated } from 'features/i18n/utils'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { isGFWUser } from 'features/user/user.slice'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -19,6 +21,7 @@ type InfoModalProps = {
 const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
   const { t } = useTranslation()
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
+  const gfwUser = useSelector(isGFWUser)
   const dataset = dataview.datasets?.[0]
 
   const tabs = useMemo(() => {
@@ -31,13 +34,31 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
         id: dataset.id,
         title: getDatasetLabel(dataset),
         content: (
-          <p className={styles.content}>
-            {/**
-             * For security reasons, we are only parsing html
-             * coming from translated descriptions
-             **/}
-            {description.length > 0 ? ReactHtmlParser(description) : dataset.description}
-          </p>
+          <Fragment>
+            <p className={styles.content}>
+              {/**
+               * For security reasons, we are only parsing html
+               * coming from translated descriptions
+               **/}
+              {description.length > 0 ? ReactHtmlParser(description) : dataset.description}
+            </p>
+            {gfwUser && (
+              <div className={styles.content}>
+                <h2 className={styles.subtitle}>Queries used</h2>
+                {dataset.configuration?.documentation?.queries?.length ? (
+                  dataset.configuration?.documentation?.queries?.map(
+                    (query: string, index: number) => (
+                      <a key={index} target="_blank" href={query} rel="noreferrer">
+                        query {index + 1}
+                      </a>
+                    )
+                  )
+                ) : (
+                  <p>none specified</p>
+                )}
+              </div>
+            )}
+          </Fragment>
         ),
       }
     })
