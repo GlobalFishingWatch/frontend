@@ -13,6 +13,7 @@ import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-com
 import {
   useMapClick,
   useMapHover,
+  useSimpleMapHover,
   useFeatureState,
   InteractionEventCallback,
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
@@ -135,9 +136,9 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-    null
-  )
+  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] =
+    useState<SliceInteractionEvent | null>(null)
+  const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
   const onMapHover = useMapHover(
     setHoveredEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
@@ -263,7 +264,7 @@ const MapWrapper = (): React.ReactElement | null => {
           }
           clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={isMapDrawing ? undefined : currentClickCallback}
-          onHover={isMapDrawing ? undefined : currentMapHoverCallback}
+          onHover={isMapDrawing ? onSimpleMapHover : currentMapHoverCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
           transitionDuration={viewport.transitionDuration}

@@ -35,7 +35,10 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
             <IconButton
               icon="download"
               disabled={!hasAnalysableLayer}
-              tooltip={t('download.action', 'Download visible activity layers for this area')}
+              tooltip={t(
+                'download.activityAction',
+                'Download visible activity layers for this area'
+              )}
               onClick={handleDownloadClick}
               size="small"
             />

@@ -307,15 +307,17 @@ function MapDraw() {
         </Popup>
       )}
       <div ref={containerRef} className={cx(styles.container, { [styles.hidden]: !editorMode })}>
+        {(selectedFeatureIndex !== null || hasOverLapInFeatures) && (
+          <div className={styles.hint}>
+            {hasOverLapInFeatures
+              ? t('layer.geometryError', 'Some polygons have self-intersections')
+              : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')}
+          </div>
+        )}
         <div>
           <label>{t('layer.name', 'Layer name')}</label>
           <div className={styles.flex}>
-            <InputText
-              value={layerName}
-              onChange={onInputChange}
-              className={styles.input}
-              inputSize="small"
-            />
+            <InputText value={layerName} onChange={onInputChange} className={styles.input} />
             <IconButton icon="add-polygon" onClick={onAddPolygonClick} />
             <IconButton
               type="warning"

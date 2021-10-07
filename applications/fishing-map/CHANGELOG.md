@@ -1,5 +1,20 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.60
+
+### Patch Changes
+
+- Updated dependencies [13e82570]
+- Updated dependencies [62c141dd]
+  - @globalfishingwatch/dataviews-client@14.1.1
+  - @globalfishingwatch/react-hooks@15.1.0
+
+## 1.1.59
+
+### Patch Changes
+
+- 3ce2cbbd: Allow GFW users to download vessel tracks
+
 ## 1.1.58
 
 ### Patch Changes
