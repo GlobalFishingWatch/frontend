@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
 import { InteractiveMap } from 'react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
@@ -12,6 +12,7 @@ import { DEFAULT_VESSEL_MAP_ZOOM, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
 import { selectVesselProfileId } from 'routes/routes.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { EventTypeVoyage } from 'types/voyage'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
@@ -27,6 +28,7 @@ const mapOptions: any = {
 
 const Map: React.FC = (): React.ReactElement => {
   const map = useMapInstance()
+  const dispatch = useAppDispatch()
   const mapRef = useRef<any>(null)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const { selectVesselEventOnClick, highlightEvent } = useMapEvents()
@@ -52,7 +54,7 @@ const Map: React.FC = (): React.ReactElement => {
   const vesselLoaded = useMemo(() => !!vessel, [vessel])
   const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
 
-  const onMapLoad = useCallback(() => {
+  useEffect(() => {
     if (!vesselLoaded || !vesselDataviewLoaded || eventsLoading || highlightedEvent) return
 
     const lastEvent =
@@ -68,13 +70,14 @@ const Map: React.FC = (): React.ReactElement => {
       })
     }
   }, [
-    vesselLoaded,
-    vesselDataviewLoaded,
-    eventsLoading,
-    highlightedEvent,
+    dispatch,
     events,
+    eventsLoading,
     highlightEvent,
+    highlightedEvent,
     setMapCoordinates,
+    vesselDataviewLoaded,
+    vesselLoaded,
     viewport.zoom,
   ])
 
@@ -174,7 +177,6 @@ const Map: React.FC = (): React.ReactElement => {
           longitude={viewport.longitude}
           onViewportChange={onViewportChange}
           onClick={onMapClick}
-          onLoad={onMapLoad}
           mapStyle={style}
           mapOptions={mapOptions}
         ></InteractiveMap>
