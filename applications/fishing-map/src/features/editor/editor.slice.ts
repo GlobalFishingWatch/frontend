@@ -4,7 +4,7 @@ import { Dataview } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { APP_NAME } from 'data/config'
-import { DEFAULT_BASEMAP_DATAVIEW_ID, TEMPLATE_DATAVIEW_IDS } from 'data/workspaces'
+import { BASEMAP_DATAVIEW_ID, TEMPLATE_DATAVIEW_IDS } from 'data/workspaces'
 
 interface EditorState {
   active: boolean
@@ -33,9 +33,7 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
     const dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?app=${APP_NAME}`)
     const filteredDataviews = dataviews.filter(
       ({ id, category }) =>
-        !TEMPLATE_DATAVIEW_IDS.includes(id) &&
-        id !== DEFAULT_BASEMAP_DATAVIEW_ID &&
-        category !== 'vessels'
+        !TEMPLATE_DATAVIEW_IDS.includes(id) && id !== BASEMAP_DATAVIEW_ID && category !== 'vessels'
     )
     return filteredDataviews
   } catch (e: any) {

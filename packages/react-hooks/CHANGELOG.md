@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 15.1.0
+
+### Minor Changes
+
+- 62c141dd: new simpleHover hook
+
 ## 15.0.1
 
 ### Patch Changes

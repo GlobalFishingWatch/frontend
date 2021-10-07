@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 14.1.1
+
+### Patch Changes
+
+- 13e82570: remove console.log
+
 ## 14.1.0
 
 ### Minor Changes

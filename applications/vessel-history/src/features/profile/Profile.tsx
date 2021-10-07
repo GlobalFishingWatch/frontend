@@ -112,11 +112,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
 
   const onBackClick = useCallback(() => {
-    const location = {
-      type: HOME,
-      ...(query && { replaceQuery: true, query }),
-    }
-    dispatchLocation(location)
+    const params = query ? { replaceQuery: true, query } : {}
+    dispatchLocation(HOME, params)
     uaEvent({
       category: 'Vessel Detail',
       action: 'Click to go back to search',

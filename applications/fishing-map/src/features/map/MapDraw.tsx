@@ -44,6 +44,8 @@ type EditorSelect = {
   selectedFeatureIndex: number
 }
 
+export const MIN_DATASET_NAME_LENGTH = 3
+
 function MapDraw() {
   const { t } = useTranslation()
   const editorRef = useRef<any>(null)
@@ -230,10 +232,15 @@ function MapDraw() {
   }, [drawMode])
 
   const hasFeaturesDrawn = features !== null && features.length > 0
+  const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
 
   if (!layerName) {
     saveTooltip = t('layer.nameRequired', 'Layer name is required')
+  } else if (!layerNameMinLength) {
+    saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
+      count: MIN_DATASET_NAME_LENGTH,
+    })
   } else if (!hasFeaturesDrawn) {
     saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
   } else if (hasOverLapInFeatures) {
@@ -307,15 +314,17 @@ function MapDraw() {
         </Popup>
       )}
       <div ref={containerRef} className={cx(styles.container, { [styles.hidden]: !editorMode })}>
+        {(selectedFeatureIndex !== null || hasOverLapInFeatures) && (
+          <div className={styles.hint}>
+            {hasOverLapInFeatures
+              ? t('layer.geometryError', 'Some polygons have self-intersections')
+              : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')}
+          </div>
+        )}
         <div>
           <label>{t('layer.name', 'Layer name')}</label>
           <div className={styles.flex}>
-            <InputText
-              value={layerName}
-              onChange={onInputChange}
-              className={styles.input}
-              inputSize="small"
-            />
+            <InputText value={layerName} onChange={onInputChange} className={styles.input} />
             <IconButton icon="add-polygon" onClick={onAddPolygonClick} />
             <IconButton
               type="warning"
@@ -337,7 +346,9 @@ function MapDraw() {
           <Button
             className={styles.button}
             loading={loading}
-            disabled={!layerName || !hasFeaturesDrawn || hasOverLapInFeatures}
+            disabled={
+              !layerName || !layerNameMinLength || !hasFeaturesDrawn || hasOverLapInFeatures
+            }
             tooltip={saveTooltip}
             tooltipPlacement="top"
             onClick={onSaveClick}

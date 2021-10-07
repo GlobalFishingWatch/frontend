@@ -86,6 +86,7 @@ function Analysis() {
 
   const onCloseClick = () => {
     cleanFeatureState('highlight')
+    cleanFeatureState('click')
     batch(() => {
       dispatch(clearAnalysisGeometry(undefined))
       dispatchQueryParams({ analysis: undefined })

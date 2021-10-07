@@ -183,6 +183,7 @@ export const parseWorkspace = (
     ...BASE_URL_TO_OBJECT_TRANSFORMATION,
     ...customUrlTransformations,
   }
+
   Object.keys(parsedDetokenized).forEach((param: string) => {
     const value = parsedDetokenized[param]
     const transformationFn = urlToObjectTransformation[param]
@@ -190,8 +191,6 @@ export const parseWorkspace = (
       parsedDetokenized[param] = transformationFn(value)
     }
   })
-
-  console.log(parsedDetokenized)
 
   return parsedDetokenized
 }

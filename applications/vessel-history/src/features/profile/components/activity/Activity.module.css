@@ -179,9 +179,14 @@ button .iconInButton {
   margin-right: var(--space-XS);
 }
 
+.settingsLinkContainer {
+  position: relative;
+}
+
 .settingsLink {
   position: absolute;
-  right: var(--space-XS);
+  top: 0;
+  right: 0;
 }
 
 .spinnerMed {

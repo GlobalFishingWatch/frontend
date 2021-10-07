@@ -25,19 +25,19 @@ export enum WorkspaceCategories {
 //      applications/vessel-history/src/features/dataviews/dataviews.config.ts
 
 // Contextual layers dataviews by environment
-export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
-export const DEFAULT_EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
-export const DEFAULT_MPA_NO_TAKE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 99 : 179
-export const DEFAULT_MPA_RESTRICTED_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 100 : 180
-export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
-export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
+export const BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
+export const EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
+export const MPA_NO_TAKE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 99 : 179
+export const MPA_RESTRICTED_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 100 : 180
+export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
+export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 
 // Workspaces dataviews
-export const DEFAULT_FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
-export const DEFAULT_CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID =
-  WORKSPACE_ENV === 'development' ? 140 : 254
-export const DEFAULT_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
-export const DEFAULT_VIIRS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 159 : 255
+export const FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
+export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 : 254
+export const VIIRS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 159 : 255
+export const PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
+export const VESSEL_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 195 : 270
 export const TEMPLATE_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 154 : 251
 export const TEMPLATE_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
 export const TEMPLATE_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
@@ -50,9 +50,10 @@ export const TEMPLATE_DATAVIEW_IDS = [
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
 ]
 
-export const DEFAULT_PRESENCE_DATAVIEWS = [
-  DEFAULT_PRESENCE_DATAVIEW_ID, // In case the workspace doesn't have the dataview added,
-  DEFAULT_VIIRS_DATAVIEW_ID, // we ensure the + icon woks for the presence category
+export const PRESENCE_DATAVIEWS = [
+  VIIRS_DATAVIEW_ID, // we ensure the + icon woks for the presence category
+  PRESENCE_DATAVIEW_ID, // In case the workspace doesn't have the dataview added,
+  VESSEL_PRESENCE_DATAVIEW_ID, // Only for gfw as includes the private-global-presence-tracks:v20201001 dataset
 ]
 
-export const DEFAULT_DATAVIEW_IDS = [...DEFAULT_PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]
+export const DEFAULT_DATAVIEW_IDS = [...PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]

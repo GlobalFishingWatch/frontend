@@ -5,7 +5,7 @@ import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { Bbox } from 'types'
-import { setDownloadGeometry } from 'features/download/download.slice'
+import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 import { selectSidebarOpen } from 'features/app/app.selectors'
@@ -47,7 +47,7 @@ export const useContextInteractions = () => {
       }
 
       batch(() => {
-        dispatch(setDownloadGeometry(feature))
+        dispatch(setDownloadActivityGeometry(feature))
         dispatch(setClickedEvent(null))
       })
 

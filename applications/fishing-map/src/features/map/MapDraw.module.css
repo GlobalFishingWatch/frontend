@@ -1,5 +1,5 @@
 .container {
-  padding: var(--space-S) var(--space-M);
+  padding: var(--space-M);
   position: absolute;
   bottom: var(--space-L);
   left: 50%;
@@ -9,12 +9,19 @@
   align-items: flex-end;
   gap: var(--space-L);
   z-index: 100;
-  height: 10rem;
 }
 
 .hidden {
   z-index: -1;
   visibility: hidden;
+}
+
+.hint {
+  position: absolute;
+  top: -3rem;
+  right: 0;
+  color: var(--color-white);
+  opacity: var(--opacity-secondary);
 }
 
 .flex {
