@@ -17,10 +17,16 @@ import {
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace, selectDaysFromLatest } from 'features/app/app.selectors'
-import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
+import {
+  DEFAULT_DATAVIEW_IDS,
+  getWorkspaceEnv,
+  VESSEL_PRESENCE_DATAVIEW_ID,
+  WorkspaceCategories,
+} from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGuestUser } from 'features/user/user.selectors'
+import { isGFWUser } from 'features/user/user.slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -64,6 +70,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const daysFromLatest = selectDaysFromLatest(state)
     const guestUser = isGuestUser(state)
+    const gfwUser = isGFWUser(state)
 
     try {
       let workspace = workspaceId
@@ -88,8 +95,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ? endAt.minus({ days: daysFromLatest })
           : DateTime.fromISO(workspace.startAt).toUTC()
 
+      const defaultWorkspaceDataviews = gfwUser
+        ? [...DEFAULT_DATAVIEW_IDS, VESSEL_PRESENCE_DATAVIEW_ID] // Only for gfw users as includes the private-global-presence-tracks dataset
+        : DEFAULT_DATAVIEW_IDS
+
       const dataviewIds = [
-        ...DEFAULT_DATAVIEW_IDS,
+        ...defaultWorkspaceDataviews,
         ...(workspace.dataviews || []).map(({ id }) => id as number),
         ...(workspace.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId as number),
