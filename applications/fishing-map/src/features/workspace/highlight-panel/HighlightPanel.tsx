@@ -75,7 +75,7 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
               {t('common.dismiss', 'Dismiss')}
             </Button>
             <Button
-              href={HighlightConfig.learnMoreUrl}
+              href={highlightContent.learnMoreUrl || HighlightConfig.learnMoreUrl}
               target="_blank"
               onClick={onDismiss}
               className={cx(styles.footerBtn, styles.cta)}

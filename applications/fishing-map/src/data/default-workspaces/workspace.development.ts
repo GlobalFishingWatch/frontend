@@ -6,6 +6,7 @@ import {
   EEZ_DATAVIEW_ID,
   MPA_DATAVIEW_ID,
   RFMO_DATAVIEW_ID,
+  HIGH_SEAS_DATAVIEW_ID,
   BASEMAP_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
   PRESENCE_DATAVIEW_ID,
@@ -143,7 +144,7 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         visible: false,
       },
-      dataviewId: 97,
+      dataviewId: HIGH_SEAS_DATAVIEW_ID,
     },
   ],
 }
