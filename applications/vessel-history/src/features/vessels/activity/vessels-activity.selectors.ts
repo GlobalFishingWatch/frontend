@@ -301,7 +301,7 @@ export const selectFilteredEvents = createSelector(
 
 export const selectFilterUpdated = createSelector([selectFilters], (filters) => {
   const keys1 = Object.keys(initialState.filters)
-  const keys2 = Object.keys(filters)
+  const keys2 = Object.keys(filters).filter((key) => filters[key as keyof Filters] !== undefined)
   if (keys1.length !== keys2.length) {
     return true
   }
