@@ -240,6 +240,7 @@
     "geometryRequired": "Se requiere dibujar un polígono",
     "geometryError": "Algunos polígonos tienen intersecciones",
     "name": "Nombre de la capa",
+    "nameLengthError": "Layer name requires at least {{count}} characters",
     "nameRequired": "Se requiere el nombre de la capa.",
     "infoClose": "Ocultar info",
     "infoOpen": "Mostrar info",
