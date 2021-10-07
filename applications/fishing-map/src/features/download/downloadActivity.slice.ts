@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { Geometry } from 'geojson'
 import { stringify } from 'qs'
@@ -16,14 +16,14 @@ export interface DownloadActivityState {
   geometry: Geometry | undefined
   name: string
   id: string
-  status: AsyncReducerStatus
+  requests: { id: string; status: AsyncReducerStatus }[]
 }
 
 const initialState: DownloadActivityState = {
   geometry: undefined,
   name: '',
   id: '',
-  status: AsyncReducerStatus.Idle,
+  requests: [],
 }
 
 export type DownloadActivityParams = {
@@ -97,12 +97,12 @@ const downloadActivitySlice = createSlice({
   initialState,
   reducers: {
     resetDownloadActivityStatus: (state) => {
-      state.status = AsyncReducerStatus.Idle
+      state.requests = []
     },
     clearDownloadActivityGeometry: (state) => {
       state.geometry = undefined
       state.name = ''
-      state.status = AsyncReducerStatus.Idle
+      state.requests = []
     },
     setDownloadActivityGeometry: (state, action: PayloadAction<TooltipEventFeature>) => {
       state.geometry = action.payload.geometry as Geometry
@@ -110,18 +110,27 @@ const downloadActivitySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(downloadActivityThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
+    builder.addCase(downloadActivityThunk.pending, (state, action) => {
+      state.requests = [
+        ...state.requests,
+        { id: action.meta.requestId, status: AsyncReducerStatus.Idle },
+      ]
     })
-    builder.addCase(downloadActivityThunk.fulfilled, (state) => {
-      state.status = AsyncReducerStatus.Finished
+    builder.addCase(downloadActivityThunk.fulfilled, (state, action) => {
+      const { requestId } = action.meta
+      state.requests = state.requests.map((request) => {
+        return request.id === requestId
+          ? { id: requestId, status: AsyncReducerStatus.Finished }
+          : request
+      })
     })
     builder.addCase(downloadActivityThunk.rejected, (state, action) => {
-      if (action.error.message === 'Aborted') {
-        state.status = AsyncReducerStatus.Aborted
-      } else {
-        state.status = AsyncReducerStatus.Error
-      }
+      const { requestId } = action.meta
+      const status =
+        action.error.message === 'Aborted' ? AsyncReducerStatus.Aborted : AsyncReducerStatus.Error
+      state.requests = state.requests.map((request) => {
+        return request.id === requestId ? { id: requestId, status } : request
+      })
     })
   },
 })
@@ -135,6 +144,16 @@ export const {
 export const selectDownloadActivityGeometry = (state: RootState) => state.downloadActivity.geometry
 export const selectDownloadActivityAreaName = (state: RootState) => state.downloadActivity.name
 export const selectDownloadActivityAreaId = (state: RootState) => state.downloadActivity.id
-export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
+export const selectDownloadActivityRequests = (state: RootState) => state.downloadActivity.requests
+
+export const selectDownloadActivityLoading = createSelector(
+  [selectDownloadActivityRequests],
+  (requests) => requests.some(({ status }) => status === AsyncReducerStatus.Loading)
+)
+export const selectDownloadActivityFinished = createSelector(
+  [selectDownloadActivityRequests],
+  (requests) =>
+    requests.length > 0 && requests.every(({ status }) => status === AsyncReducerStatus.Finished)
+)
 
 export default downloadActivitySlice.reducer
