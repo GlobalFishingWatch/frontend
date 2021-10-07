@@ -63,6 +63,10 @@ export enum DatasetStatus {
 
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
 
+export interface DatasetDocumentation {
+  queries?: string[]
+}
+
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
@@ -71,6 +75,7 @@ export interface DatasetConfiguration {
   type?: EventTypes
   geometryType?: DatasetGeometryType
   format?: 'geojson'
+  documentation?: DatasetDocumentation
   [key: string]: unknown
 }
 
