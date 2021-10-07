@@ -43,7 +43,6 @@ export default function useMapEvents() {
   const highlightEvent = useCallback(
     (event: RenderedEvent) => {
       if (!event?.id) return
-      console.log(`dispatch(setHighlightedEvent({ id: ${event.id} } as ApiEvent))`)
       dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
 
       const voyage = getVoyageByEvent(event)
