@@ -31,42 +31,40 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const { highlightEvent } = useMapEvents()
 
-  const prevDisabled = useMemo(
-    () =>
-      !(
-        highlightedEvent &&
-        eventsMap.indexOf(highlightedEvent?.id ?? '') >= 0 &&
-        eventsMap.indexOf(highlightedEvent?.id ?? '') < eventsMap.length
-      ),
-    [eventsMap, highlightedEvent]
+  const currentEventIndex = useMemo(
+    () => eventsMap.indexOf(highlightedEvent?.id ?? ''),
+    [eventsMap, highlightedEvent?.id]
   )
-  const nextDisabled = useMemo(
-    () => !(highlightedEvent && eventsMap.indexOf(highlightedEvent?.id ?? '') > 0),
-    [eventsMap, highlightedEvent]
-  )
+
+  const { prevDisabled, nextDisabled } = useMemo(() => {
+    return {
+      prevDisabled: !highlightedEvent || currentEventIndex === eventsMap.length - 1,
+      nextDisabled: !highlightedEvent || currentEventIndex === 0,
+    }
+  }, [currentEventIndex, eventsMap.length, highlightedEvent])
+
   const changeVesselEvent = useCallback(
-    (actualEventId, direction) => {
-      const actualEventIndex = eventsMap.indexOf(actualEventId.id)
-      const nextPosition = direction === 'prev' ? actualEventIndex + 1 : actualEventIndex - 1
+    (direction) => {
+      const nextPosition = direction === 'prev' ? currentEventIndex + 1 : currentEventIndex - 1
       if (nextPosition >= 0 && nextPosition < eventsMap.length) {
         const nextEvent = events[nextPosition]
         highlightEvent(nextEvent)
 
         const distance = Math.floor(
-          cheapDistance(nextEvent.position, events[actualEventIndex].position) * 10
+          cheapDistance(nextEvent.position, events[currentEventIndex].position) * 10
         )
         const pitch = Math.min(distance * 4, 60)
         const bearing =
           Math.atan2(
-            nextEvent.position.lon - events[actualEventIndex].position.lon,
-            nextEvent.position.lat - events[actualEventIndex].position.lat
+            nextEvent.position.lon - events[currentEventIndex].position.lon,
+            nextEvent.position.lat - events[currentEventIndex].position.lat
           ) *
           pitch *
           -1
         props.onEventChange(nextEvent, pitch, bearing, height)
       }
     },
-    [events, eventsMap, height, highlightEvent, props]
+    [currentEventIndex, events, eventsMap.length, height, highlightEvent, props]
   )
 
   const selectedEvent = useMemo(
@@ -91,7 +89,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 disabled={prevDisabled}
                 type={prevDisabled ? 'invert' : 'map-tool'}
                 size="small"
-                onClick={() => changeVesselEvent(highlightedEvent, 'prev')}
+                onClick={() => changeVesselEvent('prev')}
               ></IconButton>
               <span className={styles.coords}>
                 {formatcoords(selectedEvent.position.lat, selectedEvent.position.lon).format(
@@ -107,7 +105,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 disabled={nextDisabled}
                 type={nextDisabled ? 'invert' : 'map-tool'}
                 size="small"
-                onClick={() => changeVesselEvent(highlightedEvent, 'next')}
+                onClick={() => changeVesselEvent('next')}
               ></IconButton>
             </div>
             <div className={styles.footerArea}>
