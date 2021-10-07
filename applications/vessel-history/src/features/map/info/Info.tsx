@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
@@ -29,17 +29,25 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   const eventsMap: string[] = useMemo(() => events.map((e) => e.id), [events])
   const highlightedEvent = useSelector(selectHighlightedEvent)
-  const [selectedEvent, setSelectedEvent] = useState<RenderedEvent | undefined>(undefined)
-  const [prevDisabled, setPrevDisabled] = useState(false)
-  const [nextDisabled, setNextDisabled] = useState(false)
   const { highlightEvent } = useMapEvents()
 
+  const prevDisabled = useMemo(
+    () =>
+      !(
+        highlightedEvent &&
+        eventsMap.indexOf(highlightedEvent?.id ?? '') >= 0 &&
+        eventsMap.indexOf(highlightedEvent?.id ?? '') < eventsMap.length
+      ),
+    [eventsMap, highlightedEvent]
+  )
+  const nextDisabled = useMemo(
+    () => !(highlightedEvent && eventsMap.indexOf(highlightedEvent?.id ?? '') > 0),
+    [eventsMap, highlightedEvent]
+  )
   const changeVesselEvent = useCallback(
     (actualEventId, direction) => {
       const actualEventIndex = eventsMap.indexOf(actualEventId.id)
       const nextPosition = direction === 'prev' ? actualEventIndex + 1 : actualEventIndex - 1
-      setPrevDisabled(nextPosition <= eventsMap.length)
-      setNextDisabled(nextPosition >= 0)
       if (nextPosition >= 0 && nextPosition < eventsMap.length) {
         const nextEvent = events[nextPosition]
         highlightEvent(nextEvent)
@@ -61,22 +69,10 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     [events, eventsMap, height, highlightEvent, props]
   )
 
-  useEffect(() => {
-    const event = events.find((e) => e.id === highlightedEvent?.id)
-    if (event) {
-      setSelectedEvent(event)
-    } else {
-      setSelectedEvent(undefined)
-    }
-  }, [highlightedEvent, events])
-
-  useMemo(() => {
-    if (highlightedEvent) {
-      const actualEventIndex = eventsMap.indexOf(highlightedEvent.id)
-      setPrevDisabled(actualEventIndex === eventsMap.length)
-      setNextDisabled(actualEventIndex === 0)
-    }
-  }, [eventsMap, highlightedEvent])
+  const selectedEvent = useMemo(
+    () => events.find((e) => e.id === highlightedEvent?.id),
+    [events, highlightedEvent?.id]
+  )
 
   return (
     <Fragment>
