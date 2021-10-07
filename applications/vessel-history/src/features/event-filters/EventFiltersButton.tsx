@@ -1,6 +1,6 @@
 import React, { Fragment, useMemo } from 'react'
 import cx from 'classnames'
-import { shallowEqual, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { capitalize } from 'lodash'
 import { DateTime } from 'luxon'
@@ -19,8 +19,8 @@ interface ButtonProps {
 
 const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): React.ReactElement => {
   const { t } = useTranslation()
-  const filtersApplied = useSelector(selectFilterUpdated, shallowEqual)
-  const filters = useSelector(selectFilters, shallowEqual)
+  const filtersApplied = useSelector(selectFilterUpdated)
+  const filters = useSelector(selectFilters)
 
   const filtersLabel = useMemo(() => {
     return (

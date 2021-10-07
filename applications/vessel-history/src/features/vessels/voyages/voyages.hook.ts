@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { shallowEqual, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
 import { RenderedEvent } from '../activity/vessels-activity.selectors'
 import { selectFilteredEventsByVoyages } from './voyages.selectors'
 
 function useVoyagesConnect() {
-  const eventsLoading = useSelector(selectResourcesLoading, shallowEqual)
-  const eventsList = useSelector(selectFilteredEventsByVoyages, shallowEqual)
+  const eventsLoading = useSelector(selectResourcesLoading)
+  const eventsList = useSelector(selectFilteredEventsByVoyages)
   const [expandedVoyages, setExpandedVoyages] = useState<
     Record<number, RenderedVoyage | undefined>
   >([])

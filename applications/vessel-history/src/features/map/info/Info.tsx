@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
-import { shallowEqual, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -20,7 +20,7 @@ interface InfoProps {
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const [expanded, setExpanded] = useState(false)
   const [height, setHeight] = useState(0)
-  const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages, shallowEqual)
+  const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages)
 
   const events: RenderedEvent[] = useMemo(
     () => eventsWithVoyages.filter((event) => event.type !== EventTypeVoyage.Voyage),

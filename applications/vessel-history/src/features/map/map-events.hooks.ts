@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { useCallback } from 'react'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
@@ -19,8 +19,8 @@ import useViewport from './map-viewport.hooks'
 
 export default function useMapEvents() {
   const dispatch = useDispatch()
-  const highlightedEvent = useSelector(selectHighlightedEvent, shallowEqual)
-  const currentVoyageTime = useSelector(selectMapVoyageTime, shallowEqual)
+  const highlightedEvent = useSelector(selectHighlightedEvent)
+  const currentVoyageTime = useSelector(selectMapVoyageTime)
   const { getVoyageByEvent, getLastEventInVoyage } = useVoyagesConnect()
   const { viewport, setMapCoordinates } = useViewport()
 
@@ -43,6 +43,7 @@ export default function useMapEvents() {
   const highlightEvent = useCallback(
     (event: RenderedEvent) => {
       if (!event?.id) return
+      console.log(`dispatch(setHighlightedEvent({ id: ${event.id} } as ApiEvent))`)
       dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
 
       const voyage = getVoyageByEvent(event)

@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
-import { shallowEqual, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
@@ -33,7 +33,7 @@ const MapControls = ({
   const [isModalOpen, setIsOpen] = useState(false)
   const [showLayersPopup, setShowLayersPopup] = useState(false)
   const [showLayerInfo, setShowLayerInfo] = useState<{ [key: string]: boolean }>({})
-  const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context), shallowEqual)
+  const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const setModalOpen = useCallback((isOpen) => {
     uaEvent({
       category: 'Vessel Detail ACTIVITY or MAP Tab',

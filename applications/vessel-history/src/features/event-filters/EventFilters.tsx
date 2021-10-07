@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { shallowEqual, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { InputDate, Modal, Switch } from '@globalfishingwatch/ui-components'
@@ -20,12 +20,12 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const { setFilter, setDate } = useApplyFiltersConnect()
   const isModalOpen = props.isModalOpen
   const closeModal = useCallback(() => props.onCloseModal(false), [props])
-  const isPortVisitActive = useSelector(selectFilter('portVisits'), shallowEqual)
-  const isFishingEventsActive = useSelector(selectFilter('fishingEvents'), shallowEqual)
-  const isEncountersActive = useSelector(selectFilter('encounters'), shallowEqual)
-  const isLoiteringEventsActive = useSelector(selectFilter('loiteringEvents'), shallowEqual)
-  const start = useSelector(selectStart, shallowEqual)?.slice(0, 10) as string
-  const end = useSelector(selectEnd, shallowEqual)?.slice(0, 10) as string
+  const isPortVisitActive = useSelector(selectFilter('portVisits'))
+  const isFishingEventsActive = useSelector(selectFilter('fishingEvents'))
+  const isEncountersActive = useSelector(selectFilter('encounters'))
+  const isLoiteringEventsActive = useSelector(selectFilter('loiteringEvents'))
+  const start = useSelector(selectStart)?.slice(0, 10) as string
+  const end = useSelector(selectEnd)?.slice(0, 10) as string
 
   const trackAndSetFilter = useCallback(
     (tab: 'MAP' | 'ACTIVITY', filter: availableEventFilters, value: boolean) => {

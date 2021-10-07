@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
-import { shallowEqual, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { InteractiveMap } from 'react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
@@ -48,9 +48,9 @@ const Map: React.FC = (): React.ReactElement => {
     map
   )
 
-  const vesselProfileId = useSelector(selectVesselProfileId, shallowEqual)
-  const vessel = useSelector(selectVesselById(vesselProfileId), shallowEqual)
-  const [vesselDataview] = useSelector(selectActiveVesselsDataviews, shallowEqual) ?? []
+  const vesselProfileId = useSelector(selectVesselProfileId)
+  const vessel = useSelector(selectVesselById(vesselProfileId))
+  const [vesselDataview] = useSelector(selectActiveVesselsDataviews) ?? []
   const vesselLoaded = useMemo(() => !!vessel, [vessel])
   const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
 
