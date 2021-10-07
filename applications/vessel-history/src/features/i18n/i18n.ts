@@ -15,7 +15,7 @@ const PACKAGE_NAMESPACES = ['flags', 'datasets']
 export const SHARED_LABELS_PATH =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
-    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch@latest/i18n-labels`
+    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@latest`
 
 i18n
   // load translation using http -> see /public/locales
