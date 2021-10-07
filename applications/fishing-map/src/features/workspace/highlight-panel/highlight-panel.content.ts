@@ -27,7 +27,7 @@ const highlightPanelConfig: HighlighPanelConfig = {
     title: 'Datos VMS de Ecuador están ahora disponibles',
     description:
       'Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Dirección Nacional de los Espacios Acuáticos del Ecuador. Es posible rastrear la posición y actividad  de más de 1.200 embarcaciones de las flotas pesqueras industriales y artesanales de Ecuador.',
-    learnMoreUrl: 'https://globalfishingwatch.org/es/transparency-program-ecuador/es',
+    learnMoreUrl: 'https://globalfishingwatch.org/es/programa-transparencia-latinoamerica-ecuador/',
   },
 }
 
