@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 10.0.1
+
+### Patch Changes
+
+- 5ca834a5: Fixed features timerage filtering to include boundaries
+
 ## 10.0.0
 
 ### Patch Changes
