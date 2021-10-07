@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { shallowEqual, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -20,7 +20,7 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
     })
     setIsOpen(isOpen)
   }, [])
-  const filtered = useSelector(selectFilterUpdated)
+  const filtered = useSelector(selectFilterUpdated, shallowEqual)
 
   return (
     <Fragment>

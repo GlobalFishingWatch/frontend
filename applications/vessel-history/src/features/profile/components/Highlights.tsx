@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { shallowEqual, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -29,9 +29,9 @@ interface HighlightsProps {
 
 const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
-  const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
-  const events = useSelector(selectFilteredActivityHighlightEvents)
-  const loading = useSelector(selectEventsLoading)
+  const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined, shallowEqual)
+  const events = useSelector(selectFilteredActivityHighlightEvents, shallowEqual)
+  const loading = useSelector(selectEventsLoading, shallowEqual)
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
