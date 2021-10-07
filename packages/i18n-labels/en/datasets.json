@@ -646,7 +646,7 @@
     }
   },
   "public-fd-water-temperature-caribe-v3": {
-    "name": "Sea surface temperature",
+    "name": "Sea surface temperature TEST",
     "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "flag",
