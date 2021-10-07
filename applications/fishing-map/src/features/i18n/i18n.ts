@@ -15,7 +15,7 @@ export const LocaleLabels = [
 export const SHARED_LABELS_PATH =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
-    : 'https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels'
+    : 'https://cdn.jsdelivr.net/npm/@globalfishingwatch@latest/i18n-labels'
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
