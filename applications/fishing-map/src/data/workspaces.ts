@@ -54,7 +54,6 @@ export const TEMPLATE_DATAVIEW_IDS = [
 export const PRESENCE_DATAVIEWS = [
   VIIRS_DATAVIEW_ID, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_ID, // In case the workspace doesn't have the dataview added,
-  VESSEL_PRESENCE_DATAVIEW_ID, // Only for gfw as includes the private-global-presence-tracks:v20201001 dataset
 ]
 
 export const DEFAULT_DATAVIEW_IDS = [...PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]
