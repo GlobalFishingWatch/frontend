@@ -33,6 +33,7 @@ import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import FitBounds from '../common/FitBounds'
+import InfoModal from '../common/InfoModal'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -52,6 +53,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
+  const [datasetModalOpen, setDatasetModalOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
 
   const layerActive = dataview?.config?.visible ?? true
@@ -74,8 +76,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const closeExpandedContainer = () => {
-    setColorOpen(false)
-    setInfoOpen(false)
+    if (!datasetModalOpen) {
+      setColorOpen(false)
+      setInfoOpen(false)
+    }
   }
 
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
@@ -187,6 +191,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                     {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
                     {/* Field values separator */}
                     {i < fieldValues.length - 1 ? ', ' : ''}
+                    {field.id === 'dataset' && infoOpen && (
+                      <InfoModal dataview={dataview} onModalStateChange={setDatasetModalOpen} />
+                    )}
                   </span>
                 ))}
               </li>
