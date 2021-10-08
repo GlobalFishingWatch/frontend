@@ -19,15 +19,15 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
-import I18nDate from 'features/i18n/i18nDate'
-import I18nFlag from 'features/i18n/i18nFlag'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { isGuestUser } from 'features/user/user.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import I18nDate from 'features/i18n/i18nDate'
+import I18nFlag from 'features/i18n/i18nFlag'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import { isGFWUser } from 'features/user/user.slice'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -191,7 +191,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                     {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
                     {/* Field values separator */}
                     {i < fieldValues.length - 1 ? ', ' : ''}
-                    {field.id === 'dataset' && infoOpen && (
+                    {field.id === 'dataset' && infoOpen && gfwUser && (
                       <InfoModal dataview={dataview} onModalStateChange={setDatasetModalOpen} />
                     )}
                   </span>
