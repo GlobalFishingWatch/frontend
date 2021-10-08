@@ -7,7 +7,7 @@ import { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary'
-export type ButtonSize = 'default' | 'small'
+export type ButtonSize = 'default' | 'small' | 'big' | 'verybig'
 
 interface ButtonProps {
   id?: string
