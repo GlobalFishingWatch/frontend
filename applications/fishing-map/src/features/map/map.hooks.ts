@@ -28,6 +28,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
