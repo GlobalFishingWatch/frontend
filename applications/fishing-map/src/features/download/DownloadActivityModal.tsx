@@ -189,7 +189,7 @@ function DownloadActivityModal() {
 
     timeoutRef.current = setTimeout(() => {
       dispatch(resetDownloadActivityStatus())
-    }, 1000)
+    }, 1500)
   }
 
   const onClose = () => {
