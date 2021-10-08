@@ -66,18 +66,24 @@ const getVesselDataviewInstanceDatasetConfig = (
   return datasetsConfig
 }
 
+const vesselDataviewInstanceTemplate = (dataviewId: number) => {
+  return {
+    // TODO find the way to use different vessel dataviews, for example
+    // panama and peru doesn't show events and needed a workaround to work with this
+    dataviewId,
+    config: {
+      colorCyclingType: 'line' as ColorCyclingType,
+    },
+  }
+}
+
 export const getVesselDataviewInstance = (
   vessel: { id: string },
   datasets: VesselInstanceDatasets
 ): DataviewInstance<Generators.Type> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    // TODO find the way to use different vessel dataviews, for example
-    // panama and peru doesn't show events and needed a workaround to work with this
-    dataviewId: TEMPLATE_VESSEL_DATAVIEW_ID,
-    config: {
-      colorCyclingType: 'line' as ColorCyclingType,
-    },
+    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_ID),
     datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
   }
   return vesselDataviewInstance
@@ -89,10 +95,7 @@ export const getPresenceVesselDataviewInstance = (
 ): DataviewInstance<Generators.Type> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    dataviewId: VESSEL_PRESENCE_DATAVIEW_ID,
-    config: {
-      colorCyclingType: 'line' as ColorCyclingType,
-    },
+    ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_ID),
     datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
   }
   return vesselDataviewInstance
