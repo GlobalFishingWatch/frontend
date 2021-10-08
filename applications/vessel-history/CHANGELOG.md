@@ -1,5 +1,58 @@
 # @globalfishingwatchapp/vessel-history
 
+## 1.0.19
+
+### Patch Changes
+
+- Updated dependencies [5ca834a5]
+  - @globalfishingwatch/layer-composer@10.0.1
+
+## 1.0.18
+
+### Patch Changes
+
+- Updated dependencies [f3fa1b87]
+  - @globalfishingwatch/api-types@6.3.0
+
+## 1.0.17
+
+### Patch Changes
+
+- Updated dependencies [f98659b5]
+- Updated dependencies [2ea27a38]
+  - @globalfishingwatch/ui-components@12.2.0
+  - @globalfishingwatch/api-types@6.2.0
+
+## 1.0.16
+
+### Patch Changes
+
+- ec34c600: added amount of transmissions
+- Updated dependencies [ec34c600]
+  - @globalfishingwatch/api-types@6.1.0
+
+## 1.0.15
+
+### Patch Changes
+
+- Updated dependencies [f5264a92]
+- Updated dependencies [1faa75c7]
+  - @globalfishingwatch/api-types@6.0.1
+  - @globalfishingwatch/ui-components@12.1.1
+  - @globalfishingwatch/react-hooks@15.0.1
+
+## 1.0.14
+
+### Patch Changes
+
+- Updated dependencies [aa3cf308]
+  - @globalfishingwatch/api-types@6.0.0
+  - @globalfishingwatch/api-client@4.0.0
+  - @globalfishingwatch/dataviews-client@14.0.0
+  - @globalfishingwatch/layer-composer@10.0.0
+  - @globalfishingwatch/react-hooks@15.0.0
+  - @globalfishingwatch/ui-components@12.0.0
+
 ## 1.0.13
 
 ### Patch Changes

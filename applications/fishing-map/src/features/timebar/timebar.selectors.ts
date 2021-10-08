@@ -189,7 +189,7 @@ export const selectEventsWithRenderingInfo = createSelector(
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
       const infoResource = resources[infoUrl] as Resource<Vessel>
       return (data || []).map((event: ApiEvent, index) => {
-        const vesselName = infoResource.data?.shipname || 'unknown vessel'
+        const vesselName = infoResource?.data?.shipname || 'unknown vessel'
 
         let description
         let descriptionGeneric

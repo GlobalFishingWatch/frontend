@@ -25,7 +25,7 @@ import { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { isPrintSupported } from '../MapScreenshot'
+import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
 
@@ -106,6 +106,7 @@ const MapControls = ({
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })
     setModalOpen(true)
+    resetPreviewImage()
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
@@ -113,11 +114,12 @@ const MapControls = ({
       if (domElement.current) {
         domElement.current.classList.add('printing')
         setInlineStyles(domElement.current)
-        resetPreviewImage()
-        // leave some time to apply the styles and timebar to re-render
+        // leave some time to
+        // 1. apply the styles + timebar to re - render
+        // 2. map static image generated with debounced finishes
         timeoutRef.current = setTimeout(() => {
           generatePreviewImage()
-        }, 400)
+        }, MAP_IMAGE_DEBOUNCE + 400)
       }
     }, 100)
   }, [dispatchQueryParams, resetPreviewImage, generatePreviewImage])

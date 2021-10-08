@@ -3,12 +3,19 @@ import Backend from 'i18next-http-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
+import { PATH_BASENAME } from 'routes/routes'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
   // { id: Locale.es, label: 'Español' },
   { id: Locale.fr, label: 'Français' },
 ]
+
+const PACKAGE_NAMESPACES = ['flags', 'datasets']
+export const SHARED_LABELS_PATH =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8000'
+    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@latest`
 
 i18n
   // load translation using http -> see /public/locales
@@ -22,7 +29,15 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    ns: ['translations', 'flags'],
+    backend: {
+      loadPath: (lngs: string[], namespaces: string[]) => {
+        if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
+          return `${SHARED_LABELS_PATH}/{{lng}}/{{ns}}.json`
+        }
+        return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`
+      },
+    },
+    ns: ['translations', 'flags', 'datasets'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
     supportedLngs: Object.values(Locale),
@@ -38,6 +53,9 @@ i18n
     },
   })
 
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.setAttribute('lang', lng)
+})
 const t = i18n.t.bind(i18n)
 
 export { t }

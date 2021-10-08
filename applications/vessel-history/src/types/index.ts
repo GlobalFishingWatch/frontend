@@ -5,11 +5,10 @@ export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel'
 export type WorkspaceAdvancedSearchParam =
-  | 'IMO'
-  | 'MMSI'
+  | 'imo'
+  | 'mmsi'
   | 'callsign'
   | 'flags'
-  | 'lastTransmissionDate'
   | 'lastTransmissionDate'
   | 'firstTransmissionDate'
 export type WorkspaceMergeVesselsParam = 'aka'
@@ -89,6 +88,8 @@ export interface ValueItem<T = string> {
   value: T
   firstSeen?: string
   endDate?: string
+  originalFirstSeen?: number
+  originalEndDate?: number
   source?: VesselAPISource
 }
 export type BuiltYear = ValueItem

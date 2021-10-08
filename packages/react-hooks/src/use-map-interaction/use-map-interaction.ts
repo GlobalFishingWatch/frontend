@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
+import type { MapEvent } from 'react-map-gl'
 import {
   Generators,
   ExtendedStyleMeta,
@@ -118,6 +119,7 @@ const getExtendedFeatures = (
           return [temporalGridExtendedFeature]
         })
       case Generators.Type.Context:
+      case Generators.Type.UserContext:
         return {
           ...extendedFeature,
           gfwId: feature.properties?.gfw_id,
@@ -224,6 +226,16 @@ export const useMapClick = (
 type MapHoverConfig = {
   debounced?: number
 }
+
+const parseHoverEvent = (event: MapEvent): InteractionEvent => {
+  return {
+    type: 'hover',
+    point: event.point,
+    longitude: event.lngLat[0],
+    latitude: event.lngLat[1],
+  }
+}
+
 export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
   hoverCallback?: InteractionEventCallback,
@@ -246,12 +258,7 @@ export const useMapHover = (
 
   const onMapHover = useCallback(
     (event) => {
-      const hoverEvent: InteractionEvent = {
-        type: 'hover',
-        point: event.point,
-        longitude: event.lngLat[0],
-        latitude: event.lngLat[1],
-      }
+      const hoverEvent = parseHoverEvent(event)
       const isLinkHover = event.target.tagName.toLowerCase() === 'a'
       if (isLinkHover) {
         event.preventDefault()
@@ -279,6 +286,20 @@ export const useMapHover = (
       }
     },
     [cleanFeatureState, hoverCallbackImmediate, metadata, updateFeatureState]
+  )
+
+  return onMapHover
+}
+
+export const useSimpleMapHover = (hoverCallback: InteractionEventCallback) => {
+  const onMapHover = useCallback(
+    (event) => {
+      const hoverEvent = parseHoverEvent(event)
+      if (hoverCallback) {
+        hoverCallback(hoverEvent)
+      }
+    },
+    [hoverCallback]
   )
 
   return onMapHover

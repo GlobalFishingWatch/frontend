@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import Radio from '@globalfishingwatch/ui-components/dist/radio'
+import SwitchRow from '@globalfishingwatch/ui-components/dist/switch-row'
 import {
   AnyDatasetConfiguration,
   DatasetCategory,
@@ -236,15 +236,13 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         </Fragment>
       )}
       <div className={styles.input}>
-        <Radio
+        <SwitchRow
           label={t(
             'dataset.uploadPublic' as any,
             'Allow other users to see this dataset when you share a workspace'
           )}
           active={metadata.public === true}
-          onClick={(e) => {
-            onDatasetFieldChange({ public: !metadata.public })
-          }}
+          onClick={() => onDatasetFieldChange({ public: !metadata.public })}
         />
       </div>
     </div>

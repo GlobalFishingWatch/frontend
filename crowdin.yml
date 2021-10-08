@@ -7,3 +7,5 @@ files:
       /applications/vessel-history/public/locales/%two_letters_code%/%original_file_name%
   - source: packages/ocean-areas/src/data/locales/source.json
     translation: /packages/ocean-areas/src/data/locales/%two_letters_code%.json
+  - source: packages/i18n-labels/source
+    translation: /packages/i18n-labels/%two_letters_code%/%original_file_name%

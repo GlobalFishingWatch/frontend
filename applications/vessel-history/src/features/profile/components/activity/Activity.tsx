@@ -1,20 +1,20 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import { VesselWithHistory } from 'types'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
-import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
+import { EventTypeVoyage, Voyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
-import { setHighlightedEvent } from 'features/map/map.slice'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
+import { selectVesselId } from 'routes/routes.selectors'
+import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
@@ -28,17 +28,8 @@ interface ActivityProps {
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
 
-  const {
-    eventsLoading,
-    events,
-    toggleVoyage,
-  }: {
-    eventsLoading: boolean
-    events: (RenderedEvent | RenderedVoyage)[]
-    toggleVoyage: (voyage: RenderedVoyage) => void
-  } = useVoyagesConnect()
+  const { eventsLoading, events, toggleVoyage } = useVoyagesConnect()
 
-  const { setMapCoordinates } = useViewport()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -46,25 +37,30 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
     setIsOpen(true)
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
+  const { highlightEvent, highlightVoyage } = useMapEvents()
+  const { viewport, setMapCoordinates } = useViewport()
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
-      // TODO Define what's the expected behavior when clicking a voyage map icon
-      if (event.type === EventTypeVoyage.Voyage) return
+      if (event.type === EventTypeVoyage.Voyage) {
+        highlightVoyage(event)
+      } else {
+        highlightEvent(event)
 
-      dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
-      setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
-        zoom: DEFAULT_VESSEL_MAP_ZOOM,
-        bearing: 0,
-        pitch: 0,
-      })
+        setMapCoordinates({
+          latitude: event.position.lat,
+          longitude: event.position.lon,
+          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+          bearing: 0,
+          pitch: 0,
+        })
+      }
+
       props.onMoveToMap()
     },
-    [dispatch, props, setMapCoordinates]
+    [highlightEvent, highlightVoyage, props, setMapCoordinates, viewport.zoom]
   )
-
+  const isGFWVessel = useSelector(selectVesselId)
   useEffect(() => {
     dispatch(fetchRegionsThunk())
     dispatch(fetchPsmaThunk())
@@ -88,7 +84,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                     height={height}
                     itemCount={events.length}
                     itemData={events}
-                    itemSize={() => 79}
+                    itemSize={() => 60}
                   >
                     {({ index, style }) => {
                       const event = events[index]
@@ -108,7 +104,21 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                 )}
               </AutoSizer>
             ) : (
-              <p>{t('events.noResults', 'No events found. Try changing the current filters.')}</p>
+              <div>
+                {isGFWVessel && (
+                  <p className={styles.emptyState}>
+                    {t('events.noResults', 'No events found. Try changing the current filters.')}
+                  </p>
+                )}
+                {!isGFWVessel && (
+                  <p className={styles.emptyState}>
+                    {t(
+                      'events.noData',
+                      'There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.'
+                    )}
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </Fragment>

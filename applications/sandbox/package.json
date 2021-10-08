@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/sandbox",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "http://globalfishingwatch.io/frontend",
   "private": true,
@@ -13,8 +13,8 @@
     "deploy": "gh-pages -d build"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^3.0.0",
-    "@reduxjs/toolkit": "^1.5.0",
+    "@globalfishingwatch/api-client": "^4.0.0",
+    "@reduxjs/toolkit": "1.5.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

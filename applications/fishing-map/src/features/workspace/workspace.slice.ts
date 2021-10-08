@@ -17,10 +17,16 @@ import {
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace, selectDaysFromLatest } from 'features/app/app.selectors'
-import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
+import {
+  DEFAULT_DATAVIEW_IDS,
+  getWorkspaceEnv,
+  VESSEL_PRESENCE_DATAVIEW_ID,
+  WorkspaceCategories,
+} from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGuestUser } from 'features/user/user.selectors'
+import { isGFWUser } from 'features/user/user.slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -64,6 +70,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const daysFromLatest = selectDaysFromLatest(state)
     const guestUser = isGuestUser(state)
+    const gfwUser = isGFWUser(state)
 
     try {
       let workspace = workspaceId
@@ -88,8 +95,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ? endAt.minus({ days: daysFromLatest })
           : DateTime.fromISO(workspace.startAt).toUTC()
 
+      const defaultWorkspaceDataviews = gfwUser
+        ? [...DEFAULT_DATAVIEW_IDS, VESSEL_PRESENCE_DATAVIEW_ID] // Only for gfw users as includes the private-global-presence-tracks dataset
+        : DEFAULT_DATAVIEW_IDS
+
       const dataviewIds = [
-        ...DEFAULT_DATAVIEW_IDS,
+        ...defaultWorkspaceDataviews,
         ...(workspace.dataviews || []).map(({ id }) => id as number),
         ...(workspace.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId as number),
@@ -138,7 +149,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
 export const saveCurrentWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
-  async (defaultName: string, { dispatch, getState }) => {
+  async (
+    { name: defaultName, createAsPublic }: { name: string; createAsPublic: boolean },
+    { dispatch, getState }
+  ) => {
     const state = getState() as RootState
     const mergedWorkspace = selectCustomWorkspace(state)
 
@@ -155,8 +169,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
               body: {
                 ...mergedWorkspace,
                 name,
-                // TODO make this optional for admins
-                public: false,
+                public: createAsPublic,
               },
             } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
           )
@@ -191,13 +204,12 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 
 export const updatedCurrentWorkspaceThunk = createAsyncThunk(
   'workspace/updatedCurrent',
-  async (workspaceId: string, { dispatch, getState }) => {
+  async (workspace: WorkspaceUpsert<WorkspaceState>, { dispatch, getState }) => {
     const state = getState() as RootState
     const version = selectVersion(state)
-    const workspace = selectCustomWorkspace(state)
 
     const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-      `/${version}/workspaces/${workspaceId}`,
+      `/${version}/workspaces/${workspace.id}`,
       {
         method: 'PATCH',
         body: workspace,

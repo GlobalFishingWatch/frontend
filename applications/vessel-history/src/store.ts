@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
-import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
+import connectedRoutes from 'routes/routes'
+import { routerQueryMiddleware } from 'routes/routes.middlewares'
 import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
@@ -12,6 +13,7 @@ import datasetsReducer from './features/datasets/datasets.slice'
 import psmaReducer from './features/psma/psma.slice'
 import regionsReducer from './features/regions/regions.slice'
 import resourcesReducer from './features/resources/resources.slice'
+import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 
 const {
@@ -33,6 +35,7 @@ const rootReducer = combineReducers({
   psma: psmaReducer,
   regions: regionsReducer,
   resources: resourcesReducer,
+  user: userReducer,
   workspace: workspaceReducer,
 })
 
@@ -49,6 +52,20 @@ const defaultMiddlewareOptions: any = {
 }
 
 const store = configureStore({
+  devTools: {
+    stateSanitizer: (state: any) => {
+      if (!state.resources) return state
+      const serializedResources = Object.entries(state.resources).map(([key, value]: any) => [
+        key,
+        { ...value, data: 'NOT_SERIALIZED' },
+      ])
+
+      return {
+        ...state,
+        resources: Object.fromEntries(serializedResources),
+      }
+    },
+  },
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware(defaultMiddlewareOptions)

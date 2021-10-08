@@ -18,10 +18,10 @@ import AnalysisItemGraph, { AnalysisGraphProps } from './AnalysisItemGraph'
 import styles from './AnalysisItem.module.css'
 
 const FIELDS = [
-  ['geartype', 'layer.gearType_plural', 'Gear types'],
-  ['fleet', 'layer.fleet_plural', 'Fleets'],
+  ['geartype', 'layer.gearType_other', 'Gear types'],
+  ['fleet', 'layer.fleet_other', 'Fleets'],
   ['origin', 'vessel.origin', 'Origin'],
-  ['vessel_type', 'vessel.vesselType_plural', 'Vessel types'],
+  ['vessel_type', 'vessel.vesselType_other', 'Vessel types'],
 ]
 
 const sortStrings = (a: string, b: string) => a.localeCompare(b)
@@ -189,7 +189,11 @@ function AnalysisItem({
         <Fragment>
           <h3 className={styles.commonTitle}>
             {description.map((d) =>
-              d.strong ? <strong>{d.label}</strong> : <span>{d.label}</span>
+              d.strong ? (
+                <strong key={d.label}>{d.label}</strong>
+              ) : (
+                <span key={d.label}>{d.label}</span>
+              )
             )}
             .
           </h3>

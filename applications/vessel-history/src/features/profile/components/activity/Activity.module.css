@@ -1,41 +1,26 @@
 .activityContainer {
   display: flex;
   flex-direction: column;
-  padding: 0 var(--space-XS) 0;
   height: calc(100vh - var(--header-height) - var(--tabs-height));
 }
 
 .activityListContainer {
-  padding: var(--space-XS);
+  padding: var(--space-S);
   flex: 1;
 }
 
-.divider {
-  opacity: 0.1;
-  background-color: #22447e;
-  width: 100%;
-  height: 1px;
-  position: relative;
-  margin: 10px 0 15px;
-}
-
-.itemsDivider::before {
-  margin-right: 9px;
-  background: #fff url('../../../../assets/icons/vessel.svg') no-repeat 15px;
-  content: '';
-  display: inline-block;
-  position: absolute;
-  height: 15px;
-  width: 15px;
-  background-size: 15px 15px;
-  top: -6px;
-  padding: 0 21px 0 10px;
-}
-
 .event {
-  padding: var(--space-XS);
+  margin-left: var(--space-M);
+  height: 60px;
   display: flex;
   align-items: center;
+  border-top: var(--border);
+  padding: 0 var(--space-S);
+}
+
+.event .eventData {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .event .eventData .date {
@@ -43,22 +28,39 @@
   line-height: var(--space-S);
 }
 
-.event .eventData {
-  height: var(--size-S);
-}
-
-.event .eventData .description {
+.eventData .description {
   font: var(--font-XS);
   margin-top: var(--space-XS);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: calc(100vw - var(--size-S) * 4.5);
+  flex: 1;
 }
 
-.event.voyage .eventData .description {
-  text-transform: capitalize;
+.voyage {
+  margin-left: unset;
+  width: 100%;
+  padding-left: var(--space-M);
+  cursor: pointer;
+  border-top: var(--border);
+}
+
+.voyage .eventData {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.voyage .eventData .description {
+  text-transform: uppercase;
   width: calc(100vw - var(--size-S) * 3.5);
+  margin-top: 2px;
+  line-height: 1;
+  color: var(--color-secondary-blue);
+}
+
+.voyage.open .eventData .description {
+  color: var(--color-promary-blue);
 }
 
 .eventIcon {
@@ -131,6 +133,9 @@
 }
 
 .highlightsContainer {
+  border-top: var(--border);
+  margin-top: var(--space-S);
+  padding-top: var(--space-S);
   min-height: calc(var(--size-L) * 2);
   height: fit-content;
   font: var(--font-S);
@@ -145,7 +150,12 @@
 }
 
 .highlightsListContainer .event .eventData .description {
-  width: calc(100vw - var(--size-S) * 4.7);
+  width: calc(100vw - var(--size-S) * 5.7);
+}
+
+.highlightsListContainer .event {
+  margin: 0;
+  padding: 0;
 }
 
 .highlights {
@@ -169,12 +179,23 @@ button .iconInButton {
   margin-right: var(--space-XS);
 }
 
+.settingsLinkContainer {
+  position: relative;
+}
+
 .settingsLink {
   position: absolute;
-  right: var(--space-XS);
+  top: 0;
+  right: 0;
 }
 
 .spinnerMed {
   margin-top: var(--space-M);
   height: var(--size-M);
+}
+
+.emptyState {
+  color: var(--color-secondary-blue);
+  padding: var(--space-M);
+  text-align: center;
 }

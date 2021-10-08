@@ -111,40 +111,35 @@ export type VesselSearchThunk = {
   advancedSearch?: Record<string, any>
 }
 
-const trackData = (
-  query: any,
-  results: SearchResults | null,
-  actualResults: number
-) => {
+const trackData = (query: any, results: SearchResults | null, actualResults: number) => {
   if (!query.offset || query.offset === 0) {
-    const vessels = results?.vessels.slice(0, 5).map(vessel => {
+    const vessels = results?.vessels.slice(0, 5).map((vessel) => {
       return {
         gfw: vessel.id,
-        tmt: vessel.vesselMatchId
+        tmt: vessel.vesselMatchId,
       }
     })
     uaEvent({
       category: 'Search Vessel VV',
       action: 'Click Search',
       label: JSON.stringify({ ...query, vessels }),
-      value: results?.total
+      value: results?.total,
     })
   } else {
     uaEvent({
       category: 'Search Vessel VV',
       action: 'Click Load More',
       label: actualResults.toString(),
-      value: results?.total
+      value: results?.total,
     })
   }
-
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/vessels',
   async (
     { query, offset, advancedSearch }: VesselSearchThunk,
-    { rejectWithValue, getState, signal }
+    { rejectWithValue, getState, signal, dispatch }
   ) => {
     const searchData = await fetchData(query, offset, signal, advancedSearch)
     trackData({ query: query, ...advancedSearch }, searchData, 5)

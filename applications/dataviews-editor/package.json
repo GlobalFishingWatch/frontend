@@ -1,13 +1,13 @@
 {
   "name": "@globalfishingwatchapp/dataviews-editor",
-  "version": "1.1.91",
+  "version": "1.1.93",
   "private": true,
   "dependencies": {
-    "@globalfishingwatch/api-client": "^3.0.0",
-    "@globalfishingwatch/dataviews-client": "^13.1.0",
-    "@globalfishingwatch/layer-composer": "9.3.0",
+    "@globalfishingwatch/api-client": "^4.0.0",
+    "@globalfishingwatch/dataviews-client": "^14.0.0",
+    "@globalfishingwatch/layer-composer": "10.0.1",
     "@globalfishingwatch/timebar": "^2.0.8",
-    "@reduxjs/toolkit": "^1.5.0",
+    "@reduxjs/toolkit": "1.5.0",
     "cra-template-typescript": "1.0.3",
     "react-scripts": "4.0.3"
   },

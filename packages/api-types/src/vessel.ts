@@ -2,6 +2,8 @@ export interface Authorization {
   source: string
   startDate: string
   endDate: string
+  originalStartDate: number
+  originalEndDate: number
 }
 
 export interface Vessel {
@@ -36,4 +38,5 @@ export interface VesselSearch extends Vessel {
   dataset: string
   source: string // Label of the dataset
   vesselMatchId: string
+  posCount?: number
 }

@@ -54,7 +54,7 @@
 .layersModalPortal .layersModalContainer {
   width: fit-content;
   height: fit-content;
-  padding: 0 var(--space-S);
+  padding: 3rem 0 0 var(--space-S);
 }
 
 .contextLayer {
@@ -64,6 +64,7 @@
   align-items: center;
   height: var(--size-M);
   color: rgba(var(--primary-blue-rgb), 0.7);
+  margin-right: 1rem;
 }
 
 .active {
@@ -75,4 +76,22 @@
   position: absolute;
   top: var(--space-XS);
   right: var(--space-XS);
+}
+
+.layerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.layerContainer .infoIcon {
+  margin-left: auto;
+}
+.dataAndTerminologyContainer {
+  height: 90vh;
+}
+
+.map-tool {
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  border: var(--border-white);
 }

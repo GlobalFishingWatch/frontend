@@ -19,7 +19,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generator
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { PRESENCE_POC_ID, selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
@@ -97,8 +97,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
       [Generators.Type.Track]: ([info, track, ...events]) => {
         const trackWithThinning = track
-        const isPOCDataset = track.datasetId?.includes(PRESENCE_POC_ID)
-        if (thinningConfig && !isPOCDataset) {
+        if (thinningConfig) {
           const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
             id,
             value,

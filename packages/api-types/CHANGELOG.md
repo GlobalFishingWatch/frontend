@@ -1,5 +1,35 @@
 # @globalfishingwatch/api-types
 
+## 6.3.0
+
+### Minor Changes
+
+- f3fa1b87: added documentation field
+
+## 6.2.0
+
+### Minor Changes
+
+- 2ea27a38: support draw geometryType in dataset configuration
+
+## 6.1.0
+
+### Minor Changes
+
+- ec34c600: added amount of transmissions
+
+## 6.0.1
+
+### Patch Changes
+
+- f5264a92: [WIP] Fishing map/download activity popup
+
+## 6.0.0
+
+### Major Changes
+
+- aa3cf308: Added originalStartDate and originalEndDate to Authorization
+
 ## 5.3.2
 
 ### Patch Changes

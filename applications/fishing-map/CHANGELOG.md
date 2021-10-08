@@ -1,5 +1,94 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.63
+
+### Patch Changes
+
+- Updated dependencies [4f1d3fec]
+  - @globalfishingwatch/ui-components@12.3.0
+
+## 1.1.62
+
+### Patch Changes
+
+- Updated dependencies [5ca834a5]
+  - @globalfishingwatch/layer-composer@10.0.1
+
+## 1.1.61
+
+### Patch Changes
+
+- Updated dependencies [f3fa1b87]
+  - @globalfishingwatch/api-types@6.3.0
+
+## 1.1.60
+
+### Patch Changes
+
+- Updated dependencies [13e82570]
+- Updated dependencies [62c141dd]
+  - @globalfishingwatch/dataviews-client@14.1.1
+  - @globalfishingwatch/react-hooks@15.1.0
+
+## 1.1.59
+
+### Patch Changes
+
+- 3ce2cbbd: Allow GFW users to download vessel tracks
+
+## 1.1.58
+
+### Patch Changes
+
+- Updated dependencies [3f49c561]
+  - @globalfishingwatch/dataviews-client@14.1.0
+
+## 1.1.57
+
+### Patch Changes
+
+- Updated dependencies [f98659b5]
+- Updated dependencies [2ea27a38]
+  - @globalfishingwatch/ui-components@12.2.0
+  - @globalfishingwatch/api-types@6.2.0
+
+## 1.1.56
+
+### Patch Changes
+
+- Updated dependencies [ec34c600]
+  - @globalfishingwatch/api-types@6.1.0
+
+## 1.1.55
+
+### Patch Changes
+
+- f5264a92: [WIP] Fishing map/download activity popup
+- Updated dependencies [f5264a92]
+- Updated dependencies [1faa75c7]
+  - @globalfishingwatch/api-types@6.0.1
+  - @globalfishingwatch/ui-components@12.1.1
+  - @globalfishingwatch/react-hooks@15.0.1
+
+## 1.1.54
+
+### Patch Changes
+
+- Updated dependencies [a6914cd3]
+  - @globalfishingwatch/ui-components@12.1.0
+
+## 1.1.53
+
+### Patch Changes
+
+- Updated dependencies [aa3cf308]
+  - @globalfishingwatch/api-types@6.0.0
+  - @globalfishingwatch/api-client@4.0.0
+  - @globalfishingwatch/dataviews-client@14.0.0
+  - @globalfishingwatch/layer-composer@10.0.0
+  - @globalfishingwatch/react-hooks@15.0.0
+  - @globalfishingwatch/ui-components@12.0.0
+
 ## 1.1.52
 
 ### Patch Changes

@@ -93,8 +93,8 @@ export const filterFeaturesByTimerange = (features: Feature[], start: string, en
     return features.filter((feature) => {
       return (
         feature.properties &&
-        feature.properties.timestamp > startMs &&
-        feature.properties.timestamp < endMs
+        feature.properties.timestamp >= startMs &&
+        feature.properties.timestamp <= endMs
       )
     })
   }

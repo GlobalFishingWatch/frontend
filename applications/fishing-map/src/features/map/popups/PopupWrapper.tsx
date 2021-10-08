@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { Popup } from 'react-map-gl'
@@ -8,8 +7,6 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { PRESENCE_POC_INTERACTION } from 'features/datasets/datasets.slice'
-import { selectDebugOptions } from 'features/debug/debug.slice'
 import styles from './Popup.module.css'
 import FishingTooltipRow from './FishingLayers'
 import PresenceTooltipRow from './PresenceLayers'
@@ -39,8 +36,6 @@ function PopupWrapper({
   onClose,
   anchor,
 }: PopupWrapperProps) {
-  const debugOptions = useSelector(selectDebugOptions)
-
   if (!event) return null
 
   const visibleFeatures = event.features.filter((feature) => feature.visible)
@@ -77,11 +72,7 @@ function PopupWrapper({
               ))
             case DataviewCategory.Presence:
               return features.map((feature, i) => {
-                if (
-                  feature.temporalgrid?.sublayerInteractionType === 'presence-detail' ||
-                  (debugOptions.presenceTrackPOC &&
-                    feature.temporalgrid?.sublayerInteractionType === PRESENCE_POC_INTERACTION)
-                ) {
+                if (feature.temporalgrid?.sublayerInteractionType === 'presence-detail') {
                   return (
                     <FishingTooltipRow
                       key={i + (feature.title as string)}

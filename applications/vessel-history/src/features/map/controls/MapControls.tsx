@@ -3,14 +3,15 @@ import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
-import { selectFilterUpdated } from 'features/vessels/activity/vessels-activity.selectors'
 import EventFilters from 'features/event-filters/EventFilters'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
+import { getDatasetDescriptionTranslated, getDatasetNameTranslated } from 'features/i18n/utils'
+import EventFiltersButton from 'features/event-filters/EventFiltersButton'
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -31,20 +32,16 @@ const MapControls = ({
   const [extendedControls] = useState(true)
   const [isModalOpen, setIsOpen] = useState(false)
   const [showLayersPopup, setShowLayersPopup] = useState(false)
+  const [showLayerInfo, setShowLayerInfo] = useState<{ [key: string]: boolean }>({})
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
-  const filtered = useSelector(selectFilterUpdated)
   const setModalOpen = useCallback((isOpen) => {
     uaEvent({
       category: 'Vessel Detail ACTIVITY or MAP Tab',
       action: 'Open filters',
-      label: JSON.stringify({tab: 'MAP'})
+      label: JSON.stringify({ tab: 'MAP' }),
     })
     setIsOpen(isOpen)
   }, [])
-  const layerTitle = (dataview: UrlDataviewInstance) => {
-    const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-    return t(`datasets:${dataset?.id}.name` as any, dataset?.name)
-  }
 
   const handleCloseShowLayers = useCallback(() => {
     setShowLayersPopup(false)
@@ -52,11 +49,20 @@ const MapControls = ({
 
   return (
     <Fragment>
-      <EventFilters tab="MAP" isModalOpen={isModalOpen} onCloseModal={(isOpen) => setModalOpen(isOpen)}></EventFilters>
+      <EventFilters
+        tab="MAP"
+        isModalOpen={isModalOpen}
+        onCloseModal={(isOpen) => setModalOpen(isOpen)}
+      ></EventFilters>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
             <Fragment>
+              <EventFiltersButton
+                type="default"
+                className={styles['map-tool']}
+                onClick={() => setModalOpen(true)}
+              ></EventFiltersButton>
               <IconButton
                 icon="layers"
                 type="map-tool"
@@ -71,13 +77,14 @@ const MapControls = ({
                   })
                 }}
               />
-              <IconButton
-                type="map-tool"
-                icon={filtered ? 'filter-on' : 'filter-off'}
+              <DataAndTerminology
+                containerClassName={styles.dataAndTerminologyContainer}
                 size="medium"
-                tooltip={t('map.filters', 'Filter events')}
-                onClick={() => setModalOpen(true)}
-              />
+                type="map-tool"
+                title={t('common.dataAndTerminology', 'Data and Terminology')}
+              >
+                <ActivityDataAndTerminology />
+              </DataAndTerminology>
               {showLayersPopup && (
                 <Modal
                   isOpen={showLayersPopup}
@@ -93,13 +100,36 @@ const MapControls = ({
                     <div className={styles.contextLayers}>
                       {!!layers &&
                         layers.map((layer) => (
-                          <LayerSwitch
-                            key={layer.id}
-                            className={styles.contextLayer}
-                            classNameActive={styles.active}
-                            dataview={layer}
-                            title={layerTitle(layer)}
-                          />
+                          <div className={styles.layerContainer}>
+                            <LayerSwitch
+                              key={layer.id}
+                              className={styles.contextLayer}
+                              classNameActive={styles.active}
+                              dataview={layer}
+                              title={getDatasetNameTranslated(layer)}
+                            />
+                            <div>
+                              <IconButton
+                                icon="info"
+                                type="default"
+                                size="small"
+                                className={styles.infoIcon}
+                                tooltipPlacement="left"
+                                onClick={() =>
+                                  setShowLayerInfo({ ...showLayerInfo, [layer.id]: true })
+                                }
+                              />
+                              <Modal
+                                isOpen={showLayerInfo[layer.id.toString()]}
+                                onClose={() =>
+                                  setShowLayerInfo({ ...showLayerInfo, [layer.id]: false })
+                                }
+                                title={getDatasetNameTranslated(layer)}
+                              >
+                                {getDatasetDescriptionTranslated(layer)}
+                              </Modal>
+                            </div>
+                          </div>
                         ))}
                     </div>
                   </div>

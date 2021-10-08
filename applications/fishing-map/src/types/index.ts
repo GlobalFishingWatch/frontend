@@ -1,4 +1,4 @@
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { EventType } from '@globalfishingwatch/api-types'
 
 export enum Locale {
@@ -39,14 +39,13 @@ export type WorkspaceAnalysis = {
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export type BivariateDataviews = [string, string]
 
-export type WorkspaceState = {
+export interface WorkspaceState extends BaseUrlWorkspace {
   query?: string
   version?: string
   readOnly?: boolean
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   sidebarOpen?: boolean
   analysis?: WorkspaceAnalysis
-  dataviewInstances?: Partial<UrlDataviewInstance[]>
   timebarVisualisation?: TimebarVisualisations
   visibleEvents?: VisibleEvents
   timebarGraph?: TimebarGraphs

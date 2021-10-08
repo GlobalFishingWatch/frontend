@@ -35,6 +35,8 @@ import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import DownloadActivityModal from 'features/download/DownloadActivityModal'
+import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
@@ -111,7 +113,6 @@ function App(): React.ReactElement {
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const showToggle = useSelector(isWorkspaceLocation)
   const userLogged = useSelector(isUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
   const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -187,7 +188,7 @@ function App(): React.ReactElement {
 
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
-    if (locationType === WORKSPACES_LIST) return t('workspace.title_plural', 'Workspaces')
+    if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
     if (isAnalysing) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
   }, [isAnalysing, locationType])
@@ -205,7 +206,7 @@ function App(): React.ReactElement {
       <Suspense fallback={null}>
         <SplitView
           isOpen={sidebarOpen}
-          showToggle={showToggle}
+          showToggle={workspaceLocation}
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}
@@ -239,6 +240,12 @@ function App(): React.ReactElement {
           <EditorMenu />
         </Modal>
       )}
+      <Suspense fallback={null}>
+        <DownloadActivityModal />
+      </Suspense>
+      <Suspense fallback={null}>
+        <DownloadTrackModal />
+      </Suspense>
       {welcomePopupOpen && !readOnly && (
         <Suspense fallback={null}>
           <Modal

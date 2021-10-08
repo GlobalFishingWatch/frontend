@@ -1,13 +1,15 @@
 import React from 'react'
 import { event as uaEvent } from 'react-ga'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { DateTime, Interval } from 'luxon'
+import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  getPresenceVesselDataviewInstance,
+  getVesselDataviewInstance,
+} from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
@@ -15,14 +17,12 @@ import {
   TooltipEventFeature,
   useClickedEventConnect,
 } from 'features/map/map.hooks'
-import { PRESENCE_POC_ID, PRESENCE_POC_INTERACTION } from 'features/datasets/datasets.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
-import { selectTimeRange } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectDebugOptions } from 'features/debug/debug.slice'
-import { PRESENCE_POC_MAX_DAYS, PRESENCE_POC_PRICE_PER_DAY } from 'data/config'
+import { isGFWUser } from 'features/user/user.slice'
+import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
 import styles from './Popup.module.css'
 
 type FishingTooltipRowProps = {
@@ -33,48 +33,32 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { fishingInteractionStatus } = useClickedEventConnect()
-  const timeRange = useSelector(selectTimeRange)
-  const debugOptions = useSelector(selectDebugOptions)
+  const gfwUser = useSelector(isGFWUser)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    if (debugOptions.presenceTrackPOC && vessel.trackDataset?.id.includes(PRESENCE_POC_ID)) {
-      const interval = Interval.fromDateTimes(
-        DateTime.fromISO(timeRange.start).toUTC(),
-        DateTime.fromISO(timeRange.end).toUTC()
-      ).toDuration('days').days
-      if (interval > PRESENCE_POC_MAX_DAYS) {
-        alert(
-          t(
-            'errors.maxVesselPresenceTimerange',
-            'Presence vessels has a limited timerange of 180days. \n'
-          )
-        )
-        return
-      } else {
-        const cost = PRESENCE_POC_PRICE_PER_DAY * interval
-        const validationRun = window.confirm(
-          `${t('map.runningExpensiveVesselQuery', {
-            cost: cost.toFixed(2),
-            defaultValue: 'Running this query will cost around {{cost}} $. Are you sure to run it?',
-          })}`
-        )
-        if (!validationRun) {
-          return
-        }
-      }
-    }
-    const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
-    const eventsDatasetsId =
-      vesselEventsDatasets && vesselEventsDatasets?.length
-        ? vesselEventsDatasets.map((d) => d.id)
-        : []
+    let vesselDataviewInstance: DataviewInstance | undefined
+    if (
+      gfwUser &&
+      vessel.dataset?.id.includes(PRESENCE_DATASET_ID) &&
+      vessel.trackDataset?.id.includes(PRESENCE_TRACKS_DATASET_ID)
+    ) {
+      vesselDataviewInstance = getPresenceVesselDataviewInstance(vessel, {
+        trackDatasetId: vessel.trackDataset?.id,
+        infoDatasetId: vessel.infoDataset?.id,
+      })
+    } else {
+      const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
+      const eventsDatasetsId =
+        vesselEventsDatasets && vesselEventsDatasets?.length
+          ? vesselEventsDatasets.map((d) => d.id)
+          : []
 
-    const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-      trackDatasetId: vessel.trackDataset?.id,
-      infoDatasetId: vessel.infoDataset?.id,
-      ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-      ...(debugOptions.presenceTrackPOC && { timeRange }),
-    })
+      vesselDataviewInstance = getVesselDataviewInstance(vessel, {
+        trackDatasetId: vessel.trackDataset?.id,
+        infoDatasetId: vessel.infoDataset?.id,
+        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+      })
+    }
 
     upsertDataviewInstance(vesselDataviewInstance)
 
@@ -121,19 +105,19 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
           <div className={styles.vesselsTable}>
             <div className={styles.vesselsHeader}>
               <label className={styles.vesselsHeaderLabel}>
-                {t('common.vessel_plural', 'Vessels')}
+                {t('common.vessel_other', 'Vessels')}
               </label>
               <label className={styles.vesselsHeaderLabel}>
-                {feature.temporalgrid?.unit === 'hours' && t('common.hour_plural', 'hours')}
-                {feature.temporalgrid?.unit === 'days' && t('common.days_plural', 'days')}
+                {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
+                {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
               </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
               const vesselLabel = getVesselLabel(vessel, true)
-              const interactionAllowed = [
-                ...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-                PRESENCE_POC_INTERACTION,
-              ].includes(feature.temporalgrid?.sublayerInteractionType || '')
+              const interactionAllowed =
+                SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+                  feature.temporalgrid?.sublayerInteractionType || ''
+                )
               const hasDatasets =
                 vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
               return (

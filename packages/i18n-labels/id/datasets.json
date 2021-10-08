@@ -269,6 +269,54 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-peru-fishing-vessels": {
+    "name": "Private Peru VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Peru (Private)",
+    "schema": {
+      "id": "id",
+      "beam": "beam",
+      "flag": "flag",
+      "casco": {
+        "keyword": "casco",
+        "enum": {
+          "ACERO NAVAL": "ACERO NAVAL",
+          "MADERA": "MADERA",
+          "N/E": "N/E",
+          "NONE": "NONE",
+          "FIBRA DE VIDRIO": "FIBRA DE VIDRIO"
+        }
+      },
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "ssvid": "ssvid",
+      "width": "width",
+      "length": "length",
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "Peru": "Peru",
+          "Foreign": "Foreign"
+        }
+      },
+      "source": "source",
+      "regimen": "regimen",
+      "capacity": "capacity",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "chdSpecies": "chdSpecies",
+      "nationalId": "nationalId",
+      "resolution": "resolution",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-peru-presence": {
     "name": "Peru VMS Presence",
     "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
@@ -342,6 +390,17 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-chile-all-vessels": {
+    "name": "Chile VMS (all Vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-chile-fishing-effort": {
     "name": "VMS Chili",
     "description": "Data Vessel Monitoring System VMS) disediakan oleh fisheries and aquaculture regulator (SERNAPESCA) pemerintah Chili. Data VMS Chili dapat difilter untuk kapal penangkap ikan skala kecil (&lt;18 meter) dan kapal penangkap ikan industri (&gt; 18 meter). Perhatikan bahwa beberapa kapal berukuran &lt;18 meter tetapi dianggap industri karena terdaftar dalam penangkapan kuota industri. SERNAPESCA juga menggunakan peta kami untuk memvisualisasikan dan melacak posisi kapal untuk armadanya, termasuk kapal yang terlibat dalam akuakultur. Data dikumpulkan menggunakan VMS Chili melalui satelit dan penerima terestrial dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya di peta Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi 'aktivitas penangkapan ikan yang terlihat.' Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah 'aktivitas memancing', 'memancing', dan 'upaya penangkapan ikan', sebagai 'terlihat jelas' dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang 'aktivitas penangkapan ikan yang terlihat' harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
@@ -361,6 +420,26 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-chile-fishing-vessels": {
+    "name": "VMS Chile (Fishing vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industry": "industry",
+          "small_fisheries": "small_fisheries"
+        }
+      },
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionData": "firstTransmissionData",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-chile-presence": {
@@ -625,6 +704,8 @@
     "schema": {
       "id": "id",
       "dataset": "dataset",
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -736,6 +817,8 @@
           "drifting_longlines": "drifting_longlines"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -775,6 +858,8 @@
           "Purse Seine Support Vessel": "Purse Seine Support Vessel"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",

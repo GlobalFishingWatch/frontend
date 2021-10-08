@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   Vessel,
@@ -19,18 +19,21 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
-import I18nDate from 'features/i18n/i18nDate'
-import I18nFlag from 'features/i18n/i18nFlag'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { isGuestUser } from 'features/user/user.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import I18nDate from 'features/i18n/i18nDate'
+import I18nFlag from 'features/i18n/i18nFlag'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
+import { isGFWUser } from 'features/user/user.slice'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import FitBounds from '../common/FitBounds'
+import InfoModal from '../common/InfoModal'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -38,14 +41,20 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+  const { url: trackUrl, dataset: trackDataset } = resolveDataviewDatasetResource(
+    dataview,
+    DatasetTypes.Tracks
+  )
   const infoResource = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
+  const [datasetModalOpen, setDatasetModalOpen] = useState(false)
+  const gfwUser = useSelector(isGFWUser)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -67,8 +76,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const closeExpandedContainer = () => {
-    setColorOpen(false)
-    setInfoOpen(false)
+    if (!datasetModalOpen) {
+      setColorOpen(false)
+      setInfoOpen(false)
+    }
   }
 
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
@@ -180,6 +191,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                     {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
                     {/* Field values separator */}
                     {i < fieldValues.length - 1 ? ', ' : ''}
+                    {field.id === 'dataset' && infoOpen && gfwUser && (
+                      <InfoModal dataview={dataview} onModalStateChange={setDatasetModalOpen} />
+                    )}
                   </span>
                 ))}
               </li>
@@ -215,6 +229,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     </ExpandedContainer>
   )
 
+  const onDownloadClick = () => {
+    dispatch(
+      setDownloadTrackVessel({
+        id: vesselId,
+        name: vesselTitle,
+        datasets: trackDataset.id,
+      })
+    )
+  }
+
   return (
     <div
       className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
@@ -228,6 +252,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           <Fragment>
+            {gfwUser && (
+              <IconButton
+                icon="download"
+                tooltip={t('download.trackAction', 'Download vessel track')}
+                onClick={onDownloadClick}
+                size="small"
+              />
+            )}
             {layerActive && !infoLoading && TrackIconComponent}
             {infoResource && InfoIconComponent}
             <Remove dataview={dataview} />

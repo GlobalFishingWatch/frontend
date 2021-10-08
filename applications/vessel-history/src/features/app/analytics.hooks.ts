@@ -1,6 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { initialize as uaInitialize, set as uaSet, pageview, event as uaEvent } from 'react-ga'
-import { GOOGLE_UNIVERSAL_ANALYTICS_ID, GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/config'
+import {
+  GOOGLE_UNIVERSAL_ANALYTICS_ID,
+  GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
+  IS_PRODUCTION,
+} from 'data/config'
 import { useUser } from 'features/user/user.hooks'
 
 export const useAnalytics = () => {
@@ -21,10 +25,16 @@ export const useAnalytics = () => {
       pageview(window.location.pathname + window.location.search)
     }
   }, [])
-  const { user } = useUser()
+  const { user, logged } = useUser()
+  const [trackLogin, setTrackLogin] = useState(true)
+
+  // Set to track login only when the user has logged out
+  useEffect(() => {
+    !logged && setTrackLogin(true)
+  }, [logged])
 
   useEffect(() => {
-    if (user && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+    if (user && GOOGLE_UNIVERSAL_ANALYTICS_ID && trackLogin) {
       uaSet({
         dimension1: `${user.id}`,
         dimension3: `${JSON.stringify(user.groups)}` ?? '',
@@ -47,6 +57,7 @@ export const useAnalytics = () => {
         category: 'User',
         action: 'Login',
       })
+      setTrackLogin(false)
     }
-  }, [user])
+  }, [user, trackLogin])
 }

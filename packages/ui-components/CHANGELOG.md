@@ -1,5 +1,36 @@
 # @globalfishingwatch/ui-components
 
+## 12.3.0
+
+### Minor Changes
+
+- 4f1d3fec: Added support for tabs button sizes
+
+## 12.2.0
+
+### Minor Changes
+
+- f98659b5: draw and add polygon icons
+
+## 12.1.1
+
+### Patch Changes
+
+- f5264a92: [WIP] Fishing map/download activity popup
+
+## 12.1.0
+
+### Minor Changes
+
+- a6914cd3: new switch-row component
+
+## 12.0.0
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@10.0.0
+- @globalfishingwatch/react-hooks@15.0.0
+
 ## 11.1.2
 
 ### Patch Changes

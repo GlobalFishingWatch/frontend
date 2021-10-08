@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import Home from 'features/home/Home'
 import { getLocationType } from 'routes/routes.selectors'
@@ -15,6 +15,7 @@ function App() {
   useAnalytics()
   const { loading, logged, authorized } = useUser()
   const [minLoading, setMinLoading] = useState(true)
+  const locationType = useSelector(getLocationType)
 
   // Splash screen is shown at least one second
   useEffect(() => {
@@ -22,22 +23,20 @@ function App() {
     return () => clearTimeout(timer)
   }, [])
 
-  const locationType = useSelector(getLocationType)
+  const Component = useMemo(() => {
+    if (((loading || minLoading) && !logged) || !authorized) {
+      return <Splash intro={minLoading} />
+    }
+    if (locationType === SETTINGS) {
+      return <Settings />
+    }
+    if (locationType === PROFILE) {
+      return <Profile />
+    }
+    return <Home />
+  }, [authorized, loading, locationType, logged, minLoading])
 
-  if (loading || minLoading || !logged || !authorized) {
-    return <Splash intro={minLoading} />
-  }
-  if (locationType === SETTINGS) {
-    return <Settings />
-  }
-  if (locationType === PROFILE) {
-    return <Profile />
-  }
-  return (
-    <Fragment>
-      <Home />
-    </Fragment>
-  )
+  return <Suspense fallback={null}>{Component}</Suspense>
 }
 
 export default App

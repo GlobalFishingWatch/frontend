@@ -6,7 +6,7 @@ import { TooltipTypes } from '../types/types'
 import styles from './Switch.module.css'
 import { SwitchEvent } from '.'
 
-interface SwitchProps {
+export interface SwitchProps {
   id?: string
   active: boolean
   disabled?: boolean
@@ -30,10 +30,12 @@ function Switch(props: SwitchProps) {
   } = props
 
   const onClickCallback = (event: React.MouseEvent) => {
-    onClick({
-      ...event,
-      active,
-    })
+    if (!disabled) {
+      onClick({
+        ...event,
+        active,
+      })
+    }
   }
 
   return (
@@ -43,10 +45,13 @@ function Switch(props: SwitchProps) {
         type="button"
         role="switch"
         aria-checked={active}
-        disabled={disabled}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         onClick={onClickCallback}
-        className={cx(styles.switch, { [styles.customColor]: color }, className)}
+        className={cx(
+          styles.switch,
+          { [styles.disabled]: disabled, [styles.customColor]: color },
+          className
+        )}
         {...(color && { style: { color } })}
       >
         <span className={styles.nib}></span>

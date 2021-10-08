@@ -1,5 +1,4 @@
 import type { Geometry } from 'geojson'
-import type { MapEvent } from 'react-map-gl'
 import {
   ContextLayerType,
   HeatmapAnimatedInteractionType,
@@ -7,7 +6,7 @@ import {
 import { Interval } from '@globalfishingwatch/layer-composer/dist/generators'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 
-export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction'
+export { useMapHover, useSimpleMapHover, useMapClick, useFeatureState } from './use-map-interaction'
 
 export type TemporalGridFeature = {
   sublayerIndex: number
@@ -50,5 +49,5 @@ export type InteractionEvent = {
   features?: ExtendedFeature[]
   latitude: number
   longitude: number
-  point: Pick<MapEvent, 'point'>
+  point: [number, number]
 }

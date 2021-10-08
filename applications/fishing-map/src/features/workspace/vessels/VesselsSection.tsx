@@ -29,7 +29,7 @@ function VesselsSection(): React.ReactElement {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.vessel_plural', 'Vessels')}</h2>
+        <h2 className={styles.sectionTitle}>{t('common.vessel_other', 'Vessels')}</h2>
         <IconButton
           icon="search"
           type="border"

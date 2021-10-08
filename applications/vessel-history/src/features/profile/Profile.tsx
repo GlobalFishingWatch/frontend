@@ -2,14 +2,13 @@ import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'reac
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
-  selectQueryParam,
+  selectSearchableQueryParams,
   selectUrlAkaVesselQuery,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
@@ -34,6 +33,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
 import { parseVesselProfileId } from 'features/vessels/vessels.utils'
+import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
+import { useLocationConnect } from 'routes/routes.hook'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -43,9 +44,10 @@ const Profile: React.FC = (props): React.ReactElement => {
   const { t } = useTranslation()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
-  const q = useSelector(selectQueryParam('q'))
+  const query = useSelector(selectSearchableQueryParams)
   const vesselProfileId = useSelector(selectVesselProfileId)
   const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
+  const { dispatchLocation } = useLocationConnect()
   const vesselStatus = useSelector(selectVesselsStatus)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
   const vessel = useSelector(selectVesselById(vesselProfileId))
@@ -104,15 +106,19 @@ const Profile: React.FC = (props): React.ReactElement => {
     if (datasets.length > 0) {
       fetchVessel()
       dispatch(resetFilters())
+      dispatch(setHighlightedEvent(undefined))
+      dispatch(setVoyageTime(undefined))
     }
   }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
 
-  const  trackEvent = useCallback(() => {
+  const onBackClick = useCallback(() => {
+    const params = query ? { replaceQuery: true, query } : {}
+    dispatchLocation(HOME, params)
     uaEvent({
       category: 'Vessel Detail',
-      action: 'Click to go back to search'
+      action: 'Click to go back to search',
     })
-  }, [])
+  }, [dispatchLocation, query])
 
   useEffect(() => {
     if (vesselDataviewLoaded && resourceQueries && resourceQueries.length > 0) {
@@ -128,10 +134,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         id: 'info',
         title: t('common.info', 'INFO').toLocaleUpperCase(),
         content: vessel ? (
-          <Info 
-            vessel={vessel} 
-            lastPosition={lastPosition} 
-            lastPortVisit={lastPortVisit} 
+          <Info
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
             onMoveToMap={() => setActiveTab(tabs?.[2])}
           />
         ) : (
@@ -181,10 +187,6 @@ const Profile: React.FC = (props): React.ReactElement => {
     [vessel]
   )
 
-  const backLink = useMemo(() => {
-    return q ? { type: HOME, replaceQuery: true, query: { q } } : { type: HOME }
-  }, [q])
-
   const shipName = useMemo(() => {
     const gfwVesselName = vessel?.history.shipname.byDate.find(
       (name) => name.source === VesselAPISource.GFW
@@ -195,14 +197,13 @@ const Profile: React.FC = (props): React.ReactElement => {
   return (
     <Fragment>
       <header className={styles.header}>
-        <Link to={backLink} onClick={trackEvent}>
-          <IconButton
-            type="border"
-            size="default"
-            icon="arrow-left"
-            className={styles.backButton}
-          />
-        </Link>
+        <IconButton
+          onClick={onBackClick}
+          type="border"
+          size="default"
+          icon="arrow-left"
+          className={styles.backButton}
+        />
         {vessel && (
           <h1>
             {shipName ?? t('common.unknownName', 'Unknown name')}
@@ -242,7 +243,7 @@ const Profile: React.FC = (props): React.ReactElement => {
               uaEvent({
                 category: 'Vessel Detail MAP Tab',
                 action: 'See MAP Tab',
-                label: 'global tab'
+                label: 'global tab',
               })
             }
           }}

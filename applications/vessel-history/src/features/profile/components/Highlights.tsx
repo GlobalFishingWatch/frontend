@@ -5,10 +5,8 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import Link from 'redux-first-router-link'
 import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { SETTINGS } from 'routes/routes'
 import {
   RenderedEvent,
@@ -16,6 +14,11 @@ import {
   selectFilteredActivityHighlightEvents,
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectAnyHighlightsSettingDefined } from 'features/vessels/activity/vessels-highlight.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import useMapEvents from 'features/map/map-events.hooks'
+import useViewport from 'features/map/map-viewport.hooks'
+import { EventTypeVoyage, Voyage } from 'types/voyage'
 import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'
@@ -25,7 +28,6 @@ interface HighlightsProps {
 }
 
 const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
-  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
   const events = useSelector(selectFilteredActivityHighlightEvents)
@@ -37,17 +39,39 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
     setIsOpen(true)
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
-  const navigateToSettings = useCallback(() => dispatch({ type: SETTINGS }), [dispatch])
+  const { dispatchLocation } = useLocationConnect()
+  const { highlightEvent } = useMapEvents()
+  const { viewport, setMapCoordinates } = useViewport()
 
-  const trackEvent = useCallback(() => {
+  const onSettingsClick = useCallback(() => {
+    dispatchLocation(SETTINGS)
     uaEvent({
       category: 'Highlight Events',
       action: 'Start highlight events configurations',
       label: JSON.stringify({
-        page: 'vessel detail'
-      })
+        page: 'vessel detail',
+      }),
     })
-  }, [])
+  }, [dispatchLocation])
+
+  const selectEventOnMap = useCallback(
+    (event: RenderedEvent | Voyage) => {
+      if (event.type !== EventTypeVoyage.Voyage) {
+        highlightEvent(event)
+
+        setMapCoordinates({
+          latitude: event.position.lat,
+          longitude: event.position.lon,
+          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+          bearing: 0,
+          pitch: 0,
+        })
+
+        props.onMoveToMap()
+      }
+    },
+    [highlightEvent, props, setMapCoordinates, viewport.zoom]
+  )
 
   useEffect(() => {
     if (!loading) {
@@ -57,11 +81,11 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
         [EventTypes.Loitering as string]: 0,
         [EventTypes.Encounter as string]: 0,
       }
-      events.forEach(event => countEvents[event.type as string]++)
+      events.forEach((event) => countEvents[event.type as string]++)
       uaEvent({
         category: 'Highlight Events',
         action: 'Display highlight events',
-        label: JSON.stringify(countEvents)
+        label: JSON.stringify(countEvents),
       })
     }
   }, [events, loading])
@@ -73,10 +97,14 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
       })}
     >
       <div className={styles.divider}></div>
-      <div>
-        <Link className={styles.settingsLink} to={['settings']} onClick={trackEvent}>
-          <IconButton type="default" size="default" icon="settings"></IconButton>
-        </Link>
+      <div className={styles.settingsLinkContainer}>
+        <IconButton
+          onClick={onSettingsClick}
+          className={styles.settingsLink}
+          type="default"
+          size="default"
+          icon="settings"
+        />
         <h2 className={styles.highlights}>
           {t('events.activityHighlights', 'Activity Highlights')}
           {anyHighlightsSettingDefined &&
@@ -93,7 +121,7 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
             "You've not defined the highlight settings yet. " +
               'Please click Settings to configure the activity of interest.'
           )}
-          <Button type="secondary" onClick={navigateToSettings} className={styles.settings}>
+          <Button type="secondary" onClick={onSettingsClick} className={styles.settings}>
             <Icon type="default" icon="settings" className={styles.iconInButton}></Icon>
             {t('events.highlitingSettings', 'settings')}
           </Button>
@@ -132,6 +160,7 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
                                 key={index}
                                 event={event}
                                 onInfoClick={openModal}
+                                onMapClick={selectEventOnMap}
                               />
                             </div>
                           )

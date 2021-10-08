@@ -12,6 +12,13 @@ export const LocaleLabels = [
   { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
 
+export const SHARED_LABELS_PATH =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8000'
+    : 'https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@latest'
+
+export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
+
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -25,7 +32,12 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     backend: {
-      loadPath: `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: (lngs: string[], namespaces: string[]) => {
+        if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
+          return `${SHARED_LABELS_PATH}/{{lng}}/{{ns}}.json`
+        }
+        return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`
+      },
     },
     ns: ['translations', 'flags', 'datasets', 'timebar'],
     defaultNS: 'translations',

@@ -82,17 +82,6 @@ const DebugMenu: React.FC = () => {
         <p>Show or hide basemap labels</p>
         <div className={styles.header}>
           <Switch
-            id="option_presence_track"
-            active={debugOptions.presenceTrackPOC}
-            onClick={() => dispatch(toggleOption(DebugOption.PresenceTrackPOC))}
-          />
-          <label htmlFor="option_presence_track">Presence tracks</label>
-        </div>
-        <p>
-          Allows interaction with presence layer to render tracks using the new proof of concept API
-        </p>
-        <div className={styles.header}>
-          <Switch
             id="option_timeCompare"
             active={debugOptions.timeCompare}
             onClick={() => dispatch(toggleOption(DebugOption.TimeCompare))}

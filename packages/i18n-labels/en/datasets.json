@@ -269,6 +269,54 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-peru-fishing-vessels": {
+    "name": "Private Peru VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Peru (Private)",
+    "schema": {
+      "id": "id",
+      "beam": "beam",
+      "flag": "flag",
+      "casco": {
+        "keyword": "casco",
+        "enum": {
+          "ACERO NAVAL": "ACERO NAVAL",
+          "MADERA": "MADERA",
+          "N/E": "N/E",
+          "NONE": "NONE",
+          "FIBRA DE VIDRIO": "FIBRA DE VIDRIO"
+        }
+      },
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "ssvid": "ssvid",
+      "width": "width",
+      "length": "length",
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "Peru": "Peru",
+          "Foreign": "Foreign"
+        }
+      },
+      "source": "source",
+      "regimen": "regimen",
+      "capacity": "capacity",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "chdSpecies": "chdSpecies",
+      "nationalId": "nationalId",
+      "resolution": "resolution",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-peru-presence": {
     "name": "Peru VMS Presence",
     "description": "This layer of Global Fishing Watch uses data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector, (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. The data is collected using their Vessel Monitoring System (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by VMS. \n",
@@ -342,6 +390,17 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-chile-all-vessels": {
+    "name": "Chile VMS (all Vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-chile-fishing-effort": {
     "name": "Chile VMS",
     "description": "Vessel monitoring system (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator (SERNAPESCA). It is possible to filter Chile’s VMS data for small-scale fishing vessels (under 18 meters) and industrial fishing vessels (over 18 meters). Note that some vessels are <18 meters but are considered industrial because they were registered in the capture of industrial quotas. SERNAPESCA is also using our map to visualize and track vessel positions for their fleet, including vessels involved in aquaculture. Data is collected using Chile’s VMS via satellites and terrestrial receivers and contains vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
@@ -361,6 +420,26 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-chile-fishing-vessels": {
+    "name": "VMS Chile (Fishing vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industry": "industry",
+          "small_fisheries": "small_fisheries"
+        }
+      },
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionData": "firstTransmissionData",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-chile-presence": {
@@ -471,7 +550,7 @@
     }
   },
   "public-fd-chlorophyl-mediterranean-v3": {
-    "name": "Clorophyl Mediterranean",
+    "name": "Chlorophyll-a concentration",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
@@ -527,7 +606,7 @@
     }
   },
   "public-fd-salinity-mediterranean-v3": {
-    "name": "Salinity Mediterranean",
+    "name": "Salinity",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
@@ -567,7 +646,7 @@
     }
   },
   "public-fd-water-temperature-caribe-v3": {
-    "name": "Water temperature Caribe with data of 2020",
+    "name": "Sea surface temperature",
     "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "flag",
@@ -583,7 +662,7 @@
     }
   },
   "public-fd-water-temperature-mediterranean-v3": {
-    "name": "Water temperature Mediterranean",
+    "name": "Sea surface temperature",
     "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "flag",
@@ -625,6 +704,8 @@
     "schema": {
       "id": "id",
       "dataset": "dataset",
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -736,6 +817,8 @@
           "drifting_longlines": "drifting_longlines"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -775,6 +858,8 @@
           "Purse Seine Support Vessel": "Purse Seine Support Vessel"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",

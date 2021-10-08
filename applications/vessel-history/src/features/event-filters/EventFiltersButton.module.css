@@ -1,0 +1,11 @@
+.filterBtn {
+  height: 3.2rem;
+  border-radius: 1.6rem;
+  text-transform: none;
+}
+.filterBtn span {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+  overflow: hidden;
+}

@@ -48,8 +48,6 @@ export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
     return query[param]
   })
 
-//export const selectDataviewsQuery = selectQueryParam<any[]>('workspaceDataviews')
-
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
 export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
@@ -83,14 +81,11 @@ export const getDateRange = createSelector(
  */
 export const selectUrlTimeRange = createSelector(
   [selectUrlStartQuery, selectUrlEndQuery],
-  (start, end) => ({
-    start: new Date(start).getTime(),
-    end: new Date(end).getTime(),
-  })
+  (start, end) => ({ start, end })
 )
 
-export const selectAdvancedSearchMMSI = selectQueryParam<string>('MMSI') || ''
-export const selectAdvancedSearchIMO = selectQueryParam<string>('IMO') || ''
+export const selectAdvancedSearchMMSI = selectQueryParam<string>('mmsi') || ''
+export const selectAdvancedSearchIMO = selectQueryParam<string>('imo') || ''
 export const selectAdvancedSearchCallsign = selectQueryParam<string>('callsign') || ''
 export const selectAdvancedSearchRawFlags = selectQueryParam<string>('flags')
 export const selectAdvancedSearchFlags = createSelector(
@@ -140,3 +135,13 @@ export const selectHasSearch = createSelector(
 )
 
 export const selectUrlAkaVesselQuery = selectQueryParam<string[]>('aka')
+
+export const selectSearchableQueryParams = createSelector(
+  [selectAdvancedSearchFields, selectUrlQuery],
+  (filters, query) =>
+    ({
+      q: query,
+      ...filters,
+      flags: filters?.flags.join(','),
+    } as any)
+)

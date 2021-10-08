@@ -43,3 +43,7 @@
 .backButton {
   margin: 0.5rem;
 }
+.settingsHeader .infoIcon {
+  position: absolute;
+  right: var(--space-S);
+}

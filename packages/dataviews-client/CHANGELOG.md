@@ -1,5 +1,26 @@
 # @globalfishingwatch/dataviews-client
 
+## 14.1.1
+
+### Patch Changes
+
+- 13e82570: remove console.log
+
+## 14.1.0
+
+### Minor Changes
+
+- 3f49c561: moved parse/stringify workspace to dv-client
+
+## 14.0.0
+
+### Patch Changes
+
+- Updated dependencies [aa3cf308]
+  - @globalfishingwatch/api-types@6.0.0
+  - @globalfishingwatch/api-client@4.0.0
+  - @globalfishingwatch/layer-composer@10.0.0
+
 ## 13.1.0
 
 ### Minor Changes

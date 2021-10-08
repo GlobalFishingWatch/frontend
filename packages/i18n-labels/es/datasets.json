@@ -9,7 +9,7 @@
         "keyword": "Flota",
         "enum": {
           "industry": "industrial",
-          "small_fisheries": "artisanal"
+          "small_fisheries": "Artesanal"
         }
       },
       "source": "source",
@@ -54,7 +54,7 @@
         "keyword": "fleet",
         "enum": {
           "industrial": "industrial",
-          "artisanal": "artisanal",
+          "artisanal": "Artesanal",
           "not defined": "not defined"
         }
       },
@@ -269,6 +269,54 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-peru-fishing-vessels": {
+    "name": "VMS de Peru (Buques de pesca)",
+    "description": "Dataset for VMS Peru (Private)",
+    "schema": {
+      "id": "id",
+      "beam": "beam",
+      "flag": "flag",
+      "casco": {
+        "keyword": "casco",
+        "enum": {
+          "ACERO NAVAL": "ACERO NAVAL",
+          "MADERA": "MADERA",
+          "N/E": "N/E",
+          "NONE": "NONE",
+          "FIBRA DE VIDRIO": "FIBRA DE VIDRIO"
+        }
+      },
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "ssvid": "ssvid",
+      "width": "width",
+      "length": "length",
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "Peru": "Peru",
+          "Foreign": "Foreign"
+        }
+      },
+      "source": "source",
+      "regimen": "regimen",
+      "capacity": "capacity",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "chdSpecies": "chdSpecies",
+      "nationalId": "nationalId",
+      "resolution": "resolution",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-peru-presence": {
     "name": "VMS de Perú Presencia ",
     "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por el Ministerio de Producción, Sector Pesquero del Gobierno peruano (PRODUCE). El permiso para incluir datos peruanos requería que se implementara un retraso de 10 días para la publicación. Los datos se recopilan utilizando su Sistema de Monitoreo de Embarcaciones (VMS) a través de satélites y receptores terrestres, y contienen el tipo de equipo de identidad, la ubicación, la velocidad, la dirección y más de una embarcación. La capa de actividad muestra un mapa de calor de la presencia de vasos. La presencia se determina tomando una posición por día por buque a partir de las posiciones transmitidas por VMS.",
@@ -342,6 +390,17 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-chile-all-vessels": {
+    "name": "VMS de Chile (Todos los buques)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-chile-fishing-effort": {
     "name": "VMS de Chile",
     "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por el Servicio Nacional de Pesca y Acuicultura del gobierno chileno, SERNAPESCA. También es posible utilizar la ficha FILTERS en nuestra caja de herramientas para ver por separado los datos del VMS chileno para la pesca artesanal (&lt;18 metros) y buques industriales de pesca (&gt;18 metros). Tenga en cuenta que hay unos pocos barcos que son &lt;18 metros pero considerados industriales porque estaban registrados en la captura de cuotas industriales. SERNAPESCA también está utilizando nuestro mapa para visualizar y rastrear las posiciones de los buques para su flota, incluyendo los buques involucrados en la acuicultura (Visite el mapa en el sitio web de SERNAPESCA). Los datos se recogen utilizando los datos VMS chilenos vía satélites y receptores terrestres, y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesquera aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
@@ -352,7 +411,7 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Artisanal",
+          "chile_vms_small_fisheries": "Artesanal",
           "chile_vms_industry": "Industrial"
         }
       },
@@ -363,9 +422,29 @@
       "distance_from_shore_m": "distancia_de_oro_m"
     }
   },
+  "public-chile-fishing-vessels": {
+    "name": "VMS de Chile (Buques de pesca)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industry": "industry",
+          "small_fisheries": "small_fisheries"
+        }
+      },
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionData": "firstTransmissionData",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-chile-presence": {
     "name": "VMS Chile",
-    "description": "Esta capa utiliza el Sistema de Monitoreo de Embarcaciones (VMS) recibido por el sistema VMS de Chile vía satélite y contiene identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más.\nCada punto de la capa de datos de la embarcación transportista, industrial, acuicultura o artisanal representa una posición de las embarcaciones, pero no se muestran todas las posiciones. Las posiciones de las embarcaciones se muestran una posición por hora. Haga clic en la posición de una embarcación para ver la trayectoria completa de la misma.",
+    "description": "Esta capa utiliza el Sistema de Monitoreo de Embarcaciones (VMS) recibido por el sistema VMS de Chile vía satélite y contiene identidades de embarcaciones, tipo de arte, ubicación, velocidad, dirección y más.\nCada punto de la capa de datos de la embarcación transportista, industrial, acuicultura o artesanal representa una posición de las embarcaciones, pero no se muestran todas las posiciones. Las posiciones de las embarcaciones se muestran una posición por hora. Haga clic en la posición de una embarcación para ver la trayectoria completa de la misma.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -373,7 +452,7 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "chile_vms_small_fisheries": "Artisanal",
+          "chile_vms_small_fisheries": "Artesanal",
           "chile_vms_industry": "Industrial",
           "chile_vms_aquaculture": "Acuicultura",
           "chile_vms_transport": "Transporte"
@@ -625,6 +704,8 @@
     "schema": {
       "id": "id",
       "dataset": "dataset",
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -736,6 +817,8 @@
           "drifting_longlines": "drifting_longlines"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -775,6 +858,8 @@
           "Purse Seine Support Vessel": "Purse Seine Support Vessel"
         }
       },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -991,7 +1076,7 @@
         "keyword": "flota",
         "enum": {
           "industrial": "industrial",
-          "artisanal": "artisanal",
+          "artisanal": "Artesanal",
           "not defined": "no definido"
         }
       },

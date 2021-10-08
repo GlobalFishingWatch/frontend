@@ -2,7 +2,7 @@
   width: 80%;
   position: fixed;
   bottom: 0;
-  padding: 0 var(--space-XS) 0;
+  padding: var(--space-S);
   border-radius: 10px 10px 0 0;
   background: linear-gradient(180deg, #e5f0f2 0%, #fff 100%);
   box-shadow: 0 1px 2px 0 rgba(22, 63, 137, 0.2), 0 2px 10px 0 rgba(1, 37, 91, 0.15);
@@ -10,7 +10,7 @@
   min-height: 50px;
   margin-left: -40%;
   z-index: 80;
-  height: 100px;
+  height: 80px;
 }
 
 .infoContainer.expanded {
@@ -54,7 +54,7 @@
   height: auto;
   overflow: hidden;
   font-size: 16px !important;
-  padding-top: 13px;
+  padding-top: 10px;
   max-height: 400px;
   min-height: 50px;
 }
@@ -90,6 +90,12 @@
   font: var(--font-XS);
   line-height: var(--space-S);
   margin-top: var(--space-XS);
+}
+
+.footerAreaTitle {
+  display: flex;
+  justify-content: space-between;
+  margin-right: var(--space-S);
 }
 
 .dateFormat {
