@@ -4,8 +4,8 @@ import {
   sort,
   getInteractiveLayerIds,
 } from '@globalfishingwatch/layer-composer'
-import { selectDefaultMapGeneratorsConfig } from './map.selectors'
-import { updateGenerator, UpdateGeneratorPayload, selectGlobalGeneratorsConfig } from './map.slice'
+import { selectDefaultMapGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
+import { updateGenerator, UpdateGeneratorPayload } from './map.slice'
 
 // >>> To take into account when implementing useViewport <<<
 // j8seangel: This always was an 🤯 let's talk about the latest working solution I found

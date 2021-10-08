@@ -149,15 +149,18 @@
       "label": "Événements dans ces ZEEs"
     },
     "encounters": {
-      "title": "Rencontres"
+      "title": "Rencontres",
+      "shortTitle": "Encounter"
     },
     "fishingEvents": {
-      "title": "Événements de pêche"
+      "title": "Événements de pêche",
+      "shortTitle": "Fishing"
     },
     "hours": "heures",
     "km": "km",
     "loiteringEvents": {
-      "title": "Événements de dérive"
+      "title": "Événements de dérive",
+      "shortTitle": "Loitering"
     },
     "longerThan": "Supérieure à",
     "mpas": {
@@ -168,6 +171,7 @@
       "inThesePortStates": "Événements dans ces États du port",
       "inThesePortStatesDescription": "Highlight all {{eventType}} that may have occured in a port State. A port visit occurs when a vessel transits to an anchorage, and the port State is assigned based on the Exclusive Economic Zone (EEZ) the anchorage is within. Anchorages are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate:<3>https://globalfishingwatch.org/datasets-and-code-anchorages/</3> . Please investigate the highlighted events further on the map.",
       "title": "Visites du Port",
+      "shortTitle": "Port Visits",
       "inputEnd": "ports",
       "inputStart": "Visites du port en"
     },

@@ -33,6 +33,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
 import { parseVesselProfileId } from 'features/vessels/vessels.utils'
+import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
@@ -105,6 +106,8 @@ const Profile: React.FC = (props): React.ReactElement => {
     if (datasets.length > 0) {
       fetchVessel()
       dispatch(resetFilters())
+      dispatch(setHighlightedEvent(undefined))
+      dispatch(setVoyageTime(undefined))
     }
   }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
 

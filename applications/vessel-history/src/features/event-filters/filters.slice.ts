@@ -1,17 +1,20 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { memoize } from 'lodash';
-import { DEFAULT_WORKSPACE } from 'data/config';
+import { memoize } from 'lodash'
 import { RootState } from 'store'
 
-export type availableEventFilters = 'portVisits' | 'fishingEvents' | 'encounters' | 'loiteringEvents'
+export type availableEventFilters =
+  | 'portVisits'
+  | 'fishingEvents'
+  | 'encounters'
+  | 'loiteringEvents'
 
 export type Filters = {
   portVisits: boolean
   fishingEvents: boolean
   encounters: boolean
   loiteringEvents: boolean
-  start: string,
-  end: string
+  start?: string
+  end?: string
 }
 
 export type FiltersSlice = {
@@ -23,8 +26,6 @@ export const initialState: FiltersSlice = {
     encounters: true,
     loiteringEvents: true,
     portVisits: true,
-    start: DEFAULT_WORKSPACE.start,
-    end: DEFAULT_WORKSPACE.end,
   },
 }
 
@@ -49,7 +50,6 @@ export const selectEnd = (state: RootState) => state.filters.filters.end
 
 export const selectFilter = memoize((field: availableEventFilters) =>
   createSelector([selectFilters], (filters: Filters) => {
-
     return filters[field] as boolean
   })
 )

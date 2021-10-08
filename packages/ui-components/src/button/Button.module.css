@@ -51,3 +51,11 @@ a.button:visited,
 .small {
   height: var(--size-S);
 }
+
+.big {
+  height: var(--size-L);
+}
+
+.verybig {
+  height: var(--size-XL);
+}

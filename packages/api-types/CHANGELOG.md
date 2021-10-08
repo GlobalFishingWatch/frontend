@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 6.3.0
+
+### Minor Changes
+
+- f3fa1b87: added documentation field
+
 ## 6.2.0
 
 ### Minor Changes

@@ -113,7 +113,7 @@ const downloadActivitySlice = createSlice({
     builder.addCase(downloadActivityThunk.pending, (state, action) => {
       state.requests = [
         ...state.requests,
-        { id: action.meta.requestId, status: AsyncReducerStatus.Idle },
+        { id: action.meta.requestId, status: AsyncReducerStatus.Loading },
       ]
     })
     builder.addCase(downloadActivityThunk.fulfilled, (state, action) => {

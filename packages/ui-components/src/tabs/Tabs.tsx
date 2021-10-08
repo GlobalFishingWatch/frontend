@@ -1,6 +1,7 @@
 import React, { memo, useRef } from 'react'
 import cx from 'classnames'
 import Button from '../button'
+import { ButtonSize } from '../button/Button'
 import styles from './Tabs.module.css'
 import { Tab } from '.'
 
@@ -9,9 +10,16 @@ interface TabsProps {
   activeTab?: string
   onTabClick?: (tab: Tab, e: React.MouseEvent) => void
   mountAllTabsOnLoad?: boolean
+  buttonSize?: ButtonSize
 }
 
-function Tabs({ activeTab, tabs, onTabClick, mountAllTabsOnLoad = false }: TabsProps) {
+function Tabs({
+  activeTab,
+  tabs,
+  onTabClick,
+  mountAllTabsOnLoad = false,
+  buttonSize = 'default',
+}: TabsProps) {
   const activeTabId = activeTab || tabs?.[0]?.id
   const activedTabs = useRef([activeTabId])
   if (!activedTabs.current.includes(activeTabId)) {
@@ -35,6 +43,7 @@ function Tabs({ activeTab, tabs, onTabClick, mountAllTabsOnLoad = false }: TabsP
                 className={cx(styles.tabButton, { [styles.tabActive]: tabSelected })}
                 type="secondary"
                 onClick={(e) => onTabClick && onTabClick(tab, e)}
+                size={buttonSize || 'default'}
               >
                 {tab.title}
               </Button>

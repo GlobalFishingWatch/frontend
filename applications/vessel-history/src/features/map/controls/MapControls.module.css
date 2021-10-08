@@ -90,3 +90,8 @@
 .dataAndTerminologyContainer {
   height: 90vh;
 }
+
+.map-tool {
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  border: var(--border-white);
+}

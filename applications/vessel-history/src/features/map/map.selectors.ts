@@ -16,14 +16,29 @@ import { ResourcesState, selectResources } from 'features/resources/resources.sl
 import { DEBUG_MODE, DEFAULT_WORKSPACE } from 'data/config'
 import { Range } from 'types'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
-import { selectHighlightedEventMap, selectHighlightedTime } from './map.slice'
+import { selectFilters } from 'features/event-filters/filters.slice'
+import { selectHighlightedEvent, selectHighlightedTime, selectMapVoyageTime } from './map.slice'
+
+/**
+ * get the start and end dates in timestamp format
+ */
+export const selectMapTimeRange = createSelector(
+  [selectMapVoyageTime, selectFilters],
+  (voyageTime, filters) =>
+    voyageTime
+      ? {
+          start: voyageTime.start ?? filters.start,
+          end: voyageTime.end ?? filters.end,
+        }
+      : undefined
+)
 
 export const selectGlobalGeneratorsConfig = createSelector(
-  [selectViewport, selectTimeRange],
-  ({ zoom }, { start, end }) => ({
+  [selectViewport, selectMapTimeRange, selectTimeRange],
+  ({ zoom }, selectMapTimeRange, { start, end }) => ({
     zoom,
-    start,
-    end,
+    start: selectMapTimeRange?.start ?? start,
+    end: selectMapTimeRange?.end ?? end,
     token: GFWAPI.getToken(),
   })
 )
@@ -49,7 +64,6 @@ const getGeneratorsConfig = ({
     highlightedTime,
     debug: DEBUG_MODE,
   }
-
   const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
 
   return generatorsConfig.reverse()
@@ -60,15 +74,16 @@ const selectMapGeneratorsConfig = createSelector(
     selectDataviewsForResourceQuerying,
     selectResources,
     selectHighlightedTime,
-    selectHighlightedEventMap,
+    selectHighlightedEvent,
+    selectMapVoyageTime,
   ],
-  (dataviews = [], resources, highlightedTime, highlightedEvent) => {
+  (dataviews = [], resources, highlightedTime, highlightedEvent, voyageTime) => {
     return getGeneratorsConfig({
       dataviews,
       resources,
       staticTime: {
-        start: DEFAULT_WORKSPACE.start,
-        end: DEFAULT_WORKSPACE.end,
+        start: voyageTime?.start ?? DEFAULT_WORKSPACE.start,
+        end: voyageTime?.end ?? DEFAULT_WORKSPACE.end,
       },
       highlightedTime,
       highlightedEvent,
