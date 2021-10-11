@@ -6,7 +6,6 @@
   z-index: 0;
   width: calc(100% - 1px);
   position: relative;
-  padding-top: var(--space-XS);
   min-height: var(--size-M);
 }
 
