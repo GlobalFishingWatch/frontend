@@ -916,12 +916,8 @@ const flags = [
     label: 'Tuvalu',
   },
   {
-    id: 'TAI',
-    label: 'Chinese Taipei',
-  },
-  {
     id: 'TWN',
-    label: 'Taiwan',
+    label: 'Chinese Taipei',
   },
   {
     id: 'TZA',
@@ -1004,4 +1000,5 @@ const flags = [
     label: 'Zimbabwe',
   },
 ]
+
 export default flags
