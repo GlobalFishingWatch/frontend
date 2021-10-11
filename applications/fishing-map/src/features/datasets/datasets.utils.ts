@@ -1,5 +1,11 @@
 import { intersection, lowerCase, uniq } from 'lodash'
-import { Dataset, Dataview, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  Dataview,
+  DataviewDatasetConfig,
+  DataviewInstance,
+  EventTypes,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -112,6 +118,13 @@ export const isDataviewSchemaSupported = (
     return dataset.fieldsAllowed.includes(schema)
   })
   return schemaSupported
+}
+
+export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig) => {
+  return (
+    datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
+    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value
+  )
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
