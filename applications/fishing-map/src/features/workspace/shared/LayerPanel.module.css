@@ -65,7 +65,7 @@
   opacity: 1;
 }
 
-.LayerPanel:not(.expandedContainerOpen):not(:hover) .actions,
+.LayerPanel:not(.expandedContainerOpen):not(:hover) .hideUntilHovered,
 .LayerPanel.expandedContainerOpen .shownUntilHovered,
 .LayerPanel:hover .shownUntilHovered {
   display: none;

@@ -50,11 +50,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           <InfoModal dataview={dataview} />
         </div>
-        <IconButton
-          icon="more"
-          className={cx('print-hidden', styles.shownUntilHovered)}
-          size="small"
-        />
       </div>
     </div>
   )

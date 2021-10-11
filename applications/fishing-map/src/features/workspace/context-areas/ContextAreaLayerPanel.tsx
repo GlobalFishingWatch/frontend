@@ -102,11 +102,6 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
           <InfoModal dataview={dataview} />
           {isUserLayer && <Remove dataview={dataview} />}
         </div>
-        <IconButton
-          icon="more"
-          className={cx('print-hidden', styles.shownUntilHovered)}
-          size="small"
-        />
       </div>
     </div>
   )

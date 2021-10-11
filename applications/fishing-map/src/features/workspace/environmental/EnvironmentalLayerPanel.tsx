@@ -109,11 +109,6 @@ function EnvironmentalLayerPanel({
           <InfoModal dataview={dataview} />
           {isCustomUserLayer && <Remove dataview={dataview} />}
         </div>
-        <IconButton
-          icon="more"
-          className={cx('print-hidden', styles.shownUntilHovered)}
-          size="small"
-        />
       </div>
 
       {layerActive && (

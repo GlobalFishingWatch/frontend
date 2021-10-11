@@ -251,7 +251,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div
-          className={cx('print-hidden', styles.actions, {
+          className={cx('print-hidden', styles.actions, styles.hideUntilHovered, {
             [styles.active]: layerActive,
           })}
         >
@@ -266,7 +266,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               />
             )}
             {layerActive && !infoLoading && TrackIconComponent}
-            {infoResource && InfoIconComponent}
             <Remove dataview={dataview} />
           </Fragment>
         </div>
@@ -275,6 +274,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
+        {infoResource && InfoIconComponent}
       </div>
     </div>
   )
