@@ -6,6 +6,7 @@ import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { isGuestUser, selectUserId } from 'features/user/user.selectors'
@@ -108,6 +109,11 @@ function EnvironmentalLayerPanel({
           <InfoModal dataview={dataview} />
           {isCustomUserLayer && <Remove dataview={dataview} />}
         </div>
+        <IconButton
+          icon="more"
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
 
       {layerActive && (

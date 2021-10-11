@@ -44,6 +44,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+  line-height: 2.8rem;
 }
 
 .actions {
@@ -55,13 +56,19 @@
   align-items: center;
 }
 
+.active {
+  opacity: 1;
+  z-index: 1;
+}
+
 .LayerPanel:hover .actions {
   opacity: 1;
 }
 
-.active {
-  opacity: 1;
-  z-index: 1;
+.LayerPanel:not(.expandedContainerOpen):not(:hover) .actions,
+.LayerPanel.expandedContainerOpen .shownUntilHovered,
+.LayerPanel:hover .shownUntilHovered {
+  display: none;
 }
 
 .selectLabel:not(:first-child) {

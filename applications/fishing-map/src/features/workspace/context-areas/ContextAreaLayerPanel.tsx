@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
-import { Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -90,7 +90,6 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          <InfoModal dataview={dataview} />
           {layerActive && (
             <Color
               dataview={dataview}
@@ -100,8 +99,14 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
               onClickOutside={closeExpandedContainer}
             />
           )}
+          <InfoModal dataview={dataview} />
           {isUserLayer && <Remove dataview={dataview} />}
         </div>
+        <IconButton
+          icon="more"
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
     </div>
   )

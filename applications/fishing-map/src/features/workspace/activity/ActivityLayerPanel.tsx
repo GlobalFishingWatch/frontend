@@ -141,6 +141,11 @@ function ActivityLayerPanel({
           <InfoModal dataview={dataview} />
           {!readOnly && <Remove onClick={onRemoveLayerClick} />}
         </div>
+        <IconButton
+          icon="more"
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
       {layerActive && (
         <div className={styles.properties}>

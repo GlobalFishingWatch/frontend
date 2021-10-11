@@ -130,6 +130,11 @@ function UserTrackLayerPanel({
             </Fragment>
           )}
         </div>
+        <IconButton
+          icon="more"
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
 
       {layerActive && (

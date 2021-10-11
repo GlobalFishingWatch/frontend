@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -49,6 +50,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           <InfoModal dataview={dataview} />
         </div>
+        <IconButton
+          icon="more"
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
     </div>
   )

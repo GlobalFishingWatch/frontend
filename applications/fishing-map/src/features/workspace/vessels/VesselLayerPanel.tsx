@@ -250,12 +250,17 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
-        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+        <div
+          className={cx('print-hidden', styles.actions, {
+            [styles.active]: layerActive,
+          })}
+        >
           <Fragment>
             {gfwUser && (
               <IconButton
                 icon="download"
                 tooltip={t('download.trackAction', 'Download vessel track')}
+                tooltipPlacement="top"
                 onClick={onDownloadClick}
                 size="small"
               />
@@ -265,6 +270,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             <Remove dataview={dataview} />
           </Fragment>
         </div>
+        <IconButton
+          icon="more"
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
     </div>
   )
