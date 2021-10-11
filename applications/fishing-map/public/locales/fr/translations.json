@@ -127,7 +127,7 @@
     "format": "Format",
     "groupActivityBy": "Group activity by",
     "temporalResolution": "Temporal resolution",
-    "timerangeTooLong": "The maximum time range is 3 years",
+    "timerangeTooLong": "The maximum time range is {{count}} years",
     "daily": "Daily",
     "monthly": "Monthly",
     "yearly": "Yearly",
