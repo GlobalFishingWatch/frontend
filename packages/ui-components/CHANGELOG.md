@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 12.3.0
+
+### Minor Changes
+
+- 4f1d3fec: Added support for tabs button sizes
+
 ## 12.2.0
 
 ### Minor Changes

@@ -2,13 +2,15 @@ import { Fragment, useState, useCallback, useMemo } from 'react'
 import ReactHtmlParser from 'react-html-parser'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { uniqBy } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import Tabs, { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types/dist'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { getDatasetDescriptionTranslated } from 'features/i18n/utils'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { getDatasetLabel, hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { isGFWUser } from 'features/user/user.slice'
 import styles from './InfoModal.module.css'
 
@@ -16,20 +18,31 @@ type InfoModalProps = {
   dataview: UrlDataviewInstance
   onClick?: (e: React.MouseEvent) => void
   className?: string
+  onModalStateChange?: (open: boolean) => void
 }
 
-const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
+const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoModalProps) => {
   const { t } = useTranslation()
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const dataset = dataview.datasets?.[0]
 
   const tabs = useMemo(() => {
-    return dataview.datasets?.flatMap((dataset) => {
-      if (dataview.config?.datasets && !dataview.config?.datasets?.includes(dataset.id)) {
+    const uniqDatasets = dataview.datasets ? uniqBy(dataview.datasets, (dataset) => dataset.id) : []
+    return uniqDatasets.flatMap((dataset) => {
+      if (dataview.config?.type === GeneratorType.Track) {
+        const datasetConfig = dataview.datasetsConfig?.find(
+          (datasetConfig) => datasetConfig.datasetId === dataset.id
+        )
+        if (!datasetConfig) return []
+        const hasDatasetVesselId = hasDatasetConfigVesselData(datasetConfig)
+        if (!hasDatasetVesselId) return []
+      } else if (dataview.config?.datasets && !dataview.config?.datasets?.includes(dataset.id)) {
         return []
       }
       const description = getDatasetDescriptionTranslated(dataset)
+      const rawQueries = dataset.configuration?.documentation?.queries
+      const queries = Array.isArray(rawQueries) ? rawQueries : [rawQueries as unknown as string]
       return {
         id: dataset.id,
         title: getDatasetLabel(dataset),
@@ -45,14 +58,14 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
             {gfwUser && (
               <div className={styles.content}>
                 <h2 className={styles.subtitle}>Queries used</h2>
-                {dataset.configuration?.documentation?.queries?.length ? (
-                  dataset.configuration?.documentation?.queries?.map(
-                    (query: string, index: number) => (
-                      <a key={index} target="_blank" href={query} rel="noreferrer">
+                {queries?.length ? (
+                  queries?.map((query: string, index: number) => (
+                    <div key={index}>
+                      <a target="_blank" href={query} rel="noreferrer">
                         query {index + 1}
                       </a>
-                    )
-                  )
+                    </div>
+                  ))
                 ) : (
                   <p>none specified</p>
                 )}
@@ -70,15 +83,17 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       setModalInfoOpen(true)
+      if (onModalStateChange) onModalStateChange(true)
       if (onClick) {
         onClick(e)
       }
     },
-    [onClick]
+    [onClick, onModalStateChange]
   )
   const onModalClose = useCallback(() => {
     setModalInfoOpen(false)
-  }, [])
+    if (onModalStateChange) onModalStateChange(false)
+  }, [onModalStateChange])
 
   const isSingleTab = tabs?.length === 1
 
@@ -108,7 +123,7 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
       />
     ) : null
   }
-
+  const hasLongTitleTab = tabs.some((tab) => tab.title.length > 30)
   return (
     <Fragment>
       <IconButton
@@ -121,7 +136,7 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
         tooltipPlacement="top"
         onClick={handleClick}
       />
-      {tabs && tabs.length > 0 && (
+      {tabs && tabs.length > 0 && modalInfoOpen && (
         <Modal
           title={isSingleTab ? tabs[0].title : dataview.name}
           isOpen={modalInfoOpen}
@@ -135,6 +150,7 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
               tabs={tabs}
               activeTab={activeTab?.id}
               onTabClick={(tab: Tab) => setActiveTab(tab)}
+              buttonSize={hasLongTitleTab ? 'verybig' : 'default'}
             />
           )}
         </Modal>
