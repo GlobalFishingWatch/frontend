@@ -8,6 +8,7 @@
     "start": "yarn start:i18n & craco start",
     "start:i18n": "yarn --cwd ../../packages/i18n-labels serve",
     "build": "craco build",
+    "release:prepare": "./changelog.sh",
     "test": "CI=true craco test --passWithNoTests",
     "test:watch": "craco test --passWithNoTests",
     "test:coverage": "CI=true craco test --passWithNoTests --coverage",
