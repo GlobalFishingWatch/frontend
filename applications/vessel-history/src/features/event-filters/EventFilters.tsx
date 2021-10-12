@@ -39,7 +39,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   [setFilter, tab])
 
   const trackAndSetDate = useCallback(
-    (filter: 'start' | 'end', value: string) => {
+    (filter: 'start' | 'end', value?: string) => {
       uaEvent({
         category: 'Vessel Detail ACTIVITY or MAP Tab',
         action: 'Click Filter Icon - Change dates',
