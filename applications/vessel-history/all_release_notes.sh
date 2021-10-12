@@ -1,6 +1,14 @@
 #!/bin/bash
 # Generate all release notes changelog for a repo
 # Author: Rodrigo Fuentes
+#
+
+# Check pre-requisite
+if ! command -v gh &> /dev/null
+then
+    echo -e 'Github CLI is required but it was not found.\nGo to https://cli.github.com/ and follow the steps to install it.'
+    exit
+fi
 
 # Repo URL to base links off of
 REPOSITORY_URL=https://github.com/GlobalFishingWatch/frontend
