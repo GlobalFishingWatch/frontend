@@ -19,8 +19,6 @@ TAG_PREFIX="@globalfishingwatchapp/vessel-history@"
 # Assumes the tags are in version format like v1.2.3
 GIT_TAGS=$(git tag -l --sort=-version:refname | grep $TAG_PREFIX)
 
-# CHANGELOG=""
-
 TEMPLATE=\
 '---
 {{.tagName}}
