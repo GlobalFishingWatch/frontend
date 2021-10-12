@@ -307,9 +307,11 @@ class HeatmapAnimatedGenerator {
     const visible = config.sublayers.some((l) => l.visible === true)
 
     const useSublayerBreaks = finalConfig.sublayers.some((s) => s.breaks?.length)
-    const breaks = useSublayerBreaks
-      ? config.sublayers.map(({ breaks }) => breaks || [])
-      : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
+    const breaks =
+      useSublayerBreaks && config.mode !== HeatmapAnimatedMode.TimeCompare
+        ? config.sublayers.map(({ breaks }) => breaks || [])
+        : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
+
     const legends = getLegends(finalConfig, breaks || [])
     const style = {
       id: finalConfig.id,

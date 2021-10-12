@@ -78,6 +78,7 @@ export interface LayerMetadataLegend extends GeneratorLegend {
   colorRamp?: string[]
   loading?: boolean
   currentValue?: number
+  divergent?: boolean
   [key: string]: any
 }
 
