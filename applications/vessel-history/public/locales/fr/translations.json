@@ -103,9 +103,9 @@
     "noData": "Il n'y a pas d'événements pour ce navire puisque les données proviennent uniquement de la source = « Autre ». Essayez de rechercher en utilisant MMSI pour correspondre également à la source AIS.",
     "noHighlights": "Aucun événement trouvé pour vos critères de surbrillance",
     "noHighlitingSettingsMessage": "Vous n’avez pas encore défini les paramètres retenus. Veuillez cliquer sur Paramètres pour configurer l’activité qui vous intéresse.",
-    "noResults": "No events found. Try changing the current filters.",
-    "portVisitEvents": "Port Visits",
-    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
+    "noResults": "Aucun événement trouvé. Essayez de changer les filtres actuels.",
+    "portVisitEvents": "Visites de Port",
+    "portVisitEventsDescription": "Une visite de port se produit lorsqu'un navire a une entrée de port, un arrêt ou un Gap et un événement de sortie. Cela signifie que le navire se trouve à moins de 3 km d'un ancrage (ENTRÉE DU PORT), et se déplace entre 0,5 et 0. nœuds (Arrêt DU PORT), ou à l'intérieur d'un ancrage mais a une lacune dans la transmission AIS pendant au moins 4 heures (Port Gap), puis le navire transite plus de 4 km à l'extérieur du point d'ancrage (SORTIE DU PORT). Les ports sont basés sur le jeu de données de Global Fishing Watch, une base de données mondiale sur les mouillages où les navires se réunissent."
   },
   "map": {
     "filters": "Filter events",
@@ -120,12 +120,12 @@
     "flagState": "Etat du pavillon",
     "IMO": "IMO",
     "loadMore": "Charger plus",
-    "mergeSelectedVessels": "Merge Selected Vessels",
+    "mergeSelectedVessels": "Fusionner les navires sélectionnés",
     "MMSI": "MMSI",
     "noMore": "Aucun résultat supplémentaire",
     "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser Nom, MMSI, OMI ou Indicatif",
     "notAllowed": "Recherche non autorisée",
-    "seeVessel": "See Vessel",
+    "seeVessel": "Voir le navire",
     "shipname": "Nom de navire",
     "title": "Recherche",
     "advanced": "Avancé",
@@ -135,48 +135,48 @@
   "selects": {
     "allSelected": "Tous",
     "selected": "slectionns",
-    "none": "None"
+    "none": "Aucun"
   },
   "settings": {
     "distancePort": "Distance du port",
     "distancePortDescription": "Faits saillants tous les {{eventType}} dont la distance par rapport au port est supérieure à la valeur configurée. Par exemple, si vous configurez 8 km, vous verrez tous les {{eventType}} avec une distance supérieure ou égale à 8 km. La distance du port sera mise en surbrillance si la position de début ou de fin est supérieure ou égale à la distance spécifiée. Les ports comprennent tous les mouillages identifiés par GFW. Pour plus de détails sur l'ancrage, y compris sa définition, cliquez ici",
     "distanceShore": "Distance de la côte",
-    "distanceShoreDescription": "Highlight all {{eventType}} that had a distance longer than the value configured. Example if you configure 8 km, you will see all {{eventType}} with distance more or equal to 8 km from the shore. Distance from shore will be highlighted if either the start or end position is more or equal to the specified distance.",
+    "distanceShoreDescription": "Faits saillants tous les {{eventType}} dont la distance est supérieure à la valeur configurée.\nPar exemple, si vous configurez 8 km, vous verrez tous les {{eventType}} avec une distance supérieure ou égale à 8 km du rivage.\nLa distance à partir du rivage sera mise en évidence si la position de départ ou de fin est supérieure ou égale à la distance spécifiée.",
     "duration": "DURÉE",
-    "durationDescription": "Highlight all {{eventType}} that had a duration longer than the value configured. Example if you configure 5 hours, you will see all {{eventType}} with duration more or equal to 5 hours",
+    "durationDescription": "Faits saillants tous les {{eventType}} qui ont eu une durée supérieure à la valeur configurée.\nPar exemple, si vous configurez 5 heures, vous verrez tous les {{eventType}} d'une durée supérieure ou égale à 5 heures",
     "eezs": {
-      "description": "Highlight all {{eventType}} events that may have occured inside an EEZ. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the bounding box of the EEZ. For example, if you select Argentina EEZ and Chile EEZ under the {{eventType}} Events activity highlights, you will see all {{eventType}} events where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Argentina EEZ OR the Chile EEZ. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the EEZ. Please investigate the highlighted events further on the map.",
+      "description": "Faits saillants tous les {{eventType}} qui peuvent avoir eu lieu à l'intérieur d'une zone économique exclusive ou d'une ZEE. Nous calculons un cadre de délimitation pour l'emplacement de l'événement sur la base des coordonnées minimales et maximales et vérifions s'il chevauche le cadre de délimitation de la ZEE. Par exemple, si vous sélectionnez la ZEE argentine et la ZEE chilienne sous {{eventType}}, vous verrez tous les {{eventType}} où la zone de délimitation créée par les coordonnées minimales et maximales des événements chevauche les coordonnées minimales et maximales de la ZEE argentine OU la ZEE du Chili. Étant donné qu'une méthode de boîte englobante est utilisée, il est possible que les coordonnées réelles de la trajectoire du navire ne chevauchent pas la ZEE. Veuillez étudier les événements faits saillants plus loin sur la carte.",
       "label": "Événements dans ces ZEEs"
     },
     "encounters": {
       "title": "Rencontres",
-      "shortTitle": "Encounter"
+      "shortTitle": "Rencontre"
     },
     "fishingEvents": {
       "title": "Événements de pêche",
-      "shortTitle": "Fishing"
+      "shortTitle": "Pêche"
     },
     "hours": "heures",
     "km": "km",
     "loiteringEvents": {
       "title": "Événements de dérive",
-      "shortTitle": "Loitering"
+      "shortTitle": "Dérive"
     },
     "longerThan": "Supérieure à",
     "mpas": {
-      "description": "Highlight all {{eventType}} that occurred inside an MPA. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the MPA. For example, if you select Galápagos and Ascension Island, you will see all {{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Galápagos OR Ascension Island MPA. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the MPA. Please invesitage highlighted event further on the map.",
+      "description": "Faits saillants tous les {{eventType}} qui se sont produits à l'intérieur d'un APM. Nous calculons une boîte englobante pour l'emplacement de l'événement en fonction des coordonnées minimales et maximales et vérifions si elle se chevauche avec l'APM. Par exemple, si vous sélectionnez Galápagos et Ascension Island, vous verrez tous les {{eventType}} où la boîte englobante créée par des coordonnées minimales et maximales des événements chevauchés avec les coordonnées minimales et maximales de l'APM de l'île de Galápagos OU de l'Ascension. Comme une méthode de boîte englobante est utilisée, il est possible que les coordonnées de la trajectoire du navire ne se chevauchent pas avec l'APM. S'il vous plaît investissez les événements faits saillants plus loin sur la carte.",
       "label": "Événements dans ces APMs"
     },
     "portVisits": {
       "inThesePortStates": "Événements dans ces États du port",
-      "inThesePortStatesDescription": "Highlight all {{eventType}} that may have occured in a port State. A port visit occurs when a vessel transits to an anchorage, and the port State is assigned based on the Exclusive Economic Zone (EEZ) the anchorage is within. Anchorages are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate:<3>https://globalfishingwatch.org/datasets-and-code-anchorages/</3> . Please investigate the highlighted events further on the map.",
+      "inThesePortStatesDescription": "Faits saillants tous les {{eventType}} qui peuvent avoir eu lieu dans un État du port. Une visite de port se produit lorsqu'un navire transite vers un mouillage, et l'État du port est attribué en fonction de la zone économique exclusive (ZEE) dans laquelle se trouve le mouillage. Les mouillages sont basés sur l'ensemble de données sur les mouillages de Global Fishing Watch, une base de données mondiale des emplacements de mouillage où les navires se rassemblent : <3>https://globalfishingwatch.org/datasets-and-code-anchorages/</3>\nVeuillez enquêter sur les événements faits saillants plus loin sur la carte.",
       "title": "Visites du Port",
-      "shortTitle": "Port Visits",
+      "shortTitle": "Visites de Port",
       "inputEnd": "ports",
       "inputStart": "Visites du port en"
     },
     "rfmos": {
-      "description": "Highlight all {{eventType}} that occurred inside and RFMO. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the RFMO. Example if you select IOTC and WCPFC, you will see all{{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of IOTC OR WCPFC. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the RFMO. Please invesitage highlighted event further on the map.",
+      "description": "Faits saillants tous les {{eventType}} survenus au sein des organisations régionales de gestion des pêches (ORGP). Nous calculons une boîte englobante pour l'emplacement de l'événement sur la base des coordonnées minimales et maximales et vérifions si elle chevauche l'ORGP. Par exemple, si vous sélectionnez IOTC et WCPFC, vous verrez tous les {{eventType}} où la zone de délimitation créée par les coordonnées minimales et maximales des événements chevauche les coordonnées minimales et maximales de IOTC OU WCPFC. Étant donné qu'une méthode de cadre de délimitation est utilisée, il est possible que les coordonnées réelles de la trajectoire du navire ne se chevauchent pas avec l'ORGP. Veuillez étudier l'événement en surbrillance plus loin sur la carte.",
       "label": "Événements dans ces RFMOs"
     },
     "title": "Paramètres",
@@ -184,12 +184,12 @@
     "distance": "DISTANCE VOYÉE"
   },
   "user": {
-    "loggedInAs": "logged in as",
-    "login": "Log in",
-    "notAuthorized": "Only some specific registered users can use this product",
-    "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
-    "requestAccess": "Request Access",
-    "switchAccount": "Switch account"
+    "loggedInAs": "S'identifier comme",
+    "login": "S'identifier",
+    "notAuthorized": "Seuls certains utilisateurs enregistrés spécifiques peuvent utiliser ce produit",
+    "notLoggedIn": "Seuls certains utilisateurs enregistrés spécilement peuvent utiliser ce produit. Veuillez vous connecter avec vos identifiants Global Fishing Watch",
+    "requestAccess": "Demander l'accès",
+    "switchAccount": "Changer de compte"
   },
   "vessel": {
     "aisTransmission_plural": "Transmissions de l'AIS",
@@ -198,15 +198,15 @@
     "encounteredVessel": "Navire rencontré",
     "flag": "Drapeau",
     "formatValues": "{{quantity}} valeurs",
-    "geartypeDescription": "Likely gear type of vessel as defined by Global Fishing Watch. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class, see more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> . The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
+    "geartypeDescription": "Le type d'engin de pêche probable tel que défini par Global Fishing Watch. La classification des navires de pêche est estimée à l'aide d'informations de registre connues en combinaison avec un réseau neuronal convolutionnel utilisé pour estimer la classe des navires, voir plus d’informations ici:<1>https://globalfishingwatch. rg/datasets-and-code-bateau-identity/</1> . La classification des navires pour les navires de transport est estimée à l'aide d'un cumul d'informations de registre connues. Tous les navires de soutien de la visionneuse de bateaux de soutien sont considérés comme des navires de soutien à senne coulissante en fonction de l'examen interne.",
     "historyLabelByField": "Historique de {{label}} pour {{vesselName}}",
     "imo": "omi",
-    "iuuStatusDescription": "[TDB] IUU status description to be defined",
+    "iuuStatusDescription": "Statut d'inscription illégale, non déclarée et non réglementée (INN) selon les listes officielles de navires INN des ORGP - le navire est actuellement inscrit, a déjà été inscrit ou n'a jamais été inscrit",
     "mmsi": "mmsi",
     "noAuthorizations": "Aucune autorisation trouvée",
-    "nVesselsMerged": "{{count}} merged",
-    "nVesselsMerged_plural": "{{count}} merged",
-    "offlineStillNotAllowedOnMergedVessels": "OFFLINE VIEW NOT ALLOWED ON MERGED VESSELS",
+    "nVesselsMerged": "{{count}} fusionnés",
+    "nVesselsMerged_plural": "{{count}} fusionnés",
+    "offlineStillNotAllowedOnMergedVessels": "VUE HORS LIGNE NON AUTORISÉE SUR LES NAVIRES FUSIONNÉS",
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} précédentes",
     "readyForOfflineView": "PRÊT POUR VUE Hors LIGNE",
     "remove": "Retirer",
@@ -214,9 +214,9 @@
     "saveForOfflineView": "enregistrer le vaisseau pour une vue hors ligne",
     "source": "source",
     "transmission_plural": "transmissions",
-    "transmissionRange": "{{transmissions}} AIS transmissions from {{start}} to {{end}}",
-    "type": "vessel type",
-    "vesselTypeDescription": "For vessel type sourced from Global Fishing Watch additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
+    "transmissionRange": "{{transmissions}} transmissions AIS de {{start}} à {{end}}",
+    "type": "types de navires",
+    "vesselTypeDescription": "Pour le type de navire provenant de Global Fishing Watch, des recherches et des analyses supplémentaires sont menées en plus de l'utilisation des données AIS d'origine pour identifier la valeur la plus probable. Les types de navires de GFW comprennent les navires de pêche, les navires transporteurs et les navires de soutien. La classification des navires pour navire de pêche est estimé à l'aide des informations connues du registre en combinaison avec un réseau de neurones convolutifs utilisé pour estimer la classe des vaisseaux. La classification des navires pour les navires transporteurs est estimée à l'aide d'un cumul des informations de registre connues, d'un examen manuel et de la classe de navire. Tous les navires de soutien dans le visualiseur de navires sont considérés comme des navires de soutien à senne coulissante sur la base d'un examen interne. Le type de navire de « « autre » » est tiré des listes de navires autorisés des ORGP et d'autres sources de données sur les navires. Lorsque plusieurs valeurs sont données, cela reflète des informations contradictoires ou des variations dans les termes utilisés dans les sources originales.",
     "historicalValues": "valeurs historiques",
     "name": "Nom",
     "previousNames": "noms précédents",
@@ -239,15 +239,15 @@
     "operator_plural": "opérateurs",
     "owner_plural": "propriétaires",
     "type_plural": "types",
-    "iuuStatus": "IUU Status",
+    "iuuStatus": "Statut INN des ORGP",
     "iuuStatusOptions": {
       "0": "Non listé",
       "1": "listé précédemment",
       "2": "actuellement listée"
     },
-    "authorizations": "authorizations",
-    "rmfoRegistry": "RFMO Registry",
-    "authPeriod": "Authorization period"
+    "authorizations": "autorisations",
+    "rmfoRegistry": "Registre des ORGP",
+    "authPeriod": "Période d'autorisation"
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
