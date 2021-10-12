@@ -94,18 +94,18 @@
     "activityEventsDescription": "All activity data is estimated through algorithms by Global Fishing Watch (GFW). Data caveats can be found in the FAQ here",
     "activityHighlights": "Activity Highlights",
     "encounterEvents": "Encounter Events",
-    "encounterEventsDescription": "Encounters may indicate potential transshipment activity between two vessels that both appear on AIS. Encounters are estimated using AIS data, including distance between the two vessels, vessel speeds, and duration in a given area. <1></1>An encounter is defined as when two vessels, a carrier vessel and encountered fishing vessel, are detected on AIS data as within 500 meters for at least two hours and traveling at a median speed &lt;2 knots, while at least 10 km from a coastal anchorage.",
+    "encounterEventsDescription": "\"Encounters may indicate potential transshipment activity between two vessels that both appear on AIS. Encounters are estimated using AIS data, including distance between the two vessels, vessel speeds, and duration in a given area. <1></1>\nAn encounter is defined as a period when two vessels, a carrier vessel and encountered fishing vessel, are detected on AIS data within 500 meters of each other for at least two hours and traveling at a median speed less than two knots, while at least 10 km from a coastal anchorage.",
     "fishingEvents": "Fishing Events",
     "fishingEventsDescription": "When there is a consistent series of automatic identification system (AIS) points that indicate apparent fishing activity, the points are grouped into fishing events. <1></1>\nWe analyze the AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine apparent fishing activity based on changes in vessel speed and direction..<3></3>The algorithm classifies each AIS broadcast data point for these vessels as either “apparently fishing” or “not fishing” and shows the former on our fishing activity heat map. You can find more detail in our technology page: <6>https://globalfishingwatch.org/our-technology/</6> and dataset page: <10>https://globalfishingwatch.org/datasets-and-code/</10>.",
     "highlitingSettings": "settings",
     "loiteringEvents": "Loitering Events",
-    "loiteringEventsDescription": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is also estimated using AIS data, including vessel speed, duration in a given location, and distance from shore. <1></1>Loitering occurs when a carrier vessel travels at average speed of &lt;2 knots.<3></3>Due to the individual definitions of loitering events and encounter events, it is possible for a loitering event to overlap with encounter events and to encompass one or more encounter events.",
+    "loiteringEventsDescription": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is also estimated using AIS data, including vessel speed, duration in a given location, and distance from shore. \nLoitering occurs when a carrier vessel travels at average speed of less than two knots.<3></3>\nDue to the individual definitions of loitering events and encounter events, it is possible for a loitering event to overlap with encounter events and to encompass one or more encounter events.",
     "noData": "There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.",
     "noHighlights": "No events found for your highlighting criteria",
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
     "noResults": "No events found. Try changing the current filters.",
     "portVisitEvents": "Port Visits",
-    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
+    "portVisitEventsDescription": "A port visit occurs when a vessel has a port entry, stop or gap, and exit event. This means the vessel is within 3 km of an anchorage (port entry), and is moving between 0.5 and 0.2 knots (port stop), or within an anchorage but has a gap in AIS transmission for at least 4 hours (port gap), and then the vessel transits more than 4 km outside of the anchorage point (port exit). Anchorages are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate: <3>https://globalfishingwatch.org/datasets-and-code-anchorages/</3>."
   },
   "map": {
     "filters": "Filter events",
@@ -139,7 +139,7 @@
   },
   "settings": {
     "distancePort": "Distance from port",
-    "distancePortDescription": "Highlight all {{eventType}} that had a distance from port longer than the value configured. Example if you configure 8 km, you will see all {{eventType}} with distance more or equal to 8 km. Distance from port is will be highlighted if either the start or end position is more or equal to the specified distance. Ports include all GFW identified anchorages (for more details on anchorage including its definition here)",
+    "distancePortDescription": "Highlight all {{eventType}} that had a distance from port longer than the value configured. Example if you configure 8 km, you will see all {{eventType}} with distance more or equal to 8 km. Distance from port is will be highlighted if either the start or end position is more or equal to the specified distance. Ports include all GFW identified anchorages. For more details on anchorage, including its definition, click <3>https://globalfishingwatch. org/datasets-and-code-anchorages/</3>",
     "distanceShore": "Distance from shore",
     "distanceShoreDescription": "Highlight all {{eventType}} that had a distance longer than the value configured. Example if you configure 8 km, you will see all {{eventType}} with distance more or equal to 8 km from the shore. Distance from shore will be highlighted if either the start or end position is more or equal to the specified distance.",
     "duration": "DURATION",
@@ -164,19 +164,19 @@
     },
     "longerThan": "Longer than",
     "mpas": {
-      "description": "Highlight all {{eventType}} that occurred inside an MPA. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the MPA. For example, if you select Galápagos and Ascension Island, you will see all {{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Galápagos OR Ascension Island MPA. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the MPA. Please invesitage highlighted event further on the map.",
+      "description": "Highlight all {{eventType}} that occurred inside of marine protected areas (MPAs) We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the MPA. For example, if you select Galápagos and Ascension Island, you will see all {{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Galápagos OR Ascension Island MPA. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the MPA. Please invesitage highlighted event further on the map.",
       "label": "Events in these MPAs"
     },
     "portVisits": {
       "inThesePortStates": "Events in these port States",
-      "inThesePortStatesDescription": "Highlight all {{eventType}} that may have occured in a port State. A port visit occurs when a vessel transits to an anchorage, and the port State is assigned based on the Exclusive Economic Zone (EEZ) the anchorage is within. Anchorages are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate:<3>https://globalfishingwatch.org/datasets-and-code-anchorages/</3> . Please investigate the highlighted events further on the map.",
+      "inThesePortStatesDescription": "Highlight all {{eventType}} that may have occured in a port State. A port visit occurs when a vessel transits to an anchorage, and the port State is assigned based on the exclusive economic zone (EEZ) the anchorage is within. Anchorages are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate: <3>https://globalfishingwatch.org/datasets-and-code-anchorages/</3> . Please investigate the highlighted events further on the map.",
       "title": "Port Visits",
       "shortTitle": "Port Visits",
       "inputEnd": "ports",
       "inputStart": "Port visits in"
     },
     "rfmos": {
-      "description": "Highlight all {{eventType}} that occurred inside and RFMO. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the RFMO. Example if you select IOTC and WCPFC, you will see all{{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of IOTC OR WCPFC. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the RFMO. Please invesitage highlighted event further on the map.",
+      "description": "Highlight all {{eventType}} that occurred inside of regional fisheries management organizations (RFMOs). We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the RFMO. Example if you select IOTC and WCPFC, you will see all{{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of IOTC OR WCPFC. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the RFMO. Please invesitage highlighted event further on the map.",
       "label": "Events in these RFMOS"
     },
     "title": "Settings",
@@ -198,10 +198,10 @@
     "encounteredVessel": "Encountered Vessel",
     "flag": "flag",
     "formatValues": "{{quantity}} values",
-    "geartypeDescription": "Likely gear type of vessel as defined by Global Fishing Watch. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class, see more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> . The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
+    "geartypeDescription": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
     "historyLabelByField": "{{label}} history for {{vesselName}}",
     "imo": "imo",
-    "iuuStatusDescription": "[TDB] IUU status description to be defined",
+    "iuuStatusDescription": "Illegal, unreported and unregulated (IUU) listing status according to official RFMO IUU vessel lists - vessel is currently listed, was previously listed or has never been listed",
     "mmsi": "mmsi",
     "noAuthorizations": "No authorizations found",
     "nVesselsMerged": "{{count}} merged",
@@ -216,7 +216,7 @@
     "transmission_plural": "transmissions",
     "transmissionRange": "{{transmissions}} AIS transmissions from {{start}} to {{end}}",
     "type": "vessel type",
-    "vesselTypeDescription": "For vessel type sourced from Global Fishing Watch additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
+    "vesselTypeDescription": "For vessel type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classification for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the vessel viewer are considered purse seine support vessels based on internal review. \nVessel type from \"other\" is taken from RFMO authorized vessel lists and other sources of vessel data. Where multiple values are given, this reflects conflicting information or variation in terms used in original sources.",
     "historicalValues": "historical values",
     "name": "name",
     "previousNames": "previous names",
@@ -239,7 +239,7 @@
     "operator_plural": "operators",
     "owner_plural": "owners",
     "type_plural": "types",
-    "iuuStatus": "IUU Status",
+    "iuuStatus": "RFMO IUU status",
     "iuuStatusOptions": {
       "0": "Not listed",
       "1": "previously listed",
