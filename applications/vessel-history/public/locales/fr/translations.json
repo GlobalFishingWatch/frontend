@@ -17,7 +17,7 @@
     "typeToSearch": "Entrez un texte pour rechercher des navires",
     "unknown": "Inconnu",
     "unknownName": "Nom inconnu",
-    "voyageFrom": "Voyage From",
+    "voyageFrom": "Voyage de",
     "voyage": "Voyage",
     "any": "Quelconque",
     "currentTimeRange": "intervalle de temps actuel",
@@ -33,10 +33,10 @@
     "avgSpeed": "Vitesse moyenne",
     "confidence": "Confiance",
     "confidenceHelp": {
-      "portEntry": "PORT ENTRY: vessel that was not in port gets within 3km of anchorage point",
-      "portExit": "PORT EXIT: vessel that was in port moves more than 4km from anchorage point",
-      "portGap": "PORT GAP: AIS gap > 4 hours; start is recorded 4 hours after the last message before the gap; end at next message after gap.",
-      "portStop": "PORT STOP: begin: speed < 0.2 knots; end: speed > 0.5 knots",
+      "portEntry": "ENTRÉE DU PORT : le navire qui n'était pas dans le port se trouve à moins de 3 km du point d'ancrage",
+      "portExit": "SORTIE DU PORT : Le navire qui se trouvait dans le port se déplace à plus de 4km du point d'ancrage",
+      "portGap": "PORT GAP : Écart AIS > 4 heures; le début est enregistré 4 heures après le dernier message avant le vide; se termine au prochain message après l'écart.",
+      "portStop": "Arrêt DU PORT : début: vitesse < 0.2 noeuds ; fin : vitesse > 0.5 noeuds",
       "help2": "Low confidence. Only a port stop OR gap was identified based on AIS transmission.",
       "help3": "Medium confidence. A port entry and a port stop OR gap; OR a port stop OR gap followed by a port exit was identified based on AIS transmission.",
       "help4": "High confidence. A port entry, AND port stop or port gap, AND a port exit was identified based on AIS transmission."
