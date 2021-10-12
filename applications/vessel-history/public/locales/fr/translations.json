@@ -98,11 +98,11 @@
     "fishingEvents": "Événements de pêche",
     "fishingEventsDescription": "Lorsqu'il existe une série cohérente de points AIS estimés comme indiquant une activité de pêche apparente, les points sont regroupés en « événements de pêche ». <1></1>Nous analysons les données du système d'identification automatique (AIS) collectées à partir des navires que notre recherche a identifiés comme des navires de pêche commerciale connus ou possibles, et appliquons un algorithme de détection de pêche pour déterminer « l'activité de pêche apparente » en fonction des changements de vitesse et direction du navire.<3></3>L'algorithme classe chaque point de données de diffusion AIS pour ces navires en tant que « apparemment en train de pêcher » ou « ne pas pêcher » et affiche le premier sur notre carte thermique d'activité de pêche. Vous pouvez trouver plus de détails dans notre page Technologie : <6>https://globalfishingwatch.org/our-technology/</6> et page Dataset : <10>https://globalfishingwatch.org/datasets-and-code/ </10>.",
     "highlitingSettings": "paramètres",
-    "loiteringEvents": "Loitering Events",
-    "loiteringEventsDescription": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is also estimated using AIS data, including vessel speed, duration in a given location, and distance from shore. <1></1>Loitering occurs when a carrier vessel travels at average speed of &lt;2 knots.<3></3>Due to the individual definitions of loitering events and encounter events, it is possible for a loitering event to overlap with encounter events and to encompass one or more encounter events.",
-    "noData": "There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.",
+    "loiteringEvents": "Événements de dérive",
+    "loiteringEventsDescription": "L'événement de dérive se produit lorsqu'un seul navire présente un comportement indicatif d'un événement potentiel de rencontre. L'événement de dérive est également estimé à l'aide des données AIS, notamment la vitesse du navire, la durée à un endroit donné et la distance par rapport au rivage. <1></1>L'événement de dérive se produit lorsqu'un navire transporteur se déplace à une vitesse moyenne de &lt;2 nœuds.<3></3>En raison des définitions individuelles des événements de dérive et des événements de rencontre, il est possible qu'un événement de dérivee chevauchement avec des événements de rencontre et pour englober un ou plusieurs événements de rencontre.",
+    "noData": "Il n'y a pas d'événements pour ce navire puisque les données proviennent uniquement de la source = « Autre ». Essayez de rechercher en utilisant MMSI pour correspondre également à la source AIS.",
     "noHighlights": "Aucun événement trouvé pour vos critères de surbrillance",
-    "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
+    "noHighlitingSettingsMessage": "Vous n’avez pas encore défini les paramètres retenus. Veuillez cliquer sur Paramètres pour configurer l’activité qui vous intéresse.",
     "noResults": "No events found. Try changing the current filters.",
     "portVisitEvents": "Port Visits",
     "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
@@ -138,9 +138,9 @@
     "none": "None"
   },
   "settings": {
-    "distancePort": "Distance from port",
-    "distancePortDescription": "Highlight all {{eventType}} that had a distance from port longer than the value configured. Example if you configure 8 km, you will see all {{eventType}} with distance more or equal to 8 km. Distance from port is will be highlighted if either the start or end position is more or equal to the specified distance. Ports include all GFW identified anchorages (for more details on anchorage including its definition here)",
-    "distanceShore": "Distance from shore",
+    "distancePort": "Distance du port",
+    "distancePortDescription": "Faits saillants tous les {{eventType}} dont la distance par rapport au port est supérieure à la valeur configurée. Par exemple, si vous configurez 8 km, vous verrez tous les {{eventType}} avec une distance supérieure ou égale à 8 km. La distance du port sera mise en surbrillance si la position de début ou de fin est supérieure ou égale à la distance spécifiée. Les ports comprennent tous les mouillages identifiés par GFW. Pour plus de détails sur l'ancrage, y compris sa définition, cliquez ici",
+    "distanceShore": "Distance de la côte",
     "distanceShoreDescription": "Highlight all {{eventType}} that had a distance longer than the value configured. Example if you configure 8 km, you will see all {{eventType}} with distance more or equal to 8 km from the shore. Distance from shore will be highlighted if either the start or end position is more or equal to the specified distance.",
     "duration": "DURÉE",
     "durationDescription": "Highlight all {{eventType}} that had a duration longer than the value configured. Example if you configure 5 hours, you will see all {{eventType}} with duration more or equal to 5 hours",
