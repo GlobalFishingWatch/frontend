@@ -104,7 +104,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
           setDate('end', undefined)
         }}
         label={t(`filters.start` as any, 'End')}
-        min={start}
+        min={start ?? DEFAULT_WORKSPACE.start}
         max={DEFAULT_WORKSPACE.end}
       />
     </Modal>
