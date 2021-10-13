@@ -58,11 +58,13 @@ const MapControls = ({
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
             <Fragment>
-              <EventFiltersButton
-                type="default"
-                className={styles['map-tool']}
-                onClick={() => setModalOpen(true)}
-              ></EventFiltersButton>
+              <div className={styles.filtersWrapper}>
+                <EventFiltersButton
+                  type="default"
+                  className={styles['map-tool']}
+                  onClick={() => setModalOpen(true)}
+                ></EventFiltersButton>
+              </div>
               <IconButton
                 icon="layers"
                 type="map-tool"
