@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -9,6 +9,7 @@ import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { Range } from 'types'
 import { Voyage } from 'types/voyage'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { resetFilters } from 'features/event-filters/filters.slice'
 import {
   selectHighlightedEvent,
   selectMapVoyageTime,
@@ -23,6 +24,7 @@ export default function useMapEvents() {
   const currentVoyageTime = useSelector(selectMapVoyageTime)
   const { getVoyageByEvent, getLastEventInVoyage } = useVoyagesConnect()
   const { viewport, setMapCoordinates } = useViewport()
+  const [findEventVoyage, setFindEventVoyage] = useState<RenderedEvent>()
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
@@ -40,26 +42,42 @@ export default function useMapEvents() {
     [dispatch, highlightedEvent?.id]
   )
 
+  useEffect(() => {
+    if (!findEventVoyage) return
+    const voyage = getVoyageByEvent(findEventVoyage)
+    if (!voyage) return
+    const voyageTimes = {
+      start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
+      end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+    } as Range
+    if (
+      voyageTimes.start === currentVoyageTime?.start &&
+      voyageTimes.end === currentVoyageTime?.end
+    )
+      return
+
+    dispatch(setVoyageTime(voyageTimes))
+    setFindEventVoyage(undefined)
+  }, [
+    currentVoyageTime?.end,
+    currentVoyageTime?.start,
+    dispatch,
+    findEventVoyage,
+    getVoyageByEvent,
+  ])
+
   const highlightEvent = useCallback(
     (event: RenderedEvent) => {
       if (!event?.id) return
       dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
 
       const voyage = getVoyageByEvent(event)
-      if (!voyage) return
-      const voyageTimes = {
-        start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
-        end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
-      } as Range
-      if (
-        voyageTimes.start === currentVoyageTime?.start &&
-        voyageTimes.end === currentVoyageTime?.end
-      )
-        return
-
-      dispatch(setVoyageTime(voyageTimes))
+      if (!voyage) {
+        dispatch(resetFilters())
+      }
+      setFindEventVoyage(event)
     },
-    [currentVoyageTime?.end, currentVoyageTime?.start, dispatch, getVoyageByEvent]
+    [dispatch, getVoyageByEvent]
   )
 
   const highlightVoyage = useCallback(
