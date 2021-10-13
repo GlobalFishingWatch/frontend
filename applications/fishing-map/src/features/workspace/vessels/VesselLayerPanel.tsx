@@ -268,13 +268,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             {layerActive && !infoLoading && TrackIconComponent}
             <Remove dataview={dataview} />
           </Fragment>
+          {infoResource && InfoIconComponent}
         </div>
         <IconButton
           icon="more"
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
-        {infoResource && InfoIconComponent}
       </div>
     </div>
   )
