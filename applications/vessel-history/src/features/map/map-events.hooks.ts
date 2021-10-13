@@ -4,12 +4,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import {
+  RenderedEvent,
+  selectFilteredEvents,
+} from 'features/vessels/activity/vessels-activity.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { Range } from 'types'
 import { Voyage } from 'types/voyage'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
-import { resetFilters } from 'features/event-filters/filters.slice'
+import { resetFilters, selectFilters } from 'features/event-filters/filters.slice'
 import {
   selectHighlightedEvent,
   selectMapVoyageTime,
@@ -22,9 +25,12 @@ export default function useMapEvents() {
   const dispatch = useDispatch()
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const currentVoyageTime = useSelector(selectMapVoyageTime)
+  const events = useSelector(selectFilteredEvents)
   const { getVoyageByEvent, getLastEventInVoyage } = useVoyagesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const [findEventVoyage, setFindEventVoyage] = useState<RenderedEvent>()
+  const filters = useSelector(selectFilters)
+  const [prevFilters, setPrevFilters] = useState(filters)
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
@@ -41,30 +47,6 @@ export default function useMapEvents() {
     },
     [dispatch, highlightedEvent?.id]
   )
-
-  useEffect(() => {
-    if (!findEventVoyage) return
-    const voyage = getVoyageByEvent(findEventVoyage)
-    if (!voyage) return
-    const voyageTimes = {
-      start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
-      end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
-    } as Range
-    if (
-      voyageTimes.start === currentVoyageTime?.start &&
-      voyageTimes.end === currentVoyageTime?.end
-    )
-      return
-
-    dispatch(setVoyageTime(voyageTimes))
-    setFindEventVoyage(undefined)
-  }, [
-    currentVoyageTime?.end,
-    currentVoyageTime?.start,
-    dispatch,
-    findEventVoyage,
-    getVoyageByEvent,
-  ])
 
   const highlightEvent = useCallback(
     (event: RenderedEvent) => {
@@ -117,6 +99,50 @@ export default function useMapEvents() {
       viewport.zoom,
     ]
   )
+
+  // When the highlighted event was not in the filtered events list
+  // filters are reset so that the event voyage
+  // is found and highlighted
+  useEffect(() => {
+    if (!findEventVoyage) return
+    const voyage = getVoyageByEvent(findEventVoyage)
+    if (!voyage) return
+    const voyageTimes = {
+      start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
+      end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+    } as Range
+    if (
+      voyageTimes.start === currentVoyageTime?.start &&
+      voyageTimes.end === currentVoyageTime?.end
+    )
+      return
+
+    dispatch(setVoyageTime(voyageTimes))
+    setFindEventVoyage(undefined)
+  }, [
+    currentVoyageTime?.end,
+    currentVoyageTime?.start,
+    dispatch,
+    findEventVoyage,
+    getVoyageByEvent,
+  ])
+
+  const onFiltersChanged = useCallback(() => {
+    if (!highlightedEvent) return
+    const highlightedRenderedEvent = events.find((event) => event.id === highlightedEvent?.id)
+
+    if (!highlightedRenderedEvent) {
+      const [lastEvent] = events
+      lastEvent && highlightEvent(lastEvent)
+    }
+  }, [events, highlightEvent, highlightedEvent])
+
+  useEffect(() => {
+    if (JSON.stringify(prevFilters) !== JSON.stringify(filters)) {
+      if (!findEventVoyage) onFiltersChanged()
+      setPrevFilters(filters)
+    }
+  }, [filters, findEventVoyage, onFiltersChanged, prevFilters])
 
   return {
     highlightEvent,
