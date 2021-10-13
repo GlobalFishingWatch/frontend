@@ -24,8 +24,8 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const isFishingEventsActive = useSelector(selectFilter('fishingEvents'))
   const isEncountersActive = useSelector(selectFilter('encounters'))
   const isLoiteringEventsActive = useSelector(selectFilter('loiteringEvents'))
-  const start = useSelector(selectStart)?.slice(0, 10) as string
-  const end = useSelector(selectEnd)?.slice(0, 10) as string
+  const start = useSelector(selectStart)?.slice(0, 10) 
+  const end = useSelector(selectEnd)?.slice(0, 10) 
 
   const trackAndSetFilter = useCallback(
     (filter: availableEventFilters, value: boolean) => {
@@ -94,7 +94,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       </div>
       <br />
       <InputDate
-        value={start}
+        value={start ?? ''}
         onChange={(e) => {
           if (e.target.value !== start) {
             trackAndSetDate('start', e.target.value)
@@ -109,7 +109,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       />
       <br />
       <InputDate
-        value={end}
+        value={end ?? ''}
         onChange={(e) => {
           if (e.target.value !== end) {
             trackAndSetDate('end', e.target.value)
