@@ -66,10 +66,11 @@ const blob = (
   paint['heatmap-intensity'][4] = baseIntensity
   paint['heatmap-intensity'][6] = maxIntensity
 
-  const chunkMainLayer = getBaseLayer(config)
-  // TODO proper layer/src ids
-  chunkMainLayer.id = getLayerId(config.id, activeChunk)
-  chunkMainLayer.source = getSourceId(config.id, activeChunk)
+  const chunkMainLayer = getBaseLayer(
+    config,
+    getLayerId(config.id, activeChunk),
+    getSourceId(config.id, activeChunk)
+  )
   chunkMainLayer.paint = paint as any
 
   if (!chunkMainLayer.metadata) return []

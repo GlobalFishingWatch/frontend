@@ -1,3 +1,4 @@
+import { SymbolLayout, Expression } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedLayer, Group } from '../../../types'
 import { Type } from '../../types'
 import { HEATMAP_MODE_LAYER_TYPE } from '../config'
@@ -7,10 +8,14 @@ import {
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '../heatmap-animated'
 
-function getBaseLayer(config: GlobalHeatmapAnimatedGeneratorConfig): ExtendedLayer {
+function getBaseLayer(
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  id: string,
+  source: string
+): ExtendedLayer {
   return {
-    id: '_',
-    source: '_',
+    id,
+    source,
     'source-layer': TEMPORALGRID_SOURCE_LAYER,
     type: HEATMAP_MODE_LAYER_TYPE[config.mode] as any,
     metadata: {
@@ -22,11 +27,13 @@ function getBaseLayer(config: GlobalHeatmapAnimatedGeneratorConfig): ExtendedLay
 }
 
 export function getBaseInteractionLayer(
-  config: GlobalHeatmapAnimatedGeneratorConfig
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  id: string,
+  source: string
 ): ExtendedLayer {
   return {
-    id: '_',
-    source: '_',
+    id,
+    source,
     'source-layer': TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
     type: 'fill',
     paint: {
@@ -44,11 +51,13 @@ export function getBaseInteractionLayer(
 }
 
 export function getBaseInteractionHoverLayer(
-  config: GlobalHeatmapAnimatedGeneratorConfig
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  id: string,
+  source: string
 ): ExtendedLayer {
   return {
-    id: '_',
-    source: '_',
+    id,
+    source,
     'source-layer': TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
     type: 'line',
     paint: {
@@ -66,6 +75,29 @@ export function getBaseInteractionHoverLayer(
     metadata: {
       interactive: false,
       group: config.group || Group.Heatmap,
+    },
+  }
+}
+
+export function getBaseDebugLabelsLayer(exprPick: Expression, id: string, source: string) {
+  const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
+  return {
+    id,
+    source,
+    type: 'symbol',
+    'source-layer': TEMPORALGRID_SOURCE_LAYER,
+    layout: {
+      'text-field': exprDebugText,
+      'text-font': ['Roboto Mono Light'],
+      'text-size': 8,
+      'text-allow-overlap': true,
+    } as SymbolLayout,
+    paint: {
+      'text-halo-color': 'hsl(320, 0%, 100%)',
+      'text-halo-width': 2,
+    },
+    metadata: {
+      group: Group.Label,
     },
   }
 }

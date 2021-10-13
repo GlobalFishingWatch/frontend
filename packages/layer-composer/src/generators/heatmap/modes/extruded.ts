@@ -17,9 +17,11 @@ function extruded(
 ) {
   const layers: any[] = timeChunks.chunks.flatMap(
     (timeChunk: TimeChunk, timeChunkIndex: number) => {
-      const chunkMainLayer = getBaseLayer(config)
-      chunkMainLayer.id = getLayerId(config.id, timeChunk)
-      chunkMainLayer.source = getSourceId(config.id, timeChunk)
+      const chunkMainLayer = getBaseLayer(
+        config,
+        getLayerId(config.id, timeChunk),
+        getSourceId(config.id, timeChunk)
+      )
       chunkMainLayer.paint = {
         'fill-color': 'red',
         'fill-outline-color': 'transparent',

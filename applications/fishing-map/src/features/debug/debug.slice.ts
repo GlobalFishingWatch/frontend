@@ -20,10 +20,10 @@ const initialState: DebugState = {
   active: false,
   options: {
     blob: false,
-    debug: false,
+    debug: true,
     thinning: true,
     extruded: false,
-    timeCompare: true,
+    timeCompare: false,
   },
 }
 

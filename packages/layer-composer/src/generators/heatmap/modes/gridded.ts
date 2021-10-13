@@ -1,4 +1,4 @@
-import { Layer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
+import { Layer, Expression } from '@globalfishingwatch/mapbox-gl'
 import {
   GlobalHeatmapAnimatedGeneratorConfig,
   TEMPORALGRID_SOURCE_LAYER,
@@ -7,6 +7,7 @@ import { TimeChunk, TimeChunks } from '../util/time-chunks'
 import { Group } from '../../../types'
 import { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer, {
+  getBaseDebugLabelsLayer,
   getBaseInteractionHoverLayer,
   getBaseInteractionLayer,
 } from '../util/get-base-layers'
@@ -22,7 +23,7 @@ export default function gridded(
   const layers: Layer[] = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
     const pickValueAt = timeChunk.frame.toString()
     // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
-    const exprPick = ['coalesce', ['get', pickValueAt], 0]
+    const exprPick: Expression = ['coalesce', ['get', pickValueAt], 0]
 
     const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 
@@ -31,21 +32,28 @@ export default function gridded(
       'fill-outline-color': 'transparent',
     }
 
-    const chunkMainLayer = getBaseLayer(config)
-    chunkMainLayer.id = getLayerId(config.id, timeChunk)
-    chunkMainLayer.source = getSourceId(config.id, timeChunk)
+    const chunkMainLayer = getBaseLayer(
+      config,
+      getLayerId(config.id, timeChunk),
+      getSourceId(config.id, timeChunk)
+    )
     chunkMainLayer.paint = paint
     // only add legend metadata for first time chunk
     const chunkLayers: Layer[] = [chunkMainLayer]
 
     if (config.interactive && timeChunk.active) {
-      const interactionLayer = getBaseInteractionLayer(config)
-      interactionLayer.id = getLayerId(config.id, timeChunk, 'interaction')
-      interactionLayer.source = chunkMainLayer.source
+      const interactionLayer = getBaseInteractionLayer(
+        config,
+        getLayerId(config.id, timeChunk, 'interaction'),
+        chunkMainLayer.source as string
+      )
+
       chunkLayers.push(interactionLayer)
-      const interactionHoverLayer = getBaseInteractionHoverLayer(config)
-      interactionHoverLayer.id = getLayerId(config.id, timeChunk, 'interaction_hover')
-      interactionHoverLayer.source = chunkMainLayer.source
+      const interactionHoverLayer = getBaseInteractionHoverLayer(
+        config,
+        getLayerId(config.id, timeChunk, 'interaction_hover'),
+        chunkMainLayer.source as string
+      )
       chunkLayers.push(interactionHoverLayer)
     }
 
@@ -66,26 +74,12 @@ export default function gridded(
       })
     }
     if (config.debugLabels) {
-      const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
-      chunkLayers.push({
-        id: getLayerId(config.id, timeChunk, 'debug_labels'),
-        type: 'symbol',
-        source: getSourceId(config.id, timeChunk),
-        'source-layer': TEMPORALGRID_SOURCE_LAYER,
-        layout: {
-          'text-field': exprDebugText,
-          'text-font': ['Roboto Mono Light'],
-          'text-size': 8,
-          'text-allow-overlap': true,
-        } as SymbolLayout,
-        paint: {
-          'text-halo-color': 'hsl(320, 0%, 100%)',
-          'text-halo-width': 2,
-        },
-        metadata: {
-          group: Group.Label,
-        },
-      })
+      const debugTextLayer = getBaseDebugLabelsLayer(
+        exprPick,
+        getLayerId(config.id, timeChunk, 'debug_labels'),
+        getSourceId(config.id, timeChunk)
+      )
+      chunkLayers.push(debugTextLayer)
     }
     return chunkLayers
   })

@@ -157,11 +157,9 @@ class HeatmapAnimatedGenerator {
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource = config.interactive && INTERACTION_MODES.includes(config.mode)
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
-    const sublayerBreaks =
-      config.mode === HeatmapAnimatedMode.TimeCompare
-        ? // TODO
-          [[-7000, -3000, -1000, -500, -100, 0, 100, 500, 1000, 3000, 7000]]
-        : breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * config.breaksMultiplier))
+    const sublayerBreaks = breaks.map((sublayerBreaks) =>
+      sublayerBreaks.map((b) => b * config.breaksMultiplier)
+    )
 
     const sourceTimeChunks =
       config.mode === HeatmapAnimatedMode.TimeCompare
