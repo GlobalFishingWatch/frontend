@@ -7,7 +7,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
-import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
+import { selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
 import { ActivityEvent, Regions } from 'types/activity'
@@ -298,20 +298,3 @@ export const selectFilteredEvents = createSelector(
     })
   }
 )
-
-export const selectFilterUpdated = createSelector([selectFilters], (filters) => {
-  const keys1 = Object.keys(initialState.filters)
-  const keys2 = Object.keys(filters).filter((key) => filters[key as keyof Filters] !== undefined)
-  if (keys1.length !== keys2.length) {
-    return true
-  }
-
-  for (const key of keys1) {
-    const filterKey = key as keyof Filters
-    if (initialState.filters[filterKey] !== filters[filterKey]) {
-      return true
-    }
-  }
-
-  return false
-})

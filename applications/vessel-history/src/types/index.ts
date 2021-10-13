@@ -1,4 +1,4 @@
-import { Vessel, Authorization, VesselSearch } from '@globalfishingwatch/api-types'
+import { Vessel, Authorization, VesselSearch, EventType } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -203,3 +203,5 @@ export interface SearchResults {
   total: number
   searching: boolean
 }
+
+export type VisibleEvents = EventType[] | 'all' | 'none'

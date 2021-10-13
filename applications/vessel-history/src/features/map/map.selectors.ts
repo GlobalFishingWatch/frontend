@@ -12,11 +12,12 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { selectVesselsStatus } from 'features/vessels/vessels.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { ResourcesState, selectResources } from 'features/resources/resources.slice'
+import { ResourcesState } from 'features/resources/resources.slice'
 import { DEBUG_MODE, DEFAULT_WORKSPACE } from 'data/config'
 import { Range } from 'types'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
 import { selectFilters } from 'features/event-filters/filters.slice'
+import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { selectHighlightedEvent, selectHighlightedTime, selectMapVoyageTime } from './map.slice'
 
 /**
@@ -72,7 +73,7 @@ const getGeneratorsConfig = ({
 const selectMapGeneratorsConfig = createSelector(
   [
     selectDataviewsForResourceQuerying,
-    selectResources,
+    selectVisibleResources,
     selectHighlightedTime,
     selectHighlightedEvent,
     selectMapVoyageTime,
