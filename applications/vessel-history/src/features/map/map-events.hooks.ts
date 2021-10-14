@@ -133,10 +133,22 @@ export default function useMapEvents() {
 
     if (!highlightedRenderedEvent) {
       const [lastEvent] = events
-      lastEvent && highlightEvent(lastEvent)
-    }
-  }, [events, highlightEvent, highlightedEvent])
+      if (lastEvent) {
+        highlightEvent(lastEvent)
 
+        setMapCoordinates({
+          latitude: lastEvent.position.lat,
+          longitude: lastEvent.position.lon,
+          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+          bearing: 0,
+          pitch: 0,
+        })
+      }
+    }
+  }, [events, highlightEvent, highlightedEvent, setMapCoordinates, viewport.zoom])
+
+  // Highlight last event and voyage when filters change and
+  // the previously highlighted event is not shown in the list anymore
   useEffect(() => {
     if (JSON.stringify(prevFilters) !== JSON.stringify(filters)) {
       if (!findEventVoyage) onFiltersChanged()
