@@ -163,6 +163,7 @@
       "shortTitle": "Loitering"
     },
     "longerThan": "Longer than",
+    "greaterThan": "Greater than",
     "mpas": {
       "description": "Highlight all {{eventType}} that occurred inside an MPA. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the MPA. For example, if you select Galápagos and Ascension Island, you will see all {{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Galápagos OR Ascension Island MPA. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the MPA. Please invesitage highlighted event further on the map.",
       "label": "Events in these MPAs"
