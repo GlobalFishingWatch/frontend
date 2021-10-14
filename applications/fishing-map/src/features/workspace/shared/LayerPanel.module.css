@@ -64,7 +64,18 @@
   opacity: 1;
 }
 
-.LayerPanel:not(.expandedContainerOpen):not(:hover) .hideUntilHovered,
+.shownUntilHovered,
+.hideUntilHovered,
+.hideUntilHovered > * {
+  transition: var(--transition);
+}
+
+.LayerPanel:not(.expandedContainerOpen):not(:hover) .hideUntilHovered > * {
+  overflow: hidden;
+  width: 0;
+  opacity: 0;
+}
+
 .LayerPanel.expandedContainerOpen .shownUntilHovered,
 .LayerPanel:hover .shownUntilHovered {
   display: none;
