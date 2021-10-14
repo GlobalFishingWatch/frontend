@@ -1,10 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client/dist/api-client'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
+import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import {
   getDataviewsGeneratorConfigs,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
+import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   selectDataviewsForResourceQuerying,
   selectDefaultBasemapGenerator,
@@ -18,6 +20,7 @@ import { Range } from 'types'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
+import { selectVesselLastPositionGEOJson } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectHighlightedEvent, selectHighlightedTime, selectMapVoyageTime } from './map.slice'
 
 /**
@@ -92,16 +95,66 @@ const selectMapGeneratorsConfig = createSelector(
   }
 )
 
+export const selectVesselLastPositionGenerator = createSelector(
+  [selectVesselLastPositionGEOJson],
+  (lastPositionGEOJson) => {
+    if (!lastPositionGEOJson) return
+
+    const generator: Generators.GlGeneratorConfig = {
+      id: 'last-position',
+      type: Generators.Type.GL,
+      sources: [lastPositionGEOJson],
+      layers: [
+        {
+          type: 'circle',
+          layout: {},
+          paint: {
+            'circle-color': '#ffffff',
+            'circle-opacity': 0.2,
+            'circle-radius': 14,
+          },
+          metadata: {
+            interactive: false,
+          },
+        } as CircleLayer,
+        {
+          type: 'circle',
+          layout: {},
+          paint: {
+            'circle-color': '#ffffff',
+            'circle-stroke-color': '#002358',
+            'circle-stroke-opacity': 1,
+            'circle-stroke-width': 1,
+            'circle-radius': 8,
+          },
+          metadata: {
+            interactive: false,
+          },
+        } as CircleLayer,
+      ],
+    }
+
+    return generator
+  }
+)
+
 export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectVesselsStatus,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectDefaultOfflineDataviewsGenerators,
+    selectVesselLastPositionGenerator,
   ],
-  (vesselStatus, basemapGenerator, mapGeneratorsConfig, offlineDataviewsGenerators) => {
+  (
+    vesselStatus,
+    basemapGenerator,
+    mapGeneratorsConfig,
+    offlineDataviewsGenerators,
+    vesselLastPositionGenerator
+  ) => {
     return vesselStatus !== AsyncReducerStatus.Finished
       ? [...offlineDataviewsGenerators, basemapGenerator]
-      : [...offlineDataviewsGenerators, ...mapGeneratorsConfig]
+      : [...offlineDataviewsGenerators, ...mapGeneratorsConfig, vesselLastPositionGenerator]
   }
 )

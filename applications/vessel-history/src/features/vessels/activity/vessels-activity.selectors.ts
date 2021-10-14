@@ -6,6 +6,7 @@ import {
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { GeoJSONSourceRaw } from '@globalfishingwatch/mapbox-gl'
 import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
@@ -16,6 +17,7 @@ import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectSettings } from 'features/settings/settings.slice'
+import { TrackPosition } from 'types'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
 export interface RenderedEvent extends ActivityEvent {
@@ -26,6 +28,37 @@ export interface RenderedEvent extends ActivityEvent {
   durationDescription: string
   duration: number
 }
+
+export const selectTrackResources = createSelector(
+  [selectActiveTrackDataviews, selectResources],
+  (trackDataviews, resources) => {
+    const vesselsPositions = trackDataviews.map((dataview) => {
+      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      const trackResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Tracks)
+      const hasTrackData =
+        trackResources?.length && trackResources.every(({ url }) => resources[url]?.data)
+      const tracksResourceResolved =
+        tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
+
+      if (
+        !hasTrackData ||
+        !tracksResourceResolved //||
+      ) {
+        return { dataview, data: [] }
+      }
+
+      const data = trackResources.flatMap(({ url }) => {
+        if (!url || !resources[url].data) {
+          return []
+        }
+
+        return resources[url].data
+      })
+      return { dataview, data }
+    })
+    return vesselsPositions
+  }
+)
 
 export const selectEventsResources = createSelector(
   [selectActiveTrackDataviews, selectResources],
@@ -296,5 +329,36 @@ export const selectFilteredEvents = createSelector(
 
       return true
     })
+  }
+)
+
+export const selectVesselLastPositionGEOJson = createSelector(
+  [selectTrackResources],
+  (trackResources) => {
+    const lastSegment: TrackPosition[] = trackResources
+      .flatMap(({ data }) => data)
+      .flat()
+      .slice(-2) as TrackPosition[]
+
+    const lastPosition = lastSegment.pop() as TrackPosition
+    return {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [lastPosition].map((point) => ({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [point.longitude as number, point.latitude as number],
+          },
+          properties: {
+            id: ['last-position', point.timestamp].join('-'),
+            coordinateProperties: {
+              times: [point.timestamp],
+            },
+          },
+        })),
+      },
+    } as GeoJSONSourceRaw
   }
 )
