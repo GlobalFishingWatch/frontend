@@ -392,9 +392,6 @@ export function getDataviewsGeneratorConfigs(
         type: Generators.Type.HeatmapAnimated,
         sublayers: activitySublayers,
         mode: heatmapAnimatedMode,
-        // TODO add compare dates
-        // TODO merge datasets     |  ..or in generator?
-        // TODO merge color ramps  |
         ...(interval && { interval }),
       },
     }
