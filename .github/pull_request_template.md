@@ -8,8 +8,6 @@
   - describe the API changes implemented - if this PR affects a `package`
 - Did you include, if applicable, a **screenshot** of the feature?
 - Have you linked, if applicable, the **related JIRA ticket**?
-- Have you updated the **<a href="https://github.com/changesets/changesets/blob/master/docs/adding-a-changeset.md">changeset</a>** ? (only strictly needed if you modified a `package`)
-   - have you published, if applicable, **npm packages** (normally automatically done when publishing the changeset)
 
 Ground rules
 - **keep PRs small**
@@ -17,6 +15,6 @@ Ground rules
    - you should not open a single PR for multiple features
    - you should not open a single PR for multiple `application`s
 - Try to keep commit messages explicit/useful
-   - avoid changing history/squashing except to rewrite commit messages 
+   - avoid changing history/squashing except to rewrite commit messages
 - This PR should be reviewed by at least 1 team member
 - It is your responsability to merge the PR

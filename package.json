@@ -29,7 +29,6 @@
     "test": "lerna run test --scope @globalfishingwatch/*",
     "test:prepare": "lerna run prepare --scope @globalfishingwatch/*",
     "test:vessel-history": "cross-env lerna run test --scope @globalfishingwatchapp/vessel-history",
-    "changesets": "yarn changeset && yarn changeset version",
     "release": "lerna publish",
     "release:prepare": "lerna run --scope @globalfishingwatch/data-transforms build",
     "release:ci": "yarn release:prepare && lerna publish from-package -y --no-verify-access",
@@ -38,8 +37,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.0",
-    "@changesets/cli": "^2.16.0",
     "@nrwl/cli": "^12.9.0",
     "@nrwl/eslint-plugin-nx": "12.9.0",
     "@nrwl/jest": "12.9.0",
