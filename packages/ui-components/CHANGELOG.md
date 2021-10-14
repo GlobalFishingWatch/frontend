@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 12.3.1
+
+### Patch Changes
+
+- 39c43baa: Minor tweaks in Switch styles
+
 ## 12.3.0
 
 ### Minor Changes
