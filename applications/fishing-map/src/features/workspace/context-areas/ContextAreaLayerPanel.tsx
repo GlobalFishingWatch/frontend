@@ -90,7 +90,6 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          <InfoModal dataview={dataview} />
           {layerActive && (
             <Color
               dataview={dataview}
@@ -100,6 +99,7 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
               onClickOutside={closeExpandedContainer}
             />
           )}
+          <InfoModal dataview={dataview} />
           {isUserLayer && <Remove dataview={dataview} />}
         </div>
       </div>
