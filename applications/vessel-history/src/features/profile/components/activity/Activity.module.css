@@ -183,7 +183,7 @@ button .iconInButton {
   position: relative;
 }
 
-.settingsLink {
+button.settingsLink {
   position: absolute;
   top: 0;
   right: 0;
