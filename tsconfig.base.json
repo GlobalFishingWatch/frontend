@@ -1,4 +1,5 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
     "rootDir": ".",
     "sourceMap": true,
@@ -6,27 +7,27 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2019", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@globalfishingwatch/api-client": ["./packages/api-client/src/index.ts"],
+      "@globalfishingwatch/api-client": ["packages/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["packages/api-types/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["packages/data-transforms/src/index.ts"],
       "@globalfishingwatch/dataviews-client": ["packages/dataviews-client/src/index.ts"],
       "@globalfishingwatch/fourwings-aggregate": ["packages/fourwings-aggregate/src/index.ts"],
-      "@globalfishingwatch/i18n-labels": ["packages/i18n-labels"],
+      "@globalfishingwatch/i18n-labels": ["packages/i18n-labels/src/index.ts"],
       "@globalfishingwatch/layer-composer": ["packages/layer-composer/src/index.ts"],
       "@globalfishingwatch/ocean-areas": ["packages/ocean-areas/src/index.ts"],
       "@globalfishingwatch/pbf": ["packages/pbf-decoders/src/index.ts"],
       "@globalfishingwatch/react-hooks": ["packages/react-hooks/src/index.ts"],
       "@globalfishingwatch/timebar": ["packages/timebar/src/index.ts"],
-      "@globalfishingwatch/ui-components": ["packages/ui-components/src/index.ts"],
-      "mapbox-gl": ["@globalfishingwatch/mapbox-gl"]
+      "@globalfishingwatch/ui-components": ["packages/ui-components/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

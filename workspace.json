@@ -3,101 +3,549 @@
   "cli": {
     "defaultCollection": "@nrwl/react"
   },
-  "projects": {
-    "@globalfishingwatch/api-client": {
-      "root": "packages/api-client",
-      "sourceRoot": "packages/api-client/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/api-types": {
-      "root": "packages/api-types",
-      "sourceRoot": "packages/api-types/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/data-transforms": {
-      "root": "packages/data-transforms",
-      "sourceRoot": "packages/data-transforms/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/dataviews-client": {
-      "root": "packages/dataviews-client",
-      "sourceRoot": "packages/dataviews-client/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/fourwings-aggregate": {
-      "root": "packages/fourwings-aggregate",
-      "sourceRoot": "packages/fourwings-aggregate/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/layer-composer": {
-      "root": "packages/layer-composer",
-      "sourceRoot": "packages/layer-composer/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/linting": {
-      "root": "linting",
-      "type": "library"
-    },
-    "@globalfishingwatch/ocean-areas": {
-      "root": "packages/ocean-areas",
-      "sourceRoot": "packages/ocean-areas/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/pbf": {
-      "root": "packages/pbf-decoders",
-      "sourceRoot": "packages/pbf-decoders/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/react-hooks": {
-      "root": "packages/react-hooks",
-      "sourceRoot": "packages/react-hooks/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/timebar": {
-      "root": "packages/timebar",
-      "sourceRoot": "packages/timebar/src",
-      "type": "library"
-    },
-    "@globalfishingwatch/ui-components": {
-      "root": "packages/ui-components",
-      "sourceRoot": "packages/ui-components/src",
-      "type": "library"
-    },
-    "dataviews-editor": {
-      "root": "applications/dataviews-editor",
-      "sourceRoot": "applications/dataviews-editor/src",
-      "type": "application"
-    },
-    "fishing-map": {
-      "root": "applications/fishing-map",
-      "sourceRoot": "applications/fishing-map/src",
-      "type": "application"
-    },
-    "sandbox": {
-      "root": "applications/sandbox",
-      "sourceRoot": "applications/sandbox/src",
-      "type": "application"
-    },
-    "temporalgrid-demo": {
-      "root": "applications/temporalgrid-demo",
-      "sourceRoot": "applications/temporalgrid-demo/src",
-      "type": "application"
-    },
-    "tile-inspector": {
-      "root": "applications/tile-inspector",
-      "sourceRoot": "applications/tile-inspector/src",
-      "type": "application"
-    },
-    "vessel-history": {
-      "root": "applications/vessel-history",
-      "sourceRoot": "applications/vessel-history/src",
-      "type": "application"
-    }
-  },
   "generators": {
     "@nrwl/react": {
       "application": {
+        "style": "css",
+        "linter": "eslint",
         "babel": true
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  },
+  "defaultProject": "fishing-map",
+  "projects": {
+    "api-client": {
+      "root": "packages/api-client",
+      "sourceRoot": "packages/api-client/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/api-client",
+            "tsConfig": "packages/api-client/tsconfig.lib.json",
+            "project": "packages/api-client/package.json",
+            "entryFile": "packages/api-client/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "packages/api-client/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/api-client/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/api-client"],
+          "options": {
+            "jestConfig": "packages/api-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-types": {
+      "root": "packages/api-types",
+      "sourceRoot": "packages/api-types/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/api-types",
+            "tsConfig": "packages/api-types/tsconfig.lib.json",
+            "project": "packages/api-types/package.json",
+            "entryFile": "packages/api-types/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "packages/api-types/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/api-types/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/api-types"],
+          "options": {
+            "jestConfig": "packages/api-types/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "data-transforms": {
+      "root": "packages/data-transforms",
+      "sourceRoot": "packages/data-transforms/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/data-transforms",
+            "tsConfig": "packages/data-transforms/tsconfig.lib.json",
+            "project": "packages/data-transforms/package.json",
+            "entryFile": "packages/data-transforms/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "packages/data-transforms/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/data-transforms/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/data-transforms"],
+          "options": {
+            "jestConfig": "packages/data-transforms/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "dataviews-client": {
+      "root": "packages/dataviews-client",
+      "sourceRoot": "packages/dataviews-client/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/dataviews-client",
+            "tsConfig": "packages/dataviews-client/tsconfig.lib.json",
+            "project": "packages/dataviews-client/package.json",
+            "entryFile": "packages/dataviews-client/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "packages/dataviews-client/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/dataviews-client/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/dataviews-client"],
+          "options": {
+            "jestConfig": "packages/dataviews-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "fishing-map": {
+      "root": "applications/fishing-map",
+      "sourceRoot": "apps/fishing-map/src",
+      "projectType": "application",
+      "targets": {
+        "TODO": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["nx prepare-docker fishing-map ", "nx docker fishing-map "]
+          }
+        },
+        "prepare-docker": {
+          "TODO": "MOVE ./docker files to dist folder to get everything the image needs in an small context"
+        },
+        "deploy": {
+          "executor": "@nx-tools/nx-docker:build",
+          "options": {
+            "push": false,
+            "tags": ["gfw/fishing-map:latest"],
+            "file": "./apps/fishing-map/Dockerfile",
+            "context": "./dist/apps/fishing-map"
+          }
+        },
+        "start": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "start"
+          }
+        },
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "lint"
+          }
+        },
+        "test": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "test"
+          }
+        }
+      }
+    },
+    "fishing-map-e2e": {
+      "root": "applications/fishing-map-e2e",
+      "sourceRoot": "apps/fishing-map-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["nx e2e-serve fishing-map-e2e", "nx e2e-run fishing-map-e2e"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/fishing-map-e2e/**/*.{js,ts}"]
+          }
+        },
+        "e2e-run": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/fishing-map-e2e/cypress.json",
+            "tsConfig": "apps/fishing-map-e2e/tsconfig.json",
+            "baseUrl": "http://localhost:3003"
+          }
+        },
+        "e2e-serve": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["nx start fishing-map"],
+            "readyWhen": "can now view"
+          }
+        }
+      }
+    },
+    "fourwings-aggregate": {
+      "root": "packages/fourwings-aggregate",
+      "sourceRoot": "packages/fourwings-aggregate/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/fourwings-aggregate",
+            "tsConfig": "packages/fourwings-aggregate/tsconfig.lib.json",
+            "project": "packages/fourwings-aggregate/package.json",
+            "entryFile": "packages/fourwings-aggregate/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "packages/fourwings-aggregate/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/fourwings-aggregate/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/fourwings-aggregate"],
+          "options": {
+            "jestConfig": "packages/fourwings-aggregate/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "i18n-labels": {
+      "root": "packages/i18n-labels",
+      "targets": {
+        "start": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "start"
+          }
+        }
+      }
+    },
+    "layer-composer": {
+      "root": "packages/layer-composer",
+      "sourceRoot": "packages/layer-composer/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/layer-composer",
+            "tsConfig": "packages/layer-composer/tsconfig.lib.json",
+            "project": "packages/layer-composer/package.json",
+            "entryFile": "packages/layer-composer/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "packages/layer-composer/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/layer-composer/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/layer-composer"],
+          "options": {
+            "jestConfig": "packages/layer-composer/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ocean-areas": {
+      "root": "packages/ocean-areas",
+      "sourceRoot": "packages/ocean-areas/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/ocean-areas",
+            "tsConfig": "packages/ocean-areas/tsconfig.lib.json",
+            "project": "packages/ocean-areas/package.json",
+            "entryFile": "packages/ocean-areas/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "packages/ocean-areas/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/ocean-areas/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/ocean-areas"],
+          "options": {
+            "jestConfig": "packages/ocean-areas/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "pbf": {
+      "root": "packages/pbf-decoders",
+      "sourceRoot": "packages/pbf-decoders/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/pbf-decoders/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/pbf-decoders"],
+          "options": {
+            "jestConfig": "packages/pbf-decoders/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "react-hooks": {
+      "root": "packages/react-hooks",
+      "sourceRoot": "packages/react-hooks/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/react-hooks",
+            "tsConfig": "packages/react-hooks/tsconfig.lib.json",
+            "project": "packages/react-hooks/package.json",
+            "entryFile": "packages/react-hooks/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "packages/react-hooks/rollup.config.js",
+            "assets": [
+              {
+                "glob": "packages/react-hooks/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/react-hooks/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/react-hooks"],
+          "options": {
+            "jestConfig": "packages/react-hooks/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "timebar": {
+      "root": "packages/timebar",
+      "sourceRoot": "packages/timebar/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/timebar",
+            "tsConfig": "packages/timebar/tsconfig.lib.json",
+            "project": "packages/timebar/package.json",
+            "entryFile": "packages/timebar/src/index.js",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "packages/timebar/rollup.config.js",
+            "assets": [
+              {
+                "glob": "packages/timebar/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/timebar/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/timebar"],
+          "options": {
+            "jestConfig": "packages/timebar/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui-components": {
+      "root": "packages/ui-components",
+      "sourceRoot": "packages/ui-components/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/ui-components",
+            "tsConfig": "packages/ui-components/tsconfig.lib.json",
+            "project": "packages/ui-components/package.json",
+            "entryFile": "packages/ui-components/src/index.ts",
+            "external": ["react/jsx-runtime"],
+            "rollupConfig": "packages/ui-components/rollup.config.js",
+            "assets": [
+              {
+                "glob": "packages/ui-components/README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/ui-components/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/ui-components"],
+          "options": {
+            "jestConfig": "packages/ui-components/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
       }
     }
   }

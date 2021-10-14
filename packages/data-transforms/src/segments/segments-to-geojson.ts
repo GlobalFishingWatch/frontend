@@ -1,4 +1,4 @@
-import { FeatureCollection, LineString, Feature } from 'geojson'
+import type { FeatureCollection, LineString, Feature } from 'geojson'
 import { Segment, Point } from '../track-value-array-to-segments/types'
 
 const segmentsToGeoJSON = (segments: Segment[]) => {

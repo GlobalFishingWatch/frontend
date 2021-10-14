@@ -22,6 +22,7 @@ function useSmallScreen(width = DEFAULT_BREAKPOINT) {
         window.removeEventListener('resize', onWindowResize)
       }
     }
+    return
   }, [onWindowResize])
 
   return isSmallScreen

@@ -49,6 +49,7 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
     }
     return circlePaint
   }
+  return {}
 }
 
 class ContextGenerator {

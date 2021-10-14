@@ -209,6 +209,7 @@ export class GFW_API {
         throw e
       }
     }
+    return
   }
 
   fetch<T>(url: string, options: FetchOptions = {}) {
@@ -298,14 +299,12 @@ export class GFW_API {
                 return res.arrayBuffer()
               case 'vessel': {
                 try {
-                  return import('@globalfishingwatch/pbf/decoders/vessels.js').then(
-                    ({ vessels }) => {
-                      return res.arrayBuffer().then((buffer) => {
-                        const track = vessels.Track.decode(new Uint8Array(buffer))
-                        return track.data
-                      })
-                    }
-                  )
+                  return import('@globalfishingwatch/pbf').then(({ vessels }) => {
+                    return res.arrayBuffer().then((buffer) => {
+                      const track = vessels.Track.decode(new Uint8Array(buffer))
+                      return track.data
+                    })
+                  })
                 } catch (e: any) {
                   console.warn(
                     '@globalfishingwatch/pbf is a mandatory external dependency when using vessel response decoding'

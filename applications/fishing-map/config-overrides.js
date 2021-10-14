@@ -14,7 +14,6 @@ module.exports = {
         configFile: path.resolve(__dirname, 'tsconfig.json'),
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         mainFields: ['module', 'main'],
-        baseUrl: '../../',
       })
     )
     // Replace include option for babel loader with exclude
@@ -30,7 +29,7 @@ module.exports = {
   },
   paths: (paths) => {
     // Rewrite dist folder to where Nx expects it to be.
-    paths.appBuild = path.resolve(__dirname, '../../dist/applications/fishing-map')
+    paths.appBuild = path.resolve(__dirname, '../../dist/apps/fishing-map/html')
     return paths
   },
   jest: (config) => {

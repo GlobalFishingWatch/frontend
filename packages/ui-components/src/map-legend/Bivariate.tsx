@@ -74,6 +74,7 @@ const getBivariateValue = (realValues: number[], breaks: number[][]) => {
     // offset by one because values start at 1 (0 reserved for values < min value)
     return index + 1
   }
+  return
 }
 /**
  * ---------------------------------------------------------

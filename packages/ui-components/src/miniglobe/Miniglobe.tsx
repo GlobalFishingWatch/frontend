@@ -54,6 +54,7 @@ function MiniGlobe(props: MiniglobeProps) {
 
     if (north < south || west > east) {
       console.error('MiniGlobe: bounds specified not valid')
+      return null
     }
 
     const longitudeExtent = east - west
@@ -133,6 +134,7 @@ function MiniGlobe(props: MiniglobeProps) {
         />
       )
     }
+    return null
   }, [bounds, projection, size, viewportThickness])
 
   return (

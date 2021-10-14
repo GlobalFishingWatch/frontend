@@ -1,3 +1,10 @@
-import rollup from '../../config/rollup.config'
+const nrwlConfig = require('@nrwl/react/plugins/bundle-rollup');
+const svgr = require('@svgr/rollup').default;
 
-export default rollup()
+module.exports = (config) => {
+  nrwlConfig(config);
+  return {
+    ...config,
+    plugins: [...config.plugins, svgr()],
+  };
+};

@@ -188,6 +188,7 @@ class HeatmapAnimatedGenerator {
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
       return getExtrudedLayer(config, timeChunks, breaks)
     }
+    return []
   }
 
   getCacheKey = (config: FetchBreaksParams) => {

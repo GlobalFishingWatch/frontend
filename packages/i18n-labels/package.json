@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "serve": "yarn kill && serve -p 8000 --cors=true",
+    "start": "yarn kill && serve -p 8000 --cors=true",
     "kill": "kill-port 8000"
   },
   "files": [

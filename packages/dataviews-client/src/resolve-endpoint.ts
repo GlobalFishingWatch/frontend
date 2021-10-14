@@ -1,7 +1,7 @@
 import { Dataset, DatasetTypes, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
-export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
+const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
   const endpoint = dataset.endpoints?.find((endpoint) => endpoint.id === datasetConfig.endpoint)
 
   if (!endpoint) return null
@@ -47,3 +47,5 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
 
   return decodeURI(url)
 }
+
+export default resolveEndpoint

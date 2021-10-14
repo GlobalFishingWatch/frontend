@@ -1,1 +1,1 @@
-export { BBox } from 'geojson'
+export type BBox = [number, number, number, number]

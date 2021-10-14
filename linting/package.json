@@ -47,6 +47,5 @@
     "stylelint-config-css-modules": "^2.x",
     "stylelint-config-prettier": "^8.x",
     "stylelint-config-standard": "^20.x"
-  },
-  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+  }
 }

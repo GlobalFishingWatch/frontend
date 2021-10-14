@@ -1,45 +1,45 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "Debug CRA Tests - Fishing Map",
-        "type": "node",
-        "request": "launch",
-        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
-        "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
-        "cwd": "${workspaceRoot}/applications/fishing-map",
-        "protocol": "inspector",
-        "console": "integratedTerminal",
-        "internalConsoleOptions": "neverOpen"
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug CRA Tests - Fishing Map",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+      "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
+      "cwd": "${workspaceRoot}/applications/fishing-map",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Debug CRA Tests - Vessel History",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+      "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
+      "cwd": "${workspaceRoot}/applications/vessel-history",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "4wings - Debug Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/packages/fourwings-aggregate/node_modules/.bin/tap",
+      "args": ["test/*.test.mjs", "-T"],
+      "cwd": "${workspaceRoot}/packages/fourwings-aggregate",
+      "env": {
+        // "NODE_DEBUG": "1",
+        // "TAP_DEBUG": "1"
       },
-      {
-        "name": "Debug CRA Tests - Vessel History",
-        "type": "node",
-        "request": "launch",
-        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
-        "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
-        "cwd": "${workspaceRoot}/applications/vessel-history",
-        "protocol": "inspector",
-        "console": "integratedTerminal",
-        "internalConsoleOptions": "neverOpen"
-      },
-      {
-        "name": "4wings - Debug Tests",
-        "type": "node",
-        "request": "launch",
-        "runtimeExecutable": "${workspaceRoot}/packages/fourwings-aggregate/node_modules/.bin/tap",
-        "args": ["test/*.test.mjs", "-T"],
-        "cwd": "${workspaceRoot}/packages/fourwings-aggregate",
-        "env": {
-          // "NODE_DEBUG": "1",
-          // "TAP_DEBUG": "1"
-        },
-        "protocol": "inspector",
-        "console": "integratedTerminal",
-        "internalConsoleOptions": "neverOpen"
-      }
-    ]
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
 }
