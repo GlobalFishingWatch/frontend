@@ -27,7 +27,7 @@ function ColorRampLegend({
   const cleanValues = ramp?.filter(([value]) => value)
   const skipOddLabels = cleanValues && cleanValues.length >= 6 && !layer.divergent
 
-  // This scale is only used to draw non discrete gradient
+  // This scale is only used to draw non discrete gradient, and current value positioning
   const heatmapLegendScale = useMemo(() => {
     if (!ramp || !cleanRamp) return null
 
@@ -37,9 +37,17 @@ function ColorRampLegend({
       return value as number
     })
 
-    const rangeValues = cleanRamp.map((item, i) => (i * 100) / (ramp.length - 1))
+    // Reuse d3 logic when values go beyond max value
+    if (domainValues[0] === -Infinity) {
+      domainValues[0] = domainValues[1] + domainValues[2]
+    }
 
-    return scaleLinear().range(rangeValues).domain(domainValues)
+    const rangeValues = cleanRamp.map((item, i) => (i * 100) / cleanRamp.length)
+
+    return (value: number) => {
+      const scaled = scaleLinear().range(rangeValues).domain(domainValues)(value)
+      return isNaN(scaled) || scaled < 0 ? 0 : scaled
+    }
   }, [cleanRamp, ramp])
 
   const backgroundStyle = useMemo(() => {
@@ -121,7 +129,7 @@ function ColorRampLegend({
                   left: `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`,
                 }}
               >
-                {formatLegendValue(currentValue)}
+                {formatLegendValue(currentValue, false, false, layer.divergent)}
               </span>
             )}
             {type === 'colorramp-discrete' && (

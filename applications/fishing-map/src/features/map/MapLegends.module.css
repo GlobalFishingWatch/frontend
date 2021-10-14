@@ -1,5 +1,6 @@
 .legend .currentValue {
   background-color: white;
+  color: var(--color-primary-blue);
 }
 
 :global(.printing) .legend .currentValue {

@@ -235,7 +235,7 @@ const err = (msg: string) => {
   throw new Error(`4w-agg::${msg}`)
 }
 
-const aggregate = (intArray: number[], options: TileAggregationParams) => {
+function aggregate(intArray: number[], options: TileAggregationParams) {
   const {
     quantizeOffset = 0,
     tileBBox,
@@ -295,8 +295,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   const features = []
   const featuresInteractive = []
 
-  let aggregating = Array(sublayerCount).fill([])
-  console.log(aggregating)
+  let aggregating: number[][] = Array(sublayerCount).fill([])
   let currentAggregatedValues = Array(sublayerCount).fill(0)
   let currentAggregatedValuesLength = 0
 
@@ -375,7 +374,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
       }
     }
   } else {
-    console.log(aggregating)
     for (let f = 0; f < featureIntArrays.length; f++) {
       const featureIntArray = featureIntArrays[f]
       currentFeatureCell = featureIntArray[CELL_NUM_INDEX]
@@ -397,17 +395,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
         currentFeatureInteractive = getFeature({ ...featureParams, addMeta: true })
       }
 
-      if (currentFeatureCell === 2150) {
-        console.log(featureIntArray)
-        console.log(aggregating)
-      }
-
       for (let i = CELL_VALUES_START_INDEX; i < featureIntArray.length; i++) {
-        if (currentFeatureCell === 2150 && i === CELL_VALUES_START_INDEX) {
-          console.log(aggregating)
-          debugger
-        }
-
         const value = featureIntArray[i]
 
         // when we are looking at ts 0 and delta is 10, we are in fact looking at the aggregation of day -9
@@ -417,26 +405,12 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
         // dataset1, dataset2, dataset1, dataset2, ...
         const datasetIndex = featureBufferValuesPos % sublayerCount
 
-        if (currentFeatureCell === 2150) {
-          console.log(' was ', aggregating[datasetIndex])
-        }
         // collect value for this dataset
         aggregating[datasetIndex].push(value)
 
-        if (currentFeatureCell === 2150) {
-          console.log(
-            'will add ',
-            value,
-            ' to ',
-            aggregating[datasetIndex],
-            ' dataset index is ',
-            datasetIndex
-          )
-        }
-
         let tailValue = 0
         if (tail > currentFeatureMinTimestamp) {
-          tailValue = aggregating[datasetIndex].shift()
+          tailValue = aggregating[datasetIndex].shift() as number
         } else {
           currentAggregatedValuesLength++
         }
@@ -518,9 +492,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
             finalValue = getCumulativeValue(realValuesSum, cumulativeValuesPaddedStrings)
           }
           writeValueToFeature(quantizedTail, finalValue as string | number, currentFeature)
-          // if (currentFeatureCell === 2150) {
-          //   console.log(quantizedTail, currentAggregatedValues)
-          // }
         }
 
         if (datasetIndex === sublayerCount - 1) {
@@ -542,9 +513,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
         currentFeatureInteractive.properties.rawValues = featureIntArray
         featuresInteractive.push(currentFeatureInteractive)
       }
-      // if (currentFeatureCell === 2150) {
-      //   console.log(currentFeature)
-      // }
 
       featureBufferValuesPos = 0
 

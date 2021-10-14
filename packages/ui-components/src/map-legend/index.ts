@@ -46,6 +46,9 @@ export const formatLegendValue = (
     formattedValue = `${(number / 1000).toFixed(1).replace(/\.?0+$/, '')}K`
   else if (Math.abs(number) < 1) formattedValue = `${number.toFixed(2)}`
 
+  if (divergent && number > 0 && !isLast) {
+    formattedValue = ['+', formattedValue].join('')
+  }
   if (isFirst && !isNaN(number) && divergent) formattedValue = `≤${formattedValue}`
   if (isLast && !isNaN(number)) formattedValue = `≥${formattedValue}`
 

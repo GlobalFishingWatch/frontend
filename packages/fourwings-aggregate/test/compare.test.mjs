@@ -12,7 +12,7 @@ const BASE_CONFIG = {
   // interval: "10days",
   quantizeOffset: FRAME,
   singleFrame: false,
-  sublayerCombinationMode: 'delta',
+  sublayerCombinationMode: 'timecompare',
   sublayerCount: 2,
   sublayerVisibility: [true, true],
   x: 68,
@@ -38,3 +38,25 @@ tap.equal(getAt(TEST, BASE_CONFIG, { sublayerBreaks }, FEATURE, 0), 1)
 tap.equal(getAt(TEST, BASE_CONFIG, { sublayerBreaks }, FEATURE, 1), 8)
 tap.equal(getAt(TEST, BASE_CONFIG, { sublayerBreaks, delta: 3 }, FEATURE, 0), 1)
 tap.equal(getAt(TEST, BASE_CONFIG, { sublayerBreaks }, FEATURE, 4), undefined)
+
+// const TILE = [
+//   53, 113, 2322, 18468, 18560, 0, 194, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+// ]
+// const BASE_CONFIG_2 = {
+//   ...BASE_CONFIG,
+//   delta: 92,
+//   quantizeOffset: 18262,
+//   interval: 'day',
+//   tileBBox: [0, -85.0511287798066, 180, 0],
+//   x: 1,
+//   y: 1,
+//   z: 1,
+//   sublayerBreaks: [[-10000000, -5000000, -800000, 0, 800000, 5000000, 10000000]],
+// }
+// const agg2 = aggregateTile(TILE, BASE_CONFIG_2)
+// // console.log(agg2.main.features[0].properties)

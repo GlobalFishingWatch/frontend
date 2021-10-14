@@ -27,12 +27,11 @@ export default function griddedTimeCompare(
   // TODO check
   const pickValueAt = timeChunk.frame.toString()
   // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
-  const exprPick: Expression = ['coalesce', ['get', pickValueAt], 0]
+  const exprPick: Expression = ['get', pickValueAt]
 
   const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 
   const paint = {
-    // 'fill-color': timeChunk.active ? (exprColorRamp as any) : 'rgba(0,0,0,0)',
     'fill-color': exprColorRamp as any,
     'fill-outline-color': 'transparent',
   }
