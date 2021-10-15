@@ -14,8 +14,40 @@
   height: 60px;
   display: flex;
   align-items: center;
-  border-top: var(--border);
+
+  /* border-top: var(--border); */
   padding: 0 var(--space-S);
+  position: relative;
+}
+
+.divider {
+  opacity: 0.1;
+  background-color: #22447e;
+  width: calc(100% - 30px);
+  height: 1px;
+  position: relative;
+  margin: 10px 0 15px;
+  top: -8px;
+  left: 29px;
+  z-index: -1;
+}
+
+.highlightsContainer .divider {
+  width: 100%;
+  left: -8px;
+}
+
+.divider::before {
+  margin-right: 9px;
+  background: #fff url('../../../../assets/icons/vessel.svg') no-repeat 15px;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  background-size: 15px 15px;
+  top: -6px;
+  padding: 0 21px 0 10px;
 }
 
 .event .eventData {
@@ -43,6 +75,7 @@
   padding-left: var(--space-M);
   cursor: pointer;
   border-top: var(--border);
+  background: var(--gradient);
 }
 
 .voyage .eventData {
@@ -111,8 +144,16 @@
   box-shadow: 0 0 2px #163f89;
 }
 
-.eventIcon.encounter i {
-  background: #9c9091 url('../../../../assets/icons/encounter.svg') no-repeat center center;
+.highlighted::before {
+  content: '';
+  height: 10px;
+  width: 10px;
+  background-color: #f00;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: -15px;
+  position: absolute;
+  left: 0;
 }
 
 .event .actions {

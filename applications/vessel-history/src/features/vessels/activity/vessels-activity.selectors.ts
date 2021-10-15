@@ -138,20 +138,20 @@ export const selectEventsWithRenderingInfo = createSelector(
             if (event.encounter) {
               description = regionDescription
                 ? t(
-                    'event.encounterActionWith',
-                    'had an encounter with {{vessel}} in {{regionName}}',
-                    {
-                      vessel:
-                        event.encounter.vessel.name ??
-                        t('event.encounterAnotherVessel', 'another vessel'),
-                      regionName: regionDescription,
-                    }
-                  )
-                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
+                  'event.encounterActionWith',
+                  'had an encounter with {{vessel}} in {{regionName}}',
+                  {
                     vessel:
                       event.encounter.vessel.name ??
                       t('event.encounterAnotherVessel', 'another vessel'),
-                  })
+                    regionName: regionDescription,
+                  }
+                )
+                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
+                  vessel:
+                    event.encounter.vessel.name ??
+                    t('event.encounterAnotherVessel', 'another vessel'),
+                })
             }
             descriptionGeneric = t('event.encounter')
             break
@@ -203,8 +203,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-                count: Math.round(duration.minutes as number),
-              })
+              count: Math.round(duration.minutes as number),
+            })
             : '',
         ].join(' ')
 
@@ -235,6 +235,13 @@ export const selectFilteredActivityHighlightEvents = createSelector(
   [selectEventsWithRenderingInfo, selectSettings],
   (eventsWithRenderingInfo, settings) => {
     return filterActivityHighlightEvents(eventsWithRenderingInfo, settings)
+  }
+)
+
+export const selectHighlightEventIds = createSelector(
+  [selectFilteredActivityHighlightEvents],
+  (highlights): string[] => {
+    return highlights.map(event => event.id)
   }
 )
 
