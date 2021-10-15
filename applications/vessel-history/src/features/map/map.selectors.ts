@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client/dist/api-client'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
-import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
+import { SymbolLayer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
 import {
   getDataviewsGeneratorConfigs,
   UrlDataviewInstance,
@@ -106,31 +106,16 @@ export const selectVesselLastPositionGenerator = createSelector(
       sources: [lastPositionGEOJson],
       layers: [
         {
-          type: 'circle',
-          layout: {},
-          paint: {
-            'circle-color': '#ffffff',
-            'circle-opacity': 0.2,
-            'circle-radius': 14,
-          },
-          metadata: {
-            interactive: false,
-          },
-        } as CircleLayer,
-        {
-          type: 'circle',
-          layout: {},
-          paint: {
-            'circle-color': '#ffffff',
-            'circle-stroke-color': '#002358',
-            'circle-stroke-opacity': 1,
-            'circle-stroke-width': 1,
-            'circle-radius': 8,
-          },
-          metadata: {
-            interactive: false,
-          },
-        } as CircleLayer,
+          id: 'last-position-symbol',
+          type: 'symbol',
+          layout: {
+            'icon-allow-overlap': true,
+            'icon-image': 'arrow-inner',
+            'icon-size': 1.5,
+            'icon-rotate': ['get', 'course'],
+            visibility: 'visible',
+          } as SymbolLayout,
+        } as SymbolLayer,
       ],
     }
 

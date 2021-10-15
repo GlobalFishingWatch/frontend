@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
 import { upperFirst } from 'lodash'
+import bearing from '@turf/bearing'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
@@ -340,7 +341,16 @@ export const selectVesselLastPositionGEOJson = createSelector(
       .flat()
       .slice(-2) as TrackPosition[]
 
+    const prevPosition = lastSegment[0] as TrackPosition
     const lastPosition = lastSegment.pop() as TrackPosition
+    if (!lastPosition) return
+    const course = prevPosition
+      ? bearing(
+          [prevPosition.longitude, prevPosition.latitude],
+          [lastPosition.longitude, lastPosition.latitude]
+        )
+      : 0
+
     return {
       type: 'geojson',
       data: {
@@ -353,9 +363,8 @@ export const selectVesselLastPositionGEOJson = createSelector(
           },
           properties: {
             id: ['last-position', point.timestamp].join('-'),
-            coordinateProperties: {
-              times: [point.timestamp],
-            },
+            times: point.timestamp,
+            course: course,
           },
         })),
       },

@@ -29,6 +29,7 @@
     "@math.gl/web-mercator": "^3.5.5",
     "@reduxjs/toolkit": "1.5.0",
     "@researchgate/react-intersection-observer": "^1.3.5",
+    "@turf/bearing": "^6.5.0",
     "classnames": "^2.3.1",
     "countryflag": "^4.0.1",
     "dayjs": "^1.8.36",
