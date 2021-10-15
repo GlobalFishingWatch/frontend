@@ -1,8 +1,9 @@
 import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { event as uaEvent } from 'react-ga'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner, Tabs, Tag } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { VesselAPISource } from 'types'
@@ -35,6 +36,7 @@ import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vesse
 import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -128,6 +130,9 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
   }, [dispatch, loading, resourceQueries, vessel, vesselDataviewLoaded])
 
+  
+  const visibleHighlights = useSelector(countFilteredEventsHighlighted)
+
   const tabs: Tab[] = useMemo(
     () => [
       {
@@ -146,7 +151,15 @@ const Profile: React.FC = (props): React.ReactElement => {
       },
       {
         id: 'activity',
-        title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
+        title: <div className={styles.tagContainer}>
+          {t('common.activity', 'ACTIVITY').toLocaleUpperCase()} 
+          {visibleHighlights > 0 && 
+            <span className={cx(
+              styles.tabLabel, 
+              visibleHighlights > 9 ? styles.dig2 : '', 
+              visibleHighlights > 99 ? styles.dig3 : ''
+            )}>{visibleHighlights}</span>}
+        </div>,
         content: vessel ? (
           <Activity
             vessel={vessel}
@@ -170,7 +183,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         ),
       },
     ],
-    [t, vessel, lastPosition, lastPortVisit, loading]
+    [t, vessel, lastPosition, lastPortVisit, loading, visibleHighlights]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
