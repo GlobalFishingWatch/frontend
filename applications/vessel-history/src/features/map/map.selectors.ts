@@ -15,7 +15,7 @@ import {
 import { selectVesselsStatus } from 'features/vessels/vessels.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { ResourcesState } from 'features/resources/resources.slice'
-import { DEBUG_MODE, DEFAULT_WORKSPACE } from 'data/config'
+import { DEBUG_MODE, DEFAULT_WORKSPACE, LAST_POSITION_LAYERS_PREFIX } from 'data/config'
 import { Range } from 'types'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
 import { selectFilters } from 'features/event-filters/filters.slice'
@@ -106,7 +106,18 @@ export const selectVesselLastPositionGenerator = createSelector(
       sources: [lastPositionGEOJson],
       layers: [
         {
-          id: 'last-position-symbol',
+          id: `${LAST_POSITION_LAYERS_PREFIX}-symbol-outline`,
+          type: 'symbol',
+          layout: {
+            'icon-allow-overlap': true,
+            'icon-image': 'arrow-outer',
+            'icon-size': 2,
+            'icon-rotate': ['get', 'course'],
+            visibility: 'visible',
+          } as SymbolLayout,
+        } as SymbolLayer,
+        {
+          id: LAST_POSITION_LAYERS_PREFIX,
           type: 'symbol',
           layout: {
             'icon-allow-overlap': true,
