@@ -353,9 +353,9 @@ export const selectVesselLastPositionGEOJson = createSelector(
     if (!lastPosition) return
     const course = prevPosition
       ? bearing(
-          [prevPosition.longitude, prevPosition.latitude],
-          [lastPosition.longitude, lastPosition.latitude]
-        )
+        [prevPosition.longitude, prevPosition.latitude],
+        [lastPosition.longitude, lastPosition.latitude]
+      )
       : 0
 
     return {
@@ -376,5 +376,19 @@ export const selectVesselLastPositionGEOJson = createSelector(
         })),
       },
     } as GeoJSONSourceRaw
+  }
+)
+
+export const selectFilteredEventsHighlighted = createSelector(
+  [selectHighlightEventIds, selectFilteredEvents],
+  (highlightIds, events) => {
+    return events.filter(event => highlightIds.indexOf(event.id) !== -1)
+  }
+)
+
+export const countFilteredEventsHighlighted = createSelector(
+  [selectFilteredEventsHighlighted],
+  (events) => {
+    return events.length
   }
 )

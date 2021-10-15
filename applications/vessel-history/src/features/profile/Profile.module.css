@@ -58,6 +58,28 @@
   border: none;
 }
 
+.tagContainer {
+  line-height: 24px;
+}
+
+.tabLabel {
+  background: red;
+  border-radius: 50%;
+  color: var(--color-white);
+  font-size: 1rem;
+  padding: 5px 9px;
+  margin-left: var(--space-XS);
+  vertical-align: bottom;
+}
+
+.tabLabel.dig2 {
+  padding: 5px;
+}
+
+.tabLabel.dig3 {
+  padding: 6px 3px;
+}
+
 .mapContainer {
   min-height: 30vh;
   height: calc(100vh - var(--header-height) - var(--tabs-height));
