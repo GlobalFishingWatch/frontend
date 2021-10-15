@@ -12,7 +12,7 @@ import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { Range } from 'types'
 import { Voyage } from 'types/voyage'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
-import { resetFilters, selectFilters } from 'features/event-filters/filters.slice'
+import { resetFilters } from 'features/event-filters/filters.slice'
 import {
   selectHighlightedEvent,
   selectMapVoyageTime,
@@ -29,8 +29,6 @@ export default function useMapEvents() {
   const { getVoyageByEvent, getLastEventInVoyage } = useVoyagesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const [findEventVoyage, setFindEventVoyage] = useState<RenderedEvent>()
-  const filters = useSelector(selectFilters)
-  const [prevFilters, setPrevFilters] = useState(filters)
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
@@ -128,7 +126,7 @@ export default function useMapEvents() {
   ])
 
   const onFiltersChanged = useCallback(() => {
-    if (!highlightedEvent) return
+    if (!highlightedEvent || findEventVoyage) return
     const highlightedRenderedEvent = events.find((event) => event.id === highlightedEvent?.id)
 
     if (!highlightedRenderedEvent) {
@@ -145,20 +143,12 @@ export default function useMapEvents() {
         })
       }
     }
-  }, [events, highlightEvent, highlightedEvent, setMapCoordinates, viewport.zoom])
-
-  // Highlight last event and voyage when filters change and
-  // the previously highlighted event is not shown in the list anymore
-  useEffect(() => {
-    if (JSON.stringify(prevFilters) !== JSON.stringify(filters)) {
-      if (!findEventVoyage) onFiltersChanged()
-      setPrevFilters(filters)
-    }
-  }, [filters, findEventVoyage, onFiltersChanged, prevFilters])
+  }, [events, findEventVoyage, highlightEvent, highlightedEvent, setMapCoordinates, viewport.zoom])
 
   return {
     highlightEvent,
     highlightVoyage,
     selectVesselEventOnClick,
+    onFiltersChanged,
   }
 }
