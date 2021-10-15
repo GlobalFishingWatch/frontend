@@ -21,6 +21,7 @@ import {
   VisibleEvents,
   WorkspaceActivityCategory,
   WorkspaceAnalysis,
+  WorkspaceAnalysisType,
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
@@ -64,6 +65,13 @@ export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =
 export const selectAnalysisQuery = createSelector(
   [selectWorkspaceStateProperty('analysis')],
   (analysis): WorkspaceAnalysis => {
+    return analysis
+  }
+)
+
+export const selectAnalysisTypeQuery = createSelector(
+  [selectWorkspaceStateProperty('analysisType')],
+  (analysis): WorkspaceAnalysisType => {
     return analysis
   }
 )

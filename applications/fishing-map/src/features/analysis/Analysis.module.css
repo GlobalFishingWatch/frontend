@@ -96,3 +96,7 @@
   justify-content: space-between;
   padding: var(--space-M);
 }
+
+.typeChoice {
+  padding: var(--space-M);
+}

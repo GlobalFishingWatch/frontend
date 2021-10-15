@@ -24,7 +24,7 @@ import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { selectAnalysisQuery } from 'features/app/app.selectors'
+import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
@@ -44,6 +44,7 @@ export const useFilteredTimeSeries = () => {
   const map = useMapInstance()
   const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
+  const analysisType = useSelector(selectAnalysisTypeQuery)
 
   const simplifiedGeometry = useMemo(() => {
     if (!analysisAreaGeometry) return null
@@ -184,7 +185,7 @@ export const useFilteredTimeSeries = () => {
     }
 
     map.on('idle', onMapIdle)
-  }, [map, computeTimeseries, simplifiedGeometry])
+  }, [map, computeTimeseries, simplifiedGeometry, analysisType])
 
   const { start, end } = useTimerangeConnect()
 
