@@ -74,9 +74,12 @@ export const EVENTS_COLORS: Record<string, string> = {
 
 export const DEFAULT_EMPTY_VALUE = ' --- '
 
+export const LAST_POSITION_LAYERS_PREFIX = 'last-position'
+
 export const AUTHORIZED_USER_GROUPS = ['VV-African-Pilot', 'Admin-group', 'GFW']
 
-export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
+export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
+  process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
   ? {}
   : { debug: true }

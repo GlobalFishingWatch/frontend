@@ -47,7 +47,9 @@ export type CoordinatePosition = {
 export interface MapCoordinates extends CoordinatePosition {
   zoom: number
 }
-
+export interface TrackPosition extends CoordinatePosition {
+  timestamp: number
+}
 export interface FieldValueCounter<T = string> {
   counter: number
   name: T
