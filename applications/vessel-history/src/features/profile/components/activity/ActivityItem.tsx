@@ -29,14 +29,12 @@ const ActivityItem: React.FC<EventProps> = ({
         ></ActivityVoyage>
       )}
       {event.type !== EventTypeVoyage.Voyage && (
-        <div  className={styles.ppp}>
-          <ActivityEvent
-            event={event}
-            highlighted={highlighted}
-            onMapClick={onMapClick}
-            onInfoClick={onInfoClick}
-            ></ActivityEvent>
-        </div>
+        <ActivityEvent
+          event={event}
+          highlighted={highlighted}
+          onMapClick={onMapClick}
+          onInfoClick={onInfoClick}
+          ></ActivityEvent>
       )}
     </Fragment>
   )

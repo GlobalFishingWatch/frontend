@@ -59,25 +59,21 @@
 }
 
 .tagContainer {
-  line-height: 24px;
+  display: flex;
+  align-items: center;
 }
 
 .tabLabel {
-  background: red;
+  background: var(--color-danger-red);
   border-radius: 50%;
   color: var(--color-white);
   font-size: 1rem;
-  padding: 5px 9px;
   margin-left: var(--space-XS);
-  vertical-align: bottom;
-}
-
-.tabLabel.dig2 {
-  padding: 5px;
-}
-
-.tabLabel.dig3 {
-  padding: 6px 3px;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .mapContainer {

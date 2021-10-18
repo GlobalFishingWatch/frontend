@@ -2,7 +2,6 @@ import React, { memo, useRef } from 'react'
 import cx from 'classnames'
 import Button from '../button'
 import { ButtonSize } from '../button/Button'
-import Tag from '../tag'
 import styles from './Tabs.module.css'
 import { Tab } from '.'
 

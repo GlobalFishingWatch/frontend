@@ -240,8 +240,8 @@ export const selectFilteredActivityHighlightEvents = createSelector(
 
 export const selectHighlightEventIds = createSelector(
   [selectFilteredActivityHighlightEvents],
-  (highlights): string[] => {
-    return highlights.map(event => event.id)
+  (highlights): { [key: string]: boolean } => {
+    return highlights.reduce((map, event) => ({ ...map, [event.id]: true }), {})
   }
 )
 
@@ -382,7 +382,7 @@ export const selectVesselLastPositionGEOJson = createSelector(
 export const selectFilteredEventsHighlighted = createSelector(
   [selectHighlightEventIds, selectFilteredEvents],
   (highlightIds, events) => {
-    return events.filter(event => highlightIds.indexOf(event.id) !== -1)
+    return events.filter(event => highlightIds[event.id])
   }
 )
 
