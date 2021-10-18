@@ -3,8 +3,8 @@
   "version": "1.0.11",
   "private": false,
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.ts",
+  "typings": "./decoders",
   "files": [
     "dist",
     "decoders"

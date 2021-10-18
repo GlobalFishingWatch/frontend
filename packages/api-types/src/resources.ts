@@ -1,4 +1,4 @@
-import { Segment } from '@globalfishingwatch/data-transforms'
+import type { Segment } from '@globalfishingwatch/data-transforms'
 import { Dataset } from './datasets'
 import { DataviewDatasetConfig } from '.'
 

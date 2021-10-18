@@ -405,9 +405,32 @@
     },
     "pbf": {
       "root": "packages/pbf-decoders",
-      "sourceRoot": "packages/pbf-decoders/src",
+      "sourceRoot": "packages/pbf-decoders",
       "projectType": "library",
       "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/pbf-decoders",
+            "tsConfig": "packages/pbf-decoders/tsconfig.lib.json",
+            "project": "packages/pbf-decoders/package.json",
+            "entryFile": "packages/pbf-decoders/index.ts",
+            "external": [
+              "react/jsx-runtime",
+              "@globalfishingwatch/pbf",
+              "@globalfishingwatch/pbf/decoders/vessels.js"
+            ],
+            "rollupConfig": "packages/pbf-decoders/rollup.config.js",
+            "assets": [
+              {
+                "glob": "packages/pbf-decoders/decoders",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],

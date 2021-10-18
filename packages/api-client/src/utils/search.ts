@@ -1,5 +1,11 @@
 import { partition } from 'lodash'
-import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+
+export type MultiSelectOption<T = any> = {
+  id: T
+  label: string
+  alias?: string[]
+  tooltip?: string
+}
 
 export type AdvancedSearchQueryFieldKey =
   | 'shipname'

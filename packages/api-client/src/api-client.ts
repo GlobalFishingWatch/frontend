@@ -456,6 +456,7 @@ export class GFW_API {
       }
       this.status = 'idle'
       reject(new Error('No login token provided'))
+      return
     })
     return await this.logging
   }
