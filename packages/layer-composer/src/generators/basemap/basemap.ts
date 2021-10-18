@@ -1,5 +1,5 @@
 import { Layer } from '@globalfishingwatch/mapbox-gl'
-import { Type, BasemapGeneratorConfig, BasemapType } from '../types'
+import { GeneratorType, BasemapGeneratorConfig, BasemapType } from '../types'
 import { layers, sources } from './basemap-layers'
 
 const DEFAULT_CONFIG: Partial<BasemapGeneratorConfig> = {
@@ -8,7 +8,7 @@ const DEFAULT_CONFIG: Partial<BasemapGeneratorConfig> = {
 }
 
 class BasemapGenerator {
-  type = Type.Basemap
+  type = GeneratorType.Basemap
 
   _getStyleSources = (config: BasemapGeneratorConfig) => {
     const sourcesForBasemap = {

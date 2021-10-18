@@ -1,5 +1,5 @@
 import { AnyLayer, Layer, CirclePaint, LinePaint, FillPaint } from '@globalfishingwatch/mapbox-gl'
-import { Type, ContextGeneratorConfig } from '../types'
+import { GeneratorType, ContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
@@ -53,7 +53,7 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
 }
 
 class ContextGenerator {
-  type = Type.Context
+  type = GeneratorType.Context
 
   _getStyleSources = (config: ContextGeneratorConfig) => {
     if (!config.tilesUrl) {

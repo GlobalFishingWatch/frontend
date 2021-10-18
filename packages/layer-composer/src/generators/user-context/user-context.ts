@@ -1,7 +1,7 @@
 import { zip, flatten } from 'lodash'
 import type { AnyLayer, FillLayer, LineLayer, Expression } from '@globalfishingwatch/mapbox-gl'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/context'
-import { Type, UserContextGeneratorConfig } from '../types'
+import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
@@ -12,7 +12,7 @@ import {
 } from '../context/context.utils'
 
 class UserContextGenerator {
-  type = Type.UserContext
+  type = GeneratorType.UserContext
 
   _getStyleSources = (config: UserContextGeneratorConfig) => {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)

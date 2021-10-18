@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import LayerComposer, {
   sort,
-  Generators,
   ExtendedStyle,
   StyleTransformation,
   getInteractiveLayerIds,
+  AnyGeneratorConfig,
+  GlobalGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 
 const applyStyleTransformations = (
@@ -25,8 +26,8 @@ let styleSpec: any
 
 const defaultLayerComposerInstance = new LayerComposer()
 function useLayerComposer(
-  generatorConfigs: Generators.AnyGeneratorConfig[],
-  globalGeneratorConfig?: Generators.GlobalGeneratorConfig,
+  generatorConfigs: AnyGeneratorConfig[],
+  globalGeneratorConfig?: GlobalGeneratorConfig,
   styleTransformations: StyleTransformation[] = defaultTransformations,
   layerComposer: LayerComposer = defaultLayerComposerInstance
 ) {

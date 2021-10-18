@@ -9,8 +9,7 @@ import {
   EndpointId,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/src/generators'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '.'
 
 export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
@@ -112,7 +111,7 @@ const getTrackDataviewDatasetConfigs = (
 }
 
 export type DatasetConfigsTransforms = Partial<
-  Record<Generators.Type, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
+  Record<GeneratorType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
 >
 
 /**
@@ -130,10 +129,10 @@ export const getDataviewsForResourceQuerying = (
   const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
     let preparedDatasetConfigs
     switch (dataviewInstance.config?.type) {
-      case Generators.Type.Track:
+      case GeneratorType.Track:
         preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
         preparedDatasetConfigs =
-          datasetConfigsTransform?.[Generators.Type.Track]?.(preparedDatasetConfigs)
+          datasetConfigsTransform?.[GeneratorType.Track]?.(preparedDatasetConfigs)
         break
 
       default:
@@ -155,7 +154,7 @@ export const resolveResourcesFromDatasetConfigs = (
   dataviews: UrlDataviewInstance[]
 ): Resource[] => {
   return dataviews
-    .filter((dataview) => dataview.config?.type === Generators.Type.Track)
+    .filter((dataview) => dataview.config?.type === GeneratorType.Track)
     .flatMap((dataview) => {
       if (!dataview.datasetsConfig) return []
       return dataview.datasetsConfig.flatMap((datasetConfig) => {

@@ -7,7 +7,7 @@ import {
   VALUE_MULTIPLIER,
 } from '@globalfishingwatch/fourwings-aggregate'
 import {
-  Type,
+  GeneratorType,
   HeatmapAnimatedGeneratorConfig,
   MergedGeneratorConfig,
   HeatmapAnimatedMode,
@@ -86,7 +86,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
 }
 
 class HeatmapAnimatedGenerator {
-  type = Type.HeatmapAnimated
+  type = GeneratorType.HeatmapAnimated
   breaksCache: Record<string, { loading: boolean; error: boolean; breaks?: Breaks }> = {}
 
   _getStyleSources = (

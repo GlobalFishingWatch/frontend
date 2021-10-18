@@ -5,7 +5,7 @@ import greatCircle from '@turf/great-circle'
 import { Layer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { Dictionary, Group } from '../../types'
-import { Type, RulersGeneratorConfig, Ruler } from '../types'
+import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
 
 const COLOR = '#ffaa00'
 
@@ -83,7 +83,7 @@ const getRulersGeojsons = (data: Ruler[]): Dictionary<FeatureCollection> => {
 }
 
 class RulersGenerator {
-  type = Type.Rulers
+  type = GeneratorType.Rulers
 
   _getStyleSources = (config: RulersGeneratorConfig) => {
     const { data, id } = config

@@ -15,15 +15,17 @@ import {
 import {
   DEFAULT_HEATMAP_INTERVALS,
   GeneratorDataviewConfig,
-  Generators,
+  GeneratorType,
   Group,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
+  HeatmapAnimatedMode,
+  HeatmapAnimatedGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
   HeatmapAnimatedGeneratorSublayer,
   HeatmapAnimatedInteractionType,
-} from '@globalfishingwatch/layer-composer/src/generators/types'
+} from '@globalfishingwatch/layer-composer'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import {
   resolveDataviewDatasetResource,
@@ -50,7 +52,7 @@ type DataviewsGeneratorConfigsParams = {
   highlightedTime?: { start: string; end: string }
   highlightedEvent?: ApiEvent
   mergedActivityGeneratorId?: string
-  heatmapAnimatedMode?: Generators.HeatmapAnimatedMode
+  heatmapAnimatedMode?: HeatmapAnimatedMode
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -94,7 +96,7 @@ export function getGeneratorConfig(
   }
 
   switch (dataview.config?.type) {
-    case Generators.Type.TileCluster: {
+    case GeneratorType.TileCluster: {
       const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
         dataview,
         DatasetTypes.Events
@@ -109,7 +111,7 @@ export function getGeneratorConfig(
         ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
       }
     }
-    case Generators.Type.Track: {
+    case GeneratorType.Track: {
       // Inject highligtedTime
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
@@ -136,7 +138,7 @@ export function getGeneratorConfig(
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           event: dataview.config?.event,
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
-          type: Generators.Type.VesselEvents,
+          type: GeneratorType.VesselEvents,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
           data: data,
@@ -148,7 +150,7 @@ export function getGeneratorConfig(
       }
       return generator
     }
-    case Generators.Type.Heatmap: {
+    case GeneratorType.Heatmap: {
       const heatmapDataset = dataview.datasets?.find(
         (dataset) => dataset.type === DatasetTypes.Fourwings
       )
@@ -179,14 +181,14 @@ export function getGeneratorConfig(
       }
       return generator
     }
-    case Generators.Type.HeatmapAnimated: {
+    case GeneratorType.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
-      let environmentalConfig: Partial<Generators.HeatmapAnimatedGeneratorConfig> = {}
+      let environmentalConfig: Partial<HeatmapAnimatedGeneratorConfig> = {}
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
         const datasetsIds =
           dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
-        const sublayers: Generators.HeatmapAnimatedGeneratorSublayer[] = [
+        const sublayers: HeatmapAnimatedGeneratorSublayer[] = [
           {
             id: generator.id,
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
@@ -207,7 +209,7 @@ export function getGeneratorConfig(
         environmentalConfig = {
           sublayers,
           maxZoom: 8,
-          mode: Generators.HeatmapAnimatedMode.Single,
+          mode: HeatmapAnimatedMode.Single,
           aggregationOperation: AggregationOperation.Avg,
           tilesAPI,
           interactive: true,
@@ -218,6 +220,7 @@ export function getGeneratorConfig(
 
       generator = {
         ...generator,
+        ...(!generator.type && { type: GeneratorType.HeatmapAnimated }),
         ...environmentalConfig,
       }
 
@@ -245,8 +248,8 @@ export function getGeneratorConfig(
       }
       return generator
     }
-    case Generators.Type.Context:
-    case Generators.Type.UserContext: {
+    case GeneratorType.Context:
+    case GeneratorType.UserContext: {
       if (Array.isArray(dataview.config.layers)) {
         const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
           const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(
@@ -291,7 +294,7 @@ export function getGeneratorConfig(
           generator.steps = steps
         } else if (
           dataset.category === DatasetCategory.Context &&
-          dataview.config?.type === Generators.Type.UserContext
+          dataview.config?.type === GeneratorType.UserContext
         ) {
           generator.disableInteraction = dataset.configuration?.disableInteraction
         }
@@ -323,7 +326,7 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
-  const { heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Compare } = params || {}
+  const { heatmapAnimatedMode = HeatmapAnimatedMode.Compare } = params || {}
 
   const activityDataviews: UrlDataviewInstance[] = []
 
@@ -331,7 +334,7 @@ export function getDataviewsGeneratorConfigs(
   const dataviewsFiltered = dataviews.filter((d) => {
     const isActivityDataview =
       (d.category === DataviewCategory.Fishing || d.category === DataviewCategory.Presence) &&
-      d.config?.type === Generators.Type.HeatmapAnimated
+      d.config?.type === GeneratorType.HeatmapAnimated
     if (isActivityDataview) {
       activityDataviews.push(d)
     }
@@ -368,7 +371,7 @@ export function getDataviewsGeneratorConfigs(
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
         datasets,
-        colorRamp: config.colorRamp as Generators.ColorRampsIds,
+        colorRamp: config.colorRamp as ColorRampsIds,
         colorRampWhiteEnd: true,
         filter: config.filter,
         visible: config.visible,
@@ -390,7 +393,7 @@ export function getDataviewsGeneratorConfigs(
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
       config: {
-        type: Generators.Type.HeatmapAnimated,
+        type: GeneratorType.HeatmapAnimated,
         sublayers: activitySublayers,
         mode: heatmapAnimatedMode,
         ...(interval && { interval }),

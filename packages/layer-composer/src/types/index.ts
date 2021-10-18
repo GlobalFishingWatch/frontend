@@ -13,7 +13,7 @@ import type {
 } from '@globalfishingwatch/mapbox-gl'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
-  Type,
+  GeneratorType,
   ColorRampsIds,
   GeneratorLegend,
   HeatmapAnimatedGeneratorSublayer,
@@ -21,7 +21,7 @@ import {
   AnyGeneratorConfig,
 } from '../generators/types'
 
-export interface GeneratorDataviewConfig<T = Type> extends DataviewConfig<T> {
+export interface GeneratorDataviewConfig<T = GeneratorType> extends DataviewConfig<T> {
   colorRamp?: ColorRampsIds
   basemap?: string
   sublayers?: HeatmapAnimatedGeneratorSublayer[]
@@ -97,7 +97,7 @@ export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
 export interface ExtendedLayerMeta {
   group?: Group
   generatorId: string
-  generatorType: Type
+  generatorType: GeneratorType
   legend?: LayerMetadataLegend | LayerMetadataLegend[]
   gridArea?: number
   currentValue?: number

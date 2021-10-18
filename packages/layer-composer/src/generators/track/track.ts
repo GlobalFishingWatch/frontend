@@ -6,7 +6,7 @@ import convert from 'color-convert'
 import type { LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Group } from '../../types'
-import { Type, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
+import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { isConfigVisible } from '../utils'
 import filterTrackByTimerange from './filterTrackByTimerange'
@@ -87,7 +87,7 @@ const DEFAULT_TRACK_COLOR = 'rgba(0, 193, 231, 1)'
 export type GlobalTrackGeneratorConfig = MergedGeneratorConfig<TrackGeneratorConfig>
 
 class TrackGenerator {
-  type = Type.Track
+  type = GeneratorType.Track
   highlightSufix = '_highlighted'
   highlightEventSufix = `${this.highlightSufix}_event`
 

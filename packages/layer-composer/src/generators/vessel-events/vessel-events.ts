@@ -7,7 +7,7 @@ import type {
   GeoJSONSourceRaw,
 } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
-import { Type, VesselEventsGeneratorConfig, MergedGeneratorConfig } from '../types'
+import { GeneratorType, VesselEventsGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {
@@ -27,7 +27,7 @@ export type GlobalVesselEventsGeneratorConfig = MergedGeneratorConfig<VesselEven
 const DEFAULT_STROKE_COLOR = 'rgba(0, 193, 231, 1)'
 
 class VesselsEventsGenerator {
-  type = Type.VesselEvents
+  type = GeneratorType.VesselEvents
 
   _showTrackSegments = (config: GlobalVesselEventsGeneratorConfig) => {
     return (

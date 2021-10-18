@@ -2,7 +2,7 @@ import { Layer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
 import { Group } from '../../../types'
-import { Type } from '../../types'
+import { GeneratorType } from '../../types'
 import { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
 import { getLayerId, getSourceId } from '../util'
@@ -49,7 +49,7 @@ export default function gridded(
         },
         metadata: {
           group: config.group || Group.Heatmap,
-          generatorType: Type.HeatmapAnimated,
+          generatorType: GeneratorType.HeatmapAnimated,
           generatorId: config.id,
           interactive: true,
           uniqueFeatureInteraction: true,

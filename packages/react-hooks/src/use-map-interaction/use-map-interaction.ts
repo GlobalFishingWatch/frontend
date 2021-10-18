@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import type { MapEvent } from 'react-map-gl'
 import {
-  Generators,
+  Interval,
+  GeneratorType,
   ExtendedStyleMeta,
   CONFIG_BY_INTERVAL,
 } from '@globalfishingwatch/layer-composer'
@@ -65,7 +66,7 @@ const getExtendedFeatures = (
       },
     }
     switch (generatorType) {
-      case Generators.Type.HeatmapAnimated:
+      case GeneratorType.HeatmapAnimated:
         const timeChunks = generatorMetadata?.timeChunks
         const frame = timeChunks?.activeChunkFrame
         const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
@@ -108,8 +109,8 @@ const getExtendedFeatures = (
           }
           return [temporalGridExtendedFeature]
         })
-      case Generators.Type.Context:
-      case Generators.Type.UserContext:
+      case GeneratorType.Context:
+      case GeneratorType.UserContext:
         return {
           ...extendedFeature,
           gfwId: feature.properties?.gfw_id,

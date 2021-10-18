@@ -14,7 +14,7 @@ import {
 import {
   GlobalGeneratorConfig,
   AnyGeneratorConfig,
-  Type,
+  GeneratorType,
   GlobalGeneratorConfigExtended,
 } from './generators/types'
 import { isConfigVisible } from './generators/utils'
@@ -90,12 +90,12 @@ class LayerComposer {
       if (!newLayer.metadata) {
         newLayer.metadata = {
           generatorId: generatorConfig.id,
-          generatorType: generatorConfig.type as Type,
+          generatorType: generatorConfig.type as GeneratorType,
         }
       } else {
         newLayer.metadata = {
           ...newLayer.metadata,
-          generatorType: generatorConfig.type as Type,
+          generatorType: generatorConfig.type as GeneratorType,
         }
       }
       if (generatorConfig.opacity !== undefined && generatorConfig.opacity !== null) {

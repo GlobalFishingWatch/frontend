@@ -1,7 +1,7 @@
-import { Type, GlGeneratorConfig } from '../types'
+import { GeneratorType, GlGeneratorConfig } from '../types'
 
 class GlStyleGenerator {
-  type = Type.GL
+  type = GeneratorType.GL
 
   _getStyleSources = (config: GlGeneratorConfig) => {
     return config.sources?.map((glSource: any) => ({ id: `${config.id}`, ...glSource })) || []

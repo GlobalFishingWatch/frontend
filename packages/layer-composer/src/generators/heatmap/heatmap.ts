@@ -1,7 +1,7 @@
 import { flatten, zip } from 'lodash'
 import type { FillLayer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
-import { Type, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
+import { GeneratorType, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import fetchStats from './util/fetch-stats'
@@ -14,7 +14,7 @@ import { toURLArray } from './util'
 export type GlobalHeatmapGeneratorConfig = MergedGeneratorConfig<HeatmapGeneratorConfig>
 
 class HeatmapGenerator {
-  type = Type.Heatmap
+  type = GeneratorType.Heatmap
   statsError = 0
   statsCache: Record<string, { loading: boolean; error: boolean; stats?: StatsByZoom }> = {}
 
@@ -115,7 +115,7 @@ class HeatmapGenerator {
           },
           // TODO: It should be added on _applyGenericStyle from layers composer,
           // but it needs to be fixed to make it work
-          generatorType: Type.Heatmap,
+          generatorType: GeneratorType.Heatmap,
           gridArea: stats?.area,
           currentlyAt: pickValueAt,
           group: config.metadata?.group || Group.Heatmap,

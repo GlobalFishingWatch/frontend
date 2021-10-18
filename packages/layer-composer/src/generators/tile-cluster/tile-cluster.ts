@@ -1,5 +1,5 @@
 import { AnyLayer } from '@globalfishingwatch/mapbox-gl'
-import { Type, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
+import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/background'
@@ -12,7 +12,7 @@ export type GlobalTileClusterGeneratorConfig = Required<
 >
 
 class TileClusterGenerator {
-  type = Type.TileCluster
+  type = GeneratorType.TileCluster
 
   _getStyleSources = (config: GlobalTileClusterGeneratorConfig) => {
     if (!config.tilesUrl) {

@@ -1,5 +1,5 @@
 import { GeneratorStyles, Group } from '../../types'
-import { Type, CartoPolygonsGeneratorConfig } from '../types'
+import { GeneratorType, CartoPolygonsGeneratorConfig } from '../types'
 import layersDirectory from './carto-polygons-layers'
 
 export const CARTO_FISHING_MAP_API = 'https://carto.globalfishingwatch.org/user/admin/api/v1/map'
@@ -31,7 +31,7 @@ const getCartoLayergroupId = async (options: CartoLayerOptions) => {
 }
 
 class CartoPolygonsGenerator {
-  type = Type.CartoPolygons
+  type = GeneratorType.CartoPolygons
   tilesCacheByid: { [key: string]: any } = {}
   baseUrl: string
 
