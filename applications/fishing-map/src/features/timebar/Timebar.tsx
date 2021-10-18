@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
@@ -25,6 +26,7 @@ import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.sel
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectIsMapDrawing } from 'features/map/map.selectors'
+import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -69,6 +71,7 @@ const TimebarWrapper = () => {
   const tracksGraphs = useSelector(selectTracksGraphs)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
   const isMapDrawing = useSelector(selectIsMapDrawing)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
 
   const dispatch = useDispatch()
 
@@ -200,7 +203,7 @@ const TimebarWrapper = () => {
   if (!start || !end || isMapDrawing) return null
 
   return (
-    <div>
+    <div className={cx({ [styles.disabled]: showTimeComparison })}>
       <TimebarComponent
         enablePlayback={true}
         labels={labels}

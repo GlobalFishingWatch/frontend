@@ -1,0 +1,22 @@
+.container {
+  width: 100%;
+  padding: var(--space-M);
+}
+
+.timeSelection {
+  display: flex;
+  justify-content: space-between;
+}
+
+.durationWrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+.duration {
+  width: var(--size-M);
+}
+
+.durationType {
+  width: 10rem;
+}

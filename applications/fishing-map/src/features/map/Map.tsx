@@ -165,7 +165,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const debugOptions = useSelector(selectDebugOptions)
 
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
-  const portalledLegend = showTimeComparison
+  const portalledLegend = !showTimeComparison
 
   const mapLoaded = useMapLoaded()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)

@@ -17,7 +17,12 @@
     "evolution": "evolution",
     "correlation": "correlation",
     "periodComparison": "period comparison",
-    "beforeAfter": "before/after"
+    "beforeAfter": "before/after",
+    "periodComparison1st": "start of 1st period",
+    "periodComparison2nd": "start of 2nd period",
+    "periodComparisonDuration": "duration",
+    "beforeAfterDate": "date",
+    "beforeAfterDuration": "duration"
   },
   "common": {
     "active_after": "Active after",

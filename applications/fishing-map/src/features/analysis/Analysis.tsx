@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Fragment, useMemo, useCallback } from 'react'
+import React, { useEffect, useRef, useState, Fragment, useMemo, useCallback } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
@@ -40,14 +40,17 @@ import {
 import AnalysisItem from './AnalysisItem'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
+import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 
 const DATASETS_REPORT_SUPPORTED = ['global', 'private-ecuador']
 
-const AnalysisEvolution: React.FC<{
+export type AnalysisTypeProps = {
   layersTimeseriesFiltered: AnalysisGraphProps[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
-}> = (props) => {
+}
+
+const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, hasAnalysisLayers, analysisAreaName } = props
   const { t } = useTranslation()
   if (!layersTimeseriesFiltered || !layersTimeseriesFiltered?.length)
@@ -68,6 +71,16 @@ const AnalysisEvolution: React.FC<{
       })}
     </Fragment>
   )
+}
+
+const ANALYSIS_COMPONENTS_BY_TYPE: Record<
+  WorkspaceAnalysisType,
+  React.FC<AnalysisTypeProps> | null
+> = {
+  evolution: AnalysisEvolution,
+  correlation: null,
+  periodComparison: AnalysisPeriodComparison,
+  beforeAfter: AnalysisPeriodComparison,
 }
 
 function Analysis() {
@@ -208,6 +221,8 @@ function Analysis() {
     [dispatchQueryParams]
   )
 
+  const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
+
   let downloadTooltip = ''
   if (timeRangeTooLong) {
     downloadTooltip = t(
@@ -242,20 +257,13 @@ function Analysis() {
       ) : (
         <div className={styles.contentContainer}>
           <div className={styles.content}>
-            {
-              {
-                evolution: (
-                  <AnalysisEvolution
-                    layersTimeseriesFiltered={layersTimeseriesFiltered}
-                    hasAnalysisLayers={hasAnalysisLayers}
-                    analysisAreaName={analysisAreaName}
-                  />
-                ),
-                correlation: null,
-                periodComparison: 'periodComparison',
-                beforeAfter: 'beforeAfter',
-              }[analysisType]
-            }
+            {AnalysisComponent && (
+              <AnalysisComponent
+                layersTimeseriesFiltered={layersTimeseriesFiltered}
+                hasAnalysisLayers={hasAnalysisLayers}
+                analysisAreaName={analysisAreaName}
+              />
+            )}
           </div>
         </div>
       )}
