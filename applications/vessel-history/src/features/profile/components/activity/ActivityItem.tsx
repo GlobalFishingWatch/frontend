@@ -3,7 +3,6 @@ import { RenderedEvent } from 'features/vessels/activity/vessels-activity.select
 import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
 import ActivityEvent from './ActivityEvent'
 import ActivityVoyage from './ActivityVoyage'
-import styles from './Activity.module.css'
 interface EventProps {
   event: RenderedEvent | RenderedVoyage
   highlighted?: boolean

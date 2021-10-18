@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { event as uaEvent } from 'react-ga'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
