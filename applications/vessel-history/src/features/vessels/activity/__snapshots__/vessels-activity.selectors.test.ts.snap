@@ -73,27 +73,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -102,7 +85,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556822400000,
     "type": "encounter",
@@ -190,27 +172,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -219,7 +184,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556517000000,
     "type": "encounter",
@@ -274,31 +238,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
+      "mpa": Array [
         "27",
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -307,7 +252,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1555732747000,
     "type": "loitering",
@@ -350,27 +294,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        27,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -379,7 +308,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1557304262000,
     "type": "loitering",
@@ -422,31 +350,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -455,7 +364,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1557248333000,
     "type": "loitering",
@@ -498,27 +406,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -527,7 +418,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1557136527000,
     "type": "loitering",
@@ -570,31 +460,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -603,7 +474,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556952251000,
     "type": "loitering",
@@ -646,31 +516,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -679,7 +530,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556937941000,
     "type": "loitering",
@@ -722,31 +572,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -755,7 +586,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556916943000,
     "type": "loitering",
@@ -798,27 +628,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -827,7 +640,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556884582000,
     "type": "loitering",
@@ -870,31 +682,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -903,7 +696,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556848522000,
     "type": "loitering",
@@ -946,27 +738,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -975,7 +750,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556823436000,
     "type": "loitering",
@@ -1017,31 +791,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1050,7 +805,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556798243000,
     "type": "loitering",
@@ -1092,27 +846,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1121,7 +858,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556776593000,
     "type": "loitering",
@@ -1163,31 +899,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1196,7 +913,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556736903000,
     "type": "loitering",
@@ -1238,22 +954,11 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [],
-      "vme": Array [],
     },
     "start": 1556719152000,
     "type": "loitering",
@@ -1295,31 +1000,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1328,7 +1014,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556697422000,
     "type": "loitering",
@@ -1370,31 +1055,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1403,7 +1069,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556683138000,
     "type": "loitering",
@@ -1445,31 +1110,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1478,7 +1124,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556675802000,
     "type": "loitering",
@@ -1520,31 +1165,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1553,7 +1179,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556665133000,
     "type": "loitering",
@@ -1595,26 +1220,13 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "141",
+      "mpa": Array [
+        141,
       ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [],
-      "vme": Array [],
     },
     "start": 1556636102000,
     "type": "loitering",
@@ -1656,31 +1268,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1689,7 +1282,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556603918000,
     "type": "loitering",
@@ -1731,31 +1323,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1764,7 +1337,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556596737000,
     "type": "loitering",
@@ -1806,31 +1378,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1839,7 +1392,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556564102000,
     "type": "loitering",
@@ -1881,31 +1433,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1914,7 +1447,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556553423000,
     "type": "loitering",
@@ -1956,31 +1488,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -1989,7 +1502,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556542743000,
     "type": "loitering",
@@ -2031,27 +1543,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2060,7 +1555,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556517562000,
     "type": "loitering",
@@ -2102,31 +1596,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2135,7 +1610,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556477802000,
     "type": "loitering",
@@ -2177,31 +1651,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2210,7 +1665,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556470572000,
     "type": "loitering",
@@ -2252,31 +1706,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2285,7 +1720,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556459882000,
     "type": "loitering",
@@ -2327,27 +1761,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2356,7 +1773,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556427083000,
     "type": "loitering",
@@ -2398,31 +1814,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2431,7 +1828,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556402173000,
     "type": "loitering",
@@ -2473,31 +1869,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2506,7 +1883,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556359181000,
     "type": "loitering",
@@ -2548,31 +1924,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2581,7 +1938,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556308771000,
     "type": "loitering",
@@ -2623,27 +1979,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2652,7 +1991,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556294112000,
     "type": "loitering",
@@ -2694,26 +2032,13 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
+      "mpa": Array [
+        33,
       ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [],
-      "vme": Array [],
     },
     "start": 1556276347000,
     "type": "loitering",
@@ -2755,27 +2080,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2784,7 +2092,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556258142000,
     "type": "loitering",
@@ -2826,31 +2133,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2859,7 +2147,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556232953000,
     "type": "loitering",
@@ -2901,31 +2188,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -2934,7 +2202,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556225723000,
     "type": "loitering",
@@ -2976,31 +2243,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3009,7 +2257,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556211559000,
     "type": "loitering",
@@ -3051,22 +2298,11 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [],
-      "vme": Array [],
     },
     "start": 1556175302000,
     "type": "loitering",
@@ -3108,26 +2344,13 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
+      "mpa": Array [
+        33,
       ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [],
-      "vme": Array [],
     },
     "start": 1556132342000,
     "type": "loitering",
@@ -3169,27 +2392,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3198,7 +2404,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556121162000,
     "type": "loitering",
@@ -3240,26 +2445,13 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
+      "mpa": Array [
+        33,
       ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [],
-      "vme": Array [],
     },
     "start": 1556107106000,
     "type": "loitering",
@@ -3301,31 +2493,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3334,7 +2507,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556096364000,
     "type": "loitering",
@@ -3376,26 +2548,13 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
+      "mpa": Array [
+        33,
       ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [],
-      "vme": Array [],
     },
     "start": 1556088973000,
     "type": "loitering",
@@ -3437,31 +2596,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3470,7 +2610,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556081676000,
     "type": "loitering",
@@ -3512,31 +2651,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3545,7 +2665,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556035013000,
     "type": "loitering",
@@ -3587,31 +2706,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3620,7 +2720,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556027974000,
     "type": "loitering",
@@ -3662,31 +2761,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3695,7 +2775,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1556017002000,
     "type": "loitering",
@@ -3737,27 +2816,10 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
-      ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3766,7 +2828,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1555999142000,
     "type": "loitering",
@@ -3808,31 +2869,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3841,7 +2883,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1555966592000,
     "type": "loitering",
@@ -3883,31 +2924,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -3916,7 +2938,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1555919883000,
     "type": "loitering",
@@ -3958,22 +2979,11 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [],
-      "ocean": Array [],
-      "other": Array [],
+      "mpa": Array [],
       "rfmo": Array [],
-      "vme": Array [],
     },
     "start": 1555804622000,
     "type": "loitering",
@@ -4053,31 +3063,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4086,7 +3077,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1577610589000,
     "type": "port_visit",
@@ -4161,31 +3151,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4194,7 +3165,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576887912000,
     "type": "port_visit",
@@ -4269,31 +3239,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4302,7 +3253,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576872263000,
     "type": "port_visit",
@@ -4377,31 +3327,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4410,7 +3341,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576832110000,
     "type": "port_visit",
@@ -4485,31 +3415,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4518,7 +3429,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576767562000,
     "type": "port_visit",
@@ -4593,31 +3503,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4626,7 +3517,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1577836799998,
     "type": "port_visit",
