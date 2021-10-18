@@ -134,7 +134,11 @@ function Analysis() {
     cleanFeatureState('click')
     batch(() => {
       dispatch(clearAnalysisGeometry(undefined))
-      dispatchQueryParams({ analysis: undefined })
+      dispatchQueryParams({
+        analysis: undefined,
+        analysisType: undefined,
+        analysisTimeComparison: undefined,
+      })
     })
   }
 

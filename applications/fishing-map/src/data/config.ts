@@ -63,6 +63,7 @@ export const DEFAULT_WORKSPACE = {
   bivariateDataviews: undefined,
   analysis: undefined,
   analysisType: undefined,
+  analysisTimeComparison: undefined,
   activityCategory: DEFAULT_ACTIVITY_CATEGORY,
   version: DEFAULT_VERSION,
 }

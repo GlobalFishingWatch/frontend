@@ -32,12 +32,14 @@ function InputDate(props: InputDateProps, forwardedRef: Ref<HTMLInputElement>) {
   const inputRef = useRef<HTMLInputElement>(null)
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
 
+  const yymmddDate = value?.toString().slice(0, 10)
+
   return (
     <div className={cx(baseStyles.container, styles.container, styles[inputSize], className)}>
       {label && <label htmlFor={label}>{label}</label>}
       <input
         type="date"
-        value={value}
+        value={yymmddDate}
         key={label || defaultKey}
         className={styles.input}
         ref={inputRef}

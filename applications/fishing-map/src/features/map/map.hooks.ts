@@ -2,7 +2,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
-import { DateTime } from 'luxon'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
@@ -28,7 +27,10 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import {
+  selectShowTimeComparison,
+  selectTimeComparisonValues,
+} from 'features/analysis/analysis.selectors'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -64,31 +66,26 @@ export const useGeneratorsConnect = () => {
   const { viewport } = useViewport()
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
   return useMemo(() => {
-    const compareWithAfter = true
-    const globalConfig: Generators.GlobalGeneratorConfig = {
+    let globalConfig: Generators.GlobalGeneratorConfig = {
       zoom: viewport.zoom,
       start,
       end,
       token: GFWAPI.getToken(),
     }
-    if (showTimeComparison && start && end) {
-      if (compareWithAfter) {
-        globalConfig.timeCompareStart = DateTime.fromISO(start).toUTC().plus({ years: 1 }).toISO()
-        globalConfig.timeCompareEnd = DateTime.fromISO(end).toUTC().plus({ years: 1 }).toISO()
-      } else {
-        globalConfig.start = DateTime.fromISO(start).toUTC().plus({ years: 1 }).toISO()
-        globalConfig.end = DateTime.fromISO(end).toUTC().plus({ years: 1 }).toISO()
-        globalConfig.timeCompareStart = start
-        globalConfig.timeCompareEnd = end
+    if (showTimeComparison && timeComparisonValues) {
+      globalConfig = {
+        ...globalConfig,
+        ...timeComparisonValues,
       }
     }
     return {
       generatorsConfig,
       globalConfig,
     }
-  }, [generatorsConfig, viewport.zoom, start, end, showTimeComparison])
+  }, [generatorsConfig, viewport.zoom, start, end, timeComparisonValues, showTimeComparison])
 }
 
 export const useClickedEventConnect = () => {

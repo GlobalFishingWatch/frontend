@@ -32,8 +32,8 @@ export interface GlobalGeneratorConfig {
   end?: string
   zoom?: number
   token?: string
-  timeCompareStart?: string
-  timeCompareEnd?: string
+  compareStart?: string
+  compareEnd?: string
 }
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {

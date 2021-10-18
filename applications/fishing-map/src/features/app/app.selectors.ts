@@ -21,6 +21,7 @@ import {
   VisibleEvents,
   WorkspaceActivityCategory,
   WorkspaceAnalysis,
+  WorkspaceAnalysisTimeComparison,
   WorkspaceAnalysisType,
   WorkspaceState,
   WorkspaceStateProperty,
@@ -72,6 +73,13 @@ export const selectAnalysisQuery = createSelector(
 export const selectAnalysisTypeQuery = createSelector(
   [selectWorkspaceStateProperty('analysisType')],
   (analysis): WorkspaceAnalysisType => {
+    return analysis
+  }
+)
+
+export const selectAnalysisTimeComparison = createSelector(
+  [selectWorkspaceStateProperty('analysisTimeComparison')],
+  (analysis): WorkspaceAnalysisTimeComparison => {
     return analysis
   }
 )

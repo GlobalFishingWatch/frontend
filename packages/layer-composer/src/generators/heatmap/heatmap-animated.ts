@@ -194,14 +194,14 @@ class HeatmapAnimatedGenerator {
         config.mode === HeatmapAnimatedMode.TimeCompare &&
         config.start &&
         config.end &&
-        config.timeCompareStart &&
-        config.timeCompareEnd
+        config.compareStart &&
+        config.compareEnd
       ) {
         baseSourceParams['comparison-range'] = [
           config.start,
           config.end,
-          config.timeCompareStart,
-          config.timeCompareEnd,
+          config.compareStart,
+          config.compareEnd,
         ].map((d) => getDateForInterval(d)) as TileAggregationComparisonDateRange // TODO not sure why using map makes casting needed
       } else if (timeChunk.start && timeChunk.dataEnd) {
         baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].map((d) =>
