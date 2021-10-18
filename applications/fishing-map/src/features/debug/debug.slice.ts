@@ -6,7 +6,6 @@ export enum DebugOption {
   Extruded = 'extruded',
   Debug = 'debug',
   Thinning = 'thinning',
-  TimeCompare = 'timeCompare',
 }
 
 export type DebugOptions = Record<DebugOption, boolean>
@@ -23,7 +22,6 @@ const initialState: DebugState = {
     debug: false,
     thinning: true,
     extruded: false,
-    timeCompare: true,
   },
 }
 

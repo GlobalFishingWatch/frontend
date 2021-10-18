@@ -80,15 +80,6 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_labels">Basemap labels</label>
         </div>
         <p>Show or hide basemap labels</p>
-        <div className={styles.header}>
-          <Switch
-            id="option_timeCompare"
-            active={debugOptions.timeCompare}
-            onClick={() => dispatch(toggleOption(DebugOption.TimeCompare))}
-          />
-          <label htmlFor="option_timeCompare">Time compare mode</label>
-        </div>
-        <p>Compare between the time period visible in timebar and its equivalent for next year.</p>
       </section>
       <hr className={styles.separation} />
       <section>

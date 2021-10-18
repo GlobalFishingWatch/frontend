@@ -251,7 +251,7 @@ function Analysis() {
                     analysisAreaName={analysisAreaName}
                   />
                 ),
-                correlation: 'correlation (soon)',
+                correlation: null,
                 periodComparison: 'periodComparison',
                 beforeAfter: 'beforeAfter',
               }[analysisType]

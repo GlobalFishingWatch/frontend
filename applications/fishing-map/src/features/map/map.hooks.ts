@@ -28,7 +28,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -63,7 +63,7 @@ export const useGeneratorsConnect = () => {
   const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
-  const debugOptions = useSelector(selectDebugOptions)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
 
   return useMemo(() => {
     const compareWithAfter = true
@@ -73,7 +73,7 @@ export const useGeneratorsConnect = () => {
       end,
       token: GFWAPI.getToken(),
     }
-    if (debugOptions.timeCompare && start && end) {
+    if (showTimeComparison && start && end) {
       if (compareWithAfter) {
         globalConfig.timeCompareStart = DateTime.fromISO(start).toUTC().plus({ years: 1 }).toISO()
         globalConfig.timeCompareEnd = DateTime.fromISO(end).toUTC().plus({ years: 1 }).toISO()
@@ -88,7 +88,7 @@ export const useGeneratorsConnect = () => {
       generatorsConfig,
       globalConfig,
     }
-  }, [generatorsConfig, viewport.zoom, start, end, debugOptions])
+  }, [generatorsConfig, viewport.zoom, start, end, showTimeComparison])
 }
 
 export const useClickedEventConnect = () => {

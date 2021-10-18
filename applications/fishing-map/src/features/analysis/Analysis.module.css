@@ -98,5 +98,5 @@
 }
 
 .typeChoice {
-  padding: var(--space-M);
+  padding: 0 var(--space-M);
 }

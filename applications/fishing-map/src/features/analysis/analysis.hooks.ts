@@ -155,6 +155,12 @@ export const useFilteredTimeSeries = () => {
   }, [areaId])
 
   useEffect(() => {
+    // Used to re-attach the idle listener on type change
+    setTimeseries(undefined)
+    attachedListener.current = false
+  }, [analysisType])
+
+  useEffect(() => {
     if (!map || attachedListener.current || !simplifiedGeometry) return
 
     attachedListener.current = true
