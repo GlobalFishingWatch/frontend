@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux'
 import createTimebarActivityGraphWorker from 'workerize-loader!./TimebarActivityGraph.worker.ts'
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import {
   TimeChunk,
   TimeChunks,
-} from '@globalfishingwatch/layer-composer/src/generators/heatmap/util/time-chunks'
+  TEMPORALGRID_SOURCE_LAYER,
+} from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/src/miniglobe'
 import { MapboxEvent, MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'

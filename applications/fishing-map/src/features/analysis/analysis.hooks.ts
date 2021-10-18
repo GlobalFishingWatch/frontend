@@ -7,17 +7,18 @@ import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
-import { quantizeOffsetToDate, TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
-import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
 import {
+  quantizeOffsetToDate,
+  TEMPORALGRID_SOURCE_LAYER,
   TimeChunk,
   TimeChunks,
-} from '@globalfishingwatch/layer-composer/src/generators/heatmap/util/time-chunks'
+  DEFAULT_CONTEXT_SOURCE_LAYER,
+} from '@globalfishingwatch/layer-composer'
+import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { MapboxEvent } from '@globalfishingwatch/mapbox-gl'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/src/use-map-interaction'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/dist'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/src/generators'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'

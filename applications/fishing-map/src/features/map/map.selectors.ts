@@ -1,8 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
-import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/src/generators/types'
+import { AnyGeneratorConfig , Generators } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
-import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   getDataviewsGeneratorConfigs,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,

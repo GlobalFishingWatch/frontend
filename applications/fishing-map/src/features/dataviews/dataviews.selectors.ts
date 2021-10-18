@@ -14,9 +14,7 @@ import {
   resolveResourcesFromDatasetConfigs,
   DatasetConfigsTransforms,
 } from '@globalfishingwatch/dataviews-client'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/src/generators'
-import { Type } from '@globalfishingwatch/layer-composer/src/generators/types'
+import { GeneratorType, BasemapGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -36,8 +34,8 @@ import { selectAllDataviews } from './dataviews.slice'
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   config: {
-    type: Generators.Type.Basemap,
-    basemap: Generators.BasemapType.Default,
+    type: GeneratorType.Basemap,
+    basemap: BasemapType.Default,
     labels: false,
   },
 }
@@ -51,8 +49,8 @@ export const selectDefaultBasemapGenerator = createSelector(
   [selectBasemapDataview],
   (basemapDataview) => {
     const basemapGenerator = getGeneratorConfig(
-      basemapDataview as UrlDataviewInstance<Type>
-    ) as Generators.BasemapGeneratorConfig
+      basemapDataview as UrlDataviewInstance<GeneratorType>
+    ) as BasemapGeneratorConfig
     return basemapGenerator
   }
 )
@@ -96,7 +94,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
   ],
   (dataviewInstances, thinningConfig, timebarGraph) => {
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
-      [Generators.Type.Track]: ([info, track, ...events]) => {
+      [GeneratorType.Track]: ([info, track, ...events]) => {
         const trackWithThinning = track
         if (thinningConfig) {
           const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
@@ -163,7 +161,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   }
 )
 
-export const selectDataviewInstancesByType = (type: Generators.Type) => {
+export const selectDataviewInstancesByType = (type: Type) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
@@ -190,7 +188,7 @@ export const selectBasemapDataviewInstance = createSelector(
 )
 
 export const selectTrackDataviews = createSelector(
-  [selectDataviewInstancesByType(Generators.Type.Track)],
+  [selectDataviewInstancesByType(GeneratorType.Track)],
   (dataviews) => dataviews
 )
 

@@ -5,9 +5,9 @@ import { Editor, EditingMode, DrawPolygonMode } from 'react-map-gl-draw'
 import { useTranslation } from 'react-i18next'
 import { Popup } from 'react-map-gl'
 import { FeatureOf, Polygon } from '@nebula.gl/edit-modes'
-import Button from '@globalfishingwatch/ui-components/dist/button'
-import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import Button from '@globalfishingwatch/ui-components/src/button'
+import InputText from '@globalfishingwatch/ui-components/src/input-text'
+import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   useAddDataviewFromDatasetToWorkspace,

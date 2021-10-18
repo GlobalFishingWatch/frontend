@@ -2,8 +2,7 @@ import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useDispatch, useSelector } from 'react-redux'
-import Modal from '@globalfishingwatch/ui-components/dist/modal'
-import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components/dist'
+import { Button, Choice, Icon, Tag, Modal } from '@globalfishingwatch/ui-components'
 import {
   DownloadTrackParams,
   selectDownloadTrackStatus,

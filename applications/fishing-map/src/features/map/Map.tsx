@@ -6,7 +6,7 @@ import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { InteractiveMap } from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
-import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
+import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import useLayerComposer from '@globalfishingwatch/react-hooks/src/use-layer-composer'
@@ -17,9 +17,8 @@ import {
   useFeatureState,
   InteractionEventCallback,
 } from '@globalfishingwatch/react-hooks/src/use-map-interaction'
-import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import useMapLegend from '@globalfishingwatch/react-hooks/src/use-map-legend'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/src/generators'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -136,8 +135,9 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] =
-    useState<SliceInteractionEvent | null>(null)
+  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
+    null
+  )
   const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
   const onMapHover = useMapHover(
     setHoveredEvent as InteractionEventCallback,
@@ -172,7 +172,7 @@ const MapWrapper = (): React.ReactElement | null => {
     return mapLegends?.map((legend) => {
       const isSquareKm = (legend.gridArea as number) > 50000
       let label = legend.unit || ''
-      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+      if (legend.generatorType === HeatmapAnimated) {
         const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
         const gridAreaFormatted = gridArea
           ? formatI18nNumber(gridArea, {
@@ -202,12 +202,11 @@ const MapWrapper = (): React.ReactElement | null => {
       } else if (state.isHovering && hoveredTooltipEvent) {
         // Workaround to fix cluster events duplicated, only working for encounters and needs
         // TODO if wanted to scale it to other layers
-        const clusterConfig = dataviews.find((d) => d.config?.type === Generators.Type.TileCluster)
+        const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
         const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
         const isCluster = hoveredTooltipEvent.features.find(
-          (f) =>
-            f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > eventsCount
+          (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
         )
         if (isCluster) {
           return encounterSourceLoaded ? 'zoom-in' : 'progress'

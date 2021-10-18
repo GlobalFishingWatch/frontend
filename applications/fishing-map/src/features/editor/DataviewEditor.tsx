@@ -14,10 +14,7 @@ import InputText from '@globalfishingwatch/ui-components/src/input-text'
 import Choice from '@globalfishingwatch/ui-components/src/choice'
 import Select from '@globalfishingwatch/ui-components/src/select'
 import MultiSelect from '@globalfishingwatch/ui-components/src/multi-select'
-import {
-  GeneratorType,
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
-} from '@globalfishingwatch/layer-composer/src/generators'
+import { GeneratorType, COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import ColorBar, { FillColorBarOptions } from '@globalfishingwatch/ui-components/src/color-bar'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/dataviews/dataviews.slice'

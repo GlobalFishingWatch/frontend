@@ -3,13 +3,12 @@ import { Geometry } from 'geojson'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
+  UrlDataviewInstance,
   MULTILAYER_SEPARATOR,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-  UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/src/generators/types'
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import {
@@ -125,7 +124,7 @@ export const useClickedEventConnect = () => {
     }
 
     const clusterFeature = event?.features?.find(
-      (f) => f.generatorType === Generators.Type.TileCluster
+      (f) => f.generatorType === GeneratorType.TileCluster
     )
     if (clusterFeature?.properties?.expansionZoom) {
       const { count, expansionZoom, lat, lng } = clusterFeature.properties
@@ -159,7 +158,7 @@ export const useClickedEventConnect = () => {
 
     // When hovering in a vessel event we don't want to have clicked events
     const areAllFeaturesVesselEvents = event.features.every(
-      (f) => f.generatorType === Generators.Type.VesselEvents
+      (f) => f.generatorType === GeneratorType.VesselEvents
     )
 
     if (areAllFeaturesVesselEvents) {
@@ -200,7 +199,7 @@ export const useClickedEventConnect = () => {
     }
 
     const encounterFeature = event.features.find(
-      (f) => f.generatorType === Generators.Type.TileCluster
+      (f) => f.generatorType === GeneratorType.TileCluster
     )
     if (encounterFeature) {
       eventsPromiseRef.current = dispatch(fetchEncounterEventThunk(encounterFeature))
@@ -262,7 +261,7 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
   const setHighlightedEventDebounced = useCallback(() => {
     let highlightEvent: { id: string } | undefined
     const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
-    const clusterFeature = features?.find((f) => f.type === Generators.Type.TileCluster)
+    const clusterFeature = features?.find((f) => f.type === GeneratorType.TileCluster)
     if (!clusterFeature && vesselFeature) {
       highlightEvent = { id: vesselFeature.properties?.id }
     } else if (clusterFeature) {
@@ -285,13 +284,13 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
 
 export const parseMapTooltipEvent = (
   event: SliceInteractionEvent | null,
-  dataviews: UrlDataviewInstance<Generators.Type>[],
-  temporalgridDataviews: UrlDataviewInstance<Generators.Type>[]
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  temporalgridDataviews: UrlDataviewInstance<GeneratorType>[]
 ) => {
   if (!event || !event.features) return null
 
   const clusterFeature = event.features.find(
-    (f) => f.generatorType === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
+    (f) => f.generatorType === GeneratorType.TileCluster && parseInt(f.properties.count) > 1
   )
 
   // We don't want to show anything else when hovering a cluster point
@@ -334,7 +333,7 @@ export const parseMapTooltipEvent = (
           source: feature.source,
           sourceLayer: feature.sourceLayer,
           layerId: feature.layerId as string,
-          type: Generators.Type.GL,
+          type: GeneratorType.GL,
           value: feature.properties.label,
           properties: {},
           category: DataviewCategory.Context,
