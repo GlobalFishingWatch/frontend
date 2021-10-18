@@ -3,7 +3,7 @@ import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { IconButton, Spinner, Tabs, Tag } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { VesselAPISource } from 'types'
@@ -154,11 +154,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         title: <div className={styles.tagContainer}>
           {t('common.activity', 'ACTIVITY').toLocaleUpperCase()} 
           {visibleHighlights > 0 && 
-            <span className={cx(
-              styles.tabLabel, 
-              visibleHighlights > 9 ? styles.dig2 : '', 
-              visibleHighlights > 99 ? styles.dig3 : ''
-            )}>{visibleHighlights}</span>}
+            <span className={styles.tabLabel}>{visibleHighlights}</span>}
         </div>,
         content: vessel ? (
           <Activity

@@ -39,7 +39,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
-  const highlightsIds: string[] = useSelector(selectHighlightEventIds)
+  const highlightsIds = useSelector(selectHighlightEventIds)
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
@@ -94,7 +94,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                           <ActivityItem
                             key={index}
                             event={event}
-                            highlighted={event.type !== EventTypeVoyage.Voyage && highlightsIds.indexOf(event.id) !== -1}
+                            highlighted={event.type !== EventTypeVoyage.Voyage && highlightsIds[event.id]}
                             onToggleClick={toggleVoyage}
                             onMapClick={selectEventOnMap}
                             onInfoClick={openModal}
