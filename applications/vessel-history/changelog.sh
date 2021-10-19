@@ -88,5 +88,5 @@ done
 MARKDOWN+='\n\n'
 MARKDOWN+="**Full Changelog**: $REPOSITORY_URL/compare/$PREVIOUS_TAG...$NEW_PACKAGE_VERSION"
 
-# Save our markdown to a file
-echo -e "$MARKDOWN\n\n---\n$(cat REVISION_CHANGELOG.md)" > REVISION_CHANGELOG.md
+# Output the markdown to a file
+echo -e "$MARKDOWN\n\n"
