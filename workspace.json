@@ -190,22 +190,15 @@
       "sourceRoot": "applications/fishing-map/src",
       "projectType": "application",
       "targets": {
-        "TODO": {
+        "deploy": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["nx prepare-docker fishing-map ", "nx docker fishing-map "]
-          }
-        },
-        "prepare-docker": {
-          "TODO": "MOVE ./docker files to dist folder to get everything the image needs in an small context"
-        },
-        "deploy": {
-          "executor": "@nx-tools/nx-docker:build",
-          "options": {
-            "push": false,
-            "tags": ["gfw/fishing-map:latest"],
-            "file": "./applications/fishing-map/Dockerfile",
-            "context": "./dist/applications/fishing-map"
+            "commands": [
+              "nx build fishing-map",
+              "nx docker-prepare fishing-map",
+              "nx docker fishing-map"
+            ],
+            "parallel": false
           }
         },
         "build": {
@@ -215,6 +208,25 @@
             "command": "node ../../node_modules/.bin/react-app-rewired build",
             "cwd": "applications/fishing-map",
             "outputPath": "dist/applications/fishing-map"
+          }
+        },
+        "docker-prepare": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": [],
+          "options": {
+            "commands": [
+              "cp config/entrypoint.sh dist/applications/fishing-map",
+              "cp applications/fishing-map/nginx.conf dist/applications/fishing-map"
+            ]
+          }
+        },
+        "docker": {
+          "executor": "@nx-tools/nx-docker:build",
+          "options": {
+            "push": false,
+            "tags": ["gfw/fishing-map:latest"],
+            "file": "./applications/fishing-map/Dockerfile",
+            "context": "./dist/applications/fishing-map"
           }
         },
         "start": {

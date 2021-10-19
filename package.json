@@ -18,6 +18,7 @@
     "build": "nx build",
     "graph": "yarn nx dep-graph",
     "lint": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix --resolve-plugins-relative-to .",
+    "deploy": "nx affected --target=deploy",
     "graph:affected": "yarn nx affected:dep-graph",
     "clean:deps": "rm -rf node_modules && rm yarn.lock && yarn",
     "clean:dist": "rm -rf dist",
