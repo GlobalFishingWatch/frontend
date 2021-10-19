@@ -43,7 +43,7 @@ class DateSelector extends Component {
   }
 
   render() {
-    const { onChange, value, canIncrement, canDecrement } = this.props
+    const { value, canIncrement, canDecrement } = this.props
     return (
       <div className={styles.DateSelector}>
         <button

@@ -34,7 +34,7 @@ export const useDataviewInstancesConnect = () => {
         })
       }
     },
-    [dispatchQueryParams, allDataviewInstances]
+    [dispatchQueryParams]
   )
 
   return {

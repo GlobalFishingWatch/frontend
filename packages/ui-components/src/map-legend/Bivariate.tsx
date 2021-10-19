@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import styles from './Bivariate.module.css'
 import legendStyles from './MapLegend.module.css'

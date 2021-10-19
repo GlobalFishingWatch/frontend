@@ -1,4 +1,4 @@
-import { AuthorizationOptions, EventTypes, EventVessel } from '@globalfishingwatch/api-types/dist';
+import { AuthorizationOptions, EventTypes } from '@globalfishingwatch/api-types/dist'
 import { ActivityEvent } from 'types/activity'
 import { getEncounterStatus } from './vessels-activity.utils'
 
@@ -24,7 +24,7 @@ describe('vessels.activity.utils', () => {
       boundingBox: [],
       distances: {
         endDistanceFromShoreKm: 1,
-        endDistanceFromPortKm: 1
+        endDistanceFromPortKm: 1,
       },
       //fishing: undefined,
       id: '',
@@ -40,7 +40,7 @@ describe('vessels.activity.utils', () => {
       eezs: [],
       position: {
         lat: 1,
-        lon: 1
+        lon: 1,
       },
       encounter: {
         authorizationStatus: AuthorizationOptions.Authorized,
@@ -53,13 +53,13 @@ describe('vessels.activity.utils', () => {
         },
         authorized: true,
         regionAuthorizations: [],
-        vesselAuthorizations: []
+        vesselAuthorizations: [],
       },
       fishing: {
         totalDistanceKm: 1,
         averageSpeedKnots: 1,
         averageDurationHours: 1,
-      }
+      },
     }
     const result = getEncounterStatus(vesselEvent)
     expect(result).toMatchSnapshot()

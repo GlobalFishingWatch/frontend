@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import styles from './MapLegend.module.css'
 import { LegendLayer } from './'
@@ -8,7 +8,7 @@ type SolidLegendProps = {
   className?: string
 }
 
-function SolidLegend({ layer, className }: SolidLegendProps) {
+export function SolidLegend({ layer, className }: SolidLegendProps) {
   const { label, color } = (layer || {}) as LegendLayer
   return (
     <div className={cx(styles.row, styles.rowColum, className)}>
@@ -17,5 +17,3 @@ function SolidLegend({ layer, className }: SolidLegendProps) {
     </div>
   )
 }
-
-export default memo(SolidLegend)

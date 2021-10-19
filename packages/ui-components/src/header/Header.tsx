@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment } from 'react'
 import cx from 'classnames'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './Header.module.css'

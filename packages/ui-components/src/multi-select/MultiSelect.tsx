@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, memo } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import { matchSorter } from 'match-sorter'
 import {
   useMultipleSelection,

@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 import styles from './MapLegend.module.css'

@@ -1,14 +1,8 @@
-import React, { Fragment, useEffect } from 'react'
-import cx from 'classnames'
+import React, { Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import ListItem from 'common/ListItem'
 import Section from 'common/Section'
-import {
-  selectWorkspaceDataviews,
-  selectWorkspaceId,
-  selectWorkspaces,
-  setWorkspaceId,
-} from './workspace.slice'
+import { selectWorkspaceId, selectWorkspaces, setWorkspaceId } from './workspace.slice'
 
 const Workspaces = () => {
   const dispatch = useDispatch()

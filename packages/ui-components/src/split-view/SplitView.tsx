@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, memo, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { Icon } from '../icon'
 import { Choice } from '../choice'

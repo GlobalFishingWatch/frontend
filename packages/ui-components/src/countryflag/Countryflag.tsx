@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import countryflag from 'countryflag'
 import styles from './Countryflag.module.css'
 

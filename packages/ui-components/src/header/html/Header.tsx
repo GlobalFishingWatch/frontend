@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment } from 'react'
 import navigation from '../Header.links'
 
 interface HeaderProps {
@@ -6,7 +6,7 @@ interface HeaderProps {
   inverted?: boolean
 }
 
-function Header({ mini = false, inverted = false }: HeaderProps) {
+export function Header({ mini = false, inverted = false }: HeaderProps) {
   return (
     <div className={`gfw-header-container ${inverted ? 'gfw-header-container-inverted' : ''}`}>
       <header className="gfw-header">
@@ -64,5 +64,3 @@ function Header({ mini = false, inverted = false }: HeaderProps) {
     </div>
   )
 }
-
-export default memo(Header)

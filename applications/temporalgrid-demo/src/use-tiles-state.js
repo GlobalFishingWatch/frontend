@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import tilebelt from '@mapbox/tilebelt'
 
-export default () => {
+const useTileState = () => {
   const [tilesLoading, setTilesLoading] = useState({
     loading: false,
     tiles: {},
@@ -64,3 +64,5 @@ export default () => {
     tilesLoading,
   }
 }
+
+export default useTileState

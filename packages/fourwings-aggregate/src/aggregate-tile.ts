@@ -211,11 +211,6 @@ const getBivariateValue = (realValues: number[], breaks?: number[][]) => {
   }
 }
 
-const getLiteralValues = (realValues: number[], sublayerCount: number) => {
-  if (sublayerCount === 1) return realValues
-  return `[${realValues.join(',')}]`
-}
-
 const getCumulativeValue = (realValuesSum: number, cumulativeValuesPaddedStrings: string[]) => {
   if (realValuesSum === 0) return undefined
   return cumulativeValuesPaddedStrings.join('')
@@ -227,7 +222,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     tileBBox,
     x,
     y,
-    z,
     delta = 30,
     geomType = GeomType.rectangle,
     singleFrame,
@@ -283,7 +277,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   let currentFeatureInteractive
   let currentFeatureCell
   let currentFeatureMinTimestamp
-  let currentFeatureMaxTimestamp
   let featureBufferValuesPos = 0
   let head
   let tail
@@ -298,7 +291,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   const numCols = intArray[FEATURE_COL_INDEX]
 
   const featureIntArrays = []
-  let cellNum
   let startFrame = 0
   let endFrame = 0
   let startIndex = 0
@@ -313,7 +305,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     const value = intArray[i]
     if (indexInCell === CELL_NUM_INDEX) {
       startIndex = i
-      cellNum = value
     } else if (indexInCell === CELL_START_INDEX) {
       startFrame = value
     } else if (indexInCell === CELL_END_INDEX) {
@@ -358,7 +349,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
       const featureIntArray = featureIntArrays[f]
       currentFeatureCell = featureIntArray[CELL_NUM_INDEX]
       currentFeatureMinTimestamp = featureIntArray[CELL_START_INDEX]
-      currentFeatureMaxTimestamp = featureIntArray[CELL_END_INDEX]
       head = currentFeatureMinTimestamp
       const uniqueId = generateUniqueId(x, y, currentFeatureCell)
       const featureParams = {

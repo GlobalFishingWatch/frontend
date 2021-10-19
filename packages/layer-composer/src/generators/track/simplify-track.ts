@@ -9,7 +9,6 @@ const COORD_PROPS_MAX_ΔS: Dictionary<number> = {
   // courses: 20,
 }
 
-const POS_ROUND = 4
 const COORD_PROPS_ROUND: Dictionary<number> = {
   times: 0,
   speeds: 2,
@@ -25,13 +24,6 @@ const cheapDistance = (coordA: Position, coordB: Position) => {
 const round = (value: number, numDecimals: number) => {
   const base = Math.pow(10, numDecimals)
   return Math.round(value * base) / base
-}
-
-const roundPos = (pos: Position) => [round(pos[0], POS_ROUND), round(pos[1], POS_ROUND)]
-
-const TS_OFFSET = new Date(2012, 0, 1).getTime()
-const compressTimestamp = (ts: number) => {
-  return Math.round((ts - TS_OFFSET) / 1000)
 }
 
 export const simplifyTrack = (

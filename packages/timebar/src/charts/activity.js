@@ -58,7 +58,7 @@ const getPaths = (activity, graphHeight, overallScale, maxValue, curve, mode = '
     .y1(mode === 'mirror' || mode === 'down' ? (d) => middle + valuePx(d) : middle)
     .curve(CURVES[curve])
 
-  const paths = activity.map((segment, i) => {
+  const paths = activity.map((segment) => {
     return areaGenerator(segment)
   })
 

@@ -4,7 +4,7 @@ import {
   LayerMetadataLegend,
   LayerMetadataLegendBivariate,
 } from '@globalfishingwatch/layer-composer'
-import Solid from './Solid'
+import { SolidLegend } from './Solid'
 import { ColorRampLegend } from './ColorRamp'
 import { BivariateLegend } from './Bivariate'
 import styles from './MapLegend.module.css'
@@ -40,7 +40,7 @@ export function MapLegend({
 }: MapLegendProps) {
   // TODO: include user context and categorical options
   if (layer.type === 'solid') {
-    return <Solid layer={layer as LegendLayer} className={className} />
+    return <SolidLegend layer={layer as LegendLayer} className={className} />
   }
   if (layer.type === 'colorramp' || layer.type === 'colorramp-discrete') {
     return (
@@ -66,7 +66,7 @@ export function MapLegend({
   return null
 }
 
-function MapLegends(props: MapLegendsProps) {
+export function MapLegends(props: MapLegendsProps) {
   const { className, layers, roundValues, labelComponent } = props
   return (
     <div className={cx(styles.legends, className)}>

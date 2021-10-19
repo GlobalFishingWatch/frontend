@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import { Tooltip } from '../tooltip'

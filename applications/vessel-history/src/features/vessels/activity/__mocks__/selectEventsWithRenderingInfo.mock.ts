@@ -3007,7 +3007,9 @@ export const portVisitEvents = [
   },
 ]
 
-export default {
+const mock = {
   loiteringAndEncounterEvents,
   portVisitEvents,
 }
+
+export default mock

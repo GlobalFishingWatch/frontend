@@ -25,7 +25,12 @@
     "prepare": "yarn build"
   },
   "devDependencies": {},
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@globalfishingwatch/api-client": "*",
+    "@globalfishingwatch/dataviews-client": "*",
+    "@globalfishingwatch/mapbox-gl": "*",
+    "@globalfishingwatch/layer-composer": "*"
+  },
   "publishConfig": {
     "access": "public"
   }

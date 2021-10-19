@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react'
+import React, { useMemo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
 import { IconButton } from '../icon-button'
