@@ -1,6 +1,13 @@
-import rollup from '../../config/rollup.config'
+const nrwlConfig = require('@nrwl/react/plugins/bundle-rollup')
 
-export default rollup({
-  input: ['./src/index.ts', './src/api-client.ts'],
-  external: ['@globalfishingwatch/pbf/decoders/vessels.js'],
-})
+module.exports = (config) => {
+  nrwlConfig(config)
+  return {
+    ...config,
+    external: [
+      '@globalfishingwatch/pbf',
+      '@globalfishingwatch/pbf/decoders/vessels',
+      '@globalfishingwatch/pbf/decoders/4wings-tile',
+    ],
+  }
+}

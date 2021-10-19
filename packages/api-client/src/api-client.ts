@@ -299,7 +299,7 @@ export class GFW_API {
                 return res.arrayBuffer()
               case 'vessel': {
                 try {
-                  return import('@globalfishingwatch/pbf').then(({ vessels }) => {
+                  return import('@globalfishingwatch/pbf/decoders/vessels').then(({ vessels }) => {
                     return res.arrayBuffer().then((buffer) => {
                       const track = vessels.Track.decode(new Uint8Array(buffer))
                       return track.data
