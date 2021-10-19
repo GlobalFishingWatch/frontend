@@ -1,16 +1,37 @@
-import React, { forwardRef, Fragment, Ref, memo } from 'react'
+import React, { forwardRef, Fragment, Ref, CSSProperties } from 'react'
 import cx from 'classnames'
-import Icon from '../icon'
-import Tooltip from '../tooltip'
-import Spinner from '../spinner'
+import { Placement } from 'tippy.js'
+import { Icon, IconType } from '../icon'
+import { TooltipTypes } from '../types/types'
+import { Tooltip } from '../tooltip'
+import { Spinner } from '../spinner'
 import styles from './IconButton.module.css'
-import { IconButtonProps } from '.'
+
+export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning' | 'solid'
+export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
+
+export interface IconButtonProps {
+  id?: string
+  icon?: IconType
+  type?: IconButtonType
+  size?: IconButtonSize
+  className?: string
+  disabled?: boolean
+  loading?: boolean
+  onClick?: (e: React.MouseEvent) => void
+  onMouseEnter?: (e: React.MouseEvent) => void
+  onMouseLeave?: (e: React.MouseEvent) => void
+  tooltip?: TooltipTypes
+  tooltipPlacement?: Placement
+  children?: React.ReactNode
+  style?: CSSProperties
+}
 
 const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(
   '--color-danger-red'
 )
 
-function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
+function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   const {
     id,
     type = 'default',
@@ -65,4 +86,4 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   )
 }
 
-export default memo(forwardRef<HTMLButtonElement, IconButtonProps>(IconButton))
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(IconButtonComponent)

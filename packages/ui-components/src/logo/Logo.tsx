@@ -1,7 +1,11 @@
-import React, { memo } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import styles from './Logo.module.css'
-import { SubBrands } from '.'
+
+export enum SubBrands {
+  MarineManager = 'Marine Manager',
+  CarrierVessels = 'Carrier Vessels',
+}
 
 export type LogoTypes = 'default' | 'invert'
 
@@ -11,7 +15,7 @@ interface LogoProps {
   className?: string
 }
 
-function Logo(props: LogoProps) {
+export function Logo(props: LogoProps) {
   const { type = 'default', subBrand = '', className } = props
   return (
     <svg
@@ -43,5 +47,3 @@ function Logo(props: LogoProps) {
     </svg>
   )
 }
-
-export default memo(Logo)

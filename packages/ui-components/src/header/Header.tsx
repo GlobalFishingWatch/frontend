@@ -9,7 +9,7 @@ interface HeaderProps {
   inverted?: boolean
 }
 
-function Header({ mini = false, inverted = false }: HeaderProps) {
+export function Header({ mini = false, inverted = false }: HeaderProps) {
   return (
     <div
       className={cx(styles.gfwHeaderContainer, { [styles.gfwHeaderContainerInverted]: inverted })}
@@ -66,5 +66,3 @@ function Header({ mini = false, inverted = false }: HeaderProps) {
     </div>
   )
 }
-
-export default memo(Header)

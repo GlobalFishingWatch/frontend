@@ -1,7 +1,7 @@
 import { Placement } from 'tippy.js'
 import { TooltipTypes } from '../types/types'
 
-export { default } from './TagList'
+export * from './TagList'
 
 export type TagItem = {
   id: string | number

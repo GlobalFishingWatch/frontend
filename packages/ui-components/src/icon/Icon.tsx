@@ -1,7 +1,7 @@
-import React, { memo } from 'react'
+import React from 'react'
 import { Placement } from 'tippy.js'
 import cx from 'classnames'
-import Tooltip from '../tooltip'
+import { Tooltip } from '../tooltip'
 import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
@@ -125,6 +125,8 @@ export const IconComponents = {
   warning: Warning,
 }
 
+export type IconType = keyof typeof IconComponents
+
 interface IconProps {
   className?: string
   icon: keyof typeof IconComponents
@@ -133,7 +135,7 @@ interface IconProps {
   tooltipPlacement?: Placement
 }
 
-const Icon: React.FC<IconProps> = (props) => {
+export function Icon(props: IconProps) {
   const { icon, tooltip, type = 'default', className = '' } = props
   const Component = IconComponents[icon]
   if (!Component) {
@@ -146,5 +148,3 @@ const Icon: React.FC<IconProps> = (props) => {
     </Tooltip>
   )
 }
-
-export default memo(Icon)

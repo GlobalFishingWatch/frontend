@@ -1,7 +1,7 @@
-import React, { useMemo, memo } from 'react'
+import React, { useMemo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
-import IconButton from '../icon-button'
+import { IconButton } from '../icon-button'
 import styles from './Modal.module.css'
 
 interface ModalProps {
@@ -22,7 +22,7 @@ interface ModalProps {
   onClose: (e: React.MouseEvent) => void
 }
 
-function Modal(props: ModalProps) {
+export function Modal(props: ModalProps) {
   const {
     isOpen,
     onClose,
@@ -75,5 +75,3 @@ function Modal(props: ModalProps) {
     </ReactModal>
   )
 }
-
-export default memo(Modal)

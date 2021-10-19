@@ -1,6 +1,6 @@
-import React, { useRef, forwardRef, useImperativeHandle, memo, Ref } from 'react'
+import React, { useRef, forwardRef, useImperativeHandle, Ref } from 'react'
 import cx from 'classnames'
-import IconButton from '../icon-button'
+import { IconButton } from '../icon-button'
 import baseStyles from '../input-text/InputText.module.css'
 import styles from './InputDate.module.css'
 
@@ -15,7 +15,7 @@ export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
 const defaultKey = Date.now().toString()
 
-function InputDate(props: InputDateProps, forwardedRef: Ref<HTMLInputElement>) {
+export function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputElement>) {
   const { className, value, label, max, min, step, onRemove, ...rest } = props
   const inputRef = useRef<HTMLInputElement>(null)
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
@@ -49,4 +49,4 @@ function InputDate(props: InputDateProps, forwardedRef: Ref<HTMLInputElement>) {
   )
 }
 
-export default memo(forwardRef<HTMLInputElement, InputDateProps>(InputDate))
+export const InputDate = forwardRef<HTMLInputElement, InputDateProps>(InputDateComponent)

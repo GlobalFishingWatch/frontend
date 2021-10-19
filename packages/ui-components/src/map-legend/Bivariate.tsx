@@ -116,7 +116,7 @@ const valuesPositions = [
   ],
 ]
 
-function BivariateLegend({
+export function BivariateLegend({
   layer,
   className,
   labelComponent,
@@ -198,5 +198,3 @@ function BivariateLegend({
     </div>
   )
 }
-
-export default memo(BivariateLegend)

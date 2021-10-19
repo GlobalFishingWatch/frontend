@@ -13,7 +13,7 @@ interface CountryFlag {
   }
 }
 
-function CountryFlag(props: CountryFlag) {
+export function CountryFlag(props: CountryFlag) {
   const {
     iso,
     svg = false,
@@ -56,5 +56,3 @@ function CountryFlag(props: CountryFlag) {
     </span>
   )
 }
-
-export default memo(CountryFlag)

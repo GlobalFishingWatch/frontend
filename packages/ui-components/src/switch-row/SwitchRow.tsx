@@ -1,6 +1,6 @@
-import React, { memo } from 'react'
+import React from 'react'
 import cx from 'classnames'
-import Switch, { SwitchProps } from '../switch'
+import { Switch, SwitchProps } from '../switch'
 import styles from './SwitchRow.module.css'
 
 type SwitchRowProps = SwitchProps & {
@@ -8,7 +8,7 @@ type SwitchRowProps = SwitchProps & {
   className?: string
 }
 
-function SwitchRow(props: SwitchRowProps) {
+export function SwitchRow(props: SwitchRowProps) {
   const { label, className = '', ...rest } = props
 
   return (
@@ -23,5 +23,3 @@ function SwitchRow(props: SwitchRowProps) {
     </div>
   )
 }
-
-export default memo(SwitchRow)

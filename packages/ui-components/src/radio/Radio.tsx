@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
-import Tooltip from '../tooltip'
+import { Tooltip } from '../tooltip'
 import { TooltipTypes } from '../types/types'
 import styles from './Radio.module.css'
 
@@ -16,7 +16,7 @@ interface RadioProps {
   labelClassname?: string
 }
 
-function Radio(props: RadioProps) {
+export function Radio(props: RadioProps) {
   const {
     active = false,
     disabled = false,
@@ -55,5 +55,3 @@ function Radio(props: RadioProps) {
     </Tooltip>
   )
 }
-
-export default memo(Radio)

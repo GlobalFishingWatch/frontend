@@ -1,9 +1,9 @@
-import React, { memo, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
-import Icon from '../icon'
-import IconButton from '../icon-button'
-import Tooltip from '../tooltip'
+import { Icon } from '../icon'
+import { IconButton } from '../icon-button'
+import { Tooltip } from '../tooltip'
 import styles from './Select.module.css'
 import { SelectOption, SelectOnChange } from './index'
 
@@ -25,7 +25,7 @@ const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOpti
   return selectedItem !== undefined ? selectedItem.id === item.id : false
 }
 
-function Select(props: SelectProps) {
+export function Select(props: SelectProps) {
   const {
     label = '',
     placeholder = 'Select an option',
@@ -122,5 +122,3 @@ function Select(props: SelectProps) {
     </div>
   )
 }
-
-export default memo(Select)

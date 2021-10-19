@@ -1,3 +1,2 @@
-export { default } from './ColorBar'
-
+export * from './ColorBar'
 export * from './color-bar-options'

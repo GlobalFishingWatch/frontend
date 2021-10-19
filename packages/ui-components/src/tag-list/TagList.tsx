@@ -1,6 +1,6 @@
-import React, { useCallback, memo } from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
-import Tag from '../tag'
+import { Tag } from '../tag'
 import styles from './TagList.module.css'
 import { TagItem, TagListOnRemove } from './index'
 
@@ -11,7 +11,7 @@ interface TagListProps {
   onRemove?: TagListOnRemove
 }
 
-function TagList(props: TagListProps) {
+export function TagList(props: TagListProps) {
   const { className = '', color, tags = [], onRemove } = props
   const onRemoveTag = useCallback(
     (tag: TagItem) => {
@@ -40,5 +40,3 @@ function TagList(props: TagListProps) {
     </ul>
   )
 }
-
-export default memo(TagList)

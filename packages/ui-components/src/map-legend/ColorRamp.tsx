@@ -13,7 +13,7 @@ type ColorRampLegendProps = {
   labelComponent?: React.ReactNode
 }
 
-function ColorRampLegend({
+export function ColorRampLegend({
   layer = {} as LegendLayer,
   className = '',
   roundValues = true,
@@ -161,5 +161,3 @@ function ColorRampLegend({
     </div>
   )
 }
-
-export default memo(ColorRampLegend)

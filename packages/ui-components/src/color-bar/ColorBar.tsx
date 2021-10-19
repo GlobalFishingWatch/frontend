@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import styles from './ColorBar.module.css'
 import { ColorBarOption, FillColorBarOptions } from './color-bar-options'
@@ -11,7 +11,7 @@ interface ColorBarProps {
   className?: string
 }
 
-function ColorBar(props: ColorBarProps) {
+export function ColorBar(props: ColorBarProps) {
   const {
     onColorClick,
     className = '',
@@ -40,5 +40,3 @@ function ColorBar(props: ColorBarProps) {
     </ul>
   )
 }
-
-export default memo(ColorBar)

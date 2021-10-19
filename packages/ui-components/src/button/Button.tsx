@@ -1,8 +1,8 @@
-import React, { memo } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import type { Placement } from 'tippy.js'
-import Tooltip from '../tooltip'
-import Spinner from '../spinner'
+import { Tooltip } from '../tooltip'
+import { Spinner } from '../spinner'
 import { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
 
@@ -26,7 +26,7 @@ interface ButtonProps {
   target?: string
 }
 
-function Button(props: ButtonProps) {
+export function Button(props: ButtonProps) {
   const {
     id,
     type = 'default',
@@ -84,5 +84,3 @@ function Button(props: ButtonProps) {
     </Tooltip>
   )
 }
-
-export default memo(Button)

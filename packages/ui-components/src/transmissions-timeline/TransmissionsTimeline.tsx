@@ -9,7 +9,7 @@ type TransmissionsTimelineProps = {
   firstYearOfData: number
 }
 
-function TransmissionsTimeline({
+export function TransmissionsTimeline({
   firstTransmissionDate,
   lastTransmissionDate,
   firstYearOfData,
@@ -33,5 +33,3 @@ function TransmissionsTimeline({
     </div>
   )
 }
-
-export default TransmissionsTimeline

@@ -1,1 +1,1 @@
-export { default, defaultLinks } from './Menu'
+export * from './Menu'

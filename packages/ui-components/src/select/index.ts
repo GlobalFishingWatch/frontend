@@ -1,4 +1,4 @@
-export { default } from './Select'
+export * from './Select'
 
 export type SelectOption<T = any> = {
   id: T

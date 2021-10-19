@@ -7,13 +7,45 @@ import {
   UseComboboxStateChangeTypes,
 } from 'downshift'
 import cx from 'classnames'
-import Icon, { IconType } from '../icon'
-import IconButton from '../icon-button'
-import Tooltip from '../tooltip'
-import InputText from '../input-text'
+import { Icon, IconType } from '../icon'
+import { IconButton } from '../icon-button'
+import { Tooltip } from '../tooltip'
+import { InputText } from '../input-text'
 import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
-import { MultiSelectOption, MultiSelectOnChange, MultiSelectOnFilter } from './index'
+
+export type SelectOptionId = number | string
+export type MultiSelectOption<T = any> = {
+  id: T
+  label: string
+  alias?: string[]
+  tooltip?: string
+}
+/**
+ * Callback on selecting or removing options
+ * @param {SelectOption} option - Selected option
+ * @param {SelectOption[]} [selectedOptions] - The list of new options after changes
+ */
+export type MultiSelectOnChange = (
+  option: MultiSelectOption,
+  selectedOptions: MultiSelectOption[]
+) => void
+/**
+ * Callback on filtering options
+ * @param {MultiSelectOption[]} options - The list of options available
+ * @param {MultiSelectOption[]} filteredOptions - The options filtered by applying the filter
+ * @param {string} [filter] - The text entered by the user to filter on
+ * @returns Options to be displayed in the MultiSelect
+ */
+export type MultiSelectOnFilter = (
+  allOptions: MultiSelectOption[],
+  filteredOptions: MultiSelectOption[],
+  filter?: string
+) => MultiSelectOption[]
+/**
+ * Callback on removing all options
+ */
+export type MultiSelectOnRemove = (event: React.MouseEvent) => void
 
 interface MultiSelectProps {
   label?: string
@@ -58,7 +90,7 @@ const getItemsFiltered = (items: MultiSelectOption[], filter?: string) => {
   return matchingItems
 }
 
-function MultiSelect(props: MultiSelectProps) {
+export function MultiSelect(props: MultiSelectProps) {
   const {
     label = '',
     options,
@@ -273,5 +305,3 @@ function MultiSelect(props: MultiSelectProps) {
     </div>
   )
 }
-
-export default memo(MultiSelect)

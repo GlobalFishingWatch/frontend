@@ -1,8 +1,17 @@
-import React, { memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import type { Placement } from 'tippy.js'
 import cx from 'classnames'
-import Button from '../button'
+import { TooltipTypes } from '..'
+import { Button } from '../button'
 import styles from './Choice.module.css'
-import { ChoiceOption } from '.'
+
+export interface ChoiceOption {
+  id: string
+  title: string
+  disabled?: boolean
+  tooltip?: TooltipTypes
+  tooltipPlacement?: Placement
+}
 
 type ActiveChoiceProperties = {
   width: number
@@ -17,7 +26,7 @@ interface ChoiceProps {
   className?: string
 }
 
-function Choice({
+export function Choice({
   activeOption,
   options,
   onOptionClick,
@@ -107,5 +116,3 @@ function Choice({
     </div>
   )
 }
-
-export default memo(Choice)

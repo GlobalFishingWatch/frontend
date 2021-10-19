@@ -1,6 +1,6 @@
-import React, { memo, useRef } from 'react'
+import React, { useRef } from 'react'
 import cx from 'classnames'
-import Button from '../button'
+import { Button } from '../button'
 import { ButtonSize } from '../button/Button'
 import styles from './Tabs.module.css'
 import { Tab } from '.'
@@ -13,7 +13,7 @@ interface TabsProps {
   buttonSize?: ButtonSize
 }
 
-function Tabs({
+export function Tabs({
   activeTab,
   tabs,
   onTabClick,
@@ -72,5 +72,3 @@ function Tabs({
     </div>
   )
 }
-
-export default memo(Tabs)

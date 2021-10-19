@@ -1,10 +1,21 @@
-import React, { useMemo, memo } from 'react'
+import React, { useMemo } from 'react'
 import { geoOrthographic, geoPath } from 'd3-geo'
 import { feature } from 'topojson-client'
 import { Topology, GeometryCollection } from 'topojson-specification'
 import jsonData from './ne_110m_land.json'
 import styles from './Miniglobe.module.css'
-import { MiniglobeCenter, MiniglobeBounds } from './index'
+
+export interface MiniglobeBounds {
+  north: number
+  south: number
+  west: number
+  east: number
+}
+
+export interface MiniglobeCenter {
+  latitude: number
+  longitude: number
+}
 
 const MIN_DEGREES_PATH = 4
 const MAX_DEGREES_PATH = 150
@@ -22,7 +33,7 @@ interface MiniglobeProps {
   viewportThickness?: number
 }
 
-function MiniGlobe(props: MiniglobeProps) {
+export function MiniGlobe(props: MiniglobeProps) {
   const { bounds, center = defaultCenter, size = 40, viewportThickness = 4, className = '' } = props
 
   const projection = useMemo(() => {
@@ -152,5 +163,3 @@ function MiniGlobe(props: MiniglobeProps) {
     </svg>
   )
 }
-
-export default memo(MiniGlobe)

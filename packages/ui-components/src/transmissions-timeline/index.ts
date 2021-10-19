@@ -1,1 +1,1 @@
-export { default } from './TransmissionsTimeline'
+export * from './TransmissionsTimeline'

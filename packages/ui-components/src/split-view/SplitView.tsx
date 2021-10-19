@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, memo, useMemo } from 'react'
 import cx from 'classnames'
-import Icon from '../icon'
-import Choice from '../choice'
+import { Icon } from '../icon'
+import { Choice } from '../choice'
 import useSmallScreen from './use-small-screen'
 import styles from './SplitView.module.css'
 
@@ -17,7 +17,7 @@ interface SplitViewProps {
   className?: string
 }
 
-function SplitView(props: SplitViewProps) {
+export function SplitView(props: SplitViewProps) {
   const {
     isOpen = true,
     showToggle = true,
@@ -86,5 +86,3 @@ function SplitView(props: SplitViewProps) {
     </div>
   )
 }
-
-export default memo(SplitView)

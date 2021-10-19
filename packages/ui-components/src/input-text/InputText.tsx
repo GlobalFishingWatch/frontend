@@ -1,7 +1,7 @@
-import React, { useRef, forwardRef, useImperativeHandle, memo, Ref } from 'react'
+import React, { useRef, forwardRef, useImperativeHandle, Ref } from 'react'
 import cx from 'classnames'
-import Icon from '../icon'
-import Spinner from '../spinner'
+import { Icon } from '../icon'
+import { Spinner } from '../spinner'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'
@@ -19,7 +19,7 @@ type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
 const defaultKey = Date.now().toString()
 
-function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
+function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
   const {
     className,
     label,
@@ -58,4 +58,4 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
   )
 }
 
-export default memo(forwardRef<HTMLInputElement, InputTextProps>(InputText))
+export const InputText = forwardRef<HTMLInputElement, InputTextProps>(InputTextComponent)

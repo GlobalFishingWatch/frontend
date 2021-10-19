@@ -1,13 +1,13 @@
-import React, { memo } from 'react'
+import React from 'react'
 import cx from 'classnames'
-import Solid from './Solid'
-import ColorRamp from './ColorRamp'
-import Bivariate from './Bivariate'
-import styles from './MapLegend.module.css'
 import {
   LayerMetadataLegend,
   LayerMetadataLegendBivariate,
 } from '@globalfishingwatch/layer-composer'
+import Solid from './Solid'
+import { ColorRampLegend } from './ColorRamp'
+import { BivariateLegend } from './Bivariate'
+import styles from './MapLegend.module.css'
 
 type UILayer = {
   color: string
@@ -44,7 +44,7 @@ export function MapLegend({
   }
   if (layer.type === 'colorramp' || layer.type === 'colorramp-discrete') {
     return (
-      <ColorRamp
+      <ColorRampLegend
         layer={layer as LegendLayer}
         className={className}
         roundValues={roundValues}
@@ -55,7 +55,7 @@ export function MapLegend({
   }
   if (layer.type === 'bivariate') {
     return (
-      <Bivariate
+      <BivariateLegend
         layer={layer as LegendLayerBivariate}
         roundValues={roundValues}
         className={className}
@@ -81,5 +81,3 @@ function MapLegends(props: MapLegendsProps) {
     </div>
   )
 }
-
-export default memo(MapLegends)

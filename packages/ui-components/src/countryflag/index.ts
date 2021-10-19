@@ -1,1 +1,1 @@
-export { default } from './Countryflag'
+export * from './Countryflag'

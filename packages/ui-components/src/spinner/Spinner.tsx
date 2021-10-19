@@ -13,7 +13,7 @@ const spinnerVarColor = getComputedStyle(document.documentElement).getPropertyVa
   '--color-primary-blue'
 )
 
-function Spinner(props: SpinnerProps) {
+export function Spinner(props: SpinnerProps) {
   const {
     color = spinnerVarColor || '#22447e',
     size = 'default',
@@ -45,5 +45,3 @@ function Spinner(props: SpinnerProps) {
     <div className={cx(styles.centered, className)}>{SvgComponent}</div>
   )
 }
-
-export default memo(Spinner)

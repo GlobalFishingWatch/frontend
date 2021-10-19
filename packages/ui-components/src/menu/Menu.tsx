@@ -1,8 +1,8 @@
 import React, { useMemo, memo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
-import IconButton from '../icon-button'
-import Logo from '../logo'
+import { IconButton } from '../icon-button'
+import { Logo } from '../logo'
 import styles from './Menu.module.css'
 
 type MenuLink = {
@@ -47,7 +47,7 @@ interface MenuProps {
   onClose: (e: React.MouseEvent) => void
 }
 
-function Menu(props: MenuProps) {
+export function Menu(props: MenuProps) {
   const {
     isOpen,
     onClose,
@@ -94,5 +94,3 @@ function Menu(props: MenuProps) {
     </ReactModal>
   )
 }
-
-export default memo(Menu)
