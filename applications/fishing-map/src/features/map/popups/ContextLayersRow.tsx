@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import styles from './Popup.module.css'

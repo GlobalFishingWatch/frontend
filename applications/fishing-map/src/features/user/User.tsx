@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Spinner from '@globalfishingwatch/ui-components/src/spinner'
-import { DatasetCategory } from '@globalfishingwatch/api-types/dist'
+import { Spinner } from '@globalfishingwatch/ui-components'
+import { DatasetCategory } from '@globalfishingwatch/api-types'
 import EditDataset from 'features/datasets/EditDataset'
 import {
   fetchDefaultWorkspaceThunk,

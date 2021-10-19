@@ -1,7 +1,7 @@
 // import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types/dist'
+import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { AsyncError } from 'utils/async-slice'
 import {
   getContextDataviewInstance,

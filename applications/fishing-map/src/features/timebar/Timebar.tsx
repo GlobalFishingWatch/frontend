@@ -9,7 +9,7 @@ import TimebarComponent, {
   TimebarHighlighter,
   TimebarTracksEvents,
 } from '@globalfishingwatch/timebar'
-import { ApiEvent } from '@globalfishingwatch/api-types/dist'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   useTimerangeConnect,
@@ -237,7 +237,7 @@ const TimebarWrapper = () => {
                         key="events"
                         labels={labels?.trackEvents}
                         preselectedEventId={highlightedEvent?.id}
-                        tracksEvents={tracksEvents}
+                        tracksEvents={tracksEvents as any}
                         onEventClick={onEventClick}
                         onEventHover={onEventHover}
                       />

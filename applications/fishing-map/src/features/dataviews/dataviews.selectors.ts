@@ -14,7 +14,11 @@ import {
   resolveResourcesFromDatasetConfigs,
   DatasetConfigsTransforms,
 } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType, BasemapGeneratorConfig } from '@globalfishingwatch/layer-composer'
+import {
+  GeneratorType,
+  BasemapGeneratorConfig,
+  BasemapType,
+} from '@globalfishingwatch/layer-composer'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -161,7 +165,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   }
 )
 
-export const selectDataviewInstancesByType = (type: Type) => {
+export const selectDataviewInstancesByType = (type: GeneratorType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })

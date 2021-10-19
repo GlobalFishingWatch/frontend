@@ -2,11 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import InputText from '@globalfishingwatch/ui-components/src/input-text'
-import Button from '@globalfishingwatch/ui-components/src/button'
+import { InputText, Button, Modal, SwitchRow } from '@globalfishingwatch/ui-components'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import Modal from '@globalfishingwatch/ui-components/src/modal'
-import SwitchRow from '@globalfishingwatch/ui-components/src/switch-row'
 import {
   saveCurrentWorkspaceThunk,
   updatedCurrentWorkspaceThunk,

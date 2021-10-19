@@ -1,9 +1,8 @@
 import { useState, useEffect, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Modal from '@globalfishingwatch/ui-components/src/modal'
-import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
@@ -112,7 +111,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     label: t('feedback.issues', 'Platform Issues'),
   }
   const datasetOptions = activeDataviews.flatMap((dataview) => {
-    if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
+    if (dataview.config?.type === GeneratorType.HeatmapAnimated) {
       const sourcesInDataview = getSourcesSelectedInDataview(dataview)
       return sourcesInDataview.map((source) => {
         const dataset = { id: source.id, name: source.label }

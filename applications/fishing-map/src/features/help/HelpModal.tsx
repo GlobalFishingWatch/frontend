@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Modal from '@globalfishingwatch/ui-components/src/modal'
+import { Modal } from '@globalfishingwatch/ui-components'
 import styles from './HelpModal.module.css'
 
 type HelpModalProps = {

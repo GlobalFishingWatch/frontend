@@ -2,7 +2,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
-import { InteractionEvent } from '@globalfishingwatch/react-hooks'
+import {
+  InteractionEvent,
+  TemporalGridFeature,
+  useFeatureState,
+} from '@globalfishingwatch/react-hooks'
 import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   UrlDataviewInstance,
@@ -10,11 +14,7 @@ import {
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
 } from '@globalfishingwatch/dataviews-client'
 import type { Style } from '@globalfishingwatch/mapbox-gl'
-import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
-import {
-  TemporalGridFeature,
-  useFeatureState,
-} from '@globalfishingwatch/react-hooks/src/use-map-interaction'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -219,7 +219,7 @@ export type TooltipEventFeature = {
   id?: string
   title?: string
   visible?: boolean
-  type?: Type
+  type?: GeneratorType
   color?: string
   unit?: string
   source: string

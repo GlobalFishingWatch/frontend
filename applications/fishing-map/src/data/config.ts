@@ -1,6 +1,6 @@
 import ReactGA from 'react-ga'
 import { DateObject, DateTime } from 'luxon'
-import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'

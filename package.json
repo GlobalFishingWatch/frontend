@@ -1,14 +1,13 @@
 {
-  "name": "@globalfishingwatch/frontend",
+  "name": "globalfishingwatch",
   "version": "0.0.1",
-  "main": "index.js",
-  "repository": "git@github.com:GlobalFishingWatch/frontend.git",
-  "author": "satellitestudio <contact@satellitestud.io>",
-  "license": "MIT",
   "private": true,
+  "repository": "git@github.com:GlobalFishingWatch/frontend.git",
+  "license": "MIT",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "main": "index.js",
   "workspaces": {
     "packages": [
-      "packages/*",
       "applications/*",
       "linting"
     ],
@@ -19,11 +18,83 @@
     "build": "nx build",
     "graph": "yarn nx dep-graph",
     "graph:affected": "yarn nx affected:dep-graph",
-    "clean": "rm -rf node_modules && rm yarn.lock && yarn",
+    "clean:deps": "rm -rf node_modules && rm yarn.lock && yarn",
+    "clean:dist": "rm -rf dist",
+    "clean": "yarn clean:deps && yarn clean:dist",
     "prepare": "husky install"
   },
-  "dependencies": {},
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint -c ./.eslintrc.js --fix --resolve-plugins-relative-to ."
+    ],
+    "*.css": [
+      "prettier --write",
+      "stylelint --fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "stylelint --syntax=scss --fix"
+    ]
+  },
+  "resolutions": {
+    "**/babel-loader": "8.1.0",
+    "gl-matrix": "3.3.0"
+  },
+  "dependencies": {
+    "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
+    "@mapbox/mapbox-gl-style-spec": "^13.14.0",
+    "@mapbox/tile-cover": "^3.0.2",
+    "@mapbox/tilebelt": "^1.0.2",
+    "@mapbox/vector-tile": "^1.3.1",
+    "@reduxjs/toolkit": "1.5.0",
+    "@tippyjs/react": "4.2.0",
+    "@turf/area": "^6.0.1",
+    "@turf/bbox": "^6.0.1",
+    "@turf/great-circle": "^5.1.5",
+    "@turf/helpers": "^6.3.0",
+    "@turf/length": "^6.0.2",
+    "@turf/turf": "^5.1.6",
+    "abortcontroller-polyfill": "^1.4.0",
+    "classnames": "2.3.1",
+    "color-blend": "^3.0.1",
+    "color-convert": "^2.0.1",
+    "countryflag": "4.0.1",
+    "cross-env": "^7.0.3",
+    "d3-collection": "^1.0.7",
+    "d3-ease": "1.0.5",
+    "d3-geo": "1.11.3",
+    "d3-scale": "^3.2.4",
+    "d3-shape": "1.3.4",
+    "downshift": "^6.0.6",
+    "file-saver": "^2.0.2",
+    "geojson": "^0.5.0",
+    "geojson-vt": "^3.2.1",
+    "lodash": "^4.17.21",
+    "luxon": "^2.0.2",
+    "match-sorter": "^6.0.2",
+    "memoize-one": "^5.1.1",
+    "papaparse": "^5.3.0",
+    "pbf": "^3.2.1",
+    "pbjs": "^0.0.14",
+    "pbts-cli": "^1.0.3",
+    "prop-types": "^15.6.2",
+    "protobufjs": "6.9.0",
+    "qs": "^6.9.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.1",
+    "react-map-gl": "^5.3.17",
+    "react-modal": "^3.11.2",
+    "react-spring": "^8.0.27",
+    "reselect": "^4.0.0",
+    "resize-observer-polyfill": "^1.5.1",
+    "topojson-client": "^3.0.0",
+    "tracks-cloud-function": "https://github.com/GlobalFishingWatch/api-function-vessels",
+    "typescript-json-schema": "^0.47.0",
+    "vt-pbf": "^3.1.1"
+  },
   "devDependencies": {
+    "@globalfishingwatch/linting": "^1.7.0",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
     "@nrwl/cli": "^12.10.0",
     "@nrwl/cypress": "^12.10.0",
     "@nrwl/eslint-plugin-nx": "^12.10.0",
@@ -35,11 +106,24 @@
     "@nrwl/web": "^12.10.0",
     "@nrwl/workspace": "^12.10.0",
     "@nx-tools/nx-docker": "^1.0.5",
+    "@svgr/rollup": "^5.5.0",
     "@testing-library/react": "11.2.6",
     "@testing-library/react-hooks": "7.0.1",
+    "@types/color-convert": "^2.0.0",
+    "@types/d3": "^5.7.2",
+    "@types/d3-scale": "^3.2.2",
+    "@types/file-saver": "^2.0.1",
+    "@types/geojson": "^7946.0.7",
     "@types/jest": "26.0.24",
+    "@types/lodash": "^4.14.175",
+    "@types/luxon": "^1.27.1",
+    "@types/node": "^14.14.37",
+    "@types/papaparse": "^5.2.5",
+    "@types/qs": "^6.9.3",
     "@types/react": "17.0.3",
     "@types/react-dom": "17.0.3",
+    "@types/react-modal": "^3.10.5",
+    "@types/topojson-client": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
     "babel-jest": "27.0.6",
@@ -60,18 +144,25 @@
     "husky": "^7.0.0",
     "jest": "27.0.3",
     "jest-watch-typeahead": "^0.6.4",
+    "kill-port": "^1.6.1",
     "lint-staged": "^11.1.0",
     "mkdir": "^0.0.2",
     "mkdirp": "^1.0.4",
     "npm-run-all": "^4.1.5",
+    "postcss-import": "^14.0.2",
+    "postcss-modules": "^4.2.2",
     "prettier": "2.3.0",
     "prettier-eslint": "^12.0.0",
+    "react-app-rewired": "^2.1.8",
+    "react-scripts": "^4.0.3",
     "regenerator-runtime": "0.13.7",
     "rimraf": "^3.0.2",
+    "serve": "^12.0.1",
     "stylelint": "^13.13.1",
     "stylelint-config-css-modules": "^2.2.0",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
+    "tap": "~12.4.1",
     "ts-jest": "27.0.3",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5",
@@ -89,25 +180,6 @@
     "@globalfishingwatch/pbf": "*",
     "@globalfishingwatch/react-hooks": "*",
     "@globalfishingwatch/timebar": "*",
-    "@globalfishingwatch/ui-components": "*",
-    "react": "^17.x",
-    "react-dom": "^17.x"
-  },
-  "resolutions": {
-    "**/babel-loader": "8.1.0",
-    "gl-matrix": "3.3.0"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint -c ./.eslintrc.js --fix --resolve-plugins-relative-to ."
-    ],
-    "*.css": [
-      "prettier --write",
-      "stylelint --fix"
-    ],
-    "*.scss": [
-      "prettier --write",
-      "stylelint --syntax=scss --fix"
-    ]
+    "@globalfishingwatch/ui-components": "*"
   }
 }

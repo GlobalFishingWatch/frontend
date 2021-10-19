@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react'
-// import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { groupBy } from 'lodash'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'

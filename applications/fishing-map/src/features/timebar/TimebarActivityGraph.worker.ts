@@ -1,8 +1,8 @@
 import flatMap from 'array.prototype.flatmap'
 import { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components/src/miniglobe'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
-import { quantizeOffsetToDate , Interval } from '@globalfishingwatch/layer-composer'
+import { quantizeOffsetToDate, Interval } from '@globalfishingwatch/layer-composer'
 import { filterByViewport } from 'features/map/map.utils'
 
 const objectEntries =

@@ -8,8 +8,8 @@ import {
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client/dist'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
   TEMPLATE_CONTEXT_DATAVIEW_ID,
@@ -80,7 +80,7 @@ const vesselDataviewInstanceTemplate = (dataviewId: number) => {
 export const getVesselDataviewInstance = (
   vessel: { id: string },
   datasets: VesselInstanceDatasets
-): DataviewInstance<Generators.Type> => {
+): DataviewInstance<GeneratorType> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_ID),
@@ -92,7 +92,7 @@ export const getVesselDataviewInstance = (
 export const getPresenceVesselDataviewInstance = (
   vessel: { id: string },
   datasets: VesselInstanceDatasets
-): DataviewInstance<Generators.Type> => {
+): DataviewInstance<GeneratorType> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_ID),
@@ -101,7 +101,7 @@ export const getPresenceVesselDataviewInstance = (
   return vesselDataviewInstance
 }
 
-export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> => {
+export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> => {
   return {
     id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
     config: {
@@ -113,7 +113,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> 
 
 export const getEnvironmentDataviewInstance = (
   datasetId: string
-): DataviewInstance<Generators.Type> => {
+): DataviewInstance<GeneratorType> => {
   const environmentalDataviewInstance = {
     id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Environment,
@@ -151,9 +151,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
   return dataviewInstance
 }
 
-export const getContextDataviewInstance = (
-  datasetId: string
-): DataviewInstance<Generators.Type> => {
+export const getContextDataviewInstance = (datasetId: string): DataviewInstance<GeneratorType> => {
   const contextDataviewInstance = {
     id: `${CONTEXT_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Context,
@@ -181,7 +179,7 @@ export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
 
 export const getActivityDataviewInstanceFromDataview = (
   dataview?: Dataview
-): DataviewInstance<Generators.Type> | undefined => {
+): DataviewInstance<GeneratorType> | undefined => {
   if (!dataview) return
   const instance = getDataviewInstanceFromDataview(dataview)
   return {

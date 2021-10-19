@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { useFeatureState } from '@globalfishingwatch/react-hooks/src/use-map-interaction'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import useMapInstance from '../map-context.hooks'
 import { selectIsMapDrawing } from '../map.selectors'
 import {

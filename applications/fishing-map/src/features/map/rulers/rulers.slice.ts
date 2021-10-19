@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { Ruler } from '@globalfishingwatch/layer-composer'
 import { RootState } from 'store'
 
 type RulersSlice = {
   visible: boolean
   editing: boolean
   drawing: boolean
-  rulers: Generators.Ruler[]
+  rulers: Ruler[]
 }
 
 const initialState: RulersSlice = {
@@ -31,7 +31,7 @@ const slice = createSlice({
         state.visible = true
         return
       }
-      const newRuler: Generators.Ruler = {
+      const newRuler: Ruler = {
         start: {
           longitude: action.payload.longitude,
           latitude: action.payload.latitude,

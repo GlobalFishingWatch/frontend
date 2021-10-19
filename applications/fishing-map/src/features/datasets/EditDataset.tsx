@@ -2,9 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import InputText from '@globalfishingwatch/ui-components/src/input-text'
-import Modal from '@globalfishingwatch/ui-components/src/modal'
-import Button from '@globalfishingwatch/ui-components/src/button'
+import { InputText, Modal, Button } from '@globalfishingwatch/ui-components'
 import {
   Dataset,
   DatasetCategory,

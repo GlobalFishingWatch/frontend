@@ -1,4 +1,4 @@
-import { MultiSelectOption } from '@globalfishingwatch/ui-components/src/multi-select'
+import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { removeDatasetVersion } from 'features/datasets/datasets.utils'
 import i18n, { t } from './i18n'
 

@@ -3,8 +3,8 @@ import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { Popup } from 'react-map-gl'
 import type { PositionType } from 'react-map-gl/src/utils/dynamic-position'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import styles from './Popup.module.css'
@@ -111,10 +111,10 @@ function PopupWrapper({
             // TODO: merge UserContextTooltipSection and ContextTooltipSection
             case DataviewCategory.Context: {
               const userContextFeatures = features.filter(
-                (feature) => feature.type === Generators.Type.UserContext
+                (feature) => feature.type === GeneratorType.UserContext
               )
               const defaultContextFeatures = features.filter(
-                (feature) => feature.type === Generators.Type.Context
+                (feature) => feature.type === GeneratorType.Context
               )
               return (
                 <Fragment key={featureCategory}>

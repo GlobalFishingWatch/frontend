@@ -6,7 +6,7 @@ import App from 'features/app/App'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import store from './store'
 import './features/i18n/i18n'
-import '@globalfishingwatch/ui-components/src/base.css'
+import '@globalfishingwatch/ui-components/base.css'
 
 const setMobileSafeVH = () => {
   const vh = window.innerHeight * 0.01

@@ -28,6 +28,14 @@ module.exports = {
     config.resolve.alias = {
       ...config.resolve.alias,
       'mapbox-gl': '@globalfishingwatch/mapbox-gl',
+      // assets: 'applications/fishing-map/src/assets',
+      // data: 'applications/fishing-map/src/data',
+      // features: 'applications/fishing-map/src/features',
+      // routes: 'applications/fishing-map/src/routes',
+      // utils: 'applications/fishing-map/src/utils',
+      // hooks: 'applications/fishing-map/src/hooks',
+      // store: 'applications/fishing-map/src/store',
+      // types: 'applications/fishing-map/src/types',
     }
 
     return config

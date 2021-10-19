@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
-import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
-import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/src/choice'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   selectActivityDataviews,
@@ -125,7 +124,7 @@ function ActivitySection(): React.ReactElement {
         (dataview) =>
           dataview.id !== dataview1.id &&
           dataview.id !== dataview2.id &&
-          dataview.config?.type === Generators.Type.HeatmapAnimated
+          dataview.config?.type === GeneratorType.HeatmapAnimated
       )
       if (dataviewsToDisable) {
         upsertDataviewInstance(

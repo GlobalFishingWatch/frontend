@@ -1,10 +1,11 @@
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import MultiSelect, {
+import {
+  MultiSelect,
   MultiSelectOnChange,
   MultiSelectOption,
-} from '@globalfishingwatch/ui-components/src/multi-select'
+} from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'

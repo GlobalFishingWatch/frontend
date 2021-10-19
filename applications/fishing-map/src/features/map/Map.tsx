@@ -9,16 +9,16 @@ import type { MapRequest } from 'react-map-gl'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import useLayerComposer from '@globalfishingwatch/react-hooks/src/use-layer-composer'
 import {
   useMapClick,
   useMapHover,
   useSimpleMapHover,
   useFeatureState,
   InteractionEventCallback,
-} from '@globalfishingwatch/react-hooks/src/use-map-interaction'
+  useLayerComposer,
+  useMapLegend,
+} from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
-import useMapLegend from '@globalfishingwatch/react-hooks/src/use-map-legend'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -172,7 +172,7 @@ const MapWrapper = (): React.ReactElement | null => {
     return mapLegends?.map((legend) => {
       const isSquareKm = (legend.gridArea as number) > 50000
       let label = legend.unit || ''
-      if (legend.generatorType === HeatmapAnimated) {
+      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
         const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
         const gridAreaFormatted = gridArea
           ? formatI18nNumber(gridArea, {

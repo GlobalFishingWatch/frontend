@@ -1,6 +1,6 @@
 import { AsyncThunkAction, Dispatch } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Report, ReportStatus } from '@globalfishingwatch/api-types/dist'
+import { Report, ReportStatus } from '@globalfishingwatch/api-types'
 import { AsyncError } from 'utils/async-slice'
 import { CreateReport, DateRange, createReportThunk } from './analysis.slice'
 

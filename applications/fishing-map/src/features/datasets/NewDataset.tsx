@@ -6,8 +6,7 @@ import { lowerCase } from 'lodash'
 import { useSelector } from 'react-redux'
 import { parse as parseCSV } from 'papaparse'
 import { Feature } from 'geojson'
-import Modal from '@globalfishingwatch/ui-components/src/modal'
-import Button from '@globalfishingwatch/ui-components/src/button'
+import { Modal, Button } from '@globalfishingwatch/ui-components'
 import {
   AnyDatasetConfiguration,
   DatasetCategory,

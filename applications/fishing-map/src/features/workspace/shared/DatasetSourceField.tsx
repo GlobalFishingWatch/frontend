@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import TagList, { TagItem } from '@globalfishingwatch/ui-components/src/tag-list'
+import { TagList, TagItem } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'

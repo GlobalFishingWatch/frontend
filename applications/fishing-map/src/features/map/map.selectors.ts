@@ -1,7 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
-import { AnyGeneratorConfig , Generators } from '@globalfishingwatch/layer-composer'
-import { ApiEvent } from '@globalfishingwatch/api-types/dist'
+import {
+  AnyGeneratorConfig,
+  GeneratorType,
+  GlGeneratorConfig,
+  HeatmapAnimatedMode,
+  Ruler,
+} from '@globalfishingwatch/layer-composer'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
   getDataviewsGeneratorConfigs,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
@@ -32,7 +38,7 @@ import { selectDrawMode } from './map.slice'
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
   resources: ResourcesState
-  rulers: Generators.Ruler[]
+  rulers: Ruler[]
   debugOptions: DebugOptions
   highlightedTime?: Range
   highlightedEvent?: ApiEvent
@@ -48,7 +54,7 @@ const getGeneratorsConfig = ({
   bivariateDataviews,
 }: GetGeneratorConfigParams) => {
   const animatedHeatmapDataviews = dataviews.filter((dataview) => {
-    return dataview.config?.type === Generators.Type.HeatmapAnimated
+    return dataview.config?.type === GeneratorType.HeatmapAnimated
   })
 
   const visibleDataviewIds = dataviews.map(({ id }) => id)
@@ -56,14 +62,14 @@ const getGeneratorsConfig = ({
     bivariateDataviews?.filter((dataviewId) => visibleDataviewIds.includes(dataviewId))?.length ===
     2
 
-  let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariateVisible
-    ? Generators.HeatmapAnimatedMode.Bivariate
-    : Generators.HeatmapAnimatedMode.Compare
+  let heatmapAnimatedMode: HeatmapAnimatedMode = bivariateVisible
+    ? HeatmapAnimatedMode.Bivariate
+    : HeatmapAnimatedMode.Compare
 
   if (debugOptions.extruded) {
-    heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Extruded
+    heatmapAnimatedMode = HeatmapAnimatedMode.Extruded
   } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
-    heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Blob
+    heatmapAnimatedMode = HeatmapAnimatedMode.Blob
   }
 
   const generatorOptions = {
@@ -79,7 +85,7 @@ const getGeneratorsConfig = ({
   // Avoid entering rulers sources and layers when no active rules
   if (rulers?.length) {
     const rulersGeneratorConfig = {
-      type: Generators.Type.Rulers,
+      type: GeneratorType.Rulers,
       id: 'rulers',
       data: rulers,
     }
@@ -148,9 +154,9 @@ export const selectWorkspacesListGenerator = createSelector(
   (workspaces) => {
     if (!workspaces?.length) return
 
-    const generator: Generators.GlGeneratorConfig = {
+    const generator: GlGeneratorConfig = {
       id: WORKSPACE_GENERATOR_ID,
-      type: Generators.Type.GL,
+      type: GeneratorType.GL,
       sources: [
         {
           type: 'geojson',
@@ -218,7 +224,7 @@ export const selectWorkspacesListGenerator = createSelector(
 
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectDefaultBasemapGenerator, selectWorkspacesListGenerator],
-  (basemapGenerator, workspaceGenerator): Generators.AnyGeneratorConfig[] => {
+  (basemapGenerator, workspaceGenerator): AnyGeneratorConfig[] => {
     if (!workspaceGenerator) return [basemapGenerator]
     return [basemapGenerator, workspaceGenerator]
   }
@@ -253,7 +259,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   }
 )
 
-const selectGeneratorConfigsByType = (type: Generators.Type) => {
+const selectGeneratorConfigsByType = (type: GeneratorType) => {
   return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
     return generators?.filter((generator) => generator.type === type)
   })
@@ -266,7 +272,7 @@ export const selectGeneratorConfigsById = (id: string) => {
 }
 
 const selectHeatmapAnimatedGeneratorConfigs = createSelector(
-  [selectGeneratorConfigsByType(Generators.Type.HeatmapAnimated)],
+  [selectGeneratorConfigsByType(GeneratorType.HeatmapAnimated)],
   (dataviews) => dataviews
 )
 

@@ -1,7 +1,7 @@
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import Icon from '@globalfishingwatch/ui-components/src/icon'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { Locale } from 'types'
 import { LocaleLabels } from 'features/i18n/i18n'
 import styles from './LanguageToggle.module.css'

@@ -11,9 +11,9 @@ import {
   Spinner,
   Button,
 } from '@globalfishingwatch/ui-components'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import useDebounce from '@globalfishingwatch/react-hooks/src/use-debounce'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import Rulers from 'features/map/rulers/Rulers'
@@ -142,17 +142,15 @@ const MapControls = ({
   }, [downloadImage, handleModalClose])
 
   const basemapDataviewInstance = resolvedDataviewInstances?.find(
-    (d) => d.config?.type === Generators.Type.Basemap
+    (d) => d.config?.type === GeneratorType.Basemap
   )
-  const currentBasemap = basemapDataviewInstance?.config?.basemap ?? Generators.BasemapType.Default
+  const currentBasemap = basemapDataviewInstance?.config?.basemap ?? BasemapType.Default
   const switchBasemap = () => {
     upsertDataviewInstance({
       id: basemapDataviewInstance?.id,
       config: {
         basemap:
-          currentBasemap === Generators.BasemapType.Default
-            ? Generators.BasemapType.Satellite
-            : Generators.BasemapType.Default,
+          currentBasemap === BasemapType.Default ? BasemapType.Satellite : BasemapType.Default,
       },
     })
   }
@@ -208,7 +206,7 @@ const MapControls = ({
               {!isAnalyzing && (
                 <Tooltip
                   content={
-                    currentBasemap === Generators.BasemapType.Default
+                    currentBasemap === BasemapType.Default
                       ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
                       : t('map.change_basemap_default', 'Switch to default basemap')
                   }

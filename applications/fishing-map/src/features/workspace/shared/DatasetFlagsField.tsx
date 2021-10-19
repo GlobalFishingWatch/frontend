@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import TagList from '@globalfishingwatch/ui-components/src/tag-list'
+import { TagList } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFlagsByIds } from 'utils/flags'
 import styles from 'features/workspace/shared/LayerPanel.module.css'

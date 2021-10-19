@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ApiEvent } from '@globalfishingwatch/api-types/dist'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 
 export type Range = {

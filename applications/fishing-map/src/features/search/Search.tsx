@@ -7,13 +7,17 @@ import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
-import InputText from '@globalfishingwatch/ui-components/src/input-text'
-import Spinner from '@globalfishingwatch/ui-components/src/spinner'
-import useDebounce from '@globalfishingwatch/react-hooks/src/use-debounce'
-import { Button, Choice, Icon } from '@globalfishingwatch/ui-components'
-import { ChoiceOption } from '@globalfishingwatch/ui-components/src/choice'
-import TransmissionsTimeline from '@globalfishingwatch/ui-components/src/transmissionsTimeline'
+import {
+  IconButton,
+  InputText,
+  Spinner,
+  Button,
+  Choice,
+  Icon,
+  ChoiceOption,
+  TransmissionsTimeline,
+} from '@globalfishingwatch/ui-components'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'

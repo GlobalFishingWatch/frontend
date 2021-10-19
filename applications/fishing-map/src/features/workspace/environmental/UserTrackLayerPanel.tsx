@@ -3,14 +3,12 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import Tooltip from '@globalfishingwatch/ui-components/src/tooltip'
-import { ColorBarOption } from '@globalfishingwatch/ui-components/src/color-bar'
+import { Tooltip, IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { Segment } from '@globalfishingwatch/data-transforms'
-import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'

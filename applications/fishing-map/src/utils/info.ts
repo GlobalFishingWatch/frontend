@@ -1,4 +1,4 @@
-import { Vessel } from '@globalfishingwatch/api-types/dist'
+import { Vessel } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { t } from '../features/i18n/i18n'
 
