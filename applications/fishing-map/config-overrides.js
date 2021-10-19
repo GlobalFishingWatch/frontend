@@ -25,11 +25,16 @@ module.exports = {
         delete babelLoader.include
       }
     })
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'mapbox-gl': '@globalfishingwatch/mapbox-gl',
+    }
+
     return config
   },
   paths: (paths) => {
     // Rewrite dist folder to where Nx expects it to be.
-    paths.appBuild = path.resolve(__dirname, '../../dist/apps/fishing-map/html')
+    paths.appBuild = path.resolve(__dirname, '../../dist/applications/fishing-map')
     return paths
   },
   jest: (config) => {
