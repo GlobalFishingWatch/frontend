@@ -21,17 +21,9 @@
   "bugs": {
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
-  "dependencies": {
-    "@turf/helpers": "^6.3.0",
-    "@turf/turf": "^5.1.6",
-    "match-sorter": "^6.0.2"
-  },
-  "peerDependencies": {
-    "@types/geojson": "^7946.0.8"
-  },
-  "devDependencies": {
-    "geojson": "^0.5.0"
-  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "devDependencies": {},
   "publishConfig": {
     "access": "public"
   }

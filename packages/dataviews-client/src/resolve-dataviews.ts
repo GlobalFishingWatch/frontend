@@ -10,7 +10,7 @@ import {
   Resource,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { resolveEndpoint } from '.'
+import { resolveEndpoint } from './resolve-endpoint'
 
 export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
   dataviewId?: number // making this optional as sometimes we just need to reference the id
@@ -231,7 +231,7 @@ export const resolveDataviewDatasetResource = (
  * @param dataviews
  * @param dataviewInstances
  */
-export default function resolveDataviews(
+export function resolveDataviews(
   dataviewInstances: UrlDataviewInstance[],
   dataviews: Dataview[],
   datasets: Dataset[]

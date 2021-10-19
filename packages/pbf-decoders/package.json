@@ -20,16 +20,8 @@
     "build:pb:4wings-tile:ts": "pbts decoders/4wings-tile.js -o decoders/4wings-tiles.d.ts",
     "clean": "rimraf decoders && mkdirp ./decoders"
   },
-  "dependencies": {
-    "tracks-cloud-function": "https://github.com/GlobalFishingWatch/api-function-vessels"
-  },
-  "devDependencies": {
-    "cross-env": "^7.0.3",
-    "pbf": "3.2.1",
-    "pbjs": "^0.0.14",
-    "pbts-cli": "^1.0.3",
-    "protobufjs": "6.9.0"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "publishConfig": {
     "access": "public"
   }

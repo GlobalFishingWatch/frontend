@@ -2,7 +2,7 @@ export { default as useDataviewsGeneratorConfigs } from './use-dataviews-layers'
 export { default as useDebounce } from './use-debounce'
 export { default as useLayerComposer } from './use-layer-composer'
 export { default as useLogin } from './use-login'
-export { useMapHover, useMapClick } from './use-map-interaction'
+export * from './use-map-interaction'
 export type {
   InteractionEvent,
   InteractionEventCallback,

@@ -22,9 +22,5 @@
     "src": "src",
     "dist": "dist"
   },
-  "type": "module",
-  "devDependencies": {
-    "cross-env": "^7.0.3",
-    "tap": "~12.4.1"
-  }
+  "type": "module"
 }

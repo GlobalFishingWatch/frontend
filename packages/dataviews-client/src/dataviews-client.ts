@@ -8,7 +8,7 @@ import {
   ResourceResponseType,
   Dataset,
 } from '@globalfishingwatch/api-types'
-import resolveDataviews from './resolve-dataviews'
+import { resolveDataviews } from './resolve-dataviews'
 
 const BASE_URL = '/v1/dataviews'
 

@@ -125,6 +125,7 @@ const getExtendedFeatures = (
 }
 
 let sourcesWithFeatureState: FeatureStateSource[] = []
+
 export const useFeatureState = (map?: Map) => {
   const cleanFeatureState = useCallback(
     (state: FeatureStates = 'hover') => {

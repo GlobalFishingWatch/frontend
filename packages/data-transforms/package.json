@@ -1,17 +1,4 @@
 {
   "name": "@globalfishingwatch/data-transforms",
-  "version": "0.0.1",
-  "dependencies": {
-    "@types/geojson": "^7946.0.8",
-    "@types/papaparse": "^5.2.5",
-    "geojson": "^0.5.0",
-    "papaparse": "^5.3.0"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.175",
-    "lodash": "^4.17.21"
-  },
-  "peerDependencies": {
-    "lodash": "^4.17.21"
-  }
+  "version": "0.0.1"
 }

@@ -21,25 +21,10 @@
   "bugs": {
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
-  "dependencies": {
-    "qs": "^6.9.4"
-  },
-  "devDependencies": {
-    "@globalfishingwatch/api-client": "*",
-    "@globalfishingwatch/api-types": "*",
-    "@globalfishingwatch/layer-composer": "*",
-    "@types/lodash": "^4.14.168",
-    "@types/qs": "^6.9.3",
-    "cross-env": "^7.0.3",
-    "d3-scale": "3.2.3"
-  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {},
   "publishConfig": {
     "access": "public"
-  },
-  "peerDependencies": {
-    "@globalfishingwatch/api-client": "*",
-    "@globalfishingwatch/api-types": "*",
-    "@globalfishingwatch/layer-composer": "*",
-    "lodash": "^4.17.21"
   }
 }

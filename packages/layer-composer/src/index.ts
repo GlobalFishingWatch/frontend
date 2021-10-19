@@ -4,4 +4,4 @@ export { default as getInteractiveLayerIds } from './transforms/getInteractiveLa
 export * from './generators/types'
 export * from './generators'
 export * from './types'
-export { frameToDate, quantizeOffsetToDate } from './generators/heatmap/util/time-chunks'
+export * from './generators/heatmap/util/time-chunks'

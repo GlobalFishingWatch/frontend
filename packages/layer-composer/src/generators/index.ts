@@ -18,7 +18,7 @@ export { COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
 export { DEFAULT_HEATMAP_INTERVALS } from './heatmap/config'
 export { CONFIG_BY_INTERVAL } from './heatmap/util/time-chunks'
 export { TEMPORALGRID_SOURCE_LAYER } from './heatmap/modes/gridded'
-export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType }
+export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER }
 
 const GeneratorConfig = {
   [GeneratorType.Background]: new BackgroundGenerator(),
