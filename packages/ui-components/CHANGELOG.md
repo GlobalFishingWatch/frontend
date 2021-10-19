@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 12.4.0
+
+### Minor Changes
+
+- 24642e15: ACTIVITY tab - add a red dot icon in the events that are matching highlight criteria
+
 ## 12.3.1
 
 ### Patch Changes
