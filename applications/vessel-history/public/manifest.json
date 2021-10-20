@@ -6,7 +6,7 @@
   "lang": "en-US",
   "display": "standalone",
   "orientation": "any",
-  "start_url": "/",
+  "start_url": "/vessel-viewer",
   "scope": "/vessel-viewer",
   "background_color": "#fff",
   "theme_color": "#163f89",
