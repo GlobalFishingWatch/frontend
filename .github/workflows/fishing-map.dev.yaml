@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - develop
+  workflow_dispatch:
 
 env:
   NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
