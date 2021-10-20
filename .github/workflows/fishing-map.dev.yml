@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - monorepo-update
+  workflow_dispatch:
 
 
 env:
