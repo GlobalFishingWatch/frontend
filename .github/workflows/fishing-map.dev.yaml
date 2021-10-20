@@ -15,6 +15,7 @@ env:
 
 jobs:
   deploy:
+    environment: fishing-map-dev
     runs-on: ubuntu-latest
 
     steps:
@@ -49,7 +50,6 @@ jobs:
         run: yarn install
 
       # - name: Build and deploy
-      #   # environment: fishing-dev
       #   env:
       #     BASIC_AUTH_PASS: ${{ secrets._BASIC_AUTH_PASS }}
       #     BASIC_AUTH_USER: ${{ secrets._BASIC_AUTH_USER }}
