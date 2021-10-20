@@ -37,14 +37,14 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      # - name: Set yarn global bin path
-      #   run: yarn config set prefix $(yarn cache dir)
+      - name: Set yarn global bin path
+        run: yarn config set prefix $(yarn cache dir)
 
-      # - name: Add yarn bin path to system path
-      #   run: echo "::add-path::$(yarn global bin)"
+      - name: Add yarn bin path to system path
+        run: echo "$(yarn global bin)" >> $GITHUB_PATH
 
-      # - name: Set yarn global installation path
-      #   run: yarn config set global-folder $(yarn cache dir)
+      - name: Set yarn global installation path
+        run: yarn config set global-folder $(yarn cache dir)
 
       - name: Cache yarn dependencies
         uses: actions/cache@v2
