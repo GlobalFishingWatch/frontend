@@ -10,7 +10,6 @@ import {
 import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
-import { Interval } from '@globalfishingwatch/layer-composer/src/generators'
 
 type FeatureStates = 'click' | 'hover' | 'highlight'
 type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
