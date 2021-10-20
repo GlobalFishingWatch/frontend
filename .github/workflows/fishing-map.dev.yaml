@@ -1,19 +1,23 @@
 name: fishing-map 🚀 to dev
 
-on:
-  pull_request:
-    types: [closed]
-    branches:
-      - develop
 # on:
-#   push:
+#   pull_request:
+#     types: [closed]
 #     branches:
 #       - develop
+on:
+  push:
+    branches:
+      - monorepo-update
+  workflow_dispatch:
+
+env:
+  NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    environment: fishing-dev
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -48,7 +52,6 @@ jobs:
         run: yarn install
 
       - name: Build and deploy
-        environment: fishing-dev
         env:
           BASIC_AUTH_PASS: ${{ secrets._BASIC_AUTH_PASS }}
           BASIC_AUTH_USER: ${{ secrets._BASIC_AUTH_USER }}
