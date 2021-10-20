@@ -81,3 +81,20 @@ jobs:
           RUN_SERVICE_NAME: ${{ secrets._RUN_SERVICE_NAME }}
           SKIP_PREFLIGHT_CHECK: true
         run: yarn nx deploy fishing-map
+
+      - name: Setup & login to gcloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '286.0.0'
+          service_account_email: ${{ secrets.RUN_SA_EMAIL }}
+          service_account_key: ${{ secrets.RUN_SA_KEY }}
+          project_id: ${{ secrets.RUN_PROJECT }}
+
+      - name: Push image to GCR
+        uses: RafikFarhad/push-to-gcr-github-action@v4
+        with:
+          registry: gcr.io
+          project_id: ${{ secrets.RUN_PROJECT }}/github.com/globalfishingwatch/
+          image_name: gfw/fishing-map:latest
+          image_tag: latest,monorepo
+          push_only: true
