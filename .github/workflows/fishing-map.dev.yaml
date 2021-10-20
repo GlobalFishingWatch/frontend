@@ -33,9 +33,6 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
 
-      - name: Install nx
-        run: npm install -g nx
-
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -50,7 +47,7 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        # if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
 
       - name: Build and deploy
