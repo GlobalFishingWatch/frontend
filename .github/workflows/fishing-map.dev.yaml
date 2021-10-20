@@ -84,7 +84,7 @@ jobs:
 
       - name: Setup & login to gcloud
         # only if the credentials are set
-        if: secrets.RUN_SA_KEY != ''
+        if: ${{ secrets.RUN_SA_KEY }} != ''
         uses: google-github-actions/setup-gcloud@master
         with:
           version: '286.0.0'
@@ -94,7 +94,7 @@ jobs:
 
       - name: Push image to GCR
         # only if the credentials are set
-        if: secrets.RUN_SA_KEY != ''
+        if: ${{ secrets.RUN_SA_KEY }} != ''
         uses: RafikFarhad/push-to-gcr-github-action@v4
         with:
           registry: gcr.io
