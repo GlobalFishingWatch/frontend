@@ -82,23 +82,19 @@ jobs:
           SKIP_PREFLIGHT_CHECK: true
         run: yarn nx deploy fishing-map
 
-      - name: Setup & login to gcloud
-        # only if the credentials are set
-        if: ${{ secrets.RUN_SA_KEY }} != ''
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          version: '286.0.0'
-          service_account_email: ${{ secrets.RUN_SA_EMAIL }}
-          service_account_key: ${{ secrets.RUN_SA_KEY }}
-          project_id: ${{ secrets.RUN_PROJECT }}
+      # - name: Setup & login to gcloud
+      #   uses: google-github-actions/setup-gcloud@master
+      #   with:
+      #     version: '286.0.0'
+      #     service_account_email: ${{ secrets.RUN_SA_EMAIL }}
+      #     service_account_key: ${{ secrets.RUN_SA_KEY }}
+      #     project_id: ${{ secrets.RUN_PROJECT }}
 
-      - name: Push image to GCR
-        # only if the credentials are set
-        if: ${{ secrets.RUN_SA_KEY }} != ''
-        uses: RafikFarhad/push-to-gcr-github-action@v4
-        with:
-          registry: gcr.io
-          project_id: ${{ secrets.RUN_PROJECT }}/github.com/globalfishingwatch/
-          image_name: gfw/fishing-map:latest
-          image_tag: latest,monorepo
-          push_only: true
+      # - name: Push image to GCR
+      #   uses: RafikFarhad/push-to-gcr-github-action@v4
+      #   with:
+      #     registry: gcr.io
+      #     project_id: ${{ secrets.RUN_PROJECT }}/github.com/globalfishingwatch/
+      #     image_name: gfw/fishing-map:latest
+      #     image_tag: latest,monorepo
+      #     push_only: true
