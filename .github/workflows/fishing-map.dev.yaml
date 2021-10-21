@@ -25,6 +25,7 @@ jobs:
       RUN_PROJECT: ${{ secrets._RUN_PROJECT }}
       RUN_REGION: ${{ secrets._RUN_REGION }}
       RUN_SERVICE_NAME: ${{ secrets._RUN_SERVICE_NAME }}
+      DESTINATION_IMAGE: gcr.io/${{ secrets._RUN_PROJECT }}/github.com/globalfishingwatch/fishing-map-nx:$GITHUB_SHA
 
     steps:
       - name: Checkout
@@ -99,13 +100,15 @@ jobs:
 
       - name: Build and Push Container
         run: |-
-          docker build -f ./applications/fishing-map/Dockerfile -t gcr.io/${{ env.RUN_PROJECT }}/${{ env.RUN_SERVICE_NAME }}:${{  github.sha }} ./dist/applications/fishing-map
-          docker push gcr.io/${{ env.RUN_PROJECT }}/${{ env.RUN_SERVICE_NAME }}:${{  github.sha }}
+          docker build -f ./applications/fishing-map/Dockerfile -t ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} ./dist/applications/fishing-map
+          docker push ${{ env.DESTINATION_IMAGE }}:${{  github.sha }}
 
       - name: Deploy to Cloud Run
         run: |-
-          gcloud run deploy ${{ env.RUN_SERVICE_NAME }} \
+          gcloud beta run deploy ${{ env.RUN_SERVICE_NAME }}-nx \
+            --project ${{ env.RUN_PROJECT }} \
+            --image ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} \
             --region ${{ env.RUN_REGION }} \
-            --image gcr.io/${{ env.RUN_PROJECT }}/${{ env.RUN_SERVICE_NAME }}:${{  github.sha }} \
             --platform "managed" \
+            --set-env-vars BASIC_AUTH=${{ env.BASIC_AUTH }} \
             --quiet
