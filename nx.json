@@ -30,7 +30,7 @@
   },
   "projects": {
     "api-client": {
-      "implicitDependencies": ["pbf"]
+      "implicitDependencies": []
     },
     "api-types": {
       "implicitDependencies": []
