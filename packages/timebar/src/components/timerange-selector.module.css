@@ -2,7 +2,7 @@
   position: absolute;
   bottom: var(--timebar-size);
   left: 0;
-  width: 46rem;
+  width: 48rem;
   background: var(--timebar-main-background-color);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-sizing: border-box;
@@ -34,13 +34,14 @@
 
 .selectorsContainer {
   display: flex;
-  margin-bottom: 0.6rem;
+  margin-bottom: 4rem;
+  justify-content: space-between;
 }
 
 .selectorGroup {
   display: flex;
-  flex: 1;
   flex-wrap: wrap;
+  flex: 0 0 calc(50% - 0.5rem);
 }
 
 .selectorLabel {
@@ -48,9 +49,14 @@
   text-transform: uppercase;
 }
 
+.input {
+  background: white;
+  width: 100%;
+}
+
 .actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .cta {
@@ -77,20 +83,13 @@
 .secondary {
   background: transparent;
   border: 0.1rem solid var(--timebar-cta-btn-color);
+  margin-right: 0.5rem;
 }
 
 .secondary:hover,
 .secondary:focus {
   background: rgba(255, 255, 255, 0.05);
   outline: none;
-}
-
-.errorMessage {
-  display: block;
-  opacity: 0.5;
-  margin-bottom: 1.2rem;
-  min-height: 2rem;
-  line-height: 2rem;
 }
 
 @media only screen and (max-width: 540px) {

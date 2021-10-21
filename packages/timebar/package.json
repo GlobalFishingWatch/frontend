@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
+    "@globalfishingwatch/ui-components": "12.4.0",
     "@mapbox/tile-cover": "^3.0.2",
     "@turf/area": "^6.0.1",
     "@turf/bbox": "^6.0.1",
