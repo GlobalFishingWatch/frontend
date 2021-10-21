@@ -102,18 +102,18 @@ jobs:
         run: |-
           docker build \
             -f $GITHUB_WORKSPACE/applications/fishing-map/Dockerfile \
-            -t "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}" \
+            -t "${{ env.DESTINATION_IMAGE }}:nx-${{  github.sha }}" \
             $GITHUB_WORKSPACE/dist/applications/fishing-map
 
       - name: Push image to GCR
         run: |-
-          docker push "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}"
+          docker push "${{ env.DESTINATION_IMAGE }}:nx-${{  github.sha }}"
 
       - name: Deploy to Cloud Run
         run: |-
-          gcloud beta run deploy ${{ env.RUN_SERVICE_NAME }}-nx \
+          gcloud beta run deploy ${{ env.RUN_SERVICE_NAME }} \
             --project ${{ env.RUN_PROJECT }} \
-            --image ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} \
+            --image ${{ env.DESTINATION_IMAGE }}:nx-${{  github.sha }} \
             --region ${{ env.RUN_REGION }} \
             --platform "managed" \
             --set-env-vars BASIC_AUTH=${{ env.BASIC_AUTH }} \
