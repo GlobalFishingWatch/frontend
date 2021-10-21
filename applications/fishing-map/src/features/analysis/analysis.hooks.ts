@@ -213,7 +213,7 @@ const getContextAreaGeometry = (contextAreaFeatures?: mapboxgl.MapboxGeoJSONFeat
       properties,
     }
     if (!acc?.type) return featureGeometry
-    return union(acc, featureGeometry, { properties }) as Feature<Polygon>
+    return union(acc, featureGeometry, { properties } as any) as Feature<Polygon>
   }, {} as Feature<Polygon>)
   return contextAreaGeometry
 }
