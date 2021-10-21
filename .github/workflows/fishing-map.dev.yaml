@@ -18,6 +18,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: fishing-dev
+    env:
+      BASIC_AUTH_PASS: ${{ secrets._BASIC_AUTH_PASS }}
+      BASIC_AUTH_USER: ${{ secrets._BASIC_AUTH_USER }}
+      BASIC_AUTH: ${{ secrets._BASIC_AUTH }}
+      RUN_PROJECT: ${{ secrets._RUN_PROJECT }}
+      RUN_REGION: ${{ secrets._RUN_REGION }}
+      RUN_SERVICE_NAME: ${{ secrets._RUN_SERVICE_NAME }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -62,9 +70,6 @@ jobs:
 
       - name: Build and deploy
         env:
-          BASIC_AUTH_PASS: ${{ secrets._BASIC_AUTH_PASS }}
-          BASIC_AUTH_USER: ${{ secrets._BASIC_AUTH_USER }}
-          BASIC_AUTH: ${{ secrets._BASIC_AUTH }}
           REACT_APP_API_GATEWAY: ${{ secrets._REACT_APP_API_GATEWAY }}
           REACT_APP_CARRIER_PORTAL_URL_: ${{ secrets._REACT_APP_CARRIER_PORTAL_URL_ }}
           REACT_APP_FEEDBACK_SPREADSHEET_ID: ${{ secrets._REACT_APP_FEEDBACK_SPREADSHEET_ID }}
@@ -77,11 +82,8 @@ jobs:
           REACT_APP_USE_PRESENCE_POC: ${{ secrets._REACT_APP_USE_PRESENCE_POC }}
           REACT_APP_WORKSPACE_ENV: ${{ secrets._REACT_APP_WORKSPACE_ENV }}
           REACT_APP_WORKSPACES_SPREADSHEET_ID: ${{ secrets._REACT_APP_WORKSPACES_SPREADSHEET_ID }}
-          RUN_PROJECT: ${{ secrets._RUN_PROJECT }}
-          RUN_REGION: ${{ secrets._RUN_REGION }}
-          RUN_SERVICE_NAME: ${{ secrets._RUN_SERVICE_NAME }}
           SKIP_PREFLIGHT_CHECK: true
-        run: yarn build
+        run: yarn nx deploy fishing-map
 
       - name: Setup & login to gcloud
         uses: google-github-actions/setup-gcloud@master
