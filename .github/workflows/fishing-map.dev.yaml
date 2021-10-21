@@ -81,4 +81,29 @@ jobs:
           RUN_REGION: ${{ secrets._RUN_REGION }}
           RUN_SERVICE_NAME: ${{ secrets._RUN_SERVICE_NAME }}
           SKIP_PREFLIGHT_CHECK: true
-        run: yarn nx deploy fishing-map
+        run: yarn build
+
+      - name: Setup & login to gcloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '286.0.0'
+          service_account_email: ${{ secrets.RUN_SA_EMAIL }}
+          service_account_key: ${{ secrets.RUN_SA_KEY }}
+          project_id: ${{ secrets.RUN_PROJECT }}
+          export_default_credentials: true
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - name: Build and Push Container
+        run: |-
+          docker build -f ./applications/fishing-map/Dockerfile -t gcr.io/${{ env.RUN_PROJECT }}/${{ env.RUN_SERVICE_NAME }}:${{  github.sha }} ./dist/applications/fishing-map
+          docker push gcr.io/${{ env.RUN_PROJECT }}/${{ env.RUN_SERVICE_NAME }}:${{  github.sha }}
+
+      - name: Deploy to Cloud Run
+        run: |-
+          gcloud run deploy ${{ env.RUN_SERVICE_NAME }} \
+            --region ${{ env.REGION }} \
+            --image gcr.io/${{ env.RUN_PROJECT }}/${{ env.RUN_SERVICE_NAME }}:${{  github.sha }} \
+            --platform "managed" \
+            --quiet
