@@ -35,7 +35,7 @@
             "project": "packages/api-client/package.json",
             "entryFile": "packages/api-client/src/index.ts",
             "external": ["react/jsx-runtime"],
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "rollupConfig": "packages/api-client/rollup.config.js",
             "assets": [
               {
                 "glob": "packages/api-client/README.md",
