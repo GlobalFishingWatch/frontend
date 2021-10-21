@@ -25,7 +25,7 @@ jobs:
       RUN_PROJECT: ${{ secrets._RUN_PROJECT }}
       RUN_REGION: ${{ secrets._RUN_REGION }}
       RUN_SERVICE_NAME: ${{ secrets._RUN_SERVICE_NAME }}
-      DESTINATION_IMAGE: gcr.io/${{ secrets._RUN_PROJECT }}/github.com/globalfishingwatch/fishing-map-nx:$GITHUB_SHA
+      DESTINATION_IMAGE: gcr.io/${{ secrets._RUN_PROJECT }}/github.com/globalfishingwatch/fishing-map-nx
 
     steps:
       - name: Checkout
