@@ -98,10 +98,16 @@ jobs:
       - name: Authorize Docker push
         run: gcloud auth configure-docker
 
-      - name: Build and Push Container
+      - name: Build
         run: |-
-          docker build -f ./applications/fishing-map/Dockerfile -t ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} ./dist/applications/fishing-map
-          docker push ${{ env.DESTINATION_IMAGE }}:${{  github.sha }}
+          docker build \
+            -f $GITHUB_WORKSPACE/applications/fishing-map/Dockerfile \
+            -t "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}" \
+            $GITHUB_WORKSPACE/dist/applications/fishing-map
+
+      - name: Push image to GCR
+        run: |-
+          docker push "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}"
 
       - name: Deploy to Cloud Run
         run: |-
