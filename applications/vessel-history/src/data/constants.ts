@@ -10,7 +10,9 @@ export const BASE_DATASET =
 export const SHOW_VESSEL_API_SOURCE = true
 
 export const API_GATEWAY = process.env.REACT_APP_API_GATEWAY
-export const LANDMASS_OFFLINE_GEOJSON = '/data/ne_10m_admin_0_countries_gj.geojson'
+export const LANDMASS_OFFLINE_GEOJSON = `${
+  process.env.PUBLIC_URL ?? ''
+}/data/ne_10m_admin_0_countries_gj.geojson`
 
 export const ENCOUNTERS_MIN_DURATION = 2
 export const ENCOUNTERS_MAX_DURATION = 99

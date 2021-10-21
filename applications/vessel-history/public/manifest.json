@@ -6,8 +6,8 @@
   "lang": "en-US",
   "display": "standalone",
   "orientation": "any",
-  "start_url": "vessel-viewer",
-  "scope": "/",
+  "start_url": "./",
+  "scope": ".",
   "background_color": "#fff",
   "theme_color": "#163f89",
   "icons": [
