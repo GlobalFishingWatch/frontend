@@ -22,7 +22,9 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
                     from: all[index - 1],
                     start: all[index - 1].end ?? all[index - 1].start,
                   }
-                : {}),
+                : {
+                    start: 0,
+                  }),
               type: EventTypeVoyage.Voyage,
               to: port,
               // Important: Substracting 1ms to not overlap with range of the previous voyage
@@ -40,10 +42,12 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
           start: last.to?.end ?? last.to?.start,
           timestamp: new Date().getTime(),
           type: EventTypeVoyage.Voyage,
+          end: new Date().getTime(),
         } as Voyage,
       ])
     })
     .flat()
+    .filter((voyage) => voyage.type === EventTypeVoyage.Voyage)
 })
 
 const eventTypePriority: Record<EventTypes | EventTypeVoyage, number> = {
@@ -76,10 +80,8 @@ export const selectFilteredEventsByVoyages = createSelector(
     const filteredVoyages: Voyage[] = voyages
       .filter((voyage) => {
         if (
-          !interval.contains(DateTime.fromMillis((voyage.from?.start ?? 0) as number)) &&
-          !interval.contains(DateTime.fromMillis((voyage.from?.end ?? 0) as number)) &&
-          !interval.contains(DateTime.fromMillis((voyage.to?.start ?? 0) as number)) &&
-          !interval.contains(DateTime.fromMillis((voyage.to?.end ?? 0) as number))
+          !interval.contains(DateTime.fromMillis((voyage.start ?? 0) as number)) &&
+          !interval.contains(DateTime.fromMillis((voyage.end ?? new Date().getTime()) as number))
         ) {
           return false
         }

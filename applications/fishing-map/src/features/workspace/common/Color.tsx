@@ -16,10 +16,19 @@ type ColorProps = {
   onColorClick: (color: ColorBarOption) => void
   onToggleClick: (e: any) => void
   onClickOutside: () => void
+  className?: string
 }
 
 const Color = (props: ColorProps) => {
-  const { open, colorType = 'line', dataview, onToggleClick, onColorClick, onClickOutside } = props
+  const {
+    open,
+    colorType = 'line',
+    dataview,
+    onToggleClick,
+    onColorClick,
+    onClickOutside,
+    className,
+  } = props
   const { t } = useTranslation()
   return (
     <ExpandedContainer
@@ -40,6 +49,7 @@ const Color = (props: ColorProps) => {
         tooltip={t('layer.color_change', 'Change color')}
         tooltipPlacement="top"
         onClick={onToggleClick}
+        className={className}
       />
     </ExpandedContainer>
   )

@@ -121,3 +121,16 @@ and follow the steps to generate a changeset release, once merged to develop the
 ### API DOCS
 
 https://gateway.api.dev.globalfishingwatch.org/swagger#/
+
+### Link packages
+
+Go to the package that you want to update
+RUN: yarn link
+
+Go to the root of the monorepo and run
+yarn start:packages
+
+Go to your application and run
+yarn link @globalfishingwatch/{package_folder}
+
+Start your application

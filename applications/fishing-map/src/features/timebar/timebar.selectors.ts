@@ -13,7 +13,7 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
+import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
 import { t } from 'features/i18n/i18n'
 import {
@@ -46,12 +46,19 @@ export const selectTracksData = createSelector(
         DatasetTypes.UserTracks,
       ])
       if (!url) return timebarTrack
-      const track = resources[url] as Resource<TrackResourceData>
-      if (!track?.data) return timebarTrack
+      const trackResource = resources[url] as Resource<TrackResourceData>
+      if (!trackResource || trackResource.status === ResourceStatus.Loading) {
+        return timebarTrack
+      } else if (
+        trackResource.status === ResourceStatus.Error ||
+        (trackResource.status === ResourceStatus.Finished && !trackResource?.data)
+      ) {
+        return { ...timebarTrack, segments: [] }
+      }
 
-      const segments = (track.data as any).features
-        ? geoJSONToSegments(track.data as any)
-        : (track?.data as Segment[])
+      const segments = (trackResource.data as any)?.features
+        ? geoJSONToSegments(trackResource.data as any)
+        : trackResource.data || []
 
       const trackSegments: TimebarTrackSegment[] = segments.map((segment) => {
         return {
@@ -62,7 +69,7 @@ export const selectTracksData = createSelector(
       return {
         ...timebarTrack,
         segments: trackSegments,
-        segmentsOffsetY: track.dataset.type === DatasetTypes.UserTracks,
+        segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
       }
     })
     return tracksSegments

@@ -1,14 +1,18 @@
 import { DateTime } from 'luxon'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types/dist'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import {
+  RenderedEvent,
+  selectFilteredEvents,
+} from 'features/vessels/activity/vessels-activity.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { Range } from 'types'
 import { Voyage } from 'types/voyage'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { resetFilters } from 'features/event-filters/filters.slice'
 import {
   selectHighlightedEvent,
   selectMapVoyageTime,
@@ -21,8 +25,10 @@ export default function useMapEvents() {
   const dispatch = useDispatch()
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const currentVoyageTime = useSelector(selectMapVoyageTime)
+  const events = useSelector(selectFilteredEvents)
   const { getVoyageByEvent, getLastEventInVoyage } = useVoyagesConnect()
   const { viewport, setMapCoordinates } = useViewport()
+  const [findEventVoyage, setFindEventVoyage] = useState<RenderedEvent>()
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
@@ -46,20 +52,12 @@ export default function useMapEvents() {
       dispatch(setHighlightedEvent({ id: event.id } as ApiEvent))
 
       const voyage = getVoyageByEvent(event)
-      if (!voyage) return
-      const voyageTimes = {
-        start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
-        end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
-      } as Range
-      if (
-        voyageTimes.start === currentVoyageTime?.start &&
-        voyageTimes.end === currentVoyageTime?.end
-      )
-        return
-
-      dispatch(setVoyageTime(voyageTimes))
+      if (!voyage) {
+        dispatch(resetFilters())
+      }
+      setFindEventVoyage(event)
     },
-    [currentVoyageTime?.end, currentVoyageTime?.start, dispatch, getVoyageByEvent]
+    [dispatch, getVoyageByEvent]
   )
 
   const highlightVoyage = useCallback(
@@ -100,9 +98,57 @@ export default function useMapEvents() {
     ]
   )
 
+  // When the highlighted event was not in the filtered events list
+  // filters are reset so that the event voyage
+  // is found and highlighted
+  useEffect(() => {
+    if (!findEventVoyage) return
+    const voyage = getVoyageByEvent(findEventVoyage)
+    if (!voyage) return
+    const voyageTimes = {
+      start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
+      end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+    } as Range
+    if (
+      voyageTimes.start === currentVoyageTime?.start &&
+      voyageTimes.end === currentVoyageTime?.end
+    )
+      return
+
+    dispatch(setVoyageTime(voyageTimes))
+    setFindEventVoyage(undefined)
+  }, [
+    currentVoyageTime?.end,
+    currentVoyageTime?.start,
+    dispatch,
+    findEventVoyage,
+    getVoyageByEvent,
+  ])
+
+  const onFiltersChanged = useCallback(() => {
+    if (!highlightedEvent || findEventVoyage) return
+    const highlightedRenderedEvent = events.find((event) => event.id === highlightedEvent?.id)
+
+    if (!highlightedRenderedEvent) {
+      const [lastEvent] = events
+      if (lastEvent) {
+        highlightEvent(lastEvent)
+
+        setMapCoordinates({
+          latitude: lastEvent.position.lat,
+          longitude: lastEvent.position.lon,
+          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+          bearing: 0,
+          pitch: 0,
+        })
+      }
+    }
+  }, [events, findEventVoyage, highlightEvent, highlightedEvent, setMapCoordinates, viewport.zoom])
+
   return {
     highlightEvent,
     highlightVoyage,
     selectVesselEventOnClick,
+    onFiltersChanged,
   }
 }

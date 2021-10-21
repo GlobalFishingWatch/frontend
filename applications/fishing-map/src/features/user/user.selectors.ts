@@ -10,10 +10,16 @@ import {
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX } from 'data/config'
-import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'
+import {
+  selectUserStatus,
+  selectUserLogged,
+  GUEST_USER_TYPE,
+  selectUserData,
+  isGFWUser,
+} from './user.slice'
 
 const DEFAULT_GROUP_ID = 'Default'
-const PRIVATE_SUPPORTED_GROUPS = ['Indonesia', 'Peru', 'Panama']
+const PRIVATE_SUPPORTED_GROUPS = ['Indonesia', 'Peru', 'Panama', 'Brazil', 'Mexico', 'Ecuador']
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
@@ -68,20 +74,17 @@ export const selectUserWorkspaces = createSelector(
 )
 
 export const selectUserWorkspacesPrivate = createSelector(
-  [selectUserGroups, selectWorkspaces],
-  (userGroups = [], workspaces) => {
-    const groupsWithAccess = userGroups
-      .filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g))
-      .map((g) => g.toLowerCase())
-    return orderBy(
-      workspaces?.filter(
-        (workspace) =>
-          workspace.id.includes(PRIVATE_SUFIX) &&
-          groupsWithAccess.some((g) => workspace.id.includes(g))
-      ),
-      'createdAt',
-      'desc'
+  [selectUserGroups, isGFWUser, selectWorkspaces],
+  (userGroups = [], gfwUser, workspaces) => {
+    const groupsWithAccess = gfwUser
+      ? PRIVATE_SUPPORTED_GROUPS.map((g) => g.toLowerCase())
+      : userGroups.filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g)).map((g) => g.toLowerCase())
+    const privateWorkspaces = workspaces?.filter(
+      (workspace) =>
+        workspace.id.includes(PRIVATE_SUFIX) &&
+        groupsWithAccess.some((g) => workspace.id.includes(g))
     )
+    return orderBy(privateWorkspaces, 'createdAt', 'desc')
   }
 )
 

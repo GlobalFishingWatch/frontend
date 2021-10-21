@@ -7,11 +7,13 @@ import { LocaleLabels } from 'features/i18n/i18n'
 import styles from './LanguageToggle.module.css'
 
 type LanguageToggleProps = {
+  className?: string
   position?: 'bottomRight' | 'rightDown'
 }
 
 const LanguageToggle: React.FC<LanguageToggleProps> = ({
   position = 'bottomRight',
+  className = '',
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
   const toggleLanguage = (lang: Locale) => {
@@ -23,7 +25,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
     i18n.changeLanguage(lang)
   }
   return (
-    <div className={styles.languageToggle}>
+    <div className={cx(styles.languageToggle, className)}>
       <div className={styles.languageBtn}>
         <Icon icon="language" />
       </div>

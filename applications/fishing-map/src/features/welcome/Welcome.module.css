@@ -1,5 +1,5 @@
 .container {
-  padding: var(--space-L) var(--space-M);
+  padding: var(--space-S) var(--space-M) var(--space-L);
 }
 
 .logos {
@@ -44,19 +44,33 @@
 }
 
 .headerActions {
-  position: absolute;
-  top: var(--space-M);
-  right: 7rem;
   display: flex;
-  gap: var(--space-M);
 }
 
-@media only screen and (max-width: 460px) {
+@media only screen and (max-width: 768px) {
+  .container {
+    padding: var(--space-S);
+  }
+  .title {
+    margin-top: var(--space-M);
+  }
+}
+
+@media only screen and (max-width: 520px) {
+  .lngToggle {
+    height: 4rem;
+    width: 4rem;
+    margin-left: var(--space-M);
+  }
+}
+
+@media only screen and (min-width: 520px) {
   .headerActions {
-    position: relative;
-    margin-top: 4rem;
-    top: 0;
-    right: 0;
+    position: absolute;
+    top: var(--space-M);
+    right: 7rem;
+    display: flex;
+    gap: var(--space-M);
   }
 }
 
