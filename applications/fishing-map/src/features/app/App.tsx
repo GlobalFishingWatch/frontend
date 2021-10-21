@@ -41,6 +41,7 @@ import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
 import useLocalStorage from 'hooks/use-local-storage'
+import Hints from 'features/help/hints/Hints'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -229,6 +230,9 @@ function App(): React.ReactElement {
           <DebugMenu />
         </Modal>
       )}
+      <Suspense fallback={null}>
+        <Hints />
+      </Suspense>
       {gfwUser && (
         <Modal
           title="Workspace editor 📝"
