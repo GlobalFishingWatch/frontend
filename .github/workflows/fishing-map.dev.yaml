@@ -86,35 +86,38 @@ jobs:
           SKIP_PREFLIGHT_CHECK: true
         run: yarn nx deploy fishing-map
 
-      - name: Setup & login to gcloud
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          version: '286.0.0'
-          service_account_email: ${{ secrets.RUN_SA_EMAIL }}
-          service_account_key: ${{ secrets.RUN_SA_KEY }}
-          project_id: ${{ secrets.RUN_PROJECT }}
-          export_default_credentials: true
+      - name: List build files
+        run: find $GITHUB_WORKSPACE/dist/applications
 
-      - name: Authorize Docker push
-        run: gcloud auth configure-docker
+      # - name: Setup & login to gcloud
+      #   uses: google-github-actions/setup-gcloud@master
+      #   with:
+      #     version: '286.0.0'
+      #     service_account_email: ${{ secrets.RUN_SA_EMAIL }}
+      #     service_account_key: ${{ secrets.RUN_SA_KEY }}
+      #     project_id: ${{ secrets.RUN_PROJECT }}
+      #     export_default_credentials: true
 
-      - name: Build
-        run: |-
-          docker build \
-            -f $GITHUB_WORKSPACE/applications/fishing-map/Dockerfile \
-            -t "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}" \
-            $GITHUB_WORKSPACE/dist/applications/fishing-map
+      # - name: Authorize Docker push
+      #   run: gcloud auth configure-docker
 
-      - name: Push image to GCR
-        run: |-
-          docker push "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}"
+      # - name: Build
+      #   run: |-
+      #     docker build \
+      #       -f $GITHUB_WORKSPACE/applications/fishing-map/Dockerfile \
+      #       -t "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}" \
+      #       $GITHUB_WORKSPACE/dist/applications/fishing-map
 
-      - name: Deploy to Cloud Run
-        run: |-
-          gcloud beta run deploy ${{ env.RUN_SERVICE_NAME }}-nx \
-            --project ${{ env.RUN_PROJECT }} \
-            --image ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} \
-            --region ${{ env.RUN_REGION }} \
-            --platform "managed" \
-            --set-env-vars BASIC_AUTH=${{ env.BASIC_AUTH }} \
-            --quiet
+      # - name: Push image to GCR
+      #   run: |-
+      #     docker push "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}"
+
+      # - name: Deploy to Cloud Run
+      #   run: |-
+      #     gcloud beta run deploy ${{ env.RUN_SERVICE_NAME }}-nx \
+      #       --project ${{ env.RUN_PROJECT }} \
+      #       --image ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} \
+      #       --region ${{ env.RUN_REGION }} \
+      #       --platform "managed" \
+      #       --set-env-vars BASIC_AUTH=${{ env.BASIC_AUTH }} \
+      #       --quiet
