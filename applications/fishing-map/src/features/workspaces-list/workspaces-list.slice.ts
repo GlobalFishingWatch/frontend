@@ -69,18 +69,21 @@ export type HighlightedWorkspace = {
     es?: string
     fr?: string
     id?: string
+    pt?: string
   }
   description: {
     en: string
     es?: string
     fr?: string
     id?: string
+    pt?: string
   }
   cta: {
     en: string
     es?: string
     fr?: string
     id?: string
+    pt?: string
   }
   img?: string
   userGroup?: string

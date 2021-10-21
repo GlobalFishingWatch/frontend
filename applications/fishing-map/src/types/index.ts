@@ -6,6 +6,7 @@ export enum Locale {
   es = 'es',
   fr = 'fr',
   id = 'id',
+  pt = 'pt',
 }
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
