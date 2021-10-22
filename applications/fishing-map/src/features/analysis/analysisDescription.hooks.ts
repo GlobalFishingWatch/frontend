@@ -12,7 +12,10 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectAnalysisTimeComparison, selectAnalysisTypeQuery } from 'features/app/app.selectors'
+import { WorkspaceAnalysisTimeComparison, WorkspaceAnalysisType } from 'types'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
+import { selectShowTimeComparison } from './analysis.selectors'
 
 export const FIELDS = [
   ['geartype', 'layer.gearType_other', 'Gear types'],
@@ -31,12 +34,16 @@ const getSerializedFilterFields = (dataview: UrlDataviewInstance, filterKey: str
   return dataview.config?.filters?.[filterKey]?.slice().sort(sortStrings).join(', ')
 }
 
-const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
+const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparison?: boolean) => {
   const commonProperties: string[] = []
   const titleChunks: { label: string; strong?: boolean }[] = []
 
   if (dataviews && dataviews?.length > 0) {
     const firstDataviewDatasets = getSerializedDatasets(dataviews[0])
+
+    if (showTimeComparison) {
+      titleChunks.push({ label: t('analysis.changeIn', 'Change in') })
+    }
 
     if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
       commonProperties.push('dataset')
@@ -130,13 +137,20 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
   return { titleChunks, commonProperties }
 }
 
+export type DescriptionChunks = {
+  label: string
+  strong?: boolean
+}[]
+
 const getDescription = (
   titleChunks: { label: string; strong?: boolean }[],
   analysisAreaName: string,
   start: string | undefined,
   end: string | undefined,
-  graphData: AnalysisGraphProps | undefined
-) => {
+  graphData: AnalysisGraphProps | undefined,
+  analysisType: WorkspaceAnalysisType,
+  timeComparison: WorkspaceAnalysisTimeComparison
+): DescriptionChunks => {
   const dateFormat =
     graphData?.interval === 'hour'
       ? DateTime.DATETIME_MED_WITH_WEEKDAY
@@ -146,7 +160,28 @@ const getDescription = (
     descriptionChunks.push({ label: t('common.in', 'in') })
     descriptionChunks.push({ label: analysisAreaName, strong: true })
   }
-  if (start && end) {
+  if (timeComparison && (analysisType === 'periodComparison' || analysisType === 'beforeAfter')) {
+    const startLabel = formatI18nDate(timeComparison.start, { format: dateFormat })
+    // TODO Plural and i18n
+    const durationLabel = [timeComparison.duration, timeComparison.durationType].join(' ')
+    const label =
+      analysisType === 'periodComparison'
+        ? t('analysis.periodComparisonRange', {
+            compareStart: formatI18nDate(timeComparison.compareStart, { format: dateFormat }),
+            start: startLabel,
+            duration: durationLabel,
+            defaultValue: 'between the {{duration}} after {{start}} and after {{compareStart}}',
+          })
+        : t('analysis.beforeAfterRange', {
+            start: startLabel,
+            duration: durationLabel,
+            defaultValue: 'between the {{duration}} before and after {{start}}',
+          })
+    descriptionChunks.push({
+      label,
+      strong: true,
+    })
+  } else if (start && end) {
     descriptionChunks.push({
       label: t('common.dateRange', {
         start: formatI18nDate(start, { format: dateFormat }),
@@ -165,10 +200,21 @@ const useAnalysisDescription = (analysisAreaName: string, graphData?: AnalysisGr
     return graphData ? graphData.sublayers.map((s) => s.id) : []
   }, [graphData])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
+  const analysisType = useSelector(selectAnalysisTypeQuery)
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
   const { titleChunks, commonProperties } = useMemo(() => {
-    return getCommonProperties(dataviews)
-  }, [dataviews])
-  const description = getDescription(titleChunks, analysisAreaName, start, end, graphData)
+    return getCommonProperties(dataviews, showTimeComparison)
+  }, [dataviews, showTimeComparison])
+  const description = getDescription(
+    titleChunks,
+    analysisAreaName,
+    start,
+    end,
+    graphData,
+    analysisType,
+    timeComparison
+  )
   return { description, commonProperties }
 }
 

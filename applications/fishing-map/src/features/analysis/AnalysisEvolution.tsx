@@ -12,6 +12,7 @@ import styles from './AnalysisEvolution.module.css'
 import useAnalysisDescription, { FIELDS } from './analysisDescription.hooks'
 import { AnalysisTypeProps } from './Analysis'
 import { useAnalysisGeometry } from './analysis.hooks'
+import AnalysisDescription from './AnalysisDescription'
 
 function AnalysisItem({
   graphData,
@@ -35,16 +36,7 @@ function AnalysisItem({
     <div className={styles.container}>
       {hasAnalysisLayers ? (
         <Fragment>
-          <h3 className={styles.commonTitle}>
-            {description.map((d) =>
-              d.strong ? (
-                <strong key={d.label}>{d.label}</strong>
-              ) : (
-                <span key={d.label}>{d.label}</span>
-              )
-            )}
-            .
-          </h3>
+          <AnalysisDescription description={description} />
           <div className={styles.layerPanels}>
             {dataviews?.map((dataview, index) => (
               <AnalysisLayerPanel
@@ -72,7 +64,11 @@ const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
   const analysisGeometryLoaded = useAnalysisGeometry()
   const { t } = useTranslation()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  if (!layersTimeseriesFiltered || !layersTimeseriesFiltered?.length)
+  if (
+    workspaceStatus === AsyncReducerStatus.Finished &&
+    !analysisGeometryLoaded &&
+    (!layersTimeseriesFiltered || !layersTimeseriesFiltered?.length)
+  )
     return (
       <p className={styles.emptyDataPlaceholder}>{t('analysis.noData', 'No data available')}</p>
     )

@@ -3,21 +3,6 @@
   border-top: var(--border);
 }
 
-.commonTitle {
-  width: 100%;
-  padding: var(--space-M);
-  border-bottom: var(--border);
-}
-
-.commonTitle span {
-  color: var(--color-secondary-blue);
-}
-
-.commonTitle span::before,
-.commonTitle strong::before {
-  content: ' ';
-}
-
 .layerPanels {
   display: flex;
   flex-wrap: wrap;

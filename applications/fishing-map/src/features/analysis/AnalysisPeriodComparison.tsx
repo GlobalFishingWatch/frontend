@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
@@ -11,6 +11,7 @@ import { DEFAULT_WORKSPACE } from 'data/config'
 import { AnalysisTypeProps } from './Analysis'
 import styles from './AnalysisPeriodComparison.module.css'
 import useAnalysisDescription from './analysisDescription.hooks'
+import AnalysisDescription from './AnalysisDescription'
 
 const DURATION_TYPES_OPTIONS: SelectOption[] = [
   {
@@ -106,47 +107,46 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     return DURATION_TYPES_OPTIONS.find((o) => o.id === timeComparison.durationType)
   }, [timeComparison])
 
-  const { description, commonProperties } = useAnalysisDescription(
-    analysisAreaName,
-    layersTimeseriesFiltered?.[0]
-  )
-  console.log(description, commonProperties)
+  const { description } = useAnalysisDescription(analysisAreaName, layersTimeseriesFiltered?.[0])
 
   if (!timeComparison) return null
 
   return (
-    <div className={styles.container}>
-      <div className={styles.timeSelection}>
-        <InputDate
-          label={t('analysis.periodComparison1st', 'start of 1st period')}
-          onChange={onStartChange}
-          value={timeComparison.start}
-        />
-        <InputDate
-          label={t('analysis.periodComparison2nd', 'start of 2nd period')}
-          onChange={onCompareStartChange}
-          value={timeComparison.compareStart}
-        />
-        <div className={styles.durationWrapper}>
-          <InputText
-            label={t('analysis.periodComparisonDuration', 'duration')}
-            value={timeComparison.duration}
-            type="number"
-            onChange={onDurationChange}
-            className={styles.duration}
+    <Fragment>
+      <AnalysisDescription description={description} />
+      <div className={styles.container}>
+        <div className={styles.timeSelection}>
+          <InputDate
+            label={t('analysis.periodComparison1st', 'start of 1st period')}
+            onChange={onStartChange}
+            value={timeComparison.start}
           />
-          {durationTypeOption && (
-            <Select
-              options={DURATION_TYPES_OPTIONS}
-              onSelect={onDurationTypeSelect}
-              onRemove={() => {}}
-              className={styles.durationType}
-              selectedOption={durationTypeOption}
+          <InputDate
+            label={t('analysis.periodComparison2nd', 'start of 2nd period')}
+            onChange={onCompareStartChange}
+            value={timeComparison.compareStart}
+          />
+          <div className={styles.durationWrapper}>
+            <InputText
+              label={t('analysis.periodComparisonDuration', 'duration')}
+              value={timeComparison.duration}
+              type="number"
+              onChange={onDurationChange}
+              className={styles.duration}
             />
-          )}
+            {durationTypeOption && (
+              <Select
+                options={DURATION_TYPES_OPTIONS}
+                onSelect={onDurationTypeSelect}
+                onRemove={() => {}}
+                className={styles.durationType}
+                selectedOption={durationTypeOption}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   )
 }
 

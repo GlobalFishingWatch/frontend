@@ -70,7 +70,6 @@ export const useFilteredTimeSeries = () => {
           layersWithFeatures.map((l) => l.features),
           geometry
         )
-        console.log(layersWithFeatures)
         const timeseries = filteredFeatures.map((filteredFeatures, sourceIndex) => {
           const sourceMetadata = layersWithFeatures[sourceIndex].metadata
           const sourceNumSublayers = sourceMetadata.numSublayers
@@ -131,7 +130,6 @@ export const useFilteredTimeSeries = () => {
             sublayers: sourceMetadata.sublayers,
           }
         })
-        console.log(timeseries)
         setTimeseries(timeseries)
       }
       // Make features serializable for worker
