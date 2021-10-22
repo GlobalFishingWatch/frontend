@@ -1,0 +1,32 @@
+steps:
+  - id: 'download-cached-yarn-dependencies'
+    name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        gsutil cp gs://${PROJECT_ID}-${APP_ID}-cache-dependencies/cache/yarn-dependencies.tgz yarn-dependencies.tgz || exit 0
+        tar -zxf yarn-dependencies.tgz || exit 0
+
+  - id: 'install-yarn'
+    name: node
+    entrypoint: yarn
+    args: ['install', '--silent']
+
+  - id: 'upload-cached-yarn-dependencies'
+    waitFor: ['build-front']
+    name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    dir: cloudcmr-front
+    args:
+      - '-c'
+      - |
+        tar -zcf yarn-dependencies.tgz ./node_modules
+        gsutil cp yarn-dependencies.tgz gs://${PROJECT_ID}-${APP_ID}-cache-dependencies/cache/yarn-dependencies.tgz
+
+options:
+  env:
+    - 'PROJECT_ID=world-fishing-827'
+    - 'APP_ID=fishing-map'
+
+timeout: 1800s
