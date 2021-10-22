@@ -110,10 +110,10 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |-
-          gcloud beta run deploy ${{ env.RUN_SERVICE_NAME }} \
+          gcloud run deploy ${{ env.RUN_SERVICE_NAME }} \
             --project ${{ env.RUN_PROJECT }} \
             --image ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} \
             --region ${{ env.RUN_REGION }} \
-            --platform "managed" \
+            --platform managed \
             --set-env-vars BASIC_AUTH=${{ env.BASIC_AUTH }} \
             --quiet
