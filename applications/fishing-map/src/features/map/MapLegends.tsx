@@ -6,6 +6,7 @@ import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hoo
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { useMapControl } from './map-context.hooks'
 import styles from './MapLegends.module.css'
 
 type AnyLegend = LegendLayer | LegendLayerBivariate
@@ -34,6 +35,7 @@ interface MapLegendsProps {
 
 const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: MapLegendsProps) => {
   const { t } = useTranslation()
+  const { containerRef } = useMapControl()
   const legendsTranslated = useMemo(() => {
     return legends?.map((legend) => {
       const isSquareKm = (legend.gridArea as number) > 50000
@@ -56,7 +58,7 @@ const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: M
   }, [legends, t])
   if (!legends) return null
   return (
-    <div className={cx({ [styles.legendContainer]: !portalled })}>
+    <div ref={containerRef} className={cx({ [styles.legendContainer]: !portalled })}>
       {legendsTranslated?.map((legend: LegendTranslated, i: number) => {
         if (portalled) {
           const legendDomElement = document.getElementById(legend.id as string)
