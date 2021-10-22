@@ -16,6 +16,8 @@ class TimeRangeSelector extends Component {
     this.state = {
       start,
       end,
+      startValid: true,
+      endValid: true,
     }
   }
 
@@ -43,12 +45,16 @@ class TimeRangeSelector extends Component {
   }
 
   onStartChange = (e) => {
+    this.setState({ startValid: e.target.validity.valid })
+    if (!e.target.value || e.target.value === '') return
     const start = dayjs([e.target.value, 'T00:00:00.000Z'].join('')).utc().toISOString()
     this.setState({
       start,
     })
   }
   onEndChange = (e) => {
+    this.setState({ endValid: e.target.validity.valid })
+    if (!e.target.value || e.target.value === '') return
     const end = dayjs([e.target.value, 'T00:00:00.000Z'].join('')).utc().toISOString()
     this.setState({
       end,
@@ -56,9 +62,8 @@ class TimeRangeSelector extends Component {
   }
 
   render() {
-    const { start, end } = this.state
+    const { start, end, startValid, endValid } = this.state
     const { labels, absoluteStart, absoluteEnd } = this.props
-
     if (start === undefined) {
       return null
     }
@@ -119,7 +124,7 @@ class TimeRangeSelector extends Component {
             </button>
             <button
               type="button"
-              className={styles.cta}
+              className={classNames(styles.cta, { [styles.disabled]: !startValid || !endValid })}
               onClick={() => {
                 this.submit(start, end)
               }}
