@@ -10,6 +10,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { AnalysisTypeProps } from './Analysis'
 import styles from './AnalysisPeriodComparison.module.css'
+import useAnalysisDescription from './analysisDescription.hooks'
 
 const DURATION_TYPES_OPTIONS: SelectOption[] = [
   {
@@ -27,7 +28,7 @@ const parseFullISODate = (d: string) => DateTime.fromISO(d).toUTC()
 const parseYYYYMMDDDate = (d: string) => DateTime.fromISO(d).setZone('utc', { keepLocalTime: true })
 
 const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
-  // const { layersTimeseriesFiltered, hasAnalysisLayers, analysisAreaName } = props
+  const { layersTimeseriesFiltered, analysisAreaName } = props
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const { dispatchQueryParams } = useLocationConnect()
@@ -104,6 +105,12 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     if (!timeComparison) return null
     return DURATION_TYPES_OPTIONS.find((o) => o.id === timeComparison.durationType)
   }, [timeComparison])
+
+  const { description, commonProperties } = useAnalysisDescription(
+    layersTimeseriesFiltered[0],
+    analysisAreaName
+  )
+  console.log(description, commonProperties)
 
   if (!timeComparison) return null
 
