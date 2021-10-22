@@ -12,6 +12,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import Hint from 'features/help/hints/Hint'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -125,17 +126,22 @@ function ActivityLayerPanel({
               onClickOutside={closeExpandedContainer}
               component={<Filters dataview={dataview} />}
             >
-              <IconButton
-                icon={filterOpen ? 'filter-on' : 'filter-off'}
-                size="small"
-                onClick={onToggleFilterOpen}
-                tooltip={
-                  filterOpen
-                    ? t('layer.filterClose', 'Close filters')
-                    : t('layer.filterOpen', 'Open filters')
-                }
-                tooltipPlacement="top"
-              />
+              <div className={styles.filterButtonWrapper}>
+                <IconButton
+                  icon={filterOpen ? 'filter-on' : 'filter-off'}
+                  size="small"
+                  onClick={onToggleFilterOpen}
+                  tooltip={
+                    filterOpen
+                      ? t('layer.filterClose', 'Close filters')
+                      : t('layer.filterOpen', 'Open filters')
+                  }
+                  tooltipPlacement="top"
+                />
+                {dataview.id === 'fishing-ais' && (
+                  <Hint id="filterActivityLayers" className={styles.helpHint} />
+                )}
+              </div>
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />

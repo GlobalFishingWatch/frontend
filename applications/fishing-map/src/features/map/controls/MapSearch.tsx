@@ -7,6 +7,7 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/dist'
 import { OceanArea, searchOceanAreas, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
+import Hint from 'features/help/hints/Hint'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'
 
@@ -70,6 +71,8 @@ const MapSearch = () => {
         tooltip={isOpen ? t('search.close', 'Close search') : t('map.search', 'Search areas')}
         className={cx({ [styles.active]: isOpen })}
       ></IconButton>
+
+      <Hint id="areaSearch" className={styles.helpHint} />
       <div className={cx(styles.searchContainer, { [styles.hidden]: !isOpen })}>
         <InputText
           {...getInputProps({ ref: inputRef })}

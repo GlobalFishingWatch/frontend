@@ -1,46 +1,51 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { Icon } from '@globalfishingwatch/ui-components'
-import useLocalStorage from 'hooks/use-local-storage'
 import { Locale } from 'types'
 import TooltipContainer from '../../workspace/shared/TooltipContainer'
-import { HintConfig } from './hints.content'
+import hintsConfig, { HintId } from './hints.content'
 import styles from './Hint.module.css'
+import { HintsDismissed, selectHintsDismissed, setHintDismissed } from './hints.slice'
 
 type HintProps = {
-  hint: HintConfig
+  id: HintId
+  className?: string
 }
 
-const DISMISSED = 'dismissed'
+export const DISMISSED = 'dismissed'
 
-function Hint({ hint }: HintProps) {
+function Hint({ id, className }: HintProps) {
   const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
-  const [hintIdDismissed, setHintIdDismissed] = useLocalStorage(hint.hintId, '')
-
-  if (hintIdDismissed) return null
+  const hintsDismissed = useSelector(selectHintsDismissed)
+  const { placement, imageUrl, pulse } = hintsConfig[id]
+  const content = hintsConfig[id][i18n.language as Locale] || hintsConfig[id][Locale.en]
 
   const onDismiss = () => {
     setVisible(false)
-    setHintIdDismissed(DISMISSED)
+    dispatch(setHintDismissed({ [id]: DISMISSED } as HintsDismissed))
   }
+
   const onToggleBubble = () => {
     setVisible(!visible)
   }
 
-  const content = hint[i18n.language as Locale] || hint[Locale.en]
+  if (hintsDismissed?.[id] === DISMISSED) return null
+
   return (
     <TooltipContainer
       visible={visible}
       className={styles.HintPanel}
       arrowClass={styles.arrow}
-      placement={hint.placement}
-      onClickOutside={onToggleBubble}
+      placement={placement}
+      onClickOutside={onDismiss}
       component={
         <div className={styles.container}>
-          <img className={styles.img} src={hint.imageUrl} role="presentation" alt="" />
+          <img className={styles.img} src={imageUrl} role="presentation" alt="" />
           <div className={styles.content}>
             <p className={styles.text}>{content?.description}</p>
           </div>
@@ -52,8 +57,8 @@ function Hint({ hint }: HintProps) {
         </div>
       }
     >
-      <div className={styles.hintTarget} style={hint.position} onClick={onToggleBubble}>
-        <div className={cx(styles.hintBubble, styles[hint.pulse])}>
+      <div className={cx(styles.hintTarget, className)} onClick={onToggleBubble}>
+        <div className={cx(styles.hintBubble, styles[pulse])}>
           <Icon icon="help" className={styles.icon} />
         </div>
       </div>
