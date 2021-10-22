@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hooks'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useMapControl } from './map-context.hooks'
 import styles from './MapLegends.module.css'
@@ -37,25 +38,31 @@ const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: M
   const { t } = useTranslation()
   const { containerRef } = useMapControl()
   const legendsTranslated = useMemo(() => {
-    return legends?.map((legend) => {
-      const isSquareKm = (legend.gridArea as number) > 50000
-      let label = legend.unit || ''
-      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
-        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-        const gridAreaFormatted = gridArea
-          ? formatI18nNumber(gridArea, {
-              style: 'unit',
-              unit: isSquareKm ? 'kilometer' : 'meter',
-              unitDisplay: 'short',
-            })
-          : ''
-        if (legend.unit === 'hours') {
-          label = `${t('common.hour_other', 'hours')} / ${gridAreaFormatted}²`
+    return legends
+      ?.filter(
+        (legend) =>
+          portalled ||
+          (!portalled && legend.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
+      )
+      .map((legend) => {
+        const isSquareKm = (legend.gridArea as number) > 50000
+        let label = legend.unit || ''
+        if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+          const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+          const gridAreaFormatted = gridArea
+            ? formatI18nNumber(gridArea, {
+                style: 'unit',
+                unit: isSquareKm ? 'kilometer' : 'meter',
+                unitDisplay: 'short',
+              })
+            : ''
+          if (legend.unit === 'hours') {
+            label = `${t('common.hour_other', 'hours')} / ${gridAreaFormatted}²`
+          }
         }
-      }
-      return { ...legend, label }
-    })
-  }, [legends, t])
+        return { ...legend, label }
+      })
+  }, [legends, t, portalled])
   if (!legends) return null
   return (
     <div ref={containerRef} className={cx({ [styles.legendContainer]: !portalled })}>

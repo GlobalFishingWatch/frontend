@@ -21,6 +21,7 @@ import { MapboxEvent } from '@globalfishingwatch/mapbox-gl'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/dist'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -31,6 +32,7 @@ import { useSourceInStyle } from 'features/map/map-features.hooks'
 import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
 import * as AnalysisWorker from './Analysis.worker'
+import { selectShowTimeComparison } from './analysis.selectors'
 
 const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
@@ -45,6 +47,7 @@ export const useFilteredTimeSeries = () => {
   const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
 
   const simplifiedGeometry = useMemo(() => {
     if (!analysisAreaGeometry) return null
@@ -67,6 +70,7 @@ export const useFilteredTimeSeries = () => {
           layersWithFeatures.map((l) => l.features),
           geometry
         )
+        console.log(layersWithFeatures)
         const timeseries = filteredFeatures.map((filteredFeatures, sourceIndex) => {
           const sourceMetadata = layersWithFeatures[sourceIndex].metadata
           const sourceNumSublayers = sourceMetadata.numSublayers
@@ -127,6 +131,7 @@ export const useFilteredTimeSeries = () => {
             sublayers: sourceMetadata.sublayers,
           }
         })
+        console.log(timeseries)
         setTimeseries(timeseries)
       }
       // Make features serializable for worker
@@ -168,8 +173,14 @@ export const useFilteredTimeSeries = () => {
     const onMapIdle = (e: MapboxEvent) => {
       const style = (e.target as any).style.stylesheet
       const activityLayersMeta = style.metadata.generatorsMetadata
-      const activityLayersWithFeatures = Object.entries(activityLayersMeta).map(
-        ([dataviewId, metadata]) => {
+      const activityLayersWithFeatures = Object.entries(activityLayersMeta)
+        .filter(([dataviewId]) => {
+          return (
+            !showTimeComparison ||
+            (showTimeComparison && dataviewId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
+          )
+        })
+        .map(([dataviewId, metadata]) => {
           const chunks = (metadata as any).timeChunks as TimeChunks
           const allChunksFeatures = chunks.chunks.flatMap((chunk: TimeChunk) => {
             const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
@@ -182,8 +193,7 @@ export const useFilteredTimeSeries = () => {
             features: allChunksFeatures,
             metadata,
           }
-        }
-      )
+        })
       if (activityLayersWithFeatures.length) {
         computeTimeseries(activityLayersWithFeatures, simplifiedGeometry as MultiPolygon)
         map.off('idle', onMapIdle)
@@ -191,7 +201,7 @@ export const useFilteredTimeSeries = () => {
     }
 
     map.on('idle', onMapIdle)
-  }, [map, computeTimeseries, simplifiedGeometry, analysisType])
+  }, [map, computeTimeseries, simplifiedGeometry, analysisType, showTimeComparison])
 
   const { start, end } = useTimerangeConnect()
 
