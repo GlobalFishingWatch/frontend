@@ -5,8 +5,9 @@ import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selec
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import AnalysisItemGraph, { AnalysisGraphProps } from './AnalysisItemGraph'
-import styles from './AnalysisItem.module.css'
+import styles from './AnalysisEvolution.module.css'
 import useAnalysisDescription from './analysisDescription.hooks'
+import { AnalysisTypeProps } from './Analysis'
 
 const FIELDS = [
   ['geartype', 'layer.gearType_other', 'Gear types'],
@@ -69,4 +70,27 @@ function AnalysisItem({
   )
 }
 
-export default AnalysisItem
+const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
+  const { layersTimeseriesFiltered, hasAnalysisLayers, analysisAreaName } = props
+  const { t } = useTranslation()
+  if (!layersTimeseriesFiltered || !layersTimeseriesFiltered?.length)
+    return (
+      <p className={styles.emptyDataPlaceholder}>{t('analysis.noData', 'No data available')}</p>
+    )
+  return (
+    <Fragment>
+      {layersTimeseriesFiltered.map((layerTimeseriesFiltered, index) => {
+        return (
+          <AnalysisItem
+            hasAnalysisLayers={hasAnalysisLayers}
+            analysisAreaName={analysisAreaName}
+            key={index}
+            graphData={layerTimeseriesFiltered}
+          />
+        )
+      })}
+    </Fragment>
+  )
+}
+
+export default AnalysisEvolution

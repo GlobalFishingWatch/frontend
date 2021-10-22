@@ -37,7 +37,7 @@ import {
   selectAnalysisGeometry,
   selectReportStatus,
 } from './analysis.slice'
-import AnalysisItem from './AnalysisItem'
+import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
@@ -48,29 +48,6 @@ export type AnalysisTypeProps = {
   layersTimeseriesFiltered: AnalysisGraphProps[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
-}
-
-const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
-  const { layersTimeseriesFiltered, hasAnalysisLayers, analysisAreaName } = props
-  const { t } = useTranslation()
-  if (!layersTimeseriesFiltered || !layersTimeseriesFiltered?.length)
-    return (
-      <p className={styles.emptyDataPlaceholder}>{t('analysis.noData', 'No data available')}</p>
-    )
-  return (
-    <Fragment>
-      {layersTimeseriesFiltered.map((layerTimeseriesFiltered, index) => {
-        return (
-          <AnalysisItem
-            hasAnalysisLayers={hasAnalysisLayers}
-            analysisAreaName={analysisAreaName}
-            key={index}
-            graphData={layerTimeseriesFiltered}
-          />
-        )
-      })}
-    </Fragment>
-  )
 }
 
 const ANALYSIS_COMPONENTS_BY_TYPE: Record<
