@@ -69,7 +69,7 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
 
-      - name: Build and deploy
+      - name: Build app
         env:
           REACT_APP_API_GATEWAY: ${{ secrets._REACT_APP_API_GATEWAY }}
           REACT_APP_CARRIER_PORTAL_URL_: ${{ secrets._REACT_APP_CARRIER_PORTAL_URL_ }}
@@ -97,7 +97,7 @@ jobs:
       - name: Authorize Docker push
         run: gcloud auth configure-docker
 
-      - name: Build
+      - name: Build docker image
         run: |-
           docker build \
             -f $GITHUB_WORKSPACE/applications/fishing-map/Dockerfile \
@@ -108,12 +108,12 @@ jobs:
         run: |-
           docker push "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}"
 
-      - name: Deploy to Cloud Run
-        run: |-
-          gcloud run deploy ${{ env.RUN_SERVICE_NAME }} \
-            --project ${{ env.RUN_PROJECT }} \
-            --image ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} \
-            --region ${{ env.RUN_REGION }} \
-            --platform managed \
-            --set-env-vars BASIC_AUTH=${{ env.BASIC_AUTH }} \
-            --quiet
+      # - name: Deploy to Cloud Run
+      #   run: |-
+      #     gcloud run deploy ${{ env.RUN_SERVICE_NAME }} \
+      #       --project ${{ env.RUN_PROJECT }} \
+      #       --image ${{ env.DESTINATION_IMAGE }}:${{  github.sha }} \
+      #       --region ${{ env.RUN_REGION }} \
+      #       --platform managed \
+      #       --set-env-vars BASIC_AUTH=${{ env.BASIC_AUTH }} \
+      #       --quiet
