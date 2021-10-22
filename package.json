@@ -102,7 +102,7 @@
     "@nrwl/eslint-plugin-nx": "^12.10.0",
     "@nrwl/jest": "^12.10.0",
     "@nrwl/linter": "^12.10.0",
-    "@nrwl/nx-cloud": "latest",
+    "@nrwl/nx-cloud": "^12.5.0",
     "@nrwl/react": "^12.10.0",
     "@nrwl/tao": "^12.10.0",
     "@nrwl/web": "^12.10.0",

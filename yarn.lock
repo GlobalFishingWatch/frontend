@@ -2310,10 +2310,10 @@
     tmp "~0.2.1"
     tslib "^2.0.0"
 
-"@nrwl/nx-cloud@latest":
-  version "12.3.14"
-  resolved "https://registry.yarnpkg.com/@nrwl/nx-cloud/-/nx-cloud-12.3.14.tgz#ddaab7476037a5fc428202e6a952f74ac0ae8df0"
-  integrity sha512-8lXkXReF8dqbGtBmHGLxIXQ4rXRacQtyx6U9CAf34leVOZAFrr3mzAt2rWwzeKZqipy9Z2B1CbEZ2aJCROSxtg==
+"@nrwl/nx-cloud@^12.5.0":
+  version "12.5.1"
+  resolved "https://registry.yarnpkg.com/@nrwl/nx-cloud/-/nx-cloud-12.5.1.tgz#3a73cc5f29eea83ad4d1c01df63e9cf3c742adc1"
+  integrity sha512-014+QYtQmNuKVB06Rrs7fpxob4sOi+3mKdyksNT6r7MY6mEiWETAIL4wursfpg9fUpD0yG6af/I/CxiCP3fsTQ==
   dependencies:
     axios "^0.21.1"
     chalk "4.1.0"
@@ -23189,7 +23189,7 @@ tokenize-this@^1.4.0:
   resolved "https://registry.yarnpkg.com/tokenize-this/-/tokenize-this-1.4.2.tgz#ca35a2214f5ffcb0a5101294983ff47c54cee125"
   integrity sha512-WDOMkXmAyHC7VHpVWbyUe98wHspF2TqnqCBa9caTz0fRRaKlWWgZ50LBHpmCfhkCnh1ynyhorxpejBTzawo2IA==
 
-topojson-client@3.1.0, topojson-client@3.x, topojson-client@^3.0.0:
+topojson-client@3.1.0, topojson-client@3.x, topojson-client@^3.0.0, topojson-client@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/topojson-client/-/topojson-client-3.1.0.tgz#22e8b1ed08a2b922feeb4af6f53b6ef09a467b99"
   integrity sha512-605uxS6bcYxGXw9qi62XyrV6Q3xwbndjachmNxu8HWTtVPxZfEJN9fd/SZS1Q54Sn2y0TMyMxFj/cJINqGHrKw==
