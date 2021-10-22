@@ -30,6 +30,13 @@ function Hint({ id, className }: HintProps) {
     dispatch(setHintDismissed(id))
   }
 
+  const onDismissAll = () => {
+    setVisible(false)
+    Object.keys(hintsConfig).forEach((id) => {
+      dispatch(setHintDismissed(id as HintId))
+    })
+  }
+
   const showHint = () => {
     setVisible(true)
   }
@@ -50,6 +57,9 @@ function Hint({ id, className }: HintProps) {
             <p className={styles.text}>{content?.description}</p>
           </div>
           <div className={styles.footer}>
+            <Button type="secondary" onClick={onDismissAll} className={styles.footerBtn}>
+              {t('common.dismissAll', 'Dismiss all')}
+            </Button>
             <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
               {t('common.dismiss', 'Dismiss')}
             </Button>
