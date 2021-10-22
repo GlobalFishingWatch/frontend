@@ -22,11 +22,12 @@ function HintsHub() {
     dispatch(setHints())
   }, [dispatch])
 
-  if (percentageOfHintsSeen === 0) return null
+  const disabled = percentageOfHintsSeen === 0
   return (
     <IconButton
-      tooltip={t('common.resetHelpHints', 'Show again all help hints')}
+      tooltip={!disabled ? t('common.resetHelpHints', 'Show again all help hints') : ''}
       icon="help"
+      disabled={disabled}
       onClick={onHelpClick}
       type="border"
       className={styles.hintsHub}

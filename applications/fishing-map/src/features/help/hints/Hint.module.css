@@ -13,8 +13,7 @@
 }
 
 .arrow::before {
-  border: none;
-  background: var(--color-help);
+  display: none;
 }
 
 .img {

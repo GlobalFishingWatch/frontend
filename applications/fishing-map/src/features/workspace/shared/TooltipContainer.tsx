@@ -30,14 +30,14 @@ function TooltipContainer({
   component,
   className = '',
   arrowClass = '',
-  placement = 'right',
+  placement,
   onClickOutside = onClickOutSideFallback,
 }: TooltipContainerProps) {
   return (
     <Tippy
       interactive
       visible={visible}
-      placement={placement}
+      placement={placement || 'auto'}
       onClickOutside={onClickOutside}
       render={(attrs) => {
         if (!visible) return null

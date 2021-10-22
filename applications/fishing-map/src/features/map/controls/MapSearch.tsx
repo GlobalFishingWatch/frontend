@@ -2,17 +2,20 @@ import React, { memo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
+import { useDispatch } from 'react-redux'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/dist'
 import { OceanArea, searchOceanAreas, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
 import Hint from 'features/help/hints/Hint'
+import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'
 
 const MapSearch = () => {
   const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
   const [query, setQuery] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
@@ -40,6 +43,7 @@ const MapSearch = () => {
 
   const togglePropOptions = {
     onClick: () => {
+      dispatch(setHintDismissed('areaSearch'))
       setTimeout(() => {
         inputRef.current?.focus()
       }, 1)

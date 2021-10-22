@@ -8,7 +8,7 @@ import { Locale } from 'types'
 import TooltipContainer from '../../workspace/shared/TooltipContainer'
 import hintsConfig, { HintId } from './hints.content'
 import styles from './Hint.module.css'
-import { HintsDismissed, selectHintsDismissed, setHintDismissed } from './hints.slice'
+import { selectHintsDismissed, setHintDismissed } from './hints.slice'
 
 type HintProps = {
   id: HintId
@@ -27,11 +27,11 @@ function Hint({ id, className }: HintProps) {
 
   const onDismiss = () => {
     setVisible(false)
-    dispatch(setHintDismissed({ [id]: DISMISSED } as HintsDismissed))
+    dispatch(setHintDismissed(id))
   }
 
-  const onToggleBubble = () => {
-    setVisible(!visible)
+  const showHint = () => {
+    setVisible(true)
   }
 
   if (hintsDismissed?.[id] === DISMISSED) return null
@@ -57,7 +57,7 @@ function Hint({ id, className }: HintProps) {
         </div>
       }
     >
-      <div className={cx(styles.hintTarget, className)} onClick={onToggleBubble}>
+      <div className={cx(styles.hintTarget, className)} onClick={visible ? onDismiss : showHint}>
         <div className={cx(styles.hintBubble, styles[pulse])}>
           <Icon icon="help" className={styles.icon} />
         </div>

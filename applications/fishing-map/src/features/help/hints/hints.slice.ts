@@ -25,9 +25,9 @@ const hintsSlice = createSlice({
       const currentHintsDismissed = JSON.parse(localStorage.getItem('hints') || '{}')
       state.hintsDismissed = currentHintsDismissed
     },
-    setHintDismissed: (state, action: PayloadAction<HintsDismissed>) => {
+    setHintDismissed: (state, action: PayloadAction<HintId>) => {
       const currentHintsDismissed = JSON.parse(localStorage.getItem('hints') || '{}')
-      const allHintsDismissed = { ...currentHintsDismissed, ...action.payload }
+      const allHintsDismissed = { ...currentHintsDismissed, ...{ [action.payload]: DISMISSED } }
       state.hintsDismissed = allHintsDismissed
       localStorage.setItem('hints', JSON.stringify(allHintsDismissed))
     },

@@ -29,7 +29,7 @@ const hintsConfig: Record<HintId, HintConfig> = {
   fishingEffortHeatmap: {
     imageUrl: fishingEffortHeatmapImg,
     placement: 'right',
-    pulse: 'dark',
+    pulse: 'light',
     en: {
       description:
         'The map shows an interactive heat map of apparent fishing effort. The lighter grid cells are the most intensely fished areas.',
