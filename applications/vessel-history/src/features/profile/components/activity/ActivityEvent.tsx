@@ -8,12 +8,14 @@ import styles from './Activity.module.css'
 
 interface EventProps {
   event: RenderedEvent
+  highlighted?: boolean
   onInfoClick?: (event: RenderedEvent) => void
   onMapClick?: (event: RenderedEvent) => void
 }
 
 const ActivityEvent: React.FC<EventProps> = ({
   event,
+  highlighted = false,
   onInfoClick = () => {},
   onMapClick = () => {},
 }): React.ReactElement => {
@@ -21,7 +23,7 @@ const ActivityEvent: React.FC<EventProps> = ({
     <Fragment>
       <div className={styles.event}>
         <div
-          className={cx(styles.eventIcon, styles[event.type], styles[getEncounterStatus(event)])}
+          className={cx(styles.eventIcon, styles[event.type], styles[getEncounterStatus(event)], highlighted ? styles.highlighted : '')}
         >
           {event.type === 'encounter' && <Icon icon="event-encounter" type="default" />}
           {event.type === 'loitering' && <Icon icon="event-loitering" type="default" />}
@@ -41,6 +43,7 @@ const ActivityEvent: React.FC<EventProps> = ({
           ></IconButton>
         </div>
       </div>
+      <div className={styles.divider}></div>
     </Fragment>
   )
 }

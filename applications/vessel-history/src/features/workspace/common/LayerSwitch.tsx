@@ -1,4 +1,4 @@
-import { Ref, forwardRef } from 'react'
+import { Ref, forwardRef, useCallback } from 'react'
 import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { Switch } from '@globalfishingwatch/ui-components'
@@ -21,7 +21,7 @@ const LayerSwitch = (
 ) => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = [true, 'true', 1].includes((dataview?.config?.visible ?? true) as any)
-  const onToggleLayerActive = () => {
+  const onToggleLayerActive = useCallback(() => {
     uaEvent({
       category: 'Vessel Detail MAP Tab',
       action: 'Change context layers',
@@ -36,7 +36,8 @@ const LayerSwitch = (
     if (onToggle) {
       onToggle(!layerActive)
     }
-  }
+  }, [dataview.id, layerActive, onToggle, upsertDataviewInstance])
+
   return (
     <label
       ref={ref}

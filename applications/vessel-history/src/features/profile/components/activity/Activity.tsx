@@ -5,7 +5,7 @@ import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import { RenderedEvent, selectHighlightEventIds } from 'features/vessels/activity/vessels-activity.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
@@ -39,6 +39,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
+  const highlightsIds = useSelector(selectHighlightEventIds)
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
@@ -93,6 +94,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                           <ActivityItem
                             key={index}
                             event={event}
+                            highlighted={event.type !== EventTypeVoyage.Voyage && highlightsIds[event.id]}
                             onToggleClick={toggleVoyage}
                             onMapClick={selectEventOnMap}
                             onInfoClick={openModal}

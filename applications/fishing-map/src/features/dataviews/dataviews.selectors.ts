@@ -30,6 +30,7 @@ import { selectActivityCategoryFn, selectWorkspaceStateProperty } from 'features
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { selectThinningConfig } from 'features/resources/resources.selectors'
 import { TimebarGraphs } from 'types'
+import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
@@ -125,13 +126,11 @@ export const selectDataviewsForResourceQuerying = createSelector(
 
         // Clean resources when mandatory vesselId is missing
         // needed for vessels with no info datasets (zebraX)
-        const vesselId =
-          info?.query?.find((q) => q.id === 'vesselId')?.value ||
-          info?.params?.find((q) => q.id === 'vesselId')?.value
+        const vesselData = hasDatasetConfigVesselData(info)
         return [
           trackWithoutSpeed,
           ...events,
-          ...(vesselId ? [info] : []),
+          ...(vesselData ? [info] : []),
           ...(trackGraph ? [trackGraph] : []),
         ]
       },

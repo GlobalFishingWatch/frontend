@@ -129,7 +129,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
               </Trans>
             </DataAndTerminology>
           </label>
-          <span>{t('settings.longerThan', 'Longer than')}</span>
+          <span>{t('settings.greaterThan', 'Greater than')}</span>
           <InputText
             type="number"
             value={settings.distanceShoreLonger}

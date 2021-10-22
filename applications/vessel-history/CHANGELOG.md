@@ -1,5 +1,20 @@
 # @globalfishingwatchapp/vessel-history
 
+## 1.0.21
+
+### Patch Changes
+
+- Updated dependencies [b88273847]
+  - @globalfishingwatch/layer-composer@10.0.2
+
+## 1.0.20
+
+### Patch Changes
+
+- 24642e15: ACTIVITY tab - add a red dot icon in the events that are matching highlight criteria
+- Updated dependencies [24642e15]
+  - @globalfishingwatch/ui-components@12.4.0
+
 ## 1.0.19
 
 ### Patch Changes

@@ -81,7 +81,7 @@ const ActivityVoyage: React.FC<EventProps> = ({
           </div>
         )}
       </div>
-      <div className={styles.divider}></div>
+      
     </Fragment>
   )
 }

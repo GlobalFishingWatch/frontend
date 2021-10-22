@@ -18,7 +18,7 @@ steps:
         cp -r --remove-destination --parents -L ./node_modules/@globalfishingwatch ./applications/vessel-history
 
   # Build and Push production image to GCR
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'Build and Push production image to GCR'
     args:
       [

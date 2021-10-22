@@ -76,8 +76,10 @@ const getSubLayersFilters = (
 
 const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
   sublayer.visible === false ? false : true
-const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
-  sublayers.map(getSubLayerVisible)
+const getSubLayersVisible = (config: HeatmapAnimatedGeneratorConfig) =>
+  config.mode === HeatmapAnimatedMode.TimeCompare
+    ? [true, true]
+    : config.sublayers.map(getSubLayerVisible)
 
 const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
   const serialized: TileAggregationSourceParamsSerialized = {
@@ -150,7 +152,7 @@ class HeatmapAnimatedGenerator {
       config.mode === HeatmapAnimatedMode.TimeCompare
     )
 
-    const visible = getSubLayersVisible(config.sublayers)
+    const visible = getSubLayersVisible(config)
 
     const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
 
@@ -321,7 +323,7 @@ class HeatmapAnimatedGenerator {
         temporalgrid: true,
         numSublayers: finalConfig.sublayers.length,
         sublayers: finalConfig.sublayers,
-        visibleSublayers: getSubLayersVisible(finalConfig.sublayers),
+        visibleSublayers: getSubLayersVisible(finalConfig),
         timeChunks,
         aggregationOperation: finalConfig.aggregationOperation,
         sublayerCombinationMode: HEATMAP_MODE_COMBINATION[config.mode],

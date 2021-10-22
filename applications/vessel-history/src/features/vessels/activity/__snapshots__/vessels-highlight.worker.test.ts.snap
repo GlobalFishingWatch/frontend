@@ -4452,31 +4452,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4485,7 +4466,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1577836799998,
     "type": "port_visit",
@@ -4565,31 +4545,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4598,7 +4559,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1546015971000,
     "type": "port_visit",
@@ -4673,31 +4633,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4706,7 +4647,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1545929840000,
     "type": "port_visit",
@@ -4781,31 +4721,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4814,7 +4735,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1545840570000,
     "type": "port_visit",
@@ -4889,31 +4809,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -4922,7 +4823,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576887912000,
     "type": "port_visit",
@@ -4997,31 +4897,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5030,7 +4911,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576832110000,
     "type": "port_visit",
@@ -5105,31 +4985,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5138,7 +4999,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576767562000,
     "type": "port_visit",
@@ -5218,31 +5078,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5251,7 +5092,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1546108492000,
     "type": "port_visit",
@@ -5326,31 +5166,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5359,7 +5180,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1546015971000,
     "type": "port_visit",
@@ -5434,31 +5254,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5467,7 +5268,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1545929840000,
     "type": "port_visit",
@@ -5542,31 +5342,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5575,7 +5356,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1545840570000,
     "type": "port_visit",
@@ -5650,31 +5430,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5683,7 +5444,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1577610589000,
     "type": "port_visit",
@@ -5758,31 +5518,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5791,7 +5532,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576887912000,
     "type": "port_visit",
@@ -5866,31 +5606,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -5899,7 +5620,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576872263000,
     "type": "port_visit",
@@ -5974,31 +5694,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6007,7 +5708,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576832110000,
     "type": "port_visit",
@@ -6082,31 +5782,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6115,7 +5796,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576767562000,
     "type": "port_visit",
@@ -6190,31 +5870,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6223,7 +5884,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1577836800000,
     "type": "port_visit",
@@ -6298,31 +5958,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6331,7 +5972,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1577836799998,
     "type": "port_visit",
@@ -6411,31 +6051,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6444,7 +6065,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1546015971000,
     "type": "port_visit",
@@ -6519,31 +6139,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6552,7 +6153,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1545929840000,
     "type": "port_visit",
@@ -6627,31 +6227,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6660,7 +6241,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1545840570000,
     "type": "port_visit",
@@ -6735,31 +6315,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6768,7 +6329,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576887912000,
     "type": "port_visit",
@@ -6843,31 +6403,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6876,7 +6417,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576832110000,
     "type": "port_visit",
@@ -6951,31 +6491,12 @@ Array [
     },
     "regionDescription": "Norwegian EEZ",
     "regions": Object {
-      "ames": Array [],
-      "arg": Array [],
       "eez": Array [
-        "5686",
+        5686,
       ],
-      "fao": Array [
-        "27.2.a",
-        "27.2.a.2",
-        "27.2",
-        "27",
+      "mpa": Array [
+        33,
       ],
-      "hsp": Array [],
-      "kkp": Array [],
-      "majorFao": Array [
-        "27",
-      ],
-      "mpant": Array [],
-      "mparu": Array [],
-      "mregion": Array [
-        "33",
-      ],
-      "ocean": Array [
-        "atlantic",
-      ],
-      "other": Array [],
       "rfmo": Array [
         "ICCAT",
         "ICES",
@@ -6984,7 +6505,6 @@ Array [
         "ACAP",
         "NAMMCO",
       ],
-      "vme": Array [],
     },
     "start": 1576767562000,
     "type": "port_visit",

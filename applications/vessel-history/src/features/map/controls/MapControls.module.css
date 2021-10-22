@@ -95,3 +95,11 @@
   color: rgba(var(--white-rgb), var(--opacity-secondary));
   border: var(--border-white);
 }
+.filtersWrapper {
+  display: flex;
+  justify-content: flex-end;
+  max-width: calc(100vw - var(--space-S));
+}
+.filtersWrapper > * {
+  margin-left: var(--space-S);
+}

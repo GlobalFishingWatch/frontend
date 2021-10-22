@@ -35,11 +35,13 @@ const MapControls = ({
   const [showLayerInfo, setShowLayerInfo] = useState<{ [key: string]: boolean }>({})
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const setModalOpen = useCallback((isOpen) => {
-    uaEvent({
-      category: 'Vessel Detail ACTIVITY or MAP Tab',
-      action: 'Open filters',
-      label: JSON.stringify({ tab: 'MAP' }),
-    })
+    if (isOpen){
+      uaEvent({
+        category: 'Vessel Detail ACTIVITY or MAP Tab',
+        action: 'Open filters',
+        label: JSON.stringify({ tab: 'MAP' }),
+      })
+    }
     setIsOpen(isOpen)
   }, [])
 
@@ -58,11 +60,13 @@ const MapControls = ({
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && (
             <Fragment>
-              <EventFiltersButton
-                type="default"
-                className={styles['map-tool']}
-                onClick={() => setModalOpen(true)}
-              ></EventFiltersButton>
+              <div className={styles.filtersWrapper}>
+                <EventFiltersButton
+                  type="default"
+                  className={styles['map-tool']}
+                  onClick={() => setModalOpen(true)}
+                ></EventFiltersButton>
+              </div>
               <IconButton
                 icon="layers"
                 type="map-tool"
@@ -100,7 +104,7 @@ const MapControls = ({
                     <div className={styles.contextLayers}>
                       {!!layers &&
                         layers.map((layer) => (
-                          <div className={styles.layerContainer}>
+                          <div className={styles.layerContainer} key={layer.id}>
                             <LayerSwitch
                               key={layer.id}
                               className={styles.contextLayer}

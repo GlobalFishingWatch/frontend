@@ -4,6 +4,7 @@ import {
   sort,
   getInteractiveLayerIds,
 } from '@globalfishingwatch/layer-composer'
+import { LAST_POSITION_LAYERS_PREFIX } from 'data/config'
 import { selectDefaultMapGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 import { updateGenerator, UpdateGeneratorPayload } from './map.slice'
 
@@ -19,12 +20,22 @@ const styleTransformations: StyleTransformation[] = [
     sprite:
       'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/vessel-viewer',
   }),
+
+  // Move last position layer to top
+  (style) => ({
+    ...style,
+    layers: [
+      ...(style.layers?.filter((layer) => !layer.id.startsWith(LAST_POSITION_LAYERS_PREFIX)) ?? []),
+      ...(style.layers?.filter((layer) => layer.id.startsWith(LAST_POSITION_LAYERS_PREFIX)) ?? []),
+    ],
+  }),
 ]
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   const dispatch = useDispatch()
+
   return {
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
     generatorsConfig: useSelector(selectDefaultMapGeneratorsConfig),

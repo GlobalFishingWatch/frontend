@@ -105,10 +105,11 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 
 ## Vessels
 
-| Layer name                         | Dev id | Pro id |
-| ---------------------------------- | ------ | ------ |
-| Vessel with ony track and info     | 163    | ---    |
-| Vessel with track, info and events | 92     | 171    |
+| Layer name                                  | Dev id | Pro id |
+| ------------------------------------------- | ------ | ------ |
+| Vessel with ony track and info              | 163    | ---    |
+| Vessel with track, info and events          | 92     | 171    |
+| Private Vessel Presence with track and info | 195    | 270    |
 
 ## Others
 
