@@ -200,10 +200,10 @@ const TimebarWrapper = () => {
       : null
   }, [timebarVisualisation, showGraph, tracksGraphs])
 
-  if (!start || !end || isMapDrawing) return null
+  if (!start || !end || isMapDrawing || showTimeComparison) return null
 
   return (
-    <div className={cx({ [styles.disabled]: showTimeComparison })}>
+    <div>
       <TimebarComponent
         enablePlayback={true}
         labels={labels}
