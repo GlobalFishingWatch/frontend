@@ -1,11 +1,11 @@
+.hintsHub {
+  transition: all 200ms linear;
+}
+
 .HintPanel {
   border: 1px solid var(--color-help);
   background: var(--color-help);
   border-radius: 0.4rem;
-}
-
-.hintsHub {
-  transition: all 200ms linear;
 }
 
 .container {
@@ -88,6 +88,10 @@
 
 .dark {
   animation: pulseDark 2s infinite;
+}
+
+.pulseDarkOnce {
+  animation: pulseDark 2s 2;
 }
 
 @keyframes pulseLight {
