@@ -84,7 +84,7 @@ jobs:
           REACT_APP_WORKSPACE_ENV: ${{ secrets._REACT_APP_WORKSPACE_ENV }}
           REACT_APP_WORKSPACES_SPREADSHEET_ID: ${{ secrets._REACT_APP_WORKSPACES_SPREADSHEET_ID }}
           SKIP_PREFLIGHT_CHECK: true
-        run: yarn nx deploy fishing-map
+        run: yarn nx deploy fishing-map --skip-nx-cache
 
       - name: Setup & login to gcloud
         uses: google-github-actions/setup-gcloud@master
