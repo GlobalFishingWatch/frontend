@@ -22,10 +22,10 @@ jobs:
       BASIC_AUTH_PASS: ${{ secrets._BASIC_AUTH_PASS }}
       BASIC_AUTH_USER: ${{ secrets._BASIC_AUTH_USER }}
       BASIC_AUTH: ${{ secrets._BASIC_AUTH }}
-      RUN_PROJECT: ${{ secrets._RUN_PROJECT }}
+      RUN_PROJECT: ${{ secrets.RUN_PROJECT }}
       RUN_REGION: ${{ secrets._RUN_REGION }}
       RUN_SERVICE_NAME: ${{ secrets._RUN_SERVICE_NAME }}
-      DESTINATION_IMAGE: gcr.io/${{ secrets._RUN_PROJECT }}/github.com/globalfishingwatch/fishing-map-hello-world
+      DESTINATION_IMAGE: gcr.io/${{ secrets.RUN_PROJECT }}/github.com/globalfishingwatch/fishing-map-hello-world
 
     steps:
       - name: Checkout
@@ -44,12 +44,16 @@ jobs:
       - name: Authorize Docker push
         run: gcloud auth configure-docker
 
+      - name: Echo destination image
+        run: |-
+          echo "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}"
+
       - name: Build
         run: |-
           echo -e 'FROM busybox\nRUN echo "hello world"' | docker build \
-            -t "gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map-hello-world:${{  github.sha }}" \
+            -t "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}" \
             -
 
       - name: Push image to GCR
         run: |-
-          docker push "gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map-hello-world:${{  github.sha }}"
+          docker push "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}"
