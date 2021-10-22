@@ -1,20 +1,17 @@
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import AnalysisItemGraph, { AnalysisGraphProps } from './AnalysisItemGraph'
 import styles from './AnalysisEvolution.module.css'
-import useAnalysisDescription from './analysisDescription.hooks'
+import useAnalysisDescription, { FIELDS } from './analysisDescription.hooks'
 import { AnalysisTypeProps } from './Analysis'
-
-const FIELDS = [
-  ['geartype', 'layer.gearType_other', 'Gear types'],
-  ['fleet', 'layer.fleet_other', 'Fleets'],
-  ['origin', 'vessel.origin', 'Origin'],
-  ['vessel_type', 'vessel.vesselType_other', 'Vessel types'],
-]
+import { useAnalysisGeometry } from './analysis.hooks'
 
 function AnalysisItem({
   graphData,
@@ -32,7 +29,7 @@ function AnalysisItem({
   }, [graphData])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
 
-  const { description, commonProperties } = useAnalysisDescription(graphData, analysisAreaName)
+  const { description, commonProperties } = useAnalysisDescription(analysisAreaName, graphData)
 
   return (
     <div className={styles.container}>
@@ -72,12 +69,19 @@ function AnalysisItem({
 
 const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, hasAnalysisLayers, analysisAreaName } = props
+  const analysisGeometryLoaded = useAnalysisGeometry()
   const { t } = useTranslation()
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
   if (!layersTimeseriesFiltered || !layersTimeseriesFiltered?.length)
     return (
       <p className={styles.emptyDataPlaceholder}>{t('analysis.noData', 'No data available')}</p>
     )
-  return (
+
+  return workspaceStatus !== AsyncReducerStatus.Finished ||
+    !analysisGeometryLoaded ||
+    !layersTimeseriesFiltered ? (
+    <Spinner className={styles.spinnerFull} />
+  ) : (
     <Fragment>
       {layersTimeseriesFiltered.map((layerTimeseriesFiltered, index) => {
         return (

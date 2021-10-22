@@ -1,17 +1,16 @@
-import React, { useEffect, useRef, useState, Fragment, useMemo, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect, useLoginRedirect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -45,7 +44,7 @@ import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 const DATASETS_REPORT_SUPPORTED = ['global', 'private-ecuador']
 
 export type AnalysisTypeProps = {
-  layersTimeseriesFiltered: AnalysisGraphProps[]
+  layersTimeseriesFiltered?: AnalysisGraphProps[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
 }
@@ -63,7 +62,6 @@ const ANALYSIS_COMPONENTS_BY_TYPE: Record<
 function Analysis() {
   const { t } = useTranslation()
   const { onLoginClick } = useLoginRedirect()
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { start, end, timerange } = useTimerangeConnect()
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
@@ -231,23 +229,19 @@ function Analysis() {
           />
         </div>
       </div>
-      {workspaceStatus !== AsyncReducerStatus.Finished ||
-      !analysisGeometryLoaded ||
-      !layersTimeseriesFiltered ? (
-        <Spinner className={styles.spinnerFull} />
-      ) : (
-        <div className={styles.contentContainer}>
-          <div className={styles.content}>
-            {AnalysisComponent && (
-              <AnalysisComponent
-                layersTimeseriesFiltered={layersTimeseriesFiltered}
-                hasAnalysisLayers={hasAnalysisLayers}
-                analysisAreaName={analysisAreaName}
-              />
-            )}
-          </div>
+
+      <div className={styles.contentContainer}>
+        <div className={styles.content}>
+          {AnalysisComponent && (
+            <AnalysisComponent
+              layersTimeseriesFiltered={layersTimeseriesFiltered}
+              hasAnalysisLayers={hasAnalysisLayers}
+              analysisAreaName={analysisAreaName}
+            />
+          )}
         </div>
-      )}
+      </div>
+
       <div>
         <Choice
           options={ANALYSIS_TYPE_OPTIONS}

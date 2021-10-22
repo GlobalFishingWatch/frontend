@@ -107,8 +107,8 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
   }, [timeComparison])
 
   const { description, commonProperties } = useAnalysisDescription(
-    layersTimeseriesFiltered[0],
-    analysisAreaName
+    analysisAreaName,
+    layersTimeseriesFiltered?.[0]
   )
   console.log(description, commonProperties)
 

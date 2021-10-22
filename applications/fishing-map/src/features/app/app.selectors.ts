@@ -73,7 +73,7 @@ export const selectAnalysisQuery = createSelector(
 export const selectAnalysisTypeQuery = createSelector(
   [selectWorkspaceStateProperty('analysisType')],
   (analysis): WorkspaceAnalysisType => {
-    return analysis
+    return analysis || 'evolution'
   }
 )
 

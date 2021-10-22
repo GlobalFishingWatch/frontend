@@ -14,7 +14,7 @@ import {
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
 
-const FIELDS = [
+export const FIELDS = [
   ['geartype', 'layer.gearType_other', 'Gear types'],
   ['fleet', 'layer.fleet_other', 'Fleets'],
   ['origin', 'vessel.origin', 'Origin'],
@@ -159,10 +159,10 @@ const getDescription = (
   return descriptionChunks
 }
 
-const useAnalysisDescription = (graphData: AnalysisGraphProps, analysisAreaName: string) => {
+const useAnalysisDescription = (analysisAreaName: string, graphData?: AnalysisGraphProps) => {
   const { start, end } = useTimerangeConnect()
   const dataviewsIds = useMemo(() => {
-    return graphData.sublayers.map((s) => s.id)
+    return graphData ? graphData.sublayers.map((s) => s.id) : []
   }, [graphData])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
   const { titleChunks, commonProperties } = useMemo(() => {
