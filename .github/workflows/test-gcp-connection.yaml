@@ -1,0 +1,56 @@
+name: fishing-map 🚀 to dev
+
+# on:
+#   pull_request:
+#     types: [closed]
+#     branches:
+#       - develop
+on:
+  push:
+    branches:
+      - monorepo-update
+  workflow_dispatch:
+
+env:
+  NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: fishing-dev
+    env:
+      BASIC_AUTH_PASS: ${{ secrets._BASIC_AUTH_PASS }}
+      BASIC_AUTH_USER: ${{ secrets._BASIC_AUTH_USER }}
+      BASIC_AUTH: ${{ secrets._BASIC_AUTH }}
+      RUN_PROJECT: ${{ secrets._RUN_PROJECT }}
+      RUN_REGION: ${{ secrets._RUN_REGION }}
+      RUN_SERVICE_NAME: ${{ secrets._RUN_SERVICE_NAME }}
+      DESTINATION_IMAGE: gcr.io/${{ secrets._RUN_PROJECT }}/github.com/globalfishingwatch/fishing-map-helklo-world
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup & login to gcloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '286.0.0'
+          service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: ${{ secrets.RUN_PROJECT }}
+          export_default_credentials: true
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - name: Build
+        run: |-
+          echo -e 'FROM busybox\nRUN echo "hello world"' | docker build \
+            -t "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}" \
+            -
+
+      - name: Push image to GCR
+        run: |-
+          docker push "${{ env.DESTINATION_IMAGE }}:${{  github.sha }}"
