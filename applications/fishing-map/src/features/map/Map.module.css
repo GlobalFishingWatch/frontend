@@ -57,8 +57,14 @@
   opacity: var(--opacity-secondary);
 }
 
-.helpHint {
+.helpHintLeft {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: calc(50% - 1rem);
+  left: calc(50% - 1rem);
+}
+
+.helpHintRight {
+  position: absolute;
+  top: calc(50% + 1rem);
+  left: calc(50% + 1rem);
 }

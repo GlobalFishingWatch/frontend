@@ -309,8 +309,8 @@ const MapWrapper = (): React.ReactElement | null => {
         }
         return null
       })}
-      <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHint} />
-      <Hint id="fishingEffortHeatmap" className={styles.helpHint} />
+      <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+      <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
     </div>
   )
 }
