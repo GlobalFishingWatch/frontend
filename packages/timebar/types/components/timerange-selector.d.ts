@@ -2,8 +2,9 @@ export default TimeRangeSelector;
 declare class TimeRangeSelector extends Component<any, any, any> {
     constructor(props: any);
     submit(start: any, end: any): void;
-    setUnit(which: any, allBounds: any, unit: any, offset: any): void;
     last30days: () => void;
+    onStartChange: (e: any) => void;
+    onEndChange: (e: any) => void;
 }
 declare namespace TimeRangeSelector {
     namespace propTypes {
@@ -25,10 +26,6 @@ declare namespace TimeRangeSelector {
             export { end_1 as end };
             export const last30days: string;
             export const done: string;
-            export const errorEarlyStart: string;
-            export const errorLatestEnd: string;
-            export const errorMinRange: string;
-            export const errorMaxRange: string;
         }
         export { labels_1 as labels };
     }
