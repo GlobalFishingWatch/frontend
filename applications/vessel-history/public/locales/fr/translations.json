@@ -195,6 +195,7 @@
   "vessel": {
     "aisTransmission_plural": "Transmissions de l'AIS",
     "authorization_plural": "autorisations",
+    "authorizationRangeHelp": "RFMO authorisations are based on available data. Dates may be approximations where RFMO authorised vessel lists, do not contain specific authorisation periods.",
     "callsign": "indicatifs d'appel",
     "encounteredVessel": "Navire rencontré",
     "flag": "pavillon",
@@ -247,8 +248,7 @@
       "2": "actuellement listée"
     },
     "authorizations": "autorisations",
-    "rmfoRegistry": "Registre des ORGP",
-    "authPeriod": "Période d'autorisation"
+    "rmfoRegistry": "Registre des ORGP"
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
