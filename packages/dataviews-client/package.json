@@ -23,7 +23,12 @@
   },
   "dependencies": {},
   "devDependencies": {},
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@globalfishingwatch/api-types": "*",
+    "@globalfishingwatch/data-transforms": "*",
+    "@globalfishingwatch/layer-composer": "*",
+    "@reduxjs/toolkit": "1.x"
+  },
   "publishConfig": {
     "access": "public"
   }

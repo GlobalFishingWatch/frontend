@@ -23,7 +23,11 @@
   },
   "dependencies": {},
   "devDependencies": {},
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@globalfishingwatch/api-types": "*",
+    "@globalfishingwatch/data-transforms": "*",
+    "@globalfishingwatch/fourwings-aggregate": "*"
+  },
   "publishConfig": {
     "access": "public"
   }

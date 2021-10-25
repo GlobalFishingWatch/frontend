@@ -34,7 +34,9 @@
   },
   "dependencies": {},
   "devDependencies": {},
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@globalfishingwatch/layer-composer": "*"
+  },
   "publishConfig": {
     "access": "public"
   }
