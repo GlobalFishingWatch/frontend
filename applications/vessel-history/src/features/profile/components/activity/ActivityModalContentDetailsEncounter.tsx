@@ -1,13 +1,12 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { redirect } from 'redux-first-router'
 import { EventVessel } from '@globalfishingwatch/api-types/dist'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { PROFILE } from 'routes/routes'
-import { selectDataset } from 'routes/routes.selectors'
 import { useSearchConnect } from 'features/search/search.hooks'
 import ActivityModalContentField from './ActivityModalContentField'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
@@ -26,12 +25,12 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
   const { findVessel } = useSearchConnect()
   const dispatch = useDispatch()
   const [profileLoading, setProfileLoading] = useState(false)
+
   const openVesselProfile = useCallback(
     async (vessel) => {
       setProfileLoading(true)
       let dataset = 'public-global-fishing-vessels:v20201001';
       let vesselMatchId = null;
-      console.log(vessel.id)
       const vesselFound = await findVessel(vessel.id, vessel.name, vessel.flag, vessel.ssvid)
       if (vesselFound) {
         dataset = vesselFound.dataset

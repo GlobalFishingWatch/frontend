@@ -80,6 +80,9 @@ export const useSearchConnect = (params: useSearchConnectParams = defaultParams)
     [onNewSearch, dispatch, query, advancedSearch]
   )
 
+  /**
+   * find a vessel by name, flag and mmsi using advance search and try to match the id
+   */
   const findVessel = useCallback(
     async (id, name, flag, ssvid) => {
       // Ensure user is logged in before searching
@@ -88,7 +91,6 @@ export const useSearchConnect = (params: useSearchConnectParams = defaultParams)
         mmsi: ssvid,
         flags: [flag],
       })
-      console.log(vesselsFound)
       return vesselsFound?.vessels.find(vessel => vessel.id === id)
     },
     [dispatch]
