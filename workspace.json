@@ -274,7 +274,7 @@
           "options": {
             "cypressConfig": "applications/fishing-map-e2e/cypress.json",
             "tsConfig": "applications/fishing-map-e2e/tsconfig.json",
-            "baseUrl": "http://localhost:3003"
+            "baseUrl": "http://localhost:3000"
           }
         },
         "e2e-serve": {
