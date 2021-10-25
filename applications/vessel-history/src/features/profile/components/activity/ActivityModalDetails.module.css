@@ -8,6 +8,10 @@
   text-transform: capitalize;
 }
 
+.profileLoader {
+  display: inline;
+}
+
 .break {
   flex-basis: 100%;
   height: 0;

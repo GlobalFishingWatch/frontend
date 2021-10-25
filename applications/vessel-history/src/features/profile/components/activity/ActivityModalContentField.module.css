@@ -6,3 +6,8 @@
   font-weight: normal;
   color: var(--opacity-secondary);
 }
+
+.valueLink {
+  background: var(--color-highlight-blue);
+  cursor: pointer;
+}
