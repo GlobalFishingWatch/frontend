@@ -10,8 +10,13 @@ import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
 import {
   quantizeOffsetToDate,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
+  Interval,
 } from '@globalfishingwatch/layer-composer'
-import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
+import {
+  getTimeSeries,
+  getRealValues,
+  TimeSeriesFrame,
+} from '@globalfishingwatch/fourwings-aggregate'
 import {
   TimeChunk,
   TimeChunks,
@@ -25,7 +30,11 @@ import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwat
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
+import {
+  selectAnalysisQuery,
+  selectAnalysisTimeComparison,
+  selectAnalysisTypeQuery,
+} from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
@@ -42,12 +51,60 @@ type LayerWithFeatures = {
   metadata: any
 }
 
+type DateTimeSeries = {
+  date: string
+  values: number[]
+  compareDate?: string
+}[]
+
+const frameTimeseriesToDateTimeseries = (
+  frameTimeseries: TimeSeriesFrame[],
+  sourceInterval: Interval,
+  compareDeltaMillis?: number
+): DateTimeSeries => {
+  const dateFrameseries = frameTimeseries.map((frameValues) => {
+    const { frame, ...rest } = frameValues
+    const date = quantizeOffsetToDate(frame, sourceInterval)
+    const compareDate = compareDeltaMillis
+      ? new Date(date.getTime() + compareDeltaMillis).toISOString()
+      : undefined
+    return {
+      values: Object.values(rest) as number[],
+      date: date.toISOString(),
+      compareDate,
+    }
+  })
+  return dateFrameseries
+}
+
+const filterByTimerange = (timeseries: AnalysisGraphProps[], start: string, end: string) => {
+  const startDate = DateTime.fromISO(start)
+  const endDate = DateTime.fromISO(end)
+  return timeseries?.map((layerTimeseries) => {
+    return {
+      ...layerTimeseries,
+      timeseries: layerTimeseries?.timeseries.filter((current: any) => {
+        const currentDate = DateTime.fromISO(current.date)
+        return currentDate >= startDate && currentDate < endDate
+      }),
+    }
+  })
+}
+
 export const useFilteredTimeSeries = () => {
   const map = useMapInstance()
   const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
+
+  let compareDeltaMillis: number | undefined = undefined
+  if (showTimeComparison) {
+    const startMillis = DateTime.fromISO(timeComparison.start).toUTC().toMillis()
+    const compareStartMillis = DateTime.fromISO(timeComparison.compareStart).toUTC().toMillis()
+    compareDeltaMillis = compareStartMillis - startMillis
+  }
 
   const simplifiedGeometry = useMemo(() => {
     if (!analysisAreaGeometry) return null
@@ -70,6 +127,7 @@ export const useFilteredTimeSeries = () => {
           layersWithFeatures.map((l) => l.features),
           geometry
         )
+
         const timeseries = filteredFeatures.map((filteredFeatures, sourceIndex) => {
           const sourceMetadata = layersWithFeatures[sourceIndex].metadata
           const sourceNumSublayers = sourceMetadata.numSublayers
@@ -86,13 +144,11 @@ export const useFilteredTimeSeries = () => {
             sourceMetadata.aggregationOperation
           )
 
-          const valuesContained = valuesContainedRaw.map((frameValues) => {
-            const { frame, ...rest } = frameValues
-            return {
-              values: Object.values(rest) as number[],
-              date: quantizeOffsetToDate(frame, sourceInterval).toISOString(),
-            }
-          })
+          const valuesContained = frameTimeseriesToDateTimeseries(
+            valuesContainedRaw,
+            sourceInterval,
+            compareDeltaMillis
+          )
 
           const featuresContainedAndOverlapping = [
             ...(filteredFeatures.contained || []),
@@ -105,20 +161,17 @@ export const useFilteredTimeSeries = () => {
             sourceMetadata.aggregationOperation
           )
 
-          const valuesContainedAndOverlapping = valuesContainedAndOverlappingRaw.map(
-            (frameValues) => {
-              const { frame, ...rest } = frameValues
-              return {
-                values: Object.values(rest) as number[],
-                date: quantizeOffsetToDate(frame, sourceInterval).toISOString(),
-              }
-            }
+          const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
+            valuesContainedAndOverlappingRaw,
+            sourceInterval,
+            compareDeltaMillis
           )
 
-          const timeseries = valuesContainedAndOverlapping.map(({ values, date }) => {
+          const timeseries = valuesContainedAndOverlapping.map(({ values, date, compareDate }) => {
             const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
             return {
               date,
+              compareDate,
               // TODO take into account multiplier when calling getRealValue
               min: minValues ? getRealValues(minValues) : new Array(values.length).fill(0),
               max: getRealValues(values),
@@ -145,7 +198,7 @@ export const useFilteredTimeSeries = () => {
       })
       getTimeseries(serializedLayerWithFeatures, geometry)
     },
-    []
+    [compareDeltaMillis]
   )
 
   const attachedListener = useRef<boolean>(false)
@@ -173,6 +226,7 @@ export const useFilteredTimeSeries = () => {
       const activityLayersMeta = style.metadata.generatorsMetadata
       const activityLayersWithFeatures = Object.entries(activityLayersMeta)
         .filter(([dataviewId]) => {
+          // We are not interested (yet) in non-activity layers for time comparison
           return (
             !showTimeComparison ||
             (showTimeComparison && dataviewId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
@@ -204,20 +258,14 @@ export const useFilteredTimeSeries = () => {
   const { start, end } = useTimerangeConnect()
 
   const layersTimeseriesFiltered = useMemo(() => {
-    if (start && end) {
-      return timeseries?.map((layerTimeseries) => {
-        return {
-          ...layerTimeseries,
-          timeseries: layerTimeseries?.timeseries.filter((current: any) => {
-            const currentDate = DateTime.fromISO(current.date)
-            const startDate = DateTime.fromISO(start)
-            const endDate = DateTime.fromISO(end)
-            return currentDate >= startDate && currentDate < endDate
-          }),
-        }
-      })
+    if (showTimeComparison) {
+      return timeseries
+    } else {
+      if (start && end && timeseries) {
+        return filterByTimerange(timeseries, start, end)
+      }
     }
-  }, [timeseries, start, end])
+  }, [timeseries, start, end, showTimeComparison])
 
   return layersTimeseriesFiltered
 }
