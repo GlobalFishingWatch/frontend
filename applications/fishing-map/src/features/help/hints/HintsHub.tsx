@@ -3,12 +3,14 @@ import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { isGFWUser } from 'features/user/user.slice'
 import hintsConfig from './hints.content'
-import { resetHints, selectHintsDismissed, setHints } from './hints.slice'
+import { initializeHints, resetHints, selectHintsDismissed } from './hints.slice'
 import styles from './Hint.module.css'
 
 function HintsHub() {
   const { t } = useTranslation()
+  const gfwUser = useSelector(isGFWUser)
   const dispatch = useDispatch()
   const hintsConfigArray = Object.keys(hintsConfig || {})
   const hintsDismissed = useSelector(selectHintsDismissed)
@@ -20,10 +22,13 @@ function HintsHub() {
   }
 
   useEffect(() => {
-    dispatch(setHints())
+    dispatch(initializeHints())
   }, [dispatch])
 
   const disabled = percentageOfHintsSeen === 0
+
+  if (!gfwUser) return null
+
   return (
     <IconButton
       tooltip={!disabled ? t('common.resetHelpHints', 'Show again all help hints') : ''}

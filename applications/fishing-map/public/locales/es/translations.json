@@ -37,6 +37,8 @@
     "detection_one": "Detección",
     "detection_other": "Detecciones",
     "dismiss": "Cancelar",
+    "hideHelpHint": "Ocultar",
+    "hideAllHelpHints": "Ocultar todos",
     "environment": "Datos ambientales",
     "events": "Eventos",
     "feedback": "Comentarios",

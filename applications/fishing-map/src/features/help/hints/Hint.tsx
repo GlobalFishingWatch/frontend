@@ -3,8 +3,8 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { Icon } from '@globalfishingwatch/ui-components'
-import { Locale } from 'types'
+import Icon from '@globalfishingwatch/ui-components/dist/icon'
+import { isGFWUser } from 'features/user/user.slice'
 import TooltipContainer from '../../workspace/shared/TooltipContainer'
 import hintsConfig, { HintId } from './hints.content'
 import styles from './Hint.module.css'
@@ -18,12 +18,12 @@ type HintProps = {
 export const DISMISSED = 'dismissed'
 
 function Hint({ id, className }: HintProps) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation(['translations', 'helpHints'])
+  const gfwUser = useSelector(isGFWUser)
   const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
   const hintsDismissed = useSelector(selectHintsDismissed)
   const { placement, imageUrl, pulse } = hintsConfig[id]
-  const content = hintsConfig[id][i18n.language as Locale] || hintsConfig[id][Locale.en]
 
   const onDismiss = () => {
     setVisible(false)
@@ -41,7 +41,7 @@ function Hint({ id, className }: HintProps) {
     setVisible(true)
   }
 
-  if (hintsDismissed?.[id] === DISMISSED) return null
+  if (hintsDismissed?.[id] === true || !gfwUser) return null
 
   return (
     <TooltipContainer
@@ -54,14 +54,14 @@ function Hint({ id, className }: HintProps) {
         <div className={styles.container}>
           <img className={styles.img} src={imageUrl} role="presentation" alt="" />
           <div className={styles.content}>
-            <p className={styles.text}>{content?.description}</p>
+            <p className={styles.text}>{t(`helpHints:${id}`)}</p>
           </div>
           <div className={styles.footer}>
             <Button type="secondary" onClick={onDismissAll} className={styles.footerBtn}>
-              {t('common.dismissAll', 'Dismiss all')}
+              {t('translations:common.hideAllHelpHints', 'Dismiss all')}
             </Button>
             <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
-              {t('common.dismiss', 'Dismiss')}
+              {t('translations:common.hideHelpHint', 'Dismiss')}
             </Button>
           </div>
         </div>
