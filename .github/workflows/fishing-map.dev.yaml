@@ -122,4 +122,5 @@ jobs:
             --region ${{ env.RUN_REGION }} \
             --platform managed \
             --set-env-vars BASIC_AUTH=${{ env.BASIC_AUTH }} \
+            --allow-unauthenticated \
             --quiet
