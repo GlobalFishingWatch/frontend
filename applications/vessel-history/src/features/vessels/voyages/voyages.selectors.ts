@@ -98,8 +98,10 @@ export const selectFilteredEventsByVoyages = createSelector(
         ...voyage,
         eventsQuantity: filteredEvents.filter(
           (event) =>
-            (voyage.start < event.start && voyage.end > event.start) ||
-            (voyage.start <= event.end && voyage.end >= event.end)
+            (voyage.start < (event.timestamp ?? event.start) &&
+              voyage.end > (event.timestamp ?? event.start)) ||
+            (voyage.start <= (event.timestamp ?? event.end) &&
+              voyage.end >= (event.timestamp ?? event.end))
         ).length,
       }))
 

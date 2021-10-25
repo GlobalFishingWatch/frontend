@@ -368,10 +368,6 @@ Timebar.propTypes = {
       end: PropTypes.string,
       last30days: PropTypes.string,
       done: PropTypes.string,
-      errorEarlyStart: PropTypes.string,
-      errorLatestEnd: PropTypes.string,
-      errorMinRange: PropTypes.string,
-      errorMaxRange: PropTypes.string,
     }),
     bookmark: PropTypes.shape({
       goToBookmark: PropTypes.string,
@@ -428,10 +424,6 @@ Timebar.defaultProps = {
       end: 'end',
       last30days: 'Last 30 days',
       done: 'Done',
-      errorEarlyStart: 'Your start date is the earliest date with data available',
-      errorLatestEnd: 'Your end date is the latest date with data available',
-      errorMinRange: 'Your start and end date must be at least one day apart',
-      errorMaxRange: 'Your time range is the maximum range with data available',
     },
     bookmark: {
       goToBookmark: 'Go to your bookmarked time range',
