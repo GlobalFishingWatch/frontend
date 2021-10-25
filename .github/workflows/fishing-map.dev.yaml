@@ -69,6 +69,9 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
 
+      - name: Display @nrwl/nx-cloud version
+        run: yarn why @nrwl/nx-cloud
+
       - name: Build app
         env:
           REACT_APP_API_GATEWAY: ${{ secrets._REACT_APP_API_GATEWAY }}
@@ -85,6 +88,9 @@ jobs:
           REACT_APP_WORKSPACES_SPREADSHEET_ID: ${{ secrets._REACT_APP_WORKSPACES_SPREADSHEET_ID }}
           SKIP_PREFLIGHT_CHECK: true
         run: yarn nx deploy fishing-map
+
+      - name: List apps generated files during nx deploy
+        run: find $GITHUB_WORKSPACE/dist/applications/
 
       - name: Setup & login to gcloud
         uses: google-github-actions/setup-gcloud@master
