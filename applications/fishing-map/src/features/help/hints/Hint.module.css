@@ -2,6 +2,24 @@
   transition: all 200ms linear;
 }
 
+.hintsTooltip {
+  position: relative;
+  padding-right: 2rem;
+}
+
+.hintsTooltip::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0.3rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: var(--color-help);
+  border: 1px solid var(--color-primary-blue);
+  animation: pulseLight 2s infinite;
+}
+
 .HintPanel {
   border: 1px solid var(--color-help);
   background: var(--color-help);

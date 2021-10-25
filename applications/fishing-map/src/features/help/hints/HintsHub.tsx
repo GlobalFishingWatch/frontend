@@ -31,7 +31,13 @@ function HintsHub() {
 
   return (
     <IconButton
-      tooltip={!disabled ? t('common.resetHelpHints', 'Show again all help hints') : ''}
+      tooltip={
+        <span className={styles.hintsTooltip}>
+          {!disabled
+            ? t('common.resetHelpHints', 'Show again all help hints')
+            : t('common.hints', 'Need help? Look for these dots')}
+        </span>
+      }
       icon="help"
       disabled={disabled}
       onClick={onHelpClick}

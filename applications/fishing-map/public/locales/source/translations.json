@@ -39,6 +39,7 @@
     "dismiss": "Dismiss",
     "hideHelpHint": "Dismiss",
     "hideAllHelpHints": "Dismiss all",
+    "hints": "Need help? Look for these dots",
     "resetHelpHints": "Show again all help hints",
     "environment": "Environment",
     "events": "Events",
