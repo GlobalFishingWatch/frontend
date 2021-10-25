@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.3.0
+
+### Minor Changes
+
+- 8978b00d: range-selector-validity-checks
+
 ## 2.2.0
 
 ### Minor Changes
