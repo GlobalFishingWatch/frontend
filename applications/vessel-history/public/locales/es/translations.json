@@ -247,8 +247,7 @@
       "2": "currently listed"
     },
     "authorizations": "authorizations",
-    "rmfoRegistry": "RFMO Registry",
-    "authPeriod": "Authorization period"
+    "rmfoRegistry": "RFMO Registry"
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"

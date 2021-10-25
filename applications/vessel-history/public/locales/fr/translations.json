@@ -247,8 +247,7 @@
       "2": "actuellement listée"
     },
     "authorizations": "autorisations",
-    "rmfoRegistry": "Registre des ORGP",
-    "authPeriod": "Période d'autorisation"
+    "rmfoRegistry": "Registre des ORGP"
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
