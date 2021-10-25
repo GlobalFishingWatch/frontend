@@ -18,6 +18,8 @@ steps:
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--build-arg',
+        'REACT_APP_TMT_CONTACT_US_URL=$_REACT_APP_TMT_CONTACT_US_URL',
         '--target',
         'base',
         '-f',

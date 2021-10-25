@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -7,12 +7,16 @@ import { DateTime, Interval } from 'luxon'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
-import { RESULTS_PER_PAGE } from 'data/constants'
+import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
-import { selectHasSearch } from 'routes/routes.selectors'
+import {
+  selectAdvancedSearchFields,
+  selectHasSearch,
+  selectUrlQuery,
+} from 'routes/routes.selectors'
 import {
   selectSearchOffset,
   selectSearchResults,
@@ -25,6 +29,7 @@ import { PROFILE, SETTINGS } from 'routes/routes'
 import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectUserData } from 'features/user/user.slice'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -130,6 +135,43 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     setSelectedVessels([])
   }, [setSelectedVessels, vessels])
 
+  const { email = '' } = useSelector(selectUserData) || { email: '' }
+
+  const query = useSelector(selectUrlQuery)
+  const advancedSearch = useSelector(selectAdvancedSearchFields)
+  const searchContext = useMemo(
+    () =>
+      `Vessel Viewer > Search: ${[
+        query,
+        advancedSearch?.mmsi,
+        advancedSearch?.imo,
+        advancedSearch?.callsign,
+        advancedSearch?.flags,
+        advancedSearch?.firstTransmissionDate,
+        advancedSearch?.lastTransmissionDate,
+      ]
+        .filter((predicate) => predicate)
+        .join(', ')}`,
+    [
+      advancedSearch?.callsign,
+      advancedSearch?.firstTransmissionDate,
+      advancedSearch?.flags,
+      advancedSearch?.imo,
+      advancedSearch?.lastTransmissionDate,
+      advancedSearch?.mmsi,
+      query,
+    ]
+  )
+  const contactUsLink = useMemo(
+    () =>
+      `${TMT_CONTACT_US_URL}&email=${email}&usercontext=${searchContext}&data=${JSON.stringify({
+        hits: vessels.length,
+        name: query,
+        ...advancedSearch,
+      })}`,
+    [advancedSearch, email, query, searchContext, vessels.length]
+  )
+
   return (
     <div className={styles.homeContainer} data-testid="home">
       <header>
@@ -221,13 +263,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   <Spinner className={styles.loader}></Spinner>
                 </div>
               )}
-              {totalResults > 0 &&
-                !searching &&
-                vessels.length >= totalResults &&
-                vessels.length !== 0 && (
-                  <p className={styles.listFooter}>{t('search.noMore', 'NO MORE RESULTS')}</p>
-                )}
-              {!searching && vessels.length === 0 && <SearchNoResultsState />}
+              {!searching && vessels.length >= 0 && (
+                <SearchNoResultsState contactUsLink={contactUsLink} />
+              )}
             </div>
           </Fragment>
         )}

@@ -123,7 +123,7 @@
     "mergeSelectedVessels": "Merge Selected Vessels",
     "MMSI": "MMSI",
     "noMore": "No more results",
-    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or <2>contact us</2> if you still can’t find it.",
     "notAllowed": "Search not allowed",
     "seeVessel": "See Vessel",
     "shipname": "Name",

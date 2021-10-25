@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import styles from './SearchPlaceholders.module.css'
@@ -8,6 +8,7 @@ import styles from './SearchPlaceholders.module.css'
 type SearchPlaceholderProps = {
   className?: string
   children?: React.ReactNode
+  contactUsLink?: string
 }
 
 function SearchPlaceholder({ children, className = '' }: SearchPlaceholderProps) {
@@ -18,16 +19,21 @@ function SearchPlaceholder({ children, className = '' }: SearchPlaceholderProps)
   )
 }
 
-export function SearchNoResultsState({ className = '' }: SearchPlaceholderProps) {
-  const { t } = useTranslation()
+export function SearchNoResultsState({
+  className = '',
+  contactUsLink = '',
+}: SearchPlaceholderProps) {
   return (
     <SearchPlaceholder className={className}>
       <img src={vesselNoResultsImage} alt="vessel" className={styles.noResultsImage} />
       <p>
-        {t(
-          'search.noResults',
-          "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign"
-        )}
+        <Trans i18nKey="search.noResults">
+          Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or{' '}
+          <a href={contactUsLink} rel="noopener noreferrer" target="_blank">
+            contact us
+          </a>{' '}
+          if you still can’t find it.
+        </Trans>
       </p>
     </SearchPlaceholder>
   )
