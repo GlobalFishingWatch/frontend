@@ -195,6 +195,7 @@
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",
     "authorization_plural": "autorizaciones",
+    "authorizationRangeHelp": "RFMO authorisations are based on available data. Dates may be approximations where RFMO authorised vessel lists, do not contain specific authorisation periods.",
     "callsign": "signatura",
     "encounteredVessel": "Encountered Vessel",
     "flag": "bandera",
@@ -247,8 +248,7 @@
       "2": "currently listed"
     },
     "authorizations": "authorizations",
-    "rmfoRegistry": "RFMO Registry",
-    "authPeriod": "Authorization period"
+    "rmfoRegistry": "RFMO Registry"
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
