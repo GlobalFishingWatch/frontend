@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 12.4.1
+
+### Patch Changes
+
+- 3ce0364b: VV-317 Fixed logo being cut when increasing logo size
+
 ## 12.4.0
 
 ### Minor Changes
