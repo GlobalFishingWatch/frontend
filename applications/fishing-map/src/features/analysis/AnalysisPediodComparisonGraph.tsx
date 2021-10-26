@@ -35,8 +35,11 @@ export interface AnalysisGraphProps {
   interval: Interval
 }
 
+const DIFFERENCE_INCREASE = 'difference-increase'
+const DIFFERENCE_DECREASE = 'difference-decrease'
+
 const tickFormatter = (tick: number) => {
-  const formatter = tick < 1 ? '~r' : '~s'
+  const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
   return format(formatter)(tick)
 }
 
@@ -45,7 +48,7 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
   const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
   const diff = date.diff(startDate, ['months', 'days'])
 
-  return diff.months > 1 ? `${diff.days} months` : `${diff.days} days`
+  return diff.months >= 1 ? `${diff.months} months` : `${diff.days} days`
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {
@@ -53,7 +56,7 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
     return null
   }
   const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
-  const valueLabel = `${valueFormatted} ${unit ? unit : ''}`
+  const valueLabel = `${value > 0 ? '+' : ''}${valueFormatted} ${unit ? unit : ''}`
   return valueLabel
 }
 
@@ -94,20 +97,20 @@ const AnalysisGraphTooltip = (props: any) => {
         formattedLabel = date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
         break
     }
-    const formattedValues = payload.filter(({ name }) => name === 'line')
-
+    const formattedValues = payload.find(
+      ({ name, value }) =>
+        (name === DIFFERENCE_INCREASE && value > 0) || (name === DIFFERENCE_DECREASE && value < 0)
+    )
+    if (!formattedValues) return null
+    const { value, payload: linePayload, color, unit } = formattedValues || {}
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
-          {formattedValues.map(({ value, payload, color, unit }, index) => {
-            return (
-              <li key={index} className={styles.tooltipValue}>
-                <span className={styles.tooltipValueDot} style={{ color }}></span>
-                {formatTooltipValue(value, payload, unit)}
-              </li>
-            )
-          })}
+          <li className={styles.tooltipValue}>
+            <span className={styles.tooltipValueDot} style={{ color }}></span>
+            {formatTooltipValue(value as number, linePayload, unit as string)}
+          </li>
         </ul>
       </div>
     )
@@ -128,47 +131,40 @@ const AnalysisPeriodComparisonGraph: React.FC<{
     return props.graphData?.[0].sublayers[0].unit
   }, [props.graphData])
 
-  const baseline = useMemo(() => {
-    return (props.graphData?.[0].timeseries as GraphData[])
-      ?.map(({ date, min, max }) => {
-        const avg = min[0] + max[0] / 2
-        return {
-          date: new Date(date).getTime(),
-          avg: avg,
-        }
-      })
-      .filter((d) => {
-        return !isNaN(d.avg)
-      })
-  }, [props.graphData])
+  const baseline = (props.graphData?.[0].timeseries as GraphData[])?.map((time) => ({
+    date: new Date(time.date).getTime(),
+    value: 0,
+  }))
 
-  const compare = useMemo(() => {
-    return (props.graphData?.[0].timeseries as GraphData[])
-      ?.map(({ date, min, max }) => {
-        const avg = min[1] + max[1] / 2
-        return {
-          date: new Date(date).getTime(),
-          avg: avg,
-        }
-      })
-      .filter((d) => {
-        return !isNaN(d.avg)
-      })
+  const difference = useMemo(() => {
+    return (props.graphData?.[0].timeseries as GraphData[])?.map(({ date, min, max }) => {
+      const avgBaseline = min[0] + max[0] / 2
+      const avgCompare = min[1] + max[1] / 2
+      const difference = avgCompare - avgBaseline
+      return {
+        date: new Date(date).getTime(),
+        valueIncrease: difference >= 0 ? difference : 0,
+        valueDecrease: difference < 0 ? difference : 0,
+      }
+    })
   }, [props.graphData])
 
   const range = useMemo(() => {
-    return (props.graphData?.[0].timeseries as GraphData[])?.map(({ date, min, max }) => {
+    return (props.graphData?.[0].timeseries as GraphData[])?.map(({ date, min, max }, index) => {
       const baseAvg = min[0] + max[0] / 2
-      const compareAvg = min[1] + max[1] / 2
+      const avgCompare = min[1] + max[1] / 2
+      const difference = avgCompare - baseAvg
+
       return {
         date: new Date(date).getTime(),
-        rangeDecrease: baseAvg >= compareAvg ? [baseAvg, compareAvg] : [baseAvg, baseAvg],
-        rangeIncrease: baseAvg <= compareAvg ? [baseAvg, compareAvg] : [baseAvg, baseAvg],
+        rangeDecrease: difference <= 0 ? [0, difference] : [0, 0],
+        rangeIncrease: difference > 0 ? [0, difference] : [0, 0],
       }
     })
   }, [props.graphData])
 
   if (!range) return null
+  console.log(range)
 
   const dataMin: number = range.length
     ? (min(range.flatMap(({ rangeDecrease }) => rangeDecrease[0])) as number)
@@ -210,10 +206,10 @@ const AnalysisPeriodComparisonGraph: React.FC<{
           <Area
             key={`decrease-area`}
             name="area"
-            type="monotone"
+            type="step"
             dataKey={(data) => data.rangeDecrease}
             activeDot={false}
-            fill="rgba(22, 63, 137, 1)"
+            fill="rgb(63, 238, 254)"
             stroke="none"
             fillOpacity={0.2}
             isAnimationActive={false}
@@ -221,36 +217,48 @@ const AnalysisPeriodComparisonGraph: React.FC<{
           <Area
             key={`increase-area`}
             name="area"
-            type="monotone"
+            type="step"
             dataKey={(data) => data.rangeIncrease}
             activeDot={false}
-            fill="rgba(360, 62, 98, 1)"
+            fill="rgb(360, 62, 98)"
             stroke="none"
             fillOpacity={0.2}
             isAnimationActive={false}
           />
           <Line
-            key={`base-line`}
-            name="line"
-            type="monotone"
-            data={baseline}
-            dataKey={(data) => data.avg}
+            key={DIFFERENCE_INCREASE}
+            name={DIFFERENCE_INCREASE}
+            type="step"
+            data={difference}
+            dataKey={(data) => data.valueIncrease}
             unit={unit}
             dot={false}
             isAnimationActive={false}
-            stroke="rgba(22, 63, 137, .65)"
+            stroke="rgb(360, 62, 98)"
             strokeWidth={2}
           />
           <Line
-            key={`compare-line`}
-            name="line"
-            type="monotone"
-            data={compare}
-            dataKey={(data) => data.avg}
+            key={DIFFERENCE_DECREASE}
+            name={DIFFERENCE_DECREASE}
+            type="step"
+            data={difference}
+            dataKey={(data) => data.valueDecrease}
             unit={unit}
             dot={false}
             isAnimationActive={false}
-            stroke="rgba(22, 63, 137, 1)"
+            stroke="rgb(63, 238, 254)"
+            strokeWidth={2}
+          />
+          <Line
+            key="baseline"
+            name="baseline"
+            type="step"
+            data={baseline}
+            dataKey={(data) => data.value}
+            unit={unit}
+            dot={false}
+            isAnimationActive={false}
+            stroke="rgb(111, 138, 182)"
             strokeWidth={2}
           />
         </ComposedChart>

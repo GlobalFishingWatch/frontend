@@ -100,6 +100,7 @@ export const useFilteredTimeSeries = () => {
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const { duration, durationType } = timeComparison
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
@@ -216,9 +217,10 @@ export const useFilteredTimeSeries = () => {
     // Used to re-attach the idle listener on type change
     setTimeseries(undefined)
     attachedListener.current = false
-  }, [analysisType])
+  }, [analysisType, duration, durationType])
 
   useEffect(() => {
+    console.log('inside effect', duration, attachedListener.current)
     if (!map || attachedListener.current || !simplifiedGeometry) return
 
     attachedListener.current = true
@@ -255,7 +257,17 @@ export const useFilteredTimeSeries = () => {
     }
 
     map.on('idle', onMapIdle)
-  }, [map, computeTimeseries, simplifiedGeometry, analysisType, showTimeComparison])
+  }, [
+    map,
+    computeTimeseries,
+    simplifiedGeometry,
+    analysisType,
+    showTimeComparison,
+    duration,
+    durationType,
+  ])
+
+  console.log('outside effect', timeComparison.duration)
 
   const { start, end } = useTimerangeConnect()
 
