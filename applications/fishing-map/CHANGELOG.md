@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.70
+
+### Patch Changes
+
+- 48c18a7d: support custom style
+
 ## 1.1.69
 
 ### Patch Changes
