@@ -37,6 +37,8 @@
     "detection_one": "Detection",
     "detection_other": "Detections",
     "dismiss": "Dismiss",
+    "hideHelpHint": "Dismiss",
+    "hideAllHelpHints": "Dismiss all",
     "environment": "Environment",
     "events": "Events",
     "feedback": "Feedback",

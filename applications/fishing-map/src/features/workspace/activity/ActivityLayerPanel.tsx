@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -12,6 +12,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import Hint from 'features/help/hints/Hint'
+import { setHintDismissed } from 'features/help/hints/hints.slice'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -37,6 +39,7 @@ function ActivityLayerPanel({
   onToggle = () => {},
 }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
 
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -80,6 +83,7 @@ function ActivityLayerPanel({
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
+    dispatch(setHintDismissed('filterActivityLayers'))
   }
 
   const closeExpandedContainer = () => {
@@ -125,17 +129,22 @@ function ActivityLayerPanel({
               onClickOutside={closeExpandedContainer}
               component={<Filters dataview={dataview} />}
             >
-              <IconButton
-                icon={filterOpen ? 'filter-on' : 'filter-off'}
-                size="small"
-                onClick={onToggleFilterOpen}
-                tooltip={
-                  filterOpen
-                    ? t('layer.filterClose', 'Close filters')
-                    : t('layer.filterOpen', 'Open filters')
-                }
-                tooltipPlacement="top"
-              />
+              <div className={styles.filterButtonWrapper}>
+                <IconButton
+                  icon={filterOpen ? 'filter-on' : 'filter-off'}
+                  size="small"
+                  onClick={onToggleFilterOpen}
+                  tooltip={
+                    filterOpen
+                      ? t('layer.filterClose', 'Close filters')
+                      : t('layer.filterOpen', 'Open filters')
+                  }
+                  tooltipPlacement="top"
+                />
+                {dataview.id === 'fishing-ais' && (
+                  <Hint id="filterActivityLayers" className={styles.helpHint} />
+                )}
+              </div>
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
