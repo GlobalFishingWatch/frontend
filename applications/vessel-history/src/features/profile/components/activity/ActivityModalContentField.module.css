@@ -8,6 +8,6 @@
 }
 
 .valueLink {
-  background: var(--color-highlight-blue);
+  text-decoration: underline;
   cursor: pointer;
 }

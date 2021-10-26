@@ -60,7 +60,6 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
   )
   
   const onEncounterClick = useCallback(() => {
-    console.log(event.encounter?.vessel)
     openVesselProfile(event.encounter?.vessel)
   }, [openVesselProfile, event])
 
