@@ -41,7 +41,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
-import { AnalysisGraphProps } from './AnalysisItemGraph'
+import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import * as AnalysisWorker from './Analysis.worker'
 import { selectShowTimeComparison } from './analysis.selectors'
 
@@ -102,7 +102,7 @@ export const useFilteredTimeSeries = () => {
   const timeComparison = useSelector(selectAnalysisTimeComparison)
 
   let compareDeltaMillis: number | undefined = undefined
-  if (showTimeComparison) {
+  if (showTimeComparison && timeComparison) {
     const startMillis = DateTime.fromISO(timeComparison.start).toUTC().toMillis()
     const compareStartMillis = DateTime.fromISO(timeComparison.compareStart).toUTC().toMillis()
     compareDeltaMillis = compareStartMillis - startMillis
@@ -261,7 +261,15 @@ export const useFilteredTimeSeries = () => {
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
-      return timeseries
+      return timeseries?.map((timeserie) => {
+        return {
+          ...timeserie,
+          timeseries: timeserie.timeseries?.filter(
+            (time) =>
+              time.min[0] !== 0 || time.min[1] !== 0 || time.max[0] !== 0 || time.max[1] !== 0
+          ),
+        }
+      })
     } else {
       if (start && end && timeseries) {
         return filterByTimerange(timeseries, start, end)
@@ -398,20 +406,21 @@ const parseYYYYMMDDDate = (d: string) => DateTime.fromISO(d).setZone('utc', { ke
 export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisType) => {
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const { dispatchQueryParams } = useLocationConnect()
-  const { start: timebarStart } = useTimerangeConnect()
+  const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
   useEffect(() => {
     const baseStart = timebarStart || DEFAULT_WORKSPACE.availableEnd
-    const initialOffset = analysisType === 'periodComparison' ? { years: 1 } : { months: 3 }
-    const initialDuration = analysisType === 'periodComparison' ? 6 : 3
-    const initialStart = parseFullISODate(baseStart).minus(initialOffset).toISO()
+    const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
+    const durationType = timeComparison?.durationType || 'months'
+    const duration = DateTime.fromISO(baseEnd).diff(DateTime.fromISO(baseStart), ['days', 'months'])
+    const initialStart = parseFullISODate(baseStart).minus({ years: 1 }).toISO()
     const initialCompareStart = baseStart
     dispatchQueryParams({
       analysisTimeComparison: {
         start: initialStart,
         compareStart: initialCompareStart,
-        duration: initialDuration,
-        durationType: 'months',
+        duration: duration[durationType as 'days' | 'months'] || 1,
+        durationType: durationType,
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

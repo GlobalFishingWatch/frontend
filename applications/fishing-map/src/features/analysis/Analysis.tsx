@@ -38,7 +38,7 @@ import {
 } from './analysis.slice'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
-import { AnalysisGraphProps } from './AnalysisItemGraph'
+import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 import AnalysisBeforeAfter from './AnalysisBeforeAfter'
 

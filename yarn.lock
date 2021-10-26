@@ -6963,7 +6963,6 @@ attr-accept@^2.2.1:
 
 auth-middleware@GlobalFishingWatch/auth-middleware#develop:
   version "1.0.0"
-  uid "5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
   resolved "https://codeload.github.com/GlobalFishingWatch/auth-middleware/tar.gz/5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
   dependencies:
     request "^2.88.0"

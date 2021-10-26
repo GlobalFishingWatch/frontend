@@ -16,7 +16,7 @@ import { Interval } from '@globalfishingwatch/layer-composer/dist/generators/hea
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import { toFixed } from 'utils/shared'
-import styles from './AnalysisGraph.module.css'
+import styles from './AnalysisEvolutionGraph.module.css'
 
 export interface GraphData {
   date: string
