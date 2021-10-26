@@ -378,6 +378,7 @@
     "registeredGearType": "Registered gear type",
     "shiptype": "Ship type",
     "source": "Source",
+    "targetSpecies": "Target species",
     "transmission_other": "Transmissions",
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
     "vesselType_other": "Vessel types",
