@@ -378,6 +378,7 @@
     "registeredGearType": "Arte de pesca registrado",
     "shiptype": "Tipo de buque",
     "source": "Fuente",
+    "targetSpecies": "Target species",
     "transmission_other": "Transmisión",
     "unkwownVesselByGeartype": "{{gearType}} desconocida",
     "vesselType_other": "Tipos de embarcaciones",
