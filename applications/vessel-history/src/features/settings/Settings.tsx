@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useCallback, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { history } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import { selectSettings, SettingEventSectionName } from './settings.slice'
 import FishingEvents from './components/FishingEvents'
@@ -46,7 +45,6 @@ const Settings: React.FC = (): React.ReactElement => {
   }
   const [selectedOption, setSelectedOption] = useState<SettingEventSectionName>()
 
-  const dispatch = useDispatch()
   const onBackClick = useCallback(() => {
     if (selectedOption) {
       setSelectedOption(undefined)
@@ -54,10 +52,6 @@ const Settings: React.FC = (): React.ReactElement => {
       history().goBack()
     }
   }, [selectedOption])
-
-  useEffect(() => {
-    dispatch(fetchRegionsThunk())
-  }, [dispatch])
 
   return (
     <div className={styles.settingsContainer}>
