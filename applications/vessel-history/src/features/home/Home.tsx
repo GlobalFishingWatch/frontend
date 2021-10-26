@@ -162,15 +162,33 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       query,
     ]
   )
+  const vesselIds = useMemo(
+    () => vessels.map((vessel) => ({ gfwid: vessel.id, tmtid: vessel.vesselMatchId })),
+    [vessels]
+  )
   const contactUsLink = useMemo(
     () =>
       `${TMT_CONTACT_US_URL}&email=${email}&usercontext=${searchContext}&data=${JSON.stringify({
-        hits: vessels.length,
+        hits: vesselIds.length,
         name: query,
         ...advancedSearch,
+        results: vesselIds,
       })}`,
-    [advancedSearch, email, query, searchContext, vessels.length]
+    [advancedSearch, email, query, searchContext, vesselIds]
   )
+
+  const onContactUsClick = useCallback(() => {
+    uaEvent({
+      category: 'Search Vessel VV',
+      action: 'Click Contact Us ',
+      label: JSON.stringify({
+        name: query,
+        ...advancedSearch,
+        results: vesselIds,
+      }),
+      value: vesselIds.length,
+    })
+  }, [advancedSearch, query, vesselIds])
 
   return (
     <div className={styles.homeContainer} data-testid="home">
@@ -264,7 +282,10 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                 </div>
               )}
               {!searching && vessels.length >= 0 && (
-                <SearchNoResultsState contactUsLink={contactUsLink} />
+                <SearchNoResultsState
+                  contactUsLink={contactUsLink}
+                  onContactUsClick={onContactUsClick}
+                />
               )}
             </div>
           </Fragment>

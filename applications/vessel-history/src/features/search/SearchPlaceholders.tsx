@@ -8,7 +8,10 @@ import styles from './SearchPlaceholders.module.css'
 type SearchPlaceholderProps = {
   className?: string
   children?: React.ReactNode
+}
+type SearchNoResultsStateProps = SearchPlaceholderProps & {
   contactUsLink?: string
+  onContactUsClick?: () => void
 }
 
 function SearchPlaceholder({ children, className = '' }: SearchPlaceholderProps) {
@@ -22,14 +25,20 @@ function SearchPlaceholder({ children, className = '' }: SearchPlaceholderProps)
 export function SearchNoResultsState({
   className = '',
   contactUsLink = '',
-}: SearchPlaceholderProps) {
+  onContactUsClick = () => {},
+}: SearchNoResultsStateProps) {
   return (
     <SearchPlaceholder className={className}>
       <img src={vesselNoResultsImage} alt="vessel" className={styles.noResultsImage} />
       <p>
         <Trans i18nKey="search.noResults">
           Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or{' '}
-          <a href={contactUsLink} rel="noopener noreferrer" target="_blank">
+          <a
+            href={contactUsLink}
+            rel="noopener noreferrer"
+            target="_blank"
+            onClick={onContactUsClick}
+          >
             contact us
           </a>{' '}
           if you still can’t find it.
