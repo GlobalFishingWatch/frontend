@@ -122,20 +122,20 @@
     "loadMore": "Charger plus",
     "mergeSelectedVessels": "Fusionner les navires sélectionnés",
     "MMSI": "MMSI",
-    "noMore": "Aucun résultat supplémentaire",
-    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser Nom, MMSI, OMI ou Indicatif",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or <2>contact us</2> if you still can’t find it.",
     "notAllowed": "Recherche non autorisée",
     "seeVessel": "Voir le navire",
     "shipname": "Nom de navire",
     "title": "Recherche",
+    "noMore": "Aucun résultat supplémentaire",
     "advanced": "Avancé",
     "basic": "Basique",
     "placeholder": "Recherche par Nom, OMI, Indicatif ou MMSI"
   },
   "selects": {
     "allSelected": "Tous",
-    "selected": "slectionns",
-    "none": "Aucun"
+    "none": "Aucun",
+    "selected": "slectionns"
   },
   "settings": {
     "distancePort": "Distance du port",
@@ -156,6 +156,7 @@
       "title": "Événements de pêche",
       "shortTitle": "Pêche"
     },
+    "greaterThan": "Greater than",
     "hours": "heures",
     "km": "km",
     "loiteringEvents": {
@@ -163,7 +164,6 @@
       "shortTitle": "Dérive"
     },
     "longerThan": "Supérieure à",
-    "greaterThan": "Greater than",
     "mpas": {
       "description": "Faits saillants tous les {{eventType}} qui se sont produits à l'intérieur d'un APM. Nous calculons une boîte englobante pour l'emplacement de l'événement en fonction des coordonnées minimales et maximales et vérifions si elle se chevauche avec l'APM. Par exemple, si vous sélectionnez Galápagos et Ascension Island, vous verrez tous les {{eventType}} où la boîte englobante créée par des coordonnées minimales et maximales des événements chevauchés avec les coordonnées minimales et maximales de l'APM de l'île de Galápagos OU de l'Ascension. Comme une méthode de boîte englobante est utilisée, il est possible que les coordonnées de la trajectoire du navire ne se chevauchent pas avec l'APM. S'il vous plaît investissez les événements faits saillants plus loin sur la carte.",
       "label": "Événements dans ces APMs"
@@ -212,6 +212,7 @@
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} précédentes",
     "readyForOfflineView": "PRÊT POUR VUE HORS LIGNE",
     "remove": "Retirer",
+    "rmfoRegistry": "Registre des ORGP",
     "savedOn": "sauvegardé le",
     "saveForOfflineView": "enregistrer le navire pour une vue hors ligne",
     "source": "source",
@@ -247,8 +248,7 @@
       "1": "listé précédemment",
       "2": "actuellement listée"
     },
-    "authorizations": "autorisations",
-    "rmfoRegistry": "Registre des ORGP"
+    "authorizations": "autorisations"
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
