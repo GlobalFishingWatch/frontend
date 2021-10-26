@@ -27,7 +27,8 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-in
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/dist'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
-import { Bbox } from 'types'
+import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
+import { Bbox, WorkspaceAnalysisType } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import {
@@ -38,6 +39,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
 import * as AnalysisWorker from './Analysis.worker'
@@ -376,4 +378,109 @@ export const useAnalysisGeometry = () => {
   ])
 
   return loaded
+}
+
+export const DURATION_TYPES_OPTIONS: SelectOption[] = [
+  {
+    id: 'days',
+    label: 'days',
+  },
+  {
+    id: 'months',
+    label: 'months',
+  },
+]
+
+const parseFullISODate = (d: string) => DateTime.fromISO(d).toUTC()
+
+const parseYYYYMMDDDate = (d: string) => DateTime.fromISO(d).setZone('utc', { keepLocalTime: true })
+
+export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisType) => {
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const { dispatchQueryParams } = useLocationConnect()
+  const { start: timebarStart } = useTimerangeConnect()
+
+  useEffect(() => {
+    const baseStart = timebarStart || DEFAULT_WORKSPACE.availableEnd
+    const initialOffset = analysisType === 'periodComparison' ? { years: 1 } : { months: 3 }
+    const initialDuration = analysisType === 'periodComparison' ? 6 : 3
+    const initialStart = parseFullISODate(baseStart).minus(initialOffset).toISO()
+    const initialCompareStart = baseStart
+    dispatchQueryParams({
+      analysisTimeComparison: {
+        start: initialStart,
+        compareStart: initialCompareStart,
+        duration: initialDuration,
+        durationType: 'months',
+      },
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const update = useCallback(
+    ({ newStart, newCompareStart, newDuration, newDurationType }) => {
+      const start = newStart
+        ? parseYYYYMMDDDate(newStart).toISO()
+        : parseFullISODate(timeComparison.start).toISO()
+      const compareStart = newCompareStart
+        ? parseYYYYMMDDDate(newCompareStart).toISO()
+        : parseFullISODate(timeComparison.compareStart as string).toISO()
+
+      const duration = newDuration || timeComparison.duration
+      const durationType = newDurationType || timeComparison.durationType
+
+      dispatchQueryParams({
+        analysisTimeComparison: {
+          start,
+          compareStart,
+          duration,
+          durationType,
+        },
+      })
+    },
+    [timeComparison, dispatchQueryParams]
+  )
+
+  const onStartChange = useCallback(
+    (e) => {
+      update({ newStart: e.target.value })
+    },
+    [update]
+  )
+
+  const onCompareStartChange = useCallback(
+    (e) => {
+      // TODO In before/after mode, set start automatically to compareStart - duration
+      // const newStart =
+      update({ newCompareStart: e.target.value })
+    },
+    [update]
+  )
+
+  const onDurationChange = useCallback(
+    (e) => {
+      update({ newDuration: e.target.value })
+    },
+    [update]
+  )
+
+  const onDurationTypeSelect = useCallback(
+    (option) => {
+      update({ newDurationType: option.id })
+    },
+    [update]
+  )
+
+  const durationTypeOption = useMemo(() => {
+    if (!timeComparison) return null
+    return DURATION_TYPES_OPTIONS.find((o) => o.id === timeComparison.durationType)
+  }, [timeComparison])
+
+  return {
+    onStartChange,
+    onCompareStartChange,
+    onDurationChange,
+    onDurationTypeSelect,
+    durationTypeOption,
+  }
 }

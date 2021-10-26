@@ -5,12 +5,17 @@
 
 .timeSelection {
   display: flex;
-  justify-content: space-between;
+}
+
+.dateWrapper,
+.durationWrapper {
+  flex: 1;
 }
 
 .durationWrapper {
   display: flex;
   align-items: flex-end;
+  padding-left: 3rem;
 }
 
 .duration {

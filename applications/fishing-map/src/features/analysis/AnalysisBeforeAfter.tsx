@@ -4,22 +4,17 @@ import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { AnalysisTypeProps } from './Analysis'
-import styles from './AnalysisPeriodComparison.module.css'
+import styles from './AnalysisBeforeAfter.module.css'
 import useAnalysisDescription from './analysisDescription.hooks'
 import AnalysisDescription from './AnalysisDescription'
 import { DURATION_TYPES_OPTIONS, useAnalysisTimeCompareConnect } from './analysis.hooks'
 
-const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
+const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, analysisAreaName } = props
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
-  const {
-    onStartChange,
-    onCompareStartChange,
-    onDurationChange,
-    onDurationTypeSelect,
-    durationTypeOption,
-  } = useAnalysisTimeCompareConnect('periodComparison')
+  const { onCompareStartChange, onDurationChange, onDurationTypeSelect, durationTypeOption } =
+    useAnalysisTimeCompareConnect('periodComparison')
 
   const { description } = useAnalysisDescription(analysisAreaName, layersTimeseriesFiltered?.[0])
 
@@ -30,24 +25,16 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
       <AnalysisDescription description={description} />
       {/* 
         TODO: Draw graph using layersTimeseriesFiltered
-        Each timeseries item has:
-        - min and max arrays, each of them having exactly two values (value for 1st period, value for 2nd period)
-        - date: date for the first period
-        - compareDate: ddate for the second period
-        It might be easier to deal with those values for those graphs by splitting the timeseries in two, which could be done in analysis.hooks
       */}
       <div className={styles.container}>
         <div className={styles.timeSelection}>
-          <InputDate
-            label={t('analysis.periodComparison1st', 'start of 1st period')}
-            onChange={onStartChange}
-            value={timeComparison.start}
-          />
-          <InputDate
-            label={t('analysis.periodComparison2nd', 'start of 2nd period')}
-            onChange={onCompareStartChange}
-            value={timeComparison.compareStart}
-          />
+          <div className={styles.dateWrapper}>
+            <InputDate
+              label={t('analysis.beforeAfterDate', 'date')}
+              onChange={onCompareStartChange}
+              value={timeComparison.compareStart}
+            />
+          </div>
           <div className={styles.durationWrapper}>
             <InputText
               label={t('analysis.periodComparisonDuration', 'duration')}
@@ -72,4 +59,4 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
   )
 }
 
-export default AnalysisPeriodComparison
+export default AnalysisBeforeAfter

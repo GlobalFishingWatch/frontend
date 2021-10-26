@@ -40,6 +40,7 @@ import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
+import AnalysisBeforeAfter from './AnalysisBeforeAfter'
 
 const DATASETS_REPORT_SUPPORTED = ['global', 'private-ecuador']
 
@@ -56,7 +57,7 @@ const ANALYSIS_COMPONENTS_BY_TYPE: Record<
   evolution: AnalysisEvolution,
   correlation: null,
   periodComparison: AnalysisPeriodComparison,
-  beforeAfter: AnalysisPeriodComparison,
+  beforeAfter: AnalysisBeforeAfter,
 }
 
 function Analysis() {
