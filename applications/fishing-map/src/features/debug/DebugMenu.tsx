@@ -16,10 +16,6 @@ const DebugMenu: React.FC = () => {
   const basemapDataviewInstance = useSelector(selectBasemapDataviewInstance)
   // Not sure why, but it seems this hook returns an outdated style
   const style = useMapStyle()
-  useEffect(() => {
-    console.log(style)
-    console.log(locationQuery)
-  }, [])
   return (
     <div className={styles.row}>
       <section>

@@ -230,7 +230,7 @@ const MapWrapper = (): React.ReactElement | null => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={onViewportChange}
+          onViewportChange={showTimeComparison ? undefined : onViewportChange}
           mapStyle={style}
           transformRequest={transformRequest}
           onResize={setMapBounds}
@@ -264,7 +264,11 @@ const MapWrapper = (): React.ReactElement | null => {
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
+      <MapControls
+        onMouseEnter={resetHoverState}
+        mapLoading={!mapLoaded || layerComposerLoading}
+        disabled={showTimeComparison}
+      />
     </div>
   )
 }

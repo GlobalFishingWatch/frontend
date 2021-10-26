@@ -54,9 +54,11 @@ const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
 
 const MapControls = ({
   mapLoading = false,
+  disabled = false,
   onMouseEnter,
 }: {
   mapLoading?: boolean
+  disabled?: boolean
   onMouseEnter: () => void
 }): React.ReactElement => {
   const { t } = useTranslation()
@@ -174,7 +176,7 @@ const MapControls = ({
           />
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
         </div>
-        <div className={cx('print-hidden', styles.controlsNested)}>
+        <div className={cx('print-hidden', styles.controlsNested, { [styles.disabled]: disabled })}>
           {extendedControls && <MapSearch />}
           <IconButton
             icon="plus"
