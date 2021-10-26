@@ -1,4 +1,8 @@
 steps:
+  - name: 'alpine'
+    id: 'Setup empty packages dir'
+    args: ['ash', '-c', 'mkdir -p ./applications/vessel-history/node_modules/@globalfishingwatch']
+
   # Push production image to GCR
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'Build production image'
