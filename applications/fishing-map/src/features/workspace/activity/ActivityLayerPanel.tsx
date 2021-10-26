@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,7 +11,7 @@ import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selec
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import DatasetFilterSource from '../shared/DatasetSourceField'
@@ -102,6 +102,20 @@ function ActivityLayerPanel({
       onToggle={onToggle}
     />
   )
+
+  const datasetFields: { field: SupportedDatasetSchema; label: string }[] = useMemo(
+    () => [
+      { field: 'qf_detect', label: t('layer.qf', 'Quality signal') },
+      { field: 'geartype', label: t('layer.gearType_other', 'Gear types') },
+      { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
+      { field: 'shiptype', label: t('vessel.shiptype', 'Ship type') },
+      { field: 'origin', label: t('vessel.origin', 'Origin') },
+      { field: 'target_species', label: t('vessel.targetSpecies', 'Target species') },
+      { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
+    ],
+    [t]
+  )
+
   return (
     <div
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
@@ -157,36 +171,9 @@ function ActivityLayerPanel({
             <div className={styles.filters}>
               <DatasetFilterSource dataview={dataview} />
               <DatasetFlagField dataview={dataview} />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'qf_detect'}
-                label={t('layer.qf', 'Quality signal')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'geartype'}
-                label={t('layer.gearType_other', 'Gear types')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'fleet'}
-                label={t('layer.fleet_other', 'Fleets')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'shiptype'}
-                label={t('vessel.shiptype', 'Ship type')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'origin'}
-                label={t('vessel.origin', 'Origin')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'vessel_type'}
-                label={t('vessel.vesselType_other', 'Vessel types')}
-              />
+              {datasetFields.map(({ field, label }) => (
+                <DatasetSchemaField dataview={dataview} field={field} label={label} />
+              ))}
             </div>
           </div>
           <div className={activityStyles.legendContainer}>
