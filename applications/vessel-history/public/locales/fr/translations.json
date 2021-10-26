@@ -123,7 +123,7 @@
     "mergeSelectedVessels": "Fusionner les navires sélectionnés",
     "MMSI": "MMSI",
     "noMore": "Aucun résultat supplémentaire",
-    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser Nom, MMSI, OMI ou Indicatif",
+    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser Nom, MMSI, OMI ou Indicatif ou <2>contactez-nous</2> si vous ne le trouvez toujours pas.",
     "notAllowed": "Recherche non autorisée",
     "seeVessel": "Voir le navire",
     "shipname": "Nom de navire",
