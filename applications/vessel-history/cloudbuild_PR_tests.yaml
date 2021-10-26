@@ -1,7 +1,7 @@
 steps:
-  # Push build image to GCR
+  # Push production image to GCR
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
-    id: 'build base image & push to GCR'
+    id: 'Build production image'
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
@@ -18,8 +18,11 @@ steps:
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--build-arg',
+        'REACT_APP_PUBLIC_URL=$_REACT_APP_PUBLIC_URL',
+# Use build target to test yarn build while making optimizations
         '--target',
-        'base',
+        'build',
         '-f',
         './applications/vessel-history/Dockerfile',
         '-c',
