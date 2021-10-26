@@ -207,10 +207,32 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             tickCount={4}
           />
           <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
+          <Area
+            key={`decrease-area`}
+            name="area"
+            type="monotone"
+            dataKey={(data) => data.rangeDecrease}
+            activeDot={false}
+            fill="rgba(22, 63, 137, 1)"
+            stroke="none"
+            fillOpacity={0.2}
+            isAnimationActive={false}
+          />
+          <Area
+            key={`increase-area`}
+            name="area"
+            type="monotone"
+            dataKey={(data) => data.rangeIncrease}
+            activeDot={false}
+            fill="rgba(360, 62, 98, 1)"
+            stroke="none"
+            fillOpacity={0.2}
+            isAnimationActive={false}
+          />
           <Line
             key={`base-line`}
             name="line"
-            type="step"
+            type="monotone"
             data={baseline}
             dataKey={(data) => data.avg}
             unit={unit}
@@ -222,7 +244,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
           <Line
             key={`compare-line`}
             name="line"
-            type="step"
+            type="monotone"
             data={compare}
             dataKey={(data) => data.avg}
             unit={unit}
@@ -230,28 +252,6 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             isAnimationActive={false}
             stroke="rgba(22, 63, 137, 1)"
             strokeWidth={2}
-          />
-          <Area
-            key={`decrease-area`}
-            name="area"
-            type="step"
-            dataKey={(data) => data.rangeDecrease}
-            activeDot={false}
-            fill="rgba(22, 63, 137, 1)"
-            stroke="none"
-            fillOpacity={0.2}
-            isAnimationActive={false}
-          />
-          <Area
-            key={`increase-area`}
-            name="area"
-            type="step"
-            dataKey={(data) => data.rangeIncrease}
-            activeDot={false}
-            fill="rgba(360, 62, 98, 1)"
-            stroke="none"
-            fillOpacity={0.2}
-            isAnimationActive={false}
           />
         </ComposedChart>
       </ResponsiveContainer>
