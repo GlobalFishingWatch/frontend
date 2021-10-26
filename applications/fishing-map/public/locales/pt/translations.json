@@ -70,11 +70,11 @@
     "unknown": "Desconhecido",
     "unknownVessel": "Embarcação desconhecida",
     "update": "Atualizar",
-    "vessel": "Vessel",
-    "vessel_one": "Vessel",
-    "vessel_other": "Vessels",
-    "viirs": "Night light detections (VIIRS)",
-    "welcomePopupDisable": "Don't show again"
+    "vessel": "Embarcação",
+    "vessel_one": "Embarcação",
+    "vessel_other": "Embarcações",
+    "viirs": "Detecção de luz noturna (VIIRS)",
+    "welcomePopupDisable": "Não mostrar novamente"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -218,7 +218,7 @@
       "student": "Student",
       "watch": "Watch officer"
     },
-    "send": "Send",
+    "send": "Enviar",
     "type": "What are you providing feedback for?",
     "whatIssue": "Where are you having an issue?",
     "whichFeature": "Which feature would you like to improve?"
