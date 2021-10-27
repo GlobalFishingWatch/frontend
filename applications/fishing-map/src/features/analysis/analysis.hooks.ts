@@ -102,7 +102,7 @@ export const useFilteredTimeSeries = () => {
   const timeComparison = useSelector(selectAnalysisTimeComparison)
 
   let compareDeltaMillis: number | undefined = undefined
-  if (showTimeComparison) {
+  if (showTimeComparison && timeComparison) {
     const startMillis = DateTime.fromISO(timeComparison.start).toUTC().toMillis()
     const compareStartMillis = DateTime.fromISO(timeComparison.compareStart).toUTC().toMillis()
     compareDeltaMillis = compareStartMillis - startMillis
@@ -419,15 +419,24 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
 
   const update = useCallback(
     ({ newStart, newCompareStart, newDuration, newDurationType }) => {
-      const start = newStart
-        ? parseYYYYMMDDDate(newStart).toISO()
-        : parseFullISODate(timeComparison.start).toISO()
       const compareStart = newCompareStart
         ? parseYYYYMMDDDate(newCompareStart).toISO()
         : parseFullISODate(timeComparison.compareStart as string).toISO()
 
       const duration = newDuration || timeComparison.duration
       const durationType = newDurationType || timeComparison.durationType
+
+      let start: string
+      if (analysisType === 'beforeAfter') {
+        // In before/after mode, start of 1st period is calculated automatically depending on start of 2nd period (compareStart)
+        start = parseYYYYMMDDDate(compareStart)
+          .minus({ [durationType]: duration })
+          .toISO()
+      } else {
+        start = newStart
+          ? parseYYYYMMDDDate(newStart).toISO()
+          : parseFullISODate(timeComparison.start).toISO()
+      }
 
       dispatchQueryParams({
         analysisTimeComparison: {
@@ -438,7 +447,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         },
       })
     },
-    [timeComparison, dispatchQueryParams]
+    [timeComparison, dispatchQueryParams, analysisType]
   )
 
   const onStartChange = useCallback(
@@ -450,8 +459,6 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
 
   const onCompareStartChange = useCallback(
     (e) => {
-      // TODO In before/after mode, set start automatically to compareStart - duration
-      // const newStart =
       update({ newCompareStart: e.target.value })
     },
     [update]
