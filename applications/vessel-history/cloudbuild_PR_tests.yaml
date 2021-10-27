@@ -1,11 +1,6 @@
 steps:
-  - name: 'alpine'
-    id: 'Setup empty packages dir'
-    args: ['ash', '-c', 'mkdir -p ./applications/vessel-history/node_modules/@globalfishingwatch']
-
-  # Push production image to GCR
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
-    id: 'Build production image'
+    id: 'Build base image & push to GCR'
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
@@ -23,12 +18,9 @@ steps:
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
         '--build-arg',
-        'REACT_APP_PUBLIC_URL=$_REACT_APP_PUBLIC_URL',
-        '--build-arg',
         'REACT_APP_TMT_CONTACT_US_URL=$_REACT_APP_TMT_CONTACT_US_URL',
-# Use build target to test yarn build while making optimizations
         '--target',
-        'build',
+        'base',
         '-f',
         './applications/vessel-history/Dockerfile',
         '-c',
@@ -45,5 +37,4 @@ steps:
         'test',
       ]
 
-# timeout: 450s
-timeout: 3000s
+timeout: 450s
