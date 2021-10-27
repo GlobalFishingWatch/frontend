@@ -5,11 +5,13 @@ import type datasets from '@globalfishingwatch/i18n-labels/source/datasets.json'
 import type flags from '@globalfishingwatch/i18n-labels/source/flags.json'
 import type timebar from '@globalfishingwatch/i18n-labels/source/timebar.json'
 import type translations from '../../../public/locales/source/translations.json'
+import type helpHints from '../../../public/locales/source/helpHints.json'
 
 declare module 'react-i18next' {
   // and extend them!
   interface Resources {
     translations: typeof translations
+    helpHints: typeof helpHints
     datasets: typeof datasets
     timebar: typeof timebar
     flags: typeof flags

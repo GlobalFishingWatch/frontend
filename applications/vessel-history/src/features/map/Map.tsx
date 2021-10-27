@@ -35,7 +35,7 @@ const Map: React.FC = (): React.ReactElement => {
   const { selectVesselEventOnClick, highlightEvent, onFiltersChanged } = useMapEvents()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
-  const resourcesLoading = useSelector(selectResourcesLoading) ?? false
+  const resourcesLoading: boolean = useSelector(selectResourcesLoading) ?? false
   const { style, loading: layerComposerLoading } = useLayerComposer(
     generatorsConfig,
     globalConfig,
