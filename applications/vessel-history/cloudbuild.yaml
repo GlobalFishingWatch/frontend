@@ -32,7 +32,7 @@ steps:
 
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Run tests'
-    waitFor: ['Build base image']
+    # waitFor: ['Build base image']
     args:
       [
         'run',
@@ -43,7 +43,7 @@ steps:
 
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'Build nginx server image'
-    waitFor: ['-']
+    # waitFor: ['-']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
@@ -75,7 +75,7 @@ steps:
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Deploy to cloud run'
-    waitFor: ['Run tests', 'Build nginx server image']
+    # waitFor: ['Run tests', 'Build nginx server image']
     args: [
         'beta',
         'run',
