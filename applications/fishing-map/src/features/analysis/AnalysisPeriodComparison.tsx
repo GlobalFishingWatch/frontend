@@ -52,14 +52,14 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
           <InputDate
             max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
             min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-            label={t('analysis.periodComparison1st', 'Baseline period')}
+            label={t('analysis.periodComparison1st', 'Baseline start')}
             onChange={onStartChange}
             value={timeComparison.start}
           />
           <InputDate
             max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
             min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-            label={t('analysis.periodComparison2nd', 'comparison period')}
+            label={t('analysis.periodComparison2nd', 'comparison start')}
             onChange={onCompareStartChange}
             value={timeComparison.compareStart}
           />

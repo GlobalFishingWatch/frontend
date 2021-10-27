@@ -52,10 +52,10 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
   if (!diff.length('hours') && !diff.length('days')) return ''
 
   return timeChunkInterval === 'hour'
-    ? `${diff.length('hours')} ${
+    ? `${diff.length('hours').toFixed()} ${
         diff.length('hours') === 1 ? t('common.hour_one') : t('common.hour_other')
       }`
-    : `${diff.length('days')} ${
+    : `${diff.length('days').toFixed()} ${
         diff.length('days') === 1 ? t('common.days_one') : t('common.days_other')
       }`
 }
@@ -128,7 +128,7 @@ const AnalysisGraphTooltip = (props: any) => {
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formatDate(baselineDate, timeChunkInterval)}</p>
         <span className={styles.tooltipValue}>
-          {formatTooltipValue(baseline?.payload.value as number, baseline?.payload.unit as string)}
+          {formatTooltipValue(baseline?.payload.value as number, unit as string)}
         </span>
         <p className={styles.tooltipLabel}>{formatDate(compareDate, timeChunkInterval)}</p>
         <span className={styles.tooltipValue}>
