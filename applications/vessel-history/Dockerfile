@@ -1,7 +1,7 @@
 #################################################################################
 # Step to build the application assets
 #################################################################################
-FROM node:12 AS base
+FROM node:16-alpine AS base
 RUN mkdir -p /app
 WORKDIR /app
 
@@ -12,8 +12,13 @@ ARG REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=""
 ARG REACT_APP_LIMITED_ACCESS_USER=false
 ARG GENERATE_SOURCEMAP=false
 
+# Install tools required for project
+# Run `docker build --no-cache .` to update dependencies
+RUN apk add --no-cache git
+
 # Install build dependencies
 COPY ./package.json /app
+COPY ./yarn.lock /app
 ENV NODE_ENV=development
 ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
 ENV REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=${REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID}
@@ -44,9 +49,10 @@ ENV PUBLIC_URL=$REACT_APP_PUBLIC_URL
 ENV REACT_APP_TMT_CONTACT_US_URL=$REACT_APP_TMT_CONTACT_US_URL
 
 # override node_modules inside image with
-# generated versions from the monorepo
-COPY ./node_modules/@globalfishingwatch /tmp/@globalfishingwatch
-RUN cp -r /tmp/@globalfishingwatch /app/node_modules/
+# generated versions from the monorepo if exists
+# IMPORTANT: README.md file should exists so this step does not fail
+COPY ./README.md ./node_modules/@globalfishingwatc[h] /tmp/@globalfishingwatch/
+RUN rm /tmp/@globalfishingwatch/README.md && cp -r /tmp/@globalfishingwatch /app/node_modules/
 ENV GENERATE_SOURCEMAP=${GENERATE_SOURCEMAP}
 
 RUN yarn build
