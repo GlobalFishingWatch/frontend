@@ -211,7 +211,6 @@ const AnalysisPeriodComparisonGraph: React.FC<{
           />
           <YAxis
             scale="linear"
-            // domain={paddedDomain}
             interval="preserveEnd"
             tickFormatter={tickFormatter}
             axisLine={false}

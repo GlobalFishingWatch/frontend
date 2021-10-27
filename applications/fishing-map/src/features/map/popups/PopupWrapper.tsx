@@ -61,7 +61,13 @@ function PopupWrapper({
         {Object.entries(featureByCategory).map(([featureCategory, features]) => {
           switch (featureCategory) {
             case DataviewCategory.Comparison:
-              return <ComparisonRow key={featureCategory} feature={features[0]} />
+              return (
+                <ComparisonRow
+                  key={featureCategory}
+                  feature={features[0]}
+                  showFeaturesDetails={type === 'click'}
+                />
+              )
             case DataviewCategory.Fishing:
               return features.map((feature, i) => (
                 <FishingTooltipRow

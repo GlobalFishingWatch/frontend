@@ -35,7 +35,7 @@ import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -162,6 +162,7 @@ const MapWrapper = (): React.ReactElement | null => {
   }, [viewport])
 
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const isAnalyzing = useSelector(selectIsAnalyzing)
   const debugOptions = useSelector(selectDebugOptions)
 
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
@@ -230,7 +231,7 @@ const MapWrapper = (): React.ReactElement | null => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={showTimeComparison ? undefined : onViewportChange}
+          onViewportChange={isAnalyzing ? undefined : onViewportChange}
           mapStyle={style}
           transformRequest={transformRequest}
           onResize={setMapBounds}

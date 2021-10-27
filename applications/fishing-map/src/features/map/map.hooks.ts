@@ -310,26 +310,10 @@ export const parseMapTooltipEvent = (
     longitude: event.longitude,
   }
 
-  // We don't want to show anything else when hovering a comparison point
-  if (
-    event.features[0]?.temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare
-  ) {
-    return {
-      ...baseEvent,
-      features: [
-        {
-          category: DataviewCategory.Comparison,
-          value: event.features[0]?.value,
-          visible: true,
-          unit: 'hours',
-        } as TooltipEventFeature,
-      ],
-    }
-  }
-
   const clusterFeature = event.features.find(
     (f) => f.generatorType === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
   )
+
   // We don't want to show anything else when hovering a cluster point
   if (clusterFeature) {
     return {
@@ -344,6 +328,22 @@ export const parseMapTooltipEvent = (
   }
 
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
+    const baseFeature = {
+      source: feature.source,
+      sourceLayer: feature.sourceLayer,
+      layerId: feature.layerId as string,
+    }
+
+    if (feature.temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
+      return {
+        ...baseFeature,
+        category: DataviewCategory.Comparison,
+        value: event.features[0]?.value,
+        visible: true,
+        unit: 'hours',
+      } as TooltipEventFeature
+    }
+
     let dataview
     if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature
@@ -365,9 +365,7 @@ export const parseMapTooltipEvent = (
       // Not needed to create a dataview just for the workspaces list interaction
       if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
-          source: feature.source,
-          sourceLayer: feature.sourceLayer,
-          layerId: feature.layerId as string,
+          ...baseFeature,
           type: Generators.Type.GL,
           value: feature.properties.label,
           properties: {},
