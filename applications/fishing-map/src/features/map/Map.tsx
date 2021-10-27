@@ -264,11 +264,7 @@ const MapWrapper = (): React.ReactElement | null => {
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}
-      <MapControls
-        onMouseEnter={resetHoverState}
-        mapLoading={!mapLoaded || layerComposerLoading}
-        disabled={showTimeComparison}
-      />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
     </div>
   )
 }
