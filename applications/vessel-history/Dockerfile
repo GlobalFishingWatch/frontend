@@ -17,7 +17,7 @@ COPY ./package.json /app
 ENV NODE_ENV=development
 ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
 ENV REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=${REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID}
-RUN npm install --unsafe-perm
+RUN yarn
 
 COPY ./src /app/src
 COPY ./public /app/public
