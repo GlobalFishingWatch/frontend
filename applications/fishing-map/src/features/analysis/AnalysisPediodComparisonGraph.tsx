@@ -37,6 +37,7 @@ export interface ComparisonGraphProps {
 
 const DIFFERENCE_INCREASE = 'difference-increase'
 const DIFFERENCE_DECREASE = 'difference-decrease'
+const BASELINE = 'baseline'
 
 const tickFormatter = (tick: number) => {
   const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
@@ -59,12 +60,12 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
       }`
 }
 
-const formatTooltipValue = (value: number, unit: string) => {
+const formatTooltipValue = (value: number, unit: string, asDifference = false) => {
   if (value === undefined) {
     return null
   }
   const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
-  const valueLabel = `${value > 0 ? '+' : ''}${valueFormatted} ${unit ? unit : ''}`
+  const valueLabel = `${value > 0 && asDifference ? '+' : ''}${valueFormatted} ${unit ? unit : ''}`
   return valueLabel
 }
 
@@ -83,47 +84,57 @@ type AnalysisGraphTooltipProps = {
   timeChunkInterval: Interval
 }
 
+const formatDate = (date: DateTime, timeChunkInterval: Interval) => {
+  let formattedLabel = ''
+  switch (timeChunkInterval) {
+    case 'month':
+      formattedLabel += date.toFormat('LLLL y')
+      break
+    case '10days':
+      const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
+      const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
+      formattedLabel += `${timeRangeStart} - ${timeRangeEnd}`
+      break
+    case 'day':
+      formattedLabel += date.toLocaleString(DateTime.DATE_MED)
+      break
+    default:
+      formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
+      break
+  }
+  return formattedLabel
+}
+
 const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
   console.log(props)
 
   if (label && active && payload.length > 0 && payload.length) {
+    const baseline = payload.find(({ name }) => name === BASELINE)
     const difference = payload.find(
       ({ name, value }) =>
         (name === DIFFERENCE_INCREASE && value > 0) || (name === DIFFERENCE_DECREASE && value < 0)
     )
     if (!difference) return null
-    const date = DateTime.fromMillis(difference?.payload.compareDate)
+    const baselineDate = DateTime.fromMillis(difference?.payload.date)
       .toUTC()
       .setLocale(i18n.language)
-    let formattedLabel = ''
-    switch (timeChunkInterval) {
-      case 'month':
-        formattedLabel += date.toFormat('LLLL y')
-        break
-      case '10days':
-        const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
-        const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
-        formattedLabel += `${timeRangeStart} - ${timeRangeEnd}`
-        break
-      case 'day':
-        formattedLabel += date.toLocaleString(DateTime.DATE_MED)
-        break
-      default:
-        formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
-        break
-    }
+    const compareDate = DateTime.fromMillis(difference?.payload.compareDate)
+      .toUTC()
+      .setLocale(i18n.language)
 
     const { value, color, unit } = difference || {}
     return (
       <div className={styles.tooltipContainer}>
-        <p className={styles.tooltipLabel}>{formattedLabel}</p>
-        <ul>
-          <li className={styles.tooltipValue}>
-            <span className={styles.tooltipValueDot} style={{ color }}></span>
-            {formatTooltipValue(value as number, unit as string)}
-          </li>
-        </ul>
+        <p className={styles.tooltipLabel}>{formatDate(baselineDate, timeChunkInterval)}</p>
+        <span className={styles.tooltipValue}>
+          {formatTooltipValue(baseline?.payload.value as number, baseline?.payload.unit as string)}
+        </span>
+        <p className={styles.tooltipLabel}>{formatDate(compareDate, timeChunkInterval)}</p>
+        <span className={styles.tooltipValue}>
+          <span className={styles.tooltipValueDot} style={{ color }}></span>
+          {formatTooltipValue(value as number, unit as string, true)}
+        </span>
       </div>
     )
   }
@@ -143,10 +154,17 @@ const AnalysisPeriodComparisonGraph: React.FC<{
     return sublayers[0].legend.unit
   }, [sublayers])
 
-  const baseline = timeseries?.map(({ date }) => ({
-    date: new Date(date).getTime(),
-    value: 0,
-  }))
+  const baseline = useMemo(() => {
+    return timeseries?.map(({ date, compareDate, min, max }) => {
+      const avgBaseline = min[0] + max[0] / 2
+      return {
+        date: new Date(date).getTime(),
+        ...{ compareDate: compareDate ? new Date(compareDate).getTime() : {} },
+        value: avgBaseline,
+        ceros: 0,
+      }
+    })
+  }, [timeseries])
 
   const difference = useMemo(() => {
     return timeseries?.map(({ date, compareDate, min, max }) => {
@@ -248,11 +266,11 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             strokeWidth={2}
           />
           <Line
-            key="baseline"
-            name="baseline"
+            key={BASELINE}
+            name={BASELINE}
             type="step"
             data={baseline}
-            dataKey={(data) => data.value}
+            dataKey={(data) => data.ceros}
             unit={unit}
             dot={false}
             isAnimationActive={false}

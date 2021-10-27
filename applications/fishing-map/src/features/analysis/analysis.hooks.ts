@@ -480,22 +480,22 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
   const onDurationChange = useCallback(
     (e) => {
       if (
-        (timeComparison.durationType === 'months' && e.target.value > MAX_MONTHS_TO_COMPARE) ||
-        (timeComparison.durationType === 'days' && e.target.value > MAX_DAYS_TO_COMPARE)
+        (timeComparison?.durationType === 'months' && e.target.value > MAX_MONTHS_TO_COMPARE) ||
+        (timeComparison?.durationType === 'days' && e.target.value > MAX_DAYS_TO_COMPARE)
       )
         return
       update({ newDuration: e.target.value })
     },
-    [timeComparison.durationType, update]
+    [timeComparison?.durationType, update]
   )
 
   const onDurationTypeSelect = useCallback(
     (option) => {
-      if (option.id === 'months' && timeComparison.duration > MAX_MONTHS_TO_COMPARE)
+      if (option.id === 'months' && timeComparison?.duration > MAX_MONTHS_TO_COMPARE)
         update({ newDurationType: option.id, newDuration: MAX_MONTHS_TO_COMPARE })
       else update({ newDurationType: option.id })
     },
-    [timeComparison.duration, update]
+    [timeComparison?.duration, update]
   )
 
   const durationTypeOption = useMemo(() => {
