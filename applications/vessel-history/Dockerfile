@@ -1,7 +1,7 @@
 #################################################################################
 # Step to build the application assets
 #################################################################################
-FROM node:12 AS base
+FROM node:16-alpine AS base
 RUN mkdir -p /app
 WORKDIR /app
 
@@ -12,12 +12,16 @@ ARG REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=""
 ARG REACT_APP_LIMITED_ACCESS_USER=false
 ARG GENERATE_SOURCEMAP=false
 
+# Install tools required for project
+# Run `docker build --no-cache .` to update dependencies
+RUN apk add --no-cache git
+
 # Install build dependencies
 COPY ./package.json /app
 ENV NODE_ENV=development
 ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
 ENV REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=${REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID}
-RUN npm install --unsafe-perm
+RUN yarn
 
 COPY ./src /app/src
 COPY ./public /app/public
