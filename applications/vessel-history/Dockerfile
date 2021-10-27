@@ -18,6 +18,7 @@ RUN apk add --no-cache git
 
 # Install build dependencies
 COPY ./package.json /app
+COPY ./yarn.lock /app
 ENV NODE_ENV=development
 ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
 ENV REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=${REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID}
