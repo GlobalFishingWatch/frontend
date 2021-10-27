@@ -151,6 +151,7 @@ const getDescription = (
   analysisType: WorkspaceAnalysisType,
   timeComparison: WorkspaceAnalysisTimeComparison
 ): DescriptionChunks => {
+  if (!titleChunks || !titleChunks.length) return []
   const dateFormat =
     graphData?.interval === 'hour'
       ? DateTime.DATETIME_MED_WITH_WEEKDAY

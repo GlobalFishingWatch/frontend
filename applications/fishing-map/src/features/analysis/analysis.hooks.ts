@@ -40,6 +40,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
+import { useMapStyle } from 'features/map/map.hooks'
 import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
 import * as AnalysisWorker from './Analysis.worker'
@@ -95,6 +96,7 @@ const filterByTimerange = (timeseries: AnalysisGraphProps[], start: string, end:
 
 export const useFilteredTimeSeries = () => {
   const map = useMapInstance()
+  const mapStyle = useMapStyle()
   const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
@@ -206,6 +208,21 @@ export const useFilteredTimeSeries = () => {
   const attachedListener = useRef<boolean>(false)
   const { areaId } = useSelector(selectAnalysisQuery)
 
+  const getActivityLayers = useCallback(
+    (style) => {
+      const activityLayersMeta = style.metadata.generatorsMetadata
+      const layers = Object.entries(activityLayersMeta).filter(([dataviewId]) => {
+        // We are not interested (yet) in non-activity layers for time comparison
+        return (
+          !showTimeComparison ||
+          (showTimeComparison && dataviewId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
+        )
+      })
+      return layers
+    },
+    [showTimeComparison]
+  )
+
   useEffect(() => {
     // Used to re-attach the idle listener on area change
     setTimeseries(undefined)
@@ -218,6 +235,23 @@ export const useFilteredTimeSeries = () => {
     attachedListener.current = false
   }, [analysisType])
 
+  // SetTimeseries with empty actual timeseries arrays, for the descriptions to populate
+  useEffect(() => {
+    if (mapStyle) {
+      const layersEntries = getActivityLayers(mapStyle)
+      if (layersEntries.length && !timeseries) {
+        const emptyTimeseries = layersEntries.map(([dataviewId, metadata]) => {
+          return {
+            timeseries: [],
+            interval: (metadata as any).timeChunks.interval,
+            sublayers: (metadata as any).sublayers,
+          }
+        })
+        setTimeseries(emptyTimeseries)
+      }
+    }
+  }, [mapStyle, getActivityLayers, timeseries])
+
   useEffect(() => {
     if (!map || attachedListener.current || !simplifiedGeometry) return
 
@@ -225,29 +259,20 @@ export const useFilteredTimeSeries = () => {
 
     const onMapIdle = (e: MapboxEvent) => {
       const style = (e.target as any).style.stylesheet
-      const activityLayersMeta = style.metadata.generatorsMetadata
-      const activityLayersWithFeatures = Object.entries(activityLayersMeta)
-        .filter(([dataviewId]) => {
-          // We are not interested (yet) in non-activity layers for time comparison
-          return (
-            !showTimeComparison ||
-            (showTimeComparison && dataviewId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
-          )
-        })
-        .map(([dataviewId, metadata]) => {
-          const chunks = (metadata as any).timeChunks as TimeChunks
-          const allChunksFeatures = chunks.chunks.flatMap((chunk: TimeChunk) => {
-            const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
-              sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
-            })
-            return sourceFeatures
+      const activityLayersWithFeatures = getActivityLayers(style).map(([dataviewId, metadata]) => {
+        const chunks = (metadata as any).timeChunks as TimeChunks
+        const allChunksFeatures = chunks.chunks.flatMap((chunk: TimeChunk) => {
+          const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
+            sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
           })
-          return {
-            id: dataviewId,
-            features: allChunksFeatures,
-            metadata,
-          }
+          return sourceFeatures
         })
+        return {
+          id: dataviewId,
+          features: allChunksFeatures,
+          metadata,
+        }
+      })
       if (activityLayersWithFeatures.length) {
         computeTimeseries(activityLayersWithFeatures, simplifiedGeometry as MultiPolygon)
         map.off('idle', onMapIdle)
@@ -255,7 +280,14 @@ export const useFilteredTimeSeries = () => {
     }
 
     map.on('idle', onMapIdle)
-  }, [map, computeTimeseries, simplifiedGeometry, analysisType, showTimeComparison])
+  }, [
+    map,
+    computeTimeseries,
+    simplifiedGeometry,
+    analysisType,
+    showTimeComparison,
+    getActivityLayers,
+  ])
 
   const { start, end } = useTimerangeConnect()
 
@@ -268,7 +300,6 @@ export const useFilteredTimeSeries = () => {
       }
     }
   }, [timeseries, start, end, showTimeComparison])
-
   return layersTimeseriesFiltered
 }
 

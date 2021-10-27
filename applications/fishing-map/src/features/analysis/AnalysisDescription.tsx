@@ -4,6 +4,7 @@ import styles from './AnalysisDescription.module.css'
 
 const AnalysisDescription: React.FC<{ description: DescriptionChunks }> = (props) => {
   const { description } = props
+  if (!description || !description.length) return null
   return (
     <h3 className={styles.title}>
       {description.map((d) =>
