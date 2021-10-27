@@ -11,7 +11,12 @@ steps:
   - id: 'install-yarn'
     name: node
     entrypoint: yarn
-    args: ['install', '--silent']
+    args: ['install']
+
+  - id: 'check-deps'
+    name: node
+    entrypoint: yarn
+    args: ['yarn', 'why', 'tslib']
 
   - id: 'upload-cached-yarn-dependencies'
     waitFor: ['install-yarn']
