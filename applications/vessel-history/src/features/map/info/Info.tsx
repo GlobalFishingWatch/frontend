@@ -7,7 +7,7 @@ import { RenderedEvent } from 'features/vessels/activity/vessels-activity.select
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
 import { cheapDistance } from 'utils/vessel'
-import { EventTypeVoyage } from 'types/voyage'
+import { EventTypeVoyage, Voyage } from 'types/voyage'
 import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
 import { selectHighlightedEvent } from '../map.slice'
 import useMapEvents from '../map-events.hooks'
@@ -20,7 +20,7 @@ interface InfoProps {
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const [expanded, setExpanded] = useState(false)
   const [height, setHeight] = useState(0)
-  const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages)
+  const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages) as (RenderedEvent | Voyage)[]
 
   const events: RenderedEvent[] = useMemo(
     () => eventsWithVoyages.filter((event) => event.type !== EventTypeVoyage.Voyage),
