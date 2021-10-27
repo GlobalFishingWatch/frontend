@@ -128,7 +128,8 @@
     "stylelint-config-standard": "^20.0.0"
   },
   "resolutions": {
-    "gl-matrix": "3.3.0"
+    "gl-matrix": "3.3.0",
+    "reselect": "4.0.0"
   },
   "eslintConfig": {
     "extends": [

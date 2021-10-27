@@ -29,7 +29,7 @@ export const selectLocationQuery = createSelector(
 )
 
 export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
-  createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
+  createSelector([selectLocationQuery], (query: any): T => {
     return query?.[param]
   })
 
