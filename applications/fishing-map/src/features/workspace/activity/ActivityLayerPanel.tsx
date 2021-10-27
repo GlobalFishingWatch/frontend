@@ -172,7 +172,7 @@ function ActivityLayerPanel({
               <DatasetFilterSource dataview={dataview} />
               <DatasetFlagField dataview={dataview} />
               {datasetFields.map(({ field, label }) => (
-                <DatasetSchemaField dataview={dataview} field={field} label={label} />
+                <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
               ))}
             </div>
           </div>
