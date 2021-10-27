@@ -10,21 +10,21 @@ import {
   Area,
 } from 'recharts'
 import { format } from 'd3-format'
-import { min, max } from 'lodash'
-import { DateTime } from 'luxon'
+import { DateTime, Interval as TimeInterval } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import i18n from 'features/i18n/i18n'
+import i18n, { t } from 'features/i18n/i18n'
 import styles from './AnalysisEvolutionGraph.module.css'
 
-export interface GraphData {
+export interface ComparisonGraphData {
   date: string
+  compareDate?: string
   min: number[]
   max: number[]
 }
 
-export interface AnalysisGraphProps {
-  timeseries: GraphData[]
+export interface ComparisonGraphProps {
+  timeseries: ComparisonGraphData[]
   sublayers: {
     id: string
     legend: {
@@ -46,12 +46,20 @@ const tickFormatter = (tick: number) => {
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
   const startDate = DateTime.fromISO(start).toUTC()
   const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
-  const diff = date.diff(startDate, ['months', 'days'])
+  const diff = TimeInterval.fromDateTimes(startDate, date)
 
-  return diff.months >= 1 ? `${diff.months} months` : `${diff.days} days`
+  if (!diff.length('hours') && !diff.length('days')) return ''
+
+  return timeChunkInterval === 'hour'
+    ? `${diff.length('hours')} ${
+        diff.length('hours') === 1 ? t('common.hour_one') : t('common.hour_other')
+      }`
+    : `${diff.length('days')} ${
+        diff.length('days') === 1 ? t('common.days_one') : t('common.days_other')
+      }`
 }
 
-const formatTooltipValue = (value: number, payload: any, unit: string) => {
+const formatTooltipValue = (value: number, unit: string) => {
   if (value === undefined) {
     return null
   }
@@ -77,39 +85,43 @@ type AnalysisGraphTooltipProps = {
 
 const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
+  console.log(props)
 
-  if (active && payload && payload.length) {
-    const date = DateTime.fromMillis(label).toUTC().setLocale(i18n.language)
+  if (label && active && payload.length > 0 && payload.length) {
+    const difference = payload.find(
+      ({ name, value }) =>
+        (name === DIFFERENCE_INCREASE && value > 0) || (name === DIFFERENCE_DECREASE && value < 0)
+    )
+    if (!difference) return null
+    const date = DateTime.fromMillis(difference?.payload.compareDate)
+      .toUTC()
+      .setLocale(i18n.language)
     let formattedLabel = ''
     switch (timeChunkInterval) {
       case 'month':
-        formattedLabel = date.toFormat('LLLL y')
+        formattedLabel += date.toFormat('LLLL y')
         break
       case '10days':
         const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
         const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
-        formattedLabel = `${timeRangeStart} - ${timeRangeEnd}`
+        formattedLabel += `${timeRangeStart} - ${timeRangeEnd}`
         break
       case 'day':
-        formattedLabel = date.toLocaleString(DateTime.DATE_MED)
+        formattedLabel += date.toLocaleString(DateTime.DATE_MED)
         break
       default:
-        formattedLabel = date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
+        formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
         break
     }
-    const formattedValues = payload.find(
-      ({ name, value }) =>
-        (name === DIFFERENCE_INCREASE && value > 0) || (name === DIFFERENCE_DECREASE && value < 0)
-    )
-    if (!formattedValues) return null
-    const { value, payload: linePayload, color, unit } = formattedValues || {}
+
+    const { value, color, unit } = difference || {}
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
           <li className={styles.tooltipValue}>
             <span className={styles.tooltipValueDot} style={{ color }}></span>
-            {formatTooltipValue(value as number, linePayload, unit as string)}
+            {formatTooltipValue(value as number, unit as string)}
           </li>
         </ul>
       </div>
@@ -120,64 +132,51 @@ const AnalysisGraphTooltip = (props: any) => {
 }
 
 const AnalysisPeriodComparisonGraph: React.FC<{
-  graphData: any
+  graphData: ComparisonGraphProps
   start: string
   end: string
 }> = (props) => {
   const { start, end } = props
-  const { interval = '10days' } = props.graphData
+  const { interval, timeseries, sublayers } = props.graphData
 
   const unit = useMemo(() => {
-    return props.graphData?.[0].sublayers[0].unit
-  }, [props.graphData])
+    return sublayers[0].legend.unit
+  }, [sublayers])
 
-  const baseline = (props.graphData?.[0].timeseries as GraphData[])?.map((time) => ({
-    date: new Date(time.date).getTime(),
+  const baseline = timeseries?.map(({ date }) => ({
+    date: new Date(date).getTime(),
     value: 0,
   }))
 
   const difference = useMemo(() => {
-    return (props.graphData?.[0].timeseries as GraphData[])?.map(({ date, min, max }) => {
+    return timeseries?.map(({ date, compareDate, min, max }) => {
       const avgBaseline = min[0] + max[0] / 2
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - avgBaseline
       return {
         date: new Date(date).getTime(),
+        ...{ compareDate: compareDate ? new Date(compareDate).getTime() : {} },
         valueIncrease: difference >= 0 ? difference : 0,
         valueDecrease: difference < 0 ? difference : 0,
       }
     })
-  }, [props.graphData])
+  }, [timeseries])
 
   const range = useMemo(() => {
-    return (props.graphData?.[0].timeseries as GraphData[])?.map(({ date, min, max }, index) => {
+    return timeseries?.map(({ date, compareDate, min, max }, index) => {
       const baseAvg = min[0] + max[0] / 2
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - baseAvg
-
       return {
         date: new Date(date).getTime(),
+        ...{ compareDate: compareDate ? new Date(compareDate).getTime() : {} },
         rangeDecrease: difference <= 0 ? [0, difference] : [0, 0],
         rangeIncrease: difference > 0 ? [0, difference] : [0, 0],
       }
     })
-  }, [props.graphData])
+  }, [timeseries])
 
   if (!range) return null
-  console.log(range)
-
-  const dataMin: number = range.length
-    ? (min(range.flatMap(({ rangeDecrease }) => rangeDecrease[0])) as number)
-    : 0
-  const dataMax: number = range.length
-    ? (max(range.flatMap(({ rangeIncrease }) => rangeIncrease[0])) as number)
-    : 0
-
-  const domainPadding = (dataMax - dataMin) / 8
-  const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin - domainPadding)),
-    Math.ceil(dataMax + domainPadding),
-  ]
 
   return (
     <div className={styles.graph}>
@@ -189,13 +188,12 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, start, interval)}
-            axisLine={paddedDomain[0] === 0}
             scale={'time'}
             type={'number'}
           />
           <YAxis
             scale="linear"
-            domain={paddedDomain}
+            // domain={paddedDomain}
             interval="preserveEnd"
             tickFormatter={tickFormatter}
             axisLine={false}

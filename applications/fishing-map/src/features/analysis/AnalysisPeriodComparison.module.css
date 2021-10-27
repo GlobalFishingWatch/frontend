@@ -3,9 +3,22 @@
   padding: var(--space-M);
 }
 
-.timeSelection {
+.graphContainer {
+  min-height: 28rem;
   display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeSelection {
+  width: 100%;
+  display: flex;
+  gap: var(--space-S);
   justify-content: space-between;
+}
+
+.timeSelection > div {
+  flex: 1;
 }
 
 .durationWrapper {
@@ -13,10 +26,11 @@
   align-items: flex-end;
 }
 
-.duration {
-  width: var(--size-L);
+.durationWrapper > div {
+  flex: 1;
 }
 
-.durationType {
-  width: 10rem;
+.durationWrapper .duration {
+  flex: unset;
+  width: 6rem;
 }

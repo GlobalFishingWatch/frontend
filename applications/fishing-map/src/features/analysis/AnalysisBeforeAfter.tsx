@@ -23,7 +23,7 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   return (
     <Fragment>
       <AnalysisDescription description={description} />
-      {/* 
+      {/*
         TODO: Draw graph using layersTimeseriesFiltered
       */}
       <div className={styles.container}>
