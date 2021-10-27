@@ -49,9 +49,10 @@ ENV PUBLIC_URL=$REACT_APP_PUBLIC_URL
 ENV REACT_APP_TMT_CONTACT_US_URL=$REACT_APP_TMT_CONTACT_US_URL
 
 # override node_modules inside image with
-# generated versions from the monorepo
-COPY ./node_modules/@globalfishingwatch /tmp/@globalfishingwatch
-RUN cp -r /tmp/@globalfishingwatch /app/node_modules/
+# generated versions from the monorepo if exists
+# IMPORTANT: README.md file should exists so this step does not fail
+COPY ./README.md ./node_modules/@globalfishingwatc[h] /tmp/@globalfishingwatch/
+RUN rm /tmp/@globalfishingwatch/README.md && cp -r /tmp/@globalfishingwatch /app/node_modules/
 ENV GENERATE_SOURCEMAP=${GENERATE_SOURCEMAP}
 
 RUN yarn build
