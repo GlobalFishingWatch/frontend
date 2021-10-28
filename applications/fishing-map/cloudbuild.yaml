@@ -9,12 +9,12 @@ steps:
         tar -zxf yarn-dependencies.tgz || exit 0
 
   - id: 'install-yarn'
-    name: node
+    name: node:14
     entrypoint: yarn
     args: ['install']
 
   - id: 'check-deps'
-    name: node
+    name: node:14
     entrypoint: yarn
     args: ['why', 'tslib']
 
@@ -30,7 +30,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node
+    name: node:14
     entrypoint: yarn
     args: ['nx', 'deploy', 'fishing-map', '--skip-nx-cache']
     env:
