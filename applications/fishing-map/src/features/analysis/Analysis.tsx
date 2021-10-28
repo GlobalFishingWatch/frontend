@@ -190,6 +190,9 @@ function Analysis() {
       {
         id: 'beforeAfter',
         title: t('analysis.beforeAfter', 'before/after'),
+        disabled: true,
+        tooltip: t('common.comingSoon', 'before/after'),
+        tooltipPlacement: 'top',
       },
     ],
     [t]
