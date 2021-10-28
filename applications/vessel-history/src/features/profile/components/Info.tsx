@@ -128,7 +128,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         vesselCallsign: vessel?.callsign,
         vesselGeartype: vessel?.geartype
       })}`,
-    [advancedSearch, email, query, searchContext, vessel?.callsign, vessel?.flag, vessel?.geartype, vessel?.imo, vessel?.mmsi, vessel?.shipname, vessel?.type, vesselId, vesselTmtId]
+    [advancedSearch, email, query, searchContext, vessel, vesselId, vesselTmtId]
   )
 
   const onContactUsClick = useCallback(() => {
@@ -140,7 +140,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         gfwId: vesselId
       }),
     })
-  }, [vesselProfileId, vesselTmtId])
+  }, [vesselId, vesselTmtId])
 
   return (
     <Fragment>
