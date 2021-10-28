@@ -7,7 +7,6 @@ steps:
       - |
         gsutil cp gs://frontend-cache-dependencies/cache/yarn-dependencies.tgz yarn-dependencies.tgz || exit 0
         tar -zxf yarn-dependencies.tgz || exit 0
-        ls -laht node_modules || exit 0
 
   - id: 'install-yarn'
     name: node:14
@@ -88,4 +87,4 @@ steps:
 
 timeout: 1800s
 options:
-  machineType: 'N1_HIGHCPU_8'
+  machineType: 'E2_HIGHCPU_8'
