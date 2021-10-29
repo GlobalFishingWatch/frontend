@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/vessel-history",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "homepage": "/",
@@ -16,7 +16,7 @@
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "4.0.0",
+    "@globalfishingwatch/api-client": "4.0.1",
     "@globalfishingwatch/api-types": "6.3.0",
     "@globalfishingwatch/data-transforms": "^1.4.1",
     "@globalfishingwatch/dataviews-client": "^14.0.0",
