@@ -104,13 +104,13 @@ const Profile: React.FC = (props): React.ReactElement => {
       }
     }
 
-    if (datasets.length > 0) {
+    if (datasets.length > 0 && !vessel) {
       fetchVessel()
       dispatch(resetFilters())
       dispatch(setHighlightedEvent(undefined))
       dispatch(setVoyageTime(undefined))
     }
-  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
+  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds, vessel])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
