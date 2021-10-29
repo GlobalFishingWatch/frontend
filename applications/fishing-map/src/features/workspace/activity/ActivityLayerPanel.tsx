@@ -110,7 +110,7 @@ function ActivityLayerPanel({
       { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
       { field: 'shiptype', label: t('vessel.shiptype', 'Ship type') },
       { field: 'origin', label: t('vessel.origin', 'Origin') },
-      { field: 'target_species', label: t('vessel.targetSpecies', 'Target species') },
+      { field: 'target_species', label: t('vessel.target_species', 'Target species') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
     ],
     [t]
