@@ -1,5 +1,23 @@
 # @globalfishingwatch/ui-components
 
+## 12.4.1
+
+### Patch Changes
+
+- 3ce0364b: VV-317 Fixed logo being cut when increasing logo size
+
+## 12.4.0
+
+### Minor Changes
+
+- 24642e15: ACTIVITY tab - add a red dot icon in the events that are matching highlight criteria
+
+## 12.3.1
+
+### Patch Changes
+
+- 39c43baa: Minor tweaks in Switch styles
+
 ## 12.3.0
 
 ### Minor Changes

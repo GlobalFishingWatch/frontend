@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 10.0.2
+
+### Patch Changes
+
+- b88273847: show user custom layers on top of basemap
+
 ## 10.0.1
 
 ### Patch Changes

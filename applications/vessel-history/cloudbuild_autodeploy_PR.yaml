@@ -18,7 +18,7 @@ steps:
         cp -r --remove-destination --parents -L ./node_modules/@globalfishingwatch ./applications/vessel-history
 
   # Build and Push production image to GCR
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'Build and Push production image to GCR'
     args:
       [
@@ -36,6 +36,8 @@ steps:
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--build-arg',
+        'REACT_APP_TMT_CONTACT_US_URL=$_REACT_APP_TMT_CONTACT_US_URL',
         '--target',
         'production',
         '-f',

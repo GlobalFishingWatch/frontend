@@ -11,6 +11,9 @@ import {
 import { stringify, parse } from 'qs'
 import { Dictionary } from '@reduxjs/toolkit'
 import { AppActions, AppState } from 'types/redux.types'
+import { initializeDataviews } from 'features/dataviews/dataviews.utils'
+import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import { fetchPsmaThunk } from 'features/psma/psma.slice'
 
 export const PATH_BASENAME =
   process.env.REACT_APP_WORKSPACE_ENV === 'production' ? '/vessel-viewer' : ''
@@ -26,7 +29,18 @@ export type ROUTE_TYPES = typeof HOME | typeof PROFILE | typeof SETTINGS
 const thunk = async (
   dispatch: Dispatch<AppActions | NavigationAction>,
   getState: StateGetter<AppState>
-) => null
+) => {
+  initializeDataviews(dispatch)
+}
+
+const thunkRegions = async (
+  dispatch: Dispatch<AppActions | NavigationAction>,
+  getState: StateGetter<AppState>
+) => {
+  thunk(dispatch, getState)
+  dispatch(fetchRegionsThunk())
+  dispatch(fetchPsmaThunk())
+}
 
 export const routesMap: RoutesMap = {
   [HOME]: {
@@ -35,7 +49,7 @@ export const routesMap: RoutesMap = {
   },
   [SETTINGS]: {
     path: '/settings',
-    thunk,
+    thunk: thunkRegions,
   },
   [LOGIN]: {
     path: '/login',
@@ -43,7 +57,7 @@ export const routesMap: RoutesMap = {
   },
   [PROFILE]: {
     path: '/profile/:dataset/:vesselID/:tmtID',
-    thunk,
+    thunk: thunkRegions,
   },
   [NOT_FOUND]: {
     path: '',

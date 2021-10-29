@@ -21,6 +21,8 @@ export type SupportedDatasetSchema =
   | 'origin'
   | 'vessel_type'
   | 'qf_detect'
+  | 'target_species'
+
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>

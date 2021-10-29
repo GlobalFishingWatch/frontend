@@ -5,7 +5,11 @@ import { selectFilters } from 'features/event-filters/filters.slice'
 import { ActivityEvent } from 'types/activity'
 import { Voyage, EventTypeVoyage } from 'types/voyage'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { selectEventsForTracks, selectFilteredEvents } from '../activity/vessels-activity.selectors'
+import {
+  RenderedEvent,
+  selectEventsForTracks,
+  selectFilteredEvents,
+} from '../activity/vessels-activity.selectors'
 
 export const selectVoyages = createSelector([selectEventsForTracks], (eventsForTrack) => {
   return eventsForTrack
@@ -22,7 +26,9 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
                     from: all[index - 1],
                     start: all[index - 1].end ?? all[index - 1].start,
                   }
-                : {}),
+                : {
+                    start: 0,
+                  }),
               type: EventTypeVoyage.Voyage,
               to: port,
               // Important: Substracting 1ms to not overlap with range of the previous voyage
@@ -40,10 +46,12 @@ export const selectVoyages = createSelector([selectEventsForTracks], (eventsForT
           start: last.to?.end ?? last.to?.start,
           timestamp: new Date().getTime(),
           type: EventTypeVoyage.Voyage,
+          end: new Date().getTime(),
         } as Voyage,
       ])
     })
     .flat()
+    .filter((voyage) => voyage.type === EventTypeVoyage.Voyage)
 })
 
 const eventTypePriority: Record<EventTypes | EventTypeVoyage, number> = {
@@ -57,7 +65,7 @@ const eventTypePriority: Record<EventTypes | EventTypeVoyage, number> = {
 
 export const selectFilteredEventsByVoyages = createSelector(
   [selectFilteredEvents, selectVoyages, selectFilters],
-  (filteredEvents, voyages, filters) => {
+  (filteredEvents, voyages, filters): (RenderedEvent | Voyage)[] => {
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
@@ -76,10 +84,8 @@ export const selectFilteredEventsByVoyages = createSelector(
     const filteredVoyages: Voyage[] = voyages
       .filter((voyage) => {
         if (
-          !interval.contains(DateTime.fromMillis((voyage.from?.start ?? 0) as number)) &&
-          !interval.contains(DateTime.fromMillis((voyage.from?.end ?? 0) as number)) &&
-          !interval.contains(DateTime.fromMillis((voyage.to?.start ?? 0) as number)) &&
-          !interval.contains(DateTime.fromMillis((voyage.to?.end ?? 0) as number))
+          !interval.contains(DateTime.fromMillis((voyage.start ?? 0) as number)) &&
+          !interval.contains(DateTime.fromMillis((voyage.end ?? new Date().getTime()) as number))
         ) {
           return false
         }
@@ -96,8 +102,10 @@ export const selectFilteredEventsByVoyages = createSelector(
         ...voyage,
         eventsQuantity: filteredEvents.filter(
           (event) =>
-            (voyage.start < event.start && voyage.end > event.start) ||
-            (voyage.start <= event.end && voyage.end >= event.end)
+            (voyage.start < (event.timestamp ?? event.start) &&
+              voyage.end > (event.timestamp ?? event.start)) ||
+            (voyage.start <= (event.timestamp ?? event.end) &&
+              voyage.end >= (event.timestamp ?? event.end))
         ).length,
       }))
 

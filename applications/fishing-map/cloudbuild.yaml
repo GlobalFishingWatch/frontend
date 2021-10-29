@@ -1,6 +1,6 @@
 steps:
   # Push production image to GCR
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'Build production image'
     args:
       [
@@ -48,7 +48,7 @@ steps:
         'test',
       ]
 
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'Build nginx server image'
     args:
       [

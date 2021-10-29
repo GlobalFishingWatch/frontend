@@ -1,7 +1,6 @@
 steps:
-  # Push build image to GCR
-  - name: 'gcr.io/kaniko-project/executor:latest'
-    id: 'build base image & push to GCR'
+  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+    id: 'Build base image & push to GCR'
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
@@ -18,6 +17,8 @@ steps:
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--build-arg',
+        'REACT_APP_TMT_CONTACT_US_URL=$_REACT_APP_TMT_CONTACT_US_URL',
         '--target',
         'base',
         '-f',

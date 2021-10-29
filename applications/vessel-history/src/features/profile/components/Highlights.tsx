@@ -173,7 +173,7 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
                         height={height}
                         itemCount={events.length}
                         itemData={events}
-                        itemSize={() => 79}
+                        itemSize={() => 60}
                       >
                         {({ index, style }) => {
                           const event = events[index]

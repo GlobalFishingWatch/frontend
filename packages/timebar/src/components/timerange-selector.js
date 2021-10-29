@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import classNames from 'classnames'
+import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
 import { getTime } from '../utils/internal-utils'
 import { getLast30Days } from '../utils'
-import DateSelector from './date-selector'
 import styles from './timerange-selector.module.css'
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24 - 1
@@ -12,12 +12,12 @@ const ONE_DAY_MS = 1000 * 60 * 60 * 24 - 1
 class TimeRangeSelector extends Component {
   constructor(props) {
     super(props)
-    const { start, end, absoluteStart, absoluteEnd } = props
+    const { start, end } = props
     this.state = {
-      startCanIncrement: start < end,
-      startCanDecrement: start > absoluteStart,
-      endCanIncrement: getTime(end) + ONE_DAY_MS < getTime(absoluteEnd),
-      endCanDecrement: end > start,
+      start,
+      end,
+      startValid: true,
+      endValid: true,
     }
   }
 
@@ -38,64 +38,52 @@ class TimeRangeSelector extends Component {
     onSubmit(newStart, newEnd)
   }
 
-  setUnit(which, allBounds, unit, offset) {
-    const prevDate = this.state[which]
-    const newDate = dayjs(prevDate).utc().add(offset, unit)
-
-    const bounds = allBounds[which]
-    let newDateMs = newDate.toDate().getTime()
-    newDateMs = Math.min(bounds.max, Math.max(bounds.min, newDateMs))
-
-    if (which === 'start') {
-      this.setState({
-        start: new Date(newDateMs),
-        startCanIncrement: newDateMs !== bounds.max,
-        startCanDecrement: newDateMs !== bounds.min,
-        endCanDecrement: newDateMs !== bounds.max,
-      })
-    } else {
-      this.setState({
-        end: new Date(newDateMs),
-        endCanIncrement: newDateMs !== bounds.max,
-        endCanDecrement: newDateMs !== bounds.min,
-        startCanIncrement: newDateMs !== bounds.min,
-      })
-    }
-  }
-
   last30days = () => {
     const { onSubmit, latestAvailableDataDate } = this.props
     const { start, end } = getLast30Days(latestAvailableDataDate)
     onSubmit(start, end)
   }
 
-  render() {
-    const { start, end, startCanIncrement, startCanDecrement, endCanIncrement, endCanDecrement } =
-      this.state
-    const { labels, absoluteStart, absoluteEnd } = this.props
+  onStartChange = (e) => {
+    this.setState({ startValid: e.target.validity.valid })
+    if (!e.target.value || e.target.value === '') return
+    const start = dayjs([e.target.value, 'T00:00:00.000Z'].join('')).utc().toISOString()
+    this.setState({
+      start,
+    })
+  }
+  onEndChange = (e) => {
+    this.setState({ endValid: e.target.validity.valid })
+    if (!e.target.value || e.target.value === '') return
+    const end = dayjs([e.target.value, 'T00:00:00.000Z'].join('')).utc().toISOString()
+    this.setState({
+      end,
+    })
+  }
 
+  render() {
+    const { start, end, startValid, endValid } = this.state
+    const { labels, absoluteStart, absoluteEnd } = this.props
     if (start === undefined) {
       return null
     }
 
     const bounds = {
       start: {
-        min: getTime(absoluteStart),
-        max: getTime(end) - ONE_DAY_MS,
+        min: dayjs(getTime(absoluteStart)).toISOString().slice(0, 10),
+        max: dayjs(getTime(end) - ONE_DAY_MS)
+          .toISOString()
+          .slice(0, 10),
       },
       end: {
-        min: getTime(start) + ONE_DAY_MS,
-        max: getTime(absoluteEnd),
+        min: dayjs(getTime(start) + ONE_DAY_MS)
+          .toISOString()
+          .slice(0, 10),
+        max: dayjs(getTime(absoluteEnd)).toISOString().slice(0, 10),
       },
     }
     const mStart = dayjs(start).utc()
     const mEnd = dayjs(end).utc()
-
-    let errorMessage = ''
-    if (!startCanDecrement) errorMessage = labels.errorEarlyStart
-    if (!endCanIncrement) errorMessage = labels.errorLatestEnd
-    if (!startCanIncrement && !endCanDecrement) errorMessage = labels.errorMinRange
-    if (!startCanDecrement && !endCanIncrement) errorMessage = labels.errorMaxRange
 
     return (
       <div className={styles.TimeRangeSelector}>
@@ -105,60 +93,27 @@ class TimeRangeSelector extends Component {
           <div className={styles.selectorsContainer}>
             <div className={styles.selectorGroup}>
               <span className={styles.selectorLabel}>{labels.start}</span>
-              <DateSelector
-                canIncrement={startCanIncrement}
-                canDecrement={startCanDecrement}
-                onChange={(offset) => {
-                  this.setUnit('start', bounds, 'day', offset)
-                }}
-                value={mStart.date()}
-              />
-              <DateSelector
-                canIncrement={startCanIncrement}
-                canDecrement={startCanDecrement}
-                onChange={(offset) => {
-                  this.setUnit('start', bounds, 'month', offset)
-                }}
-                value={mStart.format('MMM')}
-              />
-              <DateSelector
-                canIncrement={startCanIncrement}
-                canDecrement={startCanDecrement}
-                onChange={(offset) => {
-                  this.setUnit('start', bounds, 'year', offset)
-                }}
-                value={mStart.year()}
+              <InputDate
+                value={mStart.toISOString().slice(0, 10)}
+                onChange={this.onStartChange}
+                min={bounds.start.min}
+                max={bounds.start.max}
+                className={styles.input}
+                required
               />
             </div>
             <div className={styles.selectorGroup}>
               <span className={styles.selectorLabel}>{labels.end}</span>
-              <DateSelector
-                canIncrement={endCanIncrement}
-                canDecrement={endCanDecrement}
-                onChange={(offset) => {
-                  this.setUnit('end', bounds, 'day', offset)
-                }}
-                value={mEnd.date()}
-              />
-              <DateSelector
-                canIncrement={endCanIncrement}
-                canDecrement={endCanDecrement}
-                onChange={(offset) => {
-                  this.setUnit('end', bounds, 'month', offset)
-                }}
-                value={mEnd.format('MMM')}
-              />
-              <DateSelector
-                canIncrement={endCanIncrement}
-                canDecrement={endCanDecrement}
-                onChange={(offset) => {
-                  this.setUnit('end', bounds, 'year', offset)
-                }}
-                value={mEnd.year()}
+              <InputDate
+                value={mEnd.toISOString().slice(0, 10)}
+                onChange={this.onEndChange}
+                min={bounds.end.min}
+                max={bounds.end.max}
+                className={styles.input}
+                required
               />
             </div>
           </div>
-          <span className={styles.errorMessage}>{errorMessage}</span>
           <div className={styles.actions}>
             <button
               type="button"
@@ -169,7 +124,7 @@ class TimeRangeSelector extends Component {
             </button>
             <button
               type="button"
-              className={styles.cta}
+              className={classNames(styles.cta, { [styles.disabled]: !startValid || !endValid })}
               onClick={() => {
                 this.submit(start, end)
               }}
@@ -197,10 +152,6 @@ TimeRangeSelector.propTypes = {
     end: PropTypes.string,
     last30days: PropTypes.string,
     done: PropTypes.string,
-    errorEarlyStart: PropTypes.string,
-    errorLatestEnd: PropTypes.string,
-    errorMinRange: PropTypes.string,
-    errorMaxRange: PropTypes.string,
   }),
 }
 
@@ -211,10 +162,6 @@ TimeRangeSelector.defaultProps = {
     end: 'end',
     last30days: 'Last 30 days',
     done: 'done',
-    errorEarlyStart: 'Your start date is the earliest date with data available',
-    errorLatestEnd: 'Your end date is the latest date with data available',
-    errorMinRange: 'Your start and end date must be at least one day apart',
-    errorMaxRange: 'Your time range is the maximum range with data available',
   },
 }
 

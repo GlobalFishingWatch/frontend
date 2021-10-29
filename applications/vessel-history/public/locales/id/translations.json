@@ -248,7 +248,8 @@
       "1": "previously listed",
       "2": "currently listed"
     },
-    "authorizations": "authorizations"
+    "authorizations": "authorizations",
+    "rmfoRegistry": "RFMO Registry"
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"

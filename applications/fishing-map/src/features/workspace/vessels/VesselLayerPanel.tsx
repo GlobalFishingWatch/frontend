@@ -7,6 +7,7 @@ import {
   DatasetTypes,
   ResourceStatus,
   DataviewDatasetConfigParam,
+  Resource,
 } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
@@ -48,8 +49,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     dataview,
     DatasetTypes.Tracks
   )
-  const infoResource = useSelector(selectResourceByUrl<Vessel>(infoUrl))
-  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
+  const trackResource: Resource<Segment[]> = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
@@ -250,21 +251,31 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
-        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+        <div
+          className={cx('print-hidden', styles.actions, styles.hideUntilHovered, {
+            [styles.active]: layerActive,
+          })}
+        >
           <Fragment>
             {gfwUser && (
               <IconButton
                 icon="download"
                 tooltip={t('download.trackAction', 'Download vessel track')}
+                tooltipPlacement="top"
                 onClick={onDownloadClick}
                 size="small"
               />
             )}
             {layerActive && !infoLoading && TrackIconComponent}
-            {infoResource && InfoIconComponent}
             <Remove dataview={dataview} />
           </Fragment>
+          {infoResource && InfoIconComponent}
         </div>
+        <IconButton
+          icon="more"
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
     </div>
   )

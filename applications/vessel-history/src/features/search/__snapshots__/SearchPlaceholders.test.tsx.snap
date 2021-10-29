@@ -31,7 +31,15 @@ exports[`<SearchNoResultsState /> shows SearchNoResultsState 1`] = `
         src="vessel-side@2x.png"
       />
       <p>
-        Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign
+        Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or 
+        <a
+          href=""
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          contact us
+        </a>
+         if you still can’t find it.
       </p>
     </div>
   </div>

@@ -122,7 +122,8 @@
     "loadMore": "Charger plus",
     "mergeSelectedVessels": "Fusionner les navires sélectionnés",
     "MMSI": "MMSI",
-    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or <2>contact us</2> if you still can’t find it.",
+    "noMore": "Aucun résultat supplémentaire",
+    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser Nom, MMSI, OMI ou Indicatif ou <2>contactez-nous</2> si vous ne le trouvez toujours pas.",
     "notAllowed": "Recherche non autorisée",
     "seeVessel": "Voir le navire",
     "shipname": "Nom de navire",
@@ -248,7 +249,8 @@
       "1": "listé précédemment",
       "2": "actuellement listée"
     },
-    "authorizations": "autorisations"
+    "authorizations": "autorisations",
+    "rmfoRegistry": "Registre des ORGP"
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"

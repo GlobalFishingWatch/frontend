@@ -1,9 +1,12 @@
 import React, { useCallback } from 'react'
+import cx from 'classnames'
 import { uniqBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EventType } from '@globalfishingwatch/api-types'
+import { Switch } from '@globalfishingwatch/ui-components'
+import { SwitchEvent } from '@globalfishingwatch/ui-components/dist/switch'
 import { EVENTS_COLORS } from 'data/config'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
@@ -29,10 +32,9 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
     eventDatasets && eventDatasets?.length > 0 && dataviews.some((d) => d.config?.visible)
 
   const onEventChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const checked = event.target.checked
-      const eventTypeChanged = event.target.id as EventType
-      if (checked) {
+    (event: SwitchEvent) => {
+      const eventTypeChanged = event.currentTarget.id as EventType
+      if (!event.active) {
         const visibleEvents =
           currentVisibleEvents === 'all'
             ? allEventTypes.filter((eventType) => eventType !== eventTypeChanged)
@@ -64,24 +66,24 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
         {eventDatasets.map((dataset) => {
           const eventType = dataset.configuration?.type
           if (!eventType) return null
+          const active =
+            currentVisibleEvents === 'all'
+              ? true
+              : currentVisibleEvents === 'none'
+              ? false
+              : currentVisibleEvents.includes(eventType)
+
           return (
             <li
               key={dataset.id}
-              className={layerStyles.eventsLegend}
-              style={{ color: EVENTS_COLORS[eventType] }}
+              className={cx(layerStyles.eventsLegend, { [layerStyles.active]: active })}
             >
-              <input
+              <Switch
+                active={active}
+                onClick={onEventChange}
                 id={eventType}
-                type="checkbox"
-                onChange={onEventChange}
-                className={layerStyles.eventLegendCheckbox}
-                checked={
-                  currentVisibleEvents === 'all'
-                    ? true
-                    : currentVisibleEvents === 'none'
-                    ? false
-                    : currentVisibleEvents.includes(eventType)
-                }
+                color={EVENTS_COLORS[eventType]}
+                className={layerStyles.eventsLegendSwitch}
               />
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
                 {upperFirst(t(`event.${eventType}` as any, eventType))}

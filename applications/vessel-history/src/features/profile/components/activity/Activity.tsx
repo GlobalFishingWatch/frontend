@@ -1,14 +1,15 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { Fragment, useCallback, useState } from 'react'
+import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import {
+  RenderedEvent,
+  selectHighlightEventIds,
+} from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
-import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
@@ -26,8 +27,6 @@ interface ActivityProps {
 }
 
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
-  const dispatch = useDispatch()
-
   const { eventsLoading, events, toggleVoyage } = useVoyagesConnect()
 
   const [isModalOpen, setIsOpen] = useState(false)
@@ -39,6 +38,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
+  const highlightsIds = useSelector(selectHighlightEventIds)
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
@@ -61,10 +61,6 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
     [highlightEvent, highlightVoyage, props, setMapCoordinates, viewport.zoom]
   )
   const isGFWVessel = useSelector(selectVesselId)
-  useEffect(() => {
-    dispatch(fetchRegionsThunk())
-    dispatch(fetchPsmaThunk())
-  }, [dispatch])
 
   return (
     <div className={styles.activityContainer}>
@@ -93,6 +89,9 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
                           <ActivityItem
                             key={index}
                             event={event}
+                            highlighted={
+                              event.type !== EventTypeVoyage.Voyage && highlightsIds[event.id]
+                            }
                             onToggleClick={toggleVoyage}
                             onMapClick={selectEventOnMap}
                             onInfoClick={openModal}

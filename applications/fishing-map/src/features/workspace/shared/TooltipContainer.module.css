@@ -22,20 +22,19 @@
   cursor: pointer;
 }
 
-.tooltipArrow,
-.tooltipArrow::before {
-  position: absolute;
-  left: -2px;
-  width: 8px;
-  height: 8px;
+.tooltipArrow {
+  position: relative;
   z-index: -1;
-  background-color: var(--color-white);
 }
 
 .tooltipArrow::before {
+  position: absolute;
+  background-color: var(--color-white);
+  width: 0.8rem;
+  height: 0.8rem;
+  top: -0.3rem;
+  left: -0.5rem;
   content: '';
-  border-left: var(--border);
-  border-bottom: var(--border);
+  border: var(--border);
   transform: rotate(45deg);
-  background: var(--color-white);
 }
