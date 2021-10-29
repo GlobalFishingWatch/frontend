@@ -158,8 +158,8 @@ const AnalysisPeriodComparisonGraph: React.FC<{
     return timeseries?.map(({ date, compareDate, min, max }) => {
       const avgBaseline = min[0] + max[0] / 2
       return {
-        date: new Date(date).getTime(),
-        ...{ compareDate: compareDate ? new Date(compareDate).getTime() : {} },
+        date: DateTime.fromISO(date).toUTC().toMillis(),
+        ...{ compareDate: compareDate ? DateTime.fromISO(compareDate).toUTC().toMillis() : {} },
         value: avgBaseline,
         ceros: 0,
       }
@@ -172,8 +172,8 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - avgBaseline
       return {
-        date: new Date(date).getTime(),
-        ...{ compareDate: compareDate ? new Date(compareDate).getTime() : {} },
+        date: DateTime.fromISO(date).toUTC().toMillis(),
+        ...{ compareDate: compareDate ? DateTime.fromISO(compareDate).toUTC().toMillis() : {} },
         valueIncrease: difference >= 0 ? difference : 0,
         valueDecrease: difference < 0 ? difference : 0,
       }
@@ -186,8 +186,8 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - baseAvg
       return {
-        date: new Date(date).getTime(),
-        ...{ compareDate: compareDate ? new Date(compareDate).getTime() : {} },
+        date: DateTime.fromISO(date).toUTC().toMillis(),
+        ...{ compareDate: compareDate ? DateTime.fromISO(compareDate).toUTC().toMillis() : {} },
         rangeDecrease: difference <= 0 ? [0, difference] : [0, 0],
         rangeIncrease: difference > 0 ? [0, difference] : [0, 0],
       }
@@ -202,7 +202,10 @@ const AnalysisPeriodComparisonGraph: React.FC<{
         <ComposedChart data={range} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[new Date(start).getTime(), new Date(end).getTime()]}
+            domain={[
+              DateTime.fromISO(start).toUTC().toMillis(),
+              DateTime.fromISO(end).toUTC().toMillis(),
+            ]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, start, interval)}
