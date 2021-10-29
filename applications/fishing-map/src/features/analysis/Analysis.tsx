@@ -182,6 +182,8 @@ function Analysis() {
         id: 'correlation',
         title: t('analysis.correlation', 'correlation'),
         disabled: true,
+        tooltip: t('common.comingSoon', 'Coming Soon'),
+        tooltipPlacement: 'top',
       },
       {
         id: 'periodComparison',
@@ -191,7 +193,7 @@ function Analysis() {
         id: 'beforeAfter',
         title: t('analysis.beforeAfter', 'before/after'),
         disabled: true,
-        tooltip: t('common.comingSoon', 'before/after'),
+        tooltip: t('common.comingSoon', 'Coming Soon'),
         tooltipPlacement: 'top',
       },
     ],
