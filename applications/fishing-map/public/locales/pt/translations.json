@@ -378,7 +378,7 @@
     "registeredGearType": "Tipo de petrecho registrado",
     "shiptype": "Tipo de embarcação",
     "source": "Fonte",
-    "target_species": "Espécie alvo",
+    "target_species": "Target species",
     "transmission_other": "Transmissões",
     "unkwownVesselByGeartype": "{{gearType}} desconhecido",
     "vesselType_other": "Tipos de embarcação",
