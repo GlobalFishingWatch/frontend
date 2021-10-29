@@ -296,17 +296,20 @@ export const useFilteredTimeSeries = () => {
 
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
+  const removePadding = (timeseries?: AnalysisGraphProps[]) => {
+    return timeseries?.map((timeserie) => {
+      return {
+        ...timeserie,
+        timeseries: timeserie.timeseries?.filter(
+          (time) => time.min[0] !== 0 || time.min[1] !== 0 || time.max[0] !== 0 || time.max[1] !== 0
+        ),
+      }
+    })
+  }
+
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
-      return timeseries?.map((timeserie) => {
-        return {
-          ...timeserie,
-          timeseries: timeserie.timeseries?.filter(
-            (time) =>
-              time.min[0] !== 0 || time.min[1] !== 0 || time.max[0] !== 0 || time.max[1] !== 0
-          ),
-        }
-      })
+      return removePadding(timeseries)
     } else {
       if (timebarStart && timebarEnd && timeseries) {
         return filterByTimerange(timeseries, timebarStart, timebarEnd)
@@ -440,14 +443,15 @@ const parseFullISODate = (d: string) => DateTime.fromISO(d).toUTC()
 const parseYYYYMMDDDate = (d: string) => DateTime.fromISO(d).setZone('utc', { keepLocalTime: true })
 
 export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisType) => {
-  const timeComparison = useSelector(selectAnalysisTimeComparison)
   const { dispatchQueryParams } = useLocationConnect()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const durationType = timeComparison?.durationType || 'months'
+  const duration = timeComparison?.duration
 
   useEffect(() => {
     const baseStart = timebarStart || DEFAULT_WORKSPACE.availableEnd
     const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
-    const durationType = timeComparison?.durationType || 'months'
     const duration = DateTime.fromISO(baseEnd).diff(DateTime.fromISO(baseStart), ['days', 'months'])
     const initialStart = parseFullISODate(baseStart).minus({ years: 1 }).toISO()
     const initialCompareStart = baseStart
@@ -512,22 +516,22 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
   const onDurationChange = useCallback(
     (e) => {
       if (
-        (timeComparison?.durationType === 'months' && e.target.value > MAX_MONTHS_TO_COMPARE) ||
-        (timeComparison?.durationType === 'days' && e.target.value > MAX_DAYS_TO_COMPARE)
+        (durationType === 'months' && e.target.value > MAX_MONTHS_TO_COMPARE) ||
+        (durationType === 'days' && e.target.value > MAX_DAYS_TO_COMPARE)
       )
         return
       update({ newDuration: e.target.value })
     },
-    [timeComparison?.durationType, update]
+    [durationType, update]
   )
 
   const onDurationTypeSelect = useCallback(
     (option) => {
-      if (option.id === 'months' && timeComparison?.duration > MAX_MONTHS_TO_COMPARE)
+      if (option.id === 'months' && duration > MAX_MONTHS_TO_COMPARE)
         update({ newDurationType: option.id, newDuration: MAX_MONTHS_TO_COMPARE })
       else update({ newDurationType: option.id })
     },
-    [timeComparison?.duration, update]
+    [duration, update]
   )
 
   const durationTypeOption = useMemo(() => {

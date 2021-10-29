@@ -224,14 +224,14 @@ const MapControls = ({
                   ></button>
                 </Tooltip>
               )}
-              <IconButton
-                type="map-tool"
-                tooltip={t('map.loading', 'Loading')}
-                loading={mapLoading}
-                className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
-              />
             </Fragment>
           )}
+          <IconButton
+            type="map-tool"
+            tooltip={t('map.loading', 'Loading')}
+            loading={mapLoading}
+            className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
+          />
         </div>
       </div>
       <Modal
