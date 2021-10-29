@@ -107,7 +107,6 @@ const formatDate = (date: DateTime, timeChunkInterval: Interval) => {
 
 const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
-  console.log(props)
 
   if (label && active && payload.length > 0 && payload.length) {
     const baseline = payload.find(({ name }) => name === BASELINE)
