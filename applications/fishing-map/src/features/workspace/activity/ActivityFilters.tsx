@@ -213,7 +213,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
             key={id}
             disabled={disabled}
             disabledMsg={tooltip}
-            label={t(`vessel.${id}` as any)}
+            label={t(`vessel.${id}` as any, id)}
             placeholder={getPlaceholderBySelections(optionsSelected)}
             options={options}
             selectedOptions={optionsSelected}
