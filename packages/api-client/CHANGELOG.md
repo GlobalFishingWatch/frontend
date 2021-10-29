@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 4.0.1
+
+### Patch Changes
+
+- de736c1e: support geartype and target_species in advance search
+
 ## 4.0.0
 
 ### Patch Changes

@@ -38,3 +38,15 @@
   color: var(--color-white);
   opacity: var(--opacity-secondary);
 }
+
+.helpHintLeft {
+  position: absolute;
+  top: calc(50% - 1rem);
+  left: calc(50% - 1rem);
+}
+
+.helpHintRight {
+  position: absolute;
+  top: calc(50% + 1rem);
+  left: calc(50% + 1rem);
+}

@@ -14,6 +14,8 @@ export const LANDMASS_OFFLINE_GEOJSON = `${
   process.env.PUBLIC_URL ?? ''
 }/data/ne_10m_admin_0_countries_gj.geojson`
 
+export const TMT_CONTACT_US_URL = process.env.REACT_APP_TMT_CONTACT_US_URL
+
 export const ENCOUNTERS_MIN_DURATION = 2
 export const ENCOUNTERS_MAX_DURATION = 99
 export const FISHING_EVENTS_MIN_DURATION = 0

@@ -21,6 +21,8 @@ export type SupportedDatasetSchema =
   | 'origin'
   | 'vessel_type'
   | 'qf_detect'
+  | 'target_species'
+
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
@@ -189,10 +191,18 @@ export const getSchemaFieldsSelectedInDataview = (
   return optionsSelected
 }
 
+export type SchemaFilter = {
+  id: SupportedDatasetSchema
+  active: boolean
+  disabled: boolean
+  options: ReturnType<typeof getCommonSchemaFieldsInDataview>
+  optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
+  tooltip: string
+}
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
-) => {
+): SchemaFilter => {
   const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)
   const datasetsWithSchemaIds = datasetsWithSchema?.map(({ id }) => id)
   const active = dataview.config?.datasets?.some((dataset: string) =>
@@ -200,7 +210,7 @@ export const getFiltersBySchema = (
   )
 
   const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)
-  const disabled = datasetsWithoutSchema && datasetsWithoutSchema.length > 0
+  const disabled = datasetsWithoutSchema !== undefined && datasetsWithoutSchema.length > 0
 
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
 
@@ -214,5 +224,5 @@ export const getFiltersBySchema = (
         defaultValue: 'Not supported by {{list}}',
       })
     : ''
-  return { active, disabled, options, optionsSelected, tooltip }
+  return { id: schema, active, disabled, options, optionsSelected, tooltip }
 }

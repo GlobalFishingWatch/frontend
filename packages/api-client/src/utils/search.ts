@@ -7,6 +7,8 @@ export type AdvancedSearchQueryFieldKey =
   | 'imo'
   | 'callsign'
   | 'flag'
+  | 'geartype'
+  | 'target_species'
   | 'fleet'
   | 'origin'
   | 'lastTransmissionDate'
@@ -39,6 +41,14 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   },
   callsign: {
     operator: '=',
+  },
+  geartype: {
+    operator: 'IN',
+    transformation: multiSelectOptionToQuery,
+  },
+  target_species: {
+    operator: 'IN',
+    transformation: multiSelectOptionToQuery,
   },
   flag: {
     operator: 'IN',

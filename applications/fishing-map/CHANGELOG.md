@@ -1,5 +1,18 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.71
+
+### Patch Changes
+
+- Updated dependencies [de736c1e]
+  - @globalfishingwatch/api-client@4.0.1
+
+## 1.1.70
+
+### Patch Changes
+
+- 48c18a7d: support custom style
+
 ## 1.1.69
 
 ### Patch Changes
