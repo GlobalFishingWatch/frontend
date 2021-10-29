@@ -192,7 +192,7 @@ export const getSchemaFieldsSelectedInDataview = (
 }
 
 export type SchemaFilter = {
-  id: string
+  id: SupportedDatasetSchema
   active: boolean
   disabled: boolean
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
