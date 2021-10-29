@@ -95,8 +95,3 @@
 .printBtn {
   margin-right: var(--space-S);
 }
-
-.disabled {
-  pointer-events: none;
-  opacity: 0.5;
-}
