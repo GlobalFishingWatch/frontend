@@ -34,10 +34,16 @@ export type WorkspaceState = {
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string
 }
+
+export type RedirectParam = {
+  'access-token'?: string
+}
+
 export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   Partial<WorkspaceMergeVessels> &
-  WorkspaceState
+  WorkspaceState &
+  RedirectParam
 
 export type CoordinatePosition = {
   latitude: number
