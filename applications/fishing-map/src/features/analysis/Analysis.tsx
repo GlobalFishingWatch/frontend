@@ -11,7 +11,7 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-in
 import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect, useLoginRedirect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData, isGFWUser } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -73,6 +73,7 @@ function Analysis() {
   const userData = useSelector(selectUserData)
   const guestUser = useSelector(isGuestUser)
   const analysisType = useSelector(selectAnalysisTypeQuery)
+  const gfwUser = useSelector(isGFWUser)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
@@ -189,6 +190,7 @@ function Analysis() {
       {
         id: 'beforeAfter',
         title: t('analysis.beforeAfter', 'before/after'),
+        disabled: true,
       },
     ],
     [t]
@@ -243,14 +245,16 @@ function Analysis() {
         </div>
       </div>
 
-      <div>
-        <Choice
-          options={ANALYSIS_TYPE_OPTIONS}
-          className={cx('print-hidden', styles.typeChoice)}
-          activeOption={analysisType}
-          onOptionClick={onAnalysisTypeClick}
-        />
-      </div>
+      {gfwUser && (
+        <div>
+          <Choice
+            options={ANALYSIS_TYPE_OPTIONS}
+            className={cx('print-hidden', styles.typeChoice)}
+            activeOption={analysisType}
+            onOptionClick={onAnalysisTypeClick}
+          />
+        </div>
+      )}
       <div>
         {analysisGeometry && (
           <p className={styles.placeholder}>
