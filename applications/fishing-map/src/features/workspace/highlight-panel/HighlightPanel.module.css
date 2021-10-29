@@ -20,6 +20,7 @@
   object-fit: cover;
   height: 18rem;
   width: 100%;
+  vertical-align: middle;
 }
 
 .content {

@@ -122,20 +122,20 @@
     "loadMore": "Cargar más",
     "mergeSelectedVessels": "Merge Selected Vessels",
     "MMSI": "MMSI",
-    "noMore": "No hay más resultados",
-    "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or <2>contact us</2> if you still can’t find it.",
     "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
     "seeVessel": "See Vessel",
     "shipname": "Name",
     "title": "Search",
+    "noMore": "No hay más resultados",
     "advanced": "advanced",
     "basic": "basic",
     "placeholder": "Search vessels by name, MMSI, IMO"
   },
   "selects": {
     "allSelected": "todos",
-    "selected": "seleccionado",
-    "none": "None"
+    "none": "None",
+    "selected": "seleccionado"
   },
   "settings": {
     "distancePort": "Distance from port",
@@ -156,6 +156,7 @@
       "title": "Fishing Events",
       "shortTitle": "Fishing"
     },
+    "greaterThan": "Greater than",
     "hours": "hours",
     "km": "km",
     "loiteringEvents": {
@@ -163,7 +164,6 @@
       "shortTitle": "Loitering"
     },
     "longerThan": "Longer than",
-    "greaterThan": "Greater than",
     "mpas": {
       "description": "Highlight all {{eventType}} that occurred inside an MPA. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the MPA. For example, if you select Galápagos and Ascension Island, you will see all {{eventType}} where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Galápagos OR Ascension Island MPA. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the MPA. Please invesitage highlighted event further on the map.",
       "label": "Events in these MPAs"
@@ -195,6 +195,7 @@
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",
     "authorization_plural": "autorizaciones",
+    "authorizationRangeHelp": "RFMO authorisations are based on available data. Dates may be approximations where RFMO authorised vessel lists, do not contain specific authorisation periods.",
     "callsign": "signatura",
     "encounteredVessel": "Encountered Vessel",
     "flag": "bandera",
@@ -211,6 +212,7 @@
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} anteriores",
     "readyForOfflineView": "RESPONSABLE PARA LA VISTA DE OFLINA",
     "remove": "Eliminar",
+    "rmfoRegistry": "RFMO Registry",
     "savedOn": "guardado en",
     "saveForOfflineView": "guardar buque para vista offline",
     "source": "fuente",
@@ -246,9 +248,7 @@
       "1": "previously listed",
       "2": "currently listed"
     },
-    "authorizations": "authorizations",
-    "rmfoRegistry": "RFMO Registry",
-    "authPeriod": "Authorization period"
+    "authorizations": "authorizations"
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"

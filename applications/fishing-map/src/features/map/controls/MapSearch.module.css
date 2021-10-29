@@ -50,3 +50,9 @@
 .highlighted {
   background-color: var(--color-terthiary-blue);
 }
+
+.helpHint {
+  position: absolute;
+  top: 50%;
+  left: 0;
+}

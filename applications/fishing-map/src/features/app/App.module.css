@@ -1,6 +1,7 @@
 :global(:root) {
   --print-width: 17in;
   --print-height: 10in;
+  --color-help: #fff8cd;
 }
 
 :global(.printing .print-hidden) {
