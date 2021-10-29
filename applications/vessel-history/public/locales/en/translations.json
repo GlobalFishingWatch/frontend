@@ -122,7 +122,6 @@
     "loadMore": "Load More",
     "mergeSelectedVessels": "Merge Selected Vessels",
     "MMSI": "MMSI",
-    "noMore": "No more results",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or <2>contact us</2> if you still can’t find it.",
     "notAllowed": "Search not allowed",
     "seeVessel": "See Vessel",
@@ -249,8 +248,7 @@
       "1": "previously listed",
       "2": "currently listed"
     },
-    "authorizations": "authorizations",
-    "rmfoRegistry": "RFMO Registry"
+    "authorizations": "authorizations"
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
