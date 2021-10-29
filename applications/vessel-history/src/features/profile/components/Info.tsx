@@ -53,8 +53,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   )
 
   useEffect(() => {
-    dispatchFetchOfflineVessel(vesselProfileId)
-  }, [vesselProfileId, dispatchFetchOfflineVessel])
+    if (!isMergedVesselsView) dispatchFetchOfflineVessel(vesselProfileId)
+  }, [vesselProfileId, dispatchFetchOfflineVessel, isMergedVesselsView])
 
   const onDeleteClick = async (data: OfflineVessel) => {
     const now = DateTime.now()
