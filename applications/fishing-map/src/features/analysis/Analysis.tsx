@@ -190,7 +190,7 @@ function Analysis() {
       {
         id: 'beforeAfter',
         title: t('analysis.beforeAfter', 'before/after'),
-        disabled: true,
+        disabled: false,
       },
     ],
     [t]

@@ -19,6 +19,8 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     onDurationChange,
     onDurationTypeSelect,
     durationTypeOption,
+    MIN_DATE,
+    MAX_DATE,
   } = useAnalysisTimeCompareConnect('periodComparison')
 
   const { description } = useAnalysisDescription(analysisAreaName, layersTimeseriesFiltered?.[0])
@@ -42,11 +44,15 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
             label={t('analysis.periodComparison1st', 'start of 1st period')}
             onChange={onStartChange}
             value={timeComparison.start}
+            min={MIN_DATE}
+            max={MAX_DATE}
           />
           <InputDate
             label={t('analysis.periodComparison2nd', 'start of 2nd period')}
             onChange={onCompareStartChange}
             value={timeComparison.compareStart}
+            min={timeComparison.start.slice(0, 10)}
+            max={MAX_DATE}
           />
           <div className={styles.durationWrapper}>
             <InputText
