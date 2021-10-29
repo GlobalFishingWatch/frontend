@@ -40,6 +40,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
+import { useMapStyle } from 'features/map/map.hooks'
 import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import * as AnalysisWorker from './Analysis.worker'
@@ -96,6 +97,7 @@ const filterByTimerange = (timeseries: AnalysisGraphProps[], start: string, end:
 
 export const useFilteredTimeSeries = () => {
   const map = useMapInstance()
+  const mapStyle = useMapStyle()
   const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
@@ -209,6 +211,21 @@ export const useFilteredTimeSeries = () => {
   const attachedListener = useRef<boolean>(false)
   const { areaId } = useSelector(selectAnalysisQuery)
 
+  const getActivityLayers = useCallback(
+    (style) => {
+      const activityLayersMeta = style.metadata.generatorsMetadata
+      const layers = Object.entries(activityLayersMeta).filter(([dataviewId]) => {
+        // We are not interested (yet) in non-activity layers for time comparison
+        return (
+          !showTimeComparison ||
+          (showTimeComparison && dataviewId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
+        )
+      })
+      return layers
+    },
+    [showTimeComparison]
+  )
+
   useEffect(() => {
     // Used to re-attach the idle listener on area change
     setTimeseries(undefined)
@@ -221,6 +238,23 @@ export const useFilteredTimeSeries = () => {
     attachedListener.current = false
   }, [analysisType, duration, durationType, start, compareStart])
 
+  // SetTimeseries with empty actual timeseries arrays, for the descriptions to populate
+  useEffect(() => {
+    if (mapStyle) {
+      const layersEntries = getActivityLayers(mapStyle)
+      if (layersEntries.length && !timeseries) {
+        const emptyTimeseries = layersEntries.map(([dataviewId, metadata]) => {
+          return {
+            timeseries: [],
+            interval: (metadata as any).timeChunks.interval,
+            sublayers: (metadata as any).sublayers,
+          }
+        })
+        setTimeseries(emptyTimeseries)
+      }
+    }
+  }, [mapStyle, getActivityLayers, timeseries])
+
   useEffect(() => {
     if (!map || attachedListener.current || !simplifiedGeometry) return
 
@@ -228,29 +262,20 @@ export const useFilteredTimeSeries = () => {
 
     const onMapIdle = (e: MapboxEvent) => {
       const style = (e.target as any).style.stylesheet
-      const activityLayersMeta = style.metadata.generatorsMetadata
-      const activityLayersWithFeatures = Object.entries(activityLayersMeta)
-        .filter(([dataviewId]) => {
-          // We are not interested (yet) in non-activity layers for time comparison
-          return (
-            !showTimeComparison ||
-            (showTimeComparison && dataviewId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
-          )
-        })
-        .map(([dataviewId, metadata]) => {
-          const chunks = (metadata as any).timeChunks as TimeChunks
-          const allChunksFeatures = chunks.chunks.flatMap((chunk: TimeChunk) => {
-            const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
-              sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
-            })
-            return sourceFeatures
+      const activityLayersWithFeatures = getActivityLayers(style).map(([dataviewId, metadata]) => {
+        const chunks = (metadata as any).timeChunks as TimeChunks
+        const allChunksFeatures = chunks.chunks.flatMap((chunk: TimeChunk) => {
+          const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
+            sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
           })
-          return {
-            id: dataviewId,
-            features: allChunksFeatures,
-            metadata,
-          }
+          return sourceFeatures
         })
+        return {
+          id: dataviewId,
+          features: allChunksFeatures,
+          metadata,
+        }
+      })
       if (activityLayersWithFeatures.length) {
         computeTimeseries(activityLayersWithFeatures, simplifiedGeometry as MultiPolygon)
         map.off('idle', onMapIdle)
@@ -266,6 +291,7 @@ export const useFilteredTimeSeries = () => {
     showTimeComparison,
     duration,
     durationType,
+    getActivityLayers,
   ])
 
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
@@ -286,8 +312,7 @@ export const useFilteredTimeSeries = () => {
         return filterByTimerange(timeseries, timebarStart, timebarEnd)
       }
     }
-  }, [showTimeComparison, timeseries, timebarStart, timebarEnd])
-
+  }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
   return layersTimeseriesFiltered
 }
 
@@ -439,15 +464,24 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
 
   const update = useCallback(
     ({ newStart, newCompareStart, newDuration, newDurationType }) => {
-      const start = newStart
-        ? parseYYYYMMDDDate(newStart).toISO()
-        : parseFullISODate(timeComparison.start).toISO()
       const compareStart = newCompareStart
         ? parseYYYYMMDDDate(newCompareStart).toISO()
         : parseFullISODate(timeComparison.compareStart as string).toISO()
 
       const duration = newDuration || timeComparison.duration
       const durationType = newDurationType || timeComparison.durationType
+
+      let start: string
+      if (analysisType === 'beforeAfter') {
+        // In before/after mode, start of 1st period is calculated automatically depending on start of 2nd period (compareStart)
+        start = parseYYYYMMDDDate(compareStart)
+          .minus({ [durationType]: duration })
+          .toISO()
+      } else {
+        start = newStart
+          ? parseYYYYMMDDDate(newStart).toISO()
+          : parseFullISODate(timeComparison.start).toISO()
+      }
 
       dispatchQueryParams({
         analysisTimeComparison: {
@@ -458,7 +492,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         },
       })
     },
-    [timeComparison, dispatchQueryParams]
+    [timeComparison, dispatchQueryParams, analysisType]
   )
 
   const onStartChange = useCallback(
@@ -470,8 +504,6 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
 
   const onCompareStartChange = useCallback(
     (e) => {
-      // TODO In before/after mode, set start automatically to compareStart - duration
-      // const newStart =
       update({ newCompareStart: e.target.value })
     },
     [update]

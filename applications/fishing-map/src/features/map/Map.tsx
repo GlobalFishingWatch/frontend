@@ -36,6 +36,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import Hint from 'features/help/hints/Hint'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -266,6 +267,8 @@ const MapWrapper = (): React.ReactElement | null => {
         </InteractiveMap>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
+      <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+      <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
     </div>
   )
 }

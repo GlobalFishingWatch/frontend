@@ -86,7 +86,8 @@
   },
   "resolutions": {
     "**/babel-loader": "8.1.0",
-    "gl-matrix": "3.3.0"
+    "gl-matrix": "3.3.0",
+    "reselect": "4.0.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

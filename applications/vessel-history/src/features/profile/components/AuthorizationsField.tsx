@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { Authorization } from '@globalfishingwatch/api-types/dist'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { I18nSpecialDate } from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselFieldLabel } from 'types/vessel'
@@ -86,7 +87,10 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
             label={label}
             columnHeaders={{
               field: t('vessel.rmfoRegistry', 'RMFO Registry'),
-              dates: t('vessel.authPeriod', 'Dates'),
+              dates: (<div>
+                {t('common.timeRange', 'time range')} 
+                <IconButton size="tiny" icon="info" tooltip={t('vessel.authorizationRangeHelp')}></IconButton>
+              </div>),
             }}
             history={authsHistory}
              isOpen={modalOpen}

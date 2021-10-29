@@ -14,7 +14,7 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const { onCompareStartChange, onDurationChange, onDurationTypeSelect, durationTypeOption } =
-    useAnalysisTimeCompareConnect('periodComparison')
+    useAnalysisTimeCompareConnect('beforeAfter')
 
   const { description } = useAnalysisDescription(analysisAreaName, layersTimeseriesFiltered?.[0])
 

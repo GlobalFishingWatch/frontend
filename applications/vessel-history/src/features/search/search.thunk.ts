@@ -45,7 +45,7 @@ export const getSerializedQuery = (query: string, advancedSearch?: Record<string
   return getAdvancedSearchQuery(fields)
 }
 
-const fetchData = async (
+export const fetchData = async (
   query: string,
   offset: number,
   signal?: AbortSignal | null,

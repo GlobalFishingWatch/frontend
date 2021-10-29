@@ -63,7 +63,7 @@ const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: M
         return { ...legend, label }
       })
   }, [legends, t, portalled])
-  if (!legends) return null
+  if (!legends || !legends.length) return null
   return (
     <div ref={containerRef} className={cx({ [styles.legendContainer]: !portalled })}>
       {legendsTranslated?.map((legend: LegendTranslated, i: number) => {
