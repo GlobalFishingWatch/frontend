@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { Trans, useTranslation } from 'react-i18next'
@@ -13,13 +13,17 @@ import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.sel
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { OfflineVessel, VesselFieldLabel } from 'types/vessel'
 import {
+  selectAdvancedSearchFields,
   selectDataset,
   selectTmtId,
   selectUrlAkaVesselQuery,
+  selectUrlQuery,
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.selectors'
+import { TMT_CONTACT_US_URL } from 'data/constants'
+import { selectUserData } from 'features/user/user.slice'
 import InfoField from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
@@ -102,6 +106,42 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   )
 
   const [imageLoading, setImageLoading] = useState(true)
+
+  const { email = '' } = useSelector(selectUserData) || { email: '' }
+  const query = useSelector(selectUrlQuery)
+  const advancedSearch = useSelector(selectAdvancedSearchFields)
+  const searchContext = useMemo(
+    () => `Vessel Viewer > Detail: ${vessel?.shipname}`
+  ,[vessel?.shipname])
+  const contactUsLink = useMemo(
+    () =>
+      `${TMT_CONTACT_US_URL}&email=${email}&usercontext=${searchContext}&data=${JSON.stringify({
+        name: query,
+        ...advancedSearch,
+        tmtMatchId: vesselTmtId,
+        gfwId: vesselId,
+        vesselName: vessel?.shipname,
+        vesselType: vessel?.type,
+        vesselFlag: vessel?.flag,
+        vesselMmsi: vessel?.mmsi,
+        vesselImo: vessel?.imo,
+        vesselCallsign: vessel?.callsign,
+        vesselGeartype: vessel?.geartype
+      })}`,
+    [advancedSearch, email, query, searchContext, vessel, vesselId, vesselTmtId]
+  )
+
+  const onContactUsClick = useCallback(() => {
+    uaEvent({
+      category: 'Vessel Detail INFO Tab',
+      action: 'Click Contact Us ',
+      label: JSON.stringify({
+        tmtMatchId: vesselTmtId,
+        gfwId: vesselId
+      }),
+    })
+  }, [vesselId, vesselTmtId])
+
   return (
     <Fragment>
       <div className={styles.infoContainer}>
@@ -320,6 +360,19 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               )}
             </Button>
           )}
+        </div>
+        <div className={styles.contactUs}>
+          <Trans i18nKey="vessel.contactUs">
+            <a
+              href={contactUsLink}
+              rel="noopener noreferrer"
+              target="_blank"
+              onClick={onContactUsClick}
+              >
+              contact us
+            </a>{' '}
+            if you have questions or would like more information about this vessel.
+          </Trans>
         </div>
         <Highlights onMoveToMap={props.onMoveToMap}></Highlights>
       </div>
