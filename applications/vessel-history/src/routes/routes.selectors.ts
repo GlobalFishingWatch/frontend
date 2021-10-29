@@ -136,6 +136,11 @@ export const selectHasSearch = createSelector(
 
 export const selectUrlAkaVesselQuery = selectQueryParam<string[]>('aka')
 
+export const selectMergedVesselId = createSelector(
+  [selectVesselId, selectUrlAkaVesselQuery],
+  (vesselId, akaVesselId) => [vesselId, akaVesselId].flat().join('|')
+)
+
 export const selectSearchableQueryParams = createSelector(
   [selectAdvancedSearchFields, selectUrlQuery],
   (filters, query) =>
