@@ -13,8 +13,14 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, analysisAreaName } = props
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
-  const { onCompareStartChange, onDurationChange, onDurationTypeSelect, durationTypeOption } =
-    useAnalysisTimeCompareConnect('beforeAfter')
+  const {
+    onCompareStartChange,
+    onDurationChange,
+    onDurationTypeSelect,
+    durationTypeOption,
+    MIN_DATE,
+    MAX_DATE,
+  } = useAnalysisTimeCompareConnect('beforeAfter')
 
   const { description } = useAnalysisDescription(analysisAreaName, layersTimeseriesFiltered?.[0])
 
@@ -33,6 +39,8 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
               label={t('analysis.beforeAfterDate', 'date')}
               onChange={onCompareStartChange}
               value={timeComparison.compareStart}
+              min={MIN_DATE}
+              max={MAX_DATE}
             />
           </div>
           <div className={styles.durationWrapper}>

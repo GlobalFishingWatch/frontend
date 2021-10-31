@@ -442,6 +442,9 @@ const parseFullISODate = (d: string) => DateTime.fromISO(d).toUTC()
 
 const parseYYYYMMDDDate = (d: string) => DateTime.fromISO(d).setZone('utc', { keepLocalTime: true })
 
+const MIN_DATE = DEFAULT_WORKSPACE.availableStart.slice(0, 10)
+const MAX_DATE = DEFAULT_WORKSPACE.availableEnd.slice(0, 10)
+
 export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisType) => {
   const { dispatchQueryParams } = useLocationConnect()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
@@ -545,5 +548,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
     onDurationChange,
     onDurationTypeSelect,
     durationTypeOption,
+    MIN_DATE,
+    MAX_DATE,
   }
 }
