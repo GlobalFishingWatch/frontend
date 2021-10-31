@@ -195,7 +195,7 @@
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",
     "authorization_plural": "autorizaciones",
-    "authorizationRangeHelp": "RFMO authorisations are based on available data. Dates may be approximations where RFMO authorised vessel lists, do not contain specific authorisation periods.",
+    "authorizationRangeHelp": "RFMO authorizations are based on available data. Dates may be approximations where RFMO authorized vessel lists, do not contain specific authorization periods.",
     "callsign": "signatura",
     "encounteredVessel": "Encountered Vessel",
     "flag": "bandera",
@@ -248,7 +248,8 @@
       "1": "previously listed",
       "2": "currently listed"
     },
-    "authorizations": "authorizations"
+    "authorizations": "authorizations",
+    "contactUs": "<0>Contact us</0> if you have questions or would like more information about this vessel."
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"
