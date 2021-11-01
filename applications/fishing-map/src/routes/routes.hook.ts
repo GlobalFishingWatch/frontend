@@ -3,8 +3,8 @@ import { useCallback, useEffect } from 'react'
 import { parse } from 'qs'
 import GFWAPI, { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { QueryParams } from 'types'
-import useLocalStorage from 'hooks/use-local-storage'
 import {
   selectCurrentLocation,
   selectLocationPayload,
