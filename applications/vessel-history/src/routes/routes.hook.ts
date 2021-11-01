@@ -1,9 +1,85 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
+import { parse } from 'qs'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import GFWAPI, { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
+import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { QueryParams } from 'types'
-import { selectCurrentLocation, selectLocationPayload } from 'routes/routes.selectors'
+import {
+  selectCurrentLocation,
+  selectLocationPayload,
+  selectLocationType,
+} from 'routes/routes.selectors'
 import { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
+
+export const CALLBACK_URL_KEY = 'CallbackUrl'
+export const CALLBACK_URL_PARAM = 'callbackUrlStorage'
+
+export const setRedirectUrl = () => {
+  window.localStorage.setItem(CALLBACK_URL_KEY, window.location.toString())
+}
+
+export const getLoginUrl = () => {
+  const { origin, pathname } = window.location
+  return GFWAPI.getLoginUrl(`${origin}${pathname}?${CALLBACK_URL_PARAM}=true`)
+}
+
+export const redirectToLogin = () => {
+  setRedirectUrl()
+  window.location.href = getLoginUrl()
+}
+
+export const useLoginRedirect = () => {
+  const [redirectUrl, setRedirectUrl] = useLocalStorage(CALLBACK_URL_KEY, '')
+
+  const saveRedirectUrl = useCallback(() => {
+    setRedirectUrl(window.location.toString())
+  }, [setRedirectUrl])
+
+  const onLoginClick = useCallback(() => {
+    saveRedirectUrl()
+    window.location.href = getLoginUrl()
+  }, [saveRedirectUrl])
+
+  const cleanRedirectUrl = useCallback(() => {
+    localStorage.removeItem(CALLBACK_URL_KEY)
+  }, [])
+
+  return { redirectUrl, onLoginClick, saveRedirectUrl, cleanRedirectUrl }
+}
+
+export const useReplaceLoginUrl = () => {
+  const { redirectUrl, cleanRedirectUrl } = useLoginRedirect()
+  const dispatch = useDispatch()
+  const locationPayload = useSelector(selectLocationPayload)
+  const locationType = useSelector(selectLocationType)
+
+  useEffect(() => {
+    const currentQuery = parse(window.location.search, { ignoreQueryPrefix: true })
+    const accessToken = currentQuery[ACCESS_TOKEN_STRING]
+    if (redirectUrl && currentQuery[CALLBACK_URL_PARAM]) {
+      const query = {
+        ...parseWorkspace(new URL(redirectUrl).search),
+        [ACCESS_TOKEN_STRING]: accessToken,
+      } as QueryParams
+
+      dispatch(
+        updateLocation(locationType, {
+          query,
+          payload: locationPayload,
+          replaceQuery: true,
+        })
+      )
+      cleanRedirectUrl()
+    }
+    return () => {
+      // ensures the localStorage is clean when the app is unmounted
+      cleanRedirectUrl()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+}
 
 export const useLocationConnect = () => {
   const dispatch = useDispatch()

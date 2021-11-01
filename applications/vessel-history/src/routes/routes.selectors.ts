@@ -13,6 +13,11 @@ export const selectCurrentLocation = createSelector([selectLocation], ({ type, r
   return { type: type as ROUTE_TYPES, ...routeMap }
 })
 
+export const selectLocationType = createSelector(
+  [selectLocation],
+  (location) => location.type as ROUTE_TYPES
+)
+
 export const selectLocationQuery = createSelector([selectLocation], (location) => {
   return location.query as Query
 })
