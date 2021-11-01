@@ -59,7 +59,7 @@ class UserContextGenerator {
           color: config.color,
           interactive,
           generatorId,
-          group: Group.OutlinePolygonsFill,
+          group: Group.CustomLayer,
           uniqueFeatureInteraction: true,
           legend: {
             type: 'colorramp',
@@ -101,7 +101,7 @@ class UserContextGenerator {
       metadata: {
         interactive,
         generatorId: generatorId,
-        group: Group.OutlinePolygonsFill,
+        group: Group.CustomLayer,
       },
     }
     return [lineLayer, interactionLayer]

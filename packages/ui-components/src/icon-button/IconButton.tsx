@@ -46,6 +46,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
     tooltip,
     tooltipPlacement = 'auto',
     children,
+    style,
     ...rest
   } = props
   let spinnerColor
@@ -67,6 +68,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
+        style={style}
         {...rest}
       >
         {loading ? (

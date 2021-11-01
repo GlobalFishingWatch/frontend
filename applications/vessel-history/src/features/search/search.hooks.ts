@@ -4,7 +4,7 @@ import { event as uaEvent } from 'react-ga'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { selectAdvancedSearchFields, selectUrlQuery } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchVesselSearchThunk } from './search.thunk'
+import { fetchData, fetchVesselSearchThunk } from './search.thunk'
 
 // Maximum number of vessels that can be merged
 const LIMIT_VESSELS_MERGE_TO = 3
@@ -80,9 +80,26 @@ export const useSearchConnect = (params: useSearchConnectParams = defaultParams)
     [onNewSearch, dispatch, query, advancedSearch]
   )
 
+  /**
+   * find a vessel by name, flag and mmsi using advance search and try to match the id
+   */
+  const findVessel = useCallback(
+    async (id, name, flag, ssvid) => {
+      // Ensure user is logged in before searching
+      dispatch(fetchUserThunk())
+      const vesselsFound = await fetchData(name, 0, null, {
+        mmsi: ssvid,
+        flags: [flag],
+      })
+      return vesselsFound?.vessels.find(vessel => vessel.id === id)
+    },
+    [dispatch]
+  )
+
   return {
     query,
     advancedSearch,
     fetchResults,
+    findVessel,
   }
 }

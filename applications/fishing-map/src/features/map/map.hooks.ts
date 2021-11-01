@@ -25,6 +25,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
+import { setHintDismissed } from 'features/help/hints/hints.slice'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -180,6 +181,7 @@ export const useClickedEventConnect = () => {
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
     if (fishingActivityFeatures?.length) {
+      dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
       fishingPromiseRef.current = dispatch(
         fetchFishingActivityInteractionThunk({ fishingActivityFeatures })
       )

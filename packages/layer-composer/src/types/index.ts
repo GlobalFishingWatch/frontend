@@ -48,6 +48,7 @@ export enum Group {
   OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
   OutlinePolygonsBackground = 'outlinePolygonsBackground', // Polygons  that need to be rendered below landmass
   OutlinePolygonsHighlighted = 'outlinePolygonsHighlighted', // Context layers with selected features
+  CustomLayer = 'customLayer', // Context custom user layers
   Default = 'default', // Default stack position when group is not specified
   Point = 'point', // Events, etc
   Track = 'track', // Tracks

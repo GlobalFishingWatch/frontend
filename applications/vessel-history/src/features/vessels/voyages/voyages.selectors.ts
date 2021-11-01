@@ -5,7 +5,11 @@ import { selectFilters } from 'features/event-filters/filters.slice'
 import { ActivityEvent } from 'types/activity'
 import { Voyage, EventTypeVoyage } from 'types/voyage'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { selectEventsForTracks, selectFilteredEvents } from '../activity/vessels-activity.selectors'
+import {
+  RenderedEvent,
+  selectEventsForTracks,
+  selectFilteredEvents,
+} from '../activity/vessels-activity.selectors'
 
 export const selectVoyages = createSelector([selectEventsForTracks], (eventsForTrack) => {
   return eventsForTrack
@@ -61,7 +65,7 @@ const eventTypePriority: Record<EventTypes | EventTypeVoyage, number> = {
 
 export const selectFilteredEventsByVoyages = createSelector(
   [selectFilteredEvents, selectVoyages, selectFilters],
-  (filteredEvents, voyages, filters) => {
+  (filteredEvents, voyages, filters): (RenderedEvent | Voyage)[] => {
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
@@ -98,8 +102,10 @@ export const selectFilteredEventsByVoyages = createSelector(
         ...voyage,
         eventsQuantity: filteredEvents.filter(
           (event) =>
-            (voyage.start < event.start && voyage.end > event.start) ||
-            (voyage.start <= event.end && voyage.end >= event.end)
+            (voyage.start < (event.timestamp ?? event.start) &&
+              voyage.end > (event.timestamp ?? event.start)) ||
+            (voyage.start <= (event.timestamp ?? event.end) &&
+              voyage.end >= (event.timestamp ?? event.end))
         ).length,
       }))
 

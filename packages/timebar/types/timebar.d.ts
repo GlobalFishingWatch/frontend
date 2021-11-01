@@ -64,10 +64,6 @@ declare namespace Timebar {
                 export { end_1 as end };
                 export const last30days: string;
                 export const done: string;
-                export const errorEarlyStart: string;
-                export const errorLatestEnd: string;
-                export const errorMinRange: string;
-                export const errorMaxRange: string;
             }
             namespace bookmark {
                 const goToBookmark: string;

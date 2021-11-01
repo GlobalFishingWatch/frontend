@@ -6,7 +6,6 @@ import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
 import settingsReducer from 'features/settings/settings.slice'
 import filtersReducer from 'features/event-filters/filters.slice'
-import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import mapReducer from './features/map/map.slice'
 import dataviewsReducer from './features/dataviews/dataviews.slice'
 import datasetsReducer from './features/datasets/datasets.slice'
@@ -82,8 +81,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
-
-// Only once when the app starts
-initializeDataviews(store.dispatch)
 
 export default store

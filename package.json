@@ -183,6 +183,26 @@
     "@globalfishingwatch/pbf": "*",
     "@globalfishingwatch/react-hooks": "*",
     "@globalfishingwatch/timebar": "*",
-    "@globalfishingwatch/ui-components": "*"
+    "@globalfishingwatch/ui-components": "*",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "resolutions": {
+    "**/babel-loader": "8.1.0",
+    "gl-matrix": "3.3.0",
+    "reselect": "4.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint -c ./.eslintrc.js --fix --resolve-plugins-relative-to ."
+    ],
+    "*.css": [
+      "prettier --write",
+      "stylelint --fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "stylelint --syntax=scss --fix"
+    ]
   }
 }

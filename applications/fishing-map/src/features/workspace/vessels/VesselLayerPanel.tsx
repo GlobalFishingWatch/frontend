@@ -7,6 +7,7 @@ import {
   DatasetTypes,
   ResourceStatus,
   DataviewDatasetConfigParam,
+  Resource,
 } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
 import { Segment } from '@globalfishingwatch/data-transforms'
@@ -47,8 +48,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     dataview,
     DatasetTypes.Tracks
   )
-  const infoResource = useSelector(selectResourceByUrl<Vessel>(infoUrl))
-  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
+  const trackResource: Resource<Segment[]> = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)

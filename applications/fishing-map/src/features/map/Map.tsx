@@ -39,6 +39,7 @@ import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
+import Hint from 'features/help/hints/Hint'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -47,7 +48,6 @@ import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-f
 import MapDraw from './MapDraw'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
-
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
@@ -308,6 +308,8 @@ const MapWrapper = (): React.ReactElement | null => {
         }
         return null
       })}
+      <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+      <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
     </div>
   )
 }

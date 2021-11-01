@@ -104,13 +104,13 @@ const Profile: React.FC = (props): React.ReactElement => {
       }
     }
 
-    if (datasets.length > 0) {
+    if (datasets.length > 0 && !vessel) {
       fetchVessel()
       dispatch(resetFilters())
       dispatch(setHighlightedEvent(undefined))
       dispatch(setVoyageTime(undefined))
     }
-  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
+  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds, vessel])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
@@ -182,6 +182,14 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
+  const [lastProfileId, setLastProfileId] = useState<string>('')
+
+  useEffect(() => {
+    if (lastProfileId !== vesselProfileId){
+      setLastProfileId(vesselProfileId)
+      setActiveTab(tabs[0])
+    }
+  }, [lastProfileId, tabs, vesselProfileId])
 
   const defaultPreviousNames = useMemo(() => {
     return `+${vessel?.history.shipname.byDate.length} previous ${t(

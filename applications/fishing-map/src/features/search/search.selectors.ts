@@ -5,17 +5,18 @@ import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
 import { filterDatasetsByUserType, getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { SearchType } from './search.slice'
 
 export const selectSearchDatasetsInWorkspace = createSelector(
-  [selectAllDataviewsInWorkspace, selectVesselsDatasets],
-  (dataviews, vesselsDatasets) => {
-    const datasets = getDatasetsInDataviews(dataviews)
-    return vesselsDatasets.filter(
-      (dataset) =>
-        datasets.includes(dataset.id) ||
-        dataset.relatedDatasets?.some((related) => datasets.includes(related.id))
-    )
+  [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],
+  (dataviews, vesselsDatasets, allDatasets) => {
+    const datasetsIds = getDatasetsInDataviews(dataviews)
+    const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
+      if (!datasetsIds.includes(id)) return []
+      return [id, ...(relatedDatasets || []).map((d) => d.id)]
+    })
+    return vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
   }
 )
 

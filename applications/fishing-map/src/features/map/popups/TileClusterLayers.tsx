@@ -71,12 +71,12 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
         ? eventsRelatedDatasets.map((d) => d.id)
         : []
 
-    if (infoDataset && trackDataset) {
+    if (infoDataset || trackDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(
         { id: vessel.id },
         {
-          trackDatasetId: trackDataset.id,
-          infoDatasetId: infoDataset.id,
+          trackDatasetId: trackDataset?.id,
+          infoDatasetId: infoDataset?.id,
           ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
         }
       )
@@ -141,12 +141,14 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                               <span className={styles.rowText}>
                                 {formatInfoField(event.vessel?.name, 'name')}
                               </span>
-                              <IconButton
-                                icon="pin"
-                                size="small"
-                                tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
-                                onClick={() => onPinClick(event.vessel as ExtendedEventVessel)}
-                              />
+                              {(event.vessel as ExtendedEventVessel).dataset && (
+                                <IconButton
+                                  icon="pin"
+                                  size="small"
+                                  tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+                                  onClick={() => onPinClick(event.vessel as ExtendedEventVessel)}
+                                />
+                              )}
                             </div>
                           </div>
                         )}
@@ -160,14 +162,16 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                                 <span className={styles.rowText}>
                                   {formatInfoField(event.encounter?.vessel?.name, 'name')}
                                 </span>
-                                <IconButton
-                                  icon="pin"
-                                  size="small"
-                                  tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
-                                  onClick={() =>
-                                    onPinClick(event.encounter?.vessel as ExtendedEventVessel)
-                                  }
-                                />
+                                {(event.vessel as ExtendedEventVessel).dataset && (
+                                  <IconButton
+                                    icon="pin"
+                                    size="small"
+                                    tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+                                    onClick={() =>
+                                      onPinClick(event.encounter?.vessel as ExtendedEventVessel)
+                                    }
+                                  />
+                                )}
                               </div>
                             </div>
                           </div>

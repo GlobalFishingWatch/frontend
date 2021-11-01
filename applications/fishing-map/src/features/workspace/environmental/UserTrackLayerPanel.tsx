@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { DatasetTypes, Resource, ResourceStatus } from '@globalfishingwatch/api-types'
 import { Tooltip, IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
@@ -58,7 +58,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
   const isCustomUserLayer = dataset?.ownerId === userId
 
   const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
-  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const trackResource: Resource<Segment[]> = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const trackError = trackResource?.status === ResourceStatus.Error
 
   const loading = trackResource?.status === ResourceStatus.Loading

@@ -13,6 +13,7 @@ import {
 import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
+import { setHintDismissed } from 'features/help/hints/hints.slice'
 import {
   Range,
   changeSettings,
@@ -65,12 +66,16 @@ export const TimeRangeAtom = atom<Range | null>({
 
 export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
+  const dispatch = useDispatch()
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
+      if (start !== timerange?.start || end !== timerange.end) {
+        dispatch(setHintDismissed('changingTheTimeRange'))
+      }
       setTimerange({ start, end })
     },
-    [setTimerange]
+    [dispatch, setTimerange, timerange?.end, timerange?.start]
   )
   return useMemo(() => {
     return {

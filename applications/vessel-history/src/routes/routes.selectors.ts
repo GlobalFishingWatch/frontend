@@ -41,7 +41,7 @@ export const selectVesselProfileId = createSelector(
 )
 
 export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
-  createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
+  createSelector([selectLocationQuery], (query: any): T => {
     if (query === undefined || query[param] === undefined) {
       return DEFAULT_WORKSPACE[param]
     }
@@ -135,6 +135,11 @@ export const selectHasSearch = createSelector(
 )
 
 export const selectUrlAkaVesselQuery = selectQueryParam<string[]>('aka')
+
+export const selectMergedVesselId = createSelector(
+  [selectVesselProfileId, selectUrlAkaVesselQuery],
+  (vesselProfileId, akaVesselId) => [vesselProfileId, ...(akaVesselId ?? [])].join('|')
+)
 
 export const selectSearchableQueryParams = createSelector(
   [selectAdvancedSearchFields, selectUrlQuery],

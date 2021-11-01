@@ -2,7 +2,7 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, uniqBy } from 'lodash'
 import { Dataview } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
@@ -25,6 +25,22 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
+  },
+  {
+    // IMPORTANT to prevent re fetching records that are already in our store
+    condition: (ids: number[], { getState }) => {
+      const { dataviews } = getState() as RootState
+      const fetchStatus = dataviews.status
+      const allRecordsLoaded = ids.every((id) => dataviews.ids.includes(id))
+      if (
+        (fetchStatus === AsyncReducerStatus.Finished && allRecordsLoaded) ||
+        fetchStatus === AsyncReducerStatus.Loading
+      ) {
+        // Already fetched or in progress, don't need to re-fetch
+        return false
+      }
+      return true
+    },
   }
 )
 export type ResourcesState = AsyncReducer<Dataview>

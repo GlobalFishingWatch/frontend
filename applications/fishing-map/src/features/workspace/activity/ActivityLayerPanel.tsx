@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -11,7 +11,9 @@ import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selec
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import Hint from 'features/help/hints/Hint'
+import { setHintDismissed } from 'features/help/hints/hints.slice'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -37,6 +39,7 @@ function ActivityLayerPanel({
   onToggle,
 }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
 
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -82,6 +85,7 @@ function ActivityLayerPanel({
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
+    dispatch(setHintDismissed('filterActivityLayers'))
   }
 
   const closeExpandedContainer = () => {
@@ -100,6 +104,20 @@ function ActivityLayerPanel({
       onToggle={onToggle}
     />
   )
+
+  const datasetFields: { field: SupportedDatasetSchema; label: string }[] = useMemo(
+    () => [
+      { field: 'qf_detect', label: t('layer.qf', 'Quality signal') },
+      { field: 'geartype', label: t('layer.gearType_other', 'Gear types') },
+      { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
+      { field: 'shiptype', label: t('vessel.shiptype', 'Ship type') },
+      { field: 'origin', label: t('vessel.origin', 'Origin') },
+      { field: 'target_species', label: t('vessel.target_species', 'Target species') },
+      { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
+    ],
+    [t]
+  )
+
   return (
     <div
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
@@ -127,17 +145,22 @@ function ActivityLayerPanel({
               onClickOutside={closeExpandedContainer}
               component={<Filters dataview={dataview} />}
             >
-              <IconButton
-                icon={filterOpen ? 'filter-on' : 'filter-off'}
-                size="small"
-                onClick={onToggleFilterOpen}
-                tooltip={
-                  filterOpen
-                    ? t('layer.filterClose', 'Close filters')
-                    : t('layer.filterOpen', 'Open filters')
-                }
-                tooltipPlacement="top"
-              />
+              <div className={styles.filterButtonWrapper}>
+                <IconButton
+                  icon={filterOpen ? 'filter-on' : 'filter-off'}
+                  size="small"
+                  onClick={onToggleFilterOpen}
+                  tooltip={
+                    filterOpen
+                      ? t('layer.filterClose', 'Close filters')
+                      : t('layer.filterOpen', 'Open filters')
+                  }
+                  tooltipPlacement="top"
+                />
+                {dataview.id === 'fishing-ais' && (
+                  <Hint id="filterActivityLayers" className={styles.helpHint} />
+                )}
+              </div>
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
@@ -150,36 +173,9 @@ function ActivityLayerPanel({
             <div className={styles.filters}>
               <DatasetFilterSource dataview={dataview} />
               <DatasetFlagField dataview={dataview} />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'qf_detect'}
-                label={t('layer.qf', 'Quality signal')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'geartype'}
-                label={t('layer.gearType_other', 'Gear types')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'fleet'}
-                label={t('layer.fleet_other', 'Fleets')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'shiptype'}
-                label={t('vessel.shiptype', 'Ship type')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'origin'}
-                label={t('vessel.origin', 'Origin')}
-              />
-              <DatasetSchemaField
-                dataview={dataview}
-                field={'vessel_type'}
-                label={t('vessel.vesselType_other', 'Vessel types')}
-              />
+              {datasetFields.map(({ field, label }) => (
+                <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
+              ))}
             </div>
           </div>
           <div className={activityStyles.legendContainer}>
