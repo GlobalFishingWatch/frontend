@@ -1,4 +1,5 @@
 import { Middleware } from 'redux'
+import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { routesMap } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'
@@ -20,6 +21,9 @@ export const routerQueryMiddleware: Middleware =
         newAction.query = {
           ...prevQuery,
           ...newAction.query,
+        }
+        if (newAction.query[ACCESS_TOKEN_STRING]) {
+          delete newAction.query[ACCESS_TOKEN_STRING]
         }
       }
       next(newAction)
