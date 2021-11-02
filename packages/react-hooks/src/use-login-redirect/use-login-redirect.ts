@@ -26,11 +26,11 @@ export const useLoginRedirect = (
   callbackUrlKey: string = DEFAULT_CALLBACK_URL_KEY,
   callbackUrlParam: string = DEFAULT_CALLBACK_URL_PARAM
 ) => {
-  const [redirectUrl, setRedirectUrl] = useLocalStorage(callbackUrlKey, '')
+  const [localStorageRedirectUrl, setLocalStorageRedirectUrl] = useLocalStorage(callbackUrlKey, '')
 
   const saveRedirectUrl = useCallback(() => {
-    setRedirectUrl(callbackUrlKey, window.location.toString())
-  }, [callbackUrlKey, setRedirectUrl])
+    setLocalStorageRedirectUrl(window.location.toString())
+  }, [setLocalStorageRedirectUrl])
 
   const onLoginClick = useCallback(() => {
     saveRedirectUrl()
@@ -41,7 +41,7 @@ export const useLoginRedirect = (
     localStorage.removeItem(callbackUrlKey)
   }, [callbackUrlKey])
 
-  return { redirectUrl, onLoginClick, saveRedirectUrl, cleanRedirectUrl }
+  return { localStorageRedirectUrl, onLoginClick, saveRedirectUrl, cleanRedirectUrl }
 }
 
 export default useLoginRedirect
