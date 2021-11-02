@@ -206,7 +206,7 @@ export const useMapClick = (
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
           event.features,
           metadata,
-          true
+          false
         )
         const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 

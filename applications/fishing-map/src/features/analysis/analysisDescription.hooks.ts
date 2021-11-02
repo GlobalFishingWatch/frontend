@@ -142,47 +142,67 @@ export type DescriptionChunks = {
   strong?: boolean
 }[]
 
-const getDescription = (
+export const useTimeCompareTimeDescription = (addPrefix = true) => {
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const analysisType = useSelector(selectAnalysisTypeQuery)
+  if (!timeComparison) return undefined
+  const startLabel = formatI18nDate(timeComparison.start, {
+    format: DateTime.DATE_MED_WITH_WEEKDAY,
+  })
+  // TODO Plural and i18n
+  const durationLabel = [timeComparison.duration, timeComparison.durationType].join(' ')
+  let label =
+    analysisType === 'periodComparison'
+      ? t('analysis.periodComparisonRange', {
+          compareStart: formatI18nDate(timeComparison.compareStart, {
+            format: DateTime.DATE_MED_WITH_WEEKDAY,
+          }),
+          start: startLabel,
+          duration: durationLabel,
+          defaultValue: 'between the {{duration}} after {{start}} and after {{compareStart}}',
+        })
+      : t('analysis.beforeAfterRange', {
+          start: startLabel,
+          duration: durationLabel,
+          defaultValue: 'between the {{duration}} before and after {{start}}',
+        })
+
+  if (addPrefix) {
+    label = [t('analysis.change', 'Change'), label].join(' ')
+  }
+
+  return label
+}
+
+const useDescription = (
   titleChunks: { label: string; strong?: boolean }[],
   analysisAreaName: string,
-  start: string | undefined,
-  end: string | undefined,
-  graphData: AnalysisGraphProps | undefined,
-  analysisType: WorkspaceAnalysisType,
-  timeComparison: WorkspaceAnalysisTimeComparison
+  graphData: AnalysisGraphProps | undefined
 ): DescriptionChunks => {
+  const { start, end } = useTimerangeConnect()
+  const analysisType = useSelector(selectAnalysisTypeQuery)
+  const timeCompareTimeDescription = useTimeCompareTimeDescription(false)
+
   if (!titleChunks || !titleChunks.length) return []
-  const dateFormat =
-    graphData?.interval === 'hour'
-      ? DateTime.DATETIME_MED_WITH_WEEKDAY
-      : DateTime.DATE_MED_WITH_WEEKDAY
+
   const descriptionChunks = [...titleChunks]
   if (analysisAreaName) {
     descriptionChunks.push({ label: t('common.in', 'in') })
     descriptionChunks.push({ label: analysisAreaName, strong: true })
   }
-  if (timeComparison && (analysisType === 'periodComparison' || analysisType === 'beforeAfter')) {
-    const startLabel = formatI18nDate(timeComparison.start, { format: dateFormat })
-    // TODO Plural and i18n
-    const durationLabel = [timeComparison.duration, timeComparison.durationType].join(' ')
-    const label =
-      analysisType === 'periodComparison'
-        ? t('analysis.periodComparisonRange', {
-            compareStart: formatI18nDate(timeComparison.compareStart, { format: dateFormat }),
-            start: startLabel,
-            duration: durationLabel,
-            defaultValue: 'between the {{duration}} after {{start}} and after {{compareStart}}',
-          })
-        : t('analysis.beforeAfterRange', {
-            start: startLabel,
-            duration: durationLabel,
-            defaultValue: 'between the {{duration}} before and after {{start}}',
-          })
+  if (
+    analysisType === 'periodComparison' ||
+    (analysisType === 'beforeAfter' && timeCompareTimeDescription)
+  ) {
     descriptionChunks.push({
-      label,
+      label: timeCompareTimeDescription as string,
       strong: true,
     })
   } else if (start && end) {
+    const dateFormat =
+      graphData?.interval === 'hour'
+        ? DateTime.DATETIME_MED_WITH_WEEKDAY
+        : DateTime.DATE_MED_WITH_WEEKDAY
     descriptionChunks.push({
       label: t('common.dateRange', {
         start: formatI18nDate(start, { format: dateFormat }),
@@ -196,26 +216,15 @@ const getDescription = (
 }
 
 const useAnalysisDescription = (analysisAreaName: string, graphData?: AnalysisGraphProps) => {
-  const { start, end } = useTimerangeConnect()
   const dataviewsIds = useMemo(() => {
     return graphData ? graphData.sublayers.map((s) => s.id) : []
   }, [graphData])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
-  const analysisType = useSelector(selectAnalysisTypeQuery)
-  const timeComparison = useSelector(selectAnalysisTimeComparison)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const { titleChunks, commonProperties } = useMemo(() => {
     return getCommonProperties(dataviews, showTimeComparison)
   }, [dataviews, showTimeComparison])
-  const description = getDescription(
-    titleChunks,
-    analysisAreaName,
-    start,
-    end,
-    graphData,
-    analysisType,
-    timeComparison
-  )
+  const description = useDescription(titleChunks, analysisAreaName, graphData)
   return { description, commonProperties }
 }
 

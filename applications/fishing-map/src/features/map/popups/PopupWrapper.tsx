@@ -7,6 +7,7 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
+import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
 import styles from './Popup.module.css'
 import FishingTooltipRow from './FishingLayers'
 import PresenceTooltipRow from './PresenceLayers'
@@ -36,6 +37,9 @@ function PopupWrapper({
   onClose,
   anchor,
 }: PopupWrapperProps) {
+  // Assuming only timeComparison heatmap is visible, so timerange description apply to all
+  const timeCompareTimeDescription = useTimeCompareTimeDescription()
+
   if (!event) return null
 
   const visibleFeatures = event.features.filter((feature) => feature.visible)
@@ -58,6 +62,9 @@ function PopupWrapper({
       captureClick
     >
       <div className={styles.content}>
+        {timeCompareTimeDescription && (
+          <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
+        )}
         {Object.entries(featureByCategory).map(([featureCategory, features]) => {
           switch (featureCategory) {
             case DataviewCategory.Comparison:
