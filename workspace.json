@@ -26,7 +26,7 @@
       "sourceRoot": "packages/api-client/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -67,7 +67,7 @@
       "sourceRoot": "packages/api-types/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -108,7 +108,7 @@
       "sourceRoot": "packages/data-transforms/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -149,7 +149,7 @@
       "sourceRoot": "packages/dataviews-client/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -291,7 +291,7 @@
       "sourceRoot": "packages/fourwings-aggregate/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -343,7 +343,7 @@
       "sourceRoot": "packages/layer-composer/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -384,7 +384,7 @@
       "sourceRoot": "packages/ocean-areas/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -425,7 +425,7 @@
       "sourceRoot": "packages/pbf-decoders",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -466,7 +466,7 @@
       "sourceRoot": "packages/react-hooks/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -507,7 +507,7 @@
       "sourceRoot": "packages/timebar/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
@@ -548,7 +548,7 @@
       "sourceRoot": "packages/ui-components/src",
       "projectType": "library",
       "targets": {
-        "build": {
+        "dist": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
