@@ -45,7 +45,6 @@ import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import * as AnalysisWorker from './Analysis.worker'
 import { selectShowTimeComparison } from './analysis.selectors'
-import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from './AnalysisPeriodComparison'
 
 const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
@@ -444,6 +443,8 @@ const parseYYYYMMDDDate = (d: string) => DateTime.fromISO(d).setZone('utc', { ke
 
 const MIN_DATE = DEFAULT_WORKSPACE.availableStart.slice(0, 10)
 const MAX_DATE = DEFAULT_WORKSPACE.availableEnd.slice(0, 10)
+export const MAX_DAYS_TO_COMPARE = 100
+export const MAX_MONTHS_TO_COMPARE = 12
 
 export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisType) => {
   const { dispatchQueryParams } = useLocationConnect()
