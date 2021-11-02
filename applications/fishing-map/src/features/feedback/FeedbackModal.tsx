@@ -211,6 +211,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             )}
             <Select
               label={t('feedback.role', 'Role')}
+              placeholder={t('selects.placeholder', 'Select an option')}
               options={roleOptions}
               selectedOption={roleOptions.find((option) => option.id === feedbackData.role)}
               onSelect={(option) => onFieldChange('role', option.id)}
@@ -219,6 +220,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             {feedbackData.role && (
               <Select
                 label={t('feedback.type', 'What are you providing feedback for?')}
+                placeholder={t('selects.placeholder', 'Select an option')}
                 options={allFeedbackTypeOptions}
                 selectedOption={allFeedbackTypeOptions.find(
                   (option) => option.id === feedbackData.feedbackType
@@ -230,6 +232,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             {feedbackData.feedbackType === inprovementsOption.id && (
               <Select
                 label={t('feedback.whichFeature', 'Which feature would you like to improve?')}
+                placeholder={t('selects.placeholder', 'Select an option')}
                 options={featureOptions}
                 selectedOption={featureOptions.find(
                   (option) => option.id === feedbackData.improvement
@@ -241,6 +244,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             {feedbackData.feedbackType === issuesOption.id && (
               <Select
                 label={t('feedback.whatIssue', 'Where are you having an issue?')}
+                placeholder={t('selects.placeholder', 'Select an option')}
                 options={featureOptions}
                 selectedOption={featureOptions.find((option) => option.id === feedbackData.issue)}
                 onSelect={(option) => onFieldChange('issue', option.id)}
