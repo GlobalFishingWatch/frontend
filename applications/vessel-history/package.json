@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@craco/craco": "^6.3.0",
-    "@globalfishingwatch/linting": "^1.6.1",
+    "@globalfishingwatch/linting": "1.8.0",
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.0",
     "@types/lodash": "^4.14.161",
@@ -121,13 +121,9 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint -c ./.eslintrc.js --fix"
     ],
-    "*.css": [
-      "stylelint --fix",
-      "stylelint --syntax=scss --fix"
-    ],
-    "*.scss": [
+    "*.{css, scss}": [
       "prettier --write",
-      "stylelint --syntax=scss --fix"
+      "stylelint --fix"
     ]
   },
   "browserslist": {

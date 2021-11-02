@@ -51,6 +51,7 @@
   .container {
     padding: var(--space-S);
   }
+
   .title {
     margin-top: var(--space-M);
   }
