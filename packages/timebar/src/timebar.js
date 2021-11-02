@@ -64,7 +64,7 @@ class Timebar extends Component {
   constructor() {
     super()
     this.toggleImmediate = (immediate) => {
-      this.setState(immediate)
+      this.setState({ immediate })
     }
     this.interval = null
     this.state = {
