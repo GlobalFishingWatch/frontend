@@ -40,6 +40,7 @@
 .content {
   flex: 1;
   margin-bottom: auto;
+  overflow-y: auto;
 }
 
 .saveBtn {
@@ -95,4 +96,8 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-M);
+}
+
+.typeChoice {
+  padding: 0 var(--space-M);
 }

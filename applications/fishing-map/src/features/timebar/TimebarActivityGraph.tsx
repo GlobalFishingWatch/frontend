@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import createTimebarActivityGraphWorker from 'workerize-loader!./TimebarActivityGraph.worker.ts'
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
+import { TEMPORALGRID_SOURCE_LAYER_INTERACTIVE } from '@globalfishingwatch/layer-composer'
 import {
   TimeChunk,
   TimeChunks,
@@ -45,7 +45,7 @@ const TimebarActivityGraph = () => {
       const timeChunks = metadata.timeChunks as TimeChunks
       const allChunksFeatures = metadata.timeChunks.chunks.map((chunk: TimeChunk) => {
         const features = map.querySourceFeatures(chunk.sourceId as string, {
-          sourceLayer: TEMPORALGRID_SOURCE_LAYER,
+          sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
         })
 
         const serializedFeatures = features.map(({ properties, geometry }) => ({

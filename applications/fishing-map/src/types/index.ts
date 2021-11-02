@@ -13,6 +13,8 @@ export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type WorkspaceStateProperty =
   | 'query'
   | 'analysis'
+  | 'analysisType'
+  | 'analysisTimeComparison'
   | 'readOnly'
   | 'daysFromLatest'
   | 'sidebarOpen'
@@ -36,6 +38,13 @@ export type WorkspaceAnalysis = {
   sourceId: string
   bounds?: [number, number, number, number]
 }
+export type WorkspaceAnalysisType = 'evolution' | 'correlation' | 'periodComparison' | 'beforeAfter'
+export type WorkspaceAnalysisTimeComparison = {
+  start: string
+  compareStart: string
+  duration: number
+  durationType: string
+}
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export type BivariateDataviews = [string, string]
 
@@ -46,6 +55,8 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   sidebarOpen?: boolean
   analysis?: WorkspaceAnalysis
+  analysisType?: WorkspaceAnalysisType
+  analysisTimeComparison?: WorkspaceAnalysisTimeComparison
   timebarVisualisation?: TimebarVisualisations
   visibleEvents?: VisibleEvents
   timebarGraph?: TimebarGraphs

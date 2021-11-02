@@ -105,7 +105,7 @@
   transform: translateX(-50%);
 }
 
-.step:first-child {
+.firstStep {
   transform: translateX(0);
 }
 
