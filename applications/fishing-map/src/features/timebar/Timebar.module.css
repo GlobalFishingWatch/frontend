@@ -19,7 +19,7 @@
 }
 
 .disclaimerLabel {
-  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  color: rgb(var(--white-rgb) var(--opacity-secondary));
   background-color: var(--color-primary-blue);
   border: var(--border-white);
   border-radius: 99px;

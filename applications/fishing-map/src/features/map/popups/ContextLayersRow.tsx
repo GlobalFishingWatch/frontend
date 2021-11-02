@@ -44,7 +44,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
             />
           )}
           <IconButton
-            icon="report"
+            icon="analysis"
             disabled={!hasAnalysableLayer}
             tooltip={
               hasAnalysableLayer

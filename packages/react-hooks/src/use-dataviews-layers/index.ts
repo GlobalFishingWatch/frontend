@@ -1,1 +1,1 @@
-export { default } from './use-dataviews-layers'
+export * from './use-dataviews-layers'

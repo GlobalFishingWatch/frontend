@@ -26,23 +26,6 @@
     "clean": "yarn clean:deps && yarn clean:dist",
     "prepare": "husky install"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint -c ./.eslintrc.js --fix --resolve-plugins-relative-to ."
-    ],
-    "*.css": [
-      "prettier --write",
-      "stylelint --fix"
-    ],
-    "*.scss": [
-      "prettier --write",
-      "stylelint --syntax=scss --fix"
-    ]
-  },
-  "resolutions": {
-    "**/babel-loader": "8.1.0",
-    "gl-matrix": "3.3.0"
-  },
   "dependencies": {
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@mapbox/mapbox-gl-style-spec": "^13.14.0",
@@ -161,12 +144,10 @@
     "regenerator-runtime": "0.13.7",
     "rimraf": "^3.0.2",
     "serve": "^12.0.1",
-    "stylelint": "^13.13.1",
-    "stylelint-config-css-modules": "^2.2.0",
-    "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-standard": "^20.0.0",
-    "tap": "~12.4.1",
-    "ts-jest": "27.0.3",
+    "stylelint": "^14.0.1",
+    "stylelint-config-css-modules": "^2.3.0",
+    "stylelint-config-prettier": "^9.0.2",
+    "stylelint-config-standard": "^23.0.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5",
     "typescript-plugin-css-modules": "^3.4.0"
@@ -196,13 +177,9 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint -c ./.eslintrc.js --fix --resolve-plugins-relative-to ."
     ],
-    "*.css": [
+    "*.{css, scss}": [
       "prettier --write",
       "stylelint --fix"
-    ],
-    "*.scss": [
-      "prettier --write",
-      "stylelint --syntax=scss --fix"
     ]
   }
 }

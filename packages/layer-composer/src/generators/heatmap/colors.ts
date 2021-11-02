@@ -13,6 +13,17 @@ export const HEATMAP_COLORS_BY_ID = {
   orange: '#FFAA0D',
 }
 
+export const TIME_COMPARE_COLOR_RAMP = [
+  '#3EF0FF', // -100 000
+  '#3DADDF', // -50000 -> -100000
+  '#4286C1', // -8000 -> -50000
+  '#3F69A4', // 0 -> -8000
+  '#4A4174',
+  '#844A7F',
+  '#B0547F',
+  '#FF677D',
+]
+
 export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   teal: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.teal),
   teal_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.teal),

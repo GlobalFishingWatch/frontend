@@ -11,6 +11,8 @@ export enum SublayerCombinationMode {
   Add = 'add',
   // Returns a bucket index depending on sublayer with highest value + position on sublayer color ramp
   Max = 'max',
+  // Returns a bucket index depending on delta value between two sublayers
+  TimeCompare = 'timecompare',
   // Returns a bucket index depending on a 2D color ramp
   Bivariate = 'bivariate',
   // Returns raw values that can be decoded with JSON.parse (number or array of numbers). Used for interaction layer
@@ -57,13 +59,23 @@ export interface TileAggregationParams extends BaseTileAggregationParams {
   z: number
 }
 
+export type TileAggregationDateRange = [string, string]
+export type TileAggregationComparisonDateRange = [string, string, string, string]
+
 export interface TileAggregationSourceParams extends BaseTileAggregationParams {
   id: string
   interval: string
   filters: string[]
   datasets: string[]
-  ['date-range']?: [string, string]
+  ['date-range']?: TileAggregationDateRange
+  ['comparison-range']?: TileAggregationComparisonDateRange
 }
+
+export type TileAggregationSourceParamsSerialized = Partial<
+  {
+    [key in keyof TileAggregationSourceParams]: string
+  }
+>
 
 export type CellAggregationParams = {
   rawValues: string
@@ -72,6 +84,7 @@ export type CellAggregationParams = {
   quantizeOffset: number
   sublayerCount: number
   aggregationOperation?: AggregationOperation
+  sublayerCombinationMode?: SublayerCombinationMode
   multiplier?: number
 }
 

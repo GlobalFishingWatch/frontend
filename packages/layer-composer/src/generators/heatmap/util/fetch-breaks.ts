@@ -76,12 +76,17 @@ const getBreaksUrl = (config: FetchBreaksParams): string => {
 }
 
 const getNumBins = (config: FetchBreaksParams) => {
-  const isBivariate = config.mode === HeatmapAnimatedMode.Bivariate
-  return isBivariate ? '4' : '9'
+  if (
+    config.mode === HeatmapAnimatedMode.Bivariate ||
+    config.mode === HeatmapAnimatedMode.TimeCompare
+  ) {
+    return 4
+  }
+  return 9
 }
 
 const parseBreaksResponse = (config: FetchBreaksParams, breaks: Breaks) => {
-  const bins = parseInt(getNumBins(config))
+  const bins = getNumBins(config)
   const cleanBreaks = breaks?.map((b) => {
     return b?.length === bins ? b : new Array(bins).fill(0)
   })
@@ -108,7 +113,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
 
   const breaksUrl = new URL(getBreaksUrl(config))
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
-  breaksUrl.searchParams.set('numBins', getNumBins(config))
+  breaksUrl.searchParams.set('numBins', getNumBins(config).toString())
   breaksUrl.searchParams.set('interval', '10days')
 
   const url = breaksUrl.toString()

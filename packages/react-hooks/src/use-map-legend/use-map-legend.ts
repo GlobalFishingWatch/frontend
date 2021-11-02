@@ -12,7 +12,7 @@ const getLegendId = (id = '') => {
   return `legend_${id}`
 }
 
-const getLegendLayers = (
+export const getLegendLayers = (
   style?: ExtendedStyle,
   dataviews?: UrlDataviewInstance[],
   hoveredEvent?: InteractionEvent | null
@@ -94,7 +94,7 @@ const getLegendLayers = (
   return legends as (LegendLayer | LegendLayerBivariate)[]
 }
 
-function useMapLegend(
+export function useMapLegend(
   style?: ExtendedStyle,
   dataviews?: UrlDataviewInstance[],
   interactionEvent?: InteractionEvent | null
@@ -105,4 +105,3 @@ function useMapLegend(
   }, [style, dataviews, interactionEvent])
   return legendLayers
 }
-export default useMapLegend

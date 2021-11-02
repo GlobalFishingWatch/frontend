@@ -21,7 +21,7 @@
 
 .expandedContainerOpen {
   z-index: 1;
-  filter: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), 0.4));
+  filter: drop-shadow(0 0 1rem rgb(var(--primary-blue-rgb) 0.4));
 }
 
 .header {
@@ -135,13 +135,16 @@
   .tagList > li > div {
     border: var(--border);
   }
+
   .tagList > li *::after {
     background-color: transparent;
   }
+
   .switch {
     width: 1.4rem !important;
     transition: none;
   }
+
   .switch > span {
     display: none !important;
   }

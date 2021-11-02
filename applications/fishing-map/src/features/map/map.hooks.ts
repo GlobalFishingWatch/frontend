@@ -7,7 +7,7 @@ import {
   TemporalGridFeature,
   useFeatureState,
 } from '@globalfishingwatch/react-hooks'
-import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ContextLayerType, GeneratorType, GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import {
   UrlDataviewInstance,
   MULTILAYER_SEPARATOR,
@@ -16,6 +16,7 @@ import {
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
@@ -26,6 +27,10 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
+import {
+  selectShowTimeComparison,
+  selectTimeComparisonValues,
+} from 'features/analysis/analysis.selectors'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -60,18 +65,27 @@ export const useGeneratorsConnect = () => {
   const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
+  const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
   return useMemo(() => {
+    let globalConfig: GlobalGeneratorConfig = {
+      zoom: viewport.zoom,
+      start,
+      end,
+      token: GFWAPI.getToken(),
+    }
+    if (showTimeComparison && timeComparisonValues) {
+      globalConfig = {
+        ...globalConfig,
+        ...timeComparisonValues,
+      }
+    }
     return {
       generatorsConfig,
-      globalConfig: {
-        zoom: viewport.zoom,
-        start,
-        end,
-        token: GFWAPI.getToken(),
-      },
+      globalConfig,
     }
-  }, [generatorsConfig, viewport.zoom, start, end])
+  }, [generatorsConfig, viewport.zoom, start, end, timeComparisonValues, showTimeComparison])
 }
 
 export const useClickedEventConnect = () => {
@@ -291,6 +305,12 @@ export const parseMapTooltipEvent = (
 ) => {
   if (!event || !event.features) return null
 
+  const baseEvent = {
+    point: event.point,
+    latitude: event.latitude,
+    longitude: event.longitude,
+  }
+
   const clusterFeature = event.features.find(
     (f) => f.generatorType === GeneratorType.TileCluster && parseInt(f.properties.count) > 1
   )
@@ -298,9 +318,7 @@ export const parseMapTooltipEvent = (
   // We don't want to show anything else when hovering a cluster point
   if (clusterFeature) {
     return {
-      point: event.point,
-      latitude: event.latitude,
-      longitude: event.longitude,
+      ...baseEvent,
       features: [
         {
           type: clusterFeature.generatorType,
@@ -311,6 +329,22 @@ export const parseMapTooltipEvent = (
   }
 
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
+    const baseFeature = {
+      source: feature.source,
+      sourceLayer: feature.sourceLayer,
+      layerId: feature.layerId as string,
+    }
+
+    if (feature.temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
+      return {
+        ...baseFeature,
+        category: DataviewCategory.Comparison,
+        value: event.features[0]?.value,
+        visible: true,
+        unit: 'hours',
+      } as TooltipEventFeature
+    }
+
     let dataview
     if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature
@@ -332,9 +366,7 @@ export const parseMapTooltipEvent = (
       // Not needed to create a dataview just for the workspaces list interaction
       if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
-          source: feature.source,
-          sourceLayer: feature.sourceLayer,
-          layerId: feature.layerId as string,
+          ...baseFeature,
           type: GeneratorType.GL,
           value: feature.properties.label,
           properties: {},
@@ -382,9 +414,7 @@ export const parseMapTooltipEvent = (
 
   if (!tooltipEventFeatures.length) return null
   return {
-    point: event.point,
-    latitude: event.latitude,
-    longitude: event.longitude,
+    ...baseEvent,
     features: tooltipEventFeatures,
   }
 }

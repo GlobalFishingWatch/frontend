@@ -77,10 +77,12 @@ export function Menu(props: MenuProps) {
       isOpen={isOpen}
       onRequestClose={onClose}
     >
-      <IconButton className={styles.closeBtn} icon="close" type="invert" onClick={onClose} />
-      <a href="https://globalfishingwatch.org">
-        <Logo type="invert" className={styles.logo} />
-      </a>
+      <div className={styles.header}>
+        <a href="https://globalfishingwatch.org">
+          <Logo type="invert" className={styles.logo} />
+        </a>
+        <IconButton className={styles.closeBtn} icon="close" type="invert" onClick={onClose} />
+      </div>
       {links?.length > 0 && (
         <ul>
           {links.map(({ id, label, href }) => (

@@ -1,1 +1,1 @@
-export { default } from './use-layer-composer'
+export * from './use-layer-composer'

@@ -50,6 +50,13 @@
   transform: translateX(-100%);
 }
 
+.header {
+  display: flex;
+  padding: 0 var(--space-M);
+  justify-content: space-between;
+  align-items: center;
+}
+
 .link {
   width: 100%;
   color: var(--color-white);
@@ -75,16 +82,6 @@
 .link:hover a,
 .link a:focus {
   color: var(--color-danger-red);
-}
-
-.closeBtn {
-  position: absolute;
-  top: var(--space-M);
-  right: var(--space-M);
-}
-
-.logo {
-  margin-left: var(--space-M);
 }
 
 .content {

@@ -25,7 +25,7 @@ const defaultTransformations: StyleTransformation[] = [sort, getInteractiveLayer
 let styleSpec: any
 
 const defaultLayerComposerInstance = new LayerComposer()
-function useLayerComposer(
+export function useLayerComposer(
   generatorConfigs: AnyGeneratorConfig[],
   globalGeneratorConfig?: GlobalGeneratorConfig,
   styleTransformations: StyleTransformation[] = defaultTransformations,
@@ -77,5 +77,3 @@ function useLayerComposer(
 
   return { style, loading, error }
 }
-
-export default useLayerComposer

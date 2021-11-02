@@ -22,7 +22,7 @@
     "@globalfishingwatch/dataviews-client": "^14.0.0",
     "@globalfishingwatch/i18n-labels": "^1.1.0",
     "@globalfishingwatch/layer-composer": "10.0.2",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.25",
     "@globalfishingwatch/pbf": "^1.0.11",
     "@globalfishingwatch/react-hooks": "^15.0.1",
     "@globalfishingwatch/ui-components": "12.4.1",
@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@craco/craco": "^6.3.0",
-    "@globalfishingwatch/linting": "^1.6.1",
+    "@globalfishingwatch/linting": "1.8.0",
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.0",
     "@types/lodash": "^4.14.161",
@@ -121,13 +121,9 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint -c ./.eslintrc.js --fix"
     ],
-    "*.css": [
-      "stylelint --fix",
-      "stylelint --syntax=scss --fix"
-    ],
-    "*.scss": [
+    "*.{css, scss}": [
       "prettier --write",
-      "stylelint --syntax=scss --fix"
+      "stylelint --fix"
     ]
   },
   "browserslist": {
