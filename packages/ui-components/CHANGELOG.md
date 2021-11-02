@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 12.5.0
+
+### Minor Changes
+
+- f69cd7c51: add support for 4w timecompare mode
+
 ## 12.4.1
 
 ### Patch Changes

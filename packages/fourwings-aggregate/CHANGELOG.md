@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 4.1.0
+
+### Minor Changes
+
+- f69cd7c51: add support for 4w timecompare mode
+
 ## 4.0.4
 
 ### Patch Changes
