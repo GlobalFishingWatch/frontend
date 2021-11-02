@@ -1,12 +1,9 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react'
-import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
 import { event as uaEvent } from 'react-ga'
-import { useTranslation } from 'react-i18next'
 import { InteractiveMap } from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
-import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
@@ -19,10 +16,8 @@ import {
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   useClickedEventConnect,
   useMapHighlightedEvent,
@@ -40,7 +35,9 @@ import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
+import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
+import { isWorkspaceLocation } from 'routes/routes.selectors'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -49,6 +46,7 @@ import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-f
 import MapDraw from './MapDraw'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
+import MapLegends from './MapLegends'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
@@ -77,7 +75,6 @@ const MapWrapper = (): React.ReactElement | null => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   const map = useMapInstance()
-  const { t } = useTranslation()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const drawMode = useSelector(selectDrawMode)
   const isMapDrawing = useSelector(selectIsMapDrawing)
@@ -166,30 +163,13 @@ const MapWrapper = (): React.ReactElement | null => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewport])
 
-  const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
-
-  const legendsTranslated = useMemo(() => {
-    return mapLegends?.map((legend) => {
-      const isSquareKm = (legend.gridArea as number) > 50000
-      let label = legend.unit || ''
-      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
-        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-        const gridAreaFormatted = gridArea
-          ? formatI18nNumber(gridArea, {
-              style: 'unit',
-              unit: isSquareKm ? 'kilometer' : 'meter',
-              unitDisplay: 'short',
-            })
-          : ''
-        if (legend.unit === 'hours') {
-          label = `${t('common.hour_other', 'hours')} / ${gridAreaFormatted}²`
-        }
-      }
-      return { ...legend, label }
-    })
-  }, [mapLegends, t])
-
+  const showTimeComparison = useSelector(selectShowTimeComparison)
+  const isAnalyzing = useSelector(selectIsAnalyzing)
+  const isWorkspace = useSelector(isWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
+
+  const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
+  const portalledLegend = !showTimeComparison
 
   const mapLoaded = useMapLoaded()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
@@ -254,7 +234,7 @@ const MapWrapper = (): React.ReactElement | null => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={onViewportChange}
+          onViewportChange={isAnalyzing ? undefined : onViewportChange}
           mapStyle={style}
           transformRequest={transformRequest}
           onResize={setMapBounds}
@@ -285,32 +265,16 @@ const MapWrapper = (): React.ReactElement | null => {
             )}
           <MapInfo center={hoveredEvent} />
           <MapDraw />
+          {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
-      {legendsTranslated?.map((legend: any) => {
-        const legendDomElement = document.getElementById(legend.id as string)
-        if (legendDomElement) {
-          return createPortal(
-            <MapLegend
-              layer={legend}
-              className={styles.legend}
-              currentValueClassName={styles.currentValue}
-              labelComponent={
-                <Tooltip
-                  content={t('map.legend_help', 'Approximated grid cell area at the Equator')}
-                >
-                  <span className={styles.legendLabel}>{legend.label}</span>
-                </Tooltip>
-              }
-            />,
-            legendDomElement
-          )
-        }
-        return null
-      })}
-      <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
-      <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
+      {isWorkspace && !isAnalyzing && (
+        <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+      )}
+      {isWorkspace && !isAnalyzing && (
+        <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
+      )}
     </div>
   )
 }

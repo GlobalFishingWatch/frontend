@@ -46,7 +46,6 @@ const getCommonIntervals = (datasets: Dataset[]) => {
 
 type DataviewsGeneratorConfigsParams = {
   debug?: boolean
-  timeRange?: { start: string; end: string }
   highlightedTime?: { start: string; end: string }
   highlightedEvent?: ApiEvent
   mergedActivityGeneratorId?: string

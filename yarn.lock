@@ -1490,10 +1490,10 @@
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/mapbox-gl@1.12.0-gfw.22":
-  version "1.12.0-gfw.22"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0-gfw.22.tgz#42bd23b94768c4f4027aa43c85309a79c5ee4f79"
-  integrity sha512-ym8AKgII+j0EJH90FxkcA1MkHxodq+VAoLgB6P46Wvu8rcM6tBtLlGjpc80uUvlMDGcwL6VDQ9U0vKkNJ3/wgg==
+"@globalfishingwatch/mapbox-gl@1.12.0-gfw.25":
+  version "1.12.0-gfw.25"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0-gfw.25.tgz#d40763914b67e6148810b88c38e0309ca1c091af"
+  integrity sha512-+gtEmF3IFmm8GatN25d6B2XhfeU5zjodM3yNzA7lzsMkZSP3QFYuObfatqVp7C8n1hAOVixZpsbFQJnSNx5qJw==
   dependencies:
     "@globalfishingwatch/fourwings-aggregate" "4.0.1"
     "@mapbox/geojson-rewind" "^0.5.0"
