@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 10.1.0
+
+### Minor Changes
+
+- f69cd7c51: add support for 4w timecompare mode
+
 ## 10.0.2
 
 ### Patch Changes

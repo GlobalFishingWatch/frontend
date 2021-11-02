@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 6.4.0
+
+### Minor Changes
+
+- f69cd7c51: add support for 4w timecompare mode
+
 ## 6.3.0
 
 ### Minor Changes
