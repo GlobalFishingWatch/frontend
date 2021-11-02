@@ -7,7 +7,12 @@ import { AnalysisTypeProps } from './Analysis'
 import styles from './AnalysisBeforeAfter.module.css'
 import useAnalysisDescription from './analysisDescription.hooks'
 import AnalysisDescription from './AnalysisDescription'
-import { DURATION_TYPES_OPTIONS, useAnalysisTimeCompareConnect } from './analysis.hooks'
+import {
+  DURATION_TYPES_OPTIONS,
+  MAX_DAYS_TO_COMPARE,
+  MAX_MONTHS_TO_COMPARE,
+  useAnalysisTimeCompareConnect,
+} from './analysis.hooks'
 
 const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, analysisAreaName } = props
@@ -29,7 +34,7 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   return (
     <Fragment>
       <AnalysisDescription description={description} />
-      {/* 
+      {/*
         TODO: Draw graph using layersTimeseriesFiltered
       */}
       <div className={styles.container}>
@@ -50,6 +55,12 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
               type="number"
               onChange={onDurationChange}
               className={styles.duration}
+              min={1}
+              max={
+                timeComparison.durationType === 'months'
+                  ? MAX_MONTHS_TO_COMPARE
+                  : MAX_DAYS_TO_COMPARE
+              }
             />
             {durationTypeOption && (
               <Select

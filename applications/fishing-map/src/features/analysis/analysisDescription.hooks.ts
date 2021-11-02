@@ -13,7 +13,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectAnalysisTimeComparison, selectAnalysisTypeQuery } from 'features/app/app.selectors'
-import { AnalysisGraphProps } from './AnalysisItemGraph'
+import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectShowTimeComparison } from './analysis.selectors'
 
 export const FIELDS = [

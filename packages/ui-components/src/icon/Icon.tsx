@@ -3,6 +3,7 @@ import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import Tooltip from '../tooltip'
 import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
+import { ReactComponent as Analysis } from '../assets/icons/analysis.svg'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
@@ -65,6 +66,7 @@ import styles from './Icon.module.css'
 
 export const IconComponents = {
   'add-polygon': AddPolygon,
+  analysis: Analysis,
   'arrow-down': ArrowDown,
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,

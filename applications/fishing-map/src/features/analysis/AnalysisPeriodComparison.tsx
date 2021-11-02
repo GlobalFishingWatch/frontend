@@ -1,13 +1,20 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
+import { DateTime, DurationUnit } from 'luxon'
+import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { AnalysisTypeProps } from './Analysis'
-import styles from './AnalysisPeriodComparison.module.css'
 import useAnalysisDescription from './analysisDescription.hooks'
 import AnalysisDescription from './AnalysisDescription'
-import { DURATION_TYPES_OPTIONS, useAnalysisTimeCompareConnect } from './analysis.hooks'
+import {
+  DURATION_TYPES_OPTIONS,
+  MAX_DAYS_TO_COMPARE,
+  MAX_MONTHS_TO_COMPARE,
+  useAnalysisTimeCompareConnect,
+} from './analysis.hooks'
+import AnalysisPeriodComparisonGraph from './AnalysisPediodComparisonGraph'
+import styles from './AnalysisPeriodComparison.module.css'
 
 const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, analysisAreaName } = props
@@ -30,25 +37,30 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
   return (
     <Fragment>
       <AnalysisDescription description={description} />
-      {/* 
-        TODO: Draw graph using layersTimeseriesFiltered
-        Each timeseries item has:
-        - min and max arrays, each of them having exactly two values (value for 1st period, value for 2nd period)
-        - date: date for the first period
-        - compareDate: ddate for the second period
-        It might be easier to deal with those values for those graphs by splitting the timeseries in two, which could be done in analysis.hooks
-      */}
+      {layersTimeseriesFiltered ? (
+        <AnalysisPeriodComparisonGraph
+          graphData={layersTimeseriesFiltered?.[0]}
+          start={timeComparison.start}
+          end={DateTime.fromISO(timeComparison.start)
+            .plus({ [timeComparison.durationType as DurationUnit]: timeComparison.duration })
+            .toString()}
+        />
+      ) : (
+        <div className={styles.graphContainer}>
+          <Spinner />
+        </div>
+      )}
       <div className={styles.container}>
         <div className={styles.timeSelection}>
           <InputDate
-            label={t('analysis.periodComparison1st', 'start of 1st period')}
+            label={t('analysis.periodComparison1st', 'Baseline start')}
             onChange={onStartChange}
             value={timeComparison.start}
             min={MIN_DATE}
             max={MAX_DATE}
           />
           <InputDate
-            label={t('analysis.periodComparison2nd', 'start of 2nd period')}
+            label={t('analysis.periodComparison2nd', 'comparison start')}
             onChange={onCompareStartChange}
             value={timeComparison.compareStart}
             min={timeComparison.start.slice(0, 10)}
@@ -56,6 +68,12 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
           />
           <div className={styles.durationWrapper}>
             <InputText
+              min={1}
+              max={
+                timeComparison.durationType === 'months'
+                  ? MAX_MONTHS_TO_COMPARE
+                  : MAX_DAYS_TO_COMPARE
+              }
               label={t('analysis.periodComparisonDuration', 'duration')}
               value={timeComparison.duration}
               type="number"

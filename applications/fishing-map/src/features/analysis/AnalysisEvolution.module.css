@@ -13,3 +13,10 @@
   color: var(--color-secondary-blue);
   padding: var(--space-M);
 }
+
+.graphContainer {
+  min-height: 28rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

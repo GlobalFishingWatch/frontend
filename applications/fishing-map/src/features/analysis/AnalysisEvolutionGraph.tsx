@@ -16,16 +16,16 @@ import { Interval } from '@globalfishingwatch/layer-composer/dist/generators/hea
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import { toFixed } from 'utils/shared'
-import styles from './AnalysisGraph.module.css'
+import styles from './AnalysisEvolutionGraph.module.css'
 
-export interface GraphData {
+export interface EvolutionGraphData {
   date: string
   min: number[]
   max: number[]
 }
 
 export interface AnalysisGraphProps {
-  timeseries: GraphData[]
+  timeseries: EvolutionGraphData[]
   sublayers: {
     id: string
     legend: {
@@ -133,11 +133,13 @@ const AnalysisGraphTooltip = (props: any) => {
   return null
 }
 
-const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; start: string; end: string }> = (
-  props
-) => {
+const AnalysisEvolutionGraph: React.FC<{
+  graphData: AnalysisGraphProps
+  start: string
+  end: string
+}> = (props) => {
   const { start, end } = props
-  const { timeseries, interval = '10days', sublayers } = props.graphData
+  const { timeseries, interval, sublayers } = props.graphData
 
   const dataFormated = useMemo(() => {
     return timeseries
@@ -226,4 +228,4 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; start: string
   )
 }
 
-export default AnalysisItemGraph
+export default AnalysisEvolutionGraph

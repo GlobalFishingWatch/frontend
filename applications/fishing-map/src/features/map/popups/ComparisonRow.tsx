@@ -6,13 +6,19 @@ import styles from './Popup.module.css'
 
 type ComparisonRowProps = {
   feature: TooltipEventFeature
+  showFeaturesDetails: boolean
 }
-function ComparisonRow({ feature }: ComparisonRowProps) {
+function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowProps) {
   const { t } = useTranslation()
 
   return (
     <div className={styles.popupSection}>
       <div className={styles.popupSectionContent}>
+        {showFeaturesDetails && (
+          <h3 className={styles.popupSectionTitle}>
+            {t('analysis.periodComparison', 'Period comparison')}
+          </h3>
+        )}
         <div className={styles.row}>
           <span className={styles.rowText}>
             {parseInt(feature.value) > 0 && '+'}

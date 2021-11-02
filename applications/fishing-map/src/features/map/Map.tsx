@@ -35,8 +35,9 @@ import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
+import { isWorkspaceLocation } from 'routes/routes.selectors'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -45,8 +46,8 @@ import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-f
 import MapDraw from './MapDraw'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
-import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 import MapLegends from './MapLegends'
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
@@ -163,6 +164,8 @@ const MapWrapper = (): React.ReactElement | null => {
   }, [viewport])
 
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const isAnalyzing = useSelector(selectIsAnalyzing)
+  const isWorkspace = useSelector(isWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
 
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
@@ -231,7 +234,7 @@ const MapWrapper = (): React.ReactElement | null => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={showTimeComparison ? undefined : onViewportChange}
+          onViewportChange={isAnalyzing ? undefined : onViewportChange}
           mapStyle={style}
           transformRequest={transformRequest}
           onResize={setMapBounds}
@@ -265,13 +268,13 @@ const MapWrapper = (): React.ReactElement | null => {
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}
-      <MapControls
-        onMouseEnter={resetHoverState}
-        mapLoading={!mapLoaded || layerComposerLoading}
-        disabled={showTimeComparison}
-      />
-      <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
-      <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
+      {isWorkspace && !isAnalyzing && (
+        <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+      )}
+      {isWorkspace && !isAnalyzing && (
+        <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
+      )}
     </div>
   )
 }

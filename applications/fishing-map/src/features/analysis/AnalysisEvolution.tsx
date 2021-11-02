@@ -7,7 +7,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
-import AnalysisItemGraph, { AnalysisGraphProps } from './AnalysisItemGraph'
+import AnalysisEvolutionGraph, { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import styles from './AnalysisEvolution.module.css'
 import useAnalysisDescription, { FIELDS } from './analysisDescription.hooks'
 import { AnalysisTypeProps } from './Analysis'
@@ -54,7 +54,7 @@ function AnalysisItem({
           {t('analysis.empty', 'Your selected datasets will appear here')}
         </p>
       )}
-      {start && end && <AnalysisItemGraph graphData={graphData} start={start} end={end} />}
+      {start && end && <AnalysisEvolutionGraph graphData={graphData} start={start} end={end} />}
     </div>
   )
 }
@@ -62,7 +62,6 @@ function AnalysisItem({
 const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, hasAnalysisLayers, analysisAreaName } = props
   const analysisGeometryLoaded = useAnalysisGeometry()
-  const { t } = useTranslation()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   if (
     workspaceStatus === AsyncReducerStatus.Finished &&
@@ -70,7 +69,9 @@ const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
     (!layersTimeseriesFiltered || !layersTimeseriesFiltered?.length)
   )
     return (
-      <p className={styles.emptyDataPlaceholder}>{t('analysis.noData', 'No data available')}</p>
+      <div className={styles.graphContainer}>
+        <Spinner />
+      </div>
     )
 
   return workspaceStatus !== AsyncReducerStatus.Finished ||

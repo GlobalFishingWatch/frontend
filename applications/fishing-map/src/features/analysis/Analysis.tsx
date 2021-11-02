@@ -38,14 +38,15 @@ import {
 } from './analysis.slice'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
-import { AnalysisGraphProps } from './AnalysisItemGraph'
+import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
+import { ComparisonGraphProps } from './AnalysisPediodComparisonGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 import AnalysisBeforeAfter from './AnalysisBeforeAfter'
 
 const DATASETS_REPORT_SUPPORTED = ['global', 'private-ecuador']
 
 export type AnalysisTypeProps = {
-  layersTimeseriesFiltered?: AnalysisGraphProps[]
+  layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
 }
@@ -182,6 +183,8 @@ function Analysis() {
         id: 'correlation',
         title: t('analysis.correlation', 'correlation'),
         disabled: true,
+        tooltip: t('common.comingSoon', 'Coming Soon'),
+        tooltipPlacement: 'top',
       },
       {
         id: 'periodComparison',
@@ -190,7 +193,9 @@ function Analysis() {
       {
         id: 'beforeAfter',
         title: t('analysis.beforeAfter', 'before/after'),
-        disabled: false,
+        disabled: true,
+        tooltip: t('common.comingSoon', 'Coming Soon'),
+        tooltipPlacement: 'top',
       },
     ],
     [t]
@@ -233,86 +238,83 @@ function Analysis() {
         </div>
       </div>
 
-      <div className={styles.contentContainer}>
-        <div className={styles.content}>
-          {AnalysisComponent && (
-            <AnalysisComponent
-              layersTimeseriesFiltered={layersTimeseriesFiltered}
-              hasAnalysisLayers={hasAnalysisLayers}
-              analysisAreaName={analysisAreaName}
+      <div className={styles.content}>
+        {AnalysisComponent && (
+          <AnalysisComponent
+            layersTimeseriesFiltered={layersTimeseriesFiltered}
+            hasAnalysisLayers={hasAnalysisLayers}
+            analysisAreaName={analysisAreaName}
+          />
+        )}
+        {gfwUser && (
+          <div>
+            <Choice
+              options={ANALYSIS_TYPE_OPTIONS}
+              className={cx('print-hidden', styles.typeChoice)}
+              activeOption={analysisType}
+              onOptionClick={onAnalysisTypeClick}
             />
+          </div>
+        )}
+        <div>
+          {analysisGeometry && (
+            <p className={styles.placeholder}>
+              {t(
+                'analysis.disclaimer',
+                'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+              )}
+            </p>
           )}
         </div>
-      </div>
-
-      {gfwUser && (
-        <div>
-          <Choice
-            options={ANALYSIS_TYPE_OPTIONS}
-            className={cx('print-hidden', styles.typeChoice)}
-            activeOption={analysisType}
-            onOptionClick={onAnalysisTypeClick}
-          />
-        </div>
-      )}
-      <div>
-        {analysisGeometry && (
-          <p className={styles.placeholder}>
-            {t(
-              'analysis.disclaimer',
-              'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-            )}
+        <div className={styles.footer}>
+          <p
+            className={cx(styles.footerMsg, {
+              [styles.error]: reportStatus === AsyncReducerStatus.Error,
+            })}
+          >
+            {reportStatus === AsyncReducerStatus.Error
+              ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
+              : ''}
+            {reportStatus === AsyncReducerStatus.Finished
+              ? `${t('analysis.completed', 'The report will be in your email soon')} (${
+                  userData?.email
+                })`
+              : ''}
           </p>
-        )}
-      </div>
-      <div className={styles.footer}>
-        <p
-          className={cx(styles.footerMsg, {
-            [styles.error]: reportStatus === AsyncReducerStatus.Error,
-          })}
-        >
-          {reportStatus === AsyncReducerStatus.Error
-            ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
-            : ''}
-          {reportStatus === AsyncReducerStatus.Finished
-            ? `${t('analysis.completed', 'The report will be in your email soon')} (${
-                userData?.email
-              })`
-            : ''}
-        </p>
-        {hasAnalysisLayers &&
-          (guestUser && !timeRangeTooLong ? (
-            <Button
-              type="secondary"
-              className={styles.saveBtn}
-              tooltip={t('analysis.downloadLogin', 'Please login to download report')}
-              onClick={onLoginClick}
-            >
-              {t('analysis.download', 'Download report')}
-            </Button>
-          ) : (
-            <Button
-              className={styles.saveBtn}
-              onClick={onDownloadClick}
-              loading={reportStatus === AsyncReducerStatus.LoadingCreate}
-              tooltip={downloadTooltip}
-              tooltipPlacement="top"
-              disabled={
-                !analysisGeometryLoaded ||
-                !layersTimeseriesFiltered ||
-                timeRangeTooLong ||
-                !hasAnalysisLayers ||
-                !datasetsReportSupported ||
-                reportStatus === AsyncReducerStatus.Finished
-              }
-            >
-              {reportStatus === AsyncReducerStatus.Finished ? (
-                <Icon icon="tick" />
-              ) : (
-                t('analysis.download', 'Download report')
-              )}
-            </Button>
-          ))}
+          {hasAnalysisLayers &&
+            (guestUser && !timeRangeTooLong ? (
+              <Button
+                type="secondary"
+                className={styles.saveBtn}
+                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
+                onClick={onLoginClick}
+              >
+                {t('analysis.download', 'Download report')}
+              </Button>
+            ) : (
+              <Button
+                className={styles.saveBtn}
+                onClick={onDownloadClick}
+                loading={reportStatus === AsyncReducerStatus.LoadingCreate}
+                tooltip={downloadTooltip}
+                tooltipPlacement="top"
+                disabled={
+                  !analysisGeometryLoaded ||
+                  !layersTimeseriesFiltered ||
+                  timeRangeTooLong ||
+                  !hasAnalysisLayers ||
+                  !datasetsReportSupported ||
+                  reportStatus === AsyncReducerStatus.Finished
+                }
+              >
+                {reportStatus === AsyncReducerStatus.Finished ? (
+                  <Icon icon="tick" />
+                ) : (
+                  t('analysis.download', 'Download report')
+                )}
+              </Button>
+            ))}
+        </div>
       </div>
     </div>
   )

@@ -54,11 +54,9 @@ const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
 
 const MapControls = ({
   mapLoading = false,
-  disabled = false,
   onMouseEnter,
 }: {
   mapLoading?: boolean
-  disabled?: boolean
   onMouseEnter: () => void
 }): React.ReactElement => {
   const { t } = useTranslation()
@@ -176,20 +174,24 @@ const MapControls = ({
           />
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
         </div>
-        <div className={cx('print-hidden', styles.controlsNested, { [styles.disabled]: disabled })}>
-          {extendedControls && <MapSearch />}
-          <IconButton
-            icon="plus"
-            type="map-tool"
-            tooltip={t('map.zoom_in', 'Zoom in')}
-            onClick={onZoomInClick}
-          />
-          <IconButton
-            icon="minus"
-            type="map-tool"
-            tooltip={t('map.zoom_out', 'Zoom out')}
-            onClick={onZoomOutClick}
-          />
+        <div className={cx('print-hidden', styles.controlsNested)}>
+          {extendedControls && !isAnalyzing && <MapSearch />}
+          {!isAnalyzing && (
+            <IconButton
+              icon="plus"
+              type="map-tool"
+              tooltip={t('map.zoom_in', 'Zoom in')}
+              onClick={onZoomInClick}
+            />
+          )}
+          {!isAnalyzing && (
+            <IconButton
+              icon="minus"
+              type="map-tool"
+              tooltip={t('map.zoom_out', 'Zoom out')}
+              onClick={onZoomOutClick}
+            />
+          )}
           {extendedControls && (
             <Fragment>
               {!isAnalyzing && <Rulers />}
@@ -222,14 +224,14 @@ const MapControls = ({
                   ></button>
                 </Tooltip>
               )}
-              <IconButton
-                type="map-tool"
-                tooltip={t('map.loading', 'Loading')}
-                loading={mapLoading}
-                className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
-              />
             </Fragment>
           )}
+          <IconButton
+            type="map-tool"
+            tooltip={t('map.loading', 'Loading')}
+            loading={mapLoading}
+            className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
+          />
         </div>
       </div>
       <Modal
