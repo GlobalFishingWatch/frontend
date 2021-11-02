@@ -62,10 +62,10 @@
     "prettier": "2.3.0",
     "prettier-eslint": "^12.0.0",
     "rimraf": "^3.0.2",
-    "stylelint": "^13.13.1",
-    "stylelint-config-css-modules": "^2.2.0",
-    "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-standard": "^20.0.0",
+    "stylelint": "^14.0.1",
+    "stylelint-config-css-modules": "^2.3.0",
+    "stylelint-config-prettier": "^9.0.2",
+    "stylelint-config-standard": "^23.0.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5",
     "typescript-plugin-css-modules": "^3.4.0"
@@ -93,13 +93,9 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint -c ./.eslintrc.js --fix --resolve-plugins-relative-to ."
     ],
-    "*.css": [
+    "*.{css, scss}": [
       "prettier --write",
       "stylelint --fix"
-    ],
-    "*.scss": [
-      "prettier --write",
-      "stylelint --syntax=scss --fix"
     ]
   }
 }

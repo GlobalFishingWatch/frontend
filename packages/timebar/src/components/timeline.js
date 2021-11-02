@@ -418,7 +418,7 @@ class Timeline extends PureComponent {
               }}
             >
               <TimelineUnits
-                zoomToLabel={labels}
+                labels={labels}
                 start={start}
                 end={end}
                 absoluteStart={absoluteStart}

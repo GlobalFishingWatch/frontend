@@ -21,11 +21,13 @@ function ColorRampLegend({
 }: ColorRampLegendProps) {
   const { gridArea, ramp, colorRamp, loading, label, unit, currentValue, type } = layer
 
-  // Omit bucket that goes from -Infinity --> 0. Will have to add an exception if we need a divergent scale
-  const cleanRamp = ramp?.filter(([value]) => value !== Number.NEGATIVE_INFINITY)
+  // Omit bucket that goes from -Infinity --> 0 on non-divergent scales.
+  const omitFirstBucket = !layer.divergent
+  const cleanRamp = omitFirstBucket ? ramp?.slice(1) : ramp
   const cleanValues = ramp?.filter(([value]) => value)
-  const skipOddLabels = cleanValues && cleanValues.length >= 6
+  const skipOddLabels = cleanValues && cleanValues.length >= 6 && !layer.divergent
 
+  // This scale is only used to draw non discrete gradient, and current value positioning
   const heatmapLegendScale = useMemo(() => {
     if (!ramp || !cleanRamp) return null
 
@@ -35,9 +37,17 @@ function ColorRampLegend({
       return value as number
     })
 
-    return scaleLinear()
-      .range(cleanRamp.map((item, i) => (i * 100) / (ramp.length - 1)))
-      .domain(domainValues)
+    // Reuse d3 logic when values go beyond max value
+    if (domainValues[0] === -Infinity) {
+      domainValues[0] = domainValues[1] + domainValues[2]
+    }
+
+    const rangeValues = cleanRamp.map((item, i) => (i * 100) / cleanRamp.length)
+
+    return (value: number) => {
+      const scaled = scaleLinear().range(rangeValues).domain(domainValues)(value)
+      return isNaN(scaled) || scaled < 0 ? 0 : scaled
+    }
   }, [cleanRamp, ramp])
 
   const backgroundStyle = useMemo(() => {
@@ -78,7 +88,7 @@ function ColorRampLegend({
           </div>
         </div>
         <div className={cx(styles.stepsContainer)}>
-          {colorRamp.map((color: string, i: number) => {
+          {colorRamp.map((_: string, i: number) => {
             if (skipOddLabels && i !== 0 && i !== colorRamp.length && i % 2 === 1) return null
             return (
               <span
@@ -119,7 +129,7 @@ function ColorRampLegend({
                   left: `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`,
                 }}
               >
-                {formatLegendValue(currentValue)}
+                {formatLegendValue(currentValue, false, false, layer.divergent)}
               </span>
             )}
             {type === 'colorramp-discrete' && (
@@ -136,21 +146,31 @@ function ColorRampLegend({
           </div>
           <div className={styles.stepsContainer}>
             {cleanRamp.map(([value], i) => {
-              if (value === null || value === undefined) return null
+              if (value === null || value === undefined || value === -Infinity) return null
               const roundValue = roundValues
                 ? roundLegendNumber(value as number)
                 : parseLegendNumber(value as number)
-              const valueLabel = typeof value === 'string' ? value : formatLegendValue(roundValue)
+              const valueLabel =
+                typeof value === 'string'
+                  ? value
+                  : formatLegendValue(
+                      roundValue,
+                      (omitFirstBucket && i === 0) || (!omitFirstBucket && i === 1),
+                      i === cleanRamp.length - 1,
+                      layer.divergent
+                    )
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (
                 <span
                   className={cx(styles.step, {
-                    [styles.lastStep]: !skipOddLabels && i === cleanRamp.length - 1,
+                    [styles.firstStep]: omitFirstBucket && i === 0,
+                    [styles.lastStep]:
+                      !skipOddLabels && !layer.divergent && i === cleanRamp.length - 1,
                   })}
-                  style={{ left: `${(i * 100) / (ramp.length - 1)}%` }}
+                  style={{ left: `${(i * 100) / cleanRamp.length}%` }}
                   key={i}
                 >
-                  {(i === ramp.length - 1 && !isNaN(roundValue) ? '≥ ' : '') + valueLabel}
+                  {valueLabel}
                 </span>
               )
             })}

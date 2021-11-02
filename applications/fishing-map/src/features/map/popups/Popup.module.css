@@ -242,14 +242,14 @@
   top: -2rem;
   right: -2rem;
   background-color: var(--color-primary-blue);
-  color: rgba(var(--white-rgb), 0.8);
+  color: rgb(var(--white-rgb) 0.8);
   opacity: 1;
   border: var(--border-white);
 }
 
 :global(.mapboxgl-popup .mapboxgl-popup-close-button:hover) {
   opacity: 1;
-  color: rgba(var(--white-rgb), 1);
+  color: rgb(var(--white-rgb) 1);
   background-color: var(--color-primary-blue);
 }
 

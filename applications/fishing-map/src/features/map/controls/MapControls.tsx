@@ -175,19 +175,23 @@ const MapControls = ({
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {extendedControls && <MapSearch />}
-          <IconButton
-            icon="plus"
-            type="map-tool"
-            tooltip={t('map.zoom_in', 'Zoom in')}
-            onClick={onZoomInClick}
-          />
-          <IconButton
-            icon="minus"
-            type="map-tool"
-            tooltip={t('map.zoom_out', 'Zoom out')}
-            onClick={onZoomOutClick}
-          />
+          {extendedControls && !isAnalyzing && <MapSearch />}
+          {!isAnalyzing && (
+            <IconButton
+              icon="plus"
+              type="map-tool"
+              tooltip={t('map.zoom_in', 'Zoom in')}
+              onClick={onZoomInClick}
+            />
+          )}
+          {!isAnalyzing && (
+            <IconButton
+              icon="minus"
+              type="map-tool"
+              tooltip={t('map.zoom_out', 'Zoom out')}
+              onClick={onZoomOutClick}
+            />
+          )}
           {extendedControls && (
             <Fragment>
               {!isAnalyzing && <Rulers />}
@@ -220,14 +224,14 @@ const MapControls = ({
                   ></button>
                 </Tooltip>
               )}
-              <IconButton
-                type="map-tool"
-                tooltip={t('map.loading', 'Loading')}
-                loading={mapLoading}
-                className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
-              />
             </Fragment>
           )}
+          <IconButton
+            type="map-tool"
+            tooltip={t('map.loading', 'Loading')}
+            loading={mapLoading}
+            className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
+          />
         </div>
       </div>
       <Modal

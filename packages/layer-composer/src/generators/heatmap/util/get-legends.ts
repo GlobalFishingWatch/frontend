@@ -5,6 +5,7 @@ import {
   HEATMAP_COLOR_RAMPS,
   GRID_AREA_BY_ZOOM_LEVEL,
   HEATMAP_COLORS_BY_ID,
+  TIME_COMPARE_COLOR_RAMP,
 } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToString } from './colors'
@@ -20,6 +21,8 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
   if (config.mode === HeatmapAnimatedMode.Bivariate) {
     const ramp = getBivariateRamp(visibleSublayers.map((s) => s.colorRamp as ColorRampId))
     return config.sublayers.map(() => ramp)
+  } else if (config.mode === HeatmapAnimatedMode.TimeCompare) {
+    return [TIME_COMPARE_COLOR_RAMP]
   }
 
   return config.sublayers.map(({ colorRamp, colorRampWhiteEnd, visible }) => {
@@ -57,9 +60,29 @@ export const getSublayersBreaks = (
   const end = toDT(config.end)
   // uses 'years' as breaks request a year with temporal-aggregation true
   const deltaInterval = end.diff(start, 'days').days / 10
-  return breaks?.map((bre) => {
+  const sublayersBreaks = breaks?.map((bre) => {
     return getCleanBreaks(bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel)))
   })
+
+  if (config.mode === HeatmapAnimatedMode.TimeCompare && sublayersBreaks) {
+    let biggerBreaks
+    let currentBiggerBreakMaxValue = 0
+    for (let index = 0; index < sublayersBreaks.length; index++) {
+      const sublayerBreaks = sublayersBreaks[index]
+      // Assuming the last value is the bigger one
+      const sublayerLastBreak = sublayerBreaks[sublayerBreaks.length - 1]
+      if (sublayerLastBreak > currentBiggerBreakMaxValue) {
+        currentBiggerBreakMaxValue = sublayerLastBreak
+        biggerBreaks = sublayerBreaks
+      }
+    }
+    if (!biggerBreaks) return undefined
+    const negativeBreaks = biggerBreaks.slice(1).map((bre) => -bre)
+    negativeBreaks.reverse()
+    return [negativeBreaks.concat(biggerBreaks)]
+  }
+
+  return sublayersBreaks
 }
 
 const getGridAreaByZoom = (zoom: number): number => {
@@ -175,11 +198,41 @@ const getLegendsBivariate = (config: GlobalHeatmapAnimatedGeneratorConfig, break
   ]
 }
 
+const getLegendsTimeCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
+  const sublayer = config.sublayers[0]
+  const colorRamp = getSublayersColorRamps(config)[0]
+  let ramp: [number | null | string, string][] = []
+  if (breaks.length && colorRamp) {
+    const sublayerBreaks = breaks[0] as [number, number, number, number, number, number, number]
+    ramp = colorRamp.map((color, i) => {
+      if (i === 0) return [-Infinity, color]
+      return [sublayerBreaks[i - 1], color]
+    })
+  }
+  return [
+    {
+      mode: config.mode,
+      id: sublayer.id,
+      type: LegendType.ColorRampDiscrete,
+      unit: sublayer.legend?.unit,
+      loading: !breaks?.length,
+      sublayersBreaks: breaks,
+      ramp,
+      colorRamp: TIME_COMPARE_COLOR_RAMP,
+      divergent: true,
+    },
+  ]
+}
+
 const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
-  const legends =
-    config.mode === HeatmapAnimatedMode.Bivariate
-      ? getLegendsBivariate(config, breaks)
-      : getLegendsCompare(config, breaks)
+  let legends: LayerMetadataLegend[] = []
+  if (config.mode === HeatmapAnimatedMode.TimeCompare) {
+    legends = getLegendsTimeCompare(config, breaks)
+  } else if (config.mode === HeatmapAnimatedMode.Bivariate) {
+    legends = getLegendsBivariate(config, breaks)
+  } else {
+    legends = getLegendsCompare(config, breaks)
+  }
 
   const gridArea = getGridAreaByZoom(config.zoom)
 

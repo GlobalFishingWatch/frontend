@@ -14,6 +14,7 @@ export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombi
   [HeatmapAnimatedMode.Single]: SublayerCombinationMode.None,
   [HeatmapAnimatedMode.Compare]: SublayerCombinationMode.Max,
   [HeatmapAnimatedMode.Bivariate]: SublayerCombinationMode.Bivariate,
+  [HeatmapAnimatedMode.TimeCompare]: SublayerCombinationMode.TimeCompare,
   [HeatmapAnimatedMode.Blob]: SublayerCombinationMode.Literal,
   [HeatmapAnimatedMode.Extruded]: SublayerCombinationMode.Cumulative,
 }
@@ -22,6 +23,7 @@ export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
   [HeatmapAnimatedMode.Single]: 'fill',
   [HeatmapAnimatedMode.Compare]: 'fill',
   [HeatmapAnimatedMode.Bivariate]: 'fill',
+  [HeatmapAnimatedMode.TimeCompare]: 'fill',
   [HeatmapAnimatedMode.Blob]: 'heatmap',
   [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
 }
@@ -66,3 +68,14 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   orange: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.orange),
   orange_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.orange),
 }
+
+export const TIME_COMPARE_COLOR_RAMP = [
+  '#3EF0FF', // -100 000
+  '#3DADDF', // -50000 -> -100000
+  '#4286C1', // -8000 -> -50000
+  '#3F69A4', // 0 -> -8000
+  '#4A4174',
+  '#844A7F',
+  '#B0547F',
+  '#FF677D',
+]

@@ -13,8 +13,21 @@
     "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
     "title": "Analysis",
-    "vesselFlags": "for vessels flagged by"
+    "vesselFlags": "for vessels flagged by",
+    "evolution": "evolution",
+    "correlation": "correlation",
+    "periodComparison": "Period comparison",
+    "beforeAfter": "before/after",
+    "changeIn": "Change in",
+    "periodComparison1st": "baseline start",
+    "periodComparison2nd": "comparison start",
+    "periodComparisonDuration": "duration",
+    "periodComparisonRange": "between the {{duration}} after {{start}} and after {{compareStart}}",
+    "beforeAfterDate": "date",
+    "beforeAfterDuration": "duration",
+    "beforeAfterRange": "between the {{duration}} before and after {{start}}"
   },
+
   "common": {
     "active_after": "Active after",
     "active_before": "Active before",

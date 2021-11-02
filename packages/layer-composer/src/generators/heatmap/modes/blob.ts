@@ -1,8 +1,8 @@
 import { zip } from 'lodash'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import { TimeChunks } from '../util/time-chunks'
+import { TimeChunks, pickActiveTimeChunk } from '../util/time-chunks'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
-import getBaseLayer from '../util/get-base-layer'
+import getBaseLayer from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
 import { Breaks } from '../util/fetch-breaks'
 
@@ -45,7 +45,7 @@ const blob = (
   breaks: Breaks
 ) => {
   const { colorRamp } = getColorRampBaseExpression(config)
-  const activeChunk = timeChunks.chunks.find((chunk) => chunk.active)
+  const activeChunk = pickActiveTimeChunk(timeChunks)
   if (!activeChunk) return []
   const pickValueAt = activeChunk.frame.toString()
   const exprPick = ['coalesce', ['get', pickValueAt], 0]
@@ -66,10 +66,11 @@ const blob = (
   paint['heatmap-intensity'][4] = baseIntensity
   paint['heatmap-intensity'][6] = maxIntensity
 
-  const chunkMainLayer = getBaseLayer(config)
-  // TODO proper layer/src ids
-  chunkMainLayer.id = getLayerId(config.id, activeChunk)
-  chunkMainLayer.source = getSourceId(config.id, activeChunk)
+  const chunkMainLayer = getBaseLayer(
+    config,
+    getLayerId(config.id, activeChunk),
+    getSourceId(config.id, activeChunk)
+  )
   chunkMainLayer.paint = paint as any
 
   if (!chunkMainLayer.metadata) return []

@@ -8,7 +8,7 @@ type Feature = {
   }
 }
 
-interface TimeSeriesFrame {
+export interface TimeSeriesFrame {
   frame: number
   // key will be "0", "1", etc corresponding to a stringified sublayer index.
   // This is intended to accomodate the d3 layouts we use. The associated value corresponds to
@@ -16,7 +16,7 @@ interface TimeSeriesFrame {
   [key: string]: number
 }
 
-type TimeSeries = {
+export type TimeSeries = {
   values: TimeSeriesFrame[]
   minFrame: number
   maxFrame: number

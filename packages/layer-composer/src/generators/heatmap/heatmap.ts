@@ -4,6 +4,7 @@ import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../layer-composer'
+import { TEMPORALGRID_SOURCE_LAYER } from '..'
 import fetchStats from './util/fetch-stats'
 import {
   HEATMAP_COLOR_RAMPS,
@@ -103,7 +104,7 @@ class HeatmapGenerator {
       {
         id: config.id,
         source: config.id,
-        'source-layer': 'temporalgrid',
+        'source-layer': TEMPORALGRID_SOURCE_LAYER,
         type: 'fill',
         paint,
         metadata: {
@@ -127,7 +128,7 @@ class HeatmapGenerator {
       {
         id: `${config.id}_interaction`,
         source: config.id,
-        'source-layer': 'temporalgrid',
+        'source-layer': TEMPORALGRID_SOURCE_LAYER,
         type: 'line',
         paint: {
           'line-color': 'white',

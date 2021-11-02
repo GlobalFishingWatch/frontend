@@ -6,8 +6,9 @@ import {
   ExtendedStyleMeta,
   CONFIG_BY_INTERVAL,
   Interval,
+  pickActiveTimeChunk,
 } from '@globalfishingwatch/layer-composer'
-import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
+import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
@@ -39,7 +40,7 @@ const getExtendedFeatures = (
     const generatorId = feature.layer.metadata?.generatorId ?? null
 
     // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
-    let generatorMetadata
+    let generatorMetadata: any
     if (metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
       generatorMetadata = metadata?.generatorsMetadata[generatorId]
     } else {
@@ -68,7 +69,7 @@ const getExtendedFeatures = (
       case Generators.Type.HeatmapAnimated:
         const timeChunks = generatorMetadata?.timeChunks
         const frame = timeChunks?.activeChunkFrame
-        const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
+        const activeTimeChunk = pickActiveTimeChunk(timeChunks)
 
         // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
         // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
@@ -81,11 +82,20 @@ const getExtendedFeatures = (
           frame,
           delta: Math.max(1, timeChunks.deltaInIntervalUnits),
           quantizeOffset: activeTimeChunk.quantizeOffset,
-          sublayerCount: numSublayers,
+          sublayerCount:
+            generatorMetadata?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare
+              ? 2
+              : numSublayers,
           aggregationOperation: generatorMetadata?.aggregationOperation,
+          sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
           multiplier: generatorMetadata?.multiplier,
         })
-        if (!values || !values.filter((v: number) => v > 0).length) return []
+
+        if (debug) {
+          console.log(properties.rawValues)
+        }
+
+        if (!values || !values.filter((v: number) => v !== 0).length) return []
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
         const sublayers = generatorMetadata?.sublayers
         return values.flatMap((value: any, i: number) => {
@@ -96,6 +106,7 @@ const getExtendedFeatures = (
               sublayerIndex: i,
               sublayerId: sublayers[i].id,
               sublayerInteractionType: sublayers[i].interactionType,
+              sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
               visible: visibleSublayers[i] === true,
               col: properties._col as number,
               row: properties._row as number,
@@ -196,7 +207,7 @@ export const useMapClick = (
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
           event.features,
           metadata,
-          true
+          false
         )
         const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 

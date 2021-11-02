@@ -1,6 +1,6 @@
 export { default as aggregateCell } from './aggregate-cell'
 export { default as aggregateTile } from './aggregate-tile'
-export { default as getTimeSeries } from './get-time-series'
+export { default as getTimeSeries, TimeSeries, TimeSeriesFrame } from './get-time-series'
 export {
   getCellValues,
   getRealValue,
@@ -14,5 +14,8 @@ export {
   AggregationOperation,
   TileAggregationParams,
   TileAggregationSourceParams,
+  TileAggregationSourceParamsSerialized,
+  TileAggregationDateRange,
+  TileAggregationComparisonDateRange,
 } from './types'
 export * from './constants'

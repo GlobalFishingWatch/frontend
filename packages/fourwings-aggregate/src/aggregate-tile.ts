@@ -211,6 +211,15 @@ const getBivariateValue = (realValues: number[], breaks?: number[][]) => {
   }
 }
 
+const getTimeCompareValue = (realValues: number[], breaks?: number[][]) => {
+  const delta = realValues[1] - realValues[0]
+  if (delta === 0) return undefined
+  if (breaks) {
+    return getBucketIndex(breaks[0], delta)
+  }
+  return delta
+}
+
 const getLiteralValues = (realValues: number[], sublayerCount: number) => {
   if (sublayerCount === 1) return realValues
   return `[${realValues.join(',')}]`
@@ -221,7 +230,12 @@ const getCumulativeValue = (realValuesSum: number, cumulativeValuesPaddedStrings
   return cumulativeValuesPaddedStrings.join('')
 }
 
-const aggregate = (intArray: number[], options: TileAggregationParams) => {
+const err = (msg: string) => {
+  console.error('4w-agg::', msg)
+  throw new Error(`4w-agg::${msg}`)
+}
+
+function aggregate(intArray: number[], options: TileAggregationParams) {
   const {
     quantizeOffset = 0,
     tileBBox,
@@ -239,7 +253,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     aggregationOperation,
   } = options
   if (sublayerCombinationMode === SublayerCombinationMode.None && sublayerCount > 1) {
-    throw new Error('Multiple sublayers but no proper combination mode set')
+    err('Multiple sublayers but no proper combination mode set')
   }
   if (
     sublayerBreaks &&
@@ -247,35 +261,41 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     (sublayerCombinationMode === SublayerCombinationMode.Max ||
       sublayerCombinationMode === SublayerCombinationMode.Bivariate)
   ) {
-    throw new Error(
+    err(
       'must provide as many breaks arrays as number of datasets when using compare and bivariate modes'
     )
+  }
+  if (sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
+    if (sublayerCount !== 2) err('delta combinationMode requires sublayer count === 2')
+    if (sublayerBreaks) {
+      if (sublayerBreaks.length !== 1)
+        err('delta combinationMode requires exactly one breaks array to generate a diverging scale')
+    }
   }
   if (
     sublayerBreaks &&
     sublayerBreaks.length !== 1 &&
     sublayerCombinationMode === SublayerCombinationMode.Add
   ) {
-    throw new Error('add combinationMode requires one and only one breaks array')
+    err('add combinationMode requires one and only one breaks array')
   }
   if (sublayerCombinationMode === SublayerCombinationMode.Bivariate) {
-    if (sublayerCount !== 2)
-      throw new Error('bivariate combinationMode requires exactly two datasets')
+    if (sublayerCount !== 2) err('bivariate combinationMode requires exactly two datasets')
     if (sublayerBreaks) {
       if (sublayerBreaks.length !== 2)
-        throw new Error('bivariate combinationMode requires exactly two breaks array')
+        err('bivariate combinationMode requires exactly two breaks array')
       if (sublayerBreaks[0].length !== sublayerBreaks[1].length)
-        throw new Error('bivariate breaks arrays must have the same length')
+        err('bivariate breaks arrays must have the same length')
       // TODO This might change if we want bivariate with more or less than 16 classes
       if (sublayerBreaks[0].length !== 4 || sublayerBreaks[1].length !== 4)
-        throw new Error('each bivariate breaks array require exactly 4 values')
+        err('each bivariate breaks array require exactly 4 values')
     }
   }
 
   const features = []
   const featuresInteractive = []
 
-  let aggregating = Array(sublayerCount).fill([])
+  let aggregating: number[][] = Array(sublayerCount).fill([])
   let currentAggregatedValues = Array(sublayerCount).fill(0)
   let currentAggregatedValuesLength = 0
 
@@ -390,7 +410,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
 
         let tailValue = 0
         if (tail > currentFeatureMinTimestamp) {
-          tailValue = aggregating[datasetIndex].shift()
+          tailValue = aggregating[datasetIndex].shift() as number
         } else {
           currentAggregatedValuesLength++
         }
@@ -464,6 +484,8 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
             finalValue = getValue(realValuesSum, sublayerBreaks)
           } else if (sublayerCombinationMode === SublayerCombinationMode.Bivariate) {
             finalValue = getBivariateValue(currentAggregatedValues, sublayerBreaks)
+          } else if (sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
+            finalValue = getTimeCompareValue(currentAggregatedValues, sublayerBreaks)
           } else if (sublayerCombinationMode === SublayerCombinationMode.Literal) {
             finalValue = literalValuesStr
           } else if (sublayerCombinationMode === SublayerCombinationMode.Cumulative) {
