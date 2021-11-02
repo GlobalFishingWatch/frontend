@@ -1,6 +1,6 @@
 import { zip } from 'lodash'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import { TimeChunks } from '../util/time-chunks'
+import { TimeChunks, pickActiveTimeChunk } from '../util/time-chunks'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
@@ -45,7 +45,7 @@ const blob = (
   breaks: Breaks
 ) => {
   const { colorRamp } = getColorRampBaseExpression(config)
-  const activeChunk = timeChunks.chunks.find((chunk) => chunk.active)
+  const activeChunk = pickActiveTimeChunk(timeChunks)
   if (!activeChunk) return []
   const pickValueAt = activeChunk.frame.toString()
   const exprPick = ['coalesce', ['get', pickValueAt], 0]

@@ -14,7 +14,13 @@ import TileClusterGenerator from './tile-cluster/tile-cluster'
 
 export { HEATMAP_COLOR_RAMPS, COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
 export { DEFAULT_HEATMAP_INTERVALS } from './heatmap/heatmap-animated'
-export { CONFIG_BY_INTERVAL, Interval } from './heatmap/util/time-chunks'
+export {
+  CONFIG_BY_INTERVAL,
+  Interval,
+  TimeChunks,
+  TimeChunk,
+  pickActiveTimeChunk,
+} from './heatmap/util/time-chunks'
 export {
   TEMPORALGRID_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,

@@ -11,16 +11,15 @@ import {
   quantizeOffsetToDate,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
   Interval,
+  pickActiveTimeChunk,
+  TimeChunk,
+  TimeChunks,
 } from '@globalfishingwatch/layer-composer'
 import {
   getTimeSeries,
   getRealValues,
   TimeSeriesFrame,
 } from '@globalfishingwatch/fourwings-aggregate'
-import {
-  TimeChunk,
-  TimeChunks,
-} from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { MapboxEvent } from '@globalfishingwatch/mapbox-gl'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
@@ -137,9 +136,7 @@ export const useFilteredTimeSeries = () => {
           const sourceMetadata = layersWithFeatures[sourceIndex].metadata
           const sourceNumSublayers = sourceMetadata.numSublayers
           // TODO handle multiple timechunks
-          const sourceActiveTimeChunk = sourceMetadata.timeChunks.chunks.find(
-            (c: any) => c.active
-          ) as TimeChunk
+          const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
           const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
           const sourceInterval = sourceMetadata.timeChunks.interval
           const { values: valuesContainedRaw } = getTimeSeries(

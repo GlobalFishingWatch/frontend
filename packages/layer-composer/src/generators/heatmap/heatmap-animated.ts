@@ -20,7 +20,13 @@ import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { Group } from '../..'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
-import { TimeChunk, TimeChunks, getActiveTimeChunks, Interval } from './util/time-chunks'
+import {
+  TimeChunk,
+  TimeChunks,
+  getActiveTimeChunks,
+  Interval,
+  pickActiveTimeChunk,
+} from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
@@ -165,7 +171,7 @@ class HeatmapAnimatedGenerator {
 
     const sourceTimeChunks =
       config.mode === HeatmapAnimatedMode.TimeCompare
-        ? [timeChunks.chunks.find((t) => t.active) || timeChunks.chunks[0]]
+        ? [pickActiveTimeChunk(timeChunks)]
         : timeChunks.chunks
 
     const sources = sourceTimeChunks.flatMap((timeChunk: TimeChunk) => {

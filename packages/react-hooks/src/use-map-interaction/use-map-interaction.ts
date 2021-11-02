@@ -6,6 +6,7 @@ import {
   ExtendedStyleMeta,
   CONFIG_BY_INTERVAL,
   Interval,
+  pickActiveTimeChunk,
 } from '@globalfishingwatch/layer-composer'
 import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
@@ -68,7 +69,7 @@ const getExtendedFeatures = (
       case Generators.Type.HeatmapAnimated:
         const timeChunks = generatorMetadata?.timeChunks
         const frame = timeChunks?.activeChunkFrame
-        const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
+        const activeTimeChunk = pickActiveTimeChunk(timeChunks)
 
         // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
         // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range

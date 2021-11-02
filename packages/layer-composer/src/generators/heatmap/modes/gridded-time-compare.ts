@@ -5,7 +5,7 @@ import getBaseLayer, {
   getBaseInteractionHoverLayer,
   getBaseInteractionLayer,
 } from '../util/get-base-layers'
-import { TimeChunks } from '../util/time-chunks'
+import { TimeChunks, pickActiveTimeChunk } from '../util/time-chunks'
 import { getLayerId, getSourceId } from '../util'
 import { getColorRampBaseExpression } from '../util/get-legends'
 
@@ -13,7 +13,7 @@ export default function griddedTimeCompare(
   config: GlobalHeatmapAnimatedGeneratorConfig,
   timeChunks: TimeChunks
 ) {
-  const timeChunk = timeChunks.chunks.find((t) => t.active) || timeChunks.chunks[0]
+  const timeChunk = pickActiveTimeChunk(timeChunks)
 
   const mainLayer = getBaseLayer(
     config,
