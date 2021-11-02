@@ -125,7 +125,9 @@ const getInterval = (
     }
     return 'day'
   }
-  return '10days'
+  // If interval is not valid on hour or day, fallback on biggest interval (assumed to be last item of supportedIntervals)
+  // Should be 10days, or day in the case of TimeCompare mode
+  return supportedIntervals[supportedIntervals.length - 1]
 }
 
 /**

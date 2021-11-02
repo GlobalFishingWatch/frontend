@@ -280,6 +280,11 @@ class HeatmapAnimatedGenerator {
       }
     }
 
+    // Remove 10days interval in TimeCompare mode
+    if (config.mode === HeatmapAnimatedMode.TimeCompare && Array.isArray(finalConfig.interval)) {
+      finalConfig.interval = finalConfig.interval.filter((i) => i !== '10days')
+    }
+
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
       finalConfig.start,
