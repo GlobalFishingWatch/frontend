@@ -210,8 +210,19 @@ function Analysis() {
 
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
 
+  const disableReportDownload =
+    analysisType !== 'evolution' ||
+    !analysisGeometryLoaded ||
+    !layersTimeseriesFiltered ||
+    timeRangeTooLong ||
+    !hasAnalysisLayers ||
+    !datasetsReportSupported ||
+    reportStatus === AsyncReducerStatus.Finished
+
   let downloadTooltip = ''
-  if (timeRangeTooLong) {
+  if (analysisType !== 'evolution') {
+    downloadTooltip = t('common.comingSoon', 'Coming Soon')
+  } else if (timeRangeTooLong) {
     downloadTooltip = t(
       'analysis.timeRangeTooLong',
       'Reports are only allowed for time ranges up to a year'
@@ -298,14 +309,7 @@ function Analysis() {
                 loading={reportStatus === AsyncReducerStatus.LoadingCreate}
                 tooltip={downloadTooltip}
                 tooltipPlacement="top"
-                disabled={
-                  !analysisGeometryLoaded ||
-                  !layersTimeseriesFiltered ||
-                  timeRangeTooLong ||
-                  !hasAnalysisLayers ||
-                  !datasetsReportSupported ||
-                  reportStatus === AsyncReducerStatus.Finished
-                }
+                disabled={disableReportDownload}
               >
                 {reportStatus === AsyncReducerStatus.Finished ? (
                   <Icon icon="tick" />
