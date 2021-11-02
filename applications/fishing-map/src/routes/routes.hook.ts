@@ -1,9 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import { parse } from 'qs'
-import GFWAPI, { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
+import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import {
+  useLoginRedirect as commonUseLoginRedirect,
+  setRedirectUrl as commonSetRedirectUrl,
+  getLoginUrl as commonGetLoginUrl,
+  redirectToLogin as commonRedirectToLogin,
+} from '@globalfishingwatch/react-hooks'
 import { QueryParams } from 'types'
 import {
   selectCurrentLocation,
@@ -17,38 +22,13 @@ import { updateLocation } from './routes.actions'
 export const CALLBACK_URL_KEY = 'CallbackUrl'
 export const CALLBACK_URL_PARAM = 'callbackUrlStorage'
 
-export const setRedirectUrl = () => {
-  window.localStorage.setItem(CALLBACK_URL_KEY, window.location.toString())
-}
+export const setRedirectUrl = () => commonSetRedirectUrl(CALLBACK_URL_KEY)
 
-export const getLoginUrl = () => {
-  const { origin, pathname } = window.location
-  return GFWAPI.getLoginUrl(`${origin}${pathname}?${CALLBACK_URL_PARAM}=true`)
-}
+export const getLoginUrl = () => commonGetLoginUrl(CALLBACK_URL_PARAM)
 
-export const redirectToLogin = () => {
-  setRedirectUrl()
-  window.location.href = getLoginUrl()
-}
+export const redirectToLogin = () => commonRedirectToLogin(CALLBACK_URL_KEY, CALLBACK_URL_PARAM)
 
-export const useLoginRedirect = () => {
-  const [redirectUrl, setRedirectUrl] = useLocalStorage(CALLBACK_URL_KEY, '')
-
-  const saveRedirectUrl = useCallback(() => {
-    setRedirectUrl(window.location.toString())
-  }, [setRedirectUrl])
-
-  const onLoginClick = useCallback(() => {
-    saveRedirectUrl()
-    window.location.href = getLoginUrl()
-  }, [saveRedirectUrl])
-
-  const cleanRedirectUrl = useCallback(() => {
-    localStorage.removeItem(CALLBACK_URL_KEY)
-  }, [])
-
-  return { redirectUrl, onLoginClick, saveRedirectUrl, cleanRedirectUrl }
-}
+export const useLoginRedirect = () => commonUseLoginRedirect(CALLBACK_URL_KEY, CALLBACK_URL_PARAM)
 
 export const useReplaceLoginUrl = () => {
   const { redirectUrl, cleanRedirectUrl } = useLoginRedirect()

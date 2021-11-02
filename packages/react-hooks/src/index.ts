@@ -2,6 +2,12 @@ export { default as useDataviewsGeneratorConfigs } from './use-dataviews-layers'
 export { default as useDebounce } from './use-debounce'
 export { default as useLayerComposer } from './use-layer-composer'
 export { default as useLocalStorage } from './use-local-storage'
+export { default as useLoginRedirect } from // DEFAULT_CALLBACK_URL_KEY,
+// DEFAULT_CALLBACK_URL_PARAM,
+// getLoginUrl,
+// redirectToLogin,
+// setRedirectUrl,
+'./use-login-redirect'
 export { default as useLogin } from './use-login'
 export { useMapHover, useMapClick } from './use-map-interaction'
 export type {
