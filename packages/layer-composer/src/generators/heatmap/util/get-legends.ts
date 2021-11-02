@@ -211,6 +211,7 @@ const getLegendsTimeCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, bre
   }
   return [
     {
+      mode: config.mode,
       id: sublayer.id,
       type: LegendType.ColorRampDiscrete,
       unit: sublayer.legend?.unit,

@@ -7,6 +7,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generator
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
 import { useMapControl } from './map-context.hooks'
 import styles from './MapLegends.module.css'
 
@@ -37,6 +38,8 @@ interface MapLegendsProps {
 const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: MapLegendsProps) => {
   const { t } = useTranslation()
   const { containerRef } = useMapControl()
+  // Assuming only timeComparison heatmap is visible, so timerange description apply to all
+  const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const legendsTranslated = useMemo(() => {
     return legends
       ?.filter(
@@ -63,9 +66,11 @@ const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: M
         return { ...legend, label }
       })
   }, [legends, t, portalled])
+
   if (!legends || !legends.length) return null
   return (
     <div ref={containerRef} className={cx({ [styles.legendContainer]: !portalled })}>
+      {timeCompareTimeDescription && !portalled && <div>{timeCompareTimeDescription}</div>}
       {legendsTranslated?.map((legend: LegendTranslated, i: number) => {
         if (portalled) {
           const legendDomElement = document.getElementById(legend.id as string)
