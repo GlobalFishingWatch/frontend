@@ -4,5 +4,5 @@ export {
   DEFAULT_CALLBACK_URL_PARAM,
   getLoginUrl,
   redirectToLogin,
-  setRedirectUrl, // useLoginRedirect,
+  setRedirectUrl,
 } from './use-login-redirect'

@@ -16,6 +16,7 @@ steps:
       - '-c'
       - |-
         cp -r --remove-destination --parents -L ./node_modules/@globalfishingwatch ./applications/fishing-map
+
   - name: 'node:12'
     entrypoint: 'yarn'
     id: 'test'

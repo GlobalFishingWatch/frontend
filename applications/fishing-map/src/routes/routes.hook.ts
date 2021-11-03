@@ -15,7 +15,6 @@ import {
   selectLocationPayload,
   selectLocationType,
 } from 'routes/routes.selectors'
-// import { initialDispatch } from 'store'
 import { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 
