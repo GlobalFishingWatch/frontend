@@ -45,6 +45,12 @@ COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
 COPY ./craco.config.js /app/craco.config.js
+
+# override node_modules inside image with
+# generated versions from the monorepo if exists
+# IMPORTANT: README.md file should exists so this step does not fail
+COPY ./README.md ./node_modules/@globalfishingwatc[h] /tmp/@globalfishingwatch/
+RUN rm /tmp/@globalfishingwatch/README.md && cp -r /tmp/@globalfishingwatch /app/node_modules/
 RUN yarn build
 
 #################################################################################
