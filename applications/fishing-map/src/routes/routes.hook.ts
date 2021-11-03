@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import { parse } from 'qs'
-import GFWAPI, { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
+import { GFWAPI, ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { QueryParams } from 'types'
 import useLocalStorage from 'hooks/use-local-storage'

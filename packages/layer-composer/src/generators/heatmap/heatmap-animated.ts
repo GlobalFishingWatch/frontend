@@ -17,15 +17,15 @@ import {
   HeatmapAnimatedGeneratorSublayer,
 } from '../types'
 import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
-import { Group } from '../..'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
-import { API_ENDPOINTS, DEFAULT_HEATMAP_INTERVALS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
+import { Group } from '../../types'
 import {
-  TimeChunk,
-  TimeChunks,
-  getActiveTimeChunks,
-  pickActiveTimeChunk,
-} from './util/time-chunks'
+  API_ENDPOINTS,
+  DEFAULT_HEATMAP_INTERVALS,
+  HEATMAP_DEFAULT_MAX_ZOOM,
+  HEATMAP_MODE_COMBINATION,
+} from './config'
+import { TimeChunk, TimeChunks, getActiveTimeChunks, pickActiveTimeChunk } from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
@@ -33,9 +33,6 @@ import getExtrudedLayer from './modes/extruded'
 import { getSourceId, toURLArray } from './util'
 import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
 import griddedTimeCompare from './modes/gridded-time-compare'
-
-export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid'
-export const TEMPORALGRID_SOURCE_LAYER_INTERACTIVE = 'temporalgrid_interactive'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>

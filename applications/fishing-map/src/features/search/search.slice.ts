@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
-import GFWAPI, {
+import {
+  GFWAPI,
   getAdvancedSearchQuery,
   AdvancedSearchQueryField,
   AdvancedSearchQueryFieldKey,

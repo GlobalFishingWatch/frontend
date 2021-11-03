@@ -7,23 +7,18 @@
   "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "directories": {
-    "src": "src",
-    "dist": "dist"
-  },
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "devDependencies": {},
   "peerDependencies": {
-    "@globalfishingwatch/api-client": "*",
-    "@globalfishingwatch/dataviews-client": "*",
-    "@globalfishingwatch/mapbox-gl": "*",
-    "@globalfishingwatch/layer-composer": "*"
+    "@globalfishingwatch/api-client": "4.x",
+    "@globalfishingwatch/dataviews-client": "14.x",
+    "@globalfishingwatch/fourwings-aggregate": "4.x",
+    "@globalfishingwatch/layer-composer": "10.x",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.25",
+    "lodash": "4.x"
   },
   "publishConfig": {
     "access": "public"

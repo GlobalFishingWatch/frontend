@@ -34,8 +34,13 @@
             "tsConfig": "packages/api-client/tsconfig.lib.json",
             "project": "packages/api-client/package.json",
             "entryFile": "packages/api-client/src/index.ts",
-            "external": ["react/jsx-runtime"],
-            "rollupConfig": "packages/api-client/rollup.config.js",
+            "external": [
+              "react/jsx-runtime",
+              "@globalfishingwatch/pbf",
+              "@globalfishingwatch/pbf/decoders/vessels",
+              "@globalfishingwatch/pbf/decoders/4wings-tile"
+            ],
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [
               {
                 "glob": "packages/api-client/README.md",
@@ -425,32 +430,6 @@
       "sourceRoot": "packages/pbf-decoders",
       "projectType": "library",
       "targets": {
-        "dist": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/packages/pbf-decoders",
-            "tsConfig": "packages/pbf-decoders/tsconfig.lib.json",
-            "project": "packages/pbf-decoders/package.json",
-            "entryFile": "packages/pbf-decoders/index.ts",
-            "external": ["react/jsx-runtime"],
-            "rollupConfig": "packages/pbf-decoders/rollup.config.js",
-            "assets": [
-              {
-                "glob": "packages/pbf-decoders/decoders",
-                "input": ".",
-                "output": "."
-              }
-            ]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["packages/pbf-decoders/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/packages/pbf-decoders"],
@@ -572,6 +551,11 @@
                 "glob": "packages/ui-components/src/base.css",
                 "input": ".",
                 "output": "."
+              },
+              {
+                "glob": "packages/ui-components/src/header/html",
+                "input": ".",
+                "output": "./header"
               }
             ]
           }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import LayerComposer, {
+import {
   sort,
+  LayerComposer,
   ExtendedStyle,
   StyleTransformation,
   getInteractiveLayerIds,

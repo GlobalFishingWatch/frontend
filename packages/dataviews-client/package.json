@@ -2,18 +2,10 @@
   "name": "@globalfishingwatch/dataviews-client",
   "version": "14.1.1",
   "description": "",
-  "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "directories": {
-    "src": "src",
-    "dist": "dist"
-  },
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -21,13 +13,18 @@
   "bugs": {
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "qs": "^6.9.4"
+  },
+  "devDependencies": {
+    "@types/qs": "^6.9.3"
+  },
   "peerDependencies": {
-    "@globalfishingwatch/api-types": "*",
-    "@globalfishingwatch/data-transforms": "*",
-    "@globalfishingwatch/layer-composer": "*",
-    "@reduxjs/toolkit": "1.x"
+    "@globalfishingwatch/api-types": "6.x",
+    "@globalfishingwatch/data-transforms": "1.x",
+    "@globalfishingwatch/layer-composer": "10.x",
+    "@reduxjs/toolkit": "1.x",
+    "lodash": "4.x"
   },
   "publishConfig": {
     "access": "public"

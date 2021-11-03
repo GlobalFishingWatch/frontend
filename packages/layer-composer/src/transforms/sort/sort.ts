@@ -45,7 +45,7 @@ export const convertLegacyGroups = (style: ExtendedStyle): ExtendedStyle => {
   return newStyle
 }
 
-const sort: StyleTransformation = (style, order = GROUP_ORDER) => {
+export const sort: StyleTransformation = (style, order = GROUP_ORDER) => {
   const layers = style.layers ? [...style.layers] : []
   const orderedLayers = layers.sort((a: ExtendedLayer, b: ExtendedLayer) => {
     const aGroup = a.metadata?.group || Group.Default
@@ -56,5 +56,3 @@ const sort: StyleTransformation = (style, order = GROUP_ORDER) => {
   })
   return { ...style, layers: orderedLayers }
 }
-
-export default sort

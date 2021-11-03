@@ -18,9 +18,5 @@
   "files": [
     "dist"
   ],
-  "directories": {
-    "src": "src",
-    "dist": "dist"
-  },
   "type": "module"
 }

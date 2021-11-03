@@ -1,11 +1,7 @@
 import { Layer, Expression } from '@globalfishingwatch/mapbox-gl'
-import {
-  GlobalHeatmapAnimatedGeneratorConfig,
-  TEMPORALGRID_SOURCE_LAYER,
-} from '../heatmap-animated'
+import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
 import { Group } from '../../../types'
-import { GeneratorType } from '../../types'
 import { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer, {
   getBaseDebugLabelsLayer,
@@ -13,6 +9,7 @@ import getBaseLayer, {
   getBaseInteractionLayer,
 } from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
+import { TEMPORALGRID_SOURCE_LAYER } from '../config'
 
 export default function gridded(
   config: GlobalHeatmapAnimatedGeneratorConfig,

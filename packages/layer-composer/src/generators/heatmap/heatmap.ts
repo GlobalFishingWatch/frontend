@@ -4,9 +4,12 @@ import { Group } from '../../types'
 import { GeneratorType, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
-import { TEMPORALGRID_SOURCE_LAYER } from '..'
 import fetchStats from './util/fetch-stats'
-import { HEATMAP_DEFAULT_MAX_ZOOM, COLOR_RAMP_DEFAULT_NUM_STEPS } from './config'
+import {
+  HEATMAP_DEFAULT_MAX_ZOOM,
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  TEMPORALGRID_SOURCE_LAYER,
+} from './config'
 import { HEATMAP_COLOR_RAMPS } from './colors'
 import { StatsByZoom } from './types'
 import getBreaks from './util/get-breaks'

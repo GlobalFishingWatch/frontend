@@ -20,7 +20,7 @@ import {
 import { isConfigVisible } from './generators/utils'
 import { DEFAULT_STYLE } from './config'
 
-class LayerComposer {
+export class LayerComposer {
   version: number
   glyphs: string
   sprite: string
@@ -204,5 +204,3 @@ class LayerComposer {
     return { style: this._getStyleJson(sourcesStyle, layersStyle, metadataStyle), promises }
   }
 }
-
-export default LayerComposer

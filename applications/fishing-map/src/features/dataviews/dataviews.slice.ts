@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy, memoize } from 'lodash'
 import { Dataview } from '@globalfishingwatch/api-types'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 

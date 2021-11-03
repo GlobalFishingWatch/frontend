@@ -25,7 +25,6 @@
       "@globalfishingwatch/i18n-labels/*": ["packages/i18n-labels/*"],
       "@globalfishingwatch/layer-composer": ["packages/layer-composer/src/index.ts"],
       "@globalfishingwatch/ocean-areas": ["packages/ocean-areas/src/index.ts"],
-      "@globalfishingwatch/pbf": ["packages/pbf-decoders/src/index.ts"],
       "@globalfishingwatch/pbf/*": ["packages/pbf-decoders/*"],
       "@globalfishingwatch/react-hooks": ["packages/react-hooks/src/index.ts"],
       "@globalfishingwatch/timebar": ["packages/timebar/src/index.js"],

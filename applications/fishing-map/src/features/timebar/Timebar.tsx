@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import TimebarComponent, {
+import {
+  Timebar,
   TimebarTracks,
   TimebarActivity,
   TimebarHighlighter,
@@ -204,7 +205,7 @@ const TimebarWrapper = () => {
 
   return (
     <div className={styles.timebarWrapper}>
-      <TimebarComponent
+      <Timebar
         enablePlayback={true}
         labels={labels}
         start={internalRange ? internalRange.start : start}
@@ -262,7 +263,7 @@ const TimebarWrapper = () => {
             <TimebarHighlighterWrapper activity={highlighterActivity} />
           </Fragment>
         ) : null}
-      </TimebarComponent>
+      </Timebar>
       {!isSmallScreen && <TimebarSettings />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>

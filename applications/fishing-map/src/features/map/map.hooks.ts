@@ -7,7 +7,11 @@ import {
   TemporalGridFeature,
   useFeatureState,
 } from '@globalfishingwatch/react-hooks'
-import { ContextLayerType, GeneratorType, GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
+import {
+  ContextLayerType,
+  GeneratorType,
+  GlobalGeneratorConfig,
+} from '@globalfishingwatch/layer-composer'
 import {
   UrlDataviewInstance,
   MULTILAYER_SEPARATOR,
@@ -15,7 +19,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'

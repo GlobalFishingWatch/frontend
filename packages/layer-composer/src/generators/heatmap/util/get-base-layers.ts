@@ -1,12 +1,12 @@
 import { SymbolLayout, Expression } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedLayer, Group } from '../../../types'
 import { GeneratorType } from '../../types'
-import { HEATMAP_MODE_LAYER_TYPE } from '../config'
 import {
-  GlobalHeatmapAnimatedGeneratorConfig,
+  HEATMAP_MODE_LAYER_TYPE,
   TEMPORALGRID_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
-} from '../heatmap-animated'
+} from '../config'
+import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 
 function getBaseLayer(
   config: GlobalHeatmapAnimatedGeneratorConfig,

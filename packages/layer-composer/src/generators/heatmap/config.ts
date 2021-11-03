@@ -2,6 +2,9 @@ import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate
 import { HeatmapAnimatedMode } from '../types'
 import { Interval } from './types'
 
+export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid'
+export const TEMPORALGRID_SOURCE_LAYER_INTERACTIVE = 'temporalgrid_interactive'
+
 export const API_ENDPOINTS = {
   tiles: '4wings/tile/heatmap/{z}/{x}/{y}',
   breaks: '4wings/bins/{zoom}',

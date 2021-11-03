@@ -5,13 +5,6 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "directories": {
-    "src": "src",
-    "dist": "dist"
-  },
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -28,7 +21,11 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "file-saver": "2.0.5"
+  },
   "peerDependencies": {
-    "@globalfishingwatch/pbf": "latest"
+    "@globalfishingwatch/api-types": "6.x",
+    "@globalfishingwatch/pbf": "1.x"
   }
 }

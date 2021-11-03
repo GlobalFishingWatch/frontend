@@ -1,1 +1,1 @@
-export { default } from './getInteractiveLayerIds'
+export * from './getInteractiveLayerIds'

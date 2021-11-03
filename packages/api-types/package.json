@@ -7,13 +7,6 @@
   "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.js",
-  "directories": {
-    "src": "src",
-    "dist": "dist"
-  },
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -29,5 +22,7 @@
   },
   "dependencies": {},
   "devDependencies": {},
-  "peerDependencies": {}
+  "peerDependencies": {
+    "@globalfishingwatch/data-transforms": "1.x"
+  }
 }

@@ -1,6 +1,6 @@
 import { template } from 'lodash'
 import { stringify } from 'qs'
-import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
+import { GFWAPI, FetchOptions } from '@globalfishingwatch/api-client'
 import {
   Dataview,
   Resource,

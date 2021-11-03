@@ -1,7 +1,7 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { Feature, Polygon } from 'geojson'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Report } from '@globalfishingwatch/api-types'
 import {
   AsyncError,

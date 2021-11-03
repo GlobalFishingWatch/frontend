@@ -1,9 +1,7 @@
 import { Group } from '../../../types'
 import { HEATMAP_COLOR_RAMPS } from '../colors'
-import {
-  GlobalHeatmapAnimatedGeneratorConfig,
-  TEMPORALGRID_SOURCE_LAYER,
-} from '../heatmap-animated'
+import { TEMPORALGRID_SOURCE_LAYER } from '../config'
+import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { getLayerId, getSourceId } from '../util'
 import { Breaks } from '../util/fetch-breaks'
 import getBaseLayer from '../util/get-base-layers'

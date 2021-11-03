@@ -5,37 +5,34 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "directories": {
-    "src": "src",
-    "dist": "dist"
-  },
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "watch": "run-p prerender start:js start:css",
-    "start:js": "rollup -c ./rollup.config.js -w",
-    "start:css": "postcss src/base.css -o dist/base.css -w",
-    "build": "yarn clean && yarn build:js && yarn build:css && yarn build:css-min",
-    "build:js": "cross-env NODE_ENV=production rollup -c rollup.config.js",
-    "build:css": "postcss src/base.css -o dist/base.css",
-    "build:css-min": "cross-env NODE_ENV=production postcss src/base.css -o dist/base.min.css ",
-    "prerender": "run-s prerender:build prerender:copy",
-    "prerender:build": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
-    "prerender:copy": "cp -r src/header/html dist/header",
-    "prepare": "yarn build && yarn prerender",
-    "clean": "rimraf dist/*"
+    "prerender": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
+    "postinstall": "yarn prerender"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "@tippyjs/react": "4.2.0",
+    "countryflag": "4.0.1",
+    "d3-geo": "1.12.0",
+    "d3-scale": "^3.2.2",
+    "match-sorter": "^6.3.0",
+    "react-modal": "^3.11.2",
+    "topojson-client": "3.1.0"
+  },
+  "devDependencies": {
+    "@types/react-modal": "^3.10.5",
+    "@types/topojson-client": "^3.0.0",
+    "ts-node": "^8.10.1"
+  },
   "peerDependencies": {
-    "@globalfishingwatch/layer-composer": "*"
+    "@globalfishingwatch/layer-composer": "10.x",
+    "@globalfishingwatch/react-hooks": "15.x",
+    "downshift": "6.x",
+    "react": ">17.x",
+    "react-dom": ">17.x"
   },
   "publishConfig": {
     "access": "public"
