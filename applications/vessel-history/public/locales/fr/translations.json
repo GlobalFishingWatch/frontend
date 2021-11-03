@@ -156,7 +156,7 @@
       "title": "Événements de pêche",
       "shortTitle": "Pêche"
     },
-    "greaterThan": "Supérieur à",
+    "greaterThan": "Supérieure à",
     "hours": "heures",
     "km": "km",
     "loiteringEvents": {
@@ -249,7 +249,7 @@
       "2": "actuellement listée"
     },
     "authorizations": "autorisations",
-    "contactUs": "<0>Contactez-nous</0> si vous avez des questions ou souhaitez plus d'informations sur ce vaisseau."
+    "contactUs": "<0>Contactez-nous</0> si vous avez des questions ou souhaitez plus d'informations sur ce navire."
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
