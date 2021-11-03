@@ -104,5 +104,6 @@ export const initializeDataviews = async (dispatch: AppDispatch) => {
     dataviews = action.payload as Dataview[]
   }
   const datasets = getDatasetByDataview(dataviews)
+  console.log(datasets)
   dispatch(fetchDatasetsByIdsThunk(datasets))
 }

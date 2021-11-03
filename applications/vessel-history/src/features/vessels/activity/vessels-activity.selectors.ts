@@ -80,6 +80,7 @@ export const selectEventsLoading = createSelector([selectEventsResources], (reso
 
 export const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources],
+
   (trackDataviews, resources) => {
     // const visibleEvents: (EventType[] | 'all') = 'all'
     const vesselsEvents = trackDataviews.map((dataview) => {
@@ -127,10 +128,11 @@ export const selectEventsForTracks = createSelector(
 export const selectEventsWithRenderingInfo = createSelector(
   [selectEventsForTracks, selectEEZs, selectRFMOs, selectMPAs],
   (eventsForTrack, eezs = [], rfmos = [], mpas = []) => {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
       return (data || []).map((event: ActivityEvent, index) => {
         const regionDescription = getEventRegionDescription(event, eezs, rfmos, mpas)
-
+        console.log('*')
         let description = ''
         let descriptionGeneric = ''
         switch (event.type) {

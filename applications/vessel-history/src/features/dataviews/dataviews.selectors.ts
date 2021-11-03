@@ -50,6 +50,7 @@ export const selectDefaultBasemapGenerator = createSelector(
 export const selectDataviewInstancesMerged = createSelector(
   [selectVesselDataview, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (vesselDataview, dataviews, urlDataviewInstances) => {
+    console.log(5)
     const dataviewsToMerge: DataviewInstance<any>[] = vesselDataview
       ? [...dataviews, vesselDataview]
       : dataviews
@@ -72,12 +73,14 @@ export const selectDataviewInstancesResolved = createSelector(
     datasetsStatus,
     dataviewInstances
   ): UrlDataviewInstance[] => {
-    if (
+
+    console.log('EEEEEEEEEEEEEEEEEEEEE Maradona')
+    /*if (
       dataviewsStatus !== AsyncReducerStatus.Finished ||
       datasetsStatus !== AsyncReducerStatus.Finished
     ) {
       return []
-    }
+    }*/
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstances as UrlDataviewInstance[],
       dataviews,
@@ -94,6 +97,8 @@ export const selectDataviewInstancesResolved = createSelector(
 export const selectDataviewsForResourceQuerying = createSelector(
   [selectDataviewInstancesResolved],
   (dataviewInstances) => {
+    console.log('DDDDDDDDDDDDDD')
+    console.log(dataviewInstances)
     const thinningConfig = THINNING_LEVELS[APP_THINNING]
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
       [Generators.Type.Track]: ([info, track, ...events]) => {
@@ -123,6 +128,13 @@ export const selectDataviewInstancesByType = (type: Generators.Type) => {
   })
 }
 
+export const selectTrackDataviewInstances = createSelector([selectDataviewsForResourceQuerying], (dataviews) => {
+  console.log('CCCCCCCCCCCCCCCCCC')
+  return dataviews?.filter((dataview) => dataview.config?.type === Generators.Type.Track)
+}
+)
+
+
 export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.category === category)
@@ -140,7 +152,7 @@ export const selectTrackDataviews = createSelector(
   (dataviews) => dataviews
 )
 
-export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+export const selectVesselsDataviews = createSelector([selectTrackDataviewInstances], (dataviews) => {
   return dataviews?.filter(
     (dataview) => !dataview.datasets || dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks
   )
@@ -150,8 +162,10 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
   dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
+export const selectActiveTrackDataviews = createSelector([selectTrackDataviewInstances], (dataviews) => {
+  console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB')
+  return dataviews?.filter((d) => d.config?.visible)
+}
 )
 // export const selectEventsDataviews = createSelector(
 //   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
