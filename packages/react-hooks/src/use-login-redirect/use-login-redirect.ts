@@ -41,7 +41,7 @@ export const useLoginRedirect = (
     localStorage.removeItem(callbackUrlKey)
   }, [callbackUrlKey])
 
-  return { localStorageRedirectUrl, onLoginClick, saveRedirectUrl, cleanRedirectUrl }
+  return { redirectUrl: localStorageRedirectUrl, onLoginClick, saveRedirectUrl, cleanRedirectUrl }
 }
 
 export default useLoginRedirect
