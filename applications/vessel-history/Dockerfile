@@ -15,7 +15,6 @@ ARG GENERATE_SOURCEMAP=false
 # Install tools required for project
 # Run `docker build --no-cache .` to update dependencies
 RUN apk add --no-cache git
-RUN git --version
 
 # Install build dependencies
 COPY ./package.json /app
