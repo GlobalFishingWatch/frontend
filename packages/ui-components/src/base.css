@@ -1,3 +1,4 @@
+/* stylelint-disable custom-property-pattern, color-function-notation */
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
 :root {
@@ -14,21 +15,11 @@
   --font-XXL: var(--font-regular) 5rem/6.2rem var(--font-family);
 
   /* BASE COLORS */
-  --primary-blue-rgb: 22, 63, 137;
-
-  /* rgb(22, 63, 137) */
-  --danger-red-rgb: 360, 62, 98;
-
-  /* rgb(360, 62, 98) */
-  --gradient-rgb: 229, 240, 242;
-
-  /* rgb(229, 240, 242) */
-  --off-white-rgb: 242, 247, 248;
-
-  /* rgb(242, 247, 248) */
-  --white-rgb: 255, 255, 255;
-
-  /* rgb(255, 255, 255) */
+  --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
+  --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
+  --gradient-rgb: 229, 240, 242; /* rgb(229, 240, 242) */
+  --off-white-rgb: 242, 247, 248; /* rgb(242, 247, 248) */
+  --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
 
   /* COLORS */
   --color-primary-blue: rgb(var(--primary-blue-rgb));
