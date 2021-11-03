@@ -114,29 +114,29 @@
 
 @keyframes pulseLight {
   0% {
-    box-shadow: 0 0 0 0 rgb(255 248 205 / 0.7);
+    box-shadow: 0 0 0 0 rgba(255, 248, 205, 0.7);
   }
 
   70% {
-    box-shadow: 0 0 0 1rem rgb(255 248 205 / 0);
+    box-shadow: 0 0 0 1rem rgba(255, 248, 205, 0);
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgb(255 248 205 / 0);
+    box-shadow: 0 0 0 0 rgba(255, 248, 205, 0);
   }
 }
 
 @keyframes pulseDark {
   0% {
-    box-shadow: 0 0 0 0 rgb(22 63 137 / 0.7);
+    box-shadow: 0 0 0 0 rgba(22 63, 137, 0.7);
   }
 
   70% {
-    box-shadow: 0 0 0 1rem rgb(22 63 137 / 0);
+    box-shadow: 0 0 0 1rem rgba(22 63, 137, 0);
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgb(22 63 137 / 0);
+    box-shadow: 0 0 0 0 rgba(22 63, 137, 0);
   }
 }
 

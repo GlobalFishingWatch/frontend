@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.8.1
+
+### Patch Changes
+
+- color-function-notation
+
 ## 1.8.0
 
 ### Minor Changes

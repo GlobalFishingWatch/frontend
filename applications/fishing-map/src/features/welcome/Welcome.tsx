@@ -19,11 +19,13 @@ const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: We
   const { t, i18n } = useTranslation()
   const welcomeModal = WELCOME_POPUP_CONTENT[contentKey]
   const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, true)
+
   useEffect(() => {
-    if (disabled === null) {
+    if (disabled === true) {
       setDisabled(true)
     }
   })
+
   const onDisableToggled = useCallback(() => {
     setDisabled(!disabled)
   }, [disabled, setDisabled])

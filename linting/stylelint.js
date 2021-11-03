@@ -12,6 +12,7 @@ module.exports = {
         ignoreProperties: ['composes'],
       },
     ],
+    'color-function-notation': 'legacy',
     'selector-class-pattern': '.*',
     'keyframes-name-pattern': '.*',
   },
