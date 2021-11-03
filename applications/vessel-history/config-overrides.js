@@ -34,7 +34,7 @@ module.exports = {
   },
   paths: (paths) => {
     // Rewrite dist folder to where Nx expects it to be.
-    paths.appBuild = path.resolve(__dirname, '../../dist/applications/fishing-map/html')
+    paths.appBuild = path.resolve(__dirname, '../../dist/applications/vessel-history/html')
     return paths
   },
   jest: (config) => {

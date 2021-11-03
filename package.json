@@ -14,8 +14,10 @@
     "nohoist": []
   },
   "scripts": {
-    "start:fishing-map": "nx run-many --target=start --projects=fishing-map,i18n-labels --parallel",
-    "test:fishing-map": "nx test fishing-map-e2e",
+    "start:fm": "nx run-many --target=start --projects=fishing-map,i18n-labels --parallel",
+    "test:fm": "nx test fishing-map-e2e",
+    "start:vv": "nx run-many --target=start --projects=vessel-viewer,i18n-labels --parallel",
+    "test:vv": "nx test fishing-map-e2e",
     "dist": "nx run-many --target=dist --all --with-deps",
     "build": "nx build",
     "graph": "yarn nx dep-graph",
