@@ -22,6 +22,7 @@ export type SupportedDatasetSchema =
   | 'vessel_type'
   | 'qf_detect'
   | 'target_species'
+  | 'license_category'
 
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
