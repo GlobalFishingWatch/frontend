@@ -1,9 +1,65 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
+import { parse } from 'qs'
+import {
+  useLoginRedirect as commonUseLoginRedirect,
+  setRedirectUrl as commonSetRedirectUrl,
+  getLoginUrl as commonGetLoginUrl,
+  redirectToLogin as commonRedirectToLogin,
+} from '@globalfishingwatch/react-hooks'
+import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
+import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { QueryParams } from 'types'
-import { selectCurrentLocation, selectLocationPayload } from 'routes/routes.selectors'
+import {
+  selectCurrentLocation,
+  selectLocationPayload,
+  selectLocationType,
+} from 'routes/routes.selectors'
 import { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
+
+export const CALLBACK_URL_KEY = 'CallbackUrl'
+export const CALLBACK_URL_PARAM = 'callbackUrlStorage'
+
+export const setRedirectUrl = () => commonSetRedirectUrl(CALLBACK_URL_KEY)
+
+export const getLoginUrl = () => commonGetLoginUrl(CALLBACK_URL_PARAM)
+
+export const redirectToLogin = () => commonRedirectToLogin(CALLBACK_URL_KEY, CALLBACK_URL_PARAM)
+
+export const useLoginRedirect = () => commonUseLoginRedirect(CALLBACK_URL_KEY, CALLBACK_URL_PARAM)
+
+export const useReplaceLoginUrl = () => {
+  const { redirectUrl, cleanRedirectUrl } = useLoginRedirect()
+  const dispatch = useDispatch()
+  const locationPayload = useSelector(selectLocationPayload)
+  const locationType = useSelector(selectLocationType)
+
+  useEffect(() => {
+    const currentQuery = parse(window.location.search, { ignoreQueryPrefix: true })
+    const accessToken = currentQuery[ACCESS_TOKEN_STRING]
+    if (redirectUrl && currentQuery[CALLBACK_URL_PARAM]) {
+      const query = {
+        ...parseWorkspace(new URL(redirectUrl).search),
+        [ACCESS_TOKEN_STRING]: accessToken,
+      } as QueryParams
+
+      dispatch(
+        updateLocation(locationType, {
+          query,
+          payload: locationPayload,
+          replaceQuery: true,
+        })
+      )
+      cleanRedirectUrl()
+    }
+    return () => {
+      // ensures the localStorage is clean when the app is unmounted
+      cleanRedirectUrl()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+}
 
 export const useLocationConnect = () => {
   const dispatch = useDispatch()
