@@ -1,8 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
+import { createDeepEqualSelector } from 'utils/selectors'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { ROUTE_TYPES } from './routes'
@@ -40,13 +42,14 @@ export const selectVesselProfileId = createSelector(
   formatVesselProfileId
 )
 
-export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
-  createSelector([selectLocationQuery], (query: any): T => {
+export const selectQueryParam = memoize(<T = any>(param: WorkspaceParam) =>
+  createDeepEqualSelector([selectLocationQuery], (query: any): T => {
     if (query === undefined || query[param] === undefined) {
       return DEFAULT_WORKSPACE[param]
     }
     return query[param]
   })
+)
 
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
 export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
