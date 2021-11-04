@@ -132,7 +132,15 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
 
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
-  breaksCache: Record<string, { loading: boolean; error: boolean; breaks?: Breaks }> = {}
+  breaksCache: Record<
+    string,
+    {
+      loading: boolean
+      error: boolean
+      breaks?: Breaks
+    }
+  > = {}
+  configCache: Record<string, GlobalHeatmapAnimatedGeneratorConfig> = {}
 
   _getStyleSources = (
     config: GlobalHeatmapAnimatedGeneratorConfig,
@@ -278,17 +286,17 @@ class HeatmapAnimatedGenerator {
       sublayers: config.sublayers?.map((s) => ({ ...s, visible: getSubLayerVisible(s) })),
     }
 
+    // Remove 10days interval in TimeCompare mode
+    if (config.mode === HeatmapAnimatedMode.TimeCompare && Array.isArray(finalConfig.interval)) {
+      finalConfig.interval = finalConfig.interval.filter((i) => i !== '10days')
+    }
+
     if (!config.start || !config.end) {
       return {
         id: finalConfig.id,
         sources: [],
         layers: [],
       }
-    }
-
-    // Remove 10days interval in TimeCompare mode
-    if (config.mode === HeatmapAnimatedMode.TimeCompare && Array.isArray(finalConfig.interval)) {
-      finalConfig.interval = finalConfig.interval.filter((i) => i !== '10days')
     }
 
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
@@ -343,6 +351,9 @@ class HeatmapAnimatedGenerator {
       },
     }
 
+    // Store config
+    this.configCache[cacheKey] = finalConfig
+
     if (
       breaks ||
       !visible ||
@@ -354,15 +365,30 @@ class HeatmapAnimatedGenerator {
 
     const breaksPromise = fetchBreaks(breaksConfig)
 
-    this.breaksCache[cacheKey] = { loading: true, error: false }
+    this.breaksCache[cacheKey] = {
+      loading: true,
+      error: false,
+    }
 
     const promise = new Promise((resolve, reject) => {
       breaksPromise.then((breaks) => {
-        this.breaksCache[cacheKey] = { loading: false, error: false, breaks }
-        resolve({ style: this.getStyle(finalConfig), config: finalConfig })
+        // This makes sure we are using the latest config, which may not be the case
+        // when getStyle has been called while breaks are being loaded
+        const cachedConfig = this.configCache[cacheKey]
+
+        this.breaksCache[cacheKey] = {
+          loading: false,
+          error: false,
+          breaks,
+        }
+
+        resolve({ style: this.getStyle(cachedConfig), config: cachedConfig })
       })
       breaksPromise.catch((e: any) => {
-        this.breaksCache[cacheKey] = { loading: false, error: e.name !== 'AbortError' }
+        this.breaksCache[cacheKey] = {
+          loading: false,
+          error: e.name !== 'AbortError',
+        }
         reject(e)
       })
     })

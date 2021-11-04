@@ -134,7 +134,7 @@ export const useFilteredTimeSeries = () => {
 
         const timeseries = filteredFeatures.map((filteredFeatures, sourceIndex) => {
           const sourceMetadata = layersWithFeatures[sourceIndex].metadata
-          const sourceNumSublayers = sourceMetadata.numSublayers
+          const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
           // TODO handle multiple timechunks
           const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
           const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
