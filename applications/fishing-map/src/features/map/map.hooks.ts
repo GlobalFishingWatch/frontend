@@ -330,25 +330,25 @@ export const parseMapTooltipEvent = (
   }
 
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
+    const { temporalgrid, generatorId } = feature
     const baseFeature = {
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       layerId: feature.layerId as string,
     }
 
-    if (feature.temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
+    if (temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
       return {
         ...baseFeature,
         category: DataviewCategory.Comparison,
         value: event.features[0]?.value,
         visible: true,
-        unit: 'hours',
+        unit: event.features[0]?.temporalgrid?.unit,
       } as TooltipEventFeature
     }
 
     let dataview
-    if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
-      const { temporalgrid } = feature
+    if (generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       if (!temporalgrid || temporalgrid.sublayerId === undefined || !temporalgrid.visible) {
         return []
       }
@@ -358,14 +358,14 @@ export const parseMapTooltipEvent = (
       dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator
         // from the same dataview, see map.selectors L137
-        const cleanGeneratorId = (feature.generatorId as string)?.split(MULTILAYER_SEPARATOR)[0]
+        const cleanGeneratorId = (generatorId as string)?.split(MULTILAYER_SEPARATOR)[0]
         return dataview.id === cleanGeneratorId
       })
     }
 
     if (!dataview) {
       // Not needed to create a dataview just for the workspaces list interaction
-      if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
+      if (generatorId && (generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
           ...baseFeature,
           type: Generators.Type.GL,
