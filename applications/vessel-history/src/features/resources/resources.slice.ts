@@ -13,7 +13,6 @@ export {
 } from '@globalfishingwatch/dataviews-client'
 
 export const selectResources = createSelector([originalSelectResource], (resources) => {
-
   return Object.keys(resources)
     .map((url) => {
       const resource = resources[url]

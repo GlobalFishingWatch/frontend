@@ -20,7 +20,6 @@ const initialState: PsmaState = {
 export const fetchPsmaThunk = createAsyncThunk(
   'psma/fetch',
   async (_, { rejectWithValue }) => {
-    console.log(11111111111111111111111111111)
     try {
       const psmaResult = await GFWAPI.fetch<APISearch<Psma>>(`/v1/psma-countries`)
       const psma = uniqBy(psmaResult.entries, 'iso3')

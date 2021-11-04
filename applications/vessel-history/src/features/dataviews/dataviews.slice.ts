@@ -8,7 +8,6 @@ import { RootState } from 'store'
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: number[], { signal, rejectWithValue, getState }) => {
-    console.log('JJJJJJJJJJJJJJJJJJJJJJJJJJJJ')
     const existingIds = selectIds(getState() as RootState) as string[]
     const uniqIds = Array.from(new Set([...ids, ...existingIds]))
     try {
@@ -63,18 +62,16 @@ export const selectDataviewById = memoize((id: number) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
 
-export const selectDataviews = (state: RootState) => {
-  console.log(11)
-  console.log('POR Q SE DISPARA EL 11 Y NO EL 12?')
-  console.log(state.dataviews)
-  return state.dataviews
-}
+export const selectDataviews = createSelector(
+  [(state: RootState) => state.dataviews],
+  (dataviews) => {
+    return dataviews
+  }
+)
 
 export const selectDataviewsStatus = createSelector(
   [selectDataviews],
   (dataviews) => {
-    console.log(12)
-
     return dataviews.status
   }
 )

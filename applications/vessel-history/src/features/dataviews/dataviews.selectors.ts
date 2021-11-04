@@ -51,7 +51,6 @@ export const selectDefaultBasemapGenerator = createSelector(
 export const selectDataviewInstancesMerged = createDeepEqualSelector(
   [selectVesselDataview, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (vesselDataview, dataviews, urlDataviewInstances) => {
-    console.log(5)
     const dataviewsToMerge: DataviewInstance<any>[] = vesselDataview
       ? [...dataviews, vesselDataview]
       : dataviews
@@ -74,7 +73,6 @@ export const selectDataviewInstancesResolved = createSelector(
     datasetsStatus,
     dataviewInstances
   ): UrlDataviewInstance[] => {
-    console.log('EEEEEEEEEEEEEEEEEEEEE Maradona')
     if (
       dataviewsStatus !== AsyncReducerStatus.Finished ||
       datasetsStatus !== AsyncReducerStatus.Finished
@@ -97,8 +95,6 @@ export const selectDataviewInstancesResolved = createSelector(
 export const selectDataviewsForResourceQuerying = createDeepEqualSelector(
   [selectDataviewInstancesResolved],
   (dataviewInstances) => {
-    console.log('DDDDDDDDDDDDDD')
-    console.log(dataviewInstances)
     const thinningConfig = THINNING_LEVELS[APP_THINNING]
     const datasetConfigsTransforms: DatasetConfigsTransforms = {
       [Generators.Type.Track]: ([info, track, ...events]) => {
@@ -128,16 +124,8 @@ export const selectDataviewInstancesByType = (type: Generators.Type) => {
   })
 }
 
-export const selectTrackDataviewInstances = createDeepEqualSelector(
-  [selectDataviewsForResourceQuerying],
-  (dataviews) => {
-    console.log('C selectTrackDataviewInstances', dataviews)
-    return dataviews?.filter((dataview) => dataview.config?.type === Generators.Type.Track)
-  }
-)
-
 export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
-  return createDeepEqualSelector([selectDataviewInstancesResolved], (dataviews) => {
+  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.category === category)
   })
 }
@@ -154,7 +142,7 @@ export const selectTrackDataviews = createSelector(
 )
 
 export const selectVesselsDataviews = createSelector(
-  [selectTrackDataviewInstances],
+  [selectTrackDataviews],
   (dataviews) => {
     return dataviews?.filter(
       (dataview) => !dataview.datasets || dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks
@@ -166,14 +154,9 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
   dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActiveTrackDataviews = createDeepEqualSelector(
-  [selectTrackDataviewInstances],
+export const selectActiveTrackDataviews = createSelector(
+  [selectTrackDataviews],
   (dataviews) => {
-    console.log('B selectActiveTrackDataviews', dataviews)
     return dataviews?.filter((d) => d.config?.visible)
   }
 )
-// export const selectEventsDataviews = createSelector(
-//   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
-//   (dataviews) => dataviews
-// )
