@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 10.1.1
+
+### Patch Changes
+
+- 08c49d086: fixes a race condition when fetching breaks
+
 ## 10.1.0
 
 ### Minor Changes
