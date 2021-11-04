@@ -21,7 +21,7 @@ type SearchFiltersProps = {
   datasets: Dataset[]
   className?: string
 }
-const schemaFilterIds: SupportedDatasetSchema[] = ['fleet', 'origin', 'target_species']
+const schemaFilterIds: SupportedDatasetSchema[] = ['fleet', 'origin', 'codMarinha', 'targetSpecies']
 
 function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
