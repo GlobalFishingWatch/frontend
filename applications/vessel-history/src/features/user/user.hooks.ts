@@ -29,11 +29,6 @@ export const useUser = () => {
     return user && intersection(user.groups, AUTHORIZED_USER_GROUPS).length > 0
   }, [user])
 
-  const login = useCallback(() => {
-    const location = window.location.origin + BASE_URL
-    window.location.assign(GFWAPI.getLoginUrl(location))
-  }, [])
-
   const logout = useCallback(() => {
     uaEvent({
       category: 'General VV features',
@@ -53,7 +48,6 @@ export const useUser = () => {
     logged,
     user,
     authorized,
-    login,
     logout,
   }
 }

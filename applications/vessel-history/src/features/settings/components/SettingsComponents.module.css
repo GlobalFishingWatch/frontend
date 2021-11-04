@@ -10,18 +10,23 @@
   color: rgba(34, 68, 126, 0.5);
 }
 
-.settingsField.inlineRow > div,
+.settingsField.inlineRow > div > div,
 .settingsField.inlineRow span {
   display: inline-block;
 }
 
-.settingsField.inlineRow > div {
+.settingsField.inlineRow > div > div {
   width: 7rem;
 }
 
-.settingsField.inlineRow > div input {
+.settingsField.inlineRow > div > div > input {
   text-align: center;
 }
+
 .multiSelectRegions li {
   overflow: hidden;
+}
+
+.settingsLabel {
+  display: inline-block;
 }

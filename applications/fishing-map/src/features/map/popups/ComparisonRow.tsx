@@ -23,7 +23,8 @@ function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowPr
           <span className={styles.rowText}>
             {parseInt(feature.value) > 0 && '+'}
             <I18nNumber number={feature.value} />{' '}
-            {t([`common.${feature.unit}` as any, 'common.hour'], 'hours', {
+            {/* sad little hack because i18n key is not plural while unit is */}
+            {t([`common.${feature.unit?.replace(/s$/, '')}` as any, 'common.hour'], 'hours', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}
           </span>

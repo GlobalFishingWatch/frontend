@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 15.3.0
+
+### Minor Changes
+
+- ace3e03a1: Added useLocalStorage hook
+
 ## 15.2.0
 
 ### Minor Changes

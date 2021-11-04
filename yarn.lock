@@ -1438,10 +1438,10 @@
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/i18n-labels/-/i18n-labels-1.2.1.tgz#66085d0ff39372161242c18adf9e95525ae3d202"
   integrity sha512-qCEGz8fyvpr26avF2D1zkga+e4xFWLDsp9gw2KwV++8N0ByG3NokSUEPTSkeBoH1pgdq2dX21BZxccPr7W0QQw==
 
-"@globalfishingwatch/layer-composer@10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/layer-composer/-/layer-composer-10.1.0.tgz#00216ae72c96921f56ea092c19bdcbe6e8a4b2db"
-  integrity sha512-Y1Bp3QDuhtp5fUPrkpuEjPFgSbc1gLPTPyCCGo+KfZiTzwuplJlXuN7IUWp7Vbc9OetefW5d8Q65++eX8zvlyg==
+"@globalfishingwatch/layer-composer@10.1.1":
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/layer-composer/-/layer-composer-10.1.1.tgz#dfc94d77388687a6d54d94eea509fb6f21e8486e"
+  integrity sha512-I+SorSqF1HOxYfb+66rAbDmMR6OkVIGwfEqZ4tlrk/fV2k3IwMsgvt5E9VxkucuLT5L2liBcYh9QV7VwTrJ2SA==
   dependencies:
     "@mapbox/mapbox-gl-style-spec" "^13.14.0"
     "@mapbox/tilebelt" "^1.0.2"
@@ -1533,10 +1533,10 @@
   dependencies:
     tracks-cloud-function "https://github.com/GlobalFishingWatch/api-function-vessels"
 
-"@globalfishingwatch/react-hooks@15.2.0", "@globalfishingwatch/react-hooks@^15.2.0":
-  version "15.2.0"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-hooks/-/react-hooks-15.2.0.tgz#cf86848fc5e68178cc14aec6fa476995205f1606"
-  integrity sha512-SQIOS+91UesQKnfWXpYdOzRYkAsp4CfTy/7f5SjZzsPIvaLuVjI2Jj789i5wFta1rNxQUEGfwR655kWUE0xPFA==
+"@globalfishingwatch/react-hooks@15.3.0":
+  version "15.3.0"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-hooks/-/react-hooks-15.3.0.tgz#bca37b432948cd0543fa06bc78af8d2d61f8758d"
+  integrity sha512-mjw4o/ceqF2PA8f6sUHlj/wfecNCyuNvHqr9Q/AT1DeJjpmBh3w+3vrlBQi8k5zE6o+P6oaoNARHy5P+oWLM2Q==
   dependencies:
     "@rollup/plugin-commonjs" "^20.0.0"
     "@rollup/plugin-json" "^4.1.0"
@@ -12956,10 +12956,10 @@ i18next-parser@^3.7.0:
     vinyl-fs "^3.0.2"
     vue-template-compiler "^2.6.11"
 
-i18next@21.0.1:
-  version "21.0.1"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.0.1.tgz#6b20df6135579c54c2f401590be4ea444b37a40f"
-  integrity sha512-t2qKY5tO9FPCS9TBajVRQ/FSCf8AAolLP6O2YCUGyR3qLeznlpPnrmzLmQo+Aqe/W3cY/znaV1d6AEIEVxcCAg==
+i18next@21.4.0:
+  version "21.4.0"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.4.0.tgz#59d0129e9e3974313300b0f60a0e01812ba5689e"
+  integrity sha512-H8QwhJXxnPWDvRlLn3nqDvbry7PM7i3UYa0+5EHWvlVkvNNy5WJVTzZe2tZH+HnaGVAE5MaujasyOca8mbQN+w==
   dependencies:
     "@babel/runtime" "^7.12.0"
 

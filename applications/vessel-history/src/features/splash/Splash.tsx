@@ -3,13 +3,15 @@ import { useTranslation } from 'react-i18next'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Button } from '@globalfishingwatch/ui-components/dist'
 import { useUser } from 'features/user/user.hooks'
+import { useLoginRedirect } from 'routes/routes.hook'
 import vesselHistoryLogo from '../../assets/images/splash-screen-image@2x.png'
 import tmtLogo from '../../assets/images/tmt_logo_final_full_colour@2x.png'
 import styles from './Splash.module.css'
 
 const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
   const { t } = useTranslation()
-  const { loading, login, logout, user, authorized } = useUser()
+  const { loading, logout, user, authorized } = useUser()
+  const { onLoginClick } = useLoginRedirect()
 
   const requestAccess = useCallback(() => {
     window.location.href =
@@ -42,7 +44,7 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
               )}
             </div>
             <div className={styles.buttons}>
-              <Button onClick={login}>{t('user.login', 'Log in')}</Button>
+              <Button onClick={onLoginClick}>{t('user.login', 'Log in')}</Button>
             </div>
           </div>
         )}

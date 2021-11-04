@@ -381,6 +381,7 @@
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
+    "license_category": "License category",
     "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",

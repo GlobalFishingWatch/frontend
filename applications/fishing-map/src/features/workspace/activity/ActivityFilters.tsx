@@ -35,6 +35,7 @@ const filterIds: SupportedDatasetSchema[] = [
   'shiptype',
   'origin',
   'target_species',
+  'license_category',
   'vessel_type',
   'qf_detect',
 ]

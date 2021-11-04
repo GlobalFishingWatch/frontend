@@ -21,7 +21,10 @@ export type SupportedDatasetSchema =
   | 'origin'
   | 'vessel_type'
   | 'qf_detect'
-  | 'target_species'
+  | 'codMarinha'
+  | 'targetSpecies' // TODO: normalice format in API and decide
+  | 'target_species' // between camelCase or snake_case
+  | 'license_category'
 
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 

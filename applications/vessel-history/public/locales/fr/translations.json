@@ -14,7 +14,7 @@
     "since": "depuis le",
     "timeRange": "intervalle de temps",
     "to": "à",
-    "typeToSearch": "Entrez un texte pour rechercher des navires",
+    "typeToSearch": "Entrez un texte pour rechercher",
     "unknown": "Inconnu",
     "unknownName": "Nom inconnu",
     "voyageFrom": "Voyage de",
@@ -122,7 +122,7 @@
     "loadMore": "Charger plus",
     "mergeSelectedVessels": "Fusionner les navires sélectionnés",
     "MMSI": "MMSI",
-    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or <2>contact us</2> if you still can’t find it.",
+    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser MMSI, IMO ou Signal d'appel ou <2>contactez-nous</2> si vous ne le trouvez pas.",
     "notAllowed": "Recherche non autorisée",
     "seeVessel": "Voir le navire",
     "shipname": "Nom de navire",
@@ -156,7 +156,7 @@
       "title": "Événements de pêche",
       "shortTitle": "Pêche"
     },
-    "greaterThan": "Greater than",
+    "greaterThan": "Supérieure à",
     "hours": "heures",
     "km": "km",
     "loiteringEvents": {
@@ -195,7 +195,7 @@
   "vessel": {
     "aisTransmission_plural": "Transmissions de l'AIS",
     "authorization_plural": "autorisations",
-    "authorizationRangeHelp": "RFMO authorizations are based on available data. Dates may be approximations where RFMO authorized vessel lists, do not contain specific authorization periods.",
+    "authorizationRangeHelp": "Les autorisations de la RFMO sont basées sur les données disponibles, et les dates peuvent être approximatives lorsque les listes de navires autorisées par la RFMO ne contiennent pas de périodes d'autorisation précises.",
     "callsign": "indicatifs d'appel",
     "encounteredVessel": "Navire rencontré",
     "flag": "pavillon",
@@ -249,7 +249,7 @@
       "2": "actuellement listée"
     },
     "authorizations": "autorisations",
-    "contactUs": "<0>Contact us</0> if you have questions or would like more information about this vessel."
+    "contactUs": "<0>Contactez-nous</0> si vous avez des questions ou souhaitez plus d'informations sur ce navire."
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"

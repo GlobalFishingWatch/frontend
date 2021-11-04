@@ -1,5 +1,17 @@
 # @globalfishingwatch/i18n-labels
 
+## 1.2.3
+
+### Patch Changes
+
+- update vms brazil target_species
+
+## 1.2.2
+
+### Patch Changes
+
+- fix brazil vms name
+
 ## 1.2.1
 
 ### Patch Changes

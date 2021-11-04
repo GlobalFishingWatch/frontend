@@ -381,6 +381,7 @@
     "grossTonnageRange": "Plage de tonnage brut",
     "imo": "OMI",
     "lastTransmissionDate": "Dernière date de transmission",
+    "license_category": "License category",
     "length": "Longueur",
     "lengthRange": "Plage de longueur",
     "loading": "Chargement de la trajectoire du navire",
