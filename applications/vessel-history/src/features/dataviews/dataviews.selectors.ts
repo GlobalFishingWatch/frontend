@@ -136,7 +136,7 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
   })
 }
 
-export const selectTrackDataviews = createSelector(
+export const selectTrackDataviews = createDeepEqualSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews
 )
