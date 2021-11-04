@@ -15,19 +15,23 @@ export type HighlighPanelConfig = {
 } & HighlighPanelConfigLocale
 
 const highlightPanelConfig: HighlighPanelConfig = {
-  dataviewInstanceId: 'highlight-vms-with-ecuador',
-  imageUrl: 'https://globalfishingwatch.org/wp-content/uploads/ecuador-map-highlight@2x.jpg',
-  learnMoreUrl: 'https://globalfishingwatch.org/transparency-program-ecuador/',
+  dataviewInstanceId: 'highlight-vms-with-brazil',
+  imageUrl: 'https://globalfishingwatch.org/wp-content/uploads/workspace-brazil.jpg',
+  learnMoreUrl: '',
   en: {
-    title: 'Ecuador VMS data is now available',
+    title: 'Brazil VMS data is now available',
     description:
-      'The vessel monitoring system (VMS) data is provided by the National Directorate of Aquatic Spaces of Ecuador. It is possible to track the position and activity of 1,200+ vessels comprising Ecuador’s industrial and artisanal fishing fleets.',
+      'Vessel monitoring system (VMS) data is provided by the Brazilian Secretary of Aquaculture and Fisheries. It is possible to track the position and activity of 1,300+ vessels comprising Brazil’s industrial and artisanal fishing fleets.',
   },
   es: {
     title: 'Datos VMS de Ecuador están ahora disponibles',
     description:
-      'Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Dirección Nacional de los Espacios Acuáticos del Ecuador. Es posible rastrear la posición y actividad  de más de 1.200 embarcaciones de las flotas pesqueras industriales y artesanales de Ecuador.',
-    learnMoreUrl: 'https://globalfishingwatch.org/es/programa-transparencia-latinoamerica-ecuador/',
+      'Los datos del sistema de seguimiento de buques (VMS) son proporcionados por el Secretario de Acuicultura y Pesca de Brasil. Es posible rastrear la posición y actividad de más de 1300 embarcaciones que comprenden las flotas pesqueras industriales y artesanales de Brasil.',
+  },
+  pt: {
+    title: 'Rastreamento de embarcações brasileiras está disponível',
+    description:
+      'Os dados de rastreamento de embarcações de pesca são fornecidos pela Secretaria de Aquicultura e Pesca do Ministério da Agricultura, Pecuária e Abastecimento. É possível visualizar a rota e as atividades de mais de 1300 embarcações industriais e artesanais.',
   },
 }
 
