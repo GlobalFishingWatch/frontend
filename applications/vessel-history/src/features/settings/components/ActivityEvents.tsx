@@ -53,8 +53,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       !eez.selected?.length
         ? (t('selects.none', 'None') as string)
         : eez.selected.length > 1
-        ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
-        : eez.selected[0].label,
+          ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
+          : eez.selected[0].label,
     [eez.selected, t]
   )
 
@@ -63,8 +63,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       !rfmo.selected?.length
         ? (t('selects.none', 'None') as string)
         : rfmo.selected.length > 1
-        ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
-        : rfmo.selected[0].label,
+          ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
+          : rfmo.selected[0].label,
     [rfmo.selected, t]
   )
 
@@ -73,8 +73,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       placeholder: !mpa.selected?.length
         ? (t(`common.typeToSearch`, 'Type to search') as string)
         : mpa.selected.length > 1
-        ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
-        : mpa.selected[0].label,
+          ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
+          : mpa.selected[0].label,
 
       onFilterOptions: (allOptions, filteredOptions, filter) => {
         if (filter && filter?.length >= 3) {
@@ -90,8 +90,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   return (
     <div>
       <div className={styles.settingsField}>
-        <label>
-          {t('settings.eezs.label', 'Events in these EEZs')}
+        <label className={styles.settingsLabel}>
+          <span>{t('settings.eezs.label', 'Events in these EEZs')}</span>
           <DataAndTerminology
             size="tiny"
             type="default"
@@ -121,7 +121,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         ></MultiSelect>
       </div>
       <div className={styles.settingsField}>
-        <label>
+        <label className={styles.settingsLabel}>
           {t('settings.rfmos.label', 'Events in these RFMOS')}
           <DataAndTerminology
             size="tiny"
@@ -150,7 +150,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         ></MultiSelect>
       </div>
       <div className={styles.settingsField}>
-        <label>
+        <label className={styles.settingsLabel}>
           {t('settings.mpas.label', 'Events in these MPAs')}
           <DataAndTerminology
             size="tiny"
@@ -181,7 +181,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         ></MultiSelect>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
-        <label>
+        <label className={styles.settingsLabel}>
           {t('settings.duration', 'DURATION')}
           <DataAndTerminology size="tiny" type="default" title={t('settings.duration', 'Duration')}>
             <Trans i18nKey="settings.durationDescription" values={{ eventType }}>
@@ -191,18 +191,20 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             </Trans>
           </DataAndTerminology>
         </label>
-        <span>{t('settings.longerThan', 'Longer than')}</span>
-        <InputText
-          type="number"
-          value={settings.duration}
-          min={props.minDuration}
-          max={props.maxDuration}
-          onChange={(event) => setSetting(section, 'duration', parseInt(event.currentTarget.value))}
-        ></InputText>
-        <span>{t('settings.hours', 'hours')}</span>
+        <div>
+          <span>{t('settings.longerThan', 'Longer than')}</span>
+          <InputText
+            type="number"
+            value={settings.duration}
+            min={props.minDuration}
+            max={props.maxDuration}
+            onChange={(event) => setSetting(section, 'duration', parseInt(event.currentTarget.value))}
+          ></InputText>
+          <span>{t('settings.hours', 'hours')}</span>
+        </div>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
-        <label>
+        <label className={styles.settingsLabel}>
           {t('event.distanceShore', 'Distance from shore')}
           <DataAndTerminology
             size="tiny"
@@ -217,20 +219,22 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             </Trans>
           </DataAndTerminology>
         </label>
-        <span>{t('settings.greaterThan', 'Greater than')}</span>
-        <InputText
-          type="number"
-          value={settings.distanceShoreLonger}
-          min={props.minDistance}
-          max={props.maxDistance}
-          onChange={(event) =>
-            setSetting(section, 'distanceShoreLonger', parseInt(event.currentTarget.value))
-          }
-        ></InputText>
-        <span>{t('settings.km', 'km')}</span>
+        <div>
+          <span>{t('settings.greaterThan', 'Greater than')}</span>
+          <InputText
+            type="number"
+            value={settings.distanceShoreLonger}
+            min={props.minDistance}
+            max={props.maxDistance}
+            onChange={(event) =>
+              setSetting(section, 'distanceShoreLonger', parseInt(event.currentTarget.value))
+            }
+          ></InputText>
+          <span>{t('settings.km', 'km')}</span>
+        </div>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
-        <label>
+        <label className={styles.settingsLabel}>
           {t('event.distancePort', 'Distance from port')}
           <DataAndTerminology
             size="tiny"
@@ -247,17 +251,19 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             </Trans>
           </DataAndTerminology>
         </label>
-        <span>{t('settings.greaterThan', 'Greater than')}</span>
-        <InputText
-          type="number"
-          value={settings.distancePortLonger}
-          min={props.minDistance}
-          max={props.maxDistance}
-          onChange={(event) =>
-            setSetting(section, 'distancePortLonger', parseInt(event.currentTarget.value))
-          }
-        ></InputText>
-        <span>{t('settings.km', 'km')}</span>
+        <div>
+          <span>{t('settings.greaterThan', 'Greater than')}</span>
+          <InputText
+            type="number"
+            value={settings.distancePortLonger}
+            min={props.minDistance}
+            max={props.maxDistance}
+            onChange={(event) =>
+              setSetting(section, 'distancePortLonger', parseInt(event.currentTarget.value))
+            }
+          ></InputText>
+          <span>{t('settings.km', 'km')}</span>
+        </div>
       </div>
     </div>
   )
