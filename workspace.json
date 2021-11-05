@@ -640,6 +640,14 @@
             "command": "node ../../node_modules/.bin/react-app-rewired test --watchAll=false",
             "cwd": "applications/vessel-history"
           }
+        },
+        "jest": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/applications/vessel-history"],
+          "options": {
+            "jestConfig": "applications/vessel-history/jest.config.js",
+            "passWithNoTests": true
+          }
         }
       }
     }
