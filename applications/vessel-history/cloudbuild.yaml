@@ -1,79 +1,73 @@
 steps:
-  # Push production image to GCR
+  - id: 'download-cached-yarn-dependencies'
+    name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        gsutil cp gs://frontend-cache-dependencies/cache/yarn-dependencies.tgz yarn-dependencies.tgz || exit 0
+        tar -zxf yarn-dependencies.tgz || exit 0
+
+  - id: 'install-yarn'
+    name: node:14
+    entrypoint: yarn
+    args: ['install']
+
+  - id: 'upload-cached-yarn-dependencies'
+    waitFor: ['install-yarn']
+    name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        tar -zcf yarn-dependencies.tgz ./node_modules
+        gsutil cp yarn-dependencies.tgz gs://frontend-cache-dependencies/cache/yarn-dependencies.tgz
+
+  - id: 'build-app'
+    waitFor: ['install-yarn']
+    name: node:14
+    entrypoint: yarn
+    args: ['nx', 'deploy', 'vessel-history', '--skip-nx-cache']
+    env:
+      - 'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY'
+      - 'REACT_APP_CARRIER_PORTAL_URL_=$_REACT_APP_CARRIER_PORTAL_URL_'
+      - 'REACT_APP_FEEDBACK_SPREADSHEET_ID=$_REACT_APP_FEEDBACK_SPREADSHEET_ID'
+      - 'REACT_APP_GOOGLE_MEASUREMENT_ID=$_REACT_APP_GOOGLE_MEASUREMENT_ID'
+      - 'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY'
+      - 'REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID'
+      - 'REACT_APP_LATEST_CARRIER_DATASET_ID=$_REACT_APP_LATEST_CARRIER_DATASET_ID'
+      - 'REACT_APP_SPREADSHEET_CLIENT_EMAIL=$_REACT_APP_SPREADSHEET_CLIENT_EMAIL'
+      - 'REACT_APP_SPREADSHEET_PRIVATE_KEY=$_REACT_APP_SPREADSHEET_PRIVATE_KEY'
+      - 'REACT_APP_USE_PRESENCE_POC=$_REACT_APP_USE_PRESENCE_POC'
+      - 'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV'
+      - 'REACT_APP_WORKSPACES_SPREADSHEET_ID=$_REACT_APP_WORKSPACES_SPREADSHEET_ID'
+      - 'SKIP_PREFLIGHT_CHECK=true'
+
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
-    id: 'Build base image'
+    id: 'build-image'
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        '--cache=$_USE_DOCKER_CACHE',
-        '--build-arg',
-        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
-        '--build-arg',
-        'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
-        '--build-arg',
-        'REACT_APP_LIMITED_ACCESS_USER=$_REACT_APP_LIMITED_ACCESS_USER',
-        '--build-arg',
-        'REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID',
+        '--cache=true',
         '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
-        '--build-arg',
-        'REACT_APP_PUBLIC_URL=$_REACT_APP_PUBLIC_URL',
-        '--build-arg',
-        'REACT_APP_TMT_CONTACT_US_URL=$_REACT_APP_TMT_CONTACT_US_URL',
-        '--target',
-        'base',
-        '-f',
-        './applications/vessel-history/Dockerfile',
-        '-c',
-        './applications/vessel-history',
-      ]
-
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Run tests'
-    args:
-      [
-        'run',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        'npm',
-        'test',
-      ]
-
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
-    id: 'Build nginx server image'
-    args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        '--cache=$_USE_DOCKER_CACHE',
-        '--build-arg',
-        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
-        '--build-arg',
-        'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
-        '--build-arg',
-        'REACT_APP_LIMITED_ACCESS_USER=$_REACT_APP_LIMITED_ACCESS_USER',
-        '--build-arg',
-        'REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID',
-        '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
-        '--build-arg',
-        'REACT_APP_PUBLIC_URL=$_REACT_APP_PUBLIC_URL',
-        '--build-arg',
-        'REACT_APP_TMT_CONTACT_US_URL=$_REACT_APP_TMT_CONTACT_US_URL',
         '--target',
         'production',
         '-f',
         './applications/vessel-history/Dockerfile',
         '-c',
-        './applications/vessel-history',
+        './dist/applications/vessel-history',
       ]
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Deploy to cloud run'
-    args: [
+    waitFor: ['build-image']
+    id: 'deploy-cloud-run'
+    args:
+      [
         'beta',
         'run',
         'deploy',
@@ -87,12 +81,10 @@ steps:
         '--platform',
         'managed',
         '--set-env-vars',
-        'BASIC_AUTH=$_BASIC_AUTH,
-        NODE_ENV=$_NODE_ENV',
+        'BASIC_AUTH=$_BASIC_AUTH',
         '--allow-unauthenticated',
       ]
 
-images:
-  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA'
-
 timeout: 1800s
+options:
+  machineType: 'E2_HIGHCPU_8'

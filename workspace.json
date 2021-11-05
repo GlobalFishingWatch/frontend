@@ -577,7 +577,7 @@
         }
       }
     },
-    "vessel-viewer": {
+    "vessel-history": {
       "root": "applications/vessel-history",
       "sourceRoot": "applications/vessel-history/src",
       "projectType": "application",

@@ -1,63 +1,4 @@
 #################################################################################
-# Step to build the application assets
-#################################################################################
-FROM node:16-alpine AS base
-RUN mkdir -p /app
-WORKDIR /app
-
-# Config build args
-ARG REACT_APP_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
-ARG REACT_APP_WORKSPACE_ENV=development
-ARG REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=""
-ARG REACT_APP_LIMITED_ACCESS_USER=false
-ARG GENERATE_SOURCEMAP=false
-
-# Install tools required for project
-# Run `docker build --no-cache .` to update dependencies
-RUN apk add --no-cache git
-
-# Install build dependencies
-COPY ./package.json /app
-COPY ./yarn.lock /app
-ENV NODE_ENV=development
-ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
-ENV REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=${REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID}
-RUN yarn
-
-COPY ./src /app/src
-COPY ./public /app/public
-COPY ./.eslintignore /app/.eslintignore
-COPY ./.eslintrc.js /app/.eslintrc.js
-COPY ./entrypoint.sh /app/entrypoint.sh
-COPY ./tsconfig.json /app/tsconfig.json
-COPY ./craco.config.js /app/craco.config.js
-
-# Build the application assets
-FROM base as build
-ARG REACT_APP_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
-ARG REACT_APP_LIMITED_ACCESS_USER=false
-ARG REACT_APP_WORKSPACE_ENV=development
-ARG REACT_APP_PUBLIC_URL=/
-ARG REACT_APP_TMT_CONTACT_US_URL=/
-ARG GENERATE_SOURCEMAP=false
-
-ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
-ENV REACT_APP_LIMITED_ACCESS_USER=${REACT_APP_LIMITED_ACCESS_USER}
-ENV REACT_APP_WORKSPACE_ENV=${REACT_APP_WORKSPACE_ENV}
-ENV NODE_ENV=$REACT_APP_WORKSPACE_ENV
-ENV PUBLIC_URL=$REACT_APP_PUBLIC_URL
-ENV REACT_APP_TMT_CONTACT_US_URL=$REACT_APP_TMT_CONTACT_US_URL
-
-# override node_modules inside image with
-# generated versions from the monorepo if exists
-# IMPORTANT: README.md file should exists so this step does not fail
-COPY ./README.md ./node_modules/@globalfishingwatc[h] /tmp/@globalfishingwatch/
-RUN rm /tmp/@globalfishingwatch/README.md && cp -r /tmp/@globalfishingwatch /app/node_modules/
-ENV GENERATE_SOURCEMAP=${GENERATE_SOURCEMAP}
-
-RUN yarn build
-
-#################################################################################
 # Generate htpasswd file
 #################################################################################
 FROM appsoa/docker-alpine-htpasswd as htpasswd
@@ -75,9 +16,10 @@ RUN htpasswd -Bbn "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" > /home/.htpasswd
 FROM nginx:stable-alpine as production
 RUN apk -U upgrade
 
-COPY nginx/nginx.conf /etc/nginx/nginx.template
+COPY ./nginx.conf /etc/nginx/nginx.template
 COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY entrypoint.sh entrypoint.sh
-COPY --from=build /app/build/ /usr/share/nginx/www/
+COPY ./entrypoint.sh entrypoint.sh
+COPY ./html /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
+

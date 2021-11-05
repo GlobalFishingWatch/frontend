@@ -5,14 +5,13 @@
   "private": true,
   "homepage": "/",
   "scripts": {
-    "start": "yarn start:i18n & craco start",
+    "start": "yarn start:i18n & react-app-rewired start",
     "start:i18n": "yarn --cwd ../../packages/i18n-labels serve",
-    "build": "craco build",
+    "build": "react-app-rewired build",
     "release:prepare": "./changelog.sh",
-    "test": "CI=true craco test --passWithNoTests",
-    "test:watch": "craco test --passWithNoTests",
-    "test:coverage": "CI=true craco test --passWithNoTests --coverage",
-    "eject": "craco eject",
+    "test": "CI=true react-app-rewired test --passWithNoTests",
+    "test:watch": "react-app-rewired test --passWithNoTests",
+    "test:coverage": "CI=true react-app-rewired test --passWithNoTests --coverage",
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
