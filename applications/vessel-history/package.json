@@ -127,18 +127,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "^workerize-loader(\\?.*)?!(.*)/([^/]*)$": "$2/__mocks__/$3"
-    },
-    "transform": {
-      "^.+\\.[jt]sx?$": "babel-jest"
-    },
-    "transformIgnorePatterns": [],
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/types/**/*.*"
-    ]
   }
 }
