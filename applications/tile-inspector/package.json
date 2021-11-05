@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/tile-inspector",
-  "version": "0.1.96",
+  "version": "0.1.103",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^4.0.0",
-    "@globalfishingwatch/fourwings-aggregate": "4.0.4",
-    "@globalfishingwatch/layer-composer": "10.0.1",
+    "@globalfishingwatch/fourwings-aggregate": "4.1.0",
+    "@globalfishingwatch/layer-composer": "10.1.1",
     "@globalfishingwatch/pbf": "^1.0.11",
-    "@globalfishingwatch/react-hooks": "15.1.0",
-    "@globalfishingwatch/ui-components": "12.3.0",
+    "@globalfishingwatch/react-hooks": "15.3.0",
+    "@globalfishingwatch/ui-components": "12.5.0",
     "luxon": "^1.26.0",
     "d3-geom": "^0.0.0",
     "d3-quadtree": "^2.0.0",
@@ -26,7 +26,7 @@
     "recharts": "^2.0.9"
   },
   "devDependencies": {
-    "@globalfishingwatch/linting": "^1.6.1",
+    "@globalfishingwatch/linting": "1.8.1",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "@types/luxon": "^1.26.4",

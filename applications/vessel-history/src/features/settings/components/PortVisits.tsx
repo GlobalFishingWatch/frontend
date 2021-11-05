@@ -39,8 +39,8 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
       !flags.selected?.length
         ? (t('selects.none', 'None') as string)
         : flags.selected.length > 1
-        ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
-        : flags.selected[0].label,
+          ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
+          : flags.selected[0].label,
     [flags.selected, t]
   )
   const eventType = useMemo(() => t(`settings.${section}.title`), [section, t])
@@ -49,7 +49,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
     <div className={styles.settingsFieldsContainer}>
       <div>
         <div className={styles.settingsField}>
-          <label>
+          <label className={styles.settingsLabel}>
             {t('settings.portVisits.inThesePortStates', 'Events in these port States')}
             <DataAndTerminology
               size="tiny"
@@ -87,7 +87,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
           ></MultiSelect>
         </div>
         <div className={cx(styles.settingsField, styles.inlineRow)}>
-          <label>
+          <label className={styles.settingsLabel}>
             {t('settings.duration', 'DURATION')}
             <DataAndTerminology
               size="tiny"
@@ -101,20 +101,22 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
               </Trans>
             </DataAndTerminology>
           </label>
-          <span>{t('settings.longerThan', 'Longer than')}</span>
-          <InputText
-            type="number"
-            value={settings.duration}
-            min={PORTVISIT_EVENTS_MIN_DURATION}
-            max={PORTVISIT_EVENTS_MAX_DURATION}
-            onChange={(event) =>
-              setSetting(section, 'duration', parseInt(event.currentTarget.value))
-            }
-          ></InputText>
-          <span>{t('settings.hours', 'hours')}</span>
+          <div>
+            <span>{t('settings.longerThan', 'Longer than')}</span>
+            <InputText
+              type="number"
+              value={settings.duration}
+              min={PORTVISIT_EVENTS_MIN_DURATION}
+              max={PORTVISIT_EVENTS_MAX_DURATION}
+              onChange={(event) =>
+                setSetting(section, 'duration', parseInt(event.currentTarget.value))
+              }
+            ></InputText>
+            <span>{t('settings.hours', 'hours')}</span>
+          </div>
         </div>
         <div className={cx(styles.settingsField, styles.inlineRow)}>
-          <label>
+          <label className={styles.settingsLabel}>
             {t('event.distanceShore', 'Distance from shore')}
             <DataAndTerminology
               size="tiny"
@@ -129,17 +131,19 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
               </Trans>
             </DataAndTerminology>
           </label>
-          <span>{t('settings.longerThan', 'Longer than')}</span>
-          <InputText
-            type="number"
-            value={settings.distanceShoreLonger}
-            min={PORTVISIT_EVENTS_MIN_DISTANCE}
-            max={PORTVISIT_EVENTS_MAX_DISTANCE}
-            onChange={(event) =>
-              setSetting(section, 'distanceShoreLonger', parseInt(event.currentTarget.value))
-            }
-          ></InputText>
-          <span>{t('settings.km', 'km')}</span>
+          <div>
+            <span>{t('settings.greaterThan', 'Greater than')}</span>
+            <InputText
+              type="number"
+              value={settings.distanceShoreLonger}
+              min={PORTVISIT_EVENTS_MIN_DISTANCE}
+              max={PORTVISIT_EVENTS_MAX_DISTANCE}
+              onChange={(event) =>
+                setSetting(section, 'distanceShoreLonger', parseInt(event.currentTarget.value))
+              }
+            ></InputText>
+            <span>{t('settings.km', 'km')}</span>
+          </div>
         </div>
       </div>
     </div>

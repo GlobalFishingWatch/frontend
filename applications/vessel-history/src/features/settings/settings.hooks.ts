@@ -97,8 +97,7 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
     () => ({
       ...anyRegion,
       label: t(`common.${anyRegion.label}` as any, capitalize(anyRegion.label)) as string,
-      disabled: false,
-      tooltip: t(`common.${anyRegion.label}` as any, capitalize(anyRegion.label)) as string,
+      disabled: false
     }),
     [t]
   )

@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 15.3.0
+
+### Minor Changes
+
+- ace3e03a1: Added useLocalStorage hook
+
+## 15.2.0
+
+### Minor Changes
+
+- f69cd7c51: add support for 4w timecompare mode
+
 ## 15.1.0
 
 ### Minor Changes

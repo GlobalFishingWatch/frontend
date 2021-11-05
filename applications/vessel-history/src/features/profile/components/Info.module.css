@@ -99,7 +99,11 @@ div.identifierField label {
 }
 
 .imageGallery.loading {
-  opacity: 0%;
+  opacity: 0;
+}
+
+.contactUs {
+  text-align: right;
 }
 
 @media (max-width: 1280px) {
@@ -112,16 +116,20 @@ div.identifierField label {
   .identifierField {
     width: 33.3%;
   }
+
   .imageAndFields {
     display: flex;
     gap: var(--space-M);
   }
+
   .actions {
     justify-content: flex-end;
   }
+
   .saveButton {
     width: auto;
   }
+
   .readyForOffline {
     flex: unset;
   }

@@ -25,6 +25,8 @@ import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.sel
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectIsMapDrawing } from 'features/map/map.selectors'
+import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import Hint from 'features/help/hints/Hint'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -69,6 +71,7 @@ const TimebarWrapper = () => {
   const tracksGraphs = useSelector(selectTracksGraphs)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
   const isMapDrawing = useSelector(selectIsMapDrawing)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
 
   const dispatch = useDispatch()
 
@@ -197,10 +200,10 @@ const TimebarWrapper = () => {
       : null
   }, [timebarVisualisation, showGraph, tracksGraphs])
 
-  if (!start || !end || isMapDrawing) return null
+  if (!start || !end || isMapDrawing || showTimeComparison) return null
 
   return (
-    <div>
+    <div className={styles.timebarWrapper}>
       <TimebarComponent
         enablePlayback={true}
         labels={labels}
@@ -261,6 +264,7 @@ const TimebarWrapper = () => {
         ) : null}
       </TimebarComponent>
       {!isSmallScreen && <TimebarSettings />}
+      <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>
   )
 }

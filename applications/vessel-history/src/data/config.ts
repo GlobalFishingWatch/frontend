@@ -14,7 +14,7 @@ export const FLY_EFFECTS = {
   fly: 2, // nice fly to moving the camera
 }
 // enable / disable the effect for switch events in the map
-export const ENABLE_FLYTO = FLY_EFFECTS.fly //maybe we can move this to the settings
+export const ENABLE_FLYTO = FLY_EFFECTS.softFly //maybe we can move this to the settings
 export const DEBUG_MODE =
   ((process.env.REACT_APP_DEBUG_MODE ?? false) as boolean) ||
   (WORKSPACE_ENV === 'production' ? false : true)
@@ -74,9 +74,12 @@ export const EVENTS_COLORS: Record<string, string> = {
 
 export const DEFAULT_EMPTY_VALUE = ' --- '
 
+export const LAST_POSITION_LAYERS_PREFIX = 'last-position'
+
 export const AUTHORIZED_USER_GROUPS = ['VV-African-Pilot', 'Admin-group', 'GFW']
 
-export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
+export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
+  process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
   ? {}
   : { debug: true }

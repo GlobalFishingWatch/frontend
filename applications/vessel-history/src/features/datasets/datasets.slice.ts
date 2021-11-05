@@ -3,7 +3,13 @@ import { uniqBy, memoize, without } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { asyncInitialState, AsyncReducer, createAsyncSlice, AsyncError } from 'utils/async-slice'
+import {
+  asyncInitialState,
+  AsyncReducer,
+  createAsyncSlice,
+  AsyncError,
+  AsyncReducerStatus,
+} from 'utils/async-slice'
 import { RootState } from 'store'
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
@@ -64,6 +70,22 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
+  },
+  {
+    // IMPORTANT to prevent re fetching records that are already in our store
+    condition: (ids: string[], { getState }) => {
+      const { datasets } = getState() as RootState
+      const fetchStatus = datasets.status
+      const allRecordsLoaded = ids.every((id) => datasets.ids.includes(id))
+      if (
+        (fetchStatus === AsyncReducerStatus.Finished && allRecordsLoaded) ||
+        fetchStatus === AsyncReducerStatus.Loading
+      ) {
+        // Already fetched or in progress, don't need to re-fetch
+        return false
+      }
+      return true
+    },
   }
 )
 

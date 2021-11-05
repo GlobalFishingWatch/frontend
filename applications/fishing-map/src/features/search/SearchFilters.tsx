@@ -11,6 +11,7 @@ import {
   getDatasetLabel,
   getFiltersBySchema,
   SchemaFieldDataview,
+  SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSearchFiltersConnect } from './search.hook'
@@ -20,12 +21,13 @@ type SearchFiltersProps = {
   datasets: Dataset[]
   className?: string
 }
+const schemaFilterIds: SupportedDatasetSchema[] = ['fleet', 'origin', 'codMarinha', 'targetSpecies']
 
 function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
-  const { flags, sources, fleets, origins, activeAfterDate, activeBeforeDate } = searchFilters
+  const { flag, sources, activeAfterDate, activeBeforeDate } = searchFilters
 
   const flagOptions = useMemo(getFlags, [])
   const sourceOptions = useMemo(() => {
@@ -46,19 +48,21 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
     }
   }, [activeAfterDate, activeBeforeDate, setSearchFilters, start, end])
 
-  const dataview = {
-    config: {
-      datasets: sources?.map(({ id }) => id),
-      filters: {
-        fleet: fleets?.map(({ id }) => id),
-        origin: origins?.map(({ id }) => id),
-      },
-    },
-    datasets,
-  } as SchemaFieldDataview
+  const dataview = useMemo(
+    () =>
+      ({
+        config: {
+          datasets: sources?.map(({ id }) => id),
+          filters: Object.fromEntries(
+            schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f.id)])
+          ),
+        },
+        datasets,
+      } as SchemaFieldDataview),
+    [datasets, searchFilters, sources]
+  )
 
-  const fleetFilters = getFiltersBySchema(dataview, 'fleet')
-  const originFilters = getFiltersBySchema(dataview, 'origin')
+  const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
 
   return (
     <div className={cx(className)}>
@@ -80,64 +84,49 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           }}
         />
       )}
-      {fleetFilters.active && (
-        <div className={styles.row}>
+      {schemaFilters.map((schemaFilter) => {
+        if (!schemaFilter.active) {
+          return null
+        }
+        const { id, tooltip, disabled, options, optionsSelected } = schemaFilter
+        return (
           <MultiSelect
-            disabled={fleetFilters.disabled}
-            disabledMsg={fleetFilters.tooltip}
-            label={t('vessel.fleet', 'Fleet')}
-            placeholder={getPlaceholderBySelections(fleetFilters.optionsSelected)}
-            options={fleetFilters.options}
-            selectedOptions={fleetFilters.optionsSelected}
-            className={styles.multiSelect}
+            key={id}
+            disabled={disabled}
+            disabledMsg={tooltip}
+            label={t(`vessel.${id}` as any, id)}
+            placeholder={getPlaceholderBySelections(optionsSelected)}
+            options={options}
+            selectedOptions={optionsSelected}
+            className={styles.row}
             onSelect={(filter) => {
-              setSearchFilters({ fleets: [...(fleets || []), filter] })
+              setSearchFilters({
+                [id]: [...(searchFilters[id] || []), filter],
+              })
             }}
             onRemove={(filter, rest) => {
-              setSearchFilters({ fleets: rest })
+              setSearchFilters({ [id]: rest })
             }}
             onCleanClick={() => {
-              setSearchFilters({ fleets: undefined })
+              setSearchFilters({ [id]: undefined })
             }}
           />
-        </div>
-      )}
-      {originFilters.active && (
-        <div className={styles.row}>
-          <MultiSelect
-            disabled={originFilters.disabled}
-            disabledMsg={originFilters.tooltip}
-            label={t('vessel.origin', 'Origin')}
-            placeholder={getPlaceholderBySelections(originFilters.optionsSelected)}
-            options={originFilters.options}
-            selectedOptions={originFilters.optionsSelected}
-            className={styles.multiSelect}
-            onSelect={(filter) => {
-              setSearchFilters({ origins: [...(origins || []), filter] })
-            }}
-            onRemove={(filter, rest) => {
-              setSearchFilters({ origins: rest })
-            }}
-            onCleanClick={() => {
-              setSearchFilters({ origins: undefined })
-            }}
-          />
-        </div>
-      )}
+        )
+      })}
       <MultiSelect
         label={t('layer.flagState_other', 'Flag States')}
-        placeholder={getPlaceholderBySelections(flags)}
+        placeholder={getPlaceholderBySelections(flag)}
         options={flagOptions}
-        selectedOptions={flags}
+        selectedOptions={flag}
         className={styles.row}
         onSelect={(filter) => {
-          setSearchFilters({ flags: [...(flags || []), filter] })
+          setSearchFilters({ flag: [...(flag || []), filter] })
         }}
         onRemove={(filter, rest) => {
-          setSearchFilters({ flags: rest })
+          setSearchFilters({ flag: rest })
         }}
         onCleanClick={() => {
-          setSearchFilters({ flags: undefined })
+          setSearchFilters({ flag: undefined })
         }}
       />
       <div className={styles.row}>

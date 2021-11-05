@@ -345,7 +345,8 @@ export const fetchEncounterEventThunk = createAsyncThunk<
       let vesselsInfo: ExtendedEventVessel[] = []
       const vesselsDatasets = dataview?.datasets
         ?.flatMap((d) => d.relatedDatasets || [])
-        .filter((d) => d?.type === 'carriers-vessels:v1')
+        .filter((d) => d?.type === DatasetTypes.Vessels)
+
       if (vesselsDatasets?.length && fishingVessel && carrierVessel) {
         const vesselDataset = selectDatasetById(vesselsDatasets[0].id)(state) as Dataset
         const vesselsDatasetConfig = {

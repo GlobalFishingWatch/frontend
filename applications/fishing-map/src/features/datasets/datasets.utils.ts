@@ -1,5 +1,11 @@
 import { intersection, lowerCase, uniq } from 'lodash'
-import { Dataset, Dataview, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  Dataview,
+  DataviewDatasetConfig,
+  DataviewInstance,
+  EventTypes,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -15,6 +21,11 @@ export type SupportedDatasetSchema =
   | 'origin'
   | 'vessel_type'
   | 'qf_detect'
+  | 'codMarinha'
+  | 'targetSpecies' // TODO: normalice format in API and decide
+  | 'target_species' // between camelCase or snake_case
+  | 'license_category'
+
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
@@ -114,6 +125,13 @@ export const isDataviewSchemaSupported = (
   return schemaSupported
 }
 
+export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig) => {
+  return (
+    datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
+    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value
+  )
+}
+
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   return dataset.schema?.[schema]?.enum !== undefined && dataset.schema?.[schema].enum.length > 0
 }
@@ -155,11 +173,15 @@ export const getCommonSchemaFieldsInDataview = (
   const datasetId = activeDatasets?.[0]?.id?.split(':')[0]
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
-        const label = t(
-          `datasets:${datasetId}.schema.${schema}.enum.${field}`,
-          t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
-        )
-        return { id: field, label: label }
+        let label = t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
+        if (label === field) {
+          label =
+            schema === 'geartype'
+              ? // There is an fixed list of gearTypes independant of the dataset
+                t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
+              : t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
+        }
+        return { id: field, label }
       })
     : []
   return commonSchemaFields.sort(sortFields)
@@ -176,10 +198,18 @@ export const getSchemaFieldsSelectedInDataview = (
   return optionsSelected
 }
 
+export type SchemaFilter = {
+  id: SupportedDatasetSchema
+  active: boolean
+  disabled: boolean
+  options: ReturnType<typeof getCommonSchemaFieldsInDataview>
+  optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
+  tooltip: string
+}
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
-) => {
+): SchemaFilter => {
   const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)
   const datasetsWithSchemaIds = datasetsWithSchema?.map(({ id }) => id)
   const active = dataview.config?.datasets?.some((dataset: string) =>
@@ -187,7 +217,7 @@ export const getFiltersBySchema = (
   )
 
   const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)
-  const disabled = datasetsWithoutSchema && datasetsWithoutSchema.length > 0
+  const disabled = datasetsWithoutSchema !== undefined && datasetsWithoutSchema.length > 0
 
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
 
@@ -201,5 +231,5 @@ export const getFiltersBySchema = (
         defaultValue: 'Not supported by {{list}}',
       })
     : ''
-  return { active, disabled, options, optionsSelected, tooltip }
+  return { id: schema, active, disabled, options, optionsSelected, tooltip }
 }

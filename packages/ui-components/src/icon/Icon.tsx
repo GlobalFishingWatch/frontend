@@ -3,6 +3,7 @@ import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import Tooltip from '../tooltip'
 import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
+import { ReactComponent as Analysis } from '../assets/icons/analysis.svg'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
@@ -40,6 +41,7 @@ import { ReactComponent as Layers } from '../assets/icons/layers.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
+import { ReactComponent as More } from '../assets/icons/more.svg'
 import { ReactComponent as Pin } from '../assets/icons/pin.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
 import { ReactComponent as Private } from '../assets/icons/private.svg'
@@ -64,6 +66,7 @@ import styles from './Icon.module.css'
 
 export const IconComponents = {
   'add-polygon': AddPolygon,
+  analysis: Analysis,
   'arrow-down': ArrowDown,
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
@@ -101,6 +104,7 @@ export const IconComponents = {
   layers: Layers,
   menu: Menu,
   minus: Minus,
+  more: More,
   pin: Pin,
   plus: Plus,
   private: Private,

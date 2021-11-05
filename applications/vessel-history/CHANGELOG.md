@@ -1,5 +1,51 @@
 # @globalfishingwatchapp/vessel-history
 
+## 1.0.25
+
+### Patch Changes
+
+- Updated dependencies [08c49d086]
+  - @globalfishingwatch/layer-composer@10.1.1
+
+## 1.0.24
+
+### Patch Changes
+
+- Updated dependencies [ace3e03a1]
+  - @globalfishingwatch/react-hooks@15.3.0
+
+## 1.0.23
+
+### Patch Changes
+
+- Updated dependencies [f69cd7c51]
+  - @globalfishingwatch/api-types@6.4.0
+  - @globalfishingwatch/layer-composer@10.1.0
+  - @globalfishingwatch/react-hooks@15.2.0
+  - @globalfishingwatch/ui-components@12.5.0
+
+## 1.0.22
+
+### Patch Changes
+
+- Updated dependencies [de736c1e]
+  - @globalfishingwatch/api-client@4.0.1
+
+## 1.0.21
+
+### Patch Changes
+
+- Updated dependencies [b88273847]
+  - @globalfishingwatch/layer-composer@10.0.2
+
+## 1.0.20
+
+### Patch Changes
+
+- 24642e15: ACTIVITY tab - add a red dot icon in the events that are matching highlight criteria
+- Updated dependencies [24642e15]
+  - @globalfishingwatch/ui-components@12.4.0
+
 ## 1.0.19
 
 ### Patch Changes

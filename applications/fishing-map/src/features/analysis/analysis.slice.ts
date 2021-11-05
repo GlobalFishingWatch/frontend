@@ -70,6 +70,7 @@ export interface ReportState extends AsyncReducer<Report> {
     name: string
     id: string
   }
+  timeComparison: string[]
 }
 
 const initialState: ReportState = {
@@ -80,6 +81,7 @@ const initialState: ReportState = {
     name: '',
     id: '',
   },
+  timeComparison: [],
 }
 
 const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({

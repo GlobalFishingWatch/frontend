@@ -11,11 +11,46 @@
 
 .event {
   margin-left: var(--space-M);
-  height: 60px;
+  height: 40px;
   display: flex;
   align-items: center;
-  border-top: var(--border);
+
+  /* border-top: var(--border); */
   padding: 0 var(--space-S);
+  position: relative;
+}
+
+.divider {
+  opacity: 0.1;
+  background-color: var(--color-primary-blue);
+  width: calc(100% - 2.5rem);
+  height: 1px;
+  position: relative;
+  margin: var(--space-S) 0 0;
+  left: 2.5rem;
+  z-index: -1;
+}
+
+.highlightsContainer .divider {
+  width: 100%;
+  left: calc(var(--space-XS) * -1);
+}
+
+.divider::before {
+  margin-right: 9px;
+  background: #fff url('../../../../assets/icons/vessel.svg') no-repeat 1.25rem;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  height: 1.25rem;
+  width: 1.25rem;
+  background-size: 1.25rem 1.25rem;
+  top: -7px;
+  padding: 0 var(--space-M) 0 var(--space-XS);
+}
+
+.activityListContainer > div > div > div > div:last-child .divider {
+  display: none;
 }
 
 .event .eventData {
@@ -42,7 +77,10 @@
   width: 100%;
   padding-left: var(--space-M);
   cursor: pointer;
+  height: 60px;
   border-top: var(--border);
+  background: var(--gradient);
+  margin-top: -0.9rem;
 }
 
 .voyage .eventData {
@@ -80,7 +118,7 @@
   background-color: #fff;
 }
 
-.eventIcon.encounter.unmatched {
+.eventIcon.encounter {
   background-color: #fae9a0;
 }
 
@@ -111,8 +149,16 @@
   box-shadow: 0 0 2px #163f89;
 }
 
-.eventIcon.encounter i {
-  background: #9c9091 url('../../../../assets/icons/encounter.svg') no-repeat center center;
+.highlighted::before {
+  content: '';
+  height: var(--space-XS);
+  width: var(--space-XS);
+  background-color: var(--color-danger-red);
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: -1.25rem;
+  position: absolute;
+  left: 0;
 }
 
 .event .actions {
@@ -183,7 +229,7 @@ button .iconInButton {
   position: relative;
 }
 
-.settingsLink {
+button.settingsLink {
   position: absolute;
   top: 0;
   right: 0;

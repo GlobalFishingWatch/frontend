@@ -1,5 +1,23 @@
 # @globalfishingwatch/layer-composer
 
+## 10.1.1
+
+### Patch Changes
+
+- 08c49d086: fixes a race condition when fetching breaks
+
+## 10.1.0
+
+### Minor Changes
+
+- f69cd7c51: add support for 4w timecompare mode
+
+## 10.0.2
+
+### Patch Changes
+
+- b88273847: show user custom layers on top of basemap
+
 ## 10.0.1
 
 ### Patch Changes

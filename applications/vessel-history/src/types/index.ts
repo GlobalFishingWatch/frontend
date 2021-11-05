@@ -1,4 +1,4 @@
-import { Vessel, Authorization, VesselSearch } from '@globalfishingwatch/api-types'
+import { Vessel, Authorization, VesselSearch, EventType } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -34,10 +34,16 @@ export type WorkspaceState = {
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string
 }
+
+export type RedirectParam = {
+  'access-token'?: string
+}
+
 export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   Partial<WorkspaceMergeVessels> &
-  WorkspaceState
+  WorkspaceState &
+  RedirectParam
 
 export type CoordinatePosition = {
   latitude: number
@@ -47,7 +53,9 @@ export type CoordinatePosition = {
 export interface MapCoordinates extends CoordinatePosition {
   zoom: number
 }
-
+export interface TrackPosition extends CoordinatePosition {
+  timestamp: number
+}
 export interface FieldValueCounter<T = string> {
   counter: number
   name: T
@@ -203,3 +211,5 @@ export interface SearchResults {
   total: number
   searching: boolean
 }
+
+export type VisibleEvents = EventType[] | 'all' | 'none'

@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { selectAdvancedSearchFields, selectUrlQuery } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchVesselSearchThunk } from './search.thunk'
+import { fetchData, fetchVesselSearchThunk } from './search.thunk'
 
 // Maximum number of vessels that can be merged
 const LIMIT_VESSELS_MERGE_TO = 3
@@ -20,6 +21,11 @@ export const useSearchResultsConnect = () => {
       if (selectedVessels.includes(index)) {
         setSelectedVessels(selectedVessels.filter((i) => index !== i))
       } else if (isVesselsMergeEnabled) {
+        uaEvent({
+          category: 'Search Vessel VV',
+          action: 'Select vessel from result list',
+          label: JSON.stringify({ position: index })
+        })
         setSelectedVessels([...selectedVessels, index])
       }
     },
@@ -38,11 +44,11 @@ type useSearchConnectParams = {
   onNewSearch?: () => void
 }
 const defaultParams = {
-  onNewSearch: () => {},
+  onNewSearch: () => { },
 }
 
 export const useSearchConnect = (params: useSearchConnectParams = defaultParams) => {
-  const { onNewSearch = () => {} } = params
+  const { onNewSearch = () => { } } = params
   const dispatch = useAppDispatch()
   const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
@@ -74,9 +80,26 @@ export const useSearchConnect = (params: useSearchConnectParams = defaultParams)
     [onNewSearch, dispatch, query, advancedSearch]
   )
 
+  /**
+   * find a vessel by name, flag and mmsi using advance search and try to match the id
+   */
+  const findVessel = useCallback(
+    async (id, name, flag, ssvid) => {
+      // Ensure user is logged in before searching
+      dispatch(fetchUserThunk())
+      const vesselsFound = await fetchData(name, 0, null, {
+        mmsi: ssvid,
+        flags: [flag],
+      })
+      return vesselsFound?.vessels.find(vessel => vessel.id === id)
+    },
+    [dispatch]
+  )
+
   return {
     query,
     advancedSearch,
     fetchResults,
+    findVessel,
   }
 }

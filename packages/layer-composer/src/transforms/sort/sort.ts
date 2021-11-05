@@ -14,6 +14,7 @@ const GROUP_ORDER = [
   Group.TrackHighlighted,
   Group.Point,
   Group.BasemapForeground,
+  Group.CustomLayer,
   Group.OutlinePolygonsHighlighted,
   Group.Cluster,
   Group.Tool,

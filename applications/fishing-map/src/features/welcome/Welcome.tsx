@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Logo } from '@globalfishingwatch/ui-components'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
-import useLocalStorage from 'hooks/use-local-storage'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import styles from './Welcome.module.css'
 import WELCOME_POPUP_CONTENT from './welcome.content'
@@ -18,12 +18,14 @@ export const DISABLE_WELCOME_POPUP = 'DisableWelcomePopup'
 const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: WelcomeProps) => {
   const { t, i18n } = useTranslation()
   const welcomeModal = WELCOME_POPUP_CONTENT[contentKey]
-  const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, null)
+  const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, true)
+
   useEffect(() => {
-    if (disabled === null) {
+    if (disabled === true) {
       setDisabled(true)
     }
   })
+
   const onDisableToggled = useCallback(() => {
     setDisabled(!disabled)
   }, [disabled, setDisabled])
@@ -51,11 +53,6 @@ const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: We
           </a>
         )}
       </div>
-      <h1 className={styles.title}>{title}</h1>
-      <div
-        className={styles.contentContainer}
-        dangerouslySetInnerHTML={{ __html: description }}
-      ></div>
       <div className={styles.headerActions}>
         {showDisableCheckbox && (
           <div className={styles.disableSection}>
@@ -71,8 +68,13 @@ const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: We
             </label>
           </div>
         )}
-        <LanguageToggle position="rightDown" />
+        <LanguageToggle className={styles.lngToggle} position="rightDown" />
       </div>
+      <h1 className={styles.title}>{title}</h1>
+      <div
+        className={styles.contentContainer}
+        dangerouslySetInnerHTML={{ __html: description }}
+      ></div>
     </div>
   )
 }

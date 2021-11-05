@@ -1,5 +1,93 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.75
+
+### Patch Changes
+
+- Updated dependencies [08c49d086]
+  - @globalfishingwatch/layer-composer@10.1.1
+
+## 1.1.74
+
+### Patch Changes
+
+- Updated dependencies [ace3e03a1]
+  - @globalfishingwatch/react-hooks@15.3.0
+
+## 1.1.73
+
+### Patch Changes
+
+- Updated dependencies [505c3edb7]
+  - @globalfishingwatch/timebar@2.3.1
+
+## 1.1.72
+
+### Patch Changes
+
+- Updated dependencies [f69cd7c51]
+  - @globalfishingwatch/api-types@6.4.0
+  - @globalfishingwatch/fourwings-aggregate@4.1.0
+  - @globalfishingwatch/layer-composer@10.1.0
+  - @globalfishingwatch/react-hooks@15.2.0
+  - @globalfishingwatch/ui-components@12.5.0
+
+## 1.1.71
+
+### Patch Changes
+
+- Updated dependencies [de736c1e]
+  - @globalfishingwatch/api-client@4.0.1
+
+## 1.1.70
+
+### Patch Changes
+
+- 48c18a7d: support custom style
+
+## 1.1.69
+
+### Patch Changes
+
+- Updated dependencies [3ce0364b]
+  - @globalfishingwatch/ui-components@12.4.1
+
+## 1.1.68
+
+### Patch Changes
+
+- Updated dependencies [8978b00d]
+  - @globalfishingwatch/timebar@2.3.0
+
+## 1.1.67
+
+### Patch Changes
+
+- Updated dependencies [0dd8b81d]
+  - @globalfishingwatch/i18n-labels@1.2.0
+  - @globalfishingwatch/timebar@2.2.0
+
+## 1.1.66
+
+### Patch Changes
+
+- Updated dependencies [b88273847]
+  - @globalfishingwatch/layer-composer@10.0.2
+
+## 1.1.65
+
+### Patch Changes
+
+- Updated dependencies [24642e15]
+  - @globalfishingwatch/ui-components@12.4.0
+
+## 1.1.64
+
+### Patch Changes
+
+- Updated dependencies [39c43baa]
+  - @globalfishingwatch/ui-components@12.3.1
+
 ## 1.1.63
 
 ### Patch Changes

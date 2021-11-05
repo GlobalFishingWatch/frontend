@@ -36,7 +36,7 @@ export const LAST_DATA_UPDATE = fromObject({ hour: 0, minute: 0, second: 0 }, { 
 export const DEFAULT_VIEWPORT = {
   zoom: 1.5,
   latitude: 19,
-  longitude: 26,
+  longitude: -30,
 }
 export const DEFAULT_TIME_RANGE = {
   start: DateTime.fromISO(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
@@ -62,6 +62,8 @@ export const DEFAULT_WORKSPACE = {
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,
+  analysisType: undefined,
+  analysisTimeComparison: undefined,
   activityCategory: DEFAULT_ACTIVITY_CATEGORY,
   version: DEFAULT_VERSION,
 }

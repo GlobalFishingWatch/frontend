@@ -1,23 +1,22 @@
-import { Fragment, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
-import { getFlagsByIds } from 'utils/flags'
-import { t } from 'features/i18n/i18n'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { isFishingDataview, isPresenceDataview } from 'features/workspace/activity/activity.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { isFishingDataview, isPresenceDataview } from 'features/workspace/activity/activity.utils'
+import { t } from 'features/i18n/i18n'
+import { getFlagsByIds } from 'utils/flags'
 import {
   getSchemaFieldsSelectedInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import AnalysisLayerPanel from './AnalysisLayerPanel'
-import AnalysisItemGraph, { AnalysisGraphProps } from './AnalysisItemGraph'
-import styles from './AnalysisItem.module.css'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectAnalysisTimeComparison, selectAnalysisTypeQuery } from 'features/app/app.selectors'
+import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
+import { selectShowTimeComparison } from './analysis.selectors'
 
-const FIELDS = [
+export const FIELDS = [
   ['geartype', 'layer.gearType_other', 'Gear types'],
   ['fleet', 'layer.fleet_other', 'Fleets'],
   ['origin', 'vessel.origin', 'Origin'],
@@ -34,12 +33,16 @@ const getSerializedFilterFields = (dataview: UrlDataviewInstance, filterKey: str
   return dataview.config?.filters?.[filterKey]?.slice().sort(sortStrings).join(', ')
 }
 
-const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
+const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparison?: boolean) => {
   const commonProperties: string[] = []
   const titleChunks: { label: string; strong?: boolean }[] = []
 
   if (dataviews && dataviews?.length > 0) {
     const firstDataviewDatasets = getSerializedDatasets(dataviews[0])
+
+    if (showTimeComparison) {
+      titleChunks.push({ label: t('analysis.changeIn', 'Change in') })
+    }
 
     if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
       commonProperties.push('dataset')
@@ -133,23 +136,72 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
   return { titleChunks, commonProperties }
 }
 
-const getDescription = (
+export type DescriptionChunks = {
+  label: string
+  strong?: boolean
+}[]
+
+export const useTimeCompareTimeDescription = (addPrefix = true) => {
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const analysisType = useSelector(selectAnalysisTypeQuery)
+  if (!timeComparison) return undefined
+  const startLabel = formatI18nDate(timeComparison.start, {
+    format: DateTime.DATE_MED_WITH_WEEKDAY,
+  })
+  // TODO Plural and i18n
+  const durationLabel = [timeComparison.duration, timeComparison.durationType].join(' ')
+  let label =
+    analysisType === 'periodComparison'
+      ? t('analysis.periodComparisonRange', {
+          compareStart: formatI18nDate(timeComparison.compareStart, {
+            format: DateTime.DATE_MED_WITH_WEEKDAY,
+          }),
+          start: startLabel,
+          duration: durationLabel,
+          defaultValue: 'between the {{duration}} after {{start}} and after {{compareStart}}',
+        })
+      : t('analysis.beforeAfterRange', {
+          start: startLabel,
+          duration: durationLabel,
+          defaultValue: 'between the {{duration}} before and after {{start}}',
+        })
+
+  if (addPrefix) {
+    label = [t('analysis.change', 'Change'), label].join(' ')
+  }
+
+  return label
+}
+
+const useDescription = (
   titleChunks: { label: string; strong?: boolean }[],
   analysisAreaName: string,
-  start: string | undefined,
-  end: string | undefined,
   graphData: AnalysisGraphProps | undefined
-) => {
-  const dateFormat =
-    graphData?.interval === 'hour'
-      ? DateTime.DATETIME_MED_WITH_WEEKDAY
-      : DateTime.DATE_MED_WITH_WEEKDAY
+): DescriptionChunks => {
+  const { start, end } = useTimerangeConnect()
+  const analysisType = useSelector(selectAnalysisTypeQuery)
+  const timeCompareTimeDescription = useTimeCompareTimeDescription(false)
+
+  if (!titleChunks || !titleChunks.length) return []
+
   const descriptionChunks = [...titleChunks]
   if (analysisAreaName) {
     descriptionChunks.push({ label: t('common.in', 'in') })
     descriptionChunks.push({ label: analysisAreaName, strong: true })
   }
-  if (start && end) {
+  if (
+    analysisType === 'periodComparison' ||
+    (analysisType === 'beforeAfter' && timeCompareTimeDescription)
+  ) {
+    descriptionChunks.push({
+      label: timeCompareTimeDescription as string,
+      strong: true,
+    })
+  } else if (start && end) {
+    const dateFormat =
+      graphData?.interval === 'hour'
+        ? DateTime.DATETIME_MED_WITH_WEEKDAY
+        : DateTime.DATE_MED_WITH_WEEKDAY
     descriptionChunks.push({
       label: t('common.dateRange', {
         start: formatI18nDate(start, { format: dateFormat }),
@@ -162,61 +214,17 @@ const getDescription = (
   return descriptionChunks
 }
 
-function AnalysisItem({
-  graphData,
-  hasAnalysisLayers,
-  analysisAreaName,
-}: {
-  graphData: AnalysisGraphProps
-  hasAnalysisLayers: boolean
-  analysisAreaName: string
-}) {
-  const { t } = useTranslation()
-  const { start, end } = useTimerangeConnect()
+const useAnalysisDescription = (analysisAreaName: string, graphData?: AnalysisGraphProps) => {
   const dataviewsIds = useMemo(() => {
-    return graphData.sublayers.map((s) => s.id)
+    return graphData ? graphData.sublayers.map((s) => s.id) : []
   }, [graphData])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
+  const showTimeComparison = useSelector(selectShowTimeComparison)
   const { titleChunks, commonProperties } = useMemo(() => {
-    return getCommonProperties(dataviews)
-  }, [dataviews])
-
-  const description = getDescription(titleChunks, analysisAreaName, start, end, graphData)
-
-  return (
-    <div className={styles.container}>
-      {hasAnalysisLayers ? (
-        <Fragment>
-          <h3 className={styles.commonTitle}>
-            {description.map((d) =>
-              d.strong ? (
-                <strong key={d.label}>{d.label}</strong>
-              ) : (
-                <span key={d.label}>{d.label}</span>
-              )
-            )}
-            .
-          </h3>
-          <div className={styles.layerPanels}>
-            {dataviews?.map((dataview, index) => (
-              <AnalysisLayerPanel
-                key={dataview.id}
-                dataview={dataview}
-                index={index}
-                hiddenProperties={commonProperties}
-                availableFields={FIELDS}
-              />
-            ))}
-          </div>
-        </Fragment>
-      ) : (
-        <p className={styles.placeholder}>
-          {t('analysis.empty', 'Your selected datasets will appear here')}
-        </p>
-      )}
-      {start && end && <AnalysisItemGraph graphData={graphData} start={start} end={end} />}
-    </div>
-  )
+    return getCommonProperties(dataviews, showTimeComparison)
+  }, [dataviews, showTimeComparison])
+  const description = useDescription(titleChunks, analysisAreaName, graphData)
+  return { description, commonProperties }
 }
 
-export default AnalysisItem
+export default useAnalysisDescription

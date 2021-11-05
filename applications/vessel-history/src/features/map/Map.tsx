@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { InteractiveMap } from 'react-map-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
@@ -13,6 +13,7 @@ import { selectVesselProfileId } from 'routes/routes.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { EventTypeVoyage } from 'types/voyage'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectFilters } from 'features/event-filters/filters.slice'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
@@ -31,10 +32,10 @@ const Map: React.FC = (): React.ReactElement => {
   const dispatch = useAppDispatch()
   const mapRef = useRef<any>(null)
   const highlightedEvent = useSelector(selectHighlightedEvent)
-  const { selectVesselEventOnClick, highlightEvent } = useMapEvents()
+  const { selectVesselEventOnClick, highlightEvent, onFiltersChanged } = useMapEvents()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
-  const resourcesLoading = useSelector(selectResourcesLoading) ?? false
+  const resourcesLoading: boolean = useSelector(selectResourcesLoading) ?? false
   const { style, loading: layerComposerLoading } = useLayerComposer(
     generatorsConfig,
     globalConfig,
@@ -53,6 +54,8 @@ const Map: React.FC = (): React.ReactElement => {
   const [vesselDataview] = useSelector(selectActiveVesselsDataviews) ?? []
   const vesselLoaded = useMemo(() => !!vessel, [vessel])
   const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
+  const filters = useSelector(selectFilters)
+  const [prevFilters, setPrevFilters] = useState(filters)
 
   useEffect(() => {
     if (!vesselLoaded || !vesselDataviewLoaded || eventsLoading || highlightedEvent) return
@@ -80,6 +83,15 @@ const Map: React.FC = (): React.ReactElement => {
     vesselLoaded,
     viewport.zoom,
   ])
+
+  // Highlight last event and voyage when filters change and
+  // the previously highlighted event is not shown in the list anymore
+  useEffect(() => {
+    if (JSON.stringify(prevFilters) !== JSON.stringify(filters)) {
+      onFiltersChanged()
+      setPrevFilters(filters)
+    }
+  }, [filters, onFiltersChanged, prevFilters])
 
   if (ENABLE_FLYTO) {
     let flying = false

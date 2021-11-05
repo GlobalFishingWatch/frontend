@@ -35,6 +35,7 @@ import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vesse
 import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -103,13 +104,13 @@ const Profile: React.FC = (props): React.ReactElement => {
       }
     }
 
-    if (datasets.length > 0) {
+    if (datasets.length > 0 && !vessel) {
       fetchVessel()
       dispatch(resetFilters())
       dispatch(setHighlightedEvent(undefined))
       dispatch(setVoyageTime(undefined))
     }
-  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds])
+  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds, vessel])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
@@ -127,6 +128,9 @@ const Profile: React.FC = (props): React.ReactElement => {
       })
     }
   }, [dispatch, loading, resourceQueries, vessel, vesselDataviewLoaded])
+
+  
+  const visibleHighlights = useSelector(countFilteredEventsHighlighted)
 
   const tabs: Tab[] = useMemo(
     () => [
@@ -146,7 +150,11 @@ const Profile: React.FC = (props): React.ReactElement => {
       },
       {
         id: 'activity',
-        title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
+        title: <div className={styles.tagContainer}>
+          {t('common.activity', 'ACTIVITY').toLocaleUpperCase()} 
+          {visibleHighlights > 0 && 
+            <span className={styles.tabLabel}>{visibleHighlights}</span>}
+        </div>,
         content: vessel ? (
           <Activity
             vessel={vessel}
@@ -170,10 +178,18 @@ const Profile: React.FC = (props): React.ReactElement => {
         ),
       },
     ],
-    [t, vessel, lastPosition, lastPortVisit, loading]
+    [t, vessel, lastPosition, lastPortVisit, loading, visibleHighlights]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
+  const [lastProfileId, setLastProfileId] = useState<string>('')
+
+  useEffect(() => {
+    if (lastProfileId !== vesselProfileId){
+      setLastProfileId(vesselProfileId)
+      setActiveTab(tabs[0])
+    }
+  }, [lastProfileId, tabs, vesselProfileId])
 
   const defaultPreviousNames = useMemo(() => {
     return `+${vessel?.history.shipname.byDate.length} previous ${t(

@@ -35,6 +35,7 @@ import {
   MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
   SPATIAL_RESOLUTION_OPTIONS,
   FORMAT_OPTIONS,
+  MAX_YEARS_TO_ALLOW_DOWNLOAD,
 } from './downloadActivity.config'
 
 function DownloadActivityModal() {
@@ -260,10 +261,12 @@ function DownloadActivityModal() {
           className={styles.downloadBtn}
           onClick={onDownloadClick}
           loading={downloadLoading}
-          disabled={!duration || duration.years > 1}
+          disabled={!duration || duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD}
           tooltip={
-            duration && duration.years > 3
-              ? t('download.timerangeTooLong', 'The maximum time range is 3 years')
+            duration && duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD
+              ? t('download.timerangeTooLong', 'The maximum time range is {{count}} years', {
+                  count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
+                })
               : ''
           }
         >

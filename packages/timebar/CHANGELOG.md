@@ -1,5 +1,23 @@
 # @globalfishingwatch/timebar
 
+## 2.3.1
+
+### Patch Changes
+
+- 505c3edb7: Missing trnslations in timeline units
+
+## 2.3.0
+
+### Minor Changes
+
+- 8978b00d: range-selector-validity-checks
+
+## 2.2.0
+
+### Minor Changes
+
+- 0dd8b81d: replaced timebar date pickers with ui-component ones
+
 ## 2.1.0
 
 ### Minor Changes

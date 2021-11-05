@@ -12,6 +12,7 @@ import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
 import mapReducer from './features/map/map.slice'
 import downloadActivityReducer from './features/download/downloadActivity.slice'
+import hintsReducer from './features/help/hints/hints.slice'
 import downloadTrackReducer from './features/download/downloadTrack.slice'
 import rulersReducer from './features/map/rulers/rulers.slice'
 import analysisReducer from './features/analysis/analysis.slice'
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   resources: resourcesReducer,
   timebar: timebarReducer,
   map: mapReducer,
+  hints: hintsReducer,
   downloadActivity: downloadActivityReducer,
   downloadTrack: downloadTrackReducer,
   rulers: rulersReducer,

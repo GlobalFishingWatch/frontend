@@ -1,0 +1,36 @@
+.container {
+  width: 100%;
+  padding: var(--space-M);
+}
+
+.graphContainer {
+  min-height: 28rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeSelection {
+  width: 100%;
+  display: flex;
+  gap: var(--space-S);
+  justify-content: space-between;
+}
+
+.timeSelection > div {
+  flex: 1;
+}
+
+.durationWrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+.durationWrapper > div {
+  flex: 1;
+}
+
+.durationWrapper .duration {
+  flex: unset;
+  width: 6rem;
+}

@@ -106,6 +106,31 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-global-other-vessels": {
+    "name": "AIS (Other Vessels)",
+    "description": "Other vessels from AIS",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "flag",
+      "mmsi": "mmsi",
+      "source": "source",
+      "dataset": "dataset",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "Purse Seine Support Vessel": "Purse Seine Support Vessel"
+        }
+      },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
+      "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
     "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
@@ -366,6 +391,64 @@
     "name": "Áreas que deben ser evitadas por embarcaciones transportando cargas",
     "description": "25 nm de búfer alrededor de las islas recomendando circunnavegar",
     "schema": {}
+  },
+  "public-bra-onyxsat-fishing-effort": {
+    "name": "Brazil VMS",
+    "description": "Los datos del sistema de monitoreo de buques (VMS) son proporcionados por el Secretario Brasileño de Acuicultura y Pesca. Los datos se recogen utilizando el sistema de monitoreo de buques de Brasil a través de satélites y se publican con un retraso de tres días que contiene información sobre la identidad de los buques, ubicación, velocidad, curso y movimiento. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para el sistema automático de identificación (AIS) para identificar la actividad y los comportamientos de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como la pesca aparentemente o no la pesca y muestra la primera en el mapa de calor de la actividad pesquera de la caza de pesca. VMS transmite datos de forma diferente a AIS y puede dar diferentes medidas de integridad, precisión y calidad. Global Fishing Watch está mejorando continuamente sus algoritmos a través de todos los formatos de datos de emisión para identificar algoritmicamente “la actividad pesquera aparente. Es posible que no se identifique alguna actividad pesquera o que el mapa de calor muestre una actividad pesquera aparente cuando la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero”, como aparente más que seguro. Toda la información de Global Fishing Watch sobre la “actividad pesquera aparente” debe considerarse una estimación y debe ser confiada únicamente a discreción del usuario. Los algoritmos de detección de pesca de World Fishing Watch se desarrollan y prueban utilizando datos reales de eventos de pesca recopilados por observadores y se combinan con el análisis experto de los datos del movimiento de buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y para mejorar las técnicas de clasificación automatizadas.",
+    "schema": {
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "trawlers": "trawlers",
+          "drifting_longlines": "drifting_longlines",
+          "pole_and_line": "pole_and_line",
+          "line": "line",
+          "pots_and_traps": "pots_and_traps",
+          "set_longline": "set_longline",
+          "fishing": "fishing",
+          "other_purse_seines": "other_purse_seines",
+          "set_gillnets": "set_gillnets"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "target_species": {
+        "keyword": "target_species",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
+          "Polvo": "Polvo",
+          "Caranguejo-vermelho": "Caranguejo-vermelho",
+          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
+          "peixes diversos": "peixes diversos",
+          "Sardinha-laje": "Sardinha-laje",
+          "Pescada-gó": "Pescada-gó",
+          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
+          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
+          "Fundo e Superfície": "Fundo e Superfície",
+          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
+          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
+          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
+          "Lagostas": "Lagostas",
+          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
+          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
+          "Pescada Amarela": "Pescada Amarela",
+          "Peixe-sapo": "Peixe-sapo",
+          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
+          "Pargo": "Pargo",
+          "Serras": "Serras",
+          "Cavala e Albacorinha": "Cavala e Albacorinha",
+          "Camarão-sete-barbas": "Camarão-sete-barbas",
+          "Bonito-listrado": "Bonito-listrado",
+          "camarões": "camarões",
+          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
+          "peixes demersais": "peixes demersais",
+          " Camarão-rosa": " Camarão-rosa",
+          "Dourado - atuns e afins": "Dourado - atuns e afins",
+          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+        }
+      }
+    }
   },
   "public-brazil-opentuna-fishing-vessels": {
     "name": "Brazil Open Tuna VMS (Fishing vessels)",

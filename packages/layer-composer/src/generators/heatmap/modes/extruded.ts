@@ -1,9 +1,12 @@
 import { Group } from '../../../types'
 import { HEATMAP_COLOR_RAMPS } from '../config'
-import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import {
+  GlobalHeatmapAnimatedGeneratorConfig,
+  TEMPORALGRID_SOURCE_LAYER,
+} from '../heatmap-animated'
 import { getLayerId, getSourceId } from '../util'
 import { Breaks } from '../util/fetch-breaks'
-import getBaseLayer from '../util/get-base-layer'
+import getBaseLayer from '../util/get-base-layers'
 import getLegends from '../util/get-legends'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
 
@@ -14,9 +17,11 @@ function extruded(
 ) {
   const layers: any[] = timeChunks.chunks.flatMap(
     (timeChunk: TimeChunk, timeChunkIndex: number) => {
-      const chunkMainLayer = getBaseLayer(config)
-      chunkMainLayer.id = getLayerId(config.id, timeChunk)
-      chunkMainLayer.source = getSourceId(config.id, timeChunk)
+      const chunkMainLayer = getBaseLayer(
+        config,
+        getLayerId(config.id, timeChunk),
+        getSourceId(config.id, timeChunk)
+      )
       chunkMainLayer.paint = {
         'fill-color': 'red',
         'fill-outline-color': 'transparent',
@@ -46,7 +51,7 @@ function extruded(
           id: getLayerId(config.id, timeChunk, `debug_extrusion_${sublayerIndex}`),
           source: getSourceId(config.id, timeChunk),
           type: 'fill-extrusion',
-          'source-layer': 'temporalgrid',
+          'source-layer': TEMPORALGRID_SOURCE_LAYER,
           paint: {
             'fill-extrusion-color': ramp[ramp.length - 1],
             'fill-extrusion-base': ['*', base, 50],
@@ -63,7 +68,7 @@ function extruded(
           id: getLayerId(config.id, timeChunk, 'debug_labels'),
           source: getSourceId(config.id, timeChunk),
           type: 'symbol',
-          'source-layer': 'temporalgrid',
+          'source-layer': TEMPORALGRID_SOURCE_LAYER,
           layout: {
             'text-field': [
               'to-string',

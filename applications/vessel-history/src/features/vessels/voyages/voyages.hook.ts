@@ -1,26 +1,39 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
+import { selectMergedVesselId } from 'routes/routes.selectors'
 import { RenderedEvent } from '../activity/vessels-activity.selectors'
+import {
+  upsertVesselVoyagesExpanded,
+  setVesselVoyagesInitialized,
+  VoyagesState,
+} from '../vessels.slice'
+import { selectCurrentVesselVoyagesState } from '../vessels.selectors'
 import { selectFilteredEventsByVoyages } from './voyages.selectors'
 
 function useVoyagesConnect() {
+  const dispatch = useAppDispatch()
   const eventsLoading = useSelector(selectResourcesLoading)
   const eventsList = useSelector(selectFilteredEventsByVoyages)
-  const [expandedVoyages, setExpandedVoyages] = useState<
-    Record<number, RenderedVoyage | undefined>
-  >([])
-  const [expandedByDefaultInitialized, setExpandedByDefaultInitialized] = useState(false)
+  const mergedVesselId = useSelector(selectMergedVesselId)
+  const { expanded: expandedVoyages, initialized }: VoyagesState = {
+    ...(useSelector(selectCurrentVesselVoyagesState) ?? { expanded: {}, initialized: false }),
+  }
 
   const toggleVoyage = useCallback(
     (voyage: RenderedVoyage) => {
-      setExpandedVoyages({
-        ...expandedVoyages,
-        [voyage.timestamp]: expandedVoyages[voyage.timestamp] ? undefined : voyage,
-      })
+      dispatch(
+        upsertVesselVoyagesExpanded({
+          [mergedVesselId]: {
+            ...expandedVoyages,
+            [voyage.timestamp]: expandedVoyages[voyage.timestamp] ? undefined : voyage,
+          },
+        })
+      )
     },
-    [expandedVoyages]
+    [dispatch, expandedVoyages, mergedVesselId]
   )
 
   const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
@@ -53,16 +66,20 @@ function useVoyagesConnect() {
   }, [eventsList, expandedVoyages])
 
   useEffect(() => {
-    if (expandedByDefaultInitialized || events.length === 0) return
+    if (initialized || events.length === 0) return
 
     const lastVoyage = events.find(
       (event) => event.type === EventTypeVoyage.Voyage
     ) as RenderedVoyage
     if (lastVoyage) {
-      setExpandedVoyages({
-        [lastVoyage.timestamp]: lastVoyage as RenderedVoyage,
-      })
-      setExpandedByDefaultInitialized(true)
+      dispatch(
+        upsertVesselVoyagesExpanded({
+          [mergedVesselId]: {
+            [lastVoyage.timestamp]: lastVoyage as RenderedVoyage,
+          },
+        })
+      )
+      dispatch(setVesselVoyagesInitialized({ [mergedVesselId]: true }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events, expandedVoyages])

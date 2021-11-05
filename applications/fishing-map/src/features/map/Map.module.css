@@ -15,22 +15,15 @@
   height: 100%;
 }
 
-.legend .currentValue {
-  background-color: white;
-}
-
 :global(.printing) .screenshot {
   display: block !important;
-}
-
-:global(.printing) .legend .currentValue {
-  display: none;
 }
 
 @media print {
   .screenshot {
     display: block;
   }
+
   .legend .currentValue {
     display: none;
   }
@@ -55,4 +48,16 @@
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib a) {
   color: var(--color-white);
   opacity: var(--opacity-secondary);
+}
+
+.helpHintLeft {
+  position: absolute;
+  top: calc(50% - 1rem);
+  left: calc(50% - 1rem);
+}
+
+.helpHintRight {
+  position: absolute;
+  top: calc(50% + 1rem);
+  left: calc(50% + 1rem);
 }

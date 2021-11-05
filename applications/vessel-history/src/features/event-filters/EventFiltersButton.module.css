@@ -1,9 +1,9 @@
-.filterBtn {
+button.filterBtn {
   height: 3.2rem;
   border-radius: 1.6rem;
   text-transform: none;
 }
-.filterBtn span {
+button.filterBtn span {
   white-space: nowrap;
   text-overflow: ellipsis;
   width: 100%;

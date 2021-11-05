@@ -13,13 +13,21 @@ import { VesselSourceId } from 'types/vessel'
 import gfwThunk from 'features/vessels/sources/gfw.slice'
 import tmtThunk from 'features/vessels/sources/tmt.slice'
 import { RootState } from 'store'
+import { RenderedVoyage } from 'types/voyage'
 import { mergeVesselFromSources } from './vessels.utils'
+
+export type VoyagesState = {
+  expanded: Record<number, RenderedVoyage | undefined>
+  initialized?: boolean
+}
 export interface VesselState extends AsyncReducer<VesselWithHistory> {
   dataview?: DataviewInstance<Generators.Type>
+  voyages: Record<string, VoyagesState>
 }
 const initialState: VesselState = {
   ...asyncInitialState,
   dataview: undefined,
+  voyages: {},
 }
 export interface VesselAPIThunk {
   fetchById(id: VesselSourceId): Promise<VesselWithHistory>
@@ -90,6 +98,39 @@ const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<VesselState, Ves
     upsertVesselDataview: (state, action: PayloadAction<DataviewInstance<Generators.Type>>) => {
       state.dataview = action.payload
     },
+    upsertVesselVoyagesExpanded: (
+      state,
+      action: PayloadAction<Record<string, Record<number, RenderedVoyage | undefined>>>
+    ) => {
+      const entries = Object.entries(action.payload)
+
+      entries
+        .map(([id, expanded]) => ({
+          id,
+          updates: {
+            ...(state.voyages[id] ?? {}),
+            expanded,
+          },
+        }))
+        .forEach(({ id, updates }) => {
+          state.voyages[id] = updates
+        })
+    },
+    setVesselVoyagesInitialized: (state, action: PayloadAction<Record<string, boolean>>) => {
+      const entries = Object.entries(action.payload)
+
+      entries
+        .map(([id, initialized]) => ({
+          id,
+          updates: {
+            ...(state.voyages[id] ?? {}),
+            initialized,
+          },
+        }))
+        .forEach(({ id, updates }) => {
+          state.voyages[id] = updates
+        })
+    },
   },
 })
 
@@ -106,7 +147,13 @@ export const selectVesselById = memoize((id: string) =>
 export const selectVessels = (state: RootState) => state.vessels.entities
 export const selectVesselsStatus = (state: RootState) => state.vessels.status
 export const selectVesselDataview = (state: RootState) => state.vessels.dataview
+export const selectVesselVoyages = (state: RootState) => state.vessels.voyages
 
-export const { clearVesselDataview, upsertVesselDataview } = vesselsSlice.actions
+export const {
+  clearVesselDataview,
+  upsertVesselDataview,
+  setVesselVoyagesInitialized,
+  upsertVesselVoyagesExpanded,
+} = vesselsSlice.actions
 
 export default vesselsSlice.reducer

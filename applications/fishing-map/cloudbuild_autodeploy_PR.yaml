@@ -1,59 +1,30 @@
 steps:
-  # Push production image to GCR
-  - name: 'gcr.io/kaniko-project/executor:latest'
-    id: 'Build production image'
+  - name: 'node:12'
+    entrypoint: 'yarn'
+    id: 'install monorepo dependencies'
+    args: ['install']
+  - name: 'node:12'
+    entrypoint: 'yarn'
+    id: 'build monorepo packages'
+    args: ['build']
+  - name: 'node:12'
+    entrypoint: 'bash'
+    id: 'copy packages to app'
     args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
-        '--cache=true',
-        '--build-arg',
-        'REACT_APP_SPREADSHEET_CLIENT_EMAIL=$_REACT_APP_SPREADSHEET_CLIENT_EMAIL',
-        '--build-arg',
-        'REACT_APP_SPREADSHEET_PRIVATE_KEY=$_REACT_APP_SPREADSHEET_PRIVATE_KEY',
-        '--build-arg',
-        'REACT_APP_FEEDBACK_SPREADSHEET_ID=$_REACT_APP_FEEDBACK_SPREADSHEET_ID',
-        '--build-arg',
-        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
-        '--build-arg',
-        'REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID',
-        '--build-arg',
-        'REACT_APP_GOOGLE_MEASUREMENT_ID=$_REACT_APP_GOOGLE_MEASUREMENT_ID',
-        '--build-arg',
-        'REACT_APP_USE_LOCAL_DATAVIEWS=$_REACT_APP_USE_LOCAL_DATAVIEWS',
-        '--build-arg',
-        'REACT_APP_USE_LOCAL_DATASETS=$_REACT_APP_USE_LOCAL_DATASETS',
-        '--build-arg',
-        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
-        '--build-arg',
-        'REACT_APP_CARRIER_PORTAL_URL=$_REACT_APP_CARRIER_PORTAL_URL',
-        '--build-arg',
-        'REACT_APP_LATEST_CARRIER_DATASET_ID=$_REACT_APP_LATEST_CARRIER_DATASET_ID',
-        '--build-arg',
-        'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
-        '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
-        '--target',
-        'build',
-        '-f',
-        './applications/fishing-map/Dockerfile',
-        '-c',
-        './applications/fishing-map',
-      ]
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        cp -r --remove-destination --parents -L ./node_modules/@globalfishingwatch ./applications/fishing-map
 
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Run tests'
-    args:
-      [
-        'run',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
-        'npm',
-        'test',
-      ]
+  - name: 'node:12'
+    entrypoint: 'yarn'
+    id: 'test'
+    args: ['test']
 
-  - name: 'gcr.io/kaniko-project/executor:latest'
-    id: 'Build nginx server image'
+  # Build and Push production image to GCR
+  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+    id: 'Build and Push production image to GCR'
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',

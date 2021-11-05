@@ -58,6 +58,24 @@
   border: none;
 }
 
+.tagContainer {
+  display: flex;
+  align-items: center;
+}
+
+.tabLabel {
+  background: var(--color-danger-red);
+  border-radius: 50%;
+  color: var(--color-white);
+  font-size: 1rem;
+  margin-left: var(--space-XS);
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
 .mapContainer {
   min-height: 30vh;
   height: calc(100vh - var(--header-height) - var(--tabs-height));

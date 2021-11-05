@@ -10,9 +10,11 @@ import Settings from 'features/settings/Settings'
 import { useUser } from 'features/user/user.hooks'
 import { useAnalytics } from 'features/app/analytics.hooks'
 import './App.css'
+import { useReplaceLoginUrl } from 'routes/routes.hook'
 
 function App() {
   useAnalytics()
+  useReplaceLoginUrl()
   const { loading, logged, authorized } = useUser()
   const [minLoading, setMinLoading] = useState(true)
   const locationType = useSelector(getLocationType)
