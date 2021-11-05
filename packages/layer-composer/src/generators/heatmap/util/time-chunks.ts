@@ -69,11 +69,14 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return duration.as('days') <= 31
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
-      // tileset should start at beginning of Quarter
-      return DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('quarter')
+      const monthStart = DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('month')
+      const monthStartMonth = monthStart.get('month')
+      const chunkStart = monthStart.set({ month: monthStartMonth - ((monthStartMonth - 1) % 2) })
+
+      return chunkStart
     },
     getChunkViewEnd: (chunkStart: DateTime): DateTime => {
-      return chunkStart.plus({ months: 3 })
+      return chunkStart.plus({ months: 2 })
     },
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
       return chunkViewEnd.plus({ months: 1 })
