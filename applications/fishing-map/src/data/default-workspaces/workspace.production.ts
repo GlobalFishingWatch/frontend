@@ -46,7 +46,7 @@ const workspace: Workspace<WorkspaceState> = {
       // update it here if you want to show it again or go to
       // applications/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
       // and update the `dataviewInstanceId`
-      id: 'highlight-vms-with-ecuador',
+      id: 'highlight-vms-with-brazil',
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',

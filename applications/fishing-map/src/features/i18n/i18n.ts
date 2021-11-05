@@ -10,6 +10,7 @@ export const LocaleLabels = [
   { id: Locale.es, label: 'Español' },
   { id: Locale.fr, label: 'Français' },
   { id: Locale.id, label: 'Bahasa Indonesia' },
+  { id: Locale.pt, label: 'Portuguese' },
 ]
 
 export const SHARED_LABELS_PATH =
