@@ -201,7 +201,7 @@ export const useFilteredTimeSeries = () => {
       })
       getTimeseries(serializedLayerWithFeatures, geometry)
     },
-    [compareDeltaMillis]
+    [compareDeltaMillis, showTimeComparison]
   )
 
   const attachedListener = useRef<boolean>(false)
