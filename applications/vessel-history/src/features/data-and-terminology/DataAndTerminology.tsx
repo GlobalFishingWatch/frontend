@@ -1,8 +1,12 @@
 import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components/dist/icon-button'
-import { IconButton, Modal } from '@globalfishingwatch/ui-components'
+import {
+  IconButtonSize,
+  IconButtonType,
+  IconButton,
+  Modal,
+} from '@globalfishingwatch/ui-components'
 import styles from './DataAndTerminology.module.css'
 
 interface ModalProps {

@@ -1,7 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { event as uaEvent } from 'react-ga'
-import GFWAPI, {
+import {
+  GFWAPI,
   AdvancedSearchQueryField,
   getAdvancedSearchQuery,
 } from '@globalfishingwatch/api-client'

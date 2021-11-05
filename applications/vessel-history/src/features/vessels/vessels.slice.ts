@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { DataviewInstance } from '@globalfishingwatch/api-types/dist/dataviews'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { VesselAPISource, VesselWithHistory } from 'types'
 import {
   asyncInitialState,
@@ -21,7 +21,7 @@ export type VoyagesState = {
   initialized?: boolean
 }
 export interface VesselState extends AsyncReducer<VesselWithHistory> {
-  dataview?: DataviewInstance<Generators.Type>
+  dataview?: DataviewInstance<GeneratorType>
   voyages: Record<string, VoyagesState>
 }
 const initialState: VesselState = {
@@ -95,7 +95,7 @@ const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<VesselState, Ves
       state.dataview = undefined
       state.status = AsyncReducerStatus.Idle
     },
-    upsertVesselDataview: (state, action: PayloadAction<DataviewInstance<Generators.Type>>) => {
+    upsertVesselDataview: (state, action: PayloadAction<DataviewInstance<GeneratorType>>) => {
       state.dataview = action.payload
     },
     upsertVesselVoyagesExpanded: (

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
+  GeneratorType,
   AnyGeneratorConfig,
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
+} from '@globalfishingwatch/layer-composer'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { Range } from 'types'
 
@@ -22,10 +22,10 @@ const initialState: MapState = {
   generatorsConfig: [
     {
       id: 'background',
-      type: Generators.Type.Background,
+      type: GeneratorType.Background,
       color: '#ff0000',
     } as BackgroundGeneratorConfig,
-    { id: 'satellite', type: Generators.Type.Basemap, visible: true } as BasemapGeneratorConfig,
+    { id: 'satellite', type: GeneratorType.Basemap, visible: true } as BasemapGeneratorConfig,
   ],
 }
 

@@ -1,9 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType } from '@globalfishingwatch/api-types/dist'
-import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
-import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { ColorCyclingType } from '@globalfishingwatch/api-types'
+import {
+  FillColorBarOptions,
+  LineColorBarOptions,
+  ColorBarOption,
+} from '@globalfishingwatch/ui-components'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'

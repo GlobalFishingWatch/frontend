@@ -2,8 +2,8 @@ import { DateTime } from 'luxon'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { ApiEvent } from '@globalfishingwatch/api-types/dist'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
   RenderedEvent,
   selectFilteredEvents,
@@ -35,7 +35,7 @@ export default function useMapEvents() {
       const features = event?.features ?? []
 
       const vesselFeature = features.find(
-        (feature) => feature.generatorType === Generators.Type.VesselEvents
+        (feature) => feature.generatorType === GeneratorType.VesselEvents
       )
       const highlightEvent: { id: string } | undefined = { id: vesselFeature?.properties.id }
 

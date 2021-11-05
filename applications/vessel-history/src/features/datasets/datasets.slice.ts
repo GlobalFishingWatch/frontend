@@ -2,7 +2,7 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy, memoize, without } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset } from '@globalfishingwatch/api-types'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
   AsyncReducer,

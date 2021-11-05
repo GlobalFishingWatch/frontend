@@ -1,4 +1,4 @@
-import { WorkspaceViewport } from '@globalfishingwatch/api-types/dist'
+import { WorkspaceViewport } from '@globalfishingwatch/api-types'
 import { AppDispatch, RootState } from 'store'
 import { QueryParams } from 'types'
 import { ROUTE_TYPES, HOME, PROFILE } from './routes'

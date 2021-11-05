@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { Authorization } from '@globalfishingwatch/api-types/dist'
+import { Authorization } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { I18nSpecialDate } from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
@@ -42,7 +42,7 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
   const auths: Authorization[] = sortedAuthorizations.length
     ? Array.from(new Map(sortedAuthorizations.map((item) => [item.source, item])).values())
     : []
-  
+
   const authsHistory = useMemo(
     () =>
       sortedAuthorizations?.reverse().map((auth) => ({
@@ -87,18 +87,23 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
             label={label}
             columnHeaders={{
               field: t('vessel.rmfoRegistry', 'RMFO Registry'),
-              dates: (<div>
-                {t('common.timeRange', 'time range')} 
-                <IconButton size="tiny" icon="info" tooltip={t('vessel.authorizationRangeHelp')}></IconButton>
-              </div>),
+              dates: (
+                <div>
+                  {t('common.timeRange', 'time range')}
+                  <IconButton
+                    size="tiny"
+                    icon="info"
+                    tooltip={t('vessel.authorizationRangeHelp')}
+                  ></IconButton>
+                </div>
+              ),
             }}
             history={authsHistory}
-             isOpen={modalOpen}
+            isOpen={modalOpen}
             hideTMTDate={false}
-             onClose={closeModal}
-             vesselName={vesselName}
-            ></InfoFieldHistory>
-
+            onClose={closeModal}
+            vesselName={vesselName}
+          ></InfoFieldHistory>
         </div>
       )}
     </div>

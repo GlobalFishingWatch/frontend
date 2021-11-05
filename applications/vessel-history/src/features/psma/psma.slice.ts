@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APISearch } from '@globalfishingwatch/api-types'
 import {
   asyncInitialState,

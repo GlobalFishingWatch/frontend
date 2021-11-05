@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { EventTypes, Resource } from '@globalfishingwatch/api-types/dist'
+import { EventTypes, Resource } from '@globalfishingwatch/api-types'
 import {
   ResourcesState as CommonResourcesState,
   resourcesSlice,

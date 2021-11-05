@@ -5,7 +5,7 @@ import {
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AppDispatch } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -32,7 +32,7 @@ export const getVesselDataviewInstance = (
   vessel: { id: string },
   { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets,
   akaVessels: { id: string }[] = []
-): DataviewInstance<Generators.Type> => {
+): DataviewInstance<GeneratorType> => {
   // Build list of unique vessel ids to merge
   // sorted alphabetically so that regardless of the order
   // in which the user selected the vessels
@@ -66,7 +66,7 @@ export const getVesselDataviewInstance = (
     id: getVesselDataviewInstanceId(vessel.id),
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
-      type: Generators.Type.Track,
+      type: GeneratorType.Track,
       color: DEFAULT_TRACK_COLOR,
       pointsToSegmentsSwitchLevel: null,
       event: {

@@ -1,4 +1,4 @@
-import { VesselSearch } from '@globalfishingwatch/api-types/dist'
+import { VesselSearch } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'types/activity'
 
 export type VesselSourceId = {

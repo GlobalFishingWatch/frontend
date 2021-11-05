@@ -7,7 +7,6 @@ import {
 } from 'data/constants'
 import { SettingEventSectionName, SettingsEvents } from '../settings.slice'
 import ActivityEvents from './ActivityEvents'
-import '@globalfishingwatch/ui-components/dist/base.css'
 import styles from './SettingsComponents.module.css'
 
 interface SettingsProps {

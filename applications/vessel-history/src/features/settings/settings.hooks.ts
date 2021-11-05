@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { capitalize } from 'lodash'
-import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
+import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { Region, anyRegion } from 'features/regions/regions.slice'
 import flags from 'data/flags'
@@ -40,17 +40,20 @@ export const useSettingsConnect = () => {
           duration: setting.duration,
           distance_from_shore: setting.distanceShoreLonger,
           distance_from_port: setting.distancePortLonger,
-        })
+        }),
       })
     } else {
       uaEvent({
         category: 'Highlight Events',
         action: `Configure ${settingType} events highlights`,
         label: JSON.stringify({
-          flags: newSettings.portVisits.flags?.[0] === '0-any' ? 'any' : newSettings.portVisits.flags?.length || 0,
+          flags:
+            newSettings.portVisits.flags?.[0] === '0-any'
+              ? 'any'
+              : newSettings.portVisits.flags?.length || 0,
           duration: newSettings.portVisits.duration,
           distance_from_shore: newSettings.portVisits.distanceShoreLonger,
-        })
+        }),
       })
     }
     dispatch(updateSettings(newSettings))
@@ -97,7 +100,7 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
     () => ({
       ...anyRegion,
       label: t(`common.${anyRegion.label}` as any, capitalize(anyRegion.label)) as string,
-      disabled: false
+      disabled: false,
     }),
     [t]
   )
@@ -106,13 +109,13 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
     (selected: MultiSelectOption<string>, currentSelected: MultiSelectOption[], field: string) => {
       selected === anyOption
         ? // when ANY is selected the rest are deselected
-        setSettingOptions(section, field, [selected])
+          setSettingOptions(section, field, [selected])
         : // when other than ANY is selected
-        setSettingOptions(section, field, [
-          // then ANY should be deselected
-          ...currentSelected.filter((option) => option !== anyOption),
-          selected,
-        ])
+          setSettingOptions(section, field, [
+            // then ANY should be deselected
+            ...currentSelected.filter((option) => option !== anyOption),
+            selected,
+          ])
     },
     [section, setSettingOptions, anyOption]
   )

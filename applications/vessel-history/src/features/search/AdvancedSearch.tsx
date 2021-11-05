@@ -2,10 +2,13 @@ import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
-import MultiSelect, { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
-import { Button } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  InputText,
+  InputDate,
+  MultiSelect,
+  MultiSelectOption,
+} from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectAdvancedSearchCallsign,

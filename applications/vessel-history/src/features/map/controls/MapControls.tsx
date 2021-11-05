@@ -4,7 +4,7 @@ import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
 import EventFilters from 'features/event-filters/EventFilters'
@@ -35,7 +35,7 @@ const MapControls = ({
   const [showLayerInfo, setShowLayerInfo] = useState<{ [key: string]: boolean }>({})
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const setModalOpen = useCallback((isOpen) => {
-    if (isOpen){
+    if (isOpen) {
       uaEvent({
         category: 'Vessel Detail ACTIVITY or MAP Tab',
         action: 'Open filters',

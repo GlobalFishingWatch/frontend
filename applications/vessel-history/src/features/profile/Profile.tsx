@@ -2,9 +2,8 @@ import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'reac
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
-import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
-import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
+import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -129,7 +128,6 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
   }, [dispatch, loading, resourceQueries, vessel, vesselDataviewLoaded])
 
-  
   const visibleHighlights = useSelector(countFilteredEventsHighlighted)
 
   const tabs: Tab[] = useMemo(
@@ -150,11 +148,12 @@ const Profile: React.FC = (props): React.ReactElement => {
       },
       {
         id: 'activity',
-        title: <div className={styles.tagContainer}>
-          {t('common.activity', 'ACTIVITY').toLocaleUpperCase()} 
-          {visibleHighlights > 0 && 
-            <span className={styles.tabLabel}>{visibleHighlights}</span>}
-        </div>,
+        title: (
+          <div className={styles.tagContainer}>
+            {t('common.activity', 'ACTIVITY').toLocaleUpperCase()}
+            {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
+          </div>
+        ),
         content: vessel ? (
           <Activity
             vessel={vessel}
@@ -185,7 +184,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastProfileId, setLastProfileId] = useState<string>('')
 
   useEffect(() => {
-    if (lastProfileId !== vesselProfileId){
+    if (lastProfileId !== vesselProfileId) {
       setLastProfileId(vesselProfileId)
       setActiveTab(tabs[0])
     }

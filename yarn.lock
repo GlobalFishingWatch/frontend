@@ -1397,24 +1397,12 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"
   integrity sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==
 
-"@globalfishingwatch/api-client@4.0.1", "@globalfishingwatch/api-client@^4.0.0":
+"@globalfishingwatch/api-client@^4.0.0":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/api-client/-/api-client-4.0.1.tgz#f1358e8fa358eb9f1ad36b1cfee5c36d8b667f4a"
   integrity sha512-PzG4p5GIM5qCkiia04Do/fLUIbZ6zydS6IFwZFRDzN2QHDZhOirCiyaFilarJptbaaeR/f+fPjf36Dv/83pNqg==
   dependencies:
     file-saver "^2.0.2"
-
-"@globalfishingwatch/api-types@6.4.0":
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/api-types/-/api-types-6.4.0.tgz#8b661a6115df848abf78f03e43916c0809c8f37d"
-  integrity sha512-kSIz0M+ihGABWXdb+FnwXroZRcMMt4r5jRuxJEs3xkzzZ82jMQ27O3f5e4bNpHccrBqB1pMAB64107fS2PAsBA==
-
-"@globalfishingwatch/data-transforms@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/data-transforms/-/data-transforms-1.4.1.tgz#b64d7cf4b881c38c3b0ad0c4035bd77b8275065c"
-  integrity sha512-qiSSDUdDEC8PD35i+v0KO4AIXGaeoo9P9uOL5TSsCyh1l75VIznFmGoLJx1o8b260vZFIVmkJznTWchWAdNUjg==
-  dependencies:
-    papaparse "^5.3.0"
 
 "@globalfishingwatch/dataviews-client@^14.0.0":
   version "14.1.1"
@@ -1432,11 +1420,6 @@
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.1.0.tgz#5524bdceff90cc3fd7a42ecea7794c7341e414f6"
   integrity sha512-e/+2JutMQ3+c9mCMcRKMYjpioMgIKe1xJGARx5mn6bPT+lyJfSwGtRIL5ez8rtFwjqfvEaWKkXr4MQTm1BcUZw==
-
-"@globalfishingwatch/i18n-labels@^1.1.0":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/i18n-labels/-/i18n-labels-1.2.1.tgz#66085d0ff39372161242c18adf9e95525ae3d202"
-  integrity sha512-qCEGz8fyvpr26avF2D1zkga+e4xFWLDsp9gw2KwV++8N0ByG3NokSUEPTSkeBoH1pgdq2dX21BZxccPr7W0QQw==
 
 "@globalfishingwatch/layer-composer@10.1.1":
   version "10.1.1"

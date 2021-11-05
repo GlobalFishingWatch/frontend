@@ -1,4 +1,4 @@
-import { AuthorizationOptions, EventTypes } from '@globalfishingwatch/api-types/dist'
+import { AuthorizationOptions, EventTypes } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'types/activity'
 import { getEncounterStatus } from './vessels-activity.utils'
 

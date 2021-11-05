@@ -1,12 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
-import GFWAPI from '@globalfishingwatch/api-client/dist/api-client'
-import { ApiEvent } from '@globalfishingwatch/api-types/dist'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 import { SymbolLayer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
 import {
   getDataviewsGeneratorConfigs,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { GeneratorType, GlGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import {
   selectDataviewsForResourceQuerying,
   selectDefaultBasemapGenerator,
@@ -100,9 +100,9 @@ export const selectVesselLastPositionGenerator = createSelector(
   (lastPositionGEOJson) => {
     if (!lastPositionGEOJson) return
 
-    const generator: Generators.GlGeneratorConfig = {
+    const generator: GlGeneratorConfig = {
       id: 'last-position',
-      type: Generators.Type.GL,
+      type: GeneratorType.GL,
       sources: [lastPositionGEOJson],
       layers: [
         {

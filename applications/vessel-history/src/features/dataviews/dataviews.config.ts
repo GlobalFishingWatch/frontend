@@ -1,10 +1,10 @@
-import { DataviewInstance } from '@globalfishingwatch/api-types/dist'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import {
-  BackgroundGeneratorConfig,
+  GeneratorType,
   GeneratorConfig,
   GlGeneratorConfig,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
+  BackgroundGeneratorConfig,
+} from '@globalfishingwatch/layer-composer'
 import { FillLayer } from '@globalfishingwatch/mapbox-gl'
 import { WORKSPACE_ENV } from 'data/config'
 import { LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
@@ -17,7 +17,7 @@ export const BACKGROUND_LAYER: GeneratorConfig[] = [
     id: 'background',
     tileset: 'background',
     description: 'background',
-    type: Generators.Type.Background,
+    type: GeneratorType.Background,
     color: MAP_BACKGROUND_COLOR,
   } as BackgroundGeneratorConfig,
 ]
@@ -27,7 +27,7 @@ export const OFFLINE_LAYERS: GeneratorConfig[] = [
   // in case that not all tiles are cached
   {
     id: 'landmass_offline',
-    type: Generators.Type.GL,
+    type: GeneratorType.GL,
     sources: [
       {
         type: 'geojson',
@@ -57,7 +57,7 @@ export const DEFAULT_EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 17
 export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 
-export const dataviewInstances: DataviewInstance<Generators.Type>[] = [
+export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
   {
     id: 'basemap',
     dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,

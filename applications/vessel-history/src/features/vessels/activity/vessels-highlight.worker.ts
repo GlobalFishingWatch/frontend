@@ -1,4 +1,4 @@
-import { Anchorage, EventTypes } from '@globalfishingwatch/api-types/dist'
+import { Anchorage, EventTypes } from '@globalfishingwatch/api-types'
 import { anyRegion } from 'features/regions/regions.slice'
 import { Settings, SettingsEvents, SettingsPortVisits } from 'features/settings/settings.slice'
 import { RenderedEvent } from './vessels-activity.selectors'

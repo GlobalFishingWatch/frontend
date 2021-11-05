@@ -2,9 +2,8 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { intersection } from 'lodash'
 import { event as uaEvent } from 'react-ga'
 import { useSelector, useDispatch } from 'react-redux'
-import GFWAPI, { getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
+import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import { AUTHORIZED_USER_GROUPS } from 'data/config'
-import { BASE_URL } from 'data/constants'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchUserThunk,

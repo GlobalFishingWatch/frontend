@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { MultiSelect, InputText } from '@globalfishingwatch/ui-components'
 import {
+  MultiSelect,
+  InputText,
   MultiSelectOnFilter,
   MultiSelectOption,
-} from '@globalfishingwatch/ui-components/dist/multi-select'
+} from '@globalfishingwatch/ui-components'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import { SettingEventSectionName, SettingsEvents } from '../settings.slice'
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
@@ -53,8 +54,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       !eez.selected?.length
         ? (t('selects.none', 'None') as string)
         : eez.selected.length > 1
-          ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
-          : eez.selected[0].label,
+        ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
+        : eez.selected[0].label,
     [eez.selected, t]
   )
 
@@ -63,8 +64,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       !rfmo.selected?.length
         ? (t('selects.none', 'None') as string)
         : rfmo.selected.length > 1
-          ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
-          : rfmo.selected[0].label,
+        ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
+        : rfmo.selected[0].label,
     [rfmo.selected, t]
   )
 
@@ -73,8 +74,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       placeholder: !mpa.selected?.length
         ? (t(`common.typeToSearch`, 'Type to search') as string)
         : mpa.selected.length > 1
-          ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
-          : mpa.selected[0].label,
+        ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
+        : mpa.selected[0].label,
 
       onFilterOptions: (allOptions, filteredOptions, filter) => {
         if (filter && filter?.length >= 3) {
@@ -198,7 +199,9 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             value={settings.duration}
             min={props.minDuration}
             max={props.maxDuration}
-            onChange={(event) => setSetting(section, 'duration', parseInt(event.currentTarget.value))}
+            onChange={(event) =>
+              setSetting(section, 'duration', parseInt(event.currentTarget.value))
+            }
           ></InputText>
           <span>{t('settings.hours', 'hours')}</span>
         </div>

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { UserData } from '@globalfishingwatch/api-types'
-import GFWAPI, {
+import {
+  GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
