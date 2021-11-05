@@ -140,6 +140,26 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
         <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Akses peta Global Fishing Watch sebelumnya di sini untuk memigrasikan ruang kerja hingga 18 Oktober 2021.</a></p>
       `,
     },
+    pt: {
+      title: 'Bem vindo ao mapa do Global fishing Watch',
+      description: `
+        <p>O mapa do Global Fishing Watch é a primeira ferramenta de acesso livre para visualização e análise da atividade humana no mar. qualquer pessoa com conexão à internet pode acessar o mapa para monitorar a atividade pesqueira desde 2012 a até a data atual, de mais de 65.000 embarcações comerciais de pesca que são responsáveis por uma parcela significativa da captura mundial de pescados.</p>
+        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/icon-line-caught-fish-orange.png">Esforço de pesca aparente</h2>
+        <p>Nós usamos dados que são transmitidos usando o Sistema de Identificação Automática (AIS) coletados via satélite e receptores terrestres. Nós então combinamos estas informações com dados dos sistemas de rastreamento de embarcações fornecidos pelos nossos países parceiros. Nós aplicamos nossos algoritmos de detecção para determinar o “esforço de pesca aparente”, baseado em mudanças na velocidade e direção da embarcação. O mapa de calor com células coloridas mostra quanta atividade de pesca ocorreu naquela área, permitindo comparações precisas.</p>
+        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/GFW_VESSEL-TRACKS_Orange.png">Rotas de embarcações e eventos</h2>
+        <p>Visualize rastros precisos e de alta resolução da embarcação no mapa e “eventos” que ocorreram ao longo de cada rota. Os eventos destacam onde a pesca ocorreu, visitas a portos, encontros de embarcações e eventos de deriva. Os eventos são agrupados quando o zoom do mapa é reduzido. Amplie uma área específica para obter informações mais detalhadas.</p>
+        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBAL-SEARCH_Orange-1.png">Pesquise por uma embarcação</h2>
+        <p>Pesquise por uma embarcação em qualquer lugar do mapa pelo nome da embarcação, número de identificação de serviço móvel marítimo (MMSI), número da Organização Marítima Internacional (IMO), código de chamada (Callsign), ou identificador do sistema de rastreamento de embarcações. A pesquisa avançada permite filtrar e refinar sua busca por fonte de informação, bandeira e datas. Clique em qualquer embarcação nos resultados da busca para adicionar a sua rota no mapa.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-location-map-orange.png">Carregar camadas de referência</h2>
+        <p>Camadas de referência facilitam uma melhor compreensão da atividade nas zonas econômicas exclusivas, Organizações Regionais de Pesca e outras áreas. Adicione suas próprias camadas de referência para realizar análises detalhadas ou gestão espacial.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Retorno</h2>
+        <p>Ajude-nos a melhorar o mapa do Global Fishing Watch enviando seus comentários e sugestões para support@globalfishingwatch.org ou através do formulário de comentários no painel lateral esquerdo do mapa.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Registre-se para ter acesso a todas as funcionalidades</h2>
+        <p>Registre-se para obter uma <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">conta</a> gratuita do Global Fishing Watch para acessar recursos de análise avançada, downloads de dados e opções de pesquisa avançada. O registro leva dois minutos.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Mapa anterior do Global Fishing Watch</h2>
+        <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Acesse o mapa anterior</a> do Global Fishing Watch para migrar os espaços de trabalho até 18 de outubro de 2021.</p>
+      `,
+    },
   },
 }
 
