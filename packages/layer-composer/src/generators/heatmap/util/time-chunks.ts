@@ -48,12 +48,10 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return duration.as('days') <= 2
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
-      const FIVE_DAYS_MS = 1000 * 60 * 60 * 24 * 55
-      const time = FIVE_DAYS_MS * Math.floor(bufferedActiveStart / FIVE_DAYS_MS)
-      return DateTime.fromMillis(time).toUTC()
+      return DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('week')
     },
     getChunkViewEnd: (chunkStart: DateTime): DateTime => {
-      return chunkStart.plus({ days: 5 })
+      return chunkStart.plus({ days: 7 })
     },
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
       return chunkViewEnd.plus({ days: 2 })
