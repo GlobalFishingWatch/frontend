@@ -80,6 +80,7 @@ export const selectEventsLoading = createSelector([selectEventsResources], (reso
 
 export const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources],
+
   (trackDataviews, resources) => {
     // const visibleEvents: (EventType[] | 'all') = 'all'
     const vesselsEvents = trackDataviews.map((dataview) => {
@@ -130,7 +131,6 @@ export const selectEventsWithRenderingInfo = createSelector(
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
       return (data || []).map((event: ActivityEvent, index) => {
         const regionDescription = getEventRegionDescription(event, eezs, rfmos, mpas)
-
         let description = ''
         let descriptionGeneric = ''
         switch (event.type) {
@@ -382,7 +382,7 @@ export const selectVesselLastPositionGEOJson = createSelector(
 export const selectFilteredEventsHighlighted = createSelector(
   [selectHighlightEventIds, selectFilteredEvents],
   (highlightIds, events) => {
-    return events.filter(event => highlightIds[event.id])
+    return events.filter((event) => highlightIds[event.id])
   }
 )
 
