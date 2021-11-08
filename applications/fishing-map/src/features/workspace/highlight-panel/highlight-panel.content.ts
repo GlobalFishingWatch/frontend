@@ -17,7 +17,7 @@ export type HighlighPanelConfig = {
 const highlightPanelConfig: HighlighPanelConfig = {
   dataviewInstanceId: 'highlight-vms-with-brazil',
   imageUrl: 'https://globalfishingwatch.org/wp-content/uploads/workspace-brazil.jpg',
-  learnMoreUrl: '',
+  learnMoreUrl: 'https://globalfishingwatch.org/brazil',
   en: {
     title: 'Brazil VMS data is now available',
     description:
@@ -27,6 +27,7 @@ const highlightPanelConfig: HighlighPanelConfig = {
     title: 'Datos VMS de Ecuador están ahora disponibles',
     description:
       'Los datos del sistema de seguimiento de buques (VMS) son proporcionados por el Secretario de Acuicultura y Pesca de Brasil. Es posible rastrear la posición y actividad de más de 1300 embarcaciones que comprenden las flotas pesqueras industriales y artesanales de Brasil.',
+    learnMoreUrl: 'https://globalfishingwatch.org/es/brazil',
   },
   pt: {
     title: 'Rastreamento de embarcações brasileiras está disponível',
