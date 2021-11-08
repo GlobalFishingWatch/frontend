@@ -106,6 +106,10 @@ div.identifierField label {
   text-align: right;
 }
 
+.infoLabel {
+  display: inline-block;
+}
+
 @media (max-width: 1280px) {
   .imageGallery {
     width: 100%;
