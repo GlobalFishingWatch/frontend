@@ -451,6 +451,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
   const duration = timeComparison?.duration
 
   useEffect(() => {
+    if (timeComparison) return
     const baseStart = timebarStart || DEFAULT_WORKSPACE.availableEnd
     const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
     const duration = DateTime.fromISO(baseEnd).diff(DateTime.fromISO(baseStart), ['days', 'months'])
