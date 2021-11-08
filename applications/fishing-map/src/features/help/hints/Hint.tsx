@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Icon from '@globalfishingwatch/ui-components/dist/icon'
 import { isGFWUser } from 'features/user/user.slice'
+import { selectReadOnly } from 'features/app/app.selectors'
 import TooltipContainer from '../../workspace/shared/TooltipContainer'
 import hintsConfig, { HintId } from './hints.content'
 import styles from './Hint.module.css'
@@ -20,6 +21,7 @@ export const DISMISSED = 'dismissed'
 function Hint({ id, className }: HintProps) {
   const { t } = useTranslation(['translations', 'helpHints'])
   const gfwUser = useSelector(isGFWUser)
+  const isReadOnly = useSelector(selectReadOnly)
   const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
   const hintsDismissed = useSelector(selectHintsDismissed)
@@ -41,7 +43,7 @@ function Hint({ id, className }: HintProps) {
     setVisible(true)
   }
 
-  if (hintsDismissed?.[id] === true || !gfwUser) return null
+  if (hintsDismissed?.[id] === true || !gfwUser || isReadOnly) return null
 
   return (
     <TooltipContainer
