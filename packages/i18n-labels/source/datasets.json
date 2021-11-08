@@ -76,6 +76,227 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "private-bra-onyxsat-fishing-effort": {
+    "name": "VMS Brazil",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing detection algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "trawlers": "trawlers",
+          "drifting_longlines": "drifting_longlines",
+          "pole_and_line": "pole_and_line",
+          "line": "line",
+          "pots_and_traps": "pots_and_traps",
+          "set_longline": "set_longline",
+          "fishing": "fishing",
+          "other_purse_seines": "other_purse_seines",
+          "set_gillnets": "set_gillnets"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "target_species": {
+        "keyword": "target_species",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
+          "Polvo": "Polvo",
+          "Caranguejo-vermelho": "Caranguejo-vermelho",
+          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
+          "peixes diversos": "peixes diversos",
+          "Sardinha-laje": "Sardinha-laje",
+          "Pescada-gó": "Pescada-gó",
+          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
+          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
+          "Fundo e Superfície": "Fundo e Superfície",
+          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
+          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
+          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
+          "Lagostas": "Lagostas",
+          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
+          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
+          "Pescada Amarela": "Pescada Amarela",
+          "Peixe-sapo": "Peixe-sapo",
+          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
+          "Pargo": "Pargo",
+          "Serras": "Serras",
+          "Cavala e Albacorinha": "Cavala e Albacorinha",
+          "Camarão-sete-barbas": "Camarão-sete-barbas",
+          "Bonito-listrado": "Bonito-listrado",
+          "camarões": "camarões",
+          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
+          "peixes demersais": "peixes demersais",
+          " Camarão-rosa": " Camarão-rosa",
+          "Dourado - atuns e afins": "Dourado - atuns e afins",
+          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+        }
+      },
+      "license_category": {
+        "keyword": "license_category",
+        "enum": {
+          "Cerco": "Cerco",
+          "Armadilhas": "Armadilhas",
+          "Rede de emalhe": "Rede de emalhe",
+          "Linha": "Linha",
+          "Arrasto": "Arrasto"
+        }
+      }
+    }
+  },
+  "private-bra-onyxsat-fishing-vessels": {
+    "name": "VMS Brazil (Fishing Vessels)",
+    "description": "Fishing Vessels (VMS Brazil)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "trawlers": "trawlers",
+          "drifting_longlines": "drifting_longlines",
+          "pole_and_line": "pole_and_line",
+          "line": "line",
+          "pots_and_traps": "pots_and_traps",
+          "set_longline": "set_longline",
+          "fishing": "fishing",
+          "other_purse_seines": "other_purse_seines",
+          "set_gillnets": "set_gillnets"
+        }
+      },
+      "mainGear": "mainGear",
+      "shipname": "shipname",
+      "codMarinha": "codMarinha",
+      "fishingZone": "fishingZone",
+      "licenseCode": "licenseCode",
+      "targetSpecies": {
+        "keyword": "targetSpecies",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
+          "Polvo": "Polvo",
+          "Caranguejo-vermelho": "Caranguejo-vermelho",
+          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
+          "peixes diversos": "peixes diversos",
+          "Sardinha-laje": "Sardinha-laje",
+          "Pescada-gó": "Pescada-gó",
+          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
+          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
+          "Fundo e Superfície": "Fundo e Superfície",
+          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
+          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
+          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
+          "Lagostas": "Lagostas",
+          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
+          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
+          "Pescada Amarela": "Pescada Amarela",
+          "Peixe-sapo": "Peixe-sapo",
+          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
+          "Pargo": "Pargo",
+          "Serras": "Serras",
+          "Cavala e Albacorinha": "Cavala e Albacorinha",
+          "Camarão-sete-barbas": "Camarão-sete-barbas",
+          "Bonito-listrado": "Bonito-listrado",
+          "camarões": "camarões",
+          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
+          "peixes demersais": "peixes demersais",
+          " Camarão-rosa": " Camarão-rosa",
+          "Dourado - atuns e afins": "Dourado - atuns e afins",
+          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+        }
+      },
+      "licensDescription": "licensDescription",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-bra-onyxsat-non-fishing-vessels": {
+    "name": "VMS Brazil (Non Fishing Vessels)",
+    "description": "Non Fishing Vessels (VMS Brazil)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "trawlers": "trawlers",
+          "drifting_longlines": "drifting_longlines",
+          "pole_and_line": "pole_and_line",
+          "line": "line",
+          "pots_and_traps": "pots_and_traps",
+          "set_longline": "set_longline",
+          "fishing": "fishing",
+          "other_purse_seines": "other_purse_seines",
+          "set_gillnets": "set_gillnets"
+        }
+      },
+      "mainGear": "mainGear",
+      "shipname": "shipname",
+      "codMarinha": "codMarinha",
+      "fishingZone": "fishingZone",
+      "licenseCode": "licenseCode",
+      "targetSpecies": {
+        "keyword": "targetSpecies",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
+          "Polvo": "Polvo",
+          "Caranguejo-vermelho": "Caranguejo-vermelho",
+          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
+          "peixes diversos": "peixes diversos",
+          "Sardinha-laje": "Sardinha-laje",
+          "Pescada-gó": "Pescada-gó",
+          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
+          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
+          "Fundo e Superfície": "Fundo e Superfície",
+          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
+          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
+          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
+          "Lagostas": "Lagostas",
+          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
+          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
+          "Pescada Amarela": "Pescada Amarela",
+          "Peixe-sapo": "Peixe-sapo",
+          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
+          "Pargo": "Pargo",
+          "Serras": "Serras",
+          "Cavala e Albacorinha": "Cavala e Albacorinha",
+          "Camarão-sete-barbas": "Camarão-sete-barbas",
+          "Bonito-listrado": "Bonito-listrado",
+          "camarões": "camarões",
+          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
+          "peixes demersais": "peixes demersais",
+          " Camarão-rosa": " Camarão-rosa",
+          "Dourado - atuns e afins": "Dourado - atuns e afins",
+          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+        }
+      },
+      "licensDescription": "licensDescription",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-bra-onyxsat-presence": {
+    "name": "VMS Brazil",
+    "description": "Presence (Brazil private)",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing",
+          "non-fishing": "non-fishing"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-brazil-opentuna-presence": {
     "name": "Brazil VMS",
     "description": "Presence (Brazil Open tuna - private)",
@@ -450,6 +671,18 @@
       }
     }
   },
+  "public-bra-onyxsat-fishing-vessels": {
+    "name": "VMS Brazil Onyxsat (Fishing Vessels)",
+    "description": "Fishing Vessels (VMS Brazil - Onyxsat)",
+    "schema": {
+      "id": "id",
+      "source": "source",
+      "dataset": "dataset",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-brazil-opentuna-fishing-vessels": {
     "name": "Brazil Open Tuna VMS (Fishing vessels)",
     "description": "Dataset for VMS Brazil (Public)",
@@ -580,7 +813,7 @@
     }
   },
   "public-ecuador-fishing-vessels": {
-    "name": "Ecuador VMS (Fishing vessels)",
+    "name": "Ecuador VMS",
     "description": "Dataset for VMS Ecuador (Public)",
     "schema": {
       "id": "id",
@@ -633,7 +866,7 @@
     }
   },
   "public-fd-chlorophyl-mediterranean-v3": {
-    "name": "Clorophyl Mediterranean",
+    "name": "Chlorophyll-a concentration",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
@@ -649,7 +882,7 @@
     }
   },
   "public-fd-chlorophyl-palau-v3": {
-    "name": "Chlorophyll-a concentration",
+    "name": "Chlorophyl Palau",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
@@ -689,8 +922,8 @@
     }
   },
   "public-fd-salinity-mediterranean-v3": {
-    "name": "Salinity Mediterranean",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -698,7 +931,7 @@
   },
   "public-fd-salinity-niue-v3": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -706,7 +939,7 @@
   },
   "public-fd-salinity-palau-v3": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -714,7 +947,7 @@
   },
   "public-fd-salinity-tristan-v3": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -729,8 +962,8 @@
     }
   },
   "public-fd-water-temperature-caribe-v3": {
-    "name": "Water temperature Caribe with data of 2020",
-    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -738,15 +971,15 @@
   },
   "public-fd-water-temperature-galapagos-v3": {
     "name": "Sea surface temperature",
-    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
   "public-fd-water-temperature-mediterranean-v3": {
-    "name": "Water temperature Mediterranean",
-    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -754,7 +987,7 @@
   },
   "public-fd-water-temperature-niue-v3": {
     "name": "Sea surface temperature",
-    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -762,7 +995,7 @@
   },
   "public-fd-water-temperature-palau-v3": {
     "name": "Sea surface temperature",
-    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -770,7 +1003,7 @@
   },
   "public-fd-water-temperature-tristan-v3": {
     "name": "Sea surface temperature",
-    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -1067,7 +1300,7 @@
     }
   },
   "public-mexico-fishing-vessels": {
-    "name": "Mexico VMS (Fishing vessels)",
+    "name": "Mexico VMS",
     "description": "Dataset for VMS Mexico (Public)",
     "schema": {
       "id": "id",
