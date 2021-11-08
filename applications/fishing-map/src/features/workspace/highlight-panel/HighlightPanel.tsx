@@ -59,6 +59,8 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
     return null
   }
 
+  const learnMoreUrl = highlightContent.learnMoreUrl || HighlightConfig.learnMoreUrl
+
   return (
     <TooltipContainer
       visible={visible}
@@ -74,14 +76,16 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
             <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
               {t('common.dismiss', 'Dismiss')}
             </Button>
-            <Button
-              href={highlightContent.learnMoreUrl || HighlightConfig.learnMoreUrl}
-              target="_blank"
-              onClick={onDismiss}
-              className={cx(styles.footerBtn, styles.cta)}
-            >
-              {t('common.learnMore', 'Learn more')}
-            </Button>
+            {learnMoreUrl && (
+              <Button
+                href={learnMoreUrl}
+                target="_blank"
+                onClick={onDismiss}
+                className={cx(styles.footerBtn, styles.cta)}
+              >
+                {t('common.learnMore', 'Learn more')}
+              </Button>
+            )}
           </div>
         </div>
       }
