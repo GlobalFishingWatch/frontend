@@ -477,16 +477,26 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
       const duration = newDuration || timeComparison.duration
       const durationType = newDurationType || timeComparison.durationType
 
+      const startFromCompareStart = parseYYYYMMDDDate(compareStart).minus({
+        [durationType]: duration,
+      })
+
       let start: string
       if (analysisType === 'beforeAfter') {
         // In before/after mode, start of 1st period is calculated automatically depending on start of 2nd period (compareStart)
-        start = parseYYYYMMDDDate(compareStart)
-          .minus({ [durationType]: duration })
-          .toISO()
+        start = startFromCompareStart.toISO()
       } else {
         start = newStart
           ? parseYYYYMMDDDate(newStart).toISO()
           : parseFullISODate(timeComparison.start).toISO()
+
+        // If new duration is set, make sure there delta from start to compareStart is >= of new duration
+        if (
+          newDuration &&
+          startFromCompareStart.toMillis() - parseFullISODate(timeComparison.start).toMillis() <= 0
+        ) {
+          start = startFromCompareStart.toISO()
+        }
       }
 
       dispatchQueryParams({
