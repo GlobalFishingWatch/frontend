@@ -1,5 +1,11 @@
 # @globalfishingwatch/i18n-labels
 
+## 1.2.5
+
+### Patch Changes
+
+- update datasets translations
+
 ## 1.2.4
 
 ### Patch Changes
