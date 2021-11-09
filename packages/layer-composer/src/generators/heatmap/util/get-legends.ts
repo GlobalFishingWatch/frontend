@@ -60,8 +60,11 @@ export const getSublayersBreaks = (
   const end = toDT(config.end)
   // uses 'years' as breaks request a year with temporal-aggregation true
   const deltaInterval = end.diff(start, 'days').days / 10
+  const baseMultiplier = config.mode === HeatmapAnimatedMode.TimeCompare ? 1 / 8 : 1 / 4
   const sublayersBreaks = breaks?.map((bre) => {
-    return getCleanBreaks(bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel)))
+    return getCleanBreaks(
+      bre.map((b) => deltaInterval * b * Math.pow(baseMultiplier, config.zoomLoadLevel))
+    )
   })
 
   if (config.mode === HeatmapAnimatedMode.TimeCompare && sublayersBreaks) {
