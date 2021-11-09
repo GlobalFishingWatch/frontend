@@ -6,6 +6,7 @@ const GROUP_ORDER = [
   Group.OutlinePolygonsBackground,
   Group.Heatmap,
   Group.OutlinePolygonsFill,
+  Group.OutlinePolygonsBehindBasemapFill,
   Group.BasemapFill,
   Group.Default,
   Group.Track,
