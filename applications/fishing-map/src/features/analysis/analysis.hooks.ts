@@ -447,21 +447,30 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
   const { dispatchQueryParams } = useLocationConnect()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
-  const durationType = timeComparison?.durationType || 'months'
+  const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
 
   useEffect(() => {
+    if (timeComparison) return
     const baseStart = timebarStart || DEFAULT_WORKSPACE.availableEnd
     const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
-    const duration = DateTime.fromISO(baseEnd).diff(DateTime.fromISO(baseStart), ['days', 'months'])
+    const initialDuration = DateTime.fromISO(baseEnd).diff(DateTime.fromISO(baseStart), [
+      'days',
+      'months',
+    ])
+    const initialDurationType = initialDuration.as('days') >= 30 ? 'months' : 'days'
+    const initialDurationValue =
+      initialDurationType === 'days'
+        ? Math.max(1, initialDuration.days)
+        : Math.min(MAX_MONTHS_TO_COMPARE, initialDuration.months)
     const initialStart = parseFullISODate(baseStart).minus({ years: 1 }).toISO()
     const initialCompareStart = baseStart
     dispatchQueryParams({
       analysisTimeComparison: {
         start: initialStart,
         compareStart: initialCompareStart,
-        duration: duration[durationType as 'days' | 'months'] || 1,
-        durationType: durationType,
+        duration: initialDurationValue,
+        durationType: initialDurationType,
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -476,16 +485,26 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
       const duration = newDuration || timeComparison.duration
       const durationType = newDurationType || timeComparison.durationType
 
+      const startFromCompareStart = parseYYYYMMDDDate(compareStart).minus({
+        [durationType]: duration,
+      })
+
       let start: string
       if (analysisType === 'beforeAfter') {
         // In before/after mode, start of 1st period is calculated automatically depending on start of 2nd period (compareStart)
-        start = parseYYYYMMDDDate(compareStart)
-          .minus({ [durationType]: duration })
-          .toISO()
+        start = startFromCompareStart.toISO()
       } else {
         start = newStart
           ? parseYYYYMMDDDate(newStart).toISO()
           : parseFullISODate(timeComparison.start).toISO()
+
+        // If new duration is set, make sure there delta from start to compareStart is >= of new duration
+        if (
+          newDuration &&
+          startFromCompareStart.toMillis() - parseFullISODate(timeComparison.start).toMillis() <= 0
+        ) {
+          start = startFromCompareStart.toISO()
+        }
       }
 
       dispatchQueryParams({

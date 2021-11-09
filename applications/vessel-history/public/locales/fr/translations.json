@@ -108,7 +108,7 @@
     "portVisitEventsDescription": "Une visite de port se produit lorsqu'un navire a une entrée de port, un arrêt ou un Gap et un événement de sortie. Cela signifie que le navire se trouve à moins de 3 km d'un ancrage (ENTRÉE DU PORT), et se déplace entre 0,5 et 0. nœuds (Arrêt DU PORT), ou à l'intérieur d'un ancrage mais a une lacune dans la transmission AIS pendant au moins 4 heures (Port Gap), puis le navire transite plus de 4 km à l'extérieur du point d'ancrage (SORTIE DU PORT). Les ports sont basés sur le jeu de données de Global Fishing Watch, une base de données mondiale sur les mouillages où les navires se réunissent."
   },
   "map": {
-    "filters": "Filter events",
+    "filters": "Filtrer les événements",
     "loading": "Chargement de la carte",
     "toggleLayers": "Activer/désactiver les calques"
   },
@@ -202,7 +202,7 @@
     "formatValues": "{{quantity}} valeurs",
     "geartypeDescription": "Le type d'engin de pêche probable tel que défini par Global Fishing Watch. La classification des navires de pêche est estimée à l'aide d'informations de registre connues en combinaison avec un réseau neuronal convolutionnel utilisé pour estimer la classe des navires, voir plus d’informations ici:<1>https://globalfishingwatch. rg/datasets-and-code-bateau-identity/</1> . La classification des navires pour les navires de transport est estimée à l'aide d'un cumul d'informations de registre connues. Tous les navires de soutien de la visionneuse de bateaux de soutien sont considérés comme des navires de soutien à senne coulissante en fonction de l'examen interne.",
     "historyLabelByField": "Historique de {{label}} pour {{vesselName}}",
-    "imo": "omi",
+    "imo": "imo",
     "iuuStatusDescription": "Statut d'inscription illégale, non déclarée et non réglementée (INN) selon les listes officielles de navires INN des ORGP - le navire est actuellement inscrit, a déjà été inscrit ou n'a jamais été inscrit",
     "mmsi": "mmsi",
     "noAuthorizations": "Aucune autorisation trouvée",

@@ -1,5 +1,17 @@
 # @globalfishingwatch/layer-composer
 
+## 10.1.3
+
+### Patch Changes
+
+- bf2a33a45: adapt base zoom factor for time compare
+
+## 10.1.2
+
+### Patch Changes
+
+- 02d665aad: change zoom-based factor to better adapt color scale to time compare mode
+
 ## 10.1.1
 
 ### Patch Changes

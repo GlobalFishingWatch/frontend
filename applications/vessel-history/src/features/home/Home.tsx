@@ -168,7 +168,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   )
   const contactUsLink = useMemo(
     () =>
-      `${TMT_CONTACT_US_URL}&email=${email}&usercontext=${searchContext}&data=${JSON.stringify({
+      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(email)}&usercontext=${searchContext}&data=${JSON.stringify({
         hits: vesselIds.length,
         name: query,
         ...advancedSearch,
