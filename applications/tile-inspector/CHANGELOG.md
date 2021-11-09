@@ -1,5 +1,12 @@
 # tile-inspector
 
+## 0.1.105
+
+### Patch Changes
+
+- Updated dependencies [bf2a33a45]
+  - @globalfishingwatch/layer-composer@10.1.3
+
 ## 0.1.104
 
 ### Patch Changes

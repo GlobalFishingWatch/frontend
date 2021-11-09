@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.77
+
+### Patch Changes
+
+- Updated dependencies [bf2a33a45]
+  - @globalfishingwatch/layer-composer@10.1.3
+
 ## 1.1.76
 
 ### Patch Changes
