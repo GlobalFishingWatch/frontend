@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { uniqBy } from 'lodash'
+import { uniq, uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -28,25 +28,40 @@ import { selectUserLogged } from 'features/user/user.slice'
 
 export const MAX_TOOLTIP_LIST = 5
 
-export type ExtendedFeatureVessel = {
+export type ExtendedFeatureVesselDatasets = Vessel & {
   id: string
-  hours: number
   dataset: Dataset
   infoDataset?: Dataset
   trackDataset?: Dataset
+}
+
+export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
+  hours: number
   [key: string]: any
 }
 
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
-export type ApiViirsStats = { detect_id: string; qf_detect: number; radiance: number }
+export type ApiViirsStats = {
+  detect_id: string
+  qf_detect: number
+  radiance: number
+  vessel_id: string
+}
+
+export type ExtendedViirsFeature = {
+  detect_id: string
+  qf_detect: number
+  radiance: number
+  vessel?: ExtendedFeatureVesselDatasets
+}
 
 export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 
 export type SliceExtendedFeature = ExtendedFeature & {
   event?: ExtendedFeatureEvent
   vessels?: ExtendedFeatureVessel[]
-  viirs?: ApiViirsStats[]
+  viirs?: ExtendedViirsFeature[]
 }
 
 // Extends the default extendedEvent including event and vessels information from API
@@ -134,6 +149,51 @@ const getInteractionEndpointDatasetConfig = (
   return { featuresDataviews, fourWingsDataset, datasetConfig }
 }
 
+const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) => {
+  if (!vesselDatasets || !vesselDatasets.length || !vesselIds || !vesselIds.length) {
+    return null
+  }
+  const datasetConfig = {
+    endpoint: EndpointId.VesselList,
+    datasetId: vesselDatasets?.[0]?.id,
+    params: [],
+    query: [
+      {
+        id: 'datasets',
+        value: vesselDatasets.map((d) => d.id),
+      },
+      {
+        id: 'ids',
+        value: vesselIds,
+      },
+    ],
+  }
+  return resolveEndpoint(vesselDatasets[0], datasetConfig)
+}
+
+export const fetchVesselInfo = async (
+  datasets: Dataset[],
+  vesselIds: string[],
+  signal: AbortSignal
+) => {
+  const vesselsInfoUrl = getVesselInfoEndpoint(datasets, vesselIds)
+  if (vesselsInfoUrl) {
+    try {
+      const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
+        signal,
+      })
+      // TODO remove entries once the API is stable
+      const vesselsInfoList: Vessel[] =
+        !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
+          ? vesselsInfoResponse
+          : (vesselsInfoResponse as any)?.entries
+      return vesselsInfoList || []
+    } catch (e: any) {
+      console.warn(e)
+    }
+  }
+}
+
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
   { fishingActivityFeatures: ExtendedFeature[] },
@@ -168,7 +228,10 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         startingIndex = newStartingIndex
         return dataviewVesselsIds.map((vessels, i) => {
           const dataset = selectDatasetById(datasets[i])(state)
-          return vessels.flatMap((vessel: ExtendedFeatureVessel) => ({ ...vessel, dataset }))
+          return vessels.flatMap((vessel: ExtendedFeatureVessel) => ({
+            ...vessel,
+            dataset,
+          }))
         })
       })
 
@@ -209,44 +272,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         })
       )
       const infoDatasets = allInfoDatasets.flatMap((d) => d || [])
-      let vesselsInfo: Vessel[] = []
-      if (infoDatasets?.length) {
-        const infoDataset = infoDatasets[0]
-        if (infoDataset) {
-          const infoDatasetConfig = {
-            endpoint: EndpointId.VesselList,
-            datasetId: infoDataset.id,
-            params: [],
-            query: [
-              {
-                id: 'datasets',
-                value: infoDatasets.flatMap((infoDataset) => infoDataset?.id || []),
-              },
-              {
-                id: 'ids',
-                value: topHoursVessels.map((v) => v.id),
-              },
-            ],
-          }
-          const vesselsInfoUrl = resolveEndpoint(infoDataset, infoDatasetConfig)
-
-          if (vesselsInfoUrl) {
-            try {
-              const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
-                signal,
-              })
-              // TODO remove entries once the API is stable
-              const vesselsInfoList: Vessel[] =
-                !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
-                  ? vesselsInfoResponse
-                  : (vesselsInfoResponse as any)?.entries
-              vesselsInfo = vesselsInfoList || []
-            } catch (e: any) {
-              console.warn(e)
-            }
-          }
-        }
-      }
+      const topHoursVesselIds = topHoursVessels.map(({ id }) => id)
+      const vesselsInfo = await fetchVesselInfo(infoDatasets, topHoursVesselIds, signal)
 
       const sublayersIds = fishingActivityFeatures.map(
         (feature) => feature.temporalgrid?.sublayerId || ''
@@ -284,7 +311,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 )
 
 export const fetchViirsInteractionThunk = createAsyncThunk<
-  ApiViirsStats[] | undefined,
+  ExtendedViirsFeature[] | undefined,
   { feature: ExtendedFeature },
   {
     dispatch: AppDispatch
@@ -295,20 +322,54 @@ export const fetchViirsInteractionThunk = createAsyncThunk<
     return
   }
   const state = getState() as RootState
+  const userLogged = selectUserLogged(state)
   const temporalgridDataviews = selectActivityDataviews(state) || []
 
-  const { fourWingsDataset, datasetConfig } = getInteractionEndpointDatasetConfig(
-    [feature],
-    temporalgridDataviews
-  )
+  const { featuresDataviews, fourWingsDataset, datasetConfig } =
+    getInteractionEndpointDatasetConfig([feature], temporalgridDataviews)
 
   const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
   if (interactionUrl) {
-    const viirsStats = await GFWAPI.fetch<ApiViirsStats[][]>(interactionUrl, {
+    const viirsResponse = await GFWAPI.fetch<ApiViirsStats[][]>(interactionUrl, {
       signal,
     })
 
-    return viirsStats[0]
+    const viirsStats = viirsResponse?.[0]
+    // TODO request only top radiance vessel and use MAX_TOOLTIP_LIST
+    const viirsVesselIds = uniq(viirsStats.flatMap(({ vessel_id }) => vessel_id || []))
+    const vesselDatasetIds = featuresDataviews.flatMap((dataview) =>
+      (dataview.datasets || [])?.flatMap((dataset) =>
+        (dataset.relatedDatasets || []).flatMap(({ id, type }) =>
+          type === DatasetTypes.Vessels ? id : []
+        )
+      )
+    )
+    const vesselDatasets = vesselDatasetIds.flatMap((id) => selectDatasetById(id)(state) || [])
+    const vesselsInfo = await fetchVesselInfo(vesselDatasets, viirsVesselIds, signal)
+
+    return viirsStats.map((stat) => {
+      const { vessel_id, ...rest } = stat
+      const vessel = vesselsInfo?.find((v) => v.id === stat.vessel_id)
+
+      // TODO merge funcionality with fishing thunk
+      const infoDataset = selectDatasetById(vessel?.dataset as string)(state)
+      const trackDatasetId = getRelatedDatasetByType(
+        infoDataset,
+        DatasetTypes.Tracks,
+        userLogged
+      )?.id
+      const trackDataset = selectDatasetById(trackDatasetId as string)(state)
+
+      return {
+        ...rest,
+        vessel: {
+          ...vessel,
+          dataset: infoDataset,
+          infoDataset,
+          trackDataset,
+        },
+      } as ExtendedViirsFeature
+    })
   }
 })
 

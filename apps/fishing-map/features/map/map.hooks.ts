@@ -53,7 +53,7 @@ import {
   fetchFishingActivityInteractionThunk,
   fetchViirsInteractionThunk,
   selectViirsInteractionStatus,
-  ApiViirsStats,
+  ExtendedViirsFeature,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
@@ -255,7 +255,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
-  viirs?: ApiViirsStats[]
+  viirs?: ExtendedViirsFeature[]
   temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }
