@@ -43,18 +43,16 @@ const getVisibleStartFrame = (rawFrame: number) => {
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
     isValid: (duration: Duration): boolean => {
-      return duration.as('days') < 5
+      return duration.as('days') <= 2
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
-      const TWENTY_DAYS_MS = 1000 * 60 * 60 * 24 * 20
-      const time = TWENTY_DAYS_MS * Math.floor(bufferedActiveStart / TWENTY_DAYS_MS)
-      return DateTime.fromMillis(time).toUTC()
+      return DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('week')
     },
     getChunkViewEnd: (chunkStart: DateTime): DateTime => {
-      return chunkStart.plus({ days: 20 })
+      return chunkStart.plus({ days: 7 })
     },
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
-      return chunkViewEnd.plus({ days: 5 })
+      return chunkViewEnd.plus({ days: 2 })
     },
     // We will substract every timestamp with a quantize offset to end up with shorter arrays indexes
     getRawFrame: (start: number) => {
@@ -66,17 +64,20 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   },
   day: {
     isValid: (duration: Duration): boolean => {
-      return duration.as('days') < 100
+      return duration.as('days') <= 31
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
-      // tileset should start at current year
-      return DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('year')
+      const monthStart = DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('month')
+      const monthStartMonth = monthStart.get('month')
+      const chunkStart = monthStart.set({ month: monthStartMonth - ((monthStartMonth - 1) % 2) })
+
+      return chunkStart
     },
     getChunkViewEnd: (chunkStart: DateTime): DateTime => {
-      return chunkStart.plus({ years: 1 })
+      return chunkStart.plus({ months: 2 })
     },
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
-      return chunkViewEnd.plus({ days: 100 })
+      return chunkViewEnd.plus({ months: 1 })
     },
     getRawFrame: (start: number) => {
       return start / 1000 / 60 / 60 / 24
