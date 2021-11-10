@@ -1,0 +1,52 @@
+.container {
+  position: relative;
+}
+
+.container .active {
+  opacity: 1;
+  background-color: var(--color-white);
+  color: var(--color-primary-blue);
+}
+
+.searchContainer {
+  position: absolute;
+  background-color: var(--color-white);
+  top: 0;
+  right: 5rem;
+  width: 32rem;
+}
+
+.searchContainer::after {
+  content: '';
+  top: 1rem;
+  right: -0.2rem;
+  position: absolute;
+  transform: rotate(45deg);
+  width: var(--size-XS);
+  height: var(--size-XS);
+  background-color: var(--color-white);
+  border: red;
+}
+
+.input > input {
+  padding: 0 var(--space-S);
+}
+
+.hidden {
+  display: none;
+}
+
+.results {
+  display: block;
+  left: 0;
+  width: 32rem;
+  background-color: var(--color-gradient);
+}
+
+.result {
+  padding: var(--space-XS) var(--space-S);
+}
+
+.highlighted {
+  background-color: var(--color-terthiary-blue);
+}

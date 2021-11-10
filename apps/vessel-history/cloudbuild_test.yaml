@@ -1,0 +1,41 @@
+steps:
+  - name: 'alpine'
+    id: 'create dir'
+    args: ['ash', '-c', 'mkdir -p ./apps/vessel-history/test-cbtest']
+  - name: 'alpine'
+    id: 'touch foo file'
+    args: ['ash', '-c', 'echo bar >> ./apps/vessel-history/test-cbtest/bar']
+  - name: 'docker'
+    args:
+      [
+        'build',
+        '-t',
+        'my-vessel-history-test',
+        '-f',
+        './apps/vessel-history/Dockerfile_test',
+        './apps/vessel-history',
+      ]
+  # - name: 'node:12'
+  #   entrypoint: 'yarn'
+  #   id: 'install monorepo dependencies'
+  #   args: ['install']
+  # - name: 'node:12'
+  #   entrypoint: 'yarn'
+  #   id: 'build monorepo packages'
+  #   args: ['build']
+  # - name: 'node:12'
+  #   entrypoint: 'bash'
+  #   id: 'copy packages to app'
+  #   args:
+  #     - '-eEuo'
+  #     - 'pipefail'
+  #     - '-c'
+  #     - |-
+  #       cp -r --parents ./node_modules/@globalfishingwatch ./apps/vessel-history
+
+  # # Push build image to GCR
+  # - name: 'docker'
+  #   args:
+  #     ['build', '-f', './apps/vessel-history/Dockerfile', './apps/vessel-history']
+# images:
+#   - 'my-vessel-history-test'

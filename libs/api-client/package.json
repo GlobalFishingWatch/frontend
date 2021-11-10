@@ -1,0 +1,10 @@
+{
+  "name": "@globalfishingwatch/api-client",
+  "version": "4.0.0",
+  "peerDependencies": {
+    "@globalfishingwatch/api-types": "6.x",
+    "@globalfishingwatch/pbf": "1.x",
+    "lodash": "4.x",
+    "file-saver": "2.x"
+  }
+}

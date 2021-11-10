@@ -1,5 +1,0 @@
-export * from './MapLegend'
-export * from './map-legend.utils'
-export * from './MapLegend'
-export * from './ColorRamp'
-export * from './Bivariate'

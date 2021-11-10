@@ -1,0 +1,7 @@
+{
+  "name": "@globalfishingwatch/data-transforms",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "lodash": "4.x"
+  }
+}

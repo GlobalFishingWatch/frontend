@@ -7,8 +7,8 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true,
     "importHelpers": true,
+    "resolveJsonModule": true,
     "target": "es2015",
     "module": "esnext",
     "lib": ["es2019", "dom"],
@@ -16,23 +16,23 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@globalfishingwatch/api-client": ["../../../packages/api-client/src/index.ts"],
-      "@globalfishingwatch/api-types": ["../../../packages/api-types/src/index.ts"],
-      "@globalfishingwatch/data-transforms": ["../../../packages/data-transforms/src/index.ts"],
-      "@globalfishingwatch/dataviews-client": ["../../../packages/dataviews-client/src/index.ts"],
-      "@globalfishingwatch/fourwings-aggregate": [
-        "../../../packages/fourwings-aggregate/src/index.ts"
-      ],
-      "@globalfishingwatch/i18n-labels": ["../../../packages/i18n-labels"],
-      "@globalfishingwatch/i18n-labels/*": ["../../../packages/i18n-labels/*"],
-      "@globalfishingwatch/layer-composer": ["../../../packages/layer-composer/src/index.ts"],
-      "@globalfishingwatch/ocean-areas": ["../../../packages/ocean-areas/src/index.ts"],
-      "@globalfishingwatch/pbf/*": ["../../../packages/pbf-decoders/*"],
-      "@globalfishingwatch/react-hooks": ["../../../packages/react-hooks/src/index.ts"],
-      "@globalfishingwatch/timebar": ["../../../packages/timebar/src/index.js"],
-      "@globalfishingwatch/ui-components": ["../../../packages/ui-components/src/index.ts"],
-      "@globalfishingwatch/ui-components/*": ["../../../packages/ui-components/src/*"]
+      "@globalfishingwatch/api-client": ["libs/api-client/src/index.ts"],
+      "@globalfishingwatch/api-types": ["libs/api-types/src/index.ts"],
+      "@globalfishingwatch/data-transforms": ["libs/data-transforms/src/index.ts"],
+      "@globalfishingwatch/dataviews-client": ["libs/dataviews-client/src/index.ts"],
+      "@globalfishingwatch/fourwings-aggregate": ["libs/fourwings-aggregate/src/index.ts"],
+      "@globalfishingwatch/i18n-labels": ["libs/i18n-labels/index.ts"],
+      "@globalfishingwatch/i18n-labels/*": ["libs/i18n-labels/*"],
+      "@globalfishingwatch/layer-composer": ["libs/layer-composer/src/index.ts"],
+      "@globalfishingwatch/ocean-areas": ["libs/ocean-areas/src/index.ts"],
+      "@globalfishingwatch/pbf": ["libs/pbf-decoders/src/index.ts"],
+      "@globalfishingwatch/pbf/*": ["libs/pbf-decoders/*"],
+      "@globalfishingwatch/react-hooks": ["libs/react-hooks/src/index.ts"],
+      "@globalfishingwatch/timebar": ["libs/timebar/src/index.js"],
+      "@globalfishingwatch/ui-components": ["libs/ui-components/src/index.ts"],
+      "@globalfishingwatch/ui-components/*": ["libs/ui-components/*"]
     }
   },
+  "files": ["./vendors.d.ts"],
   "exclude": ["node_modules", "tmp"]
 }

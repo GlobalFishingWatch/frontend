@@ -1,0 +1,30 @@
+.container {
+  margin-bottom: var(--space-M);
+  border-top: var(--border);
+}
+
+.commonTitle {
+  width: 100%;
+  padding: var(--space-M);
+  border-bottom: var(--border);
+}
+
+.commonTitle span {
+  color: var(--color-secondary-blue);
+}
+
+.commonTitle span::before,
+.commonTitle strong::before {
+  content: ' ';
+}
+
+.layerPanels {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.placeholder {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  padding: var(--space-M);
+}

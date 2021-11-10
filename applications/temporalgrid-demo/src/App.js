@@ -7,7 +7,7 @@ import {
   useLayerComposer,
   useDebounce,
   useMapClick,
-  // useMapHover,
+  useMapHover,
 } from '@globalfishingwatch/react-hooks'
 import TimebarComponent from '@globalfishingwatch/timebar'
 import Tilesets from './tilesets'
@@ -204,15 +204,15 @@ export default function App() {
   const clickCallback = useCallback((event) => {
     console.info(event)
   }, [])
-  // const hoverCallback = useCallback((event) => {
-  //   console.info(event)
-  // }, [])
+  const hoverCallback = useCallback((event) => {
+    console.info(event)
+  }, [])
 
   // TODO useMapInteraction has been removed
   // const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
 
   const onMapClick = useMapClick(clickCallback, style && style.metadata)
-  // const onMapHover = useMapHover(null, hoverCallback, mapRef, null, style && style.metadata)
+  const onMapHover = useMapHover(null, hoverCallback, mapRef, null, style && style.metadata)
 
   if (mapRef) {
     mapRef.showTileBoundaries = debug

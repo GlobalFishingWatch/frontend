@@ -1,0 +1,54 @@
+.Choice {
+  position: relative;
+}
+
+.list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.2rem;
+  border-radius: var(--size-M);
+  border: var(--border);
+  padding: 0.2rem;
+  min-width: min-content;
+}
+
+.activeChip {
+  content: '';
+  position: absolute;
+  width: 10px;
+  top: 0.2rem;
+  left: 0.2rem;
+  height: calc(100% - 0.4rem);
+  border-radius: var(--size-M);
+  background-color: var(--color-terthiary-blue);
+  z-index: 0;
+  transition: all 300ms ease-in-out;
+}
+
+.option {
+  flex: 1;
+  z-index: 1;
+}
+
+.optionButton {
+  flex: 1;
+  min-width: auto;
+  width: 100%;
+  border-radius: var(--size-M);
+  background-color: transparent;
+  color: var(--color-secondary-blue);
+}
+
+.optionActive {
+  color: var(--color-primary-blue);
+}
+
+.Choice .optionActive:focus {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.Choice .disabled {
+  background-color: transparent;
+}

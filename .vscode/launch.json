@@ -10,7 +10,7 @@
       "request": "launch",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
       "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
-      "cwd": "${workspaceRoot}/applications/fishing-map",
+      "cwd": "${workspaceRoot}/apps/fishing-map",
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
@@ -21,7 +21,7 @@
       "request": "launch",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
       "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
-      "cwd": "${workspaceRoot}/applications/vessel-history",
+      "cwd": "${workspaceRoot}/apps/vessel-history",
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"

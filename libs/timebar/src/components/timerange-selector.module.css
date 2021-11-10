@@ -1,0 +1,124 @@
+.TimeRangeSelector {
+  position: absolute;
+  bottom: var(--timebar-size);
+  left: 0;
+  width: 46rem;
+  background: var(--timebar-main-background-color);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+  z-index: var(--timebar-z-date-selector);
+  box-shadow: 0 0 28px 5px rgba(0, 0, 0, 0.8);
+}
+
+.veil {
+  content: '';
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: var(--timebar-main-background-color);
+  opacity: 0.7;
+  z-index: -1;
+}
+
+.inner {
+  padding: 3.5rem 3rem 3rem;
+}
+
+.title {
+  font-size: var(--timebar-extra-large-font-size);
+  line-height: var(--timebar-extra-large-font-size);
+  margin: 0 0 2rem;
+}
+
+.selectorsContainer {
+  display: flex;
+  margin-bottom: 0.6rem;
+}
+
+.selectorGroup {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.selectorLabel {
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cta {
+  display: block;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  cursor: pointer;
+  width: 15rem;
+  height: 3.6rem;
+  background: var(--timebar-cta-btn-color);
+  color: var(--timebar-white);
+  font-size: var(--timebar-font-size);
+  transition: var(--timebar-hover-transition);
+  text-transform: uppercase;
+}
+
+.cta:hover,
+.cta:focus {
+  background: var(--timebar-cta-btn-hover);
+  outline: none;
+}
+
+.secondary {
+  background: transparent;
+  border: 0.1rem solid var(--timebar-cta-btn-color);
+}
+
+.secondary:hover,
+.secondary:focus {
+  background: rgba(255, 255, 255, 0.05);
+  outline: none;
+}
+
+.errorMessage {
+  display: block;
+  opacity: 0.5;
+  margin-bottom: 1.2rem;
+  min-height: 2rem;
+  line-height: 2rem;
+}
+
+@media only screen and (max-width: 540px) {
+  .TimeRangeSelector {
+    width: 100vw;
+    position: fixed;
+    bottom: var(--timebar-size);
+  }
+}
+
+@media only screen and (max-width: 380px) {
+  .selectorsContainer {
+    flex-direction: column;
+  }
+
+  .selectorGroup {
+    align-items: center;
+  }
+
+  .selectorGroup:first-child {
+    margin-bottom: 2rem;
+  }
+
+  .selectorLabel {
+    width: 6rem;
+  }
+
+  .secondary {
+    display: none;
+  }
+}
