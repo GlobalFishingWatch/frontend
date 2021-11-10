@@ -1,0 +1,39 @@
+{
+  "playback": {
+    "playAnimation": "Reproduzir animação",
+    "pauseAnimation": "Pausar animação",
+    "toogleAnimationLooping": "Alternar repetição de animação",
+    "moveBack": "Mover para trás",
+    "moveForward": "Mover para frente",
+    "changeAnimationSpeed": "Mudar velocidade da animação"
+  },
+  "timerange": {
+    "title": "Selecione um intervalo de tempo",
+    "start": "Início",
+    "end": "fim",
+    "last30days": "Últimos 30 dias",
+    "done": "Concluído",
+    "errorEarlyStart": "Sua data de início é a data mais recente com dados disponíveis",
+    "errorLatestEnd": "Sua data final é a última data com dados disponíveis",
+    "errorMinRange": "Sua data inicial e final deve ser pelo menos um dia de diferença",
+    "errorMaxRange": "Seu intervalo de tempo é o máximo com dados disponíveis"
+  },
+  "bookmark": {
+    "goToBookmark": "Vá para o seu intervalo de tempo marcado",
+    "deleteBookmark": "Excluir intervalo de tempo marcado"
+  },
+  "trackEvents": {
+    "events": "eventos"
+  },
+  "dragLabel": "Arraste para alterar o intervalo de tempo",
+  "lastUpdate": "Última atualização",
+  "setBookmark": "Marcar intervalo de tempo atual",
+  "day": "dia",
+  "year": "ano",
+  "month": "mês",
+  "hour": "hora",
+  "zoomIn": "Aumentar zoom",
+  "zoomTo": "Ampliar para",
+  "zoomOut": "Diminuir zoom",
+  "selectTimeRange": "Selecione um intervalo de tempo"
+}

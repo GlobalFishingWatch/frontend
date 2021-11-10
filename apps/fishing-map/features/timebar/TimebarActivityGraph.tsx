@@ -32,7 +32,7 @@ const TimebarActivityGraph = () => {
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 1000)
   const isSmallScreen = useSmallScreen()
-
+  const attachedListener = useRef<boolean>(false)
   const map = useMapInstance()
   const computeStackedActivity = useCallback(
     (metadata: any, bounds: MiniglobeBounds) => {
@@ -65,13 +65,15 @@ const TimebarActivityGraph = () => {
           timeChunks.interval,
           metadata.visibleSublayers
         )
-        setStackedActivity(timeseries)
+        if (attachedListener.current) {
+          setStackedActivity(timeseries)
+        }
       }
       getTimeseriesAsync()
     },
     [map]
   )
-  const attachedListener = useRef<boolean>(false)
+
   const sourcesLoadedTimeout = useRef<number>(NaN)
   const [loading, setLoading] = useState(false)
   useEffect(() => {
@@ -95,7 +97,7 @@ const TimebarActivityGraph = () => {
     map.on('data', (e: MapSourceDataEvent) => {
       const { metadata, isActive } = isEventSourceActiveChunk(e)
       if (isActive && (e as any).previousState !== 'reloading') {
-        setLoading(true)
+        if (attachedListener.current) setLoading(true)
         if (!isNaN(sourcesLoadedTimeout.current)) {
           window.clearTimeout(sourcesLoadedTimeout.current)
         }
@@ -106,7 +108,7 @@ const TimebarActivityGraph = () => {
     })
     map.on('dataloading', (e: MapSourceDataEvent) => {
       const { isActive } = isEventSourceActiveChunk(e)
-      if (isActive) setLoading(true)
+      if (isActive && attachedListener.current) setLoading(true)
     })
     map.on('idle', (e: MapboxEvent) => {
       // If there's still a timer running when idle, skip it and render graph immediately
@@ -119,8 +121,11 @@ const TimebarActivityGraph = () => {
         computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
       }
 
-      setLoading(false)
+      if (attachedListener.current) setLoading(false)
     })
+    return () => {
+      attachedListener.current = false
+    }
   }, [map, computeStackedActivity, isSmallScreen])
 
   useEffect(() => {

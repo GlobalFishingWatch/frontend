@@ -1,0 +1,52 @@
+{
+  "name": "@globalfishingwatch/linting",
+  "version": "1.8.1",
+  "description": "linting config ready to be used in every gfw frontend project",
+  "keywords": [
+    "eslint",
+    "eslint-config",
+    "prettier",
+    "prettier-config",
+    "stylelint",
+    "stylelint-config"
+  ],
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "typescript.js",
+    "prettier.js",
+    "stylelint.js"
+  ],
+  "repository": {
+    "type": "git",
+    "repository": "git@github.com:GlobalFishingWatch/frontend.git"
+  },
+  "author": "Satellite Studio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GlobalFishingWatch/frontend/issues"
+  },
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.x",
+    "@typescript-eslint/parser": "^4.x",
+    "@typescript-eslint/scope-manager": "^4.x",
+    "babel-eslint": "^10.x",
+    "eslint": "7.x",
+    "eslint-config-prettier": "^8.x",
+    "eslint-config-react-app": "^6.x",
+    "eslint-import-resolver-typescript": "^2.x",
+    "eslint-plugin-flowtype": "^5.x",
+    "eslint-plugin-import": "^2.x",
+    "eslint-plugin-jsx-a11y": "^6.x",
+    "eslint-plugin-react": "^7.x",
+    "eslint-plugin-react-hooks": "^4.x",
+    "prettier": "2.3.0",
+    "prettier-eslint": "^12.0.0",
+    "stylelint": "14.x",
+    "stylelint-config-css-modules": "2.x",
+    "stylelint-config-prettier": "9.x",
+    "stylelint-config-standard": "23.x"
+  },
+  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+}

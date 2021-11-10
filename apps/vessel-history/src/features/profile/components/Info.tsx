@@ -112,10 +112,10 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const advancedSearch = useSelector(selectAdvancedSearchFields)
   const searchContext = useMemo(
     () => `Vessel Viewer > Detail: ${vessel?.shipname}`
-  ,[vessel?.shipname])
+    , [vessel?.shipname])
   const contactUsLink = useMemo(
     () =>
-      `${TMT_CONTACT_US_URL}&email=${email}&usercontext=${searchContext}&data=${JSON.stringify({
+      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(email)}&usercontext=${searchContext}&data=${JSON.stringify({
         name: query,
         ...advancedSearch,
         tmtMatchId: vesselTmtId,
@@ -309,9 +309,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 value={
                   vessel.iuuStatus !== undefined
                     ? t(
-                        `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
-                        vessel.iuuStatus.toString()
-                      )
+                      `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                      vessel.iuuStatus.toString()
+                    )
                     : DEFAULT_EMPTY_VALUE
                 }
                 valuesHistory={[]}
@@ -368,7 +368,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               rel="noopener noreferrer"
               target="_blank"
               onClick={onContactUsClick}
-              >
+            >
               contact us
             </a>{' '}
             if you have questions or would like more information about this vessel.
