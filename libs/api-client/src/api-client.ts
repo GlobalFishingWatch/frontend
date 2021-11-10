@@ -75,7 +75,7 @@ const isUnauthorizedError = (error: ResponseError) =>
 const isClientSide = typeof window !== 'undefined'
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
-export class GFW_API {
+export class GFW_API_CLASS {
   debug: boolean
   token = ''
   refreshToken = ''
@@ -486,4 +486,4 @@ export class GFW_API {
   }
 }
 
-export default new GFW_API()
+export const GFWAPI = new GFW_API_CLASS()

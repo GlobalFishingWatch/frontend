@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { ScaleControl } from 'react-map-gl'
@@ -7,6 +8,7 @@ import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import I18nDate from 'features/i18n/i18nDate'
+import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import styles from './MapInfo.module.css'
 
 export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
@@ -30,6 +32,7 @@ export const TimelineDatesRange = () => {
 const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
   const { viewport } = useViewport()
   const { zoom } = viewport
+  const showTimeComparison = useSelector(selectShowTimeComparison)
   return (
     <div className={styles.info}>
       <div className={styles.flex}>
@@ -42,7 +45,7 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
           </div>
         )}
       </div>
-      <TimelineDatesRange />
+      {!showTimeComparison && <TimelineDatesRange />}
     </div>
   )
 }

@@ -2,15 +2,19 @@ import React, { memo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
+import { useDispatch } from 'react-redux'
 import { InputText, IconButton } from '@globalfishingwatch/ui-components'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { OceanArea, searchOceanAreas, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
+import Hint from 'features/help/hints/Hint'
+import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'
 
 const MapSearch = () => {
   const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
   const [query, setQuery] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
@@ -38,6 +42,7 @@ const MapSearch = () => {
 
   const togglePropOptions = {
     onClick: () => {
+      dispatch(setHintDismissed('areaSearch'))
       setTimeout(() => {
         inputRef.current?.focus()
       }, 1)
@@ -69,6 +74,8 @@ const MapSearch = () => {
         tooltip={isOpen ? t('search.close', 'Close search') : t('map.search', 'Search areas')}
         className={cx({ [styles.active]: isOpen })}
       ></IconButton>
+
+      <Hint id="areaSearch" className={styles.helpHint} />
       <div className={cx(styles.searchContainer, { [styles.hidden]: !isOpen })}>
         <InputText
           {...getInputProps({ ref: inputRef })}

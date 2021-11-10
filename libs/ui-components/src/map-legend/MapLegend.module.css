@@ -105,7 +105,7 @@
   transform: translateX(-50%);
 }
 
-.step:first-child {
+.firstStep {
   transform: translateX(0);
 }
 
@@ -144,10 +144,12 @@
 .loading > tspan:nth-child(1) {
   animation-delay: 0s;
 }
+
 .loading > span:nth-child(2),
 .loading > tspan:nth-child(2) {
   animation-delay: 0.5s;
 }
+
 .loading > span:nth-child(3),
 .loading > tspan:nth-child(3) {
   animation-delay: 1s;
@@ -157,12 +159,15 @@
   0% {
     opacity: 1;
   }
+
   33% {
     opacity: 0;
   }
+
   66% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }

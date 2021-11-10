@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   DataviewDatasetConfig,
@@ -345,7 +345,8 @@ export const fetchEncounterEventThunk = createAsyncThunk<
       let vesselsInfo: ExtendedEventVessel[] = []
       const vesselsDatasets = dataview?.datasets
         ?.flatMap((d) => d.relatedDatasets || [])
-        .filter((d) => d?.type === 'carriers-vessels:v1')
+        .filter((d) => d?.type === DatasetTypes.Vessels)
+
       if (vesselsDatasets?.length && fishingVessel && carrierVessel) {
         const vesselDataset = selectDatasetById(vesselsDatasets[0].id)(state) as Dataset
         const vesselsDatasetConfig = {

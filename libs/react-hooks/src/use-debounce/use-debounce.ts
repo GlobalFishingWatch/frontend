@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { debounce } from 'lodash'
 
-function useDebounce<T>(
+export function useDebounce<T>(
   value: T,
   delay: number,
   options?: { leading?: boolean; maxWait?: number; trailing?: boolean }
@@ -35,5 +35,3 @@ function useDebounce<T>(
 
   return debouncedValue
 }
-
-export default useDebounce

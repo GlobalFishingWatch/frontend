@@ -44,7 +44,7 @@ function MapScreenshot({ map }: { map?: Map }) {
   const rulersEditing = useSelector(selectEditing)
   const printSize = useRef<{ width: PrintSize; height: PrintSize } | undefined>()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const pixelPerInch = window.devicePixelRatio * 96
     const baseSize = parseInt(getCSSVarValue('--base-font-size')) || 10
     const timebarSize = parseFloat(getCSSVarValue('--timebar-size') || '7.2') * baseSize

@@ -6,6 +6,7 @@
 .header:not(:first-child) {
   margin-top: 2rem;
 }
+
 .header label {
   margin-left: 1rem;
 }

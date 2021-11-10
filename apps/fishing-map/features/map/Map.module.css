@@ -15,22 +15,15 @@
   height: 100%;
 }
 
-.legend .currentValue {
-  background-color: white;
-}
-
 :global(.printing) .screenshot {
   display: block !important;
-}
-
-:global(.printing) .legend .currentValue {
-  display: none;
 }
 
 @media print {
   .screenshot {
     display: block;
   }
+
   .legend .currentValue {
     display: none;
   }
@@ -43,3 +36,14 @@
   width: max-content;
 }
 
+.helpHintLeft {
+  position: absolute;
+  top: calc(50% - 1rem);
+  left: calc(50% - 1rem);
+}
+
+.helpHintRight {
+  position: absolute;
+  top: calc(50% + 1rem);
+  left: calc(50% + 1rem);
+}

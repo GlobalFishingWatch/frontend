@@ -1,6 +1,6 @@
 import { ExtendedStyle } from '../../types'
 
-const getInteractiveIds = (style: ExtendedStyle) => {
+export const getInteractiveLayerIds = (style: ExtendedStyle) => {
   if (!style || !style.layers) return style
   const interactiveLayerIds = style.layers
     .filter((layer) => {
@@ -17,5 +17,3 @@ const getInteractiveIds = (style: ExtendedStyle) => {
   newStyle.metadata.interactiveLayerIds = interactiveLayerIds
   return newStyle
 }
-
-export default getInteractiveIds

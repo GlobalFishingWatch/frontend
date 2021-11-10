@@ -19,7 +19,6 @@ import {
   BasemapGeneratorConfig,
   BasemapType,
 } from '@globalfishingwatch/layer-composer'
-import { selectAllDataviews } from './dataviews.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -35,6 +34,7 @@ import { selectThinningConfig } from 'features/resources/resources.selectors'
 import { TimebarGraphs } from 'types'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { RootState } from 'store'
+import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -45,10 +45,13 @@ const defaultBasemapDataview = {
   },
 }
 
-export const selectBasemapDataview = createSelector([(state:RootState) => selectAllDataviews(state)], (dataviews) => {
-  const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
-  return basemapDataview || defaultBasemapDataview
-})
+export const selectBasemapDataview = createSelector(
+  [(state: RootState) => selectAllDataviews(state)],
+  (dataviews) => {
+    const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
+    return basemapDataview || defaultBasemapDataview
+  }
+)
 
 export const selectDefaultBasemapGenerator = createSelector(
   [selectBasemapDataview],
@@ -79,7 +82,11 @@ export const selectDataviewInstancesMerged = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMerged, (state: RootState) => selectAllDataviews(state), (state: RootState) => selectAllDatasets(state)],
+  [
+    selectDataviewInstancesMerged,
+    (state: RootState) => selectAllDataviews(state),
+    (state: RootState) => selectAllDatasets(state),
+  ],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)

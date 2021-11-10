@@ -1,3 +1,7 @@
+.layerPanelWrapper {
+  position: relative;
+}
+
 .bivariateToggleContainer {
   display: flex;
   align-items: center;
@@ -42,4 +46,10 @@
 
 .bivariateSplit {
   margin-top: 2.4rem;
+}
+
+.helpHint {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
 }

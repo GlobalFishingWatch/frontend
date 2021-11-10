@@ -202,3 +202,25 @@ label {
 }
 
 /* TODO: include heading and other html tags styles */
+
+.ReactModal__Body--open {
+  overflow: hidden;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1 !important;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0 !important;
+}
+
+.ReactModal__Content--after-open {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+.ReactModal__Content--before-close {
+  opacity: 0 !important;
+  transform: translateX(-100%) !important;
+}

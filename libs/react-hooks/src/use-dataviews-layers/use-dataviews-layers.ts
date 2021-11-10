@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client'
 
-const useDataviewsGeneratorConfigs: typeof getDataviewsGeneratorConfigs = (
+export const useDataviewsGeneratorConfigs: typeof getDataviewsGeneratorConfigs = (
   dataviews,
   params,
   resources
@@ -11,5 +11,3 @@ const useDataviewsGeneratorConfigs: typeof getDataviewsGeneratorConfigs = (
   }, [dataviews, params, resources])
   return generators
 }
-
-export default useDataviewsGeneratorConfigs

@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+// eslint-disable-next-line import/no-webpack-loader-syntax
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   TimeChunk,
   TimeChunks,
-  TEMPORALGRID_SOURCE_LAYER,
+  TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapboxEvent, MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
@@ -14,8 +15,8 @@ import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwat
 import { useMapBounds, mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
+import { getTimeseries } from './timebarActivityGraph.worker'
 import styles from './Timebar.module.css'
-import { getTimeseries } from './TimebarActivityGraph.worker'
 
 const getMetadata = (style: any) => {
   const metadata =
@@ -41,7 +42,7 @@ const TimebarActivityGraph = () => {
       const timeChunks = metadata.timeChunks as TimeChunks
       const allChunksFeatures = metadata.timeChunks.chunks.map((chunk: TimeChunk) => {
         const features = map.querySourceFeatures(chunk.sourceId as string, {
-          sourceLayer: TEMPORALGRID_SOURCE_LAYER,
+          sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
         })
 
         const serializedFeatures = features.map(({ properties, geometry }) => ({
@@ -56,9 +57,8 @@ const TimebarActivityGraph = () => {
         }
       })
 
-      const getTimeseriesAsync = () => {
-        // TODO restore async worker
-        const timeseries = getTimeseries(
+      const getTimeseriesAsync = async () => {
+        const timeseries = await getTimeseries(
           allChunksFeatures,
           bounds,
           numSublayers,

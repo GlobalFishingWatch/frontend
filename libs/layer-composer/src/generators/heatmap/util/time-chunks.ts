@@ -30,6 +30,9 @@ export type TimeChunks = {
 
 export const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 
+export const pickActiveTimeChunk = (timeChunks: TimeChunks) =>
+  timeChunks.chunks.find((t) => t.active) || timeChunks.chunks[0]
+
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 
@@ -124,7 +127,9 @@ const getInterval = (
     }
     return 'day'
   }
-  return '10days'
+  // If interval is not valid on hour or day, fallback on biggest interval (assumed to be last item of supportedIntervals)
+  // Should be 10days, or day in the case of TimeCompare mode
+  return supportedIntervals[supportedIntervals.length - 1]
 }
 
 /**
@@ -227,7 +232,9 @@ export const getActiveTimeChunks = (
   const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
 
   const finalInterval: Interval =
-    !interval || Array.isArray(interval) ? getInterval(deltaMs, interval as any) : (interval as Interval)
+    !interval || Array.isArray(interval)
+      ? getInterval(deltaMs, interval as Interval[])
+      : (interval as any)
 
   const finalIntervalConfig = CONFIG_BY_INTERVAL[finalInterval]
   const visibleStartFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeStart))

@@ -20,13 +20,17 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: true,
   },
-  images: {
-    disableStaticImages: true,
-  },
   webpack: function (config) {
     config.resolve.alias = {
       ...config.resolve.alias,
       'mapbox-gl': '@globalfishingwatch/mapbox-gl',
+    }
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      child_process: false,
+      fs: false,
+      net: false,
+      tls: false,
     }
     return config
   },

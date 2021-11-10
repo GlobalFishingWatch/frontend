@@ -1,6 +1,4 @@
 import React, { lazy, Suspense, useMemo } from 'react'
-import dynamic from 'next/dynamic'
-
 import { useSelector } from 'react-redux'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
@@ -14,12 +12,18 @@ import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
-const Analysis = dynamic(() => import(/* webpackChunkName: "Analyis" */ 'features/analysis/Analysis'))
-import User from 'features/user/User'
-import Workspace from 'features/workspace/Workspace'
-import WorkspacesList from 'features/workspaces-list/WorkspacesList'
-import Search from 'features/search/Search'
-import NewDataset from 'features/datasets/NewDataset'
+const Analysis = lazy(() => import(/* webpackChunkName: "Analyis" */ 'features/analysis/Analysis'))
+const User = lazy(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
+const Workspace = lazy(
+  () => import(/* webpackChunkName: "Workspace" */ 'features/workspace/Workspace')
+)
+const WorkspacesList = lazy(
+  () => import(/* webpackChunkName: "WorkspacesList" */ 'features/workspaces-list/WorkspacesList')
+)
+const Search = lazy(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
+const NewDataset = lazy(
+  () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/NewDataset')
+)
 
 type SidebarProps = {
   onMenuClick: () => void
@@ -54,11 +58,19 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }, [locationType, userLogged, highlightedWorkspacesStatus])
 
   if (searchQuery !== undefined) {
-    return <Search />
+    return (
+      <Suspense fallback={null}>
+        <Search />
+      </Suspense>
+    )
   }
 
   if (isAnalyzing) {
-    return <Analysis />
+    return (
+      <Suspense fallback={null}>
+        <Analysis />
+      </Suspense>
+    )
   }
 
   return (
@@ -68,7 +80,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       <NewDataset />
       <div className="scrollContainer">
         <SidebarHeader />
-        {sidebarComponent}
+        <Suspense fallback={null}>{sidebarComponent}</Suspense>
       </div>
     </div>
   )

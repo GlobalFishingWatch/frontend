@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'

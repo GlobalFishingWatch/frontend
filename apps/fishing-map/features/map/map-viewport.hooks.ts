@@ -27,26 +27,26 @@ const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 const viewportState = atom<MapCoordinates>({
   key: 'mapViewport',
   default: DEFAULT_VIEWPORT as MapCoordinates,
-  // effects_UNSTABLE: [
-  //   ({ trigger, setSelf, onSet }) => {
-  //     const dispatch = useDispatch()
-  //     const viewport = selectViewport(store.getState() as RootState)
+  effects_UNSTABLE: [
+    ({ trigger, setSelf, onSet }) => {
+      const dispatch = useDispatch()
+      const viewport = selectViewport(store.getState() as RootState)
 
-  //     if (trigger === 'get') {
-  //       setSelf(viewport)
-  //     }
+      if (trigger === 'get') {
+        setSelf(viewport)
+      }
 
-  //     const updateUrlViewportDebounced = debounce(
-  //       dispatch(updateUrlViewport),
-  //       URL_VIEWPORT_DEBOUNCED_TIME
-  //     )
+      const updateUrlViewportDebounced = debounce(
+        dispatch(updateUrlViewport),
+        URL_VIEWPORT_DEBOUNCED_TIME
+      )
 
-  //     onSet((viewport) => {
-  //       const { latitude, longitude, zoom } = viewport as MapCoordinates
-  //       updateUrlViewportDebounced({ latitude, longitude, zoom })
-  //     })
-  //   },
-  // ],
+      onSet((viewport) => {
+        const { latitude, longitude, zoom } = viewport as MapCoordinates
+        updateUrlViewportDebounced({ latitude, longitude, zoom })
+      })
+    },
+  ],
 })
 
 export default function useViewport(): UseViewport {

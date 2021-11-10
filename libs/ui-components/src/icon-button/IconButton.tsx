@@ -27,7 +27,9 @@ export interface IconButtonProps {
   style?: CSSProperties
 }
 
-const warningVarColor = '#ff3e62'
+const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(
+  '--color-danger-red'
+)
 
 function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   const {
@@ -44,6 +46,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
     tooltip,
     tooltipPlacement = 'auto',
     children,
+    style,
     ...rest
   } = props
   let spinnerColor
@@ -65,6 +68,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
+        style={style}
         {...rest}
       >
         {loading ? (

@@ -32,6 +32,14 @@
   cursor: pointer;
 }
 
+.default input {
+  height: var(--size-M);
+}
+
+.small input {
+  height: var(--size-S);
+}
+
 .actionsContainer {
   position: absolute;
   bottom: 0;

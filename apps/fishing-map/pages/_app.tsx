@@ -6,6 +6,7 @@ import Head from 'next/head'
 import store from '../store'
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
+import '../../../libs/timebar/src/timebar-settings.css'
 
 function SafeHydrate({ children }) {
   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>

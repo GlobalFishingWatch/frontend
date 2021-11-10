@@ -1,42 +1,22 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import ReactModal from 'react-modal';
-import cx from 'classnames';
-import { IconButton } from '../icon-button';
-import { Logo } from '../logo';
-import styles from './Menu.module.css';
+import React, { useMemo } from 'react'
+import ReactModal from 'react-modal'
+import cx from 'classnames'
+import { IconButton } from '../icon-button'
+import { Logo } from '../logo'
+import styles from './Menu.module.css'
 
 type MenuLink = {
-  id: string;
-  label: string;
-  href: string;
-};
+  id: string
+  label: string
+  href: string
+}
 
 export const defaultLinks: MenuLink[] = [
-  {
-    id: 'topics',
-    label: 'Topics',
-    href: 'https://globalfishingwatch.org/topics/',
-  },
-  {
-    id: 'map-data',
-    label: 'Map & data',
-    href: 'https://globalfishingwatch.org/map-and-data/',
-  },
-  {
-    id: 'programs',
-    label: 'Programs',
-    href: 'https://globalfishingwatch.org/programs/',
-  },
-  {
-    id: 'newsroom',
-    label: 'Newsroom',
-    href: 'https://globalfishingwatch.org/newsroom/',
-  },
-  {
-    id: 'about-us',
-    label: 'About Us',
-    href: 'https://globalfishingwatch.org/about-us/',
-  },
+  { id: 'topics', label: 'Topics', href: 'https://globalfishingwatch.org/topics/' },
+  { id: 'map-data', label: 'Map & data', href: 'https://globalfishingwatch.org/map-and-data/' },
+  { id: 'programs', label: 'Programs', href: 'https://globalfishingwatch.org/programs/' },
+  { id: 'newsroom', label: 'Newsroom', href: 'https://globalfishingwatch.org/newsroom/' },
+  { id: 'about-us', label: 'About Us', href: 'https://globalfishingwatch.org/about-us/' },
   {
     id: 'help',
     label: 'Help',
@@ -52,19 +32,19 @@ export const defaultLinks: MenuLink[] = [
     label: 'Privacy policy',
     href: 'https://globalfishingwatch.org/privacy-policy/',
   },
-];
+]
 
 interface MenuProps {
-  isOpen: boolean;
+  isOpen: boolean
   /**
    * Id of the html root selector, normally in CRA 'root'
    */
-  appSelector?: string;
-  bgImage: string;
-  bgImageSource?: string;
-  links?: MenuLink[];
-  activeLinkId?: string;
-  onClose: (e: React.MouseEvent) => void;
+  appSelector?: string
+  bgImage: string
+  bgImageSource?: string
+  links?: MenuLink[]
+  activeLinkId?: string
+  onClose: (e: React.MouseEvent) => void
 }
 
 export function Menu(props: MenuProps) {
@@ -76,30 +56,17 @@ export function Menu(props: MenuProps) {
     bgImage = 'https://globalfishingwatch.org/carrier-portal/static/media/juan-vilata.fc4bde7c.jpg',
     bgImageSource = '',
     activeLinkId,
-  } = props;
-  const [document, setDocument] = useState<
-    typeof window.document | undefined
-    >();
-
-  useEffect(() => {
-    setDocument(window.document);
-  }, []);
-
-  const appElement = useMemo(() => {
-    if (document) {
-      return document.getElementById(appSelector);
-    }
-  }, [appSelector, document]);
-
+  } = props
+  const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
   if (!appElement) {
-    // console.warn(`Invalid appSelector (${appSelector}) provided`);
-    return null;
+    console.warn(`Invalid appSelector (${appSelector}) provided`)
+    return null
   }
   const customStyles = {
     content: {
       backgroundImage: `url(${bgImage})`,
     },
-  };
+  }
   return (
     <ReactModal
       overlayClassName={styles.modalOverlay}
@@ -110,24 +77,16 @@ export function Menu(props: MenuProps) {
       isOpen={isOpen}
       onRequestClose={onClose}
     >
-      <IconButton
-        className={styles.closeBtn}
-        icon="close"
-        type="invert"
-        onClick={onClose}
-      />
-      <a href="https://globalfishingwatch.org">
-        <Logo type="invert" className={styles.logo} />
-      </a>
+      <div className={styles.header}>
+        <a href="https://globalfishingwatch.org">
+          <Logo type="invert" className={styles.logo} />
+        </a>
+        <IconButton className={styles.closeBtn} icon="close" type="invert" onClick={onClose} />
+      </div>
       {links?.length > 0 && (
         <ul>
           {links.map(({ id, label, href }) => (
-            <li
-              className={cx(styles.link, {
-                [styles.active]: id === activeLinkId,
-              })}
-              key={id}
-            >
+            <li className={cx(styles.link, { [styles.active]: id === activeLinkId })} key={id}>
               <a href={href}>{label}</a>
             </li>
           ))}
@@ -135,5 +94,5 @@ export function Menu(props: MenuProps) {
       )}
       {bgImageSource && <p className={styles.copyright}>{bgImageSource}</p>}
     </ReactModal>
-  );
+  )
 }

@@ -155,6 +155,7 @@
 .centered {
   display: flex;
   align-items: center;
+  min-height: 2rem;
 }
 
 .rowTitle {
@@ -206,6 +207,10 @@
   display: flex;
   column-gap: var(--space-M);
   flex-wrap: wrap;
+}
+
+.hover:global(.mapboxgl-popup .mapboxgl-popup-content) {
+  pointer-events: none;
 }
 
 .hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),

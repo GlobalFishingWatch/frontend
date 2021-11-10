@@ -15,8 +15,12 @@ import TileClusterGenerator from './tile-cluster/tile-cluster'
 export * from './heatmap/types'
 export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
 export { COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
-export { DEFAULT_HEATMAP_INTERVALS } from './heatmap/config'
-export { TEMPORALGRID_SOURCE_LAYER } from './heatmap/modes/gridded'
+export {
+  DEFAULT_HEATMAP_INTERVALS,
+  TEMPORALGRID_SOURCE_LAYER,
+  TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
+} from './heatmap/config'
+
 export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER }
 
 const GeneratorConfig = {

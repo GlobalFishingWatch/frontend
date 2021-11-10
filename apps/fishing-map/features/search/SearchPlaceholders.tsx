@@ -1,8 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
+import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
-// import vesselImage from 'assets/images/vessel@2x.png'
-// import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
+import vesselImage from 'assets/images/vessel@2x.png'
+import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import styles from './SearchPlaceholders.module.css'
 
 type SearchPlaceholderProps = {
@@ -22,7 +23,7 @@ export function SearchNoResultsState({ className = '' }: SearchPlaceholderProps)
   const { t } = useTranslation()
   return (
     <SearchPlaceholder className={className}>
-      {/* <img src={vesselNoResultsImage} alt="vessel" className={styles.noResultsImage} /> */}
+      <Image src={vesselNoResultsImage} alt="vessel" className={styles.noResultsImage} />
       <p>
         {t(
           'search.noResults',
@@ -37,7 +38,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
   const { t } = useTranslation()
   return (
     <SearchPlaceholder className={className}>
-      {/* <img src={vesselImage} alt="vessel" className={styles.vesselImage} /> */}
+      <Image src={vesselImage} alt="vessel" className={styles.vesselImage} />
       <p>
         {t(
           'search.description',

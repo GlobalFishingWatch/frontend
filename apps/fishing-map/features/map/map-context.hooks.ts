@@ -33,7 +33,7 @@ export { MapContext }
 
 export function useMapContext() {
   const context = useContext(MapContext)
-  return context as any
+  return context
 }
 
 export default function useMapInstance() {

@@ -14,4 +14,4 @@ export type LegendLayer = LayerMetadataLegend & UILayer
 
 export type LegendLayerBivariate = LayerMetadataLegendBivariate & UILayer
 
-export { default } from './use-map-legend'
+export * from './use-map-legend'

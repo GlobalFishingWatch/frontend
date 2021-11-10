@@ -2,6 +2,9 @@ import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate
 import { HeatmapAnimatedMode } from '../types'
 import { Interval } from './types'
 
+export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid'
+export const TEMPORALGRID_SOURCE_LAYER_INTERACTIVE = 'temporalgrid_interactive'
+
 export const API_ENDPOINTS = {
   tiles: '4wings/tile/heatmap/{z}/{x}/{y}',
   breaks: '4wings/bins/{zoom}',
@@ -17,6 +20,7 @@ export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombi
   [HeatmapAnimatedMode.Single]: SublayerCombinationMode.None,
   [HeatmapAnimatedMode.Compare]: SublayerCombinationMode.Max,
   [HeatmapAnimatedMode.Bivariate]: SublayerCombinationMode.Bivariate,
+  [HeatmapAnimatedMode.TimeCompare]: SublayerCombinationMode.TimeCompare,
   [HeatmapAnimatedMode.Blob]: SublayerCombinationMode.Literal,
   [HeatmapAnimatedMode.Extruded]: SublayerCombinationMode.Cumulative,
 }
@@ -25,6 +29,7 @@ export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
   [HeatmapAnimatedMode.Single]: 'fill',
   [HeatmapAnimatedMode.Compare]: 'fill',
   [HeatmapAnimatedMode.Bivariate]: 'fill',
+  [HeatmapAnimatedMode.TimeCompare]: 'fill',
   [HeatmapAnimatedMode.Blob]: 'heatmap',
   [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
 }

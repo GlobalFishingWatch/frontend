@@ -4,19 +4,22 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { USER } from 'routes/routes'
 import { selectUserWorkspaces } from 'features/user/user.selectors'
+import { RootState } from 'store'
 import {
   HighlightedWorkspace,
   selectHighlightedWorkspaces,
   selectWorkspaces,
 } from './workspaces-list.slice'
-import { RootState } from 'store'
 
-export const selectDefaultWorkspace = createSelector([(state: RootState) => selectWorkspaces(state)], (workspaces) => {
-  return workspaces?.find(
-    // To ensure this is the local workspace and not overlaps with a new one on the api with the same id
-    (w) => w.id === DEFAULT_WORKSPACE_ID && w.description === DEFAULT_WORKSPACE_ID
-  )
-})
+export const selectDefaultWorkspace = createSelector(
+  [(state: RootState) => selectWorkspaces(state)],
+  (workspaces) => {
+    return workspaces?.find(
+      // To ensure this is the local workspace and not overlaps with a new one on the api with the same id
+      (w) => w.id === DEFAULT_WORKSPACE_ID && w.description === DEFAULT_WORKSPACE_ID
+    )
+  }
+)
 
 export const selectWorkspaceByCategory = (category: WorkspaceCategories) => {
   return createSelector([selectWorkspaces], (workspaces) => {
@@ -46,7 +49,11 @@ export type HighlightedWorkspaceMerged = HighlightedWorkspace & {
 }
 
 export const selectCurrentHighlightedWorkspaces = createSelector(
-  [selectLocationCategory, selectHighlightedWorkspaces, (state: RootState) => selectWorkspaces(state)],
+  [
+    selectLocationCategory,
+    selectHighlightedWorkspaces,
+    (state: RootState) => selectWorkspaces(state),
+  ],
   (
     locationCategory,
     highlightedWorkspaces,

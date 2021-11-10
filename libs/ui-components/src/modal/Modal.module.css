@@ -1,7 +1,3 @@
-/* :global(.ReactModal__Body--open) {
-  overflow: hidden;
-} */
-
 .modalOverlay {
   background: var(--color-secondary-blue);
   position: fixed;
@@ -84,6 +80,7 @@
     height: 50rem;
     max-height: calc(100vh - var(--size-L));
   }
+
   .contentNoHeader {
     height: auto;
   }

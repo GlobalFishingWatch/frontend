@@ -15,9 +15,10 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
-// import FeedbackModal from 'features/feedback/FeedbackModal'
+import FeedbackModal from 'features/feedback/FeedbackModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import LocalStorageLoginLink from 'routes/LoginLink'
+import HintsHub from 'features/help/hints/HintsHub'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -55,9 +56,6 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   // const [modalHelpOpen, setModalHelpOpen] = useState(false)
   const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
 
-  // const onHelpClick = () => {
-  //   setModalHelpOpen(true)
-  // }
   const onFeedbackClick = () => {
     setModalFeedbackOpen(true)
   }
@@ -95,11 +93,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           </li>
         ))}
         <div className={styles.separator}></div>
-        {/* <li className={cx(styles.tab, styles.secondary)}>
-          <button className={styles.tabContent} onClick={onHelpClick}>
-            <Icon icon="help" />
-          </button>
-        </li> */}
+        <li className={cx(styles.tab, styles.secondary)}>
+          <HintsHub />
+        </li>
         {userData && (
           <li className={cx(styles.tab, styles.secondary)}>
             <IconButton
@@ -140,7 +136,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
       </ul>
       {/* <HelpModal isOpen={modalHelpOpen} onClose={() => setModalHelpOpen(false)} /> */}
-      {/* <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} /> */}
+      <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} />
     </Fragment>
   )
 }

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
 import { Field, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   Resource,
   ResourceStatus,

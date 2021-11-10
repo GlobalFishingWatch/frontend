@@ -1,7 +1,7 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { Feature, Polygon } from 'geojson'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Report } from '@globalfishingwatch/api-types'
 import {
   AsyncError,
@@ -70,6 +70,7 @@ export interface ReportState extends AsyncReducer<Report> {
     name: string
     id: string
   }
+  timeComparison: string[]
 }
 
 const initialState: ReportState = {
@@ -80,6 +81,7 @@ const initialState: ReportState = {
     name: '',
     id: '',
   },
+  timeComparison: [],
 }
 
 const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({

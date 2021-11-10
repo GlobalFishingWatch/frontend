@@ -29,10 +29,10 @@
 .scale :global(.mapboxgl-ctrl-scale) {
   font: var(--font-XS);
   background: none;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(var(--white-rgb), 0.65);
   border-left: none;
   border-right: none;
-  border-color: rgba(255, 255, 255, 0.65);
+  border-color: rgba(var(--white-rgb), 0.65);
   border-width: 1px;
 }
 
@@ -44,6 +44,7 @@
   .info {
     padding: 0 var(--space-XS);
   }
+
   .dateRange {
     font: var(--font-L);
   }
@@ -52,6 +53,7 @@
 :global(.printing) .dateRange {
   font: var(--font-L);
 }
+
 :global(.printing) .info {
   padding: 0 var(--space-XS);
 }

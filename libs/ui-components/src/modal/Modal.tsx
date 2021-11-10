@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
 import { IconButton } from '../icon-button'
@@ -37,22 +37,9 @@ export function Modal(props: ModalProps) {
     shouldCloseOnEsc = false,
     children,
   } = props
-  const [document, setDocument] = useState<
-    typeof window.document | undefined
-    >();
-
-  useEffect(() => {
-    setDocument(window.document);
-  }, []);
-
-  const appElement = useMemo(() => {
-    if (document) {
-      return document.getElementById(appSelector);
-    }
-  }, [appSelector, document]);
-
+  const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
   if (!appElement) {
-    // console.warn(`Invalid appSelector (${appSelector}) provided`)
+    console.warn(`Invalid appSelector (${appSelector}) provided`)
     return null
   }
   return (

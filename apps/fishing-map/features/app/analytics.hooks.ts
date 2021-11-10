@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { initialize as uaInitialize, set as uaSet, event as uaEvent, pageview } from 'react-ga'
 import { selectUserData } from 'features/user/user.slice'

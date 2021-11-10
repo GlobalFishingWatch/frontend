@@ -3,7 +3,8 @@ import Tippy, { TippyProps } from '@tippyjs/react'
 import styles from './Tooltip.module.css'
 
 export function Tooltip(props: TippyProps) {
-  if (!props.content) return props.children
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  if (!props.content) return <React.Fragment>{props.children}</React.Fragment>
   return (
     <Tippy
       className={styles.tooltip}

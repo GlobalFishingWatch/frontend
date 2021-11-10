@@ -17,7 +17,11 @@ class ErrorBoundary extends Component<any, { error: Error | null }> {
   }
   render() {
     if (this.state.error) {
-      return <ErrorBoundaryUI error={this.state.error} />
+      return (
+        <Suspense fallback={null}>
+          <ErrorBoundaryUI error={this.state.error} />
+        </Suspense>
+      )
     }
     return this.props.children
   }

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, kebabCase } from 'lodash'
 import { stringify } from 'qs'
 import { Workspace } from '@globalfishingwatch/api-types'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   AsyncReducerStatus,
   asyncInitialState,
@@ -69,18 +69,21 @@ export type HighlightedWorkspace = {
     es?: string
     fr?: string
     id?: string
+    pt?: string
   }
   description: {
     en: string
     es?: string
     fr?: string
     id?: string
+    pt?: string
   }
   cta: {
     en: string
     es?: string
     fr?: string
     id?: string
+    pt?: string
   }
   img?: string
   userGroup?: string
@@ -236,9 +239,9 @@ export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.workspaces
 )
 
-
-export function selectWorkspaces(state: RootState) { return selectAll(state) }
-
+export function selectWorkspaces(state: RootState) {
+  return selectAll(state)
+}
 export const selectWorkspaceListStatus = (state: RootState) => state.workspaces.status
 export const selectWorkspaceListStatusId = (state: RootState) => state.workspaces.statusId
 export const selectHighlightedWorkspaces = (state: RootState) => state.workspaces.highlighted.data

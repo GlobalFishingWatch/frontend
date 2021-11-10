@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import GFWAPI, {
+import {
+  GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
@@ -12,7 +13,7 @@ interface GFWLoginHook {
   error: string | undefined
 }
 
-const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => {
+export const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => {
   const [state, setState] = useState<GFWLoginHook>({
     logged: false,
     loading: true,
@@ -40,5 +41,3 @@ const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => {
 
   return state
 }
-
-export default useGFWLogin

@@ -1,1 +1,1 @@
-export { default } from './use-small-screen'
+export * from './use-small-screen'

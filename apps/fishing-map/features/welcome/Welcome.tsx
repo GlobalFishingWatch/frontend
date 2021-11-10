@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Logo } from '@globalfishingwatch/ui-components'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
-import useLocalStorage from 'hooks/use-local-storage'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import styles from './Welcome.module.css'
 import WELCOME_POPUP_CONTENT from './welcome.content'
@@ -19,11 +19,13 @@ const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: We
   const { t, i18n } = useTranslation()
   const welcomeModal = WELCOME_POPUP_CONTENT[contentKey]
   const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, true)
+
   useEffect(() => {
-    if (disabled === null) {
+    if (disabled === true) {
       setDisabled(true)
     }
   })
+
   const onDisableToggled = useCallback(() => {
     setDisabled(!disabled)
   }, [disabled, setDisabled])

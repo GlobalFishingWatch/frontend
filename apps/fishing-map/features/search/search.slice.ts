@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
-import GFWAPI, {
+import {
+  GFWAPI,
   getAdvancedSearchQuery,
   AdvancedSearchQueryField,
   AdvancedSearchQueryFieldKey,
@@ -19,6 +20,7 @@ import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 
 export const RESULTS_PER_PAGE = 20
 
@@ -27,15 +29,11 @@ export type VesselWithDatasets = Omit<Vessel, 'dataset'> & {
   trackDatasetId?: string
 }
 export type SearchType = 'basic' | 'advanced'
-export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
 export type SearchFilter = {
-  flags?: MultiSelectOption<string>[]
-  sources?: MultiSelectOption<string>[]
-  fleets?: MultiSelectOption<string>[]
-  origins?: MultiSelectOption<string>[]
   activeAfterDate?: string
   activeBeforeDate?: string
-}
+  sources?: MultiSelectOption<string>[]
+} & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
 
 interface SearchState {
   status: AsyncReducerStatus
@@ -121,16 +119,24 @@ export const fetchVesselSearchThunk = createAsyncThunk(
               ]
             : []),
           {
+            key: 'geartype',
+            value: filters.geartype,
+          },
+          {
+            key: 'target_species',
+            value: filters.target_species,
+          },
+          {
             key: 'flag',
-            value: filters.flags,
+            value: filters.flag,
           },
           {
             key: 'fleet',
-            value: filters.fleets,
+            value: filters.fleet,
           },
           {
             key: 'origin',
-            value: filters.origins,
+            value: filters.origin,
           },
           {
             key: 'lastTransmissionDate',

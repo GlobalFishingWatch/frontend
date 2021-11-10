@@ -1,8 +1,8 @@
-import React, { lazy, useState, useCallback, useEffect, Suspense } from 'react'
+import React, { lazy, useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
 // import RecoilizeDebugger from 'recoilize'
-import { PayloadAction } from '@reduxjs/toolkit'
 import { Menu, SplitView, Modal } from '@globalfishingwatch/ui-components'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
 import useEditorMenu from 'features/editor/editor.hooks'
@@ -14,7 +14,7 @@ import {
   selectUrlViewport,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
-// import menuBgImage from 'assets/images/menubg.jpg'
+import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import EditorMenu from 'features/editor/EditorMenu'
@@ -39,15 +39,13 @@ import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
-import useLocalStorage from 'hooks/use-local-storage'
-import Map from 'features/map/Map'
-import Timebar from 'features/timebar/Timebar'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
-// const Map = lazy(() => import(/* webpackChunkName: "Map" */ 'features/timebar/Map'))
-// const Timebar = lazy(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+
+const Map = lazy(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
+const Timebar = lazy(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 /* Using any to avoid Typescript complaining about the value */
 const MapContextProvider: any = MapContext.Provider
@@ -71,8 +69,7 @@ const Main = () => {
 }
 
 const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
-const isFirstTimeVisit =
-  typeof localStorage !== 'undefined' ? !localStorage.getItem(MARINE_MANAGER_LAST_VISIT) : false
+const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
 
 function App(): React.ReactElement {
   useAnalytics()
@@ -161,7 +158,7 @@ function App(): React.ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isAnalysing) {
       if (analysisQuery.bounds) {
         fitMapBounds(analysisQuery.bounds, { padding: 10 })
@@ -205,20 +202,23 @@ function App(): React.ReactElement {
   return (
     <MapContextProvider>
       {/* <RecoilizeDebugger /> */}
-      <SplitView
-        isOpen={sidebarOpen}
-        showToggle={workspaceLocation}
-        onToggle={onToggle}
-        aside={<Sidebar onMenuClick={onMenuClick} />}
-        main={<Main />}
-        asideWidth={asideWidth}
-        showAsideLabel={getSidebarName()}
-        showMainLabel={t('common.map', 'Map')}
-        className="split-container"
-      />
+      <Suspense fallback={null}>
+        <SplitView
+          isOpen={sidebarOpen}
+          showToggle={workspaceLocation}
+          onToggle={onToggle}
+          aside={<Sidebar onMenuClick={onMenuClick} />}
+          main={<Main />}
+          asideWidth={asideWidth}
+          showAsideLabel={getSidebarName()}
+          showMainLabel={t('common.map', 'Map')}
+          className="split-container"
+        />
+      </Suspense>
       {!readOnly && (
         <Menu
-          bgImage=""
+          appSelector="__next"
+          bgImage={menuBgImage.src}
           isOpen={menuOpen}
           onClose={() => setMenuOpen(false)}
           activeLinkId="map-data"
@@ -246,20 +246,26 @@ function App(): React.ReactElement {
           <EditorMenu />
         </Modal>
       )}
-      <DownloadActivityModal />
-      <DownloadTrackModal />
+      <Suspense fallback={null}>
+        <DownloadActivityModal />
+      </Suspense>
+      <Suspense fallback={null}>
+        <DownloadTrackModal />
+      </Suspense>
       {welcomePopupOpen && !readOnly && (
-        <Modal
-          appSelector="__next"
-          header={false}
-          isOpen={welcomePopupOpen}
-          onClose={() => setWelcomePopupOpen(false)}
-        >
-          <Welcome
-            contentKey={welcomePopupContentKey}
-            showDisableCheckbox={!locationIsMarineManager}
-          />
-        </Modal>
+        <Suspense fallback={null}>
+          <Modal
+            appSelector="__next"
+            header={false}
+            isOpen={welcomePopupOpen}
+            onClose={() => setWelcomePopupOpen(false)}
+          >
+            <Welcome
+              contentKey={welcomePopupContentKey}
+              showDisableCheckbox={!locationIsMarineManager}
+            />
+          </Modal>
+        </Suspense>
       )}
     </MapContextProvider>
   )

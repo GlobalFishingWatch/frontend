@@ -20,7 +20,7 @@ export function Logo(props: LogoProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="20 0 200 60"
+      viewBox="20 0 220 60"
       width="200"
       height="60"
       className={cx(styles.container, className)}

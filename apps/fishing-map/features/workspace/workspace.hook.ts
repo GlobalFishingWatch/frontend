@@ -3,9 +3,9 @@ import { useCallback } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { ColorCyclingType } from '@globalfishingwatch/api-types'
 import { FillColorBarOptions, LineColorBarOptions , ColorBarOption } from '@globalfishingwatch/ui-components'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 const getNextColor = (

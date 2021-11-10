@@ -2,7 +2,7 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset, DatasetCategory, EndpointId, UploadResponse } from '@globalfishingwatch/api-types'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
   AsyncReducer,
@@ -277,14 +277,13 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 
 export const { setDatasetModal, setDatasetCategory, setEditingDatasetId } = datasetSlice.actions
 
-export const {
-  selectAll,
-  selectById,
-  selectIds,
-} = entityAdapter.getSelectors<RootState>((state) => state.datasets)
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<RootState>(
+  (state) => state.datasets
+)
 
-
-export function selectAllDatasets(state: RootState) { return selectAll(state) }
+export function selectAllDatasets(state: RootState) {
+  return selectAll(state)
+}
 
 export const selectDatasetById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
