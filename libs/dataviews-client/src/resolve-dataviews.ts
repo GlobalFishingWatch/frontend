@@ -174,7 +174,7 @@ export const resolveDataviewDatasetResources = (
   dataview: UrlDataviewInstance,
   datasetTypeOrId: DatasetTypes | DatasetTypes[] | string,
   queryParamFilter?: DataviewDatasetConfigParam
-): any => {
+) => {
   const isArray = Array.isArray(datasetTypeOrId)
   const isType = isArray || Object.values(DatasetTypes).includes(datasetTypeOrId as DatasetTypes)
   let types: DatasetTypes[]
@@ -221,8 +221,11 @@ export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
   datasetTypeOrId: DatasetTypes | DatasetTypes[] | string,
   queryParamFilter?: DataviewDatasetConfigParam
-): any => {
-  return resolveDataviewDatasetResources(dataview, datasetTypeOrId, queryParamFilter)[0] || {}
+) => {
+  return (
+    resolveDataviewDatasetResources(dataview, datasetTypeOrId, queryParamFilter)[0] ||
+    ({} as Resource)
+  )
 }
 
 /**
