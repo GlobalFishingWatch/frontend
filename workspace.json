@@ -203,6 +203,13 @@
             "production": {}
           }
         },
+        "start": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["nx serve i18n-labels", "nx serve fishing-map"],
+            "parallel": true
+          }
+        },
         "serve": {
           "executor": "@nrwl/next:server",
           "options": {
@@ -246,6 +253,13 @@
       "sourceRoot": "apps/fishing-map-e2e/src",
       "projectType": "application",
       "targets": {
+        "test": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e"],
+            "parallel": true
+          }
+        },
         "e2e": {
           "executor": "@nrwl/cypress:cypress",
           "options": {
@@ -684,6 +698,13 @@
             "tags": ["gfw/vessel-history:latest"],
             "file": "./apps/vessel-history/Dockerfile",
             "context": "./dist/apps/vessel-history"
+          }
+        },
+        "start": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["nx serve i18n-labels", "nx serve vessel-history"],
+            "parallel": true
           }
         },
         "serve": {
