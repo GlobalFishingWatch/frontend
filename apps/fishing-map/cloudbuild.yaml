@@ -27,7 +27,7 @@ steps:
     waitFor: ['install-yarn']
     name: node:14
     entrypoint: yarn
-    args: ['nx', 'deploy', 'fishing-map', '--skip-nx-cache']
+    args: ['nx', 'deploy', 'fishing-map']
     env:
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_CARRIER_PORTAL_URL_=$_NEXT_PUBLIC_CARRIER_PORTAL_URL_'

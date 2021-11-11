@@ -69,7 +69,6 @@
     "redux-first-router": "2.1.5",
     "redux-first-router-link": "2.1.1",
     "shpjs": "3.6.3",
-    "source-map-explorer": "2.5.2",
     "typescript": "4.3.5",
     "web-vitals": "^1.0.1"
   },
