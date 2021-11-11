@@ -1,4 +1,12 @@
 {
   "name": "@globalfishingwatch/fourwings-aggregate",
-  "version": "0.0.1"
+  "version": "4.1.0",
+  "description": "Logic to turn fourwings tiles or cells into meaningful values for the frontend",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  }
 }

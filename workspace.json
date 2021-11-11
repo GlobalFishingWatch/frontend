@@ -316,7 +316,12 @@
       "projectType": "library",
       "tags": [],
       "targets": {
-        "serve": {},
+        "serve": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "start"
+          }
+        },
         "build": {
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
