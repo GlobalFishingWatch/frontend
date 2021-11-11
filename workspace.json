@@ -207,7 +207,8 @@
           "executor": "@nrwl/next:server",
           "options": {
             "buildTarget": "fishing-map:compile",
-            "dev": true
+            "dev": true,
+            "port": 3003
           },
           "configurations": {
             "production": {
