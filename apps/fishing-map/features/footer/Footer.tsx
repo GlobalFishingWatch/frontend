@@ -2,7 +2,6 @@ import React from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import Image from 'next/image'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import LogoDonaBertarelli from 'assets/images/partner-logos/dona-bertarelli@2x.png'
@@ -22,7 +21,7 @@ const FooterPartners = () => {
         <div className={styles.partners}>
           <span className={styles.text}>{t('footer.supportBy', 'Supported by')}</span>
           <a href="https://donabertarelli.com/" rel="noopener noreferrer" target="_blank">
-            <Image src={LogoDonaBertarelli} alt="Dona Bertarelli" width="129px" />
+            <img src={LogoDonaBertarelli.src} alt="Dona Bertarelli" width="129px" />
           </a>
         </div>
       )
@@ -31,13 +30,13 @@ const FooterPartners = () => {
         <div className={styles.partners}>
           <span className={styles.text}>{t('footer.convenedBy', 'A partnership convened by')}</span>
           <a href="https://oceana.org/" rel="noopener noreferrer" target="_blank">
-            <Image src={LogoOceana} alt="Oceana" width="64px" height="24px" />
+            <img src={LogoOceana.src} alt="Oceana" width="64px" height="24px" />
           </a>
           <a href="https://skytruth.org/" rel="noopener noreferrer" target="_blank">
-            <Image src={LogoSkytruth} alt="Skytruth" width="79px" height="24px" />
+            <img src={LogoSkytruth.src} alt="Skytruth" width="79px" height="24px" />
           </a>
           <a href="https://google.com/" rel="noopener noreferrer" target="_blank">
-            <Image src={LogoGoogle} alt="Google" width="57px" height="24px" />
+            <img src={LogoGoogle.src} alt="Google" width="57px" height="24px" />
           </a>
         </div>
       )
