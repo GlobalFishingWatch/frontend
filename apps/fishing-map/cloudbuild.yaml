@@ -57,9 +57,9 @@ steps:
         '--target',
         'production',
         '-f',
-        './applications/fishing-map/Dockerfile',
+        './apps/fishing-map/Dockerfile',
         '-c',
-        './dist/applications/fishing-map',
+        './dist/apps/fishing-map',
       ]
 
   # Deploy to the appropriate environment

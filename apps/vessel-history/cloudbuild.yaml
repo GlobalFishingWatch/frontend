@@ -57,9 +57,9 @@ steps:
         '--target',
         'production',
         '-f',
-        './applications/vessel-history/Dockerfile',
+        './apps/vessel-history/Dockerfile',
         '-c',
-        './dist/applications/vessel-history',
+        './dist/apps/vessel-history',
       ]
 
   # Deploy to the appropriate environment
