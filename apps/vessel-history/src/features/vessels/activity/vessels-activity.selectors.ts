@@ -138,20 +138,20 @@ export const selectEventsWithRenderingInfo = createSelector(
             if (event.encounter) {
               description = regionDescription
                 ? t(
-                  'event.encounterActionWith',
-                  'had an encounter with {{vessel}} in {{regionName}}',
-                  {
+                    'event.encounterActionWith',
+                    'had an encounter with {{vessel}} in {{regionName}}',
+                    {
+                      vessel:
+                        event.encounter.vessel.name ??
+                        t('event.encounterAnotherVessel', 'another vessel'),
+                      regionName: regionDescription,
+                    }
+                  )
+                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
                     vessel:
                       event.encounter.vessel.name ??
                       t('event.encounterAnotherVessel', 'another vessel'),
-                    regionName: regionDescription,
-                  }
-                )
-                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
-                  vessel:
-                    event.encounter.vessel.name ??
-                    t('event.encounterAnotherVessel', 'another vessel'),
-                })
+                  })
             }
             descriptionGeneric = t('event.encounter')
             break
@@ -203,8 +203,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-              count: Math.round(duration.minutes as number),
-            })
+                count: Math.round(duration.minutes as number),
+              })
             : '',
         ].join(' ')
 
@@ -353,9 +353,9 @@ export const selectVesselLastPositionGEOJson = createSelector(
     if (!lastPosition) return
     const course = prevPosition
       ? bearing(
-        [prevPosition.longitude, prevPosition.latitude],
-        [lastPosition.longitude, lastPosition.latitude]
-      )
+          [prevPosition.longitude, prevPosition.latitude],
+          [lastPosition.longitude, lastPosition.latitude]
+        )
       : 0
 
     return {
