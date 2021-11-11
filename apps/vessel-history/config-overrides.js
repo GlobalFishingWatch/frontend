@@ -39,6 +39,13 @@ module.exports = {
   },
   jest: (config) => {
     config.resolver = '@nrwl/jest/plugins/resolver'
+
+    config.transform = {
+      '^.+\\.[tj]sx?$': './babel-transformer.js',
+      '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
+      ...(config.transform ?? {}),
+    }
+
     return config
   },
 }

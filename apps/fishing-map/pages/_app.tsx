@@ -11,6 +11,7 @@ import '../../../libs/timebar/src/timebar-settings.css'
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 // }
+
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
