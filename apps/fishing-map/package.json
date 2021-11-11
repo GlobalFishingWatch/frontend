@@ -60,7 +60,6 @@
     "react-map-gl": "^5.3.17",
     "react-map-gl-draw": "^0.21.1",
     "react-redux": "7.2.4",
-    "react-scripts": "4.0.3",
     "react-spring": "8.0.27",
     "react-sticky-el": "2.0.9",
     "recharts": "2.0.10",
@@ -76,7 +75,6 @@
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "1.8.1",
-    "@testing-library/jest-dom": "5.14.1",
     "@testing-library/react": "12.1.0",
     "@testing-library/user-event": "13.2.1",
     "@types/array.prototype.flatmap": "1.2.2",
@@ -84,7 +82,6 @@
     "@types/d3-scale": "4.0.1",
     "@types/file-saver": "2.0.3",
     "@types/google-spreadsheet": "3.1.5",
-    "@types/jest": "27.0.1",
     "@types/lodash": "4.14.172",
     "@types/luxon": "1.27.1",
     "@types/node": "16.9.1",
@@ -162,16 +159,6 @@
     "*.scss": [
       "prettier --write",
       "stylelint --syntax=scss --fix"
-    ]
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    },
-    "transformIgnorePatterns": [],
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/types/**/*.*"
     ]
   }
 }

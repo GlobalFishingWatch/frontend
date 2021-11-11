@@ -59,8 +59,6 @@
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "1.8.1",
-    "@testing-library/jest-dom": "^5.11.5",
-    "@testing-library/react": "^11.1.0",
     "@types/lodash": "^4.14.161",
     "@types/luxon": "^1.25.0",
     "@types/qs": "^6.9.5",
