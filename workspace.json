@@ -260,6 +260,20 @@
             "parallel": true
           }
         },
+        "test-dev": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/fishing-map-e2e/cypress.json",
+            "baseUrl": "https://user:password@fishing-map.dev.globalfishingwatch.org"
+          }
+        },
+        "test-pro": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/fishing-map-e2e/cypress.json",
+            "baseUrl": "https://globalfishingwatch.org/map"
+          }
+        },
         "e2e": {
           "executor": "@nrwl/cypress:cypress",
           "options": {
