@@ -1,10 +1,10 @@
 import dynamic from 'next/dynamic'
 
-const NoSSRComponent = dynamic(() => import('../features/app/App'), {
+const AppNoSSRComponent = dynamic(() => import('../features/app/App'), {
   ssr: false,
 })
 
 const Index = () => {
-  return <NoSSRComponent />
+  return <AppNoSSRComponent />
 }
 export default Index

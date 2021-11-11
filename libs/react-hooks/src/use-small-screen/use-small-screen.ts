@@ -14,7 +14,7 @@ export function useSmallScreen(width = DEFAULT_BREAKPOINT) {
   }, [width])
 
   useEffect(() => {
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       window.addEventListener('resize', onWindowResize, { passive: true })
       return () => {
         window.removeEventListener('resize', onWindowResize)

@@ -503,6 +503,11 @@
                 "glob": "libs/pbf-decoders/README.md",
                 "input": ".",
                 "output": "."
+              },
+              {
+                "glob": "libs/pbf-decoders/decoders",
+                "input": ".",
+                "output": "."
               }
             ]
           }
