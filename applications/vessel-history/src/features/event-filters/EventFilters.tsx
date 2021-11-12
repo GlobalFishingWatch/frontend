@@ -24,8 +24,8 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const isFishingEventsActive = useSelector(selectFilter('fishingEvents'))
   const isEncountersActive = useSelector(selectFilter('encounters'))
   const isLoiteringEventsActive = useSelector(selectFilter('loiteringEvents'))
-  const start = useSelector(selectStart)?.slice(0, 10) 
-  const end = useSelector(selectEnd)?.slice(0, 10) 
+  const start = useSelector(selectStart)?.slice(0, 10)
+  const end = useSelector(selectEnd)?.slice(0, 10)
 
   const trackAndSetFilter = useCallback(
     (filter: availableEventFilters, value: boolean) => {
@@ -36,23 +36,23 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       })
       setFilter(filter, value)
     },
-  [setFilter, tab])
+    [setFilter, tab])
 
   const trackAndSetDate = useCallback(
     (filter: 'start' | 'end', value?: string) => {
       uaEvent({
         category: 'Vessel Detail ACTIVITY or MAP Tab',
         action: 'Click Filter Icon - Change dates',
-        label: JSON.stringify({ 
+        label: JSON.stringify({
           start,
           end,
           [filter]: value,
-          tab: tab 
+          tab: tab
         })
       })
       setDate(filter, value)
     },
-  [end, setDate, start, tab])
+    [end, setDate, start, tab])
 
   return (
     <Modal
@@ -103,7 +103,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
         onRemove={() => {
           trackAndSetDate('start', undefined)
         }}
-        label={t(`filters.start` as any, 'Start')}
+        label={t(`event.start` as any, 'Start')}
         min={DEFAULT_WORKSPACE.start}
         max={DEFAULT_WORKSPACE.end}
       />
@@ -118,7 +118,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
         onRemove={() => {
           trackAndSetDate('end', undefined)
         }}
-        label={t(`filters.start` as any, 'End')}
+        label={t(`event.end` as any, 'End')}
         min={start ?? DEFAULT_WORKSPACE.start}
         max={DEFAULT_WORKSPACE.end}
       />
