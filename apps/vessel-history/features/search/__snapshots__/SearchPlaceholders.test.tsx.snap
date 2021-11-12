@@ -9,7 +9,6 @@ exports[`<SearchEmptyState /> shows SearchEmptyState 1`] = `
       <img
         alt="vessel"
         class="vesselImage"
-        src="vessel@2x.png"
       />
       <p>
         Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar
@@ -28,7 +27,6 @@ exports[`<SearchNoResultsState /> shows SearchNoResultsState 1`] = `
       <img
         alt="vessel"
         class="noResultsImage"
-        src="vessel-side@2x.png"
       />
       <p>
         Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or 
