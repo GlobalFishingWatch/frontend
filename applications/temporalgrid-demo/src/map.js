@@ -50,7 +50,7 @@ const Map = React.memo(function Map({ style, onMapClick, onMapHover, onSetMapRef
     if (onSetMapRef && mapRef.current) {
       onSetMapRef(mapRef.current.getMap())
     }
-  }, [mapRef, onSetMapRef])
+  }, [mapRef])
 
   const customStyle = useMemo(() => {
     if (!style) return null

@@ -24,8 +24,8 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 |                                                     |                                                              |
 | --------------------------------------------------- | ------------------------------------------------------------ |
-| [fishing-map](applications/fishing-map)             | Version 3.0 of the fishing map project                       |
-| [vessel-history](applications/vessel-history)       | Vessel history app                                           |
+| [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project                       |
+| [vessel-history](apps/vessel-history)               | Vessel history app                                           |
 | [temporalgrid-demo](applications/temporalgrid-demo) | CRA to show how new custom mapbox-gl format development goes |
 | [dataviews-editor](applications/dataviews-editor)   | Simple interface to edit dataviews                           |
 | [sandbox](applications/sandbox)                     | Playground to use packages without releasing                 |

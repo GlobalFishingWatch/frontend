@@ -14,7 +14,8 @@
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e", "deploy"],
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "accessToken": "NzEyZWVlMmMtZjQ3OS00YzMzLWE2YzAtYjJmMDE1YzcxNjllfHJlYWQtd3JpdGU=",
         "canTrackAnalytics": false,
         "showUsageWarnings": true
       }
@@ -28,46 +29,30 @@
       }
     ]
   },
-  "projects": {
-    "api-client": {
-      "implicitDependencies": []
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "css",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint"
+      }
     },
-    "api-types": {
-      "implicitDependencies": []
-    },
-    "data-transforms": {
-      "implicitDependencies": []
-    },
-    "dataviews-client": {
-      "implicitDependencies": []
-    },
-    "fishing-map": {
-      "implicitDependencies": []
-    },
-    "fishing-map-e2e": {
-      "implicitDependencies": ["fishing-map"]
-    },
-    "fourwings-aggregate": {
-      "implicitDependencies": []
-    },
-    "i18n-labels": {},
-    "layer-composer": {
-      "implicitDependencies": []
-    },
-    "ocean-areas": {
-      "implicitDependencies": []
-    },
-    "pbf": {
-      "implicitDependencies": []
-    },
-    "react-hooks": {
-      "implicitDependencies": []
-    },
-    "timebar": {
-      "implicitDependencies": []
-    },
-    "ui-components": {
-      "implicitDependencies": []
+    "@nrwl/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
     }
-  }
+  },
+  "defaultProject": "fishing-map"
 }

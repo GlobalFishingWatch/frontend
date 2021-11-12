@@ -45,38 +45,26 @@ function Sublayer({ index, sublayer, setDatasets, setFilter, setActive, setVisib
 export default function Sublayers({ onChange }) {
   const [sublayers, updateSublayers] = useState(DEFAULT_SUBLAYERS)
 
-  const setDatasets = useCallback(
-    (index, datasets) => {
-      const newSublayers = [...sublayers]
-      newSublayers[index].datasets = datasets
-      updateSublayers(newSublayers)
-    },
-    [sublayers]
-  )
-  const setFilter = useCallback(
-    (index, filter) => {
-      const newSublayers = [...sublayers]
-      newSublayers[index].filter = filter
-      updateSublayers(newSublayers)
-    },
-    [sublayers]
-  )
-  const setActive = useCallback(
-    (index, active) => {
-      const newSublayers = [...sublayers]
-      newSublayers[index].active = active
-      updateSublayers(newSublayers)
-    },
-    [sublayers]
-  )
-  const setVisible = useCallback(
-    (index, visible) => {
-      const newSublayers = [...sublayers]
-      newSublayers[index].visible = visible
-      updateSublayers(newSublayers)
-    },
-    [sublayers]
-  )
+  const setDatasets = useCallback((index, datasets) => {
+    const newSublayers = [...sublayers]
+    newSublayers[index].datasets = datasets
+    updateSublayers(newSublayers)
+  })
+  const setFilter = useCallback((index, filter) => {
+    const newSublayers = [...sublayers]
+    newSublayers[index].filter = filter
+    updateSublayers(newSublayers)
+  })
+  const setActive = useCallback((index, active) => {
+    const newSublayers = [...sublayers]
+    newSublayers[index].active = active
+    updateSublayers(newSublayers)
+  })
+  const setVisible = useCallback((index, visible) => {
+    const newSublayers = [...sublayers]
+    newSublayers[index].visible = visible
+    updateSublayers(newSublayers)
+  })
 
   return (
     <React.Fragment>
