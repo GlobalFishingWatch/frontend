@@ -1,9 +1,9 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Document, { Html, Head, Main, NextScript } from 'next/document'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
-    const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
+    const initialProps = await Document.getInitialProps(ctx)
+    return { ...initialProps }
   }
 
   render() {
@@ -17,28 +17,10 @@ class MyDocument extends Document {
               content="width=device-width, initial-scale=1, viewport-fit=cover"
             />
             <link rel="shortcut icon" href="/icons/favicon.ico" />
-            <link
-              rel="icon"
-              type="image/png"
-              sizes="16x16"
-              href="/icons/favicon-16x16.png"
-            />
-            <link
-              rel="icon"
-              type="image/png"
-              sizes="32x32"
-              href="/icons/favicon-32x32.png"
-            />
-            <link
-              rel="icon"
-              type="image/png"
-              sizes="48x48"
-              href="/icons/favicon-48x48.png"
-            />
-            <link
-              rel="manifest"
-              href="/icons/manifest.webmanifest"
-            />
+            <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+            <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+            <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48x48.png" />
+            <link rel="manifest" href="/icons/manifest.webmanifest" />
             <meta name="mobile-web-app-capable" content="yes" />
             <meta name="theme-color" content="#163f89" />
             <meta name="application-name" content="GFW Fishing map" />
@@ -58,10 +40,7 @@ class MyDocument extends Document {
               href="/icons/apple-touch-icon-1024x1024.png"
             />
             <meta name="apple-mobile-web-app-capable" content="yes" />
-            <meta
-              name="apple-mobile-web-app-status-bar-style"
-              content="black-translucent"
-            />
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             <meta name="apple-mobile-web-app-title" content="GFW Fishing map" />
             <link
               rel="apple-touch-startup-image"
@@ -174,17 +153,16 @@ class MyDocument extends Document {
               href="/icons/apple-touch-startup-image-2160x1620.png"
             />
             <meta name="msapplication-TileColor" content="#fff" />
-            <meta
-              name="msapplication-TileImage"
-              content="/icons/mstile-144x144.png"
-            />
-            <meta
-              name="msapplication-config"
-              content="/icons/browserconfig.xml"
-            />
+            <meta name="msapplication-TileImage" content="/icons/mstile-144x144.png" />
+            <meta name="msapplication-config" content="/icons/browserconfig.xml" />
             <link rel="canonical" href="https://globalfishingwatch.org/map" />
 
             <title>GFW | Map</title>
+
+            <link
+              href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"
+              rel="stylesheet"
+            />
 
             <meta
               property="og:description"
@@ -205,8 +183,8 @@ class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    );
+    )
   }
 }
 
-export default MyDocument;
+export default MyDocument

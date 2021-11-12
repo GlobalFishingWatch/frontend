@@ -2,7 +2,6 @@
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
-// import Head from 'next/head'
 import store from '../store'
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
