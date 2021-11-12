@@ -9,6 +9,7 @@ steps:
         tar -zxf yarn-dependencies.tgz || exit 0
 
   - id: 'install-yarn'
+    waitFor: ['download-cached-yarn-dependencies']
     name: node:14-alpine
     entrypoint: bash
     args:
