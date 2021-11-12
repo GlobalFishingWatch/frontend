@@ -8,8 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "yarn lint:js && yarn lint:css",
-    "lint:js": "eslint src -c .eslintrc.js --ext .js,jsx,ts,tsx --fix",
-    "lint:css": "stylelint ./src/**/*.{css,scss,sass} --config .stylelintrc.js --fix",
+    "lint:js": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix --resolve-plugins-relative-to .",
+    "lint:css": "stylelint ./**/*.{css,scss,sass} --config .stylelintrc.js --fix",
     "serve": "serve -s build",
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
@@ -73,7 +73,8 @@
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/linting": "1.8.1",
+    "@globalfishingwatch/linting": "2.0.0",
+    "@next/eslint-plugin-next": "12.0.3",
     "@testing-library/react": "12.1.0",
     "@testing-library/user-event": "13.2.1",
     "@types/array.prototype.flatmap": "1.2.2",
