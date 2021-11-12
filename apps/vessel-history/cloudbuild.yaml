@@ -27,7 +27,7 @@ steps:
     waitFor: ['install-yarn']
     name: node:14
     entrypoint: yarn
-    args: ['nx', 'deploy', 'vessel-history']
+    args: ['nx', 'build', 'vessel-history', '--parallel']
     env:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
@@ -43,9 +43,15 @@ steps:
       - 'NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
       - 'NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID=$_NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID'
 
+  - id: 'docker-prepare'
+    waitFor: ['build-app']
+    name: node:14
+    entrypoint: yarn
+    args: ['nx', 'docker-prepare', 'vessel-history']
+
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['build-app']
+    waitFor: ['docker-prepare']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',

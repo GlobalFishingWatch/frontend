@@ -177,7 +177,7 @@
         "deploy": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["nx build fishing-map", "nx docker-prepare fishing-map"],
+            "commands": ["nx build fishing-map --parallel", "nx docker-prepare fishing-map"],
             "parallel": false
           }
         },
