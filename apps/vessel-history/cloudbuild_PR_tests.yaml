@@ -15,7 +15,7 @@ steps:
     args:
       - '-c'
       - |
-        apk add --no-cache git autoconf
+        apk add --no-cache git autoconf automake
         yarn install --frozen-lockfile
 
   - id: 'upload-cached-yarn-dependencies'
