@@ -9,9 +9,13 @@ steps:
         tar -zxf yarn-dependencies.tgz || exit 0
 
   - id: 'install-yarn'
-    name: node:14
-    entrypoint: yarn
-    args: ['install', '--frozen-lockfile']
+    name: node:14-alpine
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        apk add --no-cache git
+        yarn install --frozen-lockfile
 
   - id: 'upload-cached-yarn-dependencies'
     waitFor: ['install-yarn']
@@ -25,7 +29,7 @@ steps:
 
   - id: 'test'
     waitFor: ['install-yarn']
-    name: node:14
+    name: node:14-alpine
     entrypoint: yarn
     args: ['nx', 'test', 'vessel-history']
 
