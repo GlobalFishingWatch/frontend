@@ -11,7 +11,7 @@ steps:
   - id: 'install-yarn'
     waitFor: ['download-cached-yarn-dependencies']
     name: node:14-alpine
-    entrypoint: bash
+    entrypoint: sh
     args:
       - '-c'
       - |
