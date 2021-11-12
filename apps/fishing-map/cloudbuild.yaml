@@ -11,7 +11,7 @@ steps:
   - id: 'install-yarn'
     name: node:14
     entrypoint: yarn
-    args: ['install']
+    args: ['install', '--frozen-lockfile']
 
   - id: 'upload-cached-yarn-dependencies'
     waitFor: ['install-yarn']
