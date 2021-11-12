@@ -34,9 +34,6 @@ const nextConfig = {
     }
     return config
   },
-  experimental: {
-    esmExternals: 'loose',
-  },
   // i18n,
 }
 
