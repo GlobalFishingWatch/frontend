@@ -11,11 +11,12 @@ export const LocaleLabels = [
   { id: Locale.fr, label: 'Français' },
 ]
 
-const PACKAGE_NAMESPACES = ['flags', 'datasets']
 export const SHARED_LABELS_PATH =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
-    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@latest`
+    : 'https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@latest'
+
+export const PACKAGE_NAMESPACES = ['flags', 'datasets']
 
 i18n
   // load translation using http -> see /public/locales
@@ -54,8 +55,11 @@ i18n
   })
 
 i18n.on('languageChanged', (lng) => {
-  document.documentElement.setAttribute('lang', lng)
+  if (process.browser) {
+    document.documentElement.setAttribute('lang', lng)
+  }
 })
+
 const t = i18n.t.bind(i18n)
 
 export { t }

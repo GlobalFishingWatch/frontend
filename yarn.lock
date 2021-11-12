@@ -1365,6 +1365,32 @@
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.0.1.tgz#23069e8c59b389d5597a62c07a2010594b3775cc"
   integrity sha512-XuW8ieyLihfUJMI518eCM0QhvgxU6SS6GqWyiAqO4QPHcn7Euo8W8atB1rK108KQ4IJsW0HICKgdtZaIvLIeaA==
 
+"@globalfishingwatch/linting@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/linting/-/linting-2.0.0.tgz#a2aab40f9c8cb4f9b50fb32eb2a315f17a8664c7"
+  integrity sha512-tiN1x4j39CkaL6pINh+J64scO0iFYX/VCp1TcfwEdFzkbMDN0eygJXGpJ4WBXmQQtExpsJE6+PLtI+otLRJkgA==
+  dependencies:
+    "@next/eslint-plugin-next" "^12.x"
+    "@typescript-eslint/eslint-plugin" "^4.x"
+    "@typescript-eslint/parser" "^4.x"
+    "@typescript-eslint/scope-manager" "^4.x"
+    babel-eslint "^10.x"
+    eslint "7.x"
+    eslint-config-prettier "^8.x"
+    eslint-config-react-app "^6.x"
+    eslint-import-resolver-typescript "^2.x"
+    eslint-plugin-flowtype "^5.x"
+    eslint-plugin-import "^2.x"
+    eslint-plugin-jsx-a11y "^6.x"
+    eslint-plugin-react "^7.x"
+    eslint-plugin-react-hooks "^4.x"
+    prettier "2.3.0"
+    prettier-eslint "^12.0.0"
+    stylelint "14.x"
+    stylelint-config-css-modules "2.x"
+    stylelint-config-prettier "9.x"
+    stylelint-config-standard "23.x"
+
 "@globalfishingwatch/map-convert@github:GlobalFishingWatch/map-convert":
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
@@ -2049,7 +2075,7 @@
   dependencies:
     glob "7.1.7"
 
-"@next/eslint-plugin-next@12.0.3":
+"@next/eslint-plugin-next@12.0.3", "@next/eslint-plugin-next@^12.x":
   version "12.0.3"
   resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-12.0.3.tgz#3945c251d551bacc3712d4a18d6ca56d2938f175"
   integrity sha512-P7i+bMypneQcoRN+CX79xssvvIJCaw7Fndzbe7/lB0+LyRbVvGVyMUsFmLLbSxtZq4hvFMJ1p8wML/gsulMZWQ==
@@ -18884,7 +18910,7 @@ react-i18next@11.12.0:
     "@babel/runtime" "^7.14.5"
     html-parse-stringify "^3.0.1"
 
-react-i18next@^11.8.12, react-i18next@^11.8.13:
+react-i18next@^11.8.13:
   version "11.14.1"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.14.1.tgz#fa210fc1a3011c26e75b36c27ce708cbe6b54d59"
   integrity sha512-2M4E3G6fZHMirSfIY6F9704J5wMaqsfrrixueIDkQzbD80txtQ2RHSOe79aRqrgEnAl9MdcH0kK4PmvkbVLhAA==

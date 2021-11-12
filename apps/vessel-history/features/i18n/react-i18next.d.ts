@@ -3,7 +3,6 @@ import 'react-i18next'
 // import all namespaces (for the default language, only)
 import type { datasets, flags } from '@globalfishingwatch/i18n-labels'
 import type translations from '../../public/locales/source/translations.json'
-import type translations from '../../../public/locales/source/translations.json'
 
 declare module 'react-i18next' {
   // and extend them!
