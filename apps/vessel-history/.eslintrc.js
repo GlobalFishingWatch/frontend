@@ -1,1 +1,1 @@
-module.exports = require('@globalfishingwatch/linting')
+module.exports = require('@globalfishingwatch/linting/next')
