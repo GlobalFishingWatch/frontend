@@ -1,4 +1,4 @@
-name: CI
+name: running test in nx-cloud
 on:
   push:
     branches:
