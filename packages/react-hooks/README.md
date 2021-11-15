@@ -1,3 +1,0 @@
-# `react-hooks`
-
-> TODO: description

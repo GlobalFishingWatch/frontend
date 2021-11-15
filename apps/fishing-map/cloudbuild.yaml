@@ -1,0 +1,96 @@
+steps:
+  - id: 'download-cached-yarn-dependencies'
+    name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        gsutil cp gs://frontend-cache-dependencies/cache/yarn-dependencies.tgz yarn-dependencies.tgz || exit 0
+        tar -zxf yarn-dependencies.tgz || exit 0
+
+  - id: 'install-yarn'
+    name: node:14
+    entrypoint: yarn
+    args: ['install', '--frozen-lockfile']
+
+  - id: 'upload-cached-yarn-dependencies'
+    waitFor: ['install-yarn']
+    name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        tar -zcf yarn-dependencies.tgz ./node_modules
+        gsutil cp yarn-dependencies.tgz gs://frontend-cache-dependencies/cache/yarn-dependencies.tgz
+
+  - id: 'build-app'
+    waitFor: ['install-yarn']
+    name: node:14
+    entrypoint: yarn
+    args: ['nx', 'build', 'fishing-map', '--parallel']
+    env:
+      - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
+      - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
+      - 'NEXT_PUBLIC_CARRIER_PORTAL_URL_=$_NEXT_PUBLIC_CARRIER_PORTAL_URL_'
+      - 'NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID=$_NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID'
+      - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
+      - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY'
+      - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
+      - 'NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID=$_NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID'
+      - 'NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL=$_NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL'
+      - 'NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY=$_NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY'
+      - 'NEXT_PUBLIC_USE_PRESENCE_POC=$_NEXT_PUBLIC_USE_PRESENCE_POC'
+      - 'NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - 'NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID=$_NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID'
+
+  - id: 'docker-prepare'
+    waitFor: ['build-app']
+    name: node:14
+    entrypoint: yarn
+    args: ['nx', 'docker-prepare', 'fishing-map']
+
+  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+    id: 'build-image'
+    waitFor: ['docker-prepare']
+    args:
+      [
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
+        '--cache=true',
+        '--build-arg',
+        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+        '--build-arg',
+        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--target',
+        'production',
+        '-f',
+        './apps/fishing-map/Dockerfile',
+        '-c',
+        './dist/apps/fishing-map',
+      ]
+
+  # Deploy to the appropriate environment
+  - name: 'gcr.io/cloud-builders/gcloud'
+    waitFor: ['build-image']
+    id: 'deploy-cloud-run'
+    args:
+      [
+        'beta',
+        'run',
+        'deploy',
+        '$_RUN_SERVICE_NAME',
+        '--project',
+        '$_RUN_PROJECT',
+        '--image',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
+        '--region',
+        '$_RUN_REGION',
+        '--platform',
+        'managed',
+        '--set-env-vars',
+        'BASIC_AUTH=$_BASIC_AUTH',
+        '--allow-unauthenticated',
+      ]
+
+timeout: 1800s
+options:
+  machineType: 'E2_HIGHCPU_8'

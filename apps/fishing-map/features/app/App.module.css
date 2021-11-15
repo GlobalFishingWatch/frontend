@@ -1,0 +1,9 @@
+.main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.editorModal {
+  height: 60rem;
+}

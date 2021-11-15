@@ -1,1 +1,1 @@
-module.exports = require('@globalfishingwatch/linting/typescript')
+module.exports = require('@globalfishingwatch/linting')
