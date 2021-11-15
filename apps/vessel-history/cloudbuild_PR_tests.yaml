@@ -7,7 +7,7 @@ steps:
       - '--key=yarn-$( checksum yarn.lock )'
 
   - id: 'install-yarn'
-    waitFor: ['-']
+    waitFor: ['restore_cache']
     name: node:14
     entrypoint: bash
     args:
