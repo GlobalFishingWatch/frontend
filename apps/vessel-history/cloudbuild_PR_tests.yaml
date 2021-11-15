@@ -3,7 +3,7 @@ steps:
     id: restore_cache
     waitFor: ['-']
     args:
-      - '--bucket=gs://frontend-cache-dependencies/'
+      - '--bucket=gs://frontend-cache-dependencies'
       - '--key=yarn-$( checksum yarn.lock )'
 
   - id: 'install-yarn'
