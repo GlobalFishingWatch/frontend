@@ -8,22 +8,10 @@
   display: none !important;
 }
 
-#root {
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-}
-
 #__next {
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   width: 100%;
-}
-
-#__next > div {
-  height: 100%;
-}
-
-.app {
-  height: 100%;
 }
 
 @media print {

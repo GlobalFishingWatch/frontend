@@ -15,9 +15,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
       <Provider store={store}>
-        <div className="app">
-          <Component {...pageProps} />
-        </div>
+        <Component {...pageProps} />
       </Provider>
     </RecoilRoot>
   )
