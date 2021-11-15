@@ -3,8 +3,8 @@ steps:
     id: restore_cache
     waitFor: ['-']
     args:
-    - '--bucket=gs://frontend-cache-dependencies/'
-    - '--key=yarn-$( checksum yarn.lock )'
+      - '--bucket=gs://frontend-cache-dependencies/'
+      - '--key=yarn-$( checksum yarn.lock )'
 
   - id: 'install-yarn'
     waitFor: ['-']
@@ -16,11 +16,9 @@ steps:
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/save_cache'
     args:
-    - '--bucket=gs://frontend-cache-dependencies'
-    - '--key=yarn-$( checksum yarn.lock )'
-    - '--path=./node_modules'
-    waitFor:
-    - build
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+      - '--path=./node_modules'
 
   - id: 'test'
     waitFor: ['install-yarn']
