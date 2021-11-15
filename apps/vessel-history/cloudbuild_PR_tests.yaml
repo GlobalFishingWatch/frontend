@@ -27,6 +27,6 @@ steps:
     waitFor: ['install-yarn']
     name: node:14
     entrypoint: yarn
-    args: ['nx', 'test', 'vessel-history', '-u']
+    args: ['nx', 'test', 'vessel-history']
 
 timeout: 600s
