@@ -17,6 +17,7 @@ import {
   TEMPLATE_VESSEL_DATAVIEW_ID,
   TEMPLATE_USER_TRACK_ID,
   VESSEL_PRESENCE_DATAVIEW_ID,
+  TEMPLATE_POINTS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 
@@ -111,16 +112,20 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
   }
 }
 
-export const getEnvironmentDataviewInstance = (
+export const getBaseEnvironmentDataviewInstance = ({
+  dataviewId,
+  datasetId,
+}: {
+  dataviewId: number
   datasetId: string
-): DataviewInstance<GeneratorType> => {
-  const environmentalDataviewInstance = {
+}): DataviewInstance<GeneratorType> => {
+  return {
     id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Environment,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
-    dataviewId: TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
+    dataviewId,
     datasetsConfig: [
       {
         datasetId,
@@ -129,7 +134,26 @@ export const getEnvironmentDataviewInstance = (
       },
     ],
   }
+}
+
+export const getEnvironmentDataviewInstance = (
+  datasetId: string
+): DataviewInstance<GeneratorType> => {
+  const environmentalDataviewInstance = getBaseEnvironmentDataviewInstance({
+    dataviewId: TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
+    datasetId,
+  })
   return environmentalDataviewInstance
+}
+
+export const getUserPointsDataviewInstance = (
+  datasetId: string
+): DataviewInstance<GeneratorType> => {
+  const userPointDataviewInstance = getBaseEnvironmentDataviewInstance({
+    dataviewId: TEMPLATE_POINTS_DATAVIEW_ID,
+    datasetId,
+  })
+  return userPointDataviewInstance
 }
 
 export const getUserTrackDataviewInstance = (dataset: Dataset) => {

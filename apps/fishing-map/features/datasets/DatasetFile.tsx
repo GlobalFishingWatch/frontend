@@ -20,7 +20,7 @@ const TRACKS_ACCEPT = '.csv'
 const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
   polygons: POLYGONS_ACCEPT,
   tracks: TRACKS_ACCEPT,
-  points: '',
+  points: POLYGONS_ACCEPT,
 }
 const TRANSLATIONS_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
   polygons: 'dataset.dragFilePlaceholder',

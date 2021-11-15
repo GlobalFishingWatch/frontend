@@ -67,14 +67,13 @@ const DatasetTypeSelect = ({
       />
       <DatasetType
         id="points"
-        title={t('dataset.typePoints', 'Points (coming soon)')}
+        title={t('dataset.typePoints', 'Points')}
         description={t(
           'dataset.typePointsDescription',
           'Display one or multiple positions sized by any quantitative value in your dataset.'
         )}
         icon={<Points />}
         selected={currentType === 'points'}
-        disabled={true}
       />
     </div>
   )

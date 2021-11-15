@@ -76,7 +76,32 @@ function NewDataset(): React.ReactElement {
 
       const metadataName = capitalize(lowerCase(name))
 
-      if (!type || type === 'polygons') {
+      if (type === 'tracks') {
+        setFile(file)
+        const fileData = await readBlobAs(file, 'text')
+        const { data, meta } = parseCSV(fileData, {
+          dynamicTyping: true,
+          header: true,
+          skipEmptyLines: true,
+        })
+        setFileData(data as CSV)
+        const guessedColumns = guessColumns(meta?.fields)
+        setMetadata({
+          ...metadata,
+          name: metadataName,
+          public: true,
+          type: DatasetTypes.UserTracks,
+          category: datasetCategory,
+          fields: meta?.fields,
+          guessedFields: guessedColumns,
+          configuration: {
+            latitude: guessedColumns.latitude,
+            longitude: guessedColumns.longitude,
+            timestamp: guessedColumns.timestamp,
+            geometryType: datasetGeometryType,
+          } as DatasetConfiguration,
+        })
+      } else if (!type || type === 'polygons' || type === 'points') {
         const isZip =
           file.type === 'application/zip' ||
           file.type === 'application/x-zip-compressed' ||
@@ -144,31 +169,6 @@ function NewDataset(): React.ReactElement {
           setFileData(undefined)
           setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
         }
-      } else if (type === 'tracks') {
-        setFile(file)
-        const fileData = await readBlobAs(file, 'text')
-        const { data, meta } = parseCSV(fileData, {
-          dynamicTyping: true,
-          header: true,
-          skipEmptyLines: true,
-        })
-        setFileData(data as CSV)
-        const guessedColumns = guessColumns(meta?.fields)
-        setMetadata({
-          ...metadata,
-          name: metadataName,
-          public: true,
-          type: DatasetTypes.UserTracks,
-          category: datasetCategory,
-          fields: meta?.fields,
-          guessedFields: guessedColumns,
-          configuration: {
-            latitude: guessedColumns.latitude,
-            longitude: guessedColumns.longitude,
-            timestamp: guessedColumns.timestamp,
-            geometryType: datasetGeometryType,
-          } as DatasetConfiguration,
-        })
       }
       setLoading(false)
     },
