@@ -12,7 +12,8 @@
     ]
   },
   "scripts": {
-    "start": "nx serve",
+    "start:fishing-map": "nx start fishing-map",
+    "start:vessel-history": "nx start vessel-history",
     "build": "nx build",
     "test": "nx test",
     "dist": "nx run-many --target=dist --all --with-deps",
