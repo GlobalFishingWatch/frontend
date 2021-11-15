@@ -200,6 +200,7 @@
     "notInCVP": "Événement non disponible.",
     "port": "Port",
     "portAction": "À quai pendant",
+    "port_visitAction": "Docked for",
     "port_visit": "Port visit",
     "portAt": "Ancré à {{port}} pendant",
     "seeInCVP": "Voir dans le Carrier Vessel Portal",
