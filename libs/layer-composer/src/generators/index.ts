@@ -7,6 +7,7 @@ import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
 import ContextGenerator, { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/context'
 import UserContextGenerator from './user-context/user-context'
+import UserPointsGenerator from './user-points/user-points'
 import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
@@ -31,6 +32,7 @@ const GeneratorConfig = {
   [GeneratorType.Context]: new ContextGenerator(),
   [GeneratorType.TileCluster]: new TileClusterGenerator(),
   [GeneratorType.UserContext]: new UserContextGenerator(),
+  [GeneratorType.UserPoints]: new UserPointsGenerator(),
   [GeneratorType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
   [GeneratorType.Heatmap]: new HeatmapGenerator(),
   [GeneratorType.Track]: new TrackGenerator(),
