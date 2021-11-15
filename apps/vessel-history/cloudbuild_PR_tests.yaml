@@ -1,5 +1,6 @@
 steps:
   - id: 'download-cached-yarn-dependencies'
+    waitFor: ['-']
     name: gcr.io/cloud-builders/gsutil
     entrypoint: bash
     args:
@@ -9,6 +10,7 @@ steps:
         tar -zxf yarn-dependencies.tgz || exit 0
 
   - id: 'install-yarn'
+    waitFor: ['-']
     name: node:14
     entrypoint: yarn
     args: ['install', '--frozen-lockfile']
