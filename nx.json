@@ -1,7 +1,7 @@
 {
   "npmScope": "globalfishingwatch",
   "affected": {
-    "defaultBase": "monorepo-update"
+    "defaultBase": "develop"
   },
   "implicitDependencies": {
     "package.json": {

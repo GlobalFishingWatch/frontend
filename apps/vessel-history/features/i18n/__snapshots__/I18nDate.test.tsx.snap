@@ -2,19 +2,19 @@
 
 exports[`<I18nSpecialDate /> formats TMT date only with year 1`] = `
 <DocumentFragment>
-  1980
+  1979
 </DocumentFragment>
 `;
 
 exports[`<I18nSpecialDate /> formats TMT date with day, month and year 1`] = `
 <DocumentFragment>
-  Nov 21, 1980
+  Nov 20, 1980
 </DocumentFragment>
 `;
 
 exports[`<I18nSpecialDate /> formats TMT date with month and year 1`] = `
 <DocumentFragment>
-  Nov, 1980
+  Oct, 1980
 </DocumentFragment>
 `;
 
