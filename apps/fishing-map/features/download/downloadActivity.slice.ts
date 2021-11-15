@@ -106,7 +106,7 @@ const downloadActivitySlice = createSlice({
     },
     setDownloadActivityGeometry: (state, action: PayloadAction<TooltipEventFeature>) => {
       state.geometry = action.payload.geometry as Geometry
-      state.name = action.payload.value
+      state.name = action.payload.value || action.payload.title as string
     },
   },
   extraReducers: (builder) => {
