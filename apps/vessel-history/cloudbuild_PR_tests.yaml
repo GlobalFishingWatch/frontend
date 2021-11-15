@@ -25,6 +25,7 @@ steps:
       - '--bucket=gs://frontend-cache-dependencies'
       - '--key=yarn-$( checksum yarn.lock )'
       - '--path=./node_modules'
+      - '--no-clobber'
 
   - id: 'test'
     waitFor: ['install-yarn']
