@@ -1,0 +1,12 @@
+{
+  "fishing-map": {
+    "cloudbuildTaskId": "ui-fishing-map-preview",
+    "auto": false,
+    "watch": ["apps/fishing-map/**/*"]
+  },
+  "vessel-history": {
+    "cloudbuildTaskId": "ui-vessel-viewer-preview",
+    "auto": false,
+    "watch": ["apps/vessel-history/**/*"]
+  }
+}
