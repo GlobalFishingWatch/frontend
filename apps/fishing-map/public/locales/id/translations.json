@@ -200,6 +200,7 @@
     "notInCVP": "Peristiwa ini terjadi di luar rentang waktu data Carrier Vessel Portal",
     "port": "Port",
     "portAction": "Docked for",
+    "port_visitAction": "Docked for",
     "port_visit": "Port visit",
     "portAt": "Docked at {{port}} for",
     "seeInCVP": "Lihat di Carrier Vessel Portal",
