@@ -200,6 +200,7 @@
     "notInCVP": "Este evento aconteceu fora do intervalo de tempo dos dados do Carrier Vessel Portal",
     "port": "Porto",
     "portAction": "Atracado para",
+    "port_visitAction": "Docked for",
     "port_visit": "Visita ao porto",
     "portAt": "Ancorado em {{port}} por",
     "seeInCVP": "Ver no Carrier Vessel Portal",
