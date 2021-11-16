@@ -184,7 +184,7 @@ function Analysis() {
           title: t('analysis.correlation', 'correlation'),
           hidden: true,
           tooltip: t('common.comingSoon', 'Coming Soon'),
-          tooltipPlacement: 'top',
+          tooltipPlacement: 'top' as any,
         },
         {
           id: 'periodComparison',
