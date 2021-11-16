@@ -1,8 +1,9 @@
 import cx from 'classnames'
-import { ReactComponentElement } from 'react'
+import React, { Fragment, ReactComponentElement } from 'react'
 import { useTranslation } from 'react-i18next'
-import { DatasetGeometryType } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons.svg'
+import { ReactComponent as PolygonsLine } from 'assets/icons/dataset-type-polygons-lines.svg'
 import { ReactComponent as Tracks } from 'assets/icons/dataset-type-tracks.svg'
 import { ReactComponent as Points } from 'assets/icons/dataset-type-points.svg'
 import styles from './DatasetTypeSelect.module.css'
@@ -36,45 +37,65 @@ const DatasetType = ({
 }
 
 const DatasetTypeSelect = ({
-  onDatasetTypeChange,
   currentType,
+  datasetCategory,
+  onDatasetTypeChange,
 }: {
-  onDatasetTypeChange: (e: any) => void
+  datasetCategory: DatasetCategory
   currentType: DatasetGeometryType | undefined
+  onDatasetTypeChange: (e: any) => void
 }) => {
   const { t } = useTranslation()
   return (
     <div className={styles.wrapper} onChange={onDatasetTypeChange}>
-      <DatasetType
-        id="polygons"
-        title={t('dataset.typePolygons', 'Polygons')}
-        description={t(
-          'dataset.typePolygonsDescription',
-          'Display one or multiple areas coloured by any quantitative value in your dataset.'
-        )}
-        icon={<Polygons />}
-        selected={currentType === 'polygons'}
-      />
-      <DatasetType
-        id="tracks"
-        title={t('dataset.typeTracks', 'Tracks')}
-        description={t(
-          'dataset.typeTracksDescription',
-          'Display the movement of one or multiple animals or vessels.'
-        )}
-        icon={<Tracks />}
-        selected={currentType === 'tracks'}
-      />
-      <DatasetType
-        id="points"
-        title={t('dataset.typePoints', 'Points')}
-        description={t(
-          'dataset.typePointsDescription',
-          'Display one or multiple positions sized by any quantitative value in your dataset.'
-        )}
-        icon={<Points />}
-        selected={currentType === 'points'}
-      />
+      {datasetCategory === DatasetCategory.Environment && (
+        <Fragment>
+          <DatasetType
+            id="polygons"
+            title={t('dataset.typePolygons', 'Polygons')}
+            description={t(
+              'dataset.typePolygonsDescription',
+              'Display one or multiple areas coloured by any quantitative value in your dataset.'
+            )}
+            icon={<Polygons />}
+            selected={currentType === 'polygons'}
+          />
+          <DatasetType
+            id="tracks"
+            title={t('dataset.typeTracks', 'Tracks')}
+            description={t(
+              'dataset.typeTracksDescription',
+              'Display the movement of one or multiple animals or vessels.'
+            )}
+            icon={<Tracks />}
+            selected={currentType === 'tracks'}
+          />
+        </Fragment>
+      )}
+      {datasetCategory === DatasetCategory.Context && (
+        <Fragment>
+          <DatasetType
+            id="polygons"
+            title={t('dataset.typePolygons', 'Polygons')}
+            description={t(
+              'dataset.typePolygonsDescription',
+              'Display one or multiple areas coloured by any quantitative value in your dataset.'
+            )}
+            icon={<PolygonsLine />}
+            selected={currentType === 'polygons'}
+          />
+          <DatasetType
+            id="points"
+            title={t('dataset.typePoints', 'Points')}
+            description={t(
+              'dataset.typePointsDescription',
+              'Display one or multiple positions sized by any quantitative value in your dataset.'
+            )}
+            icon={<Points />}
+            selected={currentType === 'points'}
+          />
+        </Fragment>
+      )}
     </div>
   )
 }
