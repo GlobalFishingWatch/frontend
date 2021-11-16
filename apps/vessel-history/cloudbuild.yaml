@@ -1,27 +1,31 @@
 steps:
-  - id: 'download-cached-yarn-dependencies'
-    name: gcr.io/cloud-builders/gsutil
-    entrypoint: bash
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache
+    waitFor: ['-']
     args:
-      - '-c'
-      - |
-        gsutil cp gs://frontend-cache-dependencies/cache/yarn-dependencies.tgz yarn-dependencies.tgz || exit 0
-        tar -zxf yarn-dependencies.tgz || exit 0
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
 
   - id: 'install-yarn'
+    waitFor: ['restore_cache']
     name: node:14
-    entrypoint: yarn
-    args: ['install', '--frozen-lockfile']
-
-  - id: 'upload-cached-yarn-dependencies'
-    waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/gsutil
     entrypoint: bash
     args:
       - '-c'
+      # if dependencies cache is not found then install all deps
       - |
-        tar -zcf yarn-dependencies.tgz ./node_modules
-        gsutil cp yarn-dependencies.tgz gs://frontend-cache-dependencies/cache/yarn-dependencies.tgz
+        if [ ! -d "node_modules" ]; then
+          yarn install --frozen-lockfile
+        fi
+
+  - id: 'save_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/save_cache'
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+      - '--path=./node_modules'
+      - '--no-clobber'
 
   - id: 'build-app'
     waitFor: ['install-yarn']
@@ -72,24 +76,26 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     waitFor: ['build-image']
     id: 'deploy-cloud-run'
+    entrypoint: 'bash'
     args:
-      [
-        'beta',
-        'run',
-        'deploy',
-        '$_RUN_SERVICE_NAME',
-        '--project',
-        '$_RUN_PROJECT',
-        '--image',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        '--region',
-        '$_RUN_REGION',
-        '--platform',
-        'managed',
-        '--set-env-vars',
-        'BASIC_AUTH=$_BASIC_AUTH',
-        '--allow-unauthenticated',
-      ]
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        branch_service_name=`echo vessel-history-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'`
+        service_name=${_RUN_SERVICE_NAME:-${branch_service_name}}
+        gcloud beta run deploy \
+        $service_name \
+        --project \
+        $_RUN_PROJECT \
+        --image \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA \
+        --region \
+        $_RUN_REGION \
+        --platform managed \
+        --set-env-vars \
+        BASIC_AUTH=$_BASIC_AUTH \
+        --allow-unauthenticated
 
 timeout: 1800s
 options:
