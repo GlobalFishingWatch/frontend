@@ -66,7 +66,7 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
             onChange={onStartChange}
             value={timeComparison.start}
             min={MIN_DATE}
-            max={MAX_DATE}
+            max={timeComparison.compareStart.slice(0, 10)}
           />
           <InputDate
             label={t('analysis.periodComparison2nd', 'comparison start')}
