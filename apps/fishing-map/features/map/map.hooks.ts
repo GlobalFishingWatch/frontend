@@ -53,7 +53,7 @@ import {
   fetchFishingActivityInteractionThunk,
   fetchViirsInteractionThunk,
   selectViirsInteractionStatus,
-  ApiViirsStats,
+  ExtendedViirsFeature,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
@@ -210,7 +210,9 @@ export const useClickedEventConnect = () => {
         return false
       }
       const isFeatureVisible = feature.temporalgrid.visible
-      const isViirsFeature = feature.temporalgrid.sublayerInteractionType === 'viirs'
+      const isViirsFeature =
+        feature.temporalgrid.sublayerInteractionType === 'viirs' ||
+        feature.temporalgrid.sublayerInteractionType === 'viirs-match'
       return isFeatureVisible && isViirsFeature
     })
 
@@ -255,7 +257,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
-  viirs?: ApiViirsStats[]
+  viirs?: ExtendedViirsFeature[]
   temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }

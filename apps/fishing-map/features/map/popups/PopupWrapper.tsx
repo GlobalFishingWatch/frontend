@@ -8,6 +8,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
+import ViirsMatchTooltipRow from 'features/map/popups/ViirsMatchLayers'
 import styles from './Popup.module.css'
 import FishingTooltipRow from './FishingLayers'
 import PresenceTooltipRow from './PresenceLayers'
@@ -88,6 +89,15 @@ function PopupWrapper({
                 if (feature.temporalgrid?.sublayerInteractionType === 'presence-detail') {
                   return (
                     <FishingTooltipRow
+                      key={i + (feature.title as string)}
+                      feature={feature}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  )
+                }
+                if (feature.temporalgrid?.sublayerInteractionType === 'viirs-match') {
+                  return (
+                    <ViirsMatchTooltipRow
                       key={i + (feature.title as string)}
                       feature={feature}
                       showFeaturesDetails={type === 'click'}

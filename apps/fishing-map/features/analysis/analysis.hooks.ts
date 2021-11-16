@@ -37,7 +37,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { DEFAULT_WORKSPACE, FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { useMapStyle } from 'features/map/map.hooks'
 import { filterByPolygon } from './analysis.worker'
 import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
@@ -387,7 +387,7 @@ export const useAnalysisGeometry = () => {
         if (bounds) {
           const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
           setAnalysisBounds(wrappedBounds)
-          fitMapBounds(wrappedBounds, { padding: 10 })
+          fitMapBounds(wrappedBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
           dispatch(
             setAnalysisGeometry({
               geometry: contextAreaGeometry,

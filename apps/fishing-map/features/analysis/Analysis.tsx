@@ -38,7 +38,7 @@ import {
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
-import { ComparisonGraphProps } from './AnalysisPediodComparisonGraph'
+import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 import AnalysisBeforeAfter from './AnalysisBeforeAfter'
 
@@ -172,31 +172,29 @@ function Analysis() {
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
 
-  const ANALYSIS_TYPE_OPTIONS: ChoiceOption[] = useMemo(
-    () => [
-      {
-        id: 'evolution',
-        title: t('analysis.evolution', 'Evolution'),
-      },
-      {
-        id: 'correlation',
-        title: t('analysis.correlation', 'correlation'),
-        disabled: true,
-        tooltip: t('common.comingSoon', 'Coming Soon'),
-        tooltipPlacement: 'top',
-      },
-      {
-        id: 'periodComparison',
-        title: t('analysis.periodComparison', 'period comparison'),
-      },
-      {
-        id: 'beforeAfter',
-        title: t('analysis.beforeAfter', 'before/after'),
-        disabled: true,
-        tooltip: t('common.comingSoon', 'Coming Soon'),
-        tooltipPlacement: 'top',
-      },
-    ],
+  const ANALYSIS_TYPE_OPTIONS: (ChoiceOption & { hidden?: boolean })[] = useMemo(
+    () =>
+      [
+        {
+          id: 'evolution',
+          title: t('analysis.evolution', 'Evolution'),
+        },
+        {
+          id: 'correlation',
+          title: t('analysis.correlation', 'correlation'),
+          hidden: true,
+          tooltip: t('common.comingSoon', 'Coming Soon'),
+          tooltipPlacement: 'top' as any,
+        },
+        {
+          id: 'periodComparison',
+          title: t('analysis.periodComparison', 'period comparison'),
+        },
+        {
+          id: 'beforeAfter',
+          title: t('analysis.beforeAfter', 'before/after'),
+        },
+      ].filter((option) => !option.hidden),
     [t]
   )
 
@@ -210,13 +208,14 @@ function Analysis() {
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
 
   const disableReportDownload =
-    analysisType !== 'evolution' ||
     !analysisGeometryLoaded ||
     !layersTimeseriesFiltered ||
     timeRangeTooLong ||
     !hasAnalysisLayers ||
     !datasetsReportSupported ||
     reportStatus === AsyncReducerStatus.Finished
+
+  const showReportDownload = analysisType === 'evolution' && hasAnalysisLayers
 
   let downloadTooltip = ''
   if (analysisType !== 'evolution') {
@@ -291,7 +290,7 @@ function Analysis() {
                 })`
               : ''}
           </p>
-          {hasAnalysisLayers &&
+          {showReportDownload &&
             (guestUser && !timeRangeTooLong ? (
               <Button
                 type="secondary"

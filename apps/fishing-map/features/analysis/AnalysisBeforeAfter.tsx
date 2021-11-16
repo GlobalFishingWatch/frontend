@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment } from 'react'
+import cx from 'classnames'
+import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
+import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
+import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import { AnalysisTypeProps } from './Analysis'
 import styles from './AnalysisBeforeAfter.module.css'
 import useAnalysisDescription from './analysisDescription.hooks'
@@ -28,15 +31,23 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   } = useAnalysisTimeCompareConnect('beforeAfter')
 
   const { description } = useAnalysisDescription(analysisAreaName, layersTimeseriesFiltered?.[0])
-
+  const dataviewsIds = useMemo(() => {
+    if (!layersTimeseriesFiltered) return []
+    return layersTimeseriesFiltered[0].sublayers.map((s) => s.id)
+  }, [layersTimeseriesFiltered])
+  const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
   if (!timeComparison) return null
 
   return (
     <Fragment>
       <AnalysisDescription description={description} />
+      <div className={styles.container}>
+        {dataviews && dataviews.map((d) => <DatasetFilterSource dataview={d} hideColor={true} />)}
+      </div>
       {/*
         TODO: Draw graph using layersTimeseriesFiltered
       */}
+      <div className={cx(styles.container, styles.comingSoon)}>Graph coming soon</div>
       <div className={styles.container}>
         <div className={styles.timeSelection}>
           <div className={styles.dateWrapper}>
