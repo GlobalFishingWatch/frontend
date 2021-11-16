@@ -158,7 +158,8 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
           }),
           start: startLabel,
           duration: durationLabel,
-          defaultValue: 'between the {{duration}} after {{start}} and after {{compareStart}}',
+          defaultValue:
+            'in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}',
         })
       : t('analysis.beforeAfterRange', {
           start: startLabel,
