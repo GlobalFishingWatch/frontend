@@ -13,7 +13,7 @@ import {
   MAX_MONTHS_TO_COMPARE,
   useAnalysisTimeCompareConnect,
 } from './analysis.hooks'
-import AnalysisPeriodComparisonGraph from './AnalysisPediodComparisonGraph'
+import AnalysisPeriodComparisonGraph from './AnalysisPeriodComparisonGraph'
 import styles from './AnalysisPeriodComparison.module.css'
 
 const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {

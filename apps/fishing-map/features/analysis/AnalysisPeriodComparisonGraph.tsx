@@ -96,7 +96,7 @@ const formatDate = (date: DateTime, timeChunkInterval: Interval) => {
       formattedLabel += `${timeRangeStart} - ${timeRangeEnd}`
       break
     case 'day':
-      formattedLabel += date.toLocaleString(DateTime.DATE_MED)
+      formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
       break
     default:
       formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
