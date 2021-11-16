@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime, DurationUnit } from 'luxon'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
+import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
+import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { AnalysisTypeProps } from './Analysis'
 import useAnalysisDescription from './analysisDescription.hooks'
 import AnalysisDescription from './AnalysisDescription'
@@ -31,12 +33,19 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
   } = useAnalysisTimeCompareConnect('periodComparison')
 
   const { description } = useAnalysisDescription(analysisAreaName, layersTimeseriesFiltered?.[0])
-
+  const dataviewsIds = useMemo(() => {
+    if (!layersTimeseriesFiltered) return []
+    return layersTimeseriesFiltered[0].sublayers.map((s) => s.id)
+  }, [layersTimeseriesFiltered])
+  const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
   if (!timeComparison) return null
 
   return (
     <Fragment>
       <AnalysisDescription description={description} />
+      <div className={styles.container}>
+        {dataviews && dataviews.map((d) => <DatasetFilterSource dataview={d} hideColor={true} />)}
+      </div>
       {layersTimeseriesFiltered ? (
         <AnalysisPeriodComparisonGraph
           graphData={layersTimeseriesFiltered?.[0]}
