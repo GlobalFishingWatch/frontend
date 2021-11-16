@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -18,6 +19,11 @@ function HintsHub() {
   const percentageOfHintsSeen = (hintsDismissedArray.length / hintsConfigArray.length) * 100
 
   const onHelpClick = () => {
+    uaEvent({
+      category: 'Help hints',
+      action: `Pressing the '?' on the left of the screen to restore help hints after they've been dismissed`,
+      label: percentageOfHintsSeen.toString(),
+    })
     dispatch(resetHints())
   }
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
@@ -29,6 +30,11 @@ function Hint({ id, className }: HintProps) {
   const onDismiss = () => {
     setVisible(false)
     dispatch(setHintDismissed(id))
+    uaEvent({
+      category: 'Help hints',
+      action: `Dismiss one specific help hint`,
+      label: id,
+    })
   }
 
   const onDismissAll = () => {
@@ -36,10 +42,20 @@ function Hint({ id, className }: HintProps) {
     Object.keys(hintsConfig).forEach((id) => {
       dispatch(setHintDismissed(id as HintId))
     })
+    uaEvent({
+      category: 'Help hints',
+      action: `Dismiss all help hints before viewing all`,
+      label: id,
+    })
   }
 
   const showHint = () => {
     setVisible(true)
+    uaEvent({
+      category: 'Help hints',
+      action: `Click on a help hint to view supporting information`,
+      label: id,
+    })
   }
 
   if (hintsDismissed?.[id] === true || !gfwUser || isReadOnly) return null
