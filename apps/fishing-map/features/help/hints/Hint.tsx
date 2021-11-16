@@ -32,7 +32,7 @@ function Hint({ id, className }: HintProps) {
     dispatch(setHintDismissed(id))
     uaEvent({
       category: 'Help hints',
-      action: `Dismess one specific help hint`,
+      action: `Dismiss one specific help hint`,
       label: id,
     })
   }
