@@ -9,9 +9,10 @@ import { dataviewWithPrivateDatasets } from 'features/dataviews/dataviews.utils'
 
 type DatasetFilterSourceProps = {
   dataview: UrlDataviewInstance
+  hideColor: boolean
 }
 
-function DatasetFilterSource({ dataview }: DatasetFilterSourceProps) {
+function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) {
   const { t } = useTranslation()
   const sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
@@ -38,7 +39,7 @@ function DatasetFilterSource({ dataview }: DatasetFilterSourceProps) {
       <label>{t('layer.source', 'Sources')}</label>
       <TagList
         tags={sourcesOptions}
-        color={dataview.config?.color}
+        color={hideColor ? null : dataview.config?.color}
         className={cx(styles.tagList, {
           [styles.hidden]: mergedSourceOptions?.length > 0,
         })}
@@ -46,7 +47,7 @@ function DatasetFilterSource({ dataview }: DatasetFilterSourceProps) {
       {mergedSourceOptions.length > 0 && (
         <TagList
           tags={mergedSourceOptions}
-          color={dataview.config?.color}
+          color={hideColor ? null : dataview.config?.color}
           className={styles.mergedTagList}
         />
       )}

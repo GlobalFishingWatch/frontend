@@ -1,6 +1,7 @@
 .container {
   width: 100%;
   padding: var(--space-M);
+  display: flex;
 }
 
 .graphContainer {
