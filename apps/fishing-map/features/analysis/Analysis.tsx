@@ -172,31 +172,32 @@ function Analysis() {
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
 
-  const ANALYSIS_TYPE_OPTIONS: ChoiceOption[] = useMemo(
-    () => [
-      {
-        id: 'evolution',
-        title: t('analysis.evolution', 'Evolution'),
-      },
-      {
-        id: 'correlation',
-        title: t('analysis.correlation', 'correlation'),
-        disabled: true,
-        tooltip: t('common.comingSoon', 'Coming Soon'),
-        tooltipPlacement: 'top',
-      },
-      {
-        id: 'periodComparison',
-        title: t('analysis.periodComparison', 'period comparison'),
-      },
-      {
-        id: 'beforeAfter',
-        title: t('analysis.beforeAfter', 'before/after'),
-        disabled: true,
-        tooltip: t('common.comingSoon', 'Coming Soon'),
-        tooltipPlacement: 'top',
-      },
-    ],
+  const ANALYSIS_TYPE_OPTIONS: (ChoiceOption & { hidden?: boolean })[] = useMemo(
+    () =>
+      [
+        {
+          id: 'evolution',
+          title: t('analysis.evolution', 'Evolution'),
+        },
+        {
+          id: 'correlation',
+          title: t('analysis.correlation', 'correlation'),
+          hidden: true,
+          tooltip: t('common.comingSoon', 'Coming Soon'),
+          tooltipPlacement: 'top',
+        },
+        {
+          id: 'periodComparison',
+          title: t('analysis.periodComparison', 'period comparison'),
+        },
+        {
+          id: 'beforeAfter',
+          title: t('analysis.beforeAfter', 'before/after'),
+          disabled: true,
+          tooltip: t('common.comingSoon', 'Coming Soon'),
+          tooltipPlacement: 'top',
+        },
+      ].filter((option) => !option.hidden),
     [t]
   )
 
