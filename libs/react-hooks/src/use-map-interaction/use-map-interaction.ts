@@ -120,6 +120,7 @@ const getExtendedFeatures = (
           return [temporalGridExtendedFeature]
         })
       case GeneratorType.Context:
+      case GeneratorType.UserPoints:
       case GeneratorType.UserContext:
         return {
           ...extendedFeature,

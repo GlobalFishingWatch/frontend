@@ -9,6 +9,7 @@ import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
 import ViirsMatchTooltipRow from 'features/map/popups/ViirsMatchLayers'
+import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import styles from './Popup.module.css'
 import FishingTooltipRow from './FishingLayers'
 import PresenceTooltipRow from './PresenceLayers'
@@ -136,6 +137,9 @@ function PopupWrapper({
               )
             // TODO: merge UserContextTooltipSection and ContextTooltipSection
             case DataviewCategory.Context: {
+              const userPointFeatures = features.filter(
+                (feature) => feature.type === GeneratorType.UserPoints
+              )
               const userContextFeatures = features.filter(
                 (feature) => feature.type === GeneratorType.UserContext
               )
@@ -144,6 +148,10 @@ function PopupWrapper({
               )
               return (
                 <Fragment key={featureCategory}>
+                  <UserPointsTooltipSection
+                    features={userPointFeatures}
+                    showFeaturesDetails={type === 'click'}
+                  />
                   <UserContextTooltipSection
                     features={userContextFeatures}
                     showFeaturesDetails={type === 'click'}

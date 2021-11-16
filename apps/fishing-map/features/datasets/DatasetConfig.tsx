@@ -86,7 +86,11 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
       />
       {datasetCategory === DatasetCategory.Context && (
         <Select
-          label={t('dataset.featuresNameField', 'Features name field')}
+          label={
+            datasetGeometryType === 'points'
+              ? t('dataset.pointsNameField', 'Field to name each point')
+              : t('dataset.featuresNameField', 'Field to name each area')
+          }
           placeholder={t('selects.placeholder', 'Select an option')}
           options={fieldsOptions}
           className={styles.input}

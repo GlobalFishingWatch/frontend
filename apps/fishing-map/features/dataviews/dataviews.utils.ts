@@ -112,20 +112,15 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
   }
 }
 
-export const getBaseEnvironmentDataviewInstance = ({
-  dataviewId,
-  datasetId,
-}: {
-  dataviewId: number
+export const getEnvironmentDataviewInstance = (
   datasetId: string
-}): DataviewInstance<GeneratorType> => {
+): DataviewInstance<GeneratorType> => {
   return {
     id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
-    category: DataviewCategory.Environment,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
-    dataviewId,
+    dataviewId: TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
     datasetsConfig: [
       {
         datasetId,
@@ -136,24 +131,23 @@ export const getBaseEnvironmentDataviewInstance = ({
   }
 }
 
-export const getEnvironmentDataviewInstance = (
-  datasetId: string
-): DataviewInstance<GeneratorType> => {
-  const environmentalDataviewInstance = getBaseEnvironmentDataviewInstance({
-    dataviewId: TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
-    datasetId,
-  })
-  return environmentalDataviewInstance
-}
-
 export const getUserPointsDataviewInstance = (
   datasetId: string
 ): DataviewInstance<GeneratorType> => {
-  const userPointDataviewInstance = getBaseEnvironmentDataviewInstance({
+  return {
+    id: `user-points-${datasetId}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_ID,
-    datasetId,
-  })
-  return userPointDataviewInstance
+    config: {
+      colorCyclingType: 'line' as ColorCyclingType,
+    },
+    datasetsConfig: [
+      {
+        datasetId: datasetId,
+        endpoint: EndpointId.UserContextTiles,
+        params: [{ id: 'id', value: datasetId }],
+      },
+    ],
+  }
 }
 
 export const getUserTrackDataviewInstance = (dataset: Dataset) => {

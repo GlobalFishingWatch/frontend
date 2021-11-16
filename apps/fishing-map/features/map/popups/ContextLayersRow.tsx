@@ -12,8 +12,8 @@ interface ContextLayersRowProps {
   showFeaturesDetails: boolean
   showActions?: boolean
   linkHref?: string
-  handleDownloadClick: (e: React.MouseEvent<Element, MouseEvent>) => void
-  handleReportClick: (e: React.MouseEvent<Element, MouseEvent>) => void
+  handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
+  handleReportClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
 }
 const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   id,
@@ -31,7 +31,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
       <span className={styles.rowText}>{label}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
-          {gfwUser && (
+          {gfwUser && handleDownloadClick && (
             <IconButton
               icon="download"
               disabled={!hasAnalysableLayer}
@@ -43,20 +43,22 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
               size="small"
             />
           )}
-          <IconButton
-            icon="analysis"
-            disabled={!hasAnalysableLayer}
-            tooltip={
-              hasAnalysableLayer
-                ? t('common.analysis', 'Create an analysis for this area')
-                : t(
-                    'common.analysisNotAvailable',
-                    'Toggle an activity or environmenet layer on to analyse in in this area'
-                  )
-            }
-            onClick={handleReportClick}
-            size="small"
-          />
+          {handleReportClick && (
+            <IconButton
+              icon="analysis"
+              disabled={!hasAnalysableLayer}
+              tooltip={
+                hasAnalysableLayer
+                  ? t('common.analysis', 'Create an analysis for this area')
+                  : t(
+                      'common.analysisNotAvailable',
+                      'Toggle an activity or environmenet layer on to analyse in in this area'
+                    )
+              }
+              onClick={handleReportClick}
+              size="small"
+            />
+          )}
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
               <IconButton icon="info" tooltip="See more" size="small" />

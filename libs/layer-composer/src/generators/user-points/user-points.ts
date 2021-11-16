@@ -34,6 +34,39 @@ class UserContextGenerator {
 
     const interactive = !config.disableInteraction
 
+    // if (config.steps?.length && config.colorRamp) {
+    //   const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
+    //   const legendRamp = zip(config.steps, originalColorRamp)
+    //   const valueExpression = ['to-number', ['get', config.pickValueAt || 'value']]
+    //   const colorRamp = [
+    //     'interpolate',
+    //     ['linear'],
+    //     valueExpression,
+    //     ...flatten(legendRamp),
+    //   ] as Expression
+    //   const stepsLayer: FillLayer = {
+    //     ...baseLayer,
+    //     type: 'fill' as const,
+    //     paint: {
+    //       'fill-outline-color': 'transparent',
+    //       'fill-color': colorRamp,
+    //     },
+    //     metadata: {
+    //       color: config.color,
+    //       interactive,
+    //       generatorId,
+    //       group: Group.CustomLayer,
+    //       uniqueFeatureInteraction: true,
+    //       legend: {
+    //         type: 'colorramp',
+    //         ...config.metadata?.legend,
+    //         ramp: legendRamp,
+    //       },
+    //     },
+    //   }
+    //   return [stepsLayer]
+    // }
+
     const cirlceLayer: CircleLayer = {
       ...baseLayer,
       type: 'circle',
@@ -47,8 +80,8 @@ class UserContextGenerator {
         color: config.color,
         interactive,
         generatorId,
+        uniqueFeatureInteraction: true,
         legend: {
-          type: 'solid',
           ...config.metadata?.legend,
           group: Group.OutlinePolygonsHighlighted,
         },

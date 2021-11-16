@@ -11,7 +11,7 @@ export const dataviews: Dataview[] = [
       color: '#00FFBC',
       colorRamp: 'teal',
     },
-    category: DataviewCategory.Environment,
+    category: DataviewCategory.Context,
     datasetsConfig: [],
   },
 ]

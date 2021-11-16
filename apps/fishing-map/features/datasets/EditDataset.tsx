@@ -88,9 +88,12 @@ function EditDataset(): React.ReactElement {
 
   const allowUpdate = checkChanges(metadata, dataset)
 
-  const showEnvironmentalFields =
+  const showPointPropertyFields =
+    datasetCategory === DatasetCategory.Context && dataset?.configuration?.geometryType === 'points'
+
+  const showColorPropertyFields =
     datasetCategory === DatasetCategory.Environment &&
-    dataset?.configuration?.geometryType !== 'tracks'
+    dataset?.configuration?.geometryType === 'polygons'
 
   const { min, max } = metadata?.propertyToIncludeRange || {}
 
@@ -117,7 +120,16 @@ function EditDataset(): React.ReactElement {
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
-        {showEnvironmentalFields && (
+        {showPointPropertyFields && (
+          <InputText
+            value={metadata?.propertyToInclude ?? ''}
+            inputSize="small"
+            label={t('dataset.featuresNameField', 'Features name field')}
+            className={styles.input}
+            onChange={(e) => onDatasetFieldChange({ propertyToInclude: e.target.value })}
+          />
+        )}
+        {showColorPropertyFields && (
           <div className={styles.row}>
             <InputText
               value={metadata?.propertyToInclude}

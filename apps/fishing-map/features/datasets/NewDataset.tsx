@@ -146,7 +146,7 @@ function NewDataset(): React.ReactElement {
           } as DatasetConfiguration
 
           // Set disableInteraction flag when not all features are polygons
-          if (datasetCategory === 'context') {
+          if (datasetCategory === 'context' && datasetGeometryType === 'polygons') {
             if (
               (geojson.type === 'Feature' && geojson.geometry.type === 'Polygon') ||
               !(geojson as FeatureCollectionWithFilename).features?.every((feature) =>
@@ -339,9 +339,6 @@ function NewDataset(): React.ReactElement {
     setDatasetGeometryTypeConfirmed(true)
   }
 
-  const promptForGeometryType =
-    datasetGeometryTypeConfirmed === false && datasetCategory === DatasetCategory.Environment
-
   return (
     <Modal
       appSelector="__next"
@@ -355,8 +352,9 @@ function NewDataset(): React.ReactElement {
       onClose={onClose}
     >
       <div className={styles.modalContent}>
-        {promptForGeometryType ? (
+        {datasetGeometryTypeConfirmed === false ? (
           <DatasetTypeSelect
+            datasetCategory={datasetCategory}
             onDatasetTypeChange={onDatasetTypeChange}
             currentType={datasetGeometryType}
           />
@@ -390,7 +388,7 @@ function NewDataset(): React.ReactElement {
             </a>
           </span>
         </div>
-        {promptForGeometryType ? (
+        {datasetGeometryTypeConfirmed === false ? (
           <Button
             disabled={!datasetGeometryType}
             className={styles.saveBtn}

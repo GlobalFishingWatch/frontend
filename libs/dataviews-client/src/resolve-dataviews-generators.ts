@@ -282,10 +282,7 @@ export function getGeneratorConfig(
         if (dataset?.source) {
           generator.attribution = dataset.source
         }
-        if (
-          dataset.category === DatasetCategory.Environment &&
-          dataview.config?.type !== GeneratorType.UserPoints
-        ) {
+        if (dataset.category === DatasetCategory.Environment) {
           const { min, max } =
             (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
             {}

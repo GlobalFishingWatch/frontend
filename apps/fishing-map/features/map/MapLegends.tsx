@@ -68,6 +68,7 @@ const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: M
   }, [legends, t, portalled])
 
   if (!legends || !legends.length) return null
+
   return (
     <div ref={containerRef} className={cx({ [styles.legendContainer]: !portalled })}>
       {timeCompareTimeDescription && !portalled && <div>{timeCompareTimeDescription}</div>}
