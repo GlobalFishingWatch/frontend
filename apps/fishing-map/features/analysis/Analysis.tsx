@@ -211,13 +211,14 @@ function Analysis() {
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
 
   const disableReportDownload =
-    analysisType !== 'evolution' ||
     !analysisGeometryLoaded ||
     !layersTimeseriesFiltered ||
     timeRangeTooLong ||
     !hasAnalysisLayers ||
     !datasetsReportSupported ||
     reportStatus === AsyncReducerStatus.Finished
+
+  const showReportDownload = analysisType === 'evolution' && hasAnalysisLayers
 
   let downloadTooltip = ''
   if (analysisType !== 'evolution') {
@@ -292,7 +293,7 @@ function Analysis() {
                 })`
               : ''}
           </p>
-          {hasAnalysisLayers &&
+          {showReportDownload &&
             (guestUser && !timeRangeTooLong ? (
               <Button
                 type="secondary"
