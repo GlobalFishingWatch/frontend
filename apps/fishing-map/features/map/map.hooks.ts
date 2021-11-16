@@ -210,7 +210,9 @@ export const useClickedEventConnect = () => {
         return false
       }
       const isFeatureVisible = feature.temporalgrid.visible
-      const isViirsFeature = feature.temporalgrid.sublayerInteractionType === 'viirs'
+      const isViirsFeature =
+        feature.temporalgrid.sublayerInteractionType === 'viirs' ||
+        feature.temporalgrid.sublayerInteractionType === 'viirs-match'
       return isFeatureVisible && isViirsFeature
     })
 

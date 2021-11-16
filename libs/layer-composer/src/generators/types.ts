@@ -393,6 +393,7 @@ export type HeatmapAnimatedInteractionType =
   | 'presence'
   | 'presence-detail'
   | 'viirs'
+  | 'viirs-match'
   | 'fishing-effort'
 
 export interface HeatmapAnimatedGeneratorSublayer {
