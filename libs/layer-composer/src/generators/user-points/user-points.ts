@@ -1,11 +1,10 @@
-import { zip, flatten } from 'lodash'
-import type { AnyLayer, FillLayer, Expression, CircleLayer } from '@globalfishingwatch/mapbox-gl'
+import type { AnyLayer, CircleLayer } from '@globalfishingwatch/mapbox-gl'
+import { DEFAULT_BACKGROUND_COLOR } from '@globalfishingwatch/layer-composer'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/context'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
-import { HEATMAP_COLOR_RAMPS } from '../heatmap/colors'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
 
 class UserContextGenerator {
@@ -39,7 +38,9 @@ class UserContextGenerator {
       ...baseLayer,
       type: 'circle',
       paint: {
-        'circle-radius': 5,
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 1, 5, 5],
+        'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
+        'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0, 5, 1],
         ...getCirclePaintWithFeatureState(config.color),
       },
       metadata: {
