@@ -9,7 +9,7 @@ import { dataviewWithPrivateDatasets } from 'features/dataviews/dataviews.utils'
 
 type DatasetFilterSourceProps = {
   dataview: UrlDataviewInstance
-  hideColor: boolean
+  hideColor?: boolean
 }
 
 function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) {
