@@ -193,9 +193,6 @@ function Analysis() {
         {
           id: 'beforeAfter',
           title: t('analysis.beforeAfter', 'before/after'),
-          disabled: true,
-          tooltip: t('common.comingSoon', 'Coming Soon'),
-          tooltipPlacement: 'top',
         },
       ].filter((option) => !option.hidden),
     [t]
