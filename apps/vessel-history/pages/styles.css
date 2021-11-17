@@ -47,7 +47,7 @@ hr {
 }
 
 :root {
-  --header-height: calc(70px + 4rem);
+  --header-height: 6rem;
   --vessel-item-width: 100%;
 }
 

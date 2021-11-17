@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
 :root {
-  --base-font-size: 10px;
+  --base-font-size: 12px;
 
   /* FONTS */
   --font-family: 'Roboto', sans-serif;
