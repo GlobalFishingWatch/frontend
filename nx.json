@@ -15,13 +15,7 @@
       "runner": "@nrwl/nx-cloud",
       "options": {
         "cacheableOperations": ["build", "lint", "test", "e2e"],
-        "runtimeCacheInputs": [
-          "echo $NEXT_PUBLIC_WORKSPACE_ENV",
-          "echo $NEXT_PUBLIC_API_GATEWAY",
-          "# List env variables user to compute cache for builds",
-          "# using platform independent shasum command to compute its checksum",
-          "#echo $NEXT_PUBLIC_WORKSPACE_ENV | ( command -v sha256sum >/dev/null && sha256sum || { shasum -a 256; exit 1; }) "
-        ],
+        "runtimeCacheInputs": ["echo $NEXT_PUBLIC_WORKSPACE_ENV", "echo $NEXT_PUBLIC_API_GATEWAY"],
         "accessToken": "NzEyZWVlMmMtZjQ3OS00YzMzLWE2YzAtYjJmMDE1YzcxNjllfHJlYWQtd3JpdGU=",
         "canTrackAnalytics": false,
         "showUsageWarnings": true
