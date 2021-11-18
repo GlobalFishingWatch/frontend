@@ -68,7 +68,7 @@ self.addEventListener('message', (event) => {
 // Precache GeoJson for offline use
 precacheAndRoute([{ url: LANDMASS_OFFLINE_GEOJSON }])
 
-// Cache all requests to /public folder like /icons and manifest.jsonm
+// Cache all requests to /public folder like /icons and manifest.json
 registerRoute(
   ({ url }) =>
     (url.origin === self.location.origin && url.pathname.startsWith('/icons')) ||
