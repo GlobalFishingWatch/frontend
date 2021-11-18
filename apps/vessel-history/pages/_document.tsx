@@ -37,7 +37,7 @@ class MyDocument extends Document {
             />
             <link
               rel="manifest"
-              href="/icons/manifest.webmanifest"
+              href="/manifest.json"
             />
             <meta name="mobile-web-app-capable" content="yes" />
             <meta name="theme-color" content="#163f89" />
