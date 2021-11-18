@@ -68,6 +68,8 @@ steps:
     waitFor: ['build-image']
     id: 'deploy-cloud-run'
     entrypoint: 'bash'
+    env:
+      - '_RUN_SERVICE_NAME=$_RUN_SERVICE_NAME'
     args:
       - '-eEuo'
       - 'pipefail'
