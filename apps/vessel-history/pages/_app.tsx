@@ -7,9 +7,9 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import store from '../store'
 import * as serviceWorker from '../offline/serviceWorkerRegistration'
 import 'features/i18n/i18n'
-import './styles.css'
 import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
+import './styles.css'
 
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
