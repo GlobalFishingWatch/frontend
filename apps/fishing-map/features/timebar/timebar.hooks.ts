@@ -3,9 +3,10 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { ApiEvent } from '@globalfishingwatch/api-types'
+import { DEFAULT_CALLBACK_URL_KEY } from '@globalfishingwatch/react-hooks'
 import { TimebarVisualisations } from 'types'
 import { selectTimebarVisualisation } from 'features/app/app.selectors'
-import { CALLBACK_URL_KEY, useLocationConnect } from 'routes/routes.hook'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveActivityDataviews,
   selectActiveTrackDataviews,
@@ -30,7 +31,7 @@ export const TimeRangeAtom = atom<Range | null>({
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
       const redirectUrl =
-        typeof window !== undefined ? window.localStorage.getItem(CALLBACK_URL_KEY) : null
+        typeof window !== undefined ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
       const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
       const dispatch = useDispatch()
 

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
 import { IconButton, Logo, SubBrands } from '@globalfishingwatch/ui-components'
+import { useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -15,7 +16,6 @@ import { isWorkspaceLocation, selectLocationCategory } from 'routes/routes.selec
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
-import { useLoginRedirect } from 'routes/routes.hook'
 import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'

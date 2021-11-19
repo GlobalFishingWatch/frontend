@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { DatasetCategory } from '@globalfishingwatch/api-types'
+import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import EditDataset from 'features/datasets/EditDataset'
 import {
   fetchDefaultWorkspaceThunk,
@@ -9,7 +10,6 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
-import { redirectToLogin } from 'routes/routes.hook'
 import styles from './User.module.css'
 import { GUEST_USER_TYPE, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'

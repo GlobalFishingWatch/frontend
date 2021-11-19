@@ -5,9 +5,9 @@ import {
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
+import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { redirectToLogin } from 'routes/routes.hook'
 
 interface UserState {
   logged: boolean
