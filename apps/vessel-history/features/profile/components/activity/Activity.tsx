@@ -68,7 +68,12 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>
-          <Modal title={selectedEvent?.description ?? ''} isOpen={isModalOpen} onClose={closeModal}>
+          <Modal
+            appSelector="__next"
+            title={selectedEvent?.description ?? ''}
+            isOpen={isModalOpen}
+            onClose={closeModal}
+          >
             {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
           </Modal>
           <div className={styles.activityContainer}>

@@ -36,7 +36,8 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
       })
       setFilter(filter, value)
     },
-    [setFilter, tab])
+    [setFilter, tab]
+  )
 
   const trackAndSetDate = useCallback(
     (filter: 'start' | 'end', value?: string) => {
@@ -47,15 +48,17 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
           start,
           end,
           [filter]: value,
-          tab: tab
-        })
+          tab: tab,
+        }),
       })
       setDate(filter, value)
     },
-    [end, setDate, start, tab])
+    [end, setDate, start, tab]
+  )
 
   return (
     <Modal
+      appSelector="__next"
       title={t(`filters.title` as any, 'Filter events')}
       isOpen={isModalOpen}
       onClose={closeModal}

@@ -91,6 +91,7 @@ const MapControls = ({
               </DataAndTerminology>
               {showLayersPopup && (
                 <Modal
+                  appSelector="__next"
                   isOpen={showLayersPopup}
                   onClose={handleCloseShowLayers}
                   header={false}
@@ -124,6 +125,7 @@ const MapControls = ({
                                 }
                               />
                               <Modal
+                                appSelector="__next"
                                 isOpen={showLayerInfo[layer.id.toString()]}
                                 onClose={() =>
                                   setShowLayerInfo({ ...showLayerInfo, [layer.id]: false })
