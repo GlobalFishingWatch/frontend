@@ -33,6 +33,7 @@ steps:
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
+      - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_CARRIER_PORTAL_URL_=$_NEXT_PUBLIC_CARRIER_PORTAL_URL_'
