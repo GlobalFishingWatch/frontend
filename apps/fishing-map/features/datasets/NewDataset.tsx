@@ -32,7 +32,7 @@ import {
 } from './datasets.hook'
 import styles from './NewDataset.module.css'
 import DatasetFile from './DatasetFile'
-import DatasetConfig from './DatasetConfig'
+import DatasetConfig, { extractPropertiesFromGeojson } from './DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
 
 export type DatasetMetadata = {
@@ -138,7 +138,9 @@ function NewDataset(): React.ReactElement {
         }
         if (geojson !== undefined) {
           setFileData(geojson)
+          const fields = extractPropertiesFromGeojson(geojson as FeatureCollectionWithFilename)
           const configuration = {
+            fields,
             geometryType: datasetGeometryType,
             // TODO when supporting multiple files upload
             // ...(geojson?.fileName && { file: geojson.fileName }),
@@ -156,7 +158,6 @@ function NewDataset(): React.ReactElement {
               configuration.disableInteraction = true
             }
           }
-
           setMetadata((metadata) => ({
             ...metadata,
             public: true,
