@@ -29,7 +29,7 @@ function UserPointsTooltipSection({
             {featureByType.map((feature, index) => {
               const { gfw_id } = feature.properties
               const label = feature.value ?? feature.title
-              const id = `${feature.value}-${gfw_id}}`
+              const id = `${feature.value}-${gfw_id}`
               return (
                 <ContextLayersRow
                   id={id}
