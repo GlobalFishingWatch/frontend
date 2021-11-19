@@ -76,6 +76,7 @@ export interface DatasetConfiguration {
   geometryType?: DatasetGeometryType
   format?: 'geojson'
   documentation?: DatasetDocumentation
+  fields?: string[]
   [key: string]: unknown
 }
 

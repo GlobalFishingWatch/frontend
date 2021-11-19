@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { InputText, Modal, Button } from '@globalfishingwatch/ui-components'
+import { capitalize } from 'lodash'
+import { InputText, Modal, Button, Select } from '@globalfishingwatch/ui-components'
 import {
   Dataset,
   DatasetCategory,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
+import { getPropertyFieldsOptions } from 'features/datasets/DatasetConfig'
 import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 import { selectDatasetById } from './datasets.slice'
@@ -88,9 +90,15 @@ function EditDataset(): React.ReactElement {
 
   const allowUpdate = checkChanges(metadata, dataset)
 
-  const showEnvironmentalFields =
+  // TODO: Restore this when found a way to invalidate tiles cache in the api that works
+  // for now only using an InputText disabled to show what property is currently in use
+  // const contextFieldOptions = getPropertyFieldsOptions(dataset?.configuration?.fields)
+  // const showContextNamePropertyFields =
+  //   datasetCategory === DatasetCategory.Context && contextFieldOptions?.length > 0
+
+  const showColorPropertyFields =
     datasetCategory === DatasetCategory.Environment &&
-    dataset?.configuration?.geometryType !== 'tracks'
+    dataset?.configuration?.geometryType === 'polygons'
 
   const { min, max } = metadata?.propertyToIncludeRange || {}
 
@@ -117,7 +125,37 @@ function EditDataset(): React.ReactElement {
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
-        {showEnvironmentalFields && (
+        {datasetCategory === DatasetCategory.Context && (
+          <InputText
+            disabled
+            value={metadata?.propertyToInclude ?? ''}
+            inputSize="small"
+            label={t('dataset.featuresNameField', 'Features name field')}
+            className={styles.input}
+          />
+        )}
+        {/* {showContextNamePropertyFields && (
+          <Select
+            label={
+              dataset.configuration.geometryType === 'points'
+                ? t('dataset.pointsNameField', 'Field to name each point')
+                : t('dataset.featuresNameField', 'Field to name each area')
+            }
+            placeholder={t('selects.placeholder', 'Select an option')}
+            options={contextFieldOptions}
+            className={styles.input}
+            selectedOption={contextFieldOptions.find(
+              ({ id }) => id === metadata?.propertyToInclude
+            )}
+            onSelect={(selected) => {
+              onDatasetFieldChange({ propertyToInclude: selected.id })
+            }}
+            onRemove={() => {
+              onDatasetFieldChange({ propertyToInclude: undefined })
+            }}
+          />
+        )} */}
+        {showColorPropertyFields && (
           <div className={styles.row}>
             <InputText
               value={metadata?.propertyToInclude}

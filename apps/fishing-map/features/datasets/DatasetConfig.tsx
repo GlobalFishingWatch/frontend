@@ -9,11 +9,10 @@ import {
   DatasetGeometryType,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import { capitalize } from 'utils/shared'
 import { DatasetMetadata } from './NewDataset'
 import styles from './NewDataset.module.css'
 
-const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
+export const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
   if (!geojson?.features) return []
   const uniqueProperties = Object.keys(
     geojson.features.reduce(function (acc, { properties }) {
@@ -21,6 +20,14 @@ const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
     }, {})
   )
   return uniqueProperties
+}
+
+export const getPropertyFieldsOptions = (fields: string[]) => {
+  if (!fields) return
+  return fields.map((property) => ({
+    id: property,
+    label: property,
+  }))
 }
 
 const getPropertyRangeValuesFromGeojson = (
@@ -62,10 +69,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
   } = props
   const { t } = useTranslation()
   const fields = (metadata.fields as string[]) || extractPropertiesFromGeojson(fileData)
-  const fieldsOptions = fields.map((property) => ({
-    id: property,
-    label: capitalize(property),
-  }))
+  const fieldsOptions = getPropertyFieldsOptions(fields)
 
   const { min, max } =
     (metadata.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange || {}
@@ -86,7 +90,11 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
       />
       {datasetCategory === DatasetCategory.Context && (
         <Select
-          label={t('dataset.featuresNameField', 'Features name field')}
+          label={
+            datasetGeometryType === 'points'
+              ? t('dataset.pointsNameField', 'Field to name each point')
+              : t('dataset.featuresNameField', 'Field to name each area')
+          }
           placeholder={t('selects.placeholder', 'Select an option')}
           options={fieldsOptions}
           className={styles.input}

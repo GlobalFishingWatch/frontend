@@ -6,6 +6,7 @@ import { AsyncError } from 'utils/async-slice'
 import {
   getContextDataviewInstance,
   getEnvironmentDataviewInstance,
+  getUserPointsDataviewInstance,
   getUserTrackDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -37,17 +38,16 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
     (dataset: Dataset) => {
       let dataviewInstance
       if (dataset.category === DatasetCategory.Context) {
-        dataviewInstance = getContextDataviewInstance(dataset.id)
-      } else if (
-        dataset.category === DatasetCategory.Environment &&
-        dataset.configuration?.geometryType === 'polygons'
-      ) {
-        dataviewInstance = getEnvironmentDataviewInstance(dataset.id)
-      } else if (
-        dataset.category === DatasetCategory.Environment &&
-        dataset.configuration?.geometryType === 'tracks'
-      ) {
-        dataviewInstance = getUserTrackDataviewInstance(dataset)
+        dataviewInstance =
+          dataset.configuration?.geometryType === 'points'
+            ? getUserPointsDataviewInstance(dataset.id)
+            : getContextDataviewInstance(dataset.id)
+      } else if (dataset.category === DatasetCategory.Environment) {
+        if (dataset.configuration?.geometryType === 'polygons') {
+          dataviewInstance = getEnvironmentDataviewInstance(dataset.id)
+        } else if (dataset.configuration?.geometryType === 'tracks') {
+          dataviewInstance = getUserTrackDataviewInstance(dataset)
+        }
       }
       if (dataviewInstance) {
         upsertDataviewInstance(dataviewInstance)

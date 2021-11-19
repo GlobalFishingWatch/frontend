@@ -32,7 +32,7 @@ import {
 } from './datasets.hook'
 import styles from './NewDataset.module.css'
 import DatasetFile from './DatasetFile'
-import DatasetConfig from './DatasetConfig'
+import DatasetConfig, { extractPropertiesFromGeojson } from './DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
 
 export type DatasetMetadata = {
@@ -76,7 +76,32 @@ function NewDataset(): React.ReactElement {
 
       const metadataName = capitalize(lowerCase(name))
 
-      if (!type || type === 'polygons') {
+      if (type === 'tracks') {
+        setFile(file)
+        const fileData = await readBlobAs(file, 'text')
+        const { data, meta } = parseCSV(fileData, {
+          dynamicTyping: true,
+          header: true,
+          skipEmptyLines: true,
+        })
+        setFileData(data as CSV)
+        const guessedColumns = guessColumns(meta?.fields)
+        setMetadata({
+          ...metadata,
+          name: metadataName,
+          public: true,
+          type: DatasetTypes.UserTracks,
+          category: datasetCategory,
+          fields: meta?.fields,
+          guessedFields: guessedColumns,
+          configuration: {
+            latitude: guessedColumns.latitude,
+            longitude: guessedColumns.longitude,
+            timestamp: guessedColumns.timestamp,
+            geometryType: datasetGeometryType,
+          } as DatasetConfiguration,
+        })
+      } else if (!type || type === 'polygons' || type === 'points') {
         const isZip =
           file.type === 'application/zip' ||
           file.type === 'application/x-zip-compressed' ||
@@ -113,7 +138,9 @@ function NewDataset(): React.ReactElement {
         }
         if (geojson !== undefined) {
           setFileData(geojson)
+          const fields = extractPropertiesFromGeojson(geojson as FeatureCollectionWithFilename)
           const configuration = {
+            fields,
             geometryType: datasetGeometryType,
             // TODO when supporting multiple files upload
             // ...(geojson?.fileName && { file: geojson.fileName }),
@@ -121,7 +148,7 @@ function NewDataset(): React.ReactElement {
           } as DatasetConfiguration
 
           // Set disableInteraction flag when not all features are polygons
-          if (datasetCategory === 'context') {
+          if (datasetCategory === 'context' && datasetGeometryType === 'polygons') {
             if (
               (geojson.type === 'Feature' && geojson.geometry.type === 'Polygon') ||
               !(geojson as FeatureCollectionWithFilename).features?.every((feature) =>
@@ -131,7 +158,6 @@ function NewDataset(): React.ReactElement {
               configuration.disableInteraction = true
             }
           }
-
           setMetadata((metadata) => ({
             ...metadata,
             public: true,
@@ -144,31 +170,6 @@ function NewDataset(): React.ReactElement {
           setFileData(undefined)
           setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
         }
-      } else if (type === 'tracks') {
-        setFile(file)
-        const fileData = await readBlobAs(file, 'text')
-        const { data, meta } = parseCSV(fileData, {
-          dynamicTyping: true,
-          header: true,
-          skipEmptyLines: true,
-        })
-        setFileData(data as CSV)
-        const guessedColumns = guessColumns(meta?.fields)
-        setMetadata({
-          ...metadata,
-          name: metadataName,
-          public: true,
-          type: DatasetTypes.UserTracks,
-          category: datasetCategory,
-          fields: meta?.fields,
-          guessedFields: guessedColumns,
-          configuration: {
-            latitude: guessedColumns.latitude,
-            longitude: guessedColumns.longitude,
-            timestamp: guessedColumns.timestamp,
-            geometryType: datasetGeometryType,
-          } as DatasetConfiguration,
-        })
       }
       setLoading(false)
     },
@@ -339,9 +340,6 @@ function NewDataset(): React.ReactElement {
     setDatasetGeometryTypeConfirmed(true)
   }
 
-  const promptForGeometryType =
-    datasetGeometryTypeConfirmed === false && datasetCategory === DatasetCategory.Environment
-
   return (
     <Modal
       appSelector="__next"
@@ -355,8 +353,9 @@ function NewDataset(): React.ReactElement {
       onClose={onClose}
     >
       <div className={styles.modalContent}>
-        {promptForGeometryType ? (
+        {datasetGeometryTypeConfirmed === false ? (
           <DatasetTypeSelect
+            datasetCategory={datasetCategory}
             onDatasetTypeChange={onDatasetTypeChange}
             currentType={datasetGeometryType}
           />
@@ -390,7 +389,7 @@ function NewDataset(): React.ReactElement {
             </a>
           </span>
         </div>
-        {promptForGeometryType ? (
+        {datasetGeometryTypeConfirmed === false ? (
           <Button
             disabled={!datasetGeometryType}
             className={styles.saveBtn}

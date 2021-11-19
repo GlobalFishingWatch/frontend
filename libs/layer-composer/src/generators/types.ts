@@ -8,6 +8,7 @@ import { Interval } from './heatmap/types'
 export enum GeneratorType {
   Background = 'BACKGROUND',
   UserContext = 'USER_CONTEXT',
+  UserPoints = 'USER_POINTS',
   TileCluster = 'TILE_CLUSTER',
   Context = 'CONTEXT',
   Basemap = 'BASEMAP',

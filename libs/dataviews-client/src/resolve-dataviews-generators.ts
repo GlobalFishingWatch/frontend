@@ -248,6 +248,7 @@ export function getGeneratorConfig(
       return generator
     }
     case GeneratorType.Context:
+    case GeneratorType.UserPoints:
     case GeneratorType.UserContext: {
       if (Array.isArray(dataview.config.layers)) {
         const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
@@ -293,7 +294,8 @@ export function getGeneratorConfig(
           generator.steps = steps
         } else if (
           dataset.category === DatasetCategory.Context &&
-          dataview.config?.type === GeneratorType.UserContext
+          (dataview.config?.type === GeneratorType.UserContext ||
+            dataview.config?.type === GeneratorType.UserPoints)
         ) {
           generator.disableInteraction = dataset.configuration?.disableInteraction
         }
