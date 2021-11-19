@@ -43,6 +43,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     <Fragment>
       {history.length > 0 && (
         <Modal
+          appSelector="__next"
           title={t('vessel.historyLabelByField', defaultTitle, {
             label: t(`vessel.${label}` as any, label),
             vesselName,

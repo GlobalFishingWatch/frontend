@@ -190,7 +190,6 @@ class MyDocument extends Document {
           </head>
         </Head>
         <body>
-          <div id="root"></div>
           <Main />
           <NextScript />
         </body>

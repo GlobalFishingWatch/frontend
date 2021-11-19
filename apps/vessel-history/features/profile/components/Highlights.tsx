@@ -47,34 +47,37 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
       action: 'Select one vessel from highlights section',
       label: JSON.stringify({
         position: index,
-        click: 'info'
+        click: 'info',
       }),
     })
   }, [])
 
-  const onMapClick = useCallback((event: RenderedEvent | Voyage, index: number) => {
-    uaEvent({
-      category: 'Highlight Events',
-      action: 'Select one vessel from highlights section',
-      label: JSON.stringify({
-        position: index,
-        click: 'map'
-      }),
-    })
-    if (event.type !== EventTypeVoyage.Voyage) {
-      highlightEvent(event)
-
-      setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
-        zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
-        bearing: 0,
-        pitch: 0,
+  const onMapClick = useCallback(
+    (event: RenderedEvent | Voyage, index: number) => {
+      uaEvent({
+        category: 'Highlight Events',
+        action: 'Select one vessel from highlights section',
+        label: JSON.stringify({
+          position: index,
+          click: 'map',
+        }),
       })
+      if (event.type !== EventTypeVoyage.Voyage) {
+        highlightEvent(event)
 
-      props.onMoveToMap()
-    }
-  }, [highlightEvent, props, setMapCoordinates, viewport.zoom])
+        setMapCoordinates({
+          latitude: event.position.lat,
+          longitude: event.position.lon,
+          zoom: viewport.zoom ?? DEFAULT_VESSEL_MAP_ZOOM,
+          bearing: 0,
+          pitch: 0,
+        })
+
+        props.onMoveToMap()
+      }
+    },
+    [highlightEvent, props, setMapCoordinates, viewport.zoom]
+  )
 
   const onSettingsClick = useCallback(() => {
     dispatchLocation(SETTINGS)
@@ -87,7 +90,6 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
     })
   }, [dispatchLocation])
 
-
   const countEvents = useMemo(() => {
     if (events.length) {
       const countEvents = {
@@ -97,19 +99,18 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
         [EventTypes.Encounter as string]: 0,
       }
       events.forEach((event) => countEvents[event.type as string]++)
-      return countEvents;
+      return countEvents
     }
     return null
   }, [events])
-  
+
   useEffect(() => {
-    if (countEvents){
+    if (countEvents) {
       uaEvent({
         category: 'Highlight Events',
         action: 'Display highlight events',
         label: JSON.stringify(countEvents),
       })
-
     }
   }, [countEvents])
 
@@ -156,6 +157,7 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
           {!loading && (
             <Fragment>
               <Modal
+                appSelector="__next"
                 title={selectedEvent?.description ?? ''}
                 isOpen={isModalOpen}
                 onClose={closeModal}
@@ -179,11 +181,11 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
                           const event = events[index]
                           return (
                             <div style={style}>
-                              <ActivityItem 
-                                key={index} 
-                                event={event} 
-                                onInfoClick={() => openModal(event, index)} 
-                                onMapClick={() => onMapClick(event, index)} 
+                              <ActivityItem
+                                key={index}
+                                event={event}
+                                onInfoClick={() => openModal(event, index)}
+                                onMapClick={() => onMapClick(event, index)}
                               />
                             </div>
                           )

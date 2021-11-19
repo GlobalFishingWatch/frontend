@@ -39,6 +39,7 @@ const DataAndTerminology: React.FC<ModalProps> = ({
         onClick={() => setShowModal(true)}
       />
       <Modal
+        appSelector="__next"
         isOpen={showModal}
         onClose={closeModal}
         title={title ?? t('common.dataAndTerminology', 'Data and Terminology')}
