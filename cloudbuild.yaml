@@ -38,7 +38,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        yarn nx affected:apps --base=origin/develop --plain > affected-apps.txt
+        yarn affected
         echo affected-apps.txt
 
   # Trigger the affected apps builds
