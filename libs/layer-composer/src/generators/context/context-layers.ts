@@ -28,7 +28,7 @@ const getDefaultContextInteraction = (): Partial<FillLayer> => {
   }
 }
 
-const getDefaultContextLine = (color = 'white', behindBasemap = false): Partial<LineLayer> => {
+const getDefaultContextLine = (color = 'white'): Partial<LineLayer> => {
   return {
     type: 'line',
     paint: {
@@ -40,7 +40,7 @@ const getDefaultContextLine = (color = 'white', behindBasemap = false): Partial<
     },
     metadata: {
       interactive: false,
-      group: behindBasemap ? Group.OutlinePolygonsBehindBasemapFill : Group.OutlinePolygons,
+      group: Group.OutlinePolygons,
     },
   }
 }
@@ -102,12 +102,12 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
   [ContextLayerType.EEZBoundaries]: [
     {
       id: 'eez_rest_lines_',
-      ...getDefaultContextLine('#33B679', true),
+      ...getDefaultContextLine('#33B679'),
       filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
     } as LineLayer,
     {
       id: 'eez_special_lines_',
-      ...getDefaultContextLine('#33B679', true),
+      ...getDefaultContextLine(),
       filter: ['match', ['get', 'line_type'], settledBoundaries, false, true],
       paint: {
         'line-color': '#33B679',
