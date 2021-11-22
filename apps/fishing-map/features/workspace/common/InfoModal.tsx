@@ -12,6 +12,15 @@ import { getDatasetLabel, hasDatasetConfigVesselData } from 'features/datasets/d
 import { isGFWUser } from 'features/user/user.slice'
 import styles from './InfoModal.module.css'
 
+export const getDatasetQueriesArray = (dataset) => {
+  const rawQueries = dataset?.configuration?.documentation?.queries
+  if (!rawQueries) return
+  const queries = Array.isArray(rawQueries)
+    ? (rawQueries as string[])
+    : [rawQueries as unknown as string]
+  return queries
+}
+
 type InfoModalProps = {
   dataview: UrlDataviewInstance
   onClick?: (e: React.MouseEvent) => void
@@ -39,8 +48,7 @@ const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoMod
         return []
       }
       const description = getDatasetDescriptionTranslated(dataset)
-      const rawQueries = dataset.configuration?.documentation?.queries
-      const queries = Array.isArray(rawQueries) ? rawQueries : [rawQueries as unknown as string]
+      const queries = getDatasetQueriesArray(dataset)
       return {
         id: dataset.id,
         title: getDatasetLabel(dataset),

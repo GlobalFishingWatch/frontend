@@ -5,9 +5,10 @@ type InfoErrorProps = {
   loading?: boolean
   tooltip: string
   className?: string
+  onClick?: () => void
 }
 
-const InfoError = ({ error, loading, tooltip, className }: InfoErrorProps) => {
+const InfoError = ({ error, loading, tooltip, className, onClick }: InfoErrorProps) => {
   return (
     <IconButton
       icon={error ? 'warning' : 'info'}
@@ -17,6 +18,7 @@ const InfoError = ({ error, loading, tooltip, className }: InfoErrorProps) => {
       className={className}
       tooltip={tooltip}
       tooltipPlacement="top"
+      onClick={onClick}
     />
   )
 }
