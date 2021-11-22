@@ -51,6 +51,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
+        echo affected-apps.txt
         AFFECTED_APPS=(`cat affected-apps.txt`)
         for i in ${AFFECTED_APPS[@]}; do
           if [[$i]]; then
