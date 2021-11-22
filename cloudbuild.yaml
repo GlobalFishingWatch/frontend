@@ -4,9 +4,19 @@ steps:
     entrypoint: yarn
     args: ['global', 'add', 'nx']
 
+  - id: get-affected
+    name: node:14
+    waitFor: ['install-nx']
+    entrypoint: bash
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - nx affected:apps --plain > affected-apps.txt
+
   # Trigger the affected apps builds
   - name: gcr.io/cloud-builders/gcloud
-    waitFor: ['install-nx']
+    waitFor: ['get-affected']
     id: deploy-cloud-run
     entrypoint: bash
     args:
@@ -14,7 +24,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        AFFECTED_APPS=(`nx affected:apps --plain`)
+        AFFECTED_APPS=(`cat affected-apps.txt`)
         for i in ${AFFECTED_APPS[@]}; do
           gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
         done
