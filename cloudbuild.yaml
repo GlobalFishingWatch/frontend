@@ -7,8 +7,8 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        yarn global add nx
-        nx affected:apps --plain > affected-apps.txt
+        yarn global add nx || exit 0
+        nx affected:apps --plain > affected-apps.txt || exit 0
 
   # Trigger the affected apps builds
   - name: gcr.io/cloud-builders/gcloud
