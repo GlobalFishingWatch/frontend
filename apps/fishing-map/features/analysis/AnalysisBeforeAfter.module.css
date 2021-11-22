@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  width: 100%;
+  padding: var(--space-M);
+}
+
+.comingSoon {
+  text-align: center;
+  font-style: italic;
+  justify-content: center;
+  align-items: center;
+  height: 15rem;
+}
+
+.timeSelection {
+  display: flex;
+}
+
+.dateWrapper,
+.durationWrapper {
+  flex: 1;
+}
+
+.durationWrapper {
+  display: flex;
+  align-items: flex-end;
+  padding-left: 3rem;
+}
+
+.duration {
+  width: var(--size-L);
+}
+
+.durationType {
+  width: 10rem;
+}

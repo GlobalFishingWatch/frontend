@@ -1,5 +1,12 @@
 # @globalfishingwatch/linting
 
+## 2.0.0
+
+### Breaking Changes
+
+- Typescript used as default now, use `/javascript` for legacy projects
+- Added `/next` config
+
 ## 1.8.1
 
 ### Patch Changes

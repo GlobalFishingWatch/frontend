@@ -24,8 +24,8 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 |                                                     |                                                              |
 | --------------------------------------------------- | ------------------------------------------------------------ |
-| [fishing-map](applications/fishing-map)             | Version 3.0 of the fishing map project                       |
-| [vessel-history](applications/vessel-history)       | Vessel history app                                           |
+| [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project                       |
+| [vessel-history](apps/vessel-history)               | Vessel history app                                           |
 | [temporalgrid-demo](applications/temporalgrid-demo) | CRA to show how new custom mapbox-gl format development goes |
 | [dataviews-editor](applications/dataviews-editor)   | Simple interface to edit dataviews                           |
 | [sandbox](applications/sandbox)                     | Playground to use packages without releasing                 |
@@ -106,17 +106,7 @@ yarn build
 
 ### Publishing
 
-Using [changesets](https://github.com/atlassian/changesets) and its [github bot](https://github.com/apps/changeset-bot) to versioning, tag and generate the changelog on every package. See an [example of bot usage](https://github.com/GlobalFishingWatch/frontend/pull/90#issuecomment-698843334)
-
-This will read the packages included in the changeset and open a [new PR with the packages affected](https://github.com/GlobalFishingWatch/frontend/pull/92). Once this PR is merged, a [github action](https://github.com/GlobalFishingWatch/frontend/blob/develop/.github/workflows/publish-and-build.yml) will publish in npm automatically.
-
-If you prefer to do it locally you could run
-
-```bash
-yarn changesets
-```
-
-and follow the steps to generate a changeset release, once merged to develop the github action will deploy to npm automatically.
+TODO
 
 ### API DOCS
 

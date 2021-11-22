@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/linting",
-  "version": "1.8.1",
+  "version": "2.0.1",
   "description": "linting config ready to be used in every gfw frontend project",
   "keywords": [
     "eslint",
@@ -13,7 +13,8 @@
   "main": "index.js",
   "files": [
     "index.js",
-    "typescript.js",
+    "next.js",
+    "javascript.js",
     "prettier.js",
     "stylelint.js"
   ],
@@ -28,6 +29,7 @@
   },
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "dependencies": {
+    "@next/eslint-plugin-next": "^12.x",
     "@typescript-eslint/eslint-plugin": "^4.x",
     "@typescript-eslint/parser": "^4.x",
     "@typescript-eslint/scope-manager": "^4.x",
@@ -47,6 +49,5 @@
     "stylelint-config-css-modules": "2.x",
     "stylelint-config-prettier": "9.x",
     "stylelint-config-standard": "23.x"
-  },
-  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+  }
 }

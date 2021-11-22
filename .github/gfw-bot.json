@@ -1,12 +1,12 @@
 {
   "fishing-map": {
-    "cloudbuildTaskId": "fishing-map-autodeploy-bot",
+    "cloudbuildTaskId": "ui-fishing-map-autodeploy",
     "auto": false,
-    "watch": ["applications/fishing-map/**/*"]
+    "watch": ["apps/fishing-map/**/*"]
   },
   "vessel-history": {
-    "cloudbuildTaskId": "ui-vessel-viewer-autodeploy-bot",
+    "cloudbuildTaskId": "ui-vessel-viewer-autodeploy",
     "auto": false,
-    "watch": ["applications/vessel-history/**/*"]
+    "watch": ["apps/vessel-history/**/*"]
   }
 }
