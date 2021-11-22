@@ -14,7 +14,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        AFFECTED_APPS=$(nx affected:apps --plain)
-        for APP in $AFFECTED_APPS; do
-          gcloud -q beta builds triggers run --branch=develop ui-${APP}-develop
+        AFFECTED_APPS=(`nx affected:apps --plain`)
+        for i in ${AFFECTED_APPS[@]}; do
+          gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
         done
