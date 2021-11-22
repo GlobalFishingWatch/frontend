@@ -39,6 +39,7 @@ import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
+import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -161,7 +162,7 @@ function App(): React.ReactElement {
   useLayoutEffect(() => {
     if (isAnalysing) {
       if (analysisQuery.bounds) {
-        fitMapBounds(analysisQuery.bounds, { padding: 10 })
+        fitMapBounds(analysisQuery.bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
