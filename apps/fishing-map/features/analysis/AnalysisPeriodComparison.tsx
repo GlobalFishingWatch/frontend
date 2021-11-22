@@ -44,7 +44,8 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     <Fragment>
       <AnalysisDescription description={description} />
       <div className={styles.container}>
-        {dataviews && dataviews.map((d) => <DatasetFilterSource dataview={d} hideColor={true} />)}
+        {dataviews &&
+          dataviews.map((d) => <DatasetFilterSource key={d.id} dataview={d} hideColor={true} />)}
       </div>
       {layersTimeseriesFiltered ? (
         <AnalysisPeriodComparisonGraph
