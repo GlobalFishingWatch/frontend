@@ -102,6 +102,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const trackLoading = trackResource?.status === ResourceStatus.Loading
   const infoLoading = infoResource?.status === ResourceStatus.Loading
+  const loading = trackLoading || infoLoading
 
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
@@ -271,7 +272,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           {infoResource && InfoIconComponent}
         </div>
         <IconButton
-          icon="more"
+          icon={'more'}
+          loading={loading}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
