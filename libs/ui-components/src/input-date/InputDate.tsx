@@ -8,7 +8,7 @@ import styles from './InputDate.module.css'
 export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
   label?: string
-  htmlLabel?: Element
+  htmlLabel?: JSX.Element
   max?: string
   min?: string
   step?: number
