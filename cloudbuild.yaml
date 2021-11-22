@@ -1,5 +1,33 @@
 steps:
-  - id: install-nx
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache
+    waitFor: ['-']
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+
+  - id: 'install-yarn'
+    waitFor: ['restore_cache']
+    name: node:14
+    entrypoint: bash
+    args:
+      - '-c'
+      # if dependencies cache is not found then install all deps
+      - |
+        if [ ! -d "node_modules" ]; then
+          yarn install --frozen-lockfile
+        fi
+
+  - id: 'save_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/save_cache'
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+      - '--path=./node_modules'
+      - '--no-clobber'
+
+  - id: get-affected
     name: node:14
     entrypoint: bash
     args:
@@ -7,13 +35,12 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        yarn global add nx || exit 0
-        nx affected:apps --plain > affected-apps.txt || exit 0
+        yarn nx affected:apps --plain > affected-apps.txt || exit 0
         echo affected-apps.txt || exit 0
 
   # Trigger the affected apps builds
   - name: gcr.io/cloud-builders/gcloud
-    waitFor: ['install-nx']
+    waitFor: ['get-affected']
     id: deploy-cloud-run
     entrypoint: bash
     args:
