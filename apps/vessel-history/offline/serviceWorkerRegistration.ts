@@ -1,6 +1,8 @@
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
+import { BASE_URL } from 'data/constants'
+
 // This lets the app load faster on subsequent visits in production, and gives
 // it offline capabilities. However, it also means that developers (and users)
 // will only see deployed updates on subsequent visits to a page, after all the
@@ -10,7 +12,7 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://cra.link/PWA
 
-const PUBLIC_URL = './'
+const PUBLIC_URL = BASE_URL
 
 const isLocalhost =
   typeof window !== 'undefined' &&
@@ -39,7 +41,7 @@ export function register(config?: Config) {
     }
 
     window.addEventListener('load', () => {
-      const swUrl = `${PUBLIC_URL}/service-worker.js`
+      const swUrl = `${PUBLIC_URL}/sw.js`
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.

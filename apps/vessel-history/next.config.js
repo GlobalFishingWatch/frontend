@@ -1,10 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const withPlugins = require('next-compose-plugins')
 const withNx = require('@nrwl/next/plugins/with-nx')
+const withWorkbox = require('next-with-workbox')
+
 // const { i18n } = require('./next-i18next.config')
 
-/**
- * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
- **/
 const nextConfig = {
   async rewrites() {
     return [
@@ -14,11 +14,6 @@ const nextConfig = {
         destination: '/',
       },
     ]
-  },
-  nx: {
-    // Set this to true if you would like to to use SVGR
-    // See: https://github.com/gregberge/svgr
-    svgr: true,
   },
   webpack: function (config) {
     config.resolve.alias = {
@@ -34,7 +29,34 @@ const nextConfig = {
     }
     return config
   },
+
   // i18n,
+  productionBrowserSourceMaps: process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development',
 }
 
-module.exports = withNx(nextConfig)
+module.exports = withPlugins(
+  [
+    [
+      withNx,
+      {
+        nx: {
+          // Set this to true if you would like to to use SVGR
+          // See: https://github.com/gregberge/svgr
+          svgr: true,
+        },
+      },
+    ],
+    [
+      withWorkbox,
+      {
+        workbox: {
+          swSrc: 'offline/service-worker.ts',
+          // .
+          // ..
+          // ... any workbox-webpack-plugin.GenerateSW option
+        },
+      },
+    ],
+  ],
+  nextConfig
+)

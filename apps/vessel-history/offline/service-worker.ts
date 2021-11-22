@@ -14,7 +14,7 @@ import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import { NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies'
 import { BackgroundSyncPlugin } from 'workbox-background-sync'
-import { API_GATEWAY, LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
+import { API_GATEWAY, BASE_URL, LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -39,9 +39,9 @@ registerRoute(
     }
 
     // If this is a URL that starts with /_, skip.
-    if (url.pathname.startsWith('/_')) {
-      return false
-    }
+    // if (url.pathname.startsWith('/_')) {
+    //   return false
+    // }
 
     // If this looks like a URL for a resource, because it contains
     // a file extension, skip.
@@ -52,7 +52,7 @@ registerRoute(
     // Return true to signal that we want to use the handler.
     return true
   },
-  createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
+  createHandlerBoundToURL(BASE_URL + '/index.html')
 )
 
 // This allows the web app to trigger skipWaiting via
