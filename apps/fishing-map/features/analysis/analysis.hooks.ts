@@ -442,6 +442,8 @@ export const MAX_MONTHS_TO_COMPARE = 12
 
 export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisType) => {
   const { dispatchQueryParams } = useLocationConnect()
+  const fitMapBounds = useMapFitBounds()
+  const { bounds } = useSelector(selectAnalysisQuery)
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const durationType = timeComparison?.durationType
@@ -462,6 +464,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         : Math.min(MAX_MONTHS_TO_COMPARE, initialDuration.months)
     const initialStart = parseFullISODate(baseStart).minus({ years: 1 }).toISO()
     const initialCompareStart = baseStart
+
     dispatchQueryParams({
       analysisTimeComparison: {
         start: initialStart,
@@ -504,6 +507,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         }
       }
 
+      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       dispatchQueryParams({
         analysisTimeComparison: {
           start,
@@ -513,7 +517,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         },
       })
     },
-    [timeComparison, dispatchQueryParams, analysisType]
+    [timeComparison, analysisType, fitMapBounds, bounds, dispatchQueryParams]
   )
 
   const onStartChange = useCallback(
@@ -544,9 +548,11 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
 
   const onDurationTypeSelect = useCallback(
     (option) => {
-      if (option.id === 'months' && duration > MAX_MONTHS_TO_COMPARE)
+      if (option.id === 'months' && duration > MAX_MONTHS_TO_COMPARE) {
         update({ newDurationType: option.id, newDuration: MAX_MONTHS_TO_COMPARE })
-      else update({ newDurationType: option.id })
+      } else {
+        update({ newDurationType: option.id })
+      }
     },
     [duration, update]
   )
