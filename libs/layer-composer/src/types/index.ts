@@ -43,9 +43,9 @@ export enum Group {
   Background = 'background', // Solid bg color
   Basemap = 'basemap', // Satellite tiles
   Heatmap = 'heatmap', // Fill/gradient-based heatmaps
-  BasemapFill = 'basemapFill', // Landmass
-  OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as EEZ, RFMOs, etc
+  OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as RFMOs, MPAs, etc
   OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
+  BasemapFill = 'basemapFill', // Landmass
   OutlinePolygonsBackground = 'outlinePolygonsBackground', // Polygons  that need to be rendered below landmass
   OutlinePolygonsHighlighted = 'outlinePolygonsHighlighted', // Context layers with selected features
   CustomLayer = 'customLayer', // Context custom user layers
