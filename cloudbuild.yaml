@@ -1,4 +1,7 @@
 steps:
+  - name: gcr.io/cloud-builders/git
+    args: ['fetch', '--unshallow']
+
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
@@ -35,8 +38,8 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        yarn nx affected:apps --plain > affected-apps.txt || exit 0
-        echo affected-apps.txt || exit 0
+        yarn nx affected:apps --plain > affected-apps.txt
+        echo affected-apps.txt
 
   # Trigger the affected apps builds
   - name: gcr.io/cloud-builders/gcloud
