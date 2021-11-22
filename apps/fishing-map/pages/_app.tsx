@@ -6,6 +6,7 @@ import store from '../store'
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>

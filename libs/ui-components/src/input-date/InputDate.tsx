@@ -8,6 +8,7 @@ import styles from './InputDate.module.css'
 export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
   label?: string
+  htmlLabel?: Element
   max?: string
   min?: string
   step?: number
@@ -22,6 +23,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
     className,
     value,
     label,
+    htmlLabel,
     max,
     min,
     step,
@@ -34,9 +36,11 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
 
   const yymmddDate = value?.toString().slice(0, 10)
 
+  const labelContent = htmlLabel || label
+
   return (
     <div className={cx(baseStyles.container, styles.container, styles[inputSize], className)}>
-      {label && <label htmlFor={label}>{label}</label>}
+      {labelContent && <label htmlFor={label}>{labelContent}</label>}
       <input
         type="date"
         value={yymmddDate}
