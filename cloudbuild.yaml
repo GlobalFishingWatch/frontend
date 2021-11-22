@@ -11,8 +11,8 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:14
-    entrypoint: bash
+    name: node:14-alpine
+    entrypoint: sh
     args:
       - '-c'
       # if dependencies cache is not found then install all deps
@@ -31,15 +31,9 @@ steps:
       - '--no-clobber'
 
   - id: get-affected
-    name: node:14
-    entrypoint: bash
-    args:
-      - '-eEuo'
-      - 'pipefail'
-      - '-c'
-      - |-
-        yarn affected
-        echo affected-apps.txt
+    name: 'gcr.io/cloud-builders/yarn'
+    entrypoint: yarn
+    args: ['affected']
 
   # Trigger the affected apps builds
   - name: gcr.io/cloud-builders/gcloud
@@ -51,7 +45,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        echo affected-apps.txt
+        echo `cat affected-apps.txt`
         AFFECTED_APPS=(`cat affected-apps.txt`)
         for i in ${AFFECTED_APPS[@]}; do
           if [[$i]]; then
