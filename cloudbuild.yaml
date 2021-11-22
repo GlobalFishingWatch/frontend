@@ -9,6 +9,7 @@ steps:
       - |-
         yarn global add nx || exit 0
         nx affected:apps --plain > affected-apps.txt || exit 0
+        echo affected-apps.txt || exit 0
 
   # Trigger the affected apps builds
   - name: gcr.io/cloud-builders/gcloud
@@ -22,5 +23,7 @@ steps:
       - |-
         AFFECTED_APPS=(`cat affected-apps.txt`)
         for i in ${AFFECTED_APPS[@]}; do
-          gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
+          if [[$i]]; then
+            gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
+          fi
         done
