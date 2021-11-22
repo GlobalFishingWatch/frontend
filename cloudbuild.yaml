@@ -45,10 +45,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        echo `cat affected-apps.txt`
         AFFECTED_APPS=(`cat affected-apps.txt`)
         for i in ${AFFECTED_APPS[@]}; do
-          if [[$i]]; then
-            gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
-          fi
+          [ ! -z "$i" ] && gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
         done
