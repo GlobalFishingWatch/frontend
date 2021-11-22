@@ -154,15 +154,19 @@ const AnalysisPeriodComparisonGraph: React.FC<{
   }, [sublayers])
 
   const baseline = useMemo(() => {
-    return timeseries?.map(({ date, compareDate, min, max }) => {
-      const avgBaseline = min[0] + max[0] / 2
-      return {
-        date: DateTime.fromISO(date).toUTC().toMillis(),
-        ...{ compareDate: compareDate ? DateTime.fromISO(compareDate).toUTC().toMillis() : {} },
-        value: avgBaseline,
-        ceros: 0,
-      }
-    })
+    if (!timeseries || !timeseries.length) return []
+    return [
+      {
+        date: DateTime.fromISO(timeseries[0].date).toUTC().toMillis(),
+        zero: 0,
+      },
+      {
+        date: DateTime.fromISO(timeseries[timeseries.length - 1].date)
+          .toUTC()
+          .toMillis(),
+        zero: 0,
+      },
+    ]
   }, [timeseries])
 
   const difference = useMemo(() => {
@@ -251,7 +255,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             unit={unit}
             dot={false}
             isAnimationActive={false}
-            stroke="rgb(360, 62, 98)"
+            stroke="rgb(22, 63, 137) "
             strokeWidth={2}
           />
           <Line
@@ -263,19 +267,28 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             unit={unit}
             dot={false}
             isAnimationActive={false}
-            stroke="rgb(63, 238, 254)"
+            stroke="rgb(22, 63, 137) "
+            strokeWidth={2}
+          />
+          <Line
+            key={`${BASELINE}_bg`}
+            name={BASELINE}
+            data={baseline}
+            dataKey={(data) => data.zero}
+            dot={false}
+            isAnimationActive={false}
+            stroke="rgb(229, 240, 242)"
             strokeWidth={2}
           />
           <Line
             key={BASELINE}
             name={BASELINE}
-            type="step"
             data={baseline}
-            dataKey={(data) => data.ceros}
-            unit={unit}
+            dataKey={(data) => data.zero}
             dot={false}
             isAnimationActive={false}
             stroke="rgb(111, 138, 182)"
+            strokeDasharray="2 4"
             strokeWidth={2}
           />
         </ComposedChart>
