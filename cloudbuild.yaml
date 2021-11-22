@@ -1,22 +1,18 @@
 steps:
   - id: install-nx
     name: node:14
-    entrypoint: yarn
-    args: ['global', 'add', 'nx']
-
-  - id: get-affected
-    name: node:14
-    waitFor: ['install-nx']
     entrypoint: bash
     args:
       - '-eEuo'
       - 'pipefail'
       - '-c'
-      - nx affected:apps --plain > affected-apps.txt
+      - |-
+        yarn global add nx
+        nx affected:apps --plain > affected-apps.txt
 
   # Trigger the affected apps builds
   - name: gcr.io/cloud-builders/gcloud
-    waitFor: ['get-affected']
+    waitFor: ['install-nx']
     id: deploy-cloud-run
     entrypoint: bash
     args:
