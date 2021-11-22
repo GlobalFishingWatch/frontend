@@ -9,12 +9,11 @@ import {
   ComposedChart,
   Area,
 } from 'recharts'
-import { format } from 'd3-format'
 import { DateTime, Interval as TimeInterval } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n, { t } from 'features/i18n/i18n'
 import styles from './AnalysisEvolutionGraph.module.css'
+import { formatDate, formatTooltipValue, tickFormatter } from './analysis.utils'
 
 export interface ComparisonGraphData {
   date: string
@@ -39,11 +38,6 @@ const DIFFERENCE_INCREASE = 'difference-increase'
 const DIFFERENCE_DECREASE = 'difference-decrease'
 const BASELINE = 'baseline'
 
-const tickFormatter = (tick: number) => {
-  const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
-  return format(formatter)(tick)
-}
-
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
   const startDate = DateTime.fromISO(start).toUTC()
   const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
@@ -60,15 +54,6 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
       }`
 }
 
-const formatTooltipValue = (value: number, unit: string, asDifference = false) => {
-  if (value === undefined) {
-    return null
-  }
-  const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
-  const valueLabel = `${value > 0 && asDifference ? '+' : ''}${valueFormatted} ${unit ? unit : ''}`
-  return valueLabel
-}
-
 type AnalysisGraphTooltipProps = {
   active: boolean
   payload: {
@@ -82,27 +67,6 @@ type AnalysisGraphTooltipProps = {
   }[]
   label: number
   timeChunkInterval: Interval
-}
-
-const formatDate = (date: DateTime, timeChunkInterval: Interval) => {
-  let formattedLabel = ''
-  switch (timeChunkInterval) {
-    case 'month':
-      formattedLabel += date.toFormat('LLLL y')
-      break
-    case '10days':
-      const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
-      const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
-      formattedLabel += `${timeRangeStart} - ${timeRangeEnd}`
-      break
-    case 'day':
-      formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
-      break
-    default:
-      formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
-      break
-  }
-  return formattedLabel
 }
 
 const AnalysisGraphTooltip = (props: any) => {

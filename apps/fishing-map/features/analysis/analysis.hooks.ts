@@ -448,7 +448,19 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
   const duration = timeComparison?.duration
 
   useEffect(() => {
-    if (timeComparison) return
+    if (timeComparison) {
+      if (analysisType === 'beforeAfter')
+        // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
+        dispatchQueryParams({
+          analysisTimeComparison: {
+            ...timeComparison,
+            start: parseFullISODate(timeComparison.compareStart)
+              .minus({ [timeComparison.durationType]: timeComparison.duration })
+              .toISO(),
+          },
+        })
+      return
+    }
     const baseStart = timebarStart || DEFAULT_WORKSPACE.availableEnd
     const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
     const initialDuration = DateTime.fromISO(baseEnd).diff(DateTime.fromISO(baseStart), [
@@ -458,9 +470,14 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
     const initialDurationType = initialDuration.as('days') >= 30 ? 'months' : 'days'
     const initialDurationValue =
       initialDurationType === 'days'
-        ? Math.max(1, initialDuration.days)
-        : Math.min(MAX_MONTHS_TO_COMPARE, initialDuration.months)
-    const initialStart = parseFullISODate(baseStart).minus({ years: 1 }).toISO()
+        ? Math.max(1, Math.round(initialDuration.days))
+        : Math.min(MAX_MONTHS_TO_COMPARE, Math.round(initialDuration.months))
+
+    const baseStartMinusOffset =
+      analysisType === 'periodComparison'
+        ? { years: 1 }
+        : { [initialDurationType]: initialDuration }
+    const initialStart = parseFullISODate(baseStart).minus(baseStartMinusOffset).toISO()
     const initialCompareStart = baseStart
     dispatchQueryParams({
       analysisTimeComparison: {

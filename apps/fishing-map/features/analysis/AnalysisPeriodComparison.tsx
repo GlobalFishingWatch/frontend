@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { DateTime, DurationUnit } from 'luxon'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
@@ -17,11 +16,13 @@ import {
 } from './analysis.hooks'
 import AnalysisPeriodComparisonGraph from './AnalysisPeriodComparisonGraph'
 import styles from './AnalysisPeriodComparison.module.css'
+import { selectTimeComparisonValues } from './analysis.selectors'
 
 const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, analysisAreaName } = props
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const {
     onStartChange,
     onCompareStartChange,
@@ -39,20 +40,18 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
   }, [layersTimeseriesFiltered])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
   if (!timeComparison) return null
-
   return (
     <Fragment>
       <AnalysisDescription description={description} />
       <div className={styles.container}>
-        {dataviews && dataviews.map((d) => <DatasetFilterSource dataview={d} hideColor={true} />)}
+        {dataviews &&
+          dataviews.map((d) => <DatasetFilterSource dataview={d} key={d.id} hideColor={true} />)}
       </div>
       {layersTimeseriesFiltered ? (
         <AnalysisPeriodComparisonGraph
           graphData={layersTimeseriesFiltered?.[0]}
           start={timeComparison.start}
-          end={DateTime.fromISO(timeComparison.start)
-            .plus({ [timeComparison.durationType as DurationUnit]: timeComparison.duration })
-            .toString()}
+          end={timeComparisonValues.end}
         />
       ) : (
         <div className={styles.graphContainer}>

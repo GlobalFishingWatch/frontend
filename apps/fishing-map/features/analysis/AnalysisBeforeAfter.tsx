@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
+import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
@@ -16,11 +15,14 @@ import {
   MAX_MONTHS_TO_COMPARE,
   useAnalysisTimeCompareConnect,
 } from './analysis.hooks'
+import AnalysisBeforeAfterGraph from './AnalysisBeforeAfterGraph'
+import { selectTimeComparisonValues } from './analysis.selectors'
 
 const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, analysisAreaName } = props
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const {
     onCompareStartChange,
     onDurationChange,
@@ -42,12 +44,20 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
     <Fragment>
       <AnalysisDescription description={description} />
       <div className={styles.container}>
-        {dataviews && dataviews.map((d) => <DatasetFilterSource dataview={d} hideColor={true} />)}
+        {dataviews &&
+          dataviews.map((d) => <DatasetFilterSource dataview={d} key={d.id} hideColor={true} />)}
       </div>
-      {/*
-        TODO: Draw graph using layersTimeseriesFiltered
-      */}
-      <div className={cx(styles.container, styles.comingSoon)}>Graph coming soon</div>
+      {layersTimeseriesFiltered ? (
+        <AnalysisBeforeAfterGraph
+          graphData={layersTimeseriesFiltered?.[0]}
+          start={timeComparison.start}
+          end={timeComparisonValues.end}
+        />
+      ) : (
+        <div className={styles.graphContainer}>
+          <Spinner />
+        </div>
+      )}
       <div className={styles.container}>
         <div className={styles.timeSelection}>
           <div className={styles.dateWrapper}>

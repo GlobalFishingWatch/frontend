@@ -4,20 +4,14 @@
   padding: var(--space-M);
 }
 
-.comingSoon {
-  text-align: center;
-  font-style: italic;
-  justify-content: center;
-  align-items: center;
-  height: 15rem;
-}
-
 .timeSelection {
   display: flex;
+  width: 100%;
+  gap: var(--space-S);
+  justify-content: space-between;
 }
 
-.dateWrapper,
-.durationWrapper {
+.dateWrapper {
   flex: 1;
 }
 
