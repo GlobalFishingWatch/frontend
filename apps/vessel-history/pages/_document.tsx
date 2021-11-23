@@ -36,7 +36,7 @@ class MyDocument extends Document {
               sizes="48x48"
               href={`${BASE_URL}/icons/favicon-48x48.png`}
             />
-            <link rel="manifest" href="/manifest.json" />
+            <link rel="manifest" href={`${BASE_URL}/manifest.json`} />
             <meta name="mobile-web-app-capable" content="yes" />
             <meta name="theme-color" content="#163f89" />
             <meta name="application-name" content="GFW Vessel Viewer" />

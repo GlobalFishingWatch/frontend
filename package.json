@@ -142,7 +142,8 @@
   },
   "resolutions": {
     "gl-matrix": "3.3.0",
-    "reselect": "4.0.0"
+    "reselect": "4.0.0",
+    "webpack-sources": "3.2.1"
   },
   "husky": {
     "hooks": {
