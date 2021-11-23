@@ -149,7 +149,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                       )}
                     </span>
                     <IconButton
-                      icon={vesselInWorkspace ? 'tick' : 'pin'}
+                      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                       style={{
                         color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
                       }}
