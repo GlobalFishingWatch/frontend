@@ -136,7 +136,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                 const isVesselInEndpointParams = vesselDatasetConfig.params.find(
                   (p) => p.id === 'vesselId' && p.value === vessel.id
                 )
-                if (isVesselInEndpointParams) return v
+                return isVesselInEndpointParams ? v : undefined
               })
 
               return (
@@ -150,8 +150,19 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                     </span>
                     <IconButton
                       icon={vesselInWorkspace ? 'tick' : 'pin'}
+                      style={{
+                        color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                      }}
                       disabled={
                         !interactionAllowed || !hasDatasets || vesselInWorkspace !== undefined
+                      }
+                      tooltip={
+                        vesselInWorkspace
+                          ? t(
+                              'search.vesselAlreadyInWorkspace',
+                              'This vessel is already in your workspace'
+                            )
+                          : t('search.seeVessel', 'See vessel')
                       }
                       onClick={(e) => onVesselClick(e, vessel)}
                       size="small"

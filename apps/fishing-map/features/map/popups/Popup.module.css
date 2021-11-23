@@ -108,7 +108,7 @@
   position: relative;
   flex: 1;
   text-align: left;
-  margin-right: var(--space-M);
+  margin-right: var(--space-L);
 }
 
 .vesselsMore {
@@ -118,8 +118,8 @@
 .pinButton {
   position: absolute;
   display: inline-block;
-  top: -5px;
-  margin-left: 4px;
+  bottom: -5px;
+  margin-left: var(space-S);
 }
 
 .vesselHours {
