@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
@@ -15,22 +15,32 @@ interface DatasetFileProps {
 
 type DatasetGeometryTypesSupported = Extract<DatasetGeometryType, 'polygons' | 'tracks' | 'points'>
 
-const POLYGONS_ACCEPT = '.zip, .json, .geojson'
-const TRACKS_ACCEPT = '.csv'
+const ZIP_GEOJSON_TYPES = '.zip, .json, .geojson'
+const CSV_TYPE = '.csv'
 const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
-  polygons: POLYGONS_ACCEPT,
-  tracks: TRACKS_ACCEPT,
-  points: POLYGONS_ACCEPT,
+  polygons: ZIP_GEOJSON_TYPES,
+  tracks: CSV_TYPE,
+  points: [ZIP_GEOJSON_TYPES, CSV_TYPE].join(','),
+}
+const ACCEPT_ICON_BY_TYPE: Record<DatasetGeometryTypesSupported, JSX.Element> = {
+  polygons: <FilesSupportedPolygonsIcon />,
+  tracks: <FilesSupportedTracksIcon />,
+  points: (
+    <div className={styles.icons}>
+      <FilesSupportedPolygonsIcon />
+      <FilesSupportedTracksIcon />
+    </div>
+  ),
 }
 const TRANSLATIONS_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
   polygons: 'dataset.dragFilePlaceholder',
   tracks: 'dataset.dragFilePlaceholderCSV',
-  points: '',
+  points: 'dataset.dragFilePlaceholderCombined',
 }
 const ERRORS_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
   polygons: 'dataset.onlyZipAndJsonAllowed',
   tracks: 'dataset.onlyCsvAllowed',
-  points: '',
+  points: 'dataset.onlyZipAndJsonAndCsvAllowed',
 }
 
 const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className = '' }) => {
@@ -39,8 +49,9 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
   const translationKey = supportedType
     ? TRANSLATIONS_BY_TYPE[supportedType]
     : TRANSLATIONS_BY_TYPE.polygons
-  const filesSupportedIcon =
-    accept === POLYGONS_ACCEPT ? <FilesSupportedPolygonsIcon /> : <FilesSupportedTracksIcon />
+  const filesSupportedIcon = supportedType
+    ? ACCEPT_ICON_BY_TYPE[supportedType]
+    : ACCEPT_FILES_BY_TYPE.polygons
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
     (files) => {

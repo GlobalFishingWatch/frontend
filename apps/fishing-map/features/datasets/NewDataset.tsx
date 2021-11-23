@@ -1,4 +1,5 @@
 import React, { useState, useCallback, Fragment } from 'react'
+import { featureCollection, point } from '@turf/helpers'
 import { FeatureCollectionWithFilename } from 'shpjs'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
@@ -18,13 +19,14 @@ import {
 import {
   checkRecordValidity,
   csvToTrackSegments,
+  guessColum,
   guessColumns,
   segmentsToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
 import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
-import { readBlobAs } from 'utils/files'
+import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import {
   useDatasetsAPI,
   useDatasetModalConnect,
@@ -75,6 +77,7 @@ function NewDataset(): React.ReactElement {
         file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
 
       const metadataName = capitalize(lowerCase(name))
+      let formatGeojson = false
 
       if (type === 'tracks') {
         setFile(file)
@@ -108,9 +111,11 @@ function NewDataset(): React.ReactElement {
           file.type === 'application/octet-stream' ||
           file.type === 'multipart/x-zip'
         const isGeojson =
-          (!isZip && file.type === 'application/json') || (!isZip && file.name.includes('.geojson'))
+          !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
+        const isCSV = !isZip && !isGeojson && file.type === 'text/csv'
 
         if (isGeojson && file.name.includes('.geojson')) {
+          formatGeojson = true
           const blob = file.slice(0, file.size, 'application/json')
           const fileAsJson = new File([blob], `${name}.json`, { type: 'application/json' })
           setFile(fileAsJson)
@@ -128,6 +133,31 @@ function NewDataset(): React.ReactElement {
           } catch (e: any) {
             console.warn('Error reading file:', e)
           }
+        } else if (isCSV) {
+          const fileData = await readBlobAs(file, 'text')
+          const { data, meta } = parseCSV<any>(fileData, {
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+          })
+          const latField = guessColum('latitude', meta.fields)
+          const lngField = guessColum('longitude', meta.fields)
+          if (latField !== undefined && lngField !== undefined) {
+            formatGeojson = true
+            try {
+              geojson = featureCollection(
+                data.flatMap((d) => {
+                  const { [latField]: lat, [lngField]: lng, ...rest } = d
+                  return lat && lng ? point([lng, lat], rest) : []
+                })
+              )
+            } catch (e) {
+              console.warn(e)
+            }
+          } else {
+            setError(t('errors.missingLatLng', 'No latitude or longitude fields found'))
+          }
+          // geojson = JSON.parse(fileData)
         } else {
           const fileData = await readBlobAs(file, 'text')
           try {
@@ -144,7 +174,7 @@ function NewDataset(): React.ReactElement {
             geometryType: datasetGeometryType,
             // TODO when supporting multiple files upload
             // ...(geojson?.fileName && { file: geojson.fileName }),
-            ...(isGeojson && { format: 'geojson' }),
+            ...(formatGeojson && { format: 'geojson' }),
           } as DatasetConfiguration
 
           // Set disableInteraction flag when not all features are polygons
@@ -224,7 +254,7 @@ function NewDataset(): React.ReactElement {
   const onConfirmClick = async () => {
     if (file) {
       let validityError
-      let userTrackGeoJSONFile
+      let onTheFlyGeoJSONFile
       if (
         metadata?.category === DatasetCategory.Environment &&
         datasetGeometryType === 'polygons'
@@ -268,11 +298,15 @@ function NewDataset(): React.ReactElement {
               ...(metadata.configuration as any),
             })
             const geoJSON = segmentsToGeoJSON(segments)
-            userTrackGeoJSONFile = new File([JSON.stringify(geoJSON)], 'file.json', {
-              type: 'application/json',
-            })
+            onTheFlyGeoJSONFile = getFileFromGeojson(geoJSON)
           }
         }
+      } else if (
+        metadata?.category === DatasetCategory.Context &&
+        datasetGeometryType === 'points' &&
+        file.type === 'text/csv'
+      ) {
+        onTheFlyGeoJSONFile = getFileFromGeojson(fileData as Feature)
       }
       if (validityError) {
         setError(validityError)
@@ -290,14 +324,15 @@ function NewDataset(): React.ReactElement {
       uaEvent({
         category: `${uaCategory}`,
         action: `Confirm ${uaDatasetType} upload`,
-        label: userTrackGeoJSONFile?.name ?? file.name,
+        label: onTheFlyGeoJSONFile?.name ?? file.name,
       })
+      debugger
       setLoading(true)
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {
           ...metadata,
         },
-        file: userTrackGeoJSONFile || file,
+        file: onTheFlyGeoJSONFile || file,
         createAsPublic: metadata?.public ?? true,
       })
       setLoading(false)
