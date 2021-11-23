@@ -4,28 +4,33 @@ import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { InputText, Button, Modal, SwitchRow } from '@globalfishingwatch/ui-components'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import { Workspace } from '@globalfishingwatch/api-types'
 import {
-  saveCurrentWorkspaceThunk,
+  saveWorkspaceThunk,
   updatedCurrentWorkspaceThunk,
 } from 'features/workspace/workspace.slice'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectCustomWorkspace, selectViewport } from 'features/app/app.selectors'
+import { selectViewport } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
+import { selectWorkspaceId } from 'routes/routes.selectors'
+import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import styles from './NewWorkspaceModal.module.css'
 
 type NewWorkspaceModalProps = {
+  title?: string
   isOpen: boolean
   onClose: () => void
-  onFinish?: () => void
+  onFinish?: (workspace: Workspace) => void
+  workspace: AppWorkspace
+  suggestName?: boolean
 }
 
 const formatTimerangeBoundary = (
@@ -38,7 +43,14 @@ const formatTimerangeBoundary = (
   }).replace(/[.,]/g, '')
 }
 
-function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps) {
+function NewWorkspaceModal({
+  title,
+  isOpen,
+  onClose,
+  onFinish,
+  workspace,
+  suggestName = true,
+}: NewWorkspaceModalProps) {
   const [name, setName] = useState('')
   const [createLoading, setCreateLoading] = useState(false)
   const [updateLoading, setUpdateLoading] = useState(false)
@@ -47,8 +59,7 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
   const viewport = useSelector(selectViewport)
   const timerange = useTimerangeConnect()
   const userData = useSelector(selectUserData)
-  const workspace = useSelector(selectWorkspace)
-  const currentWorkspace = useSelector(selectCustomWorkspace)
+  const urlWorkspaceId = useSelector(selectWorkspaceId)
   const dataviewsInWorkspace = useSelector(selectDataviewInstancesMerged)
   const hasEditPermission = useSelector(selectUserWorkspaceEditPermissions)
   const workspaceDatasets = getDatasetsInDataviews(dataviewsInWorkspace || [])
@@ -57,7 +68,8 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
 
   const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
-  const hasWorkspaceDefined = workspace !== null && !isDefaultWorkspace
+  const hasWorkspaceDefined =
+    workspace !== null && urlWorkspaceId !== undefined && !isDefaultWorkspace
   const allowUpdate = hasWorkspaceDefined && (isOwnerWorkspace || hasEditPermission)
   const showOverWriteWarning = hasWorkspaceDefined && !isOwnerWorkspace && hasEditPermission
   const initialCreateAsPublic = allowUpdate
@@ -69,12 +81,19 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
   useEffect(() => {
     if (isOpen) {
       let workspaceName = workspace?.name
-      if (isDefaultWorkspace || !allowUpdate) {
+      if ((!hasWorkspaceDefined || !workspaceName) && suggestName) {
         const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
-        const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
-        const start = formatTimerangeBoundary(timerange.start, dateFormat)
-        const end = formatTimerangeBoundary(timerange.end, dateFormat)
-        workspaceName = `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`
+        if (timerange.start && timerange.end) {
+          const dateFormat = pickDateFormatByRange(
+            timerange.start as string,
+            timerange.end as string
+          )
+          const start = formatTimerangeBoundary(timerange.start, dateFormat)
+          const end = formatTimerangeBoundary(timerange.end, dateFormat)
+          workspaceName = `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`
+        } else {
+          workspaceName = areaName
+        }
       }
 
       if (workspaceName) {
@@ -85,21 +104,18 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
   }, [isOpen])
 
   const updateWorkspace = async () => {
-    if (currentWorkspace) {
+    if (workspace) {
       setUpdateLoading(true)
-      const dispatchedAction = await dispatch(
-        updatedCurrentWorkspaceThunk({ ...currentWorkspace, name })
-      )
+      const dispatchedAction = await dispatch(updatedCurrentWorkspaceThunk({ ...workspace, name }))
       if (updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
         uaEvent({
           category: 'Workspace Management',
           action: 'Edit current workspace',
           label: dispatchedAction.payload?.name ?? 'Unknown',
         })
-
         setUpdateLoading(false)
         if (onFinish) {
-          onFinish()
+          onFinish(dispatchedAction.payload)
         }
       } else {
         console.warn('Error updating workspace', dispatchedAction.payload)
@@ -110,16 +126,19 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
   const createWorkspace = async () => {
     if (name) {
       setCreateLoading(true)
-      const dispatchedAction = await dispatch(saveCurrentWorkspaceThunk({ name, createAsPublic }))
-      if (saveCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
+      const dispatchedAction = await dispatch(
+        saveWorkspaceThunk({ workspace, name, createAsPublic })
+      )
+      if (saveWorkspaceThunk.fulfilled.match(dispatchedAction)) {
+        const workspace = dispatchedAction.payload as Workspace
         uaEvent({
           category: 'Workspace Management',
           action: 'Save current workspace',
-          label: dispatchedAction.payload?.name ?? 'Unknown',
+          label: workspace?.name ?? 'Unknown',
         })
         setCreateLoading(false)
         if (onFinish) {
-          onFinish()
+          onFinish(workspace)
         }
       } else {
         console.warn('Error saving workspace', dispatchedAction.payload)
@@ -130,7 +149,7 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
   return (
     <Modal
       appSelector="__next"
-      title={t('workspace.save', 'Save the current workspace')}
+      title={title || t('workspace.save', 'Save the current workspace')}
       isOpen={isOpen}
       shouldCloseOnEsc={true}
       contentClassName={styles.modal}
@@ -142,6 +161,7 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
         label={t('common.name', 'Name')}
         className={styles.input}
         onChange={(e) => setName(e.target.value)}
+        autoFocus
       />
       {workspace?.id && (
         <SwitchRow
@@ -184,7 +204,7 @@ function NewWorkspaceModal({ isOpen, onClose, onFinish }: NewWorkspaceModalProps
           </Button>
         )}
         <Button loading={createLoading} disabled={!name} onClick={createWorkspace}>
-          {t('workspace.create', 'Create new workspace') as string}
+          {t('workspace.create', 'Create as new workspace') as string}
         </Button>
       </div>
     </Modal>

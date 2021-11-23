@@ -26,6 +26,6 @@ export interface Workspace<State = unknown, Category = string> {
 }
 
 export interface WorkspaceUpsert<T = any> extends Partial<Omit<Workspace<T>, 'aoi' | 'dataviews'>> {
-  aoi?: number
+  aoi?: string
   dataviews?: number[]
 }

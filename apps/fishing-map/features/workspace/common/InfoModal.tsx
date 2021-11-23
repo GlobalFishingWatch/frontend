@@ -1,15 +1,12 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
-import ReactHtmlParser from 'react-html-parser'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { uniqBy } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Tabs, Tab, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { getDatasetDescriptionTranslated } from 'features/i18n/utils'
 import { getDatasetLabel, hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
-import { isGFWUser } from 'features/user/user.slice'
+import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -22,7 +19,6 @@ type InfoModalProps = {
 const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoModalProps) => {
   const { t } = useTranslation()
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
-  const gfwUser = useSelector(isGFWUser)
   const dataset = dataview.datasets?.[0]
 
   const tabs = useMemo(() => {
@@ -38,39 +34,10 @@ const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoMod
       } else if (dataview.config?.datasets && !dataview.config?.datasets?.includes(dataset.id)) {
         return []
       }
-      const description = getDatasetDescriptionTranslated(dataset)
-      const rawQueries = dataset.configuration?.documentation?.queries
-      const queries = Array.isArray(rawQueries) ? rawQueries : [rawQueries as unknown as string]
       return {
         id: dataset.id,
         title: getDatasetLabel(dataset),
-        content: (
-          <Fragment>
-            <p className={styles.content}>
-              {/**
-               * For security reasons, we are only parsing html
-               * coming from translated descriptions
-               **/}
-              {description.length > 0 ? ReactHtmlParser(description) : dataset.description}
-            </p>
-            {gfwUser && (
-              <div className={styles.content}>
-                <h2 className={styles.subtitle}>Queries used</h2>
-                {queries?.length ? (
-                  queries?.map((query: string, index: number) => (
-                    <div key={index}>
-                      <a target="_blank" href={query} rel="noreferrer">
-                        query {index + 1}
-                      </a>
-                    </div>
-                  ))
-                ) : (
-                  <p>none specified</p>
-                )}
-              </div>
-            )}
-          </Fragment>
-        ),
+        content: <InfoModalContent dataset={dataset} />,
       }
     })
     // Updating tabs when t changes to ensure the content is updated on lang change
