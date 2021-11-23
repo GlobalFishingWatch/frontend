@@ -4,7 +4,7 @@ type Args = Columns & {
   record: Record<string, any>
 }
 
-const checkRecordValidity = ({ record, latitude, longitude, timestamp }: Args) => {
+export const checkRecordValidity = ({ record, latitude, longitude, timestamp }: Args) => {
   const errors = []
   if (Number.isNaN(parseInt(record[latitude])) || record[latitude] > 90 || record[latitude] < -90) {
     errors.push('latitude')
@@ -22,5 +22,3 @@ const checkRecordValidity = ({ record, latitude, longitude, timestamp }: Args) =
   }
   return errors
 }
-
-export default checkRecordValidity
