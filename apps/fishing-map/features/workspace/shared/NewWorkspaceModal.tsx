@@ -161,6 +161,7 @@ function NewWorkspaceModal({
         label={t('common.name', 'Name')}
         className={styles.input}
         onChange={(e) => setName(e.target.value)}
+        autoFocus
       />
       {workspace?.id && (
         <SwitchRow
