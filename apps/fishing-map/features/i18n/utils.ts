@@ -10,14 +10,14 @@ export const getPlaceholderBySelections = (selections?: MultiSelectOption[]): st
 }
 
 export const getDatasetNameTranslated = (dataset: { id: string; name?: string }): string => {
-  return t(`datasets:${removeDatasetVersion(dataset.id)}.name`, dataset.name)
+  return t(`datasets:${removeDatasetVersion(dataset?.id)}.name`, dataset?.name)
 }
 
 export const getDatasetDescriptionTranslated = (dataset: {
   id: string
   description?: string
 }): string => {
-  return t(`datasets:${removeDatasetVersion(dataset.id)}.description`, dataset.description)
+  return t(`datasets:${removeDatasetVersion(dataset?.id)}.description`, dataset?.description)
 }
 
 export const getDateFormatString = ({ locale = i18n.language, upper = false } = {}) => {

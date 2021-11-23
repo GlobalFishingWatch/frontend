@@ -3,11 +3,11 @@ import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Spinner, IconButton } from '@globalfishingwatch/ui-components'
-import { Workspace } from '@globalfishingwatch/api-types'
 import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import {
+  AppWorkspace,
   deleteWorkspaceThunk,
   selectWorkspaceListStatus,
   selectWorkspaceListStatusId,
@@ -32,7 +32,7 @@ function UserWorkspaces() {
   const { dispatchLocation } = useLocationConnect()
   const [workspaceTemplatesOpen, setWorkspaceTemplatesOpen] = useState(false)
   const [workspaceTemplateSelected, setWorkspaceTemplateSelected] = useState<
-    Workspace | undefined
+    AppWorkspace | undefined
   >()
   const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
   const { setMapCoordinates } = useViewport()
@@ -50,7 +50,7 @@ function UserWorkspaces() {
   const deleteLoading = workspacesStatus === AsyncReducerStatus.LoadingDelete
 
   const onEditClick = useCallback(
-    async (workspace: Workspace) => {
+    async (workspace: AppWorkspace) => {
       const name = prompt(t('workspace.nameInput', 'Workspace name'), workspace.name)
       if (name) {
         await dispatch(updateWorkspaceThunk({ id: workspace.id, name }))
@@ -76,7 +76,7 @@ function UserWorkspaces() {
   }, [])
 
   const onWorkspaceCreateFinish = useCallback(
-    (workspace: Workspace) => {
+    (workspace: AppWorkspace) => {
       if (workspace) {
         closeWorkspaceCreate()
         dispatch(cleanCurrentWorkspaceData())
@@ -118,7 +118,7 @@ function UserWorkspaces() {
   }, [createWorkspaceByUserGroup, userGroups, workspacesByUserGroup])
 
   const onWorkspaceClick = useCallback(
-    (workspace: Workspace) => {
+    (workspace: AppWorkspace) => {
       if (workspace.viewport) {
         setMapCoordinates(workspace.viewport)
       }
@@ -127,7 +127,7 @@ function UserWorkspaces() {
   )
 
   const onDeleteClick = useCallback(
-    async (workspace: Workspace) => {
+    async (workspace: AppWorkspace) => {
       const confirmation = window.confirm(
         `${t(
           'workspace.confirmRemove',

@@ -1,6 +1,5 @@
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import ReactHtmlParser from 'react-html-parser'
-import React, { Fragment, useCallback, useState } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { Button, Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
@@ -13,9 +12,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import InfoError from 'features/workspace/common/InfoError'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { isGFWUser } from 'features/user/user.slice'
-import { getDatasetQueriesArray } from 'features/workspace/common/InfoModal'
-import infoModalStyles from 'features/workspace/common/InfoModal.module.css'
+import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import styles from './User.module.css'
 import { selectUserDatasetsByCategory } from './user.selectors'
 
@@ -26,7 +23,6 @@ interface UserDatasetsProps {
 function UserDatasets({ datasetCategory }: UserDatasetsProps) {
   const [infoDataset, setInfoDataset] = useState<Dataset | undefined>()
   const datasets = useSelector(selectUserDatasetsByCategory(datasetCategory))
-  const gfwUser = useSelector(isGFWUser)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
   const { t } = useTranslation()
@@ -72,7 +68,6 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
   )
 
   const loading = datasetsStatus === AsyncReducerStatus.Loading
-  const infoDatasetQueries = getDatasetQueriesArray(infoDataset)
 
   return (
     <div className={styles.views}>
@@ -147,29 +142,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
         isOpen={infoDataset !== undefined}
         onClose={() => setInfoDataset(undefined)}
       >
-        <Fragment>
-          <p className={infoModalStyles.content}>
-            {/**
-             * For security reasons, we are only parsing html
-             * coming from translated descriptions
-             **/}
-            {infoDataset?.description.length > 0
-              ? ReactHtmlParser(infoDataset.description)
-              : infoDataset?.description}
-          </p>
-          {gfwUser && infoDatasetQueries && (
-            <div className={infoModalStyles.content}>
-              <h2 className={infoModalStyles.subtitle}>Queries used</h2>
-              {infoDatasetQueries?.map((query: string, index: number) => (
-                <div key={index}>
-                  <a target="_blank" href={query} rel="noreferrer">
-                    query {index + 1}
-                  </a>
-                </div>
-              ))}
-            </div>
-          )}
-        </Fragment>
+        <InfoModalContent dataset={infoDataset} />
       </Modal>
     </div>
   )
