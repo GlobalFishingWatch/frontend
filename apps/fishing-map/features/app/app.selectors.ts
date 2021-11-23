@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types'
+import { DataviewInstance, Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectWorkspace,
@@ -23,7 +23,6 @@ import {
   WorkspaceAnalysis,
   WorkspaceAnalysisTimeComparison,
   WorkspaceAnalysisType,
-  WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
 import {
@@ -31,6 +30,7 @@ import {
   selectDataviewInstancesMerged,
 } from 'features/dataviews/dataviews.selectors'
 import { RootState } from 'store'
+import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -178,7 +178,7 @@ export const selectWorkspaceAppState = createSelector(
   }
 )
 
-export const selectCustomWorkspace = createSelector(
+export const selectWorkspaceWithCurrentState = createSelector(
   [
     selectWorkspace,
     selectViewport,
@@ -187,20 +187,12 @@ export const selectCustomWorkspace = createSelector(
     selectWorkspaceAppState,
     (state) => selectDataviewInstancesMerged(state),
   ],
-  (
-    workspace,
-    viewport,
-    timerange,
-    category,
-    state,
-    dataviewInstances
-  ): WorkspaceUpsert<WorkspaceState> => {
+  (workspace, viewport, timerange, category, state, dataviewInstances): AppWorkspace => {
     return {
       ...workspace,
       app: APP_NAME,
       category,
       aoi: undefined,
-      dataviews: workspace?.dataviews?.map(({ id }) => id as number),
       viewport,
       startAt: timerange.start,
       endAt: timerange.end,
