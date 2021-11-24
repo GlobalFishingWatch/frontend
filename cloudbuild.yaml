@@ -11,8 +11,8 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:14-alpine
-    entrypoint: sh
+    name: gcr.io/cloud-builders/yarn
+    entrypoint: bash
     args:
       - '-c'
       # if dependencies cache is not found then install all deps

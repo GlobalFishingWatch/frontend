@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:14
+    name: gcr.io/cloud-builders/yarn
     entrypoint: bash
     args:
       - '-c'
@@ -29,7 +29,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:14
+    name: gcr.io/cloud-builders/yarn
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
