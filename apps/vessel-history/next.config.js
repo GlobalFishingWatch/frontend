@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withPlugins = require('next-compose-plugins')
 const withNx = require('@nrwl/next/plugins/with-nx')
-const withWorkbox = require('next-with-workbox')
+const withPWA = require('next-pwa')
 
 // const { i18n } = require('./next-i18next.config')
 
@@ -31,7 +31,11 @@ const nextConfig = {
   },
 
   // i18n,
-  productionBrowserSourceMaps: process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development',
+  basePath:
+    process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/vessel-viewer' : ''),
+  productionBrowserSourceMaps:
+    process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
+    process.env.NODE_ENV === 'development',
 }
 
 module.exports = withPlugins(
@@ -47,13 +51,22 @@ module.exports = withPlugins(
       },
     ],
     [
-      withWorkbox,
+      withPWA,
       {
+        pwa: {
+          // disable: process.env.NODE_ENV === 'development',
+          // register: true,
+          dest: 'public',
+          customWorkerDir: 'offline',
+          // scope: '/',
+          // sw: 'sw.js',
+          //...
+        },
         workbox: {
-          swSrc: 'offline/service-worker.ts',
-          // .
-          // ..
-          // ... any workbox-webpack-plugin.GenerateSW option
+          // swSrc: 'offline/service-worker.ts',
+          //   // .
+          //   // ..
+          //   // ... any workbox-webpack-plugin.GenerateSW option
         },
       },
     ],
