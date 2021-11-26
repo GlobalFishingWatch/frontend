@@ -2,6 +2,7 @@
 const withPlugins = require('next-compose-plugins')
 const withNx = require('@nrwl/next/plugins/with-nx')
 const withPWA = require('next-pwa')
+const runtimeCaching = require('next-pwa/cache')
 
 // const { i18n } = require('./next-i18next.config')
 
@@ -57,7 +58,9 @@ module.exports = withPlugins(
           // register: true,
           dest: 'public',
           customWorkerDir: 'offline',
-          // scope: '/',
+          buildExcludes: [/middleware-manifest.json$/],
+          runtimeCaching,
+          // scope: '/vessel-viewer',
           // sw: 'sw.js',
           //...
         },
