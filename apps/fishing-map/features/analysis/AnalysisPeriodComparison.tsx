@@ -39,7 +39,16 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     return layersTimeseriesFiltered[0].sublayers.map((s) => s.id)
   }, [layersTimeseriesFiltered])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
+
+  //TODO timeComparison.start is null when coming from before7after
+
   if (!timeComparison) return null
+
+  const isLoading =
+    !layersTimeseriesFiltered ||
+    !layersTimeseriesFiltered[0] ||
+    !layersTimeseriesFiltered[0].timeseries.length
+
   return (
     <Fragment>
       <AnalysisDescription description={description} />
@@ -47,16 +56,16 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
         {dataviews &&
           dataviews.map((d) => <DatasetFilterSource key={d.id} dataview={d} hideColor={true} />)}
       </div>
-      {layersTimeseriesFiltered ? (
+      {isLoading ? (
+        <div className={styles.graphContainer}>
+          <Spinner />
+        </div>
+      ) : (
         <AnalysisPeriodComparisonGraph
           graphData={layersTimeseriesFiltered?.[0]}
           start={timeComparison.start}
           end={timeComparisonValues.end}
         />
-      ) : (
-        <div className={styles.graphContainer}>
-          <Spinner />
-        </div>
       )}
       <div className={styles.container}>
         <div className={styles.timeSelection}>

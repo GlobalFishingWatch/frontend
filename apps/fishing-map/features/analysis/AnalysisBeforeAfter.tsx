@@ -40,6 +40,11 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
   if (!timeComparison) return null
 
+  const isLoading =
+    !layersTimeseriesFiltered ||
+    !layersTimeseriesFiltered[0] ||
+    !layersTimeseriesFiltered[0].timeseries.length
+
   return (
     <Fragment>
       <AnalysisDescription description={description} />
@@ -47,16 +52,16 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
         {dataviews &&
           dataviews.map((d) => <DatasetFilterSource key={d.id} dataview={d} hideColor={true} />)}
       </div>
-      {layersTimeseriesFiltered ? (
+      {isLoading ? (
+        <div className={styles.graphContainer}>
+          <Spinner />
+        </div>
+      ) : (
         <AnalysisBeforeAfterGraph
           graphData={layersTimeseriesFiltered?.[0]}
           start={timeComparison.start}
           end={timeComparisonValues.end}
         />
-      ) : (
-        <div className={styles.graphContainer}>
-          <Spinner />
-        </div>
       )}
       <div className={styles.container}>
         <div className={styles.timeSelection}>

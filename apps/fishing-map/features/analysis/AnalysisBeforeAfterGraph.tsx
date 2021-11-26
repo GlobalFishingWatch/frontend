@@ -94,8 +94,9 @@ const AnalysisBeforeAfterGraph: React.FC<{
 
   const ticks = useMemo(() => {
     const finalTicks = [dtStart.toMillis()]
-    const startIncrementAt = Math.ceil(timeComparison.duration * 0.35)
-    for (let i = startIncrementAt; i <= timeComparison.duration; i++) {
+    const FRACTION_OF_AXIS_WITHOUT_TICKS = 0.35
+    const startTicksAt = Math.ceil(timeComparison.duration * FRACTION_OF_AXIS_WITHOUT_TICKS)
+    for (let i = startTicksAt; i <= timeComparison.duration; i++) {
       finalTicks.push(
         dtStart
           .plus({ [timeComparison.durationType]: i })
@@ -111,7 +112,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
     }
     finalTicks.sort()
     return finalTicks
-  }, [timeComparison])
+  }, [timeComparison, dtStart])
 
   const unit = useMemo(() => {
     return sublayers[0].legend.unit
