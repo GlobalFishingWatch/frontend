@@ -1,15 +1,13 @@
 import React, { useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, Spinner , IconButton } from '@globalfishingwatch/ui-components'
-import { Workspace } from '@globalfishingwatch/api-types'
+import { Button, Spinner, IconButton } from '@globalfishingwatch/ui-components'
 import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import {
-  createWorkspaceThunk,
+  AppWorkspace,
   deleteWorkspaceThunk,
   selectWorkspaceListStatus,
   selectWorkspaceListStatusId,
@@ -23,7 +21,8 @@ import {
 } from 'features/workspaces-list/workspaces-list.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { getEventLabel } from 'utils/analytics'
+import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
+import { cleanCurrentWorkspaceData } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'
 import { selectUserGroups, selectUserWorkspaces } from './user.selectors'
 
@@ -31,8 +30,10 @@ function UserWorkspaces() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchLocation } = useLocationConnect()
-  const [creatingLoading, setCreatingLoading] = useState(false)
   const [workspaceTemplatesOpen, setWorkspaceTemplatesOpen] = useState(false)
+  const [workspaceTemplateSelected, setWorkspaceTemplateSelected] = useState<
+    AppWorkspace | undefined
+  >()
   const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
   const { setMapCoordinates } = useViewport()
   const defaultWorkspace = useSelector(selectDefaultWorkspace)
@@ -49,7 +50,7 @@ function UserWorkspaces() {
   const deleteLoading = workspacesStatus === AsyncReducerStatus.LoadingDelete
 
   const onEditClick = useCallback(
-    async (workspace: Workspace) => {
+    async (workspace: AppWorkspace) => {
       const name = prompt(t('workspace.nameInput', 'Workspace name'), workspace.name)
       if (name) {
         await dispatch(updateWorkspaceThunk({ id: workspace.id, name }))
@@ -59,64 +60,37 @@ function UserWorkspaces() {
   )
 
   const createWorkspaceByUserGroup = useCallback(
-    async (userGroup: string) => {
+    (userGroup: string) => {
       const workspaceId = workspacesByUserGroup[userGroup]
-      let defaultTemplate = false
-      let template = workspaces.find((w) => w?.id === workspaceId)
-      if (!template) {
-        defaultTemplate = true
-        template = defaultWorkspace
-      }
-      if (template) {
-        const name = prompt(
-          t('workspace.nameInput', 'Workspace name'),
-          defaultTemplate ? '' : template.name
+      const template = workspaces.find((w) => w?.id === workspaceId) || defaultWorkspace
+      setWorkspaceTemplateSelected({
+        ...template,
+        name: '',
+      })
+    },
+    [defaultWorkspace, workspaces, workspacesByUserGroup]
+  )
+
+  const closeWorkspaceCreate = useCallback(() => {
+    setWorkspaceTemplateSelected(undefined)
+  }, [])
+
+  const onWorkspaceCreateFinish = useCallback(
+    (workspace: AppWorkspace) => {
+      if (workspace) {
+        closeWorkspaceCreate()
+        dispatch(cleanCurrentWorkspaceData())
+        dispatchLocation(
+          WORKSPACE,
+          {
+            category: workspace.category || WorkspaceCategories.FishingActivity,
+            workspaceId: workspace.id,
+          },
+          true
         )
-        if (name) {
-          if (name !== template.name) {
-            setCreatingLoading(true)
-            setWorkspaceTemplatesOpen(false)
-            const workspace = {
-              ...template,
-              name,
-            }
-            const action = await dispatch(createWorkspaceThunk(workspace))
-            uaEvent({
-              category: 'Workspace Management',
-              action: 'Save current workspace',
-              label: getEventLabel([`base: ${template.name}`, name]),
-            })
-            if (createWorkspaceThunk.fulfilled.match(action)) {
-              dispatchLocation(
-                WORKSPACE,
-                {
-                  category: action.payload.category || WorkspaceCategories.FishingActivity,
-                  workspaceId: action.payload.id,
-                },
-                true
-              )
-            } else {
-              alert(
-                t(
-                  'errors.workspaceCreate',
-                  'There was an error creating the workspace, please try again later'
-                )
-              )
-            }
-            setCreatingLoading(false)
-          } else {
-            alert(
-              t('errors.workspaceDuplicatedName', 'There is already a workspace with this name')
-            )
-            createWorkspaceByUserGroup(userGroup)
-          }
-        } else if (name === '') {
-          alert(t('errors.workspaceMissingName', 'Workspace name is needed'))
-          createWorkspaceByUserGroup(userGroup)
-        }
       }
     },
-    [defaultWorkspace, dispatch, dispatchLocation, t, workspaces, workspacesByUserGroup]
+    [closeWorkspaceCreate, dispatch, dispatchLocation]
   )
 
   const onWorkspaceUserGroupClick = useCallback(
@@ -129,7 +103,7 @@ function UserWorkspaces() {
 
   const onNewWorkspaceClick = useCallback(() => {
     const groupsWithTemplates = userGroups?.filter(
-      (group) => workspacesByUserGroup[group] !== undefined
+      (group) => workspacesByUserGroup?.[group] !== undefined
     )
     if (!groupsWithTemplates) {
       console.warn('Missing template for user groups', userGroups)
@@ -144,7 +118,7 @@ function UserWorkspaces() {
   }, [createWorkspaceByUserGroup, userGroups, workspacesByUserGroup])
 
   const onWorkspaceClick = useCallback(
-    (workspace: Workspace) => {
+    (workspace: AppWorkspace) => {
       if (workspace.viewport) {
         setMapCoordinates(workspace.viewport)
       }
@@ -153,7 +127,7 @@ function UserWorkspaces() {
   )
 
   const onDeleteClick = useCallback(
-    async (workspace: Workspace) => {
+    async (workspace: AppWorkspace) => {
       const confirmation = window.confirm(
         `${t(
           'workspace.confirmRemove',
@@ -173,6 +147,7 @@ function UserWorkspaces() {
         <label>{t('workspace.title_other', 'Workspaces')}</label>
         <TooltipContainer
           visible={workspaceTemplatesOpen}
+          placement="right"
           onClickOutside={() => {
             setWorkspaceTemplatesOpen(false)
           }}
@@ -188,17 +163,22 @@ function UserWorkspaces() {
         >
           {/* Div needed because of https://github.com/atomiks/tippyjs-react#component-children */}
           <div>
-            <Button
-              disabled={loading}
-              loading={creatingLoading}
-              type="secondary"
-              onClick={onNewWorkspaceClick}
-            >
+            <Button disabled={loading} type="secondary" onClick={onNewWorkspaceClick}>
               {t('workspace.new', 'New Workspace') as string}
             </Button>
           </div>
         </TooltipContainer>
       </div>
+      {workspaceTemplateSelected && (
+        <NewWorkspaceModal
+          title={t('workspace.new', 'New workspace')}
+          isOpen={workspaceTemplateSelected !== undefined}
+          onClose={closeWorkspaceCreate}
+          onFinish={onWorkspaceCreateFinish}
+          workspace={workspaceTemplateSelected}
+          suggestName={false}
+        />
+      )}
       {loading ? (
         <div className={styles.placeholder}>
           <Spinner size="small" />

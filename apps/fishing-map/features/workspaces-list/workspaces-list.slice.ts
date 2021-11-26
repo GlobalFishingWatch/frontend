@@ -16,7 +16,7 @@ import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 
-type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
+export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
 
 type fetchWorkspacesThunkParams = {
   app?: string

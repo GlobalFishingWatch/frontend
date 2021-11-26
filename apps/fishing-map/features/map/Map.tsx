@@ -38,7 +38,6 @@ import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
-import { isGFWUser } from 'features/user/user.slice'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -76,7 +75,6 @@ const MapWrapper = (): React.ReactElement | null => {
   useSetMapIdleAtom()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-  const gfwUser = useSelector(isGFWUser)
   const drawMode = useSelector(selectDrawMode)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const dataviews = useSelector(selectDataviewInstancesResolved)
@@ -235,7 +233,7 @@ const MapWrapper = (): React.ReactElement | null => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={gfwUser && isAnalyzing ? undefined : onViewportChange}
+          onViewportChange={onViewportChange}
           mapStyle={style}
           transformRequest={transformRequest}
           onResize={setMapBounds}

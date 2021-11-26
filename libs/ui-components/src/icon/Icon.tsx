@@ -43,6 +43,7 @@ import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
 import { ReactComponent as More } from '../assets/icons/more.svg'
 import { ReactComponent as Pin } from '../assets/icons/pin.svg'
+import { ReactComponent as PinFilled } from '../assets/icons/pin-filled.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
 import { ReactComponent as Private } from '../assets/icons/private.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
@@ -106,6 +107,7 @@ export const IconComponents = {
   minus: Minus,
   more: More,
   pin: Pin,
+  'pin-filled': PinFilled,
   plus: Plus,
   private: Private,
   publish: Publish,

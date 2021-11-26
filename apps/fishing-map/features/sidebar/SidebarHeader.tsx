@@ -14,7 +14,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isWorkspaceLocation, selectLocationCategory } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
-import { selectReadOnly } from 'features/app/app.selectors'
+import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
 import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import { useClipboardNotification } from './sidebar.hooks'
@@ -30,6 +30,7 @@ function SaveWorkspaceButton() {
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const workspace = useSelector(selectWorkspace)
+  const customWorkspace = useSelector(selectWorkspaceWithCurrentState)
 
   const onCloseCreateWorkspace = useCallback(() => {
     setShowWorkspaceCreateModal(false)
@@ -93,6 +94,7 @@ function SaveWorkspaceButton() {
           isOpen={showWorkspaceCreateModal}
           onClose={onCloseCreateWorkspace}
           onFinish={onSaveCreateWorkspace}
+          workspace={customWorkspace}
         />
       )}
     </Fragment>

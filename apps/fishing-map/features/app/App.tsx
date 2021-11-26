@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 // import RecoilizeDebugger from 'recoilize'
 import { Menu, SplitView, Modal } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Workspace } from '@globalfishingwatch/api-types'
 import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
 import useEditorMenu from 'features/editor/editor.hooks'
@@ -39,6 +40,7 @@ import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
+import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -128,14 +130,14 @@ function App(): React.ReactElement {
       action = dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
-        const payload = resolvedAction.payload as any
-        if (!urlViewport && payload?.viewport) {
-          setMapCoordinates(payload.viewport)
+        const workspace = resolvedAction.payload as Workspace
+        if (!urlViewport && workspace?.viewport) {
+          setMapCoordinates(workspace.viewport)
         }
-        if (!urlTimeRange && payload?.startAt && payload?.endAt) {
+        if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
-            start: payload?.startAt,
-            end: payload?.endAt,
+            start: workspace?.startAt,
+            end: workspace?.endAt,
           })
         }
       }
@@ -161,7 +163,7 @@ function App(): React.ReactElement {
   useLayoutEffect(() => {
     if (isAnalysing) {
       if (analysisQuery.bounds) {
-        fitMapBounds(analysisQuery.bounds, { padding: 10 })
+        fitMapBounds(analysisQuery.bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }

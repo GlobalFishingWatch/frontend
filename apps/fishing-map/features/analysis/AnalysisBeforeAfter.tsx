@@ -45,7 +45,7 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
       <AnalysisDescription description={description} />
       <div className={styles.container}>
         {dataviews &&
-          dataviews.map((d) => <DatasetFilterSource dataview={d} key={d.id} hideColor={true} />)}
+          dataviews.map((d) => <DatasetFilterSource key={d.id} dataview={d} hideColor={true} />)}
       </div>
       {layersTimeseriesFiltered ? (
         <AnalysisBeforeAfterGraph

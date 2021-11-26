@@ -34,9 +34,10 @@ export interface ComparisonGraphProps {
   interval: Interval
 }
 
-const DIFFERENCE_INCREASE = 'difference-increase'
-const DIFFERENCE_DECREASE = 'difference-decrease'
+const DIFFERENCE = 'difference'
 const BASELINE = 'baseline'
+const COLOR_DECREASE = 'rgb(63, 238, 254)'
+const COLOR_INCREASE = 'rgb(360, 62, 98)'
 
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
   const startDate = DateTime.fromISO(start).toUTC()
@@ -73,11 +74,8 @@ const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
 
   if (label && active && payload.length > 0 && payload.length) {
-    const baseline = payload.find(({ name }) => name === BASELINE)
-    const difference = payload.find(
-      ({ name, value }) =>
-        (name === DIFFERENCE_INCREASE && value > 0) || (name === DIFFERENCE_DECREASE && value < 0)
-    )
+    if (payload.length) console.log(payload)
+    const difference = payload.find(({ name }) => name === DIFFERENCE)
     if (!difference) return null
     const baselineDate = DateTime.fromMillis(difference?.payload.date)
       .toUTC()
@@ -86,17 +84,20 @@ const AnalysisGraphTooltip = (props: any) => {
       .toUTC()
       .setLocale(i18n.language)
 
-    const { value, color, unit } = difference || {}
+    const differenceValue = difference?.payload.difference
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formatDate(baselineDate, timeChunkInterval)}</p>
         <span className={styles.tooltipValue}>
-          {formatTooltipValue(baseline?.payload.value as number, unit as string)}
+          {formatTooltipValue(difference?.payload.baseline as number, difference?.unit as string)}
         </span>
         <p className={styles.tooltipLabel}>{formatDate(compareDate, timeChunkInterval)}</p>
         <span className={styles.tooltipValue}>
-          <span className={styles.tooltipValueDot} style={{ color }}></span>
-          {formatTooltipValue(value as number, unit as string, true)}
+          <span
+            className={styles.tooltipValueDot}
+            style={{ color: differenceValue > 0 ? COLOR_INCREASE : COLOR_DECREASE }}
+          ></span>
+          {formatTooltipValue(differenceValue as number, difference?.unit as string, true)}
         </span>
       </div>
     )
@@ -141,8 +142,8 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       return {
         date: DateTime.fromISO(date).toUTC().toMillis(),
         ...{ compareDate: compareDate ? DateTime.fromISO(compareDate).toUTC().toMillis() : {} },
-        valueIncrease: difference >= 0 ? difference : 0,
-        valueDecrease: difference < 0 ? difference : 0,
+        baseline: avgBaseline,
+        difference,
       }
     })
   }, [timeseries])
@@ -194,7 +195,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             type="step"
             dataKey={(data) => data.rangeDecrease}
             activeDot={false}
-            fill="rgb(63, 238, 254)"
+            fill={COLOR_DECREASE}
             stroke="none"
             fillOpacity={0.2}
             isAnimationActive={false}
@@ -205,34 +206,10 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             type="step"
             dataKey={(data) => data.rangeIncrease}
             activeDot={false}
-            fill="rgb(360, 62, 98)"
+            fill={COLOR_INCREASE}
             stroke="none"
             fillOpacity={0.2}
             isAnimationActive={false}
-          />
-          <Line
-            key={DIFFERENCE_INCREASE}
-            name={DIFFERENCE_INCREASE}
-            type="step"
-            data={difference}
-            dataKey={(data) => data.valueIncrease}
-            unit={unit}
-            dot={false}
-            isAnimationActive={false}
-            stroke="rgb(22, 63, 137) "
-            strokeWidth={2}
-          />
-          <Line
-            key={DIFFERENCE_DECREASE}
-            name={DIFFERENCE_DECREASE}
-            type="step"
-            data={difference}
-            dataKey={(data) => data.valueDecrease}
-            unit={unit}
-            dot={false}
-            isAnimationActive={false}
-            stroke="rgb(22, 63, 137) "
-            strokeWidth={2}
           />
           <Line
             key={`${BASELINE}_bg`}
@@ -250,9 +227,22 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             data={baseline}
             dataKey={(data) => data.zero}
             dot={false}
+            unit={unit}
             isAnimationActive={false}
             stroke="rgb(111, 138, 182)"
             strokeDasharray="2 4"
+            strokeWidth={2}
+          />
+          <Line
+            key={DIFFERENCE}
+            name={DIFFERENCE}
+            type="step"
+            data={difference}
+            dataKey={(data) => data.difference}
+            unit={unit}
+            dot={false}
+            isAnimationActive={false}
+            stroke="rgb(22, 63, 137) "
             strokeWidth={2}
           />
         </ComposedChart>
