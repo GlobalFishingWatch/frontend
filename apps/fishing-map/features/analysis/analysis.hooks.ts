@@ -26,6 +26,7 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { SelectOption } from '@globalfishingwatch/ui-components'
+import { t } from 'features/i18n/i18n'
 import { Bbox, WorkspaceAnalysisType } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -423,11 +424,11 @@ export const useAnalysisGeometry = () => {
 export const DURATION_TYPES_OPTIONS: SelectOption[] = [
   {
     id: 'days',
-    label: 'days',
+    label: t('common.days_other'),
   },
   {
     id: 'months',
-    label: 'months',
+    label: t('common.months_other'),
   },
 ]
 

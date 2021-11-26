@@ -151,8 +151,13 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
   const compareStartLabel = formatI18nDate(timeComparison.compareStart, {
     format: DateTime.DATE_MED_WITH_WEEKDAY,
   })
-  // TODO Plural and i18n
-  const durationLabel = [timeComparison.duration, timeComparison.durationType].join(' ')
+
+  const durationTypeLabel =
+    parseInt(timeComparison.duration as any) === 1
+      ? t(`common.${timeComparison.durationType}_one`)
+      : t(`common.${timeComparison.durationType}_other`)
+  const durationLabel = [timeComparison.duration, durationTypeLabel].join(' ')
+
   let label =
     analysisType === 'periodComparison'
       ? t('analysis.periodComparisonRange', {
