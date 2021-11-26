@@ -58,6 +58,13 @@ declare global {
   }
 }
 
+export const COLOR_PRIMARY_BLUE = getComputedStyle(document.documentElement).getPropertyValue(
+  '--color-primary-blue'
+)
+export const COLOR_GRADIENT = getComputedStyle(document.documentElement).getPropertyValue(
+  '--color-gradient'
+)
+
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)

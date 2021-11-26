@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { WorkspaceAnalysisTimeComparison } from 'types'
 import i18n from 'features/i18n/i18n'
+import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { formatDate, formatTooltipValue, tickFormatter } from './analysis.utils'
 import styles from './AnalysisEvolutionGraph.module.css'
 import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
@@ -44,7 +45,6 @@ const formatDateTicks = (tick: number, timeComparison: WorkspaceAnalysisTimeComp
 const AnalysisGraphTooltip = (props: any) => {
   const { payload, timeChunkInterval } = props
 
-  const timeComparison = useSelector(selectAnalysisTimeComparison)
   const avgLineValue = payload?.find((p) => p.name === 'line')
   if (!avgLineValue) return null
 
@@ -145,7 +145,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
             tickLine={false}
             tickCount={4}
           />
-          <ReferenceLine x={dtStart.toMillis()} stroke="rgb(22, 63, 137)" />
+          <ReferenceLine x={dtStart.toMillis()} stroke={COLOR_PRIMARY_BLUE} />
           <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
           <Line
             name="line"
@@ -154,7 +154,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
             unit={unit}
             dot={false}
             isAnimationActive={false}
-            stroke="rgb(22, 63, 137)"
+            stroke={COLOR_PRIMARY_BLUE}
             strokeWidth={2}
           />
           <Area
@@ -162,7 +162,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
             type="monotone"
             dataKey="range"
             activeDot={false}
-            fill="rgb(22, 63, 137)"
+            fill={COLOR_PRIMARY_BLUE}
             stroke="none"
             fillOpacity={0.2}
             isAnimationActive={false}

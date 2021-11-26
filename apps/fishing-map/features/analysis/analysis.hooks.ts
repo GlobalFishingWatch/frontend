@@ -464,7 +464,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         })
       return
     }
-    const baseStart = timebarStart || DEFAULT_WORKSPACE.availableEnd
+    const baseStart = timebarStart || DEFAULT_WORKSPACE.availableStart
     const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
     const initialDuration = DateTime.fromISO(baseEnd).diff(DateTime.fromISO(baseStart), [
       'days',

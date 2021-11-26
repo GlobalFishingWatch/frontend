@@ -6,6 +6,7 @@ import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import Hint from 'features/help/hints/Hint'
+import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { AnalysisTypeProps } from './Analysis'
 import useAnalysisDescription from './analysisDescription.hooks'
 import AnalysisDescription from './AnalysisDescription'
@@ -96,7 +97,7 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
               <svg width="24" height="10">
                 <path
                   d="M 0, 5 h 4 v 4 h 4 v -8 h 4 v 4 h 4"
-                  stroke="rgb(22, 63, 137)"
+                  stroke={COLOR_PRIMARY_BLUE}
                   strokeWidth={2}
                   fill="none"
                 ></path>

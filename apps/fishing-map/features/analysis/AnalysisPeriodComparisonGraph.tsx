@@ -8,10 +8,15 @@ import {
   Line,
   ComposedChart,
   Area,
+  ReferenceLine,
 } from 'recharts'
 import { DateTime, Interval as TimeInterval } from 'luxon'
+import { useSelector } from 'react-redux'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import i18n, { t } from 'features/i18n/i18n'
+import { LAST_DATA_UPDATE } from 'data/config'
+import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
+import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/App'
 import styles from './AnalysisEvolutionGraph.module.css'
 import { formatDate, formatTooltipValue, tickFormatter } from './analysis.utils'
 
@@ -112,22 +117,45 @@ const AnalysisPeriodComparisonGraph: React.FC<{
 }> = (props) => {
   const { start, end } = props
   const { interval, timeseries, sublayers } = props.graphData
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
 
   const unit = useMemo(() => {
     return sublayers[0].legend.unit
   }, [sublayers])
 
+  const dtLastDataUpdate = useMemo(() => {
+    return DateTime.fromISO(LAST_DATA_UPDATE).toUTC()
+  }, [])
+
+  const offsetedLastDataUpdate = useMemo(() => {
+    // Need to offset LAST_DATA_UPDATE because graph uses dates from start, not compareStart
+    const diff = DateTime.fromISO(timeComparison.compareStart)
+      .diff(DateTime.fromISO(timeComparison.start))
+      .toMillis()
+    const offsetedLastDataUpdate = dtLastDataUpdate
+      .minus({
+        milliseconds: diff,
+      })
+      .toUTC()
+      .toMillis()
+    return offsetedLastDataUpdate
+  }, [timeComparison])
+
   const baseline = useMemo(() => {
     if (!timeseries || !timeseries.length) return []
+
     return [
       {
         date: DateTime.fromISO(timeseries[0].date).toUTC().toMillis(),
         zero: 0,
       },
       {
-        date: DateTime.fromISO(timeseries[timeseries.length - 1].date)
-          .toUTC()
-          .toMillis(),
+        date: Math.min(
+          DateTime.fromISO(timeseries[timeseries.length - 1].compareDate)
+            .toUTC()
+            .toMillis(),
+          offsetedLastDataUpdate
+        ),
         zero: 0,
       },
     ]
@@ -148,18 +176,29 @@ const AnalysisPeriodComparisonGraph: React.FC<{
   }, [timeseries])
 
   const range = useMemo(() => {
-    return timeseries?.map(({ date, compareDate, min, max }, index) => {
+    return timeseries?.map(({ date, compareDate, min, max }) => {
       const baseAvg = min[0] + max[0] / 2
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - baseAvg
-      return {
-        date: DateTime.fromISO(date).toUTC().toMillis(),
-        ...{ compareDate: compareDate ? DateTime.fromISO(compareDate).toUTC().toMillis() : {} },
-        rangeDecrease: difference <= 0 ? [0, difference] : [0, 0],
-        rangeIncrease: difference > 0 ? [0, difference] : [0, 0],
+      const dtStart = DateTime.fromISO(date).toUTC()
+      const dtCompareStart = DateTime.fromISO(compareDate).toUTC()
+      const data = {
+        date: dtStart.toMillis(),
+        ...{ compareDate: compareDate ? dtCompareStart.toMillis() : {} },
+        rangeDecrease: null,
+        rangeIncrease: null,
       }
+      if (dtStart.toMillis() < offsetedLastDataUpdate) {
+        data.rangeDecrease = difference <= 0 ? [0, difference] : [0, 0]
+        data.rangeIncrease = difference > 0 ? [0, difference] : [0, 0]
+      }
+      return data
     })
   }, [timeseries])
+
+  const lastDate = useMemo(() => {
+    return range?.[range?.length - 1].date
+  }, [range])
 
   if (!range) return null
 
@@ -217,7 +256,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             dataKey={(data) => data.zero}
             dot={false}
             isAnimationActive={false}
-            stroke="rgb(229, 240, 242)"
+            stroke={COLOR_GRADIENT}
             strokeWidth={2}
           />
           <Line
@@ -241,9 +280,12 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             unit={unit}
             dot={false}
             isAnimationActive={false}
-            stroke="rgb(22, 63, 137) "
+            stroke={COLOR_PRIMARY_BLUE}
             strokeWidth={2}
           />
+          {offsetedLastDataUpdate < lastDate && (
+            <ReferenceLine x={offsetedLastDataUpdate} stroke={COLOR_PRIMARY_BLUE} />
+          )}
         </ComposedChart>
       </ResponsiveContainer>
     </div>
