@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, memo } from 'react'
 import cx from 'classnames'
+import Image from 'next/image'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
@@ -20,14 +21,14 @@ export const DISMISSED = 'dismissed'
 
 function Hint({ id, className }: HintProps) {
   const { t } = useTranslation(['translations', 'helpHints'])
+  const { placement, imageUrl, pulse, openedByDefault } = hintsConfig[id]
   const gfwUser = useSelector(isGFWUser)
   const isReadOnly = useSelector(selectReadOnly)
   const dispatch = useDispatch()
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(openedByDefault || false)
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const { placement, imageUrl, pulse } = hintsConfig[id]
 
-  const onDismiss = () => {
+  const onDismiss = useCallback(() => {
     setVisible(false)
     dispatch(setHintDismissed(id))
     uaEvent({
@@ -35,9 +36,9 @@ function Hint({ id, className }: HintProps) {
       action: `Dismiss one specific help hint`,
       label: id,
     })
-  }
+  }, [dispatch, id])
 
-  const onDismissAll = () => {
+  const onDismissAll = useCallback(() => {
     setVisible(false)
     Object.keys(hintsConfig).forEach((id) => {
       dispatch(setHintDismissed(id as HintId))
@@ -47,16 +48,19 @@ function Hint({ id, className }: HintProps) {
       action: `Dismiss all help hints before viewing all`,
       label: id,
     })
-  }
+  }, [dispatch, id])
 
-  const showHint = () => {
+  const showHint = useCallback(() => {
     setVisible(true)
     uaEvent({
       category: 'Help hints',
       action: `Click on a help hint to view supporting information`,
       label: id,
     })
-  }
+  }, [id])
+  const hideHint = useCallback(() => {
+    setVisible(false)
+  }, [])
 
   if (hintsDismissed?.[id] === true || !gfwUser || isReadOnly) return null
 
@@ -66,10 +70,20 @@ function Hint({ id, className }: HintProps) {
       className={styles.HintPanel}
       arrowClass={styles.arrow}
       placement={placement}
-      onClickOutside={onDismiss}
+      key={`${id}-tooltip`}
+      onClickOutside={hideHint}
       component={
         <div className={styles.container}>
-          <img className={styles.img} src={imageUrl} role="presentation" alt="" />
+          {imageUrl && (
+            <Image
+              className={styles.img}
+              src={imageUrl}
+              role="presentation"
+              alt=""
+              width="240px"
+              height="160px"
+            />
+          )}
           <div className={styles.content}>
             <p className={styles.text}>{t(`helpHints:${id}`)}</p>
           </div>
@@ -84,7 +98,11 @@ function Hint({ id, className }: HintProps) {
         </div>
       }
     >
-      <div className={cx(styles.hintTarget, className)} onClick={visible ? onDismiss : showHint}>
+      <div
+        className={cx(styles.hintTarget, className)}
+        onClick={visible ? onDismiss : showHint}
+        key={`${id}-bubble`}
+      >
         <div className={cx(styles.hintBubble, styles[pulse])}>
           <Icon icon="help" className={styles.icon} />
         </div>
@@ -93,4 +111,4 @@ function Hint({ id, className }: HintProps) {
   )
 }
 
-export default Hint
+export default memo(Hint)

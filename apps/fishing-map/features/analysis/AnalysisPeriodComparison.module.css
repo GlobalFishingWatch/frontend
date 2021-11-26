@@ -25,6 +25,7 @@
 .durationWrapper {
   display: flex;
   align-items: flex-end;
+  gap: var(--space-XS);
 }
 
 .durationWrapper > div {
@@ -34,4 +35,14 @@
 .durationWrapper .duration {
   flex: unset;
   width: 6rem;
+}
+
+.inputDateLabel {
+  display: flex;
+  align-items: center;
+}
+
+.helpHint {
+  position: relative;
+  margin-left: 2rem;
 }
