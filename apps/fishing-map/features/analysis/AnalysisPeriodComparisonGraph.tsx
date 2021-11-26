@@ -74,7 +74,6 @@ const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
 
   if (label && active && payload.length > 0 && payload.length) {
-    if (payload.length) console.log(payload)
     const difference = payload.find(({ name }) => name === DIFFERENCE)
     if (!difference) return null
     const baselineDate = DateTime.fromMillis(difference?.payload.date)

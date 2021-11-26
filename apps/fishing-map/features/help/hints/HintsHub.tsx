@@ -9,6 +9,8 @@ import hintsConfig from './hints.content'
 import { initializeHints, resetHints, selectHintsDismissed } from './hints.slice'
 import styles from './Hint.module.css'
 
+const HELP_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-help')
+
 function HintsHub() {
   const { t } = useTranslation()
   const gfwUser = useSelector(isGFWUser)
@@ -50,7 +52,7 @@ function HintsHub() {
       type="border"
       className={cx(styles.hintsHub, { [styles.pulseDarkOnce]: hintsDismissedArray.length === 1 })}
       style={{
-        background: `linear-gradient(to top, #fff8cd 0%, #fff8cd ${percentageOfHintsSeen}%, rgba(0,0,0,0) ${percentageOfHintsSeen}%, rgba(0,0,0,0) 100%) no-repeat`,
+        background: `linear-gradient(to top, ${HELP_COLOR} 0%, ${HELP_COLOR} ${percentageOfHintsSeen}%, rgba(0,0,0,0) ${percentageOfHintsSeen}%, rgba(0,0,0,0) 100%) no-repeat`,
       }}
     />
   )
