@@ -16,7 +16,7 @@ import {
 } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
-import { selectCustomWorkspace, selectDaysFromLatest } from 'features/app/app.selectors'
+import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
   DEFAULT_DATAVIEW_IDS,
   getWorkspaceEnv,
@@ -27,6 +27,7 @@ import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGuestUser } from 'features/user/user.selectors'
 import { isGFWUser } from 'features/user/user.slice'
+import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -147,14 +148,30 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   }
 )
 
-export const saveCurrentWorkspaceThunk = createAsyncThunk(
+const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
+  return {
+    ...workspace,
+    ...(workspace.dataviews && { dataviews: workspace.dataviews.map(({ id }) => id) }),
+    ...(workspace.aoi && { aoi: workspace.aoi.id }),
+  }
+}
+
+export const saveWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
   async (
-    { name: defaultName, createAsPublic }: { name: string; createAsPublic: boolean },
+    {
+      name: defaultName,
+      createAsPublic,
+      workspace,
+    }: {
+      name: string
+      createAsPublic: boolean
+      workspace?: AppWorkspace
+    },
     { dispatch, getState }
   ) => {
     const state = getState() as RootState
-    const mergedWorkspace = selectCustomWorkspace(state)
+    const workspaceUpsert = parseUpsertWorkspace(workspace)
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
@@ -167,7 +184,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
             {
               method: 'POST',
               body: {
-                ...mergedWorkspace,
+                ...workspaceUpsert,
                 name,
                 public: createAsPublic,
               },
@@ -204,15 +221,16 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 
 export const updatedCurrentWorkspaceThunk = createAsyncThunk(
   'workspace/updatedCurrent',
-  async (workspace: WorkspaceUpsert<WorkspaceState>, { dispatch, getState }) => {
+  async (workspace: AppWorkspace, { dispatch, getState }) => {
     const state = getState() as RootState
     const version = selectVersion(state)
+    const workspaceUpsert = parseUpsertWorkspace(workspace)
 
     const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
       `/${version}/workspaces/${workspace.id}`,
       {
         method: 'PATCH',
-        body: workspace,
+        body: workspaceUpsert,
       } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
     )
     if (workspaceUpdated) {
@@ -226,6 +244,9 @@ const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
+    cleanCurrentWorkspaceData: (state) => {
+      state.data = null
+    },
     setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
       state.lastVisited = action.payload
     },
@@ -256,16 +277,16 @@ const workspaceSlice = createSlice({
         state.status = AsyncReducerStatus.Idle
       }
     })
-    builder.addCase(saveCurrentWorkspaceThunk.pending, (state) => {
+    builder.addCase(saveWorkspaceThunk.pending, (state) => {
       state.customStatus = AsyncReducerStatus.Loading
     })
-    builder.addCase(saveCurrentWorkspaceThunk.fulfilled, (state, action) => {
+    builder.addCase(saveWorkspaceThunk.fulfilled, (state, action) => {
       state.customStatus = AsyncReducerStatus.Finished
       if (action.payload) {
         state.data = action.payload
       }
     })
-    builder.addCase(saveCurrentWorkspaceThunk.rejected, (state) => {
+    builder.addCase(saveWorkspaceThunk.rejected, (state) => {
       state.customStatus = AsyncReducerStatus.Error
     })
     builder.addCase(updatedCurrentWorkspaceThunk.pending, (state) => {
@@ -283,6 +304,6 @@ const workspaceSlice = createSlice({
   },
 })
 
-export const { setLastWorkspaceVisited } = workspaceSlice.actions
+export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

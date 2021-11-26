@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:14
+    name: gcr.io/cloud-builders/yarn
     entrypoint: bash
     args:
       - '-c'
@@ -29,10 +29,11 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:14
+    name: gcr.io/cloud-builders/yarn
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
+      - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_CARRIER_PORTAL_URL_=$_NEXT_PUBLIC_CARRIER_PORTAL_URL_'
@@ -78,6 +79,8 @@ steps:
     waitFor: ['build-image']
     id: 'deploy-cloud-run'
     entrypoint: 'bash'
+    env:
+      - '_RUN_SERVICE_NAME=$_RUN_SERVICE_NAME'
     args:
       - '-eEuo'
       - 'pipefail'

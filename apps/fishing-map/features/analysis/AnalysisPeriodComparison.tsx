@@ -44,7 +44,8 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     <Fragment>
       <AnalysisDescription description={description} />
       <div className={styles.container}>
-        {dataviews && dataviews.map((d) => <DatasetFilterSource dataview={d} hideColor={true} />)}
+        {dataviews &&
+          dataviews.map((d) => <DatasetFilterSource key={d.id} dataview={d} hideColor={true} />)}
       </div>
       {layersTimeseriesFiltered ? (
         <AnalysisPeriodComparisonGraph
@@ -62,6 +63,19 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
       <div className={styles.container}>
         <div className={styles.timeSelection}>
           <InputDate
+            htmlLabel={
+              <Fragment>
+                <svg width="24" height="10">
+                  <path
+                    d="M 0, 5 H 18"
+                    stroke="rgb(111, 138, 182)"
+                    strokeDasharray="4 2"
+                    strokeWidth={2}
+                  ></path>
+                </svg>
+                {t('analysis.periodComparison1st', 'Baseline start')}
+              </Fragment>
+            }
             label={t('analysis.periodComparison1st', 'Baseline start')}
             onChange={onStartChange}
             value={timeComparison.start}
@@ -69,6 +83,19 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
             max={timeComparison.compareStart.slice(0, 10)}
           />
           <InputDate
+            htmlLabel={
+              <Fragment>
+                <svg width="24" height="10">
+                  <path
+                    d="M 0, 5 h 4 v 4 h 4 v -8 h 4 v 4 h 4"
+                    stroke="rgb(22, 63, 137) "
+                    strokeWidth={2}
+                    fill="none"
+                  ></path>
+                </svg>
+                {t('analysis.periodComparison2nd', 'comparison start')}
+              </Fragment>
+            }
             label={t('analysis.periodComparison2nd', 'comparison start')}
             onChange={onCompareStartChange}
             value={timeComparison.compareStart}

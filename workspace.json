@@ -206,8 +206,19 @@
         "start": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["nx serve i18n-labels", "nx serve fishing-map"],
+            "commands": [
+              "nx clean-locales fishing-map",
+              "nx serve i18n-labels",
+              "nx serve fishing-map"
+            ],
             "parallel": true
+          }
+        },
+        "clean-locales": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": [],
+          "options": {
+            "commands": ["rm -rf dist/apps/fishing-map/public/locales"]
           }
         },
         "serve": {
@@ -716,8 +727,20 @@
         "start": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["nx serve i18n-labels", "nx serve vessel-history"],
+            "commands": [
+              "nx clean-locales vessel-history",
+              "nx serve i18n-labels",
+              "nx serve vessel-history"
+            ],
             "parallel": true
+          }
+        },
+
+        "clean-locales": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": [],
+          "options": {
+            "commands": ["rm -rf dist/apps/vessel-history/public/locales"]
           }
         },
         "serve": {

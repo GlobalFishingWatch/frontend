@@ -2,8 +2,8 @@ import React from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Spinner } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
+import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
+import { DatasetTypes, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -23,6 +23,8 @@ import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
+import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
+import { useMapContext } from '../map-context.hooks'
 import styles from './Popup.module.css'
 
 type FishingTooltipRowProps = {
@@ -34,8 +36,14 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { fishingInteractionStatus } = useClickedEventConnect()
   const gfwUser = useSelector(isGFWUser)
+  const vessels = useSelector(selectActiveTrackDataviews)
+  const { eventManager } = useMapContext()
 
-  const onVesselClick = (vessel: ExtendedFeatureVessel) => {
+  const onVesselClick = (
+    ev: React.MouseEvent<Element, MouseEvent>,
+    vessel: ExtendedFeatureVessel
+  ) => {
+    eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
     let vesselDataviewInstance: DataviewInstance | undefined
     if (
       gfwUser &&
@@ -120,23 +128,51 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                 )
               const hasDatasets =
                 vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+
+              const vesselInWorkspace = vessels.find((v) => {
+                const vesselDatasetConfig = v.datasetsConfig?.find(
+                  (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
+                )
+                const isVesselInEndpointParams = vesselDatasetConfig.params.find(
+                  (p) => p.id === 'vesselId' && p.value === vessel.id
+                )
+                return isVesselInEndpointParams ? v : undefined
+              })
+
               return (
-                <button
-                  key={i}
-                  disabled={!interactionAllowed || !hasDatasets}
-                  className={styles.vesselRow}
-                  onClick={() => onVesselClick(vessel)}
-                >
+                <div key={i} className={styles.vesselRow}>
                   <span className={styles.vesselName}>
-                    {vesselLabel}
-                    {vessel.dataset && vessel.dataset.name && (
-                      <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
-                    )}
+                    <span>
+                      {vesselLabel}
+                      {vessel.dataset && vessel.dataset.name && (
+                        <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
+                      )}
+                    </span>
+                    <IconButton
+                      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+                      style={{
+                        color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                      }}
+                      disabled={
+                        !interactionAllowed || !hasDatasets || vesselInWorkspace !== undefined
+                      }
+                      tooltip={
+                        vesselInWorkspace
+                          ? t(
+                              'search.vesselAlreadyInWorkspace',
+                              'This vessel is already in your workspace'
+                            )
+                          : t('search.seeVessel', 'See vessel')
+                      }
+                      onClick={(e) => onVesselClick(e, vessel)}
+                      size="small"
+                      className={styles.pinButton}
+                    />
                   </span>
-                  <span>
+                  <span className={styles.vesselHours}>
                     <I18nNumber number={vessel.hours} />
                   </span>
-                </button>
+                </div>
               )
             })}
             {feature.vesselsInfo.overflow && (

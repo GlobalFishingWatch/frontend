@@ -21,8 +21,10 @@ import {
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { isGuestUser } from 'features/user/user.selectors'
-import { selectAnalysisTypeQuery } from 'features/app/app.selectors'
+import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -64,6 +66,7 @@ function Analysis() {
   const { t } = useTranslation()
   const { onLoginClick } = useLoginRedirect()
   const { start, end, timerange } = useTimerangeConnect()
+  const fitMapBounds = useMapFitBounds()
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
@@ -73,6 +76,7 @@ function Analysis() {
   const userData = useSelector(selectUserData)
   const guestUser = useSelector(isGuestUser)
   const analysisType = useSelector(selectAnalysisTypeQuery)
+  const { bounds } = useSelector(selectAnalysisQuery)
   const gfwUser = useSelector(isGFWUser)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
@@ -200,9 +204,10 @@ function Analysis() {
 
   const onAnalysisTypeClick = useCallback(
     (option: ChoiceOption) => {
+      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       dispatchQueryParams({ analysisType: option.id as WorkspaceAnalysisType })
     },
-    [dispatchQueryParams]
+    [bounds, dispatchQueryParams, fitMapBounds]
   )
 
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
