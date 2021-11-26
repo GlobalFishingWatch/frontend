@@ -42,7 +42,7 @@ const formatDateTicks = (tick: number, timeComparison: WorkspaceAnalysisTimeComp
 }
 
 const AnalysisGraphTooltip = (props: any) => {
-  const { payload } = props
+  const { payload, timeChunkInterval } = props
 
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const avgLineValue = payload?.find((p) => p.name === 'line')
@@ -51,7 +51,7 @@ const AnalysisGraphTooltip = (props: any) => {
   const date = DateTime.fromMillis(avgLineValue.payload.date).toUTC().setLocale(i18n.language)
   return (
     <div className={styles.tooltipContainer}>
-      <p className={styles.tooltipLabel}>{formatDate(date, timeComparison.durationType)}</p>
+      <p className={styles.tooltipLabel}>{formatDate(date, timeChunkInterval)}</p>
       <span className={styles.tooltipValue}>
         {formatTooltipValue(avgLineValue.payload.avg as number, avgLineValue.unit as string)}
       </span>
@@ -65,7 +65,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
   end: string
 }> = (props) => {
   const { start, end } = props
-  const { timeseries, sublayers } = props.graphData
+  const { timeseries, sublayers, interval } = props.graphData
   const timeComparison = useSelector(selectAnalysisTimeComparison)
 
   const dtStart = useMemo(() => {
@@ -146,7 +146,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
             tickCount={4}
           />
           <ReferenceLine x={dtStart.toMillis()} stroke="rgb(22, 63, 137)" />
-          <Tooltip content={<AnalysisGraphTooltip />} />
+          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
           <Line
             name="line"
             type="monotone"

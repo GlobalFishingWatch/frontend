@@ -76,7 +76,7 @@ export const formatDate = (date: DateTime, timeChunkInterval: Interval | string)
       break
     case 'day':
     case 'days':
-      formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
+      formattedLabel += date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
       break
     default:
       formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
