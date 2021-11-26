@@ -479,7 +479,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
     const baseStartMinusOffset =
       analysisType === 'periodComparison'
         ? { years: 1 }
-        : { [initialDurationType]: initialDuration }
+        : { [initialDurationType]: initialDurationValue }
     const initialStart = parseFullISODate(baseStart).minus(baseStartMinusOffset).toISO()
     const initialCompareStart = baseStart
 
