@@ -127,7 +127,7 @@
     "title_one": "Datos",
     "title_other": "Datos",
     "typePoints": " Puntos",
-    "typePointsDescription": "Muestra una o varias posiciones de tamaño por cualquier valor cuantitativo en tus datos.",
+    "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
     "typePolygons": " Polígonos",
     "typePolygonsDescription": "Mostrar una o varias áreas coloreadas por cualquier valor cuantitativo en sus datos.",
     "typeTracks": " Pistas",

@@ -127,7 +127,7 @@
     "title_one": "Dataset",
     "title_other": "Datasets",
     "typePoints": " Pontos",
-    "typePointsDescription": "Exiba uma ou várias posições com escala de tamanho representados por qualquer valor quantitativo no seu conjunto de dados.",
+    "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polígonos",
     "typePolygonsDescription": "Exiba uma ou várias áreas com cores representadas por qualquer valor quantitativo no seu conjunto de dados.",
     "typeTracks": " Rotas",

@@ -127,7 +127,7 @@
     "title_one": "Dataset",
     "title_other": "Datasets",
     "typePoints": "Points",
-    "typePointsDescription": "Display one or multiple positions sized by any quantitative value in your dataset.",
+    "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
     "typePolygonsDescription": "Display one or multiple areas coloured by any quantitative value in your dataset.",
     "typeTracks": " Tracks",
