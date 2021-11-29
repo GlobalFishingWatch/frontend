@@ -20,7 +20,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { isGuestUser } from 'features/user/user.selectors'
+import { isGuestUser } from 'features/selectors/user.selectors'
 import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'

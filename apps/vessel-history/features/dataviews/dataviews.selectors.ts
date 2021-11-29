@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
@@ -120,12 +120,6 @@ export const selectDataviewsResourceQueries = createDeepEqualSelector(
   }
 )
 
-export const selectDataviewInstancesByType = (type: GeneratorType) => {
-  return createDeepEqualSelector([selectDataviewsForResourceQuerying], (dataviews) => {
-    return dataviews?.filter((dataview) => dataview.config?.type === type)
-  })
-}
-
 export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.category === category)
@@ -137,22 +131,3 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
     return dataviews?.filter((dataview) => ids.includes(dataview.id))
   })
 }
-
-export const selectTrackDataviews = createDeepEqualSelector(
-  [selectDataviewInstancesByType(GeneratorType.Track)],
-  (dataviews) => dataviews
-)
-
-export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
-  return dataviews?.filter(
-    (dataview) => !dataview.datasets || dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks
-  )
-})
-
-export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
-)
-
-export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
-  return dataviews?.filter((d) => d.config?.visible)
-})

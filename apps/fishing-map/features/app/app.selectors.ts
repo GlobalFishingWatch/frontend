@@ -3,13 +3,11 @@ import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectWorkspace,
-  selectWorkspaceState,
   selectWorkspaceTimeRange,
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
 import { Range } from 'features/timebar/timebar.slice'
 import {
-  selectQueryParam,
   selectUrlViewport,
   selectLocationCategory,
   selectUrlTimeRange,
@@ -23,14 +21,13 @@ import {
   WorkspaceAnalysis,
   WorkspaceAnalysisTimeComparison,
   WorkspaceAnalysisType,
-  WorkspaceStateProperty,
 } from 'types'
+import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { selectWorkspaceStateProperty } from 'features/selectors/app.selectors'
 import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesMerged,
-} from 'features/dataviews/dataviews.selectors'
-import { RootState } from 'store'
-import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+} from 'features/selectors/dataviews.selectors'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -53,15 +50,6 @@ export const selectTimeRange = createSelector(
     } as Range
   }
 )
-
-export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =>
-  createSelector(
-    [selectQueryParam(property), selectWorkspaceState],
-    (urlProperty, workspaceState) => {
-      if (urlProperty !== undefined) return urlProperty
-      return workspaceState[property] ?? DEFAULT_WORKSPACE[property]
-    }
-  )
 
 export const selectAnalysisQuery = createSelector(
   [selectWorkspaceStateProperty('analysis')],
@@ -97,10 +85,6 @@ export const selectActivityCategory = createSelector(
     return activityCategory
   }
 )
-
-export function selectActivityCategoryFn(state: RootState) {
-  return selectActivityCategory(state)
-}
 
 export const selectBivariateDataviews = createSelector(
   [selectWorkspaceStateProperty('bivariateDataviews')],
@@ -143,8 +127,9 @@ export const selectVisibleEvents = createSelector(
     return visibleEvents
   }
 )
+
 export const selectTimebarGraph = createSelector(
-  [selectWorkspaceStateProperty('timebarGraph'), (state) => selectActiveVesselsDataviews(state)],
+  [selectWorkspaceStateProperty('timebarGraph'), selectActiveVesselsDataviews],
   (timebarGraph, vessels): TimebarGraphs => {
     return vessels && vessels.length ? timebarGraph : TimebarGraphs.None
   }
@@ -185,7 +170,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
     selectTimeRange,
     selectLocationCategory,
     selectWorkspaceAppState,
-    (state) => selectDataviewInstancesMerged(state),
+    selectDataviewInstancesMerged,
   ],
   (workspace, viewport, timerange, category, state, dataviewInstances): AppWorkspace => {
     return {

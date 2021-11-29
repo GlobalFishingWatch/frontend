@@ -28,7 +28,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
 import { DEFAULT_WORKSPACE, FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
-import { useMapStyle } from 'features/map/map.hooks'
+import { useMapStyle } from 'features/map/map-style.hooks'
 import {
   featuresToTimeseries,
   filterTimeseriesByTimerange,

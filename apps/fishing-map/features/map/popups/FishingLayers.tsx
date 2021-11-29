@@ -23,7 +23,7 @@ import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveTrackDataviews } from 'features/selectors/dataviews.selectors'
 import { useMapContext } from '../map-context.hooks'
 import styles from './Popup.module.css'
 

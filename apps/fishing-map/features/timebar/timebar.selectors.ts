@@ -16,12 +16,12 @@ import {
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
 import { t } from 'features/i18n/i18n'
+import { selectResources } from 'features/resources/resources.slice'
+import { EVENTS_COLORS } from 'data/config'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
-} from 'features/dataviews/dataviews.selectors'
-import { selectResources } from 'features/resources/resources.slice'
-import { EVENTS_COLORS } from 'data/config'
+} from 'features/selectors/dataviews.selectors'
 
 type TimebarTrackSegment = {
   start: number
