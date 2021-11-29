@@ -45,6 +45,7 @@ const COLOR_DECREASE = 'rgb(63, 238, 254)'
 const COLOR_INCREASE = 'rgb(360, 62, 98)'
 
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
+  if (!Number.isInteger(tick)) return null
   const startDate = DateTime.fromISO(start).toUTC()
   const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
   const diff = TimeInterval.fromDateTimes(startDate, date)
