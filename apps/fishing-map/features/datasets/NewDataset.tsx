@@ -19,7 +19,7 @@ import {
 import {
   checkRecordValidity,
   csvToTrackSegments,
-  guessColum,
+  guessColumn,
   guessColumns,
   segmentsToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
@@ -140,8 +140,8 @@ function NewDataset(): React.ReactElement {
             dynamicTyping: true,
             skipEmptyLines: true,
           })
-          const latField = guessColum('latitude', meta.fields)
-          const lngField = guessColum('longitude', meta.fields)
+          const latField = guessColumn('latitude', meta.fields)
+          const lngField = guessColumn('longitude', meta.fields)
           if (latField !== undefined && lngField !== undefined) {
             formatGeojson = true
             try {
@@ -326,7 +326,6 @@ function NewDataset(): React.ReactElement {
         action: `Confirm ${uaDatasetType} upload`,
         label: onTheFlyGeoJSONFile?.name ?? file.name,
       })
-      debugger
       setLoading(true)
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {

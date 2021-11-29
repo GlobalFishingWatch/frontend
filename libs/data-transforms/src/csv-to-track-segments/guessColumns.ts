@@ -1,4 +1,4 @@
-export type GuessColum = 'latitude' | 'longitude' | 'timestamp'
+export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
 
 export const LatitudeMatches = ['latitude', 'lat', 'location-lat', 'LAT', 'LATITUDE']
 export const LongitudeMatches = [
@@ -14,7 +14,7 @@ export const LongitudeMatches = [
 ]
 export const TimestampMatches = ['timestamp', 'time', 'date', 'datetime']
 
-export const GUESS_COLUMN_DICT: Record<GuessColum, string[]> = {
+export const GUESS_COLUMN_DICT: Record<GuessColumn, string[]> = {
   latitude: LatitudeMatches,
   longitude: LongitudeMatches,
   timestamp: TimestampMatches,
@@ -22,7 +22,7 @@ export const GUESS_COLUMN_DICT: Record<GuessColum, string[]> = {
 
 export const GUESS_COLUMN_NAMES = [Object.entries(GUESS_COLUMN_DICT)]
 
-export const guessColum = (col: GuessColum, options: string[]) => {
+export const guessColumn = (col: GuessColumn, options: string[]) => {
   return options.find((option) => GUESS_COLUMN_DICT[col].includes(option))
 }
 
