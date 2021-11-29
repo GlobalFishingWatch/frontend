@@ -9,9 +9,10 @@ interface SpinnerProps {
   inline?: boolean
 }
 
-const spinnerVarColor = getComputedStyle(document.documentElement).getPropertyValue(
-  '--color-primary-blue'
-)
+const spinnerVarColor =
+  typeof window !== 'undefined'
+    ? window.getComputedStyle(document.documentElement).getPropertyValue('--color-primary-blue')
+    : ''
 
 export function Spinner(props: SpinnerProps) {
   const {
