@@ -34,7 +34,7 @@ const nextConfig = {
     }
     return config
   },
-  productionBrowserSourceMaps: true,
+  // productionBrowserSourceMaps: true,
   // i18n,
 }
 
