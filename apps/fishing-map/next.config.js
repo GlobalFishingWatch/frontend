@@ -32,6 +32,7 @@ const nextConfig = {
       net: false,
       tls: false,
     }
+    // config.optimization.minimize = false
     return config
   },
   // productionBrowserSourceMaps: true,
