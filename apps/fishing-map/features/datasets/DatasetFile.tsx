@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
 import { DatasetGeometryType } from '@globalfishingwatch/api-types'
-import { ReactComponent as FilesSupportedPolygonsIcon } from 'assets/icons/files-supported-polygons.svg'
-import { ReactComponent as FilesSupportedTracksIcon } from 'assets/icons/files-supported-tracks.svg'
+import { ReactComponent as FilesCsvIcon } from 'assets/icons/file-csv.svg'
+import { ReactComponent as FilesJsonIcon } from 'assets/icons/file-json.svg'
+import { ReactComponent as FileZipIcon } from 'assets/icons/file-zip.svg'
 import { joinTranslatedList } from 'features/i18n/utils'
 import styles from './NewDataset.module.css'
 
@@ -20,42 +21,27 @@ interface DatasetFileProps {
 
 type DatasetGeometryTypesSupported = Extract<DatasetGeometryType, 'polygons' | 'tracks' | 'points'>
 
-const CSV_TYPES = { id: 'csv', files: ['.csv'] }
-const GEOJSON_TYPES = { id: 'geojson', files: ['.json', '.geojson'] }
-const SHAPEFILE_TYPE = { id: 'shapefile', files: ['.zip'] }
+type FileConfig = { id: string; files: string[]; icon: JSX.Element }
+const CSV_TYPES = { id: 'csv', files: ['.csv'], icon: <FilesCsvIcon key="csv" /> }
+const GEOJSON_TYPES = {
+  id: 'geojson',
+  files: ['.json', '.geojson'],
+  icon: <FilesJsonIcon key="geojson" />,
+}
+const SHAPEFILE_TYPE = { id: 'shapefile', files: ['.zip'], icon: <FileZipIcon key="zip" /> }
 
-const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryTypesSupported, string> = {
-  polygons: [...SHAPEFILE_TYPE.files, ...GEOJSON_TYPES.files].join(', '),
-  tracks: CSV_TYPES.files.join(','),
-  points: [...SHAPEFILE_TYPE.files, ...GEOJSON_TYPES.files, ...CSV_TYPES.files].join(', '),
-}
-const ACCEPT_LABELS_BY_TYPE: Record<DatasetGeometryTypesSupported, string[]> = {
-  polygons: [SHAPEFILE_TYPE.id, GEOJSON_TYPES.id],
-  tracks: [CSV_TYPES.id],
-  points: [SHAPEFILE_TYPE.id, GEOJSON_TYPES.id, CSV_TYPES.id],
+const FILES_CONFIG_BY_TYPE: Record<DatasetGeometryTypesSupported, FileConfig[]> = {
+  polygons: [SHAPEFILE_TYPE, GEOJSON_TYPES],
+  tracks: [CSV_TYPES],
+  points: [SHAPEFILE_TYPE, GEOJSON_TYPES, CSV_TYPES],
 }
 
-const ACCEPT_ICON_BY_TYPE: Record<DatasetGeometryTypesSupported, JSX.Element> = {
-  polygons: <FilesSupportedPolygonsIcon />,
-  tracks: <FilesSupportedTracksIcon />,
-  points: (
-    <div className={styles.icons}>
-      <FilesSupportedPolygonsIcon />
-      <FilesSupportedTracksIcon />
-    </div>
-  ),
-}
 const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className = '' }) => {
   const supportedType = type as DatasetGeometryTypesSupported
-  const formatsAccepted = supportedType
-    ? ACCEPT_FILES_BY_TYPE[supportedType]
-    : ACCEPT_FILES_BY_TYPE.polygons
-  const formatsAcceptedLabels = supportedType
-    ? ACCEPT_LABELS_BY_TYPE[supportedType]
-    : ACCEPT_LABELS_BY_TYPE.polygons
-  const formatsAcceptedIcons = supportedType
-    ? ACCEPT_ICON_BY_TYPE[supportedType]
-    : ACCEPT_FILES_BY_TYPE.polygons
+  const fileConfig = supportedType
+    ? FILES_CONFIG_BY_TYPE[supportedType]
+    : FILES_CONFIG_BY_TYPE.polygons
+  const filesAcceptedFormats = fileConfig.flatMap(({ files }) => files)
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
     (files) => {
@@ -64,13 +50,13 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
     [onFileLoaded, type]
   )
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: formatsAccepted,
+    accept: filesAcceptedFormats,
     onDropAccepted,
   })
 
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
-      {formatsAcceptedIcons}
+      <div className={styles.icons}>{fileConfig.map(({ icon }) => icon)}</div>
       <input {...getInputProps()} />
       {acceptedFiles.length ? (
         <p className={styles.fileText}>
@@ -83,7 +69,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
           {t('dataset.dragFileFormatsPlaceholder', {
             defaultValue: 'Drag and drop a {{formats}} here or click to select it',
             formats: joinTranslatedList(
-              formatsAcceptedLabels.map((f) => t(`dataset.formats.${f}` as any, f))
+              fileConfig.map(({ id }) => t(`dataset.formats.${id}` as any, id))
             ),
           })}
         </p>
@@ -91,7 +77,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
       {fileRejections.length > 0 && (
         <p className={cx(styles.fileText, styles.warning)}>
           {t('dataset.onlyFileFormatAllowed', {
-            formats: formatsAccepted,
+            formats: joinTranslatedList(filesAcceptedFormats),
             defaultValue: '(Only {{formats}} files are allowed)',
           })}
         </p>
