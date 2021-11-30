@@ -37,7 +37,6 @@
     "react-image-gallery": "^1.1.1",
     "react-map-gl": "^5.3.17",
     "react-redux": "^7.2.6",
-    "react-scripts": "4.0.3",
     "react-virtualized-auto-sizer": "^1.0.5",
     "react-window": "^1.8.6",
     "recoil": "0.5.2",
