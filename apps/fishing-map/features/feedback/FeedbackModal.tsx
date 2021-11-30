@@ -5,11 +5,10 @@ import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-compone
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
+import { GUEST_USER_TYPE, selectUserData, isGuestUser } from 'features/user/user.slice'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserGroupsClean } from 'features/user/user.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { isGuestUser } from 'features/selectors/user.selectors'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {

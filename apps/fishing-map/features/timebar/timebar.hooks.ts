@@ -12,7 +12,7 @@ import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
-import { selectActiveTrackDataviews } from 'features/selectors/dataviews.selectors'
+import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import {
   Range,
   changeSettings,

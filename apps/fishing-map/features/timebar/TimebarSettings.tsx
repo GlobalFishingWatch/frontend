@@ -13,7 +13,7 @@ import { getEventLabel } from 'utils/analytics'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
-} from 'features/selectors/dataviews.selectors'
+} from 'features/dataviews/dataviews.slice'
 import { useTimebarVisualisationConnect } from './timebar.hooks'
 import { selectTracksGraphsLoading } from './timebar.selectors'
 import styles from './TimebarSettings.module.css'

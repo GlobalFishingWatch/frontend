@@ -9,7 +9,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectDataviewInstancesResolved } from 'features/selectors/dataviews.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 const getNextColor = (

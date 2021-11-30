@@ -3,6 +3,7 @@ import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectWorkspace,
+  selectWorkspaceStateProperty,
   selectWorkspaceTimeRange,
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
@@ -23,11 +24,10 @@ import {
   WorkspaceAnalysisType,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { selectWorkspaceStateProperty } from 'features/selectors/app.selectors'
 import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesMerged,
-} from 'features/selectors/dataviews.selectors'
+} from 'features/dataviews/dataviews.slice'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],

@@ -8,7 +8,7 @@ import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
-import { isGuestUser } from 'features/selectors/user.selectors'
+import { isGuestUser } from 'features/user/user.slice'
 import { useDatasetModalConnect, useAddDataviewFromDatasetToWorkspace } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {

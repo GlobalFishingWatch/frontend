@@ -21,7 +21,7 @@ import { EVENTS_COLORS } from 'data/config'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
-} from 'features/selectors/dataviews.selectors'
+} from 'features/dataviews/dataviews.slice'
 
 type TimebarTrackSegment = {
   start: number

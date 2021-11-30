@@ -12,17 +12,17 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
+  selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
   selectWorkspaceDataviews,
 } from 'features/workspace/workspace.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { RootState } from 'store'
-import { selectWorkspaceStateProperty } from 'features/selectors/app.selectors'
 import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesResolved,
   selectDataviewsForResourceQuerying,
-} from 'features/selectors/dataviews.selectors'
+} from 'features/dataviews/dataviews.slice'
 import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
