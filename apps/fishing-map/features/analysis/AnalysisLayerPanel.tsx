@@ -44,7 +44,7 @@ function AnalysisLayerPanel({ dataview, hiddenProperties, availableFields }: Lay
 
   if (areAllPropertiesHidden) {
     // TODO I don't understand that logic
-    // return null
+    return null
   }
 
   return (

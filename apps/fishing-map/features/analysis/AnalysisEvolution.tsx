@@ -11,17 +11,18 @@ import AnalysisEvolutionGraph, { AnalysisGraphProps } from './AnalysisEvolutionG
 import styles from './AnalysisEvolution.module.css'
 import useAnalysisDescription, { FIELDS } from './analysisDescription.hooks'
 import { AnalysisTypeProps } from './Analysis'
-import { useAnalysisGeometry } from './analysis.hooks'
 import AnalysisDescription from './AnalysisDescription'
 
 function AnalysisItem({
   graphData,
   hasAnalysisLayers,
   analysisAreaName,
+  loading,
 }: {
   graphData: AnalysisGraphProps
   hasAnalysisLayers: boolean
   analysisAreaName: string
+  loading: boolean
 }) {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
@@ -31,7 +32,6 @@ function AnalysisItem({
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
 
   const { description, commonProperties } = useAnalysisDescription(analysisAreaName, graphData)
-
   return (
     <div className={styles.container}>
       {hasAnalysisLayers ? (
@@ -54,35 +54,36 @@ function AnalysisItem({
           {t('analysis.empty', 'Your selected datasets will appear here')}
         </p>
       )}
-      {start && end && <AnalysisEvolutionGraph graphData={graphData} start={start} end={end} />}
+      {loading && (
+        <div className={styles.graphContainer}>
+          <Spinner />
+        </div>
+      )}
+      {start && end && !loading && (
+        <AnalysisEvolutionGraph graphData={graphData} start={start} end={end} />
+      )}
     </div>
   )
 }
 
 const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
-  const { layersTimeseriesFiltered, hasAnalysisLayers, analysisAreaName } = props
-  const analysisGeometryLoaded = useAnalysisGeometry()
+  const { layersTimeseriesFiltered, hasAnalysisLayers, analysisGeometryLoaded, analysisAreaName } =
+    props
+
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  if (
-    workspaceStatus === AsyncReducerStatus.Finished &&
-    !analysisGeometryLoaded &&
-    (!layersTimeseriesFiltered || !layersTimeseriesFiltered?.length)
-  )
+  if (workspaceStatus !== AsyncReducerStatus.Finished)
     return (
       <div className={styles.graphContainer}>
         <Spinner />
       </div>
     )
 
-  return workspaceStatus !== AsyncReducerStatus.Finished ||
-    !analysisGeometryLoaded ||
-    !layersTimeseriesFiltered ? (
-    <Spinner className={styles.spinnerFull} />
-  ) : (
+  return (
     <Fragment>
-      {layersTimeseriesFiltered.map((layerTimeseriesFiltered, index) => {
+      {layersTimeseriesFiltered?.map((layerTimeseriesFiltered, index) => {
         return (
           <AnalysisItem
+            loading={!analysisGeometryLoaded || !layerTimeseriesFiltered.timeseries.length}
             hasAnalysisLayers={hasAnalysisLayers}
             analysisAreaName={analysisAreaName}
             key={index}

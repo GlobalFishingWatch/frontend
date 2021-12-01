@@ -50,6 +50,7 @@ export type AnalysisTypeProps = {
   layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
+  analysisGeometryLoaded?: boolean
 }
 
 const ANALYSIS_COMPONENTS_BY_TYPE: Record<
@@ -258,6 +259,7 @@ function Analysis() {
             layersTimeseriesFiltered={layersTimeseriesFiltered}
             hasAnalysisLayers={hasAnalysisLayers}
             analysisAreaName={analysisAreaName}
+            analysisGeometryLoaded={analysisGeometryLoaded}
           />
         )}
         {gfwUser && (
