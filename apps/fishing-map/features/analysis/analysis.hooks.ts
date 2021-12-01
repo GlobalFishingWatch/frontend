@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
+import { feature } from '@turf/helpers'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import {
   quantizeOffsetToDate,
@@ -315,14 +316,22 @@ export const useFilteredTimeSeries = () => {
 
 const getContextAreaGeometry = (contextAreaFeatures?: mapboxgl.MapboxGeoJSONFeature[]) => {
   const contextAreaGeometry = contextAreaFeatures?.reduce((acc, { geometry, properties }) => {
-    const featureGeometry: Feature<Polygon> = {
-      type: 'Feature',
-      geometry: geometry as Polygon,
-      properties,
-    }
+    const featureGeometry = feature(geometry as Polygon)
     if (!acc?.type) return featureGeometry
     return union(acc, featureGeometry, { properties } as any) as Feature<Polygon>
   }, {} as Feature<Polygon>)
+  // const contextAreaGeometry = e?.reduce((acc, { geometry, properties }) => {
+  //   const featureGeometry = {
+  //     type: 'Feature',
+  //     geometry: geometry,
+  //     properties,
+  //   }
+  //   if (!acc?.type) {
+  //     console.log('return initial feature')
+  //     return featureGeometry
+  //   }
+  //   return me.Z(acc, featureGeometry, { properties })
+  // }, {})
   return contextAreaGeometry
 }
 
