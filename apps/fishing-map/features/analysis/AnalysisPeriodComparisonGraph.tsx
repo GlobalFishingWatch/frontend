@@ -141,26 +141,14 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       .toUTC()
       .toMillis()
     return offsetedLastDataUpdate
-  }, [timeComparison])
+  }, [dtLastDataUpdate, timeComparison.compareStart, timeComparison.start])
 
   const baseline = useMemo(() => {
     if (!timeseries || !timeseries.length) return []
-
-    return [
-      {
-        date: DateTime.fromISO(timeseries[0].date).toUTC().toMillis(),
-        zero: 0,
-      },
-      {
-        date: Math.min(
-          DateTime.fromISO(timeseries[timeseries.length - 1].compareDate)
-            .toUTC()
-            .toMillis(),
-          offsetedLastDataUpdate
-        ),
-        zero: 0,
-      },
-    ]
+    return timeseries.map(({ date }) => ({
+      date: DateTime.fromISO(date).toUTC().toMillis(),
+      zero: 0,
+    }))
   }, [timeseries])
 
   const difference = useMemo(() => {
@@ -196,7 +184,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       }
       return data
     })
-  }, [timeseries])
+  }, [offsetedLastDataUpdate, timeseries])
 
   const lastDate = useMemo(() => {
     return range?.[range?.length - 1].date
