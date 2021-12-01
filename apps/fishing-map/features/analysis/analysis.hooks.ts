@@ -7,6 +7,7 @@ import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 import { feature } from '@turf/helpers'
 // eslint-disable-next-line import/no-webpack-loader-syntax
+import { uniqBy } from 'lodash'
 import {
   quantizeOffsetToDate,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
@@ -315,24 +316,18 @@ export const useFilteredTimeSeries = () => {
 }
 
 const getContextAreaGeometry = (contextAreaFeatures?: mapboxgl.MapboxGeoJSONFeature[]) => {
-  const contextAreaGeometry = contextAreaFeatures?.reduce((acc, { geometry, properties }) => {
-    const featureGeometry = feature(geometry as Polygon)
+  const uniqContextAreaFeatures = uniqBy(contextAreaFeatures, 'id')
+
+  if (uniqContextAreaFeatures?.length === 1) {
+    const { geometry, properties } = uniqContextAreaFeatures[0]
+    return feature(geometry, properties)
+  }
+
+  return uniqContextAreaFeatures?.reduce((acc, { geometry, properties }) => {
+    const featureGeometry = feature(geometry as Polygon, properties)
     if (!acc?.type) return featureGeometry
-    return union(acc, featureGeometry, { properties } as any) as Feature<Polygon>
+    return union(acc, featureGeometry, { properties } as any)
   }, {} as Feature<Polygon>)
-  // const contextAreaGeometry = e?.reduce((acc, { geometry, properties }) => {
-  //   const featureGeometry = {
-  //     type: 'Feature',
-  //     geometry: geometry,
-  //     properties,
-  //   }
-  //   if (!acc?.type) {
-  //     console.log('return initial feature')
-  //     return featureGeometry
-  //   }
-  //   return me.Z(acc, featureGeometry, { properties })
-  // }, {})
-  return contextAreaGeometry
 }
 
 export const useAnalysisGeometry = () => {

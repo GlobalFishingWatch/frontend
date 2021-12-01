@@ -48,7 +48,6 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
   const startDate = DateTime.fromISO(start).toUTC()
   const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
   const diff = TimeInterval.fromDateTimes(startDate, date)
-
   if (!diff.length('hours') && !diff.length('days')) return ''
 
   return timeChunkInterval === 'hour'
