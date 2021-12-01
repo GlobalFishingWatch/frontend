@@ -1,29 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Feature, Polygon, MultiPolygon } from 'geojson'
-import union from '@turf/union'
+import { Polygon, MultiPolygon } from 'geojson'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
-import { feature } from '@turf/helpers'
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import { uniqBy } from 'lodash'
 import {
-  quantizeOffsetToDate,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
-  Interval,
-  pickActiveTimeChunk,
   TimeChunk,
   TimeChunks,
   DEFAULT_CONTEXT_SOURCE_LAYER,
 } from '@globalfishingwatch/layer-composer'
-import {
-  getTimeSeries,
-  getRealValues,
-  TimeSeriesFrame,
-} from '@globalfishingwatch/fourwings-aggregate'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
-import { MapboxEvent } from '@globalfishingwatch/mapbox-gl'
+import type { Map, MapboxEvent } from '@globalfishingwatch/mapbox-gl'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
@@ -42,56 +29,27 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
 import { DEFAULT_WORKSPACE, FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { useMapStyle } from 'features/map/map.hooks'
-import { filterByPolygon } from './analysis.worker'
+import {
+  featuresToTimeseries,
+  filterTimeseriesByTimerange,
+  removeTimeseriesPadding,
+} from 'features/analysis/analysis-timeseries.utils'
+import { filterByPolygon, getContextAreaGeometry } from './analysis-geo.utils'
 import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectShowTimeComparison } from './analysis.selectors'
 
-type LayerWithFeatures = {
+export type LayerWithFeatures = {
   id: string
   features: GeoJSON.Feature<GeoJSON.Geometry>[]
   metadata: any
 }
 
-type DateTimeSeries = {
+export type DateTimeSeries = {
   date: string
   values: number[]
   compareDate?: string
 }[]
-
-const frameTimeseriesToDateTimeseries = (
-  frameTimeseries: TimeSeriesFrame[],
-  sourceInterval: Interval,
-  compareDeltaMillis?: number
-): DateTimeSeries => {
-  const dateFrameseries = frameTimeseries.map((frameValues) => {
-    const { frame, ...rest } = frameValues
-    const date = quantizeOffsetToDate(frame, sourceInterval)
-    const compareDate = compareDeltaMillis
-      ? new Date(date.getTime() + compareDeltaMillis).toISOString()
-      : undefined
-    return {
-      values: Object.values(rest) as number[],
-      date: date.toISOString(),
-      compareDate,
-    }
-  })
-  return dateFrameseries
-}
-
-const filterByTimerange = (timeseries: AnalysisGraphProps[], start: string, end: string) => {
-  const startDate = DateTime.fromISO(start)
-  const endDate = DateTime.fromISO(end)
-  return timeseries?.map((layerTimeseries) => {
-    return {
-      ...layerTimeseries,
-      timeseries: layerTimeseries?.timeseries.filter((current: any) => {
-        const currentDate = DateTime.fromISO(current.date)
-        return currentDate >= startDate && currentDate < endDate
-      }),
-    }
-  })
-}
 
 export const useFilteredTimeSeries = () => {
   const map = useMapInstance()
@@ -123,68 +81,18 @@ export const useFilteredTimeSeries = () => {
 
   const computeTimeseries = useCallback(
     (layersWithFeatures: LayerWithFeatures[], geometry: Polygon | MultiPolygon) => {
-      const getTimeseries = async (
+      const getTimeseries = (
         layersWithFeatures: LayerWithFeatures[],
         geometry: Polygon | MultiPolygon
       ) => {
-        const filteredFeatures = await filterByPolygon(
+        const filteredFeatures = filterByPolygon(
           layersWithFeatures.map((l) => l.features),
           geometry
         )
-
-        const timeseries = filteredFeatures.map((filteredFeatures, sourceIndex) => {
-          const sourceMetadata = layersWithFeatures[sourceIndex].metadata
-          const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
-          // TODO handle multiple timechunks
-          const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
-          const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
-          const sourceInterval = sourceMetadata.timeChunks.interval
-          const { values: valuesContainedRaw } = getTimeSeries(
-            (filteredFeatures.contained || []) as any,
-            sourceNumSublayers,
-            sourceQuantizeOffset,
-            sourceMetadata.aggregationOperation
-          )
-
-          const valuesContained = frameTimeseriesToDateTimeseries(
-            valuesContainedRaw,
-            sourceInterval,
-            compareDeltaMillis
-          )
-
-          const featuresContainedAndOverlapping = [
-            ...(filteredFeatures.contained || []),
-            ...(filteredFeatures.overlapping || []),
-          ]
-          const { values: valuesContainedAndOverlappingRaw } = getTimeSeries(
-            featuresContainedAndOverlapping as any,
-            sourceNumSublayers,
-            sourceQuantizeOffset,
-            sourceMetadata.aggregationOperation
-          )
-
-          const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
-            valuesContainedAndOverlappingRaw,
-            sourceInterval,
-            compareDeltaMillis
-          )
-
-          const timeseries = valuesContainedAndOverlapping.map(({ values, date, compareDate }) => {
-            const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
-            return {
-              date,
-              compareDate,
-              // TODO take into account multiplier when calling getRealValue
-              min: minValues ? getRealValues(minValues) : new Array(values.length).fill(0),
-              max: getRealValues(values),
-            }
-          })
-
-          return {
-            timeseries,
-            interval: sourceInterval,
-            sublayers: sourceMetadata.sublayers,
-          }
+        const timeseries = featuresToTimeseries(filteredFeatures, {
+          layersWithFeatures,
+          showTimeComparison,
+          compareDeltaMillis,
         })
         setTimeseries(timeseries)
       }
@@ -292,42 +200,16 @@ export const useFilteredTimeSeries = () => {
 
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
-  const removePadding = (timeseries?: AnalysisGraphProps[]) => {
-    return timeseries?.map((timeserie) => {
-      return {
-        ...timeserie,
-        timeseries: timeserie.timeseries?.filter(
-          (time) => time.min[0] !== 0 || time.min[1] !== 0 || time.max[0] !== 0 || time.max[1] !== 0
-        ),
-      }
-    })
-  }
-
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
-      return removePadding(timeseries)
+      return removeTimeseriesPadding(timeseries)
     } else {
       if (timebarStart && timebarEnd && timeseries) {
-        return filterByTimerange(timeseries, timebarStart, timebarEnd)
+        return filterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)
       }
     }
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
   return layersTimeseriesFiltered
-}
-
-const getContextAreaGeometry = (contextAreaFeatures?: mapboxgl.MapboxGeoJSONFeature[]) => {
-  const uniqContextAreaFeatures = uniqBy(contextAreaFeatures, 'id')
-
-  if (uniqContextAreaFeatures?.length === 1) {
-    const { geometry, properties } = uniqContextAreaFeatures[0]
-    return feature(geometry, properties)
-  }
-
-  return uniqContextAreaFeatures?.reduce((acc, { geometry, properties }) => {
-    const featureGeometry = feature(geometry as Polygon, properties)
-    if (!acc?.type) return featureGeometry
-    return union(acc, featureGeometry, { properties } as any)
-  }, {} as Feature<Polygon>)
 }
 
 export const useAnalysisGeometry = () => {
