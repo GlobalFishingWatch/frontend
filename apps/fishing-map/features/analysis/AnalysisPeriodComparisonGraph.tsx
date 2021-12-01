@@ -45,6 +45,9 @@ const COLOR_DECREASE = 'rgb(63, 238, 254)'
 const COLOR_INCREASE = 'rgb(360, 62, 98)'
 
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
+  if (!tick) {
+    return ''
+  }
   const startDate = DateTime.fromISO(start).toUTC()
   const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
   const diff = TimeInterval.fromDateTimes(startDate, date)
@@ -59,7 +62,7 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
       }`
 }
 
-type AnalysisGraphTooltipProps = {
+type PeriodComparisonGraphTooltipProps = {
   active: boolean
   payload: {
     name: string
@@ -74,8 +77,8 @@ type AnalysisGraphTooltipProps = {
   timeChunkInterval: Interval
 }
 
-const AnalysisGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
+const PeriodComparisonGraphTooltip = (props: any) => {
+  const { active, payload, label, timeChunkInterval } = props as PeriodComparisonGraphTooltipProps
 
   if (label && active && payload.length > 0 && payload.length) {
     const difference = payload.find(({ name }) => name === DIFFERENCE)
@@ -225,7 +228,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
+          <Tooltip content={<PeriodComparisonGraphTooltip timeChunkInterval={interval} />} />
           <Area
             key={`decrease-area`}
             name="area"
