@@ -17,11 +17,17 @@ const allAvailableProperties = ['dataset', 'source', 'flag']
 type LayerPanelProps = {
   index: number
   dataview: UrlDataviewInstance
+  hideColors?: boolean
   hiddenProperties?: string[]
   availableFields: string[][]
 }
 
-function AnalysisLayerPanel({ dataview, hiddenProperties, availableFields }: LayerPanelProps) {
+function AnalysisLayerPanel({
+  dataview,
+  hiddenProperties,
+  availableFields,
+  hideColors,
+}: LayerPanelProps) {
   const { t } = useTranslation()
 
   const fishignDataview = isFishingDataview(dataview)
@@ -35,7 +41,8 @@ function AnalysisLayerPanel({ dataview, hiddenProperties, availableFields }: Lay
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
   const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
-  const showDot = !allAvailableProperties.every((property) => hiddenProperties?.includes(property))
+  const showDot =
+    !allAvailableProperties.every((property) => hiddenProperties?.includes(property)) && !hideColors
 
   const areAllPropertiesHidden =
     hiddenProperties?.includes('dataset') &&
@@ -49,7 +56,7 @@ function AnalysisLayerPanel({ dataview, hiddenProperties, availableFields }: Lay
 
   return (
     <div className={cx(styles.row)}>
-      <div className={styles.content}>
+      <div className={cx(styles.content, { [styles.contentDot]: showDot })}>
         {showDot && <span className={styles.dot} style={{ color: dataview.config?.color }} />}
         {!hiddenProperties?.includes('dataset') && (
           <div className={layerPanelStyles.filter}>
@@ -61,7 +68,9 @@ function AnalysisLayerPanel({ dataview, hiddenProperties, availableFields }: Lay
             )}
           </div>
         )}
-        {!hiddenProperties?.includes('source') && <DatasetFilterSource dataview={dataview} />}
+        {!hiddenProperties?.includes('source') && (
+          <DatasetFilterSource dataview={dataview} hideColor={hideColors} />
+        )}
         {!hiddenProperties?.includes('flag') && (
           <DatasetFlagField dataview={dataview} showWhenEmpty />
         )}
@@ -75,11 +84,6 @@ function AnalysisLayerPanel({ dataview, hiddenProperties, availableFields }: Lay
             />
           )
         })}
-        {/* <AnalysisFilter
-          label={t('analysis.area', 'Area')}
-          taglist={areaItems}
-          color={dataview?.config?.color}
-        /> */}
       </div>
     </div>
   )

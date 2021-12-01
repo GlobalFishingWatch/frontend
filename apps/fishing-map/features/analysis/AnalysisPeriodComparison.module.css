@@ -1,3 +1,8 @@
+.layerPanel {
+  width: 100%;
+  display: flex;
+}
+
 .container {
   width: 100%;
   padding: var(--space-M);
