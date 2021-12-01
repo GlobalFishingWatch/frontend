@@ -62,7 +62,7 @@
     "luxon": "^2.0.2",
     "match-sorter": "^6.0.2",
     "memoize-one": "^5.1.1",
-    "next": "12.0.3",
+    "next": "^12.0.4",
     "papaparse": "5.3.1",
     "pbf": "^3.2.1",
     "pbjs": "^0.0.14",
@@ -121,6 +121,7 @@
     "@typescript-eslint/eslint-plugin": "4.33.0",
     "@typescript-eslint/parser": "4.33.0",
     "babel-jest": "27.3.1",
+    "circular-dependency-plugin": "^5.2.2",
     "cypress": "^8.3.0",
     "eslint": "7.32.0",
     "eslint-config-next": "12.0.0",
@@ -136,6 +137,7 @@
     "jest-watch-typeahead": "^1.0.0",
     "kill-port": "^1.6.1",
     "lint-staged": "11.2.6",
+    "next-circular-dependency": "^1.0.1",
     "prettier": "^2.3.1",
     "serve": "^13.0.2",
     "ts-jest": "27.0.7",
@@ -144,7 +146,9 @@
   },
   "resolutions": {
     "gl-matrix": "3.3.0",
-    "reselect": "4.0.0"
+    "reselect": "4.0.0",
+    "webpack": "5.64.4",
+    "webpack-sources": "3.2.2"
   },
   "husky": {
     "hooks": {

@@ -78,8 +78,8 @@ const DatasetTypeSelect = ({
             id="polygons"
             title={t('dataset.typePolygons', 'Polygons')}
             description={t(
-              'dataset.typePolygonsDescription',
-              'Display one or multiple areas coloured by any quantitative value in your dataset.'
+              'dataset.typePolygonsContextDescription',
+              'Display one or multiple areas.'
             )}
             icon={<PolygonsLine />}
             selected={currentType === 'polygons'}
