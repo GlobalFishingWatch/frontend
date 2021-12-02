@@ -50,6 +50,7 @@ export type AnalysisTypeProps = {
   layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
+  analysisGeometryLoaded?: boolean
 }
 
 const ANALYSIS_COMPONENTS_BY_TYPE: Record<
@@ -175,6 +176,7 @@ function Analysis() {
 
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
+  const timeComparisonEnabled = dataviews.length === 1
 
   const ANALYSIS_TYPE_OPTIONS: (ChoiceOption & { hidden?: boolean })[] = useMemo(
     () =>
@@ -193,13 +195,21 @@ function Analysis() {
         {
           id: 'periodComparison',
           title: t('analysis.periodComparison', 'period comparison'),
+          tooltip: timeComparisonEnabled
+            ? ''
+            : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
+          disabled: !timeComparisonEnabled,
         },
         {
           id: 'beforeAfter',
           title: t('analysis.beforeAfter', 'before/after'),
+          tooltip: timeComparisonEnabled
+            ? ''
+            : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
+          disabled: !timeComparisonEnabled,
         },
       ].filter((option) => !option.hidden),
-    [t]
+    [timeComparisonEnabled, t]
   )
 
   const onAnalysisTypeClick = useCallback(
@@ -258,6 +268,7 @@ function Analysis() {
             layersTimeseriesFiltered={layersTimeseriesFiltered}
             hasAnalysisLayers={hasAnalysisLayers}
             analysisAreaName={analysisAreaName}
+            analysisGeometryLoaded={analysisGeometryLoaded}
           />
         )}
         {gfwUser && (

@@ -6,6 +6,7 @@
     "download": "Download report",
     "downloadLogin": "You need to login to download a report",
     "empty": "Your selected datasets will appear here",
+    "errorTimeComparisonFilters": "Only one activity layer supported",
     "errorMessage": "Something went wrong",
     "experimental": "Experimental",
     "filteredBy": "filtered by",
@@ -27,7 +28,7 @@
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
     "beforeAfterDate": "date",
     "beforeAfterDuration": "duration",
-    "beforeAfterRange": "between the {{duration}} before and after {{start}}"
+    "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}"
   },
   "common": {
     "active_after": "Active after",

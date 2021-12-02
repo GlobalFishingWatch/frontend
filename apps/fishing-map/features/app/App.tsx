@@ -41,6 +41,7 @@ import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { initializeHints } from 'features/help/hints/hints.slice'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -57,6 +58,13 @@ declare global {
     gtag: any
   }
 }
+
+export const COLOR_PRIMARY_BLUE = getComputedStyle(document.documentElement).getPropertyValue(
+  '--color-primary-blue'
+)
+export const COLOR_GRADIENT = getComputedStyle(document.documentElement).getPropertyValue(
+  '--color-gradient'
+)
 
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
@@ -105,6 +113,10 @@ function App(): React.ReactElement {
     if (locationIsMarineManager)
       localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
   }, [locationIsMarineManager])
+
+  useEffect(() => {
+    dispatch(initializeHints())
+  }, [dispatch])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()

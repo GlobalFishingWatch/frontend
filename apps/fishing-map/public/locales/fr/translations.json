@@ -27,7 +27,7 @@
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
     "beforeAfterDate": "date",
     "beforeAfterDuration": "duration",
-    "beforeAfterRange": "between the {{duration}} before and after {{start}}"
+    "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}"
   },
   "common": {
     "active_after": "Actif après",

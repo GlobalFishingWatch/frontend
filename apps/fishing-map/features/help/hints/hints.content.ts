@@ -5,11 +5,11 @@ import clickingOnAGridCellToShowVesselsImg from 'assets/images/hints/clickingOnA
 import changingTheTimeRangeImg from 'assets/images/hints/changingTheTimeRange.png'
 import areaSearchImg from 'assets/images/hints/areaSearch.png'
 
-// t('helpHints:fishingEffortHeatmap', 'The map shows an interactive heat map of apparent fishing effort. The lighter grid cells are the most intensely fished areas.')
+// t('helpHints:fishingEffortHeatmap', 'The map shows an interactive heat map of activity. The lighter grid cells are the areas with more activity.')
 // t('helpHints:filterActivityLayers', 'Click the filter icon to filter activity using different available criteria, including data source, flag and gear types.')
 // t('helpHints:clickingOnAGridCellToShowVessels', 'Click on any grid cell to show the most active vessels in that area over the chosen time range.')
 // t('helpHints:changingTheTimeRange', 'Click and drag to change the time range you are viewing in the time bar.')
-// t('helpHints:areaSearch', 'Search by country, sea or ocean to focus on an area you're interested in.')
+// t('helpHints:periodComparisonBaseline', 'Select a baseline to compare changes in activity e.g. between now and the same date last year, or to compare activity at different times of year.')
 
 export type HintId =
   | 'fishingEffortHeatmap'
@@ -17,11 +17,13 @@ export type HintId =
   | 'clickingOnAGridCellToShowVessels'
   | 'changingTheTimeRange'
   | 'areaSearch'
+  | 'periodComparisonBaseline'
 
 type HintConfig = {
-  imageUrl: string
+  imageUrl?: string
   placement?: Placement
   pulse: 'light' | 'dark'
+  openedByDefault?: boolean
 }
 
 const hintsConfig: Record<HintId, HintConfig> = {
@@ -29,6 +31,7 @@ const hintsConfig: Record<HintId, HintConfig> = {
     imageUrl: fishingEffortHeatmapImg.src,
     placement: 'right',
     pulse: 'light',
+    openedByDefault: true,
   },
   filterActivityLayers: {
     imageUrl: howToFilterActivityLayersImg.src,
@@ -49,6 +52,11 @@ const hintsConfig: Record<HintId, HintConfig> = {
     imageUrl: areaSearchImg.src,
     placement: 'right',
     pulse: 'light',
+  },
+  periodComparisonBaseline: {
+    placement: 'top',
+    pulse: 'dark',
+    openedByDefault: true,
   },
 }
 

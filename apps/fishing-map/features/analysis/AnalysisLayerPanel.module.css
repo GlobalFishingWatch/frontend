@@ -1,12 +1,15 @@
 .row {
-  padding: var(--space-M);
+  padding: var(--space-S) var(--space-M);
 }
 
 .content {
   position: relative;
-  padding-left: var(--space-M);
   display: flex;
   flex-wrap: wrap;
+}
+
+.contentDot {
+  padding-left: var(--space-M);
 }
 
 .dataset {
