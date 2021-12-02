@@ -38,12 +38,12 @@
 
 .helpHintLeft {
   position: absolute;
-  top: calc(50% - 1rem);
-  left: calc(50% - 1rem);
+  top: 50%;
+  left: calc(50% - 5rem);
 }
 
 .helpHintRight {
   position: absolute;
-  top: calc(50% + 1rem);
-  left: calc(50% + 1rem);
+  top: 50%;
+  left: calc(50% + 5rem);
 }

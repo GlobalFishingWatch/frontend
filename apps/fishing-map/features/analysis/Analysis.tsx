@@ -10,7 +10,7 @@ import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectUserData, isGFWUser } from 'features/user/user.slice'
+import { selectUserData, isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -20,7 +20,6 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { isGuestUser } from 'features/user/user.selectors'
 import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -50,6 +49,7 @@ export type AnalysisTypeProps = {
   layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
+  analysisGeometryLoaded?: boolean
 }
 
 const ANALYSIS_COMPONENTS_BY_TYPE: Record<
@@ -175,6 +175,7 @@ function Analysis() {
 
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
+  const timeComparisonEnabled = dataviews.length === 1
 
   const ANALYSIS_TYPE_OPTIONS: (ChoiceOption & { hidden?: boolean })[] = useMemo(
     () =>
@@ -193,13 +194,21 @@ function Analysis() {
         {
           id: 'periodComparison',
           title: t('analysis.periodComparison', 'period comparison'),
+          tooltip: timeComparisonEnabled
+            ? ''
+            : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
+          disabled: !timeComparisonEnabled,
         },
         {
           id: 'beforeAfter',
           title: t('analysis.beforeAfter', 'before/after'),
+          tooltip: timeComparisonEnabled
+            ? ''
+            : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
+          disabled: !timeComparisonEnabled,
         },
       ].filter((option) => !option.hidden),
-    [t]
+    [timeComparisonEnabled, t]
   )
 
   const onAnalysisTypeClick = useCallback(
@@ -258,6 +267,7 @@ function Analysis() {
             layersTimeseriesFiltered={layersTimeseriesFiltered}
             hasAnalysisLayers={hasAnalysisLayers}
             analysisAreaName={analysisAreaName}
+            analysisGeometryLoaded={analysisGeometryLoaded}
           />
         )}
         {gfwUser && (

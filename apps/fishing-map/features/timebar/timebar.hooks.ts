@@ -7,14 +7,12 @@ import { DEFAULT_CALLBACK_URL_KEY } from '@globalfishingwatch/react-hooks'
 import { TimebarVisualisations } from 'types'
 import { selectTimebarVisualisation } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectActiveActivityDataviews,
-  selectActiveTrackDataviews,
-} from 'features/dataviews/dataviews.selectors'
+import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
+import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import {
   Range,
   changeSettings,

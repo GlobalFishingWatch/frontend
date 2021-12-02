@@ -8,13 +8,17 @@ import {
   Line,
   ComposedChart,
   Area,
+  ReferenceLine,
 } from 'recharts'
-import { format } from 'd3-format'
 import { DateTime, Interval as TimeInterval } from 'luxon'
+import { useSelector } from 'react-redux'
 import { Interval } from '@globalfishingwatch/layer-composer'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n, { t } from 'features/i18n/i18n'
+import { LAST_DATA_UPDATE } from 'data/config'
+import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
+import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/App'
 import styles from './AnalysisEvolutionGraph.module.css'
+import { formatDate, formatTooltipValue, tickFormatter } from './analysis.utils'
 
 export interface ComparisonGraphData {
   date: string
@@ -40,16 +44,13 @@ const BASELINE = 'baseline'
 const COLOR_DECREASE = 'rgb(63, 238, 254)'
 const COLOR_INCREASE = 'rgb(360, 62, 98)'
 
-const tickFormatter = (tick: number) => {
-  const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
-  return format(formatter)(tick)
-}
-
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
+  if (!tick) {
+    return ''
+  }
   const startDate = DateTime.fromISO(start).toUTC()
   const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
   const diff = TimeInterval.fromDateTimes(startDate, date)
-
   if (!diff.length('hours') && !diff.length('days')) return ''
 
   return timeChunkInterval === 'hour'
@@ -61,16 +62,7 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
       }`
 }
 
-const formatTooltipValue = (value: number, unit: string, asDifference = false) => {
-  if (value === undefined) {
-    return null
-  }
-  const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
-  const valueLabel = `${value > 0 && asDifference ? '+' : ''}${valueFormatted} ${unit ? unit : ''}`
-  return valueLabel
-}
-
-type AnalysisGraphTooltipProps = {
+type PeriodComparisonGraphTooltipProps = {
   active: boolean
   payload: {
     name: string
@@ -85,32 +77,10 @@ type AnalysisGraphTooltipProps = {
   timeChunkInterval: Interval
 }
 
-const formatDate = (date: DateTime, timeChunkInterval: Interval) => {
-  let formattedLabel = ''
-  switch (timeChunkInterval) {
-    case 'month':
-      formattedLabel += date.toFormat('LLLL y')
-      break
-    case '10days':
-      const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
-      const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
-      formattedLabel += `${timeRangeStart} - ${timeRangeEnd}`
-      break
-    case 'day':
-      formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
-      break
-    default:
-      formattedLabel += date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
-      break
-  }
-  return formattedLabel
-}
-
-const AnalysisGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
+const PeriodComparisonGraphTooltip = (props: any) => {
+  const { active, payload, label, timeChunkInterval } = props as PeriodComparisonGraphTooltipProps
 
   if (label && active && payload.length > 0 && payload.length) {
-    if (payload.length) console.log(payload)
     const difference = payload.find(({ name }) => name === DIFFERENCE)
     if (!difference) return null
     const baselineDate = DateTime.fromMillis(difference?.payload.date)
@@ -149,25 +119,36 @@ const AnalysisPeriodComparisonGraph: React.FC<{
 }> = (props) => {
   const { start, end } = props
   const { interval, timeseries, sublayers } = props.graphData
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
 
   const unit = useMemo(() => {
     return sublayers[0].legend.unit
   }, [sublayers])
 
+  const dtLastDataUpdate = useMemo(() => {
+    return DateTime.fromISO(LAST_DATA_UPDATE).toUTC()
+  }, [])
+
+  const offsetedLastDataUpdate = useMemo(() => {
+    // Need to offset LAST_DATA_UPDATE because graph uses dates from start, not compareStart
+    const diff = DateTime.fromISO(timeComparison.compareStart)
+      .diff(DateTime.fromISO(timeComparison.start))
+      .toMillis()
+    const offsetedLastDataUpdate = dtLastDataUpdate
+      .minus({
+        milliseconds: diff,
+      })
+      .toUTC()
+      .toMillis()
+    return offsetedLastDataUpdate
+  }, [dtLastDataUpdate, timeComparison.compareStart, timeComparison.start])
+
   const baseline = useMemo(() => {
     if (!timeseries || !timeseries.length) return []
-    return [
-      {
-        date: DateTime.fromISO(timeseries[0].date).toUTC().toMillis(),
-        zero: 0,
-      },
-      {
-        date: DateTime.fromISO(timeseries[timeseries.length - 1].date)
-          .toUTC()
-          .toMillis(),
-        zero: 0,
-      },
-    ]
+    return timeseries.map(({ date }) => ({
+      date: DateTime.fromISO(date).toUTC().toMillis(),
+      zero: 0,
+    }))
   }, [timeseries])
 
   const difference = useMemo(() => {
@@ -185,18 +166,29 @@ const AnalysisPeriodComparisonGraph: React.FC<{
   }, [timeseries])
 
   const range = useMemo(() => {
-    return timeseries?.map(({ date, compareDate, min, max }, index) => {
+    return timeseries?.map(({ date, compareDate, min, max }) => {
       const baseAvg = min[0] + max[0] / 2
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - baseAvg
-      return {
-        date: DateTime.fromISO(date).toUTC().toMillis(),
-        ...{ compareDate: compareDate ? DateTime.fromISO(compareDate).toUTC().toMillis() : {} },
-        rangeDecrease: difference <= 0 ? [0, difference] : [0, 0],
-        rangeIncrease: difference > 0 ? [0, difference] : [0, 0],
+      const dtStart = DateTime.fromISO(date).toUTC()
+      const dtCompareStart = DateTime.fromISO(compareDate).toUTC()
+      const data = {
+        date: dtStart.toMillis(),
+        ...{ compareDate: compareDate ? dtCompareStart.toMillis() : {} },
+        rangeDecrease: null,
+        rangeIncrease: null,
       }
+      if (dtStart.toMillis() < offsetedLastDataUpdate) {
+        data.rangeDecrease = difference <= 0 ? [0, difference] : [0, 0]
+        data.rangeIncrease = difference > 0 ? [0, difference] : [0, 0]
+      }
+      return data
     })
-  }, [timeseries])
+  }, [offsetedLastDataUpdate, timeseries])
+
+  const lastDate = useMemo(() => {
+    return range?.[range?.length - 1].date
+  }, [range])
 
   if (!range) return null
 
@@ -224,7 +216,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
+          <Tooltip content={<PeriodComparisonGraphTooltip timeChunkInterval={interval} />} />
           <Area
             key={`decrease-area`}
             name="area"
@@ -254,7 +246,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             dataKey={(data) => data.zero}
             dot={false}
             isAnimationActive={false}
-            stroke="rgb(229, 240, 242)"
+            stroke={COLOR_GRADIENT}
             strokeWidth={2}
           />
           <Line
@@ -278,9 +270,12 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             unit={unit}
             dot={false}
             isAnimationActive={false}
-            stroke="rgb(22, 63, 137) "
+            stroke={COLOR_PRIMARY_BLUE}
             strokeWidth={2}
           />
+          {offsetedLastDataUpdate < lastDate && (
+            <ReferenceLine x={offsetedLastDataUpdate} stroke={COLOR_PRIMARY_BLUE} />
+          )}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

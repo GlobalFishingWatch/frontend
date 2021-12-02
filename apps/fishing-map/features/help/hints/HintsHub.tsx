@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,8 +6,10 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { isGFWUser } from 'features/user/user.slice'
 import hintsConfig from './hints.content'
-import { initializeHints, resetHints, selectHintsDismissed } from './hints.slice'
+import { resetHints, selectHintsDismissed } from './hints.slice'
 import styles from './Hint.module.css'
+
+const HELP_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-help')
 
 function HintsHub() {
   const { t } = useTranslation()
@@ -26,10 +28,6 @@ function HintsHub() {
     })
     dispatch(resetHints())
   }
-
-  useEffect(() => {
-    dispatch(initializeHints())
-  }, [dispatch])
 
   const disabled = percentageOfHintsSeen === 0
 
@@ -50,7 +48,7 @@ function HintsHub() {
       type="border"
       className={cx(styles.hintsHub, { [styles.pulseDarkOnce]: hintsDismissedArray.length === 1 })}
       style={{
-        background: `linear-gradient(to top, #fff8cd 0%, #fff8cd ${percentageOfHintsSeen}%, rgba(0,0,0,0) ${percentageOfHintsSeen}%, rgba(0,0,0,0) 100%) no-repeat`,
+        background: `linear-gradient(to top, ${HELP_COLOR} 0%, ${HELP_COLOR} ${percentageOfHintsSeen}%, rgba(0,0,0,0) ${percentageOfHintsSeen}%, rgba(0,0,0,0) 100%) no-repeat`,
       }}
     />
   )

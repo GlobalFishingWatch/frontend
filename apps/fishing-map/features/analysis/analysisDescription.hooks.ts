@@ -148,8 +148,16 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
   const startLabel = formatI18nDate(timeComparison.start, {
     format: DateTime.DATE_MED_WITH_WEEKDAY,
   })
-  // TODO Plural and i18n
-  const durationLabel = [timeComparison.duration, timeComparison.durationType].join(' ')
+  const compareStartLabel = formatI18nDate(timeComparison.compareStart, {
+    format: DateTime.DATE_MED_WITH_WEEKDAY,
+  })
+
+  const durationTypeLabel =
+    parseInt(timeComparison.duration as any) === 1
+      ? t(`common.${timeComparison.durationType}_one`)
+      : t(`common.${timeComparison.durationType}_other`)
+  const durationLabel = [timeComparison.duration, durationTypeLabel].join(' ')
+
   let label =
     analysisType === 'periodComparison'
       ? t('analysis.periodComparisonRange', {
@@ -162,9 +170,9 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
             'in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}',
         })
       : t('analysis.beforeAfterRange', {
-          start: startLabel,
+          compareStart: compareStartLabel,
           duration: durationLabel,
-          defaultValue: 'between the {{duration}} before and after {{start}}',
+          defaultValue: 'between the {{duration}} before and after {{compareStart}}',
         })
 
   if (addPrefix) {

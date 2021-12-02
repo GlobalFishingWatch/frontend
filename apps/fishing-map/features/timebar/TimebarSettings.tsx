@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next'
 import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import {
-  selectActiveActivityDataviews,
-  selectActiveTrackDataviews,
-  selectActiveVesselsDataviews,
-} from 'features/dataviews/dataviews.selectors'
+import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
+import {
+  selectActiveTrackDataviews,
+  selectActiveVesselsDataviews,
+} from 'features/dataviews/dataviews.slice'
 import { useTimebarVisualisationConnect } from './timebar.hooks'
 import { selectTracksGraphsLoading } from './timebar.selectors'
 import styles from './TimebarSettings.module.css'

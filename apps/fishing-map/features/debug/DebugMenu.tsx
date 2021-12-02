@@ -4,7 +4,7 @@ import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBasemapDataviewInstance } from 'features/dataviews/dataviews.selectors'
-import { useMapStyle } from 'features/map/map.hooks'
+import { useMapStyle } from 'features/map/map-style.hooks'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
 

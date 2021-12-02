@@ -1,7 +1,9 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { Polygon, MultiPolygon, BBox } from 'geojson'
+import { feature } from '@turf/helpers'
+import union from '@turf/union'
+import { Feature, Polygon, MultiPolygon, BBox } from 'geojson'
+import { uniqBy } from 'lodash'
 
-type Feature = GeoJSON.Feature<GeoJSON.Geometry>
 export type FilteredPolygons = {
   contained: Feature[]
   overlapping: Feature[]
@@ -65,4 +67,19 @@ export function filterByPolygon(
     )
   })
   return filtered
+}
+
+export const getContextAreaGeometry = (contextAreaFeatures?: mapboxgl.MapboxGeoJSONFeature[]) => {
+  const uniqContextAreaFeatures = uniqBy(contextAreaFeatures, 'id')
+
+  if (uniqContextAreaFeatures?.length === 1) {
+    const { geometry, properties } = uniqContextAreaFeatures[0]
+    return feature(geometry, properties)
+  }
+
+  return uniqContextAreaFeatures?.reduce((acc, { geometry, properties }) => {
+    const featureGeometry = feature(geometry as Polygon, properties)
+    if (!acc?.type) return featureGeometry
+    return union(acc, featureGeometry, { properties } as any)
+  }, {} as Feature<Polygon>)
 }

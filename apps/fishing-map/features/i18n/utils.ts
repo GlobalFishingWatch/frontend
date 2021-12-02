@@ -1,5 +1,4 @@
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { removeDatasetVersion } from 'features/datasets/datasets.utils'
 import i18n, { t } from './i18n'
 
 export const getPlaceholderBySelections = (selections?: MultiSelectOption[]): string => {
@@ -7,6 +6,10 @@ export const getPlaceholderBySelections = (selections?: MultiSelectOption[]): st
   return selections.length > 1
     ? `${selections.length} ${t('selects.selected', 'selected')}`
     : selections[0].label
+}
+
+export const removeDatasetVersion = (datasetId: string) => {
+  return datasetId ? datasetId?.split(':')[0] : ''
 }
 
 export const getDatasetNameTranslated = (dataset: { id: string; name?: string }): string => {
@@ -37,4 +40,10 @@ export const getDateFormatString = ({ locale = i18n.language, upper = false } = 
       }
     })
     .join('')
+}
+
+export const joinTranslatedList = (list: string[], condition: 'or' | 'and' = 'or') => {
+  return list.reduce(function (acc, el, i) {
+    return acc + (i === list.length - 1 ? ` ${t(`common.${condition}`, condition)} ` : ', ') + el
+  })
 }

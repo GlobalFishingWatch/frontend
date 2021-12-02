@@ -25,8 +25,7 @@ import {
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { isGuestUser } from 'features/user/user.selectors'
-import { isGFWUser } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 

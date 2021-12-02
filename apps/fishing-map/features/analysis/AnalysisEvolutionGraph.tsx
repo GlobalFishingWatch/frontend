@@ -9,7 +9,6 @@ import {
   ComposedChart,
   Area,
 } from 'recharts'
-import { format } from 'd3-format'
 import { min, max } from 'lodash'
 import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
@@ -17,6 +16,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import { toFixed } from 'utils/shared'
 import styles from './AnalysisEvolutionGraph.module.css'
+import { tickFormatter } from './analysis.utils'
 
 export interface EvolutionGraphData {
   date: string
@@ -34,11 +34,6 @@ export interface AnalysisGraphProps {
     }
   }[]
   interval: Interval
-}
-
-const tickFormatter = (tick: number) => {
-  const formatter = tick < 1 ? '~r' : '~s'
-  return format(formatter)(tick)
 }
 
 const formatDateTicks = (tick: number, timeChunkInterval: Interval) => {
