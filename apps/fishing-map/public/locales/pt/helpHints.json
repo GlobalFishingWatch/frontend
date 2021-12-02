@@ -1,7 +1,8 @@
 {
-  "fishingEffortHeatmap": "O mapa mostra o esforço aparente de pesca na forma de um mapa de calor interativo. As células do grid com cores mais claras representam as áreas com maior intensidade de pesca.",
+  "fishingEffortHeatmap": "The map shows an interactive heat map of activity. The lighter grid cells are the areas with more activity.",
   "filterActivityLayers": "Clique no ícone de filtro para filtrar a atividade usando diferentes critérios disponíveis, incluindo fonte de dados, bandeira e tipos de petrechos de pesca.",
   "clickingOnAGridCellToShowVessels": "Clique em qualquer célula do grid para mostrar as embarcações mais ativas no intervalo de tempo escolhido.",
   "changingTheTimeRange": "Clique e arraste para mudar o intervalo de tempo que você está visualizado na barra de tempo.",
-  "areaSearch": "Pesquise por país, mar ou oceano para se centralizar o mapa em uma área na qual você tem interesse."
+  "areaSearch": "Pesquise por país, mar ou oceano para se centralizar o mapa em uma área na qual você tem interesse.",
+  "periodComparisonBaseline": "Select a baseline to compare changes in activity e.g. between now and the same date last year, or to compare activity at different times of year."
 }
