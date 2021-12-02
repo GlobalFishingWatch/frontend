@@ -1,6 +1,5 @@
-import React, { useState, useCallback, memo } from 'react'
+import React, { useState, useCallback } from 'react'
 import cx from 'classnames'
-import Image from 'next/image'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
@@ -75,7 +74,8 @@ function Hint({ id, className }: HintProps) {
       component={
         <div className={styles.container}>
           {imageUrl && (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               className={styles.img}
               src={imageUrl}
               role="presentation"
