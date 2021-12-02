@@ -17,7 +17,6 @@ import {
   MULTILAYER_SEPARATOR,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
 } from '@globalfishingwatch/dataviews-client'
-import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
@@ -35,6 +34,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/analysis/analysis.selectors'
+import { useMapStyle } from 'features/map/map-style.hooks'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -56,7 +56,7 @@ import {
   ExtendedViirsFeature,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
+import { useMapAndSourcesLoaded } from './map-features.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   'fishing-effort',
@@ -423,25 +423,6 @@ export const parseMapTooltipEvent = (
     ...baseEvent,
     features: tooltipEventFeatures,
   }
-}
-
-export const useMapStyle = () => {
-  const map = useMapInstance()
-
-  // Used to ensure the style is refreshed on load finish
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const mapLoaded = useMapLoaded()
-
-  if (!map) return null
-
-  let style: Style
-  try {
-    style = map.getStyle()
-  } catch (e: any) {
-    return null
-  }
-
-  return style
 }
 
 export const useGeneratorStyleMetadata = (generatorId: string) => {

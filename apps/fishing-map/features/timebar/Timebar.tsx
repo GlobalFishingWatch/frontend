@@ -28,6 +28,7 @@ import { upperFirst } from 'utils/info'
 import { selectIsMapDrawing } from 'features/map/map.selectors'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
+import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -42,9 +43,6 @@ import {
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
-
-export const TIMEBAR_HEIGHT = 72
-export const MAX_TIMEBAR_VESSELS = 10
 
 const TimebarHighlighterWrapper = ({ activity }: any) => {
   const highlightedTime = useSelector(selectHighlightedTime)

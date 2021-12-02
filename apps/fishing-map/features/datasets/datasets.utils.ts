@@ -31,10 +31,6 @@ export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   (dataset?.id || '').includes(PRIVATE_SUFIX)
 
-export const removeDatasetVersion = (datasetId: string) => {
-  return datasetId ? datasetId?.split(':')[0] : ''
-}
-
 export const getDatasetLabel = (dataset: { id: string; name?: string }): string => {
   const { id, name = '' } = dataset || {}
   if (!id) return name || ''

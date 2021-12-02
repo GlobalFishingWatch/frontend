@@ -25,10 +25,7 @@ import {
   useGeneratorsConnect,
   TooltipEventFeature,
 } from 'features/map/map.hooks'
-import {
-  selectActivityDataviews,
-  selectDataviewInstancesResolved,
-} from 'features/dataviews/dataviews.selectors'
+import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
@@ -38,11 +35,13 @@ import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
+import { useMapLoaded } from 'features/map/map-style.hooks'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
-import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
+import { useMapAndSourcesLoaded, useSetMapIdleAtom } from './map-features.hooks'
 import MapDraw from './MapDraw'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'

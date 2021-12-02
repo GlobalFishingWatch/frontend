@@ -11,20 +11,10 @@ import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX } from 'data/config'
 import { RootState } from 'store'
-import {
-  selectUserStatus,
-  selectUserLogged,
-  GUEST_USER_TYPE,
-  selectUserData,
-  isGFWUser,
-} from './user.slice'
+import { selectUserStatus, selectUserLogged, selectUserData, isGFWUser } from './user.slice'
 
 const DEFAULT_GROUP_ID = 'Default'
 const PRIVATE_SUPPORTED_GROUPS = ['Indonesia', 'Peru', 'Panama', 'Brazil', 'Mexico', 'Ecuador']
-
-export const isGuestUser = createSelector([selectUserData], (userData) => {
-  return userData?.type === GUEST_USER_TYPE
-})
 
 export const isUserLogged = createSelector(
   [selectUserStatus, selectUserLogged],
