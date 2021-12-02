@@ -63,6 +63,10 @@
   flex-direction: column;
 }
 
+.icons svg:not(:first-of-type) {
+  margin-left: 1rem;
+}
+
 .hint {
   color: var(--color-secondary-blue);
   text-decoration: underline;
