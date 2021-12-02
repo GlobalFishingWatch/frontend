@@ -1,7 +1,19 @@
+.layerPanel {
+  width: 100%;
+  display: flex;
+}
+
 .container {
   display: flex;
-  width: 100%;
   padding: var(--space-M);
+  width: 100%;
+}
+
+.graphContainer {
+  min-height: 28rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .timeSelection {

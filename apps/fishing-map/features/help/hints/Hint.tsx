@@ -111,4 +111,4 @@ function Hint({ id, className }: HintProps) {
   )
 }
 
-export default memo(Hint)
+export default Hint

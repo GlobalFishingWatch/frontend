@@ -9,42 +9,40 @@ import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 
+const arrayToStringTransform = (array: string[]) =>
+  `(${array?.map((v: string) => `'${v}'`).join(', ')})`
+
 export const transformFilters = (filters: Record<string, any>): string => {
   const queryFiltersFields = [
     {
       value: filters.flag,
       field: 'flag',
       operator: 'IN',
-      transformation: (value: any): string =>
-        `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
+      transformation: arrayToStringTransform,
     },
     {
       value: filters.fleet,
       field: 'fleet',
       operator: 'IN',
-      transformation: (value: any): string =>
-        `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
+      transformation: arrayToStringTransform,
     },
     {
       value: filters.origin,
       field: 'origin',
       operator: 'IN',
-      transformation: (value: any): string =>
-        `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
+      transformation: arrayToStringTransform,
     },
     {
       value: filters.geartype,
       field: 'geartype',
       operator: 'IN',
-      transformation: (value: any): string =>
-        `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
+      transformation: arrayToStringTransform,
     },
     {
       value: filters.vessel_type,
       field: 'vessel_type',
       operator: 'IN',
-      transformation: (value: any): string =>
-        `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
+      transformation: arrayToStringTransform,
     },
   ]
 

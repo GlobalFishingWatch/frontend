@@ -45,11 +45,12 @@ const COLOR_DECREASE = 'rgb(63, 238, 254)'
 const COLOR_INCREASE = 'rgb(360, 62, 98)'
 
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
-  if (!Number.isInteger(tick)) return null
+  if (!tick) {
+    return ''
+  }
   const startDate = DateTime.fromISO(start).toUTC()
   const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
   const diff = TimeInterval.fromDateTimes(startDate, date)
-
   if (!diff.length('hours') && !diff.length('days')) return ''
 
   return timeChunkInterval === 'hour'
@@ -61,7 +62,7 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
       }`
 }
 
-type AnalysisGraphTooltipProps = {
+type PeriodComparisonGraphTooltipProps = {
   active: boolean
   payload: {
     name: string
@@ -76,8 +77,8 @@ type AnalysisGraphTooltipProps = {
   timeChunkInterval: Interval
 }
 
-const AnalysisGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
+const PeriodComparisonGraphTooltip = (props: any) => {
+  const { active, payload, label, timeChunkInterval } = props as PeriodComparisonGraphTooltipProps
 
   if (label && active && payload.length > 0 && payload.length) {
     const difference = payload.find(({ name }) => name === DIFFERENCE)
@@ -140,26 +141,14 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       .toUTC()
       .toMillis()
     return offsetedLastDataUpdate
-  }, [timeComparison])
+  }, [dtLastDataUpdate, timeComparison.compareStart, timeComparison.start])
 
   const baseline = useMemo(() => {
     if (!timeseries || !timeseries.length) return []
-
-    return [
-      {
-        date: DateTime.fromISO(timeseries[0].date).toUTC().toMillis(),
-        zero: 0,
-      },
-      {
-        date: Math.min(
-          DateTime.fromISO(timeseries[timeseries.length - 1].compareDate)
-            .toUTC()
-            .toMillis(),
-          offsetedLastDataUpdate
-        ),
-        zero: 0,
-      },
-    ]
+    return timeseries.map(({ date }) => ({
+      date: DateTime.fromISO(date).toUTC().toMillis(),
+      zero: 0,
+    }))
   }, [timeseries])
 
   const difference = useMemo(() => {
@@ -195,7 +184,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       }
       return data
     })
-  }, [timeseries])
+  }, [offsetedLastDataUpdate, timeseries])
 
   const lastDate = useMemo(() => {
     return range?.[range?.length - 1].date
@@ -227,7 +216,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
+          <Tooltip content={<PeriodComparisonGraphTooltip timeChunkInterval={interval} />} />
           <Area
             key={`decrease-area`}
             name="area"

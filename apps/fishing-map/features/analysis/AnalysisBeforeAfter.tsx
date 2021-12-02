@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment, useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
-import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
+import AnalysisLayerPanel from 'features/analysis/AnalysisLayerPanel'
 import { AnalysisTypeProps } from './Analysis'
 import styles from './AnalysisBeforeAfter.module.css'
-import useAnalysisDescription from './analysisDescription.hooks'
+import useAnalysisDescription, { FIELDS } from './analysisDescription.hooks'
 import AnalysisDescription from './AnalysisDescription'
 import {
   DURATION_TYPES_OPTIONS,
@@ -32,7 +32,10 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
     MAX_DATE,
   } = useAnalysisTimeCompareConnect('beforeAfter')
 
-  const { description } = useAnalysisDescription(analysisAreaName, layersTimeseriesFiltered?.[0])
+  const { description, commonProperties } = useAnalysisDescription(
+    analysisAreaName,
+    layersTimeseriesFiltered?.[0]
+  )
   const dataviewsIds = useMemo(() => {
     if (!layersTimeseriesFiltered) return []
     return layersTimeseriesFiltered[0].sublayers.map((s) => s.id)
@@ -48,9 +51,18 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   return (
     <Fragment>
       <AnalysisDescription description={description} />
-      <div className={styles.container}>
+      <div className={styles.layerPanel}>
         {dataviews &&
-          dataviews.map((d) => <DatasetFilterSource key={d.id} dataview={d} hideColor={true} />)}
+          dataviews.map((dataview, index) => (
+            <AnalysisLayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              index={index}
+              hiddenProperties={commonProperties}
+              availableFields={FIELDS}
+              hideColors={true}
+            />
+          ))}
       </div>
       {isLoading ? (
         <div className={styles.graphContainer}>

@@ -1,11 +1,11 @@
 import type { AnyLayer, CircleLayer } from '@globalfishingwatch/mapbox-gl'
-import { DEFAULT_BACKGROUND_COLOR } from '@globalfishingwatch/layer-composer'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/context'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
+import { DEFAULT_BACKGROUND_COLOR } from '../background/background'
 
 class UserContextGenerator {
   type = GeneratorType.UserContext
