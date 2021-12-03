@@ -20,7 +20,7 @@
   animation: pulseLight 2s infinite;
 }
 
-.HintPanel {
+div.HintPanel {
   border: 1px solid var(--color-help);
   background: var(--color-help);
   border-radius: 0.4rem;
