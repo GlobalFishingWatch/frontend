@@ -21,6 +21,7 @@ type ActiveChoiceProperties = {
 interface ChoiceProps {
   options: ChoiceOption[]
   activeOption: string
+  disabled?: boolean
   onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
   size?: 'default' | 'small'
   className?: string
@@ -29,6 +30,7 @@ interface ChoiceProps {
 export function Choice({
   activeOption,
   options,
+  disabled,
   onOptionClick,
   size = 'default',
   className = '',
@@ -87,10 +89,10 @@ export function Choice({
               ref={optionSelected ? activeRef : null}
             >
               <Button
-                disabled={option.disabled}
+                disabled={disabled || option.disabled}
                 className={cx(styles.optionButton, {
                   [styles.optionActive]: optionSelected,
-                  [styles.disabled]: option.disabled,
+                  [styles.disabled]: disabled || option.disabled,
                 })}
                 tooltip={option.tooltip}
                 tooltipPlacement={option.tooltipPlacement}

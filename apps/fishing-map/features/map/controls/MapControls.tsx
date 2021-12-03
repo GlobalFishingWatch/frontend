@@ -173,23 +173,19 @@ const MapControls = ({
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {extendedControls && !isAnalyzing && <MapSearch />}
-          {!isAnalyzing && (
-            <IconButton
-              icon="plus"
-              type="map-tool"
-              tooltip={t('map.zoom_in', 'Zoom in')}
-              onClick={onZoomInClick}
-            />
-          )}
-          {!isAnalyzing && (
-            <IconButton
-              icon="minus"
-              type="map-tool"
-              tooltip={t('map.zoom_out', 'Zoom out')}
-              onClick={onZoomOutClick}
-            />
-          )}
+          {extendedControls && <MapSearch />}
+          <IconButton
+            icon="plus"
+            type="map-tool"
+            tooltip={t('map.zoom_in', 'Zoom in')}
+            onClick={onZoomInClick}
+          />
+          <IconButton
+            icon="minus"
+            type="map-tool"
+            tooltip={t('map.zoom_out', 'Zoom out')}
+            onClick={onZoomOutClick}
+          />
           {extendedControls && (
             <Fragment>
               {!isAnalyzing && <Rulers />}
@@ -207,21 +203,20 @@ const MapControls = ({
                   onClick={onScreenshotClick}
                 />
               )}
-              {!isAnalyzing && (
-                <Tooltip
-                  content={
-                    currentBasemap === BasemapType.Default
-                      ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
-                      : t('map.change_basemap_default', 'Switch to default basemap')
-                  }
-                  placement="left"
-                >
-                  <button
-                    className={cx(styles.basemapSwitcher, styles[currentBasemap])}
-                    onClick={switchBasemap}
-                  ></button>
-                </Tooltip>
-              )}
+
+              <Tooltip
+                content={
+                  currentBasemap === BasemapType.Default
+                    ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
+                    : t('map.change_basemap_default', 'Switch to default basemap')
+                }
+                placement="left"
+              >
+                <button
+                  className={cx(styles.basemapSwitcher, styles[currentBasemap])}
+                  onClick={switchBasemap}
+                ></button>
+              </Tooltip>
             </Fragment>
           )}
           <IconButton

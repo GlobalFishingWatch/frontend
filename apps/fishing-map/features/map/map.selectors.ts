@@ -85,7 +85,19 @@ const getGeneratorsConfig = ({
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   }
 
-  const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
+  let generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
+
+  // In time comparison mode, exclude any heatmap layer that is not activity
+  if (showTimeComparison) {
+    generatorsConfig = generatorsConfig.filter((config) => {
+      if (
+        config.type === GeneratorType.HeatmapAnimated &&
+        config.id !== MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+      )
+        return false
+      return true
+    })
+  }
 
   // Avoid entering rulers sources and layers when no active rules
   if (rulers?.length) {

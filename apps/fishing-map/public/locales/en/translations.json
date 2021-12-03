@@ -6,7 +6,7 @@
     "download": "Download report (AIS)",
     "downloadLogin": "Register and login to download reports (free, 2 minutes)",
     "empty": "Your selected datasets will appear here",
-    "errorTimeComparisonFilters": "Only one activity layer supported",
+    "errorTimeComparisonFilters": "Several layers with filters are not supported",
     "errorMessage": "Something went wrong",
     "experimental": "Experimental",
     "filteredBy": "filtered by",

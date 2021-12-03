@@ -117,4 +117,4 @@ export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Context,
 ]
 
-export const FIT_BOUNDS_ANALYSIS_PADDING = 100
+export const FIT_BOUNDS_ANALYSIS_PADDING = 30

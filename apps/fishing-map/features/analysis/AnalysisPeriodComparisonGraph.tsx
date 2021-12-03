@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, Fragment } from 'react'
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -75,10 +75,12 @@ type PeriodComparisonGraphTooltipProps = {
   }[]
   label: number
   timeChunkInterval: Interval
+  offsetedLastDataUpdate: number
 }
 
 const PeriodComparisonGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as PeriodComparisonGraphTooltipProps
+  const { active, payload, label, timeChunkInterval, offsetedLastDataUpdate } =
+    props as PeriodComparisonGraphTooltipProps
 
   if (label && active && payload.length > 0 && payload.length) {
     const difference = payload.find(({ name }) => name === DIFFERENCE)
@@ -99,11 +101,17 @@ const PeriodComparisonGraphTooltip = (props: any) => {
         </span>
         <p className={styles.tooltipLabel}>{formatDate(compareDate, timeChunkInterval)}</p>
         <span className={styles.tooltipValue}>
-          <span
-            className={styles.tooltipValueDot}
-            style={{ color: differenceValue > 0 ? COLOR_INCREASE : COLOR_DECREASE }}
-          ></span>
-          {formatTooltipValue(differenceValue as number, difference?.unit as string, true)}
+          {difference?.payload.date > offsetedLastDataUpdate ? (
+            '---'
+          ) : (
+            <Fragment>
+              <span
+                className={styles.tooltipValueDot}
+                style={{ color: differenceValue > 0 ? COLOR_INCREASE : COLOR_DECREASE }}
+              ></span>
+              {formatTooltipValue(differenceValue as number, difference?.unit as string, true)}
+            </Fragment>
+          )}
         </span>
       </div>
     )
@@ -216,7 +224,14 @@ const AnalysisPeriodComparisonGraph: React.FC<{
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<PeriodComparisonGraphTooltip timeChunkInterval={interval} />} />
+          <Tooltip
+            content={
+              <PeriodComparisonGraphTooltip
+                timeChunkInterval={interval}
+                offsetedLastDataUpdate={offsetedLastDataUpdate}
+              />
+            }
+          />
           <Area
             key={`decrease-area`}
             name="area"

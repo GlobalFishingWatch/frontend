@@ -10,7 +10,7 @@ import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectUserData, isGFWUser, isGuestUser } from 'features/user/user.slice'
+import { selectUserData, isGuestUser } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -77,7 +77,6 @@ function Analysis() {
   const guestUser = useSelector(isGuestUser)
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
-  const gfwUser = useSelector(isGFWUser)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
@@ -175,7 +174,30 @@ function Analysis() {
 
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
-  const timeComparisonEnabled = dataviews.length === 1
+  const timeComparisonEnabled = useMemo(() => {
+    let tooltip = ''
+    let enabled = true
+    if (!dataviews.length) {
+      tooltip = t(
+        'analysis.errorTimeComparisonDataviews',
+        'At least one activity layer must be enabled'
+      )
+      enabled = false
+    } else if (
+      dataviews.length > 1 &&
+      !dataviews.every((d) => !d.config.filters || !Object.keys(d.config.filters).length)
+    ) {
+      tooltip = t(
+        'analysis.errorTimeComparisonFilters',
+        'Several layers with filters are not supported'
+      )
+      enabled = false
+    }
+    return {
+      enabled,
+      tooltip,
+    }
+  }, [dataviews])
 
   const ANALYSIS_TYPE_OPTIONS: (ChoiceOption & { hidden?: boolean })[] = useMemo(
     () =>
@@ -192,20 +214,16 @@ function Analysis() {
           tooltipPlacement: 'top' as any,
         },
         {
-          id: 'periodComparison',
-          title: t('analysis.periodComparison', 'period comparison'),
-          tooltip: timeComparisonEnabled
-            ? ''
-            : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
-          disabled: !timeComparisonEnabled,
-        },
-        {
           id: 'beforeAfter',
           title: t('analysis.beforeAfter', 'before/after'),
-          tooltip: timeComparisonEnabled
-            ? ''
-            : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
-          disabled: !timeComparisonEnabled,
+          tooltip: timeComparisonEnabled.tooltip,
+          disabled: !timeComparisonEnabled.enabled,
+        },
+        {
+          id: 'periodComparison',
+          title: t('analysis.periodComparison', 'period comparison'),
+          tooltip: timeComparisonEnabled.tooltip,
+          disabled: !timeComparisonEnabled.enabled,
         },
       ].filter((option) => !option.hidden),
     [timeComparisonEnabled, t]
@@ -270,16 +288,15 @@ function Analysis() {
             analysisGeometryLoaded={analysisGeometryLoaded}
           />
         )}
-        {gfwUser && (
-          <div>
-            <Choice
-              options={ANALYSIS_TYPE_OPTIONS}
-              className={cx('print-hidden', styles.typeChoice)}
-              activeOption={analysisType}
-              onOptionClick={onAnalysisTypeClick}
-            />
-          </div>
-        )}
+        <div>
+          <Choice
+            options={ANALYSIS_TYPE_OPTIONS}
+            className={cx('print-hidden', styles.typeChoice)}
+            activeOption={analysisType}
+            onOptionClick={onAnalysisTypeClick}
+            disabled={!bounds}
+          />
+        </div>
         <div>
           {analysisGeometry && (
             <p className={styles.placeholder}>
