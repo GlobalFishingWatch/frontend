@@ -146,7 +146,8 @@ export const useFilteredTimeSeries = () => {
   useEffect(() => {
     if (mapStyle) {
       const layersEntries = getActivityLayers(mapStyle)
-      if (layersEntries.length && !timeseries) {
+      const hasAlreadyTimeseries = timeseries && timeseries.length
+      if (layersEntries.length && !hasAlreadyTimeseries) {
         const emptyTimeseries = layersEntries.map(([dataviewId, metadata]) => {
           return {
             timeseries: [],
