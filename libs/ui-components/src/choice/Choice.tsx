@@ -74,7 +74,7 @@ export function Choice({
   }, [options])
 
   return (
-    <div className={cx(styles.Choice, className, { [styles.disabled]: disabled })}>
+    <div className={cx(styles.Choice, className)}>
       <ul className={styles.list} role="radiogroup">
         {options.map((option, index) => {
           const optionSelected = activeOptionId === option.id
@@ -89,10 +89,10 @@ export function Choice({
               ref={optionSelected ? activeRef : null}
             >
               <Button
-                disabled={option.disabled}
+                disabled={disabled || option.disabled}
                 className={cx(styles.optionButton, {
                   [styles.optionActive]: optionSelected,
-                  [styles.disabled]: option.disabled,
+                  [styles.disabled]: disabled || option.disabled,
                 })}
                 tooltip={option.tooltip}
                 tooltipPlacement={option.tooltipPlacement}

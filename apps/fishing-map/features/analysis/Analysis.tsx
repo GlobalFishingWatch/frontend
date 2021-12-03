@@ -175,14 +175,27 @@ function Analysis() {
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
   const timeComparisonEnabled = useMemo(() => {
-    const isSimple =
-      dataviews.length === 1 ||
-      dataviews.every((d) => !d.config.filters || !Object.keys(d.config.filters).length)
+    let tooltip = ''
+    let enabled = true
+    if (!dataviews.length) {
+      tooltip = t(
+        'analysis.errorTimeComparisonDataviews',
+        'At least one activity layer must be enabled'
+      )
+      enabled = false
+    } else if (
+      dataviews.length > 1 &&
+      !dataviews.every((d) => !d.config.filters || !Object.keys(d.config.filters).length)
+    ) {
+      tooltip = t(
+        'analysis.errorTimeComparisonFilters',
+        'Several layers with filters are not supported'
+      )
+      enabled = false
+    }
     return {
-      enabled: isSimple,
-      tooltip: !isSimple
-        ? t('analysis.errorTimeComparisonFilters', 'Several layers with filters are not supported')
-        : '',
+      enabled,
+      tooltip,
     }
   }, [dataviews])
 

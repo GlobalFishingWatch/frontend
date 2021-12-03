@@ -99,8 +99,6 @@ const getGeneratorsConfig = ({
     })
   }
 
-  console.log(generatorsConfig)
-
   // Avoid entering rulers sources and layers when no active rules
   if (rulers?.length) {
     const rulersGeneratorConfig = {
