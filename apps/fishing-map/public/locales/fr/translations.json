@@ -9,6 +9,7 @@
     "errorTimeComparisonFilters": "Several layers with filters are not supported",
     "errorTimeComparisonDataviews": "At least one activity layer must be enabled",
     "errorMessage": "Quelque chose s'est mal passé",
+    "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
     "experimental": "Expérimental",
     "filteredBy": "filtré par",
     "noData": "Aucune donnée disponible",
