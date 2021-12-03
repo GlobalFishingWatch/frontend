@@ -21,6 +21,7 @@ type ActiveChoiceProperties = {
 interface ChoiceProps {
   options: ChoiceOption[]
   activeOption: string
+  disabled?: boolean
   onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
   size?: 'default' | 'small'
   className?: string
@@ -29,6 +30,7 @@ interface ChoiceProps {
 export function Choice({
   activeOption,
   options,
+  disabled,
   onOptionClick,
   size = 'default',
   className = '',
@@ -72,7 +74,7 @@ export function Choice({
   }, [options])
 
   return (
-    <div className={cx(styles.Choice, className)}>
+    <div className={cx(styles.Choice, className, { [styles.disabled]: disabled })}>
       <ul className={styles.list} role="radiogroup">
         {options.map((option, index) => {
           const optionSelected = activeOptionId === option.id

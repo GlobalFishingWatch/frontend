@@ -281,6 +281,7 @@ function Analysis() {
             className={cx('print-hidden', styles.typeChoice)}
             activeOption={analysisType}
             onOptionClick={onAnalysisTypeClick}
+            disabled={!bounds}
           />
         </div>
         <div>
