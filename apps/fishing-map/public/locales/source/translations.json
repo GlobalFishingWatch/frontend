@@ -6,7 +6,7 @@
     "download": "Download report",
     "downloadLogin": "You need to login to download a report",
     "empty": "Your selected datasets will appear here",
-    "errorTimeComparisonFilters": "Only one activity layer supported",
+    "errorTimeComparisonFilters": "Several layers with filters are not supported",
     "errorMessage": "Something went wrong",
     "experimental": "Experimental",
     "filteredBy": "filtered by",

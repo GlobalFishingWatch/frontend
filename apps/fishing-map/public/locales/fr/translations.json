@@ -6,7 +6,7 @@
     "download": "Télécharger le rapport",
     "downloadLogin": "Vous devez vous connecter pour télécharger le rapport (gratuit, 2 minutes)",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
-    "errorTimeComparisonFilters": "Only one activity layer supported",
+    "errorTimeComparisonFilters": "Calques multiples avec filtres non supportés",
     "errorMessage": "Quelque chose s'est mal passé",
     "experimental": "Expérimental",
     "filteredBy": "filtré par",

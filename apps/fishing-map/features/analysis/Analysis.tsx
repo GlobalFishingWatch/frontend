@@ -174,7 +174,17 @@ function Analysis() {
 
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
-  const timeComparisonEnabled = dataviews.length === 1
+  const timeComparisonEnabled = useMemo(() => {
+    const isSimple =
+      dataviews.length === 1 ||
+      dataviews.every((d) => !d.config.filters || !Object.keys(d.config.filters).length)
+    return {
+      enabled: isSimple,
+      tooltip: !isSimple
+        ? t('analysis.errorTimeComparisonFilters', 'Several layers with filters are not supported')
+        : '',
+    }
+  }, [dataviews])
 
   const ANALYSIS_TYPE_OPTIONS: (ChoiceOption & { hidden?: boolean })[] = useMemo(
     () =>
@@ -193,18 +203,14 @@ function Analysis() {
         {
           id: 'beforeAfter',
           title: t('analysis.beforeAfter', 'before/after'),
-          tooltip: timeComparisonEnabled
-            ? ''
-            : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
-          disabled: !timeComparisonEnabled,
+          tooltip: timeComparisonEnabled.tooltip,
+          disabled: !timeComparisonEnabled.enabled,
         },
         {
           id: 'periodComparison',
           title: t('analysis.periodComparison', 'period comparison'),
-          tooltip: timeComparisonEnabled
-            ? ''
-            : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
-          disabled: !timeComparisonEnabled,
+          tooltip: timeComparisonEnabled.tooltip,
+          disabled: !timeComparisonEnabled.enabled,
         },
       ].filter((option) => !option.hidden),
     [timeComparisonEnabled, t]

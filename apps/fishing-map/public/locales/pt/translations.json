@@ -6,7 +6,7 @@
     "download": "Descarregar relatório",
     "downloadLogin": "Você precisa fazer login para baixar o relatório",
     "empty": "Os datasets selecionados aparecerão aqui",
-    "errorTimeComparisonFilters": "Only one activity layer supported",
+    "errorTimeComparisonFilters": "Several layers with filters are not supported",
     "errorMessage": "Algo deu errado",
     "experimental": "Experimental",
     "filteredBy": "filtrado por",
