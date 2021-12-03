@@ -339,16 +339,18 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
 
   useEffect(() => {
     if (timeComparison) {
-      if (analysisType === 'beforeAfter')
+      if (analysisType === 'beforeAfter') {
         // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
+        const newStart = parseFullISODate(timeComparison.compareStart)
+          .minus({ [timeComparison.durationType]: timeComparison.duration })
+          .toISO()
         dispatchQueryParams({
           analysisTimeComparison: {
             ...timeComparison,
-            start: parseFullISODate(timeComparison.compareStart)
-              .minus({ [timeComparison.durationType]: timeComparison.duration })
-              .toISO(),
+            start: newStart,
           },
         })
+      }
       return
     }
     const baseStart = timebarStart || DEFAULT_WORKSPACE.availableStart
@@ -390,7 +392,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
       const duration = newDuration || timeComparison.duration
       const durationType = newDurationType || timeComparison.durationType
 
-      const startFromCompareStart = parseYYYYMMDDDate(compareStart).minus({
+      const startFromCompareStart = parseFullISODate(compareStart).minus({
         [durationType]: duration,
       })
 
