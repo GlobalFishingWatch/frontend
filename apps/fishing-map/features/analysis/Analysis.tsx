@@ -10,7 +10,7 @@ import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectUserData, isGFWUser, isGuestUser } from 'features/user/user.slice'
+import { selectUserData, isGuestUser } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -77,7 +77,6 @@ function Analysis() {
   const guestUser = useSelector(isGuestUser)
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
-  const gfwUser = useSelector(isGFWUser)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
@@ -270,16 +269,14 @@ function Analysis() {
             analysisGeometryLoaded={analysisGeometryLoaded}
           />
         )}
-        {gfwUser && (
-          <div>
-            <Choice
-              options={ANALYSIS_TYPE_OPTIONS}
-              className={cx('print-hidden', styles.typeChoice)}
-              activeOption={analysisType}
-              onOptionClick={onAnalysisTypeClick}
-            />
-          </div>
-        )}
+        <div>
+          <Choice
+            options={ANALYSIS_TYPE_OPTIONS}
+            className={cx('print-hidden', styles.typeChoice)}
+            activeOption={analysisType}
+            onOptionClick={onAnalysisTypeClick}
+          />
+        </div>
         <div>
           {analysisGeometry && (
             <p className={styles.placeholder}>
