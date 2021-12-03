@@ -191,16 +191,16 @@ function Analysis() {
           tooltipPlacement: 'top' as any,
         },
         {
-          id: 'periodComparison',
-          title: t('analysis.periodComparison', 'period comparison'),
+          id: 'beforeAfter',
+          title: t('analysis.beforeAfter', 'before/after'),
           tooltip: timeComparisonEnabled
             ? ''
             : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
           disabled: !timeComparisonEnabled,
         },
         {
-          id: 'beforeAfter',
-          title: t('analysis.beforeAfter', 'before/after'),
+          id: 'periodComparison',
+          title: t('analysis.periodComparison', 'period comparison'),
           tooltip: timeComparisonEnabled
             ? ''
             : t('analysis.errorTimeComparisonFilters', 'Only one activity layer supported'),
