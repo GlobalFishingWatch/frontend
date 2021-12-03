@@ -45,8 +45,6 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
   }, [layersTimeseriesFiltered])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
 
-  //TODO timeComparison.start is null when coming from before7after
-
   if (!timeComparison) return null
 
   const isLoading =
