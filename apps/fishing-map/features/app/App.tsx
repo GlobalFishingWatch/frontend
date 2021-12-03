@@ -33,6 +33,7 @@ import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { initializeHints } from 'features/help/hints/hints.slice'
+import AppModals from 'features/app/AppModals'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -208,6 +209,7 @@ function App(): React.ReactElement {
           activeLinkId="map-data"
         />
       )}
+      <AppModals />
     </MapContextProvider>
   )
 }
