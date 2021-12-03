@@ -51,3 +51,8 @@
   position: relative;
   margin-left: 2rem;
 }
+
+.error {
+  padding: 0 var(--space-M) var(--space-M);
+  color: var(--color-danger-red);
+}

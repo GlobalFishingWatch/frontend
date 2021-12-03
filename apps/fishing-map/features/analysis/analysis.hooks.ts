@@ -333,6 +333,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
   const fitMapBounds = useMapFitBounds()
   const { bounds } = useSelector(selectAnalysisQuery)
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
+  const [errorMsg, setErrorMsg] = useState(null)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
@@ -384,7 +385,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
   }, [])
 
   const update = useCallback(
-    ({ newStart, newCompareStart, newDuration, newDurationType }) => {
+    ({ newStart, newCompareStart, newDuration, newDurationType, error }) => {
       const compareStart = newCompareStart
         ? parseYYYYMMDDDate(newCompareStart).toISO()
         : parseFullISODate(timeComparison.compareStart as string).toISO()
@@ -423,20 +424,36 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
           durationType,
         },
       })
+      if (error) {
+        setErrorMsg(
+          t(
+            'analysis.errorPeriodComparisonDateRange',
+            'Date range error. Comparison start must be after baseline start.'
+          )
+        )
+      } else {
+        setErrorMsg(null)
+      }
     },
     [timeComparison, analysisType, fitMapBounds, bounds, dispatchQueryParams]
   )
 
   const onStartChange = useCallback(
     (e) => {
-      update({ newStart: e.target.value })
+      update({
+        newStart: e.target.value,
+        error: e.target.validity.rangeOverflow || e.target.validity.rangeUnderflow,
+      })
     },
     [update]
   )
 
   const onCompareStartChange = useCallback(
     (e) => {
-      update({ newCompareStart: e.target.value })
+      update({
+        newCompareStart: e.target.value,
+        error: e.target.validity.rangeOverflow || e.target.validity.rangeUnderflow,
+      })
     },
     [update]
   )
@@ -475,6 +492,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
     onDurationChange,
     onDurationTypeSelect,
     durationTypeOption,
+    errorMsg,
     MIN_DATE,
     MAX_DATE,
   }

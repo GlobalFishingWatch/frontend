@@ -1,6 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
@@ -31,6 +32,7 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     onDurationChange,
     onDurationTypeSelect,
     durationTypeOption,
+    errorMsg,
     MIN_DATE,
     MAX_DATE,
   } = useAnalysisTimeCompareConnect('periodComparison')
@@ -151,6 +153,7 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
           </div>
         </div>
       </div>
+      {errorMsg && <div className={cx(styles.container, styles.error)}>{errorMsg}</div>}
     </Fragment>
   )
 }
