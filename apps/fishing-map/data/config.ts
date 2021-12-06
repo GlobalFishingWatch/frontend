@@ -7,6 +7,7 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV || process.env.NODE_ENV) === 'production'
 
+// Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
   process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
