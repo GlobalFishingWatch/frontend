@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { isGFWUser } from 'features/user/user.slice'
+import { isGuestUser } from 'features/user/user.slice'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import styles from './Popup.module.css'
 
@@ -23,7 +23,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   handleDownloadClick,
   handleReportClick,
 }: ContextLayersRowProps) => {
-  const gfwUser = useSelector(isGFWUser)
+  const guestUser = useSelector(isGuestUser)
   const { t } = useTranslation()
   const hasAnalysableLayer = useSelector(selectHasAnalysisLayersVisible)
   return (
@@ -31,7 +31,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
       <span className={styles.rowText}>{label}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
-          {gfwUser && handleDownloadClick && (
+          {!guestUser && handleDownloadClick && (
             <IconButton
               icon="download"
               disabled={!hasAnalysableLayer}
