@@ -65,17 +65,23 @@ function ContextAreaSection(): React.ReactElement {
         <h2 className={styles.sectionTitle}>{t('common.context_area_other', 'Context areas')}</h2>
         {!readOnly && (
           <Fragment>
-            {!guestUser && (
-              <IconButton
-                icon="draw"
-                type="border"
-                size="medium"
-                tooltip={t('layer.drawPolygon', 'Draw a layer')}
-                tooltipPlacement="top"
-                className="print-hidden"
-                onClick={onDrawClick}
-              />
-            )}
+            <IconButton
+              icon="draw"
+              type="border"
+              size="medium"
+              tooltip={
+                guestUser
+                  ? t(
+                      'layer.drawPolygonLogin',
+                      'Register and login to draw a layer (free, 2 minutes)'
+                    )
+                  : t('layer.drawPolygon', 'Draw a layer')
+              }
+              tooltipPlacement="top"
+              className="print-hidden"
+              onClick={onDrawClick}
+              disabled={guestUser}
+            />
             <TooltipContainer
               visible={newDatasetOpen}
               onClickOutside={() => {
