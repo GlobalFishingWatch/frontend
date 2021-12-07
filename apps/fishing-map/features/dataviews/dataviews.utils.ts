@@ -212,3 +212,17 @@ export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {
   const datasets = dataview.datasets || []
   return datasets.some(isPrivateDataset)
 }
+
+export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: string) => {
+  if (!vesselId) return null
+  const vesselInWorkspace = vessels.find((v) => {
+    const vesselDatasetConfig = v.datasetsConfig?.find(
+      (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
+    )
+    const isVesselInEndpointParams = vesselDatasetConfig.params.find(
+      (p) => p.id === 'vesselId' && p.value === vesselId
+    )
+    return isVesselInEndpointParams ? v : undefined
+  })
+  return vesselInWorkspace
+}

@@ -7,7 +7,7 @@ import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -18,6 +18,7 @@ import {
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useViewport from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -54,6 +55,7 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
   const { viewport } = useViewport()
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()
+  const vessels = useSelector(selectActiveTrackDataviews)
 
   useEffect(() => {
     if (!carrierLatest) {
@@ -117,6 +119,9 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
           )
         }
 
+        const carrierInWorkspace = getVesselInWorkspace(vessels, event?.vessel.id)
+        const donorInWorkspace = getVesselInWorkspace(vessels, event.encounter?.vessel?.id)
+
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
@@ -143,9 +148,21 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                               </span>
                               {(event.vessel as ExtendedEventVessel).dataset && (
                                 <IconButton
-                                  icon="pin"
+                                  icon={carrierInWorkspace ? 'pin-filled' : 'pin'}
+                                  style={{
+                                    color: carrierInWorkspace
+                                      ? carrierInWorkspace.config.color
+                                      : '',
+                                  }}
                                   size="small"
-                                  tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+                                  tooltip={
+                                    carrierInWorkspace
+                                      ? t(
+                                          'search.vesselAlreadyInWorkspace',
+                                          'This vessel is already in your workspace'
+                                        )
+                                      : t('vessel.addToWorkspace', 'Add vessel to view')
+                                  }
                                   onClick={() => onPinClick(event.vessel as ExtendedEventVessel)}
                                 />
                               )}
@@ -164,9 +181,19 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                                 </span>
                                 {(event.vessel as ExtendedEventVessel).dataset && (
                                   <IconButton
-                                    icon="pin"
+                                    icon={donorInWorkspace ? 'pin-filled' : 'pin'}
+                                    style={{
+                                      color: donorInWorkspace ? donorInWorkspace.config.color : '',
+                                    }}
                                     size="small"
-                                    tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+                                    tooltip={
+                                      donorInWorkspace
+                                        ? t(
+                                            'search.vesselAlreadyInWorkspace',
+                                            'This vessel is already in your workspace'
+                                          )
+                                        : t('vessel.addToWorkspace', 'Add vessel to view')
+                                    }
                                     onClick={() =>
                                       onPinClick(event.encounter?.vessel as ExtendedEventVessel)
                                     }
