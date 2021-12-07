@@ -25,6 +25,7 @@ import { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
@@ -78,7 +79,7 @@ const MapControls = ({
 
   useEffect(() => {
     if (!domElement.current) {
-      domElement.current = document.getElementById('root') as HTMLElement
+      domElement.current = document.getElementById(ROOT_DOM_ELEMENT) as HTMLElement
     }
   }, [])
 
@@ -228,7 +229,7 @@ const MapControls = ({
         </div>
       </div>
       <Modal
-        appSelector="__next"
+        appSelector={ROOT_DOM_ELEMENT}
         title="Screenshot preview"
         isOpen={modalOpen}
         onClose={handleModalClose}
@@ -238,6 +239,7 @@ const MapControls = ({
           {previewImageLoading || !previewImage ? (
             <Spinner />
           ) : (
+            // eslint-disable-next-line @next/next/no-img-element
             <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
           )}
         </div>
