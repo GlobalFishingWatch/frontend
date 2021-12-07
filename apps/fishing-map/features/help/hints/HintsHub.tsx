@@ -4,7 +4,6 @@ import { event as uaEvent } from 'react-ga'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { isGFWUser } from 'features/user/user.slice'
 import hintsConfig from './hints.content'
 import { resetHints, selectHintsDismissed } from './hints.slice'
 import styles from './Hint.module.css'
@@ -13,7 +12,6 @@ const HELP_COLOR = getComputedStyle(document.documentElement).getPropertyValue('
 
 function HintsHub() {
   const { t } = useTranslation()
-  const gfwUser = useSelector(isGFWUser)
   const dispatch = useDispatch()
   const hintsConfigArray = Object.keys(hintsConfig || {})
   const hintsDismissed = useSelector(selectHintsDismissed)
@@ -30,8 +28,6 @@ function HintsHub() {
   }
 
   const disabled = percentageOfHintsSeen === 0
-
-  if (!gfwUser) return null
 
   return (
     <IconButton

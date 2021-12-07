@@ -4,7 +4,6 @@ import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
-import { isGFWUser } from 'features/user/user.slice'
 import { selectReadOnly } from 'features/app/app.selectors'
 import TooltipContainer from '../../workspace/shared/TooltipContainer'
 import hintsConfig, { HintId } from './hints.content'
@@ -21,7 +20,6 @@ export const DISMISSED = 'dismissed'
 function Hint({ id, className }: HintProps) {
   const { t } = useTranslation(['translations', 'helpHints'])
   const { placement, imageUrl, pulse, openedByDefault } = hintsConfig[id]
-  const gfwUser = useSelector(isGFWUser)
   const isReadOnly = useSelector(selectReadOnly)
   const dispatch = useDispatch()
   const [visible, setVisible] = useState(openedByDefault || false)
@@ -61,7 +59,7 @@ function Hint({ id, className }: HintProps) {
     setVisible(false)
   }, [])
 
-  if (hintsDismissed?.[id] === true || !gfwUser || isReadOnly) return null
+  if (hintsDismissed?.[id] === true || isReadOnly) return null
 
   return (
     <TooltipContainer
