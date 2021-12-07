@@ -53,7 +53,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const allOption = { id: 'all', label: t('selects.allSelected', 'All') }
   const allSourceOptions = sourceOptions.length > 1 ? [allOption, ...sourceOptions] : sourceOptions
   const allSelected = areAllSourcesSelectedInDataview(dataview)
-  const sourcesSelected = getSourcesSelectedInDataview(dataview)
+  const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
 
   const flagOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const flags = useMemo(getFlags, [])
