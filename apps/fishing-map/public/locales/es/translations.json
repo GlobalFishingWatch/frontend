@@ -6,8 +6,10 @@
     "download": "Descargar informe (AIS)",
     "downloadLogin": "Necesita <1>iniciar sesión</1> para descargar el informe (gratis y toma 2 minutos)",
     "empty": "Los datos seleccionados aparecerán aquí",
-    "errorTimeComparisonFilters": "Multiples capas con filtros no estan soportadas",
+    "errorTimeComparisonFilters": "Several layers with filters are not supported",
+    "errorTimeComparisonDataviews": "At least one activity layer must be enabled",
     "errorMessage": "Ha habido un error",
+    "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
     "experimental": "Experimental",
     "filteredBy": "filtrado por",
     "noData": "No hay datos disponibles",
@@ -28,7 +30,7 @@
     "periodComparisonRange": "en el {{duration}} siguiente {{compareStart}} comparado con la línea de referencia en el {{duration}} siguiente {{start}}",
     "beforeAfterDate": "fecha",
     "beforeAfterDuration": "duración",
-    "beforeAfterRange": "entre el {{duration}} antes y después del {{compareStart}}"
+    "beforeAfterRange": "{{duration}} antes y después del {{compareStart}}"
   },
   "common": {
     "active_after": "Activo después de",
@@ -260,6 +262,7 @@
     "add": "Añadir capa",
     "color_change": "Cambiar el color",
     "drawPolygon": "Dibujar una capa",
+    "drawPolygonLogin": "Register and login to draw a layer (free, 2 minutes)",
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
