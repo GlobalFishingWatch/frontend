@@ -219,7 +219,7 @@ export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: s
     const vesselDatasetConfig = v.datasetsConfig?.find(
       (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
     )
-    const isVesselInEndpointParams = vesselDatasetConfig.params.find(
+    const isVesselInEndpointParams = vesselDatasetConfig?.params?.find(
       (p) => p.id === 'vesselId' && p.value === vesselId
     )
     return isVesselInEndpointParams ? v : undefined
