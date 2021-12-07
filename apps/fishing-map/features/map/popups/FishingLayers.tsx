@@ -9,6 +9,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
   getVesselDataviewInstance,
+  getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -129,15 +130,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
               const hasDatasets =
                 vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
-              const vesselInWorkspace = vessels.find((v) => {
-                const vesselDatasetConfig = v.datasetsConfig?.find(
-                  (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
-                )
-                const isVesselInEndpointParams = vesselDatasetConfig.params.find(
-                  (p) => p.id === 'vesselId' && p.value === vessel.id
-                )
-                return isVesselInEndpointParams ? v : undefined
-              })
+              const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
 
