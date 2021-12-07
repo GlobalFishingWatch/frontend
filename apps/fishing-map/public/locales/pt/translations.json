@@ -262,6 +262,7 @@
     "add": "Adicionar camada",
     "color_change": "Alterar cor",
     "drawPolygon": "Desenhe uma camada",
+    "drawPolygonLogin": "Register and login to draw a layer (free, 2 minutes)",
     "editPolygonHint": "Clique nos cantos do polígono para ajustar suas coordenadas",
     "filterClose": "Fechar filtros",
     "filterOpen": "Abrir filtros",
