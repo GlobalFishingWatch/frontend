@@ -139,6 +139,9 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                 return isVesselInEndpointParams ? v : undefined
               })
 
+              const pinTrackDisabled =
+                !interactionAllowed || !hasDatasets || vesselInWorkspace !== undefined
+
               return (
                 <div key={i} className={styles.vesselRow}>
                   <span className={styles.vesselName}>
@@ -148,26 +151,25 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                         <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
                       )}
                     </span>
-                    <IconButton
-                      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-                      style={{
-                        color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
-                      }}
-                      disabled={
-                        !interactionAllowed || !hasDatasets || vesselInWorkspace !== undefined
-                      }
-                      tooltip={
-                        vesselInWorkspace
-                          ? t(
-                              'search.vesselAlreadyInWorkspace',
-                              'This vessel is already in your workspace'
-                            )
-                          : t('search.seeVessel', 'See vessel')
-                      }
-                      onClick={(e) => onVesselClick(e, vessel)}
-                      size="small"
-                      className={styles.pinButton}
-                    />
+                    {!pinTrackDisabled && (
+                      <IconButton
+                        icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+                        style={{
+                          color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                        }}
+                        tooltip={
+                          vesselInWorkspace
+                            ? t(
+                                'search.vesselAlreadyInWorkspace',
+                                'This vessel is already in your workspace'
+                              )
+                            : t('search.seeVessel', 'See vessel')
+                        }
+                        onClick={(e) => onVesselClick(e, vessel)}
+                        size="small"
+                        className={styles.pinButton}
+                      />
+                    )}
                   </span>
                   <span className={styles.vesselHours}>
                     <I18nNumber number={vessel.hours} />
