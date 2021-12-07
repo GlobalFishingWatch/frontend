@@ -262,6 +262,7 @@
     "add": "Añadir capa",
     "color_change": "Cambiar el color",
     "drawPolygon": "Dibujar una capa",
+    "drawPolygonLogin": "Register and login to draw a layer (free, 2 minutes)",
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
