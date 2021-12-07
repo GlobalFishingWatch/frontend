@@ -119,8 +119,8 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
           )
         }
 
-        const carrierInWorkspace = getVesselInWorkspace(vessels, event?.vessel.id)
-        const donorInWorkspace = getVesselInWorkspace(vessels, event.encounter?.vessel?.id)
+        const carrierInWorkspace = getVesselInWorkspace(vessels, event?.vessel?.id)
+        const donorInWorkspace = getVesselInWorkspace(vessels, event?.encounter?.vessel?.id)
 
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
