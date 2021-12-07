@@ -24,7 +24,7 @@ import {
   segmentsToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
 import { capitalize } from 'utils/shared'
-import { SUPPORT_EMAIL } from 'data/config'
+import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import {
@@ -376,7 +376,7 @@ function NewDataset(): React.ReactElement {
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={
         datasetCategory === DatasetCategory.Context
           ? t('dataset.uploadNewContext', 'Upload new context areas')

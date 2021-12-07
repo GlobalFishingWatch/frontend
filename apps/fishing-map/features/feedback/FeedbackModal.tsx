@@ -9,6 +9,7 @@ import { GUEST_USER_TYPE, selectUserData, isGuestUser } from 'features/user/user
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserGroupsClean } from 'features/user/user.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -181,7 +182,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={t('common.feedback', 'Feedback')}
       isOpen={isOpen}
       onClose={onClose}

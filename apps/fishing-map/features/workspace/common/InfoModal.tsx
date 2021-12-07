@@ -7,6 +7,7 @@ import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { getDatasetLabel, hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -103,7 +104,7 @@ const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoMod
       />
       {tabs && tabs.length > 0 && modalInfoOpen && (
         <Modal
-          appSelector="__next"
+          appSelector={ROOT_DOM_ELEMENT}
           title={isSingleTab ? tabs[0].title : dataview.name}
           isOpen={modalInfoOpen}
           onClose={onModalClose}

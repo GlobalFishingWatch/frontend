@@ -18,6 +18,7 @@ import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DateRange } from 'features/analysis/analysis.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
@@ -66,7 +67,7 @@ function DownloadTrackModal() {
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={`${t('download.title', 'Download')} - ${t('download.track', 'Vessel Track')}`}
       isOpen={downloadTrackId !== ''}
       onClose={onClose}

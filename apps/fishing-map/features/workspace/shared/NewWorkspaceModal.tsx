@@ -16,7 +16,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectViewport } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
+import { PRIVATE_SUFIX, PUBLIC_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.slice'
 import { selectUserData } from 'features/user/user.slice'
 import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
@@ -148,7 +148,7 @@ function NewWorkspaceModal({
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={title || t('workspace.save', 'Save the current workspace')}
       isOpen={isOpen}
       shouldCloseOnEsc={true}

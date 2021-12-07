@@ -3,6 +3,8 @@ import { DateObject, DateTime } from 'luxon'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 
+export const ROOT_DOM_ELEMENT = '__next'
+
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV || process.env.NODE_ENV) === 'production'

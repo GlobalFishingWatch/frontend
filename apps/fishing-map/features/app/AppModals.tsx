@@ -13,6 +13,7 @@ import DebugMenu from 'features/debug/DebugMenu'
 import EditorMenu from 'features/editor/EditorMenu'
 import DownloadActivityModal from 'features/download/DownloadActivityModal'
 import DownloadTrackModal from 'features/download/DownloadTrackModal'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './App.module.css'
 
 const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
@@ -45,7 +46,7 @@ const AppModals = () => {
     <Fragment>
       {gfwUser && (
         <Modal
-          appSelector="__next"
+          appSelector={ROOT_DOM_ELEMENT}
           title="Secret debug menu 🤖"
           isOpen={debugActive}
           onClose={dispatchToggleDebugMenu}
@@ -55,7 +56,7 @@ const AppModals = () => {
       )}
       {gfwUser && (
         <Modal
-          appSelector="__next"
+          appSelector={ROOT_DOM_ELEMENT}
           title="Workspace editor 📝"
           isOpen={editorActive}
           shouldCloseOnEsc={false}
@@ -74,7 +75,7 @@ const AppModals = () => {
       {welcomePopupOpen && !readOnly && (
         <Suspense fallback={null}>
           <Modal
-            appSelector="__next"
+            appSelector={ROOT_DOM_ELEMENT}
             header={false}
             isOpen={welcomePopupOpen}
             onClose={() => setWelcomePopupOpen(false)}

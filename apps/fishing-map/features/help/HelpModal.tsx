@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './HelpModal.module.css'
 
 type HelpModalProps = {
@@ -13,7 +14,7 @@ function HelpModal({ isOpen = false, onClose }: HelpModalProps) {
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={t('common.help', 'help')}
       isOpen={isOpen}
       onClose={onClose}
