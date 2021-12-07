@@ -139,8 +139,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                 return isVesselInEndpointParams ? v : undefined
               })
 
-              const pinTrackDisabled =
-                !interactionAllowed || !hasDatasets || vesselInWorkspace !== undefined
+              const pinTrackDisabled = !interactionAllowed || !hasDatasets
 
               return (
                 <div key={i} className={styles.vesselRow}>
