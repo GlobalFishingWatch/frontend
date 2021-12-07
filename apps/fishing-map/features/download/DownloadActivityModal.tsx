@@ -24,6 +24,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import { DateRange } from 'features/analysis/analysis.slice'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -197,7 +198,7 @@ function DownloadActivityModal() {
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={`${t('download.title', 'Download')} - ${t('download.activity', 'Activity')}`}
       isOpen={downloadAreaGeometry !== undefined}
       onClose={onClose}

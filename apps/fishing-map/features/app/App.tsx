@@ -31,7 +31,7 @@ import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints/hints.slice'
 import AppModals from 'features/app/AppModals'
 import { useAppDispatch } from './app.hooks'
@@ -202,7 +202,7 @@ function App(): React.ReactElement {
       </Suspense>
       {!readOnly && (
         <Menu
-          appSelector="__next"
+          appSelector={ROOT_DOM_ELEMENT}
           bgImage={menuBgImage.src}
           isOpen={menuOpen}
           onClose={() => setMenuOpen(false)}
