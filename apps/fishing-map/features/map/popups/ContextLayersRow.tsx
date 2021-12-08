@@ -31,14 +31,18 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
       <span className={styles.rowText}>{label}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
-          {!guestUser && handleDownloadClick && (
+          {handleDownloadClick && (
             <IconButton
               icon="download"
-              disabled={!hasAnalysableLayer}
-              tooltip={t(
-                'download.activityAction',
-                'Download visible activity layers for this area'
-              )}
+              disabled={!hasAnalysableLayer || guestUser}
+              tooltip={
+                guestUser
+                  ? t(
+                      'download.downloadActivityLogin',
+                      'Register and login to download activity (free, 2 minutes)'
+                    )
+                  : t('download.activityAction', 'Download visible activity layers for this area')
+              }
               onClick={handleDownloadClick}
               size="small"
             />
