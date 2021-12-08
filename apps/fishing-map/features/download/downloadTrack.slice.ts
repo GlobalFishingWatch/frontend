@@ -6,7 +6,7 @@ import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { DateRange } from 'features/analysis/analysis.slice'
+import { DateRange } from 'features/download/downloadActivity.slice'
 import { Format } from './downloadTrack.config'
 
 type VesselParams = {

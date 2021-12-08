@@ -16,9 +16,9 @@ import {
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { DateRange } from 'features/analysis/analysis.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { DateRange } from 'features/download/downloadActivity.slice'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 

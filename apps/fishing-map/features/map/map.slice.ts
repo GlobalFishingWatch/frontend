@@ -16,15 +16,12 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
 import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-} from 'features/datasets/datasets.selectors'
-import {
   selectEventsDataviews,
   selectActivityDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectUserLogged } from 'features/user/user.slice'
+import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 
 export const MAX_TOOLTIP_LIST = 5
 

@@ -2,9 +2,11 @@ import { intersection, lowerCase, uniq } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import {
   Dataset,
+  DatasetTypes,
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
+  EndpointId,
   EventTypes,
   UserPermission,
 } from '@globalfishingwatch/api-types'
@@ -84,6 +86,27 @@ export const getDatasetsInDataviews = (
   )
 }
 
+export const getRelatedDatasetByType = (
+  dataset?: Dataset,
+  datasetType?: DatasetTypes,
+  fullDatasetAllowed = false
+) => {
+  if (fullDatasetAllowed) {
+    const fullDataset = dataset?.relatedDatasets?.find(
+      (relatedDataset) =>
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
+    )
+    if (fullDataset) {
+      return fullDataset
+    }
+  }
+  return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
+}
+
+export const getRelatedDatasetsByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
+  return dataset?.relatedDatasets?.filter((relatedDataset) => relatedDataset.type === datasetType)
+}
+
 export const getActiveDatasetsInActivityDataviews = (
   dataviews: UrlDataviewInstance<GeneratorType>[]
 ) => {
@@ -92,18 +115,37 @@ export const getActiveDatasetsInActivityDataviews = (
   })
 }
 
-export const getDatasetsDownloadSupported = (
+export const checkDatasetReportPermission = (datasetId: string, permissions: UserPermission[]) => {
+  const permission = { type: 'dataset', value: datasetId, action: 'report' }
+  return checkExistPermissionInList(permissions, permission)
+}
+
+export const getActivityDatasetsDownloadSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
     const datasets: Dataset[] = (dataview?.config?.datasets || []).filter((datasetId: string) => {
-      if (!datasetId) return false
-      const permission = { type: 'dataset', value: datasetId, action: 'report' }
-      return checkExistPermissionInList(permissions, permission)
+      return datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
     })
     return datasets
   })
+}
+
+export const getVesselDatasetsDownloadSupported = (
+  dataview: UrlDataviewInstance<GeneratorType>,
+  permissions: UserPermission[] = []
+) => {
+  const datasets = (dataview?.datasetsConfig || [])
+    .filter(
+      (datasetConfig) =>
+        datasetConfig.endpoint === EndpointId.Tracks && hasDatasetConfigVesselData(datasetConfig)
+    )
+    .filter((dataset) => {
+      if (!dataset) return false
+      return checkDatasetReportPermission(dataset.datasetId, permissions)
+    })
+  return datasets
 }
 
 export const getDatasetsDownloadNotSupported = (
@@ -111,7 +153,7 @@ export const getDatasetsDownloadNotSupported = (
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
-  const datasetsDownloadSupported = getDatasetsDownloadSupported(dataviews, permissions)
+  const datasetsDownloadSupported = getActivityDatasetsDownloadSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 

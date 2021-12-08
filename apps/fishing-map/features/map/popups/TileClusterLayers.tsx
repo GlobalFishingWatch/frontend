@@ -11,15 +11,12 @@ import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/datavi
 import { formatInfoField } from 'utils/info'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-} from 'features/datasets/datasets.selectors'
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { useMapContext } from 'features/map/map-context.hooks'
+import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import useViewport from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
