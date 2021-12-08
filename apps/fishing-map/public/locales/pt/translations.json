@@ -108,8 +108,6 @@
     "confirmRemove": "Tem certeza de que deseja excluir permanentemente este dataset?",
     "dragActive": "Arraste o arquivo aqui...",
     "dragFileFormatsPlaceholder": "Arraste e solte um {{formats}} aqui ou clique para selecioná-lo",
-    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
-    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Editar dataset",
     "emptyFilters": "Nenhum filtro disponível",
     "emptyState": "Seus datasets aparecerão aqui",
