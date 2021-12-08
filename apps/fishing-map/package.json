@@ -11,7 +11,7 @@
     "lint:js": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix --resolve-plugins-relative-to .",
     "lint:css": "stylelint ./**/*.{css,scss,sass} --config .stylelintrc.js --fix",
     "serve": "serve -s build",
-    "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'",
+    "i18n:parser": "i18next",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {

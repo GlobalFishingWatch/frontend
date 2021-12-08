@@ -33,7 +33,7 @@ module.exports = {
   output: 'public/locales/$LOCALE/$NAMESPACE.json',
   // An array of globs that describe where to look for source files
   // relative to the location of the configuration file
-  input: ['src/**/*.{ts,tsx}'],
+  input: ['[!node_modules][!public]*/**/*.{js,jsx,ts,tsx}'],
   // For react file, extract the defaultNamespace - https://react.i18next.com/latest/withtranslation-hoc
   // Ignored when parsing a `.jsx` file and namespace is extracted from that file.
   reactNamespace: false,
