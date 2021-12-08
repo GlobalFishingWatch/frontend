@@ -197,6 +197,7 @@
     "authorization_plural": "autorisations",
     "authorizationRangeHelp": "Les autorisations de la RFMO sont basées sur les données disponibles, et les dates peuvent être approximatives lorsque les listes de navires autorisées par la RFMO ne contiennent pas de périodes d'autorisation précises.",
     "callsign": "indicatifs d'appel",
+    "contactUs": "<0>Contactez-nous</0> si vous avez des questions ou souhaitez plus d'informations sur ce navire.",
     "encounteredVessel": "Navire rencontré",
     "flag": "pavillon",
     "formatValues": "{{quantity}} valeurs",
@@ -248,8 +249,7 @@
       "1": "listé précédemment",
       "2": "actuellement listée"
     },
-    "authorizations": "autorisations",
-    "contactUs": "<0>Contactez-nous</0> si vous avez des questions ou souhaitez plus d'informations sur ce navire."
+    "authorizations": "autorisations"
   },
   "layer": {
     "toggleVisibility": "Afficher/cacher calque"
