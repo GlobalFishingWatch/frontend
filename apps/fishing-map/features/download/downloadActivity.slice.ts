@@ -5,12 +5,20 @@ import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { TooltipEventFeature } from 'features/map/map.hooks'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { transformFilters } from 'features/analysis/analysis.utils'
-import { DateRange } from 'features/analysis/analysis.slice'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
+
+export type DateRange = {
+  start: string
+  end: string
+}
+
+export type DownloadActivityArea = {
+  geometry: Geometry
+  name: string
+}
 
 export interface DownloadActivityState {
   geometry: Geometry | undefined
@@ -104,9 +112,9 @@ const downloadActivitySlice = createSlice({
       state.name = ''
       state.requests = []
     },
-    setDownloadActivityGeometry: (state, action: PayloadAction<TooltipEventFeature>) => {
+    setDownloadActivityGeometry: (state, action: PayloadAction<DownloadActivityArea>) => {
       state.geometry = action.payload.geometry as Geometry
-      state.name = action.payload.value || action.payload.title as string
+      state.name = action.payload.name
     },
   },
   extraReducers: (builder) => {
@@ -150,6 +158,12 @@ export const selectDownloadActivityLoading = createSelector(
   [selectDownloadActivityRequests],
   (requests) => requests.some(({ status }) => status === AsyncReducerStatus.Loading)
 )
+
+export const selectDownloadActivityError = createSelector(
+  [selectDownloadActivityRequests],
+  (requests) => requests.some(({ status }) => status === AsyncReducerStatus.Error)
+)
+
 export const selectDownloadActivityFinished = createSelector(
   [selectDownloadActivityRequests],
   (requests) =>
