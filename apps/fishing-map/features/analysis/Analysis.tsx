@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useMemo, useCallback, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
@@ -14,7 +14,7 @@ import {
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
-import { getDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
+import { getActivityDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
 import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -66,7 +66,10 @@ function Analysis() {
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-  const datasetsReportAllowed = getDatasetsDownloadSupported(dataviews, userData?.permissions || [])
+  const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
+    dataviews,
+    userData?.permissions || []
+  )
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
@@ -223,31 +226,33 @@ function Analysis() {
             disabled={!bounds}
           />
         </div>
-        <div>
-          <p className={styles.placeholder}>
-            {t(
-              'analysis.disclaimer',
-              'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-            )}
-          </p>
-        </div>
-        <div className={styles.footer}>
-          {showReportDownload && (
-            <LoginButtonWrapper
-              tooltip={t('analysis.downloadLogin', 'Please login to download report')}
-            >
-              <Button
-                className={styles.saveBtn}
-                onClick={onDownloadClick}
-                tooltip={downloadTooltip}
-                tooltipPlacement="top"
-                disabled={disableReportDownload}
+        {showReportDownload && (
+          <Fragment>
+            <div>
+              <p className={styles.placeholder}>
+                {t(
+                  'analysis.disclaimer',
+                  'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+                )}
+              </p>
+            </div>
+            <div className={styles.footer}>
+              <LoginButtonWrapper
+                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
               >
-                {t('analysis.download', 'Download report')}
-              </Button>
-            </LoginButtonWrapper>
-          )}
-        </div>
+                <Button
+                  className={styles.saveBtn}
+                  onClick={onDownloadClick}
+                  tooltip={downloadTooltip}
+                  tooltipPlacement="top"
+                  disabled={disableReportDownload}
+                >
+                  {t('analysis.download', 'Download report')}
+                </Button>
+              </LoginButtonWrapper>
+            </div>
+          </Fragment>
+        )}
       </div>
     </div>
   )

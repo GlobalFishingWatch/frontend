@@ -151,6 +151,7 @@
     "activityAction": "Download visible activity layers for this area",
     "track": "Vessel Track",
     "trackAction": "Download vessel track",
+    "trackNotAllowed": "You don't have permissions to download tracks from this source",
     "area": "Area",
     "timeRange": "Time Range",
     "format": "Format",

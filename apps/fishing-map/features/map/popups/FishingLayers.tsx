@@ -11,7 +11,7 @@ import {
   getVesselDataviewInstance,
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
