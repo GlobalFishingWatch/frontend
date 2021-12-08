@@ -155,6 +155,7 @@
     "activityAction": "Download visible activity layers for this area",
     "area": "Area",
     "daily": "Daily",
+    "downloadActivityLogin": "Register and login to download activity (free, 2 minutes)",
     "format": "Format",
     "groupActivityBy": "Group activity by",
     "highResNotAvailable": "Your area is too big",
@@ -169,11 +170,7 @@
     "track": "Vessel Track",
     "trackAction": "Download vessel track",
     "yearly": "Yearly",
-    "spatialResolution": "Spatial resolution",
-    "yearlyNotAvailable": "Your time range is shorter than 1 year",
-    "monthlyNotAvailable": "Your time range is shorter than 1 month",
-    "highResNotAvailable": "Your area is too big",
-    "downloadActivityLogin": "Register and login to download activity (free, 2 minutes)"
+    "yearlyNotAvailable": "Your time range is shorter than 1 year"
   },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",
