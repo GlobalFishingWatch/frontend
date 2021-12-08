@@ -163,7 +163,8 @@
     "spatialResolution": "Resolución espacial",
     "yearlyNotAvailable": "Su intervalo de tiempo es menor de 1 año",
     "monthlyNotAvailable": "Su intervalo de tiempo es menor de 1 mes",
-    "highResNotAvailable": "Tu área es demasiado grande"
+    "highResNotAvailable": "Tu área es demasiado grande",
+    "downloadActivityLogin": "Register and login to download activity (free, 2 minutes)"
   },
   "errors": {
     "contactUs": "Por favor <1>póngase en contacto con nosotros</1> para informar del problema.",
