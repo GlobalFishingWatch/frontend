@@ -197,6 +197,7 @@
     "authorization_plural": "authorizations",
     "authorizationRangeHelp": "RFMO authorizations are based on available data. Dates may be approximations where RFMO authorized vessel lists, do not contain specific authorization periods.",
     "callsign": "callsign",
+    "contactUs": "<0>Entre em contato conosco</0> se tiver dúvidas ou quiser mais informações sobre esta embarcação.",
     "encounteredVessel": "Encountered Vessel",
     "flag": "flag",
     "formatValues": "{{quantity}} values",
@@ -248,8 +249,7 @@
       "1": "listado anteriormente",
       "2": "atualmente listado"
     },
-    "authorizations": "Autorizações",
-    "contactUs": "<0>Entre em contato conosco</0> se tiver dúvidas ou quiser mais informações sobre esta embarcação."
+    "authorizations": "Autorizações"
   },
   "layer": {
     "toggleVisibility": "Alterar visibilidade da camada"
