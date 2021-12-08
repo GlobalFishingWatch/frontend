@@ -9,7 +9,7 @@ import styles from './Button.module.css'
 export type ButtonType = 'default' | 'secondary'
 export type ButtonSize = 'default' | 'small' | 'big' | 'verybig'
 
-interface ButtonProps {
+export interface ButtonProps {
   id?: string
   type?: ButtonType
   size?: ButtonSize

@@ -151,8 +151,10 @@
   "download": {
     "activity": "Activity",
     "activityAction": "Download visible activity layers for this area",
+    "activityLogin": "Register and login to download activity (free, 2 minutes)",
     "area": "Area",
     "daily": "Daily",
+    "datasetsNotAllowed": "You don't have permissions to download the following datasets:",
     "format": "Format",
     "groupActivityBy": "Group activity by",
     "highResNotAvailable": "Your area is too big",
@@ -167,6 +169,8 @@
     "title": "Download",
     "track": "Vessel Track",
     "trackAction": "Download vessel track",
+    "trackNotAllowed": "You don't have permissions to download tracks from this source",
+    "vesselTrackLogin": "Register and login to download vessel tracks (free, 2 minutes)",
     "yearly": "Yearly",
     "yearlyNotAvailable": "Your time range is shorter than 1 year"
   },

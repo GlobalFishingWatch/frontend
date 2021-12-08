@@ -21,12 +21,16 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import { isGuestUser, isGFWUser } from 'features/user/user.slice'
+import { isGuestUser, isGFWUser, selectUserData } from 'features/user/user.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import {
+  getDatasetLabel,
+  getVesselDatasetsDownloadSupported,
+} from 'features/datasets/datasets.utils'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -50,10 +54,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const trackResource: Resource<Segment[]> = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const guestUser = useSelector(isGuestUser)
+  const userData = useSelector(selectUserData)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
   const [datasetModalOpen, setDatasetModalOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
+  const downloadDatasetsSupported = getVesselDatasetsDownloadSupported(
+    dataview,
+    userData?.permissions
+  )
+  const downloadSupported = downloadDatasetsSupported.length > 0
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -256,15 +266,28 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           })}
         >
           <Fragment>
-            {gfwUser && (
+            <LoginButtonWrapper
+              tooltip={t(
+                'download.vesselTrackLogin',
+                'Register and login to download vessel tracks (free, 2 minutes)'
+              )}
+            >
               <IconButton
                 icon="download"
-                tooltip={t('download.trackAction', 'Download vessel track')}
+                disabled={!downloadSupported}
+                tooltip={
+                  downloadSupported
+                    ? t('download.trackAction', 'Download vessel track')
+                    : t(
+                        'download.trackNotAllowed',
+                        "You don't have permissions to download tracks from this source"
+                      )
+                }
                 tooltipPlacement="top"
                 onClick={onDownloadClick}
                 size="small"
               />
-            )}
+            </LoginButtonWrapper>
             {layerActive && !infoLoading && TrackIconComponent}
             <Remove dataview={dataview} />
           </Fragment>

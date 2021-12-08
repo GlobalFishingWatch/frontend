@@ -35,7 +35,7 @@ import {
   removeTimeseriesPadding,
 } from 'features/analysis/analysis-timeseries.utils'
 import { filterByPolygon, getContextAreaGeometry } from './analysis-geo.utils'
-import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
+import { ReportGeometry, selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectShowTimeComparison } from './analysis.selectors'
 
@@ -278,7 +278,7 @@ export const useAnalysisGeometry = () => {
           fitMapBounds(wrappedBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
           dispatch(
             setAnalysisGeometry({
-              geometry: contextAreaGeometry,
+              geometry: contextAreaGeometry as ReportGeometry,
               name: areaName,
               bounds: wrappedBounds,
             })

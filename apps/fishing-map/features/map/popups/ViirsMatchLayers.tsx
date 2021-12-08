@@ -9,7 +9,7 @@ import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.ho
 import { getVesselLabel } from 'utils/info'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
 import { ExtendedFeatureVesselDatasets, MAX_TOOLTIP_LIST } from '../map.slice'
