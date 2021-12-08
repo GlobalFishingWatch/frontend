@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  min-height: 100%;
+}
+
+.info {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  gap: var(--space-S);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.footerLabel {
+  flex: 1;
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+}
+
+.error {
+  color: var(--color-danger-red);
+}

@@ -1,0 +1,235 @@
+.popup {
+  font: var(--font-S);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.popup.click {
+  pointer-events: all;
+}
+
+.hover .content {
+  transform: translate(var(--space-XS), var(--space-S));
+  background: var(--color-primary-blue);
+  color: var(--color-white);
+  max-width: 32rem;
+}
+
+.click .content {
+  background: var(--color-white);
+  color: var(--color-primary-blue);
+  box-shadow: var(--box-shadow);
+  min-width: 32rem;
+  max-width: 40vw;
+}
+
+.popupSection {
+  display: flex;
+  padding: var(--space-XS);
+}
+
+.popupSection:not(:last-child) {
+  border-bottom: none;
+}
+
+.hover .popupSection {
+  border: var(--border-white);
+}
+
+.click .popupSection {
+  padding: var(--space-S);
+  border: var(--border);
+  cursor: default;
+}
+
+.hover .popupSection:not(:last-child) {
+  border-bottom: none;
+}
+
+.popupSectionColor {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  margin-top: var(--space-XS);
+  margin-right: var(--space-XS);
+  border: var(--border);
+}
+
+.hover .popupSectionColor {
+  margin-top: 3px;
+}
+
+.popupSectionContent {
+  flex: 1;
+}
+
+.popupSectionTitle {
+  max-width: 30rem;
+  opacity: var(--opacity-secondary);
+  line-height: 1.2;
+  margin-bottom: var(--space-XS);
+}
+
+.loading {
+  width: 100%;
+  height: 17.9rem;
+  padding: var(--space-XS);
+}
+
+.vesselsTable {
+  padding-top: var(--space-XS);
+}
+
+.vesselsHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-XS);
+}
+
+.vesselsHeaderLabel {
+  font: var(--font-XS);
+}
+
+.vesselRow {
+  color: currentColor;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.3;
+  margin-bottom: var(--space-XS);
+}
+
+.vesselRowLegend {
+  opacity: var(--opacity-secondary);
+}
+
+.vesselName {
+  position: relative;
+  flex: 1;
+  text-align: left;
+  margin-right: var(--space-L);
+}
+
+.vesselsMore {
+  opacity: var(--opacity-secondary);
+}
+
+.pinButton {
+  position: absolute;
+  display: inline-block;
+  bottom: -5px;
+  margin-left: var(space-S);
+}
+
+.vesselHours {
+  padding-left: 20px;
+}
+
+.rowContainer {
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-S);
+}
+
+.hover .row {
+  padding-right: var(--space-S);
+  margin-bottom: var(--space-XS);
+}
+
+.rowColum {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.hover .row:last-child {
+  margin-bottom: 0;
+}
+
+.click .row:last-child {
+  margin-bottom: 0;
+}
+
+.btnLarge {
+  width: 100%;
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  min-height: 2rem;
+}
+
+.rowTitle {
+  font: var(--font-XS);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+}
+
+.viirsTable {
+  width: 100%;
+}
+
+.viirsTable,
+.viirsTable th,
+.viirsTable td {
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.viirsTable th {
+  font: var(--font-XS);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  text-align: left;
+}
+
+.viirsTable th:last-child,
+.viirsTable td:last-child {
+  text-align: right;
+}
+
+.rowText {
+  line-height: 1.2;
+}
+
+.rowActions {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-left: var(--space-S);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.flex {
+  margin-top: var(--space-S);
+  display: flex;
+  column-gap: var(--space-M);
+  flex-wrap: wrap;
+}
+
+.hover:global(.mapboxgl-popup .mapboxgl-popup-content) {
+  pointer-events: none;
+}
+
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+  display: none;
+  border-width: 0 !important;
+  pointer-events: none;
+}

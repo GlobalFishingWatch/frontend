@@ -1,0 +1,51 @@
+steps:
+  - name: gcr.io/cloud-builders/git
+    args: ['fetch', '--unshallow', '--no-tags']
+
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache
+    waitFor: ['-']
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+
+  - id: 'install-yarn'
+    waitFor: ['restore_cache']
+    name: gcr.io/cloud-builders/yarn
+    entrypoint: bash
+    args:
+      - '-c'
+      # if dependencies cache is not found then install all deps
+      - |
+        if [ ! -d "node_modules" ]; then
+          yarn install --frozen-lockfile
+        fi
+
+  - id: 'save_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/save_cache'
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+      - '--path=./node_modules'
+      - '--no-clobber'
+
+  - id: get-affected
+    name: 'gcr.io/cloud-builders/yarn'
+    entrypoint: yarn
+    args: ['affected']
+
+  # Trigger the affected apps builds
+  - name: gcr.io/cloud-builders/gcloud
+    waitFor: ['get-affected']
+    id: deploy-cloud-run
+    entrypoint: bash
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        AFFECTED_APPS=(`cat affected-apps.txt`)
+        for i in ${AFFECTED_APPS[@]}; do
+          [ ! -z "$i" ] && gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
+        done

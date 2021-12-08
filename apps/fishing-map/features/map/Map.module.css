@@ -1,0 +1,49 @@
+.container {
+  flex: 1;
+  height: calc(100% - 9.6rem);
+}
+
+.screenshot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+:global(.printing) .screenshot {
+  display: block !important;
+}
+
+@media print {
+  .screenshot {
+    display: block;
+  }
+
+  .legend .currentValue {
+    display: none;
+  }
+}
+
+.legendLabel {
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+  cursor: help;
+  width: max-content;
+}
+
+.helpHintLeft {
+  position: absolute;
+  top: 50%;
+  left: calc(50% - 5rem);
+}
+
+.helpHintRight {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 5rem);
+}

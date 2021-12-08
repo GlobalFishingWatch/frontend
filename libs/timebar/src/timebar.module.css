@@ -1,0 +1,80 @@
+.Timebar {
+  position: relative;
+  width: 100%;
+  height: var(--timebar-size);
+  display: flex;
+  background: var(--timebar-main-background-color);
+  border-top: 1px solid var(--timebar-main-border-color);
+  color: var(--timebar-white);
+  font-family: var(--timebar-font-family);
+  font-size: var(--timebar-font-size);
+  font-weight: var(--timebar-font-weight);
+  box-sizing: content-box;
+}
+
+.uiButton {
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  cursor: pointer;
+  width: 3.6rem;
+  height: 3.6rem;
+  background-color: var(--timebar-ui-btn-color);
+  color: var(--timebar-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--timebar-hover-transition);
+}
+
+.uiButton:disabled {
+  cursor: not-allowed;
+}
+
+.uiButton:disabled svg {
+  opacity: 0.5;
+}
+
+.uiButton:hover,
+.uiButton:focus {
+  background-color: var(--timebar-ui-btn-color-hover);
+  outline: none;
+}
+
+/* TIME ACTIONS */
+
+.timeActions {
+  position: relative;
+  width: var(--timebar-size);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.timeRange {
+  border-right: 0.1rem solid var(--timebar-main-background-color);
+}
+
+.timeScale {
+  display: flex;
+}
+
+.timeScale .uiButton {
+  height: 3.5rem;
+}
+
+.timeRangeContainer {
+  position: relative;
+}
+
+@media only screen and (max-width: 768px) {
+  .playbackActions,
+  .bookmark,
+  .timeScale {
+    display: none;
+  }
+
+  .timeRange {
+    width: var(--timebar-size);
+    height: var(--timebar-size);
+  }
+}

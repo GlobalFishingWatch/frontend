@@ -1,0 +1,174 @@
+.legends {
+  background-color: var(--color-primary-blue);
+  min-width: 25rem;
+  font: var(--font-S);
+  color: var(--color-white);
+  max-height: 21rem;
+  overflow: auto;
+}
+
+/* .row {
+  padding: var(--space-S) var(--space-M);
+} */
+
+.rowColum {
+  display: flex;
+  align-items: center;
+}
+
+.row:not(:last-child) {
+  border-bottom: 1px solid rgba(var(--white-rgb), var(--opacity-terthiary));
+}
+
+.subTitle {
+  opacity: var(--opacity-secondary);
+}
+
+.line {
+  display: inline-flex;
+  width: 2rem;
+  height: 2px;
+  margin-right: var(--space-S);
+}
+
+.ramp {
+  height: 1rem;
+  width: 100%;
+  position: relative;
+  background-color: var(--color-map-background);
+}
+
+.ramp::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: var(--border);
+}
+
+.currentValue {
+  font: var(--font-XS);
+  position: absolute;
+  top: 1rem;
+  padding: 3px 8px;
+  z-index: 1;
+  background-color: var(--color-primary-blue);
+  transform: translateX(-50%);
+  transition: left 0.1s linear, transform 0.1s linear;
+  line-height: 1;
+  filter: var(--filter-drop-shadow);
+}
+
+.currentValue::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 1.8rem;
+  height: 1rem;
+  width: 3px;
+  z-index: 1;
+  background-color: var(--color-white);
+  transition: left 0.1s linear;
+}
+
+.offsetLeft {
+  transform: translateX(0%);
+}
+
+.offsetLeft::after {
+  left: 0;
+}
+
+.offsetRight {
+  transform: translateX(-100%);
+}
+
+.offsetRight::after {
+  left: unset;
+  right: 0;
+}
+
+.stepsContainer {
+  width: 100%;
+  position: relative;
+  min-height: 1.5rem;
+  line-height: 1;
+  padding-top: 0.2rem;
+}
+
+.step {
+  font: var(--font-XS);
+  opacity: var(--opacity-secondary);
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.firstStep {
+  transform: translateX(0);
+}
+
+.lastStep {
+  transform: translateX(-100%);
+}
+
+.discreteSteps {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 1rem;
+}
+
+.discreteStep {
+  flex: 1;
+}
+
+.loading {
+  opacity: 0.6;
+}
+
+.loading > span,
+.loading > tspan {
+  animation: pulse 2s infinite;
+  letter-spacing: -1px;
+  font-size: 2.5rem !important;
+  line-height: 1.2rem;
+}
+
+.loading > span {
+  line-height: 1rem;
+}
+
+.loading > span:nth-child(1),
+.loading > tspan:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading > span:nth-child(2),
+.loading > tspan:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.loading > span:nth-child(3),
+.loading > tspan:nth-child(3) {
+  animation-delay: 1s;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  33% {
+    opacity: 0;
+  }
+
+  66% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
