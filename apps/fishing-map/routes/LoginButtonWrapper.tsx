@@ -1,18 +1,23 @@
 import React from 'react'
 import { Placement } from 'tippy.js'
 import { useSelector } from 'react-redux'
-import { getLoginUrl } from '@globalfishingwatch/react-hooks'
 import { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'
 import { isGuestUser } from 'features/user/user.slice'
+import LocalStorageLoginLink from './LoginLink'
 
-interface LoginWrapperProps {
+interface LoginButtonWrapperProps {
   tooltip?: string
   tooltipPlacement?: Placement
   children: JSX.Element
 }
 
-export function LoginWrapper({ children, tooltip, tooltipPlacement = 'auto' }: LoginWrapperProps) {
+const LoginButtonWrapper = ({
+  children,
+  tooltip,
+  tooltipPlacement = 'auto',
+}: LoginButtonWrapperProps) => {
   const guestUser = useSelector(isGuestUser)
+
   if (!guestUser) {
     return children
   }
@@ -22,10 +27,18 @@ export function LoginWrapper({ children, tooltip, tooltipPlacement = 'auto' }: L
     (child: React.ReactElement<IconButtonProps | ButtonProps>) => {
       // Checking isValidElement is the safe way and avoids a typescript error too.
       if (React.isValidElement(child)) {
-        return React.cloneElement(child, { onClick: undefined, tooltip, tooltipPlacement })
+        return React.cloneElement(child, {
+          onClick: undefined,
+          tooltip,
+          tooltipPlacement,
+          // enabling inner button as logic is handled by the parent component
+          disabled: false,
+        })
       }
       return child
     }
   )
-  return <a href={getLoginUrl()}>{childrenWithoutAction}</a>
+  return <LocalStorageLoginLink>{childrenWithoutAction}</LocalStorageLoginLink>
 }
+
+export default LoginButtonWrapper

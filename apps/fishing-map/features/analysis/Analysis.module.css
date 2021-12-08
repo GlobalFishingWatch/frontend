@@ -76,7 +76,6 @@
 }
 
 .footerMsg {
-  display: flex;
   flex: 1;
   font: var(--font-S);
   color: var(--color-secondary-blue);
@@ -93,6 +92,7 @@
 
 .footer {
   display: flex;
+  gap: var(--space-S);
   align-items: center;
   justify-content: space-between;
   padding: var(--space-M);

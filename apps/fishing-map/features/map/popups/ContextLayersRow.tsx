@@ -8,6 +8,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { getDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
 import { isGuestUser, selectUserData } from 'features/user/user.slice'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import styles from './Popup.module.css'
 
 interface DownloadPopupButtonProps {
@@ -26,29 +27,32 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
     userData?.permissions || []
   )
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
-  let tooltip = t('download.activityAction', 'Download visible activity layers for this area')
-  if (!datasetsReportSupported) {
-    tooltip = t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
-  } else if (guestUser) {
-    tooltip = t(
-      'download.downloadActivityLogin',
-      'Register and login to download activity (free, 2 minutes)'
-    )
-  }
   return (
-    <IconButton
-      icon="download"
-      disabled={!hasAnalysableLayer || !datasetsReportSupported || guestUser}
-      tooltip={tooltip}
-      onClick={onClick}
-      size="small"
-    />
+    <LoginButtonWrapper
+      tooltip={t(
+        'download.activityLogin',
+        'Register and login to download activity (free, 2 minutes)'
+      )}
+    >
+      <IconButton
+        icon="download"
+        disabled={!guestUser && (!hasAnalysableLayer || !datasetsReportSupported)}
+        tooltip={
+          datasetsReportSupported
+            ? t('download.activityAction', 'Download visible activity layers for this area')
+            : t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
+        }
+        onClick={onClick}
+        size="small"
+      />
+    </LoginButtonWrapper>
   )
 }
 
 interface ReportPopupButtonProps {
   onClick: (e: React.MouseEvent<Element, MouseEvent>) => void
 }
+
 const ReportPopupButton: React.FC<ReportPopupButtonProps> = ({
   onClick,
 }: ReportPopupButtonProps) => {

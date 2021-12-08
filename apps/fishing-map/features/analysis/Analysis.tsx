@@ -7,10 +7,10 @@ import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { Button, Icon, IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import { useFeatureState, useLoginRedirect } from '@globalfishingwatch/react-hooks'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectUserData, isGuestUser } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -18,13 +18,18 @@ import {
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
-import { getDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
+import {
+  getDatasetsDownloadSupported,
+  getDatasetsDownloadNotSupported,
+  getDatasetLabel,
+} from 'features/datasets/datasets.utils'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -63,7 +68,6 @@ const ANALYSIS_COMPONENTS_BY_TYPE: Record<
 
 function Analysis() {
   const { t } = useTranslation()
-  const { onLoginClick } = useLoginRedirect()
   const { start, end, timerange } = useTimerangeConnect()
   const fitMapBounds = useMapFitBounds()
   const dispatch = useDispatch()
@@ -73,7 +77,6 @@ function Analysis() {
   const dataviews = useSelector(selectActiveActivityDataviews)
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const userData = useSelector(selectUserData)
-  const guestUser = useSelector(isGuestUser)
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
 
@@ -81,6 +84,10 @@ function Analysis() {
   const reportStatus = useSelector(selectReportStatus)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getDatasetsDownloadSupported(dataviews, userData?.permissions || [])
+  const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
+    dataviews,
+    userData?.permissions || []
+  )
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
@@ -225,9 +232,9 @@ function Analysis() {
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
 
   const disableReportDownload =
+    timeRangeTooLong ||
     !analysisGeometryLoaded ||
     !layersTimeseriesFiltered ||
-    timeRangeTooLong ||
     !hasAnalysisLayers ||
     !datasetsReportSupported ||
     reportStatus === AsyncReducerStatus.Finished
@@ -301,23 +308,23 @@ function Analysis() {
             {reportStatus === AsyncReducerStatus.Error
               ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
               : ''}
-            {reportStatus === AsyncReducerStatus.Finished
-              ? `${t('analysis.completed', 'The report will be in your email soon')} (${
-                  userData?.email
-                })`
-              : ''}
+
+            {datasetsDownloadNotSupported.length > 0 && (
+              <span>
+                {t(
+                  'download.datasetsNotAllowed',
+                  "You don't have permissions to download the following datasets:"
+                )}{' '}
+                {datasetsDownloadNotSupported
+                  .map((dataset) => getDatasetLabel({ id: dataset }))
+                  .join(', ')}
+              </span>
+            )}
           </p>
-          {showReportDownload &&
-            (guestUser && !timeRangeTooLong ? (
-              <Button
-                type="secondary"
-                className={styles.saveBtn}
-                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
-                onClick={onLoginClick}
-              >
-                {t('analysis.download', 'Download report')}
-              </Button>
-            ) : (
+          {showReportDownload && (
+            <LoginButtonWrapper
+              tooltip={t('analysis.downloadLogin', 'Please login to download report')}
+            >
               <Button
                 className={styles.saveBtn}
                 onClick={onDownloadClick}
@@ -332,7 +339,8 @@ function Analysis() {
                   t('analysis.download', 'Download report')
                 )}
               </Button>
-            ))}
+            </LoginButtonWrapper>
+          )}
         </div>
       </div>
     </div>

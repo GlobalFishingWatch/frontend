@@ -95,17 +95,19 @@ function DownloadTrackModal() {
             onOptionClick={(option) => setFormat(option.id as Format)}
           />
         </div>
-        <Button
-          className={styles.downloadBtn}
-          onClick={onDownloadClick}
-          loading={downloadStatus === AsyncReducerStatus.Loading}
-        >
-          {downloadStatus === AsyncReducerStatus.Finished ? (
-            <Icon icon="tick" />
-          ) : (
-            t('download.title', 'Download')
-          )}
-        </Button>
+        <div className={styles.footer}>
+          <Button
+            className={styles.downloadBtn}
+            onClick={onDownloadClick}
+            loading={downloadStatus === AsyncReducerStatus.Loading}
+          >
+            {downloadStatus === AsyncReducerStatus.Finished ? (
+              <Icon icon="tick" />
+            ) : (
+              t('download.title', 'Download')
+            )}
+          </Button>
+        </div>
       </div>
     </Modal>
   )
