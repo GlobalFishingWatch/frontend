@@ -108,8 +108,6 @@
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement ce jeu de données ?",
     "dragActive": "Déposez le fichier ici ...",
     "dragFileFormatsPlaceholder": "Glissez et déposez parmi {{formats}} ici ou cliquez pour sélectionner",
-    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
-    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Modifier le jeu de données",
     "emptyFilters": "Aucun filtre disponible",
     "emptyState": "Vos jeux de données apparaîtront ici",
