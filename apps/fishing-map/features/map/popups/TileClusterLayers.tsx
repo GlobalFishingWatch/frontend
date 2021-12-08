@@ -19,6 +19,7 @@ import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import { useMapContext } from 'features/map/map-context.hooks'
 import useViewport from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -48,7 +49,7 @@ const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEve
 
 function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLayersProps) {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const datasets = useSelector(selectAllDatasets)
   const { apiEventStatus } = useClickedEventConnect()
   const { start, end } = useTimerangeConnect()
@@ -56,6 +57,7 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()
   const vessels = useSelector(selectActiveTrackDataviews)
+  const { eventManager } = useMapContext()
 
   useEffect(() => {
     if (!carrierLatest) {
@@ -63,7 +65,14 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
     }
   }, [carrierLatest, dispatchFetchLatestCarrier])
 
-  const onPinClick = (vessel: ExtendedEventVessel) => {
+  const onPinClick = (ev: React.MouseEvent<Element, MouseEvent>, vessel: ExtendedEventVessel) => {
+    eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+    const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
+    if (vesselInWorkspace) {
+      deleteDataviewInstance(vesselInWorkspace.id)
+      return
+    }
+
     const infoDataset = datasets.find((dataset) => dataset.id === vessel.dataset)
     const trackDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)
     const eventsRelatedDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
@@ -163,7 +172,9 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                                         )
                                       : t('vessel.addToWorkspace', 'Add vessel to view')
                                   }
-                                  onClick={() => onPinClick(event.vessel as ExtendedEventVessel)}
+                                  onClick={(e) =>
+                                    onPinClick(e, event.vessel as ExtendedEventVessel)
+                                  }
                                 />
                               )}
                             </div>
@@ -194,8 +205,8 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                                           )
                                         : t('vessel.addToWorkspace', 'Add vessel to view')
                                     }
-                                    onClick={() =>
-                                      onPinClick(event.encounter?.vessel as ExtendedEventVessel)
+                                    onClick={(e) =>
+                                      onPinClick(e, event.encounter?.vessel as ExtendedEventVessel)
                                     }
                                   />
                                 )}

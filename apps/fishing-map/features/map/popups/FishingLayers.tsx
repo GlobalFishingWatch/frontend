@@ -3,7 +3,7 @@ import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -34,7 +34,7 @@ type FishingTooltipRowProps = {
 }
 function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { fishingInteractionStatus } = useClickedEventConnect()
   const gfwUser = useSelector(isGFWUser)
   const vessels = useSelector(selectActiveTrackDataviews)
@@ -45,6 +45,13 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
     vessel: ExtendedFeatureVessel
   ) => {
     eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+
+    const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
+    if (vesselInWorkspace) {
+      deleteDataviewInstance(vesselInWorkspace.id)
+      return
+    }
+
     let vesselDataviewInstance: DataviewInstance | undefined
     if (
       gfwUser &&
