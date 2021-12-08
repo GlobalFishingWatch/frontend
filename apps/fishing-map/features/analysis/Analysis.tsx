@@ -104,7 +104,7 @@ function Analysis() {
   const timeComparisonEnabled = useMemo(() => {
     let tooltip = ''
     let enabled = true
-    if (!dataviews || dataviews.length) {
+    if (!dataviews || !dataviews.length) {
       tooltip = t(
         'analysis.errorTimeComparisonDataviews',
         'At least one activity layer must be enabled'
