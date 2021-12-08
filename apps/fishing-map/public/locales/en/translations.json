@@ -3,7 +3,7 @@
     "close": "Close analysis",
     "completed": "The report has been emailed successfully, you'll receive it soon.",
     "disclaimer": "Data presented should be taken as an estimate. Download a data report for more precise analysis, including the list of vessels involved.",
-    "download": "Download report (AIS)",
+    "download": "Download report",
     "downloadLogin": "Register and login to download reports (free, 2 minutes)",
     "empty": "Your selected datasets will appear here",
     "errorTimeComparisonFilters": "Several layers with filters are not supported",
