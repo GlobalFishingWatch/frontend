@@ -10,6 +10,7 @@ import areaSearchImg from 'assets/images/hints/areaSearch.png'
 // t('helpHints:clickingOnAGridCellToShowVessels', 'Click on any grid cell to show the most active vessels in that area over the chosen time range.')
 // t('helpHints:changingTheTimeRange', 'Click and drag to change the time range you are viewing in the time bar.')
 // t('helpHints:periodComparisonBaseline', 'Select a baseline to compare changes in activity e.g. between now and the same date last year, or to compare activity at different times of year.')
+// t('helpHints:areaSearch', 'Search by country, sea or ocean to focus on an area you\'re interested in.')
 
 export type HintId =
   | 'fishingEffortHeatmap'
