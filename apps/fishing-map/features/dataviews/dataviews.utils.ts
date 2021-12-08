@@ -1,12 +1,15 @@
 import { kebabCase } from 'lodash'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import {
   ColorCyclingType,
   Dataset,
+  DatasetTypes,
   Dataview,
   DataviewCategory,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
+  UserPermission,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -20,6 +23,7 @@ import {
   TEMPLATE_POINTS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -206,6 +210,23 @@ export const getActivityDataviewInstanceFromDataview = (
       colorCyclingType: 'fill' as ColorCyclingType,
     },
   }
+}
+
+export const getDatasetsReportAllowed = (
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  permissions: UserPermission[]
+) => {
+  return dataviews.flatMap((dataview) => {
+    const datasets: Dataset[] = (dataview?.config?.datasets || [])
+      .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
+      .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
+      .filter((dataset: Dataset) => {
+        if (!dataset) return false
+        const permission = { type: 'dataset', value: dataset?.id, action: 'report' }
+        return checkExistPermissionInList(permissions, permission)
+      })
+    return datasets
+  })
 }
 
 export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {

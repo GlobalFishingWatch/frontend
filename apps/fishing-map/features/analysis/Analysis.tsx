@@ -18,6 +18,7 @@ import {
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
+import { getDatasetsReportAllowed } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
@@ -42,8 +43,6 @@ import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 import AnalysisBeforeAfter from './AnalysisBeforeAfter'
-
-const DATASETS_REPORT_SUPPORTED = ['global', 'private-ecuador']
 
 export type AnalysisTypeProps = {
   layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
@@ -71,7 +70,7 @@ function Analysis() {
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const dataviews = useSelector(selectActiveActivityDataviews) || []
+  const dataviews = useSelector(selectActiveActivityDataviews)
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const userData = useSelector(selectUserData)
   const guestUser = useSelector(isGuestUser)
@@ -81,22 +80,8 @@ function Analysis() {
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-
-  const datasetsReportAllowed = dataviews.flatMap((dataview) => {
-    const datasets: Dataset[] = (dataview?.config?.datasets || [])
-      .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
-      .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
-      .filter((dataset: Dataset) => {
-        if (!dataset) return false
-        const permission = { type: 'dataset', value: dataset?.id, action: 'report' }
-        return checkExistPermissionInList(userData?.permissions, permission)
-      })
-    return datasets
-  })
-
-  const datasetsReportSupported = datasetsReportAllowed.some((dataset) =>
-    DATASETS_REPORT_SUPPORTED.some((datasetSupported) => dataset.id.includes(datasetSupported))
-  )
+  const datasetsReportAllowed = getDatasetsReportAllowed(dataviews, userData?.permissions || [])
+  const datasetsReportSupported = datasetsReportAllowed?.length > 0
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -177,7 +162,7 @@ function Analysis() {
   const timeComparisonEnabled = useMemo(() => {
     let tooltip = ''
     let enabled = true
-    if (!dataviews.length) {
+    if (!dataviews || dataviews.length) {
       tooltip = t(
         'analysis.errorTimeComparisonDataviews',
         'At least one activity layer must be enabled'
@@ -197,7 +182,7 @@ function Analysis() {
       enabled,
       tooltip,
     }
-  }, [dataviews])
+  }, [dataviews, t])
 
   const ANALYSIS_TYPE_OPTIONS: (ChoiceOption & { hidden?: boolean })[] = useMemo(
     () =>
