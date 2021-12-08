@@ -160,6 +160,7 @@
     "daily": "Daily",
     "monthly": "Monthly",
     "yearly": "Yearly",
+    "datasetsNotAllowed": "You don't have permissions to download the following datasets:",
     "spatialResolution": "Spatial resolution",
     "yearlyNotAvailable": "Your time range is shorter than 1 year",
     "monthlyNotAvailable": "Your time range is shorter than 1 month",

@@ -6,7 +6,7 @@ import {
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
-import { getDatasetsReportAllowed } from 'features/dataviews/dataviews.utils'
+import { getDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
 import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import styles from './Popup.module.css'
 
@@ -21,7 +21,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   const userData = useSelector(selectUserData)
   const activityDataviews = useSelector(selectActiveActivityDataviews)
   const hasAnalysableLayer = useSelector(selectHasAnalysisLayersVisible)
-  const datasetsReportAllowed = getDatasetsReportAllowed(
+  const datasetsReportAllowed = getDatasetsDownloadSupported(
     activityDataviews,
     userData?.permissions || []
   )

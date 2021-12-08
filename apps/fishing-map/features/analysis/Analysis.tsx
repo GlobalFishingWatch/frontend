@@ -18,7 +18,7 @@ import {
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
-import { getDatasetsReportAllowed } from 'features/dataviews/dataviews.utils'
+import { getDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
@@ -80,7 +80,7 @@ function Analysis() {
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-  const datasetsReportAllowed = getDatasetsReportAllowed(dataviews, userData?.permissions || [])
+  const datasetsReportAllowed = getDatasetsDownloadSupported(dataviews, userData?.permissions || [])
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)

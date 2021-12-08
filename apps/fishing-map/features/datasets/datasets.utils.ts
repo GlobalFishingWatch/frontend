@@ -1,12 +1,15 @@
 import { intersection, lowerCase, uniq } from 'lodash'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import {
   Dataset,
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
   EventTypes,
+  UserPermission,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
@@ -79,6 +82,37 @@ export const getDatasetsInDataviews = (
       return guestUser ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX)) : datasetIds
     })
   )
+}
+
+export const getActiveDatasetsInActivityDataviews = (
+  dataviews: UrlDataviewInstance<GeneratorType>[]
+) => {
+  return dataviews.flatMap((dataview) => {
+    return dataview?.config?.datasets || []
+  })
+}
+
+export const getDatasetsDownloadSupported = (
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  permissions: UserPermission[] = []
+) => {
+  return dataviews.flatMap((dataview) => {
+    const datasets: Dataset[] = (dataview?.config?.datasets || []).filter((datasetId: string) => {
+      if (!datasetId) return false
+      const permission = { type: 'dataset', value: datasetId, action: 'report' }
+      return checkExistPermissionInList(permissions, permission)
+    })
+    return datasets
+  })
+}
+
+export const getDatasetsDownloadNotSupported = (
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  permissions: UserPermission[] = []
+) => {
+  const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
+  const datasetsDownloadSupported = getDatasetsDownloadSupported(dataviews, permissions)
+  return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
