@@ -163,7 +163,8 @@
     "spatialResolution": "Spatial resolution",
     "yearlyNotAvailable": "Your time range is shorter than 1 year",
     "monthlyNotAvailable": "Your time range is shorter than 1 month",
-    "highResNotAvailable": "Your area is too big"
+    "highResNotAvailable": "Your area is too big",
+    "downloadActivityLogin": "Register and login to download activity (free, 2 minutes)"
   },
   "errors": {
     "contactUs": "Harap <1> hubungi kami </1> untuk melaporkan masalah tersebut.",
