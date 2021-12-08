@@ -29,12 +29,12 @@ export enum SpatialResolution {
 
 export const FORMAT_OPTIONS: ChoiceOption[] = [
   {
-    id: Format.GeoTIFF,
-    title: 'geotiff',
-  },
-  {
     id: Format.Csv,
     title: 'csv',
+  },
+  {
+    id: Format.GeoTIFF,
+    title: 'geotiff',
   },
   {
     id: Format.NetCDF,

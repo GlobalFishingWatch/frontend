@@ -48,7 +48,12 @@ export const useContextInteractions = () => {
       }
 
       batch(() => {
-        dispatch(setDownloadActivityGeometry(feature))
+        dispatch(
+          setDownloadActivityGeometry({
+            geometry: feature.geometry,
+            name: feature.value || feature.title,
+          })
+        )
         dispatch(setClickedEvent(null))
       })
 

@@ -1,46 +1,31 @@
-import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, Icon, IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { Button, IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectUserData } from 'features/user/user.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
-import {
-  getDatasetsDownloadSupported,
-  getDatasetsDownloadNotSupported,
-  getDatasetLabel,
-} from 'features/datasets/datasets.utils'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
-import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { getDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
 import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
-  CreateReport,
-  createReportThunk,
-  DateRange,
-  ReportGeometry,
-  resetReportStatus,
   selectAnalysisAreaName,
   selectAnalysisGeometry,
-  selectReportStatus,
 } from './analysis.slice'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
@@ -68,10 +53,9 @@ const ANALYSIS_COMPONENTS_BY_TYPE: Record<
 
 function Analysis() {
   const { t } = useTranslation()
-  const { start, end, timerange } = useTimerangeConnect()
+  const { start, end } = useTimerangeConnect()
   const fitMapBounds = useMapFitBounds()
   const dispatch = useDispatch()
-  const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const dataviews = useSelector(selectActiveActivityDataviews)
@@ -81,13 +65,8 @@ function Analysis() {
   const { bounds } = useSelector(selectAnalysisQuery)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
-  const reportStatus = useSelector(selectReportStatus)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getDatasetsDownloadSupported(dataviews, userData?.permissions || [])
-  const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
-    dataviews,
-    userData?.permissions || []
-  )
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
@@ -105,7 +84,7 @@ function Analysis() {
     cleanFeatureState('highlight')
     cleanFeatureState('click')
     batch(() => {
-      dispatch(clearAnalysisGeometry(undefined))
+      dispatch(clearAnalysisGeometry())
       dispatchQueryParams({
         analysis: undefined,
         analysisType: undefined,
@@ -115,54 +94,10 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    const reportDataviews = dataviews
-      .map((dataview) => {
-        const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
-          .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
-          .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
-          .filter((dataset: Dataset) => {
-            if (!dataset) return false
-            const permission = { type: 'dataset', value: dataset?.id, action: 'report' }
-            return checkExistPermissionInList(userData?.permissions, permission)
-          })
-
-        return {
-          filters: dataview.config?.filters || {},
-          datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
-        }
-      })
-      .filter((dataview) => dataview.datasets.length > 0)
-
-    const reportName = Array.from(new Set(dataviews.map((dataview) => dataview.name))).join(',')
-    const createReport: CreateReport = {
-      name: `${reportName} - ${t('common.report', 'Report')}`,
-      dateRange: timerange as DateRange,
-      dataviews: reportDataviews,
-      geometry: analysisGeometry as ReportGeometry,
-    }
-    await dispatch(createReportThunk(createReport))
-    uaEvent({
-      category: 'Analysis',
-      action: `Download report`,
-      label: getEventLabel([
-        analysisAreaName,
-        ...reportDataviews
-          .map(({ datasets, filters }) => [datasets.join(','), ...getActivityFilters(filters)])
-          .flat(),
-      ]),
-    })
-    timeoutRef.current = setTimeout(() => {
-      dispatch(resetReportStatus(undefined))
-    }, 5000)
+    dispatch(
+      setDownloadActivityGeometry({ geometry: analysisGeometry.geometry, name: analysisAreaName })
+    )
   }
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [])
 
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
@@ -236,8 +171,7 @@ function Analysis() {
     !analysisGeometryLoaded ||
     !layersTimeseriesFiltered ||
     !hasAnalysisLayers ||
-    !datasetsReportSupported ||
-    reportStatus === AsyncReducerStatus.Finished
+    !datasetsReportSupported
 
   const showReportDownload = analysisType === 'evolution' && hasAnalysisLayers
 
@@ -290,37 +224,14 @@ function Analysis() {
           />
         </div>
         <div>
-          {analysisGeometry && (
-            <p className={styles.placeholder}>
-              {t(
-                'analysis.disclaimer',
-                'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-              )}
-            </p>
-          )}
-        </div>
-        <div className={styles.footer}>
-          <p
-            className={cx(styles.footerMsg, {
-              [styles.error]: reportStatus === AsyncReducerStatus.Error,
-            })}
-          >
-            {reportStatus === AsyncReducerStatus.Error
-              ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
-              : ''}
-
-            {datasetsDownloadNotSupported.length > 0 && (
-              <span>
-                {t(
-                  'download.datasetsNotAllowed',
-                  "You don't have permissions to download the following datasets:"
-                )}{' '}
-                {datasetsDownloadNotSupported
-                  .map((dataset) => getDatasetLabel({ id: dataset }))
-                  .join(', ')}
-              </span>
+          <p className={styles.placeholder}>
+            {t(
+              'analysis.disclaimer',
+              'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
             )}
           </p>
+        </div>
+        <div className={styles.footer}>
           {showReportDownload && (
             <LoginButtonWrapper
               tooltip={t('analysis.downloadLogin', 'Please login to download report')}
@@ -328,16 +239,11 @@ function Analysis() {
               <Button
                 className={styles.saveBtn}
                 onClick={onDownloadClick}
-                loading={reportStatus === AsyncReducerStatus.LoadingCreate}
                 tooltip={downloadTooltip}
                 tooltipPlacement="top"
                 disabled={disableReportDownload}
               >
-                {reportStatus === AsyncReducerStatus.Finished ? (
-                  <Icon icon="tick" />
-                ) : (
-                  t('analysis.download', 'Download report')
-                )}
+                {t('analysis.download', 'Download report')}
               </Button>
             </LoginButtonWrapper>
           )}

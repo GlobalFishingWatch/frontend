@@ -1,4 +1,5 @@
 import React, { Fragment, useMemo, useRef, useState } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,12 +18,13 @@ import {
   selectDownloadActivityFinished,
   selectDownloadActivityAreaName,
   selectDownloadActivityGeometry,
+  selectDownloadActivityError,
+  DateRange,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
-import { DateRange } from 'features/analysis/analysis.slice'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
@@ -52,6 +54,7 @@ function DownloadActivityModal() {
   )
   const timeoutRef = useRef<NodeJS.Timeout>()
   const downloadLoading = useSelector(selectDownloadActivityLoading)
+  const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)
   const { start, end, timerange } = useTimerangeConnect()
@@ -276,6 +279,12 @@ function DownloadActivityModal() {
               {datasetsDownloadNotSupported
                 .map((dataset) => getDatasetLabel({ id: dataset }))
                 .join(', ')}
+            </p>
+          )}
+
+          {downloadError && (
+            <p className={cx(styles.footerLabel, styles.error)}>
+              {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
             </p>
           )}
           <Button

@@ -23,3 +23,7 @@
   font: var(--font-S);
   opacity: var(--opacity-secondary);
 }
+
+.error {
+  color: var(--color-danger-red);
+}
