@@ -24,7 +24,7 @@
     "filteredBy": "filtrado por",
     "noData": "No hay datos disponibles",
     "onlyAISAllowed": "Sólo los conjuntos de datos AIS pueden descargarse",
-    "periodComparison": "Comparación del período",
+    "periodComparison": "Comparación entre periodos",
     "periodComparison1st": "inicio de línea base",
     "periodComparison2nd": "inicio de comparación",
     "periodComparisonDuration": "duración",
@@ -101,7 +101,7 @@
     "vessel_other": "Embarcaciones",
     "viirs": "Detección de luz nocturna (VIIRS)",
     "welcomePopupDisable": "No volver a mostrar",
-    "whatsNew": "What's new?"
+    "whatsNew": "Novedades"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
