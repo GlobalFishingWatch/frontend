@@ -55,9 +55,11 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   // const [modalHelpOpen, setModalHelpOpen] = useState(false)
   const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
 
-  const onFeedbackClick = () => {
-    setModalFeedbackOpen(true)
-  }
+  const onFeedbackClick = useCallback(() => {
+    if (userData) {
+      setModalFeedbackOpen(true)
+    }
+  }, [userData])
 
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
@@ -108,17 +110,15 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         <li className={cx(styles.tab, styles.secondary)}>
           <HintsHub />
         </li>
-        {userData && (
-          <li className={cx(styles.tab, styles.secondary)}>
-            <IconButton
-              // className={cx(styles.tabContent, 'print-hidden')}
-              icon="feedback"
-              onClick={onFeedbackClick}
-              tooltip={t('common.feedback', 'Feedback')}
-              tooltipPlacement="right"
-            />
-          </li>
-        )}
+        <li className={cx(styles.tab, styles.secondary)}>
+          <IconButton
+            // className={cx(styles.tabContent, 'print-hidden')}
+            icon="feedback"
+            onClick={onFeedbackClick}
+            tooltip={t('common.feedback', 'Feedback')}
+            tooltipPlacement="right"
+          />
+        </li>
         <li className={styles.tab}>
           <LanguageToggle />
         </li>
