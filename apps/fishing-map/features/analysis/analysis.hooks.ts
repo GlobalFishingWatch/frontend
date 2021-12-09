@@ -190,6 +190,7 @@ export const useAnalysisGeometry = () => {
   const dispatch = useDispatch()
   const fitMapBounds = useMapFitBounds()
   const attachedListener = useRef<boolean>(false)
+  const isAnalyzing = useRef<boolean>(false)
   const { dispatchQueryParams } = useLocationConnect()
   const { areaId, sourceId } = useSelector(selectAnalysisQuery)
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
@@ -233,35 +234,44 @@ export const useAnalysisGeometry = () => {
   }, [areaId])
 
   useEffect(() => {
+    isAnalyzing.current = true
+    return () => {
+      isAnalyzing.current = false
+    }
+  }, [])
+
+  useEffect(() => {
     if (!map || attachedListener.current || !sourceLoaded) return
 
     attachedListener.current = true
 
     const onMapIdle = (e: MapboxEvent) => {
-      const contextAreaFeatures = getContextAreaFeatures(map)
-      const contextAreaGeometry = getContextAreaGeometry(contextAreaFeatures)
+      if (isAnalyzing.current) {
+        const contextAreaFeatures = getContextAreaFeatures(map)
+        const contextAreaGeometry = getContextAreaGeometry(contextAreaFeatures)
 
-      if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
-        const { name, value, id } = contextAreaGeometry.properties || {}
-        const layerName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
-        const areaName: string = name || id || value || layerName || ''
-        const bounds = bbox(contextAreaGeometry) as Bbox
-        if (bounds) {
-          const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
-          setAnalysisBounds(wrappedBounds)
-          fitMapBounds(wrappedBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
-          dispatch(
-            setAnalysisGeometry({
-              geometry: contextAreaGeometry as ReportGeometry,
-              name: areaName,
-              bounds: wrappedBounds,
-            })
-          )
-          setHighlightedArea()
-        } else {
-          console.warn('No area bounds')
+        if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
+          const { name, value, id } = contextAreaGeometry.properties || {}
+          const layerName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
+          const areaName: string = name || id || value || layerName || ''
+          const bounds = bbox(contextAreaGeometry) as Bbox
+          if (bounds) {
+            const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
+            setAnalysisBounds(wrappedBounds)
+            fitMapBounds(wrappedBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+            dispatch(
+              setAnalysisGeometry({
+                geometry: contextAreaGeometry as ReportGeometry,
+                name: areaName,
+                bounds: wrappedBounds,
+              })
+            )
+            setHighlightedArea()
+          } else {
+            console.warn('No area bounds')
+          }
+          setLoaded(true)
         }
-        setLoaded(true)
       }
       map.off('idle', onMapIdle)
     }
