@@ -16,8 +16,11 @@
 .legendLabel {
   font: var(--font-S);
   opacity: var(--opacity-secondary);
-  cursor: help;
   width: max-content;
+}
+
+.help {
+  cursor: help;
 }
 
 .legendContainer {

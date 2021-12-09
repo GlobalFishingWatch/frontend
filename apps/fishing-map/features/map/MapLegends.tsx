@@ -22,9 +22,13 @@ const MapLegendWrapper: React.FC<{ legend: LegendTranslated }> = ({ legend }) =>
       className={styles.legend}
       currentValueClassName={styles.currentValue}
       labelComponent={
-        <Tooltip content={t('map.legend_help', 'Approximated grid cell area at the Equator')}>
+        legend.label.includes('²') ? (
+          <Tooltip content={t('map.legend_help', 'Approximated grid cell area at the Equator')}>
+            <span className={cx(styles.legendLabel, styles.help)}>{legend.label}</span>
+          </Tooltip>
+        ) : (
           <span className={styles.legendLabel}>{legend.label}</span>
-        </Tooltip>
+        )
       }
     />
   )
