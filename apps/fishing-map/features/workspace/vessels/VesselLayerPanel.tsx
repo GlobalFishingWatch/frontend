@@ -164,16 +164,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       tooltip={t('vessel.loading', 'Loading vessel track')}
     />
   ) : (
-    <Fragment>
-      <Color
-        dataview={dataview}
-        open={colorOpen}
-        onColorClick={changeTrackColor}
-        onToggleClick={onToggleColorOpen}
-        onClickOutside={closeExpandedContainer}
-      />
-      <FitBounds hasError={trackError} trackResource={trackResource} />
-    </Fragment>
+    <FitBounds hasError={trackError} trackResource={trackResource} />
   )
 
   const InfoIconComponent = infoLoading ? (
@@ -288,6 +279,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 size="small"
               />
             </LoginButtonWrapper>
+            <Color
+              dataview={dataview}
+              open={colorOpen}
+              onColorClick={changeTrackColor}
+              onToggleClick={onToggleColorOpen}
+              onClickOutside={closeExpandedContainer}
+            />
             {layerActive && !infoLoading && TrackIconComponent}
             <Remove dataview={dataview} />
           </Fragment>

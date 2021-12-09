@@ -230,7 +230,7 @@ function Analysis() {
           <p className={styles.placeholder}>
             <Trans i18nKey="analysis.disclaimer">
               The data shown above should be taken as an estimate.
-              <a href="https://globalfishingwatch.org/faqs/">
+              <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
                 Find out more about Global Fishing Watch analysis tools and methods.
               </a>
             </Trans>
