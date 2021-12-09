@@ -10,7 +10,8 @@
     "close": "Close analysis",
     "completed": "The report has been emailed successfully, you'll receive it soon.",
     "correlation": "correlation",
-    "disclaimer": "Data presented should be taken as an estimate. Download a data report for more precise analysis, including the list of vessels involved.",
+    "disclaimer": "The data shown above should be taken as an estimate.",
+    "disclaimerReport": "Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
     "download": "Download report",
     "downloadLogin": "Register and login to download reports (free, 2 minutes)",
     "empty": "Your selected datasets will appear here",
@@ -99,7 +100,8 @@
     "vessel_one": "Vessel",
     "vessel_other": "Vessels",
     "viirs": "Night light detections (VIIRS)",
-    "welcomePopupDisable": "Don't show again"
+    "welcomePopupDisable": "Don't show again",
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Add reference layer",

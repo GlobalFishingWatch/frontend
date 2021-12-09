@@ -30,7 +30,6 @@ function AnalysisItem({
     return graphData.sublayers.map((s) => s.id)
   }, [graphData])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
-
   const { description, commonProperties } = useAnalysisDescription(analysisAreaName, graphData)
   return (
     <div className={styles.container}>
@@ -71,7 +70,7 @@ const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
     props
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  if (workspaceStatus !== AsyncReducerStatus.Finished)
+  if (workspaceStatus !== AsyncReducerStatus.Finished || !layersTimeseriesFiltered)
     return (
       <div className={styles.graphContainer}>
         <Spinner />
@@ -83,7 +82,7 @@ const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
       {layersTimeseriesFiltered?.map((layerTimeseriesFiltered, index) => {
         return (
           <AnalysisItem
-            loading={!analysisGeometryLoaded || !layerTimeseriesFiltered.timeseries.length}
+            loading={!analysisGeometryLoaded || !layerTimeseriesFiltered.timeseries}
             hasAnalysisLayers={hasAnalysisLayers}
             analysisAreaName={analysisAreaName}
             key={index}

@@ -10,7 +10,8 @@
     "close": "Fermer l'analyse",
     "completed": "Vous recevrez le rapport par e-mail sous peu",
     "correlation": "Corrélation",
-    "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation. Cliquez sur le bouton ci-dessous si vous avez besoin d'une analyse plus précise, incluant la liste des navires concernés, et nous vous l'enverrons par e-mail.",
+    "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation.",
+    "disclaimerReport": "Cliquez sur le bouton ci-dessous si vous avez besoin d'une analyse plus précise, incluant la liste des navires concernés, et nous vous l'enverrons par e-mail.",
     "download": "Télécharger le rapport",
     "downloadLogin": "Vous devez vous connecter pour télécharger le rapport (gratuit, 2 minutes)",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
@@ -99,7 +100,8 @@
     "vessel_one": "Navire",
     "vessel_other": "Navires",
     "viirs": "Détection de lumière de nuit (VIIRS)",
-    "welcomePopupDisable": "Ne plus afficher"
+    "welcomePopupDisable": "Ne plus afficher",
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Ajouter un calque de référence",

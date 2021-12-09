@@ -10,7 +10,8 @@
     "close": "Tutup analisis",
     "completed": "Laporan akan segera ada di email anda",
     "correlation": "correlation",
-    "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan. Klik tombol di bawah jika Anda membutuhkan analisis yang lebih tepat, termasuk daftar kapal yang terlibat, dan kami akan mengirimkannya ke email Anda.",
+    "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan.",
+    "disclaimerReport": "Klik tombol di bawah jika Anda membutuhkan analisis yang lebih tepat, termasuk daftar kapal yang terlibat, dan kami akan mengirimkannya ke email Anda.",
     "download": "Unduh laporan",
     "downloadLogin": "Anda perlu masuk untuk Unduh laporan",
     "empty": "Dataset yang dipilih akan muncul di sini",
@@ -99,7 +100,8 @@
     "vessel_one": "Vessel",
     "vessel_other": "Vessels",
     "viirs": "Night light detections (VIIRS)",
-    "welcomePopupDisable": "Don't show again"
+    "welcomePopupDisable": "Don't show again",
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",

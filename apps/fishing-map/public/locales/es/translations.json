@@ -10,7 +10,8 @@
     "close": "Cerrar análisis",
     "completed": "El informe estará pronto en su correo electrónico",
     "correlation": "correlación",
-    "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación. Haga clic en el botón de abajo si necesita una análisis más preciso, incluyendo la lista de las embarcaciones involucradas, lo cuál será enviado a su correo electrónico.",
+    "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación.",
+    "disclaimerReport": "Haga clic en el botón de abajo si necesita una análisis más preciso, incluyendo la lista de las embarcaciones involucradas, lo cuál será enviado a su correo electrónico.",
     "download": "Descargar informe",
     "downloadLogin": "Necesita iniciar sesión para descargar el informe (gratis, 2 minutos)",
     "empty": "Los datos seleccionados aparecerán aquí",
@@ -27,7 +28,7 @@
     "periodComparison1st": "inicio de línea base",
     "periodComparison2nd": "inicio de comparación",
     "periodComparisonDuration": "duración",
-    "periodComparisonRange": "en el {{duration}} siguiente {{compareStart}} comparado con la línea de referencia en el {{duration}} siguiente {{start}}",
+    "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
     "vesselFlags": "de embarcaciones abanderadas con"
@@ -99,7 +100,8 @@
     "vessel_one": "Embarcación",
     "vessel_other": "Embarcaciones",
     "viirs": "Detección de luz nocturna (VIIRS)",
-    "welcomePopupDisable": "No volver a mostrar"
+    "welcomePopupDisable": "No volver a mostrar",
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",

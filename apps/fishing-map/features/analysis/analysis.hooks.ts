@@ -28,12 +28,12 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useSourceInStyle } from 'features/map/map-features.hooks'
 import { DEFAULT_WORKSPACE, FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
-import { useMapStyle } from 'features/map/map-style.hooks'
 import {
   featuresToTimeseries,
   filterTimeseriesByTimerange,
   removeTimeseriesPadding,
 } from 'features/analysis/analysis-timeseries.utils'
+import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { filterByPolygon, getContextAreaGeometry } from './analysis-geo.utils'
 import { ReportGeometry, selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
@@ -53,7 +53,6 @@ export type DateTimeSeries = {
 
 export const useFilteredTimeSeries = () => {
   const map = useMapInstance()
-  const mapStyle = useMapStyle()
   const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
@@ -133,24 +132,6 @@ export const useFilteredTimeSeries = () => {
     attachedListener.current = false
   }, [analysisEvolutionChange, duration, durationType, start, compareStart])
 
-  // SetTimeseries with empty actual timeseries arrays, for the descriptions to populate
-  useEffect(() => {
-    if (mapStyle) {
-      const layersEntries = getActivityLayers(mapStyle)
-      const hasAlreadyTimeseries = timeseries && timeseries.length
-      if (layersEntries.length && !hasAlreadyTimeseries) {
-        const emptyTimeseries = layersEntries.map(([dataviewId, metadata]) => {
-          return {
-            timeseries: [],
-            interval: (metadata as any).timeChunks.interval,
-            sublayers: (metadata as any).sublayers,
-          }
-        })
-        setTimeseries(emptyTimeseries)
-      }
-    }
-  }, [mapStyle, getActivityLayers, timeseries])
-
   useEffect(() => {
     if (!map || attachedListener.current || !simplifiedGeometry) return
 
@@ -214,6 +195,7 @@ export const useAnalysisGeometry = () => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const [loaded, setLoaded] = useState(false)
   const sourceLoaded = useSourceInStyle(sourceId)
+  const contextDataviews = useSelector(selectContextAreasDataviews)
 
   const getContextAreaFeatures = useCallback(
     (map: Map) => {
@@ -261,7 +243,8 @@ export const useAnalysisGeometry = () => {
 
       if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
         const { name, value, id } = contextAreaGeometry.properties || {}
-        const areaName: string = name || id || value || ''
+        const layerName = contextDataviews.find(({ id }) => id === sourceId).datasets?.[0].name
+        const areaName: string = name || id || value || layerName || ''
         const bounds = bbox(contextAreaGeometry) as Bbox
         if (bounds) {
           const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
@@ -294,6 +277,8 @@ export const useAnalysisGeometry = () => {
     fitMapBounds,
     dispatch,
     setHighlightedArea,
+    contextDataviews,
+    sourceId,
   ])
 
   return loaded
