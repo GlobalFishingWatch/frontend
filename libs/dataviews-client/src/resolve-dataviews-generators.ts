@@ -132,7 +132,7 @@ export function getGeneratorConfig(
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       if (hasEventData) {
         // TODO This flatMap will prevent the corresponding generator to memoize correctly
-        const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data : []))
+        const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           event: dataview.config?.event,
