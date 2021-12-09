@@ -56,6 +56,7 @@ import { ReactComponent as Search } from '../assets/icons/search.svg'
 import { ReactComponent as Settings } from '../assets/icons/settings.svg'
 import { ReactComponent as Share } from '../assets/icons/share.svg'
 import { ReactComponent as Skip } from '../assets/icons/skip.svg'
+import { ReactComponent as Sparks } from '../assets/icons/sparks.svg'
 import { ReactComponent as Split } from '../assets/icons/split.svg'
 import { ReactComponent as Target } from '../assets/icons/target.svg'
 import { ReactComponent as Tick } from '../assets/icons/tick.svg'
@@ -120,6 +121,7 @@ export const IconComponents = {
   settings: Settings,
   share: Share,
   skip: Skip,
+  sparks: Sparks,
   split: Split,
   target: Target,
   tick: Tick,
