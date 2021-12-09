@@ -46,7 +46,7 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   const isLoading =
     !layersTimeseriesFiltered ||
     !layersTimeseriesFiltered[0] ||
-    !layersTimeseriesFiltered[0].timeseries.length
+    !layersTimeseriesFiltered[0].timeseries
 
   return (
     <Fragment>

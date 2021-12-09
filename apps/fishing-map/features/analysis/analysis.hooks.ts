@@ -142,24 +142,6 @@ export const useFilteredTimeSeries = () => {
     attachedListener.current = false
   }, [analysisType, duration, durationType, start, compareStart])
 
-  // SetTimeseries with empty actual timeseries arrays, for the descriptions to populate
-  useEffect(() => {
-    if (mapStyle) {
-      const layersEntries = getActivityLayers(mapStyle)
-      const hasAlreadyTimeseries = timeseries && timeseries.length
-      if (layersEntries.length && !hasAlreadyTimeseries) {
-        const emptyTimeseries = layersEntries.map(([dataviewId, metadata]) => {
-          return {
-            timeseries: [],
-            interval: (metadata as any).timeChunks.interval,
-            sublayers: (metadata as any).sublayers,
-          }
-        })
-        setTimeseries(emptyTimeseries)
-      }
-    }
-  }, [mapStyle, getActivityLayers, timeseries])
-
   useEffect(() => {
     if (!map || attachedListener.current || !simplifiedGeometry) return
 
