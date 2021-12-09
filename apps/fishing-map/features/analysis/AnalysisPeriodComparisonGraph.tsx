@@ -195,7 +195,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
   }, [offsetedLastDataUpdate, timeseries])
 
   const lastDate = useMemo(() => {
-    return range?.[range?.length - 1].date
+    return range?.[range?.length - 1]?.date
   }, [range])
 
   if (!range) return null
