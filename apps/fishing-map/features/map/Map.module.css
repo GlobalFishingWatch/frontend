@@ -1,6 +1,5 @@
 .container {
-  flex: 1;
-  height: calc(100% - 9.6rem);
+  height: 100%;
 }
 
 .screenshot {

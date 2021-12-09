@@ -1,6 +1,8 @@
-import React, { lazy, useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
+import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
 // import RecoilizeDebugger from 'recoilize'
+import dynamic from 'next/dynamic'
+import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { MapContext } from 'features/map/map-context.hooks'
@@ -39,8 +41,8 @@ import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.se
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
-const Map = lazy(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-const Timebar = lazy(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
+const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 /* Using any to avoid Typescript complaining about the value */
 const MapContextProvider: any = MapContext.Provider
@@ -65,7 +67,9 @@ const Main = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   return (
     <div className={styles.main}>
-      <Map />
+      <div className={styles.mapContainer}>
+        <Map />
+      </div>
       {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
       <Footer />
     </div>
@@ -78,6 +82,7 @@ function App(): React.ReactElement {
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const readOnly = useSelector(selectReadOnly)
+  const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const analysisQuery = useSelector(selectAnalysisQuery)
@@ -184,22 +189,24 @@ function App(): React.ReactElement {
     asideWidth = '37rem'
   }
 
+  if (!i18n.ready) {
+    return null
+  }
+
   return (
     <MapContextProvider>
       {/* <RecoilizeDebugger /> */}
-      <Suspense fallback={null}>
-        <SplitView
-          isOpen={sidebarOpen}
-          showToggle={workspaceLocation}
-          onToggle={onToggle}
-          aside={<Sidebar onMenuClick={onMenuClick} />}
-          main={<Main />}
-          asideWidth={asideWidth}
-          showAsideLabel={getSidebarName()}
-          showMainLabel={t('common.map', 'Map')}
-          className="split-container"
-        />
-      </Suspense>
+      <SplitView
+        isOpen={sidebarOpen}
+        showToggle={workspaceLocation}
+        onToggle={onToggle}
+        aside={<Sidebar onMenuClick={onMenuClick} />}
+        main={<Main />}
+        asideWidth={asideWidth}
+        showAsideLabel={getSidebarName()}
+        showMainLabel={t('common.map', 'Map')}
+        className="split-container"
+      />
       {!readOnly && (
         <Menu
           appSelector={ROOT_DOM_ELEMENT}

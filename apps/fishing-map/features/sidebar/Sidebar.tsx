@@ -1,5 +1,6 @@
-import React, { lazy, Suspense, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -12,16 +13,18 @@ import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
-const Analysis = lazy(() => import(/* webpackChunkName: "Analyis" */ 'features/analysis/Analysis'))
-const User = lazy(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
-const Workspace = lazy(
+const Analysis = dynamic(
+  () => import(/* webpackChunkName: "Analyis" */ 'features/analysis/Analysis')
+)
+const User = dynamic(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
+const Workspace = dynamic(
   () => import(/* webpackChunkName: "Workspace" */ 'features/workspace/Workspace')
 )
-const WorkspacesList = lazy(
+const WorkspacesList = dynamic(
   () => import(/* webpackChunkName: "WorkspacesList" */ 'features/workspaces-list/WorkspacesList')
 )
-const Search = lazy(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
-const NewDataset = lazy(
+const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
+const NewDataset = dynamic(
   () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/NewDataset')
 )
 
@@ -58,19 +61,11 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }, [locationType, userLogged, highlightedWorkspacesStatus])
 
   if (searchQuery !== undefined) {
-    return (
-      <Suspense fallback={null}>
-        <Search />
-      </Suspense>
-    )
+    return <Search />
   }
 
   if (isAnalyzing) {
-    return (
-      <Suspense fallback={null}>
-        <Analysis />
-      </Suspense>
-    )
+    return <Analysis />
   }
 
   return (
@@ -80,7 +75,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       <NewDataset />
       <div className="scrollContainer">
         <SidebarHeader />
-        <Suspense fallback={null}>{sidebarComponent}</Suspense>
+        {sidebarComponent}
       </div>
     </div>
   )

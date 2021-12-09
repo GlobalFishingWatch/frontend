@@ -1,4 +1,4 @@
-import React, { Component, useState, Suspense } from 'react'
+import React, { Component, useState } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 import { Button } from '@globalfishingwatch/ui-components'
 import styles from './ErrorBoundary.module.css'
@@ -17,11 +17,7 @@ class ErrorBoundary extends Component<any, { error: Error | null }> {
   }
   render() {
     if (this.state.error) {
-      return (
-        <Suspense fallback={null}>
-          <ErrorBoundaryUI error={this.state.error} />
-        </Suspense>
-      )
+      return <ErrorBoundaryUI error={this.state.error} />
     }
     return this.props.children
   }

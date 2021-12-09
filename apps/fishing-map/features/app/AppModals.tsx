@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components'
@@ -66,26 +66,20 @@ const AppModals = () => {
           <EditorMenu />
         </Modal>
       )}
-      <Suspense fallback={null}>
-        <DownloadActivityModal />
-      </Suspense>
-      <Suspense fallback={null}>
-        <DownloadTrackModal />
-      </Suspense>
+      <DownloadActivityModal />
+      <DownloadTrackModal />
       {welcomePopupOpen && !readOnly && (
-        <Suspense fallback={null}>
-          <Modal
-            appSelector={ROOT_DOM_ELEMENT}
-            header={false}
-            isOpen={welcomePopupOpen}
-            onClose={() => setWelcomePopupOpen(false)}
-          >
-            <Welcome
-              contentKey={welcomePopupContentKey}
-              showDisableCheckbox={!locationIsMarineManager}
-            />
-          </Modal>
-        </Suspense>
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          header={false}
+          isOpen={welcomePopupOpen}
+          onClose={() => setWelcomePopupOpen(false)}
+        >
+          <Welcome
+            contentKey={welcomePopupContentKey}
+            showDisableCheckbox={!locationIsMarineManager}
+          />
+        </Modal>
       )}
     </Fragment>
   )
