@@ -228,14 +228,19 @@ function Analysis() {
         </div>
         <div>
           <p className={styles.placeholder}>
-            {t(
-              'analysis.disclaimer',
-              'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-            )}
+            {t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}
           </p>
         </div>
         {showReportDownload && (
           <Fragment>
+            <div>
+              <p className={styles.placeholder}>
+                {t(
+                  'analysis.disclaimerReport',
+                  'Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+                )}
+              </p>
+            </div>
             <div className={styles.footer}>
               <LoginButtonWrapper
                 tooltip={t('analysis.downloadLogin', 'Please login to download report')}
