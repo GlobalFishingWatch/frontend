@@ -10,7 +10,7 @@
     "close": "Fermer l'analyse",
     "completed": "Vous recevrez le rapport par e-mail sous peu",
     "correlation": "Corrélation",
-    "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation.",
+    "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation. <1>Plus d'information sur les méthodes et outils d'analyses de Global Fishing Watch</1>",
     "disclaimerReport": "Cliquez sur le bouton ci-dessous si vous avez besoin d'une analyse plus précise, incluant la liste des navires concernés, et nous vous l'enverrons par e-mail.",
     "download": "Télécharger le rapport",
     "downloadLogin": "Vous devez vous connecter pour télécharger le rapport (gratuit, 2 minutes)",

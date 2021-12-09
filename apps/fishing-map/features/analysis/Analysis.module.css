@@ -49,6 +49,10 @@
   padding: var(--space-M);
 }
 
+.placeholder a {
+  text-decoration: underline;
+}
+
 .graph .spinner {
   height: 24rem;
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback, Fragment } from 'react'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { Button, IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -228,7 +228,12 @@ function Analysis() {
         </div>
         <div>
           <p className={styles.placeholder}>
-            {t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}
+            <Trans i18nKey="analysis.disclaimer">
+              The data shown above should be taken as an estimate.
+              <a href="https://globalfishingwatch.org/faqs/">
+                Find out more about Global Fishing Watch analysis tools and methods.
+              </a>
+            </Trans>
           </p>
         </div>
         {showReportDownload && (
