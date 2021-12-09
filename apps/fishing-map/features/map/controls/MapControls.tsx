@@ -190,21 +190,18 @@ const MapControls = ({
           {extendedControls && (
             <Fragment>
               {!isAnalyzing && <Rulers />}
-              {!isAnalyzing && (
-                <IconButton
-                  icon="camera"
-                  type="map-tool"
-                  loading={loading}
-                  disabled={mapLoading || loading}
-                  tooltip={
-                    mapLoading || loading
-                      ? t('map.mapLoadingWait', 'Please wait until map loads')
-                      : t('map.captureMap', 'Capture map')
-                  }
-                  onClick={onScreenshotClick}
-                />
-              )}
-
+              <IconButton
+                icon="camera"
+                type="map-tool"
+                loading={loading}
+                disabled={mapLoading || loading}
+                tooltip={
+                  mapLoading || loading
+                    ? t('map.mapLoadingWait', 'Please wait until map loads')
+                    : t('map.captureMap', 'Capture map')
+                }
+                onClick={onScreenshotClick}
+              />
               <Tooltip
                 content={
                   currentBasemap === BasemapType.Default
