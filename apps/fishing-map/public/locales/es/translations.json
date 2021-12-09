@@ -27,7 +27,7 @@
     "periodComparison1st": "inicio de línea base",
     "periodComparison2nd": "inicio de comparación",
     "periodComparisonDuration": "duración",
-    "periodComparisonRange": "en el {{duration}} siguiente {{compareStart}} comparado con la línea de referencia en el {{duration}} siguiente {{start}}",
+    "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
     "vesselFlags": "de embarcaciones abanderadas con"
@@ -99,7 +99,8 @@
     "vessel_one": "Embarcación",
     "vessel_other": "Embarcaciones",
     "viirs": "Detección de luz nocturna (VIIRS)",
-    "welcomePopupDisable": "No volver a mostrar"
+    "welcomePopupDisable": "No volver a mostrar",
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",

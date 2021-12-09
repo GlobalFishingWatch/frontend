@@ -99,7 +99,8 @@
     "vessel_one": "Embarcação",
     "vessel_other": "Embarcações",
     "viirs": "Detecção de luz noturna (VIIRS)",
-    "welcomePopupDisable": "Não mostrar novamente"
+    "welcomePopupDisable": "Não mostrar novamente",
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Adicionar conjunto de dados de contexto",

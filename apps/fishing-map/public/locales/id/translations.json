@@ -99,7 +99,8 @@
     "vessel_one": "Vessel",
     "vessel_other": "Vessels",
     "viirs": "Night light detections (VIIRS)",
-    "welcomePopupDisable": "Don't show again"
+    "welcomePopupDisable": "Don't show again",
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
