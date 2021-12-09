@@ -243,7 +243,7 @@ export const useAnalysisGeometry = () => {
 
       if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
         const { name, value, id } = contextAreaGeometry.properties || {}
-        const layerName = contextDataviews.find(({ id }) => id === sourceId).datasets?.[0].name
+        const layerName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
         const areaName: string = name || id || value || layerName || ''
         const bounds = bbox(contextAreaGeometry) as Bbox
         if (bounds) {
