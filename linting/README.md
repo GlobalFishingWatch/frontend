@@ -38,12 +38,12 @@ to your `.eslintrc`:
 }
 ```
 
-#### Typescript
+#### Javascript
 
 ```json
 {
   "eslintConfig": {
-    "extends": "@globalfishingwatch/linting/typescript"
+    "extends": "@globalfishingwatch/linting/javascript"
   }
 }
 ```
@@ -52,7 +52,25 @@ to your `.eslintrc`:
 
 ```json
 {
-  "extends": "@globalfishingwatch/linting/typescript"
+  "extends": "@globalfishingwatch/linting/javascript"
+}
+```
+
+#### Next
+
+```json
+{
+  "eslintConfig": {
+    "extends": "@globalfishingwatch/linting/next"
+  }
+}
+```
+
+to your `.eslintrc`:
+
+```json
+{
+  "extends": "@globalfishingwatch/linting/next"
 }
 ```
 

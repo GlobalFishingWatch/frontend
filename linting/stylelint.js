@@ -14,6 +14,7 @@ module.exports = {
     ],
     'color-function-notation': 'legacy',
     'selector-class-pattern': '.*',
+    'selector-id-pattern': '.*',
     'keyframes-name-pattern': '.*',
   },
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],

@@ -23,10 +23,12 @@ const defaultMiddlewareOptions: any = {
   },
 }
 
-export default () => {
+const store = () => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: [...getDefaultMiddleware(defaultMiddlewareOptions)],
   })
   return store
 }
+
+export default store
