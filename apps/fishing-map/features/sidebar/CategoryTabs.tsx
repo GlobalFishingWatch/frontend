@@ -93,6 +93,19 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         ))}
         <div className={styles.separator}></div>
         <li className={cx(styles.tab, styles.secondary)}>
+          <a
+            href="https://globalfishingwatch.org/platform-updates"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <IconButton
+              icon="sparks"
+              tooltip={t('common.whatsNew', "What's new?")}
+              tooltipPlacement="right"
+            />
+          </a>
+        </li>
+        <li className={cx(styles.tab, styles.secondary)}>
           <HintsHub />
         </li>
         {userData && (

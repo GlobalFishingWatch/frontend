@@ -96,18 +96,7 @@ export const useFilteredTimeSeries = () => {
         })
         setTimeseries(timeseries)
       }
-      // Make features serializable for worker
-      const serializedLayerWithFeatures = layersWithFeatures.map((layerWithFeatures) => {
-        return {
-          ...layerWithFeatures,
-          features: layerWithFeatures.features.map(({ properties, geometry }) => ({
-            type: 'Feature' as any,
-            properties,
-            geometry,
-          })),
-        }
-      })
-      getTimeseries(serializedLayerWithFeatures, geometry)
+      getTimeseries(layersWithFeatures, geometry)
     },
     [compareDeltaMillis, showTimeComparison]
   )
@@ -136,11 +125,13 @@ export const useFilteredTimeSeries = () => {
     attachedListener.current = false
   }, [areaId])
 
+  const analysisEvolutionChange =
+    analysisType === 'beforeAfter' || analysisType === 'periodComparison' ? 'time' : analysisType
   useEffect(() => {
     // Used to re-attach the idle listener on type change
     setTimeseries(undefined)
     attachedListener.current = false
-  }, [analysisType, duration, durationType, start, compareStart])
+  }, [analysisEvolutionChange, duration, durationType, start, compareStart])
 
   useEffect(() => {
     if (!map || attachedListener.current || !simplifiedGeometry) return
