@@ -18,7 +18,7 @@ type HintProps = {
 export const DISMISSED = 'dismissed'
 
 function Hint({ id, className }: HintProps) {
-  const { t } = useTranslation(['translations', 'helpHints'])
+  const { t, ready } = useTranslation(['translations', 'helpHints'])
   const { placement, imageUrl, pulse, openedByDefault } = hintsConfig[id]
   const isReadOnly = useSelector(selectReadOnly)
   const dispatch = useDispatch()
@@ -59,7 +59,7 @@ function Hint({ id, className }: HintProps) {
     setVisible(false)
   }, [])
 
-  if (hintsDismissed?.[id] === true || isReadOnly) return null
+  if (hintsDismissed?.[id] === true || isReadOnly || !ready) return null
 
   return (
     <TooltipContainer
@@ -97,7 +97,7 @@ function Hint({ id, className }: HintProps) {
       }
     >
       <div
-        className={cx(styles.hintTarget, className)}
+        className={cx(styles.hintTarget, className, 'print-hidden')}
         onClick={visible ? onDismiss : showHint}
         key={`${id}-bubble`}
       >
