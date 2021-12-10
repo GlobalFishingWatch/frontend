@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+import { Spinner, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
-import { getVesselLabel } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
@@ -26,7 +27,8 @@ import { isGFWUser } from 'features/user/user.slice'
 import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { useMapContext } from '../map-context.hooks'
-import styles from './Popup.module.css'
+import popupStyles from './Popup.module.css'
+import styles from './FishingLayers.module.css'
 
 type FishingTooltipRowProps = {
   feature: TooltipEventFeature
@@ -86,11 +88,11 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   }
 
   return (
-    <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
-      <div className={styles.popupSectionContent}>
+    <div className={popupStyles.popupSection}>
+      <span className={popupStyles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <div className={popupStyles.popupSectionContent}>
         {showFeaturesDetails && (
-          <h3 className={styles.popupSectionTitle}>
+          <h3 className={popupStyles.popupSectionTitle}>
             {feature.title}
             {feature.temporalgrid && feature.temporalgrid.interval === '10days' && (
               <span>
@@ -104,8 +106,8 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
             )}
           </h3>
         )}
-        <div className={styles.row}>
-          <span className={styles.rowText}>
+        <div className={popupStyles.row}>
+          <span className={popupStyles.rowText}>
             <I18nNumber number={feature.value} />{' '}
             {t([`common.${feature.temporalgrid?.unit}` as any, 'common.hour'], 'hours', {
               count: parseInt(feature.value), // neded to select the plural automatically
@@ -113,76 +115,92 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
           </span>
         </div>
         {fishingInteractionStatus === AsyncReducerStatus.Loading && (
-          <div className={styles.loading}>
+          <div className={popupStyles.loading}>
             <Spinner size="small" />
           </div>
         )}
+
         {feature.vesselsInfo && (
-          <div className={styles.vesselsTable}>
-            <div className={styles.vesselsHeader}>
-              <label className={styles.vesselsHeaderLabel}>
-                {t('common.vessel_other', 'Vessels')}
-              </label>
-              <label className={styles.vesselsHeaderLabel}>
-                {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
-                {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
-              </label>
-            </div>
-            {feature.vesselsInfo.vessels.map((vessel, i) => {
-              const vesselLabel = getVesselLabel(vessel, true)
-              const interactionAllowed =
-                SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-                  feature.temporalgrid?.sublayerInteractionType || ''
-                )
-              const hasDatasets =
-                vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+          <Fragment>
+            <table className={styles.vesselsTable}>
+              <thead>
+                <tr>
+                  <th colSpan={2}>{t('common.vessel_other', 'Vessels')}</th>
+                  <th>{t('common.flag_short', 'iso3')}</th>
+                  <th>{t('common.gearType_short', 'gear')}</th>
+                  <th>{t('common.source_short', 'source')}</th>
+                  <th className={styles.vesselsTableHeaderRight}>
+                    {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
+                    {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {feature.vesselsInfo.vessels.map((vessel, i) => {
+                  const vesselName = formatInfoField(vessel.shipname, 'name')
+                  const vesselGearType = `${t(
+                    `vessel.gearTypes.${vessel.geartype}` as any,
+                    EMPTY_FIELD_PLACEHOLDER
+                  )}`
 
-              const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
+                  const interactionAllowed =
+                    SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+                      feature.temporalgrid?.sublayerInteractionType || ''
+                    )
+                  const hasDatasets =
+                    vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
-              const pinTrackDisabled = !interactionAllowed || !hasDatasets
+                  const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
 
-              return (
-                <div key={i} className={styles.vesselRow}>
-                  <span className={styles.vesselName}>
-                    <span>
-                      {vesselLabel}
+                  const pinTrackDisabled = !interactionAllowed || !hasDatasets
+                  return (
+                    <tr key={i}>
+                      <td>
+                        {!pinTrackDisabled && (
+                          <IconButton
+                            icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+                            style={{
+                              color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                            }}
+                            tooltip={
+                              vesselInWorkspace
+                                ? t(
+                                    'search.vesselAlreadyInWorkspace',
+                                    'This vessel is already in your workspace'
+                                  )
+                                : t('search.seeVessel', 'See vessel')
+                            }
+                            onClick={(e) => onVesselClick(e, vessel)}
+                            size="small"
+                            className={styles.vesselsPinButton}
+                          />
+                        )}
+                      </td>
+                      <td className={styles.vesselsTableColLarge}>{vesselName}</td>
+                      <td className={styles.vesselsTableColSmall}>
+                        <Tooltip content={t(`flags:${vessel.flag}`)}>
+                          <span>{vessel.flag}</span>
+                        </Tooltip>
+                      </td>
+                      <td className={styles.vesselsTableColLarge}>{vesselGearType}</td>
                       {vessel.dataset && vessel.dataset.name && (
-                        <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
+                        <td className={styles.vesselsTableColMedium}>{vessel.dataset.name}</td>
                       )}
-                    </span>
-                    {!pinTrackDisabled && (
-                      <IconButton
-                        icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-                        style={{
-                          color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
-                        }}
-                        tooltip={
-                          vesselInWorkspace
-                            ? t(
-                                'search.vesselAlreadyInWorkspace',
-                                'This vessel is already in your workspace'
-                              )
-                            : t('search.seeVessel', 'See vessel')
-                        }
-                        onClick={(e) => onVesselClick(e, vessel)}
-                        size="small"
-                        className={styles.pinButton}
-                      />
-                    )}
-                  </span>
-                  <span className={styles.vesselHours}>
-                    <I18nNumber number={vessel.hours} />
-                  </span>
-                </div>
-              )
-            })}
+                      <td className={cx(styles.vesselsTableColSmall, styles.vesselsTableHour)}>
+                        <I18nNumber number={vessel.hours} />
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
             {feature.vesselsInfo.overflow && (
               <div className={styles.vesselsMore}>
                 + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length}{' '}
                 {t('common.more', 'more')}
               </div>
             )}
-          </div>
+          </Fragment>
         )}
       </div>
     </div>

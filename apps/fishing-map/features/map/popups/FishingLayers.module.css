@@ -1,0 +1,58 @@
+.vesselsTable {
+  margin-top: var(--space-M);
+  margin-right: var(--space-M);
+  margin-bottom: var(--space-XS);
+  border-collapse: collapse;
+}
+
+.vesselsTable td,
+.vesselsTable th {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0;
+  line-height: 1rem;
+}
+
+.vesselsTable tr:not(:last-child) td {
+  border-bottom: 1px solid var(--color-terthiary-blue);
+}
+
+.vesselsTable th {
+  text-align: left;
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+}
+
+.vesselsTable th.vesselsTableHeaderRight {
+  text-align: right;
+}
+
+.vesselsTableColLarge {
+  max-width: 16rem;
+  width: 16rem;
+}
+
+.vesselsTableColMedium {
+  max-width: 10rem;
+  width: 10rem;
+}
+
+.vesselsTableColSmall {
+  max-width: 5rem;
+  width: 5rem;
+}
+
+.vesselsTableHour {
+  text-align: right;
+}
+
+.vesselsPinButton {
+  display: inline-block;
+  bottom: -5px;
+  margin-left: var(space-S);
+}
+
+.vesselsMore {
+  opacity: var(--opacity-secondary);
+}

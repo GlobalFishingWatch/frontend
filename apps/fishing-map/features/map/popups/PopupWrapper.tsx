@@ -52,6 +52,13 @@ function PopupWrapper({
     'category'
   )
 
+  const largeContent =
+    featureByCategory[DataviewCategory.Fishing]?.length > 0 ||
+    (featureByCategory[DataviewCategory.Presence]?.length > 0 &&
+      featureByCategory[DataviewCategory.Presence]?.some(
+        (feature) => feature.temporalgrid?.sublayerInteractionType === 'presence-detail'
+      ))
+
   return (
     <Popup
       latitude={event.latitude}
@@ -63,7 +70,7 @@ function PopupWrapper({
       anchor={anchor}
       captureClick
     >
-      <div className={styles.content}>
+      <div className={cx(styles.content, { [styles.largeContent]: largeContent })}>
         {timeCompareTimeDescription && (
           <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
         )}

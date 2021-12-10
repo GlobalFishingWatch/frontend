@@ -23,6 +23,11 @@
   max-width: 40vw;
 }
 
+.click .largeContent {
+  width: 60rem;
+  max-width: 60rem;
+}
+
 .popupSection {
   display: flex;
   padding: var(--space-XS);
@@ -71,20 +76,14 @@
   margin-bottom: var(--space-XS);
 }
 
+.click .largeContent .popupSectionTitle {
+  max-width: unset;
+}
+
 .loading {
   width: 100%;
-  height: 17.9rem;
+  height: 18.8rem;
   padding: var(--space-XS);
-}
-
-.vesselsTable {
-  padding-top: var(--space-XS);
-}
-
-.vesselsHeader {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--space-XS);
 }
 
 .vesselsHeaderLabel {
@@ -113,17 +112,6 @@
 
 .vesselsMore {
   opacity: var(--opacity-secondary);
-}
-
-.pinButton {
-  position: absolute;
-  display: inline-block;
-  bottom: -5px;
-  margin-left: var(space-S);
-}
-
-.vesselHours {
-  padding-left: 20px;
 }
 
 .rowContainer {
