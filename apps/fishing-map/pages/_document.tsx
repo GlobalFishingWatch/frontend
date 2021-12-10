@@ -159,11 +159,6 @@ class MyDocument extends Document {
 
             <title>GFW | Map</title>
 
-            <link
-              href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"
-              rel="stylesheet"
-            />
-
             <meta
               property="og:description"
               content="Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability."
