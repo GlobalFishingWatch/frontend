@@ -4,6 +4,7 @@ import { scaleLinear } from 'd3-scale'
 import { event as uaEvent } from 'react-ga'
 import { InteractiveMap } from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
+import dynamic from 'next/dynamic'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -42,10 +43,11 @@ import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import { useMapAndSourcesLoaded, useSetMapIdleAtom } from './map-features.hooks'
-import MapDraw from './MapDraw'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
 import MapLegends from './MapLegends'
+
+const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
@@ -262,7 +264,7 @@ const MapWrapper = (): React.ReactElement | null => {
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
-          <MapDraw />
+          {drawMode !== 'disabled' && <MapDraw />}
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}

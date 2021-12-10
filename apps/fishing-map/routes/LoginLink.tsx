@@ -10,7 +10,7 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
   const { saveRedirectUrl } = useLoginRedirect()
 
   return (
-    <a ref={ref} href={getLoginUrl()} onClick={saveRedirectUrl} className={className}>
+    <a ref={ref} href={getLoginUrl()} onClick={saveRedirectUrl} className={className} title="Login">
       {children}
     </a>
   )
