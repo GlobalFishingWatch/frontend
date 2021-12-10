@@ -73,7 +73,11 @@ export function SplitView(props: SplitViewProps) {
           </div>
         ) : (
           showToggle && (
-            <button className={cx('print-hidden', styles.toggleBtn)} onClick={handleClick}>
+            <button
+              aria-label="Toggle sidebar"
+              className={cx('print-hidden', styles.toggleBtn)}
+              onClick={handleClick}
+            >
               <Icon icon={internalOpen ? 'arrow-left' : 'arrow-right'} />
             </button>
           )

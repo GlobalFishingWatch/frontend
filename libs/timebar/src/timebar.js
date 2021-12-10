@@ -284,7 +284,7 @@ class Timebar extends Component {
             <div className={cx('print-hidden', styles.timeRangeContainer)}>
               <button
                 type="button"
-                title={labels.timeRange}
+                title={labels.timerange.title}
                 className={cx(styles.uiButton, styles.timeRange)}
                 disabled={immediate}
                 onClick={this.toggleTimeRangeSelector}

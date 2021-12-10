@@ -85,8 +85,6 @@ export function Choice({
               key={option.id}
               className={styles.option}
               role="radio"
-              aria-controls={option.id}
-              tabIndex={index}
               aria-checked={optionSelected}
               ref={optionSelected ? activeRef : null}
             >

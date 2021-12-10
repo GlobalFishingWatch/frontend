@@ -88,12 +88,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
               className={styles.tabContent}
               to={getLinkToCategory(category.title as WorkspaceCategories)}
               onClick={onCategoryClick}
+              title={category.title}
             >
               <Icon icon={`category-${category.title}` as IconType} />
             </Link>
           </li>
         ))}
-        <div className={styles.separator}></div>
+        <li className={styles.separator} aria-hidden></li>
         <li className={cx(styles.tab, styles.secondary)}>
           <a
             href="https://globalfishingwatch.org/platform-updates"

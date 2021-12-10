@@ -56,6 +56,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
         id={id}
+        aria-label={icon || ''}
         ref={ref}
         className={cx(
           styles.iconButton,
