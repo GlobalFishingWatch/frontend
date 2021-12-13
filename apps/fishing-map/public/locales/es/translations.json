@@ -381,8 +381,10 @@
     "firstTransmissionDate": "Fecha primera transmisión",
     "fishingZone": "Zona de pesca",
     "flag": "Bandera",
+    "flag_short": "iso3",
     "fleet": "Flota",
     "geartype": "Arte de pesca",
+    "gearType_short": "gear",
     "gearTypes": {
       "dredge_fishing": "Pesca de dragado",
       "drifting_longlines": "Palangre a la deriva",
@@ -426,6 +428,7 @@
     "registeredGearType": "Arte de pesca registrado",
     "shiptype": "Tipo de buque",
     "source": "Fuente",
+    "source_short": "Source",
     "target_species": "Especies objetivo",
     "targetSpecies": "Especies objetivo",
     "transmission_other": "Transmisión",
