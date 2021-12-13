@@ -381,8 +381,10 @@
     "firstTransmissionDate": "Tanggal transmisi pertama",
     "fishingZone": "Fishing zone",
     "flag": "Bendera",
+    "flag_short": "iso3",
     "fleet": "Armada",
     "geartype": "Jenis peralatan",
+    "gearType_short": "gear",
     "gearTypes": {
       "dredge_fishing": "Penggaruk",
       "drifting_longlines": "Rawai hanyut",
@@ -426,6 +428,7 @@
     "registeredGearType": "Jenis peralatan terdaftar",
     "shiptype": "Ship type",
     "source": "Sumber",
+    "source_short": "Source",
     "target_species": "Target species",
     "targetSpecies": "Target species",
     "transmission_other": "Transmissions",
