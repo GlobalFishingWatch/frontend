@@ -142,9 +142,9 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
               <thead>
                 <tr>
                   <th colSpan={2}>{t('common.vessel_other', 'Vessels')}</th>
-                  <th>{t('common.flag_short', 'iso3')}</th>
-                  <th>{t('common.gearType_short', 'gear')}</th>
-                  <th>{t('common.source_short', 'source')}</th>
+                  <th>{t('vessel.flag_short', 'iso3')}</th>
+                  <th>{t('vessel.gearType_short', 'gear')}</th>
+                  <th>{t('vessel.source_short', 'source')}</th>
                   <th className={styles.vesselsTableHeaderRight}>
                     {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
                     {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
