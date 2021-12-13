@@ -346,16 +346,19 @@ export function getDataviewsGeneratorConfigs(
   if (activityDataviews.length) {
     const activitySublayers = activityDataviews.flatMap((dataview) => {
       const { config, datasetsConfig } = dataview
-      if (!config || !datasetsConfig || !datasetsConfig.length) return []
+      if (!config || !datasetsConfig || !datasetsConfig.length || !dataview?.datasets?.length) {
+        return []
+      }
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
+      if (!dataview.datasets?.length) return []
       const units = uniq(dataview.datasets?.map((dataset) => dataset.unit))
-      if (units.length !== 1) {
+      if (units.length > 0 && units.length !== 1) {
         throw new Error('Shouldnt have distinct units for the same heatmap layer')
       }
       const interactionTypes = uniq(
         dataview.datasets?.map((dataset) => dataset.configuration?.type || 'fishing-effort')
       ) as HeatmapAnimatedInteractionType[]
-      if (interactionTypes.length !== 1) {
+      if (interactionTypes.length > 0 && interactionTypes.length !== 1) {
         throw new Error(
           `Shouldnt have distinct dataset config types for the same heatmap layer: ${interactionTypes.toString()}`
         )
