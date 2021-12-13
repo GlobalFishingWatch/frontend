@@ -2,9 +2,9 @@ import React, { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
-import { Spinner, Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
-import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import { TooltipEventFeature } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
@@ -48,7 +48,6 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const datasets = useSelector(selectAllDatasets)
-  const { apiEventStatus } = useClickedEventConnect()
   const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
@@ -135,11 +134,7 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
               {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
               {showFeaturesDetails && (
                 <div className={styles.row}>
-                  {apiEventStatus === AsyncReducerStatus.Loading ? (
-                    <div className={styles.loading}>
-                      <Spinner size="small" />
-                    </div>
-                  ) : event ? (
+                  {event ? (
                     <div className={styles.rowContainer}>
                       <span className={styles.rowText}>
                         <I18nDate date={event.start as string} />
