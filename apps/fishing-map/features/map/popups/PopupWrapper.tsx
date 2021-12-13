@@ -67,6 +67,7 @@ function PopupWrapper({
       ...viewport,
       latitude: viewport.latitude + 0.00001,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [popupNeedsLoading])
 
   if (!event) return null

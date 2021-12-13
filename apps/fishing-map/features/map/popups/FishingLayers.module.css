@@ -22,6 +22,7 @@
   white-space: nowrap;
   padding: 0;
   line-height: 2rem;
+  height: 3rem;
   max-width: 14rem;
   vertical-align: middle;
 }
@@ -33,6 +34,11 @@
 .vesselsTable td:not(:first-child):not(:nth-child(2)),
 .vesselsTable th:not(:first-child) {
   padding-left: 2rem;
+}
+
+.vesselsTable td.icon {
+  width: 3rem;
+  overflow: visible;
 }
 
 .vesselsTable th.vesselsTableHeaderRight {

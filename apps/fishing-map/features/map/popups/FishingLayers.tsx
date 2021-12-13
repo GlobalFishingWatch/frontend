@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -90,7 +90,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   const hasPinColumn =
     interactionAllowed &&
     feature.vesselsInfo &&
-    feature.vesselsInfo.vessels.every((vessel) => {
+    feature.vesselsInfo.vessels.some((vessel) => {
       const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
       return hasDatasets
     })
@@ -153,8 +153,8 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                   const pinTrackDisabled = !interactionAllowed || !hasDatasets
                   return (
                     <tr key={i}>
-                      {!pinTrackDisabled && (
-                        <td>
+                      <td className={styles.icon}>
+                        {!pinTrackDisabled && (
                           <IconButton
                             icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                             style={{
@@ -171,8 +171,8 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                             onClick={(e) => onVesselClick(e, vessel)}
                             size="small"
                           />
-                        </td>
-                      )}
+                        )}
+                      </td>
                       <td>{vesselName}</td>
                       <td>
                         <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
