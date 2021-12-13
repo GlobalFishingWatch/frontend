@@ -171,7 +171,7 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
                   const pinTrackDisabled = !interactionAllowed || !hasDatasets
                   return (
                     <tr key={i}>
-                      <td>
+                      <td className={styles.icon}>
                         {!pinTrackDisabled && (
                           <IconButton
                             icon={vesselInWorkspace ? 'pin-filled' : 'pin'}

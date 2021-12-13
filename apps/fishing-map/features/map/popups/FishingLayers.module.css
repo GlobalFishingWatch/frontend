@@ -11,11 +11,15 @@
 
 .vesselsTable td,
 .vesselsTable th {
-  min-height: 10rem;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0;
   line-height: 1rem;
+}
+
+.vesselsTable td.icon {
+  overflow: visible;
 }
 
 .vesselsTable tr:not(:last-child) td {
