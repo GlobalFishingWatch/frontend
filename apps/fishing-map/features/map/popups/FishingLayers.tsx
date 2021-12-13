@@ -194,7 +194,7 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
                       </td>
                       <td className={styles.vesselsTableColLarge}>{vesselName}</td>
                       <td className={styles.vesselsTableColSmall}>
-                        <Tooltip content={t(`flags:${vessel.flag}`)}>
+                        <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
                           <span>{vessel.flag}</span>
                         </Tooltip>
                       </td>
@@ -211,10 +211,7 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
               </tbody>
             </table>
             {feature.vesselsInfo.overflow && (
-              <button
-                className={styles.vesselsMore}
-                onClick={(e) => onMoreClick(e, event.latitude, event.longitude)}
-              >
+              <button className={styles.vesselsMore} onClick={onMoreClick}>
                 + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length}{' '}
                 {t('common.more', 'more')}
               </button>
