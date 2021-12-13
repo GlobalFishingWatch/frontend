@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { Popup } from 'react-map-gl'
@@ -18,6 +18,7 @@ import {
   selectFishingInteractionStatus,
   selectViirsInteractionStatus,
 } from '../map.slice'
+import useViewport from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 import FishingTooltipRow from './FishingLayers'
 import PresenceTooltipRow from './PresenceLayers'
@@ -58,6 +59,16 @@ function PopupWrapper({
     (s) => s === AsyncReducerStatus.Loading
   )
 
+  const { setMapCoordinates, viewport } = useViewport()
+
+  // Force-trigger a rerender of the map to avoid popup repositioning flash
+  useEffect(() => {
+    setMapCoordinates({
+      ...viewport,
+      latitude: viewport.latitude + 0.00001,
+    })
+  }, [popupNeedsLoading])
+
   if (!event) return null
 
   const visibleFeatures = event.features.filter((feature) => feature.visible)
@@ -78,6 +89,7 @@ function PopupWrapper({
       className={cx(styles.popup, styles[type], className)}
       anchor={anchor}
       captureClick
+      // dynamicPosition={false}
     >
       {popupNeedsLoading ? (
         <div className={styles.loading}>
