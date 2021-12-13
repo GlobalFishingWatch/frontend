@@ -381,8 +381,10 @@
     "firstTransmissionDate": "Première date de transmission",
     "fishingZone": "Zone de pêche",
     "flag": "Pavillon",
+    "flag_short": "iso3",
     "fleet": "Flotte",
     "geartype": "Type d'équipement",
+    "gearType_short": "gear",
     "gearTypes": {
       "dredge_fishing": "Pêche à la drague",
       "drifting_longlines": "Palangre dérivante",
@@ -426,6 +428,7 @@
     "registeredGearType": "Type d'équipement enregistré",
     "shiptype": "Type de navire",
     "source": "Source",
+    "source_short": "Source",
     "target_species": "Espèces pêchées",
     "targetSpecies": "Espèces pêchées",
     "transmission_other": "Transmissions",
