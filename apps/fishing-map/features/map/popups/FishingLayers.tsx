@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Spinner, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
@@ -16,6 +16,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
+  TooltipEvent,
   TooltipEventFeature,
   useClickedEventConnect,
 } from 'features/map/map.hooks'
@@ -27,20 +28,23 @@ import { isGFWUser } from 'features/user/user.slice'
 import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { useMapContext } from '../map-context.hooks'
+import useViewport from '../map-viewport.hooks'
 import popupStyles from './Popup.module.css'
 import styles from './FishingLayers.module.css'
 
 type FishingTooltipRowProps = {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
+  event?: TooltipEvent
 }
-function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
+function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { fishingInteractionStatus } = useClickedEventConnect()
   const gfwUser = useSelector(isGFWUser)
   const vessels = useSelector(selectActiveTrackDataviews)
   const { eventManager } = useMapContext()
+  const { setMapCoordinates, viewport } = useViewport()
 
   const onVesselClick = (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -86,6 +90,18 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
       label: getEventLabel([vessel.dataset.id, vessel.id]),
     })
   }
+
+  const onMoreClick = useCallback(
+    (ev: React.MouseEvent<Element, MouseEvent>) => {
+      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+      setMapCoordinates({
+        latitude: event.latitude,
+        longitude: event.longitude,
+        zoom: Math.max(1, viewport.zoom + 3),
+      })
+    },
+    [event, setMapCoordinates, viewport, eventManager]
+  )
 
   return (
     <div className={popupStyles.popupSection}>
@@ -195,10 +211,13 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
               </tbody>
             </table>
             {feature.vesselsInfo.overflow && (
-              <div className={styles.vesselsMore}>
+              <button
+                className={styles.vesselsMore}
+                onClick={(e) => onMoreClick(e, event.latitude, event.longitude)}
+              >
                 + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length}{' '}
                 {t('common.more', 'more')}
-              </div>
+              </button>
             )}
           </Fragment>
         )}

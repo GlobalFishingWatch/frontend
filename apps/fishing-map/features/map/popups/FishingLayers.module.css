@@ -5,8 +5,13 @@
   border-collapse: collapse;
 }
 
+.vesselsTable tr {
+  min-height: 10rem;
+}
+
 .vesselsTable td,
 .vesselsTable th {
+  min-height: 10rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0;
