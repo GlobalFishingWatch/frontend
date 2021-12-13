@@ -381,8 +381,10 @@
     "firstTransmissionDate": "Primeira data de transmissão",
     "fishingZone": "Área de pesca",
     "flag": "Bandeira",
+    "flag_short": "iso3",
     "fleet": "Frota",
     "geartype": "Petrechos de pesca",
+    "gearType_short": "gear",
     "gearTypes": {
       "dredge_fishing": "Pesca de draga",
       "drifting_longlines": "Espinhel de superfície",
@@ -426,6 +428,7 @@
     "registeredGearType": "Tipo de petrecho registrado",
     "shiptype": "Tipo de embarcação",
     "source": "Fonte",
+    "source_short": "Source",
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
     "transmission_other": "Transmissões",
