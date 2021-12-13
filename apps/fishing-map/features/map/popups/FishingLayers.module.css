@@ -1,6 +1,5 @@
 .vesselsTable {
-  margin-top: var(--space-M);
-  margin-right: var(--space-M);
+  margin-right: var(--space-S);
   margin-bottom: var(--space-XS);
   border-collapse: collapse;
 }
@@ -22,21 +21,18 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0;
-  line-height: 2.5rem;
+  line-height: 2rem;
   max-width: 14rem;
-}
-
-.vesselsTable td:not(:first-child),
-.vesselsTable th:not(:first-child) {
-  padding-left: 2rem;
-}
-
-.vesselsTable td.icon {
-  overflow: visible;
+  vertical-align: middle;
 }
 
 .vesselsTable tr:not(:last-child) td {
   border-bottom: 1px solid var(--color-terthiary-blue);
+}
+
+.vesselsTable td:not(:first-child):not(:nth-child(2)),
+.vesselsTable th:not(:first-child) {
+  padding-left: 2rem;
 }
 
 .vesselsTable th.vesselsTableHeaderRight {
@@ -45,12 +41,6 @@
 
 .vesselsTableHour {
   text-align: right;
-}
-
-.vesselsPinButton {
-  display: inline-block;
-  bottom: -5px;
-  margin-left: var(space-S);
 }
 
 .vesselsMore {

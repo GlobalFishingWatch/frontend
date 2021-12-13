@@ -2,7 +2,6 @@ import React, { Fragment, useCallback } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -171,7 +170,7 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
                   return (
                     <tr key={i}>
                       {!pinTrackDisabled && (
-                        <td className={styles.icon}>
+                        <td>
                           <IconButton
                             icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                             style={{
@@ -187,7 +186,6 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
                             }
                             onClick={(e) => onVesselClick(e, vessel)}
                             size="small"
-                            className={styles.vesselsPinButton}
                           />
                         </td>
                       )}
