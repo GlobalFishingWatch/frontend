@@ -115,7 +115,6 @@ function PopupWrapper({
                   <FishingTooltipRow
                     key={i + (feature.title as string)}
                     feature={feature}
-                    event={event}
                     showFeaturesDetails={type === 'click'}
                   />
                 ))
@@ -126,7 +125,6 @@ function PopupWrapper({
                       <FishingTooltipRow
                         key={i + (feature.title as string)}
                         feature={feature}
-                        event={event}
                         showFeaturesDetails={type === 'click'}
                       />
                     )

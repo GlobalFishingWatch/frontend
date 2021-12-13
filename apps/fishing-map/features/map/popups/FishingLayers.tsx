@@ -16,7 +16,6 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-  TooltipEvent,
   TooltipEventFeature,
 } from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -26,22 +25,19 @@ import { isGFWUser } from 'features/user/user.slice'
 import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { useMapContext } from '../map-context.hooks'
-import useViewport from '../map-viewport.hooks'
 import popupStyles from './Popup.module.css'
 import styles from './FishingLayers.module.css'
 
 type FishingTooltipRowProps = {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
-  event?: TooltipEvent
 }
-function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingTooltipRowProps) {
+function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const gfwUser = useSelector(isGFWUser)
   const vessels = useSelector(selectActiveTrackDataviews)
   const { eventManager } = useMapContext()
-  const { setMapCoordinates, viewport } = useViewport()
 
   const onVesselClick = (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -87,18 +83,6 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
       label: getEventLabel([vessel.dataset.id, vessel.id]),
     })
   }
-
-  const onMoreClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>) => {
-      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-      setMapCoordinates({
-        latitude: event.latitude,
-        longitude: event.longitude,
-        zoom: Math.max(1, viewport.zoom + 3),
-      })
-    },
-    [event, setMapCoordinates, viewport, eventManager]
-  )
 
   const interactionAllowed = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
     feature.temporalgrid?.sublayerInteractionType || ''
@@ -208,10 +192,10 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
               </tbody>
             </table>
             {feature.vesselsInfo.overflow && (
-              <button className={styles.vesselsMore} onClick={onMoreClick}>
+              <div className={styles.vesselsMore}>
                 + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length}{' '}
                 {t('common.more', 'more')}
-              </button>
+              </div>
             )}
           </Fragment>
         )}
