@@ -15,17 +15,20 @@
   max-width: 32rem;
 }
 
-.click .content {
+.click .content,
+.click .loading {
   background: var(--color-white);
   color: var(--color-primary-blue);
   box-shadow: var(--box-shadow);
-  min-width: 32rem;
-  max-width: 40vw;
 }
 
-.click .largeContent {
-  width: 60rem;
-  max-width: 60rem;
+.click .content {
+  min-width: 32rem;
+}
+
+.click .loading {
+  width: 50px;
+  height: 50px;
 }
 
 .popupSection {
@@ -70,7 +73,6 @@
 }
 
 .popupSectionTitle {
-  max-width: 30rem;
   opacity: var(--opacity-secondary);
   line-height: 1.2;
   margin-bottom: var(--space-XS);
@@ -78,12 +80,6 @@
 
 .click .largeContent .popupSectionTitle {
   max-width: unset;
-}
-
-.loading {
-  width: 100%;
-  height: 18.8rem;
-  padding: var(--space-XS);
 }
 
 .vesselsHeaderLabel {

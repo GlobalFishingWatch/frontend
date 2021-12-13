@@ -2,12 +2,10 @@ import React, { Fragment } from 'react'
 import { groupBy } from 'lodash'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { Spinner } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import { TooltipEventFeature } from 'features/map/map.hooks'
 import { getVesselLabel } from 'utils/info'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
@@ -22,7 +20,6 @@ type ViirsMatchTooltipRowProps = {
 function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { viirsInteractionStatus } = useClickedEventConnect()
   const viirsGroupedByVessel = groupBy(feature.viirs, 'vessel.id')
   const vessels = Object.entries(viirsGroupedByVessel)
     .sort(([id, a], [id2, b]) => b.length - a.length)
@@ -63,12 +60,7 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             })}
           </span>
         </div>
-        {viirsInteractionStatus === AsyncReducerStatus.Loading && (
-          <div className={styles.loading}>
-            <Spinner size="small" />
-          </div>
-        )}
-        {showFeaturesDetails && viirsInteractionStatus === AsyncReducerStatus.Finished && vessels && (
+        {showFeaturesDetails && vessels && (
           <Fragment>
             <table className={styles.viirsTable}>
               <thead>

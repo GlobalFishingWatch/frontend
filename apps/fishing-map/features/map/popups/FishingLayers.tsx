@@ -3,7 +3,7 @@ import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { Spinner, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -18,12 +18,10 @@ import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEvent,
   TooltipEventFeature,
-  useClickedEventConnect,
 } from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { getEventLabel } from 'utils/analytics'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
@@ -40,7 +38,6 @@ type FishingTooltipRowProps = {
 function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const { fishingInteractionStatus } = useClickedEventConnect()
   const gfwUser = useSelector(isGFWUser)
   const vessels = useSelector(selectActiveTrackDataviews)
   const { eventManager } = useMapContext()
@@ -103,6 +100,18 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
     [event, setMapCoordinates, viewport, eventManager]
   )
 
+  const interactionAllowed = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+    feature.temporalgrid?.sublayerInteractionType || ''
+  )
+
+  const hasPinColumn =
+    interactionAllowed &&
+    feature.vesselsInfo &&
+    feature.vesselsInfo.vessels.every((vessel) => {
+      const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+      return hasDatasets
+    })
+
   return (
     <div className={popupStyles.popupSection}>
       <span className={popupStyles.popupSectionColor} style={{ backgroundColor: feature.color }} />
@@ -130,18 +139,12 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
             })}
           </span>
         </div>
-        {fishingInteractionStatus === AsyncReducerStatus.Loading && (
-          <div className={popupStyles.loading}>
-            <Spinner size="small" />
-          </div>
-        )}
-
         {feature.vesselsInfo && (
           <Fragment>
             <table className={styles.vesselsTable}>
               <thead>
                 <tr>
-                  <th colSpan={2}>{t('common.vessel_other', 'Vessels')}</th>
+                  <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
                   <th>{t('vessel.flag_short', 'iso3')}</th>
                   <th>{t('vessel.gearType_short', 'gear')}</th>
                   <th>{t('vessel.source_short', 'source')}</th>
@@ -159,10 +162,6 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
                     EMPTY_FIELD_PLACEHOLDER
                   )}`
 
-                  const interactionAllowed =
-                    SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-                      feature.temporalgrid?.sublayerInteractionType || ''
-                    )
                   const hasDatasets =
                     vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
@@ -171,8 +170,8 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
                   const pinTrackDisabled = !interactionAllowed || !hasDatasets
                   return (
                     <tr key={i}>
-                      <td className={styles.icon}>
-                        {!pinTrackDisabled && (
+                      {!pinTrackDisabled && (
+                        <td className={styles.icon}>
                           <IconButton
                             icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                             style={{
@@ -190,19 +189,17 @@ function FishingTooltipRow({ feature, event, showFeaturesDetails }: FishingToolt
                             size="small"
                             className={styles.vesselsPinButton}
                           />
-                        )}
-                      </td>
-                      <td className={styles.vesselsTableColLarge}>{vesselName}</td>
-                      <td className={styles.vesselsTableColSmall}>
+                        </td>
+                      )}
+                      <td>{vesselName}</td>
+                      <td>
                         <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
                           <span>{vessel.flag}</span>
                         </Tooltip>
                       </td>
-                      <td className={styles.vesselsTableColLarge}>{vesselGearType}</td>
-                      {vessel.dataset && vessel.dataset.name && (
-                        <td className={styles.vesselsTableColMedium}>{vessel.dataset.name}</td>
-                      )}
-                      <td className={cx(styles.vesselsTableColSmall, styles.vesselsTableHour)}>
+                      <td>{vesselGearType}</td>
+                      <td>{vessel.dataset && vessel.dataset.name}</td>
+                      <td className={styles.vesselsTableHour}>
                         <I18nNumber number={vessel.hours} />
                       </td>
                     </tr>
