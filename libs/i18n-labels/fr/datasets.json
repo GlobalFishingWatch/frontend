@@ -1,6 +1,6 @@
 {
   "full-chile-fishing-vessels": {
-    "name": "VMS Chile",
+    "name": "Chile VMS (Fishing Vessels)",
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
@@ -14,13 +14,14 @@
       },
       "source": "source",
       "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionData": "firstTransmissionData",
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "full-indonesia-fishing-vessels": {
-    "name": "VMS Indonesia",
+    "name": "VMS Indonesia (Fishing Vessels)",
     "description": "Dataset for VMS Indonesia (Public)",
     "schema": {
       "id": "id",
@@ -479,6 +480,7 @@
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
+          "small-scale": "small-scale",
           "not defined": "not defined"
         }
       },
@@ -575,6 +577,7 @@
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
+          "small-scale": "small-scale",
           "not defined": "not defined"
         }
       },
@@ -615,7 +618,7 @@
   },
   "public-bra-onyxsat-fishing-effort": {
     "name": "Brazil VMS",
-    "description": "Vessel monitoring system (VMS) data is provided by the Brazilian Secretary of Aquaculture and Fisheries. Data is collected using Brazil's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ identity, location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing detection algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
       "flag": "flag",
       "geartype": {
@@ -672,13 +675,67 @@
     }
   },
   "public-bra-onyxsat-fishing-vessels": {
-    "name": "VMS Brazil Onyxsat (Fishing Vessels)",
-    "description": "Fishing Vessels (VMS Brazil - Onyxsat)",
+    "name": "VMS Brazil (Fishing Vessels)",
+    "description": "Fishing Vessels (VMS Brazil)",
     "schema": {
       "id": "id",
+      "flag": "flag",
       "source": "source",
       "dataset": "dataset",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "trawlers": "trawlers",
+          "drifting_longlines": "drifting_longlines",
+          "pole_and_line": "pole_and_line",
+          "line": "line",
+          "pots_and_traps": "pots_and_traps",
+          "set_longline": "set_longline",
+          "fishing": "fishing",
+          "other_purse_seines": "other_purse_seines",
+          "set_gillnets": "set_gillnets"
+        }
+      },
+      "mainGear": "mainGear",
       "shipname": "shipname",
+      "codMarinha": "codMarinha",
+      "fishingZone": "fishingZone",
+      "targetSpecies": {
+        "keyword": "targetSpecies",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
+          "Polvo": "Polvo",
+          "Caranguejo-vermelho": "Caranguejo-vermelho",
+          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
+          "peixes diversos": "peixes diversos",
+          "Sardinha-laje": "Sardinha-laje",
+          "Pescada-gó": "Pescada-gó",
+          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
+          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
+          "Fundo e Superfície": "Fundo e Superfície",
+          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
+          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
+          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
+          "Lagostas": "Lagostas",
+          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
+          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
+          "Pescada Amarela": "Pescada Amarela",
+          "Peixe-sapo": "Peixe-sapo",
+          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
+          "Pargo": "Pargo",
+          "Serras": "Serras",
+          "Cavala e Albacorinha": "Cavala e Albacorinha",
+          "Camarão-sete-barbas": "Camarão-sete-barbas",
+          "Bonito-listrado": "Bonito-listrado",
+          "camarões": "camarões",
+          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
+          "peixes demersais": "peixes demersais",
+          " Camarão-rosa": " Camarão-rosa",
+          "Dourado - atuns e afins": "Dourado - atuns e afins",
+          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+        }
+      },
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -739,28 +796,30 @@
     }
   },
   "public-chile-fishing-vessels": {
-    "name": "VMS Chile (Fishing vessels)",
+    "name": "Chile VMS (Fishing Vessels)",
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
-      "fleet": {
-        "keyword": "fleet",
-        "enum": {
-          "industry": "industry",
-          "small_fisheries": "small_fisheries"
-        }
-      },
-      "source": "source",
       "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionData": "firstTransmissionData",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-chile-non-fishing-vessels": {
+    "name": "Chile VMS (Non fishing Vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "normalizedShipname": "normalizedShipname",
+      "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-chile-presence": {
     "name": "Chile VMS",
-    "description": "This layer uses the Vessel Monitoring System (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). The data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. Click on a carrier vessel’s position to view the vessel’s complete track.",
+    "description": "Vessel monitoring system (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator (SERNAPESCA). It is possible to filter Chile’s VMS data for small-scale fishing vessels (<18 meters) and industrial fishing vessels (>18 meters). Note that some vessels are <18 meters but are considered industrial because they were registered in the capture of industrial quotas. SERNAPESCA is also using our map to visualize and track vessel positions for their fleet, including vessels involved in aquaculture. Data is collected using Chile’s VMS via satellites and terrestrial receivers and contains vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -813,7 +872,7 @@
     }
   },
   "public-ecuador-fishing-vessels": {
-    "name": "Ecuador VMS",
+    "name": "Ecuador VMS (Fishing vessels)",
     "description": "Dataset for VMS Ecuador (Public)",
     "schema": {
       "id": "id",
@@ -821,7 +880,21 @@
       "source": "source",
       "shipname": "shipname",
       "nationalId": "nationalId",
-      "normalizedShipname": "normalizedShipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-ecuador-non-fishing-vessels": {
+    "name": "Ecuador VMS (Non fishing vessels)",
+    "description": "Dataset for VMS Ecuador (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "nationalId": "nationalId",
+      "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -923,7 +996,7 @@
   },
   "public-fd-salinity-mediterranean-v3": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -931,7 +1004,7 @@
   },
   "public-fd-salinity-niue-v3": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -939,7 +1012,7 @@
   },
   "public-fd-salinity-palau-v3": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -947,7 +1020,7 @@
   },
   "public-fd-salinity-tristan-v3": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -1308,7 +1381,7 @@
       "source": "source",
       "shipname": "shipname",
       "nationalId": "nationalId",
-      "normalizedShipname": "normalizedShipname",
+      "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -1381,6 +1454,17 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "public-panama-non-fishing-vessels": {
+    "name": "Panama VMS (Non fishing vessels)",
+    "description": "Dataset for VMS Panama - Carriers (Public)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-peru-fishing-effort": {
     "name": "Peru VMS",
     "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
@@ -1393,6 +1477,7 @@
         "enum": {
           "industrial": "Industriel",
           "artisanal": "artisanal",
+          "small-scale": "small-scale",
           "not defined": "non défini"
         }
       },
@@ -1429,6 +1514,17 @@
       "distance_from_shore_m": "distance_de_rivage_m"
     }
   },
+  "public-peru-fishing-vessels": {
+    "name": "Peru VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Peru (Public)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-peru-presence": {
     "name": "Peru VMS Presence",
     "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
@@ -1441,6 +1537,7 @@
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
+          "small-scale": "small-scale",
           "not defined": "not defined"
         }
       },
