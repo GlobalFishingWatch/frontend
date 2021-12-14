@@ -13,6 +13,7 @@ type FishingTooltipRowProps = {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
 }
+
 function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
 
@@ -22,14 +23,21 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
     setModalOpen(false)
   }, [setModalOpen])
 
+  let title = feature.title
+  if (feature.temporalgrid && feature.temporalgrid.interval === '10days') {
+    title = [
+      title,
+      t('common.dateRange', {
+        start: formatI18nDate(feature.temporalgrid.visibleStartDate),
+        end: formatI18nDate(feature.temporalgrid.visibleEndDate),
+        defaultValue: 'between {{start}} and {{end}}',
+      }),
+    ].join(' ')
+  }
+
   return (
     <Fragment>
-      <Modal
-        appSelector={ROOT_DOM_ELEMENT}
-        title="vessels"
-        isOpen={modalOpen}
-        onClose={onModalClose}
-      >
+      <Modal appSelector={ROOT_DOM_ELEMENT} title={title} isOpen={modalOpen} onClose={onModalClose}>
         {feature.vesselsInfo && (
           <div className={styles.modalContainer}>
             <VesselsTable feature={feature} showFullList={true} />
@@ -47,21 +55,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
           style={{ backgroundColor: feature.color }}
         />
         <div className={popupStyles.popupSectionContent}>
-          {showFeaturesDetails && (
-            <h3 className={popupStyles.popupSectionTitle}>
-              {feature.title}
-              {feature.temporalgrid && feature.temporalgrid.interval === '10days' && (
-                <span>
-                  {' '}
-                  {t('common.dateRange', {
-                    start: formatI18nDate(feature.temporalgrid.visibleStartDate),
-                    end: formatI18nDate(feature.temporalgrid.visibleEndDate),
-                    defaultValue: 'between {{start}} and {{end}}',
-                  })}
-                </span>
-              )}
-            </h3>
-          )}
+          {showFeaturesDetails && <h3 className={popupStyles.popupSectionTitle}>{title}</h3>}
           <div className={popupStyles.row}>
             <span className={popupStyles.rowText}>
               <I18nNumber number={feature.value} />{' '}
