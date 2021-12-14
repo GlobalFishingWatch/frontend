@@ -229,7 +229,7 @@ const TimebarWrapper = () => {
             {timebarVisualisation === TimebarVisualisations.Vessel &&
               (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
                 <Fragment>
-                  <TimebarTracks key="tracks" tracks={tracks} />
+                  <TimebarTracks key="tracks" data={tracks} />
                   {showGraph && tracksGraphs && (
                     <TimebarActivity key="trackActivity" graphTracks={tracksGraphs} />
                   )}

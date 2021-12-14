@@ -14,6 +14,11 @@ import {
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
+import {
+  TimebarChartData,
+  TimebarChartDataChunk,
+  TimebarChartDataItem,
+} from '@globalfishingwatch/timebar'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
 import { t } from 'features/i18n/i18n'
 import { selectResources } from 'features/resources/resources.slice'
@@ -23,23 +28,15 @@ import {
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.slice'
 
-type TimebarTrackSegment = {
-  start: number
-  end: number
-}
-
-export type TimebarTrack = {
-  segments?: TimebarTrackSegment[]
-  color: string
-}
-
 export const selectTracksData = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
     if (!trackDataviews || !resources) return
-    const tracksSegments: (TimebarTrack | null)[] = trackDataviews.flatMap((dataview) => {
-      const timebarTrack = {
-        color: dataview.config?.color || '',
+    const tracksSegments: TimebarChartData = trackDataviews.flatMap((dataview) => {
+      const timebarTrack: TimebarChartDataItem = {
+        color: dataview.config?.color,
+        chunks: [],
+        status: ResourceStatus.Idle,
       }
       const { url } = resolveDataviewDatasetResource(dataview, [
         DatasetTypes.Tracks,
@@ -48,19 +45,19 @@ export const selectTracksData = createSelector(
       if (!url) return timebarTrack
       const trackResource = resources[url] as Resource<TrackResourceData>
       if (!trackResource || trackResource.status === ResourceStatus.Loading) {
-        return timebarTrack
+        return { ...timebarTrack, status: ResourceStatus.Loading }
       } else if (
         trackResource.status === ResourceStatus.Error ||
         (trackResource.status === ResourceStatus.Finished && !trackResource?.data)
       ) {
-        return { ...timebarTrack, segments: [] }
+        return { ...timebarTrack, status: ResourceStatus.Error }
       }
 
       const segments = (trackResource.data as any)?.features
         ? geoJSONToSegments(trackResource.data as any)
         : trackResource.data || []
 
-      const trackSegments: TimebarTrackSegment[] = segments.map((segment) => {
+      const trackSegments: TimebarChartDataChunk[] = segments.map((segment) => {
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
@@ -68,8 +65,10 @@ export const selectTracksData = createSelector(
       })
       return {
         ...timebarTrack,
-        segments: trackSegments,
-        segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
+        chunks: trackSegments,
+        status: ResourceStatus.Finished,
+        // TODO
+        // segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
       }
     })
     return tracksSegments

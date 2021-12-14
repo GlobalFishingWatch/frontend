@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, createContext } from 'react'
 import PropTypes from 'prop-types'
 import memoize from 'memoize-one'
 import cx from 'classnames'
@@ -26,7 +26,7 @@ const DRAG_INNER = 'DRAG_INNER'
 const DRAG_START = 'DRAG_START'
 const DRAG_END = 'DRAG_END'
 
-export const TimelineContext = React.createContext({})
+export const TimelineContext = createContext({})
 
 class Timeline extends PureComponent {
   static contextType = ImmediateContext
