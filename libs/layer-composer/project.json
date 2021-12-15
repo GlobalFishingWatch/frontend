@@ -1,0 +1,42 @@
+{
+  "root": "libs/layer-composer",
+  "sourceRoot": "libs/layer-composer/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/layer-composer",
+        "tsConfig": "libs/layer-composer/tsconfig.lib.json",
+        "project": "libs/layer-composer/package.json",
+        "entryFile": "libs/layer-composer/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/layer-composer/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/layer-composer/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/layer-composer"],
+      "options": {
+        "jestConfig": "libs/layer-composer/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
