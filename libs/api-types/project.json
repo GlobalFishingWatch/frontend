@@ -1,0 +1,42 @@
+{
+  "root": "libs/api-types",
+  "sourceRoot": "libs/api-types/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/api-types",
+        "tsConfig": "libs/api-types/tsconfig.lib.json",
+        "project": "libs/api-types/package.json",
+        "entryFile": "libs/api-types/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/api-types/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api-types/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/api-types"],
+      "options": {
+        "jestConfig": "libs/api-types/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

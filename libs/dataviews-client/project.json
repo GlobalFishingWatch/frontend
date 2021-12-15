@@ -1,0 +1,42 @@
+{
+  "root": "libs/dataviews-client",
+  "sourceRoot": "libs/dataviews-client/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/dataviews-client",
+        "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
+        "project": "libs/dataviews-client/package.json",
+        "entryFile": "libs/dataviews-client/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/dataviews-client/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/dataviews-client/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/dataviews-client"],
+      "options": {
+        "jestConfig": "libs/dataviews-client/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
