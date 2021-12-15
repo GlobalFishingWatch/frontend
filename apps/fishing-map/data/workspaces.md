@@ -16,9 +16,9 @@ Fetch them using this [API endpoint](hhttps://gateway.api.globalfishingwatch.org
 
 ## Private countries
 
-| Layer name | Dev id | Pro id                          |
-| ---------- | ------ | ------------------------------- |
-| Brazil     | ---    | brazil_private                  |
-| Panama     | ---    | panama_private_workspace-public |
-| Ecuador    | ---    | private_ecuador_vms             |
-| Peru       | ---    | private_peru                    |
+| Layer name | Dev id | Pro id              |
+| ---------- | ------ | ------------------- |
+| Brazil     | ---    | brazil_private      |
+| Panama     | ---    | private_panama      |
+| Ecuador    | ---    | private_ecuador_vms |
+| Peru       | ---    | private_peru        |
