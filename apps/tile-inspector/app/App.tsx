@@ -1,8 +1,7 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import { LineChart, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { DateTime } from 'luxon'
-import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import Button from '@globalfishingwatch/ui-components/dist/button'
+import { InputText, Button } from '@globalfishingwatch/ui-components'
 import {
   CELL_END_INDEX,
   CELL_NUM_INDEX,
@@ -13,11 +12,9 @@ import {
   FEATURE_ROW_INDEX,
 } from '@globalfishingwatch/fourwings-aggregate'
 import { Interval, CONFIG_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import decodePBF from './decodePbf'
 import LineCanvas from './LineCanvas'
-import './App.css'
-
-import '@globalfishingwatch/ui-components/dist/base.css'
 
 type Meta = {
   rows: number
@@ -109,7 +106,7 @@ const H = 800
 
 function App(): React.ReactElement {
   const [tileURL, setTileURL] = useState(
-    'https://gateway.api.dev.globalfishingwatch.org/v1/4wings/tile/heatmap/1/1/1?proxy=true&format=intArray&temporal-aggregation=false&interval=10days&datasets[0]=public-global-presence:v20201001,public-panama-carrier-presence:v20200331'
+    'https://gateway.api.dev.globalfishingwatch.org/v1/4wings/tile/heatmap/1/1/0?proxy=true&format=intArray&temporal-aggregation=false&interval=10days&datasets[0]=public-global-fishing-effort:v20201001&datasets[1]=public-bra-onyxsat-fishing-effort:v20211126,public-chile-fishing-effort:v20211126,public-ecuador-fishing-effort:v20211126,public-indonesia-fishing-effort:v20200320,public-panama-fishing-effort:v20211126,public-peru-fishing-effort:v20211126'
   )
   const [numSublayers, setNumSublayers] = useState(1)
 
@@ -122,22 +119,20 @@ function App(): React.ReactElement {
   const [currentPt, setCurrentPt] = useState(null)
 
   const loadTile = useCallback(() => {
-    fetch(tileURL)
-      .then((response) => response.arrayBuffer())
-      .then((buffer) => {
-        const url = new URL(tileURL)
-        const interval = url.searchParams.get('interval') as Interval
-        const intArray = decodePBF(buffer)
-        const cells = getCellArrays(intArray, numSublayers)
-        setMeta({
-          rows: intArray[FEATURE_ROW_INDEX],
-          cols: intArray[FEATURE_COL_INDEX],
-          domainX: cells.domainX,
-          domainY: cells.domainY,
-          interval,
-        })
-        setCells(cells)
+    GFWAPI.fetch(tileURL, { responseType: 'arrayBuffer' }).then((buffer) => {
+      const url = new URL(tileURL)
+      const interval = url.searchParams.get('interval') as Interval
+      const intArray = decodePBF(buffer)
+      const cells = getCellArrays(intArray, numSublayers)
+      setMeta({
+        rows: intArray[FEATURE_ROW_INDEX],
+        cols: intArray[FEATURE_COL_INDEX],
+        domainX: cells.domainX,
+        domainY: cells.domainY,
+        interval,
       })
+      setCells(cells)
+    })
   }, [tileURL, numSublayers])
 
   const dateTickFormatter = useCallback(
