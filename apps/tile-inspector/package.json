@@ -28,6 +28,7 @@
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "@types/luxon": "^1.26.4",
+    "@types/d3-quadtree": "^3.0.2",
     "@types/d3-scale": "^3.2.2"
   },
   "browserslist": [
