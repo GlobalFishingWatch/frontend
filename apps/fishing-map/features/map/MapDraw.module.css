@@ -7,7 +7,6 @@
   background-color: var(--color-off-white);
   display: flex;
   align-items: flex-end;
-  gap: var(--space-L);
   z-index: 100;
 }
 
@@ -17,11 +16,19 @@
 }
 
 .hint {
+  display: flex;
+  align-items: center;
   position: absolute;
-  top: -3rem;
+  top: -4rem;
   right: 0;
-  color: var(--color-white);
-  opacity: var(--opacity-secondary);
+  background-color: var(--color-help);
+  text-align: right;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+}
+
+.hintIcon {
+  margin-right: var(--space-S);
 }
 
 .flex {
@@ -72,4 +79,12 @@
 
 .editing svg g:hover rect[data-type='editHandle'] {
   cursor: pointer;
+}
+
+.buttonsContainer {
+  margin-left: var(--space-L);
+}
+
+.saveAsPublic {
+  margin-bottom: var(--space-S);
 }

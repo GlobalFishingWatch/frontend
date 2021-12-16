@@ -5,7 +5,7 @@ import { Editor, EditingMode, DrawPolygonMode } from 'react-map-gl-draw'
 import { useTranslation } from 'react-i18next'
 import { Popup } from 'react-map-gl'
 import { FeatureOf, Polygon } from '@nebula.gl/edit-modes'
-import { Button, InputText, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -49,6 +49,7 @@ function MapDraw() {
   const editorRef = useRef<any>(null)
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
+  const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
   const [features, setFeatures] = useState<DrawFeature[] | null>(null)
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
@@ -172,6 +173,10 @@ function MapDraw() {
     dispatchQueryParams({ sidebarOpen: true })
   }, [dispatchQueryParams, dispatchSetDrawMode, resetState])
 
+  const toggleCreateAsPublic = useCallback(() => {
+    setCreateAsPublic((createAsPublic) => !createAsPublic)
+  }, [])
+
   const createDataset = useCallback(
     async (features: DrawFeature[], name) => {
       if (features && features.length > 0) {
@@ -179,7 +184,7 @@ function MapDraw() {
         const { payload, error } = await dispatchCreateDataset({
           dataset: getDrawDatasetDefinition(name),
           file: getFileWithFeatures(name, features),
-          createAsPublic: true,
+          createAsPublic,
         })
         if (error) {
           console.warn(error)
@@ -190,7 +195,7 @@ function MapDraw() {
         closeDraw()
       }
     },
-    [addDataviewFromDatasetToWorkspace, closeDraw, dispatchCreateDataset]
+    [addDataviewFromDatasetToWorkspace, closeDraw, createAsPublic, dispatchCreateDataset]
   )
 
   const onSaveClick = useCallback(() => {
@@ -314,45 +319,54 @@ function MapDraw() {
       <div ref={containerRef} className={cx(styles.container, { [styles.hidden]: !editorMode })}>
         {(selectedFeatureIndex !== null || hasOverLapInFeatures) && (
           <div className={styles.hint}>
+            <IconButton size="small" type="border" icon="help" className={styles.hintIcon} />
             {hasOverLapInFeatures
               ? t('layer.geometryError', 'Some polygons have self-intersections')
               : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')}
           </div>
         )}
-        <div>
-          <label>{t('layer.name', 'Layer name')}</label>
+        <InputText
+          label={t('layer.name', 'Layer name')}
+          value={layerName}
+          onChange={onInputChange}
+          className={styles.input}
+        />
+        <IconButton icon="add-polygon" onClick={onAddPolygonClick} />
+        <IconButton
+          type="warning"
+          icon="delete"
+          disabled={!hasFeatureSelected}
+          tooltip={
+            !hasFeatureSelected
+              ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
+              : ''
+          }
+          onClick={onRemoveClick}
+        />
+        <div className={styles.buttonsContainer}>
+          <SwitchRow
+            className={styles.saveAsPublic}
+            label={t('workspace.drawUploadPublic', 'Allow other users to see this layer')}
+            active={createAsPublic}
+            onClick={toggleCreateAsPublic}
+          />
           <div className={styles.flex}>
-            <InputText value={layerName} onChange={onInputChange} className={styles.input} />
-            <IconButton icon="add-polygon" onClick={onAddPolygonClick} />
-            <IconButton
-              type="warning"
-              icon="delete"
-              disabled={!hasFeatureSelected}
-              tooltip={
-                !hasFeatureSelected
-                  ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
-                  : ''
+            <Button className={styles.button} type="secondary" onClick={closeDraw}>
+              {t('common.dismiss', 'Dismiss')}
+            </Button>
+            <Button
+              className={styles.button}
+              loading={loading}
+              disabled={
+                !layerName || !layerNameMinLength || !hasFeaturesDrawn || hasOverLapInFeatures
               }
-              onClick={onRemoveClick}
-            />
+              tooltip={saveTooltip}
+              tooltipPlacement="top"
+              onClick={onSaveClick}
+            >
+              {t('common.save', 'Save')}
+            </Button>
           </div>
-        </div>
-        <div className={styles.flex}>
-          <Button className={styles.button} type="secondary" onClick={closeDraw}>
-            {t('common.dismiss', 'Dismiss')}
-          </Button>
-          <Button
-            className={styles.button}
-            loading={loading}
-            disabled={
-              !layerName || !layerNameMinLength || !hasFeaturesDrawn || hasOverLapInFeatures
-            }
-            tooltip={saveTooltip}
-            tooltipPlacement="top"
-            onClick={onSaveClick}
-          >
-            {t('common.save', 'Save')}
-          </Button>
         </div>
       </div>
     </Fragment>
