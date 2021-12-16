@@ -360,7 +360,7 @@ function MapDraw() {
         <div className={styles.buttonsContainer}>
           <SwitchRow
             className={styles.saveAsPublic}
-            label={t('workspace.drawUploadPublic', 'Allow other users to see this layer')}
+            label={t('workspace.drawUploadPublic' as any, 'Allow other users to see this layer')}
             active={createAsPublic}
             onClick={toggleCreateAsPublic}
           />
