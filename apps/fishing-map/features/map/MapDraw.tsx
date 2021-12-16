@@ -119,9 +119,16 @@ function MapDraw() {
   ])
 
   const onEditorSelect = useCallback((e: EditorSelect) => {
+    console.log(e)
     setSelectedFeatureIndex(e.selectedFeatureIndex)
     setSelectedEditHandleIndex(e.selectedEditHandleIndex)
   }, [])
+
+  const onHintClick = useCallback(() => {
+    const featureIndex = features?.length - 1
+    setSelectedFeatureIndex(featureIndex)
+    setSelectedEditHandleIndex(1)
+  }, [features])
 
   const onEditorUpdate = useCallback(
     (e: EditorUpdate) => {
@@ -265,6 +272,7 @@ function MapDraw() {
             features={features}
             mode={editorMode}
             featureStyle={customFeatureStyle}
+            selectedFeatureIndex={selectedFeatureIndex}
             onUpdate={onEditorUpdate}
             onSelect={onEditorSelect}
           />
@@ -324,6 +332,7 @@ function MapDraw() {
               type={hasOverLapInFeatures ? 'warning' : 'border'}
               icon={hasOverLapInFeatures ? 'warning' : 'help'}
               className={styles.hintIcon}
+              onClick={hasOverLapInFeatures ? undefined : onHintClick}
             />
             {hasOverLapInFeatures
               ? t('layer.geometryError', 'Some polygons have self-intersections')
