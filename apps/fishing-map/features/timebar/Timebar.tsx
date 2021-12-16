@@ -233,7 +233,7 @@ const TimebarWrapper = () => {
                   {showGraph && tracksGraphs && (
                     <TimebarActivity key="trackActivity" graphTracks={tracksGraphs} />
                   )}
-                  {tracksEvents && (
+                  {/* {tracksEvents && (
                     <Fragment>
                       <TimebarTracksEvents
                         key="events"
@@ -244,7 +244,7 @@ const TimebarWrapper = () => {
                         onEventHover={onEventHover}
                       />
                     </Fragment>
-                  )}
+                  )} */}
                 </Fragment>
               ) : (
                 <div className={styles.disclaimer}>

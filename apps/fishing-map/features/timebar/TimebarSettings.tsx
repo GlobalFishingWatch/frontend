@@ -31,33 +31,6 @@ const TimebarSettings = () => {
   const graphsLoading = useSelector(selectTracksGraphsLoading)
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length < 2
 
-  const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = useMemo(
-    () => [
-      {
-        id: 'speed',
-        label: t('timebarSettings.graphOptions.speed', 'Speed'),
-        tooltip: timebarGraphEnabled
-          ? ''
-          : t(
-              'timebarSettings.graphOptions.speedDisabled',
-              'Not available with more than 1 vessel selected'
-            ),
-        disabled: !timebarGraphEnabled,
-      },
-      {
-        id: 'depth',
-        label: t('timebarSettings.graphOptions.depth', 'Depth (Coming soon)'),
-        tooltip: t('common.comingSoon', 'Coming soon'),
-        disabled: true,
-      },
-      {
-        id: 'none',
-        label: t('timebarSettings.graphOptions.none', 'None'),
-      },
-    ],
-    [timebarGraphEnabled, t]
-  )
-
   const openOptions = () => {
     uaEvent({
       category: 'Timebar',
@@ -74,15 +47,17 @@ const TimebarSettings = () => {
   }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
-  }
-  const setGraphOption = (o: SelectOption) => {
-    if (!o.label.includes('Coming soon')) {
-      dispatchQueryParams({ timebarGraph: o.id as TimebarGraphs })
-    }
-  }
-  const removeGraphOption = () => {
     dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
   }
+  const setVesselGraphSpeed = () => {
+    dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
+    dispatchQueryParams({ timebarGraph: TimebarGraphs.Speed })
+  }
+  const setVesselGraphDepth = () => {
+    dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
+    dispatchQueryParams({ timebarGraph: TimebarGraphs.Depth })
+  }
+
   const expandedContainerRef = useClickedOutside(closeOptions)
 
   const activityLabel = `
@@ -119,17 +94,21 @@ const TimebarSettings = () => {
       />
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
-          <Radio
-            label={activityLabel}
-            active={timebarVisualisation === TimebarVisualisations.Heatmap}
-            disabled={!activeHeatmapDataviews?.length}
-            tooltip={activityTooltipLabel}
-            onClick={setHeatmapActive}
-          />
-          <Fragment>
+          <h1>Timebar settings</h1>
+          <div className={styles.radiosContainer}>
+            <Radio
+              label={activityLabel}
+              active={timebarVisualisation === TimebarVisualisations.Heatmap}
+              disabled={!activeHeatmapDataviews?.length}
+              tooltip={activityTooltipLabel}
+              onClick={setHeatmapActive}
+            />
             <Radio
               label={t('timebarSettings.tracks', 'Tracks')}
-              active={timebarVisualisation === TimebarVisualisations.Vessel}
+              active={
+                timebarVisualisation === TimebarVisualisations.Vessel &&
+                (timebarGraph === TimebarGraphs.None || !timebarGraphEnabled)
+              }
               disabled={!activeTrackDataviews?.length}
               tooltip={
                 !activeTrackDataviews?.length
@@ -138,23 +117,43 @@ const TimebarSettings = () => {
               }
               onClick={setVesselActive}
             />
-            {timebarVisualisation === TimebarVisualisations.Vessel &&
-              activeVesselsDataviews &&
-              activeVesselsDataviews.length > 0 && (
-                <div className={styles.vesselTrackOptions}>
-                  {timebarGraphEnabled && (
-                    <Select
-                      label={t('timebarSettings.graph', 'Graph')}
-                      options={TIMEBAR_GRAPH_OPTIONS}
-                      selectedOption={TIMEBAR_GRAPH_OPTIONS.find((o) => o.id === timebarGraph)}
-                      onSelect={setGraphOption}
-                      onRemove={removeGraphOption}
-                      direction="top"
-                    />
-                  )}
-                </div>
-              )}
-          </Fragment>
+            <Radio
+              label={t('timebarSettings.graphSpeed', 'Track Speed')}
+              active={
+                timebarVisualisation === TimebarVisualisations.Vessel &&
+                timebarGraph === TimebarGraphs.Speed &&
+                timebarGraphEnabled
+              }
+              disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+              tooltip={
+                !activeTrackDataviews?.length || !timebarGraphEnabled
+                  ? t(
+                      'timebarSettings.graphDisabled',
+                      'Not available with more than 1 vessel selected'
+                    )
+                  : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
+              }
+              onClick={setVesselGraphSpeed}
+            />
+            <Radio
+              label={t('timebarSettings.graphDepth', 'Track Depth')}
+              active={
+                timebarVisualisation === TimebarVisualisations.Vessel &&
+                timebarGraph === TimebarGraphs.Depth &&
+                timebarGraphEnabled
+              }
+              disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+              tooltip={
+                !activeTrackDataviews?.length || !timebarGraphEnabled
+                  ? t(
+                      'timebarSettings.graphDisabled',
+                      'Not available with more than 1 vessel selected'
+                    )
+                  : t('timebarSettings.showGraphDepth', 'Show track depth graph')
+              }
+              onClick={setVesselGraphDepth}
+            />
+          </div>
         </div>
       )}
     </div>

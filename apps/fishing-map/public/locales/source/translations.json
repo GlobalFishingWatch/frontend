@@ -353,6 +353,11 @@
       "speed": "Speed",
       "speedDisabled": "Not available with more than 1 vessel selected"
     },
+    "graphDisabled": "Not available with more than 1 vessel selected",
+    "graphSpeed": "Track speed",
+    "showGraphSpeed": "Show track speed graph",
+    "graphDepth": "Track depth",
+    "showGraphDepth": "Show track depth graph",
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
