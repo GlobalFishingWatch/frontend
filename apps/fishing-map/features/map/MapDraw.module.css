@@ -27,6 +27,10 @@
   border-radius: var(--border-radius);
 }
 
+.warning {
+  background-color: var(--color-danger-red-background);
+}
+
 .hintIcon {
   margin-right: var(--space-S);
 }

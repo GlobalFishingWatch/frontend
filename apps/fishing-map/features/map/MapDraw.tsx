@@ -317,9 +317,14 @@ function MapDraw() {
         </Popup>
       )}
       <div ref={containerRef} className={cx(styles.container, { [styles.hidden]: !editorMode })}>
-        {(selectedFeatureIndex !== null || hasOverLapInFeatures) && (
-          <div className={styles.hint}>
-            <IconButton size="small" type="border" icon="help" className={styles.hintIcon} />
+        {(features?.length > 0 || hasOverLapInFeatures) && (
+          <div className={cx(styles.hint, { [styles.warning]: hasOverLapInFeatures })}>
+            <IconButton
+              size="small"
+              type={hasOverLapInFeatures ? 'warning' : 'border'}
+              icon={hasOverLapInFeatures ? 'warning' : 'help'}
+              className={styles.hintIcon}
+            />
             {hasOverLapInFeatures
               ? t('layer.geometryError', 'Some polygons have self-intersections')
               : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')}
