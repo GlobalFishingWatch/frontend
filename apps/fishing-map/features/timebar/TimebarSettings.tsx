@@ -15,7 +15,6 @@ import {
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.slice'
 import { useTimebarVisualisationConnect } from './timebar.hooks'
-import { selectTracksGraphsLoading } from './timebar.selectors'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
@@ -28,7 +27,6 @@ const TimebarSettings = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activityCategory = useSelector(selectActivityCategory)
-  const graphsLoading = useSelector(selectTracksGraphsLoading)
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length < 2
 
   const openOptions = () => {
@@ -84,7 +82,6 @@ const TimebarSettings = () => {
       <IconButton
         icon={optionsPanelOpen ? 'close' : 'settings'}
         type="map-tool"
-        loading={graphsLoading}
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
           optionsPanelOpen

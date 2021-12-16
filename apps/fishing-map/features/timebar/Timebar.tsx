@@ -9,6 +9,7 @@ import {
   TimebarActivity,
   TimebarHighlighter,
   TimebarTracksEvents,
+  TimebarTrackGraph,
 } from '@globalfishingwatch/timebar'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -40,6 +41,7 @@ import {
   selectTracksData,
   selectTracksGraphs,
   selectEventsWithRenderingInfo,
+  selectTracksGraphData,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
@@ -68,10 +70,11 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraphs = useSelector(selectTracksGraphs)
+  const tracksGraphsData = useSelector(selectTracksGraphData)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const showTimeComparison = useSelector(selectShowTimeComparison)
-
+  console.log(tracksGraphsData)
   const dispatch = useDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
@@ -231,7 +234,10 @@ const TimebarWrapper = () => {
                 <Fragment>
                   <TimebarTracks key="tracks" data={tracks} />
                   {showGraph && tracksGraphs && (
-                    <TimebarActivity key="trackActivity" graphTracks={tracksGraphs} />
+                    <Fragment>
+                      <TimebarActivity key="trackActivity" graphTracks={tracksGraphs} />
+                      <TimebarTrackGraph key="trackGraph" data={tracksGraphs} />
+                    </Fragment>
                   )}
                   {/* {tracksEvents && (
                     <Fragment>

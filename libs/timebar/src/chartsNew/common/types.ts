@@ -4,13 +4,18 @@ export type EventType = 'fishing' | 'encounter'
 
 export type AnyChartDataItemType = EventType
 
+export type TimebarChartDataChunkValue = {
+  timestamp: number
+  value?: number
+}
+
 export type TimebarChartDataChunk = {
   start: number
   end?: number
   id?: string | number
   type?: AnyChartDataItemType | string
   color?: string
-  props?: Record<string, any>
+  values?: TimebarChartDataChunkValue[]
 }
 
 export type TimebarChartDataItem = {

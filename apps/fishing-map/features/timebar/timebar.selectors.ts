@@ -18,6 +18,7 @@ import {
   TimebarChartData,
   TimebarChartDataChunk,
   TimebarChartDataItem,
+  TimebarChartDataChunkValue,
 } from '@globalfishingwatch/timebar'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
 import { t } from 'features/i18n/i18n'
@@ -61,6 +62,7 @@ export const selectTracksData = createSelector(
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
+          values: segment as TimebarChartDataChunkValue[],
         }
       })
       return {
@@ -99,18 +101,6 @@ export const selectTracksGraphsResources = createSelector(
   }
 )
 
-export const selectTracksGraphsLoading = createSelector(
-  [selectTracksGraphsResources],
-  (trackResources) => {
-    if (!trackResources) return false
-    return trackResources.some(
-      ({ trackResource, graphResource }) =>
-        trackResource?.status === ResourceStatus.Loading ||
-        graphResource?.status === ResourceStatus.Loading
-    )
-  }
-)
-
 export const selectTracksGraphs = createSelector(
   [selectTracksGraphsResources, selectTimebarGraph],
   (tracksGraphsResources, timebarGraphType) => {
@@ -139,6 +129,71 @@ export const selectTracksGraphs = createSelector(
       }
     })
     return graphs
+  }
+)
+
+export const selectTracksGraphData = createSelector(
+  [selectTracksData, selectActiveVesselsDataviews, selectResources, selectTimebarGraph],
+  (tracksData, vesselDataviews, resources, timebarGraphType) => {
+    if (!tracksData || !resources) return
+    const tracksGraphsData: TimebarChartData = vesselDataviews.flatMap(
+      (dataview, dataviewIndex) => {
+        const trackGraphData: TimebarChartDataItem = {
+          color: dataview.config?.color,
+          chunks: [],
+          status: ResourceStatus.Idle,
+        }
+
+        const { url: graphUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks, {
+          id: 'fields',
+          value: timebarGraphType,
+        })
+        if (!graphUrl) return trackGraphData
+        const graphResource = resources[graphUrl] as Resource<TrackResourceData>
+
+        // TODO better by id?
+        const track = tracksData[dataviewIndex]
+
+        if (
+          track.status === ResourceStatus.Loading ||
+          !graphResource ||
+          graphResource.status === ResourceStatus.Loading
+        ) {
+          return { ...trackGraphData, status: ResourceStatus.Loading }
+        } else if (
+          track.status === ResourceStatus.Error ||
+          graphResource.status === ResourceStatus.Error ||
+          (graphResource.status === ResourceStatus.Finished && !graphResource?.data)
+        ) {
+          return { ...trackGraphData, status: ResourceStatus.Error }
+        }
+
+        const graphChunksWithCurrentFeature: TimebarChartDataChunk[] = track.chunks.map(
+          (trackChunk, trackChunkIndex) => {
+            const graphSegment = graphResource?.data?.[trackChunkIndex]
+            const graphChunkValues: TimebarChartDataChunkValue[] = trackChunk.values?.flatMap(
+              (trackSegmentPoint, trackSegmentPointIndex) => {
+                const graphSegmentPoint = graphSegment?.[trackSegmentPointIndex]
+                const value = (graphSegmentPoint as any)?.[timebarGraphType]
+                if (!value) return []
+                return {
+                  timestamp: trackSegmentPoint.timestamp,
+                  value,
+                }
+              }
+            )
+            const graphChunk: TimebarChartDataChunk = {
+              ...trackChunk,
+              values: graphChunkValues,
+            }
+            return graphChunk
+          }
+        )
+        trackGraphData.chunks = graphChunksWithCurrentFeature
+        return trackGraphData
+      }
+    )
+    return tracksGraphsData
   }
 )
 
