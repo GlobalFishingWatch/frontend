@@ -5,6 +5,7 @@ import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'
 import styles from './tracks.module.css'
+import { useFilteredChartData } from './common/hooks'
 import { TimebarChartData, TimebarChartDataChunk, TimebarChartDataItem } from '.'
 
 type TrackChunkWithCoords = TimebarChartDataChunk & { x?: number; width?: number }
@@ -49,10 +50,13 @@ const getTracksWithCoords = (
 
 const Tracks = ({ data }: { data: TimebarChartData }) => {
   const { immediate } = useContext(ImmediateContext) as any
-  const { outerScale, graphHeight } = useContext(TimelineContext) as TimelineContextProps
+  const { outerScale, graphHeight, outerStart, outerEnd } = useContext(
+    TimelineContext
+  ) as TimelineContextProps
+  const filteredTracks = useFilteredChartData(data, +new Date(outerStart), +new Date(outerEnd))
   const tracksWithCoords = useMemo(
-    () => getTracksWithCoords(data, outerScale, graphHeight),
-    [data, outerScale, graphHeight]
+    () => getTracksWithCoords(filteredTracks, outerScale, graphHeight),
+    [filteredTracks, outerScale, graphHeight]
   )
 
   if (!tracksWithCoords) return null
