@@ -1,31 +1,16 @@
 import React, { useContext, useMemo } from 'react'
-import {
-  area,
-  curveStepAfter,
-  // curveStepBefore,
-  // curveLinear,
-  // curveBasis,
-  // curveCatmullRom,
-  // curveCardinal,
-} from 'd3-shape'
-import { quantile } from 'd3-array'
+import { area, curveStepAfter } from 'd3-shape'
+import { quantile } from 'simple-statistics'
 import ImmediateContext from '../immediateContext'
 import { TimelineContext, TimelineContextProps, TimelineScale } from '..'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { useFilteredChartData } from './common/hooks'
-import {
-  TimebarChartData,
-  TimebarChartDataChunk,
-  TimebarChartDataChunkValue,
-  TimebarChartDataItem,
-} from '.'
-
-const TOP_MARGIN = 5
-const BOTTOM_MARGIN = 20
-const MIN_HEIGHT = 2
+import { getTrackY } from './common/utils'
+import { TimebarChartData, TimebarChartDataChunk, TimebarChartDataItem } from '.'
 
 const getMaxValues = (data: TimebarChartData) => {
   const maxValues = data.map((trackGraphData: TimebarChartDataItem) => {
+    if (!trackGraphData.chunks.length) return 0
     const itemValues = trackGraphData.chunks.reduce(
       (acc: number[], currentChunk: TimebarChartDataChunk) => {
         const chunkValues = currentChunk.values!.map((v) => v.value as number)
@@ -33,41 +18,44 @@ const getMaxValues = (data: TimebarChartData) => {
       },
       []
     )
+
     // https://online.stat.psu.edu/stat200/lesson/3/3.2
     const q25 = quantile(itemValues, 0.25)
     const q75 = quantile(itemValues, 0.75)
     const q1 = Math.min(q25!, q75!)
     const q3 = Math.max(q25!, q75!)
     const iqr = q3 - q1
-    const upperFence = q3 + 1.5 * iqr
+    const upperFence = q3 + iqr
 
-    return upperFence
+    return Math.min(upperFence, quantile(itemValues, 1))
   })
   return maxValues
 }
 
 const getPaths = (
   trackGraphData: TimebarChartDataItem,
+  numTracks: number,
+  trackIndex: number,
   graphHeight: number,
   overallScale: TimelineScale,
   maxValue: number,
-  mode = 'mirror'
+  orientation: string
 ) => {
-  const finalHeight = graphHeight - TOP_MARGIN - BOTTOM_MARGIN
-  const middle = Math.round(TOP_MARGIN + finalHeight / 2)
-  const bottom = Math.round(TOP_MARGIN + finalHeight)
-
-  const minHeight = mode === 'mirror' ? MIN_HEIGHT / 2 : MIN_HEIGHT
-  const valuePx = (d: TimebarChartDataChunkValue) =>
-    minHeight + (finalHeight * (d.value || 1)) / maxValue / 2
-
-  const upper = (d: TimebarChartDataChunkValue) => middle - valuePx(d)
-  const lower = (d: TimebarChartDataChunkValue) => middle + valuePx(d)
+  const trackY = getTrackY(numTracks, trackIndex, graphHeight)
+  const getPx = (d: any) => (Math.min((d as any).value, maxValue) / maxValue) * trackY.height
 
   const areaGenerator = area()
     .x((d) => overallScale((d as any).timestamp))
-    .y0(mode === 'mirror' || mode === 'up' ? (upper as any) : middle)
-    .y1(mode === 'mirror' || mode === 'down' ? (lower as any) : bottom)
+    .y0((d) => {
+      if (orientation === 'down') return trackY.y0
+      if (orientation === 'middle') return trackY.y - getPx(d) / 2
+      return trackY.y0 + trackY.height - getPx(d)
+    })
+    .y1((d) => {
+      if (orientation === 'up') return trackY.y1
+      if (orientation === 'middle') return trackY.y + getPx(d) / 2
+      return trackY.y0 + getPx(d)
+    })
     .curve(curveStepAfter)
 
   const paths = trackGraphData.chunks.map((chunk) => {
@@ -81,24 +69,33 @@ const getPathContainers = (
   tracksGraphData: TimebarChartData,
   graphHeight: number,
   overallScale: TimelineScale,
-  maxValues: number[]
+  maxValues: number[],
+  orientation: string
 ) => {
   if (!tracksGraphData) return []
   return tracksGraphData.map((trackGraphData, i) => {
     return {
       paths: getPaths(
         trackGraphData,
+        tracksGraphData.length,
+        i,
         graphHeight,
         overallScale,
         maxValues[i],
-        tracksGraphData.length === 1 ? 'mirror' : i === 0 ? 'up' : 'down'
+        orientation
       ),
       color: trackGraphData.color,
     }
   })
 }
 
-const TrackGraph = ({ data }: { data: TimebarChartData }) => {
+const TrackGraph = ({
+  data,
+  orientation = 'up',
+}: {
+  data: TimebarChartData
+  orientation?: string
+}) => {
   const { immediate } = useContext(ImmediateContext) as any
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(
     TimelineContext
@@ -108,8 +105,8 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
   }, [data])
   const filteredGraphsData = useFilteredChartData(data)
   const pathContainers = useMemo(() => {
-    return getPathContainers(filteredGraphsData, graphHeight, overallScale, maxValues)
-  }, [filteredGraphsData, graphHeight, overallScale])
+    return getPathContainers(filteredGraphsData, graphHeight, overallScale, maxValues, orientation)
+  }, [filteredGraphsData, graphHeight, overallScale, maxValues, orientation])
 
   return (
     <svg width={outerWidth} height={graphHeight}>

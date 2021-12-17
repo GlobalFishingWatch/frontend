@@ -189,9 +189,21 @@ const TimebarWrapper = () => {
     [dispatch, dispatchHighlightedEvent]
   )
   const showGraph = useMemo(() => {
-    return timebarGraph !== 'none' && tracksGraphsData && tracksGraphsData.length === 1
+    return (
+      timebarGraph !== 'none' &&
+      tracksGraphsData &&
+      (tracksGraphsData.length === 1 || tracksGraphsData.length === 2)
+    )
   }, [timebarGraph, tracksGraphsData])
 
+  const trackGraphOrientation = useMemo(() => {
+    if (tracksGraphsData.length === 0 || tracksGraphsData.length > 2) return 'middle'
+    return {
+      none: 'middle',
+      speed: 'middle',
+      depth: 'down',
+    }[timebarGraph]
+  }, [timebarGraph, tracksGraphsData])
   const highlighterActivity = useMemo(() => {
     return timebarVisualisation === TimebarVisualisations.Vessel && showGraph && tracksGraphsData
       ? tracksGraphsData
@@ -228,11 +240,13 @@ const TimebarWrapper = () => {
             {timebarVisualisation === TimebarVisualisations.Vessel &&
               (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
                 <Fragment>
-                  <TimebarTracks key="tracks" data={tracks} />
+                  <TimebarTracks key="tracks" data={tracks} orientation={trackGraphOrientation} />
                   {showGraph && tracksGraphsData && (
-                    <Fragment>
-                      <TimebarTrackGraph key="trackGraph" data={tracksGraphsData} />
-                    </Fragment>
+                    <TimebarTrackGraph
+                      key="trackGraph"
+                      data={tracksGraphsData}
+                      orientation={trackGraphOrientation}
+                    />
                   )}
                   {tracksEvents && (
                     <Fragment>

@@ -27,6 +27,7 @@
     "memoize-one": "^5.0.0",
     "react-spring": "^8.0.27",
     "resize-observer-polyfill": "^1.5.1",
+    "simple-statistics": "^7.7.0",
     "topojson-client": "^3.0.0"
   },
   "devDependencies": {
@@ -34,15 +35,15 @@
     "@mapbox/mapbox-gl-style-spec": "^13.7.2",
     "dayjs": "1.8.36",
     "geojson-validation": "^0.2.1",
-    "reselect": "4.0.0",
-    "prop-types": "^15.6.2"
+    "prop-types": "^15.6.2",
+    "reselect": "4.0.0"
   },
   "peerDependencies": {
     "@globalfishingwatch/ui-components": "12.x",
     "classnames": "2.x",
     "dayjs": "1.x",
-    "prop-types": "15.x",
     "lodash": "4.x",
+    "prop-types": "15.x",
     "react": ">17.x",
     "react-dom": ">17.x",
     "react-spring": "^8.x",

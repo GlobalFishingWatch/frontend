@@ -18,7 +18,8 @@ type TracksWithCoords = TrackItemWithCoords[]
 const getTracksWithCoords = (
   tracks: TimebarChartData,
   outerScale: TimelineScale,
-  graphHeight: number
+  graphHeight: number,
+  orientation: string
 ) => {
   if (tracks === null || !outerScale) return null
   const trackWithCoords: TracksWithCoords = []
@@ -26,6 +27,10 @@ const getTracksWithCoords = (
     if (!track) {
       return
     }
+    const baseTrackY = getTrackY(tracks.length, trackIndex, graphHeight)
+    let trackY = baseTrackY.y
+    if (orientation === 'up') trackY = baseTrackY.y1
+    if (orientation === 'down') trackY = baseTrackY.y0
     const trackItemWithCoords: TrackItemWithCoords = {
       ...track,
       chunks: !track.chunks
@@ -39,7 +44,7 @@ const getTracksWithCoords = (
               width: outerScale(chunk.end as number) - x,
             }
           }),
-      y: getTrackY(tracks.length, trackIndex, graphHeight),
+      y: trackY,
       // TODO
       // segmentsOffsetY: track.segmentsOffsetY,
     }
@@ -48,14 +53,20 @@ const getTracksWithCoords = (
   return trackWithCoords
 }
 
-const Tracks = ({ data }: { data: TimebarChartData }) => {
+const Tracks = ({
+  data,
+  orientation = 'middle',
+}: {
+  data: TimebarChartData
+  orientation?: string
+}) => {
   const { immediate } = useContext(ImmediateContext) as any
   const { outerScale, graphHeight } = useContext(TimelineContext) as TimelineContextProps
 
   const filteredTracks = useFilteredChartData(data)
   const tracksWithCoords = useMemo(
-    () => getTracksWithCoords(filteredTracks, outerScale, graphHeight),
-    [filteredTracks, outerScale, graphHeight]
+    () => getTracksWithCoords(filteredTracks, outerScale, graphHeight, orientation),
+    [filteredTracks, outerScale, graphHeight, orientation]
   )
 
   if (!tracksWithCoords) return null

@@ -353,7 +353,7 @@
       "speed": "Speed",
       "speedDisabled": "Not available with more than 1 vessel selected"
     },
-    "graphDisabled": "Not available with more than 1 vessel selected",
+    "graphDisabled": "Not available with more than 2 vessels selected",
     "graphSpeed": "Track speed",
     "showGraphSpeed": "Show track speed graph",
     "graphDepth": "Track depth",

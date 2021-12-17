@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
@@ -27,7 +27,7 @@ const TimebarSettings = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activityCategory = useSelector(selectActivityCategory)
-  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length < 2
+  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length <= 2
 
   const openOptions = () => {
     uaEvent({
@@ -126,7 +126,7 @@ const TimebarSettings = () => {
                 !activeTrackDataviews?.length || !timebarGraphEnabled
                   ? t(
                       'timebarSettings.graphDisabled',
-                      'Not available with more than 1 vessel selected'
+                      'Not available with more than 2 vessels selected'
                     )
                   : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
               }
@@ -144,7 +144,7 @@ const TimebarSettings = () => {
                 !activeTrackDataviews?.length || !timebarGraphEnabled
                   ? t(
                       'timebarSettings.graphDisabled',
-                      'Not available with more than 1 vessel selected'
+                      'Not available with more than 2 vessels selected'
                     )
                   : t('timebarSettings.showGraphDepth', 'Show track depth graph')
               }
