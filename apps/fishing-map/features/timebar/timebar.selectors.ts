@@ -77,61 +77,6 @@ export const selectTracksData = createSelector(
   }
 )
 
-export const selectTracksGraphsResources = createSelector(
-  [selectActiveVesselsDataviews, selectTimebarGraph, selectResources],
-  (vesselDataviews, timebarGraphType, resources) => {
-    if (!vesselDataviews || !resources) return
-
-    const trackGraphResources = vesselDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-      if (!url) return []
-      const trackResource = resources[url] as Resource<TrackResourceData>
-      if (!trackResource?.data) return []
-
-      const { url: graphUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks, {
-        id: 'fields',
-        value: timebarGraphType,
-      })
-      if (!graphUrl) return []
-
-      const graphResource = resources[graphUrl] as Resource<TrackResourceData>
-      return { dataview, trackResource, graphResource }
-    })
-    return trackGraphResources
-  }
-)
-
-export const selectTracksGraphs = createSelector(
-  [selectTracksGraphsResources, selectTimebarGraph],
-  (tracksGraphsResources, timebarGraphType) => {
-    if (!tracksGraphsResources || tracksGraphsResources.length > 2) return
-
-    const graphs = tracksGraphsResources.flatMap(({ dataview, trackResource, graphResource }) => {
-      const segmentsWithCurrentFeature = trackResource.data?.map(
-        (trackSegment, trackSegmentIndex) => {
-          const graphSegment = graphResource?.data?.[trackSegmentIndex]
-          return trackSegment.flatMap((trackSegmentPoint, trackSegmentPointIndex) => {
-            const graphSegmentPoint = graphSegment?.[trackSegmentPointIndex]
-            const value = (graphSegmentPoint as any)?.[timebarGraphType]
-            if (!value) return []
-            return {
-              date: trackSegmentPoint.timestamp,
-              value,
-            }
-          })
-        }
-      )
-      return {
-        color: dataview.config?.color || '',
-        segmentsWithCurrentFeature,
-        // TODO Figure out this magic value
-        maxValue: 25,
-      }
-    })
-    return graphs
-  }
-)
-
 export const selectTracksGraphData = createSelector(
   [selectTracksData, selectActiveVesselsDataviews, selectResources, selectTimebarGraph],
   (tracksData, vesselDataviews, resources, timebarGraphType) => {

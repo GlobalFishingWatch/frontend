@@ -1,25 +1,23 @@
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
+import { TimelineContext, TimelineContextProps } from '../..'
 import { TimebarChartData } from './types'
 
-export const useFilteredChartData = (
-  data: TimebarChartData,
-  outerStartMs: number,
-  outerEndMs: number
-) => {
+export const useFilteredChartData = (data: TimebarChartData) => {
+  const { outerStart, outerEnd } = useContext(TimelineContext) as TimelineContextProps
   // TODO overflow + debounce?
   return useMemo(() => {
     return data.map((item) => {
       const filteredChunks = item.chunks.filter((chunk) => {
         const chunkStart = chunk.start
         const chunkEnd = chunk.end || chunk.start
-        return chunkEnd > outerStartMs && chunkStart < outerEndMs
+        return chunkEnd > +new Date(outerStart) && chunkStart < +new Date(outerEnd)
       })
       return {
         ...item,
         chunks: filteredChunks,
       }
     })
-  }, [data, outerStartMs, outerEndMs])
+  }, [data, outerStart, outerEnd])
 }
 
 export const useClusteredChartData = (data: TimebarChartData) => {}

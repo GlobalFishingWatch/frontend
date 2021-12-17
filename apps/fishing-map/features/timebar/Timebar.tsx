@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import {
   Timebar,
   TimebarTracks,
-  TimebarActivity,
   TimebarHighlighter,
   TimebarTracksEvents,
   TimebarTrackGraph,
@@ -39,7 +38,6 @@ import {
 import TimebarSettings from './TimebarSettings'
 import {
   selectTracksData,
-  selectTracksGraphs,
   selectEventsWithRenderingInfo,
   selectTracksGraphData,
 } from './timebar.selectors'
@@ -69,12 +67,10 @@ const TimebarWrapper = () => {
   const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
-  const tracksGraphs = useSelector(selectTracksGraphs)
   const tracksGraphsData = useSelector(selectTracksGraphData)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const showTimeComparison = useSelector(selectShowTimeComparison)
-  console.log(tracksGraphsData)
   const dispatch = useDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
@@ -193,14 +189,14 @@ const TimebarWrapper = () => {
     [dispatch, dispatchHighlightedEvent]
   )
   const showGraph = useMemo(() => {
-    return timebarGraph !== 'none' && tracksGraphs && tracksGraphs.length === 1
-  }, [timebarGraph, tracksGraphs])
+    return timebarGraph !== 'none' && tracksGraphsData && tracksGraphsData.length === 1
+  }, [timebarGraph, tracksGraphsData])
 
   const highlighterActivity = useMemo(() => {
-    return timebarVisualisation === TimebarVisualisations.Vessel && showGraph && tracksGraphs
-      ? tracksGraphs
+    return timebarVisualisation === TimebarVisualisations.Vessel && showGraph && tracksGraphsData
+      ? tracksGraphsData
       : null
-  }, [timebarVisualisation, showGraph, tracksGraphs])
+  }, [timebarVisualisation, showGraph, tracksGraphsData])
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
@@ -233,13 +229,12 @@ const TimebarWrapper = () => {
               (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
                 <Fragment>
                   <TimebarTracks key="tracks" data={tracks} />
-                  {showGraph && tracksGraphs && (
+                  {showGraph && tracksGraphsData && (
                     <Fragment>
-                      <TimebarActivity key="trackActivity" graphTracks={tracksGraphs} />
-                      <TimebarTrackGraph key="trackGraph" data={tracksGraphs} />
+                      <TimebarTrackGraph key="trackGraph" data={tracksGraphsData} />
                     </Fragment>
                   )}
-                  {/* {tracksEvents && (
+                  {tracksEvents && (
                     <Fragment>
                       <TimebarTracksEvents
                         key="events"
@@ -250,7 +245,7 @@ const TimebarWrapper = () => {
                         onEventHover={onEventHover}
                       />
                     </Fragment>
-                  )} */}
+                  )}
                 </Fragment>
               ) : (
                 <div className={styles.disclaimer}>

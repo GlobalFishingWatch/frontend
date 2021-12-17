@@ -50,10 +50,9 @@ const getTracksWithCoords = (
 
 const Tracks = ({ data }: { data: TimebarChartData }) => {
   const { immediate } = useContext(ImmediateContext) as any
-  const { outerScale, graphHeight, outerStart, outerEnd } = useContext(
-    TimelineContext
-  ) as TimelineContextProps
-  const filteredTracks = useFilteredChartData(data, +new Date(outerStart), +new Date(outerEnd))
+  const { outerScale, graphHeight } = useContext(TimelineContext) as TimelineContextProps
+
+  const filteredTracks = useFilteredChartData(data)
   const tracksWithCoords = useMemo(
     () => getTracksWithCoords(filteredTracks, outerScale, graphHeight),
     [filteredTracks, outerScale, graphHeight]

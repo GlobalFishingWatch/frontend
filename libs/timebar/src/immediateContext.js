@@ -1,3 +1,3 @@
-import React from 'react'
-const ImmediateContext = React.createContext(false)
+import { createContext } from 'react'
+const ImmediateContext = createContext(false)
 export default ImmediateContext
