@@ -15,9 +15,11 @@ import {
   getCommonSchemaFieldsInDataview,
   isDataviewSchemaSupported,
   SupportedDatasetSchema,
-  SchemaFilter,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+import ActivitySchemaFilter, {
+  showSchemaFilter,
+} from 'features/workspace/activity/ActivitySchemaFilter'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -34,15 +36,12 @@ const filterIds: SupportedDatasetSchema[] = [
   'fleet',
   'shiptype',
   'origin',
+  'radiance',
   'target_species',
   'license_category',
   'vessel_type',
   'qf_detect',
 ]
-
-const showSchemaFilter = (schemaFilter: SchemaFilter) => {
-  return schemaFilter.active && schemaFilter.options.length > 1
-}
 
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
@@ -209,20 +208,12 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         if (!showSchemaFilter(schemaFilter)) {
           return null
         }
-        const { id, tooltip, disabled, options, optionsSelected } = schemaFilter
         return (
-          <MultiSelect
-            key={id}
-            disabled={disabled}
-            disabledMsg={tooltip}
-            label={t(`vessel.${id}` as any, id)}
-            placeholder={getPlaceholderBySelections(optionsSelected)}
-            options={options}
-            selectedOptions={optionsSelected}
-            className={styles.multiSelect}
-            onSelect={(selection) => onSelectFilterClick(id, selection)}
-            onRemove={(selection, rest) => onRemoveFilterClick(id, rest)}
-            onCleanClick={() => onCleanFilterClick(id)}
+          <ActivitySchemaFilter
+            schemaFilter={schemaFilter}
+            onSelect={onSelectFilterClick}
+            onRemove={onRemoveFilterClick}
+            onClean={onCleanFilterClick}
           />
         )
       })}

@@ -26,6 +26,7 @@ export type SupportedDatasetSchema =
   | 'origin'
   | 'vessel_type'
   | 'qf_detect'
+  | 'radiance'
   | 'codMarinha'
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
@@ -234,6 +235,17 @@ export const getNotSupportedSchemaFieldsDatasets = (
   return datasetsWithoutSchemaFieldsSupport
 }
 
+const getCommonSchemaTypeInDataview = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema
+) => {
+  const activeDatasets = dataview?.datasets?.filter((dataset) =>
+    dataview.config?.datasets?.includes(dataset.id)
+  )
+  const datasetSchemas = activeDatasets?.map((d) => d.schema?.[schema]?.type).filter(Boolean)
+  return datasetSchemas?.[0]
+}
+
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
@@ -277,6 +289,7 @@ export type SchemaFilter = {
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
   tooltip: string
+  type: 'string' | 'number'
 }
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
@@ -292,6 +305,7 @@ export const getFiltersBySchema = (
   const disabled = datasetsWithoutSchema !== undefined && datasetsWithoutSchema.length > 0
 
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
+  const type = getCommonSchemaTypeInDataview(dataview, schema)
 
   const optionsSelected = options?.filter((fleet) =>
     dataview.config?.filters?.[schema]?.includes(fleet.id)
@@ -303,5 +317,5 @@ export const getFiltersBySchema = (
         defaultValue: 'Not supported by {{list}}',
       })
     : ''
-  return { id: schema, active, disabled, options, optionsSelected, tooltip }
+  return { id: schema, active, disabled, options, optionsSelected, tooltip, type }
 }
