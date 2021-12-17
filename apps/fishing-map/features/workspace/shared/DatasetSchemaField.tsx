@@ -14,9 +14,23 @@ type LayerPanelProps = {
 }
 
 function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement {
-  const valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field).sort(
+  let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field).sort(
     (a, b) => a.label - b.label
   )
+
+  const valuesAreRangeOfNumbers =
+    valuesSelected.length > 1 && valuesSelected.every((value) => Number(value.label))
+
+  if (valuesAreRangeOfNumbers) {
+    const range = `${valuesSelected[0].label} - ${valuesSelected[valuesSelected.length - 1].label}`
+    valuesSelected = [
+      {
+        id: range,
+        label: range,
+      },
+    ]
+  }
+
   return (
     <Fragment>
       {valuesSelected.length > 0 && (
