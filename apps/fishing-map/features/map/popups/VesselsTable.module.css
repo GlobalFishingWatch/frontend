@@ -48,3 +48,7 @@
 .vesselsTableHour {
   text-align: right;
 }
+
+.vesselsTable.fullWidth {
+  width: 100%;
+}
