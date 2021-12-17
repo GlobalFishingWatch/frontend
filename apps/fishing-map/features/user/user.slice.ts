@@ -23,6 +23,7 @@ const initialState: UserState = {
 
 export const GUEST_USER_TYPE = 'guest'
 export const GFW_GROUP_ID = 'GFW Staff'
+export const GFW_DEV_GROUP_ID = 'development-group'
 
 export const fetchGuestUser = async () => {
   const permissions = await fetch(`${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`).then(
