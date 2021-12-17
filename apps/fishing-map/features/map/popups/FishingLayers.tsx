@@ -1,10 +1,13 @@
 import React, { Fragment, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { Modal } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { MAX_VESSELS_LOAD } from 'features/map/map.slice'
+import { isGFWUser } from 'features/user/user.slice'
 import popupStyles from './Popup.module.css'
 import styles from './FishingLayers.module.css'
 import VesselsTable from './VesselsTable'
@@ -16,6 +19,7 @@ type FishingTooltipRowProps = {
 
 function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
+  const gfwUser = useSelector(isGFWUser)
 
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -37,18 +41,24 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
 
   return (
     <Fragment>
-      <Modal appSelector={ROOT_DOM_ELEMENT} title={title} isOpen={modalOpen} onClose={onModalClose}>
-        {feature.vesselsInfo && (
-          <div className={styles.modalContainer}>
-            <VesselsTable feature={feature} showFullList={true} />
-            {feature.vesselsInfo.overflowLoad && (
+      {gfwUser && (
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          title={title}
+          isOpen={modalOpen}
+          onClose={onModalClose}
+        >
+          {feature.vesselsInfo && (
+            <div className={styles.modalContainer}>
+              <VesselsTable feature={feature} showFullList={true} />
               <div className={styles.vesselsMore}>
-                + {feature.vesselsInfo.overflowLoadNumber} {t('common.more', 'more')}
+                {Math.min(MAX_VESSELS_LOAD, feature.vesselsInfo.numVessels)} displayed out of{' '}
+                {feature.vesselsInfo.numVessels}
               </div>
-            )}
-          </div>
-        )}
-      </Modal>
+            </div>
+          )}
+        </Modal>
+      )}
       <div className={popupStyles.popupSection}>
         <span
           className={popupStyles.popupSectionColor}
@@ -68,7 +78,11 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
             <Fragment>
               <VesselsTable feature={feature} />
               {feature.vesselsInfo.overflow && (
-                <button className={styles.vesselsMore} onClick={() => setModalOpen(true)}>
+                <button
+                  className={styles.vesselsMore}
+                  disabled={!gfwUser}
+                  onClick={() => setModalOpen(true)}
+                >
                   + {feature.vesselsInfo.overflowNumber} {t('common.more', 'more')}
                 </button>
               )}

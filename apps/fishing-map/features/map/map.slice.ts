@@ -24,7 +24,7 @@ import { selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 
 export const MAX_TOOLTIP_LIST = 5
-export const MAX_VESSELS_LOAD = 100
+export const MAX_VESSELS_LOAD = 200
 
 export type ExtendedFeatureVesselDatasets = Vessel & {
   id: string

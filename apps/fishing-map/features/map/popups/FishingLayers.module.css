@@ -4,4 +4,9 @@
 
 .vesselsMore {
   opacity: var(--opacity-secondary);
+  cursor: pointer;
+}
+
+.vesselsMore:disabled {
+  cursor: unset;
 }
