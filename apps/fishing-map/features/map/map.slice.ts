@@ -24,6 +24,7 @@ import { selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 
 export const MAX_TOOLTIP_LIST = 5
+export const MAX_VESSELS_LOAD = 200
 
 export type ExtendedFeatureVesselDatasets = Vessel & {
   id: string
@@ -237,7 +238,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           return source
             .flatMap((source) => source)
             .sort((a, b) => b.hours - a.hours)
-            .slice(0, MAX_TOOLTIP_LIST)
+            .slice(0, MAX_VESSELS_LOAD)
         })
         .flatMap((v) => v)
 
