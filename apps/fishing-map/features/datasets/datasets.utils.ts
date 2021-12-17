@@ -254,16 +254,20 @@ export const getCommonSchemaFieldsInDataview = (
     dataview.config?.datasets?.includes(dataset.id)
   )
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
+  const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
   const datasetId = activeDatasets?.[0]?.id?.split(':')[0]
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
-        let label = t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
+        let label =
+          schemaType === 'number'
+            ? field
+            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
         if (label === field) {
-          label =
-            schema === 'geartype'
-              ? // There is an fixed list of gearTypes independant of the dataset
-                t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
-              : t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
+          if (schema === 'geartype') {
+            // There is an fixed list of gearTypes independant of the dataset
+            label = t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
+          }
+          label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
         }
         return { id: field.toString(), label }
       })

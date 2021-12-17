@@ -288,6 +288,7 @@
     "nameLengthError_other": "Layer name requires at least {{count}} characters",
     "nameRequired": "Layer name is required",
     "qf": "Quality signal",
+    "radiance": "Radiance",
     "remove": "Remove layer",
     "seeDescription": "Click to see layer description",
     "selectPolygonToRemove": "Select the polygon to remove",
