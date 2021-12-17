@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { range as lodashRange } from 'lodash'
 import { MultiSelect, MultiSelectOption, Slider } from '@globalfishingwatch/ui-components'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
@@ -7,7 +8,7 @@ import styles from './ActivityFilters.module.css'
 
 type ActivitySchemaFilterProps = {
   schemaFilter: SchemaFilter
-  onSelect: (filterKey: string, selection: MultiSelectOption) => void
+  onSelect: (filterKey: string, selection: MultiSelectOption | MultiSelectOption[]) => void
   onRemove: (filterKey: string, selection: MultiSelectOption[]) => void
   onClean: (filterKey: string) => void
 }
@@ -27,23 +28,34 @@ function ActivitySchemaFilter({
   }
   const { id, tooltip, disabled, options, optionsSelected, type } = schemaFilter
   if (type === 'number') {
-    const rangeValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
-    const range = optionsSelected?.length
-      ? optionsSelected.map(({ id }) => parseInt(id))
-      : [rangeValues[0], rangeValues[rangeValues.length - 1]]
+    const onSliderChange = (range) => {
+      const selection = lodashRange(range[0], range[1]).map((id) => ({
+        id: id.toString(),
+        label: id.toString(),
+      }))
+      onSelect(id, selection)
+    }
+    const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+    const rangeValues =
+      optionsSelected?.length > 0
+        ? optionsSelected.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+        : optionValues
+
+    const range = [rangeValues[0], rangeValues[rangeValues.length - 1]]
     return (
       <Slider
         range={range}
         label={t(`vessel.${id}` as any, id)}
         config={{
           step: 1,
-          min: range[0],
-          max: range[1],
+          min: optionValues?.[0],
+          max: optionValues?.[optionValues.length - 1],
         }}
-        onChange={(range) => console.log(range)}
+        onChange={onSliderChange}
       ></Slider>
     )
   }
+
   return (
     <MultiSelect
       key={id}

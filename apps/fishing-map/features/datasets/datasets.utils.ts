@@ -265,7 +265,7 @@ export const getCommonSchemaFieldsInDataview = (
                 t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
               : t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
         }
-        return { id: field, label }
+        return { id: field.toString(), label }
       })
     : []
   return commonSchemaFields.sort(sortFields)

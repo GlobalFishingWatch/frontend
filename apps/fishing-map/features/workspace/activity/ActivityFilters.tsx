@@ -119,8 +119,13 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     })
   }
 
-  const onSelectFilterClick = (filterKey: string, selection: MultiSelectOption) => {
-    const filterValues = [...(dataview.config?.filters?.[filterKey] || []), selection.id]
+  const onSelectFilterClick = (
+    filterKey: string,
+    selection: MultiSelectOption | MultiSelectOption[]
+  ) => {
+    const filterValues = Array.isArray(selection)
+      ? selection.map(({ id }) => id).sort((a, b) => a - b)
+      : [...(dataview.config?.filters?.[filterKey] || []), selection.id]
     upsertDataviewInstance({
       id: dataview.id,
       config: {
@@ -210,6 +215,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         }
         return (
           <ActivitySchemaFilter
+            key={schemaFilter.id}
             schemaFilter={schemaFilter}
             onSelect={onSelectFilterClick}
             onRemove={onRemoveFilterClick}
