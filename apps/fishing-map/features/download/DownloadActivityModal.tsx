@@ -172,13 +172,7 @@ function DownloadActivityModal() {
       })
       .filter((dataview) => dataview.datasets.length > 0)
 
-    console.log(format)
     if (format === Format.GeoTIFF) {
-      console.log({
-        regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
-        spatialResolution,
-        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-      })
       uaEvent({
         category: 'Data downloads',
         action: `Download GeoTIFF file`,
@@ -190,11 +184,6 @@ function DownloadActivityModal() {
       })
     }
     if (format === Format.Csv) {
-      console.log({
-        regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
-        spatialResolution,
-        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-      })
       uaEvent({
         category: 'Data downloads',
         action: `Download CSV file`,
