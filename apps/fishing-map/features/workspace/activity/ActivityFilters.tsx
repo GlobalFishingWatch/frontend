@@ -40,7 +40,6 @@ const filterIds: SupportedDatasetSchema[] = [
   'target_species',
   'license_category',
   'vessel_type',
-  'qf_detect',
 ]
 
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {

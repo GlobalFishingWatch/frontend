@@ -25,7 +25,6 @@ export type SupportedDatasetSchema =
   | 'shiptype'
   | 'origin'
   | 'vessel_type'
-  | 'qf_detect'
   | 'radiance'
   | 'codMarinha'
   | 'targetSpecies' // TODO: normalice format in API and decide

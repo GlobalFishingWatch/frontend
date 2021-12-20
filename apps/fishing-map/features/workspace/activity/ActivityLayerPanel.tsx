@@ -107,7 +107,6 @@ function ActivityLayerPanel({
 
   const datasetFields: { field: SupportedDatasetSchema; label: string }[] = useMemo(
     () => [
-      { field: 'qf_detect', label: t('layer.qf', 'Quality signal') },
       { field: 'radiance', label: t('layer.radiance', 'Radiance') },
       { field: 'geartype', label: t('layer.gearType_other', 'Gear types') },
       { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
