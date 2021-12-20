@@ -30,11 +30,11 @@ import styles from './VesselsTable.module.css'
 function VesselsTable({
   feature,
   showFullList,
-  vesselProperty = 'hour',
+  vesselProperty = 'hours',
 }: {
   feature: TooltipEventFeature
   showFullList?: boolean
-  vesselProperty?: 'hour' | 'radiance'
+  vesselProperty?: 'hours' | 'radiance'
 }) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
