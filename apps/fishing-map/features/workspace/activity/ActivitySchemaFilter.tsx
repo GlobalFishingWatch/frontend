@@ -29,7 +29,7 @@ function ActivitySchemaFilter({
   const { id, tooltip, disabled, options, optionsSelected, type } = schemaFilter
   if (type === 'number') {
     const onSliderChange = (range) => {
-      const selection = lodashRange(range[0], range[1]).map((id) => ({
+      const selection = lodashRange(range[0], range[1] + 1).map((id) => ({
         id: id.toString(),
         label: id.toString(),
       }))
