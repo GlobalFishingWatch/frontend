@@ -1,6 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
+import { debounce } from 'lodash'
 import {
   MultiSelect,
   MultiSelectOnChange,
@@ -41,6 +42,14 @@ const filterIds: SupportedDatasetSchema[] = [
   'license_category',
   'vessel_type',
 ]
+
+const trackEvent = debounce((filterKey: string, label: string) => {
+  uaEvent({
+    category: 'Activity data',
+    action: `Click on ${filterKey} filter`,
+    label: label,
+  })
+}, 200)
 
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
@@ -134,15 +143,12 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         },
       },
     })
-    uaEvent({
-      category: 'Activity data',
-      action: `Click on ${filterKey} filter`,
-      label: getEventLabel([
-        'select',
-        getActivitySources(dataview),
-        ...getActivityFilters({ [filterKey]: filterValues }),
-      ]),
-    })
+    const eventLabel = getEventLabel([
+      'select',
+      getActivitySources(dataview),
+      ...getActivityFilters({ [filterKey]: filterValues }),
+    ])
+    trackEvent(filterKey, eventLabel)
   }
 
   const onRemoveFilterClick = (filterKey: string, selection: MultiSelectOption[]) => {
