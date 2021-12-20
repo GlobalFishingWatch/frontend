@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { scaleTime } from 'd3-scale'
 import dayjs from 'dayjs'
 import { throttle } from 'lodash'
-import { animated, Spring } from 'react-spring/renderprops'
+import { animated, Spring } from 'react-spring'
 import ResizeObserver from 'resize-observer-polyfill'
 import ImmediateContext from '../immediateContext'
 import {
