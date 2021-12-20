@@ -21,6 +21,7 @@ import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datase
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
+  SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
   TooltipEventFeature,
 } from '../map.hooks'
 import { useMapContext } from '../map-context.hooks'
@@ -29,18 +30,22 @@ import styles from './VesselsTable.module.css'
 function VesselsTable({
   feature,
   showFullList,
+  vesselProperty = 'hour',
 }: {
   feature: TooltipEventFeature
   showFullList?: boolean
+  vesselProperty?: 'hour' | 'radiance'
 }) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
   const { eventManager } = useMapContext()
-  const interactionAllowed = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-    feature.temporalgrid?.sublayerInteractionType || ''
-  )
+  const interactionAllowed = [
+    ...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
+    ...SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
+  ].includes(feature.temporalgrid?.sublayerInteractionType || '')
+
   const vessels = showFullList
     ? feature.vesselsInfo?.vessels?.slice(0, MAX_VESSELS_LOAD)
     : feature.vesselsInfo?.vessels?.slice(0, MAX_TOOLTIP_LIST)
@@ -109,58 +114,62 @@ function VesselsTable({
           <th className={styles.vesselsTableHeaderRight}>
             {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
             {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
+            {feature.temporalgrid?.unit === 'detections' &&
+              t('common.detection_other', 'detections')}
           </th>
         </tr>
       </thead>
       <tbody>
-        {vessels.map((vessel, i) => {
-          const vesselName = formatInfoField(vessel.shipname, 'name')
-          const vesselGearType = `${t(
-            `vessel.gearTypes.${vessel.geartype}` as any,
-            EMPTY_FIELD_PLACEHOLDER
-          )}`
+        {vessels?.length > 0 &&
+          vessels.map((vessel, i) => {
+            const vesselName = formatInfoField(vessel.shipname, 'name')
+            const vesselGearType = `${t(
+              `vessel.gearTypes.${vessel.geartype}` as any,
+              EMPTY_FIELD_PLACEHOLDER
+            )}`
 
-          const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const hasDatasets =
+              vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
-          const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
+            const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
 
-          const pinTrackDisabled = !interactionAllowed || !hasDatasets
-          return (
-            <tr key={i}>
-              <td className={styles.icon}>
-                {!pinTrackDisabled && (
-                  <IconButton
-                    icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-                    style={{
-                      color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
-                    }}
-                    tooltip={
-                      vesselInWorkspace
-                        ? t(
-                            'search.vesselAlreadyInWorkspace',
-                            'This vessel is already in your workspace'
-                          )
-                        : t('search.seeVessel', 'See vessel')
-                    }
-                    onClick={(e) => onVesselClick(e, vessel)}
-                    size="small"
-                  />
-                )}
-              </td>
-              <td>{vesselName}</td>
-              <td>
-                <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
-                  <span>{vessel.flag}</span>
-                </Tooltip>
-              </td>
-              <td>{vesselGearType}</td>
-              <td>{vessel.dataset && vessel.dataset.name}</td>
-              <td className={styles.vesselsTableHour}>
-                <I18nNumber number={vessel.hours} />
-              </td>
-            </tr>
-          )
-        })}
+            const pinTrackDisabled = !interactionAllowed || !hasDatasets
+            return (
+              <tr key={i}>
+                <td className={styles.icon}>
+                  {!pinTrackDisabled && (
+                    <IconButton
+                      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+                      style={{
+                        color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                      }}
+                      tooltip={
+                        vesselInWorkspace
+                          ? t(
+                              'search.vesselAlreadyInWorkspace',
+                              'This vessel is already in your workspace'
+                            )
+                          : t('search.seeVessel', 'See vessel')
+                      }
+                      onClick={(e) => onVesselClick(e, vessel)}
+                      size="small"
+                    />
+                  )}
+                </td>
+                <td>{vesselName}</td>
+                <td>
+                  <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
+                    <span>{vessel.flag}</span>
+                  </Tooltip>
+                </td>
+                <td>{vesselGearType}</td>
+                <td>{vessel.dataset && vessel.dataset.name}</td>
+                <td className={styles.vesselsTableHour}>
+                  <I18nNumber number={vessel[vesselProperty]} />
+                </td>
+              </tr>
+            )
+          })}
       </tbody>
     </table>
   )

@@ -1,16 +1,9 @@
-import React, { Fragment } from 'react'
+import React, { useMemo } from 'react'
 import { groupBy } from 'lodash'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import { getVesselLabel } from 'utils/info'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { getEventLabel } from 'utils/analytics'
-import { ExtendedFeatureVesselDatasets, MAX_TOOLTIP_LIST } from '../map.slice'
+import VesselsTable from 'features/map/popups/VesselsTable'
 import styles from './Popup.module.css'
 
 type ViirsMatchTooltipRowProps = {
@@ -19,33 +12,22 @@ type ViirsMatchTooltipRowProps = {
 }
 function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const viirsGroupedByVessel = groupBy(feature.viirs, 'vessel.id')
-  const vessels = Object.entries(viirsGroupedByVessel)
-    .sort(([id, a], [id2, b]) => b.length - a.length)
-    .slice(0, MAX_TOOLTIP_LIST)
 
-  const onVesselClick = (vessel: ExtendedFeatureVesselDatasets) => {
-    const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
-    const eventsDatasetsId =
-      vesselEventsDatasets && vesselEventsDatasets?.length
-        ? vesselEventsDatasets.map((d) => d.id)
-        : []
-
-    const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-      trackDatasetId: vessel.trackDataset?.id,
-      infoDatasetId: vessel.infoDataset?.id,
-      ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-    })
-
-    upsertDataviewInstance(vesselDataviewInstance)
-
-    uaEvent({
-      category: 'Tracks',
-      action: 'Click in vessel from grid cell panel',
-      label: getEventLabel([vessel.dataset.id, vessel.id]),
-    })
-  }
+  const featureWithVessels = useMemo(() => {
+    const viirsGroupedByVessel = groupBy(feature.viirs, 'vessel.id')
+    const vesselsGrouped = Object.values(viirsGroupedByVessel)
+      .sort((a, b) => b.length - a.length)
+      .map((radiances) => {
+        return radiances.reduce((acc, radiance) => {
+          if (!acc) {
+            acc = { ...radiance.vessel, radiance: 0 }
+          }
+          acc.radiance += radiance.radiance
+          return acc
+        }, null as any)
+      })
+    return { ...feature, vesselsInfo: { vessels: vesselsGrouped } } as any
+  }, [feature])
 
   return (
     <div className={styles.popupSection}>
@@ -60,45 +42,8 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             })}
           </span>
         </div>
-        {showFeaturesDetails && vessels && (
-          <Fragment>
-            <table className={styles.viirsTable}>
-              <thead>
-                <tr>
-                  <th>{t('common.vessel', 'Vessel')}</th>
-                  <th>
-                    {t(
-                      [`common.${feature.temporalgrid?.unit}` as any, 'common.detection'],
-                      'detections',
-                      {
-                        count: parseInt(feature.value), // neded to select the plural automatically
-                      }
-                    )}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {vessels.map(([vesselId, detections]) => {
-                  const vessel = detections[0].vessel
-                  const vesselLabel = getVesselLabel(vessel, true)
-                  return (
-                    <tr key={vesselId}>
-                      <td>
-                        <button
-                          key={vessel.id}
-                          className={styles.vesselRow}
-                          onClick={() => onVesselClick(vessel)}
-                        >
-                          <span className={styles.vesselName}>{vesselLabel}</span>
-                        </button>
-                      </td>
-                      <td>{<I18nNumber number={detections.length} />}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </Fragment>
+        {showFeaturesDetails && (
+          <VesselsTable feature={featureWithVessels} vesselProperty="radiance" />
         )}
       </div>
     </div>

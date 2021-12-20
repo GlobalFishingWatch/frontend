@@ -63,6 +63,7 @@ export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   'fishing-effort',
   'presence-detail',
 ]
+export const SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION = ['viirs', 'viirs-match']
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -211,9 +212,9 @@ export const useClickedEventConnect = () => {
         return false
       }
       const isFeatureVisible = feature.temporalgrid.visible
-      const isViirsFeature =
-        feature.temporalgrid.sublayerInteractionType === 'viirs' ||
-        feature.temporalgrid.sublayerInteractionType === 'viirs-match'
+      const isViirsFeature = SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION.includes(
+        feature.temporalgrid.sublayerInteractionType
+      )
       return isFeatureVisible && isViirsFeature
     })
 
