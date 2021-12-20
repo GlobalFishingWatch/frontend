@@ -201,7 +201,7 @@ const TimebarWrapper = () => {
     return {
       none: 'middle',
       speed: 'middle',
-      depth: 'down',
+      elevation: 'down',
     }[timebarGraph]
   }, [timebarGraph, tracksGraphsData])
   const highlighterActivity = useMemo(() => {

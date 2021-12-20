@@ -20,14 +20,13 @@ const getMaxValues = (data: TimebarChartData) => {
     )
 
     // https://online.stat.psu.edu/stat200/lesson/3/3.2
-    const q25 = quantile(itemValues, 0.25)
-    const q75 = quantile(itemValues, 0.75)
-    const q1 = Math.min(q25!, q75!)
-    const q3 = Math.max(q25!, q75!)
-    const iqr = q3 - q1
-    const upperFence = q3 + iqr
+    const q1 = quantile(itemValues, 0.25)
+    const q3 = quantile(itemValues, 0.75)
+    const iqr = Math.abs(q3 - q1)
+    const upperFence = Math.abs(q3 + iqr)
+    const lowerFence = Math.abs(q1 - iqr)
 
-    return Math.min(upperFence, quantile(itemValues, 1))
+    return upperFence > lowerFence ? upperFence : lowerFence
   })
   return maxValues
 }
@@ -42,7 +41,7 @@ const getPaths = (
   orientation: string
 ) => {
   const trackY = getTrackY(numTracks, trackIndex, graphHeight)
-  const getPx = (d: any) => (Math.min((d as any).value, maxValue) / maxValue) * trackY.height
+  const getPx = (d: any) => ((d as any).value / maxValue) * trackY.height
 
   const areaGenerator = area()
     .x((d) => overallScale((d as any).timestamp))
@@ -54,7 +53,7 @@ const getPaths = (
     .y1((d) => {
       if (orientation === 'up') return trackY.y1
       if (orientation === 'middle') return trackY.y + getPx(d) / 2
-      return trackY.y0 + getPx(d)
+      return trackY.y0 + Math.abs(getPx(d))
     })
     .curve(curveStepAfter)
 

@@ -90,7 +90,7 @@ export type VisibleEvents = EventType[] | 'all' | 'none'
 
 export enum TimebarGraphs {
   Speed = 'speed',
-  Depth = 'depth',
+  Depth = 'elevation',
   None = 'none',
 }
 
