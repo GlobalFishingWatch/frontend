@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { uniq, uniqBy } from 'lodash'
+import { groupBy, uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -333,8 +333,12 @@ export const fetchViirsInteractionThunk = createAsyncThunk<
     })
 
     const viirsStats = viirsResponse?.[0]
-    // TODO request only top radiance vessel and use MAX_TOOLTIP_LIST
-    const viirsVesselIds = uniq(viirsStats.flatMap(({ vessel_id }) => vessel_id || []))
+    const viirsVesselIds = Object.entries(groupBy(viirsStats, 'vessel_id'))
+      .sort(([id1, a], [id2, b]) => b.length - a.length)
+      .filter(([id]) => id !== 'null')
+      .slice(0, MAX_TOOLTIP_LIST)
+      .map(([id]) => id)
+
     const vesselDatasetIds = featuresDataviews.flatMap((dataview) =>
       (dataview.datasets || [])?.flatMap((dataset) =>
         (dataset.relatedDatasets || []).flatMap(({ id, type }) =>
@@ -344,7 +348,6 @@ export const fetchViirsInteractionThunk = createAsyncThunk<
     )
     const vesselDatasets = vesselDatasetIds.flatMap((id) => selectDatasetById(id)(state) || [])
     const vesselsInfo = await fetchVesselInfo(vesselDatasets, viirsVesselIds, signal)
-
     return viirsStats.map((stat) => {
       const { vessel_id, ...rest } = stat
       const vessel = vesselsInfo?.find((v) => v.id === stat.vessel_id)
