@@ -1,5 +1,6 @@
 import React, { Fragment, useCallback, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import kinks from '@turf/kinks'
 import { Editor, EditingMode, DrawPolygonMode } from 'react-map-gl-draw'
 import { useTranslation } from 'react-i18next'
@@ -119,7 +120,6 @@ function MapDraw() {
   ])
 
   const onEditorSelect = useCallback((e: EditorSelect) => {
-    console.log(e)
     setSelectedFeatureIndex(e.selectedFeatureIndex)
     setSelectedEditHandleIndex(e.selectedEditHandleIndex)
   }, [])
@@ -153,6 +153,10 @@ function MapDraw() {
 
   const onAddPolygonClick = useCallback(() => {
     dispatchSetDrawMode('draw')
+    uaEvent({
+      category: 'Reference layer',
+      action: `Draw a custom reference layer - Click + icon`
+    })
   }, [dispatchSetDrawMode])
 
   const onRemoveClick = useCallback(() => {
@@ -178,6 +182,10 @@ function MapDraw() {
     resetState()
     dispatchSetDrawMode('disabled')
     dispatchQueryParams({ sidebarOpen: true })
+    uaEvent({
+      category: 'Reference layer',
+      action: `Draw a custom reference layer - Click dismiss`
+    })
   }, [dispatchQueryParams, dispatchSetDrawMode, resetState])
 
   const toggleCreateAsPublic = useCallback(() => {
@@ -208,6 +216,10 @@ function MapDraw() {
   const onSaveClick = useCallback(() => {
     if (features && features.length > 0 && layerName) {
       createDataset(features, layerName)
+      uaEvent({
+        category: 'Reference layer',
+        action: `Draw a custom reference layer - Click save`
+      })
     }
   }, [createDataset, features, layerName])
 

@@ -66,9 +66,9 @@ const ReportPopupButton: React.FC<ReportPopupButtonProps> = ({
         hasAnalysableLayer
           ? t('common.analysis', 'Create an analysis for this area')
           : t(
-              'common.analysisNotAvailable',
-              'Toggle an activity or environmenet layer on to analyse in in this area'
-            )
+            'common.analysisNotAvailable',
+            'Toggle an activity or environmenet layer on to analyse in in this area'
+          )
       }
       onClick={onClick}
       size="small"

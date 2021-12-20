@@ -29,6 +29,7 @@ import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import { getDatasetLabel, getDatasetsDownloadNotSupported } from 'features/datasets/datasets.utils'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -171,6 +172,41 @@ function DownloadActivityModal() {
       })
       .filter((dataview) => dataview.datasets.length > 0)
 
+    console.log(format)
+    if (format === Format.GeoTIFF) {
+      console.log({
+        regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+        spatialResolution,
+        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+      })
+      uaEvent({
+        category: 'Data downloads',
+        action: `Download GeoTIFF file`,
+        label: JSON.stringify({
+          regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+          spatialResolution,
+          sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+        }),
+      })
+    }
+    if (format === Format.Csv) {
+      console.log({
+        regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+        spatialResolution,
+        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+      })
+      uaEvent({
+        category: 'Data downloads',
+        action: `Download CSV file`,
+        label: JSON.stringify({
+          regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+          temporalResolution,
+          spatialResolution,
+          groupBy,
+          sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+        }),
+      })
+    }
     const downloadPromises = downloadDataviews.map((dataview) => {
       const downloadParams: DownloadActivityParams = {
         dateRange: timerange as DateRange,
@@ -294,8 +330,8 @@ function DownloadActivityModal() {
             tooltip={
               duration && duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD
                 ? t('download.timerangeTooLong', 'The maximum time range is {{count}} years', {
-                    count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
-                  })
+                  count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
+                })
                 : ''
             }
           >
