@@ -11,6 +11,7 @@ import {
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
+  TEMPLATE_ACTIVITY_DATAVIEW_ID,
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
   TEMPLATE_CONTEXT_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
@@ -181,7 +182,7 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
       {
         datasetId,
         params: [],
-        endpoint: 'user-context-tiles',
+        endpoint: EndpointId.UserContextTiles,
       },
     ],
   }
@@ -206,6 +207,25 @@ export const getActivityDataviewInstanceFromDataview = (
       colorCyclingType: 'fill' as ColorCyclingType,
     },
   }
+}
+
+export const getActivityDataviewInstance = (datasetId: string): DataviewInstance<GeneratorType> => {
+  const contextDataviewInstance = {
+    id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
+    category: DataviewCategory.Fishing,
+    config: {
+      colorCyclingType: 'line' as ColorCyclingType,
+    },
+    dataviewId: TEMPLATE_ACTIVITY_DATAVIEW_ID,
+    datasetsConfig: [
+      {
+        datasetId,
+        params: [],
+        endpoint: EndpointId.FourwingsTiles,
+      },
+    ],
+  }
+  return contextDataviewInstance
 }
 
 export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {

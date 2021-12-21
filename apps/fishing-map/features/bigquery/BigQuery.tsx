@@ -2,14 +2,18 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, InputText, SwitchRow } from '@globalfishingwatch/ui-components'
+import { Dataset } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getActivityDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   createBigQueryDatasetThunk,
   fetchBigQueryRunCostThunk,
   selectCreationStatus,
   selectRunCost,
   selectRunCostStatus,
+  toggleBigQueryMenu,
 } from './bigquery.slice'
 import styles from './BigQuery.module.css'
 
@@ -23,6 +27,7 @@ const BigQueryMenu: React.FC = () => {
   const [error, setError] = useState('')
   const [runCostChecked, setRunCostChecked] = useState(false)
   const [createAsPublic, setCreateAsPublic] = useState(true)
+  const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [query, setQuery] = useState('')
 
   const onRunCostClick = async () => {
@@ -36,10 +41,13 @@ const BigQueryMenu: React.FC = () => {
 
   const onCreateClick = async () => {
     const action = await dispatch(createBigQueryDatasetThunk({ name, createAsPublic, query }))
-    if (fetchBigQueryRunCostThunk.fulfilled.match(action)) {
-      console.log(action)
+    if (createBigQueryDatasetThunk.fulfilled.match(action)) {
+      const dataset = action.payload.payload as Dataset
+      const dataviewInstance = getActivityDataviewInstance(dataset.id)
+      addNewDataviewInstances([dataviewInstance])
+      dispatch(toggleBigQueryMenu())
     } else {
-      setError('Error creating')
+      setError('There was an unexpected error')
     }
   }
 
@@ -73,7 +81,7 @@ const BigQueryMenu: React.FC = () => {
       />
       <div className={styles.footer}>
         {error && <p className={styles.error}>{error}</p>}
-        {runCost !== null && <p>This query will cost around: {runCost} GB</p>}
+        {runCost !== null && <p>This query will move: {runCost.totalBytesPretty}</p>}
         <Button
           disabled={!hasQuery}
           tooltip={hasQuery ? '' : 'Query is required'}
@@ -83,7 +91,7 @@ const BigQueryMenu: React.FC = () => {
           Check creation cost
         </Button>
         <Button
-          disabled={disableCreation}
+          disabled={disableCreation || creationStatus === AsyncReducerStatus.Loading}
           tooltip={disableCreation ? 'Query, name and checking creation cost are required' : ''}
           loading={creationStatus === AsyncReducerStatus.Loading}
           onClick={onCreateClick}
