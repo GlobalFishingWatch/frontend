@@ -102,8 +102,9 @@ const AppModals = () => {
       <DownloadTrackModal />
       {welcomePopupOpen && !readOnly && (
         <Modal
-          appSelector={ROOT_DOM_ELEMENT}
           header={false}
+          appSelector={ROOT_DOM_ELEMENT}
+          shouldCloseOnEsc
           isOpen={welcomePopupOpen}
           onClose={() => setWelcomePopupOpen(false)}
         >
