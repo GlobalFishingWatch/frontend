@@ -22,6 +22,9 @@ export type TimebarChartDataItem = {
   chunks: TimebarChartDataChunk[]
   color?: string
   status?: ResourceStatus
+  getHighlighterLabel?:
+    | string
+    | ((chunk: TimebarChartDataChunk, value: TimebarChartDataChunkValue | undefined) => string)
 }
 
 export type TimebarChartData = TimebarChartDataItem[]

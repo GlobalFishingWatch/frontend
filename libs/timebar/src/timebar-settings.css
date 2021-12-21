@@ -14,6 +14,7 @@
   --timebar-light-blue: #4fc6d7;
   --timebar-track-default: #fe81eb;
   --timebar-white: #fff;
+  --timebar-white-faded: rgba(255, 255, 255, 0.6);
 
   /* TYPE */
   --timebar-font-family: 'Roboto', sans-serif;

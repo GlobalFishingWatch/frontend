@@ -24,8 +24,8 @@ const getMaxValues = (data: TimebarChartData) => {
     const q1 = quantile(itemValues, 0.25)
     const q3 = quantile(itemValues, 0.75)
     const iqr = Math.abs(q3 - q1)
-    const upperFence = Math.abs(q3 + iqr)
-    const lowerFence = Math.abs(q1 - iqr)
+    const upperFence = Math.abs(q3 + iqr * 1.5)
+    const lowerFence = Math.abs(q1 - iqr * 1.5)
 
     return upperFence > lowerFence ? upperFence : lowerFence
   })

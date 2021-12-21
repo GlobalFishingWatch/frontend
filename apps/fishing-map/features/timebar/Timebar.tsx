@@ -9,6 +9,7 @@ import {
   TimebarHighlighter,
   TimebarTracksEvents,
   TimebarTrackGraph,
+  TimebarChartData,
 } from '@globalfishingwatch/timebar'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -44,14 +45,13 @@ import {
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
-const TimebarHighlighterWrapper = ({ activity }: any) => {
+const TimebarHighlighterWrapper = ({ data }: { data: TimebarChartData[] }) => {
   const highlightedTime = useSelector(selectHighlightedTime)
   return highlightedTime ? (
     <TimebarHighlighter
       hoverStart={highlightedTime.start}
       hoverEnd={highlightedTime.end}
-      activity={activity}
-      unit="knots"
+      data={data}
     />
   ) : null
 }
@@ -204,11 +204,26 @@ const TimebarWrapper = () => {
       elevation: 'down',
     }[timebarGraph]
   }, [timebarGraph, tracksGraphsData])
-  const highlighterActivity = useMemo(() => {
-    return timebarVisualisation === TimebarVisualisations.Vessel && showGraph && tracksGraphsData
-      ? tracksGraphsData
-      : null
-  }, [timebarVisualisation, showGraph, tracksGraphsData])
+
+  const highlighterData = useMemo(() => {
+    if (timebarVisualisation === TimebarVisualisations.Heatmap) {
+      // TODO move setStackedActivity from TimebarActivityGraph to a hook that will be called at this level
+      return []
+    } else if (
+      timebarVisualisation === TimebarVisualisations.Vessel &&
+      tracks &&
+      tracks.length <= MAX_TIMEBAR_VESSELS
+    ) {
+      const data: TimebarChartData[] = [tracks]
+      if (showGraph && tracksGraphsData) {
+        data.push(tracksGraphsData)
+      }
+      if (tracksEvents) {
+        // TODO
+      }
+      return data
+    }
+  }, [timebarVisualisation, tracks, showGraph, tracksGraphsData, tracksEvents])
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
@@ -273,7 +288,7 @@ const TimebarWrapper = () => {
                   </label>
                 </div>
               ))}
-            <TimebarHighlighterWrapper activity={highlighterActivity} />
+            <TimebarHighlighterWrapper data={highlighterData} />
           </Fragment>
         ) : null}
       </Timebar>

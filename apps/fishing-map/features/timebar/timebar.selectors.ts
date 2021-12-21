@@ -58,24 +58,32 @@ export const selectTracksData = createSelector(
         ? geoJSONToSegments(trackResource.data as any)
         : trackResource.data || []
 
-      const trackSegments: TimebarChartDataChunk[] = segments.map((segment) => {
+      const chunks: TimebarChartDataChunk[] = segments.map((segment) => {
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
           values: segment as TimebarChartDataChunkValue[],
         }
       })
-      return {
+      const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+      const item: TimebarChartDataItem = {
         ...timebarTrack,
-        chunks: trackSegments,
+        chunks,
         status: ResourceStatus.Finished,
+        getHighlighterLabel: [(resources[infoUrl] as any).data.shipname.slice(0, 3), '.'].join(''),
         // TODO
         // segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
       }
+      return item
     })
     return tracksSegments
   }
 )
+
+const getTrackGraphSpeedHighlighterLabel = (chunk, value: TimebarChartDataChunkValue) =>
+  `${value.value.toFixed(2)} knots`
+const getTrackGraphElevationighlighterLabel = (chunk, value: TimebarChartDataChunkValue) =>
+  `${value.value} m`
 
 export const selectTracksGraphData = createSelector(
   [selectTracksData, selectActiveVesselsDataviews, selectResources, selectTimebarGraph],
@@ -87,6 +95,10 @@ export const selectTracksGraphData = createSelector(
           color: dataview.config?.color,
           chunks: [],
           status: ResourceStatus.Idle,
+          getHighlighterLabel:
+            timebarGraphType === 'speed'
+              ? getTrackGraphSpeedHighlighterLabel
+              : getTrackGraphElevationighlighterLabel,
         }
 
         const { url: graphUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks, {

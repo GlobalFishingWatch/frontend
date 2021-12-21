@@ -14,5 +14,5 @@ export type TimelineContextProps = {
   innerEndPx: number
   overallScale: TimelineScale
   svgTransform: string
-  tooltipContainer: JSX.Element
+  tooltipContainer: Element
 }
