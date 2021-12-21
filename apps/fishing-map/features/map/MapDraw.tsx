@@ -341,6 +341,7 @@ function MapDraw() {
         )}
         <InputText
           label={t('layer.name', 'Layer name')}
+          labelClassName={styles.layerLabel}
           value={layerName}
           onChange={onInputChange}
           className={styles.input}
@@ -360,7 +361,10 @@ function MapDraw() {
         <div className={styles.buttonsContainer}>
           <SwitchRow
             className={styles.saveAsPublic}
-            label={t('workspace.drawUploadPublic' as any, 'Allow other users to see this layer')}
+            label={t(
+              'dataset.uploadPublic' as any,
+              'Allow other users to see this dataset when you share a workspace'
+            )}
             active={createAsPublic}
             onClick={toggleCreateAsPublic}
           />

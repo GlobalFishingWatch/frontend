@@ -27,6 +27,10 @@
   border-radius: var(--border-radius);
 }
 
+.container .layerLabel {
+  margin-bottom: 1rem;
+}
+
 .warning {
   background-color: var(--color-danger-red-background);
 }

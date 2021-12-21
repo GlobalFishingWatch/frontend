@@ -272,7 +272,6 @@
     "color_change": "Change color",
     "drawPolygon": "Draw a custom reference layer",
     "drawPolygonLogin": "Register and login to draw a layer (free, 2 minutes)",
-    "drawUploadPublic": "Allow other users to see this layer",
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
