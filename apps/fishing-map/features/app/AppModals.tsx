@@ -15,6 +15,8 @@ import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import useSecretMenu from 'hooks/secret-menu.hooks'
 import DebugMenu from 'features/debug/DebugMenu'
+import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
+import BigQueryMenu from 'features/bigquery/BigQuery'
 import styles from './App.module.css'
 
 const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
@@ -31,12 +33,19 @@ const EditorMenuConfig = {
   selectMenuActive: selectEditorActive,
 }
 
+const BigQueryMenuConfig = {
+  key: 'b',
+  onToggle: toggleBigQueryMenu,
+  selectMenuActive: selectBigQueryActive,
+}
+
 const AppModals = () => {
   const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(isGFWUser)
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
+  const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
 
   const locationIsMarineManager =
@@ -62,6 +71,7 @@ const AppModals = () => {
           appSelector={ROOT_DOM_ELEMENT}
           title="Secret debug menu 🤖"
           isOpen={debugActive}
+          shouldCloseOnEsc
           onClose={dispatchToggleDebugMenu}
         >
           <DebugMenu />
@@ -72,11 +82,20 @@ const AppModals = () => {
           appSelector={ROOT_DOM_ELEMENT}
           title="Workspace editor 📝"
           isOpen={editorActive}
-          shouldCloseOnEsc={false}
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
         >
           <EditorMenu />
+        </Modal>
+      )}
+      {gfwUser && (
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          title="Big query datasets creation"
+          isOpen={bigqueryActive}
+          onClose={dispatchBigQueryMenu}
+        >
+          <BigQueryMenu />
         </Modal>
       )}
       <DownloadActivityModal />

@@ -1,0 +1,34 @@
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  margin-top: var(--space-M);
+}
+
+.editor {
+  margin-top: 1rem;
+  width: 100%;
+  height: 250px;
+  font-size: 1.2rem;
+  font-family: monospace;
+  background: #212121;
+  color: white;
+  padding: var(--space-M);
+  resize: vertical;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: auto;
+  gap: var(--space-M);
+}
+
+.error {
+  flex: 1;
+  color: var(--color-danger-red);
+}
