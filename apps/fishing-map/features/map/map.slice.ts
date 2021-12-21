@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { groupBy, uniqBy } from 'lodash'
+import { uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -41,16 +41,12 @@ export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
 export type ApiViirsStats = {
-  detect_id: string
-  qf_detect: number
-  radiance: number
+  detections: number
   vessel_id: string
 }
 
 export type ExtendedViirsFeature = {
-  detect_id: string
-  qf_detect: number
-  radiance: number
+  detections: number
   vessel?: ExtendedFeatureVesselDatasets
 }
 
@@ -333,11 +329,10 @@ export const fetchViirsInteractionThunk = createAsyncThunk<
     })
 
     const viirsStats = viirsResponse?.[0]
-    const viirsVesselIds = Object.entries(groupBy(viirsStats, 'vessel_id'))
-      .sort(([id1, a], [id2, b]) => b.length - a.length)
-      .filter(([id]) => id !== 'null')
-      .slice(0, MAX_TOOLTIP_LIST)
-      .map(([id]) => id)
+    const viirsVesselIds = viirsStats
+      .sort((a, b) => b.detections - a.detections)
+      .filter(({ vessel_id }) => vessel_id !== null)
+      .map(({ vessel_id }) => vessel_id)
 
     const vesselDatasetIds = featuresDataviews.flatMap((dataview) =>
       (dataview.datasets || [])?.flatMap((dataset) =>

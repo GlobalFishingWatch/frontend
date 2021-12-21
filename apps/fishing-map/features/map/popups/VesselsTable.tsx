@@ -34,7 +34,7 @@ function VesselsTable({
 }: {
   feature: TooltipEventFeature
   showFullList?: boolean
-  vesselProperty?: 'hours' | 'radiance'
+  vesselProperty?: 'hours' | 'detections'
 }) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -53,8 +53,7 @@ function VesselsTable({
   const hasPinColumn =
     showFullList ||
     (interactionAllowed &&
-      feature.vesselsInfo &&
-      feature.vesselsInfo.vessels.some((vessel) => {
+      feature?.vesselsInfo?.vessels?.some((vessel) => {
         const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
         return hasDatasets
       }))

@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { groupBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
@@ -14,19 +13,13 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
   const { t } = useTranslation()
 
   const featureWithVessels = useMemo(() => {
-    const viirsGroupedByVessel = groupBy(feature.viirs, 'vessel.id')
-    const vesselsGrouped = Object.values(viirsGroupedByVessel)
-      .sort((a, b) => b.length - a.length)
-      .map((radiances) => {
-        return radiances.reduce((acc, radiance) => {
-          if (!acc) {
-            acc = { ...radiance.vessel, radiance: 0 }
-          }
-          acc.radiance += radiance.radiance
-          return acc
-        }, null as any)
-      })
-    return { ...feature, vesselsInfo: { vessels: vesselsGrouped } } as any
+    const vesselsWithDetections = (feature.viirs || []).flatMap(({ detections, vessel }) => {
+      if (!vessel || !vessel.id) {
+        return []
+      }
+      return { ...vessel, detections }
+    })
+    return { ...feature, vesselsInfo: { vessels: vesselsWithDetections } } as any
   }, [feature])
 
   return (
@@ -43,7 +36,7 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
           </span>
         </div>
         {showFeaturesDetails && (
-          <VesselsTable feature={featureWithVessels} vesselProperty="radiance" />
+          <VesselsTable feature={featureWithVessels} vesselProperty="detections" />
         )}
       </div>
     </div>
