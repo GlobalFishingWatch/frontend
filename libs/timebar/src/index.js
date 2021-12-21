@@ -1,7 +1,7 @@
 export * from './utils'
 export * from './layouts'
 export { EVENT_SOURCE } from './constants'
-export { TimelineContext } from './components/timeline'
+export { TimelineContext } from './timelineContext'
 export { ImmediateContext } from './immediateContext'
 export { default as Timebar } from './timebar'
 export { default as TimebarEvents } from './charts/events'

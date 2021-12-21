@@ -11,10 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "scripts": {
-    "types": "tsc src/index.js --declaration --allowJs --emitDeclarationOnly --outDir types >/dev/null || true",
-    "prepare": "yarn types"
-  },
+  "scripts": {},
   "dependencies": {
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@mapbox/tile-cover": "^3.0.2",
@@ -51,5 +48,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "types": "src/types/types.d.ts"
 }

@@ -1,5 +1,6 @@
 import { useContext, useMemo } from 'react'
-import { TimelineContext, TimelineContextProps } from '../..'
+import { TimelineContextProps } from '../../types'
+import TimelineContext from '../../timelineContext'
 import { TimebarChartData } from './types'
 
 export const useFilteredChartData = (data: TimebarChartData) => {

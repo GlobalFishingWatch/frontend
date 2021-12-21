@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useMemo } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { TimelineContextProps, TimelineScale } from '../types'
-import { TimelineContext } from '../components/timeline'
+import TimelineContext from '../timelineContext'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'

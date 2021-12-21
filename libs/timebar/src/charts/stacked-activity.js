@@ -5,7 +5,7 @@ import { scaleLinear } from 'd3-scale'
 import { max } from 'd3-array'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
-import { TimelineContext } from '../components/timeline'
+import TimelineContext from '../timelineContext'
 
 const MARGIN_BOTTOM = 20
 const MARGIN_TOP = 5
@@ -13,11 +13,10 @@ const MARGIN_TOP = 5
 const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
   if (!data) return []
 
-  
   const stackLayout = stack()
     .keys(Array.from(Array(numSublayers).keys()))
     .offset(stackOffsetSilhouette)
-    
+
   const series = stackLayout(data)
   const maxY = max(series, (d) => max(d, (d) => d[1]))
   const y = scaleLinear()
@@ -28,11 +27,11 @@ const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
     .x((d) => overallScale(d.data.date))
     .y0((d) => {
       const y0 = y(d[0])
-      return (numSublayers === 1 && y0 < 0) ? Math.min(y0, -1) : y0
+      return numSublayers === 1 && y0 < 0 ? Math.min(y0, -1) : y0
     })
     .y1((d) => {
       const y1 = y(d[1])
-      return (numSublayers === 1 && y1 > 0) ? Math.max(y1, 1) : y1
+      return numSublayers === 1 && y1 > 0 ? Math.max(y1, 1) : y1
     })
     .curve(curveStepAfter)
 

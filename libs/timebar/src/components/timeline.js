@@ -1,4 +1,4 @@
-import React, { PureComponent, createContext } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import memoize from 'memoize-one'
 import cx from 'classnames'
@@ -17,6 +17,7 @@ import {
 } from '../utils/internal-utils'
 import { EVENT_SOURCE } from '../constants'
 import { getLast30Days } from '../utils'
+import TimelineContext from '../timelineContext'
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
@@ -25,8 +26,6 @@ import styles from './timeline.module.css'
 const DRAG_INNER = 'DRAG_INNER'
 const DRAG_START = 'DRAG_START'
 const DRAG_END = 'DRAG_END'
-
-export const TimelineContext = createContext({})
 
 class Timeline extends PureComponent {
   static contextType = ImmediateContext
