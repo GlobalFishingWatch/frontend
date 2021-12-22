@@ -37,6 +37,8 @@ const filterIds: SupportedDatasetSchema[] = [
   'fleet',
   'shiptype',
   'origin',
+  'source',
+  'matched',
   'radiance',
   'target_species',
   'license_category',

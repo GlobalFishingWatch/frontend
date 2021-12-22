@@ -26,6 +26,8 @@ export type SupportedDatasetSchema =
   | 'origin'
   | 'vessel_type'
   | 'radiance'
+  | 'source'
+  | 'matched'
   | 'codMarinha'
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
@@ -258,7 +260,7 @@ export const getCommonSchemaFieldsInDataview = (
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
         let label =
-          schemaType === 'number'
+          schemaType === 'number' || schemaType === 'boolean'
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
         if (label === field) {
