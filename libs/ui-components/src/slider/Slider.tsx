@@ -13,6 +13,7 @@ interface SliderProps {
   range: SliderRange
   config?: SliderConfig
   onChange: (range: SliderRange) => void
+  className?: string
 }
 
 const activeColor =
@@ -22,7 +23,7 @@ const borderColor =
   getComputedStyle(document.body).getPropertyValue('--color-border') || 'rgba(22, 63, 137, 0.15)'
 
 export function Slider(props: SliderProps) {
-  const { range, label, config = {}, onChange } = props
+  const { range, label, config = {}, onChange, className } = props
   const { step = 1, min = 0, max = 100 } = config as SliderConfig
   const values = useMemo(() => range || [min, max], [max, min, range])
 
@@ -47,7 +48,7 @@ export function Slider(props: SliderProps) {
   )
 
   return (
-    <div>
+    <div className={className}>
       <label>{label}</label>
       <div className={styles.container}>
         <Range

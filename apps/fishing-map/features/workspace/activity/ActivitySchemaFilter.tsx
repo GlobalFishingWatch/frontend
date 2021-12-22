@@ -44,6 +44,7 @@ function ActivitySchemaFilter({
     const range = [rangeValues[0], rangeValues[rangeValues.length - 1]]
     return (
       <Slider
+        className={styles.multiSelect}
         range={range}
         label={t(`vessel.${id}` as any, id)}
         config={{
