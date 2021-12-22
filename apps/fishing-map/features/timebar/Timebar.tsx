@@ -37,11 +37,7 @@ import {
   Range,
 } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import {
-  selectTracksData,
-  selectEventsWithRenderingInfo,
-  selectTracksGraphData,
-} from './timebar.selectors'
+import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
@@ -68,7 +64,8 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
-  const tracksEvents = useSelector(selectEventsWithRenderingInfo)
+  const tracksEvents = useSelector(selectTracksEvents)
+  console.log(tracksEvents)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const dispatch = useDispatch()
@@ -265,14 +262,14 @@ const TimebarWrapper = () => {
                   )}
                   {tracksEvents && (
                     <Fragment>
-                      <TimebarTracksEvents
+                      {/* <TimebarTracksEvents
                         key="events"
                         labels={labels?.trackEvents}
                         preselectedEventId={highlightedEvent?.id}
                         tracksEvents={tracksEvents as any}
                         onEventClick={onEventClick}
                         onEventHover={onEventHover}
-                      />
+                      /> */}
                     </Fragment>
                   )}
                 </Fragment>
