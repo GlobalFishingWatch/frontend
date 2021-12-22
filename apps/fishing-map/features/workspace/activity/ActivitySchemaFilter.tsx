@@ -1,6 +1,5 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { range as lodashRange } from 'lodash'
 import { MultiSelect, MultiSelectOption, Slider } from '@globalfishingwatch/ui-components'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
@@ -29,7 +28,7 @@ function ActivitySchemaFilter({
   const { id, tooltip, disabled, options, optionsSelected, type } = schemaFilter
   if (type === 'number') {
     const onSliderChange = (range) => {
-      const selection = lodashRange(range[0], range[1] + 1).map((id) => ({
+      const selection = range.map((id) => ({
         id: id.toString(),
         label: id.toString(),
       }))

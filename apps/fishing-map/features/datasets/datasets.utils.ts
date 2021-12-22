@@ -313,8 +313,8 @@ export const getFiltersBySchema = (
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
   const type = getCommonSchemaTypeInDataview(dataview, schema)
 
-  const optionsSelected = options?.filter((fleet) =>
-    dataview.config?.filters?.[schema]?.includes(fleet.id)
+  const optionsSelected = options?.filter((option) =>
+    dataview.config?.filters?.[schema]?.includes(option.id)
   )
 
   const tooltip = disabled
