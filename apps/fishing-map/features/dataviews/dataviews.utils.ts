@@ -10,6 +10,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_ID,
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
@@ -209,11 +210,15 @@ export const getActivityDataviewInstanceFromDataview = (
   }
 }
 
-export const getBigQueryDataviewInstance = (datasetId: string): DataviewInstance<GeneratorType> => {
+export const getBigQueryDataviewInstance = (
+  datasetId: string,
+  { aggregationOperation = AggregationOperation.Sum } = {}
+): DataviewInstance<GeneratorType> => {
   const contextDataviewInstance = {
     id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
+      aggregationOperation,
     },
     dataviewId: TEMPLATE_ACTIVITY_DATAVIEW_ID,
     datasetsConfig: [

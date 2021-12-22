@@ -4,6 +4,25 @@
   flex-direction: column;
 }
 
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-S);
+}
+
+.input {
+  flex: 1;
+}
+
+.inputShort {
+  flex: 0.3;
+}
+
+.inputLabel {
+  margin-bottom: var(--space-S);
+}
+
 .row {
   margin-top: var(--space-M);
 }
@@ -30,5 +49,6 @@
 
 .error {
   flex: 1;
+  text-transform: uppercase;
   color: var(--color-danger-red);
 }

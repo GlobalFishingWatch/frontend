@@ -15,7 +15,7 @@ export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
 const AUTH_PATH = 'auth'
 
-interface ResponseError {
+export interface ResponseError {
   status: number
   message: string
 }
@@ -56,7 +56,8 @@ const processStatus = (response: Response): Promise<Response> => {
       if (response.status >= 400 && response.status < 500) {
         authError = await response.text().then((text) => {
           try {
-            return JSON.parse(text)?.error
+            const res = JSON.parse(text)
+            return res?.error || res?.message
           } catch (e: any) {
             return response.statusText
           }

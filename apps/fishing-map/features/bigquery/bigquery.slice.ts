@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { kebabCase } from 'lodash'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
 import { RootState } from 'store'
@@ -11,19 +12,26 @@ export type RunCostResponse = {
 
 export const fetchBigQueryRunCostThunk = createAsyncThunk(
   'bigQuery/fetchRunCost',
-  async ({ query }: { query: string }) => {
-    const response = await GFWAPI.fetch<RunCostResponse>(
-      '/v1/4wings/bq/create-temporal-dataset?dryRun=true',
-      {
-        method: 'POST',
-        body: {
-          name: 'Calculating cost using dryRun',
-          ttl: 1, // days
-          query,
-        } as any,
-      }
-    )
-    return response
+  async ({ query }: { query: string }, { rejectWithValue }) => {
+    try {
+      const response = await GFWAPI.fetch<RunCostResponse>(
+        '/v1/4wings/bq/create-temporal-dataset?dryRun=true',
+        {
+          method: 'POST',
+          body: {
+            name: 'Calculating cost using dryRun',
+            ttl: 1, // days
+            query,
+          } as any,
+        }
+      )
+      return response
+    } catch (e: any) {
+      return rejectWithValue({
+        status: e.status || e.code,
+        message: e.message,
+      })
+    }
   }
 )
 
@@ -48,7 +56,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
       '/v1/4wings/bq/create-temporal-dataset',
       {
         method: 'POST',
-        body: { query, name, ttl, public: createAsPublic } as any,
+        body: { query, name: kebabCase(name), ttl, public: createAsPublic } as any,
       }
     )
     const dataset = await dispatch(fetchDatasetByIdThunk(id))
@@ -86,7 +94,7 @@ const bigQuerySlice = createSlice({
     })
     builder.addCase(fetchBigQueryRunCostThunk.fulfilled, (state, action) => {
       state.runCostStatus = AsyncReducerStatus.Finished
-      state.runCost = action.payload
+      state.runCost = action.payload as RunCostResponse
     })
     builder.addCase(fetchBigQueryRunCostThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
