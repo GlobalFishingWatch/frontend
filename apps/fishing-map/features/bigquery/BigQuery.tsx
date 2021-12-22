@@ -63,7 +63,7 @@ const BigQueryMenu: React.FC = () => {
         onChange={(e) => setName(e.target.value)}
       />
       <div className={styles.row}>
-        <label>Query</label>
+        <label>Query (Ensure id, lat, lon, timestamp and value are all present)</label>
         <textarea
           value={query}
           className={styles.editor}
