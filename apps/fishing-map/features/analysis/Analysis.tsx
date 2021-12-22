@@ -175,7 +175,6 @@ function Analysis() {
         })
       }
       if (option.id === 'periodComparison' && timeComparison) {
-        console.log(timeComparison)
         uaEvent({
           category: 'Analysis',
           action: `Click '${option.title}' in analysis mode`,

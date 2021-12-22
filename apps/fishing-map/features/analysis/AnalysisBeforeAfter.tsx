@@ -53,6 +53,8 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
         duration: duration.target.value + ' ' + durationTypeOption.label,
+        durationAmount: duration.target.value,
+        durationType: durationTypeOption.label,
         regionName: analysisAreaName,
         sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
       })
@@ -66,6 +68,8 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
         duration: timeComparison.duration + ' ' + duration.label,
+        durationAmount: timeComparison.duration,
+        durationType: duration.label,
         regionName: analysisAreaName,
         sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
       })
