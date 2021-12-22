@@ -2,6 +2,7 @@ import { intersection, lowerCase, uniq } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import {
   Dataset,
+  DatasetSchemaType,
   DatasetTypes,
   Dataview,
   DataviewDatasetConfig,
@@ -294,7 +295,7 @@ export type SchemaFilter = {
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
   tooltip: string
-  type: 'string' | 'number'
+  type: DatasetSchemaType
 }
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
