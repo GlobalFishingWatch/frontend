@@ -52,3 +52,16 @@
 .vesselsTable.fullWidth {
   width: 100%;
 }
+
+.modalContainer {
+  padding-bottom: 3rem;
+}
+
+.vesselsMore {
+  opacity: var(--opacity-secondary);
+  cursor: pointer;
+}
+
+.vesselsMore:disabled {
+  cursor: unset;
+}

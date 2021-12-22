@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
@@ -11,17 +11,6 @@ type ViirsMatchTooltipRowProps = {
 }
 function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
-
-  const featureWithVessels = useMemo(() => {
-    const vesselsWithDetections = (feature.viirs || []).flatMap(({ detections, vessel }) => {
-      if (!vessel || !vessel.id) {
-        return []
-      }
-      return { ...vessel, detections }
-    })
-    return { ...feature, vesselsInfo: { vessels: vesselsWithDetections } } as any
-  }, [feature])
-
   return (
     <div className={styles.popupSection}>
       <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
@@ -35,9 +24,7 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             })}
           </span>
         </div>
-        {showFeaturesDetails && (
-          <VesselsTable feature={featureWithVessels} vesselProperty="detections" />
-        )}
+        {showFeaturesDetails && <VesselsTable feature={feature} vesselProperty="detections" />}
       </div>
     </div>
   )
