@@ -209,18 +209,22 @@ export const getActivityDataviewInstanceFromDataview = (
   }
 }
 
-export const getActivityDataviewInstance = (datasetId: string): DataviewInstance<GeneratorType> => {
+export const getBigQueryDataviewInstance = (datasetId: string): DataviewInstance<GeneratorType> => {
   const contextDataviewInstance = {
     id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
-    category: DataviewCategory.Fishing,
     config: {
-      colorCyclingType: 'line' as ColorCyclingType,
+      colorCyclingType: 'fill' as ColorCyclingType,
     },
     dataviewId: TEMPLATE_ACTIVITY_DATAVIEW_ID,
     datasetsConfig: [
       {
         datasetId,
-        params: [],
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
         endpoint: EndpointId.FourwingsTiles,
       },
     ],

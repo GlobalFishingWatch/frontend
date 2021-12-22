@@ -5,7 +5,7 @@ import { Button, InputText, SwitchRow } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { getActivityDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { getBigQueryDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   createBigQueryDatasetThunk,
@@ -43,7 +43,7 @@ const BigQueryMenu: React.FC = () => {
     const action = await dispatch(createBigQueryDatasetThunk({ name, createAsPublic, query }))
     if (createBigQueryDatasetThunk.fulfilled.match(action)) {
       const dataset = action.payload.payload as Dataset
-      const dataviewInstance = getActivityDataviewInstance(dataset.id)
+      const dataviewInstance = getBigQueryDataviewInstance(dataset.id)
       addNewDataviewInstances([dataviewInstance])
       dispatch(toggleBigQueryMenu())
     } else {
