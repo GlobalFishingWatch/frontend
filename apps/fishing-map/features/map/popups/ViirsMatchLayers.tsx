@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
@@ -35,7 +35,11 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             {t([`common.${feature.temporalgrid?.unit}` as any, 'common.detection'], 'detections', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}{' '}
-            (<I18nNumber number={notMatchedDetections} /> {t('vessel.unmatched', 'unmatched')})
+            {showFeaturesDetails && (
+              <Fragment>
+                (<I18nNumber number={notMatchedDetections} /> {t('vessel.unmatched', 'unmatched')})
+              </Fragment>
+            )}
           </span>
         </div>
         {showFeaturesDetails && (
