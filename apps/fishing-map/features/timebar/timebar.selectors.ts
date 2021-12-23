@@ -16,9 +16,9 @@ import {
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import {
   TimebarChartData,
-  TimebarChartDataChunk,
-  TimebarChartDataItem,
-  TimebarChartDataChunkValue,
+  TimebarChartChunk,
+  TimebarChartItem,
+  TimebarChartValue,
   TrackEventChunkProps,
 } from '@globalfishingwatch/timebar'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
@@ -35,7 +35,7 @@ export const selectTracksData = createSelector(
   (trackDataviews, resources) => {
     if (!trackDataviews || !resources) return
     const tracksSegments: TimebarChartData = trackDataviews.flatMap((dataview) => {
-      const timebarTrack: TimebarChartDataItem = {
+      const timebarTrack: TimebarChartItem = {
         color: dataview.config?.color,
         chunks: [],
         status: ResourceStatus.Idle,
@@ -59,15 +59,15 @@ export const selectTracksData = createSelector(
         ? geoJSONToSegments(trackResource.data as any)
         : trackResource.data || []
 
-      const chunks: TimebarChartDataChunk[] = segments.map((segment) => {
+      const chunks: TimebarChartChunk[] = segments.map((segment) => {
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
-          values: segment as TimebarChartDataChunkValue[],
+          values: segment as TimebarChartValue[],
         }
       })
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      const item: TimebarChartDataItem = {
+      const item: TimebarChartItem = {
         ...timebarTrack,
         chunks,
         status: ResourceStatus.Finished,
@@ -81,9 +81,9 @@ export const selectTracksData = createSelector(
   }
 )
 
-const getTrackGraphSpeedHighlighterLabel = (chunk, value: TimebarChartDataChunkValue) =>
+const getTrackGraphSpeedHighlighterLabel = (chunk, value: TimebarChartValue) =>
   `${value.value.toFixed(2)} knots`
-const getTrackGraphElevationighlighterLabel = (chunk, value: TimebarChartDataChunkValue) =>
+const getTrackGraphElevationighlighterLabel = (chunk, value: TimebarChartValue) =>
   `${value.value} m`
 
 export const selectTracksGraphData = createSelector(
@@ -92,7 +92,7 @@ export const selectTracksGraphData = createSelector(
     if (!tracksData || !resources) return
     const tracksGraphsData: TimebarChartData = vesselDataviews.flatMap(
       (dataview, dataviewIndex) => {
-        const trackGraphData: TimebarChartDataItem = {
+        const trackGraphData: TimebarChartItem = {
           color: dataview.config?.color,
           chunks: [],
           status: ResourceStatus.Idle,
@@ -126,10 +126,10 @@ export const selectTracksGraphData = createSelector(
           return { ...trackGraphData, status: ResourceStatus.Error }
         }
 
-        const graphChunksWithCurrentFeature: TimebarChartDataChunk[] = track.chunks.map(
+        const graphChunksWithCurrentFeature: TimebarChartChunk[] = track.chunks.map(
           (trackChunk, trackChunkIndex) => {
             const graphSegment = graphResource?.data?.[trackChunkIndex]
-            const graphChunkValues: TimebarChartDataChunkValue[] = trackChunk.values?.flatMap(
+            const graphChunkValues: TimebarChartValue[] = trackChunk.values?.flatMap(
               (trackSegmentPoint, trackSegmentPointIndex) => {
                 const graphSegmentPoint = graphSegment?.[trackSegmentPointIndex]
                 const value = (graphSegmentPoint as any)?.[timebarGraphType]
@@ -140,7 +140,7 @@ export const selectTracksGraphData = createSelector(
                 }
               }
             )
-            const graphChunk: TimebarChartDataChunk = {
+            const graphChunk: TimebarChartChunk = {
               ...trackChunk,
               values: graphChunkValues,
             }
@@ -231,7 +231,7 @@ export const selectTracksEvents = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
     const tracksEvents: TimebarChartData<TrackEventChunkProps> = trackDataviews.map((dataview) => {
-      const trackEvents: TimebarChartDataItem<TrackEventChunkProps> = {
+      const trackEvents: TimebarChartItem<TrackEventChunkProps> = {
         color: dataview.config?.color,
         chunks: [],
         status: ResourceStatus.Idle,
@@ -246,7 +246,7 @@ export const selectTracksEvents = createSelector(
       const infoResource = resources[infoUrl] as Resource<Vessel>
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
-        eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
+        eventsResources?.length && eventsResources.some(({ url }) => resources[url]?.data)
       const tracksResourceResolved = tracksUrl && trackResource?.status === ResourceStatus.Finished
       const infoResourceResolved = infoUrl && infoResource?.status === ResourceStatus.Finished
       if (!hasEventData || !tracksResourceResolved || !infoResourceResolved || !infoResource.data) {
@@ -260,27 +260,27 @@ export const selectTracksEvents = createSelector(
         return dataset.configuration?.type && visibleEvents.includes(dataset.configuration?.type)
       })
 
-      eventsResourcesFiltered.forEach(({ url }) => {
+      trackEvents.chunks = eventsResourcesFiltered.flatMap(({ url }) => {
         if (!url || !resources[url].data) {
           return []
         }
 
         const data = resources[url].data as ApiEvent[]
-        trackEvents.chunks = data.map((event) => {
+        const chunks = data.map((event) => {
           const props = getTrackEventChunkProps(
             infoResource.data,
             event,
             dataview.config?.showAuthorizationStatus
           )
-          const chunk: TimebarChartDataChunk<TrackEventChunkProps> = {
+          const chunk: TimebarChartChunk<TrackEventChunkProps> = {
             start: event.start as number,
-            end: event.start as number,
+            end: event.end as number,
             props,
           }
           return chunk
         })
+        return chunks
       })
-
       return trackEvents
     })
     return tracksEvents

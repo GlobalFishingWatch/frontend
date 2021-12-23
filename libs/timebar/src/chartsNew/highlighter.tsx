@@ -6,7 +6,7 @@ import TimelineContext from '../timelineContext'
 import { TimelineContextProps, TimelineScale } from '../types'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
-import { TimebarChartData, TimebarChartDataChunk, TimebarChartDataItem } from './common/types'
+import { TimebarChartData, TimebarChartChunk, TimebarChartItem } from './common/types'
 
 const getCoords = (hoverStart: string, hoverEnd: string, outerScale: TimelineScale) => {
   const hoverStartDate = new Date(hoverStart)
@@ -29,15 +29,15 @@ const getCoords = (hoverStart: string, hoverEnd: string, outerScale: TimelineSca
   }
 }
 
-const findChunk = (centerMs: number, item: TimebarChartDataItem) => {
-  const foundChunk = item.chunks.find((chunk: TimebarChartDataChunk, chunkIndex: number) => {
+const findChunk = (centerMs: number, item: TimebarChartItem) => {
+  const foundChunk = item.chunks.find((chunk: TimebarChartChunk, chunkIndex: number) => {
     const chunkEnd = chunk.end || item.chunks[chunkIndex + 1]?.start || Number.NEGATIVE_INFINITY
     return centerMs > chunk.start && centerMs < chunkEnd
   })
   return foundChunk
 }
 
-const findValue = (centerMs: number, chunk: TimebarChartDataChunk) => {
+const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
   if (!chunk.values) return undefined
   const foundValue = chunk.values.find((value, valueIndex) => {
     const valueEnd =

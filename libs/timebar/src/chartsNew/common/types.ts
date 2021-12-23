@@ -8,26 +8,29 @@ export type TrackEventChunkProps = {
   descriptionGeneric: string
 }
 
-export type TimebarChartDataChunkValue = {
+export type TimebarChartValue = {
   timestamp: number
   value?: number
 }
 
-export type TimebarChartDataChunk<T = void> = {
+export type TimebarChartChunk<T = void> = {
   start: number
   end?: number
   id?: string | number
-  values?: TimebarChartDataChunkValue[]
+  values?: TimebarChartValue[]
+  x?: number
+  width?: number
   props?: T
 }
 
-export type TimebarChartDataItem<T = void> = {
-  chunks: TimebarChartDataChunk<T>[]
+export type TimebarChartItem<T = void> = {
+  chunks: TimebarChartChunk<T>[]
   color?: string
   status?: ResourceStatus
+  y?: number
   getHighlighterLabel?:
     | string
-    | ((chunk: TimebarChartDataChunk, value: TimebarChartDataChunkValue | undefined) => string)
+    | ((chunk: TimebarChartChunk, value: TimebarChartValue | undefined) => string)
 }
 
-export type TimebarChartData<T = void> = TimebarChartDataItem<T>[]
+export type TimebarChartData<T = void> = TimebarChartItem<T>[]

@@ -5,7 +5,6 @@ export { TimelineContext } from './timelineContext'
 export { ImmediateContext } from './immediateContext'
 export { default as Timebar } from './timebar'
 export { default as TimebarEvents } from './charts/events'
-export { default as TimebarTracksEvents } from './charts/tracks-events'
 export { default as TimebarStackedActivity } from './charts/stacked-activity'
 
 export * from './chartsNew'

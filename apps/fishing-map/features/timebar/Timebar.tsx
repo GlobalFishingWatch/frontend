@@ -8,7 +8,7 @@ import {
   TimebarTracks,
   TimebarHighlighter,
   TimebarTracksEvents,
-  TimebarTrackGraph,
+  TimebarTracksGraph,
   TimebarChartData,
 } from '@globalfishingwatch/timebar'
 import { ApiEvent } from '@globalfishingwatch/api-types'
@@ -65,7 +65,6 @@ const TimebarWrapper = () => {
   const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
   const tracksEvents = useSelector(selectTracksEvents)
-  console.log(tracksEvents)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const dispatch = useDispatch()
@@ -254,7 +253,7 @@ const TimebarWrapper = () => {
                 <Fragment>
                   <TimebarTracks key="tracks" data={tracks} orientation={trackGraphOrientation} />
                   {showGraph && tracksGraphsData && (
-                    <TimebarTrackGraph
+                    <TimebarTracksGraph
                       key="trackGraph"
                       data={tracksGraphsData}
                       orientation={trackGraphOrientation}
@@ -262,14 +261,15 @@ const TimebarWrapper = () => {
                   )}
                   {tracksEvents && (
                     <Fragment>
-                      {/* <TimebarTracksEvents
-                        key="events"
-                        labels={labels?.trackEvents}
-                        preselectedEventId={highlightedEvent?.id}
-                        tracksEvents={tracksEvents as any}
-                        onEventClick={onEventClick}
-                        onEventHover={onEventHover}
-                      /> */}
+                      <TimebarTracksEvents
+                        data={tracksEvents}
+                        // key="events"
+                        // labels={labels?.trackEvents}
+                        // preselectedEventId={highlightedEvent?.id}
+                        // tracksEvents={tracksEvents as any}
+                        // onEventClick={onEventClick}
+                        // onEventHover={onEventHover}
+                      />
                     </Fragment>
                   )}
                 </Fragment>
