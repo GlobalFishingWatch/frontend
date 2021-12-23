@@ -64,11 +64,12 @@ export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   'presence-detail',
   'viirs-match',
 ]
+// TODO remove once match-prototype is ready for production
 export const SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION = ['viirs']
 
 export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
   return {
-    vessels: vessels,
+    vessels,
     numVessels: vessels.length,
     overflow: vessels.length > MAX_TOOLTIP_LIST,
     overflowNumber: vessels.length - MAX_TOOLTIP_LIST,

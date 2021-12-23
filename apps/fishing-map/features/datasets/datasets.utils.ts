@@ -256,10 +256,15 @@ const getCommonSchemaTypeInDataview = (
   return datasetSchemas?.[0]
 }
 
+export type SchemaFieldSelection = {
+  id: string
+  label: any
+}
+
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
-) => {
+): SchemaFieldSelection[] => {
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
   )

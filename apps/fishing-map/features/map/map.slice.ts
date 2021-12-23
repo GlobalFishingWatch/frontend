@@ -237,7 +237,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         })
       })
 
-      const topIncidenceVessels = vesselsBySource
+      const topActivityVessels = vesselsBySource
         .map((source) => {
           return source
             .flatMap((source) => source)
@@ -246,14 +246,14 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         })
         .flatMap((v) => v)
 
-      const topIncidenceVesselsDatasets = uniqBy(
-        topIncidenceVessels.map(({ dataset }) => dataset),
+      const topActivityVesselsDatasets = uniqBy(
+        topActivityVessels.map(({ dataset }) => dataset),
         'id'
       )
 
       // Grab related dataset to fetch info from and prepare tracks
       const allInfoDatasets = await Promise.all(
-        topIncidenceVesselsDatasets.flatMap(async (dataset) => {
+        topActivityVesselsDatasets.flatMap(async (dataset) => {
           const infoDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Vessels)
           if (!infoDatasets) {
             return []
@@ -274,8 +274,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         })
       )
       const infoDatasets = allInfoDatasets.flatMap((d) => d || [])
-      const topIndicenceVesselIds = topIncidenceVessels.map(({ id, vessel_id }) => id)
-      const vesselsInfo = await fetchVesselInfo(infoDatasets, topIndicenceVesselIds, signal)
+      const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
+      const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
       const sublayersIds = fishingActivityFeatures.map(
         (feature) => feature.temporalgrid?.sublayerId || ''
