@@ -12,7 +12,7 @@ import {
   getVesselDataviewInstance,
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getDatasetLabel, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
   ActivityProperty,
@@ -133,30 +133,28 @@ function VesselsTable({
       label: getEventLabel([vessel.dataset.id, vessel.id]),
     })
   }
+  const vesselsLoaded = Math.min(MAX_VESSELS_LOAD, feature.vesselsInfo?.numVessels)
   return (
     <Fragment>
-      <table className={cx(styles.vesselsTable, { [styles.fullWidth]: showFullList })}>
-        <thead>
-          <tr>
-            <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
-            <th>{t('vessel.flag_short', 'iso3')}</th>
-            <th>{t('vessel.gearType_short', 'gear')}</th>
-            <th>{t('vessel.source_short', 'source')}</th>
-            <th className={styles.vesselsTableHeaderRight}>
-              {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
-              {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
-              {feature.temporalgrid?.unit === 'detections' &&
-                t('common.detection_other', 'detections')}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {vessels?.length > 0 &&
-            vessels.map((vessel, i) => {
-              const vesselName =
-                vessel.shipname !== undefined
-                  ? formatInfoField(vessel.shipname, 'name')
-                  : t('vessel.notMatched', 'No data matched')
+      {vessels?.length > 0 && (
+        <table className={cx(styles.vesselsTable, { [styles.fullWidth]: showFullList })}>
+          <thead>
+            <tr>
+              <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
+              <th>{t('vessel.flag_short', 'iso3')}</th>
+              <th>{t('vessel.gearType_short', 'gear')}</th>
+              <th>{t('vessel.source_short', 'source')}</th>
+              <th className={styles.vesselsTableHeaderRight}>
+                {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
+                {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
+                {feature.temporalgrid?.unit === 'detections' &&
+                  t('common.detection_other', 'detections')}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {vessels.map((vessel, i) => {
+              const vesselName = formatInfoField(vessel.shipname, 'name')
 
               const vesselGearType = `${t(
                 `vessel.gearTypes.${vessel.geartype}` as any,
@@ -198,15 +196,18 @@ function VesselsTable({
                     </Tooltip>
                   </td>
                   <td className={styles.columnSpace}>{vesselGearType}</td>
-                  <td className={styles.columnSpace}>{vessel.dataset && vessel.dataset.name}</td>
+                  <td className={styles.columnSpace}>
+                    {getDatasetLabel(vessel.infoDataset) || EMPTY_FIELD_PLACEHOLDER}
+                  </td>
                   <td className={cx(styles.vesselsTableHour, styles.columnSpace)}>
                     <I18nNumber number={vessel[vesselProperty]} />
                   </td>
                 </tr>
               )
             })}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      )}
       {feature.vesselsInfo && !showFullList && (
         <Fragment>
           {feature.vesselsInfo.overflow && (
@@ -230,10 +231,11 @@ function VesselsTable({
           {feature.vesselsInfo && (
             <div className={styles.modalContainer}>
               <VesselsTable feature={feature} showFullList={true} vesselProperty={vesselProperty} />
-              <div className={styles.vesselsMore}>
-                {Math.min(MAX_VESSELS_LOAD, feature.vesselsInfo.numVessels)} displayed out of{' '}
-                {feature.vesselsInfo.numVessels}
-              </div>
+              {vesselsLoaded !== feature.vesselsInfo.numVessels && (
+                <div className={styles.vesselsMore}>
+                  {vesselsLoaded} displayed out of {feature.vesselsInfo.numVessels}
+                </div>
+              )}
             </div>
           )}
         </Modal>
