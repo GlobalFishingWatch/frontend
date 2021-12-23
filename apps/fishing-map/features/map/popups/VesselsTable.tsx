@@ -153,7 +153,11 @@ function VesselsTable({
         <tbody>
           {vessels?.length > 0 &&
             vessels.map((vessel, i) => {
-              const vesselName = formatInfoField(vessel.shipname, 'name')
+              const vesselName =
+                vessel.shipname !== undefined
+                  ? formatInfoField(vessel.shipname, 'name')
+                  : t('vessel.notMatched', 'No data matched')
+
               const vesselGearType = `${t(
                 `vessel.gearTypes.${vessel.geartype}` as any,
                 EMPTY_FIELD_PLACEHOLDER
@@ -167,8 +171,8 @@ function VesselsTable({
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
               return (
                 <tr key={i}>
-                  <td className={styles.icon}>
-                    {!pinTrackDisabled && (
+                  {!pinTrackDisabled && (
+                    <td className={styles.icon}>
                       <IconButton
                         icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                         style={{
@@ -185,17 +189,17 @@ function VesselsTable({
                         onClick={(e) => onVesselClick(e, vessel)}
                         size="small"
                       />
-                    )}
-                  </td>
-                  <td>{vesselName}</td>
-                  <td>
+                    </td>
+                  )}
+                  <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1}>{vesselName}</td>
+                  <td className={styles.columnSpace}>
                     <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
-                      <span>{vessel.flag}</span>
+                      <span>{vessel.flag || EMPTY_FIELD_PLACEHOLDER}</span>
                     </Tooltip>
                   </td>
-                  <td>{vesselGearType}</td>
-                  <td>{vessel.dataset && vessel.dataset.name}</td>
-                  <td className={styles.vesselsTableHour}>
+                  <td className={styles.columnSpace}>{vesselGearType}</td>
+                  <td className={styles.columnSpace}>{vessel.dataset && vessel.dataset.name}</td>
+                  <td className={cx(styles.vesselsTableHour, styles.columnSpace)}>
                     <I18nNumber number={vessel[vesselProperty]} />
                   </td>
                 </tr>
