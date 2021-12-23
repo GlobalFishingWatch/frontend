@@ -31,7 +31,7 @@
   border-bottom: 1px solid var(--color-terthiary-blue);
 }
 
-.vesselsTable td:not(:first-child):not(:nth-child(2)),
+.vesselsTable .columnSpace,
 .vesselsTable th:not(:first-child) {
   padding-left: 2rem;
 }
@@ -51,4 +51,21 @@
 
 .vesselsTable.fullWidth {
   width: 100%;
+}
+
+.modalContainer {
+  padding-bottom: 3rem;
+}
+
+.vesselsMore,
+.vesselsDisplayed {
+  opacity: var(--opacity-secondary);
+}
+
+.vesselsMore {
+  cursor: pointer;
+}
+
+.vesselsMore:disabled {
+  cursor: unset;
 }

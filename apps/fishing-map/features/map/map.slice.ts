@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { uniq, uniqBy } from 'lodash'
+import { uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -24,10 +24,11 @@ import { selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 
 export const MAX_TOOLTIP_LIST = 5
-export const MAX_VESSELS_LOAD = 200
+export const MAX_VESSELS_LOAD = 150
 
 export type ExtendedFeatureVesselDatasets = Vessel & {
   id: string
+  vessel_id?: string // TODO define how vessel is returned in API
   dataset: Dataset
   infoDataset?: Dataset
   trackDataset?: Dataset
@@ -41,17 +42,8 @@ export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
 export type ApiViirsStats = {
-  detect_id: string
-  qf_detect: number
   radiance: number
-  vessel_id: string
-}
-
-export type ExtendedViirsFeature = {
-  detect_id: string
   qf_detect: number
-  radiance: number
-  vessel?: ExtendedFeatureVesselDatasets
 }
 
 export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
@@ -59,7 +51,7 @@ export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 export type SliceExtendedFeature = ExtendedFeature & {
   event?: ExtendedFeatureEvent
   vessels?: ExtendedFeatureVessel[]
-  viirs?: ExtendedViirsFeature[]
+  viirs?: ApiViirsStats[]
 }
 
 // Extends the default extendedEvent including event and vessels information from API
@@ -192,15 +184,19 @@ export const fetchVesselInfo = async (
   }
 }
 
+export type ActivityProperty = 'hours' | 'detections'
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  { fishingActivityFeatures: ExtendedFeature[] },
+  { fishingActivityFeatures: ExtendedFeature[]; activityProperty?: ActivityProperty },
   {
     dispatch: AppDispatch
   }
 >(
   'map/fetchFishingActivityInteraction',
-  async ({ fishingActivityFeatures }, { getState, signal, dispatch }) => {
+  async (
+    { fishingActivityFeatures, activityProperty = 'hours' },
+    { getState, signal, dispatch }
+  ) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
     const temporalgridDataviews = selectActivityDataviews(state) || []
@@ -214,9 +210,17 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
     const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
     if (interactionUrl) {
-      const sublayersVesselsIds = await GFWAPI.fetch<ExtendedFeatureVessel[]>(interactionUrl, {
-        signal,
-      })
+      const sublayersVesselsIdsResponse = await GFWAPI.fetch<ExtendedFeatureVessel[]>(
+        interactionUrl,
+        { signal }
+      )
+      // TODO remove once normalized in api between id and vessel_id
+      const sublayersVesselsIds = sublayersVesselsIdsResponse.map((sublayer) =>
+        sublayer.map((vessel) => {
+          const { id, vessel_id, ...rest } = vessel
+          return { ...rest, id: id || vessel_id }
+        })
+      )
 
       let startingIndex = 0
       const vesselsBySource: ExtendedFeatureVessel[][][] = featuresDataviews.map((dataview) => {
@@ -233,23 +237,23 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         })
       })
 
-      const topHoursVessels = vesselsBySource
+      const topActivityVessels = vesselsBySource
         .map((source) => {
           return source
             .flatMap((source) => source)
-            .sort((a, b) => b.hours - a.hours)
+            .sort((a, b) => b[activityProperty] - a[activityProperty])
             .slice(0, MAX_VESSELS_LOAD)
         })
         .flatMap((v) => v)
 
-      const topHoursVesselsDatasets = uniqBy(
-        topHoursVessels.map(({ dataset }) => dataset),
+      const topActivityVesselsDatasets = uniqBy(
+        topActivityVessels.map(({ dataset }) => dataset),
         'id'
       )
 
       // Grab related dataset to fetch info from and prepare tracks
       const allInfoDatasets = await Promise.all(
-        topHoursVesselsDatasets.flatMap(async (dataset) => {
+        topActivityVesselsDatasets.flatMap(async (dataset) => {
           const infoDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Vessels)
           if (!infoDatasets) {
             return []
@@ -270,12 +274,13 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         })
       )
       const infoDatasets = allInfoDatasets.flatMap((d) => d || [])
-      const topHoursVesselIds = topHoursVessels.map(({ id }) => id)
-      const vesselsInfo = await fetchVesselInfo(infoDatasets, topHoursVesselIds, signal)
+      const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
+      const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
       const sublayersIds = fishingActivityFeatures.map(
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
+
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         return {
           sublayerId: sublayersIds[i],
@@ -299,7 +304,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 }
               })
             })
-            .sort((a, b) => b.hours - a.hours),
+            .sort((a, b) => b[activityProperty] - a[activityProperty]),
         }
       })
 
@@ -309,7 +314,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 )
 
 export const fetchViirsInteractionThunk = createAsyncThunk<
-  ExtendedViirsFeature[] | undefined,
+  ApiViirsStats[] | undefined,
   { feature: ExtendedFeature },
   {
     dispatch: AppDispatch
@@ -320,11 +325,12 @@ export const fetchViirsInteractionThunk = createAsyncThunk<
     return
   }
   const state = getState() as RootState
-  const userLogged = selectUserLogged(state)
   const temporalgridDataviews = selectActivityDataviews(state) || []
 
-  const { featuresDataviews, fourWingsDataset, datasetConfig } =
-    getInteractionEndpointDatasetConfig([feature], temporalgridDataviews)
+  const { fourWingsDataset, datasetConfig } = getInteractionEndpointDatasetConfig(
+    [feature],
+    temporalgridDataviews
+  )
 
   const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
   if (interactionUrl) {
@@ -332,42 +338,7 @@ export const fetchViirsInteractionThunk = createAsyncThunk<
       signal,
     })
 
-    const viirsStats = viirsResponse?.[0]
-    // TODO request only top radiance vessel and use MAX_TOOLTIP_LIST
-    const viirsVesselIds = uniq(viirsStats.flatMap(({ vessel_id }) => vessel_id || []))
-    const vesselDatasetIds = featuresDataviews.flatMap((dataview) =>
-      (dataview.datasets || [])?.flatMap((dataset) =>
-        (dataset.relatedDatasets || []).flatMap(({ id, type }) =>
-          type === DatasetTypes.Vessels ? id : []
-        )
-      )
-    )
-    const vesselDatasets = vesselDatasetIds.flatMap((id) => selectDatasetById(id)(state) || [])
-    const vesselsInfo = await fetchVesselInfo(vesselDatasets, viirsVesselIds, signal)
-
-    return viirsStats.map((stat) => {
-      const { vessel_id, ...rest } = stat
-      const vessel = vesselsInfo?.find((v) => v.id === stat.vessel_id)
-
-      // TODO merge funcionality with fishing thunk
-      const infoDataset = selectDatasetById(vessel?.dataset as string)(state)
-      const trackDatasetId = getRelatedDatasetByType(
-        infoDataset,
-        DatasetTypes.Tracks,
-        userLogged
-      )?.id
-      const trackDataset = selectDatasetById(trackDatasetId as string)(state)
-
-      return {
-        ...rest,
-        vessel: {
-          ...vessel,
-          dataset: infoDataset,
-          infoDataset,
-          trackDataset,
-        },
-      } as ExtendedViirsFeature
-    })
+    return viirsResponse?.[0]
   }
 })
 

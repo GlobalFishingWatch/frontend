@@ -1,16 +1,9 @@
-import React, { Fragment, useState, useCallback } from 'react'
+import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { Modal } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { ROOT_DOM_ELEMENT } from 'data/config'
-import { MAX_VESSELS_LOAD } from 'features/map/map.slice'
-import { isGFWUser } from 'features/user/user.slice'
 import popupStyles from './Popup.module.css'
-import styles from './FishingLayers.module.css'
-import VesselsTable from './VesselsTable'
+import VesselsTable, { getVesselTableTitle } from './VesselsTable'
 
 type FishingTooltipRowProps = {
   feature: TooltipEventFeature
@@ -19,46 +12,10 @@ type FishingTooltipRowProps = {
 
 function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
-  const gfwUser = useSelector(isGFWUser)
-
-  const [modalOpen, setModalOpen] = useState(false)
-
-  const onModalClose = useCallback(() => {
-    setModalOpen(false)
-  }, [setModalOpen])
-
-  let title = feature.title
-  if (feature.temporalgrid && feature.temporalgrid.interval === '10days') {
-    title = [
-      title,
-      t('common.dateRange', {
-        start: formatI18nDate(feature.temporalgrid.visibleStartDate),
-        end: formatI18nDate(feature.temporalgrid.visibleEndDate),
-        defaultValue: 'between {{start}} and {{end}}',
-      }),
-    ].join(' ')
-  }
+  const title = getVesselTableTitle(feature)
 
   return (
     <Fragment>
-      {gfwUser && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={title}
-          isOpen={modalOpen}
-          onClose={onModalClose}
-        >
-          {feature.vesselsInfo && (
-            <div className={styles.modalContainer}>
-              <VesselsTable feature={feature} showFullList={true} />
-              <div className={styles.vesselsMore}>
-                {Math.min(MAX_VESSELS_LOAD, feature.vesselsInfo.numVessels)} displayed out of{' '}
-                {feature.vesselsInfo.numVessels}
-              </div>
-            </div>
-          )}
-        </Modal>
-      )}
       <div className={popupStyles.popupSection}>
         <span
           className={popupStyles.popupSectionColor}
@@ -74,20 +31,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
               })}
             </span>
           </div>
-          {feature.vesselsInfo && (
-            <Fragment>
-              <VesselsTable feature={feature} />
-              {feature.vesselsInfo.overflow && (
-                <button
-                  className={styles.vesselsMore}
-                  disabled={!gfwUser}
-                  onClick={() => setModalOpen(true)}
-                >
-                  + {feature.vesselsInfo.overflowNumber} {t('common.more', 'more')}
-                </button>
-              )}
-            </Fragment>
-          )}
+          {showFeaturesDetails && <VesselsTable feature={feature} />}
         </div>
       </div>
     </Fragment>
