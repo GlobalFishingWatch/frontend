@@ -26,6 +26,7 @@ import { isPrivateDataset } from 'features/datasets/datasets.utils'
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
 export const FISHING_LAYER_PREFIX = 'fishing-'
+export const BIG_QUERY_PREFIX = 'bq-'
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
@@ -215,7 +216,7 @@ export const getBigQueryDataviewInstance = (
   { aggregationOperation = AggregationOperation.Sum } = {}
 ): DataviewInstance<GeneratorType> => {
   const contextDataviewInstance = {
-    id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
+    id: `${BIG_QUERY_PREFIX}${Date.now()}`,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
       aggregationOperation,

@@ -41,7 +41,6 @@ const BigQueryMenu: React.FC = () => {
   const [aggregationOperation, setAggregationOperation] = useState<AggregationOperation | null>(
     null
   )
-  console.log(aggregationOperation)
   const [runCostChecked, setRunCostChecked] = useState(false)
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
