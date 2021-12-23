@@ -10,6 +10,7 @@ import {
   ExtendedStyle,
   ExtendedStyleMeta,
   GeneratorPromise,
+  HeatmapLayerMeta,
 } from './types'
 import {
   GlobalGeneratorConfig,
@@ -60,7 +61,9 @@ export class LayerComposer {
 
   _getGeneratorMetadata = (layers: GeneratorStyles[]): ExtendedStyleMeta => {
     const generatorsMetadata = Object.fromEntries(
-      layers.filter((layer) => layer.metadata).map((layer) => [layer.id, layer.metadata])
+      layers
+        .filter((layer) => layer.metadata)
+        .map((layer) => [layer.id, layer.metadata as HeatmapLayerMeta])
     )
     const metadata = {
       generatedAt: Date.now(),

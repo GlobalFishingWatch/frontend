@@ -13,6 +13,10 @@ import type {
 } from '@globalfishingwatch/mapbox-gl'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
+  AggregationOperation,
+  SublayerCombinationMode,
+} from '@globalfishingwatch/fourwings-aggregate'
+import {
   GeneratorType,
   ColorRampsIds,
   GeneratorLegend,
@@ -20,6 +24,7 @@ import {
   GeneratorConfig,
   AnyGeneratorConfig,
 } from '../generators/types'
+import { TimeChunks } from '../generators/heatmap/util/time-chunks'
 
 export interface GeneratorDataviewConfig<T = GeneratorType> extends DataviewConfig<T> {
   colorRamp?: ColorRampsIds
@@ -106,6 +111,20 @@ export interface ExtendedLayerMeta {
   color?: string
 }
 
+export interface HeatmapLayerMeta {
+  aggregationOperation: AggregationOperation
+  breaks: number[]
+  group: Group
+  legends: LayerMetadataLegend | LayerMetadataLegend[]
+  multiplier: number
+  numSublayers: number
+  sublayerCombinationMode: SublayerCombinationMode
+  sublayers: HeatmapLayer[]
+  temporalgrid: true
+  timeChunks: TimeChunks
+  visibleSublayers: boolean[]
+}
+
 export type AnyLayer =
   | BackgroundLayer
   | CircleLayer
@@ -127,7 +146,7 @@ export type ExtendedLayer = AnyLayer & {
 export interface ExtendedStyleMeta {
   generatedAt?: number
   interactiveLayerIds?: string[]
-  generatorsMetadata?: Record<string, any>
+  generatorsMetadata?: Record<string, HeatmapLayerMeta>
 }
 
 /**

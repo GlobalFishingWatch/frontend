@@ -10,7 +10,9 @@ import {
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import {
+  TEMPLATE_ACTIVITY_DATAVIEW_ID,
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
   TEMPLATE_CONTEXT_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
@@ -24,6 +26,7 @@ import { isPrivateDataset } from 'features/datasets/datasets.utils'
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
 export const FISHING_LAYER_PREFIX = 'fishing-'
+export const BIG_QUERY_PREFIX = 'bq-'
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
@@ -181,7 +184,7 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
       {
         datasetId,
         params: [],
-        endpoint: 'user-context-tiles',
+        endpoint: EndpointId.UserContextTiles,
       },
     ],
   }
@@ -206,6 +209,33 @@ export const getActivityDataviewInstanceFromDataview = (
       colorCyclingType: 'fill' as ColorCyclingType,
     },
   }
+}
+
+export const getBigQueryDataviewInstance = (
+  datasetId: string,
+  { aggregationOperation = AggregationOperation.Sum } = {}
+): DataviewInstance<GeneratorType> => {
+  const contextDataviewInstance = {
+    id: `${BIG_QUERY_PREFIX}${Date.now()}`,
+    config: {
+      colorCyclingType: 'fill' as ColorCyclingType,
+      aggregationOperation,
+    },
+    dataviewId: TEMPLATE_ACTIVITY_DATAVIEW_ID,
+    datasetsConfig: [
+      {
+        datasetId,
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: EndpointId.FourwingsTiles,
+      },
+    ],
+  }
+  return contextDataviewInstance
 }
 
 export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {

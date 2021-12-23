@@ -155,7 +155,7 @@ function NewWorkspaceModal({
       appSelector={ROOT_DOM_ELEMENT}
       title={title || t('workspace.save', 'Save the current workspace')}
       isOpen={isOpen}
-      shouldCloseOnEsc={true}
+      shouldCloseOnEsc
       contentClassName={styles.modal}
       onClose={onClose}
     >
