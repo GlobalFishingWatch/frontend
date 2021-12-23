@@ -134,6 +134,7 @@ function VesselsTable({
     })
   }
   const vesselsLoaded = Math.min(MAX_VESSELS_LOAD, feature.vesselsInfo?.numVessels)
+
   return (
     <Fragment>
       {vessels?.length > 0 && (
@@ -221,7 +222,7 @@ function VesselsTable({
           )}
         </Fragment>
       )}
-      {gfwUser && (
+      {gfwUser && !showFullList && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           title={title}
@@ -232,9 +233,9 @@ function VesselsTable({
             <div className={styles.modalContainer}>
               <VesselsTable feature={feature} showFullList={true} vesselProperty={vesselProperty} />
               {vesselsLoaded !== feature.vesselsInfo.numVessels && (
-                <div className={styles.vesselsMore}>
+                <button className={styles.vesselsDisplayed}>
                   {vesselsLoaded} displayed out of {feature.vesselsInfo.numVessels}
-                </div>
+                </button>
               )}
             </div>
           )}

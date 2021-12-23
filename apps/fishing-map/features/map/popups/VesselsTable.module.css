@@ -57,8 +57,12 @@
   padding-bottom: 3rem;
 }
 
-.vesselsMore {
+.vesselsMore,
+.vesselsDisplayed {
   opacity: var(--opacity-secondary);
+}
+
+.vesselsMore {
   cursor: pointer;
 }
 
