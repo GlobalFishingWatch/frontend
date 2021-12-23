@@ -27,13 +27,6 @@ function ActivitySchemaFilter({
   }
   const { id, tooltip, disabled, options, optionsSelected, type } = schemaFilter
   if (type === 'number') {
-    const onSliderChange = (range) => {
-      const selection = range.map((id) => ({
-        id: id.toString(),
-        label: id.toString(),
-      }))
-      onSelect(id, selection)
-    }
     const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
     const rangeValues =
       optionsSelected?.length > 0
@@ -41,6 +34,18 @@ function ActivitySchemaFilter({
         : optionValues
 
     const range = [rangeValues[0], rangeValues[rangeValues.length - 1]]
+
+    const onSliderChange = (rangeSelected) => {
+      if (rangeSelected[0] === range[0] && rangeSelected[1] === range[1]) {
+        onClean(id)
+      } else {
+        const selection = rangeSelected.map((id) => ({
+          id: id.toString(),
+          label: id.toString(),
+        }))
+        onSelect(id, selection)
+      }
+    }
     return (
       <Slider
         className={styles.multiSelect}
