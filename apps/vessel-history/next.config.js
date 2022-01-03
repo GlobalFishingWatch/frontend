@@ -32,7 +32,8 @@ const nextConfig = {
   },
 
   // i18n,
-  basePath: process.env.NODE_ENV === 'production' ? '/vessel-viewer' : '',
+  basePath:
+    process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/vessel-viewer' : ''),
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
@@ -60,6 +61,8 @@ module.exports = withPlugins(
           customWorkerDir: 'offline',
           buildExcludes: [/middleware-manifest.json$/],
           runtimeCaching,
+          scope: '/vessel-viewer',
+          // dynamicStartUrl: true,
           // scope: '/vessel-viewer',
           // sw: 'sw.js',
           //...
