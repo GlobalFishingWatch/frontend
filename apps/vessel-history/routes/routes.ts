@@ -14,9 +14,10 @@ import { AppActions, AppState } from 'types/redux.types'
 import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
+import { BASE_URL } from 'data/constants'
 
-export const PATH_BASENAME =
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' ? '/vessel-viewer' : ''
+export const PATH_BASENAME = BASE_URL
+// process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' ? '/vessel-viewer' : ''
 
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
