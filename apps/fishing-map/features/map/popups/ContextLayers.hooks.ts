@@ -46,7 +46,6 @@ export const useContextInteractions = () => {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-
       batch(() => {
         dispatch(
           setDownloadActivityGeometry({

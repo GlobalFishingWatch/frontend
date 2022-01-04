@@ -1,5 +1,6 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
+import { event as uaEvent } from 'react-ga'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
@@ -21,6 +22,14 @@ type ContextTooltipRowProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, 'layerId')
+
+  const trackOnDownloadClick = useCallback((event, feature) => {
+    uaEvent({
+      category: 'Data downloads',
+      action: `Click on polygon, click on download icon`,
+    })
+    onDownloadClick(event, feature)
+  }, [onDownloadClick])
 
   return (
     <Fragment>
@@ -81,7 +90,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     label={label}
                     linkHref={linkHref}
                     showFeaturesDetails={showFeaturesDetails}
-                    handleDownloadClick={(e) => onDownloadClick(e, feature)}
+                    handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
                     handleReportClick={(e) => onReportClick(e, feature)}
                   />
                 )
