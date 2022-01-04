@@ -27,9 +27,9 @@ clientsClaim()
 // even if you decide not to use precaching. See https://cra.link/PWA
 // console.log({ env: process.env, self })
 
-const WB_MANIFEST = self.__WB_MANIFEST || []
-console.log(WB_MANIFEST)
-precacheAndRoute(WB_MANIFEST)
+// const WB_MANIFEST = self.__WB_MANIFEST || []
+// console.log(WB_MANIFEST)
+// precacheAndRoute(WB_MANIFEST)
 // const precacheController = new PrecacheController()
 
 // self.addEventListener('install', (event: ExtendableEvent) => {

@@ -1,8 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const { cwd } = require('process')
 const withPlugins = require('next-compose-plugins')
 const withNx = require('@nrwl/next/plugins/with-nx')
 const withPWA = require('next-pwa')
 const runtimeCaching = require('next-pwa/cache')
+const getStaticPrecacheEntries = require('./utils/staticprecache')
 
 // const { i18n } = require('./next-i18next.config')
 
@@ -62,6 +64,16 @@ module.exports = withPlugins(
           buildExcludes: [/middleware-manifest.json$/],
           runtimeCaching,
           scope: '/vessel-viewer',
+          additionalManifestEntries: [
+            ...getStaticPrecacheEntries({
+              ...nextConfig,
+              // exclude icon-related files from the precache since they are platform specific
+              // note: no need to pass publicExcludes to next-pwa, it's not used for anything else
+              publicExcludes: ['!*.png', '!*.ico', '!browserconfig.xml'],
+              // set the public folder path
+              publicPath: `${cwd()}/apps/vessel-history/public`,
+            }),
+          ],
           // dynamicStartUrl: true,
           // scope: '/vessel-viewer',
           // sw: 'sw.js',
