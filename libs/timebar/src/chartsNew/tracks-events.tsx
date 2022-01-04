@@ -6,7 +6,7 @@ import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { TimebarChartData, TimebarChartItem, TrackEventChunkProps } from './common/types'
 import styles from './tracks-events.module.css'
-import { useFilteredChartData } from './common/hooks'
+import { useFilteredChartData, useClusteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
 
 const getTracksEventsWithCoords = (
@@ -49,7 +49,8 @@ const TracksEvents = ({ data }: { data: TimebarChartData }) => {
     outerStart,
     outerEnd,
   } = useContext(TimelineContext) as TimelineContextProps
-  const filteredTracksEvents = useFilteredChartData(data as TimebarChartData)
+  const clusteredTracksEvents = useClusteredChartData(data as TimebarChartData)
+  const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
   const tracksEventsWithCoords = useMemo(
     () => getTracksEventsWithCoords(filteredTracksEvents, outerScale, graphHeight),
     [filteredTracksEvents, outerScale, graphHeight]
@@ -71,7 +72,7 @@ const TracksEvents = ({ data }: { data: TimebarChartData }) => {
               className={cx(styles.event, {
                 // [styles.highlighted]: eventHighlighted && eventHighlighted.id === event.id,
               })}
-              data-type={event.props?.type}
+              data-type={event.type}
               style={{
                 background: event.props?.color || 'white',
                 left: `${event.x}px`,

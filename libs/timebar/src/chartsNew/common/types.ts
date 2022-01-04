@@ -1,7 +1,6 @@
 import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 
 export type TrackEventChunkProps = {
-  type: EventTypes
   color: string
   colorLabels?: string
   description: string
@@ -13,13 +12,19 @@ export type TimebarChartValue = {
   value?: number
 }
 
+export type TimebarChartChunkCluster = {
+  numChunks: number
+}
+
 export type TimebarChartChunk<T = void> = {
   start: number
   end?: number
   id?: string | number
+  type?: EventTypes
   values?: TimebarChartValue[]
   x?: number
   width?: number
+  cluster?: TimebarChartChunkCluster
   props?: T
 }
 

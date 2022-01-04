@@ -219,7 +219,6 @@ const getTrackEventChunkProps = (
   const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
 
   return {
-    type: event.type,
     color,
     colorLabels,
     description,
@@ -276,6 +275,7 @@ export const selectTracksEvents = createSelector(
             id: event.id,
             start: event.start as number,
             end: event.end as number,
+            type: event.type,
             props,
           }
           return chunk
