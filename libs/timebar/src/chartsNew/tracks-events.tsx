@@ -22,13 +22,12 @@ const getTracksEventsWithCoords = (
       y: baseTrackY.defaultY,
       chunks: !trackEvents.chunks
         ? []
-        : trackEvents.chunks.map((chunk, id) => {
+        : trackEvents.chunks.map((chunk) => {
             const x = outerScale(chunk.start)
             const x2 = chunk.end ? outerScale(chunk.end) : x
             const width = Math.max(1, x2 - x)
             return {
               ...chunk,
-              id,
               x,
               width,
             }

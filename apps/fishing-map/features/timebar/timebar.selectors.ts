@@ -273,6 +273,7 @@ export const selectTracksEvents = createSelector(
             dataview.config?.showAuthorizationStatus
           )
           const chunk: TimebarChartChunk<TrackEventChunkProps> = {
+            id: event.id,
             start: event.start as number,
             end: event.end as number,
             props,
