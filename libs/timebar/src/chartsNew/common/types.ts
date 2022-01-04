@@ -24,6 +24,7 @@ export type TimebarChartChunk<T = void> = {
   values?: TimebarChartValue[]
   x?: number
   width?: number
+  height?: number
   cluster?: TimebarChartChunkCluster
   props?: T
 }

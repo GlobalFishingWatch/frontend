@@ -12,4 +12,40 @@
   border-radius: 7px;
   border: 2px solid transparent;
   cursor: pointer;
+  height: 4px;
+}
+
+.encounter,
+.port_visit {
+  border-radius: 0;
+  filter: drop-shadow(0 0 1px var(--timebar-main-background-color));
+  height: 8px;
+  min-width: 8px;
+  z-index: 1;
+}
+
+.encounter::after,
+.encounter::before {
+  content: '';
+  height: 0;
+  width: 0;
+  display: block;
+  transform: translateY(-25%);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  position: absolute;
+}
+
+.encounter::after {
+  border-left: 4px solid red;
+  border-left-color: inherit;
+  right: -6px;
+  filter: drop-shadow(2px 0 1px var(--timebar-main-background-color));
+}
+
+.encounter::before {
+  border-right: 4px solid red;
+  border-right-color: inherit;
+  left: -6px;
+  filter: drop-shadow(-2px 0 1px var(--timebar-main-background-color));
 }

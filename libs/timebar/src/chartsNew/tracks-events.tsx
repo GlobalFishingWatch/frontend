@@ -9,6 +9,9 @@ import styles from './tracks-events.module.css'
 import { useFilteredChartData, useClusteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
 
+const ONE_TRACK_HEIGHT = 5
+const MIN_HEIGHT = 2
+
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData,
   outerScale: TimelineScale,
@@ -17,6 +20,7 @@ const getTracksEventsWithCoords = (
   // TODO merge with Tracks' getTracksWithCoords
   return tracksEvents.map((trackEvents, trackIndex) => {
     const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight)
+    // const baseHeight = Math.max(MIN_HEIGHT, ONE_TRACK_HEIGHT - tracksEvents.length + 1)
     const trackItemWithCoords: TimebarChartItem = {
       ...trackEvents,
       y: baseTrackY.defaultY,
@@ -30,6 +34,7 @@ const getTracksEventsWithCoords = (
               ...chunk,
               x,
               width,
+              // height: baseHeight,
             }
           }),
     }
@@ -37,7 +42,13 @@ const getTracksEventsWithCoords = (
   })
 }
 
-const TracksEvents = ({ data }: { data: TimebarChartData }) => {
+const TracksEvents = ({
+  data,
+  useTrackColor,
+}: {
+  data: TimebarChartData
+  useTrackColor: boolean
+}) => {
   const { immediate } = useContext(ImmediateContext) as any
   const {
     outerScale,
@@ -69,15 +80,16 @@ const TracksEvents = ({ data }: { data: TimebarChartData }) => {
           {trackEvents.chunks.map((event) => (
             <div
               key={event.id}
-              className={cx(styles.event, {
+              className={cx(styles.event, styles[event.type || 'none'], {
                 // [styles.highlighted]: eventHighlighted && eventHighlighted.id === event.id,
               })}
               data-type={event.type}
               style={{
-                background: event.props?.color || 'white',
+                background: useTrackColor ? trackEvents.color : event.props?.color || 'white',
+                borderLeftColor: useTrackColor ? trackEvents.color : event.props?.color || 'white',
+                borderRightColor: useTrackColor ? trackEvents.color : event.props?.color || 'white',
                 left: `${event.x}px`,
                 width: `${event.width}px`,
-                height: '5px',
                 // ...(event.height && { height: `${event.height}px` }),
                 transition: immediate
                   ? 'none'
