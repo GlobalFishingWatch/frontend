@@ -62,8 +62,8 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
         sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
       })
     })
-    onCompareStartChange(date)
-  }, [onCompareStartChange])
+    onStartChange(date)
+  }, [onStartChange])
 
   const trackAndChangeDuration = useCallback((duration) => {
     uaEvent({
