@@ -16,9 +16,6 @@ import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { BASE_URL } from 'data/constants'
 
-export const PATH_BASENAME = BASE_URL
-// process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' ? '/vessel-viewer' : ''
-
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
@@ -86,7 +83,7 @@ const decodeWorkspace = (queryString: string) => {
 }
 
 const routesOptions: Options = {
-  basename: PATH_BASENAME,
+  basename: BASE_URL,
   querySerializer: {
     stringify: encodeWorkspace,
     parse: decodeWorkspace,
