@@ -38,6 +38,7 @@ import Hint from 'features/help/hints/Hint'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useMapLoaded } from 'features/map/map-style.hooks'
+import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -74,6 +75,7 @@ const handleError = ({ error }: any) => {
 const MapWrapper = (): React.ReactElement | null => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
+  useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const drawMode = useSelector(selectDrawMode)
