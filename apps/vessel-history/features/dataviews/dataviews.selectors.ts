@@ -120,12 +120,6 @@ export const selectDataviewsResourceQueries = createDeepEqualSelector(
   }
 )
 
-export const selectDataviewInstancesByType = (type: GeneratorType) => {
-  return createDeepEqualSelector([selectDataviewsForResourceQuerying], (dataviews) => {
-    return dataviews?.filter((dataview) => dataview.config?.type === type)
-  })
-}
-
 export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.category === category)
@@ -135,6 +129,12 @@ export const selectDataviewInstancesByCategory = (category: DataviewCategory) =>
 export const selectDataviewInstancesByIds = (ids: string[]) => {
   return createDeepEqualSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => ids.includes(dataview.id))
+  })
+}
+
+export const selectDataviewInstancesByType = (type: GeneratorType) => {
+  return createDeepEqualSelector([selectDataviewsForResourceQuerying], (dataviews) => {
+    return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }
 

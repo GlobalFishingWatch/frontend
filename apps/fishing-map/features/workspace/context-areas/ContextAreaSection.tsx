@@ -14,8 +14,8 @@ import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { isGFWUser } from 'features/user/user.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ContextAreaLayerPanel'
 
@@ -26,7 +26,6 @@ function ContextAreaSection(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
 
   const readOnly = useSelector(selectReadOnly)
-  const gfwUser = useSelector(isGFWUser)
   const dataviews = useSelector(selectContextAreasDataviews)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
@@ -34,6 +33,10 @@ function ContextAreaSection(): React.ReactElement {
   const onDrawClick = useCallback(() => {
     dispatchSetDrawMode('draw')
     dispatchQueryParams({ sidebarOpen: false })
+    uaEvent({
+      category: 'Reference layer',
+      action: `Draw a custom reference layer - Start`
+    })
   }, [dispatchQueryParams, dispatchSetDrawMode])
 
   const onAddClick = useCallback(() => {
@@ -65,7 +68,12 @@ function ContextAreaSection(): React.ReactElement {
         <h2 className={styles.sectionTitle}>{t('common.context_area_other', 'Context areas')}</h2>
         {!readOnly && (
           <Fragment>
-            {gfwUser && (
+            <LoginButtonWrapper
+              tooltip={t(
+                'layer.drawPolygonLogin',
+                'Register and login to draw a layer (free, 2 minutes)'
+              )}
+            >
               <IconButton
                 icon="draw"
                 type="border"
@@ -75,7 +83,7 @@ function ContextAreaSection(): React.ReactElement {
                 className="print-hidden"
                 onClick={onDrawClick}
               />
-            )}
+            </LoginButtonWrapper>
             <TooltipContainer
               visible={newDatasetOpen}
               onClickOutside={() => {

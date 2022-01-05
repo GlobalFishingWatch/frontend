@@ -17,7 +17,6 @@ import {
   MULTILAYER_SEPARATOR,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
 } from '@globalfishingwatch/dataviews-client'
-import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
@@ -35,6 +34,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/analysis/analysis.selectors'
+import { useMapStyle } from 'features/map/map-style.hooks'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -44,6 +44,7 @@ import {
   setClickedEvent,
   selectClickedEvent,
   MAX_TOOLTIP_LIST,
+  MAX_VESSELS_LOAD,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
   selectFishingInteractionStatus,
@@ -53,15 +54,29 @@ import {
   fetchFishingActivityInteractionThunk,
   fetchViirsInteractionThunk,
   selectViirsInteractionStatus,
-  ExtendedViirsFeature,
+  ApiViirsStats,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
+import { useMapAndSourcesLoaded } from './map-features.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   'fishing-effort',
   'presence-detail',
+  'viirs-match',
 ]
+// TODO remove once match-prototype is ready for production
+export const SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION = ['viirs']
+
+export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
+  return {
+    vessels,
+    numVessels: vessels.length,
+    overflow: vessels.length > MAX_TOOLTIP_LIST,
+    overflowNumber: vessels.length - MAX_TOOLTIP_LIST,
+    overflowLoad: vessels.length > MAX_VESSELS_LOAD,
+    overflowLoadNumber: vessels.length - MAX_VESSELS_LOAD,
+  }
+}
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -200,8 +215,13 @@ export const useClickedEventConnect = () => {
 
     if (fishingActivityFeatures?.length) {
       dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
+      const activityProperty = fishingActivityFeatures.some(
+        (feature) => feature.temporalgrid.sublayerInteractionType === 'viirs-match'
+      )
+        ? 'detections'
+        : 'hours'
       fishingPromiseRef.current = dispatch(
-        fetchFishingActivityInteractionThunk({ fishingActivityFeatures })
+        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperty })
       )
     }
 
@@ -210,9 +230,9 @@ export const useClickedEventConnect = () => {
         return false
       }
       const isFeatureVisible = feature.temporalgrid.visible
-      const isViirsFeature =
-        feature.temporalgrid.sublayerInteractionType === 'viirs' ||
-        feature.temporalgrid.sublayerInteractionType === 'viirs-match'
+      const isViirsFeature = SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION.includes(
+        feature.temporalgrid.sublayerInteractionType
+      )
       return isFeatureVisible && isViirsFeature
     })
 
@@ -253,11 +273,14 @@ export type TooltipEventFeature = {
   properties: Record<string, string>
   vesselsInfo?: {
     overflow: boolean
+    overflowNumber: number
+    overflowLoad: boolean
+    overflowLoadNumber: number
     numVessels: number
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
-  viirs?: ExtendedViirsFeature[]
+  viirs?: ApiViirsStats[]
   temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }
@@ -409,11 +432,7 @@ export const parseMapTooltipEvent = (
     })
 
     if (feature.vessels) {
-      tooltipEventFeature.vesselsInfo = {
-        vessels: feature.vessels.slice(0, MAX_TOOLTIP_LIST),
-        numVessels: feature.vessels.length,
-        overflow: feature.vessels.length > MAX_TOOLTIP_LIST,
-      }
+      tooltipEventFeature.vesselsInfo = getVesselsInfoConfig(feature.vessels)
     }
     return tooltipEventFeature
   })
@@ -423,25 +442,6 @@ export const parseMapTooltipEvent = (
     ...baseEvent,
     features: tooltipEventFeatures,
   }
-}
-
-export const useMapStyle = () => {
-  const map = useMapInstance()
-
-  // Used to ensure the style is refreshed on load finish
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const mapLoaded = useMapLoaded()
-
-  if (!map) return null
-
-  let style: Style
-  try {
-    style = map.getStyle()
-  } catch (e: any) {
-    return null
-  }
-
-  return style
 }
 
 export const useGeneratorStyleMetadata = (generatorId: string) => {

@@ -1,23 +1,29 @@
-.container {
-  display: flex;
+.layerPanel {
   width: 100%;
-  padding: var(--space-M);
+  display: flex;
 }
 
-.comingSoon {
-  text-align: center;
-  font-style: italic;
-  justify-content: center;
+.container {
+  display: flex;
+  padding: var(--space-M);
+  width: 100%;
+}
+
+.graphContainer {
+  min-height: 28rem;
+  display: flex;
   align-items: center;
-  height: 15rem;
+  justify-content: center;
 }
 
 .timeSelection {
   display: flex;
+  width: 100%;
+  gap: var(--space-S);
+  justify-content: space-between;
 }
 
-.dateWrapper,
-.durationWrapper {
+.dateWrapper {
   flex: 1;
 }
 

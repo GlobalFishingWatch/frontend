@@ -19,6 +19,7 @@
   font-family: monospace;
   background: #212121;
   color: white;
+  resize: vertical;
 }
 
 .section:not(:first-child) {

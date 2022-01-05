@@ -3,10 +3,13 @@ import { DateObject, DateTime } from 'luxon'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 
+export const ROOT_DOM_ELEMENT = '__next'
+
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV || process.env.NODE_ENV) === 'production'
 
+// Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
   process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
@@ -117,4 +120,4 @@ export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Context,
 ]
 
-export const FIT_BOUNDS_ANALYSIS_PADDING = 100
+export const FIT_BOUNDS_ANALYSIS_PADDING = 30

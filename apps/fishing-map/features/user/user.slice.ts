@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import {
   GFWAPI,
   getAccessTokenFromUrl,
@@ -22,7 +22,8 @@ const initialState: UserState = {
 }
 
 export const GUEST_USER_TYPE = 'guest'
-export const GFW_GROUP_ID = 'GFW'
+export const GFW_GROUP_ID = 'GFW Staff'
+export const GFW_DEV_GROUP_ID = 'development-group'
 
 export const fetchGuestUser = async () => {
   const permissions = await fetch(`${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`).then(
@@ -92,5 +93,9 @@ export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
+
+export const isGuestUser = createSelector([selectUserData], (userData) => {
+  return userData?.type === GUEST_USER_TYPE
+})
 
 export default userSlice.reducer

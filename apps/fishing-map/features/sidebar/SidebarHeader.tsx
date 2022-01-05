@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
 import { IconButton, Logo, SubBrands } from '@globalfishingwatch/ui-components'
-import { useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -15,17 +14,14 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { isWorkspaceLocation, selectLocationCategory } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
-import { isGuestUser } from 'features/user/user.selectors'
 import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
 function SaveWorkspaceButton() {
-  const [showLoginLink, setShowLoginLink] = useState(false)
   const [showWorkspaceCreateModal, setShowWorkspaceCreateModal] = useState(false)
-  const { onLoginClick } = useLoginRedirect()
   const { t } = useTranslation()
-  const guestUser = useSelector(isGuestUser)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
@@ -51,44 +47,26 @@ function SaveWorkspaceButton() {
     return null
   }
 
-  if (guestUser) {
-    return (
-      <IconButton
-        icon={showLoginLink ? 'user' : 'save'}
-        size="medium"
-        disabled={!showLoginLink}
-        tooltip={t('workspace.saveLogin', 'You need to login to save views')}
-        tooltipPlacement="bottom"
-        className="print-hidden"
-        onClick={onLoginClick}
-        onMouseEnter={() => {
-          setShowLoginLink(true)
-        }}
-        onMouseLeave={() => {
-          setShowLoginLink(false)
-        }}
-      />
-    )
-  }
-
   return (
     <Fragment>
-      <IconButton
-        icon={showClipboardNotification ? 'tick' : 'save'}
-        size="medium"
-        className="print-hidden"
-        onClick={onSaveClick}
-        loading={workspaceCustomStatus === AsyncReducerStatus.Loading}
-        tooltip={
-          showClipboardNotification
-            ? t(
-                'workspace.saved',
-                "The workspace was saved and it's available in your user profile"
-              )
-            : t('workspace.save', 'Save this workspace')
-        }
-        tooltipPlacement="bottom"
-      />
+      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+        <IconButton
+          icon={showClipboardNotification ? 'tick' : 'save'}
+          size="medium"
+          className="print-hidden"
+          onClick={onSaveClick}
+          loading={workspaceCustomStatus === AsyncReducerStatus.Loading}
+          tooltip={
+            showClipboardNotification
+              ? t(
+                  'workspace.saved',
+                  "The workspace was saved and it's available in your user profile"
+                )
+              : t('workspace.save', 'Save this workspace')
+          }
+          tooltipPlacement="bottom"
+        />
+      </LoginButtonWrapper>
       {showWorkspaceCreateModal && (
         <NewWorkspaceModal
           isOpen={showWorkspaceCreateModal}

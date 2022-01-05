@@ -25,8 +25,7 @@ import {
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { isGuestUser } from 'features/user/user.selectors'
-import { isGFWUser } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
@@ -69,7 +68,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const version = selectVersion(state)
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
-    const daysFromLatest = selectDaysFromLatest(state)
     const guestUser = isGuestUser(state)
     const gfwUser = isGFWUser(state)
 
@@ -87,6 +85,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         return
       }
 
+      const daysFromLatest =
+        selectDaysFromLatest(state) || workspace.state?.daysFromLatest || undefined
       const endAt =
         daysFromLatest !== undefined
           ? DateTime.fromISO(DEFAULT_TIME_RANGE.end).toUTC()

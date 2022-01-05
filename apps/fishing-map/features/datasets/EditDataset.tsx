@@ -2,14 +2,13 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { capitalize } from 'lodash'
-import { InputText, Modal, Button, Select } from '@globalfishingwatch/ui-components'
+import { InputText, Modal, Button } from '@globalfishingwatch/ui-components'
 import {
   Dataset,
   DatasetCategory,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import { getPropertyFieldsOptions } from 'features/datasets/DatasetConfig'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 import { selectDatasetById } from './datasets.slice'
@@ -104,7 +103,7 @@ function EditDataset(): React.ReactElement {
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={t('dataset.edit', 'Edit dataset')}
       isOpen={datasetModal === 'edit'}
       contentClassName={styles.modalContainer}

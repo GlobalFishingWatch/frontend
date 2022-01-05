@@ -1,7 +1,7 @@
 import { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 import { InputText, SwitchRow, Select } from '@globalfishingwatch/ui-components'
 import {
   AnyDatasetConfiguration,
@@ -68,8 +68,11 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
     onDatasetFieldChange,
   } = props
   const { t } = useTranslation()
-  const fields = (metadata.fields as string[]) || extractPropertiesFromGeojson(fileData)
-  const fieldsOptions = getPropertyFieldsOptions(fields)
+  const fields = useMemo(
+    () => (metadata.fields as string[]) || extractPropertiesFromGeojson(fileData),
+    [fileData, metadata.fields]
+  )
+  const fieldsOptions = useMemo(() => getPropertyFieldsOptions(fields), [fields])
 
   const { min, max } =
     (metadata.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange || {}

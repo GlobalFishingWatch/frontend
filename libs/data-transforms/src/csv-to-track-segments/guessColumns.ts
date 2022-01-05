@@ -1,10 +1,26 @@
-const GUESS_COLUMN_NAMES: [string, string[]][] = [
-  ['latitude', ['latitude', 'lat', 'location-lat']],
-  ['longitude', ['longitude', 'lng', 'lon', 'long', 'location-lng']],
-  ['timestamp', ['timestamp', 'time', 'date', 'datetime']],
-]
+export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
 
-const guessColumns = (columns: string[] | undefined) => {
+export const LatitudeMatches = ['latitude', 'lat', 'location-lat']
+export const LongitudeMatches = ['longitude', 'lng', 'lon', 'long', 'location-lng']
+export const TimestampMatches = ['timestamp', 'time', 'date', 'datetime']
+
+const matchesWithUpperCase = (matches: string[]) => {
+  return [...matches, ...matches.map((match) => match.toUpperCase())]
+}
+
+export const GUESS_COLUMN_DICT: Record<GuessColumn, string[]> = {
+  latitude: matchesWithUpperCase(LatitudeMatches),
+  longitude: matchesWithUpperCase(LongitudeMatches),
+  timestamp: matchesWithUpperCase(TimestampMatches),
+}
+
+export const GUESS_COLUMN_NAMES = Object.entries(GUESS_COLUMN_DICT)
+
+export const guessColumn = (col: GuessColumn, options: string[]) => {
+  return options.find((option) => GUESS_COLUMN_DICT[col].includes(option))
+}
+
+export const guessColumns = (columns: string[] | undefined) => {
   if (!columns) return {}
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {
     const exactGuess = columns?.find((column) => candidates.includes(column))
@@ -12,7 +28,7 @@ const guessColumns = (columns: string[] | undefined) => {
     let approximateGuess
     if (!exactGuess) {
       approximateGuess = columns?.find((column) =>
-        candidates.find((candidate) => new RegExp(candidate).test(column))
+        candidates.find((candidate) => new RegExp(candidate as string).test(column))
       )
     }
     return [columnToGuess, exactGuess || approximateGuess]
@@ -20,5 +36,3 @@ const guessColumns = (columns: string[] | undefined) => {
 
   return Object.fromEntries(guessedColumns)
 }
-
-export default guessColumns

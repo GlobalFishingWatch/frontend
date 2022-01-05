@@ -1,41 +1,33 @@
-import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useMemo, useCallback, Fragment } from 'react'
 import cx from 'classnames'
+import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import { useTranslation } from 'react-i18next'
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, Icon, IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import { useFeatureState, useLoginRedirect } from '@globalfishingwatch/react-hooks'
+import { Button, IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectUserData, isGFWUser } from 'features/user/user.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectUserData } from 'features/user/user.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
-import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { isGuestUser } from 'features/user/user.selectors'
-import { selectAnalysisQuery, selectAnalysisTypeQuery } from 'features/app/app.selectors'
+import { getActivityDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
+import { selectAnalysisQuery, selectAnalysisTimeComparison, selectAnalysisTypeQuery } from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
-  CreateReport,
-  createReportThunk,
-  DateRange,
-  ReportGeometry,
-  resetReportStatus,
   selectAnalysisAreaName,
   selectAnalysisGeometry,
-  selectReportStatus,
 } from './analysis.slice'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
@@ -44,12 +36,11 @@ import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 import AnalysisBeforeAfter from './AnalysisBeforeAfter'
 
-const DATASETS_REPORT_SUPPORTED = ['global', 'private-ecuador']
-
 export type AnalysisTypeProps = {
   layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
+  analysisGeometryLoaded?: boolean
 }
 
 const ANALYSIS_COMPONENTS_BY_TYPE: Record<
@@ -64,40 +55,25 @@ const ANALYSIS_COMPONENTS_BY_TYPE: Record<
 
 function Analysis() {
   const { t } = useTranslation()
-  const { onLoginClick } = useLoginRedirect()
-  const { start, end, timerange } = useTimerangeConnect()
+  const { start, end } = useTimerangeConnect()
   const fitMapBounds = useMapFitBounds()
   const dispatch = useDispatch()
-  const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const dataviews = useSelector(selectActiveActivityDataviews) || []
+  const dataviews = useSelector(selectActiveActivityDataviews)
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const userData = useSelector(selectUserData)
-  const guestUser = useSelector(isGuestUser)
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
-  const gfwUser = useSelector(isGFWUser)
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
-  const reportStatus = useSelector(selectReportStatus)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-
-  const datasetsReportAllowed = dataviews.flatMap((dataview) => {
-    const datasets: Dataset[] = (dataview?.config?.datasets || [])
-      .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
-      .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
-      .filter((dataset: Dataset) => {
-        if (!dataset) return false
-        const permission = { type: 'dataset', value: dataset?.id, action: 'report' }
-        return checkExistPermissionInList(userData?.permissions, permission)
-      })
-    return datasets
-  })
-
-  const datasetsReportSupported = datasetsReportAllowed.some((dataset) =>
-    DATASETS_REPORT_SUPPORTED.some((datasetSupported) => dataset.id.includes(datasetSupported))
+  const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
+    dataviews,
+    userData?.permissions || []
   )
+  const datasetsReportSupported = datasetsReportAllowed?.length > 0
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -114,7 +90,7 @@ function Analysis() {
     cleanFeatureState('highlight')
     cleanFeatureState('click')
     batch(() => {
-      dispatch(clearAnalysisGeometry(undefined))
+      dispatch(clearAnalysisGeometry())
       dispatchQueryParams({
         analysis: undefined,
         analysisType: undefined,
@@ -124,57 +100,37 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    const reportDataviews = dataviews
-      .map((dataview) => {
-        const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
-          .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
-          .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
-          .filter((dataset: Dataset) => {
-            if (!dataset) return false
-            const permission = { type: 'dataset', value: dataset?.id, action: 'report' }
-            return checkExistPermissionInList(userData?.permissions, permission)
-          })
-
-        return {
-          filters: dataview.config?.filters || {},
-          datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
-        }
-      })
-      .filter((dataview) => dataview.datasets.length > 0)
-
-    const reportName = Array.from(new Set(dataviews.map((dataview) => dataview.name))).join(',')
-    const createReport: CreateReport = {
-      name: `${reportName} - ${t('common.report', 'Report')}`,
-      dateRange: timerange as DateRange,
-      dataviews: reportDataviews,
-      geometry: analysisGeometry as ReportGeometry,
-    }
-    await dispatch(createReportThunk(createReport))
-    uaEvent({
-      category: 'Analysis',
-      action: `Download report`,
-      label: getEventLabel([
-        analysisAreaName,
-        ...reportDataviews
-          .map(({ datasets, filters }) => [datasets.join(','), ...getActivityFilters(filters)])
-          .flat(),
-      ]),
-    })
-    timeoutRef.current = setTimeout(() => {
-      dispatch(resetReportStatus(undefined))
-    }, 5000)
+    dispatch(
+      setDownloadActivityGeometry({ geometry: analysisGeometry.geometry, name: analysisAreaName })
+    )
   }
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [])
 
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
+  const timeComparisonEnabled = useMemo(() => {
+    let tooltip = ''
+    let enabled = true
+    if (!dataviews || !dataviews.length) {
+      tooltip = t(
+        'analysis.errorTimeComparisonDataviews',
+        'At least one activity layer must be enabled'
+      )
+      enabled = false
+    } else if (
+      dataviews.length > 1 &&
+      !dataviews.every((d) => !d.config.filters || !Object.keys(d.config.filters).length)
+    ) {
+      tooltip = t(
+        'analysis.errorTimeComparisonFilters',
+        'Several layers with filters are not supported'
+      )
+      enabled = false
+    }
+    return {
+      enabled,
+      tooltip,
+    }
+  }, [dataviews, t])
 
   const ANALYSIS_TYPE_OPTIONS: (ChoiceOption & { hidden?: boolean })[] = useMemo(
     () =>
@@ -191,34 +147,58 @@ function Analysis() {
           tooltipPlacement: 'top' as any,
         },
         {
-          id: 'periodComparison',
-          title: t('analysis.periodComparison', 'period comparison'),
-        },
-        {
           id: 'beforeAfter',
           title: t('analysis.beforeAfter', 'before/after'),
+          tooltip: timeComparisonEnabled.tooltip,
+          disabled: !timeComparisonEnabled.enabled,
+        },
+        {
+          id: 'periodComparison',
+          title: t('analysis.periodComparison', 'period comparison'),
+          tooltip: timeComparisonEnabled.tooltip,
+          disabled: !timeComparisonEnabled.enabled,
         },
       ].filter((option) => !option.hidden),
-    [t]
+    [timeComparisonEnabled, t]
   )
 
   const onAnalysisTypeClick = useCallback(
     (option: ChoiceOption) => {
+      if (option.id === 'beforeAfter') {
+        uaEvent({
+          category: 'Analysis',
+          action: `Click '${option.title}' in analysis mode`,
+          label: JSON.stringify({
+            regionName: analysisAreaName,
+            sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+          })
+        })
+      }
+      if (option.id === 'periodComparison' && timeComparison) {
+        uaEvent({
+          category: 'Analysis',
+          action: `Click '${option.title}' in analysis mode`,
+          label: JSON.stringify({
+            duration: timeComparison.duration + ' ' + timeComparison.durationType,
+            regionName: analysisAreaName,
+            sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+          })
+        })
+      }
       fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       dispatchQueryParams({ analysisType: option.id as WorkspaceAnalysisType })
     },
-    [bounds, dispatchQueryParams, fitMapBounds]
+    [bounds, dispatchQueryParams, fitMapBounds, dataviews, getSourcesSelectedInDataview, timeComparison]
   )
 
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
 
   const disableReportDownload =
+    timeRangeTooLong ||
     !analysisGeometryLoaded ||
     !layersTimeseriesFiltered ||
-    timeRangeTooLong ||
     !hasAnalysisLayers ||
-    !datasetsReportSupported ||
-    reportStatus === AsyncReducerStatus.Finished
+    !datasetsReportSupported
 
   const showReportDownload = analysisType === 'evolution' && hasAnalysisLayers
 
@@ -258,70 +238,55 @@ function Analysis() {
             layersTimeseriesFiltered={layersTimeseriesFiltered}
             hasAnalysisLayers={hasAnalysisLayers}
             analysisAreaName={analysisAreaName}
+            analysisGeometryLoaded={analysisGeometryLoaded}
           />
         )}
-        {gfwUser && (
-          <div>
-            <Choice
-              options={ANALYSIS_TYPE_OPTIONS}
-              className={cx('print-hidden', styles.typeChoice)}
-              activeOption={analysisType}
-              onOptionClick={onAnalysisTypeClick}
-            />
-          </div>
-        )}
         <div>
-          {analysisGeometry && (
-            <p className={styles.placeholder}>
-              {t(
-                'analysis.disclaimer',
-                'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-              )}
-            </p>
-          )}
+          <Choice
+            options={ANALYSIS_TYPE_OPTIONS}
+            className={cx('print-hidden', styles.typeChoice)}
+            activeOption={analysisType}
+            onOptionClick={onAnalysisTypeClick}
+            disabled={!bounds}
+          />
         </div>
-        <div className={styles.footer}>
-          <p
-            className={cx(styles.footerMsg, {
-              [styles.error]: reportStatus === AsyncReducerStatus.Error,
-            })}
-          >
-            {reportStatus === AsyncReducerStatus.Error
-              ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
-              : ''}
-            {reportStatus === AsyncReducerStatus.Finished
-              ? `${t('analysis.completed', 'The report will be in your email soon')} (${
-                  userData?.email
-                })`
-              : ''}
+        <div>
+          <p className={styles.placeholder}>
+            <Trans i18nKey="analysis.disclaimer">
+              The data shown above should be taken as an estimate.
+              <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
+                Find out more about Global Fishing Watch analysis tools and methods.
+              </a>
+            </Trans>
           </p>
-          {showReportDownload &&
-            (guestUser && !timeRangeTooLong ? (
-              <Button
-                type="secondary"
-                className={styles.saveBtn}
-                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
-                onClick={onLoginClick}
-              >
-                {t('analysis.download', 'Download report')}
-              </Button>
-            ) : (
-              <Button
-                className={styles.saveBtn}
-                onClick={onDownloadClick}
-                loading={reportStatus === AsyncReducerStatus.LoadingCreate}
-                tooltip={downloadTooltip}
-                tooltipPlacement="top"
-                disabled={disableReportDownload}
-              >
-                {reportStatus === AsyncReducerStatus.Finished ? (
-                  <Icon icon="tick" />
-                ) : (
-                  t('analysis.download', 'Download report')
-                )}
-              </Button>
-            ))}
         </div>
+        {showReportDownload && (
+          <Fragment>
+            <div>
+              <p className={styles.placeholder}>
+                {t(
+                  'analysis.disclaimerReport',
+                  'Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+                )}
+              </p>
+            </div>
+            <div className={styles.footer}>
+              <LoginButtonWrapper
+                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
+              >
+                <Button
+                  className={styles.saveBtn}
+                  onClick={onDownloadClick}
+                  tooltip={downloadTooltip}
+                  tooltipPlacement="top"
+                  disabled={disableReportDownload}
+                >
+                  {t('analysis.download', 'Download report')}
+                </Button>
+              </LoginButtonWrapper>
+            </div>
+          </Fragment>
+        )}
       </div>
     </div>
   )

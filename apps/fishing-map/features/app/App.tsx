@@ -1,15 +1,13 @@
-import React, { lazy, useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
+import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
 // import RecoilizeDebugger from 'recoilize'
-import { Menu, SplitView, Modal } from '@globalfishingwatch/ui-components'
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import dynamic from 'next/dynamic'
+import { useTranslation } from 'react-i18next'
+import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { MapContext } from 'features/map/map-context.hooks'
-import useDebugMenu from 'features/debug/debug.hooks'
-import useEditorMenu from 'features/editor/editor.hooks'
 import {
   isWorkspaceLocation,
-  selectLocationCategory,
   selectLocationType,
   selectUrlTimeRange,
   selectUrlViewport,
@@ -17,8 +15,6 @@ import {
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
-import DebugMenu from 'features/debug/DebugMenu'
-import EditorMenu from 'features/editor/EditorMenu'
 import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
 import {
@@ -26,28 +22,27 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk, isGFWUser } from 'features/user/user.slice'
+import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import DownloadActivityModal from 'features/download/DownloadActivityModal'
-import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
+import { initializeHints } from 'features/help/hints/hints.slice'
+import AppModals from 'features/app/AppModals'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
-const Map = lazy(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-const Timebar = lazy(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
+const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 /* Using any to avoid Typescript complaining about the value */
 const MapContextProvider: any = MapContext.Provider
@@ -58,20 +53,28 @@ declare global {
   }
 }
 
+export const COLOR_PRIMARY_BLUE =
+  typeof window !== 'undefined'
+    ? getComputedStyle(document.documentElement).getPropertyValue('--color-primary-blue')
+    : 'rgb(22, 63, 137)'
+export const COLOR_GRADIENT =
+  typeof window !== 'undefined'
+    ? getComputedStyle(document.documentElement).getPropertyValue('--color-gradient')
+    : 'rgb(229, 240, 242)'
+
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   return (
     <div className={styles.main}>
-      <Map />
+      <div className={styles.mapContainer}>
+        <Map />
+      </div>
       {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
       <Footer />
     </div>
   )
 }
-
-const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
-const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
 
 function App(): React.ReactElement {
   useAnalytics()
@@ -79,32 +82,21 @@ function App(): React.ReactElement {
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const readOnly = useSelector(selectReadOnly)
+  const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const analysisQuery = useSelector(selectAnalysisQuery)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
-  const gfwUser = useSelector(isGFWUser)
   const narrowSidebar = workspaceLocation && !analysisQuery
-  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
-  const { editorActive, dispatchToggleEditorMenu } = useEditorMenu()
 
-  const locationIsMarineManager =
-    useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
-
-  const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
-
-  const [welcomePopupOpen, setWelcomePopupOpen] = useState(
-    locationIsMarineManager ? isFirstTimeVisit : !disabledWelcomePopup
-  )
-  const welcomePopupContentKey = locationIsMarineManager
-    ? WorkspaceCategories.MarineManager
-    : WorkspaceCategories.FishingActivity
+  const onMenuClick = useCallback(() => {
+    setMenuOpen(true)
+  }, [])
 
   useEffect(() => {
-    if (locationIsMarineManager)
-      localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
-  }, [locationIsMarineManager])
+    dispatch(initializeHints())
+  }, [dispatch])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
@@ -183,10 +175,6 @@ function App(): React.ReactElement {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
   }, [dispatchQueryParams, sidebarOpen])
 
-  const onMenuClick = useCallback(() => {
-    setMenuOpen(true)
-  }, [])
-
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
@@ -201,74 +189,34 @@ function App(): React.ReactElement {
     asideWidth = '37rem'
   }
 
+  if (!i18n.ready) {
+    return null
+  }
+
   return (
     <MapContextProvider>
       {/* <RecoilizeDebugger /> */}
-      <Suspense fallback={null}>
-        <SplitView
-          isOpen={sidebarOpen}
-          showToggle={workspaceLocation}
-          onToggle={onToggle}
-          aside={<Sidebar onMenuClick={onMenuClick} />}
-          main={<Main />}
-          asideWidth={asideWidth}
-          showAsideLabel={getSidebarName()}
-          showMainLabel={t('common.map', 'Map')}
-          className="split-container"
-        />
-      </Suspense>
+      <SplitView
+        isOpen={sidebarOpen}
+        showToggle={workspaceLocation}
+        onToggle={onToggle}
+        aside={<Sidebar onMenuClick={onMenuClick} />}
+        main={<Main />}
+        asideWidth={asideWidth}
+        showAsideLabel={getSidebarName()}
+        showMainLabel={t('common.map', 'Map')}
+        className="split-container"
+      />
       {!readOnly && (
         <Menu
-          appSelector="__next"
+          appSelector={ROOT_DOM_ELEMENT}
           bgImage={menuBgImage.src}
           isOpen={menuOpen}
           onClose={() => setMenuOpen(false)}
           activeLinkId="map-data"
         />
       )}
-      {gfwUser && (
-        <Modal
-          appSelector="__next"
-          title="Secret debug menu 🤖"
-          isOpen={debugActive}
-          onClose={dispatchToggleDebugMenu}
-        >
-          <DebugMenu />
-        </Modal>
-      )}
-      {gfwUser && (
-        <Modal
-          appSelector="__next"
-          title="Workspace editor 📝"
-          isOpen={editorActive}
-          shouldCloseOnEsc={false}
-          contentClassName={styles.editorModal}
-          onClose={dispatchToggleEditorMenu}
-        >
-          <EditorMenu />
-        </Modal>
-      )}
-      <Suspense fallback={null}>
-        <DownloadActivityModal />
-      </Suspense>
-      <Suspense fallback={null}>
-        <DownloadTrackModal />
-      </Suspense>
-      {welcomePopupOpen && !readOnly && (
-        <Suspense fallback={null}>
-          <Modal
-            appSelector="__next"
-            header={false}
-            isOpen={welcomePopupOpen}
-            onClose={() => setWelcomePopupOpen(false)}
-          >
-            <Welcome
-              contentKey={welcomePopupContentKey}
-              showDisableCheckbox={!locationIsMarineManager}
-            />
-          </Modal>
-        </Suspense>
-      )}
+      <AppModals />
     </MapContextProvider>
   )
 }

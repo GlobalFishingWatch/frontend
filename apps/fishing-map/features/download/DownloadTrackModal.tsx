@@ -16,8 +16,9 @@ import {
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { DateRange } from 'features/analysis/analysis.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { ROOT_DOM_ELEMENT } from 'data/config'
+import { DateRange } from 'features/download/downloadActivity.slice'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
@@ -66,7 +67,7 @@ function DownloadTrackModal() {
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={`${t('download.title', 'Download')} - ${t('download.track', 'Vessel Track')}`}
       isOpen={downloadTrackId !== ''}
       onClose={onClose}
@@ -94,17 +95,19 @@ function DownloadTrackModal() {
             onOptionClick={(option) => setFormat(option.id as Format)}
           />
         </div>
-        <Button
-          className={styles.downloadBtn}
-          onClick={onDownloadClick}
-          loading={downloadStatus === AsyncReducerStatus.Loading}
-        >
-          {downloadStatus === AsyncReducerStatus.Finished ? (
-            <Icon icon="tick" />
-          ) : (
-            t('download.title', 'Download')
-          )}
-        </Button>
+        <div className={styles.footer}>
+          <Button
+            className={styles.downloadBtn}
+            onClick={onDownloadClick}
+            loading={downloadStatus === AsyncReducerStatus.Loading}
+          >
+            {downloadStatus === AsyncReducerStatus.Finished ? (
+              <Icon icon="tick" />
+            ) : (
+              t('download.title', 'Download')
+            )}
+          </Button>
+        </div>
       </div>
     </Modal>
   )

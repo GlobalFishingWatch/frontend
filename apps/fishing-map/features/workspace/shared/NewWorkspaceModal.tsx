@@ -16,8 +16,8 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectViewport } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
-import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
+import { PRIVATE_SUFIX, PUBLIC_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
+import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.slice'
 import { selectUserData } from 'features/user/user.slice'
 import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
 import { selectWorkspaceId } from 'routes/routes.selectors'
@@ -67,10 +67,14 @@ function NewWorkspaceModal({
   const containsPrivateDatasets = privateDatasets.length > 0
 
   const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
+  const isPublicWorkspace = workspace?.id?.includes(PUBLIC_SUFIX)
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
   const hasWorkspaceDefined =
     workspace !== null && urlWorkspaceId !== undefined && !isDefaultWorkspace
-  const allowUpdate = hasWorkspaceDefined && (isOwnerWorkspace || hasEditPermission)
+  const allowUpdate =
+    hasWorkspaceDefined &&
+    (isOwnerWorkspace || hasEditPermission) &&
+    (isPublicWorkspace ? !containsPrivateDatasets : true)
   const showOverWriteWarning = hasWorkspaceDefined && !isOwnerWorkspace && hasEditPermission
   const initialCreateAsPublic = allowUpdate
     ? workspace?.id.includes(PUBLIC_SUFIX) || false
@@ -148,10 +152,10 @@ function NewWorkspaceModal({
 
   return (
     <Modal
-      appSelector="__next"
+      appSelector={ROOT_DOM_ELEMENT}
       title={title || t('workspace.save', 'Save the current workspace')}
       isOpen={isOpen}
-      shouldCloseOnEsc={true}
+      shouldCloseOnEsc
       contentClassName={styles.modal}
       onClose={onClose}
     >

@@ -8,27 +8,47 @@ import {
   TimeChunk,
   TimeChunks,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
+  ExtendedStyle,
 } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapboxEvent, MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useMapBounds, mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
-import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveActivityDataviews,
+  selectActiveEnvironmentalDataviews,
+} from 'features/dataviews/dataviews.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
+import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { getTimeseries } from './timebarActivityGraph.worker'
 import styles from './Timebar.module.css'
 
-const getMetadata = (style: any) => {
-  const metadata =
-    style?.metadata?.generatorsMetadata?.[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
-  if (metadata?.timeChunks) {
-    return metadata
+const getMetadata = (style: ExtendedStyle) => {
+  const generatorsMetadata = style?.metadata?.generatorsMetadata
+  if (!generatorsMetadata) return null
+
+  const activityHeatmapMetadata = generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
+  if (activityHeatmapMetadata?.timeChunks) {
+    return activityHeatmapMetadata
   }
+
+  const environmentalMetadata = Object.entries(generatorsMetadata).filter(
+    ([id, metadata]) => metadata.temporalgrid === true
+  )
+  const bqEnvironmentalMetadata = environmentalMetadata.filter(([id]) =>
+    id.includes(BIG_QUERY_PREFIX)
+  )
+  if (environmentalMetadata?.length === 1 && bqEnvironmentalMetadata?.length === 1) {
+    return bqEnvironmentalMetadata[0][1]
+  }
+
   return null
 }
 
 const TimebarActivityGraph = () => {
-  const temporalGridDataviews = useSelector(selectActiveActivityDataviews)
+  const activityDataviews = useSelector(selectActiveActivityDataviews)
+  const environmentalDataviews = useSelector(selectActiveEnvironmentalDataviews)
+  const temporalGridDataviews = [...activityDataviews, ...environmentalDataviews]
   const [stackedActivity, setStackedActivity] = useState<any>()
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 1000)
@@ -37,7 +57,9 @@ const TimebarActivityGraph = () => {
   const map = useMapInstance()
   const computeStackedActivity = useCallback(
     (metadata: any, bounds: MiniglobeBounds) => {
-      if (!map || !metadata) return
+      if (!map || !metadata) {
+        return
+      }
       const numSublayers = metadata.numSublayers
       const timeChunks = metadata.timeChunks as TimeChunks
       const allChunksFeatures = metadata.timeChunks.chunks.map((chunk: TimeChunk) => {

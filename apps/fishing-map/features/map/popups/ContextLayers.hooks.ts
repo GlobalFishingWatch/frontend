@@ -9,7 +9,7 @@ import { setDownloadActivityGeometry } from 'features/download/downloadActivity.
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 import { selectSidebarOpen } from 'features/app/app.selectors'
-import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
+import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { setClickedEvent } from '../map.slice'
@@ -46,9 +46,13 @@ export const useContextInteractions = () => {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-
       batch(() => {
-        dispatch(setDownloadActivityGeometry(feature))
+        dispatch(
+          setDownloadActivityGeometry({
+            geometry: feature.geometry,
+            name: feature.value || feature.title,
+          })
+        )
         dispatch(setClickedEvent(null))
       })
 

@@ -4,6 +4,7 @@ import { scaleLinear } from 'd3-scale'
 import { event as uaEvent } from 'react-ga'
 import { InteractiveMap } from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
+import dynamic from 'next/dynamic'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -25,10 +26,7 @@ import {
   useGeneratorsConnect,
   TooltipEventFeature,
 } from 'features/map/map.hooks'
-import {
-  selectActivityDataviews,
-  selectDataviewInstancesResolved,
-} from 'features/dataviews/dataviews.selectors'
+import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
@@ -38,15 +36,18 @@ import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
+import { useMapLoaded } from 'features/map/map-style.hooks'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
-import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
-import MapDraw from './MapDraw'
+import { useMapAndSourcesLoaded, useSetMapIdleAtom } from './map-features.hooks'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
 import MapLegends from './MapLegends'
+
+const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
@@ -263,7 +264,7 @@ const MapWrapper = (): React.ReactElement | null => {
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
-          <MapDraw />
+          {drawMode !== 'disabled' && <MapDraw />}
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}

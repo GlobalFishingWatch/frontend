@@ -8,8 +8,7 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
-import { selectUserData } from 'features/user/user.slice'
-import { isGuestUser } from 'features/user/user.selectors'
+import { selectUserData, isGuestUser } from 'features/user/user.slice'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
@@ -56,9 +55,11 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   // const [modalHelpOpen, setModalHelpOpen] = useState(false)
   const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
 
-  const onFeedbackClick = () => {
-    setModalFeedbackOpen(true)
-  }
+  const onFeedbackClick = useCallback(() => {
+    if (userData) {
+      setModalFeedbackOpen(true)
+    }
+  }, [userData])
 
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
@@ -87,26 +88,38 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
               className={styles.tabContent}
               to={getLinkToCategory(category.title as WorkspaceCategories)}
               onClick={onCategoryClick}
+              title={category.title}
             >
               <Icon icon={`category-${category.title}` as IconType} />
             </Link>
           </li>
         ))}
-        <div className={styles.separator}></div>
+        <li className={styles.separator} aria-hidden></li>
+        <li className={cx(styles.tab, styles.secondary)}>
+          <a
+            href="https://globalfishingwatch.org/platform-updates"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <IconButton
+              icon="sparks"
+              tooltip={t('common.whatsNew', "What's new?")}
+              tooltipPlacement="right"
+            />
+          </a>
+        </li>
         <li className={cx(styles.tab, styles.secondary)}>
           <HintsHub />
         </li>
-        {userData && (
-          <li className={cx(styles.tab, styles.secondary)}>
-            <IconButton
-              // className={cx(styles.tabContent, 'print-hidden')}
-              icon="feedback"
-              onClick={onFeedbackClick}
-              tooltip={t('common.feedback', 'Feedback')}
-              tooltipPlacement="right"
-            />
-          </li>
-        )}
+        <li className={cx(styles.tab, styles.secondary)}>
+          <IconButton
+            // className={cx(styles.tabContent, 'print-hidden')}
+            icon="feedback"
+            onClick={onFeedbackClick}
+            tooltip={t('common.feedback', 'Feedback')}
+            tooltipPlacement="right"
+          />
+        </li>
         <li className={styles.tab}>
           <LanguageToggle />
         </li>

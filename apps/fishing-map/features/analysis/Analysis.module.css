@@ -43,16 +43,14 @@
   overflow-y: auto;
 }
 
-.saveBtn {
-  margin-top: auto;
-  align-self: flex-end;
-  margin-left: auto;
-}
-
 .placeholder {
   font: var(--font-S);
   color: var(--color-secondary-blue);
   padding: var(--space-M);
+}
+
+.placeholder a {
+  text-decoration: underline;
 }
 
 .graph .spinner {
@@ -75,13 +73,6 @@
   min-height: 24rem;
 }
 
-.footerMsg {
-  display: flex;
-  flex: 1;
-  font: var(--font-S);
-  color: var(--color-secondary-blue);
-}
-
 .error,
 .experimental {
   color: var(--color-danger-red);
@@ -93,8 +84,9 @@
 
 .footer {
   display: flex;
+  gap: var(--space-S);
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: var(--space-M);
 }
 

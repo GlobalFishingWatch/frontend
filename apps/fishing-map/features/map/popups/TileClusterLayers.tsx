@@ -2,22 +2,21 @@ import React, { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
-import { Spinner, Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
-import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import { TooltipEventFeature } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-} from 'features/datasets/datasets.selectors'
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import { useMapContext } from 'features/map/map-context.hooks'
+import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import useViewport from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -47,13 +46,14 @@ const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEve
 
 function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLayersProps) {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const datasets = useSelector(selectAllDatasets)
-  const { apiEventStatus } = useClickedEventConnect()
   const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()
+  const vessels = useSelector(selectActiveTrackDataviews)
+  const { eventManager } = useMapContext()
 
   useEffect(() => {
     if (!carrierLatest) {
@@ -61,7 +61,14 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
     }
   }, [carrierLatest, dispatchFetchLatestCarrier])
 
-  const onPinClick = (vessel: ExtendedEventVessel) => {
+  const onPinClick = (ev: React.MouseEvent<Element, MouseEvent>, vessel: ExtendedEventVessel) => {
+    eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+    const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
+    if (vesselInWorkspace) {
+      deleteDataviewInstance(vesselInWorkspace.id)
+      return
+    }
+
     const infoDataset = datasets.find((dataset) => dataset.id === vessel.dataset)
     const trackDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)
     const eventsRelatedDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
@@ -117,6 +124,9 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
           )
         }
 
+        const carrierInWorkspace = getVesselInWorkspace(vessels, event?.vessel?.id)
+        const donorInWorkspace = getVesselInWorkspace(vessels, event?.encounter?.vessel?.id)
+
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
@@ -124,11 +134,7 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
               {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
               {showFeaturesDetails && (
                 <div className={styles.row}>
-                  {apiEventStatus === AsyncReducerStatus.Loading ? (
-                    <div className={styles.loading}>
-                      <Spinner size="small" />
-                    </div>
-                  ) : event ? (
+                  {event ? (
                     <div className={styles.rowContainer}>
                       <span className={styles.rowText}>
                         <I18nDate date={event.start as string} />
@@ -143,10 +149,24 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                               </span>
                               {(event.vessel as ExtendedEventVessel).dataset && (
                                 <IconButton
-                                  icon="pin"
+                                  icon={carrierInWorkspace ? 'pin-filled' : 'pin'}
+                                  style={{
+                                    color: carrierInWorkspace
+                                      ? carrierInWorkspace.config.color
+                                      : '',
+                                  }}
                                   size="small"
-                                  tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
-                                  onClick={() => onPinClick(event.vessel as ExtendedEventVessel)}
+                                  tooltip={
+                                    carrierInWorkspace
+                                      ? t(
+                                          'search.vesselAlreadyInWorkspace',
+                                          'This vessel is already in your workspace'
+                                        )
+                                      : t('vessel.addToWorkspace', 'Add vessel to view')
+                                  }
+                                  onClick={(e) =>
+                                    onPinClick(e, event.vessel as ExtendedEventVessel)
+                                  }
                                 />
                               )}
                             </div>
@@ -164,11 +184,21 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                                 </span>
                                 {(event.vessel as ExtendedEventVessel).dataset && (
                                   <IconButton
-                                    icon="pin"
+                                    icon={donorInWorkspace ? 'pin-filled' : 'pin'}
+                                    style={{
+                                      color: donorInWorkspace ? donorInWorkspace.config.color : '',
+                                    }}
                                     size="small"
-                                    tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
-                                    onClick={() =>
-                                      onPinClick(event.encounter?.vessel as ExtendedEventVessel)
+                                    tooltip={
+                                      donorInWorkspace
+                                        ? t(
+                                            'search.vesselAlreadyInWorkspace',
+                                            'This vessel is already in your workspace'
+                                          )
+                                        : t('vessel.addToWorkspace', 'Add vessel to view')
+                                    }
+                                    onClick={(e) =>
+                                      onPinClick(e, event.encounter?.vessel as ExtendedEventVessel)
                                     }
                                   />
                                 )}

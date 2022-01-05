@@ -36,7 +36,9 @@ export const HIGH_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 97 : 174
 // Workspaces dataviews
 export const FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
 export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 : 254
+// TODO replace this with match once ready to production
 export const VIIRS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 159 : 255
+export const VIIRS_MATCH_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 197 : 0
 export const PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
 export const VESSEL_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 195 : 270
 export const TEMPLATE_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 154 : 251
@@ -44,12 +46,15 @@ export const TEMPLATE_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 
 export const TEMPLATE_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
 export const TEMPLATE_POINTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 207 : 274
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223
+export const TEMPLATE_ACTIVITY_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 234 : 275
 
 export const TEMPLATE_DATAVIEW_IDS = [
   TEMPLATE_USER_TRACK_ID,
   TEMPLATE_VESSEL_DATAVIEW_ID,
   TEMPLATE_CONTEXT_DATAVIEW_ID,
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
+  TEMPLATE_POINTS_DATAVIEW_ID,
+  TEMPLATE_ACTIVITY_DATAVIEW_ID,
 ]
 
 export const PRESENCE_DATAVIEWS = [

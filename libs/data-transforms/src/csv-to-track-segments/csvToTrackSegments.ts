@@ -19,7 +19,13 @@ const getUTCDate = (timestamp: string) => {
   )
 }
 
-const csvToTrackSegments = ({ records, latitude, longitude, timestamp, id }: Args): Segment[] => {
+export const csvToTrackSegments = ({
+  records,
+  latitude,
+  longitude,
+  timestamp,
+  id,
+}: Args): Segment[] => {
   const grouped = id ? groupBy(records, id) : { no_id: records }
   const segments = Object.values(grouped).map((groupedRecords) => {
     return groupedRecords.map((record) => {
@@ -34,5 +40,3 @@ const csvToTrackSegments = ({ records, latitude, longitude, timestamp, id }: Arg
   })
   return segments
 }
-
-export default csvToTrackSegments

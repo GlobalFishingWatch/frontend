@@ -1,5 +1,5 @@
 /* stylelint-disable custom-property-pattern, color-function-notation */
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap');
 
 :root {
   --base-font-size: 10px;
@@ -27,6 +27,7 @@
   --color-secondary-blue: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
   --color-terthiary-blue: rgba(var(--primary-blue-rgb), var(--opacity-terthiary));
   --color-danger-red: rgb(var(--danger-red-rgb));
+  --color-danger-red-background: #f6bdbd;
   --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
   --color-gradient: rgb(var(--gradient-rgb));
   --color-off-white: rgb(var(--off-white-rgb));
@@ -165,6 +166,11 @@ ul {
 
 *::-webkit-scrollbar-thumb:horizontal {
   min-width: var(--scrollbar-minlength);
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  opacity: 1;
 }
 
 sub {

@@ -10,7 +10,20 @@
   gap: var(--space-S);
 }
 
-.downloadBtn {
+.footer {
   margin-top: auto;
-  margin-left: auto;
+  display: flex;
+  gap: var(--space-S);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.footerLabel {
+  flex: 1;
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+}
+
+.error {
+  color: var(--color-danger-red);
 }

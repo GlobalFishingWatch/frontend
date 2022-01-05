@@ -1,7 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { WorkspaceState } from 'types'
+import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { RootState } from 'store'
-import { PUBLIC_SUFIX } from 'data/config'
+import { DEFAULT_WORKSPACE, PUBLIC_SUFIX } from 'data/config'
+import { selectQueryParam } from 'routes/routes.selectors'
 
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace.lastVisited
 export const selectWorkspace = (state: RootState) => state.workspace.data
@@ -42,3 +43,12 @@ export const selectWorkspaceState = createSelector(
     return workspace?.state || ({} as WorkspaceState)
   }
 )
+
+export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =>
+  createSelector(
+    [selectQueryParam(property), selectWorkspaceState],
+    (urlProperty, workspaceState) => {
+      if (urlProperty !== undefined) return urlProperty
+      return workspaceState[property] ?? DEFAULT_WORKSPACE[property]
+    }
+  )

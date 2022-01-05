@@ -24,8 +24,10 @@ const makeRulerGeometry = (ruler: Ruler): Feature<LineString> => {
   }
   const lengthKm = length(rawFeature, { units: 'kilometers' })
   const lengthNmi = lengthKm / 1.852
-  const lengthKmFormatted = lengthKm.toFixed(lengthKm > 100 ? 0 : 1)
-  const lengthNmiFormatted = lengthNmi.toFixed(lengthNmi > 100 ? 0 : 1)
+  const precissionKm = lengthKm > 100 ? 0 : lengthKm > 10 ? 1 : 2
+  const precissionNmi = lengthNmi > 100 ? 0 : lengthNmi > 10 ? 1 : 2
+  const lengthKmFormatted = lengthKm.toFixed(precissionKm)
+  const lengthNmiFormatted = lengthNmi.toFixed(precissionNmi)
 
   const finalFeature =
     lengthKm < 100
@@ -36,7 +38,7 @@ const makeRulerGeometry = (ruler: Ruler): Feature<LineString> => {
         ) as Feature<LineString>)
 
   finalFeature.properties = {}
-  finalFeature.properties.label = `${lengthKmFormatted}km - ${lengthNmiFormatted}nmi`
+  finalFeature.properties.label = `${lengthKmFormatted}km - ${lengthNmiFormatted}nm`
   finalFeature.properties.isNew = isNew
   return finalFeature
 }

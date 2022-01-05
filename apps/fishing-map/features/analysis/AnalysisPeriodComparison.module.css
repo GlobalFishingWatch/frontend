@@ -1,3 +1,8 @@
+.layerPanel {
+  width: 100%;
+  display: flex;
+}
+
 .container {
   width: 100%;
   padding: var(--space-M);
@@ -25,6 +30,7 @@
 .durationWrapper {
   display: flex;
   align-items: flex-end;
+  gap: var(--space-XS);
 }
 
 .durationWrapper > div {
@@ -34,4 +40,19 @@
 .durationWrapper .duration {
   flex: unset;
   width: 6rem;
+}
+
+.inputDateLabel {
+  display: flex;
+  align-items: center;
+}
+
+.helpHint {
+  position: relative;
+  margin-left: 2rem;
+}
+
+.error {
+  padding: 0 var(--space-M) var(--space-M);
+  color: var(--color-danger-red);
 }

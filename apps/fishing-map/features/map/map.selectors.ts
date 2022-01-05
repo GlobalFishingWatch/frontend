@@ -85,19 +85,35 @@ const getGeneratorsConfig = ({
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   }
 
-  const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
-
-  // Avoid entering rulers sources and layers when no active rules
-  if (rulers?.length) {
-    const rulersGeneratorConfig = {
-      type: GeneratorType.Rulers,
-      id: 'rulers',
-      data: rulers,
+  try {
+    let generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
+    // In time comparison mode, exclude any heatmap layer that is not activity
+    if (showTimeComparison) {
+      generatorsConfig = generatorsConfig.filter((config) => {
+        if (
+          config.type === GeneratorType.HeatmapAnimated &&
+          config.id !== MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+        )
+          return false
+        return true
+      })
     }
-    return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
-  }
 
-  return generatorsConfig.reverse()
+    // Avoid entering rulers sources and layers when no active rules
+    if (rulers?.length) {
+      const rulersGeneratorConfig = {
+        type: GeneratorType.Rulers,
+        id: 'rulers',
+        data: rulers,
+      }
+      return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
+    }
+
+    return generatorsConfig.reverse()
+  } catch (e) {
+    console.error(e)
+    return []
+  }
 }
 
 const selectMapGeneratorsConfig = createSelector(

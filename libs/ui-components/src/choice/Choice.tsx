@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Placement } from 'tippy.js'
 import cx from 'classnames'
 import { TooltipTypes } from '..'
@@ -21,6 +21,7 @@ type ActiveChoiceProperties = {
 interface ChoiceProps {
   options: ChoiceOption[]
   activeOption: string
+  disabled?: boolean
   onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
   size?: 'default' | 'small'
   className?: string
@@ -29,6 +30,7 @@ interface ChoiceProps {
 export function Choice({
   activeOption,
   options,
+  disabled,
   onOptionClick,
   size = 'default',
   className = '',
@@ -36,8 +38,9 @@ export function Choice({
   const activeOptionId = activeOption || options?.[0]?.id
 
   const activeRef = useRef<HTMLLIElement | null>(null)
-  const [activeElementProperties, setActiveElementProperties] =
-    useState<ActiveChoiceProperties | undefined>()
+  const [activeElementProperties, setActiveElementProperties] = useState<
+    ActiveChoiceProperties | undefined
+  >()
 
   const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
     if (activeOptionId === option.id) return
@@ -49,27 +52,28 @@ export function Choice({
     onOptionClick && onOptionClick(option, e)
   }
 
-  useLayoutEffect(() => {
+  const updateActiveElementPoperties = useCallback(() => {
     if (activeRef?.current?.clientWidth) {
       setActiveElementProperties({
-        width: activeRef?.current.getBoundingClientRect().width,
+        width: activeRef?.current.clientWidth,
         left: activeRef?.current.offsetLeft,
       })
     }
-  }, [activeRef, activeOptionId])
+  }, [])
+
+  useLayoutEffect(() => {
+    updateActiveElementPoperties()
+  }, [activeRef, activeOptionId, updateActiveElementPoperties])
 
   // Workaround to ensure the activeElement has the clientWidth ready
   useEffect(() => {
-    setTimeout(() => {
-      if (activeRef?.current) {
-        setActiveElementProperties({
-          width: activeRef?.current.clientWidth,
-          left: activeRef?.current.offsetLeft,
-        })
-      }
-    }, 500)
+    setTimeout(updateActiveElementPoperties, 500)
+    window.addEventListener('resize', updateActiveElementPoperties)
+    return () => {
+      window.removeEventListener('resize', updateActiveElementPoperties)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options])
+  }, [options, updateActiveElementPoperties])
 
   return (
     <div className={cx(styles.Choice, className)}>
@@ -81,16 +85,14 @@ export function Choice({
               key={option.id}
               className={styles.option}
               role="radio"
-              aria-controls={option.id}
-              tabIndex={index}
               aria-checked={optionSelected}
               ref={optionSelected ? activeRef : null}
             >
               <Button
-                disabled={option.disabled}
+                disabled={disabled || option.disabled}
                 className={cx(styles.optionButton, {
                   [styles.optionActive]: optionSelected,
-                  [styles.disabled]: option.disabled,
+                  [styles.disabled]: disabled || option.disabled,
                 })}
                 tooltip={option.tooltip}
                 tooltipPlacement={option.tooltipPlacement}

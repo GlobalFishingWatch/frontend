@@ -15,7 +15,7 @@ import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import Rulers from 'features/map/rulers/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
@@ -25,6 +25,7 @@ import { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
@@ -78,7 +79,7 @@ const MapControls = ({
 
   useEffect(() => {
     if (!domElement.current) {
-      domElement.current = document.getElementById('root') as HTMLElement
+      domElement.current = document.getElementById(ROOT_DOM_ELEMENT) as HTMLElement
     }
   }, [])
 
@@ -173,55 +174,52 @@ const MapControls = ({
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {extendedControls && !isAnalyzing && <MapSearch />}
-          {!isAnalyzing && (
-            <IconButton
-              icon="plus"
-              type="map-tool"
-              tooltip={t('map.zoom_in', 'Zoom in')}
-              onClick={onZoomInClick}
-            />
-          )}
-          {!isAnalyzing && (
-            <IconButton
-              icon="minus"
-              type="map-tool"
-              tooltip={t('map.zoom_out', 'Zoom out')}
-              onClick={onZoomOutClick}
-            />
-          )}
+          {extendedControls && <MapSearch />}
+          <IconButton
+            icon="plus"
+            type="map-tool"
+            tooltip={t('map.zoom_in', 'Zoom in')}
+            onClick={onZoomInClick}
+          />
+          <IconButton
+            icon="minus"
+            type="map-tool"
+            tooltip={t('map.zoom_out', 'Zoom out')}
+            onClick={onZoomOutClick}
+          />
           {extendedControls && (
             <Fragment>
               {!isAnalyzing && <Rulers />}
-              {!isAnalyzing && (
-                <IconButton
-                  icon="camera"
-                  type="map-tool"
-                  loading={loading}
-                  disabled={mapLoading || loading}
-                  tooltip={
-                    mapLoading || loading
-                      ? t('map.mapLoadingWait', 'Please wait until map loads')
-                      : t('map.captureMap', 'Capture map')
-                  }
-                  onClick={onScreenshotClick}
-                />
-              )}
-              {!isAnalyzing && (
-                <Tooltip
-                  content={
+              <IconButton
+                icon="camera"
+                type="map-tool"
+                loading={loading}
+                disabled={mapLoading || loading}
+                tooltip={
+                  mapLoading || loading
+                    ? t('map.mapLoadingWait', 'Please wait until map loads')
+                    : t('map.captureMap', 'Capture map')
+                }
+                onClick={onScreenshotClick}
+              />
+              <Tooltip
+                content={
+                  currentBasemap === BasemapType.Default
+                    ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
+                    : t('map.change_basemap_default', 'Switch to default basemap')
+                }
+                placement="left"
+              >
+                <button
+                  aria-label={
                     currentBasemap === BasemapType.Default
                       ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
                       : t('map.change_basemap_default', 'Switch to default basemap')
                   }
-                  placement="left"
-                >
-                  <button
-                    className={cx(styles.basemapSwitcher, styles[currentBasemap])}
-                    onClick={switchBasemap}
-                  ></button>
-                </Tooltip>
-              )}
+                  className={cx(styles.basemapSwitcher, styles[currentBasemap])}
+                  onClick={switchBasemap}
+                ></button>
+              </Tooltip>
             </Fragment>
           )}
           <IconButton
@@ -233,7 +231,7 @@ const MapControls = ({
         </div>
       </div>
       <Modal
-        appSelector="__next"
+        appSelector={ROOT_DOM_ELEMENT}
         title="Screenshot preview"
         isOpen={modalOpen}
         onClose={handleModalClose}
@@ -243,6 +241,7 @@ const MapControls = ({
           {previewImageLoading || !previewImage ? (
             <Spinner />
           ) : (
+            // eslint-disable-next-line @next/next/no-img-element
             <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
           )}
         </div>

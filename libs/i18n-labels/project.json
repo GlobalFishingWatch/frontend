@@ -1,0 +1,73 @@
+{
+  "root": "libs/i18n-labels",
+  "sourceRoot": "libs/i18n-labels",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nrwl/workspace:run-script",
+      "options": {
+        "script": "start"
+      }
+    },
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/i18n-labels",
+        "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
+        "project": "libs/i18n-labels/package.json",
+        "entryFile": "libs/i18n-labels/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/i18n-labels/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/i18n-labels/en",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/i18n-labels/es",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/i18n-labels/fr",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/i18n-labels/id",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/i18n-labels/source",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/i18n-labels/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/i18n-labels"],
+      "options": {
+        "jestConfig": "libs/i18n-labels/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

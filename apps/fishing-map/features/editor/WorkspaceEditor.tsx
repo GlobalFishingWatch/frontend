@@ -5,9 +5,11 @@ import { groupBy } from 'lodash'
 import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
+import {
+  selectDataviewInstancesMerged,
+  addDataviewEntity,
+} from 'features/dataviews/dataviews.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { addDataviewEntity } from 'features/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -58,6 +60,7 @@ const WorkspaceEditor = ({ onEditClick }: WorkspaceEditorProps) => {
       (dataviewInstance) => dataviewId === dataviewInstance.dataviewId && !dataviewInstance.deleted
     )
   }
+
   const addDataviewToWorkspace = async (dataview: Dataview) => {
     setLoadingId(dataview.id)
     const dataviewInstance = getDataviewInstanceFromDataview(dataview)

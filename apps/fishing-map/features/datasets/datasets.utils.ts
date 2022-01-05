@@ -1,17 +1,28 @@
 import { intersection, lowerCase, uniq } from 'lodash'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import {
   Dataset,
+  DatasetSchemaType,
+  DatasetTypes,
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
+  EndpointId,
   EventTypes,
+  UserPermission,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
-import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_DATAVIEW_ID } from 'data/workspaces'
+import {
+  FISHING_DATAVIEW_ID,
+  PRESENCE_DATAVIEW_ID,
+  VIIRS_DATAVIEW_ID,
+  VIIRS_MATCH_DATAVIEW_ID,
+} from 'data/workspaces'
 
 export type SupportedDatasetSchema =
   | 'flag'
@@ -20,7 +31,9 @@ export type SupportedDatasetSchema =
   | 'shiptype'
   | 'origin'
   | 'vessel_type'
-  | 'qf_detect'
+  | 'radiance'
+  | 'source'
+  | 'matched'
   | 'codMarinha'
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
@@ -30,10 +43,6 @@ export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' 
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   (dataset?.id || '').includes(PRIVATE_SUFIX)
-
-export const removeDatasetVersion = (datasetId: string) => {
-  return datasetId ? datasetId?.split(':')[0] : ''
-}
 
 export const getDatasetLabel = (dataset: { id: string; name?: string }): string => {
   const { id, name = '' } = dataset || {}
@@ -59,7 +68,10 @@ export const getDatasetTitleByDataview = (
     datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
   } else if (dataviewInstance.dataviewId === PRESENCE_DATAVIEW_ID) {
     datasetTitle = t(`common.presence`, 'Vessel presence')
-  } else if (dataviewInstance.dataviewId === VIIRS_DATAVIEW_ID) {
+  } else if (
+    dataviewInstance.dataviewId === VIIRS_DATAVIEW_ID ||
+    dataviewInstance.dataviewId === VIIRS_MATCH_DATAVIEW_ID
+  ) {
     datasetTitle = t(`common.viirs`, 'Night light detections (VIIRS)')
   } else if (activeDatasets) {
     if (hasDatasetsConfig && activeDatasets?.length !== 1) {
@@ -83,6 +95,77 @@ export const getDatasetsInDataviews = (
       return guestUser ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX)) : datasetIds
     })
   )
+}
+
+export const getRelatedDatasetByType = (
+  dataset?: Dataset,
+  datasetType?: DatasetTypes,
+  fullDatasetAllowed = false
+) => {
+  if (fullDatasetAllowed) {
+    const fullDataset = dataset?.relatedDatasets?.find(
+      (relatedDataset) =>
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
+    )
+    if (fullDataset) {
+      return fullDataset
+    }
+  }
+  return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
+}
+
+export const getRelatedDatasetsByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
+  return dataset?.relatedDatasets?.filter((relatedDataset) => relatedDataset.type === datasetType)
+}
+
+export const getActiveDatasetsInActivityDataviews = (
+  dataviews: UrlDataviewInstance<GeneratorType>[]
+) => {
+  return dataviews.flatMap((dataview) => {
+    return dataview?.config?.datasets || []
+  })
+}
+
+export const checkDatasetReportPermission = (datasetId: string, permissions: UserPermission[]) => {
+  const permission = { type: 'dataset', value: datasetId, action: 'report' }
+  return checkExistPermissionInList(permissions, permission)
+}
+
+export const getActivityDatasetsDownloadSupported = (
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  permissions: UserPermission[] = []
+) => {
+  return dataviews.flatMap((dataview) => {
+    const datasets: Dataset[] = (dataview?.config?.datasets || []).filter((datasetId: string) => {
+      return datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
+    })
+    return datasets
+  })
+}
+
+export const getVesselDatasetsDownloadSupported = (
+  dataview: UrlDataviewInstance<GeneratorType>,
+  permissions: UserPermission[] = []
+) => {
+  const datasets = (dataview?.datasetsConfig || [])
+    .filter(
+      (datasetConfig) =>
+        datasetConfig.endpoint === EndpointId.Tracks && hasDatasetConfigVesselData(datasetConfig)
+    )
+    .filter((dataset) => {
+      if (!dataset) return false
+      return checkDatasetReportPermission(dataset.datasetId, permissions)
+    })
+  return datasets
+}
+
+export const getDatasetsDownloadNotSupported = (
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  permissions: UserPermission[] = []
+) => {
+  const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
+  const datasetsDownloadSupported = getActivityDatasetsDownloadSupported(dataviews, permissions)
+  return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
@@ -162,26 +245,46 @@ export const getNotSupportedSchemaFieldsDatasets = (
   return datasetsWithoutSchemaFieldsSupport
 }
 
-export const getCommonSchemaFieldsInDataview = (
+const getCommonSchemaTypeInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
   )
+  const datasetSchemas = activeDatasets?.map((d) => d.schema?.[schema]?.type).filter(Boolean)
+  return datasetSchemas?.[0]
+}
+
+export type SchemaFieldSelection = {
+  id: string
+  label: any
+}
+
+export const getCommonSchemaFieldsInDataview = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema
+): SchemaFieldSelection[] => {
+  const activeDatasets = dataview?.datasets?.filter((dataset) =>
+    dataview.config?.datasets?.includes(dataset.id)
+  )
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
+  const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
   const datasetId = activeDatasets?.[0]?.id?.split(':')[0]
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
-        let label = t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
+        let label =
+          schemaType === 'number' || schemaType === 'boolean'
+            ? field
+            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
         if (label === field) {
-          label =
-            schema === 'geartype'
-              ? // There is an fixed list of gearTypes independant of the dataset
-                t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
-              : t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
+          if (schema === 'geartype') {
+            // There is an fixed list of gearTypes independant of the dataset
+            label = t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
+          }
+          label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
         }
-        return { id: field, label }
+        return { id: field.toString(), label }
       })
     : []
   return commonSchemaFields.sort(sortFields)
@@ -205,6 +308,7 @@ export type SchemaFilter = {
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
   tooltip: string
+  type: DatasetSchemaType
 }
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
@@ -220,9 +324,10 @@ export const getFiltersBySchema = (
   const disabled = datasetsWithoutSchema !== undefined && datasetsWithoutSchema.length > 0
 
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
+  const type = getCommonSchemaTypeInDataview(dataview, schema)
 
-  const optionsSelected = options?.filter((fleet) =>
-    dataview.config?.filters?.[schema]?.includes(fleet.id)
+  const optionsSelected = options?.filter((option) =>
+    dataview.config?.filters?.[schema]?.includes(option.id)
   )
 
   const tooltip = disabled
@@ -231,5 +336,5 @@ export const getFiltersBySchema = (
         defaultValue: 'Not supported by {{list}}',
       })
     : ''
-  return { id: schema, active, disabled, options, optionsSelected, tooltip }
+  return { id: schema, active, disabled, options, optionsSelected, tooltip, type }
 }

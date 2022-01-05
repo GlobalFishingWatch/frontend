@@ -28,8 +28,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { APP_NAME } from 'data/config'
+import { toggleEditorMenu } from 'features/editor/editor.slice'
 import styles from './EditorMenu.module.css'
-import useEditorMenu from './editor.hooks'
 
 const UNKNOWN_CATEGORY = 'unknown' as DataviewCategory
 
@@ -67,7 +67,6 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
-  const { dispatchToggleEditorMenu } = useEditorMenu()
 
   const isEditingDataview = editDataview !== undefined
 
@@ -144,7 +143,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
         const dataviewInstance = getDataviewInstanceFromDataview(action.payload as Dataview)
         addNewDataviewInstances([dataviewInstance])
       }
-      dispatchToggleEditorMenu()
+      dispatch(toggleEditorMenu())
     } else {
       setError((action.payload as AsyncError).message)
     }

@@ -54,10 +54,10 @@ i18n
       //   return value
       // },
     },
-    // react: {
-    //   wait: true,
-    //   useSuspense: false,
-    // },
+    react: {
+      // wait: true,
+      useSuspense: false,
+    },
   })
 
 i18n.on('languageChanged', (lng) => {
