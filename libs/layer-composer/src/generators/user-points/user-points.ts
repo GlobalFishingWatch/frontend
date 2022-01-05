@@ -1,4 +1,4 @@
-import type { AnyLayer, CircleLayer } from '@globalfishingwatch/mapbox-gl'
+import type { LayerSpecification, CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/context'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
@@ -24,7 +24,7 @@ class UserContextGenerator {
     ]
   }
 
-  _getStyleLayers = (config: UserContextGeneratorConfig): AnyLayer[] => {
+  _getStyleLayers = (config: UserContextGeneratorConfig): LayerSpecification[] => {
     const generatorId = config.id
     const baseLayer = {
       id: generatorId,
@@ -32,7 +32,7 @@ class UserContextGenerator {
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
     }
 
-    const cirlceLayer: CircleLayer = {
+    const circleLayer: CircleLayerSpecification = {
       ...baseLayer,
       type: 'circle',
       paint: {
@@ -53,7 +53,7 @@ class UserContextGenerator {
       },
     }
 
-    return [cirlceLayer]
+    return [circleLayer]
   }
 
   getStyle = (config: UserContextGeneratorConfig) => {

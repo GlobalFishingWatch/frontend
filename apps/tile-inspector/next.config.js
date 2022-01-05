@@ -25,7 +25,7 @@ const nextConfig = {
   webpack: function (config) {
     config.resolve.alias = {
       ...config.resolve.alias,
-      'mapbox-gl': '@globalfishingwatch/mapbox-gl',
+      'mapbox-gl': '@globalfishingwatch/maplibre-gl',
     }
     config.resolve.fallback = {
       ...config.resolve.fallback,

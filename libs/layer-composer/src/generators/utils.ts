@@ -1,7 +1,6 @@
-import type { Visibility } from '@globalfishingwatch/mapbox-gl'
-import { AnyGeneratorConfig } from './types'
+import { AnyGeneratorConfig, LayerVisibility } from './types'
 
-export function isConfigVisible(config: AnyGeneratorConfig): Visibility {
+export function isConfigVisible(config: AnyGeneratorConfig): LayerVisibility {
   return config.visible !== undefined && config.visible !== null
     ? config.visible
       ? 'visible'

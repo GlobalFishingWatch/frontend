@@ -3,6 +3,7 @@ import { feature } from '@turf/helpers'
 import union from '@turf/union'
 import { Feature, Polygon, MultiPolygon, BBox } from 'geojson'
 import { uniqBy } from 'lodash'
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 
 export type FilteredPolygons = {
   contained: Feature[]
@@ -69,12 +70,12 @@ export function filterByPolygon(
   return filtered
 }
 
-export const getContextAreaGeometry = (contextAreaFeatures?: mapboxgl.MapboxGeoJSONFeature[]) => {
+export const getContextAreaGeometry = (contextAreaFeatures?: GeoJSONFeature[]) => {
   const uniqContextAreaFeatures = uniqBy(contextAreaFeatures, 'id')
 
   if (uniqContextAreaFeatures?.length === 1) {
     const { geometry, properties } = uniqContextAreaFeatures[0]
-    return feature(geometry, properties)
+    return feature(geometry, properties as any)
   }
 
   return uniqContextAreaFeatures?.reduce((acc, { geometry, properties }) => {

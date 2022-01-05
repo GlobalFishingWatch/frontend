@@ -1,5 +1,5 @@
 import flatMap from 'array.prototype.flatmap'
-import { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, Interval } from '@globalfishingwatch/layer-composer'
@@ -30,7 +30,7 @@ const objectFromEntries =
 
 export const getTimeseries = (
   allChunksFeatures: {
-    features: MapboxGeoJSONFeature[]
+    features: GeoJSONFeature[]
     quantizeOffset: number
   }[],
   bounds: MiniglobeBounds,
@@ -42,7 +42,7 @@ export const getTimeseries = (
 
   const allChunksValues = flatMap(
     allChunksFeatures,
-    (chunk: { features: MapboxGeoJSONFeature[]; quantizeOffset: number }) => {
+    (chunk: { features: GeoJSONFeature[]; quantizeOffset: number }) => {
       const chunkQuantizeOffset = chunk.quantizeOffset
       const filteredFeatures = filterByViewport(chunk.features, bounds)
       if (filteredFeatures?.length > 0) {
@@ -74,7 +74,9 @@ export const getTimeseries = (
           }
         })
         return finalValues
-      } else return []
+      } else {
+        return []
+      }
     }
   )
   return allChunksValues

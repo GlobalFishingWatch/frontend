@@ -1,4 +1,4 @@
-import { Layer } from '@globalfishingwatch/mapbox-gl'
+import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, BasemapGeneratorConfig, BasemapType } from '../types'
 import { layers, sources } from './basemap-layers'
 
@@ -22,7 +22,7 @@ class BasemapGenerator {
     return styleSources
   }
 
-  _getStyleLayers = (config: BasemapGeneratorConfig): Layer[] => {
+  _getStyleLayers = (config: BasemapGeneratorConfig): LayerSpecification[] => {
     return [...layers[config.basemap], ...(config.labels ? layers[BasemapType.Labels] : [])]
   }
 

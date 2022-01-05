@@ -1,5 +1,9 @@
 import { zip, flatten } from 'lodash'
-import type { AnyLayer, FillLayer, LineLayer, Expression } from '@globalfishingwatch/mapbox-gl'
+import type {
+  LayerSpecification,
+  FillLayerSpecification,
+  LineLayerSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/context'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
@@ -28,7 +32,7 @@ class UserContextGenerator {
     ]
   }
 
-  _getStyleLayers = (config: UserContextGeneratorConfig): AnyLayer[] => {
+  _getStyleLayers = (config: UserContextGeneratorConfig): LayerSpecification[] => {
     const generatorId = config.id
     const baseLayer = {
       id: generatorId,
@@ -42,13 +46,8 @@ class UserContextGenerator {
       const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
       const legendRamp = zip(config.steps, originalColorRamp)
       const valueExpression = ['to-number', ['get', config.pickValueAt || 'value']]
-      const colorRamp = [
-        'interpolate',
-        ['linear'],
-        valueExpression,
-        ...flatten(legendRamp),
-      ] as Expression
-      const stepsLayer: FillLayer = {
+      const colorRamp = ['interpolate', ['linear'], valueExpression, ...flatten(legendRamp)]
+      const stepsLayer: FillLayerSpecification = {
         ...baseLayer,
         type: 'fill' as const,
         paint: {
@@ -71,7 +70,7 @@ class UserContextGenerator {
       return [stepsLayer]
     }
 
-    const lineLayer: LineLayer = {
+    const lineLayer: LineLayerSpecification = {
       ...baseLayer,
       type: 'line',
       paint: {
@@ -90,7 +89,7 @@ class UserContextGenerator {
       },
     }
 
-    const interactionLayer: FillLayer = {
+    const interactionLayer: FillLayerSpecification = {
       ...baseLayer,
       id: `${generatorId}_interaction`,
       type: 'fill',

@@ -7,7 +7,7 @@ import {
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { GeoJSONSourceRaw } from '@globalfishingwatch/mapbox-gl'
+import { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
@@ -375,7 +375,7 @@ export const selectVesselLastPositionGEOJson = createSelector(
           },
         })),
       },
-    } as GeoJSONSourceRaw
+    } as GeoJSONSourceSpecification
   }
 )
 

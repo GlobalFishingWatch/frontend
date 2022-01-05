@@ -1,4 +1,8 @@
-import { LinePaint, FillPaint, CirclePaint } from '@globalfishingwatch/mapbox-gl'
+import {
+  LineLayerSpecification,
+  FillLayerSpecification,
+  CircleLayerSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 
 export const DEFAULT_LINE_COLOR = 'white'
 export const HIGHLIGHT_LINE_COLOR = 'white'
@@ -7,7 +11,7 @@ export const HIGHLIGHT_FILL_COLOR = 'rgba(0, 0, 0, 0.3)'
 export const getLinePaintWithFeatureState = (
   color = DEFAULT_LINE_COLOR,
   opacity = 1
-): LinePaint => {
+): LineLayerSpecification['paint'] => {
   return {
     'line-opacity': opacity,
     'line-color': [
@@ -26,7 +30,7 @@ export const getLinePaintWithFeatureState = (
 export const getCirclePaintWithFeatureState = (
   color = DEFAULT_LINE_COLOR,
   opacity = 1
-): CirclePaint => {
+): CircleLayerSpecification['paint'] => {
   return {
     'circle-opacity': opacity,
     'circle-color': [
@@ -45,7 +49,7 @@ export const getCirclePaintWithFeatureState = (
 export const getFillPaintWithFeatureState = (
   color = DEFAULT_LINE_COLOR,
   opacity = 1
-): FillPaint => {
+): FillLayerSpecification['paint'] => {
   return {
     'fill-opacity': opacity,
     'fill-color': [

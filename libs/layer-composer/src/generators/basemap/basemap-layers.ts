@@ -1,10 +1,10 @@
-import { Layer } from '@globalfishingwatch/mapbox-gl'
+import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { BasemapType } from '../types'
 import { Group, Dictionary } from '../../types'
 
 export const DEFAULT_LANDMASS_COLOR = '#274777'
 
-export const layers: Dictionary<Layer[]> = {
+export const layers: Dictionary<LayerSpecification[]> = {
   [BasemapType.Satellite]: [
     {
       type: 'raster',

@@ -1,4 +1,4 @@
-import { AnySourceImpl, Layer, AnyPaint, AnyLayout } from '@globalfishingwatch/mapbox-gl'
+import { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import Generators from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import {
@@ -22,17 +22,15 @@ import { isConfigVisible } from './generators/utils'
 import { DEFAULT_STYLE } from './config'
 
 export class LayerComposer {
-  version: number
   glyphs: string
   sprite: string
   generators: Dictionary<Generator>
   latestGenerated: {
-    sourcesStyle: Dictionary<AnySourceImpl[]>
-    layersStyle: Dictionary<Layer[]>
+    sourcesStyle: Dictionary<SourceSpecification[]>
+    layersStyle: Dictionary<LayerSpecification[]>
   }
 
   constructor(params?: LayerComposerOptions) {
-    this.version = (params && params.version) || DEFAULT_STYLE.version
     this.glyphs = (params && params.glyphs) || DEFAULT_STYLE.glyphs
     this.sprite = (params && params.sprite) || DEFAULT_STYLE.sprite
     this.generators = (params && params.generators) || Generators
@@ -42,7 +40,7 @@ export class LayerComposer {
   }
 
   // Sources dictionary for id and array of sources per layer
-  _getGeneratorSources = (layers: GeneratorStyles[]): Dictionary<AnySourceImpl[]> => {
+  _getGeneratorSources = (layers: GeneratorStyles[]): Dictionary<SourceSpecification[]> => {
     return Object.fromEntries(
       layers
         .filter((layer) => layer.sources && layer.sources.length)
@@ -51,7 +49,7 @@ export class LayerComposer {
   }
 
   // Same here for layers
-  _getGeneratorLayers = (layers: GeneratorStyles[]): Dictionary<Layer[]> => {
+  _getGeneratorLayers = (layers: GeneratorStyles[]): Dictionary<LayerSpecification[]> => {
     return Object.fromEntries(
       layers
         .filter((layer) => layer.layers && layer.layers.length)
@@ -81,25 +79,22 @@ export class LayerComposer {
     newGeneratorStyles.layers = newGeneratorStyles.layers.map((layer) => {
       const newLayer = { ...layer }
       if (!newLayer.layout) {
-        newLayer.layout = {} as AnyLayout
+        newLayer.layout = {} as LayerSpecification['layout']
       }
       newLayer.layout = {
         ...newLayer.layout,
         visibility: isConfigVisible(generatorConfig),
       }
       if (!newLayer.paint) {
-        newLayer.paint = {} as AnyPaint
+        newLayer.paint = {} as LayerSpecification['paint']
       }
       if (!newLayer.metadata) {
-        newLayer.metadata = {
-          generatorId: generatorConfig.id,
-          generatorType: generatorConfig.type as GeneratorType,
-        }
-      } else {
-        newLayer.metadata = {
-          ...newLayer.metadata,
-          generatorType: generatorConfig.type as GeneratorType,
-        }
+        newLayer.metadata = {}
+      }
+      newLayer.metadata = {
+        ...newLayer.metadata,
+        generatorId: generatorConfig.id,
+        generatorType: generatorConfig.type as GeneratorType,
       }
       if (generatorConfig.opacity !== undefined && generatorConfig.opacity !== null) {
         // Can't really handle global opacity on symbol layers as we don't know whether it applies to icon or text
@@ -148,7 +143,7 @@ export class LayerComposer {
   // Latest step in the workflow which compose the output needed for mapbox-gl
   _getStyleJson(sources = {}, layers = {}, metadata = {}): ExtendedStyle {
     return {
-      version: this.version,
+      version: 8,
       glyphs: this.glyphs,
       sprite: this.sprite,
       sources: flatObjectArrays(sources),

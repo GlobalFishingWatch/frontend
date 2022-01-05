@@ -1,7 +1,7 @@
-import { Layer, Expression } from '@globalfishingwatch/mapbox-gl'
+import { LayerSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
-import { Group } from '../../../types'
+import { ExtendedLayer, Group } from '../../../types'
 import { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer, {
   getBaseDebugLabelsLayer,
@@ -18,10 +18,10 @@ export default function gridded(
   const { colorRampBaseExpression } = getColorRampBaseExpression(config)
 
   // TODO only active chunk needed?
-  const layers: Layer[] = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
-    const pickValueAt = timeChunk.frame.toString()
+  const layers: LayerSpecification[] = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
     // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
-    const exprPick: Expression = ['coalesce', ['get', pickValueAt], 0]
+    const pickValueAt = timeChunk.frame.toString()
+    const exprPick: FilterSpecification = ['coalesce', ['get', pickValueAt], 0]
 
     const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 
@@ -37,20 +37,20 @@ export default function gridded(
     )
     chunkMainLayer.paint = paint
     // only add legend metadata for first time chunk
-    const chunkLayers: Layer[] = [chunkMainLayer]
+    const chunkLayers: LayerSpecification[] = [chunkMainLayer]
 
     if (config.interactive && timeChunk.active) {
       const interactionLayer = getBaseInteractionLayer(
         config,
         getLayerId(config.id, timeChunk, 'interaction'),
-        chunkMainLayer.source as string
+        chunkMainLayer.source
       )
 
       chunkLayers.push(interactionLayer)
       const interactionHoverLayer = getBaseInteractionHoverLayer(
         config,
         getLayerId(config.id, timeChunk, 'interaction_hover'),
-        chunkMainLayer.source as string
+        chunkMainLayer.source
       )
       chunkLayers.push(interactionHoverLayer)
     }

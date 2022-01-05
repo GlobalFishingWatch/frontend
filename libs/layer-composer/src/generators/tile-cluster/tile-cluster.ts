@@ -1,4 +1,4 @@
-import { AnyLayer } from '@globalfishingwatch/mapbox-gl'
+import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
@@ -49,7 +49,7 @@ class TileClusterGenerator {
     ]
   }
 
-  _getStyleLayers = (config: GlobalTileClusterGeneratorConfig): AnyLayer[] => {
+  _getStyleLayers = (config: GlobalTileClusterGeneratorConfig): LayerSpecification[] => {
     const activeFilter = ['case', ['==', ['get', 'event_id'], config.currentEventId || null]]
     const layers = [
       {
@@ -135,7 +135,7 @@ class TileClusterGenerator {
       //   },
       // },
     ]
-    return layers as AnyLayer[]
+    return layers as LayerSpecification[]
   }
 
   getStyle = (config: GlobalTileClusterGeneratorConfig) => {

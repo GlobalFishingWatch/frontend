@@ -446,5 +446,5 @@ export const parseMapTooltipEvent = (
 
 export const useGeneratorStyleMetadata = (generatorId: string) => {
   const style = useMapStyle()
-  return style?.metadata?.generatorsMetadata[generatorId] || {}
+  return style?.metadata?.generatorsMetadata?.[generatorId] || {}
 }
