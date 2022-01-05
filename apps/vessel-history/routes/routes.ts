@@ -16,6 +16,8 @@ import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { BASE_URL } from 'data/constants'
 
+export const PATH_BASENAME = BASE_URL
+
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
@@ -83,7 +85,7 @@ const decodeWorkspace = (queryString: string) => {
 }
 
 const routesOptions: Options = {
-  basename: BASE_URL,
+  basename: PATH_BASENAME,
   querySerializer: {
     stringify: encodeWorkspace,
     parse: decodeWorkspace,
