@@ -60,7 +60,7 @@ module.exports = withPlugins(
           // disable: process.env.NODE_ENV === 'development',
           // register: true,
           dest: 'public',
-          customWorkerDir: 'offline',
+          // customWorkerDir: 'offline',
           buildExcludes: [/middleware-manifest.json$/],
           runtimeCaching,
           scope: '/vessel-viewer',
