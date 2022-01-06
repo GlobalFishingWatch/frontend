@@ -9,9 +9,6 @@ import styles from './tracks-events.module.css'
 import { useFilteredChartData, useClusteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
 
-const ONE_TRACK_HEIGHT = 5
-const MIN_HEIGHT = 2
-
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData,
   outerScale: TimelineScale,
@@ -20,7 +17,6 @@ const getTracksEventsWithCoords = (
   // TODO merge with Tracks' getTracksWithCoords
   return tracksEvents.map((trackEvents, trackIndex) => {
     const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight)
-    // const baseHeight = Math.max(MIN_HEIGHT, ONE_TRACK_HEIGHT - tracksEvents.length + 1)
     const trackItemWithCoords: TimebarChartItem = {
       ...trackEvents,
       y: baseTrackY.defaultY,
@@ -34,7 +30,6 @@ const getTracksEventsWithCoords = (
               ...chunk,
               x,
               width,
-              // height: baseHeight,
             }
           }),
     }
@@ -90,7 +85,6 @@ const TracksEvents = ({
                 borderRightColor: useTrackColor ? trackEvents.color : event.props?.color || 'white',
                 left: `${event.x}px`,
                 width: `${event.width}px`,
-                // ...(event.height && { height: `${event.height}px` }),
                 transition: immediate
                   ? 'none'
                   : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,

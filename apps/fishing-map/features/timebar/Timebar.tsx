@@ -210,12 +210,12 @@ const TimebarWrapper = () => {
       tracks &&
       tracks.length <= MAX_TIMEBAR_VESSELS
     ) {
-      const data: TimebarChartData[] = [tracks]
+      const data: TimebarChartData<any>[] = [tracks]
+      if (tracksEvents) {
+        data.push(tracksEvents)
+      }
       if (showGraph && tracksGraphsData) {
         data.push(tracksGraphsData)
-      }
-      if (tracksEvents) {
-        // TODO
       }
       return data
     }
@@ -263,12 +263,12 @@ const TimebarWrapper = () => {
                     <Fragment>
                       <TimebarTracksEvents
                         data={tracksEvents}
-                        useTrackColor={true}
+                        useTrackColor={false}
                         // key="events"
                         // labels={labels?.trackEvents}
-                        // preselectedEventId={highlightedEvent?.id}
-                        // onEventClick={onEventClick}
-                        // onEventHover={onEventHover}
+                        preselectedEventId={highlightedEvent?.id}
+                        onEventClick={onEventClick}
+                        onEventHover={onEventHover}
                       />
                     </Fragment>
                   )}

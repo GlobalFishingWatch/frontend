@@ -36,7 +36,7 @@ export type TimebarChartItem<T = void> = {
   y?: number
   getHighlighterLabel?:
     | string
-    | ((chunk: TimebarChartChunk, value: TimebarChartValue | undefined) => string)
+    | ((chunk: TimebarChartChunk<any>, value: TimebarChartValue | undefined) => string)
 }
 
 export type TimebarChartData<T = void> = TimebarChartItem<T>[]

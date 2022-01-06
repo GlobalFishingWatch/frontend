@@ -32,8 +32,8 @@
   display: flex;
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
+  cursor: grab;
+  cursor: grab;
 }
 
 .veil {
@@ -94,6 +94,8 @@
 
 .tooltipContainer {
   visibility: visible;
+  position: absolute;
+  top: 0;
 }
 
 .last30Days {

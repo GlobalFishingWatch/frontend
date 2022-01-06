@@ -29,12 +29,12 @@ const getCoords = (hoverStart: string, hoverEnd: string, outerScale: TimelineSca
   }
 }
 
-const findChunk = (centerMs: number, item: TimebarChartItem) => {
-  const foundChunk = item.chunks.find((chunk: TimebarChartChunk, chunkIndex: number) => {
+const findChunks = (centerMs: number, item: TimebarChartItem) => {
+  const foundChunks = item.chunks.filter((chunk: TimebarChartChunk, chunkIndex: number) => {
     const chunkEnd = chunk.end || item.chunks[chunkIndex + 1]?.start || Number.NEGATIVE_INFINITY
     return centerMs > chunk.start && centerMs < chunkEnd
   })
-  return foundChunk
+  return foundChunks
 }
 
 const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
@@ -67,7 +67,9 @@ const getHighlighterData = (
 
   data.forEach((datum, datumIndex) => {
     datum.forEach((item, itemIndex) => {
-      const foundChunk = findChunk(centerMs, item)
+      const foundChunks = findChunks(centerMs, item)
+      // TODO Case where several track events overlap. Right now prioritized by type (encounter first etc) but should we display them all
+      const foundChunk = foundChunks ? foundChunks[0] : undefined
       let label = undefined
       if (foundChunk) {
         const foundValue = findValue(centerMs, foundChunk)
@@ -77,9 +79,11 @@ const getHighlighterData = (
             : item.getHighlighterLabel(foundChunk, foundValue)
           : foundValue?.value?.toString()
       }
-      highlighterData[itemIndex]!.labels![datumIndex] = {
-        value: label,
-        isMain: datumIndex === 0 && data.length > 1,
+      if (label) {
+        highlighterData[itemIndex]!.labels![datumIndex] = {
+          value: label,
+          isMain: datumIndex === 0 && data.length > 1,
+        }
       }
     })
   })
@@ -114,6 +118,8 @@ const Highlighter = ({
   const highlighterData = useMemo(() => {
     return getHighlighterData(centerMs, data)
   }, [centerMs, data])
+
+  console.log(highlighterData)
 
   return (
     <Fragment>

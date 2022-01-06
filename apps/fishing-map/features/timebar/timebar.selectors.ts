@@ -67,11 +67,12 @@ export const selectTracksData = createSelector(
         }
       })
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+      const shipname = (resources[infoUrl] as any).data.shipname
       const item: TimebarChartItem = {
         ...timebarTrack,
         chunks,
         status: ResourceStatus.Finished,
-        getHighlighterLabel: [(resources[infoUrl] as any).data.shipname.slice(0, 3), '.'].join(''),
+        getHighlighterLabel: shipname,
         // TODO
         // segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
       }
@@ -156,40 +157,37 @@ export const selectTracksGraphData = createSelector(
 )
 
 const getTrackEventChunkProps = (
-  info: Vessel,
   event: ApiEvent,
   showAuthorizationStatus: boolean
 ): TrackEventChunkProps => {
-  const vesselName = info.shipname || 'unknown vessel'
-
   let description
   let descriptionGeneric
   switch (event.type) {
     case EventTypes.Encounter:
       if (event.encounter) {
-        description = `${vesselName} ${t('event.encounterActionWith', 'had an encounter with')} ${
+        description = `${t('event.encounterActionWith', 'had an encounter with')} ${
           event.encounter.vessel.name
             ? event.encounter.vessel.name
             : t('event.encounterAnotherVessel', 'another vessel')
         } `
       }
-      descriptionGeneric = `${vesselName} ${t('event.encounter')}`
+      descriptionGeneric = `${t('event.encounter')}`
       break
     case EventTypes.Port:
       if (event.port && event.port.name) {
-        description = `${vesselName} ${t('event.portAt', { port: event.port.name })} `
+        description = `${t('event.portAt', { port: event.port.name })} `
       } else {
-        description = `${vesselName} ${t('event.portAction')}`
+        description = `${t('event.portAction')}`
       }
-      descriptionGeneric = `${vesselName} ${t('event.port')}`
+      descriptionGeneric = `${t('event.port')}`
       break
     case EventTypes.Loitering:
-      description = `${vesselName} ${t('event.loiteringAction')}`
-      descriptionGeneric = `${vesselName} ${t('event.loitering')}`
+      description = `${t('event.loiteringAction')}`
+      descriptionGeneric = `${t('event.loitering')}`
       break
     case EventTypes.Fishing:
-      description = `${vesselName} ${t('event.fishingAction')}`
-      descriptionGeneric = `${vesselName} ${t('event.fishing')}`
+      description = `${t('event.fishingAction')}`
+      descriptionGeneric = `${t('event.fishing')}`
       break
     default:
       description = t('event.unknown', 'Unknown event')
@@ -226,6 +224,18 @@ const getTrackEventChunkProps = (
   }
 }
 
+const EVENT_TYPES_SORT_ORDER = {
+  [EventTypes.Encounter]: 1,
+  [EventTypes.Loitering]: 2,
+  [EventTypes.Gap]: 3,
+  [EventTypes.Port]: 4,
+  [EventTypes.Fishing]: 5,
+}
+
+const getTrackEventHighlighterLabel = (chunk: TimebarChartChunk<TrackEventChunkProps>) => {
+  return chunk.props.description
+}
+
 export const selectTracksEvents = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
@@ -235,20 +245,17 @@ export const selectTracksEvents = createSelector(
         chunks: [],
         status: ResourceStatus.Idle,
         // TODO
-        // getHighlighterLabel:
+        getHighlighterLabel: getTrackEventHighlighterLabel,
       }
       if (Array.isArray(visibleEvents) && visibleEvents?.length === 0) return trackEvents
 
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       const trackResource = resources[tracksUrl]
-      const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      const infoResource = resources[infoUrl] as Resource<Vessel>
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.some(({ url }) => resources[url]?.data)
       const tracksResourceResolved = tracksUrl && trackResource?.status === ResourceStatus.Finished
-      const infoResourceResolved = infoUrl && infoResource?.status === ResourceStatus.Finished
-      if (!hasEventData || !tracksResourceResolved || !infoResourceResolved || !infoResource.data) {
+      if (!hasEventData || !tracksResourceResolved) {
         return { ...trackEvents, status: ResourceStatus.Loading }
       }
 
@@ -266,11 +273,7 @@ export const selectTracksEvents = createSelector(
 
         const data = resources[url].data as ApiEvent[]
         const chunks = data.map((event) => {
-          const props = getTrackEventChunkProps(
-            infoResource.data,
-            event,
-            dataview.config?.showAuthorizationStatus
-          )
+          const props = getTrackEventChunkProps(event, dataview.config?.showAuthorizationStatus)
           const chunk: TimebarChartChunk<TrackEventChunkProps> = {
             id: event.id,
             start: event.start as number,
@@ -281,6 +284,16 @@ export const selectTracksEvents = createSelector(
           return chunk
         })
         return chunks
+      })
+
+      // Sort events to pick prioritized event on highlight
+      trackEvents.chunks.sort((chunkA, chunkB) => {
+        const first = chunkA.type ? EVENT_TYPES_SORT_ORDER[chunkA.type] : Number.MAX_SAFE_INTEGER
+        const second = chunkB.type ? EVENT_TYPES_SORT_ORDER[chunkB.type] : Number.MAX_SAFE_INTEGER
+        let result = 0
+        if (first < second) result = -1
+        else if (first > second) result = 1
+        return result
       })
       return trackEvents
     })
