@@ -36,9 +36,10 @@ export const getDataviewViewportFeatures = (map: Map, dataviewId: string) => {
   const allFeaturesValues = timeChunks.chunks.map((chunk) => {
     const features = map.querySourceFeatures(chunk.sourceId as string, {
       sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
+      filter: [],
     })
     const filteredFeatures = filterByViewport(features, bounds)
-    const featuresValues = filteredFeatures.flatMap(({ properties }) => {
+    const featuresValues = filteredFeatures.flatMap(({ properties }: any) => {
       const values = aggregateCell({
         rawValues: properties.rawValues,
         frame,

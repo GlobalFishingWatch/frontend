@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom } from 'features/map/map-sources.atom'
@@ -25,14 +24,16 @@ export const useMapSourceTilesLoadedAtom = () => {
   useEffect(() => {
     if (!map) return
 
-    const onSourceDataLoading = (e: MapDataEvent) => {
+    // TODO: include sourceId in typedefinition fork
+    const onSourceDataLoading = (e: any) => {
       const { sourceId } = e
       if (sourceId) {
         setSourceTilesLoaded((state) => ({ ...state, [sourceId]: false }))
       }
     }
 
-    const onSourceTilesLoaded = (e: MapDataEvent) => {
+    // TODO: include sourceId in typedefinition fork
+    const onSourceTilesLoaded = (e: any) => {
       const { sourceId } = e
       if (sourceId) {
         setSourceTilesLoaded((state) => ({ ...state, [sourceId]: true }))
