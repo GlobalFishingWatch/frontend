@@ -43,7 +43,8 @@ import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
-import { useMapAndSourcesLoaded, useSetMapIdleAtom } from './map-features.hooks'
+import { useSetMapIdleAtom } from './map-features.hooks'
+import { useMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
 import MapLegends from './MapLegends'
@@ -75,6 +76,7 @@ const handleError = ({ error }: any) => {
 const MapWrapper = (): React.ReactElement | null => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
+  useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -175,7 +177,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const portalledLegend = !showTimeComparison
 
   const mapLoaded = useMapLoaded()
-  const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useMapSourceTilesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
     (state) => {

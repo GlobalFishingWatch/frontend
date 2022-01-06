@@ -1,24 +1,26 @@
 import { useCallback, useEffect } from 'react'
 import { ckmeans } from 'simple-statistics'
 import { useSelector } from 'react-redux'
-import {
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
-  ExtendedStyle,
-  pickActiveTimeChunk,
-  TimeChunks,
-} from '@globalfishingwatch/layer-composer'
-import { useMapIdle } from 'features/map/map-features.hooks'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getDataviewViewportFeatures } from 'features/workspace/environmental/environmental.utils'
+import {
+  getDataviewGeneratorMeta,
+  getDataviewViewportFeatures,
+} from 'features/workspace/environmental/environmental.utils'
 import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
-import { useMapStyle } from 'features/map/map-style.hooks'
+import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 
 export const useEnvironmentalBreaksUpdate = () => {
-  const idle = useMapIdle()
   const map = useMapInstance()
-  const mapStyle = useMapStyle()
   const dataviews = useSelector(selectEnvironmentalDataviews)
+  const sources = dataviews.flatMap(
+    (dataview) =>
+      getDataviewGeneratorMeta(map, dataview.id)?.timeChunks?.chunks?.flatMap(
+        ({ sourceId }) => sourceId || []
+      ) || []
+  )
+  const sourcesLoaded = useMapSourceTilesLoaded(sources)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const updateBreaksByViewportValues = useCallback(
@@ -69,31 +71,11 @@ export const useEnvironmentalBreaksUpdate = () => {
   )
 
   useEffect(() => {
-    if (idle) {
+    if (sourcesLoaded) {
       updateBreaksByViewportValues(dataviews)
     } else {
       hideLayerWhileLoading(dataviews)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idle])
-
-  useEffect(() => {
-    if (!map) return
-    const setIdleState = (e) => {
-      if (e.sourceId === 'mergedAnimatedHeatmap-heatmapchunk_10days') {
-        console.log(e)
-      }
-    }
-    if (map) {
-      console.log('adds')
-      map.on('sourcetilesdata', setIdleState)
-    }
-    const detachListeners = () => {
-      console.log('removes')
-      map.off('sourcetilesdata', setIdleState)
-      // map.off('sourcedata', resetIdleState)
-    }
-
-    return detachListeners
-  }, [map])
+  }, [sourcesLoaded])
 }
