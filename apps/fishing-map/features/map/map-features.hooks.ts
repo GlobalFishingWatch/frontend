@@ -34,16 +34,3 @@ export const useMapIdle = () => {
   const idle = useRecoilValue(mapIdleAtom)
   return idle
 }
-
-export const useSourceInStyle = (sourcesIds: string | string[]) => {
-  const style = useMapStyle()
-  const sourcesIdsList = Array.isArray(sourcesIds) ? sourcesIds : [sourcesIds]
-  const sourcesLoaded = sourcesIdsList.every((source) => style?.sources?.[source] !== undefined)
-  return sourcesLoaded
-}
-
-export const useMapAndSourcesLoaded = (sourcesIds: string | string[]) => {
-  const mapLoaded = useMapLoaded()
-  const sourcesLoaded = useSourceInStyle(sourcesIds)
-  return mapLoaded && sourcesLoaded
-}
