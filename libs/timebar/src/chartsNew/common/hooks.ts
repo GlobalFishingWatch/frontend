@@ -23,17 +23,17 @@ export const useFilteredChartData = (data: TimebarChartData) => {
   const { outerStart, outerEnd } = useContext(TimelineContext) as TimelineContextProps
 
   const [filteredData, setFilteredData] = useState<TimebarChartData>([])
-  const debounced = useDebouncedCallback(
-    (start, end) => {
-      setFilteredData(filterData(data, start, end))
+  const debouncedSetFilteredData = useDebouncedCallback(
+    (data, outerStart, outerEnd) => {
+      setFilteredData(filterData(data, outerStart, outerEnd))
     },
     100,
     { maxWait: 1000, leading: true }
   )
 
   useMemo(() => {
-    debounced(outerStart, outerEnd)
-  }, [outerStart, outerEnd, debounced])
+    debouncedSetFilteredData(data, outerStart, outerEnd)
+  }, [outerStart, outerEnd, data, debouncedSetFilteredData])
 
   return filteredData
 }
