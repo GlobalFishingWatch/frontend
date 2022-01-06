@@ -9,15 +9,23 @@ import type { Map } from '@globalfishingwatch/maplibre-gl'
 import { mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
 
+export const getDataviewGeneratorMeta = (map: Map, dataviewId) => {
+  if (!map || !map.getStyle) {
+    return
+  }
+  const style = map.getStyle() as ExtendedStyle
+  const generatorsMetadata = style?.metadata?.generatorsMetadata
+  if (!generatorsMetadata) {
+    return
+  }
+  return generatorsMetadata[dataviewId]
+}
+
 export const getDataviewViewportFeatures = (map: Map, dataviewId: string) => {
   if (!map) {
     return
   }
-  const style = map.getStyle && (map.getStyle() as ExtendedStyle)
-  const generatorsMetadata = style?.metadata?.generatorsMetadata
-  if (!generatorsMetadata) return null
-
-  const metadata = generatorsMetadata[dataviewId]
+  const metadata = getDataviewGeneratorMeta(map, dataviewId)
   if (!metadata) {
     return
   }

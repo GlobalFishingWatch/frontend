@@ -35,6 +35,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/analysis/analysis.selectors'
 import { useMapStyle } from 'features/map/map-style.hooks'
+import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -57,7 +58,6 @@ import {
   ApiViirsStats,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useMapAndSourcesLoaded } from './map-features.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   'fishing-effort',
@@ -118,7 +118,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useMapSourceTilesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
   const viirsPromiseRef = useRef<any>()
