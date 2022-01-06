@@ -1,3 +1,4 @@
+import { createContext } from 'react'
 export type TimelineScale = (date: Date | number) => number
 
 export type TimelineContextProps = {
@@ -16,3 +17,7 @@ export type TimelineContextProps = {
   svgTransform: string
   tooltipContainer: Element
 }
+
+export const TimelineContext = createContext<TimelineContextProps>({} as TimelineContextProps)
+
+export default TimelineContext

@@ -48,6 +48,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "types": "src/types/types.d.ts"
+  }
 }

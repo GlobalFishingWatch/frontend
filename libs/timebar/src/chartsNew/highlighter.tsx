@@ -1,12 +1,14 @@
 import { Fragment, useContext, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import cx from 'classnames'
-import TimelineContext from '../timelineContext'
-import { TimelineContextProps, TimelineScale } from '../types'
+import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
 import { TimebarChartData, TimebarChartDataChunk, TimebarChartDataItem } from './common/types'
+
+dayjs.extend(utc)
 
 const getCoords = (hoverStart: string, hoverEnd: string, outerScale: TimelineScale) => {
   const hoverStartDate = new Date(hoverStart)
@@ -102,9 +104,7 @@ const Highlighter = ({
   hoverEnd: string
   data?: TimebarChartData[]
 }) => {
-  const { outerScale, graphHeight, tooltipContainer } = useContext(
-    TimelineContext
-  ) as TimelineContextProps
+  const { outerScale, graphHeight, tooltipContainer } = useContext(TimelineContext)
   const { width, left, center, centerMs, centerDateLabel } = useMemo(
     () => getCoords(hoverStart, hoverEnd, outerScale),
     [hoverStart, hoverEnd, outerScale]
