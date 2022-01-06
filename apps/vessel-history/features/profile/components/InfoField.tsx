@@ -8,6 +8,7 @@ import { VesselFieldLabel } from 'types/vessel'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import InfoFieldHistory from './InfoFieldHistory'
 import styles from './Info.module.css'
+import Faq from './Faq'
 
 interface ListItemProps {
   label: VesselFieldLabel
@@ -15,6 +16,7 @@ interface ListItemProps {
   valuesHistory?: ValueItem[]
   vesselName: string
   hideTMTDate?: boolean
+  includeFaq?: boolean
   helpText?: React.ReactNode
 }
 
@@ -24,6 +26,7 @@ const InfoField: React.FC<ListItemProps> = ({
   valuesHistory = [],
   vesselName,
   hideTMTDate = false,
+  includeFaq = false,
   helpText,
 }): React.ReactElement => {
   const { t } = useTranslation()
@@ -49,6 +52,7 @@ const InfoField: React.FC<ListItemProps> = ({
         {helpText && (
           <DataAndTerminology size="tiny" type="default" title={t(`vessel.${label}` as any, label)}>
             {helpText}
+            {includeFaq && <Faq source={label} />}
           </DataAndTerminology>
         )}
       </label>
