@@ -60,7 +60,7 @@ const Tracks = ({
   data: TimebarChartData
   orientation?: string
 }) => {
-  const { immediate } = useContext(ImmediateContext) as any
+  const { immediate } = useContext(ImmediateContext)
   const { outerScale, graphHeight } = useContext(TimelineContext)
 
   const filteredTracks = useFilteredChartData(data)

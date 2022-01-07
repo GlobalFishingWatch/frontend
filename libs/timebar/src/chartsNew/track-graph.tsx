@@ -95,7 +95,7 @@ const TrackGraph = ({
   data: TimebarChartData
   orientation?: string
 }) => {
-  const { immediate } = useContext(ImmediateContext) as any
+  const { immediate } = useContext(ImmediateContext)
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
   const maxValues = useMemo(() => {
     return getMaxValues(data)
