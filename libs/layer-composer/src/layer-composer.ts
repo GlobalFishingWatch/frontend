@@ -143,7 +143,7 @@ export class LayerComposer {
   // Latest step in the workflow which compose the output needed for mapbox-gl
   _getStyleJson(sources = {}, layers = {}, metadata = {}): ExtendedStyle {
     return {
-      version: 8,
+      version: DEFAULT_STYLE.version,
       glyphs: this.glyphs,
       sprite: this.sprite,
       sources: flatObjectArrays(sources),
