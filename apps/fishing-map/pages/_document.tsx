@@ -24,6 +24,7 @@ class MyDocument extends Document {
             <meta name="mobile-web-app-capable" content="yes" />
             <meta name="theme-color" content="#163f89" />
             <meta name="application-name" content="GFW Fishing map" />
+            <meta name="referrer" content="strict-origin-when-cross-origin"></meta>
             <link
               rel="apple-touch-icon"
               sizes="120x120"
