@@ -1,7 +1,6 @@
 import React, { Fragment, useContext, useMemo } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { TimelineContextProps, TimelineScale } from '../types'
-import TimelineContext from '../timelineContext'
+import TimelineContext, { TimelineScale } from '../timelineContext'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'
@@ -52,7 +51,7 @@ const Tracks = ({
   orientation?: string
 }) => {
   const { immediate } = useContext(ImmediateContext) as any
-  const { outerScale, graphHeight } = useContext(TimelineContext) as TimelineContextProps
+  const { outerScale, graphHeight } = useContext(TimelineContext)
 
   const filteredTracks = useFilteredChartData(data)
   const tracksWithCoords = useMemo(

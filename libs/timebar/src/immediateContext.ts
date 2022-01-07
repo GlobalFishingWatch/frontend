@@ -1,3 +1,4 @@
 import { createContext } from 'react'
-const ImmediateContext = createContext(false)
+
+export const ImmediateContext = createContext<boolean>(false)
 export default ImmediateContext

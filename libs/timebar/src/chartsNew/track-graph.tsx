@@ -2,8 +2,7 @@ import React, { useContext, useMemo } from 'react'
 import { area, curveStepAfter } from 'd3-shape'
 import { quantile } from 'simple-statistics'
 import ImmediateContext from '../immediateContext'
-import TimelineContext from '../timelineContext'
-import { TimelineContextProps, TimelineScale } from '../types'
+import TimelineContext, { TimelineScale } from '../timelineContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
@@ -97,9 +96,7 @@ const TrackGraph = ({
   orientation?: string
 }) => {
   const { immediate } = useContext(ImmediateContext) as any
-  const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(
-    TimelineContext
-  ) as TimelineContextProps
+  const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
   const maxValues = useMemo(() => {
     return getMaxValues(data)
   }, [data])

@@ -1,7 +1,6 @@
 import { useContext, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { TimelineContextProps, TimelineScale } from '../../types'
-import TimelineContext from '../../timelineContext'
+import TimelineContext, { TimelineScale } from '../../timelineContext'
 import { TimebarChartChunk } from '..'
 import { TimebarChartData } from './types'
 
@@ -20,7 +19,7 @@ const filterData = (data: TimebarChartData, start: string, end: string) => {
 }
 
 export const useFilteredChartData = (data: TimebarChartData) => {
-  const { outerStart, outerEnd } = useContext(TimelineContext) as TimelineContextProps
+  const { outerStart, outerEnd } = useContext(TimelineContext)
 
   const [filteredData, setFilteredData] = useState<TimebarChartData>([])
   const debouncedSetFilteredData = useDebouncedCallback(
@@ -78,7 +77,7 @@ const clusterData = (data: TimebarChartData, outerScale: TimelineScale) => {
 }
 
 export const useClusteredChartData = (data: TimebarChartData) => {
-  const { outerStart, outerEnd, outerScale } = useContext(TimelineContext) as TimelineContextProps
+  const { outerStart, outerEnd, outerScale } = useContext(TimelineContext)
   const delta = +new Date(outerEnd) - +new Date(outerStart)
   return useMemo(() => {
     return clusterData(data, outerScale)

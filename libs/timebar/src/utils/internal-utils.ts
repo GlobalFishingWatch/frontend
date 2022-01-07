@@ -1,14 +1,14 @@
-import dayjs from 'dayjs'
+import dayjs, { OpUnitType } from 'dayjs'
 import { DEFAULT_DATE_FORMAT, DEFAULT_FULL_DATE_FORMAT } from '../constants'
 
-export const getTime = (dateISO) => new Date(dateISO).getTime()
+export const getTime = (dateISO: string) => new Date(dateISO).getTime()
 
 export const clampToAbsoluteBoundaries = (
-  start,
-  end,
-  desiredDeltaMs,
-  absoluteStart,
-  absoluteEnd
+  start: string,
+  end: string,
+  desiredDeltaMs: number,
+  absoluteStart: string,
+  absoluteEnd: string
 ) => {
   const startMs = getTime(start)
   const endMs = getTime(end)
@@ -32,13 +32,14 @@ export const clampToAbsoluteBoundaries = (
   return { newStartClamped, newEndClamped, clamped }
 }
 
-export const getDeltaMs = (start, end) => getTime(end) - getTime(start)
-export const getDeltaDays = (start, end) => getDeltaMs(start, end) / 1000 / 60 / 60 / 24
-export const isMoreThanADay = (start, end) => getDeltaDays(start, end) > 1
-export const getDefaultFormat = (start, end) =>
+export const getDeltaMs = (start: string, end: string) => getTime(end) - getTime(start)
+export const getDeltaDays = (start: string, end: string) =>
+  getDeltaMs(start, end) / 1000 / 60 / 60 / 24
+export const isMoreThanADay = (start: string, end: string) => getDeltaDays(start, end) > 1
+export const getDefaultFormat = (start: string, end: string) =>
   isMoreThanADay(start, end) ? DEFAULT_DATE_FORMAT : DEFAULT_FULL_DATE_FORMAT
 
-export const stickToClosestUnit = (date, unit) => {
+export const stickToClosestUnit = (date: string, unit: OpUnitType) => {
   const mDate = dayjs(date).utc()
   const mStartOf = mDate.startOf(unit)
   const mEndOf = mDate.endOf(unit)
