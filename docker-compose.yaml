@@ -1,5 +1,24 @@
 version: '3.9'
 services:
+  map:
+    build:
+      context: ./dist/apps/fishing-map
+      dockerfile: ../../../apps/fishing-map/Dockerfile
+    container_name: map
+    expose:
+      - '80'
+    volumes:
+      - ./dist/apps/fishing-map/exported:/usr/share/nginx/www
+    env_file:
+      - apps/fishing-map/.build.env
+    environment:
+      - NEXT_PUBLIC_WORKSPACE_ENV=development
+      - NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org/
+      - PORT=80
+      - BASIC_AUTH=off
+    networks:
+      - frontend-network
+
   vessel-viewer:
     build:
       context: ./dist/apps/vessel-history
@@ -9,8 +28,10 @@ services:
       - '80'
     volumes:
       - ./dist/apps/vessel-history/exported:/usr/share/nginx/www
+    env_file:
+      - apps/vessel-history/.build.env
     environment:
-      - NEXT_PUBLIC_WORKSPACE_ENV=production
+      - NEXT_PUBLIC_WORKSPACE_ENV=development
       - NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org/
       - PORT=80
       - BASIC_AUTH=off
