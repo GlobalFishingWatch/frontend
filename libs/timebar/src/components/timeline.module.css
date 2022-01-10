@@ -32,8 +32,6 @@
   display: flex;
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
-  cursor: grab;
-  cursor: grab;
 }
 
 .veil {

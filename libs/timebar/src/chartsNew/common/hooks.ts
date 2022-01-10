@@ -53,7 +53,12 @@ const clusterData = (data: TimebarChartData, outerScale: TimelineScale) => {
         const lastEndPx = outerScale(lastEnd)
         const deltaPx = currentEventStartPx - lastEndPx
 
-        if (deltaPx > MIN_DISTANCE_PX_TO_CLUSTER || currentEvent.type !== lastType) {
+        if (
+          !lastClusteredEvent ||
+          !lastClusteredEvent.end ||
+          deltaPx > MIN_DISTANCE_PX_TO_CLUSTER ||
+          currentEvent.type !== lastType
+        ) {
           if (lastClusteredEvent && lastClusteredEvent.cluster?.numChunks === 1) {
             delete lastClusteredEvent.cluster
           }
@@ -67,7 +72,7 @@ const clusterData = (data: TimebarChartData, outerScale: TimelineScale) => {
           return [...currentClusteredEvents, newClusteredEvent]
         }
         lastClusteredEvent.end = currentEvent.end
-        lastClusteredEvent.cluster!.numChunks++
+        if (lastClusteredEvent.cluster) lastClusteredEvent.cluster.numChunks++
         return currentClusteredEvents
       },
       []
@@ -84,5 +89,6 @@ export const useClusteredChartData = (data: TimebarChartData) => {
   const delta = +new Date(outerEnd) - +new Date(outerStart)
   return useMemo(() => {
     return clusterData(data, outerScale)
-  }, [data, delta])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, delta]) // only memoize when delta changes (ie start and end can change with delta staying the same)
 }
