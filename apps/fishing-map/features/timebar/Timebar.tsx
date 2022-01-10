@@ -8,8 +8,10 @@ import {
   TimebarTracks,
   TimebarHighlighter,
   TimebarTracksEvents,
-  TimebarTrackGraph,
+  TimebarTracksGraph,
   TimebarChartData,
+  TimebarChartChunk,
+  TrackEventChunkProps,
 } from '@globalfishingwatch/timebar'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -37,11 +39,7 @@ import {
   Range,
 } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import {
-  selectTracksData,
-  selectEventsWithRenderingInfo,
-  selectTracksGraphData,
-} from './timebar.selectors'
+import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
@@ -68,7 +66,7 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
-  const tracksEvents = useSelector(selectEventsWithRenderingInfo)
+  const tracksEvents = useSelector(selectTracksEvents)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const dispatch = useDispatch()
@@ -96,34 +94,31 @@ const TimebarWrapper = () => {
   )
 
   const isSmallScreen = useSmallScreen()
-  const hoverInEvent = useRef(false)
 
   const activityCategory = useSelector(selectActivityCategory)
 
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
-      if (hoverInEvent.current === false) {
-        if (clientX === null || clientX === undefined || isNaN(clientX)) {
-          dispatchDisableHighlightedTime()
-        } else {
-          try {
-            const start = scale(clientX - 10).toISOString()
-            const end = scale(clientX + 10).toISOString()
-            const startDateTime = DateTime.fromISO(start)
-            const endDateTime = DateTime.fromISO(end)
-            const diff = endDateTime.diff(startDateTime, 'hours')
-            if (diff.hours < 1) {
-              // To ensure at least 1h range is highlighted
-              const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
-              const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
-              dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
-            } else {
-              dispatch(setHighlightedTime({ start, end }))
-            }
-          } catch (e: any) {
-            console.log(clientX)
-            console.warn(e)
+      if (clientX === null || clientX === undefined || isNaN(clientX)) {
+        dispatchDisableHighlightedTime()
+      } else {
+        try {
+          const start = scale(clientX - 10).toISOString()
+          const end = scale(clientX + 10).toISOString()
+          const startDateTime = DateTime.fromISO(start)
+          const endDateTime = DateTime.fromISO(end)
+          const diff = endDateTime.diff(startDateTime, 'hours')
+          if (diff.hours < 1) {
+            // To ensure at least 1h range is highlighted
+            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
+            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+            dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
+          } else {
+            dispatch(setHighlightedTime({ start, end }))
           }
+        } catch (e: any) {
+          console.log(clientX)
+          console.warn(e)
         }
       }
     },
@@ -168,10 +163,10 @@ const TimebarWrapper = () => {
 
   const { zoom } = viewport
   const onEventClick = useCallback(
-    (event: ApiEvent) => {
+    (event: TimebarChartChunk<TrackEventChunkProps>) => {
       setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
+        latitude: event.props.latitude,
+        longitude: event.props.longitude,
         zoom: zoom < 8 ? 8 : zoom,
       })
     },
@@ -179,12 +174,18 @@ const TimebarWrapper = () => {
   )
 
   const onEventHover = useCallback(
-    (event: ApiEvent) => {
-      if (event) {
-        dispatch(disableHighlightedTime())
+    (event: TimebarChartChunk<TrackEventChunkProps>) => {
+      if (!event) {
+        dispatchHighlightedEvent(null)
+        return
       }
-      hoverInEvent.current = event !== undefined
-      dispatchHighlightedEvent(event)
+
+      dispatch(disableHighlightedTime())
+
+      const apiEvent: ApiEvent = {
+        id: event.id as string,
+      } as any
+      dispatchHighlightedEvent(apiEvent)
     },
     [dispatch, dispatchHighlightedEvent]
   )
@@ -214,12 +215,12 @@ const TimebarWrapper = () => {
       tracks &&
       tracks.length <= MAX_TIMEBAR_VESSELS
     ) {
-      const data: TimebarChartData[] = [tracks]
+      const data: TimebarChartData<any>[] = [tracks]
+      if (tracksEvents) {
+        data.push(tracksEvents)
+      }
       if (showGraph && tracksGraphsData) {
         data.push(tracksGraphsData)
-      }
-      if (tracksEvents) {
-        // TODO
       }
       return data
     }
@@ -257,7 +258,7 @@ const TimebarWrapper = () => {
                 <Fragment>
                   <TimebarTracks key="tracks" data={tracks} orientation={trackGraphOrientation} />
                   {showGraph && tracksGraphsData && (
-                    <TimebarTrackGraph
+                    <TimebarTracksGraph
                       key="trackGraph"
                       data={tracksGraphsData}
                       orientation={trackGraphOrientation}
@@ -266,10 +267,10 @@ const TimebarWrapper = () => {
                   {tracksEvents && (
                     <Fragment>
                       <TimebarTracksEvents
-                        key="events"
-                        labels={labels?.trackEvents}
+                        data={tracksEvents}
+                        useTrackColor={tracksGraphsData.length > 1}
+                        // labels={labels?.trackEvents}
                         preselectedEventId={highlightedEvent?.id}
-                        tracksEvents={tracksEvents as any}
                         onEventClick={onEventClick}
                         onEventHover={onEventHover}
                       />

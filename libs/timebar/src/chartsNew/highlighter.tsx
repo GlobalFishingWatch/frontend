@@ -6,7 +6,7 @@ import cx from 'classnames'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
-import { TimebarChartData, TimebarChartDataChunk, TimebarChartDataItem } from './common/types'
+import { TimebarChartData, TimebarChartChunk, TimebarChartItem } from './common/types'
 
 dayjs.extend(utc)
 
@@ -31,15 +31,15 @@ const getCoords = (hoverStart: string, hoverEnd: string, outerScale: TimelineSca
   }
 }
 
-const findChunk = (centerMs: number, item: TimebarChartDataItem) => {
-  const foundChunk = item.chunks.find((chunk: TimebarChartDataChunk, chunkIndex: number) => {
+const findChunks = (centerMs: number, item: TimebarChartItem) => {
+  const foundChunks = item.chunks.filter((chunk: TimebarChartChunk, chunkIndex: number) => {
     const chunkEnd = chunk.end || item.chunks[chunkIndex + 1]?.start || Number.NEGATIVE_INFINITY
     return centerMs > chunk.start && centerMs < chunkEnd
   })
-  return foundChunk
+  return foundChunks
 }
 
-const findValue = (centerMs: number, chunk: TimebarChartDataChunk) => {
+const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
   if (!chunk.values) return undefined
   const foundValue = chunk.values.find((value, valueIndex) => {
     const valueEnd =
@@ -69,7 +69,9 @@ const getHighlighterData = (
 
   data.forEach((datum, datumIndex) => {
     datum.forEach((item, itemIndex) => {
-      const foundChunk = findChunk(centerMs, item)
+      const foundChunks = findChunks(centerMs, item)
+      // TODO Case where several track events overlap. Right now prioritized by type (encounter first etc) but should we display them all
+      const foundChunk = foundChunks ? foundChunks[0] : undefined
       let label = undefined
       if (foundChunk) {
         const foundValue = findValue(centerMs, foundChunk)
@@ -79,9 +81,11 @@ const getHighlighterData = (
             : item.getHighlighterLabel(foundChunk, foundValue)
           : foundValue?.value?.toString()
       }
-      highlighterData[itemIndex]!.labels![datumIndex] = {
-        value: label,
-        isMain: datumIndex === 0 && data.length > 1,
+      if (label) {
+        highlighterData[itemIndex]!.labels![datumIndex] = {
+          value: label,
+          isMain: datumIndex === 0 && data.length > 1,
+        }
       }
     })
   })

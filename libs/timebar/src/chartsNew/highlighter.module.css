@@ -12,7 +12,7 @@
 
 .tooltipContainer {
   pointer-events: none;
-  top: -34px;
+  bottom: -2px;
   z-index: var(--timebar-z-highlighter-tooltips);
 }
 
@@ -27,13 +27,18 @@
 .tooltip {
   left: 50%;
   transform: translateX(-50%);
-  text-align: center;
   background: var(--timebar-ui-btn-color);
   white-space: nowrap;
   color: var(--timebar-white);
-  padding: 6px;
+  padding: 6px 10px;
   border-radius: 6px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
+}
+
+.tooltipDate,
+.tooltipItem {
+  display: block;
+  line-height: 1.8rem;
 }
 
 .tooltipDate {
@@ -53,15 +58,16 @@
 .tooltipColor {
   width: 6px;
   height: 6px;
-  margin-right: 0.2rem;
+  margin-right: 0.4rem;
   display: inline-block;
   border-radius: 99px;
 }
 
-.tooltipLabel:not(:last-child) {
-  margin-right: 0.4rem;
+.tooltipLabel:not(:last-child, .isMain)::after {
+  content: ' - ';
 }
 
 .tooltipLabel.isMain {
   color: var(--timebar-white);
+  margin-right: 0.4rem;
 }

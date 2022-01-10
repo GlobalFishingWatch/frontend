@@ -1,0 +1,54 @@
+.Events {
+  position: absolute;
+}
+
+.track,
+.event {
+  position: absolute;
+}
+
+.event {
+  transform: translateY(-50%);
+  border-radius: 99px;
+  cursor: pointer;
+  height: 4px;
+  background: var(--background-color);
+}
+
+.event:hover,
+.event.highlighted {
+  filter: drop-shadow(1px 1px 0 var(--hover-color)) drop-shadow(-1px -1px 0 var(--hover-color))
+    drop-shadow(1px -1px 0 var(--hover-color)) drop-shadow(-1px 1px 0 var(--hover-color));
+}
+
+.encounter,
+.port_visit {
+  border-radius: 0;
+  height: 10px;
+  min-width: 10px;
+  z-index: 1;
+  filter: drop-shadow(1px 1px 0 var(--timebar-main-background-color))
+    drop-shadow(-1px -1px 0 var(--timebar-main-background-color))
+    drop-shadow(1px -1px 0 var(--timebar-main-background-color))
+    drop-shadow(-1px 1px 0 var(--timebar-main-background-color));
+}
+
+.encounter::after,
+.encounter::before {
+  content: '';
+  height: 10px;
+  width: 5px;
+  background: var(--background-color);
+  position: absolute;
+  top: 0;
+}
+
+.encounter::after {
+  right: -5px;
+  clip-path: polygon(-1px 0, 100% 50%, -1px 100%);
+}
+
+.encounter::before {
+  left: -5px;
+  clip-path: polygon(5px 0, 5px 100%, 0 50%);
+}

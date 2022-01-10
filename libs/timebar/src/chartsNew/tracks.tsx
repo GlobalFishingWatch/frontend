@@ -6,14 +6,7 @@ import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'
 import styles from './tracks.module.css'
 import { useFilteredChartData } from './common/hooks'
-import { TimebarChartData, TimebarChartDataChunk, TimebarChartDataItem } from '.'
-
-type TrackChunkWithCoords = TimebarChartDataChunk & { x?: number; width?: number }
-type TrackItemWithCoords = Omit<TimebarChartDataItem, 'chunks'> & {
-  y: number
-  chunks: TrackChunkWithCoords[]
-}
-type TracksWithCoords = TrackItemWithCoords[]
+import { TimebarChartData, TimebarChartItem } from './common/types'
 
 const getTracksWithCoords = (
   tracks: TimebarChartData,
@@ -22,16 +15,13 @@ const getTracksWithCoords = (
   orientation: string
 ) => {
   if (tracks === null || !outerScale) return null
-  const trackWithCoords: TracksWithCoords = []
+  const trackWithCoords: TimebarChartData = []
   tracks.forEach((track, trackIndex) => {
     if (!track) {
       return
     }
-    const baseTrackY = getTrackY(tracks.length, trackIndex, graphHeight)
-    let trackY = baseTrackY.y
-    if (orientation === 'up') trackY = baseTrackY.y1
-    if (orientation === 'down') trackY = baseTrackY.y0
-    const trackItemWithCoords: TrackItemWithCoords = {
+    const baseTrackY = getTrackY(tracks.length, trackIndex, graphHeight, orientation)
+    const trackItemWithCoords: TimebarChartItem = {
       ...track,
       chunks: !track.chunks
         ? []
@@ -44,7 +34,7 @@ const getTracksWithCoords = (
               width: outerScale(chunk.end as number) - x,
             }
           }),
-      y: trackY,
+      y: baseTrackY.defaultY,
       // TODO
       // segmentsOffsetY: track.segmentsOffsetY,
     }

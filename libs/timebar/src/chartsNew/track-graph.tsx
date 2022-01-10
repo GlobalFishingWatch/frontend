@@ -6,13 +6,13 @@ import TimelineContext, { TimelineScale } from '../timelineContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
-import { TimebarChartData, TimebarChartDataChunk, TimebarChartDataItem } from '.'
+import { TimebarChartData, TimebarChartChunk, TimebarChartItem } from '.'
 
 const getMaxValues = (data: TimebarChartData) => {
-  const maxValues = data.map((trackGraphData: TimebarChartDataItem) => {
+  const maxValues = data.map((trackGraphData: TimebarChartItem) => {
     if (!trackGraphData.chunks.length) return 0
     const itemValues = trackGraphData.chunks.reduce(
-      (acc: number[], currentChunk: TimebarChartDataChunk) => {
+      (acc: number[], currentChunk: TimebarChartChunk) => {
         const chunkValues = currentChunk.values!.map((v) => v.value as number)
         return acc.concat(chunkValues)
       },
@@ -32,7 +32,7 @@ const getMaxValues = (data: TimebarChartData) => {
 }
 
 const getPaths = (
-  trackGraphData: TimebarChartDataItem,
+  trackGraphData: TimebarChartItem,
   numTracks: number,
   trackIndex: number,
   graphHeight: number,
@@ -46,12 +46,12 @@ const getPaths = (
   const areaGenerator = area()
     .x((d) => overallScale((d as any).timestamp))
     .y0((d) => {
-      if (orientation === 'down') return trackY.y0
+      if (orientation === 'down') return trackY.defaultY
       if (orientation === 'middle') return trackY.y - getPx(d) / 2
       return trackY.y0 + trackY.height - getPx(d)
     })
     .y1((d) => {
-      if (orientation === 'up') return trackY.y1
+      if (orientation === 'up') return trackY.defaultY
       if (orientation === 'middle') return trackY.y + getPx(d) / 2
       return trackY.y0 + Math.abs(getPx(d))
     })
@@ -90,7 +90,7 @@ const getPathContainers = (
 
 const TrackGraph = ({
   data,
-  orientation = 'up',
+  orientation = 'middle',
 }: {
   data: TimebarChartData
   orientation?: string
