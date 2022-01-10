@@ -1,44 +1,18 @@
 import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import {
-  ExtendedStyle,
+  HeatmapLayerMeta,
   pickActiveTimeChunk,
-  TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
   TimeChunks,
 } from '@globalfishingwatch/layer-composer'
-import type { Map } from '@globalfishingwatch/maplibre-gl'
-import { mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
-import { filterByViewport } from 'features/map/map.utils'
+import type { Feature } from '@globalfishingwatch/maplibre-gl'
 
-export const getDataviewGeneratorMeta = (map: Map, dataviewId) => {
-  if (!map || !map.getStyle) {
-    return
-  }
-  const style = map.getStyle() as ExtendedStyle
-  const generatorsMetadata = style?.metadata?.generatorsMetadata
-  if (!generatorsMetadata) {
-    return
-  }
-  return generatorsMetadata[dataviewId]
-}
-
-export const getDataviewViewportFeatures = (map: Map, dataviewId: string) => {
-  if (!map) {
-    return
-  }
-  const metadata = getDataviewGeneratorMeta(map, dataviewId)
-  if (!metadata) {
-    return
-  }
+// TODO filter by Viewport
+export const aggregateFeatures = (features: Feature[], metadata: HeatmapLayerMeta) => {
   const timeChunks = metadata.timeChunks as TimeChunks
   const frame = timeChunks?.activeChunkFrame
-  const bounds = mglToMiniGlobeBounds(map.getBounds())
   const activeTimeChunk = pickActiveTimeChunk(timeChunks)
   const allFeaturesValues = timeChunks.chunks.map((chunk) => {
-    const features = map.querySourceFeatures(chunk.sourceId as string, {
-      sourceLayer: TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
-    })
-    const filteredFeatures = filterByViewport(features, bounds)
-    const featuresValues = filteredFeatures.flatMap(({ properties }) => {
+    const featuresValues = features.flatMap(({ properties }: any) => {
       const values = aggregateCell({
         rawValues: properties.rawValues,
         frame,
