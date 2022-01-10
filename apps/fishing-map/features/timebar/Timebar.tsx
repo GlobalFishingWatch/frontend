@@ -12,6 +12,7 @@ import {
   TimebarChartData,
   TimebarChartChunk,
   TrackEventChunkProps,
+  TrackGraphOrientation,
 } from '@globalfishingwatch/timebar'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -197,13 +198,13 @@ const TimebarWrapper = () => {
     )
   }, [timebarGraph, tracksGraphsData])
 
-  const trackGraphOrientation = useMemo(() => {
-    if (tracksGraphsData.length === 0 || tracksGraphsData.length > 2) return 'middle'
+  const trackGraphOrientation = useMemo<TrackGraphOrientation>(() => {
+    if (tracksGraphsData.length === 0 || tracksGraphsData.length > 2) return 'mirrored'
     return {
-      none: 'middle',
-      speed: 'middle',
+      none: 'mirrored',
+      speed: 'mirrored',
       elevation: 'down',
-    }[timebarGraph]
+    }[timebarGraph] as TrackGraphOrientation
   }, [timebarGraph, tracksGraphsData])
 
   const highlighterData = useMemo(() => {
@@ -248,6 +249,7 @@ const TimebarWrapper = () => {
         bookmarkPlacement="bottom"
         minimumRange={1}
         minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
+        trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}
       >
         {!isSmallScreen ? (
@@ -256,13 +258,9 @@ const TimebarWrapper = () => {
             {timebarVisualisation === TimebarVisualisations.Vessel &&
               (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
                 <Fragment>
-                  <TimebarTracks key="tracks" data={tracks} orientation={trackGraphOrientation} />
+                  <TimebarTracks key="tracks" data={tracks} />
                   {showGraph && tracksGraphsData && (
-                    <TimebarTracksGraph
-                      key="trackGraph"
-                      data={tracksGraphsData}
-                      orientation={trackGraphOrientation}
-                    />
+                    <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} />
                   )}
                   {tracksEvents && (
                     <Fragment>

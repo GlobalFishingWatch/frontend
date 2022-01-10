@@ -1,6 +1,8 @@
 import { createContext } from 'react'
 export type TimelineScale = (date: Date | number) => number
 
+export type TrackGraphOrientation = 'up' | 'down' | 'mirrored'
+
 export type TimelineContextProps = {
   start: string
   end: string
@@ -16,6 +18,7 @@ export type TimelineContextProps = {
   overallScale: TimelineScale
   svgTransform: string
   tooltipContainer: Element
+  trackGraphOrientation: TrackGraphOrientation
 }
 
 export const TimelineContext = createContext<TimelineContextProps>({} as TimelineContextProps)

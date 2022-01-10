@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useMemo } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import TimelineContext, { TimelineScale } from '../timelineContext'
+import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'
@@ -12,7 +12,7 @@ const getTracksWithCoords = (
   tracks: TimebarChartData,
   outerScale: TimelineScale,
   graphHeight: number,
-  orientation: string
+  orientation: TrackGraphOrientation
 ) => {
   if (tracks === null || !outerScale) return null
   const trackWithCoords: TimebarChartData = []
@@ -43,20 +43,14 @@ const getTracksWithCoords = (
   return trackWithCoords
 }
 
-const Tracks = ({
-  data,
-  orientation = 'middle',
-}: {
-  data: TimebarChartData
-  orientation?: string
-}) => {
+const Tracks = ({ data }: { data: TimebarChartData }) => {
   const { immediate } = useContext(ImmediateContext)
-  const { outerScale, graphHeight } = useContext(TimelineContext)
+  const { outerScale, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
 
   const filteredTracks = useFilteredChartData(data)
   const tracksWithCoords = useMemo(
-    () => getTracksWithCoords(filteredTracks, outerScale, graphHeight, orientation),
-    [filteredTracks, outerScale, graphHeight, orientation]
+    () => getTracksWithCoords(filteredTracks, outerScale, graphHeight, trackGraphOrientation),
+    [filteredTracks, outerScale, graphHeight, trackGraphOrientation]
   )
 
   if (!tracksWithCoords) return null

@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from 'react'
 import { area, curveStepAfter } from 'd3-shape'
 import { quantile } from 'simple-statistics'
 import ImmediateContext from '../immediateContext'
-import TimelineContext, { TimelineScale } from '../timelineContext'
+import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
@@ -38,7 +38,7 @@ const getPaths = (
   graphHeight: number,
   overallScale: TimelineScale,
   maxValue: number,
-  orientation: string
+  orientation: TrackGraphOrientation
 ) => {
   const trackY = getTrackY(numTracks, trackIndex, graphHeight)
   const getPx = (d: any) => ((d as any).value / maxValue) * trackY.height
@@ -47,12 +47,12 @@ const getPaths = (
     .x((d) => overallScale((d as any).timestamp))
     .y0((d) => {
       if (orientation === 'down') return trackY.defaultY
-      if (orientation === 'middle') return trackY.y - getPx(d) / 2
+      if (orientation === 'mirrored') return trackY.y - getPx(d) / 2
       return trackY.y0 + trackY.height - getPx(d)
     })
     .y1((d) => {
       if (orientation === 'up') return trackY.defaultY
-      if (orientation === 'middle') return trackY.y + getPx(d) / 2
+      if (orientation === 'mirrored') return trackY.y + getPx(d) / 2
       return trackY.y0 + Math.abs(getPx(d))
     })
     .curve(curveStepAfter)
@@ -69,7 +69,7 @@ const getPathContainers = (
   graphHeight: number,
   overallScale: TimelineScale,
   maxValues: number[],
-  orientation: string
+  orientation: TrackGraphOrientation
 ) => {
   if (!tracksGraphData) return []
   return tracksGraphData.map((trackGraphData, i) => {
@@ -88,22 +88,23 @@ const getPathContainers = (
   })
 }
 
-const TrackGraph = ({
-  data,
-  orientation = 'middle',
-}: {
-  data: TimebarChartData
-  orientation?: string
-}) => {
+const TrackGraph = ({ data }: { data: TimebarChartData }) => {
   const { immediate } = useContext(ImmediateContext)
-  const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
+  const { overallScale, outerWidth, graphHeight, svgTransform, trackGraphOrientation } =
+    useContext(TimelineContext)
   const maxValues = useMemo(() => {
     return getMaxValues(data)
   }, [data])
   const filteredGraphsData = useFilteredChartData(data)
   const pathContainers = useMemo(() => {
-    return getPathContainers(filteredGraphsData, graphHeight, overallScale, maxValues, orientation)
-  }, [filteredGraphsData, graphHeight, overallScale, maxValues, orientation])
+    return getPathContainers(
+      filteredGraphsData,
+      graphHeight,
+      overallScale,
+      maxValues,
+      trackGraphOrientation
+    )
+  }, [filteredGraphsData, graphHeight, overallScale, maxValues, trackGraphOrientation])
 
   return (
     <svg width={outerWidth} height={graphHeight}>

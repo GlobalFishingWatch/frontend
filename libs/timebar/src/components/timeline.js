@@ -334,6 +334,7 @@ class Timeline extends PureComponent {
       onChange,
       onBookmarkChange,
       showLastUpdate,
+      trackGraphOrientation,
     } = this.props
     const {
       dragging,
@@ -377,6 +378,7 @@ class Timeline extends PureComponent {
           overallScale,
           svgTransform,
           tooltipContainer: this.tooltipContainer,
+          trackGraphOrientation,
         }}
       >
         <div

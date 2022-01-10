@@ -344,6 +344,7 @@ class Timebar extends Component {
             bookmarkPlacement={bookmarkPlacement}
             showLastUpdate={this.props.showLastUpdate}
             latestAvailableDataDate={this.props.latestAvailableDataDate}
+            trackGraphOrientation={this.props.trackGraphOrientation}
           />
         </div>
       </ImmediateContext.Provider>
