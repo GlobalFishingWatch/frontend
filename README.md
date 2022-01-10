@@ -127,7 +127,7 @@ Start your application
 
 ## Docker Compose
 
-To replicate the prod environment where the apps run on a path (not the root) and with https we use a `nginx-proxy` that runs on SSL and maps all the incoming request to its corresponding app.
+To replicate the prod environment where the apps run on a path (not the root) and with https we use a nginx proxy that runs on SSL and maps all the incoming request to its corresponding app.
 
 ### Setup
 
