@@ -1,7 +1,8 @@
-export const TOP_MARGIN = 5
-export const BOTTOM_MARGIN = 20
+export const TOP_MARGIN = 8
+export const BOTTOM_MARGIN = 10
 export const MIN_HEIGHT = 2
 export const TOTAL_MARGIN = TOP_MARGIN + BOTTOM_MARGIN
+export const SPACING = 10
 
 export const getTrackY = (
   numTracks: number,
@@ -9,10 +10,9 @@ export const getTrackY = (
   graphHeight: number,
   orientation = 'middle'
 ) => {
-  const TOTAL_MARGIN = 15
-  const finalHeight = graphHeight - TOTAL_MARGIN
+  const finalHeight = graphHeight - TOTAL_MARGIN - SPACING * (numTracks - 1)
   const height = finalHeight / numTracks
-  const y0 = TOP_MARGIN + height * trackIndex
+  const y0 = TOP_MARGIN + height * trackIndex + SPACING * trackIndex
   const y = y0 + height / 2
   const y1 = y0 + height
   let defaultY = y

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
-import TimelineContext, { TimelineScale } from '../timelineContext'
+import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import {
@@ -16,11 +16,13 @@ import { getTrackY } from './common/utils'
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData,
   outerScale: TimelineScale,
-  graphHeight: number
+  graphHeight: number,
+  orientation: TrackGraphOrientation
 ) => {
   // TODO merge with Tracks' getTracksWithCoords
   return tracksEvents.map((trackEvents, trackIndex) => {
-    const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight)
+    const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight, orientation)
+    console.log(baseTrackY.defaultY)
     const trackItemWithCoords: TimebarChartItem = {
       ...trackEvents,
       y: baseTrackY.defaultY,
@@ -55,12 +57,18 @@ const TracksEvents = ({
   onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
   const { immediate } = useContext(ImmediateContext) as any
-  const { outerScale, graphHeight } = useContext(TimelineContext)
+  const { outerScale, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const clusteredTracksEvents = useClusteredChartData(data as TimebarChartData)
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
   const tracksEventsWithCoords = useMemo(
-    () => getTracksEventsWithCoords(filteredTracksEvents, outerScale, graphHeight),
-    [filteredTracksEvents, outerScale, graphHeight]
+    () =>
+      getTracksEventsWithCoords(
+        filteredTracksEvents,
+        outerScale,
+        graphHeight,
+        trackGraphOrientation
+      ),
+    [filteredTracksEvents, outerScale, graphHeight, trackGraphOrientation]
   ) as TimebarChartData<TrackEventChunkProps>
 
   const [highlightedEvent, setHighlightedEvent] =

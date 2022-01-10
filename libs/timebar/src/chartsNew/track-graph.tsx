@@ -40,7 +40,7 @@ const getPaths = (
   maxValue: number,
   orientation: TrackGraphOrientation
 ) => {
-  const trackY = getTrackY(numTracks, trackIndex, graphHeight)
+  const trackY = getTrackY(numTracks, trackIndex, graphHeight, orientation)
   const getPx = (d: any) => ((d as any).value / maxValue) * trackY.height
 
   const areaGenerator = area()
