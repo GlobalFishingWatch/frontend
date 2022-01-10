@@ -1,16 +1,9 @@
 import type {
-  AnySourceImpl,
-  BackgroundLayer,
-  CircleLayer,
-  FillExtrusionLayer,
-  FillLayer,
-  HeatmapLayer,
-  HillshadeLayer,
-  LineLayer,
-  RasterLayer,
-  Style,
-  SymbolLayer,
-} from '@globalfishingwatch/mapbox-gl'
+  SourceSpecification,
+  HeatmapLayerSpecification,
+  LayerSpecification,
+  StyleSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
   AggregationOperation,
@@ -23,6 +16,7 @@ import {
   HeatmapAnimatedGeneratorSublayer,
   GeneratorConfig,
   AnyGeneratorConfig,
+  ContextLayerType,
 } from '../generators/types'
 import { TimeChunks } from '../generators/heatmap/util/time-chunks'
 
@@ -99,12 +93,16 @@ export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
 }
 
 /**
- * Set of additional metadata properties added by LayerCompoeser for later use in transformations or to be consumed directly ie (group, legend, etc)
+ * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface ExtendedLayerMeta {
+  generatorId?: string
+  generatorType?: GeneratorType
+  interactive?: boolean
+  uniqueFeatureInteraction?: boolean
   group?: Group
-  generatorId: string
-  generatorType: GeneratorType
+  'mapbox:group'?: string
+  layer?: ContextLayerType
   legend?: LayerMetadataLegend | LayerMetadataLegend[]
   gridArea?: number
   currentValue?: number
@@ -119,27 +117,16 @@ export interface HeatmapLayerMeta {
   multiplier: number
   numSublayers: number
   sublayerCombinationMode: SublayerCombinationMode
-  sublayers: HeatmapLayer[]
+  sublayers: HeatmapLayerSpecification[]
   temporalgrid: true
   timeChunks: TimeChunks
   visibleSublayers: boolean[]
 }
 
-export type AnyLayer =
-  | BackgroundLayer
-  | CircleLayer
-  | FillExtrusionLayer
-  | FillLayer
-  | HeatmapLayer
-  | HillshadeLayer
-  | LineLayer
-  | RasterLayer
-  | SymbolLayer
-
 /**
  * A standard Mapbox GL Layer with layer-composer specific metadata
  */
-export type ExtendedLayer = AnyLayer & {
+export type ExtendedLayer = LayerSpecification & {
   metadata?: ExtendedLayerMeta
 }
 
@@ -152,8 +139,8 @@ export interface ExtendedStyleMeta {
 /**
  * A standard Mapbox GL Style with leyer-composer specific metadata
  */
-export interface ExtendedStyle extends Style {
-  layers?: ExtendedLayer[]
+export interface ExtendedStyle extends StyleSpecification {
+  layers: ExtendedLayer[]
   metadata?: ExtendedStyleMeta
 }
 
@@ -178,7 +165,7 @@ export type GeneratorPromise = Promise<{ style: GeneratorStyles; config: AnyGene
 // TODO This is unusable as is because sources carry an id which is invalid
 export interface GeneratorStyles {
   id: string
-  sources: AnySourceImpl[]
+  sources: SourceSpecification[]
   layers: ExtendedLayer[]
   promise?: GeneratorPromise
   promises?: GeneratorPromise[]

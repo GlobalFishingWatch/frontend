@@ -1,11 +1,10 @@
-import { Layer, Style } from '@globalfishingwatch/mapbox-gl'
+import { LayerSpecification, StyleSpecification } from '@globalfishingwatch/maplibre-gl'
 import { ExtendedLayer, ExtendedStyle, Group } from '../../types'
-import sort, { convertLegacyGroups } from './sort'
+import { sort, convertLegacyGroups } from './sort'
 
-type MockStyle = Omit<Style, 'layers'> & { layers: Partial<Layer>[] }
+type MockStyle = Omit<StyleSpecification, 'layers'> & { layers: Partial<LayerSpecification>[] }
 
 const mock: MockStyle = {
-  version: 8,
   layers: [
     {
       id: 'background',

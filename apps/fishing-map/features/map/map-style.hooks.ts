@@ -1,5 +1,5 @@
 import { useRecoilValue } from 'recoil'
-import { Style } from '@globalfishingwatch/mapbox-gl'
+import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
 import useMapInstance from 'features/map/map-context.hooks'
 import { mapIdleAtom } from 'features/map/map-features.atom'
 
@@ -23,7 +23,7 @@ export const useMapStyle = () => {
 
   if (!map) return null
 
-  let style: Style
+  let style: ExtendedStyle
   try {
     style = map.getStyle()
   } catch (e: any) {

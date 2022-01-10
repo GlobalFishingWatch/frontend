@@ -7,10 +7,19 @@ import {
   ExtendedStyleMeta,
   CONFIG_BY_INTERVAL,
   pickActiveTimeChunk,
+  ExtendedLayer,
 } from '@globalfishingwatch/layer-composer'
 import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
+import type { Map, GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
+
+export type MaplibreGeoJSONFeature = GeoJSONFeature & {
+  layer: ExtendedLayer
+  source: string
+  sourceLayer: string
+  state: { [key: string]: any }
+  properties: any
+}
 
 type FeatureStates = 'click' | 'hover' | 'highlight'
 type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
@@ -31,17 +40,17 @@ export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
 }
 
 const getExtendedFeatures = (
-  features: MapboxGeoJSONFeature[],
+  features: MaplibreGeoJSONFeature[],
   metadata?: ExtendedStyleMeta,
   debug = false
 ): ExtendedFeature[] => {
-  const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
+  const extendedFeatures: ExtendedFeature[] = features.flatMap((feature) => {
     const generatorType = feature.layer.metadata?.generatorType ?? null
     const generatorId = feature.layer.metadata?.generatorId ?? null
 
     // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
     let generatorMetadata: any
-    if (metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
+    if (generatorId && metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
       generatorMetadata = metadata?.generatorsMetadata[generatorId]
     } else {
       generatorMetadata = feature.layer.metadata

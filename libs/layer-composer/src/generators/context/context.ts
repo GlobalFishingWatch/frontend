@@ -1,5 +1,11 @@
-import { AnyLayer, Layer, CirclePaint, LinePaint, FillPaint } from '@globalfishingwatch/mapbox-gl'
+import {
+  LayerSpecification,
+  CircleLayerSpecification,
+  LineLayerSpecification,
+  FillLayerSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, ContextGeneratorConfig } from '../types'
+import { ExtendedLayerMeta } from '../../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
@@ -15,21 +21,24 @@ const getSourceId = (config: ContextGeneratorConfig) => {
   return `${config.id}-${config.layer}`
 }
 
-const getPaintPropertyByType = (layer: Layer, config: any) => {
+const getPaintPropertyByType = (layer: LayerSpecification, config: any) => {
   const opacity = config.opacity !== undefined ? config.opacity : 1
   if (layer.type === 'line') {
     const color = layer.id?.includes(HIGHLIGHT_SUFIX)
       ? 'transparent'
-      : config.color || (layer.paint as LinePaint)?.['line-color'] || DEFAULT_LINE_COLOR
-    const linePaint: LinePaint = {
+      : config.color ||
+        (layer.paint as LineLayerSpecification['paint'])?.['line-color'] ||
+        DEFAULT_LINE_COLOR
+    const linePaint: LineLayerSpecification['paint'] = {
       ...layer.paint,
       ...getLinePaintWithFeatureState(color, opacity),
     }
     return linePaint
   } else if (layer.type === 'fill') {
-    const fillColor = config.fillColor || (layer.paint as FillPaint)?.['fill-color']
+    const fillColor =
+      config.fillColor || (layer.paint as FillLayerSpecification['paint'])?.['fill-color']
 
-    const fillPaint: FillPaint = {
+    const fillPaint: FillLayerSpecification['paint'] = {
       ...layer.paint,
       ...getFillPaintWithFeatureState(fillColor, opacity),
     }
@@ -39,7 +48,7 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
     const circleStrokeColor = config.strokeColor || 'hsla(190, 100%, 45%, 0.5)'
     const circleStrokeWidth = config.strokeWidth || 2
     const circleRadius = config.radius || 5
-    const circlePaint: CirclePaint = {
+    const circlePaint: CircleLayerSpecification['paint'] = {
       ...layer.paint,
       'circle-color': circleColor,
       'circle-opacity': opacity,
@@ -73,7 +82,7 @@ class ContextGenerator {
     ]
   }
 
-  _getStyleLayers = (config: ContextGeneratorConfig): AnyLayer[] => {
+  _getStyleLayers = (config: ContextGeneratorConfig): LayerSpecification[] => {
     const baseLayers = LAYERS[config.layer]
     if (!baseLayers?.length) {
       throw new Error(`Context layer should specify a valid layer parameter, ${config.layer}`)
@@ -92,7 +101,7 @@ class ContextGenerator {
         },
         paint,
         metadata: {
-          ...baseLayer.metadata,
+          ...(baseLayer.metadata as ExtendedLayerMeta),
           layer: config.layer,
           color,
           generatorId: config.id,
@@ -100,7 +109,7 @@ class ContextGenerator {
       }
     })
 
-    return layers as AnyLayer[]
+    return layers as LayerSpecification[]
   }
 
   getStyle = (config: ContextGeneratorConfig) => {

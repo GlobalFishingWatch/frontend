@@ -11,7 +11,7 @@ import {
   ExtendedStyle,
 } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { MapboxEvent, MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
+import { MapLibreEvent, MapSourceDataEvent } from '@globalfishingwatch/maplibre-gl'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useMapBounds, mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
 import {
@@ -132,7 +132,7 @@ const TimebarActivityGraph = () => {
       const { isActive } = isEventSourceActiveChunk(e)
       if (isActive && attachedListener.current) setLoading(true)
     })
-    map.on('idle', (e: MapboxEvent) => {
+    map.on('idle', (e: MapLibreEvent) => {
       // If there's still a timer running when idle, skip it and render graph immediately
       if (!isNaN(sourcesLoadedTimeout.current)) {
         window.clearTimeout(sourcesLoadedTimeout.current)

@@ -1,5 +1,12 @@
-import { SymbolLayout, Expression } from '@globalfishingwatch/mapbox-gl'
-import { ExtendedLayer, Group } from '../../../types'
+import {
+  SymbolLayerSpecification,
+  FilterSpecification,
+  FillLayerSpecification,
+  LineLayerSpecification,
+  FillExtrusionLayerSpecification,
+  HeatmapLayerSpecification,
+} from '@globalfishingwatch/maplibre-gl'
+import { ExtendedLayerMeta, Group } from '../../../types'
 import { GeneratorType } from '../../types'
 import {
   HEATMAP_MODE_LAYER_TYPE,
@@ -12,7 +19,7 @@ function getBaseLayer(
   config: GlobalHeatmapAnimatedGeneratorConfig,
   id: string,
   source: string
-): ExtendedLayer {
+): FillLayerSpecification | FillExtrusionLayerSpecification | HeatmapLayerSpecification {
   return {
     id,
     source,
@@ -22,7 +29,7 @@ function getBaseLayer(
       group: config.group || Group.Heatmap,
       generatorType: GeneratorType.HeatmapAnimated,
       generatorId: config.id,
-    },
+    } as ExtendedLayerMeta,
   }
 }
 
@@ -30,7 +37,7 @@ export function getBaseInteractionLayer(
   config: GlobalHeatmapAnimatedGeneratorConfig,
   id: string,
   source: string
-): ExtendedLayer {
+): FillLayerSpecification {
   return {
     id,
     source,
@@ -46,7 +53,7 @@ export function getBaseInteractionLayer(
       generatorId: config.id,
       interactive: true,
       uniqueFeatureInteraction: true,
-    },
+    } as ExtendedLayerMeta,
   }
 }
 
@@ -54,7 +61,7 @@ export function getBaseInteractionHoverLayer(
   config: GlobalHeatmapAnimatedGeneratorConfig,
   id: string,
   source: string
-): ExtendedLayer {
+): LineLayerSpecification {
   return {
     id,
     source,
@@ -75,11 +82,15 @@ export function getBaseInteractionHoverLayer(
     metadata: {
       interactive: false,
       group: config.group || Group.Heatmap,
-    },
+    } as ExtendedLayerMeta,
   }
 }
 
-export function getBaseDebugLabelsLayer(exprPick: Expression, id: string, source: string) {
+export function getBaseDebugLabelsLayer(
+  exprPick: FilterSpecification,
+  id: string,
+  source: string
+): SymbolLayerSpecification {
   const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
   return {
     id,
@@ -91,14 +102,14 @@ export function getBaseDebugLabelsLayer(exprPick: Expression, id: string, source
       'text-font': ['Roboto Mono Light'],
       'text-size': 8,
       'text-allow-overlap': true,
-    } as SymbolLayout,
+    } as SymbolLayerSpecification['layout'],
     paint: {
       'text-halo-color': 'hsl(320, 0%, 100%)',
       'text-halo-width': 2,
     },
     metadata: {
       group: Group.Label,
-    },
+    } as ExtendedLayerMeta,
   }
 }
 

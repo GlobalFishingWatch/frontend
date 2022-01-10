@@ -21,7 +21,7 @@ import MapControls from './controls/MapControls'
 import useMapEvents from './map-events.hooks'
 import { selectHighlightedEvent } from './map.slice'
 import styles from './Map.module.css'
-import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
 const mapOptions: any = {
   customAttribution: '© Copyright Global Fishing Watch 2020',

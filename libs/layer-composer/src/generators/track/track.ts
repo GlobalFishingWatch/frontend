@@ -3,7 +3,7 @@ import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
 import convert from 'color-convert'
-import type { LineLayer } from '@globalfishingwatch/mapbox-gl'
+import type { LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Group } from '../../types'
 import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
@@ -62,7 +62,7 @@ const getHighlightedData = (
 const getHighlightedLayer = (
   id: string,
   { group = Group.TrackHighlighted, paint = {} } = {}
-): LineLayer => {
+): LineLayerSpecification => {
   return {
     id,
     type: 'line',
@@ -160,7 +160,10 @@ class TrackGenerator {
     return { sources, uniqIds }
   }
 
-  _getStyleLayers = (config: GlobalTrackGeneratorConfig, uniqIds: string[]): LineLayer[] => {
+  _getStyleLayers = (
+    config: GlobalTrackGeneratorConfig,
+    uniqIds: string[]
+  ): LineLayerSpecification[] => {
     const paint = {
       'line-color': config.color || DEFAULT_TRACK_COLOR,
       'line-width': 1.5,
@@ -187,7 +190,7 @@ class TrackGenerator {
     }
 
     const visibility = isConfigVisible(config)
-    const layer: LineLayer = {
+    const layer: LineLayerSpecification = {
       id: config.id,
       source: config.id,
       type: 'line',

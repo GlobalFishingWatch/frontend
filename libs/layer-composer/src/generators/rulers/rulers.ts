@@ -2,7 +2,7 @@ import memoizeOne from 'memoize-one'
 import { FeatureCollection, Feature, LineString, Point } from 'geojson'
 import length from '@turf/length'
 import greatCircle from '@turf/great-circle'
-import { Layer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
+import { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { Dictionary, Group } from '../../types'
 import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
@@ -103,7 +103,7 @@ class RulersGenerator {
 
   _getStyleLayers = (config: RulersGeneratorConfig) => {
     const { id } = config
-    const layers: Partial<Layer>[] = [
+    const layers: Partial<LayerSpecification>[] = [
       {
         id: `rulers-${id}-lines`,
         source: `rulers-${id}-lines`,
@@ -147,7 +147,7 @@ class RulersGenerator {
             ['literal', ['Roboto Mono Light']],
           ],
           'text-size': ['case', ['==', ['get', 'isNew'], true], 13, 12],
-        } as SymbolLayout,
+        } as SymbolLayerSpecification['layout'],
         paint: {
           'text-color': COLOR,
         },

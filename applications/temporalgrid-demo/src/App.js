@@ -15,7 +15,7 @@ import Map from './map'
 import Login from './login'
 
 import './App.css'
-import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
 export const DEFAULT_SUBLAYERS = [
   {

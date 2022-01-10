@@ -39,9 +39,9 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 ## See also
 
-### Mapbox GL fork
+### MapLibre GL fork
 
-We maintain our own forks of <a href="https://github.com/GlobalFishingWatch/mapbox-gl-js/">Mapbox GL</a> to handle gridded temporal data (see `temporalgrid` branches on both repos)
+We maintain our own forks of <a href="https://github.com/GlobalFishingWatch/maplibre-gl-js/">Mapbox GL</a> to handle gridded temporal data (see `temporalgrid` branches on both repos)
 
 ### LayerComposer / Dataviews / Workspaces
 
