@@ -119,8 +119,6 @@ const Highlighter = ({
     return getHighlighterData(centerMs, data)
   }, [centerMs, data])
 
-  console.log(highlighterData)
-
   return (
     <Fragment>
       <div

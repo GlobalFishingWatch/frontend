@@ -7,7 +7,6 @@ import {
   Resource,
   ResourceStatus,
   TrackResourceData,
-  Vessel,
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
@@ -221,6 +220,8 @@ const getTrackEventChunkProps = (
     colorLabels,
     description,
     descriptionGeneric,
+    latitude: event.position.lat,
+    longitude: event.position.lon,
   }
 }
 

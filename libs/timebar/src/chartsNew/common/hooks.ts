@@ -54,6 +54,9 @@ const clusterData = (data: TimebarChartData, outerScale: TimelineScale) => {
         const deltaPx = currentEventStartPx - lastEndPx
 
         if (deltaPx > MIN_DISTANCE_PX_TO_CLUSTER || currentEvent.type !== lastType) {
+          if (lastClusteredEvent && lastClusteredEvent.cluster?.numChunks === 1) {
+            delete lastClusteredEvent.cluster
+          }
           // create new agg event
           const newClusteredEvent: TimebarChartChunk = {
             ...currentEvent,

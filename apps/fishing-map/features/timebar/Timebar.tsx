@@ -10,6 +10,8 @@ import {
   TimebarTracksEvents,
   TimebarTracksGraph,
   TimebarChartData,
+  TimebarChartChunk,
+  TrackEventChunkProps,
 } from '@globalfishingwatch/timebar'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -164,10 +166,10 @@ const TimebarWrapper = () => {
 
   const { zoom } = viewport
   const onEventClick = useCallback(
-    (event: ApiEvent) => {
+    (event: TimebarChartChunk<TrackEventChunkProps>) => {
       setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
+        latitude: event.props.latitude,
+        longitude: event.props.longitude,
         zoom: zoom < 8 ? 8 : zoom,
       })
     },
@@ -175,12 +177,17 @@ const TimebarWrapper = () => {
   )
 
   const onEventHover = useCallback(
-    (event: ApiEvent) => {
-      if (event) {
-        dispatch(disableHighlightedTime())
+    (event: TimebarChartChunk<TrackEventChunkProps>) => {
+      if (!event) {
+        dispatchHighlightedEvent(null)
+        return
       }
+      dispatch(disableHighlightedTime())
       hoverInEvent.current = event !== undefined
-      dispatchHighlightedEvent(event)
+      const apiEvent: ApiEvent = {
+        id: event.id as string,
+      } as any
+      dispatchHighlightedEvent(apiEvent)
     },
     [dispatch, dispatchHighlightedEvent]
   )
@@ -264,7 +271,6 @@ const TimebarWrapper = () => {
                       <TimebarTracksEvents
                         data={tracksEvents}
                         useTrackColor={false}
-                        // key="events"
                         // labels={labels?.trackEvents}
                         preselectedEventId={highlightedEvent?.id}
                         onEventClick={onEventClick}
