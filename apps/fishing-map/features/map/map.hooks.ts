@@ -36,6 +36,7 @@ import {
 } from 'features/analysis/analysis.selectors'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
+import { getSourceMetadata } from 'features/map/map-sources.utils'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -446,5 +447,5 @@ export const parseMapTooltipEvent = (
 
 export const useGeneratorStyleMetadata = (generatorId: string) => {
   const style = useMapStyle()
-  return style?.metadata?.generatorsMetadata?.[generatorId] || {}
+  return getSourceMetadata(style, generatorId) || {}
 }
