@@ -83,6 +83,7 @@
     "topojson-client": "^3.1.0",
     "tracks-cloud-function": "https://github.com/GlobalFishingWatch/api-function-vessels",
     "tslib": "^2.3.0",
+    "use-debounce": "^7.0.1",
     "typescript-json-schema": "^0.47.0",
     "vt-pbf": "^3.1.1"
   },
