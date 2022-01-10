@@ -51,8 +51,8 @@ const TracksEvents = ({
   data: TimebarChartData<TrackEventChunkProps>
   useTrackColor: boolean
   preselectedEventId?: string
-  onEventClick: (event: TimebarChartChunk<TrackEventChunkProps>) => void
-  onEventHover: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
+  onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
+  onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
   const { immediate } = useContext(ImmediateContext) as any
   const { outerScale, graphHeight } = useContext(TimelineContext)
@@ -118,16 +118,18 @@ const TracksEvents = ({
                 } as React.CSSProperties
               }
               onMouseEnter={() => {
-                if (!event.cluster) {
+                if (!event.cluster && onEventHover) {
                   onEventHover(event)
                 }
                 setHighlightedEvent(event)
               }}
               onMouseLeave={() => {
-                onEventHover()
+                if (onEventHover) onEventHover()
                 setHighlightedEvent(null)
               }}
-              onClick={() => onEventClick(event)}
+              onClick={() => {
+                if (onEventClick) onEventClick(event)
+              }}
             ></div>
           ))}
         </div>

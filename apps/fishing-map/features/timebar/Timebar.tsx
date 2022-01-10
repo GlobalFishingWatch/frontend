@@ -94,34 +94,31 @@ const TimebarWrapper = () => {
   )
 
   const isSmallScreen = useSmallScreen()
-  const hoverInEvent = useRef(false)
 
   const activityCategory = useSelector(selectActivityCategory)
 
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
-      if (hoverInEvent.current === false) {
-        if (clientX === null || clientX === undefined || isNaN(clientX)) {
-          dispatchDisableHighlightedTime()
-        } else {
-          try {
-            const start = scale(clientX - 10).toISOString()
-            const end = scale(clientX + 10).toISOString()
-            const startDateTime = DateTime.fromISO(start)
-            const endDateTime = DateTime.fromISO(end)
-            const diff = endDateTime.diff(startDateTime, 'hours')
-            if (diff.hours < 1) {
-              // To ensure at least 1h range is highlighted
-              const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
-              const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
-              dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
-            } else {
-              dispatch(setHighlightedTime({ start, end }))
-            }
-          } catch (e: any) {
-            console.log(clientX)
-            console.warn(e)
+      if (clientX === null || clientX === undefined || isNaN(clientX)) {
+        dispatchDisableHighlightedTime()
+      } else {
+        try {
+          const start = scale(clientX - 10).toISOString()
+          const end = scale(clientX + 10).toISOString()
+          const startDateTime = DateTime.fromISO(start)
+          const endDateTime = DateTime.fromISO(end)
+          const diff = endDateTime.diff(startDateTime, 'hours')
+          if (diff.hours < 1) {
+            // To ensure at least 1h range is highlighted
+            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
+            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+            dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
+          } else {
+            dispatch(setHighlightedTime({ start, end }))
           }
+        } catch (e: any) {
+          console.log(clientX)
+          console.warn(e)
         }
       }
     },
@@ -182,8 +179,9 @@ const TimebarWrapper = () => {
         dispatchHighlightedEvent(null)
         return
       }
+
       dispatch(disableHighlightedTime())
-      hoverInEvent.current = event !== undefined
+
       const apiEvent: ApiEvent = {
         id: event.id as string,
       } as any
