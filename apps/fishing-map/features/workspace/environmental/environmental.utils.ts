@@ -6,7 +6,6 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import type { Feature } from '@globalfishingwatch/maplibre-gl'
 
-// TODO filter by Viewport
 export const aggregateFeatures = (features: Feature[], metadata: HeatmapLayerMeta) => {
   const timeChunks = metadata.timeChunks as TimeChunks
   const frame = timeChunks?.activeChunkFrame
