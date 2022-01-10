@@ -42,8 +42,9 @@ const findChunks = (centerMs: number, item: TimebarChartItem) => {
 const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
   if (!chunk.values) return undefined
   const foundValue = chunk.values.find((value, valueIndex) => {
-    const valueEnd =
-      chunk.values![valueIndex + 1]?.timestamp || chunk.end || Number.NEGATIVE_INFINITY
+    if (!chunk.values) return false
+    const values = chunk.values[valueIndex + 1]
+    const valueEnd = values?.timestamp || chunk.end || Number.NEGATIVE_INFINITY
     return centerMs > value.timestamp && centerMs < valueEnd
   })
   return foundValue

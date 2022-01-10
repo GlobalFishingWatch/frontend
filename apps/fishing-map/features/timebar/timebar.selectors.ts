@@ -66,7 +66,7 @@ export const selectTracksData = createSelector(
         }
       })
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      const shipname = (resources[infoUrl] as any).data.shipname
+      const shipname = (resources[infoUrl] as any)?.data?.shipname
       const item: TimebarChartItem = {
         ...timebarTrack,
         chunks,
@@ -245,7 +245,6 @@ export const selectTracksEvents = createSelector(
         color: dataview.config?.color,
         chunks: [],
         status: ResourceStatus.Idle,
-        // TODO
         getHighlighterLabel: getTrackEventHighlighterLabel,
       }
       if (Array.isArray(visibleEvents) && visibleEvents?.length === 0) return trackEvents

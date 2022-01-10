@@ -22,7 +22,6 @@ const getTracksEventsWithCoords = (
   // TODO merge with Tracks' getTracksWithCoords
   return tracksEvents.map((trackEvents, trackIndex) => {
     const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight, orientation)
-    console.log(baseTrackY.defaultY)
     const trackItemWithCoords: TimebarChartItem = {
       ...trackEvents,
       y: baseTrackY.defaultY,

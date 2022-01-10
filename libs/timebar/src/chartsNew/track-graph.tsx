@@ -31,15 +31,23 @@ const getMaxValues = (data: TimebarChartData) => {
   return maxValues
 }
 
-const getPaths = (
-  trackGraphData: TimebarChartItem,
-  numTracks: number,
-  trackIndex: number,
-  graphHeight: number,
-  overallScale: TimelineScale,
-  maxValue: number,
+const getPaths = ({
+  trackGraphData,
+  numTracks,
+  trackIndex,
+  graphHeight,
+  overallScale,
+  maxValue,
+  orientation,
+}: {
+  trackGraphData: TimebarChartItem
+  numTracks: number
+  trackIndex: number
+  graphHeight: number
+  overallScale: TimelineScale
+  maxValue: number
   orientation: TrackGraphOrientation
-) => {
+}) => {
   const trackY = getTrackY(numTracks, trackIndex, graphHeight, orientation)
   const getPx = (d: any) => ((d as any).value / maxValue) * trackY.height
 
@@ -64,25 +72,31 @@ const getPaths = (
   return paths
 }
 
-const getPathContainers = (
-  tracksGraphData: TimebarChartData,
-  graphHeight: number,
-  overallScale: TimelineScale,
-  maxValues: number[],
+const getPathContainers = ({
+  tracksGraphData,
+  graphHeight,
+  overallScale,
+  maxValues,
+  orientation,
+}: {
+  tracksGraphData: TimebarChartData
+  graphHeight: number
+  overallScale: TimelineScale
+  maxValues: number[]
   orientation: TrackGraphOrientation
-) => {
+}) => {
   if (!tracksGraphData) return []
   return tracksGraphData.map((trackGraphData, i) => {
     return {
-      paths: getPaths(
+      paths: getPaths({
         trackGraphData,
-        tracksGraphData.length,
-        i,
+        numTracks: tracksGraphData.length,
+        trackIndex: i,
         graphHeight,
         overallScale,
-        maxValues[i],
-        orientation
-      ),
+        maxValue: maxValues[i],
+        orientation,
+      }),
       color: trackGraphData.color,
     }
   })
@@ -97,13 +111,13 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
   }, [data])
   const filteredGraphsData = useFilteredChartData(data)
   const pathContainers = useMemo(() => {
-    return getPathContainers(
-      filteredGraphsData,
+    return getPathContainers({
+      tracksGraphData: filteredGraphsData,
       graphHeight,
       overallScale,
       maxValues,
-      trackGraphOrientation
-    )
+      orientation: trackGraphOrientation,
+    })
   }, [filteredGraphsData, graphHeight, overallScale, maxValues, trackGraphOrientation])
 
   return (

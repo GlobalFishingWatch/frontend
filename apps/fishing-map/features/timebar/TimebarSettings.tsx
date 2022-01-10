@@ -3,18 +3,17 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
-import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { selectActivityCategory } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.slice'
-import { useTimebarVisualisationConnect } from './timebar.hooks'
+import { useTimebarVisualisationConnect, useTimebarGraphConnect } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
@@ -23,9 +22,8 @@ const TimebarSettings = () => {
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
-  const timebarGraph = useSelector(selectTimebarGraph)
-  const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
+  const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const activityCategory = useSelector(selectActivityCategory)
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length <= 2
 
@@ -45,15 +43,15 @@ const TimebarSettings = () => {
   }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
-    dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
+    dispatchTimebarGraph(TimebarGraphs.None)
   }
   const setVesselGraphSpeed = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
-    dispatchQueryParams({ timebarGraph: TimebarGraphs.Speed })
+    dispatchTimebarGraph(TimebarGraphs.Speed)
   }
   const setVesselGraphDepth = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
-    dispatchQueryParams({ timebarGraph: TimebarGraphs.Depth })
+    dispatchTimebarGraph(TimebarGraphs.Depth)
   }
 
   const expandedContainerRef = useClickedOutside(closeOptions)

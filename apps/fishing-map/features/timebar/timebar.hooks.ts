@@ -4,8 +4,8 @@ import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { DEFAULT_CALLBACK_URL_KEY } from '@globalfishingwatch/react-hooks'
-import { TimebarVisualisations } from 'types'
-import { selectTimebarVisualisation } from 'features/app/app.selectors'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import store, { RootState } from 'store'
@@ -142,6 +142,22 @@ export const useTimebarVisualisationConnect = () => {
   )
 
   return { timebarVisualisation, dispatchTimebarVisualisation }
+}
+
+export const useTimebarGraphConnect = () => {
+  const timebarGraph = useSelector(selectTimebarGraph)
+  const { dispatchQueryParams } = useLocationConnect()
+  const dispatchTimebarGraph = useCallback(
+    (timebarGraph: TimebarGraphs) => {
+      dispatchQueryParams({ timebarGraph })
+    },
+    [dispatchQueryParams]
+  )
+
+  return {
+    timebarGraph,
+    dispatchTimebarGraph,
+  }
 }
 
 // Used to automate the behave depending on vessels or activity state
