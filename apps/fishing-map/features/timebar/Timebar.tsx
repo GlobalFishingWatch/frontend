@@ -270,7 +270,7 @@ const TimebarWrapper = () => {
                     <Fragment>
                       <TimebarTracksEvents
                         data={tracksEvents}
-                        useTrackColor={false}
+                        useTrackColor={tracksGraphsData.length > 1}
                         // labels={labels?.trackEvents}
                         preselectedEventId={highlightedEvent?.id}
                         onEventClick={onEventClick}

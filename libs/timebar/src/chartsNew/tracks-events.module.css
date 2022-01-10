@@ -9,43 +9,46 @@
 
 .event {
   transform: translateY(-50%);
-  border-radius: 7px;
-  border: 2px solid transparent;
+  border-radius: 99px;
   cursor: pointer;
   height: 4px;
+  background: var(--background-color);
+}
+
+.event:hover,
+.event.highlighted {
+  filter: drop-shadow(1px 1px 0 var(--hover-color)) drop-shadow(-1px -1px 0 var(--hover-color))
+    drop-shadow(1px -1px 0 var(--hover-color)) drop-shadow(-1px 1px 0 var(--hover-color));
 }
 
 .encounter,
 .port_visit {
   border-radius: 0;
-  filter: drop-shadow(0 0 1px var(--timebar-main-background-color));
-  height: 8px;
-  min-width: 8px;
+  height: 10px;
+  min-width: 10px;
   z-index: 1;
+  filter: drop-shadow(1px 1px 0 var(--timebar-main-background-color))
+    drop-shadow(-1px -1px 0 var(--timebar-main-background-color))
+    drop-shadow(1px -1px 0 var(--timebar-main-background-color))
+    drop-shadow(-1px 1px 0 var(--timebar-main-background-color));
 }
 
 .encounter::after,
 .encounter::before {
   content: '';
-  height: 0;
-  width: 0;
-  display: block;
-  transform: translateY(-25%);
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
+  height: 10px;
+  width: 5px;
+  background: var(--background-color);
   position: absolute;
+  top: 0;
 }
 
 .encounter::after {
-  border-left: 4px solid red;
-  border-left-color: inherit;
-  right: -6px;
-  filter: drop-shadow(2px 0 1px var(--timebar-main-background-color));
+  right: -5px;
+  clip-path: polygon(-1px 0, 100% 50%, -1px 100%);
 }
 
 .encounter::before {
-  border-right: 4px solid red;
-  border-right-color: inherit;
-  left: -6px;
-  filter: drop-shadow(-2px 0 1px var(--timebar-main-background-color));
+  left: -5px;
+  clip-path: polygon(5px 0, 5px 100%, 0 50%);
 }

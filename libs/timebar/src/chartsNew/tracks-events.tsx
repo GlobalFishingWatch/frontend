@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
-import { EventTypes } from '@globalfishingwatch/api-types'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
@@ -105,15 +104,19 @@ const TracksEvents = ({
               className={cx(styles.event, styles[event.type || 'none'], {
                 [styles.highlighted]: eventHighlighted && eventHighlighted.id === event.id,
               })}
-              data-type={event.type}
-              style={{
-                background: useTrackColor ? trackEvents.color : event.props?.color || 'white',
-                left: `${event.x}px`,
-                width: `${event.width}px`,
-                transition: immediate
-                  ? 'none'
-                  : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
-              }}
+              style={
+                {
+                  '--background-color': useTrackColor
+                    ? trackEvents.color
+                    : event.props?.color || 'white',
+                  '--hover-color': useTrackColor ? 'white' : trackEvents.color,
+                  left: `${event.x}px`,
+                  width: `${event.width}px`,
+                  transition: immediate
+                    ? 'none'
+                    : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
+                } as React.CSSProperties
+              }
               onMouseEnter={() => {
                 if (!event.cluster) {
                   onEventHover(event)
