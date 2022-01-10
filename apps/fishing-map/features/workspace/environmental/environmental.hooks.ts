@@ -2,42 +2,35 @@ import { useCallback, useEffect } from 'react'
 import { ckmeans } from 'simple-statistics'
 import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
-import useMapInstance from 'features/map/map-context.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  getDataviewGeneratorMeta,
-  getDataviewViewportFeatures,
-} from 'features/workspace/environmental/environmental.utils'
-import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
-import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
+import { selectActiveEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
+import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import { aggregateFeatures } from 'features/workspace/environmental/environmental.utils'
+import { useMapBounds } from 'features/map/map-viewport.hooks'
 
 export const useEnvironmentalBreaksUpdate = () => {
-  const map = useMapInstance()
-  const dataviews = useSelector(selectEnvironmentalDataviews)
-  const sources = dataviews.flatMap(
-    (dataview) =>
-      getDataviewGeneratorMeta(map, dataview.id)?.timeChunks?.chunks?.flatMap(
-        ({ sourceId }) => sourceId || []
-      ) || []
-  )
-  const sourcesLoaded = useMapSourceTilesLoaded(sources)
+  const dataviews = useSelector(selectActiveEnvironmentalDataviews)
+  const { bounds } = useMapBounds()
+  const dataviewFeatures = useMapDataviewFeatures(dataviews, bounds)
+  const sourcesLoaded =
+    dataviewFeatures?.length > 0 ? dataviewFeatures.every(({ loaded }) => loaded) : false
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const updateBreaksByViewportValues = useCallback(
-    (dataviews) => {
-      const dataviewInstances = dataviews?.flatMap((dataview) => {
-        const features = getDataviewViewportFeatures(map, dataview.id)
+    (dataviewFeatures) => {
+      const dataviewInstances = dataviewFeatures?.flatMap(({ features, dataviewId, metadata }) => {
         if (features && features.length) {
-          const steps = Math.min(features.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
+          const data = aggregateFeatures(features, metadata)
+          const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
           // TODO review if sample the features is needed by performance
           // const featuresSample =
           //   features.length > 100
           //     ? sample(features, Math.round(features.length / 100), Math.random)
           //     : features
           // using ckmeans as jenks
-          const ck = ckmeans(features, steps).map(([clusterFirst]) => clusterFirst)
+          const ck = ckmeans(data, steps).map(([clusterFirst]) => clusterFirst)
           return {
-            id: dataview.id,
+            id: dataviewId,
             config: {
               opacity: undefined,
               breaks: ck,
@@ -50,7 +43,7 @@ export const useEnvironmentalBreaksUpdate = () => {
         upsertDataviewInstance(dataviewInstances)
       }
     },
-    [map, upsertDataviewInstance]
+    [upsertDataviewInstance]
   )
 
   const hideLayerWhileLoading = useCallback(
@@ -72,7 +65,7 @@ export const useEnvironmentalBreaksUpdate = () => {
 
   useEffect(() => {
     if (sourcesLoaded) {
-      updateBreaksByViewportValues(dataviews)
+      updateBreaksByViewportValues(dataviewFeatures)
     } else {
       hideLayerWhileLoading(dataviews)
     }
