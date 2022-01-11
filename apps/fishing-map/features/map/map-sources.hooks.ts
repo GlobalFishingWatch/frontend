@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { Feature } from '@globalfishingwatch/maplibre-gl'
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
   HeatmapLayerMeta,
@@ -15,7 +15,6 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom } from 'features/map/map-sources.atom'
 import { getSourceMetadata } from 'features/map/map-sources.utils'
-import { filterByViewport } from 'features/map/map.utils'
 
 type SourcesHookInput = string | string[]
 
@@ -99,32 +98,33 @@ export type DataviewFeature = {
   sourceId: string
   dataviewId: string
   loaded: boolean
-  features: Feature[]
+  features: GeoJSONFeature[]
   metadata: HeatmapLayerMeta
 }
-export const useMapDataviewFeatures = (
-  dataviews: UrlDataviewInstance[],
-  bounds?: MiniglobeBounds
-) => {
+export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
   const sourceTilesLoaded = useMapSourceTiles()
 
-  const dataviewMetadata = useMemo(
-    () =>
-      dataviews.map((dataview) => {
-        const dataviewSource =
-          dataview.category === 'fishing' || dataview.category === 'presence'
-            ? MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-            : dataview.id
-        const metadata = getSourceMetadata(style, dataviewSource)
-        return {
-          dataviewId: dataview.id,
-          metadata: metadata,
-        }
-      }),
-    [dataviews, style]
-  )
+  // Memoized to avoid re-runs on style changes like hovers
+  const styleMetadata = useMemo(() => style?.metadata, [style])
+
+  const dataviewMetadata = useMemo(() => {
+    return dataviews.map((dataview) => {
+      const dataviewSource =
+        dataview.category === 'fishing' || dataview.category === 'presence'
+          ? MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+          : dataview.id
+      const metadata = getSourceMetadata(
+        { metadata: styleMetadata } as ExtendedStyle,
+        dataviewSource
+      )
+      return {
+        dataviewId: dataview.id,
+        metadata: metadata,
+      }
+    })
+  }, [dataviews, styleMetadata])
 
   const dataviewFeatures = useMemo(() => {
     const dataviewFeature = dataviewMetadata.map(({ dataviewId, metadata }) => {
@@ -139,13 +139,13 @@ export const useMapDataviewFeatures = (
         sourceId,
         dataviewId,
         loaded,
-        features: bounds && features ? filterByViewport(features, bounds) : features,
+        features,
         metadata,
       }
       return data
     })
     return dataviewFeature
-  }, [bounds, dataviewMetadata, map, sourceTilesLoaded])
+  }, [dataviewMetadata, map, sourceTilesLoaded])
 
   return dataviewFeatures
 }
