@@ -33,7 +33,7 @@ function isCellInPolygon(cellGeometry: Polygon, polygon: Polygon) {
 }
 
 export function filterByPolygon(
-  layersCells: Feature[][],
+  layersCells: GeoJSONFeature[][],
   polygon: Polygon | MultiPolygon
 ): FilteredPolygons[] {
   const filtered = layersCells.map((layerCells) => {
@@ -51,7 +51,7 @@ export function filterByPolygon(
             : isCellInPolygon(cell.geometry as Polygon, polygon as Polygon)
 
         if (isContained) {
-          acc.contained.push(cell)
+          acc.contained.push(cell as Feature)
         } else {
           const center = {
             type: 'Point' as const,
@@ -59,7 +59,7 @@ export function filterByPolygon(
           }
           const overlaps = booleanPointInPolygon(center, polygon)
           if (overlaps) {
-            acc.overlapping.push(cell)
+            acc.overlapping.push(cell as Feature)
           }
         }
         return acc

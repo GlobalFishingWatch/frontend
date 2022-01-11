@@ -107,6 +107,7 @@ export interface ExtendedLayerMeta {
   gridArea?: number
   currentValue?: number
   color?: string
+  unit?: string
 }
 
 export interface HeatmapLayerMeta {
@@ -117,7 +118,7 @@ export interface HeatmapLayerMeta {
   multiplier: number
   numSublayers: number
   sublayerCombinationMode: SublayerCombinationMode
-  sublayers: HeatmapLayerSpecification[]
+  sublayers: ExtendedLayer<HeatmapLayerSpecification>[]
   temporalgrid: true
   timeChunks: TimeChunks
   visibleSublayers: boolean[]
@@ -126,7 +127,7 @@ export interface HeatmapLayerMeta {
 /**
  * A standard Mapbox GL Layer with layer-composer specific metadata
  */
-export type ExtendedLayer = LayerSpecification & {
+export type ExtendedLayer<L = LayerSpecification> = L & {
   metadata?: ExtendedLayerMeta
 }
 
