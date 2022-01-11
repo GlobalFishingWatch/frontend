@@ -12,6 +12,7 @@ import { selectSidebarOpen } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { clearAnalysisGeometry } from 'features/analysis/analysis.slice'
 import { setClickedEvent } from '../map.slice'
 import useMapInstance, { useMapContext } from '../map-context.hooks'
 import { TooltipEventFeature } from '../map.hooks'
@@ -78,6 +79,7 @@ export const useContextInteractions = () => {
           analysis: { areaId, sourceId },
           ...(!isSidebarOpen && { sidebarOpen: true }),
         })
+        dispatch(clearAnalysisGeometry())
         dispatch(setClickedEvent(null))
       })
 

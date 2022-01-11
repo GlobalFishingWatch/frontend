@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
-import type { Map, MapLibreEvent } from '@globalfishingwatch/maplibre-gl'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox } from 'types'
@@ -18,11 +17,7 @@ import {
 } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
-import {
-  DataviewFeature,
-  useMapDataviewFeatures,
-  useSourceInStyle,
-} from 'features/map/map-sources.hooks'
+import { DataviewFeature, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import {
   featuresToTimeseries,
@@ -122,26 +117,19 @@ export const useAnalysisGeometry = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
   const fitMapBounds = useMapFitBounds()
-  const attachedListener = useRef<boolean>(false)
-  const isAnalyzing = useRef<boolean>(false)
   const { dispatchQueryParams } = useLocationConnect()
   const { areaId, sourceId } = useSelector(selectAnalysisQuery)
+  const analysisGeometry = useSelector(selectAnalysisGeometry)
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
-  const [loaded, setLoaded] = useState(false)
-  const sourceLoaded = useSourceInStyle(sourceId)
-  const contextDataviews = useSelector(selectContextAreasDataviews)
-
-  const getContextAreaFeatures = useCallback(
-    (map: Map) => {
-      const filter = ['==', 'gfw_id', parseInt(areaId)]
-      const contextAreaFeatures = map.querySourceFeatures(sourceId, {
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-        filter,
-      })
-      return contextAreaFeatures
-    },
+  const geometryDataview = useMemo(
+    () => ({
+      id: sourceId,
+      config: { filter: ['==', 'gfw_id', parseInt(areaId)] },
+    }),
     [areaId, sourceId]
   )
+  const geometryFeatures = useMapDataviewFeatures(geometryDataview)?.[0]
+  const contextDataviews = useSelector(selectContextAreasDataviews)
 
   const setHighlightedArea = useCallback(() => {
     cleanFeatureState('highlight')
@@ -161,58 +149,33 @@ export const useAnalysisGeometry = () => {
   )
 
   useEffect(() => {
-    // Used to re-attach the idle listener on area change
-    attachedListener.current = false
-    setLoaded(false)
-  }, [areaId])
-
-  useEffect(() => {
-    isAnalyzing.current = true
-    return () => {
-      isAnalyzing.current = false
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!map || attachedListener.current || !sourceLoaded) return
-
-    attachedListener.current = true
-
-    const onMapIdle = (e: MapLibreEvent) => {
-      if (isAnalyzing.current) {
-        const contextAreaFeatures = getContextAreaFeatures(map)
-        const contextAreaGeometry = getContextAreaGeometry(contextAreaFeatures)
-
-        if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
-          const { name, value, id } = contextAreaGeometry.properties || {}
-          const layerName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
-          const areaName: string = name || id || value || layerName || ''
-          const bounds = bbox(contextAreaGeometry) as Bbox
-          if (bounds) {
-            const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
-            setAnalysisBounds(wrappedBounds)
-            fitMapBounds(wrappedBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
-            dispatch(
-              setAnalysisGeometry({
-                geometry: contextAreaGeometry as ReportGeometry,
-                name: areaName,
-                bounds: wrappedBounds,
-              })
-            )
-            setHighlightedArea()
-          } else {
-            console.warn('No area bounds')
-          }
-          setLoaded(true)
+    if (geometryFeatures.loaded && !analysisGeometry) {
+      const contextAreaGeometry = getContextAreaGeometry(geometryFeatures.features)
+      debugger
+      if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
+        const { name, value, id } = contextAreaGeometry.properties || {}
+        const layerName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
+        const areaName: string = name || id || value || layerName || ''
+        const bounds = bbox(contextAreaGeometry) as Bbox
+        if (bounds) {
+          const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
+          setAnalysisBounds(wrappedBounds)
+          fitMapBounds(wrappedBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+          dispatch(
+            setAnalysisGeometry({
+              geometry: contextAreaGeometry as ReportGeometry,
+              name: areaName,
+              bounds: wrappedBounds,
+            })
+          )
+          setHighlightedArea()
+        } else {
+          console.warn('No area bounds')
         }
       }
-      map.off('idle', onMapIdle)
-    }
-    if (map) {
-      map.on('idle', onMapIdle)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, areaId, sourceLoaded])
+  }, [geometryFeatures])
 
-  return loaded
+  return geometryFeatures.loaded || analysisGeometry !== undefined
 }

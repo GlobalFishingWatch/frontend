@@ -16,7 +16,11 @@ import {
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
 import { getActivityDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
-import { selectAnalysisQuery, selectAnalysisTimeComparison, selectAnalysisTypeQuery } from 'features/app/app.selectors'
+import {
+  selectAnalysisQuery,
+  selectAnalysisTimeComparison,
+  selectAnalysisTypeQuery,
+} from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
@@ -170,8 +174,10 @@ function Analysis() {
           action: `Click '${option.title}' in analysis mode`,
           label: JSON.stringify({
             regionName: analysisAreaName,
-            sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-          })
+            sourceNames: dataviews.flatMap((dataview) =>
+              getSourcesSelectedInDataview(dataview).map((source) => source.label)
+            ),
+          }),
         })
       }
       if (option.id === 'periodComparison' && timeComparison) {
@@ -181,14 +187,16 @@ function Analysis() {
           label: JSON.stringify({
             duration: timeComparison.duration + ' ' + timeComparison.durationType,
             regionName: analysisAreaName,
-            sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-          })
+            sourceNames: dataviews.flatMap((dataview) =>
+              getSourcesSelectedInDataview(dataview).map((source) => source.label)
+            ),
+          }),
         })
       }
       fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       dispatchQueryParams({ analysisType: option.id as WorkspaceAnalysisType })
     },
-    [bounds, dispatchQueryParams, fitMapBounds, dataviews, getSourcesSelectedInDataview, timeComparison]
+    [timeComparison, fitMapBounds, bounds, dispatchQueryParams, analysisAreaName, dataviews]
   )
 
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])

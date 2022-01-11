@@ -5,6 +5,7 @@ import { event as uaEvent } from 'react-ga'
 import { InteractiveMap } from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
 import dynamic from 'next/dynamic'
+import { useSetRecoilState } from 'recoil'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -37,13 +38,14 @@ import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/a
 import Hint from 'features/help/hints/Hint'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import { useMapLoaded } from 'features/map/map-style.hooks'
+import { useMapLoaded } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
+import { mapReadyAtom } from 'features/map/map-state.atom'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
-import { useSetMapIdleAtom } from './map-features.hooks'
+import { useSetMapIdleAtom } from './map-state.hooks'
 import { useMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
@@ -81,6 +83,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const drawMode = useSelector(selectDrawMode)
+  const setMapReady = useSetRecoilState(mapReadyAtom)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
@@ -129,6 +132,10 @@ const MapWrapper = (): React.ReactElement | null => {
     }
     return clickEvent
   }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onMapClick])
+
+  const onLoadCallback = useCallback(() => {
+    setMapReady(true)
+  }, [setMapReady])
 
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
@@ -249,6 +256,7 @@ const MapWrapper = (): React.ReactElement | null => {
           clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={isMapDrawing ? undefined : currentClickCallback}
           onHover={isMapDrawing ? onSimpleMapHover : currentMapHoverCallback}
+          onLoad={onLoadCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
           transitionDuration={viewport.transitionDuration}
