@@ -131,7 +131,6 @@ export type ExtendedLayer = LayerSpecification & {
 }
 
 export interface ExtendedStyleMeta {
-  generatedAt?: number
   interactiveLayerIds?: string[]
   generatorsMetadata?: Record<string, HeatmapLayerMeta>
 }

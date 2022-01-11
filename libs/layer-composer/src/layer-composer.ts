@@ -64,7 +64,6 @@ export class LayerComposer {
         .map((layer) => [layer.id, layer.metadata as HeatmapLayerMeta])
     )
     const metadata = {
-      generatedAt: Date.now(),
       generatorsMetadata,
     }
     return metadata
