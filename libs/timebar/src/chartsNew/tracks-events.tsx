@@ -14,7 +14,7 @@ import { useFilteredChartData, useClusteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
 
 const getTracksEventsWithCoords = (
-  tracksEvents: TimebarChartData,
+  tracksEvents: TimebarChartData<any>,
   outerScale: TimelineScale,
   graphHeight: number,
   orientation: TrackGraphOrientation
@@ -22,7 +22,7 @@ const getTracksEventsWithCoords = (
   // TODO merge with Tracks' getTracksWithCoords
   return tracksEvents.map((trackEvents, trackIndex) => {
     const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight, orientation)
-    const trackItemWithCoords: TimebarChartItem = {
+    const trackItemWithCoords: TimebarChartItem<any> = {
       ...trackEvents,
       y: baseTrackY.defaultY,
       chunks: !trackEvents.chunks
@@ -57,7 +57,7 @@ const TracksEvents = ({
 }) => {
   const { immediate } = useContext(ImmediateContext) as any
   const { outerScale, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
-  const clusteredTracksEvents = useClusteredChartData(data as TimebarChartData)
+  const clusteredTracksEvents = useClusteredChartData(data)
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
   const tracksEventsWithCoords = useMemo(
     () =>

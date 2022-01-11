@@ -4,7 +4,7 @@ import TimelineContext, { TimelineScale } from '../../timelineContext'
 import { TimebarChartChunk } from '..'
 import { TimebarChartData } from './types'
 
-const filterData = (data: TimebarChartData, start: string, end: string) => {
+const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
   return data.map((item) => {
     const filteredChunks = item.chunks.filter((chunk) => {
       const chunkStart = chunk.start
@@ -18,10 +18,10 @@ const filterData = (data: TimebarChartData, start: string, end: string) => {
   })
 }
 
-export const useFilteredChartData = (data: TimebarChartData) => {
+export const useFilteredChartData = (data: TimebarChartData<any>) => {
   const { outerStart, outerEnd } = useContext(TimelineContext)
 
-  const [filteredData, setFilteredData] = useState<TimebarChartData>([])
+  const [filteredData, setFilteredData] = useState<TimebarChartData<any>>([])
   const debouncedSetFilteredData = useDebouncedCallback(
     (data, outerStart, outerEnd) => {
       setFilteredData(filterData(data, outerStart, outerEnd))
@@ -39,7 +39,7 @@ export const useFilteredChartData = (data: TimebarChartData) => {
 
 const MIN_DISTANCE_PX_TO_CLUSTER = 2
 
-const clusterData = (data: TimebarChartData, outerScale: TimelineScale) => {
+const clusterData = (data: TimebarChartData<any>, outerScale: TimelineScale) => {
   return data.map((item) => {
     const aggregatedChunks = item.chunks.reduce(
       (currentClusteredEvents: TimebarChartChunk[], currentEvent: TimebarChartChunk) => {
@@ -84,7 +84,7 @@ const clusterData = (data: TimebarChartData, outerScale: TimelineScale) => {
   })
 }
 
-export const useClusteredChartData = (data: TimebarChartData) => {
+export const useClusteredChartData = (data: TimebarChartData<any>) => {
   const { outerStart, outerEnd, outerScale } = useContext(TimelineContext)
   const delta = +new Date(outerEnd) - +new Date(outerStart)
   return useMemo(() => {
