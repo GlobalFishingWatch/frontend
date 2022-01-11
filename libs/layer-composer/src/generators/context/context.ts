@@ -14,8 +14,7 @@ import {
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from './context.utils'
-
-export const DEFAULT_CONTEXT_SOURCE_LAYER = 'main'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
 
 const getSourceId = (config: ContextGeneratorConfig) => {
   return `${config.id}-${config.layer}`

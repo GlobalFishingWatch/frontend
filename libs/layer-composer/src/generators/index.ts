@@ -1,11 +1,11 @@
 import { GeneratorType } from './types'
-import BackgroundGenerator, { DEFAULT_BACKGROUND_COLOR } from './background/background'
+import BackgroundGenerator from './background/background'
 import BaseMapGenerator from './basemap/basemap'
 import GLStyleGenerator from './gl/gl'
 import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-polygons'
 import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
-import ContextGenerator, { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/context'
+import ContextGenerator from './context/context'
 import UserContextGenerator from './user-context/user-context'
 import UserPointsGenerator from './user-points/user-points'
 import TrackGenerator from './track/track'
@@ -15,14 +15,14 @@ import TileClusterGenerator from './tile-cluster/tile-cluster'
 
 export * from './heatmap/types'
 export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
+export { DEFAULT_BACKGROUND_COLOR } from './background/config'
+export { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/config'
 export { COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
 export {
   DEFAULT_HEATMAP_INTERVALS,
   TEMPORALGRID_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from './heatmap/config'
-
-export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER }
 
 const GeneratorConfig = {
   [GeneratorType.Background]: new BackgroundGenerator(),
