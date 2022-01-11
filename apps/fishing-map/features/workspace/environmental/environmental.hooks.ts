@@ -2,25 +2,28 @@ import { useCallback, useEffect } from 'react'
 import { ckmeans } from 'simple-statistics'
 import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
-import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import { DataviewFeature, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import { aggregateFeatures } from 'features/workspace/environmental/environmental.utils'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
+import { filterByViewport } from 'features/map/map.utils'
 
 export const useEnvironmentalBreaksUpdate = () => {
   const dataviews = useSelector(selectActiveEnvironmentalDataviews)
   const { bounds } = useMapBounds()
-  const dataviewFeatures = useMapDataviewFeatures(dataviews, bounds)
+  const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const sourcesLoaded =
     dataviewFeatures?.length > 0 ? dataviewFeatures.every(({ loaded }) => loaded) : false
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const updateBreaksByViewportValues = useCallback(
-    (dataviewFeatures) => {
+    (dataviewFeatures: DataviewFeature[], bounds: MiniglobeBounds) => {
       const dataviewInstances = dataviewFeatures?.flatMap(({ features, dataviewId, metadata }) => {
         if (features && features.length) {
-          const data = aggregateFeatures(features, metadata)
+          const filteredFeatures = filterByViewport(features, bounds)
+          const data = aggregateFeatures(filteredFeatures, metadata)
           const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
           // TODO review if sample the features is needed by performance
           // const featuresSample =
@@ -65,7 +68,7 @@ export const useEnvironmentalBreaksUpdate = () => {
 
   useEffect(() => {
     if (sourcesLoaded) {
-      updateBreaksByViewportValues(dataviewFeatures)
+      updateBreaksByViewportValues(dataviewFeatures, bounds)
     } else {
       hideLayerWhileLoading(dataviews)
     }

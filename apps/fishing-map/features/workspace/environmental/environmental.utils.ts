@@ -4,9 +4,9 @@ import {
   pickActiveTimeChunk,
   TimeChunks,
 } from '@globalfishingwatch/layer-composer'
-import type { Feature } from '@globalfishingwatch/maplibre-gl'
+import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 
-export const aggregateFeatures = (features: Feature[], metadata: HeatmapLayerMeta) => {
+export const aggregateFeatures = (features: GeoJSONFeature[], metadata: HeatmapLayerMeta) => {
   const timeChunks = metadata.timeChunks as TimeChunks
   const frame = timeChunks?.activeChunkFrame
   const activeTimeChunk = pickActiveTimeChunk(timeChunks)
