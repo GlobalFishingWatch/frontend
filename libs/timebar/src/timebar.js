@@ -367,6 +367,9 @@ Timebar.propTypes = {
       start: PropTypes.string,
       end: PropTypes.string,
       last30days: PropTypes.string,
+      last3months: PropTypes.string,
+      last6months: PropTypes.string,
+      lastYear: PropTypes.string,
       done: PropTypes.string,
     }),
     bookmark: PropTypes.shape({
@@ -423,6 +426,9 @@ Timebar.defaultProps = {
       start: 'start',
       end: 'end',
       last30days: 'Last 30 days',
+      last3months: 'Last 3 months',
+      last6months: 'Last 6 months',
+      lastYear: 'Last year',
       done: 'Done',
     },
     bookmark: {
