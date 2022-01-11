@@ -1,10 +1,10 @@
-import { Feature } from '@globalfishingwatch/maplibre-gl'
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, Interval } from '@globalfishingwatch/layer-composer'
 import { DataviewFeature } from 'features/map/map-sources.hooks'
 
 type TimeseriesParams = {
-  features: Feature[]
+  features: GeoJSONFeature[]
   quantizeOffset: number
   numSublayers: number
   interval: Interval
