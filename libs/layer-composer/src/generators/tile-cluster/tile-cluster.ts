@@ -2,7 +2,7 @@ import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
-import { DEFAULT_BACKGROUND_COLOR } from '../background/background'
+import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { Group } from '../../types'
 
 const MAX_ZOOM_TO_CLUSTER_POINTS = 4

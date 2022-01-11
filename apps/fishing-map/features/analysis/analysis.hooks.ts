@@ -151,7 +151,6 @@ export const useAnalysisGeometry = () => {
   useEffect(() => {
     if (geometryFeatures.loaded && !analysisGeometry) {
       const contextAreaGeometry = getContextAreaGeometry(geometryFeatures.features)
-      debugger
       if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
         const { name, value, id } = contextAreaGeometry.properties || {}
         const layerName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
