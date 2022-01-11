@@ -63,10 +63,13 @@ function PopupWrapper({
 
   // Force-trigger a rerender of the map to avoid popup repositioning flash
   useEffect(() => {
-    setMapCoordinates({
-      ...viewport,
-      latitude: viewport.latitude + 0.00001,
-    })
+    // Only for click popup so we avoid running viewport => bounds => TimebarActivityGraph bounds on hover
+    if (type === 'click') {
+      setMapCoordinates({
+        ...viewport,
+        latitude: viewport.latitude + 0.00001,
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [popupNeedsLoading])
 
