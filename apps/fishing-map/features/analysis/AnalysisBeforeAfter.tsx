@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import React, { Fragment, useCallback, useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
@@ -39,63 +39,54 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   }, [layersTimeseriesFiltered])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
 
-  const trackAndChangeDate = useCallback(
-    (date) => {
-      uaEvent({
-        category: 'Analysis',
-        action: `Select date in 'before/after'`,
-        label: JSON.stringify({
-          date: date.target.value,
-          regionName: analysisAreaName,
-          sourceNames: dataviews.flatMap((dataview) =>
-            getSourcesSelectedInDataview(dataview).map((source) => source.label)
-          ),
-        }),
-      })
-      onCompareStartChange(date)
-    },
-    [analysisAreaName, dataviews, onCompareStartChange]
-  )
+  const trackAndChangeDate = (date) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select date in 'before/after'`,
+      label: JSON.stringify({
+        date: date.target.value,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
+    })
+    onCompareStartChange(date)
+  }
 
-  const trackAndChangeDuration = useCallback(
-    (duration) => {
-      uaEvent({
-        category: 'Analysis',
-        action: `Select duration in 'before/after'`,
-        label: JSON.stringify({
-          duration: duration.target.value + ' ' + durationTypeOption.label,
-          durationAmount: duration.target.value,
-          durationType: durationTypeOption.label,
-          regionName: analysisAreaName,
-          sourceNames: dataviews.flatMap((dataview) =>
-            getSourcesSelectedInDataview(dataview).map((source) => source.label)
-          ),
-        }),
-      })
-      onDurationChange(duration)
-    },
-    [analysisAreaName, dataviews, durationTypeOption.label, onDurationChange]
-  )
+  const trackAndChangeDuration = (duration) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select duration in 'before/after'`,
+      label: JSON.stringify({
+        duration: duration.target.value + ' ' + durationTypeOption?.label,
+        durationAmount: duration.target.value,
+        durationType: durationTypeOption?.label,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
+    })
+    onDurationChange(duration)
+  }
 
-  const trackAndChangeDurationType = useCallback(
-    (duration) => {
-      uaEvent({
-        category: 'Analysis',
-        action: `Select duration in 'before/after'`,
-        label: JSON.stringify({
-          duration: timeComparison.duration + ' ' + duration.label,
-          durationAmount: timeComparison.duration,
-          durationType: duration.label,
-          regionName: analysisAreaName,
-          sourceNames: dataviews.flatMap((dataview) =>
-            getSourcesSelectedInDataview(dataview).map((source) => source.label)
-          ),
-        }),
-      })
-      onDurationTypeSelect(duration)
-    },
-    [analysisAreaName, dataviews, onDurationTypeSelect, timeComparison.duration]
-  )
+  const trackAndChangeDurationType = (duration) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select duration in 'before/after'`,
+      label: JSON.stringify({
+        duration: timeComparison?.duration + ' ' + duration.label,
+        durationAmount: timeComparison?.duration,
+        durationType: duration.label,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
+    })
+    onDurationTypeSelect(duration)
+  }
 
   const { description, commonProperties } = useAnalysisDescription(
     analysisAreaName,

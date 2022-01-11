@@ -94,9 +94,9 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
 }
 
 export type DataviewFeature = {
+  loaded: boolean
   sourceId: string
   dataviewId: string
-  loaded: boolean
   features: GeoJSONFeature[]
   metadata: HeatmapLayerMeta
 }

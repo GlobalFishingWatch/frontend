@@ -1,32 +1,24 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
 import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
-import {
-  selectActiveActivityDataviews,
-  selectActiveEnvironmentalDataviews,
-} from 'features/dataviews/dataviews.selectors'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { getTimeseriesFromDataviews } from 'features/timebar/TimebarActivityGraph.utils'
 import { filterByViewport } from 'features/map/map.utils'
 import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = () => {
-  const activityDataviews = useSelector(selectActiveActivityDataviews)
-  const environmentalDataviews = useSelector(selectActiveEnvironmentalDataviews)
-  const temporalGridDataviews = useMemo(
-    () => [...activityDataviews, ...environmentalDataviews],
-    [activityDataviews, environmentalDataviews]
-  )
+  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const [stackedActivity, setStackedActivity] = useState<any>()
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 400)
   const isSmallScreen = useSmallScreen()
 
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
-  const dataviewFeatures = useMapDataviewFeatures(temporalGridDataviews)
+  const dataviewFeatures = useMapDataviewFeatures(temporalgridDataviews)
   const dataviewFeaturesLoaded = dataviewFeatures.every(({ loaded }) => loaded)
 
   useEffect(() => {
@@ -44,7 +36,7 @@ const TimebarActivityGraph = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataviewFeaturesLoaded, debouncedBounds])
 
-  const dataviewsColors = temporalGridDataviews?.map((dataview) => dataview.config?.color)
+  const dataviewsColors = temporalgridDataviews?.map((dataview) => dataview.config?.color)
 
   if (!stackedActivity) return null
   return (
@@ -53,7 +45,7 @@ const TimebarActivityGraph = () => {
         key="stackedActivity"
         data={stackedActivity}
         colors={dataviewsColors}
-        numSublayers={temporalGridDataviews?.length}
+        numSublayers={temporalgridDataviews?.length}
       />
     </div>
   )
