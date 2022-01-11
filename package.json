@@ -148,7 +148,8 @@
   "resolutions": {
     "gl-matrix": "3.3.0",
     "reselect": "4.0.0",
-    "@popperjs/core": "2.10.2"
+    "@popperjs/core": "2.10.2",
+    "webpack-sources": "3.2.1"
   },
   "husky": {
     "hooks": {
