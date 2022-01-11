@@ -16,7 +16,7 @@ import {
   MAX_DAYS_TO_COMPARE,
   MAX_MONTHS_TO_COMPARE,
   useAnalysisTimeCompareConnect,
-} from './analysis.hooks'
+} from './analysis-timecomparison.hooks'
 import AnalysisBeforeAfterGraph from './AnalysisBeforeAfterGraph'
 import { selectTimeComparisonValues } from './analysis.selectors'
 
@@ -33,59 +33,75 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
     MIN_DATE,
     MAX_DATE,
   } = useAnalysisTimeCompareConnect('beforeAfter')
-
-  const trackAndChangeDate = useCallback((date) => {
-    uaEvent({
-      category: 'Analysis',
-      action: `Select date in 'before/after'`,
-      label: JSON.stringify({
-        date: date.target.value,
-        regionName: analysisAreaName,
-        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-      })
-    })
-    onCompareStartChange(date)
-  }, [onCompareStartChange])
-
-  const trackAndChangeDuration = useCallback((duration) => {
-    uaEvent({
-      category: 'Analysis',
-      action: `Select duration in 'before/after'`,
-      label: JSON.stringify({
-        duration: duration.target.value + ' ' + durationTypeOption.label,
-        durationAmount: duration.target.value,
-        durationType: durationTypeOption.label,
-        regionName: analysisAreaName,
-        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-      })
-    })
-    onDurationChange(duration)
-  }, [onCompareStartChange])
-
-  const trackAndChangeDurationType = useCallback((duration) => {
-    uaEvent({
-      category: 'Analysis',
-      action: `Select duration in 'before/after'`,
-      label: JSON.stringify({
-        duration: timeComparison.duration + ' ' + duration.label,
-        durationAmount: timeComparison.duration,
-        durationType: duration.label,
-        regionName: analysisAreaName,
-        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-      })
-    })
-    onDurationTypeSelect(duration)
-  }, [onCompareStartChange])
-
-  const { description, commonProperties } = useAnalysisDescription(
-    analysisAreaName,
-    layersTimeseriesFiltered?.[0]
-  )
   const dataviewsIds = useMemo(() => {
     if (!layersTimeseriesFiltered) return []
     return layersTimeseriesFiltered[0].sublayers.map((s) => s.id)
   }, [layersTimeseriesFiltered])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
+
+  const trackAndChangeDate = useCallback(
+    (date) => {
+      uaEvent({
+        category: 'Analysis',
+        action: `Select date in 'before/after'`,
+        label: JSON.stringify({
+          date: date.target.value,
+          regionName: analysisAreaName,
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
+        }),
+      })
+      onCompareStartChange(date)
+    },
+    [analysisAreaName, dataviews, onCompareStartChange]
+  )
+
+  const trackAndChangeDuration = useCallback(
+    (duration) => {
+      uaEvent({
+        category: 'Analysis',
+        action: `Select duration in 'before/after'`,
+        label: JSON.stringify({
+          duration: duration.target.value + ' ' + durationTypeOption.label,
+          durationAmount: duration.target.value,
+          durationType: durationTypeOption.label,
+          regionName: analysisAreaName,
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
+        }),
+      })
+      onDurationChange(duration)
+    },
+    [analysisAreaName, dataviews, durationTypeOption.label, onDurationChange]
+  )
+
+  const trackAndChangeDurationType = useCallback(
+    (duration) => {
+      uaEvent({
+        category: 'Analysis',
+        action: `Select duration in 'before/after'`,
+        label: JSON.stringify({
+          duration: timeComparison.duration + ' ' + duration.label,
+          durationAmount: timeComparison.duration,
+          durationType: duration.label,
+          regionName: analysisAreaName,
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
+        }),
+      })
+      onDurationTypeSelect(duration)
+    },
+    [analysisAreaName, dataviews, onDurationTypeSelect, timeComparison.duration]
+  )
+
+  const { description, commonProperties } = useAnalysisDescription(
+    analysisAreaName,
+    layersTimeseriesFiltered?.[0]
+  )
+
   if (!timeComparison) return null
 
   const isLoading =
@@ -149,7 +165,7 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
               <Select
                 options={DURATION_TYPES_OPTIONS}
                 onSelect={trackAndChangeDurationType}
-                onRemove={() => { }}
+                onRemove={() => {}}
                 className={styles.durationType}
                 selectedOption={durationTypeOption}
               />
