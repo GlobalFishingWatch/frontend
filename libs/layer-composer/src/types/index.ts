@@ -122,6 +122,7 @@ export interface HeatmapLayerMeta {
   temporalgrid: true
   timeChunks: TimeChunks
   visibleSublayers: boolean[]
+  sourceLayer?: string
 }
 
 /**
