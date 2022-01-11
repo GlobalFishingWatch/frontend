@@ -10,7 +10,6 @@ import {
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom } from 'features/map/map-sources.atom'
