@@ -262,9 +262,10 @@ const MapWrapper = (): React.ReactElement | null => {
               closeButton
             />
           )}
-          {hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
-            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude &&
-            !clickedEvent && (
+          {hoveredTooltipEvent &&
+            !clickedEvent &&
+            hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
+            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
