@@ -121,7 +121,9 @@ const TimebarSettings = () => {
               }
               disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
               tooltip={
-                !activeTrackDataviews?.length || !timebarGraphEnabled
+                !activeTrackDataviews?.length
+                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
+                  : !timebarGraphEnabled
                   ? t(
                       'timebarSettings.graphDisabled',
                       'Not available with more than 2 vessels selected'
@@ -139,7 +141,9 @@ const TimebarSettings = () => {
               }
               disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
               tooltip={
-                !activeTrackDataviews?.length || !timebarGraphEnabled
+                !activeTrackDataviews?.length
+                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
+                  : !timebarGraphEnabled
                   ? t(
                       'timebarSettings.graphDisabled',
                       'Not available with more than 2 vessels selected'

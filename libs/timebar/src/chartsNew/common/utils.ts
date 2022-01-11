@@ -1,5 +1,5 @@
-export const TOP_MARGIN = 8
-export const BOTTOM_MARGIN = 10
+export const TOP_MARGIN = 6
+export const BOTTOM_MARGIN = 15
 export const MIN_HEIGHT = 2
 export const TOTAL_MARGIN = TOP_MARGIN + BOTTOM_MARGIN
 export const SPACING = 10

@@ -347,12 +347,6 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
-    "graphOptions": {
-      "depth": "Depth $t(common.comingSoon)",
-      "none": "None",
-      "speed": "Speed",
-      "speedDisabled": "Not available with more than 1 vessel selected"
-    },
     "graphDisabled": "Not available with more than 2 vessels selected",
     "graphSpeed": "Track speed",
     "showGraphSpeed": "Show track speed graph",
