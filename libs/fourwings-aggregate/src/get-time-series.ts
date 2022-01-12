@@ -1,11 +1,10 @@
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { CELL_VALUES_START_INDEX } from './constants'
 import { AggregationOperation } from './types'
 import { getCellValues } from './util'
 
-type Feature = {
-  properties: {
-    rawValues: string
-  }
+export type TimeseriesFeatureProps = {
+  rawValues: string
 }
 
 export interface TimeSeriesFrame {
@@ -23,7 +22,7 @@ export type TimeSeries = {
 }
 
 export const getTimeSeries = (
-  features: Feature[],
+  features: GeoJSONFeature<TimeseriesFeatureProps>[],
   numSublayers: number,
   quantizeOffset = 0,
   aggregationOperation = AggregationOperation.Sum

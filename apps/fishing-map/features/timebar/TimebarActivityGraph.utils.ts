@@ -1,69 +1,66 @@
-import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import { uniqBy } from 'lodash'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, Interval } from '@globalfishingwatch/layer-composer'
-import { DataviewFeature } from 'features/map/map-sources.hooks'
+import { DataviewChunkFeature, DataviewFeature } from 'features/map/map-sources.hooks'
 
 type TimeseriesParams = {
-  features: GeoJSONFeature[]
-  quantizeOffset: number
+  chunksFeatures: DataviewChunkFeature[]
   numSublayers: number
   interval: Interval
   visibleSublayers: boolean[]
 }
-export const getTimeseries = ({
-  features,
-  quantizeOffset,
+
+export const getChunksTimeseries = ({
+  chunksFeatures,
   numSublayers,
   interval,
   visibleSublayers,
 }: TimeseriesParams) => {
-  if (!features || !features.length) {
-    return []
-  }
+  let prevMaxFrame: number
 
-  // let prevMaxFrame: number
-  const { values, maxFrame } = getTimeSeries(features as any, numSublayers, quantizeOffset)
+  const allChunksValues = chunksFeatures.flatMap(({ features, quantizeOffset }) => {
+    if (features?.length > 0) {
+      const { values, maxFrame } = getTimeSeries(features, numSublayers, quantizeOffset)
 
-  // TODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODO
-  // TODO!! ask Erik what does it do  TODOTODOTODOTO!!
-  // TODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODO
+      const valuesTimeChunkOverlapFramesFiltered = prevMaxFrame
+        ? values.filter((frameValues) => frameValues.frame > prevMaxFrame)
+        : values
 
-  // const valuesTimeChunkOverlapFramesFiltered = prevMaxFrame
-  //   ? values.filter((frameValues) => frameValues.frame > prevMaxFrame)
-  //   : values
+      prevMaxFrame = maxFrame
 
-  // prevMaxFrame = maxFrame
-
-  const finalValues = values.map((frameValues) => {
-    // Ideally we don't have the features not visible in 4wings but we have them
-    // so this needs to be filtered by the current active ones
-    const activeFrameValues = Object.fromEntries(
-      Object.entries(frameValues).map(([key, value]) => {
-        const cleanValue = key === 'frame' || visibleSublayers[parseInt(key)] === true ? value : 0
-        return [key, cleanValue]
+      const finalValues = valuesTimeChunkOverlapFramesFiltered.map((frameValues) => {
+        // Ideally we don't have the features not visible in 4wings but we have them
+        // so this needs to be filtered by the current active ones
+        const activeFrameValues = Object.fromEntries(
+          Object.entries(frameValues).map(([key, value]) => {
+            const cleanValue =
+              key === 'frame' || visibleSublayers[parseInt(key)] === true ? value : 0
+            return [key, cleanValue]
+          })
+        )
+        return {
+          ...activeFrameValues,
+          date: quantizeOffsetToDate(frameValues.frame, interval).getTime(),
+        }
       })
-    )
-    return {
-      ...activeFrameValues,
-      date: quantizeOffsetToDate(frameValues.frame, interval).getTime(),
+      return finalValues
+    } else {
+      return []
     }
   })
-  return finalValues
+  return allChunksValues
 }
 
 export const getTimeseriesFromDataviews = (dataviewFeatures: DataviewFeature[]) => {
-  console.log('reruns activity stack')
-  const dataviewsTimeseries = dataviewFeatures.map(({ features, metadata, loaded }) => {
-    if (!loaded || !features) {
+  const uniqDataviewFeatures = uniqBy(dataviewFeatures, 'sourceId')
+  const dataviewsTimeseries = uniqDataviewFeatures.map(({ chunksFeatures, metadata, loaded }) => {
+    if (!loaded || !chunksFeatures) {
       // TODO return loading or null depending on state
       return []
     }
-
     const timeChunks = metadata.timeChunks
-    const quantizeOffset = timeChunks.chunks?.[0].quantizeOffset
-    const timeseries = getTimeseries({
-      features,
-      quantizeOffset,
+    const timeseries = getChunksTimeseries({
+      chunksFeatures,
       interval: timeChunks.interval,
       numSublayers: metadata.numSublayers,
       visibleSublayers: metadata.visibleSublayers,
