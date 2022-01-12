@@ -1222,10 +1222,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"
   integrity sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==
 
-"@globalfishingwatch/fourwings-aggregate@4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.0.1.tgz#23069e8c59b389d5597a62c07a2010594b3775cc"
-  integrity sha512-XuW8ieyLihfUJMI518eCM0QhvgxU6SS6GqWyiAqO4QPHcn7Euo8W8atB1rK108KQ4IJsW0HICKgdtZaIvLIeaA==
+"@globalfishingwatch/fourwings-aggregate@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.1.0.tgz#5524bdceff90cc3fd7a42ecea7794c7341e414f6"
+  integrity sha512-e/+2JutMQ3+c9mCMcRKMYjpioMgIKe1xJGARx5mn6bPT+lyJfSwGtRIL5ez8rtFwjqfvEaWKkXr4MQTm1BcUZw==
 
 "@globalfishingwatch/linting@2.0.0":
   version "2.0.0"
@@ -1270,12 +1270,12 @@
     rw "^1.3.3"
     sort-object "^0.3.2"
 
-"@globalfishingwatch/maplibre-gl@2.0.0-gfw.4":
-  version "2.0.0-gfw.4"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.0.0-gfw.4.tgz#6b8b90c8755d11e2aecb138cb4638dd849e8b087"
-  integrity sha512-orlki38bUnmzEVSvUmPX7DG6zFtAjj1LKhdhviXKSRj41j9TVuCvdcSRGaM1+y9+Hz9IuVz+1ZI6IMLzwYGMvA==
+"@globalfishingwatch/maplibre-gl@2.0.0-gfw.6":
+  version "2.0.0-gfw.6"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.0.0-gfw.6.tgz#86dbcecc99e20b62c083c7868376be4a72db6bbd"
+  integrity sha512-C12S6YWkG0mNHGIbOKOWpLjH5GpAdiQVjHvu2YH9BKVSRI4VsRd002G2klXLL+Syp+JSv7L8P6eunzpdKPrOzg==
   dependencies:
-    "@globalfishingwatch/fourwings-aggregate" "4.0.1"
+    "@globalfishingwatch/fourwings-aggregate" "4.1.0"
     "@mapbox/geojson-rewind" "^0.5.0"
     "@mapbox/jsonlint-lines-primitives" "^2.0.2"
     "@mapbox/mapbox-gl-supported" "^2.0.1"
