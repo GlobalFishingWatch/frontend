@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
   HeatmapLayerMeta,
@@ -11,12 +11,15 @@ import {
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
+import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom } from 'features/map/map-sources.atom'
 import { getHeatmapSourceMetadata } from 'features/map/map-sources.utils'
 
 type SourcesHookInput = string | string[]
+// TODO: move this to fork and include sourceId in the event for tiles loaded
+type CustomMapDataEvent = MapDataEvent & { sourceId: string }
 
 const toArray = <S = SourcesHookInput>(elem: S) => (Array.isArray(elem) ? elem : [elem])
 
@@ -54,14 +57,14 @@ export const useMapSourceTilesLoadedAtom = () => {
   useEffect(() => {
     if (!map) return
 
-    const onSourceDataLoading = (e: any) => {
+    const onSourceDataLoading = (e: CustomMapDataEvent) => {
       const { sourceId } = e
       if (sourceId) {
         setSourceTilesLoaded((state) => ({ ...state, [sourceId]: false }))
       }
     }
 
-    const onSourceTilesLoaded = (e: any) => {
+    const onSourceTilesLoaded = (e: CustomMapDataEvent) => {
       const { sourceId } = e
       if (sourceId) {
         setSourceTilesLoaded((state) => ({ ...state, [sourceId]: true }))
@@ -93,13 +96,27 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
   return sourceInStyle && sourcesIdsList.every((source) => sourceTilesLoaded[source])
 }
 
+export type DataviewChunkFeature = {
+  loaded: boolean
+  features: GeoJSONFeature<TimeseriesFeatureProps>[]
+  quantizeOffset: number
+}
 export type DataviewFeature = {
   loaded: boolean
   sourceId: string
   dataviewId: string
   features: GeoJSONFeature[]
+  chunksFeatures: DataviewChunkFeature[]
   metadata: HeatmapLayerMeta
 }
+
+export const getDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewFeature[]) => {
+  const dataviewsArray = toArray(dataviews)
+  return dataviewsArray.every(({ loaded, chunksFeatures }) =>
+    chunksFeatures ? chunksFeatures.every(({ loaded }) => loaded) : loaded
+  )
+}
+
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
@@ -129,13 +146,37 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
     const dataviewFeature = dataviewMetadata.map(({ dataviewId, metadata, filter }) => {
       const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
       const sourceId = metadata?.timeChunks?.activeSourceId || dataviewId
-      const loaded = sourceTilesLoaded[sourceId]
-      const features = loaded ? map.querySourceFeatures(sourceId, { sourceLayer, filter }) : null
+      const chunks = metadata?.timeChunks?.chunks.map(({ sourceId, quantizeOffset }) => ({
+        sourceId,
+        quantizeOffset,
+      }))
+
+      const chunksFeatures: DataviewChunkFeature[] | null = chunks
+        ? chunks.map(({ sourceId, quantizeOffset }) => {
+            const chunkLoaded = sourceTilesLoaded[sourceId]
+            return {
+              features: chunkLoaded
+                ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
+                : null,
+              quantizeOffset,
+              loaded: chunkLoaded,
+            }
+          })
+        : null
+
+      const loaded = chunks
+        ? chunksFeatures.every(({ loaded }) => loaded)
+        : sourceTilesLoaded[sourceId]
+
+      const features: GeoJSONFeature[] | null =
+        !chunks && loaded ? map.querySourceFeatures(sourceId, { sourceLayer, filter }) : null
+
       const data = {
         sourceId,
         dataviewId,
         loaded,
         features,
+        chunksFeatures,
         metadata,
       }
       return data

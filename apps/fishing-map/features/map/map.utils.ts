@@ -1,7 +1,10 @@
 import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
-export const filterByViewport = (features: GeoJSONFeature[], bounds: MiniglobeBounds) => {
+export const filterByViewport = <P = unknown>(
+  features: GeoJSONFeature<P>[],
+  bounds: MiniglobeBounds
+) => {
   if (!bounds) {
     return []
   }
