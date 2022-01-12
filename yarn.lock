@@ -1248,10 +1248,10 @@
     rw "^1.3.3"
     sort-object "^0.3.2"
 
-"@globalfishingwatch/maplibre-gl@2.0.0-gfw.6":
-  version "2.0.0-gfw.6"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.0.0-gfw.6.tgz#86dbcecc99e20b62c083c7868376be4a72db6bbd"
-  integrity sha512-C12S6YWkG0mNHGIbOKOWpLjH5GpAdiQVjHvu2YH9BKVSRI4VsRd002G2klXLL+Syp+JSv7L8P6eunzpdKPrOzg==
+"@globalfishingwatch/maplibre-gl@2.0.0-gfw.7":
+  version "2.0.0-gfw.7"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.0.0-gfw.7.tgz#da3336ef3f318377ce2c72cb84b1250824878801"
+  integrity sha512-zG6tLxQ0roF3e+zqvlVw7SmCKPHkhknu/4rU0oyzc78hypbM/6ou4ROQZlMyYXTM6f/df/eeLTB5ongu9viR2Q==
   dependencies:
     "@globalfishingwatch/fourwings-aggregate" "4.1.0"
     "@mapbox/geojson-rewind" "^0.5.0"
