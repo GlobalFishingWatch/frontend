@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { uniqBy } from 'lodash'
 import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
@@ -97,6 +98,7 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
 }
 
 export type DataviewChunkFeature = {
+  active: boolean
   loaded: boolean
   features: GeoJSONFeature<TimeseriesFeatureProps>[]
   quantizeOffset: number
@@ -112,19 +114,20 @@ export type DataviewFeature = {
 
 export const getDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewFeature[]) => {
   const dataviewsArray = toArray(dataviews)
-  return dataviewsArray.every(({ loaded, chunksFeatures }) =>
-    chunksFeatures ? chunksFeatures.every(({ loaded }) => loaded) : loaded
-  )
+  return dataviewsArray.length ? dataviewsArray.every(({ loaded }) => loaded) : false
 }
 
-export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
+export const useMapDataviewFeatures = (
+  dataviews: UrlDataviewInstance | UrlDataviewInstance[],
+  mergeBySource = true
+) => {
   const style = useMapStyle()
   const map = useMapInstance()
   const sourceTilesLoaded = useMapSourceTiles()
   // Memoized to avoid re-runs on style changes like hovers
   const styleMetadata = useMemo(() => style?.metadata, [style])
 
-  const dataviewMetadata = useMemo(() => {
+  const dataviewsMetadata = useMemo(() => {
     const dataviewsArray = toArray(dataviews)
     return dataviewsArray.map((dataview) => {
       const dataviewSource =
@@ -143,18 +146,20 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
   }, [dataviews, styleMetadata])
 
   const dataviewFeatures = useMemo(() => {
-    const dataviewFeature = dataviewMetadata.map(({ dataviewId, metadata, filter }) => {
+    const dataviewsFeature = dataviewsMetadata.map(({ dataviewId, metadata, filter }) => {
       const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
       const sourceId = metadata?.timeChunks?.activeSourceId || dataviewId
-      const chunks = metadata?.timeChunks?.chunks.map(({ sourceId, quantizeOffset }) => ({
+      const chunks = metadata?.timeChunks?.chunks.map(({ active, sourceId, quantizeOffset }) => ({
+        active,
         sourceId,
         quantizeOffset,
       }))
 
       const chunksFeatures: DataviewChunkFeature[] | null = chunks
-        ? chunks.map(({ sourceId, quantizeOffset }) => {
+        ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const chunkLoaded = sourceTilesLoaded[sourceId]
             return {
+              active,
               features: chunkLoaded
                 ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
                 : null,
@@ -165,7 +170,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         : null
 
       const loaded = chunks
-        ? chunksFeatures.every(({ loaded }) => loaded)
+        ? chunksFeatures.every(({ loaded }) => loaded !== false)
         : sourceTilesLoaded[sourceId]
 
       const features: GeoJSONFeature[] | null =
@@ -181,8 +186,8 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
       }
       return data
     })
-    return dataviewFeature
-  }, [dataviewMetadata, map, sourceTilesLoaded])
+    return mergeBySource ? uniqBy(dataviewsFeature, 'sourceId') : dataviewFeatures
+  }, [dataviewsMetadata, map, mergeBySource, sourceTilesLoaded])
 
   return dataviewFeatures
 }
