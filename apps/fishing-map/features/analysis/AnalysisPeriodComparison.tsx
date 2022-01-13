@@ -24,7 +24,7 @@ import styles from './AnalysisPeriodComparison.module.css'
 import { selectTimeComparisonValues } from './analysis.selectors'
 
 const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
-  const { layersTimeseriesFiltered, analysisAreaName } = props
+  const { layersTimeseriesFiltered, analysisAreaName, loading } = props
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
@@ -123,11 +123,6 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
 
   if (!timeComparison) return null
 
-  const isLoading =
-    !layersTimeseriesFiltered ||
-    !layersTimeseriesFiltered[0] ||
-    !layersTimeseriesFiltered[0].timeseries
-
   return (
     <Fragment>
       <AnalysisDescription description={description} />
@@ -144,16 +139,20 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
             />
           ))}
       </div>
-      {isLoading ? (
-        <div className={styles.graphContainer}>
-          <Spinner />
+      {loading ||
+        (!layersTimeseriesFiltered && (
+          <div className={styles.graphContainer}>
+            <Spinner />
+          </div>
+        ))}
+      {layersTimeseriesFiltered && (
+        <div className={loading ? styles.blur : ''}>
+          <AnalysisPeriodComparisonGraph
+            graphData={layersTimeseriesFiltered?.[0]}
+            start={timeComparison.start}
+            end={timeComparisonValues.end}
+          />
         </div>
-      ) : (
-        <AnalysisPeriodComparisonGraph
-          graphData={layersTimeseriesFiltered?.[0]}
-          start={timeComparison.start}
-          end={timeComparisonValues.end}
-        />
       )}
       <div className={styles.container}>
         <div className={styles.timeSelection}>

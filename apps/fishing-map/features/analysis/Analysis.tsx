@@ -4,7 +4,13 @@ import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  IconButton,
+  Choice,
+  ChoiceOption,
+  Spinner,
+} from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
@@ -27,6 +33,8 @@ import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -41,10 +49,9 @@ import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 import AnalysisBeforeAfter from './AnalysisBeforeAfter'
 
 export type AnalysisTypeProps = {
+  loading: boolean
   layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
-  hasAnalysisLayers: boolean
   analysisAreaName: string
-  analysisGeometryLoaded?: boolean
 }
 
 const ANALYSIS_COMPONENTS_BY_TYPE: Record<
@@ -70,6 +77,7 @@ function Analysis() {
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
@@ -109,8 +117,8 @@ function Analysis() {
     )
   }
 
-  const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
+  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const timeComparisonEnabled = useMemo(() => {
     let tooltip = ''
     let enabled = true
@@ -222,6 +230,14 @@ function Analysis() {
     downloadTooltip = t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
   }
 
+  if (workspaceStatus !== AsyncReducerStatus.Finished) {
+    return (
+      <div className={styles.container}>
+        <Spinner />
+      </div>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -241,13 +257,16 @@ function Analysis() {
       </div>
 
       <div className={styles.content}>
-        {AnalysisComponent && (
+        {hasAnalysisLayers && AnalysisComponent ? (
           <AnalysisComponent
             layersTimeseriesFiltered={layersTimeseriesFiltered}
-            hasAnalysisLayers={hasAnalysisLayers}
             analysisAreaName={analysisAreaName}
-            analysisGeometryLoaded={analysisGeometryLoaded}
+            loading={!analysisGeometryLoaded || loading}
           />
+        ) : (
+          <p className={styles.placeholder}>
+            {t('analysis.empty', 'Your selected datasets will appear here')}
+          </p>
         )}
         <div>
           <Choice

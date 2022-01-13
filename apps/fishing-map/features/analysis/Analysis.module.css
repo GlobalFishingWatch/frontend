@@ -73,6 +73,10 @@
   min-height: 24rem;
 }
 
+.blur {
+  filter: blur(5px);
+}
+
 .error,
 .experimental {
   color: var(--color-danger-red);
