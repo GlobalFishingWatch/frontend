@@ -36,7 +36,7 @@ const useStackedActivity = () => {
         chunksFeatures: dataview.chunksFeatures?.map((chunk) => {
           return {
             ...chunk,
-            features: filterByViewport(chunk.features, debouncedBounds),
+            features: chunk.features ? filterByViewport(chunk.features, debouncedBounds) : [],
           }
         }),
       }
