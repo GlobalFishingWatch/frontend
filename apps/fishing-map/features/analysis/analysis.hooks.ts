@@ -44,6 +44,7 @@ export type DateTimeSeries = {
 }[]
 
 export const useFilteredTimeSeries = () => {
+  const [blur, setBlur] = useState(false)
   const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
@@ -52,6 +53,8 @@ export const useFilteredTimeSeries = () => {
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
   const { areaId } = useSelector(selectAnalysisQuery)
+  const loading = !getDataviewsFeatureLoaded(activityFeatures)
+  const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
@@ -74,7 +77,7 @@ export const useFilteredTimeSeries = () => {
   const computeTimeseries = useCallback(
     (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
       const features = layersWithFeatures.map(({ chunksFeatures }) =>
-        chunksFeatures.flatMap(({ active, features }) => (active ? features : []))
+        chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
       )
       const filteredFeatures = filterByPolygon(features, geometry)
       const timeseries = featuresToTimeseries(filteredFeatures, {
@@ -92,18 +95,23 @@ export const useFilteredTimeSeries = () => {
 
   useEffect(() => {
     setTimeseries(undefined)
+    setBlur(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areaId, analysisEvolutionChange])
 
   useEffect(() => {
+    setBlur(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeComparison, timebarStart, timebarEnd])
+
+  useEffect(() => {
     const activityFeaturesLoaded = getDataviewsFeatureLoaded(activityFeatures)
-    if (!timeseries && activityFeaturesLoaded && simplifiedGeometry) {
+    if ((!timeseries || blur) && activityFeaturesLoaded && simplifiedGeometry) {
       computeTimeseries(activityFeatures, simplifiedGeometry as MultiPolygon)
+      setBlur(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activityFeatures, computeTimeseries, simplifiedGeometry])
-
-  const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
@@ -114,7 +122,11 @@ export const useFilteredTimeSeries = () => {
       }
     }
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
-  return layersTimeseriesFiltered
+
+  return {
+    loading: layersTimeseriesFiltered?.length ? loading : false,
+    layersTimeseriesFiltered,
+  }
 }
 
 export const useAnalysisGeometry = () => {

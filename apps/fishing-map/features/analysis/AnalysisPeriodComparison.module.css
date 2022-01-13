@@ -18,6 +18,7 @@
 
 .timeSelection {
   width: 100%;
+  flex-wrap: wrap;
   display: flex;
   gap: var(--space-S);
   justify-content: space-between;
@@ -55,4 +56,8 @@
 .error {
   padding: 0 var(--space-M) var(--space-M);
   color: var(--color-danger-red);
+}
+
+.blur {
+  filter: blur(5px);
 }

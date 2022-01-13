@@ -39,6 +39,9 @@ export function filterByPolygon(
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
       (acc, cell) => {
+        if (!cell?.geometry) {
+          return acc
+        }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [[minX, minY], [maxX], [_, maxY]] = (cell.geometry as Polygon).coordinates[0]
         const cellBbox: BBox = [minX, minY, maxX, maxY]
