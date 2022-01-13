@@ -1,0 +1,72 @@
+{
+  "root": "apps/tile-inspector",
+  "sourceRoot": "apps/tile-inspector",
+  "projectType": "application",
+  "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["nx build tile-inspector --parallel", "nx docker-prepare tile-inspector"],
+        "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/tile-inspector",
+          "cp apps/tile-inspector/nginx.conf dist/apps/tile-inspector"
+        ]
+      }
+    },
+    "compile": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/tile-inspector",
+        "outputPath": "dist/apps/tile-inspector"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "start": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "tile-inspector:compile",
+        "dev": true,
+        "port": 3003
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "tile-inspector:compile:production",
+          "dev": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "tile-inspector:compile:production"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/tile-inspector"],
+      "options": {
+        "jestConfig": "apps/tile-inspector/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/tile-inspector/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}

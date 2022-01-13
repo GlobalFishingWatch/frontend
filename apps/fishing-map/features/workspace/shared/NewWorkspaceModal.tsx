@@ -67,10 +67,14 @@ function NewWorkspaceModal({
   const containsPrivateDatasets = privateDatasets.length > 0
 
   const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
+  const isPublicWorkspace = workspace?.id?.includes(PUBLIC_SUFIX)
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
   const hasWorkspaceDefined =
     workspace !== null && urlWorkspaceId !== undefined && !isDefaultWorkspace
-  const allowUpdate = hasWorkspaceDefined && (isOwnerWorkspace || hasEditPermission)
+  const allowUpdate =
+    hasWorkspaceDefined &&
+    (isOwnerWorkspace || hasEditPermission) &&
+    (isPublicWorkspace ? !containsPrivateDatasets : true)
   const showOverWriteWarning = hasWorkspaceDefined && !isOwnerWorkspace && hasEditPermission
   const initialCreateAsPublic = allowUpdate
     ? workspace?.id.includes(PUBLIC_SUFIX) || false
@@ -151,7 +155,7 @@ function NewWorkspaceModal({
       appSelector={ROOT_DOM_ELEMENT}
       title={title || t('workspace.save', 'Save the current workspace')}
       isOpen={isOpen}
-      shouldCloseOnEsc={true}
+      shouldCloseOnEsc
       contentClassName={styles.modal}
       onClose={onClose}
     >

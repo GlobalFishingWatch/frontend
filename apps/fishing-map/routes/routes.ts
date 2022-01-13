@@ -2,7 +2,10 @@ import { Dispatch } from 'redux'
 import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-first-router'
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
-export const PATH_BASENAME = process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' ? '/map' : ''
+export const PATH_BASENAME =
+  process.env.NEXT_PUBLIC_URL || process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production'
+    ? '/map'
+    : ''
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'

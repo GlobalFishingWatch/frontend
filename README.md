@@ -39,9 +39,9 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 ## See also
 
-### Mapbox GL fork
+### MapLibre GL fork
 
-We maintain our own forks of <a href="https://github.com/GlobalFishingWatch/mapbox-gl-js/">Mapbox GL</a> to handle gridded temporal data (see `temporalgrid` branches on both repos)
+We maintain our own forks of <a href="https://github.com/GlobalFishingWatch/maplibre-gl-js/">Mapbox GL</a> to handle gridded temporal data (see `temporalgrid` branches on both repos)
 
 ### LayerComposer / Dataviews / Workspaces
 
@@ -124,3 +124,55 @@ Go to your application and run
 yarn link @globalfishingwatch/{package_folder}
 
 Start your application
+
+## Docker Compose
+
+To replicate the prod environment where the apps run on a path (not the root) and with https we use a nginx proxy that runs on SSL and maps all the incoming request to its corresponding app.
+
+### Setup
+
+1. Generate the ssl certificates:
+
+```bash
+./generate-certificate.sh
+```
+
+2. Set the proper environment variables to build each app, lookt at the build.env.sample file for reference:
+
+```bash
+cp apps/fishing-map/.build.env.sample apps/fishing-map/.build.env
+# Edit apps/fishing-map/.build.env and save your changes
+cp apps/vessel-history/.build.env.sample apps/vessel-history/.build.env
+# Edit apps/vessel-history/.build.env and save your changes
+```
+
+3. Build the apps:
+
+```bash
+npx env-cmd -f apps/fishing-map/.build.env nx build fishing-map --parallel
+nx run fishing-map:docker-prepare
+npx env-cmd -f apps/vessel-history/.build.env nx build vessel-history --parallel
+nx run vessel-history:docker-prepare
+```
+
+4. Spin up docker compose:
+
+```bash
+docker-compose up -d
+```
+
+5. Navigate to `https://localhost/maps` and/or `https://localhost/vessel-viewer`. Note that if you want to develop/test the progressive web app (offline mode) you'll have to start Chrome with specific flags to omit the SSL self signed certificate error:
+
+Osx
+
+```bash
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome   --user-data-dir=/tmp/foo --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost
+```
+
+Windows
+
+```cmd
+chrome.exe --user-data-dir=/tmp/foo --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost/
+```
+
+_Pending: Add `https://localhost` (or a more meaningful hostname) to the list of redirectUrls in the GFW application_

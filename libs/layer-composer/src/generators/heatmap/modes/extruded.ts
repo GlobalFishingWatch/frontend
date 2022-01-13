@@ -1,4 +1,4 @@
-import { Group } from '../../../types'
+import { ExtendedLayerMeta, Group } from '../../../types'
 import { HEATMAP_COLOR_RAMPS } from '../colors'
 import { TEMPORALGRID_SOURCE_LAYER } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
@@ -31,7 +31,7 @@ function extruded(
 
       // only add legend metadata for first time chunk
       if (timeChunkIndex === 0) {
-        chunkMainLayer.metadata.legend = getLegends(config, breaks)
+        ;(chunkMainLayer.metadata as ExtendedLayerMeta).legend = getLegends(config, breaks)
       }
 
       const pickValueAt = timeChunk.frame.toString()

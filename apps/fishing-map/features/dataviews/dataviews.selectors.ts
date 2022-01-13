@@ -214,13 +214,17 @@ export const selectAllDataviewsInWorkspace = createSelector(
 export const selectAvailableFishingDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
-    return dataviews?.filter((d) => d.category === DataviewCategory.Fishing)
+    return dataviews?.filter(
+      (d) => d.category === DataviewCategory.Fishing && d.datasetsConfig?.length > 0
+    )
   }
 )
 
 export const selectAvailablePresenceDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
-    return dataviews?.filter((d) => d.category === DataviewCategory.Presence)
+    return dataviews?.filter(
+      (d) => d.category === DataviewCategory.Presence && d.datasetsConfig?.length > 0
+    )
   }
 )

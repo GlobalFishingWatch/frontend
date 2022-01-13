@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { ApiEvent } from '@globalfishingwatch/api-types'
-import { SymbolLayer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
+import { SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   getDataviewsGeneratorConfigs,
   UrlDataviewInstance,
@@ -114,8 +114,8 @@ export const selectVesselLastPositionGenerator = createSelector(
             'icon-size': 2,
             'icon-rotate': ['get', 'course'],
             visibility: 'visible',
-          } as SymbolLayout,
-        } as SymbolLayer,
+          } as SymbolLayerSpecification['layout'],
+        } as SymbolLayerSpecification,
         {
           id: LAST_POSITION_LAYERS_PREFIX,
           type: 'symbol',
@@ -125,8 +125,8 @@ export const selectVesselLastPositionGenerator = createSelector(
             'icon-size': 1.5,
             'icon-rotate': ['get', 'course'],
             visibility: 'visible',
-          } as SymbolLayout,
-        } as SymbolLayer,
+          } as SymbolLayerSpecification['layout'],
+        } as SymbolLayerSpecification,
       ],
     }
 

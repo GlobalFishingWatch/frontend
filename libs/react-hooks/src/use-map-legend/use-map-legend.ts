@@ -69,8 +69,8 @@ export const getLegendLayers = (
             ...sublayerLegendMetadata,
             id: getLegendId(id),
             color: layer.metadata?.color || dataview?.config?.color || 'red',
-            generatorId: layer.metadata.generatorId,
-            generatorType: layer.metadata.generatorType,
+            generatorId: layer.metadata?.generatorId || '',
+            generatorType: layer.metadata?.generatorType || '',
           }
           return sublayerLegend
         }) || []

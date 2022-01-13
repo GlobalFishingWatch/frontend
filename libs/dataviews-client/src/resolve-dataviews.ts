@@ -321,6 +321,15 @@ export function resolveDataviews(
           const filterValues = Array.isArray(filters[filterKey])
             ? filters[filterKey]
             : [filters[filterKey]]
+
+          const datasetSchema = dataviewInstance.datasets?.find(
+            (d) => d.schema?.[filterKey] !== undefined
+          )?.schema?.[filterKey]
+          if (datasetSchema && datasetSchema.type === 'number') {
+            return `${filterKey} >= ${filterValues[0]} AND ${filterKey} <= ${
+              filterValues[filterValues.length - 1]
+            }`
+          }
           return `${filterKey} IN (${filterValues.map((f: string) => `'${f}'`).join(', ')})`
         })
         if (sqlFilters.length) {

@@ -1,4 +1,4 @@
-import { Layer } from '@globalfishingwatch/mapbox-gl'
+import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
 import { GeneratorType, BackgroundGeneratorConfig } from '../types'
 
@@ -7,7 +7,7 @@ export const DEFAULT_BACKGROUND_COLOR = 'rgb(0, 36, 87)'
 class BackgroundGenerator {
   type = GeneratorType.Background
 
-  _getStyleLayers = (config: BackgroundGeneratorConfig): Layer[] => [
+  _getStyleLayers = (config: BackgroundGeneratorConfig): LayerSpecification[] => [
     {
       id: 'background',
       type: 'background',

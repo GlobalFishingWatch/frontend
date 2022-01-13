@@ -27,6 +27,7 @@
   --color-secondary-blue: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
   --color-terthiary-blue: rgba(var(--primary-blue-rgb), var(--opacity-terthiary));
   --color-danger-red: rgb(var(--danger-red-rgb));
+  --color-danger-red-background: #f6bdbd;
   --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
   --color-gradient: rgb(var(--gradient-rgb));
   --color-off-white: rgb(var(--off-white-rgb));

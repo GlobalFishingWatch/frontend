@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
+import type { CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   AnyGeneratorConfig,
   GeneratorType,
@@ -226,7 +226,7 @@ export const selectWorkspacesListGenerator = createSelector(
           metadata: {
             interactive: true,
           },
-        } as CircleLayer,
+        } as CircleLayerSpecification,
         {
           type: 'circle',
           layout: {},
@@ -240,7 +240,7 @@ export const selectWorkspacesListGenerator = createSelector(
           metadata: {
             interactive: false,
           },
-        } as CircleLayer,
+        } as CircleLayerSpecification,
       ],
     }
 

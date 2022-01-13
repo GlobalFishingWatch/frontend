@@ -37,7 +37,10 @@ export const convertLegacyGroups = (style: ExtendedStyle): ExtendedStyle => {
     newStyle.layers &&
     newStyle.layers.map((layer) => {
       const legacyGroup = layer.metadata && layer.metadata['mapbox:group']
-      if (legacyGroup) {
+      if (legacyGroup && layer.metadata) {
+        if (!layer.metadata) {
+          layer.metadata = {}
+        }
         layer.metadata.group = GROUP_FROM_LEGACY[legacyGroup]
       }
       return layer

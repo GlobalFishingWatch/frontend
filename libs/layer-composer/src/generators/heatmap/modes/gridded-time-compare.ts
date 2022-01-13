@@ -1,4 +1,4 @@
-import { Layer, Expression } from '@globalfishingwatch/mapbox-gl'
+import { LayerSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import getBaseLayer, {
   getBaseDebugLabelsLayer,
@@ -27,7 +27,7 @@ export default function griddedTimeCompare(
   // TODO check
   const pickValueAt = timeChunk.frame.toString()
   // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
-  const exprPick: Expression = ['get', pickValueAt]
+  const exprPick: FilterSpecification = ['get', pickValueAt]
 
   const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 
@@ -37,7 +37,7 @@ export default function griddedTimeCompare(
   }
   mainLayer.paint = paint
 
-  const layers: Layer[] = [mainLayer]
+  const layers: LayerSpecification[] = [mainLayer]
   if (config.interactive && timeChunk.active) {
     const interactionLayer = getBaseInteractionLayer(
       config,

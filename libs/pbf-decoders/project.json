@@ -1,0 +1,47 @@
+{
+  "root": "libs/pbf-decoders",
+  "sourceRoot": "libs/pbf-decoders",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/pbf-decoders",
+        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
+        "project": "libs/pbf-decoders/package.json",
+        "entryFile": "libs/pbf-decoders/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/pbf-decoders/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/pbf-decoders/decoders",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/pbf-decoders/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/pbf-decoders"],
+      "options": {
+        "jestConfig": "libs/pbf-decoders/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

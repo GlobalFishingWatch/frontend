@@ -46,7 +46,7 @@ export function useLayerComposer(
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
         if (process.env.NODE_ENV === 'development') {
           if (!styleSpec) {
-            styleSpec = await import('@globalfishingwatch/mapbox-gl/dist/style-spec')
+            styleSpec = await import('@globalfishingwatch/maplibre-gl-style-spec')
           }
           if (styleSpec && styleSpec.validate) {
             const styleErrors = styleSpec.validate(afterTransformations)

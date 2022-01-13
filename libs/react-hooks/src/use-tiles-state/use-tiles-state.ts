@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react'
 import tilebelt from '@mapbox/tilebelt'
-import type { MapSourceDataEvent, Map } from '@globalfishingwatch/mapbox-gl'
+import type { Map } from '@globalfishingwatch/maplibre-gl'
 
 type TilesLoading = {
   loading: boolean
@@ -20,7 +20,7 @@ export function useTilesState(map?: Map) {
   }, [setTilesLoading])
 
   const onLoad = useCallback(
-    (e: MapSourceDataEvent) => {
+    (e: any) => {
       if (e.coord) {
         setTilesLoading((tilesLoading) => {
           const { key, x, y, z } = e.coord.canonical
@@ -49,7 +49,7 @@ export function useTilesState(map?: Map) {
   )
 
   const onLoadComplete = useCallback(
-    (e: MapSourceDataEvent) => {
+    (e: any) => {
       // On error event coord is undefined so we nee to grab the key from the tileId
       const key = e.coord?.canonical?.key || e.tile?.tileID?.canonical?.key
       if (key !== undefined) {

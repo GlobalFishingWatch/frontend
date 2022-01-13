@@ -20,6 +20,7 @@
     "d3-scale": "^3.3.0",
     "match-sorter": "^6.3.0",
     "react-modal": "^3.11.2",
+    "react-range": "^1.8.11",
     "topojson-client": "3.1.0"
   },
   "devDependencies": {

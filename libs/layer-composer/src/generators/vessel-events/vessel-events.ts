@@ -1,11 +1,11 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
 import type {
-  CircleLayer,
-  LineLayer,
-  SymbolLayer,
-  GeoJSONSourceRaw,
-} from '@globalfishingwatch/mapbox-gl'
+  CircleLayerSpecification,
+  LineLayerSpecification,
+  SymbolLayerSpecification,
+  GeoJSONSourceSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
 import { GeneratorType, VesselEventsGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
@@ -18,7 +18,7 @@ import {
   getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
 
-interface VesselsEventsSource extends GeoJSONSourceRaw {
+interface VesselsEventsSource extends GeoJSONSourceSpecification {
   id: string
 }
 
@@ -103,7 +103,7 @@ class VesselsEventsGenerator {
 
     const activeFilter = ['case', ['==', ['get', 'id'], config.currentEventId || null]]
 
-    const pointsLayers: (CircleLayer | SymbolLayer)[] = [
+    const pointsLayers: (CircleLayerSpecification | SymbolLayerSpecification)[] = [
       {
         id: `${config.id}_background`,
         type: 'circle',
@@ -130,7 +130,7 @@ class VesselsEventsGenerator {
           interactive: true,
           generatorId: config.id,
         },
-      } as CircleLayer,
+      } as CircleLayerSpecification,
     ]
 
     const showIcons = config.showIcons !== undefined ? config.showIcons : true
@@ -148,7 +148,7 @@ class VesselsEventsGenerator {
         metadata: {
           group: Group.Point,
         },
-      } as SymbolLayer)
+      } as SymbolLayerSpecification)
     }
 
     if (!showTrackSegments) {
@@ -177,7 +177,7 @@ class VesselsEventsGenerator {
           generatorId: config.id,
           uniqueFeatureInteraction: true,
         },
-      } as LineLayer,
+      } as LineLayerSpecification,
     ]
     return [...pointsLayers, ...segmentsLayers]
   }

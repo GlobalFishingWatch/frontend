@@ -1,10 +1,12 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import Hint from 'features/help/hints/Hint'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import AnalysisLayerPanel from 'features/analysis/AnalysisLayerPanel'
@@ -36,6 +38,58 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     MIN_DATE,
     MAX_DATE,
   } = useAnalysisTimeCompareConnect('periodComparison')
+
+  const trackAndChangeComparisonDate = useCallback((date) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select comparison date in 'period comparison'`,
+      label: JSON.stringify({
+        date: date.target.value,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+      })
+    })
+    onCompareStartChange(date)
+  }, [onCompareStartChange])
+
+  const trackAndChangeBaselineDate = useCallback((date) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select baseline date in 'period comparison'`,
+      label: JSON.stringify({
+        date: date.target.value,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+      })
+    })
+    onStartChange(date)
+  }, [onStartChange])
+
+  const trackAndChangeDuration = useCallback((duration) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select duration in 'period comparison'`,
+      label: JSON.stringify({
+        duration: duration.target.value + ' ' + durationTypeOption.label,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+      })
+    })
+    onDurationChange(duration)
+  }, [onCompareStartChange])
+
+  const trackAndChangeDurationType = useCallback((duration) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select duration in 'period comparison'`,
+      label: JSON.stringify({
+        duration: timeComparison.duration + ' ' + duration.label,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+      })
+    })
+    onDurationTypeSelect(duration)
+  }, [onCompareStartChange])
 
   const { description, commonProperties } = useAnalysisDescription(
     analysisAreaName,
@@ -98,7 +152,7 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
             </div>
             <InputDate
               // label={t('analysis.periodComparison1st', 'Baseline start')}
-              onChange={onStartChange}
+              onChange={trackAndChangeBaselineDate}
               value={timeComparison.start}
               min={MIN_DATE}
               max={timeComparison.compareStart.slice(0, 10)}
@@ -117,7 +171,7 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
               <label>{t('analysis.periodComparison2nd', 'comparison start')}</label>
             </div>
             <InputDate
-              onChange={onCompareStartChange}
+              onChange={trackAndChangeComparisonDate}
               value={timeComparison.compareStart}
               min={timeComparison.start.slice(0, 10)}
               max={MAX_DATE}
@@ -137,14 +191,14 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
                 }
                 value={timeComparison.duration}
                 type="number"
-                onChange={onDurationChange}
+                onChange={trackAndChangeDuration}
                 className={styles.duration}
               />
               {durationTypeOption && (
                 <Select
                   options={DURATION_TYPES_OPTIONS}
-                  onSelect={onDurationTypeSelect}
-                  onRemove={() => {}}
+                  onSelect={trackAndChangeDurationType}
+                  onRemove={() => { }}
                   className={styles.durationType}
                   selectedOption={durationTypeOption}
                 />

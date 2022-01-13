@@ -90,7 +90,6 @@ function PopupWrapper({
       className={cx(styles.popup, styles[type], className)}
       anchor={anchor}
       captureClick
-      // dynamicPosition={false}
     >
       {popupNeedsLoading ? (
         <div className={styles.loading}>

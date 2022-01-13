@@ -5,6 +5,7 @@ import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
 import { Breaks } from '../util/fetch-breaks'
+import { ExtendedLayerMeta } from '../../../types'
 
 const baseBlobIntensity = 0.5
 const baseBlobRadius = 30
@@ -73,8 +74,10 @@ const blob = (
   )
   chunkMainLayer.paint = paint as any
 
-  if (!chunkMainLayer.metadata) return []
-  chunkMainLayer.metadata.legend = getLegends(config, breaks)
+  if (!chunkMainLayer.metadata) {
+    return []
+  }
+  ;(chunkMainLayer.metadata as ExtendedLayerMeta).legend = getLegends(config, breaks)
 
   return [chunkMainLayer]
 }

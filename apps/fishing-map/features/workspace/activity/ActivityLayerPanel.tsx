@@ -107,11 +107,13 @@ function ActivityLayerPanel({
 
   const datasetFields: { field: SupportedDatasetSchema; label: string }[] = useMemo(
     () => [
-      { field: 'qf_detect', label: t('layer.qf', 'Quality signal') },
+      { field: 'radiance', label: t('layer.radiance', 'Radiance') },
       { field: 'geartype', label: t('layer.gearType_other', 'Gear types') },
       { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
       { field: 'shiptype', label: t('vessel.shiptype', 'Ship type') },
       { field: 'origin', label: t('vessel.origin', 'Origin') },
+      { field: 'matched', label: t('vessel.matched', 'Matched') },
+      { field: 'source', label: t('vessel.source', 'Source') },
       { field: 'target_species', label: t('vessel.target_species', 'Target species') },
       { field: 'license_category', label: t('vessel.license_category', 'License category') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
