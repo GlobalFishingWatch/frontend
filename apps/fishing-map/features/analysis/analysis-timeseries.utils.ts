@@ -75,8 +75,11 @@ export const featuresToTimeseries = (
     compareDeltaMillis: number
   }
 ) => {
-  return filteredFeatures.map((filteredFeatures, sourceIndex) => {
-    const sourceMetadata = layersWithFeatures[sourceIndex].metadata
+  return filteredFeatures.flatMap((filteredFeatures, sourceIndex) => {
+    const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
+    if (!sourceMetadata) {
+      return []
+    }
     const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
     // TODO handle multiple timechunks
     const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
