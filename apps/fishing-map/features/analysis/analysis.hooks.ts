@@ -17,7 +17,11 @@ import {
 } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
-import { DataviewFeature, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import {
+  DataviewFeature,
+  getDataviewsFeatureLoaded,
+  useMapDataviewFeatures,
+} from 'features/map/map-sources.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import {
   featuresToTimeseries,
@@ -69,10 +73,10 @@ export const useFilteredTimeSeries = () => {
 
   const computeTimeseries = useCallback(
     (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
-      const filteredFeatures = filterByPolygon(
-        layersWithFeatures.map((l) => l.features),
-        geometry
+      const features = layersWithFeatures.map(({ chunksFeatures }) =>
+        chunksFeatures.flatMap(({ active, features }) => (active ? features : []))
       )
+      const filteredFeatures = filterByPolygon(features, geometry)
       const timeseries = featuresToTimeseries(filteredFeatures, {
         layersWithFeatures,
         showTimeComparison,
@@ -92,7 +96,7 @@ export const useFilteredTimeSeries = () => {
   }, [areaId, analysisEvolutionChange])
 
   useEffect(() => {
-    const activityFeaturesLoaded = activityFeatures.every(({ loaded }) => loaded)
+    const activityFeaturesLoaded = getDataviewsFeatureLoaded(activityFeatures)
     if (!timeseries && activityFeaturesLoaded && simplifiedGeometry) {
       computeTimeseries(activityFeatures, simplifiedGeometry as MultiPolygon)
     }

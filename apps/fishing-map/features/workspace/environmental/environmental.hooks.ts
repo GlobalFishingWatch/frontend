@@ -5,7 +5,11 @@ import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
-import { DataviewFeature, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import {
+  DataviewFeature,
+  getDataviewsFeatureLoaded,
+  useMapDataviewFeatures,
+} from 'features/map/map-sources.hooks'
 import { aggregateFeatures } from 'features/workspace/environmental/environmental.utils'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
@@ -14,8 +18,7 @@ export const useEnvironmentalBreaksUpdate = () => {
   const dataviews = useSelector(selectActiveEnvironmentalDataviews)
   const { bounds } = useMapBounds()
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
-  const sourcesLoaded =
-    dataviewFeatures?.length > 0 ? dataviewFeatures.every(({ loaded }) => loaded) : false
+  const sourcesLoaded = getDataviewsFeatureLoaded(dataviewFeatures)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const updateBreaksByViewportValues = useCallback(
