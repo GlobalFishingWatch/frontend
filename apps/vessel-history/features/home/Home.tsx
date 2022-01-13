@@ -59,6 +59,28 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     dispatchFetchOfflineVessels()
   }, [dispatchFetchOfflineVessels])
 
+  const openVesselProfiles = useCallback(
+    (vessels, aka: string[] = []) => {
+      const payload = {
+        dataset: vessels.find(vessel => vessel.dataset) ? vessels.find(vessel => vessel.dataset).dataset : 'NA',
+        vesselID: vessels.find(vessel => vessel.id) ? vessels.find(vessel => vessel.id).id : 'NA',
+        tmtID: vessels.find(vessel => vessel.vesselMatchId) ? vessels.find(vessel => vessel.vesselMatchId).vesselMatchId : 'NA',
+      }
+      console.log(vessels)
+      console.log(payload)
+      dispatch(
+        redirect({
+          type: PROFILE,
+          payload,
+          query: {
+            aka: aka as any,
+          },
+        })
+      )
+    },
+    [dispatch]
+  )
+
   const openVesselProfile = useCallback(
     (vessel, aka: string[] = []) => {
       dispatch(
@@ -88,7 +110,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   }, [openVesselProfile, selectedVessels, vessels])
 
   const onMergeVesselClick = useCallback(() => {
-    const selectedVessel = vessels[selectedVessels[0]]
     uaEvent({
       category: 'Search Vessel VV',
       action: 'Merge vessels',
@@ -100,8 +121,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       .map((akaVessel) =>
         formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
       )
-    if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
-  }, [openVesselProfile, selectedVessels, vessels])
+    const selectedVesselsData = selectedVessels.map(vesselId => vessels[vesselId])
+    if (selectedVessels) openVesselProfiles(selectedVesselsData, akaVessels)
+  }, [openVesselProfiles, selectedVessels, vessels])
 
   const onSettingsClick = useCallback(() => {
     dispatchLocation(SETTINGS)
