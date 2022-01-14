@@ -6,6 +6,7 @@ import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timeli
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
+import { useUpdateChartsData } from './chartsData.atom'
 import { TimebarChartData, TimebarChartChunk, TimebarChartItem } from '.'
 
 const getMaxValues = (data: TimebarChartData) => {
@@ -110,6 +111,8 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
     return getMaxValues(data)
   }, [data])
   const filteredGraphsData = useFilteredChartData(data)
+  useUpdateChartsData('tracksGraphs', filteredGraphsData)
+
   const pathContainers = useMemo(() => {
     return getPathContainers({
       tracksGraphData: filteredGraphsData,

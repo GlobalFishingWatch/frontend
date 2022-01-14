@@ -10,8 +10,9 @@ import {
   TimebarChartChunk,
 } from './common/types'
 import styles from './tracks-events.module.css'
-import { useFilteredChartData, useClusteredChartData } from './common/hooks'
+import { useClusteredChartData, useFilteredChartData, useSortedChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
+import { useUpdateChartsData } from './chartsData.atom'
 
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData<any>,
@@ -57,17 +58,17 @@ const TracksEvents = ({
 }) => {
   const { immediate } = useContext(ImmediateContext) as any
   const { outerScale, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+
   const clusteredTracksEvents = useClusteredChartData(data)
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
+  const sortedTracksEvents = useSortedChartData(filteredTracksEvents)
+
+  useUpdateChartsData('tracksEvents', sortedTracksEvents)
+
   const tracksEventsWithCoords = useMemo(
     () =>
-      getTracksEventsWithCoords(
-        filteredTracksEvents,
-        outerScale,
-        graphHeight,
-        trackGraphOrientation
-      ),
-    [filteredTracksEvents, outerScale, graphHeight, trackGraphOrientation]
+      getTracksEventsWithCoords(sortedTracksEvents, outerScale, graphHeight, trackGraphOrientation),
+    [sortedTracksEvents, outerScale, graphHeight, trackGraphOrientation]
   ) as TimebarChartData<TrackEventChunkProps>
 
   const [highlightedEvent, setHighlightedEvent] =

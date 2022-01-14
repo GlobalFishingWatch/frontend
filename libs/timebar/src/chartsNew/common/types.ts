@@ -42,3 +42,7 @@ export type TimebarChartItem<T = void> = {
 }
 
 export type TimebarChartData<T = void> = TimebarChartItem<T>[]
+
+export type ChartType = 'tracks' | 'tracksEvents' | 'tracksGraphs' | 'activity'
+
+export type TimebarChartsData = Record<ChartType, TimebarChartData<void>>
