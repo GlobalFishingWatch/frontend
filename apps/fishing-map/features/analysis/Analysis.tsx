@@ -230,7 +230,7 @@ function Analysis() {
     downloadTooltip = t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
   }
 
-  if (workspaceStatus !== AsyncReducerStatus.Finished) {
+  if (workspaceStatus !== AsyncReducerStatus.Finished || !analysisGeometryLoaded) {
     return (
       <div className={styles.container}>
         <Spinner />

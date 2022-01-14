@@ -38,13 +38,16 @@ function AnalysisItem({ loading, graphData, analysisAreaName }: AnalysisItemProp
           ))}
         </div>
       </Fragment>
-      {loading && (
-        <div className={styles.graphContainer}>
-          <Spinner />
+      {loading ||
+        (!graphData && (
+          <div className={styles.graphContainer}>
+            <Spinner />
+          </div>
+        ))}
+      {graphData && (
+        <div className={loading ? styles.blur : ''}>
+          <AnalysisEvolutionGraph graphData={graphData} start={start} end={end} />
         </div>
-      )}
-      {start && end && !loading && graphData && (
-        <AnalysisEvolutionGraph graphData={graphData} start={start} end={end} />
       )}
     </div>
   )
