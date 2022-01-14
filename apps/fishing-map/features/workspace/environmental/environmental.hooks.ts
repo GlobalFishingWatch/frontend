@@ -7,7 +7,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import {
   DataviewFeature,
-  getDataviewsFeatureLoaded,
+  areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
 import { aggregateFeatures } from 'features/workspace/environmental/environmental.utils'
@@ -18,7 +18,7 @@ export const useEnvironmentalBreaksUpdate = () => {
   const dataviews = useSelector(selectActiveEnvironmentalDataviews)
   const { bounds } = useMapBounds()
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
-  const sourcesLoaded = getDataviewsFeatureLoaded(dataviewFeatures)
+  const sourcesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const updateBreaksByViewportValues = useCallback(
