@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { uniqBy } from 'lodash'
 import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
@@ -9,6 +8,7 @@ import {
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
 import {
+  isActivityDataview,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
@@ -22,7 +22,7 @@ type SourcesHookInput = string | string[]
 // TODO: move this to fork and include sourceId in the event for tiles loaded
 type CustomMapDataEvent = MapDataEvent & { sourceId: string }
 
-const toArray = <S = SourcesHookInput>(elem: S) => (Array.isArray(elem) ? elem : [elem])
+const toArray = (elem) => (Array.isArray(elem) ? elem : [elem])
 
 const getSourcesFromMergedGenerator = (style: ExtendedStyle) => {
   const meta = getHeatmapSourceMetadata(style, MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
@@ -106,7 +106,7 @@ export type DataviewChunkFeature = {
 export type DataviewFeature = {
   loaded: boolean
   sourceId: string
-  dataviewId: string
+  dataviewsId: string[]
   features: GeoJSONFeature[]
   chunksFeatures: DataviewChunkFeature[]
   metadata: HeatmapLayerMeta
@@ -117,38 +117,53 @@ export const getDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewF
   return dataviewsArray.length ? dataviewsArray.every(({ loaded }) => loaded) : false
 }
 
-export const useMapDataviewFeatures = (
-  dataviews: UrlDataviewInstance | UrlDataviewInstance[],
-  mergeBySource = true
-) => {
+export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
   const sourceTilesLoaded = useMapSourceTiles()
   // Memoized to avoid re-runs on style changes like hovers
-  const styleMetadata = useMemo(() => style?.metadata, [style])
+  const generatorsMetadata = useMemo(() => style?.metadata?.generatorsMetadata, [style])
 
   const dataviewsMetadata = useMemo(() => {
+    const style = { metadata: { generatorsMetadata } } as ExtendedStyle
     const dataviewsArray = toArray(dataviews)
-    return dataviewsArray.map((dataview) => {
-      const dataviewSource =
-        dataview.category === 'fishing' || dataview.category === 'presence'
-          ? MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-          : dataview.id
-      const metadata =
-        getHeatmapSourceMetadata({ metadata: styleMetadata } as ExtendedStyle, dataviewSource) ||
-        ({ sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER } as HeatmapLayerMeta)
-      return {
-        dataviewId: dataview.id,
-        metadata: metadata,
-        filter: dataview.config.filter,
+    const dataviewsMetadata: {
+      metadata: HeatmapLayerMeta
+      sourceId: string
+      dataviewsId: string[]
+      filter?: string[]
+    }[] = dataviewsArray.reduce((acc, dataview) => {
+      const activityDataview = isActivityDataview(dataview)
+      if (activityDataview) {
+        const existingMergedAnimatedDataviewIndex = acc.findIndex(
+          (d) => d.sourceId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+        )
+        if (existingMergedAnimatedDataviewIndex >= 0) {
+          acc[existingMergedAnimatedDataviewIndex].dataviewsId.push(dataview.id)
+          return acc
+        }
       }
-    })
-  }, [dataviews, styleMetadata])
+      const sourceId = activityDataview
+        ? MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+        : dataview.id
+      const metadata =
+        getHeatmapSourceMetadata(style, sourceId) ||
+        ({ sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER } as HeatmapLayerMeta)
+      return acc.concat({
+        sourceId,
+        metadata,
+        dataviewsId: [dataview.id],
+        filter: dataview.config.filter,
+      })
+    }, [])
+    return dataviewsMetadata
+  }, [dataviews, generatorsMetadata])
 
   const dataviewFeatures = useMemo(() => {
-    const dataviewsFeature = dataviewsMetadata.map(({ dataviewId, metadata, filter }) => {
+    console.log(dataviewsMetadata)
+    const dataviewsFeature = dataviewsMetadata.map(({ dataviewsId, metadata, filter }) => {
       const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
-      const sourceId = metadata?.timeChunks?.activeSourceId || dataviewId
+      const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
       const chunks = metadata?.timeChunks?.chunks.map(({ active, sourceId, quantizeOffset }) => ({
         active,
         sourceId,
@@ -178,7 +193,7 @@ export const useMapDataviewFeatures = (
 
       const data = {
         sourceId,
-        dataviewId,
+        dataviewsId,
         loaded,
         features,
         chunksFeatures,
@@ -186,8 +201,8 @@ export const useMapDataviewFeatures = (
       }
       return data
     })
-    return mergeBySource ? uniqBy(dataviewsFeature, 'sourceId') : dataviewFeatures
-  }, [dataviewsMetadata, map, mergeBySource, sourceTilesLoaded])
+    return dataviewsFeature
+  }, [dataviewsMetadata, map, sourceTilesLoaded])
 
   return dataviewFeatures
 }
