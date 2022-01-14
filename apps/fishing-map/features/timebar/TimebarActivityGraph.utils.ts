@@ -53,8 +53,8 @@ export const getChunksTimeseries = ({
 
 export const getTimeseriesFromDataviews = (dataviewFeatures: DataviewFeature[]) => {
   const uniqDataviewFeatures = uniqBy(dataviewFeatures, 'sourceId')
-  const dataviewsTimeseries = uniqDataviewFeatures.map(({ chunksFeatures, metadata, loaded }) => {
-    if (!loaded || !chunksFeatures) {
+  const dataviewsTimeseries = uniqDataviewFeatures.map(({ chunksFeatures, metadata, state }) => {
+    if (!state.loaded || state.error || !chunksFeatures) {
       // TODO return loading or null depending on state
       return []
     }

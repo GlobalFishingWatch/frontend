@@ -19,8 +19,9 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
   DataviewFeature,
-  getDataviewsFeatureLoaded,
+  areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
+  hasDataviewsFeatureError,
 } from 'features/map/map-sources.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import {
@@ -53,15 +54,7 @@ export const useFilteredTimeSeries = () => {
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
   const { areaId } = useSelector(selectAnalysisQuery)
-  const loading = !getDataviewsFeatureLoaded(activityFeatures)
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
-
-  let compareDeltaMillis: number | undefined = undefined
-  if (showTimeComparison && timeComparison) {
-    const startMillis = DateTime.fromISO(timeComparison.start).toUTC().toMillis()
-    const compareStartMillis = DateTime.fromISO(timeComparison.compareStart).toUTC().toMillis()
-    compareDeltaMillis = compareStartMillis - startMillis
-  }
 
   const simplifiedGeometry = useMemo(() => {
     if (!analysisAreaGeometry) return null
@@ -74,6 +67,12 @@ export const useFilteredTimeSeries = () => {
     return simplifiedGeometry
   }, [analysisAreaGeometry])
 
+  let compareDeltaMillis: number | undefined = undefined
+  if (showTimeComparison && timeComparison) {
+    const startMillis = DateTime.fromISO(timeComparison.start).toUTC().toMillis()
+    const compareStartMillis = DateTime.fromISO(timeComparison.compareStart).toUTC().toMillis()
+    compareDeltaMillis = compareStartMillis - startMillis
+  }
   const computeTimeseries = useCallback(
     (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
       const features = layersWithFeatures.map(({ chunksFeatures }) =>
@@ -85,9 +84,11 @@ export const useFilteredTimeSeries = () => {
         showTimeComparison,
         compareDeltaMillis,
       })
+
       setTimeseries(timeseries)
+      setBlur(false)
     },
-    [compareDeltaMillis, showTimeComparison]
+    [showTimeComparison, compareDeltaMillis]
   )
 
   const analysisEvolutionChange =
@@ -95,8 +96,6 @@ export const useFilteredTimeSeries = () => {
 
   useEffect(() => {
     setTimeseries(undefined)
-    setBlur(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areaId, analysisEvolutionChange])
 
   useEffect(() => {
@@ -105,13 +104,12 @@ export const useFilteredTimeSeries = () => {
   }, [timeComparison, timebarStart, timebarEnd])
 
   useEffect(() => {
-    const activityFeaturesLoaded = getDataviewsFeatureLoaded(activityFeatures)
-    if ((!timeseries || blur) && activityFeaturesLoaded && simplifiedGeometry) {
+    const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
+    if (activityFeaturesLoaded && simplifiedGeometry) {
       computeTimeseries(activityFeatures, simplifiedGeometry as MultiPolygon)
-      setBlur(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeatures, computeTimeseries, simplifiedGeometry])
+  }, [activityFeatures, simplifiedGeometry])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
@@ -123,8 +121,11 @@ export const useFilteredTimeSeries = () => {
     }
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
 
+  // console.log(timeseries)
+  // console.log(layersTimeseriesFiltered)
   return {
-    loading: layersTimeseriesFiltered?.length ? loading : false,
+    loading: blur && !areDataviewsFeatureLoaded(activityFeatures),
+    error: hasDataviewsFeatureError(activityFeatures),
     layersTimeseriesFiltered,
   }
 }
@@ -165,7 +166,7 @@ export const useAnalysisGeometry = () => {
   )
 
   useEffect(() => {
-    if (geometryFeatures.loaded && !analysisGeometry) {
+    if (geometryFeatures.state?.loaded && !analysisGeometry) {
       const contextAreaGeometry = getContextAreaGeometry(geometryFeatures.features)
       if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
         const { name, value, id } = contextAreaGeometry.properties || {}
@@ -192,5 +193,5 @@ export const useAnalysisGeometry = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geometryFeatures])
 
-  return geometryFeatures.loaded || analysisGeometry !== undefined
+  return geometryFeatures.state?.loaded || analysisGeometry !== undefined
 }

@@ -15,12 +15,12 @@ import {
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
-import { mapTilesAtom } from 'features/map/map-sources.atom'
+import { mapTilesAtom, TilesAtomSourceState } from 'features/map/map-sources.atom'
 import { getHeatmapSourceMetadata } from 'features/map/map-sources.utils'
 
 type SourcesHookInput = string | string[]
 // TODO: move this to fork and include sourceId in the event for tiles loaded
-type CustomMapDataEvent = MapDataEvent & { sourceId: string }
+type CustomMapDataEvent = MapDataEvent & { sourceId: string; error?: string }
 
 const toArray = (elem) => (Array.isArray(elem) ? elem : [elem])
 
@@ -61,14 +61,22 @@ export const useMapSourceTilesLoadedAtom = () => {
     const onSourceDataLoading = (e: CustomMapDataEvent) => {
       const { sourceId } = e
       if (sourceId) {
-        setSourceTilesLoaded((state) => ({ ...state, [sourceId]: false }))
+        setSourceTilesLoaded((state) => ({ ...state, [sourceId]: { loaded: false } }))
       }
     }
 
     const onSourceTilesLoaded = (e: CustomMapDataEvent) => {
-      const { sourceId } = e
+      const { sourceId, error } = e
       if (sourceId) {
-        setSourceTilesLoaded((state) => ({ ...state, [sourceId]: true }))
+        const sourceState = {
+          loaded: true,
+          ...(error && { error }),
+        }
+        debugger
+        setSourceTilesLoaded((state) => ({
+          ...state,
+          [sourceId]: sourceState,
+        }))
       }
     }
     if (map) {
@@ -94,17 +102,17 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
   const sourceTilesLoaded = useMapSourceTiles()
   const sourceInStyle = useSourceInStyle(sourcesId)
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesId)
-  return sourceInStyle && sourcesIdsList.every((source) => sourceTilesLoaded[source])
+  return sourceInStyle && sourcesIdsList.every((source) => sourceTilesLoaded[source]?.loaded)
 }
 
 export type DataviewChunkFeature = {
   active: boolean
-  loaded: boolean
+  state: TilesAtomSourceState
   features: GeoJSONFeature<TimeseriesFeatureProps>[]
   quantizeOffset: number
 }
 export type DataviewFeature = {
-  loaded: boolean
+  state: TilesAtomSourceState
   sourceId: string
   dataviewsId: string[]
   features: GeoJSONFeature[]
@@ -112,9 +120,14 @@ export type DataviewFeature = {
   metadata: HeatmapLayerMeta
 }
 
-export const getDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewFeature[]) => {
-  const dataviewsArray = toArray(dataviews)
-  return dataviewsArray.length ? dataviewsArray.every(({ loaded }) => loaded) : false
+export const areDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewFeature[]) => {
+  const dataviewsArray: DataviewFeature[] = toArray(dataviews)
+  return dataviewsArray.length ? dataviewsArray.every(({ state }) => state?.loaded) : false
+}
+
+export const hasDataviewsFeatureError = (dataviews: DataviewFeature | DataviewFeature[]) => {
+  const dataviewsArray: DataviewFeature[] = toArray(dataviews)
+  return dataviewsArray.length ? dataviewsArray.some(({ state }) => state?.error) : false
 }
 
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
@@ -160,6 +173,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
   }, [dataviews, generatorsMetadata])
 
   const dataviewFeatures = useMemo(() => {
+    debugger
     const dataviewsFeature = dataviewsMetadata.map(({ dataviewsId, metadata, filter }) => {
       const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
       const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
@@ -171,29 +185,34 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
 
       const chunksFeatures: DataviewChunkFeature[] | null = chunks
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
-            const chunkLoaded = sourceTilesLoaded[sourceId]
+            const chunkState = sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
             return {
               active,
-              features: chunkLoaded
-                ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
-                : null,
+              features:
+                chunkState.loaded && !chunkState.error
+                  ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
+                  : null,
               quantizeOffset,
-              loaded: chunkLoaded,
+              state: chunkState,
             }
           })
         : null
-
-      const loaded = chunks
-        ? chunksFeatures.every(({ loaded }) => loaded !== false)
-        : sourceTilesLoaded[sourceId]
+      const state = chunks
+        ? ({
+            loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
+            error: chunksFeatures.filter(({ state }) => state.error).join(','),
+          } as TilesAtomSourceState)
+        : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
       const features: GeoJSONFeature[] | null =
-        !chunks && loaded ? map.querySourceFeatures(sourceId, { sourceLayer, filter }) : null
+        !chunks && state?.loaded && !state?.error
+          ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
+          : null
 
-      const data = {
+      const data: DataviewFeature = {
         sourceId,
         dataviewsId,
-        loaded,
+        state,
         features,
         chunksFeatures,
         metadata,

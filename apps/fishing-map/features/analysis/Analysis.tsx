@@ -118,7 +118,7 @@ function Analysis() {
   }
 
   const analysisGeometryLoaded = useAnalysisGeometry()
-  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
+  const { error, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const timeComparisonEnabled = useMemo(() => {
     let tooltip = ''
     let enabled = true
@@ -255,66 +255,76 @@ function Analysis() {
           />
         </div>
       </div>
-
-      <div className={styles.content}>
-        {hasAnalysisLayers && AnalysisComponent ? (
-          <AnalysisComponent
-            layersTimeseriesFiltered={layersTimeseriesFiltered}
-            analysisAreaName={analysisAreaName}
-            loading={!analysisGeometryLoaded || loading}
-          />
-        ) : (
+      {error ? (
+        <div className={cx(styles.content, styles.center)}>
           <p className={styles.placeholder}>
-            {t('analysis.empty', 'Your selected datasets will appear here')}
-          </p>
-        )}
-        <div>
-          <Choice
-            options={ANALYSIS_TYPE_OPTIONS}
-            className={cx('print-hidden', styles.typeChoice)}
-            activeOption={analysisType}
-            onOptionClick={onAnalysisTypeClick}
-            disabled={!bounds}
-          />
-        </div>
-        <div>
-          <p className={styles.placeholder}>
-            <Trans i18nKey="analysis.disclaimer">
-              The data shown above should be taken as an estimate.
-              <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
-                Find out more about Global Fishing Watch analysis tools and methods.
-              </a>
-            </Trans>
+            {t(
+              'analysis.error',
+              'There was a problem loading the data, please try refreshing the page'
+            )}
           </p>
         </div>
-        {showReportDownload && (
-          <Fragment>
-            <div>
-              <p className={styles.placeholder}>
-                {t(
-                  'analysis.disclaimerReport',
-                  'Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-                )}
-              </p>
-            </div>
-            <div className={styles.footer}>
-              <LoginButtonWrapper
-                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
-              >
-                <Button
-                  className={styles.saveBtn}
-                  onClick={onDownloadClick}
-                  tooltip={downloadTooltip}
-                  tooltipPlacement="top"
-                  disabled={disableReportDownload}
+      ) : (
+        <div className={styles.content}>
+          {hasAnalysisLayers && AnalysisComponent ? (
+            <AnalysisComponent
+              layersTimeseriesFiltered={layersTimeseriesFiltered}
+              analysisAreaName={analysisAreaName}
+              loading={!analysisGeometryLoaded || loading}
+            />
+          ) : (
+            <p className={styles.placeholder}>
+              {t('analysis.empty', 'Your selected datasets will appear here')}
+            </p>
+          )}
+          <div>
+            <Choice
+              options={ANALYSIS_TYPE_OPTIONS}
+              className={cx('print-hidden', styles.typeChoice)}
+              activeOption={analysisType}
+              onOptionClick={onAnalysisTypeClick}
+              disabled={!bounds}
+            />
+          </div>
+          <div>
+            <p className={styles.placeholder}>
+              <Trans i18nKey="analysis.disclaimer">
+                The data shown above should be taken as an estimate.
+                <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
+                  Find out more about Global Fishing Watch analysis tools and methods.
+                </a>
+              </Trans>
+            </p>
+          </div>
+          {showReportDownload && (
+            <Fragment>
+              <div>
+                <p className={styles.placeholder}>
+                  {t(
+                    'analysis.disclaimerReport',
+                    'Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+                  )}
+                </p>
+              </div>
+              <div className={styles.footer}>
+                <LoginButtonWrapper
+                  tooltip={t('analysis.downloadLogin', 'Please login to download report')}
                 >
-                  {t('analysis.download', 'Download report')}
-                </Button>
-              </LoginButtonWrapper>
-            </div>
-          </Fragment>
-        )}
-      </div>
+                  <Button
+                    className={styles.saveBtn}
+                    onClick={onDownloadClick}
+                    tooltip={downloadTooltip}
+                    tooltipPlacement="top"
+                    disabled={disableReportDownload}
+                  >
+                    {t('analysis.download', 'Download report')}
+                  </Button>
+                </LoginButtonWrapper>
+              </div>
+            </Fragment>
+          )}
+        </div>
+      )}
     </div>
   )
 }

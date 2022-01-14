@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
-import { getDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { getTimeseriesFromDataviews } from 'features/timebar/TimebarActivityGraph.utils'
 import { filterByViewport } from 'features/map/map.utils'
@@ -22,7 +22,7 @@ const useStackedActivity = () => {
   const debouncedBounds = useDebounce(bounds, 400)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const dataviewFeatures = useMapDataviewFeatures(temporalgridDataviews)
-  const dataviewFeaturesLoaded = getDataviewsFeatureLoaded(dataviewFeatures)
+  const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
   const loading = !dataviewFeaturesLoaded || boundsChanged
 

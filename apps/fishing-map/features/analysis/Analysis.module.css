@@ -43,6 +43,12 @@
   overflow-y: auto;
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .placeholder {
   font: var(--font-S);
   color: var(--color-secondary-blue);
