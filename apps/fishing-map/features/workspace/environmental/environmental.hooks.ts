@@ -23,7 +23,7 @@ export const useEnvironmentalBreaksUpdate = () => {
 
   const updateBreaksByViewportValues = useCallback(
     (dataviewFeatures: DataviewFeature[], bounds: MiniglobeBounds) => {
-      const dataviewInstances = dataviewFeatures?.flatMap(({ features, dataviewId, metadata }) => {
+      const dataviewInstances = dataviewFeatures?.flatMap(({ features, dataviewsId, metadata }) => {
         if (features && features.length) {
           const filteredFeatures = filterByViewport(features, bounds)
           const data = aggregateFeatures(filteredFeatures, metadata)
@@ -36,7 +36,7 @@ export const useEnvironmentalBreaksUpdate = () => {
           // using ckmeans as jenks
           const ck = ckmeans(data, steps).map(([clusterFirst]) => clusterFirst)
           return {
-            id: dataviewId,
+            id: dataviewsId[0],
             config: {
               opacity: undefined,
               breaks: ck,

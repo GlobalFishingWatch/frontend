@@ -312,6 +312,14 @@ export function getGeneratorConfig(
   }
 }
 
+export function isActivityDataview(dataview: UrlDataviewInstance) {
+  return (
+    (dataview.category === DataviewCategory.Fishing ||
+      dataview.category === DataviewCategory.Presence) &&
+    dataview.config?.type === GeneratorType.HeatmapAnimated
+  )
+}
+
 /**
  * Generates generator configs to be consumed by LayerComposer, based on the list of dataviews provided,
  * and associates Resources to them when needed for the generator (ie tracks data for a track generator).
@@ -333,13 +341,11 @@ export function getDataviewsGeneratorConfigs(
 
   // Collect heatmap animated generators and filter them out from main dataview list
   const dataviewsFiltered = dataviews.filter((d) => {
-    const isActivityDataview =
-      (d.category === DataviewCategory.Fishing || d.category === DataviewCategory.Presence) &&
-      d.config?.type === GeneratorType.HeatmapAnimated
-    if (isActivityDataview) {
+    const activityDataview = isActivityDataview(d)
+    if (activityDataview) {
       activityDataviews.push(d)
     }
-    return !isActivityDataview
+    return !activityDataview
   })
 
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
