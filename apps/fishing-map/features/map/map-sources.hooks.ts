@@ -160,7 +160,6 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
   }, [dataviews, generatorsMetadata])
 
   const dataviewFeatures = useMemo(() => {
-    console.log(dataviewsMetadata)
     const dataviewsFeature = dataviewsMetadata.map(({ dataviewsId, metadata, filter }) => {
       const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
       const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
