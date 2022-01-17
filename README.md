@@ -30,6 +30,16 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | [dataviews-editor](applications/dataviews-editor)   | Simple interface to edit dataviews                           |
 | [sandbox](applications/sandbox)                     | Playground to use packages without releasing                 |
 
+To create a new application using a template with sidebar + map + timebar just run:
+
+```shell
+nx workspace-generator app [your-name]
+```
+
+```shell
+nx start [your-name]
+```
+
 ## Other utils
 
 |                    |                                                            |
