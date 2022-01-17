@@ -30,12 +30,7 @@
       "description": "The file extension to be used for style files.",
       "type": "string",
       "default": "css",
-      "alias": "s",
-      "x-prompt": {
-        "message": "Which stylesheet format would you like to use?",
-        "type": "list",
-        "items": [{ "value": "css", "label": "CSS" }]
-      }
+      "alias": "s"
     },
     "server": {
       "description": "The server script path to be used with next.",

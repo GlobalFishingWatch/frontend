@@ -1,0 +1,14 @@
+.main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapContainer {
+  flex: 1;
+  height: calc(100% - 9.6rem);
+}
+
+.editorModal {
+  height: 60rem;
+}

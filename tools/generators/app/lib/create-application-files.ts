@@ -1,7 +1,6 @@
 import { join } from 'path'
 import { generateFiles, names, offsetFromRoot, toJS, Tree } from '@nrwl/devkit'
 import { NormalizedSchema } from './normalize-options'
-import { createAppJsx, createStyleRules } from './create-application-files.helpers'
 
 export function createApplicationFiles(host: Tree, options: NormalizedSchema) {
   const templateVariables = {
@@ -9,9 +8,6 @@ export function createApplicationFiles(host: Tree, options: NormalizedSchema) {
     ...options,
     tmpl: '',
     offsetFromRoot: offsetFromRoot(options.appProjectRoot),
-    appContent: createAppJsx(options.name),
-    styleContent: createStyleRules(),
-    pageStyleContent: `.page {}`,
     stylesExt: options.style === 'less' || options.style === 'styl' ? options.style : 'css',
   }
 
