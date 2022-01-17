@@ -34,5 +34,5 @@
     }
   },
   "files": ["./vendors.d.ts"],
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "tools/generators/*/files/*"]
 }

@@ -13,8 +13,8 @@
     "ocean-areas": "libs/ocean-areas",
     "pbf": "libs/pbf-decoders",
     "react-hooks": "libs/react-hooks",
-    "timebar": "libs/timebar",
     "tile-inspector": "apps/tile-inspector",
+    "timebar": "libs/timebar",
     "ui-components": "libs/ui-components",
     "vessel-history": "apps/vessel-history"
   }
