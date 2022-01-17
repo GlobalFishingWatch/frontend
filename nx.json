@@ -35,7 +35,7 @@
     ]
   },
   "cli": {
-    "defaultCollection": "@nrwl/react"
+    "defaultCollection": "@nrwl/next"
   },
   "generators": {
     "@nrwl/react": {
