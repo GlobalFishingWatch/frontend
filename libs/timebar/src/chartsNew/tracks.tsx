@@ -5,7 +5,7 @@ import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'
 import styles from './tracks.module.css'
-import { useFilteredChartData } from './common/hooks'
+import { useFilteredChartData, useOuterScale } from './common/hooks'
 import { TimebarChartData, TimebarChartItem } from './common/types'
 import { useUpdateChartsData } from './chartsData.atom'
 
@@ -46,7 +46,8 @@ const getTracksWithCoords = (
 
 const Tracks = ({ data }: { data: TimebarChartData }) => {
   const { immediate } = useContext(ImmediateContext)
-  const { outerScale, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+  const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+  const outerScale = useOuterScale()
 
   const filteredTracks = useFilteredChartData(data)
   useUpdateChartsData('tracks', filteredTracks)

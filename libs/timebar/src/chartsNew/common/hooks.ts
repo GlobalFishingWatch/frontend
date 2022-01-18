@@ -1,5 +1,6 @@
 import { useContext, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
+import { scaleTime } from 'd3-scale'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import TimelineContext, { TimelineScale } from '../../timelineContext'
 import { TimebarChartData, TimebarChartChunk } from './types'
@@ -89,9 +90,17 @@ const useDelta = () => {
   return delta
 }
 
+export const useOuterScale = () => {
+  const { outerStart, outerEnd, outerWidth } = useContext(TimelineContext)
+  return useMemo(() => {
+    return scaleTime()
+      .domain([new Date(outerStart), new Date(outerEnd)])
+      .range([0, outerWidth])
+  }, [outerStart, outerEnd, outerWidth])
+}
+
 export const useClusteredChartData = (data: TimebarChartData<any>) => {
-  const ctx = useContext(TimelineContext)
-  const outerScale = ctx.outerScale
+  const outerScale = useOuterScale()
   const delta = useDelta()
   return useMemo(() => {
     return clusterData(data, outerScale)

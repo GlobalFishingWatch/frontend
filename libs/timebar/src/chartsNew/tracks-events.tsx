@@ -10,7 +10,12 @@ import {
   TimebarChartChunk,
 } from './common/types'
 import styles from './tracks-events.module.css'
-import { useClusteredChartData, useFilteredChartData, useSortedChartData } from './common/hooks'
+import {
+  useClusteredChartData,
+  useFilteredChartData,
+  useOuterScale,
+  useSortedChartData,
+} from './common/hooks'
 import { getTrackY } from './common/utils'
 import { useUpdateChartsData } from './chartsData.atom'
 
@@ -57,7 +62,8 @@ const TracksEvents = ({
   onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
   const { immediate } = useContext(ImmediateContext) as any
-  const { outerScale, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+  const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+  const outerScale = useOuterScale()
 
   const clusteredTracksEvents = useClusteredChartData(data)
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)

@@ -7,13 +7,9 @@ import { useRecoilValue } from 'recoil'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
-import {
-  TimebarChartData,
-  TimebarChartChunk,
-  TimebarChartItem,
-  TimebarChartsData,
-} from './common/types'
+import { TimebarChartChunk, TimebarChartItem, TimebarChartsData } from './common/types'
 import chartsDataState from './chartsData.atom'
+import { useOuterScale } from './common/hooks'
 
 dayjs.extend(utc)
 
@@ -111,7 +107,8 @@ const getHighlighterData = (
 }
 
 const Highlighter = ({ hoverStart, hoverEnd }: { hoverStart: string; hoverEnd: string }) => {
-  const { outerScale, graphHeight, tooltipContainer } = useContext(TimelineContext)
+  const { graphHeight, tooltipContainer } = useContext(TimelineContext)
+  const outerScale = useOuterScale()
   const { width, left, center, centerMs, centerDateLabel } = useMemo(
     () => getCoords(hoverStart, hoverEnd, outerScale),
     [hoverStart, hoverEnd, outerScale]
