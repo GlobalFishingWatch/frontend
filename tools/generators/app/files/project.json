@@ -6,10 +6,7 @@
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": [
-          "nx build <%= name %> --parallel",
-          "nx docker-prepare <%= name %>"
-        ],
+        "commands": ["nx build <%= name %> --parallel", "nx docker-prepare <%= name %>"],
         "parallel": false
       }
     },
@@ -25,9 +22,7 @@
     },
     "compile": {
       "executor": "@nrwl/next:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "root": "apps/<%= name %>",
@@ -41,9 +36,9 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx clean-locales port",
+          "nx clean-locales <%= name %>",
           "nx serve i18n-labels",
-          "nx serve port"
+          "nx serve <%= name %>"
         ],
         "parallel": true
       }
@@ -52,9 +47,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "outputs": [],
       "options": {
-        "commands": [
-          "rm -rf dist/apps/<%= name %>/public/locales"
-        ]
+        "commands": ["rm -rf dist/apps/<%= name %>/public/locales"]
       }
     },
     "serve": {
@@ -79,9 +72,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/apps/<%= name %>"
-      ],
+      "outputs": ["coverage/apps/<%= name %>"],
       "options": {
         "jestConfig": "apps/<%= name %>/jest.config.js",
         "passWithNoTests": true
@@ -89,13 +80,9 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/<%= name %>/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["apps/<%= name %>/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },

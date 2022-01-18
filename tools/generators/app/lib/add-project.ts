@@ -49,7 +49,11 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   targets.start = {
     executor: '@nrwl/workspace:run-commands',
     options: {
-      commands: ['nx clean-locales port', 'nx serve i18n-labels', 'nx serve port'],
+      commands: [
+        `nx clean-locales ${options.projectName}`,
+        'nx serve i18n-labels',
+        `nx serve ${options.projectName}`,
+      ],
       parallel: true,
     },
   }
