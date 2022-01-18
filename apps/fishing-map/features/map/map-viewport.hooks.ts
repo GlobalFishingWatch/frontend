@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
@@ -29,7 +28,6 @@ const viewportState = atom<MapCoordinates>({
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
-      const dispatch = useDispatch()
       const viewport = selectViewport(store.getState() as RootState)
 
       if (trigger === 'get') {
@@ -37,7 +35,7 @@ const viewportState = atom<MapCoordinates>({
       }
 
       const updateUrlViewportDebounced = debounce(
-        dispatch(updateUrlViewport),
+        store.dispatch(updateUrlViewport),
         URL_VIEWPORT_DEBOUNCED_TIME
       )
 
