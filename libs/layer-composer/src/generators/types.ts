@@ -1,9 +1,11 @@
 import { FeatureCollection } from 'geojson'
-import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
+import { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
+
+export type LayerVisibility = 'visible' | 'none'
 
 export enum GeneratorType {
   Background = 'BACKGROUND',
@@ -189,8 +191,8 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
 export interface GlGeneratorConfig extends GeneratorConfig {
   id: string
   type: GeneratorType.GL
-  sources?: AnySourceData[]
-  layers?: Layer[]
+  sources?: SourceSpecification[]
+  layers?: LayerSpecification[]
 }
 
 /**

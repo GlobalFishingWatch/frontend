@@ -209,9 +209,9 @@ export function getGeneratorConfig(
           sublayers,
           maxZoom: 8,
           mode: HeatmapAnimatedMode.Single,
-          aggregationOperation: AggregationOperation.Avg,
           tilesAPI,
           interactive: true,
+          aggregationOperation: dataview.config?.aggregationOperation || AggregationOperation.Avg,
           breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
           interval: dataview.config?.interval || 'month',
         }

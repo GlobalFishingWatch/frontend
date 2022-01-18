@@ -92,8 +92,10 @@ export type RelatedDataset = {
   type: DatasetTypes
 }
 
+export type DatasetSchemaType = 'number' | 'string' | 'boolean'
+
 export type DatasetSchema = {
-  type: 'number' | 'string'
+  type: DatasetSchemaType
   maxLength: number
   minLength: number
   enum: string[]

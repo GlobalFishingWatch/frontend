@@ -1,11 +1,14 @@
 import React, { Fragment } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import Faq from '../Faq'
+import GuideAndVideo from '../GuideAndVideo'
 
 const ActivityDataAndTerminology = (): React.ReactElement => {
   const { t } = useTranslation()
 
   return (
     <Fragment>
+      <Faq source='Data and terminology' />
       <p>
         {t(
           'events.activityEventsDescription',
@@ -78,6 +81,7 @@ const ActivityDataAndTerminology = (): React.ReactElement => {
           dataset, a global database of anchorage locations where vessels congregate.
         </Trans>
       </p>
+      <GuideAndVideo source='Data and terminology' />
     </Fragment>
   )
 }

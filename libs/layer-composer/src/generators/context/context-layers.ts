@@ -1,5 +1,9 @@
-import type { FillLayer, Layer, LineLayer } from '@globalfishingwatch/mapbox-gl'
-import { Group } from '../../types'
+import type {
+  FillLayerSpecification,
+  LayerSpecification,
+  LineLayerSpecification,
+} from '@globalfishingwatch/maplibre-gl'
+import { ExtendedLayer, ExtendedLayerMeta, Group } from '../../types'
 import { ContextLayerType } from '../types'
 
 export const HIGHLIGHT_SUFIX = '_highlight'
@@ -13,7 +17,7 @@ const settledBoundaries = [
   'Unilateral claim (undisputed)',
 ]
 
-const getDefaultContextInteraction = (): Partial<FillLayer> => {
+const getDefaultContextInteraction = (): Partial<FillLayerSpecification> => {
   return {
     type: 'fill',
     paint: {
@@ -24,11 +28,11 @@ const getDefaultContextInteraction = (): Partial<FillLayer> => {
     metadata: {
       interactive: true,
       group: Group.OutlinePolygonsBackground,
-    },
+    } as ExtendedLayerMeta,
   }
 }
 
-const getDefaultContextLine = (color = 'white'): Partial<LineLayer> => {
+const getDefaultContextLine = (color = 'white'): Partial<LineLayerSpecification> => {
   return {
     type: 'line',
     paint: {
@@ -41,11 +45,11 @@ const getDefaultContextLine = (color = 'white'): Partial<LineLayer> => {
     metadata: {
       interactive: false,
       group: Group.OutlinePolygons,
-    },
+    } as ExtendedLayerMeta,
   }
 }
 
-const getDefaultContextHighlight = (): Partial<LineLayer> => {
+const getDefaultContextHighlight = (): Partial<LineLayerSpecification> => {
   return {
     type: 'line',
     paint: {
@@ -58,28 +62,31 @@ const getDefaultContextHighlight = (): Partial<LineLayer> => {
     metadata: {
       interactive: false,
       group: Group.OutlinePolygonsHighlighted,
-    },
+    } as ExtendedLayerMeta,
   }
 }
 
-const getDefaultContextLayersById = (id: string, color: string): (LineLayer | FillLayer)[] => {
+const getDefaultContextLayersById = (
+  id: string,
+  color: string
+): (LineLayerSpecification | FillLayerSpecification)[] => {
   return [
     {
       id: `${id}_interaction`,
       ...getDefaultContextInteraction(),
-    } as FillLayer,
+    } as FillLayerSpecification,
     {
       id: `${id}_line`,
       ...getDefaultContextLine(color),
-    } as LineLayer,
+    } as LineLayerSpecification,
     {
       id: `${id}${HIGHLIGHT_SUFIX}`,
       ...getDefaultContextHighlight(),
-    } as LineLayer,
+    } as LineLayerSpecification,
   ]
 }
 
-const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
+const CONTEXT_LAYERS: Record<ContextLayerType, LayerSpecification[]> = {
   [ContextLayerType.MPA]: getDefaultContextLayersById(ContextLayerType.MPA, '#1AFF6B'),
   [ContextLayerType.MPANoTake]: getDefaultContextLayersById(ContextLayerType.MPANoTake, '#F4511F'),
   [ContextLayerType.MPARestricted]: getDefaultContextLayersById(
@@ -93,18 +100,18 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
     {
       id: 'eez_interaction_',
       ...getDefaultContextInteraction(),
-    } as FillLayer,
+    } as FillLayerSpecification,
     {
       id: `eez${HIGHLIGHT_SUFIX}_`,
       ...getDefaultContextHighlight(),
-    } as LineLayer,
+    } as LineLayerSpecification,
   ],
   [ContextLayerType.EEZBoundaries]: [
     {
       id: 'eez_rest_lines_',
       ...getDefaultContextLine('#33B679'),
       filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
-    } as LineLayer,
+    } as LineLayerSpecification,
     {
       id: 'eez_special_lines_',
       ...getDefaultContextLine(),
@@ -113,7 +120,7 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
         'line-color': '#33B679',
         'line-dasharray': [2, 4],
       },
-    } as LineLayer,
+    } as LineLayerSpecification,
   ],
 }
 

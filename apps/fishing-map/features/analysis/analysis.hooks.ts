@@ -10,7 +10,7 @@ import {
   TimeChunks,
   DEFAULT_CONTEXT_SOURCE_LAYER,
 } from '@globalfishingwatch/layer-composer'
-import type { Map, MapboxEvent } from '@globalfishingwatch/mapbox-gl'
+import type { Map, MapLibreEvent } from '@globalfishingwatch/maplibre-gl'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
@@ -137,7 +137,7 @@ export const useFilteredTimeSeries = () => {
 
     attachedListener.current = true
 
-    const onMapIdle = (e: MapboxEvent) => {
+    const onMapIdle = (e: MapLibreEvent) => {
       const style = (e.target as any).style.stylesheet
       const activityLayersWithFeatures = getActivityLayers(style).map(([dataviewId, metadata]) => {
         const chunks = (metadata as any).timeChunks as TimeChunks
@@ -245,7 +245,7 @@ export const useAnalysisGeometry = () => {
 
     attachedListener.current = true
 
-    const onMapIdle = (e: MapboxEvent) => {
+    const onMapIdle = (e: MapLibreEvent) => {
       if (isAnalyzing.current) {
         const contextAreaFeatures = getContextAreaFeatures(map)
         const contextAreaGeometry = getContextAreaGeometry(contextAreaFeatures)

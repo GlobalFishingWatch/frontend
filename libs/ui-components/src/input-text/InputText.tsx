@@ -8,6 +8,7 @@ export type InputSize = 'default' | 'small'
 export type InputType = 'text' | 'email' | 'search' | 'number'
 
 type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  labelClassName?: string
   className?: string
   label?: string
   type?: InputType
@@ -22,6 +23,7 @@ const defaultKey = Date.now().toString()
 function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
   const {
     className,
+    labelClassName = '',
     label,
     type = 'text',
     step = 'any',
@@ -35,7 +37,11 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
 
   return (
     <div className={cx(styles.container, styles[inputSize], className)}>
-      {label && <label htmlFor={label}>{label}</label>}
+      {label && (
+        <label className={labelClassName} htmlFor={label}>
+          {label}
+        </label>
+      )}
       <input
         className={styles.input}
         key={inputKey}

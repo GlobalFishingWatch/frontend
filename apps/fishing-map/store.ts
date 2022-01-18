@@ -18,6 +18,7 @@ import rulersReducer from './features/map/rulers/rulers.slice'
 import analysisReducer from './features/analysis/analysis.slice'
 import debugReducer from './features/debug/debug.slice'
 import editorReducer from './features/editor/editor.slice'
+import bigQueryReducer from './features/bigquery/bigquery.slice'
 
 const {
   reducer: location,
@@ -27,24 +28,25 @@ const {
 } = connectedRoutes
 
 const rootReducer = combineReducers({
-  user: userReducer,
-  search: searchReducer,
-  workspace: workspaceReducer,
-  workspaces: workspacesReducer,
+  analysis: analysisReducer,
+  bigQuery: bigQueryReducer,
   datasets: datasetsReducer,
   dataviews: dataviewsReducer,
-  resources: resourcesReducer,
-  timebar: timebarReducer,
-  map: mapReducer,
-  hints: hintsReducer,
+  debug: debugReducer,
   downloadActivity: downloadActivityReducer,
   downloadTrack: downloadTrackReducer,
-  rulers: rulersReducer,
-  debug: debugReducer,
   editor: editorReducer,
+  hints: hintsReducer,
   location: location,
+  map: mapReducer,
+  resources: resourcesReducer,
+  rulers: rulersReducer,
+  search: searchReducer,
+  timebar: timebarReducer,
   title: titleReducer,
-  analysis: analysisReducer,
+  user: userReducer,
+  workspace: workspaceReducer,
+  workspaces: workspacesReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK

@@ -35,20 +35,16 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
          **/}
         {description.length > 0 ? ReactHtmlParser(description) : dataset.description}
       </p>
-      {gfwUser && (
+      {gfwUser && queries?.length > 0 && (
         <div className={styles.content}>
           <h2 className={styles.subtitle}>Queries used</h2>
-          {queries?.length ? (
-            queries?.map((query: string, index: number) => (
-              <div key={index}>
-                <a target="_blank" href={query} rel="noreferrer">
-                  query {index + 1}
-                </a>
-              </div>
-            ))
-          ) : (
-            <p>none specified</p>
-          )}
+          {queries?.map((query: string, index: number) => (
+            <div key={index}>
+              <a target="_blank" href={query} rel="noreferrer">
+                query {index + 1}
+              </a>
+            </div>
+          ))}
         </div>
       )}
     </Fragment>

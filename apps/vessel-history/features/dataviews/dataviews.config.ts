@@ -5,7 +5,7 @@ import {
   GlGeneratorConfig,
   BackgroundGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
-import { FillLayer } from '@globalfishingwatch/mapbox-gl'
+import { FillLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { WORKSPACE_ENV } from 'data/config'
 import { LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
 
@@ -41,7 +41,7 @@ export const OFFLINE_LAYERS: GeneratorConfig[] = [
           'fill-color': DEFAULT_LANDMASS_COLOR,
           'fill-opacity': 0.99, // This is a trick to allow proper rendering of MGL heatmap layers behind
         },
-      } as FillLayer,
+      } as FillLayerSpecification,
     ],
     metadata: {
       offline: true,

@@ -33,6 +33,10 @@ function ContextAreaSection(): React.ReactElement {
   const onDrawClick = useCallback(() => {
     dispatchSetDrawMode('draw')
     dispatchQueryParams({ sidebarOpen: false })
+    uaEvent({
+      category: 'Reference layer',
+      action: `Draw a custom reference layer - Start`
+    })
   }, [dispatchQueryParams, dispatchSetDrawMode])
 
   const onAddClick = useCallback(() => {

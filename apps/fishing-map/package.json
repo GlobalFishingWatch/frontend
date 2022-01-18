@@ -26,7 +26,7 @@
     "@turf/simplify": "6.5.0",
     "@turf/union": "6.5.0",
     "array.prototype.flatmap": "1.2.4",
-    "auth-middleware": "GlobalFishingWatch/auth-middleware#develop",
+    "auth-middleware": "https://github.com/GlobalFishingWatch/auth-middleware",
     "bowser": "2.11.0",
     "classnames": "2.3.1",
     "countryflag": "4.0.1",

@@ -1,6 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
+import { debounce } from 'lodash'
 import {
   MultiSelect,
   MultiSelectOnChange,
@@ -15,9 +16,11 @@ import {
   getCommonSchemaFieldsInDataview,
   isDataviewSchemaSupported,
   SupportedDatasetSchema,
-  SchemaFilter,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+import ActivitySchemaFilter, {
+  showSchemaFilter,
+} from 'features/workspace/activity/ActivitySchemaFilter'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -34,15 +37,21 @@ const filterIds: SupportedDatasetSchema[] = [
   'fleet',
   'shiptype',
   'origin',
+  'matched',
+  'source',
+  'radiance',
   'target_species',
   'license_category',
   'vessel_type',
-  'qf_detect',
 ]
 
-const showSchemaFilter = (schemaFilter: SchemaFilter) => {
-  return schemaFilter.active && schemaFilter.options.length > 1
-}
+const trackEvent = debounce((filterKey: string, label: string) => {
+  uaEvent({
+    category: 'Activity data',
+    action: `Click on ${filterKey} filter`,
+    label: label,
+  })
+}, 200)
 
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
@@ -120,8 +129,13 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     })
   }
 
-  const onSelectFilterClick = (filterKey: string, selection: MultiSelectOption) => {
-    const filterValues = [...(dataview.config?.filters?.[filterKey] || []), selection.id]
+  const onSelectFilterClick = (
+    filterKey: string,
+    selection: MultiSelectOption | MultiSelectOption[]
+  ) => {
+    const filterValues = Array.isArray(selection)
+      ? selection.map(({ id }) => id).sort((a, b) => a - b)
+      : [...(dataview.config?.filters?.[filterKey] || []), selection.id]
     upsertDataviewInstance({
       id: dataview.id,
       config: {
@@ -131,15 +145,12 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         },
       },
     })
-    uaEvent({
-      category: 'Activity data',
-      action: `Click on ${filterKey} filter`,
-      label: getEventLabel([
-        'select',
-        getActivitySources(dataview),
-        ...getActivityFilters({ [filterKey]: filterValues }),
-      ]),
-    })
+    const eventLabel = getEventLabel([
+      'select',
+      getActivitySources(dataview),
+      ...getActivityFilters({ [filterKey]: filterValues }),
+    ])
+    trackEvent(filterKey, eventLabel)
   }
 
   const onRemoveFilterClick = (filterKey: string, selection: MultiSelectOption[]) => {
@@ -209,20 +220,13 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         if (!showSchemaFilter(schemaFilter)) {
           return null
         }
-        const { id, tooltip, disabled, options, optionsSelected } = schemaFilter
         return (
-          <MultiSelect
-            key={id}
-            disabled={disabled}
-            disabledMsg={tooltip}
-            label={t(`vessel.${id}` as any, id)}
-            placeholder={getPlaceholderBySelections(optionsSelected)}
-            options={options}
-            selectedOptions={optionsSelected}
-            className={styles.multiSelect}
-            onSelect={(selection) => onSelectFilterClick(id, selection)}
-            onRemove={(selection, rest) => onRemoveFilterClick(id, rest)}
-            onCleanClick={() => onCleanFilterClick(id)}
+          <ActivitySchemaFilter
+            key={schemaFilter.id}
+            schemaFilter={schemaFilter}
+            onSelect={onSelectFilterClick}
+            onRemove={onRemoveFilterClick}
+            onClean={onCleanFilterClick}
           />
         )
       })}

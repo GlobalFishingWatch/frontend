@@ -135,9 +135,11 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
 
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
+  const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
   return {
     ...dataview,
     ...(dataviewId && { dataviewId }),
+    ...(dataview.config && breaks && { config: { ...dataview.config, breaks } }),
   }
 }
 

@@ -1,5 +1,8 @@
 import { flatten, zip } from 'lodash'
-import type { FillLayer, LineLayer } from '@globalfishingwatch/mapbox-gl'
+import type {
+  FillLayerSpecification,
+  LineLayerSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
 import { GeneratorType, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
@@ -74,7 +77,7 @@ class HeatmapGenerator {
   _getStyleLayers = (
     config: GlobalHeatmapGeneratorConfig,
     statsByZoom?: StatsByZoom
-  ): [FillLayer, LineLayer] => {
+  ): [FillLayerSpecification, LineLayerSpecification] => {
     let breaks = config.breaks || []
     const zoom = Math.min(config.zoomLoadLevel, config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
     const stats = statsByZoom?.[zoom]

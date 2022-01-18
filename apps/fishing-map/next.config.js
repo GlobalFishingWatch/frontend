@@ -26,7 +26,7 @@ const nextConfig = {
   webpack: function (config) {
     config.resolve.alias = {
       ...config.resolve.alias,
-      'mapbox-gl': '@globalfishingwatch/mapbox-gl',
+      'mapbox-gl': '@globalfishingwatch/maplibre-gl',
     }
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -53,6 +53,11 @@ const nextConfig = {
   },
   // productionBrowserSourceMaps: true,
   // i18n,
+  // i18n,
+  basePath: process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : ''),
+  productionBrowserSourceMaps:
+    process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
+    process.env.NODE_ENV === 'development',
 }
 
 module.exports = withNx(nextConfig)

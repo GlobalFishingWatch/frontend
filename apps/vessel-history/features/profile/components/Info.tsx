@@ -170,6 +170,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 label={VesselFieldLabel.type}
                 value={vessel.vesselType}
                 valuesHistory={vessel.history.vesselType.byDate}
+                includeFaq={true}
                 helpText={
                   <Trans i18nKey="vessel.vesselTypeDescription">
                     For vessel type sourced from Global Fishing Watch additional research and
@@ -213,6 +214,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                 label={VesselFieldLabel.geartype}
                 value={vessel.geartype}
+                includeFaq={true}
                 valuesHistory={vessel.history.geartype.byDate}
                 helpText={
                   <Trans i18nKey="vessel.geartypeDescription">

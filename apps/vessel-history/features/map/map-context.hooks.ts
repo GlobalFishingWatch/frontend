@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { MapContext } from 'react-map-gl'
 import type { ExtraState, ViewportProps, WebMercatorViewport } from 'react-map-gl'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
+import type { Map } from '@globalfishingwatch/maplibre-gl'
 
 export type ViewportChangeHandler = (viewState: ViewportProps) => void
 
@@ -19,7 +19,7 @@ export type ViewStateChangeHandler = (info: ViewStateChangeInfo) => void
 
 export type ForkedContext = {
   viewport?: WebMercatorViewport
-  map?: Map // need to overwrite types here to use '@globalfishingwatch/mapbox-gl' Map type
+  map?: Map // need to overwrite types here to use '@globalfishingwatch/maplibre-gl' Map type
   container: HTMLElement | null
   mapContainer: HTMLElement | null
   onViewStateChange?: ViewStateChangeHandler
