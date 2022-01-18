@@ -115,7 +115,9 @@ const vesselThunk: VesselAPIThunk = {
       })
     }
     const url = `/v1/vessel-history/${id}`
-    return await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
+    const result = await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
+    console.log(result)
+    return result
   },
 }
 

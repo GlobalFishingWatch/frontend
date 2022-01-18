@@ -58,19 +58,27 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
-
+  console.log(akaVesselProfileIds)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
       const [dataset, gfwId] = (
         Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
       ).split('_')
-      const action = await dispatch(fetchVesselByIdThunk(vesselProfileId))
-      if (dataset && gfwId && fetchVesselByIdThunk.fulfilled.match(action as any)) {
+      console.log(dataset, gfwId, vesselProfileId)
+      if (dataset.toLocaleLowerCase() === 'na') {
+
+      }
+      const action = await dispatch(fetchVesselByIdThunk({ id: vesselProfileId, akas: akaVesselProfileIds }))
+
+      console.log(action)
+      if (fetchVesselByIdThunk.fulfilled.match(action as any)) {
         const vesselDataset = datasets
           .filter((ds) => ds.id === dataset)
           .slice(0, 1)
           .shift()
+        console.log(datasets)
+        console.log(vesselDataset)
         if (vesselDataset) {
           const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
           if (trackDatasetId) {
@@ -88,6 +96,8 @@ const Profile: React.FC = (props): React.ReactElement => {
             const akaVesselsIds = (akaVesselProfileIds ?? [])
               .map((vesselProfileId) => parseVesselProfileId(vesselProfileId))
               .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id)
+
+
             const vesselDataviewInstance = getVesselDataviewInstance(
               { id: gfwId },
               {

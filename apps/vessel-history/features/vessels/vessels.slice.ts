@@ -47,11 +47,16 @@ export type FetchVessel = {
   source: VesselAPISource
   sourceId: VesselSourceId
 }
-
+type FetchIds = {
+  id: string
+  akas?: string[]
+}
 export const fetchVesselByIdThunk = createAsyncThunk(
   'vessels/fetchById',
-  async (id: string, { rejectWithValue }) => {
+  async (idData: FetchIds, { rejectWithValue }) => {
+    const id = idData.id
     try {
+
       const [dataset, gfwId, tmtId] = id.split('_')
       const vesselsToFetch: FetchVessel[] = [
         {
@@ -67,9 +72,28 @@ export const fetchVesselByIdThunk = createAsyncThunk(
             id: tmtId,
           },
         },
-      ].filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
+      ]
+      if (idData.akas) {
+        idData.akas.forEach((akaId) => {
+          const [akaDataset, akaGfwId, akaTmtId] = akaId.split('_')
+          vesselsToFetch.push({
+            source: VesselAPISource.GFW,
+            sourceId: {
+              id: akaGfwId,
+              dataset: akaDataset,
+            },
+          },
+            {
+              source: VesselAPISource.TMT,
+              sourceId: {
+                id: akaTmtId,
+              },
+            })
+        })
+      }
+      const vesselsToFetchFiltered = vesselsToFetch.filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
       const vessels = await Promise.all(
-        vesselsToFetch.map(async ({ source, sourceId }) => ({
+        vesselsToFetchFiltered.map(async ({ source, sourceId }) => ({
           source,
           vessel: await getVesselFromSourceAPI(source).fetchById(sourceId),
         }))
