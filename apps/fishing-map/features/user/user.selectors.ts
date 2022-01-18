@@ -14,7 +14,15 @@ import { RootState } from 'store'
 import { selectUserStatus, selectUserLogged, selectUserData, isGFWUser } from './user.slice'
 
 const DEFAULT_GROUP_ID = 'Default'
-const PRIVATE_SUPPORTED_GROUPS = ['Indonesia', 'Peru', 'Panama', 'Brazil', 'Mexico', 'Ecuador']
+const PRIVATE_SUPPORTED_GROUPS = [
+  'Indonesia',
+  'Peru',
+  'Panama',
+  'Brazil',
+  'Mexico',
+  'Ecuador',
+  'Costa Rica',
+]
 
 export const isUserLogged = createSelector(
   [selectUserStatus, selectUserLogged],
