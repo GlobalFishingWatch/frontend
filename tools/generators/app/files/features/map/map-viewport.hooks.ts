@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
@@ -23,7 +22,6 @@ const viewportState = atom<MapCoordinates>({
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
-      const dispatch = useDispatch()
       const viewport = selectUrlViewport(store.getState() as RootState)
 
       if (trigger === 'get' && viewport) {
@@ -31,7 +29,7 @@ const viewportState = atom<MapCoordinates>({
       }
 
       const updateUrlViewportDebounced = debounce(
-        dispatch(updateUrlViewport),
+        store.dispatch(updateUrlViewport),
         URL_VIEWPORT_DEBOUNCED_TIME
       )
 

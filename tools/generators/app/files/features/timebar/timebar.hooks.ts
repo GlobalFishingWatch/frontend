@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
@@ -20,7 +19,6 @@ export const TimeRangeAtom = atom<TimebarRange | null>({
       const redirectUrl =
         typeof window !== undefined ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
       const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
-      const dispatch = useDispatch()
 
       if (trigger === 'get') {
         if (urlTimeRange) {
@@ -42,7 +40,7 @@ export const TimeRangeAtom = atom<TimebarRange | null>({
           }
         }
       }
-      const updateTimerangeDebounced = debounce(dispatch(updateUrlTimerange), 1000)
+      const updateTimerangeDebounced = debounce(store.dispatch(updateUrlTimerange), 1000)
       onSet((timerange) => {
         if (timerange) {
           updateTimerangeDebounced({ ...timerange })
