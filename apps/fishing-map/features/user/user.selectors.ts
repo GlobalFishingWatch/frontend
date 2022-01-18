@@ -21,7 +21,7 @@ const PRIVATE_SUPPORTED_GROUPS = [
   'Brazil',
   'Mexico',
   'Ecuador',
-  'Costa Rica',
+  'Costa_Rica',
 ]
 
 export const isUserLogged = createSelector(
