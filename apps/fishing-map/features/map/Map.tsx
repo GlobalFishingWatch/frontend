@@ -46,7 +46,11 @@ import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import { useSetMapIdleAtom } from './map-state.hooks'
-import { useMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
+import {
+  useAllMapSourceTilesLoaded,
+  useMapSourceTilesLoaded,
+  useMapSourceTilesLoadedAtom,
+} from './map-sources.hooks'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
 import MapLegends from './MapLegends'
@@ -91,6 +95,7 @@ const MapWrapper = (): React.ReactElement | null => {
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
+  const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
@@ -281,7 +286,10 @@ const MapWrapper = (): React.ReactElement | null => {
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
+      <MapControls
+        onMouseEnter={resetHoverState}
+        mapLoading={!mapLoaded || layerComposerLoading || !allSourcesLoaded}
+      />
       {isWorkspace && !isAnalyzing && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
