@@ -98,9 +98,10 @@ export const fetchVesselByIdThunk = createAsyncThunk(
           vessel: await getVesselFromSourceAPI(source).fetchById(sourceId),
         }))
       )
+
       return {
         ...mergeVesselFromSources(vessels),
-        id,
+        id: [id, ...(idData.akas ?? [])].join('|'),
       }
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })

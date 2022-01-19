@@ -7,8 +7,22 @@ interface GFWVesselSourceId extends VesselSourceId {
   id: string
   dataset: string
 }
+
+const getHistoryField = (data: GFWDetail, field: string, byCount: any[] = []) => ({
+
+  byCount: byCount,
+  byDate: data[field] ? [
+    {
+      value: data[field],
+      endDate: data.lastTransmissionDate,
+      firstSeen: data.firstTransmissionDate,
+      source: VesselAPISource.GFW,
+    },
+  ] : []
+})
+
 export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
-  const emptyHistory = { byDate: [], byCount: [] }
+
   return {
     id: data.id,
     flag: data.flag,
@@ -23,40 +37,18 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
     vesselType: data.vesselType,
     authorizations: [],
     history: {
-      callsign: {
-        byCount: data.otherCallsigns,
-        byDate: [],
-      },
-      geartype: {
-        byCount: [],
-        byDate: [],
-      },
-      imo: {
-        byCount: data.otherImos,
-        byDate: [],
-      },
-      shipname: {
-        byCount: data.otherShipnames,
-        byDate: [],
-      },
-      mmsi: emptyHistory,
-      owner: emptyHistory,
-      flag: emptyHistory,
-      depth: emptyHistory,
-      length: emptyHistory,
-      grossTonnage: emptyHistory,
-      vesselType: {
-        byCount: [],
-        byDate: [
-          {
-            value: data.vesselType,
-            endDate: data.lastTransmissionDate,
-            firstSeen: data.firstTransmissionDate,
-            source: VesselAPISource.GFW,
-          },
-        ],
-      },
-      operator: emptyHistory,
+      callsign: getHistoryField(data, 'callsign', data.otherCallsigns),
+      geartype: getHistoryField(data, 'geartype'),
+      imo: getHistoryField(data, 'imo'),
+      shipname: getHistoryField(data, 'shipname', data.otherShipnames),
+      mmsi: getHistoryField(data, 'mmsi'),
+      owner: getHistoryField(data, 'owner'),
+      flag: getHistoryField(data, 'flag'),
+      depth: getHistoryField(data, 'depth'),
+      length: getHistoryField(data, 'length'),
+      grossTonnage: getHistoryField(data, 'grossTonnage'),
+      vesselType: getHistoryField(data, 'vesselType'),
+      operator: getHistoryField(data, 'operator'),
     },
   } as VesselWithHistory
 }

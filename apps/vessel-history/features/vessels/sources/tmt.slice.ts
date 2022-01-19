@@ -1,6 +1,6 @@
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Authorization } from '@globalfishingwatch/api-types'
-import { TMTDetail, ValueItem, VesselWithHistory } from 'types'
+import { AnyValueList, TMTDetail, ValueItem, VesselAPISource, VesselFieldHistory, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
 
@@ -15,6 +15,10 @@ const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem:
 const sortAuthorization = (a: Authorization, b: Authorization) =>
   a.originalStartDate > b.originalStartDate ? 1 : -1
 
+const getHistoryField = (historyField: AnyValueList[]): VesselFieldHistory<any> => ({
+  byCount: [],
+  byDate: historyField.reverse().map((field) => ({ ...field, source: VesselAPISource.TMT }))
+})
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
     vesselMatchId,
@@ -24,59 +28,21 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     authorisationList,
     imageList,
   } = data
+
   const vesselHistory = {
-    builtYear: {
-      byCount: [],
-      byDate: valueList.builtYear.reverse(),
-    },
-    callsign: {
-      byCount: [],
-      byDate: valueList.ircs.reverse(),
-    },
-    depth: {
-      byCount: [],
-      byDate: valueList.depth.reverse(),
-    },
-    flag: {
-      byCount: [],
-      byDate: valueList.flag.reverse(),
-    },
-    imo: {
-      byCount: [],
-      byDate: valueList.imo.reverse(),
-    },
-    geartype: {
-      byCount: [],
-      byDate: valueList.gear.reverse(),
-    },
-    grossTonnage: {
-      byCount: [],
-      byDate: valueList.gt.reverse(),
-    },
-    shipname: {
-      byCount: [],
-      byDate: valueList.name.reverse(),
-    },
-    length: {
-      byCount: [],
-      byDate: valueList.loa.reverse(),
-    },
-    mmsi: {
-      byCount: [],
-      byDate: valueList.mmsi.reverse(),
-    },
-    owner: {
-      byCount: [],
-      byDate: vesselOwnership.reverse(),
-    },
-    vesselType: {
-      byCount: [],
-      byDate: valueList.vesselType.reverse(),
-    },
-    operator: {
-      byCount: [],
-      byDate: vesselOperations.reverse(),
-    },
+    builtYear: getHistoryField(valueList.builtYear),
+    callsign: getHistoryField(valueList.ircs),
+    depth: getHistoryField(valueList.depth),
+    flag: getHistoryField(valueList.flag),
+    imo: getHistoryField(valueList.imo),
+    geartype: getHistoryField(valueList.gear),
+    grossTonnage: getHistoryField(valueList.gt),
+    shipname: getHistoryField(valueList.name),
+    length: getHistoryField(valueList.loa),
+    mmsi: getHistoryField(valueList.mmsi),
+    owner: getHistoryField(vesselOwnership),
+    vesselType: getHistoryField(valueList.vesselType),
+    operator: getHistoryField(vesselOperations),
   }
 
   const vessel: VesselWithHistory = {
@@ -115,9 +81,8 @@ const vesselThunk: VesselAPIThunk = {
       })
     }
     const url = `/v1/vessel-history/${id}`
-    const result = await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
-    console.log(result)
-    return result
+
+    return await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
   },
 }
 

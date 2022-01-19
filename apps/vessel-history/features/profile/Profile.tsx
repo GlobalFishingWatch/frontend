@@ -7,6 +7,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
+  selectMergedVesselId,
   selectSearchableQueryParams,
   selectUrlAkaVesselQuery,
   selectVesselProfileId,
@@ -46,11 +47,12 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastPosition] = useState(null)
   const query = useSelector(selectSearchableQueryParams)
   const vesselProfileId = useSelector(selectVesselProfileId)
-  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const { dispatchLocation } = useLocationConnect()
   const vesselStatus = useSelector(selectVesselsStatus)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
-  const vessel = useSelector(selectVesselById(vesselProfileId))
+  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
+  const mergedVesselId = useSelector(selectMergedVesselId)
+  const vessel = useSelector(selectVesselById(mergedVesselId))
   const datasets = useSelector(selectDatasets)
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
@@ -58,27 +60,33 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
-  console.log(akaVesselProfileIds)
+
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
-      const [dataset, gfwId] = (
+      let [dataset, gfwId] = (
         Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
       ).split('_')
-      console.log(dataset, gfwId, vesselProfileId)
+
       if (dataset.toLocaleLowerCase() === 'na') {
-
+        const gfwAka = akaVesselProfileIds.find(aka => {
+          const [akaDataset] = aka.split('_')
+          return akaDataset.toLocaleLowerCase() !== 'na'
+        })
+        if (gfwAka) {
+          const [akaDataset, akaGfwId] = gfwAka.split('_')
+          dataset = akaDataset
+          gfwId = akaGfwId
+        }
       }
-      const action = await dispatch(fetchVesselByIdThunk({ id: vesselProfileId, akas: akaVesselProfileIds }))
 
-      console.log(action)
+      const action = await dispatch(fetchVesselByIdThunk({ id: vesselProfileId, akas: akaVesselProfileIds }))
       if (fetchVesselByIdThunk.fulfilled.match(action as any)) {
         const vesselDataset = datasets
           .filter((ds) => ds.id === dataset)
           .slice(0, 1)
           .shift()
-        console.log(datasets)
-        console.log(vesselDataset)
+
         if (vesselDataset) {
           const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
           if (trackDatasetId) {
@@ -95,7 +103,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             // Only merge with vessels of the same dataset that the main vessel
             const akaVesselsIds = (akaVesselProfileIds ?? [])
               .map((vesselProfileId) => parseVesselProfileId(vesselProfileId))
-              .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id)
+            //.filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id)
 
 
             const vesselDataviewInstance = getVesselDataviewInstance(
@@ -131,6 +139,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   }, [dispatchLocation, query])
 
   useEffect(() => {
+    console.log(resourceQueries)
+    console.log(vesselDataviewLoaded)
     if (vesselDataviewLoaded && resourceQueries && resourceQueries.length > 0) {
       resourceQueries.forEach((resourceQuery) => {
         dispatch(fetchResourceThunk(resourceQuery))

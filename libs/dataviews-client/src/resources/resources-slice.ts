@@ -34,7 +34,7 @@ export const fetchResourceThunk = createAsyncThunk(
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
-      resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
+        resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
         ? 'vessel'
         : 'json'
 
