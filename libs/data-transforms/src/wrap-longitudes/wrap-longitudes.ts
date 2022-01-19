@@ -19,5 +19,5 @@ export const wrapBBoxLongitudes = (bbox: Bbox) => {
       return coordinate + lonOffset
     }
     return coordinate
-  })
+  }) as Bbox
 }
