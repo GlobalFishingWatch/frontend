@@ -33,6 +33,7 @@ import {
   selectActiveTemporalgridDataviews,
   selectContextAreasDataviews,
 } from 'features/dataviews/dataviews.selectors'
+import { parsePropertiesBbox } from 'features/map/map.utils'
 import { filterByPolygon, getContextAreaGeometry } from './analysis-geo.utils'
 import { ReportGeometry, selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
@@ -121,8 +122,6 @@ export const useFilteredTimeSeries = () => {
     }
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
 
-  // console.log(timeseries)
-  // console.log(layersTimeseriesFiltered)
   return {
     loading: blur && !areDataviewsFeatureLoaded(activityFeatures),
     error: hasDataviewsFeatureError(activityFeatures),
@@ -169,10 +168,10 @@ export const useAnalysisGeometry = () => {
     if (geometryFeatures.state?.loaded && !analysisGeometry) {
       const contextAreaGeometry = getContextAreaGeometry(geometryFeatures.features)
       if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
-        const { name, value, id } = contextAreaGeometry.properties || {}
+        const { name, value, id, bbox } = contextAreaGeometry.properties || {}
         const layerName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
         const areaName: string = name || id || value || layerName || ''
-        const bounds = bbox(contextAreaGeometry) as Bbox
+        const bounds = parsePropertiesBbox(bbox)
         if (bounds) {
           const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
           setAnalysisBounds(wrappedBounds)

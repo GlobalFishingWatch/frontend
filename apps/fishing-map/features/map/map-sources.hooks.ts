@@ -61,22 +61,29 @@ export const useMapSourceTilesLoadedAtom = () => {
     const onSourceDataLoading = (e: CustomMapDataEvent) => {
       const { sourceId } = e
       if (sourceId) {
-        setSourceTilesLoaded((state) => ({ ...state, [sourceId]: { loaded: false } }))
+        setSourceTilesLoaded((state) => {
+          const source = { ...state[sourceId], loaded: false }
+          return {
+            ...state,
+            [sourceId]: source,
+          }
+        })
       }
     }
 
     const onSourceTilesLoaded = (e: CustomMapDataEvent) => {
       const { sourceId, error } = e
       if (sourceId) {
-        const sourceState = {
-          loaded: true,
-          ...(error && { error }),
-        }
-        debugger
-        setSourceTilesLoaded((state) => ({
-          ...state,
-          [sourceId]: sourceState,
-        }))
+        setSourceTilesLoaded((state) => {
+          let errorMsg = state[sourceId]?.error
+          if (errorMsg === undefined && error !== undefined) {
+            errorMsg = error || 'Unknown error'
+          }
+          return {
+            ...state,
+            [sourceId]: { loaded: true, ...(errorMsg && { error: errorMsg }) },
+          }
+        })
       }
     }
     if (map) {
@@ -173,7 +180,6 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
   }, [dataviews, generatorsMetadata])
 
   const dataviewFeatures = useMemo(() => {
-    debugger
     const dataviewsFeature = dataviewsMetadata.map(({ dataviewsId, metadata, filter }) => {
       const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
       const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
