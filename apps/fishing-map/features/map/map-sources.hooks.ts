@@ -72,16 +72,16 @@ export const useMapSourceTilesLoadedAtom = () => {
     }
 
     const onSourceTilesLoaded = (e: CustomMapDataEvent) => {
-      const { sourceId, error } = e
+      const { sourceId, error: tileError } = e
       if (sourceId) {
         setSourceTilesLoaded((state) => {
-          let errorMsg = state[sourceId]?.error
-          if (errorMsg === undefined && error !== undefined) {
-            errorMsg = error || 'Unknown error'
+          let error = state[sourceId]?.error
+          if (error === undefined && tileError !== undefined) {
+            error = tileError || 'Unknown error'
           }
           return {
             ...state,
-            [sourceId]: { loaded: true, ...(errorMsg && { error: errorMsg }) },
+            [sourceId]: { loaded: true, ...(error && { error }) },
           }
         })
       }
@@ -110,6 +110,12 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
   const sourceInStyle = useSourceInStyle(sourcesId)
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesId)
   return sourceInStyle && sourcesIdsList.every((source) => sourceTilesLoaded[source]?.loaded)
+}
+
+export const useAllMapSourceTilesLoaded = () => {
+  const sourceTilesLoaded = useMapSourceTiles()
+  const allSourcesLoaded = Object.values(sourceTilesLoaded).every(({ loaded }) => loaded === true)
+  return allSourcesLoaded
 }
 
 export type DataviewChunkFeature = {
