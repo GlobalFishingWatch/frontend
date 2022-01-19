@@ -1,18 +1,17 @@
 import { useCallback, useMemo } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
-import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { Bbox } from 'types'
 import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
-import { selectSidebarOpen } from 'features/app/app.selectors'
+import { selectAnalysisQuery, selectSidebarOpen } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { clearAnalysisGeometry } from 'features/analysis/analysis.slice'
+import { parsePropertiesBbox } from 'features/map/map.utils'
 import { setClickedEvent } from '../map.slice'
 import useMapInstance, { useMapContext } from '../map-context.hooks'
 import { TooltipEventFeature } from '../map.hooks'
@@ -36,6 +35,7 @@ export const useContextInteractions = () => {
   const { eventManager } = useMapContext()
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
+  const { areaId, sourceId } = useSelector(selectAnalysisQuery)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
 
@@ -62,17 +62,10 @@ export const useContextInteractions = () => {
     [cleanFeatureState, dispatch, eventManager]
   )
 
-  const onReportClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
-      if (!feature.properties?.gfw_id) {
-        console.warn('No gfw_id available in the feature to report', feature)
-        return
-      }
-
-      const areaId = feature.properties?.gfw_id
-      const sourceId = feature.source
+  const setReportArea = useCallback(
+    (feature: TooltipEventFeature) => {
+      const { source: sourceId, properties = {}, title, value } = feature
+      const { gfw_id: areaId, bbox } = properties
       highlightArea(areaId, sourceId)
       batch(() => {
         dispatchQueryParams({
@@ -85,7 +78,7 @@ export const useContextInteractions = () => {
 
       // Analysis already does it on page reload but to avoid waiting
       // this moves the map to the same position
-      const bounds = bbox(feature.geometry) as Bbox
+      const bounds = parsePropertiesBbox(bbox)
       if (bounds) {
         const boundsParams = {
           padding: FIT_BOUNDS_ANALYSIS_PADDING,
@@ -97,10 +90,26 @@ export const useContextInteractions = () => {
       uaEvent({
         category: 'Analysis',
         action: `Open analysis panel`,
-        label: getEventLabel([feature.title ?? '', feature.value ?? '']),
+        label: getEventLabel([title ?? '', value ?? '']),
       })
     },
-    [eventManager, highlightArea, dispatchQueryParams, isSidebarOpen, dispatch, fitMapBounds]
+    [highlightArea, dispatchQueryParams, isSidebarOpen, dispatch, fitMapBounds]
+  )
+
+  const onReportClick = useCallback(
+    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
+      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+
+      if (!feature.properties?.gfw_id) {
+        console.warn('No gfw_id available in the feature to report', feature)
+        return
+      }
+
+      if (areaId !== feature.properties?.gfw_id || sourceId !== feature.source) {
+        setReportArea(feature)
+      }
+    },
+    [areaId, sourceId, eventManager, setReportArea]
   )
 
   return useMemo(() => ({ onDownloadClick, onReportClick }), [onDownloadClick, onReportClick])
