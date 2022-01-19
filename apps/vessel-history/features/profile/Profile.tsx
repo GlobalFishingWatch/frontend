@@ -64,7 +64,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
-      let [dataset, gfwId] = (
+      let [dataset, gfwId, tmtId] = (
         Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
       ).split('_')
 
@@ -74,9 +74,10 @@ const Profile: React.FC = (props): React.ReactElement => {
           return akaDataset.toLocaleLowerCase() !== 'na'
         })
         if (gfwAka) {
-          const [akaDataset, akaGfwId] = gfwAka.split('_')
+          const [akaDataset, akaGfwId, akaTmt] = gfwAka.split('_')
           dataset = akaDataset
           gfwId = akaGfwId
+          tmtId = akaTmt
         }
       }
 
@@ -101,10 +102,17 @@ const Profile: React.FC = (props): React.ReactElement => {
                 : []
 
             // Only merge with vessels of the same dataset that the main vessel
-            const akaVesselsIds = (akaVesselProfileIds ?? [])
-              .map((vesselProfileId) => parseVesselProfileId(vesselProfileId))
-            //.filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id)
-
+            const akaVesselsIds = [{
+              dataset,
+              id: gfwId,
+              vesselMatchId: tmtId
+            }].concat(parseVesselProfileId(vesselProfileId))
+              // I generate the list with all so doesn't care what vessel is in the path
+              .concat(
+                (akaVesselProfileIds ?? []).map((akaId) => parseVesselProfileId(akaId))
+              )
+              // Now we filter to get only gfw vessels and not repeat the main (from path o query)
+              .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId)
 
             const vesselDataviewInstance = getVesselDataviewInstance(
               { id: gfwId },
@@ -115,6 +123,7 @@ const Profile: React.FC = (props): React.ReactElement => {
               },
               akaVesselsIds as { id: string }[]
             )
+
             dispatch(upsertVesselDataview(vesselDataviewInstance))
           }
         }
@@ -139,8 +148,6 @@ const Profile: React.FC = (props): React.ReactElement => {
   }, [dispatchLocation, query])
 
   useEffect(() => {
-    console.log(resourceQueries)
-    console.log(vesselDataviewLoaded)
     if (vesselDataviewLoaded && resourceQueries && resourceQueries.length > 0) {
       resourceQueries.forEach((resourceQuery) => {
         dispatch(fetchResourceThunk(resourceQuery))
