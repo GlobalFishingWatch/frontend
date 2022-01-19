@@ -92,6 +92,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         const fieldsAllowed = Array.from(
           new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
         )
+        console.log(fieldsAllowed)
 
         const fields: AdvancedSearchQueryField[] = [
           {
@@ -109,6 +110,15 @@ export const fetchVesselSearchThunk = createAsyncThunk(
               ]
             : []),
           ...(fieldsAllowed.includes('imo')
+            ? [
+                {
+                  key: 'imo' as AdvancedSearchQueryFieldKey,
+                  value: query,
+                  combinedWithOR: true,
+                },
+              ]
+            : []),
+          ...(fieldsAllowed.includes('codMarinha')
             ? [
                 {
                   key: 'imo' as AdvancedSearchQueryFieldKey,
