@@ -12,6 +12,7 @@ export type AdvancedSearchQueryFieldKey =
   | 'mmsi'
   | 'imo'
   | 'callsign'
+  | 'codMarinha'
   | 'flag'
   | 'geartype'
   | 'target_species'
@@ -40,6 +41,9 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     transformation: (value) => `'%${value as string}%'`,
   },
   mmsi: {
+    operator: '=',
+  },
+  codMarinha: {
     operator: '=',
   },
   imo: {
@@ -79,10 +83,10 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
 export const getAdvancedSearchQuery = (fields: AdvancedSearchQueryField[]) => {
   const getFieldQuery = (field: AdvancedSearchQueryField) => {
     const params = FIELDS_PARAMS[field.key]
-    const value = params.transformation
+    const value = params?.transformation
       ? params.transformation(field.value as string | MultiSelectOption[])
       : `'${field.value}'`
-    const query = `${field.key} ${params.operator} ${value}`
+    const query = `${field.key} ${params?.operator} ${value}`
     return query
   }
 

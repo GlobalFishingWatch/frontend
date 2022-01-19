@@ -121,7 +121,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           ...(fieldsAllowed.includes('codMarinha')
             ? [
                 {
-                  key: 'imo' as AdvancedSearchQueryFieldKey,
+                  key: 'codMarinha' as AdvancedSearchQueryFieldKey,
                   value: query,
                   combinedWithOR: true,
                 },
