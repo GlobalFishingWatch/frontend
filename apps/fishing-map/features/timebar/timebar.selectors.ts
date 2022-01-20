@@ -226,6 +226,7 @@ const getTrackEventChunkProps = (
 }
 
 const getTrackEventHighlighterLabel = (chunk: TimebarChartChunk<TrackEventChunkProps>) => {
+  console.log(chunk.cluster)
   return chunk.props.description
 }
 

@@ -76,7 +76,7 @@ export const DEFAULT_EMPTY_VALUE = ' --- '
 
 export const LAST_POSITION_LAYERS_PREFIX = 'last-position'
 
-export const AUTHORIZED_USER_GROUPS = ['VV-African-Pilot', 'Admin-group', 'GFW']
+export const AUTHORIZED_USER_GROUPS = ['VV-African-Pilot', 'Admin-group', 'GFW Staff']
 
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
