@@ -112,9 +112,7 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    dispatch(
-      setDownloadActivityGeometry({ geometry: analysisGeometry.geometry, name: analysisAreaName })
-    )
+    dispatch(setDownloadActivityGeometry({ geometry: analysisGeometry, name: analysisAreaName }))
   }
 
   const analysisArea = useAnalysisGeometry()
