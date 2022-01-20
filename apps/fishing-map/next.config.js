@@ -4,11 +4,13 @@ const withNx = require('@nrwl/next/plugins/with-nx')
 
 // const { i18n } = require('./next-i18next.config')
 
+const IS_PRODUCTION =
+  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
+
 /**
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
-  basePath: '/map',
   async rewrites() {
     return [
       // Rewrite everything to `pages/index`
@@ -53,11 +55,8 @@ const nextConfig = {
   },
   // productionBrowserSourceMaps: true,
   // i18n,
-  // i18n,
-  basePath: process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : ''),
-  productionBrowserSourceMaps:
-    process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
-    process.env.NODE_ENV === 'development',
+  basePath: process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '/map' : '',
+  productionBrowserSourceMaps: !IS_PRODUCTION,
 }
 
 module.exports = withNx(nextConfig)
