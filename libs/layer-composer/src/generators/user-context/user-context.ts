@@ -59,6 +59,7 @@ class UserContextGenerator {
           interactive,
           generatorId,
           group: Group.CustomLayer,
+          datasetId: config.datasetId,
           uniqueFeatureInteraction: true,
           legend: {
             type: 'colorramp',
@@ -100,6 +101,7 @@ class UserContextGenerator {
       metadata: {
         interactive,
         generatorId: generatorId,
+        datasetId: config.datasetId,
         group: Group.CustomLayer,
       },
     }

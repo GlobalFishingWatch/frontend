@@ -1,4 +1,3 @@
-import type { Geometry } from 'geojson'
 import {
   Interval,
   ContextLayerType,
@@ -29,6 +28,8 @@ export type ExtendedFeature = {
   sourceLayer: string
   generatorId: string | number | null
   generatorType: string | null
+  generatorContextLayer?: ContextLayerType | null
+  datasetId?: string
   id: string
   value: any
   tile: {
@@ -38,8 +39,6 @@ export type ExtendedFeature = {
   }
   temporalgrid?: TemporalGridFeature
   uniqueFeatureInteraction?: boolean
-  generatorContextLayer?: ContextLayerType | null
-  geometry?: Geometry
 }
 
 export type InteractionEventCallback = (event: InteractionEvent | null) => void

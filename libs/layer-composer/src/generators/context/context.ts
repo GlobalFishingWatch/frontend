@@ -101,9 +101,10 @@ class ContextGenerator {
         paint,
         metadata: {
           ...(baseLayer.metadata as ExtendedLayerMeta),
-          layer: config.layer,
           color,
+          layer: config.layer,
           generatorId: config.id,
+          datasetId: config.datasetId,
         },
       }
     })

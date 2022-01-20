@@ -1,5 +1,4 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { Geometry } from 'geojson'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import {
@@ -266,8 +265,8 @@ export type TooltipEventFeature = {
   source: string
   sourceLayer: string
   layerId: string
+  datasetId?: string
   generatorContextLayer?: ContextLayerType | null
-  geometry?: Geometry
   value: string // TODO Why not a number?
   properties: Record<string, string>
   vesselsInfo?: {
