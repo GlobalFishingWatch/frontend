@@ -1,7 +1,6 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
 import type {
-  CircleLayerSpecification,
   LineLayerSpecification,
   SymbolLayerSpecification,
   GeoJSONSourceSpecification,
@@ -18,7 +17,7 @@ import {
   getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
 
-interface VesselsEventsSource extends GeoJSONSourceSpecification {
+export interface VesselsEventsSource extends GeoJSONSourceSpecification {
   id: string
 }
 
@@ -50,8 +49,10 @@ class VesselsEventsGenerator {
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(
       data,
       showAuthorizationStatus,
-      iconsPrefix
+      iconsPrefix,
+      config.color
     ) as FeatureCollection
+
     const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
       geojson.features,
       start,
@@ -63,6 +64,7 @@ class VesselsEventsGenerator {
       type: 'geojson',
       data: { ...geojson, features: featuresFiltered },
     }
+
     const showTrackSegments = this._showTrackSegments(config)
 
     if (!showTrackSegments) {
@@ -103,53 +105,134 @@ class VesselsEventsGenerator {
 
     const activeFilter = ['case', ['==', ['get', 'id'], config.currentEventId || null]]
 
-    const pointsLayers: (CircleLayerSpecification | SymbolLayerSpecification)[] = [
+    const pointsLayers: SymbolLayerSpecification[] = [
       {
-        id: `${config.id}_background`,
-        type: 'circle',
+        type: 'symbol',
+        id: `${config.id}_points`,
         source: `${config.id}_points`,
         ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         paint: {
-          'circle-color': ['get', 'color'],
-          'circle-stroke-width': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            2,
-            [...activeFilter, 2, 0],
-            8,
-            [...activeFilter, 2, 1],
-            14,
-            [...activeFilter, 2, 3],
-          ],
-          'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
-          'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
+          'icon-color': ['get', 'color'],
+          // 'circle-stroke-width': [
+          //   'interpolate',
+          //   ['linear'],
+          //   ['zoom'],
+          //   2,
+          //   [...activeFilter, 2, 0],
+          //   8,
+          //   [...activeFilter, 2, 1],
+          //   14,
+          //   [...activeFilter, 2, 3],
+          // ],
+          // 'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
+          // 'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
+          // 'icon-halo-color': 'rgba(255, 0, 255, 255)',
+          // 'icon-halo-width': 1,
+          // 'icon-halo-blur': 5,
         },
-        metadata: {
-          group: Group.Point,
-          interactive: true,
-          generatorId: config.id,
-        },
-      } as CircleLayerSpecification,
-    ]
-
-    const showIcons = config.showIcons !== undefined ? config.showIcons : true
-    if (showIcons) {
-      pointsLayers.push({
-        id: `${config.id}_outline`,
-        source: `${config.id}_points`,
-        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
-        type: 'symbol',
         layout: {
           'icon-allow-overlap': true,
-          'icon-image': ['get', 'icon'],
-          'icon-size': [...activeFilter, 1 * iconsSize, 0],
+          'icon-size': ['get', 'shapeSize'],
+          'icon-image': ['get', 'shape'],
+          'symbol-sort-key': ['get', 'shapePriority'],
         },
         metadata: {
           group: Group.Point,
+          interactive: false,
+          generatorId: config.id,
         },
-      } as SymbolLayerSpecification)
-    }
+      } as SymbolLayerSpecification,
+    ]
+
+    // const pointsLayers: (CircleLayerSpecification | SymbolLayerSpecification)[] = types.map(
+    //   (type: EventType) => {
+    //     const sourceId = getSourceId(config.id, type)
+    //     if (type === 'fishing') {
+    //       return {
+    //         type: 'circle',
+    //         id: `${sourceId}_points`,
+    //         source: sourceId,
+    //         ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
+    //         paint: {
+    //           'circle-color': activeStrokeColor,
+    //           'circle-opacity': 0.5,
+    //           // 'circle-stroke-width': [
+    //           //   'interpolate',
+    //           //   ['linear'],
+    //           //   ['zoom'],
+    //           //   2,
+    //           //   [...activeFilter, 2, 0],
+    //           //   8,
+    //           //   [...activeFilter, 2, 1],
+    //           //   14,
+    //           //   [...activeFilter, 2, 3],
+    //           // ],
+    //           // 'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
+    //           'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
+    //         },
+    //         metadata: {
+    //           group: Group.Point,
+    //           interactive: true,
+    //           generatorId: config.id,
+    //         },
+    //       } as CircleLayerSpecification
+    //     } else {
+    //       return {
+    //         type: 'symbol',
+    //         id: `${sourceId}_points`,
+    //         source: sourceId,
+    //         ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
+    //         paint: {
+    //           // 'icon-color': ['get', 'color'],
+    //           // 'circle-stroke-width': [
+    //           //   'interpolate',
+    //           //   ['linear'],
+    //           //   ['zoom'],
+    //           //   2,
+    //           //   [...activeFilter, 2, 0],
+    //           //   8,
+    //           //   [...activeFilter, 2, 1],
+    //           //   14,
+    //           //   [...activeFilter, 2, 3],
+    //           // ],
+    //           // 'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
+    //           // 'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
+    //           'icon-halo-color': 'rgba(255, 0, 255, 255)',
+    //           'icon-halo-width': 1,
+    //           // 'icon-halo-blur': 5,
+    //         },
+    //         layout: {
+    //           'icon-allow-overlap': true,
+    //           'icon-size': 1,
+    //           'icon-image': `square`,
+    //         },
+    //         metadata: {
+    //           group: Group.Point,
+    //           interactive: false,
+    //           generatorId: config.id,
+    //         },
+    //       } as SymbolLayerSpecification
+    //     }
+    //   }
+    // )
+
+    // const showIcons = config.showIcons !== undefined ? config.showIcons : true
+    // if (showIcons) {
+    //   pointsLayers.push({
+    //     id: `${config.id}_outline`,
+    //     source: `${config.id}_points`,
+    //     ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
+    //     type: 'symbol',
+    //     layout: {
+    //       'icon-allow-overlap': true,
+    //       'icon-image': ['get', 'icon'],
+    //       'icon-size': [...activeFilter, 1 * iconsSize, 0],
+    //     },
+    //     metadata: {
+    //       group: Group.Point,
+    //     },
+    //   } as SymbolLayerSpecification)
+    // }
 
     if (!showTrackSegments) {
       return pointsLayers
