@@ -96,6 +96,7 @@ export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
  * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface ExtendedLayerMeta {
+  datasetId?: string
   generatorId?: string
   generatorType?: GeneratorType
   interactive?: boolean

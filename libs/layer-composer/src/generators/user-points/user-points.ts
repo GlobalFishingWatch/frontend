@@ -46,6 +46,7 @@ class UserContextGenerator {
         interactive: !config.disableInteraction,
         generatorId,
         uniqueFeatureInteraction: true,
+        datasetId: config.datasetId,
         legend: {
           ...config.metadata?.legend,
           group: Group.OutlinePolygonsHighlighted,
