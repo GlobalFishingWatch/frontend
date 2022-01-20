@@ -67,7 +67,8 @@ export const selectTracksData = createSelector(
         }
       })
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      const shipname = getVesselLabel((resources[infoUrl] as any)?.data)
+      const vessel = (resources[infoUrl] as any)?.data
+      const shipname = vessel ? getVesselLabel(vessel) : ''
       const item: TimebarChartItem = {
         ...timebarTrack,
         chunks,

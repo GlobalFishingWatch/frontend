@@ -56,7 +56,7 @@ const TracksEvents = ({
   onEventHover,
 }: {
   data: TimebarChartData<TrackEventChunkProps>
-  useTrackColor: boolean
+  useTrackColor?: boolean
   preselectedEventId?: string
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
   onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
@@ -65,16 +65,20 @@ const TracksEvents = ({
   const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const outerScale = useOuterScale()
 
-  const clusteredTracksEvents = useClusteredChartData(data)
+  const sortedTracksEvents = useSortedChartData(data)
+  const clusteredTracksEvents = useClusteredChartData(sortedTracksEvents)
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
-  const sortedTracksEvents = useSortedChartData(filteredTracksEvents)
-
   useUpdateChartsData('tracksEvents', sortedTracksEvents)
 
   const tracksEventsWithCoords = useMemo(
     () =>
-      getTracksEventsWithCoords(sortedTracksEvents, outerScale, graphHeight, trackGraphOrientation),
-    [sortedTracksEvents, outerScale, graphHeight, trackGraphOrientation]
+      getTracksEventsWithCoords(
+        filteredTracksEvents,
+        outerScale,
+        graphHeight,
+        trackGraphOrientation
+      ),
+    [filteredTracksEvents, outerScale, graphHeight, trackGraphOrientation]
   ) as TimebarChartData<TrackEventChunkProps>
 
   const [highlightedEvent, setHighlightedEvent] =
@@ -120,12 +124,13 @@ const TracksEvents = ({
               })}
               style={
                 {
-                  '--background-color': useTrackColor
-                    ? trackEvents.color
-                    : event.props?.color || 'white',
-                  '--hover-color': useTrackColor ? 'white' : trackEvents.color,
+                  '--background-color':
+                    useTrackColor || event.type === 'fishing'
+                      ? trackEvents.color
+                      : event.props?.color || 'white',
                   left: `${event.x}px`,
                   width: `${event.width}px`,
+                  '--encounterWidth': `${Math.max(12, event.width || 0)}px`,
                   transition: immediate
                     ? 'none'
                     : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
@@ -144,7 +149,9 @@ const TracksEvents = ({
               onClick={() => {
                 if (onEventClick) onEventClick(event)
               }}
-            ></div>
+            >
+              <div className={styles.eventInner} />
+            </div>
           ))}
         </div>
       ))}
