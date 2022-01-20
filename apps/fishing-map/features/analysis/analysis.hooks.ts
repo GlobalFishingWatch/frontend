@@ -6,7 +6,6 @@ import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -29,13 +28,15 @@ import {
   filterTimeseriesByTimerange,
   removeTimeseriesPadding,
 } from 'features/analysis/analysis-timeseries.utils'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { filterByPolygon } from './analysis-geo.utils'
 import {
-  selectActiveTemporalgridDataviews,
-  selectContextAreasDataviews,
-} from 'features/dataviews/dataviews.selectors'
-import { parsePropertiesBbox } from 'features/map/map.utils'
-import { filterByPolygon, getContextAreaGeometry } from './analysis-geo.utils'
-import { ReportGeometry, selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
+  fetchAnalysisAreaThunk,
+  FetchAnalysisThunkParam,
+  selectAnalysisArea,
+  selectAnalysisAreaGeometry,
+} from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectShowTimeComparison } from './analysis.selectors'
 
@@ -47,7 +48,7 @@ export type DateTimeSeries = {
 
 export const useFilteredTimeSeries = () => {
   const [blur, setBlur] = useState(false)
-  const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
+  const analysisAreaGeometry = useSelector(selectAnalysisAreaGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -59,7 +60,7 @@ export const useFilteredTimeSeries = () => {
 
   const simplifiedGeometry = useMemo(() => {
     if (!analysisAreaGeometry) return null
-    const simplifiedGeometry = simplify(analysisAreaGeometry?.geometry as Polygon | MultiPolygon, {
+    const simplifiedGeometry = simplify(analysisAreaGeometry, {
       tolerance: 0.1,
     })
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
@@ -134,18 +135,11 @@ export const useAnalysisGeometry = () => {
   const dispatch = useDispatch()
   const fitMapBounds = useMapFitBounds()
   const { dispatchQueryParams } = useLocationConnect()
-  const { areaId, sourceId } = useSelector(selectAnalysisQuery)
-  const analysisGeometry = useSelector(selectAnalysisGeometry)
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
-  const geometryDataview = useMemo(
-    () => ({
-      id: sourceId,
-      config: { filter: ['==', 'gfw_id', parseInt(areaId)] },
-    }),
-    [areaId, sourceId]
-  )
-  const geometryFeatures = useMapDataviewFeatures(geometryDataview)?.[0]
-  const contextDataviews = useSelector(selectContextAreasDataviews)
+
+  const { areaId, sourceId, datasetId } = useSelector(selectAnalysisQuery)
+  const analysisArea = useSelector(selectAnalysisArea)
+  const { status, bounds } = analysisArea
 
   const setHighlightedArea = useCallback(() => {
     cleanFeatureState('highlight')
@@ -159,38 +153,36 @@ export const useAnalysisGeometry = () => {
 
   const setAnalysisBounds = useCallback(
     (bounds: Bbox) => {
-      dispatchQueryParams({ analysis: { areaId, bounds, sourceId } })
+      dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
     },
-    [areaId, sourceId, dispatchQueryParams]
+    [dispatchQueryParams, areaId, sourceId, datasetId]
+  )
+
+  const fetchAnalysisArea = useCallback(
+    ({ datasetId, areaId }: FetchAnalysisThunkParam) => {
+      dispatch(fetchAnalysisAreaThunk({ datasetId, areaId }))
+    },
+    [dispatch]
   )
 
   useEffect(() => {
-    if (geometryFeatures.state?.loaded && !analysisGeometry) {
-      const contextAreaGeometry = getContextAreaGeometry(geometryFeatures.features)
-      if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
-        const { name, value, id, bbox } = contextAreaGeometry.properties || {}
-        const layerName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
-        const areaName: string = name || id || value || layerName || ''
-        const bounds = parsePropertiesBbox(bbox)
-        if (bounds) {
-          const wrappedBounds = wrapBBoxLongitudes(bounds) as Bbox
-          setAnalysisBounds(wrappedBounds)
-          fitMapBounds(wrappedBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
-          dispatch(
-            setAnalysisGeometry({
-              geometry: contextAreaGeometry as ReportGeometry,
-              name: areaName,
-              bounds: wrappedBounds,
-            })
-          )
-          setHighlightedArea()
-        } else {
-          console.warn('No area bounds')
-        }
+    if (areaId && datasetId) {
+      fetchAnalysisArea({ datasetId, areaId })
+    }
+  }, [areaId, datasetId, fetchAnalysisArea])
+
+  useEffect(() => {
+    if (status === AsyncReducerStatus.Finished) {
+      if (bounds) {
+        setAnalysisBounds(bounds)
+        fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+        setHighlightedArea()
+      } else {
+        console.warn('No area bounds')
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [geometryFeatures])
+  }, [status, bounds])
 
-  return geometryFeatures.state?.loaded || analysisGeometry !== undefined
+  return analysisArea
 }
