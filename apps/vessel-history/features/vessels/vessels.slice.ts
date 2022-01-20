@@ -91,7 +91,9 @@ export const fetchVesselByIdThunk = createAsyncThunk(
             })
         })
       }
-      const vesselsToFetchFiltered = vesselsToFetch.filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
+      const vesselsToFetchFiltered = [...new Map(vesselsToFetch.map(item => [item.sourceId.id, item])).values()]
+        .filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na');
+
       const vessels = await Promise.all(
         vesselsToFetchFiltered.map(async ({ source, sourceId }) => ({
           source,

@@ -39,7 +39,7 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
     history: {
       callsign: getHistoryField(data, 'callsign', data.otherCallsigns),
       geartype: getHistoryField(data, 'geartype'),
-      imo: getHistoryField(data, 'imo'),
+      imo: getHistoryField(data, 'imo', data.otherImos),
       shipname: getHistoryField(data, 'shipname', data.otherShipnames),
       mmsi: getHistoryField(data, 'mmsi'),
       owner: getHistoryField(data, 'owner'),

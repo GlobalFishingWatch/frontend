@@ -68,7 +68,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
       ).split('_')
 
-      if (dataset.toLocaleLowerCase() === 'na') {
+      if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
         const gfwAka = akaVesselProfileIds.find(aka => {
           const [akaDataset] = aka.split('_')
           return akaDataset.toLocaleLowerCase() !== 'na'
@@ -80,8 +80,10 @@ const Profile: React.FC = (props): React.ReactElement => {
           tmtId = akaTmt
         }
       }
-
-      const action = await dispatch(fetchVesselByIdThunk({ id: vesselProfileId, akas: akaVesselProfileIds }))
+      const action = await dispatch(fetchVesselByIdThunk({
+        id: vesselProfileId,
+        akas: akaVesselProfileIds
+      }))
       if (fetchVesselByIdThunk.fulfilled.match(action as any)) {
         const vesselDataset = datasets
           .filter((ds) => ds.id === dataset)
