@@ -30,15 +30,10 @@ import {
 } from 'features/analysis/analysis-timeseries.utils'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { Area, fetchAreaThunk, FetchAreaThunkParam } from 'features/areas/areas.slice'
 import { filterByPolygon } from './analysis-geo.utils'
-import {
-  fetchAnalysisAreaThunk,
-  FetchAnalysisThunkParam,
-  selectAnalysisArea,
-  selectAnalysisAreaGeometry,
-} from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
-import { selectShowTimeComparison } from './analysis.selectors'
+import { selectAnalysisArea, selectShowTimeComparison } from './analysis.selectors'
 
 export type DateTimeSeries = {
   date: string
@@ -48,7 +43,7 @@ export type DateTimeSeries = {
 
 export const useFilteredTimeSeries = () => {
   const [blur, setBlur] = useState(false)
-  const analysisAreaGeometry = useSelector(selectAnalysisAreaGeometry)
+  const analysisAreaGeometry = useSelector(selectAnalysisArea)?.geometry
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -60,7 +55,7 @@ export const useFilteredTimeSeries = () => {
 
   const simplifiedGeometry = useMemo(() => {
     if (!analysisAreaGeometry) return null
-    const simplifiedGeometry = simplify(analysisAreaGeometry as MultiPolygon, {
+    const simplifiedGeometry = simplify(analysisAreaGeometry, {
       tolerance: 0.1,
     })
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
@@ -108,7 +103,7 @@ export const useFilteredTimeSeries = () => {
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
     if (activityFeaturesLoaded && simplifiedGeometry) {
-      computeTimeseries(activityFeatures, simplifiedGeometry as MultiPolygon)
+      computeTimeseries(activityFeatures, simplifiedGeometry)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activityFeatures, simplifiedGeometry])
@@ -130,15 +125,14 @@ export const useFilteredTimeSeries = () => {
   }
 }
 
-export const useAnalysisGeometry = () => {
+export const useAnalysisArea = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
   const fitMapBounds = useMapFitBounds()
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
-
   const { areaId, sourceId, datasetId } = useSelector(selectAnalysisQuery)
-  const analysisArea = useSelector(selectAnalysisArea)
+  const analysisArea = useSelector(selectAnalysisArea) || ({} as Area)
   const { status, bounds } = analysisArea
 
   const setHighlightedArea = useCallback(() => {
@@ -154,13 +148,14 @@ export const useAnalysisGeometry = () => {
   const setAnalysisBounds = useCallback(
     (bounds: Bbox) => {
       dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
+      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
     },
-    [dispatchQueryParams, areaId, sourceId, datasetId]
+    [dispatchQueryParams, areaId, sourceId, datasetId, fitMapBounds]
   )
 
   const fetchAnalysisArea = useCallback(
-    ({ datasetId, areaId }: FetchAnalysisThunkParam) => {
-      dispatch(fetchAnalysisAreaThunk({ datasetId, areaId }))
+    ({ datasetId, areaId }: FetchAreaThunkParam) => {
+      dispatch(fetchAreaThunk({ datasetId, areaId }))
     },
     [dispatch]
   )
@@ -175,7 +170,6 @@ export const useAnalysisGeometry = () => {
     if (status === AsyncReducerStatus.Finished) {
       if (bounds) {
         setAnalysisBounds(bounds)
-        fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
         setHighlightedArea()
       } else {
         console.warn('No area bounds')

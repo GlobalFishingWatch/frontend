@@ -5,10 +5,19 @@ import {
   selectAnalysisTimeComparison,
   selectAnalysisTypeQuery,
 } from 'features/app/app.selectors'
+import { Area, getAreaKey, selectAreas } from 'features/areas/areas.slice'
 
 export const selectIsAnalyzing = createSelector([selectAnalysisQuery], (analysisQuery) => {
   return analysisQuery !== undefined
 })
+
+export const selectAnalysisArea = createSelector(
+  [selectAnalysisQuery, selectAreas],
+  ({ areaId, datasetId }, areas): Area => {
+    const areaKey = getAreaKey({ areaId, datasetId })
+    return areas[areaKey]
+  }
+)
 
 export const selectShowTimeComparison = createSelector(
   [selectAnalysisTypeQuery],

@@ -36,13 +36,8 @@ import { getSourcesSelectedInDataview } from 'features/workspace/activity/activi
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Analysis.module.css'
-import {
-  clearAnalysisGeometry,
-  selectAnalysisAreaGeometry,
-  selectAnalysisAreaName,
-} from './analysis.slice'
 import AnalysisEvolution from './AnalysisEvolution'
-import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
+import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
@@ -72,14 +67,17 @@ function Analysis() {
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const dataviews = useSelector(selectActiveActivityDataviews)
-  const analysisGeometry = useSelector(selectAnalysisAreaGeometry)
   const userData = useSelector(selectUserData)
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
-  const analysisAreaName = useSelector(selectAnalysisAreaName)
+  const analysisArea = useAnalysisArea()
+  const analysisGeometry = analysisArea?.geometry
+  const analysisAreaName = analysisArea?.name
+  const analysisGeometryLoaded = analysisArea.status === AsyncReducerStatus.Finished
+
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
     dataviews,
@@ -102,7 +100,6 @@ function Analysis() {
     cleanFeatureState('highlight')
     cleanFeatureState('click')
     batch(() => {
-      dispatch(clearAnalysisGeometry())
       dispatchQueryParams({
         analysis: undefined,
         analysisType: undefined,
@@ -114,9 +111,6 @@ function Analysis() {
   const onDownloadClick = async () => {
     dispatch(setDownloadActivityGeometry({ geometry: analysisGeometry, name: analysisAreaName }))
   }
-
-  const analysisArea = useAnalysisGeometry()
-  const analysisGeometryLoaded = analysisArea.status === AsyncReducerStatus.Finished
 
   const { error, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const timeComparisonEnabled = useMemo(() => {
