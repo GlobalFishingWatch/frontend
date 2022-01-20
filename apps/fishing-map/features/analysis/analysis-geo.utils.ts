@@ -1,16 +1,14 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { feature } from '@turf/helpers'
-import union from '@turf/union'
-import { Feature, Polygon, MultiPolygon, BBox } from 'geojson'
-import { uniqBy } from 'lodash'
+import { Feature, Polygon, MultiPolygon } from 'geojson'
 import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import { Bbox } from 'types'
 
 export type FilteredPolygons = {
   contained: Feature[]
   overlapping: Feature[]
 }
 
-function isBboxContained(container: BBox, cell: BBox) {
+function isBboxContained(container: Bbox, cell: Bbox) {
   if (cell[0] < container[0]) {
     return false
   }
@@ -44,8 +42,8 @@ export function filterByPolygon(
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [[minX, minY], [maxX], [_, maxY]] = (cell.geometry as Polygon).coordinates[0]
-        const cellBbox: BBox = [minX, minY, maxX, maxY]
-        const bboxContained = isBboxContained(polygon.bbox as BBox, cellBbox)
+        const cellBbox: Bbox = [minX, minY, maxX, maxY]
+        const bboxContained = isBboxContained(polygon.bbox as Bbox, cellBbox)
         const isContained =
           bboxContained && polygon.type === 'MultiPolygon'
             ? polygon.coordinates.some((coordinates) =>
@@ -71,19 +69,4 @@ export function filterByPolygon(
     )
   })
   return filtered
-}
-
-export const getContextAreaGeometry = (contextAreaFeatures?: GeoJSONFeature[]) => {
-  const uniqContextAreaFeatures = uniqBy(contextAreaFeatures, 'id')
-
-  if (uniqContextAreaFeatures?.length === 1) {
-    const { geometry, properties } = uniqContextAreaFeatures[0]
-    return feature(geometry, properties as any)
-  }
-
-  return uniqContextAreaFeatures?.reduce((acc, { geometry, properties }) => {
-    const featureGeometry = feature(geometry as Polygon, properties)
-    if (!acc?.type) return featureGeometry
-    return union(acc, featureGeometry, { properties } as any)
-  }, {} as Feature<Polygon>)
 }

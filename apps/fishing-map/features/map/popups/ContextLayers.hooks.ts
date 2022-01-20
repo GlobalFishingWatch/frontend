@@ -3,7 +3,6 @@ import { batch, useDispatch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 import { selectAnalysisQuery, selectSidebarOpen } from 'features/app/app.selectors'
@@ -35,7 +34,7 @@ export const useContextInteractions = () => {
   const { eventManager } = useMapContext()
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
-  const { areaId, sourceId } = useSelector(selectAnalysisQuery)
+  const { areaId, sourceId } = useSelector(selectAnalysisQuery) || {}
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
 
@@ -48,12 +47,13 @@ export const useContextInteractions = () => {
         return
       }
       batch(() => {
-        dispatch(
-          setDownloadActivityGeometry({
-            geometry: feature.geometry,
-            name: feature.value || feature.title,
-          })
-        )
+        // TODO get geometry from API too
+        // dispatch(
+        //   setDownloadActivityGeometry({
+        //     geometry: feature.geometry,
+        //     name: feature.value || feature.title,
+        //   })
+        // )
         dispatch(setClickedEvent(null))
       })
 
@@ -64,18 +64,8 @@ export const useContextInteractions = () => {
 
   const setReportArea = useCallback(
     (feature: TooltipEventFeature) => {
-      const { source: sourceId, properties = {}, title, value } = feature
+      const { source: sourceId, datasetId, properties = {}, title, value } = feature
       const { gfw_id: areaId, bbox } = properties
-      highlightArea(areaId, sourceId)
-      batch(() => {
-        dispatchQueryParams({
-          analysis: { areaId, sourceId },
-          ...(!isSidebarOpen && { sidebarOpen: true }),
-        })
-        dispatch(clearAnalysisGeometry())
-        dispatch(setClickedEvent(null))
-      })
-
       // Analysis already does it on page reload but to avoid waiting
       // this moves the map to the same position
       const bounds = parsePropertiesBbox(bbox)
@@ -87,6 +77,17 @@ export const useContextInteractions = () => {
         }
         fitMapBounds(bounds, boundsParams)
       }
+
+      highlightArea(areaId, sourceId)
+      batch(() => {
+        dispatchQueryParams({
+          analysis: { areaId, sourceId, datasetId, bounds },
+          ...(!isSidebarOpen && { sidebarOpen: true }),
+        })
+        dispatch(clearAnalysisGeometry())
+        dispatch(setClickedEvent(null))
+      })
+
       uaEvent({
         category: 'Analysis',
         action: `Open analysis panel`,

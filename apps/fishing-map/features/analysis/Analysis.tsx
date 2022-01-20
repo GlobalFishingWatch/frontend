@@ -38,8 +38,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
+  selectAnalysisAreaGeometry,
   selectAnalysisAreaName,
-  selectAnalysisGeometry,
 } from './analysis.slice'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
@@ -72,7 +72,7 @@ function Analysis() {
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const dataviews = useSelector(selectActiveActivityDataviews)
-  const analysisGeometry = useSelector(selectAnalysisGeometry)
+  const analysisGeometry = useSelector(selectAnalysisAreaGeometry)
   const userData = useSelector(selectUserData)
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
@@ -117,7 +117,9 @@ function Analysis() {
     )
   }
 
-  const analysisGeometryLoaded = useAnalysisGeometry()
+  const analysisArea = useAnalysisGeometry()
+  const analysisGeometryLoaded = analysisArea.status === AsyncReducerStatus.Finished
+
   const { error, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const timeComparisonEnabled = useMemo(() => {
     let tooltip = ''

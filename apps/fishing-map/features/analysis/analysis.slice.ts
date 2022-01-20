@@ -1,13 +1,16 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Feature, Polygon } from 'geojson'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import bbox from '@turf/bbox'
+import { ContextAreaGeometry, ContextAreaGeometryGeom } from '@globalfishingwatch/api-types'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { RootState } from 'store'
 import { Bbox } from 'types'
-
-export type ReportGeometry = Feature<Polygon>
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export interface ReportState {
   area: {
-    geometry: ReportGeometry | undefined
+    status: AsyncReducerStatus
+    geometry: ContextAreaGeometryGeom | undefined
     bounds: Bbox | undefined
     name: string
     id: string
@@ -16,6 +19,7 @@ export interface ReportState {
 
 const initialState: ReportState = {
   area: {
+    status: AsyncReducerStatus.Idle,
     geometry: undefined,
     bounds: undefined,
     name: '',
@@ -23,34 +27,62 @@ const initialState: ReportState = {
   },
 }
 
+export type FetchAnalysisThunkParam = { datasetId: string; areaId: string }
+export const fetchAnalysisAreaThunk = createAsyncThunk(
+  'analysis/fetchArea',
+  async (
+    { datasetId, areaId }: FetchAnalysisThunkParam = {} as FetchAnalysisThunkParam,
+    { signal, getState }
+  ) => {
+    // TODO review how to gran layerName
+    // const state = getState() as RootState
+    // const contextDataviews = selectContextAreasDataviews(state)
+    // const layerName = contextDataviews.find(({ id }) => id === dataset)?.datasets?.[0].name
+    const area = await GFWAPI.fetch<ContextAreaGeometry>(
+      `/v1/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
+      {
+        signal,
+      }
+    )
+    return {
+      id: area.id,
+      name: area.properties.geoname,
+      bounds: wrapBBoxLongitudes(bbox(area.geometry) as Bbox),
+      geometry: area.geometry,
+    }
+  }
+)
+
 const analysisSlice = createSlice({
   name: 'analysis',
   initialState,
   reducers: {
     clearAnalysisGeometry: (state) => {
-      state.area.geometry = undefined
-      state.area.name = ''
-      state.area.bounds = undefined
+      state.area = initialState.area
     },
-    setAnalysisGeometry: (
-      state,
-      action: PayloadAction<{
-        geometry: ReportGeometry | undefined
-        name: string
-        bounds: [number, number, number, number]
-      }>
-    ) => {
-      state.area.geometry = action.payload.geometry
-      state.area.bounds = action.payload.bounds
-      state.area.name = action.payload.name
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchAnalysisAreaThunk.pending, (state) => {
+      state.area.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchAnalysisAreaThunk.fulfilled, (state, action) => {
+      state.area = {
+        status: AsyncReducerStatus.Finished,
+        ...action.payload,
+      }
+    })
+    builder.addCase(fetchAnalysisAreaThunk.rejected, (state) => {
+      state.area.status = AsyncReducerStatus.Error
+    })
   },
 })
 
-export const { clearAnalysisGeometry, setAnalysisGeometry } = analysisSlice.actions
+export const { clearAnalysisGeometry } = analysisSlice.actions
 
-export const selectAnalysisGeometry = (state: RootState) => state.analysis.area.geometry
-export const selectAnalysisBounds = (state: RootState) => state.analysis.area.bounds
+export const selectAnalysisArea = (state: RootState) => state.analysis.area
+export const selectAnalysisAreaStatus = (state: RootState) => state.analysis.area.status
+export const selectAnalysisAreaGeometry = (state: RootState) => state.analysis.area.geometry
+export const selectAnalysisAreaBounds = (state: RootState) => state.analysis.area.bounds
 export const selectAnalysisAreaName = (state: RootState) => state.analysis.area.name
 export const selectAnalysisAreaId = (state: RootState) => state.analysis.area.id
 
