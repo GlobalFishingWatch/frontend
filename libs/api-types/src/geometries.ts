@@ -1,4 +1,4 @@
-import type { Feature, MultiPolygon } from 'geojson'
+import type { MultiPolygon, Polygon } from 'geojson'
 
 export interface ContextAreaGeometryProperties {
   fid: string
@@ -7,7 +7,7 @@ export interface ContextAreaGeometryProperties {
   geoname: string
 }
 
-export type ContextAreaGeometryGeom = Feature<MultiPolygon>
+export type ContextAreaGeometryGeom = Polygon | MultiPolygon
 export interface ContextAreaGeometry<P = ContextAreaGeometryProperties> {
   id: string
   type: string

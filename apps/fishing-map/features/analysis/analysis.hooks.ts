@@ -60,7 +60,7 @@ export const useFilteredTimeSeries = () => {
 
   const simplifiedGeometry = useMemo(() => {
     if (!analysisAreaGeometry) return null
-    const simplifiedGeometry = simplify(analysisAreaGeometry, {
+    const simplifiedGeometry = simplify(analysisAreaGeometry as MultiPolygon, {
       tolerance: 0.1,
     })
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell

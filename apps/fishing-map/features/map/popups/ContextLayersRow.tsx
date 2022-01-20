@@ -66,9 +66,9 @@ const ReportPopupButton: React.FC<ReportPopupButtonProps> = ({
         hasAnalysableLayer
           ? t('common.analysis', 'Create an analysis for this area')
           : t(
-            'common.analysisNotAvailable',
-            'Toggle an activity or environmenet layer on to analyse in in this area'
-          )
+              'common.analysisNotAvailable',
+              'Toggle an activity or environmenet layer on to analyse in in this area'
+            )
       }
       onClick={onClick}
       size="small"
@@ -83,7 +83,7 @@ interface ContextLayersRowProps {
   showActions?: boolean
   linkHref?: string
   handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
-  handleReportClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
+  handleAnalysisClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
 }
 const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   id,
@@ -91,7 +91,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   showFeaturesDetails,
   linkHref,
   handleDownloadClick,
-  handleReportClick,
+  handleAnalysisClick,
 }: ContextLayersRowProps) => {
   return (
     <div className={styles.row} key={id}>
@@ -99,7 +99,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <DownloadPopupButton onClick={handleDownloadClick} />}
-          {handleReportClick && <ReportPopupButton onClick={handleReportClick} />}
+          {handleAnalysisClick && <ReportPopupButton onClick={handleAnalysisClick} />}
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
               <IconButton icon="info" tooltip="See more" size="small" />

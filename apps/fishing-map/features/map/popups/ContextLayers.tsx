@@ -20,16 +20,19 @@ type ContextTooltipRowProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
-  const { onReportClick, onDownloadClick } = useContextInteractions()
+  const { onAnalysisClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, 'layerId')
 
-  const trackOnDownloadClick = useCallback((event, feature) => {
-    uaEvent({
-      category: 'Data downloads',
-      action: `Click on polygon, click on download icon`,
-    })
-    onDownloadClick(event, feature)
-  }, [onDownloadClick])
+  const trackOnDownloadClick = useCallback(
+    (event, feature) => {
+      uaEvent({
+        category: 'Data downloads',
+        action: `Click on polygon, click on download icon`,
+      })
+      onDownloadClick(event, feature)
+    },
+    [onDownloadClick]
+  )
 
   return (
     <Fragment>
@@ -91,7 +94,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     linkHref={linkHref}
                     showFeaturesDetails={showFeaturesDetails}
                     handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
-                    handleReportClick={(e) => onReportClick(e, feature)}
+                    handleAnalysisClick={(e) => onAnalysisClick(e, feature)}
                   />
                 )
               }

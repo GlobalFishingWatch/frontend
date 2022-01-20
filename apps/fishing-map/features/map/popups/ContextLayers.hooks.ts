@@ -62,7 +62,7 @@ export const useContextInteractions = () => {
     [cleanFeatureState, dispatch, eventManager]
   )
 
-  const setReportArea = useCallback(
+  const setAnalysisArea = useCallback(
     (feature: TooltipEventFeature) => {
       const { source: sourceId, datasetId, properties = {}, title, value } = feature
       const { gfw_id: areaId, bbox } = properties
@@ -97,7 +97,7 @@ export const useContextInteractions = () => {
     [highlightArea, dispatchQueryParams, isSidebarOpen, dispatch, fitMapBounds]
   )
 
-  const onReportClick = useCallback(
+  const onAnalysisClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
       eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
 
@@ -107,11 +107,11 @@ export const useContextInteractions = () => {
       }
 
       if (areaId !== feature.properties?.gfw_id || sourceId !== feature.source) {
-        setReportArea(feature)
+        setAnalysisArea(feature)
       }
     },
-    [areaId, sourceId, eventManager, setReportArea]
+    [areaId, sourceId, eventManager, setAnalysisArea]
   )
 
-  return useMemo(() => ({ onDownloadClick, onReportClick }), [onDownloadClick, onReportClick])
+  return useMemo(() => ({ onDownloadClick, onAnalysisClick }), [onDownloadClick, onAnalysisClick])
 }
