@@ -125,6 +125,7 @@
     "individualIdField": "Individual ID field",
     "latitudeNameField": "Latitude field",
     "longitudeNameField": "Longitude field",
+    "login": "This is a private dataset, login to see it",
     "new": "New dataset",
     "notUploadedYet": "No reference layers uploaded yet.",
     "notUploadedYetEnvironment": "No environment layers uploaded yet",
