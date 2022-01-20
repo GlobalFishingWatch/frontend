@@ -12,6 +12,7 @@
   border-radius: 99px;
   cursor: pointer;
   height: 4px;
+  min-width: 4px;
   background: var(--background-color);
 }
 

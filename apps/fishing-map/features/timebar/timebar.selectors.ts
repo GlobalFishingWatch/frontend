@@ -28,6 +28,7 @@ import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.slice'
+import { getVesselLabel } from 'utils/info'
 
 export const selectTracksData = createSelector(
   [selectActiveTrackDataviews, selectResources],
@@ -66,7 +67,7 @@ export const selectTracksData = createSelector(
         }
       })
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      const shipname = (resources[infoUrl] as any)?.data?.shipname
+      const shipname = getVesselLabel((resources[infoUrl] as any)?.data)
       const item: TimebarChartItem = {
         ...timebarTrack,
         chunks,
@@ -226,6 +227,7 @@ const getTrackEventChunkProps = (
 }
 
 const getTrackEventHighlighterLabel = (chunk: TimebarChartChunk<TrackEventChunkProps>) => {
+  // console.log(chunk)
   if (chunk.cluster) {
     return `${chunk.props.descriptionGeneric} (${chunk.cluster.numChunks} ${t(
       'event.events',

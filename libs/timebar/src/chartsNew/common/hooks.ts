@@ -37,7 +37,7 @@ export const useFilteredChartData = (data: TimebarChartData<any>) => {
   return filteredData
 }
 
-const MIN_DISTANCE_PX_TO_CLUSTER = 2
+const MIN_DISTANCE_PX_TO_CLUSTER = 4
 
 export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineScale) => {
   return data.map((item) => {
@@ -77,6 +77,10 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
       },
       []
     )
+    const lastChunk = aggregatedChunks[aggregatedChunks.length - 1]
+    if (lastChunk && lastChunk.cluster?.numChunks === 1) {
+      delete lastChunk.cluster
+    }
     return {
       ...item,
       chunks: aggregatedChunks,
