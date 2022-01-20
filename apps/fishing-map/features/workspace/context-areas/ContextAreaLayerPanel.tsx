@@ -9,6 +9,8 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGuestUser } from 'features/user/user.slice'
+import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
+import { PRIVATE_SUFIX } from 'data/config'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -53,7 +55,14 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   useAutoRefreshImportingDataset(dataset, 5000)
 
   if (!dataset) {
-    return <DatasetNotFound dataview={dataview} />
+    const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
+      d.datasetId.includes(PRIVATE_SUFIX)
+    )
+    return guestUser && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} />
+    ) : (
+      <DatasetNotFound dataview={dataview} />
+    )
   }
 
   const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
