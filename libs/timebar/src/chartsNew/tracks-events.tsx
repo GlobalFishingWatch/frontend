@@ -10,8 +10,14 @@ import {
   TimebarChartChunk,
 } from './common/types'
 import styles from './tracks-events.module.css'
-import { useFilteredChartData, useClusteredChartData } from './common/hooks'
+import {
+  useClusteredChartData,
+  useFilteredChartData,
+  useOuterScale,
+  useSortedChartData,
+} from './common/hooks'
 import { getTrackY } from './common/utils'
+import { useUpdateChartsData } from './chartsData.atom'
 
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData<any>,
@@ -56,18 +62,19 @@ const TracksEvents = ({
   onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
   const { immediate } = useContext(ImmediateContext) as any
-  const { outerScale, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+  const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+  const outerScale = useOuterScale()
+
   const clusteredTracksEvents = useClusteredChartData(data)
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
+  const sortedTracksEvents = useSortedChartData(filteredTracksEvents)
+
+  useUpdateChartsData('tracksEvents', sortedTracksEvents)
+
   const tracksEventsWithCoords = useMemo(
     () =>
-      getTracksEventsWithCoords(
-        filteredTracksEvents,
-        outerScale,
-        graphHeight,
-        trackGraphOrientation
-      ),
-    [filteredTracksEvents, outerScale, graphHeight, trackGraphOrientation]
+      getTracksEventsWithCoords(sortedTracksEvents, outerScale, graphHeight, trackGraphOrientation),
+    [sortedTracksEvents, outerScale, graphHeight, trackGraphOrientation]
   ) as TimebarChartData<TrackEventChunkProps>
 
   const [highlightedEvent, setHighlightedEvent] =

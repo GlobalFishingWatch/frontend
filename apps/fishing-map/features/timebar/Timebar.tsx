@@ -9,7 +9,6 @@ import {
   TimebarHighlighter,
   TimebarTracksEvents,
   TimebarTracksGraph,
-  TimebarChartData,
   TimebarChartChunk,
   TrackEventChunkProps,
   TrackGraphOrientation,
@@ -44,14 +43,10 @@ import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './t
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
-const TimebarHighlighterWrapper = ({ data }: { data: TimebarChartData[] }) => {
+const TimebarHighlighterWrapper = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
   return highlightedTime ? (
-    <TimebarHighlighter
-      hoverStart={highlightedTime.start}
-      hoverEnd={highlightedTime.end}
-      data={data}
-    />
+    <TimebarHighlighter hoverStart={highlightedTime.start} hoverEnd={highlightedTime.end} />
   ) : null
 }
 
@@ -207,26 +202,6 @@ const TimebarWrapper = () => {
     }[timebarGraph] as TrackGraphOrientation
   }, [timebarGraph, tracksGraphsData])
 
-  const highlighterData = useMemo(() => {
-    if (timebarVisualisation === TimebarVisualisations.Heatmap) {
-      // TODO move setStackedActivity from TimebarActivityGraph to a hook that will be called at this level
-      return []
-    } else if (
-      timebarVisualisation === TimebarVisualisations.Vessel &&
-      tracks &&
-      tracks.length <= MAX_TIMEBAR_VESSELS
-    ) {
-      const data: TimebarChartData<any>[] = [tracks]
-      if (tracksEvents) {
-        data.push(tracksEvents)
-      }
-      if (showGraph && tracksGraphsData) {
-        data.push(tracksGraphsData)
-      }
-      return data
-    }
-  }, [timebarVisualisation, tracks, showGraph, tracksGraphsData, tracksEvents])
-
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
   return (
@@ -287,7 +262,7 @@ const TimebarWrapper = () => {
                   </label>
                 </div>
               ))}
-            <TimebarHighlighterWrapper data={highlighterData} />
+            <TimebarHighlighterWrapper />
           </Fragment>
         ) : null}
       </Timebar>

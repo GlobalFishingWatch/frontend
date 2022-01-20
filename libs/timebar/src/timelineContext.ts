@@ -6,7 +6,6 @@ export type TrackGraphOrientation = 'up' | 'down' | 'mirrored'
 export type TimelineContextProps = {
   start: string
   end: string
-  outerScale: TimelineScale
   outerStart: string // ISO
   outerEnd: string // ISO
   outerWidth: number

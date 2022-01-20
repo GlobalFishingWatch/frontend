@@ -225,14 +225,6 @@ const getTrackEventChunkProps = (
   }
 }
 
-const EVENT_TYPES_SORT_ORDER = {
-  [EventTypes.Encounter]: 1,
-  [EventTypes.Loitering]: 2,
-  [EventTypes.Gap]: 3,
-  [EventTypes.Port]: 4,
-  [EventTypes.Fishing]: 5,
-}
-
 const getTrackEventHighlighterLabel = (chunk: TimebarChartChunk<TrackEventChunkProps>) => {
   return chunk.props.description
 }
@@ -284,16 +276,6 @@ export const selectTracksEvents = createSelector(
           return chunk
         })
         return chunks
-      })
-
-      // Sort events to pick prioritized event on highlight
-      trackEvents.chunks.sort((chunkA, chunkB) => {
-        const first = chunkA.type ? EVENT_TYPES_SORT_ORDER[chunkA.type] : Number.MAX_SAFE_INTEGER
-        const second = chunkB.type ? EVENT_TYPES_SORT_ORDER[chunkB.type] : Number.MAX_SAFE_INTEGER
-        let result = 0
-        if (first < second) result = -1
-        else if (first > second) result = 1
-        return result
       })
       return trackEvents
     })

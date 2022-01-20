@@ -1,10 +1,11 @@
 import { useContext, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
+import { scaleTime } from 'd3-scale'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import TimelineContext, { TimelineScale } from '../../timelineContext'
-import { TimebarChartChunk } from '..'
-import { TimebarChartData } from './types'
+import { TimebarChartData, TimebarChartChunk } from './types'
 
-const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
+export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
   return data.map((item) => {
     const filteredChunks = item.chunks.filter((chunk) => {
       const chunkStart = chunk.start
@@ -20,7 +21,6 @@ const filterData = (data: TimebarChartData<any>, start: string, end: string) => 
 
 export const useFilteredChartData = (data: TimebarChartData<any>) => {
   const { outerStart, outerEnd } = useContext(TimelineContext)
-
   const [filteredData, setFilteredData] = useState<TimebarChartData<any>>([])
   const debouncedSetFilteredData = useDebouncedCallback(
     (data, outerStart, outerEnd) => {
@@ -39,7 +39,7 @@ export const useFilteredChartData = (data: TimebarChartData<any>) => {
 
 const MIN_DISTANCE_PX_TO_CLUSTER = 2
 
-const clusterData = (data: TimebarChartData<any>, outerScale: TimelineScale) => {
+export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineScale) => {
   return data.map((item) => {
     const aggregatedChunks = item.chunks.reduce(
       (currentClusteredEvents: TimebarChartChunk[], currentEvent: TimebarChartChunk) => {
@@ -84,11 +84,57 @@ const clusterData = (data: TimebarChartData<any>, outerScale: TimelineScale) => 
   })
 }
 
-export const useClusteredChartData = (data: TimebarChartData<any>) => {
-  const { outerStart, outerEnd, outerScale } = useContext(TimelineContext)
+const useDelta = () => {
+  const { outerStart, outerEnd } = useContext(TimelineContext)
   const delta = +new Date(outerEnd) - +new Date(outerStart)
+  return delta
+}
+
+export const useOuterScale = () => {
+  const { outerStart, outerEnd, outerWidth } = useContext(TimelineContext)
+  return useMemo(() => {
+    return scaleTime()
+      .domain([new Date(outerStart), new Date(outerEnd)])
+      .range([0, outerWidth])
+  }, [outerStart, outerEnd, outerWidth])
+}
+
+export const useClusteredChartData = (data: TimebarChartData<any>) => {
+  const outerScale = useOuterScale()
+  const delta = useDelta()
   return useMemo(() => {
     return clusterData(data, outerScale)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, delta]) // only memoize when delta changes (ie start and end can change with delta staying the same)
+}
+
+const EVENT_TYPES_SORT_ORDER = {
+  [EventTypes.Encounter]: 1,
+  [EventTypes.Loitering]: 2,
+  [EventTypes.Gap]: 3,
+  [EventTypes.Port]: 4,
+  [EventTypes.Fishing]: 5,
+}
+
+const sortData = (data: TimebarChartData<any>) => {
+  return data.map((item) => {
+    return {
+      ...item,
+      chunks: item.chunks.sort((chunkA, chunkB) => {
+        const first = chunkA.type ? EVENT_TYPES_SORT_ORDER[chunkA.type] : Number.MAX_SAFE_INTEGER
+        const second = chunkB.type ? EVENT_TYPES_SORT_ORDER[chunkB.type] : Number.MAX_SAFE_INTEGER
+        let result = 0
+        if (first < second) result = -1
+        else if (first > second) result = 1
+        return result
+      }),
+    }
+  })
+}
+
+export const useSortedChartData = (data: TimebarChartData<any>) => {
+  // Sort events to pick prioritized event on highlight
+  return useMemo(() => {
+    return sortData(data)
+  }, [data])
 }

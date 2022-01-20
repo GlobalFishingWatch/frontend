@@ -3,10 +3,13 @@ import { createPortal } from 'react-dom'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import cx from 'classnames'
+import { useRecoilValue } from 'recoil'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
-import { TimebarChartData, TimebarChartChunk, TimebarChartItem } from './common/types'
+import { TimebarChartChunk, TimebarChartItem, TimebarChartsData } from './common/types'
+import chartsDataState from './chartsData.atom'
+import { useOuterScale } from './common/hooks'
 
 dayjs.extend(utc)
 
@@ -57,19 +60,22 @@ type HighlighterData = {
 
 const getHighlighterData = (
   centerMs: number,
-  data?: TimebarChartData[]
+  dataRecord?: TimebarChartsData
 ): (HighlighterData | undefined)[] => {
-  if (!data || !data.length) return []
+  if (!dataRecord) return []
+  const data = Object.entries(dataRecord)
+  if (!data.length) return []
 
-  let highlighterData: (HighlighterData | undefined)[] = data[0].map((mainItem) => {
+  let highlighterData: (HighlighterData | undefined)[] = data[0][1].map((mainItem) => {
     return {
       color: mainItem.color,
       labels: [],
     }
   })
 
-  data.forEach((datum, datumIndex) => {
-    datum.forEach((item, itemIndex) => {
+  data.forEach((chart, chartIndex) => {
+    const chartData = chart[1]
+    chartData.forEach((item, itemIndex) => {
       const foundChunks = findChunks(centerMs, item)
       // TODO Case where several track events overlap. Right now prioritized by type (encounter first etc) but should we display them all
       const foundChunk = foundChunks ? foundChunks[0] : undefined
@@ -83,9 +89,9 @@ const getHighlighterData = (
           : foundValue?.value?.toString()
       }
       if (label) {
-        highlighterData[itemIndex]!.labels![datumIndex] = {
+        highlighterData[itemIndex]!.labels![chartIndex] = {
           value: label,
-          isMain: datumIndex === 0 && data.length > 1,
+          isMain: chartIndex === 0 && data.length > 1,
         }
       }
     })
@@ -100,25 +106,19 @@ const getHighlighterData = (
   return highlighterData
 }
 
-const Highlighter = ({
-  hoverStart,
-  hoverEnd,
-  data,
-}: {
-  hoverStart: string
-  hoverEnd: string
-  data?: TimebarChartData[]
-}) => {
-  const { outerScale, graphHeight, tooltipContainer } = useContext(TimelineContext)
+const Highlighter = ({ hoverStart, hoverEnd }: { hoverStart: string; hoverEnd: string }) => {
+  const { graphHeight, tooltipContainer } = useContext(TimelineContext)
+  const outerScale = useOuterScale()
   const { width, left, center, centerMs, centerDateLabel } = useMemo(
     () => getCoords(hoverStart, hoverEnd, outerScale),
     [hoverStart, hoverEnd, outerScale]
   )
 
-  // TODO filter first?
+  const chartsData = useRecoilValue(chartsDataState)
+
   const highlighterData = useMemo(() => {
-    return getHighlighterData(centerMs, data)
-  }, [centerMs, data])
+    return getHighlighterData(centerMs, chartsData)
+  }, [centerMs, chartsData])
 
   return (
     <Fragment>
