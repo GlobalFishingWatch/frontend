@@ -125,6 +125,7 @@
     "individualIdField": "Champ ID Individuel",
     "latitudeNameField": "Champ de Latitude",
     "longitudeNameField": "Champ de longitude",
+    "login": "This is a private dataset, login to see it",
     "new": "Nouveau jeu de données",
     "notUploadedYet": "Aucun calque de référence ajouté pour le moment",
     "notUploadedYetEnvironment": "Aucun calque d'environnement ajouté pour le moment",
