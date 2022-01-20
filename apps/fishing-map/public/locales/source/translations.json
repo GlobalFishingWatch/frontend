@@ -201,6 +201,7 @@
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
+    "events": "events",
     "during": "during",
     "encounter": "Encounter",
     "encounterAction": "had an encounter with",
