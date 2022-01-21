@@ -15,22 +15,13 @@ export type DateRange = {
   end: string
 }
 
-export type DownloadActivityArea = {
-  geometry: Geometry
-  name: string
-}
-
 export interface DownloadActivityState {
-  geometry: Geometry | undefined
-  name: string
-  id: string
+  areaKey: string
   requests: { id: string; status: AsyncReducerStatus }[]
 }
 
 const initialState: DownloadActivityState = {
-  geometry: undefined,
-  name: '',
-  id: '',
+  areaKey: '',
   requests: [],
 }
 
@@ -104,17 +95,15 @@ const downloadActivitySlice = createSlice({
   name: 'downloadActivity',
   initialState,
   reducers: {
+    setDownloadActivityAreaKey: (state, action: PayloadAction<string>) => {
+      state.areaKey = action.payload
+    },
     resetDownloadActivityStatus: (state) => {
       state.requests = []
     },
-    clearDownloadActivityGeometry: (state) => {
-      state.geometry = undefined
-      state.name = ''
+    resetDownloadActivityState: (state) => {
+      state.areaKey = ''
       state.requests = []
-    },
-    setDownloadActivityGeometry: (state, action: PayloadAction<DownloadActivityArea>) => {
-      state.geometry = action.payload.geometry as Geometry
-      state.name = action.payload.name
     },
   },
   extraReducers: (builder) => {
@@ -144,14 +133,12 @@ const downloadActivitySlice = createSlice({
 })
 
 export const {
+  setDownloadActivityAreaKey,
   resetDownloadActivityStatus,
-  clearDownloadActivityGeometry,
-  setDownloadActivityGeometry,
+  resetDownloadActivityState,
 } = downloadActivitySlice.actions
 
-export const selectDownloadActivityGeometry = (state: RootState) => state.downloadActivity.geometry
-export const selectDownloadActivityAreaName = (state: RootState) => state.downloadActivity.name
-export const selectDownloadActivityAreaId = (state: RootState) => state.downloadActivity.id
+export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
 export const selectDownloadActivityRequests = (state: RootState) => state.downloadActivity.requests
 
 export const selectDownloadActivityLoading = createSelector(

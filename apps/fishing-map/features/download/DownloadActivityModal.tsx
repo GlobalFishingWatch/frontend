@@ -6,20 +6,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
-import { Geometry, MultiPolygon, Polygon } from 'geojson'
+import { Geometry } from 'geojson'
 import { Icon, Modal, Button, Choice, ChoiceOption, Tag } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import {
-  clearDownloadActivityGeometry,
+  resetDownloadActivityState,
   DownloadActivityParams,
   downloadActivityThunk,
   resetDownloadActivityStatus,
   selectDownloadActivityLoading,
   selectDownloadActivityFinished,
-  selectDownloadActivityAreaName,
-  selectDownloadActivityGeometry,
   selectDownloadActivityError,
   DateRange,
+  selectDownloadActivityAreaKey,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -30,6 +29,8 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import { getDatasetLabel, getDatasetsDownloadNotSupported } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { selectDownloadActivityArea } from 'features/download/download.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -137,11 +138,13 @@ function DownloadActivityModal() {
     filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
 
-  const downloadAreaGeometry = useSelector(selectDownloadActivityGeometry)
-  const downloadAreaName = useSelector(selectDownloadActivityAreaName)
+  const areaKey = useSelector(selectDownloadActivityAreaKey)
+  const downloadArea = useSelector(selectDownloadActivityArea)
+  const downloadAreaName = downloadArea?.name
+  const downloadAreaGeometry = downloadArea?.geometry
   const areaIsTooBigForHighRes = useMemo(() => {
     return downloadAreaGeometry
-      ? area(downloadAreaGeometry as Polygon | MultiPolygon) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
+      ? area(downloadAreaGeometry) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
       : false
   }, [downloadAreaGeometry])
   const filteredSpatialResolutionOptions = SPATIAL_RESOLUTION_OPTIONS.map((option) => {
@@ -179,7 +182,9 @@ function DownloadActivityModal() {
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
           spatialResolution,
-          sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
         }),
       })
     }
@@ -192,7 +197,9 @@ function DownloadActivityModal() {
           temporalResolution,
           spatialResolution,
           groupBy,
-          sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
         }),
       })
     }
@@ -230,14 +237,14 @@ function DownloadActivityModal() {
   }
 
   const onClose = () => {
-    dispatch(clearDownloadActivityGeometry())
+    dispatch(resetDownloadActivityState())
   }
 
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={`${t('download.title', 'Download')} - ${t('download.activity', 'Activity')}`}
-      isOpen={downloadAreaGeometry !== undefined}
+      isOpen={areaKey !== ''}
       onClose={onClose}
       contentClassName={styles.modalContent}
     >
@@ -314,13 +321,13 @@ function DownloadActivityModal() {
           )}
           <Button
             onClick={onDownloadClick}
-            loading={downloadLoading}
+            loading={downloadLoading || downloadArea?.status === AsyncReducerStatus.Loading}
             disabled={!duration || duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD}
             tooltip={
               duration && duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD
                 ? t('download.timerangeTooLong', 'The maximum time range is {{count}} years', {
-                  count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
-                })
+                    count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
+                  })
                 : ''
             }
           >
