@@ -19,20 +19,17 @@ export type AreasState = Record<string, Area>
 
 const initialState: AreasState = {}
 
+export const AREA_KEY_SEPARATOR = '-'
 export const getAreaKey = ({ datasetId, areaId }: FetchAreaThunkParam) =>
-  [datasetId, areaId].join('-')
+  [datasetId, areaId].join(AREA_KEY_SEPARATOR)
 
-export type FetchAreaThunkParam = { datasetId: string; areaId: string }
+export type FetchAreaThunkParam = { datasetId: string; areaId: string; areaName?: string }
 export const fetchAreaThunk = createAsyncThunk(
   'areas/fetch',
   async (
-    { datasetId, areaId }: FetchAreaThunkParam = {} as FetchAreaThunkParam,
-    { signal, getState }
+    { datasetId, areaId, areaName }: FetchAreaThunkParam = {} as FetchAreaThunkParam,
+    { signal }
   ) => {
-    // TODO review how to gran layerName
-    // const state = getState() as RootState
-    // const contextDataviews = selectContextAreasDataviews(state)
-    // const layerName = contextDataviews.find(({ id }) => id === dataset)?.datasets?.[0].name
     const area = await GFWAPI.fetch<ContextAreaGeometry>(
       `/v1/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
       {
@@ -40,10 +37,11 @@ export const fetchAreaThunk = createAsyncThunk(
       }
     )
     const key = getAreaKey({ datasetId, areaId })
+    const name = areaName || area.properties.value || area.properties.name || area.id
     return {
       key,
+      name,
       id: area.id,
-      name: area.properties.geoname,
       bounds: wrapBBoxLongitudes(bbox(area.geometry) as Bbox),
       geometry: area.geometry,
     }
@@ -57,7 +55,12 @@ const areasSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchAreaThunk.pending, (state, action) => {
       const key = getAreaKey(action.meta.arg)
-      state[key] = { ...state[key], status: AsyncReducerStatus.Loading }
+      const name = action.meta.arg.areaName
+      state[key] = {
+        ...state[key],
+        ...(name && { name }),
+        status: AsyncReducerStatus.Loading,
+      }
     })
     builder.addCase(fetchAreaThunk.fulfilled, (state, action) => {
       const { key, ...rest } = action.payload

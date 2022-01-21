@@ -146,6 +146,7 @@ function DownloadActivityModal() {
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaName = downloadArea?.name
   const downloadAreaGeometry = downloadArea?.geometry
+  const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
   const areaIsTooBigForHighRes = useMemo(() => {
     return downloadAreaGeometry
       ? area(downloadAreaGeometry) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
@@ -325,8 +326,10 @@ function DownloadActivityModal() {
           )}
           <Button
             onClick={onDownloadClick}
-            loading={downloadLoading || downloadArea?.status === AsyncReducerStatus.Loading}
-            disabled={!duration || duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD}
+            loading={downloadLoading || downloadAreaLoading}
+            disabled={
+              !duration || duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD || downloadAreaLoading
+            }
             tooltip={
               duration && duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD
                 ? t('download.timerangeTooLong', 'The maximum time range is {{count}} years', {

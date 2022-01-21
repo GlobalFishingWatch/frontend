@@ -1,10 +1,8 @@
 import type { MultiPolygon, Polygon } from 'geojson'
 
 export interface ContextAreaGeometryProperties {
-  fid: string
-  mrgid: string
   gfw_id: string
-  geoname: string
+  [key: string]: string
 }
 
 export type ContextAreaGeometryGeom = Polygon | MultiPolygon
