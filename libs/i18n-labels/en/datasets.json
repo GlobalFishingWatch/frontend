@@ -308,6 +308,28 @@
       "vessel_id": "vessel_id"
     }
   },
+  "private-costa-rica-fishing-effort": {
+    "name": "Costa Rica VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
+          "costarica_vms_atuneros": "costarica_vms_atuneros",
+          "costarica_vms_sardineros": "costarica_vms_sardineros"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "private-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
     "description": "\nVessel monitoring system (VMS) data is provided by the National Directorate of Aquatic Spaces of the Ecuadorian Navy. Data is collected using Ecuador's vessel monitoring system via satellites and is published on a seven-day delay containing information on vessels’ identity, location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.\n",
@@ -418,6 +440,39 @@
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-zebrax-presence": {
+    "name": "Zebrax",
+    "description": "Zebra X Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "trap net": "trap net",
+          "purse seine": "purse seine"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-zebrax-vessels": {
+    "name": "Indonesia ZebraX (Vessels)",
+    "description": "Vessels (Indonesia ZebraX)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "private-panama-fishing-effort": {
@@ -840,6 +895,40 @@
     "name": "Cold-water corals (Source: UNEP-WCMC)",
     "description": "This dataset shows the Mediterranean and Black Sea distribution of cold-water corals using data collected from 1915 to 2014, buffered at ~1km. Occurrence records are given for the subclass Octocorallia (octocorals; also known as Alcyonaria) and four Orders (in Class Anthozoa): Scleractinia (reef-forming corals), Antipatharia (black corals), Zoanthidae (encrusting or button polyps), and Pennatulacea (sea pens). Occurrence records are also available for the order sub-Order Filifera (lace corals) in Class Hydrozoa. References: Freiwald et al. 2017, Freiwald et al 2004. Source: UNEP-WCMC.",
     "schema": {}
+  },
+  "public-costa-rica-fishing-effort": {
+    "name": "Costa Rica VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "costarica_vms_avanzados": "costarica_vms_avanzados",
+          "costarica_vms_atuneros": "costarica_vms_atuneros",
+          "costarica_vms_sardineros": "costarica_vms_sardineros"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-costa-rica-fishing-vessels": {
+    "name": "Costa Rica VMS",
+    "description": "Dataset for VMS Costa Rica (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
   },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
@@ -1339,6 +1428,15 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "trap net": "trap net",
+          "purse seine": "purse seine"
+        }
+      },
       "vessel_id": "vessel_id"
     }
   },
