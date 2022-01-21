@@ -79,8 +79,14 @@ export const useMapSourceTilesLoadedAtom = () => {
           if (error === undefined && tileError !== undefined) {
             error = tileError || 'Unknown error'
           }
+          const styleSources = Object.keys(map.getStyle().sources)
+          const stateWithoutCancelledSources = Object.fromEntries(
+            Object.entries(state).filter(([source]) => {
+              return styleSources.includes(source)
+            })
+          )
           return {
-            ...state,
+            ...stateWithoutCancelledSources,
             [sourceId]: { loaded: true, ...(error && { error }) },
           }
         })
