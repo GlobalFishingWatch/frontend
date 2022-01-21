@@ -52,11 +52,12 @@ export const useContextInteractions = () => {
       const datasetId = feature.datasetId
       const areaId = feature.properties?.gfw_id
       const areaKey = getAreaKey({ datasetId, areaId })
+      const areaName = feature.value || feature.title
       batch(() => {
         dispatch(setDownloadActivityAreaKey(areaKey))
         dispatch(setClickedEvent(null))
       })
-      dispatch(fetchAreaThunk({ datasetId, areaId }))
+      dispatch(fetchAreaThunk({ datasetId, areaId, areaName }))
 
       cleanFeatureState('highlight')
     },

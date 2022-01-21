@@ -28,7 +28,10 @@ import {
   filterTimeseriesByTimerange,
   removeTimeseriesPadding,
 } from 'features/analysis/analysis-timeseries.utils'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveTemporalgridDataviews,
+  selectContextAreasDataviews,
+} from 'features/dataviews/dataviews.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { Area, fetchAreaThunk, FetchAreaThunkParam } from 'features/areas/areas.slice'
 import { filterByPolygon } from './analysis-geo.utils'
@@ -131,6 +134,7 @@ export const useAnalysisArea = () => {
   const fitMapBounds = useMapFitBounds()
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
+  const contextDataviews = useSelector(selectContextAreasDataviews)
   const { areaId, sourceId, datasetId } = useSelector(selectAnalysisQuery)
   const analysisArea = useSelector(selectAnalysisArea) || ({} as Area)
   const { status, bounds } = analysisArea
@@ -154,17 +158,19 @@ export const useAnalysisArea = () => {
   )
 
   const fetchAnalysisArea = useCallback(
-    ({ datasetId, areaId }: FetchAreaThunkParam) => {
-      dispatch(fetchAreaThunk({ datasetId, areaId }))
+    (fetchParams: FetchAreaThunkParam) => {
+      dispatch(fetchAreaThunk(fetchParams))
     },
     [dispatch]
   )
 
   useEffect(() => {
-    if (areaId && datasetId) {
-      fetchAnalysisArea({ datasetId, areaId })
+    if (areaId && datasetId && contextDataviews?.length) {
+      const areaName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
+      fetchAnalysisArea({ datasetId, areaId, areaName })
     }
-  }, [areaId, datasetId, fetchAnalysisArea])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areaId, datasetId, fetchAnalysisArea, contextDataviews])
 
   useEffect(() => {
     if (status === AsyncReducerStatus.Finished) {
