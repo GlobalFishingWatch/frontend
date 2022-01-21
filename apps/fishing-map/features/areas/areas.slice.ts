@@ -9,6 +9,7 @@ import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export interface Area {
+  key: string
   id: string
   status: AsyncReducerStatus
   geometry: ContextAreaGeometryGeom | undefined
@@ -63,10 +64,9 @@ const areasSlice = createSlice({
       }
     })
     builder.addCase(fetchAreaThunk.fulfilled, (state, action) => {
-      const { key, ...rest } = action.payload
-      state[key] = {
+      state[action.payload.key] = {
         status: AsyncReducerStatus.Finished,
-        ...rest,
+        ...action.payload,
       }
     })
     builder.addCase(fetchAreaThunk.rejected, (state, action) => {
