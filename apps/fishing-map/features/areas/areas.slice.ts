@@ -53,11 +53,7 @@ export const fetchAreaThunk = createAsyncThunk(
 const areasSlice = createSlice({
   name: 'areas',
   initialState,
-  reducers: {
-    clearAreaGeometry: (state) => {
-      state.area = initialState.area
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchAreaThunk.pending, (state, action) => {
       const key = getAreaKey(action.meta.arg)
@@ -76,8 +72,6 @@ const areasSlice = createSlice({
     })
   },
 })
-
-export const { clearAreaGeometry } = areasSlice.actions
 
 export const selectAreas = (state) => state.areas
 export const selectAreaById = memoize((id: string) =>

@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { batch, useDispatch, useSelector } from 'react-redux'
+import { batch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
@@ -10,6 +10,9 @@ import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { parsePropertiesBbox } from 'features/map/map.utils'
+import { fetchAreaThunk, getAreaKey } from 'features/areas/areas.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { setClickedEvent } from '../map.slice'
 import useMapInstance, { useMapContext } from '../map-context.hooks'
 import { TooltipEventFeature } from '../map.hooks'
@@ -28,7 +31,7 @@ export const useHighlightArea = () => {
 }
 
 export const useContextInteractions = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const highlightArea = useHighlightArea()
   const { eventManager } = useMapContext()
   const isSidebarOpen = useSelector(selectSidebarOpen)
@@ -45,16 +48,15 @@ export const useContextInteractions = () => {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
+
+      const datasetId = feature.datasetId
+      const areaId = feature.properties?.gfw_id
+      const areaKey = getAreaKey({ datasetId, areaId })
       batch(() => {
-        // TODO get geometry from API too
-        // dispatch(
-        //   setDownloadActivityGeometry({
-        //     geometry: feature.geometry,
-        //     name: feature.value || feature.title,
-        //   })
-        // )
+        dispatch(setDownloadActivityAreaKey(areaKey))
         dispatch(setClickedEvent(null))
       })
+      dispatch(fetchAreaThunk({ datasetId, areaId }))
 
       cleanFeatureState('highlight')
     },
