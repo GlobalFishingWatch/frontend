@@ -6,6 +6,7 @@ import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { MULTILAYER_SEPARATOR } from '@globalfishingwatch/dataviews-client'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -165,9 +166,24 @@ export const useAnalysisArea = () => {
   )
 
   useEffect(() => {
-    if (areaId && datasetId && contextDataviews?.length) {
-      const areaName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
-      fetchAnalysisArea({ datasetId, areaId, areaName })
+    if (areaId && contextDataviews?.length) {
+      if (datasetId) {
+        const areaName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
+        fetchAnalysisArea({ datasetId, areaId, areaName })
+      } else {
+        // Fallback for legacy url which doesn't contain datasetId in the url
+        // trying to get the dataset from the context dataview
+        const dataviewsIdBySource = contextDataviews.map(
+          ({ id }) => id.split(MULTILAYER_SEPARATOR)[0]
+        )
+        const dataview = contextDataviews.find(
+          ({ id }) => id === sourceId || dataviewsIdBySource.includes(id)
+        )
+        const datasetId = dataview?.datasets?.[0].id
+        if (datasetId) {
+          dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
+        }
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areaId, datasetId, fetchAnalysisArea, contextDataviews])
