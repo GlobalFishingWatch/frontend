@@ -31,10 +31,10 @@ import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import styles from './Analysis.module.css'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
@@ -74,7 +74,6 @@ function Analysis() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const analysisArea = useAnalysisArea()
-  const analysisGeometry = analysisArea?.geometry
   const analysisAreaName = analysisArea?.name
   const analysisGeometryLoaded = analysisArea.status === AsyncReducerStatus.Finished
 
@@ -109,7 +108,7 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    dispatch(setDownloadActivityGeometry({ geometry: analysisGeometry, name: analysisAreaName }))
+    dispatch(setDownloadActivityAreaKey(analysisArea.key))
   }
 
   const { error, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
