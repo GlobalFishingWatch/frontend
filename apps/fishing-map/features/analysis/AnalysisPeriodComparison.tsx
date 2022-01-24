@@ -62,59 +62,50 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
     [analysisAreaName, dataviews, onCompareStartChange]
   )
 
-  const trackAndChangeBaselineDate = useCallback(
-    (date) => {
-      uaEvent({
-        category: 'Analysis',
-        action: `Select baseline date in 'period comparison'`,
-        label: JSON.stringify({
-          date: date.target.value,
-          regionName: analysisAreaName,
-          sourceNames: dataviews.flatMap((dataview) =>
-            getSourcesSelectedInDataview(dataview).map((source) => source.label)
-          ),
-        }),
-      })
-      onStartChange(date)
-    },
-    [analysisAreaName, dataviews, onStartChange]
-  )
+  const trackAndChangeBaselineDate = (date) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select baseline date in 'period comparison'`,
+      label: JSON.stringify({
+        date: date.target.value,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
+    })
+    onStartChange(date)
+  }
 
-  const trackAndChangeDuration = useCallback(
-    (duration) => {
-      uaEvent({
-        category: 'Analysis',
-        action: `Select duration in 'period comparison'`,
-        label: JSON.stringify({
-          duration: duration.target.value + ' ' + durationTypeOption.label,
-          regionName: analysisAreaName,
-          sourceNames: dataviews.flatMap((dataview) =>
-            getSourcesSelectedInDataview(dataview).map((source) => source.label)
-          ),
-        }),
-      })
-      onDurationChange(duration)
-    },
-    [analysisAreaName, dataviews, durationTypeOption.label, onDurationChange]
-  )
+  const trackAndChangeDuration = (duration) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select duration in 'period comparison'`,
+      label: JSON.stringify({
+        duration: duration?.target?.value + ' ' + durationTypeOption?.label,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
+    })
+    onDurationChange(duration)
+  }
 
-  const trackAndChangeDurationType = useCallback(
-    (duration) => {
-      uaEvent({
-        category: 'Analysis',
-        action: `Select duration in 'period comparison'`,
-        label: JSON.stringify({
-          duration: timeComparison.duration + ' ' + duration.label,
-          regionName: analysisAreaName,
-          sourceNames: dataviews.flatMap((dataview) =>
-            getSourcesSelectedInDataview(dataview).map((source) => source.label)
-          ),
-        }),
-      })
-      onDurationTypeSelect(duration)
-    },
-    [analysisAreaName, dataviews, onDurationTypeSelect, timeComparison.duration]
-  )
+  const trackAndChangeDurationType = (duration) => {
+    uaEvent({
+      category: 'Analysis',
+      action: `Select duration in 'period comparison'`,
+      label: JSON.stringify({
+        duration: timeComparison?.duration + ' ' + duration?.label,
+        regionName: analysisAreaName,
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
+    })
+    onDurationTypeSelect(duration)
+  }
 
   const { description, commonProperties } = useAnalysisDescription(
     analysisAreaName,
