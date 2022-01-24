@@ -39,7 +39,7 @@ export const getTimeSeries = (
   }
 
   const valuesByFrame: { sublayersValues: number[]; numValues: number }[] = []
-  features.forEach((feature, j) => {
+  features.forEach((feature) => {
     const rawValues: string = feature.properties.rawValues
     const { values, minCellOffset } = getCellValues(rawValues)
     if (minCellOffset < minFrame) minFrame = minCellOffset
