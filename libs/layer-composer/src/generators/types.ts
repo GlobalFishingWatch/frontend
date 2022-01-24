@@ -1,5 +1,9 @@
 import { FeatureCollection } from 'geojson'
-import { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import {
+  SourceSpecification,
+  LayerSpecification,
+  GeoJSONSourceSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { Group } from '..'
@@ -20,6 +24,7 @@ export enum GeneratorType {
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   Track = 'TRACK',
   VesselEvents = 'VESSEL_EVENTS',
+  VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
   Rulers = 'RULERS',
 }
 
@@ -449,4 +454,8 @@ export enum HeatmapAnimatedMode {
   Extruded = 'extruded',
   // Just show raw value ffor 1 sublayer
   Single = 'single',
+}
+
+export interface VesselsEventsSource extends GeoJSONSourceSpecification {
+  id: string
 }

@@ -46,12 +46,13 @@ const getCommonIntervals = (datasets: Dataset[]) => {
   )
 }
 
-type DataviewsGeneratorConfigsParams = {
+export type DataviewsGeneratorConfigsParams = {
   debug?: boolean
   highlightedTime?: { start: string; end: string }
   highlightedEvent?: ApiEvent
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: HeatmapAnimatedMode
+  customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -133,11 +134,16 @@ export function getGeneratorConfig(
       if (hasEventData) {
         // TODO This flatMap will prevent the corresponding generator to memoize correctly
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
+        const type =
+          params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
+            ? params?.customGeneratorMapping.VESSEL_EVENTS
+            : GeneratorType.VesselEvents
+        console.log(type)
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           event: dataview.config?.event,
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
-          type: GeneratorType.VesselEvents,
+          type,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
           data: data,
@@ -327,6 +333,7 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
+  console.log(params)
   const { heatmapAnimatedMode = HeatmapAnimatedMode.Compare } = params || {}
 
   const activityDataviews: UrlDataviewInstance[] = []

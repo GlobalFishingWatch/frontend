@@ -1,7 +1,6 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
 import type {
-  CircleLayerSpecification,
   LineLayerSpecification,
   SymbolLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
@@ -26,8 +25,8 @@ export type GlobalVesselEventsGeneratorConfig = MergedGeneratorConfig<VesselEven
 
 const DEFAULT_STROKE_COLOR = 'rgba(0, 193, 231, 1)'
 
-class VesselsEventsGenerator {
-  type = GeneratorType.VesselEvents
+class VesselsEventsShapesGenerator {
+  type = GeneratorType.VesselEventsShapes
 
   _showTrackSegments = (config: GlobalVesselEventsGeneratorConfig) => {
     return (
@@ -50,7 +49,8 @@ class VesselsEventsGenerator {
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(
       data,
       showAuthorizationStatus,
-      iconsPrefix
+      iconsPrefix,
+      config.color
     ) as FeatureCollection
 
     const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
@@ -105,53 +105,44 @@ class VesselsEventsGenerator {
 
     const activeFilter = ['case', ['==', ['get', 'id'], config.currentEventId || null]]
 
-    const pointsLayers: (CircleLayerSpecification | SymbolLayerSpecification)[] = [
+    const pointsLayers: SymbolLayerSpecification[] = [
       {
-        id: `${config.id}_background`,
-        type: 'circle',
+        type: 'symbol',
+        id: `${config.id}_points`,
         source: `${config.id}_points`,
         ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         paint: {
-          'circle-color': ['get', 'color'],
-          'circle-stroke-width': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            2,
-            [...activeFilter, 2, 0],
-            8,
-            [...activeFilter, 2, 1],
-            14,
-            [...activeFilter, 2, 3],
-          ],
-          'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
-          'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
+          'icon-color': ['get', 'color'],
+          // 'circle-stroke-width': [
+          //   'interpolate',
+          //   ['linear'],
+          //   ['zoom'],
+          //   2,
+          //   [...activeFilter, 2, 0],
+          //   8,
+          //   [...activeFilter, 2, 1],
+          //   14,
+          //   [...activeFilter, 2, 3],
+          // ],
+          // 'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
+          // 'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
+          // 'icon-halo-color': 'rgba(255, 0, 255, 255)',
+          // 'icon-halo-width': 1,
+          // 'icon-halo-blur': 5,
+        },
+        layout: {
+          'icon-allow-overlap': true,
+          'icon-size': ['get', 'shapeSize'],
+          'icon-image': ['get', 'shape'],
+          'symbol-sort-key': ['get', 'shapePriority'],
         },
         metadata: {
           group: Group.Point,
           interactive: true,
           generatorId: config.id,
         },
-      } as CircleLayerSpecification,
+      } as SymbolLayerSpecification,
     ]
-
-    const showIcons = config.showIcons !== undefined ? config.showIcons : true
-    if (showIcons) {
-      pointsLayers.push({
-        id: `${config.id}_outline`,
-        source: `${config.id}_points`,
-        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
-        type: 'symbol',
-        layout: {
-          'icon-allow-overlap': true,
-          'icon-image': ['get', 'icon'],
-          'icon-size': [...activeFilter, 1 * iconsSize, 0],
-        },
-        metadata: {
-          group: Group.Point,
-        },
-      } as SymbolLayerSpecification)
-    }
 
     if (!showTrackSegments) {
       return pointsLayers
@@ -204,4 +195,4 @@ class VesselsEventsGenerator {
   }
 }
 
-export default VesselsEventsGenerator
+export default VesselsEventsShapesGenerator

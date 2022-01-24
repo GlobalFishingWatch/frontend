@@ -12,6 +12,7 @@ import {
   getDataviewsGeneratorConfigs,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
+  DataviewsGeneratorConfigsParams,
 } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import {
@@ -77,12 +78,15 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 
-  const generatorOptions = {
+  const generatorOptions: DataviewsGeneratorConfigsParams = {
     heatmapAnimatedMode,
     highlightedEvent,
     highlightedTime,
     debug: debugOptions.debug,
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+    customGeneratorMapping: {
+      [GeneratorType.VesselEvents]: GeneratorType.VesselEventsShapes,
+    },
   }
 
   try {
