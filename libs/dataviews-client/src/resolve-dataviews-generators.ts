@@ -138,7 +138,7 @@ export function getGeneratorConfig(
           params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
             ? params?.customGeneratorMapping.VESSEL_EVENTS
             : GeneratorType.VesselEvents
-        console.log(type)
+
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           event: dataview.config?.event,
@@ -333,7 +333,6 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
-  console.log(params)
   const { heatmapAnimatedMode = HeatmapAnimatedMode.Compare } = params || {}
 
   const activityDataviews: UrlDataviewInstance[] = []

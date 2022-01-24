@@ -24,7 +24,7 @@ const SHAPE_BY_TYPE: Record<EventType, string> = {
   gap: 'circle',
 }
 const SHAPE_SIZE_BY_TYPE: Record<EventType, number> = {
-  fishing: 0.6,
+  fishing: 0.4,
   encounter: 1.5,
   loitering: 1.5,
   port_visit: 1,

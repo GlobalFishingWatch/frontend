@@ -11,7 +11,6 @@ import {
   MergedGeneratorConfig,
   VesselsEventsSource,
 } from '../types'
-import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {
   getVesselEventsGeojson,
@@ -22,8 +21,6 @@ import {
 } from './vessel-events.utils'
 
 export type GlobalVesselEventsGeneratorConfig = MergedGeneratorConfig<VesselEventsGeneratorConfig>
-
-const DEFAULT_STROKE_COLOR = 'rgba(0, 193, 231, 1)'
 
 class VesselsEventsShapesGenerator {
   type = GeneratorType.VesselEventsShapes
@@ -94,15 +91,6 @@ class VesselsEventsShapesGenerator {
     }
     const showTrackSegments = this._showTrackSegments(config)
 
-    const { activeIconsSize, iconsSize, inactiveIconsSize, activeStrokeColor, strokeColor } = {
-      activeIconsSize: 1,
-      iconsSize: 1,
-      inactiveIconsSize: 1,
-      activeStrokeColor: config.color || DEFAULT_STROKE_COLOR,
-      strokeColor: DEFAULT_LANDMASS_COLOR,
-      ...config.event,
-    }
-
     const activeFilter = ['case', ['==', ['get', 'id'], config.currentEventId || null]]
 
     const pointsLayers: SymbolLayerSpecification[] = [
@@ -112,27 +100,21 @@ class VesselsEventsShapesGenerator {
         source: `${config.id}_points`,
         ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         paint: {
-          'icon-color': ['get', 'color'],
-          // 'circle-stroke-width': [
-          //   'interpolate',
-          //   ['linear'],
-          //   ['zoom'],
-          //   2,
-          //   [...activeFilter, 2, 0],
-          //   8,
-          //   [...activeFilter, 2, 1],
-          //   14,
-          //   [...activeFilter, 2, 3],
-          // ],
-          // 'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
-          // 'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
-          // 'icon-halo-color': 'rgba(255, 0, 255, 255)',
-          // 'icon-halo-width': 1,
-          // 'icon-halo-blur': 5,
+          'icon-color': [...activeFilter, '#ffffff', ['get', 'color']],
+          'icon-halo-color': config.color || '#ffffff',
+          'icon-halo-width': [...activeFilter, 2, 0],
         },
         layout: {
           'icon-allow-overlap': true,
-          'icon-size': ['get', 'shapeSize'],
+          'icon-size': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            4,
+            [...activeFilter, ['*', 1.5, ['get', 'shapeSize']], ['get', 'shapeSize']],
+            9,
+            [...activeFilter, ['*', 3, ['get', 'shapeSize']], ['*', 2, ['get', 'shapeSize']]],
+          ],
           'icon-image': ['get', 'shape'],
           'symbol-sort-key': ['get', 'shapePriority'],
         },
