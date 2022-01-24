@@ -76,7 +76,8 @@ function Analysis() {
 
   const analysisArea = useAnalysisArea()
   const analysisAreaName = analysisArea?.name
-  const analysisGeometryLoaded = analysisArea.status === AsyncReducerStatus.Finished
+  const analysisAreaError = analysisArea.status === AsyncReducerStatus.Error
+  const analysisAreaLoading = analysisArea.status === AsyncReducerStatus.Loading
 
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
@@ -205,7 +206,7 @@ function Analysis() {
 
   const disableReportDownload =
     timeRangeTooLong ||
-    !analysisGeometryLoaded ||
+    analysisAreaLoading ||
     !layersTimeseriesFiltered ||
     !hasAnalysisLayers ||
     !datasetsReportSupported
@@ -224,7 +225,7 @@ function Analysis() {
     downloadTooltip = t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
   }
 
-  if (workspaceStatus !== AsyncReducerStatus.Finished || !analysisGeometryLoaded) {
+  if (workspaceStatus !== AsyncReducerStatus.Finished || analysisAreaLoading) {
     return (
       <div className={styles.container}>
         <Spinner />
@@ -249,7 +250,7 @@ function Analysis() {
           />
         </div>
       </div>
-      {error ? (
+      {error || analysisAreaError ? (
         <div className={cx(styles.content, styles.center)}>
           <p className={styles.placeholder}>
             {t(
