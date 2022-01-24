@@ -5,7 +5,7 @@ import { event as uaEvent } from 'react-ga'
 import { InteractiveMap } from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
 import dynamic from 'next/dynamic'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -41,6 +41,7 @@ import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.sl
 import { useMapLoaded } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
+import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -88,6 +89,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const drawMode = useSelector(selectDrawMode)
   const setMapReady = useSetRecoilState(mapReadyAtom)
+  const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
@@ -250,7 +252,7 @@ const MapWrapper = (): React.ReactElement | null => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={onViewportChange}
+          onViewportChange={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
           mapStyle={style}
           transformRequest={transformRequest}
           onResize={setMapBounds}

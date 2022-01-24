@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
+import { atom, selector, useRecoilState } from 'recoil'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { MULTILAYER_SEPARATOR } from '@globalfishingwatch/dataviews-client'
@@ -39,6 +40,19 @@ import { filterByPolygon } from './analysis-geo.utils'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectAnalysisArea, selectShowTimeComparison } from './analysis.selectors'
 
+export const mapTimeseriesAtom = atom<AnalysisGraphProps[] | undefined>({
+  key: 'mapTimeseriesState',
+  default: undefined,
+})
+
+export const selectMapTimeseries = selector({
+  key: 'mapTimeseriesStateLoaded',
+  get: ({ get }) => {
+    const timeseries = get(mapTimeseriesAtom)
+    return timeseries && timeseries.length > 0
+  },
+})
+
 export type DateTimeSeries = {
   date: string
   values: number[]
@@ -46,9 +60,9 @@ export type DateTimeSeries = {
 }[]
 
 export const useFilteredTimeSeries = () => {
+  const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const [blur, setBlur] = useState(false)
   const analysisAreaGeometry = useSelector(selectAnalysisArea)?.geometry
-  const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
@@ -89,7 +103,7 @@ export const useFilteredTimeSeries = () => {
       setTimeseries(timeseries)
       setBlur(false)
     },
-    [showTimeComparison, compareDeltaMillis]
+    [showTimeComparison, compareDeltaMillis, setTimeseries]
   )
 
   const analysisEvolutionChange =
