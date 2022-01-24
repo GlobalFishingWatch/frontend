@@ -46,13 +46,14 @@ const workspace: Workspace<WorkspaceState> = {
       // update it here if you want to show it again or go to
       // apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
       // and update the `dataviewInstanceId`
-      id: 'highlight-vms-with-ecuador',
+      id: 'highlight-vms-with-costarica',
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
         datasets: [
-          'public-chile-fishing-effort:v20211126',
           'public-bra-onyxsat-fishing-effort:v20211126',
+          'public-costa-rica-fishing-effort:v20211126',
+          'public-chile-fishing-effort:v20211126',
           'public-ecuador-fishing-effort:v20211126',
           'public-indonesia-fishing-effort:v20200320',
           'public-panama-fishing-effort:v20211126',
