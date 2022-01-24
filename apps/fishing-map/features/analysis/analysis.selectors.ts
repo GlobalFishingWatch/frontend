@@ -13,7 +13,9 @@ export const selectIsAnalyzing = createSelector([selectAnalysisQuery], (analysis
 
 export const selectAnalysisArea = createSelector(
   [selectAnalysisQuery, selectAreas],
-  ({ areaId, datasetId }, areas): Area => {
+  (analysisQuery, areas): Area => {
+    if (!analysisQuery) return
+    const { areaId, datasetId } = analysisQuery
     const areaKey = getAreaKey({ areaId, datasetId })
     return areas[areaKey]
   }

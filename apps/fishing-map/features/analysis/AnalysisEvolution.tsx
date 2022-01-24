@@ -11,11 +11,12 @@ import { AnalysisTypeProps } from './Analysis'
 import AnalysisDescription from './AnalysisDescription'
 
 type AnalysisItemProps = {
+  blur: boolean
   loading: boolean
   graphData: AnalysisGraphProps
   analysisAreaName: string
 }
-function AnalysisItem({ loading, graphData, analysisAreaName }: AnalysisItemProps) {
+function AnalysisItem({ blur, loading, graphData, analysisAreaName }: AnalysisItemProps) {
   const { start, end } = useTimerangeConnect()
   const dataviewsIds = useMemo(() => {
     return graphData.sublayers.map((s) => s.id)
@@ -38,14 +39,13 @@ function AnalysisItem({ loading, graphData, analysisAreaName }: AnalysisItemProp
           ))}
         </div>
       </Fragment>
-      {loading ||
-        (!graphData && (
-          <div className={styles.graphContainer}>
-            <Spinner />
-          </div>
-        ))}
+      {loading && !blur && (
+        <div className={styles.graphContainer}>
+          <Spinner />
+        </div>
+      )}
       {graphData && (
-        <div className={loading ? styles.blur : ''}>
+        <div className={blur ? styles.blur : ''}>
           <AnalysisEvolutionGraph graphData={graphData} start={start} end={end} />
         </div>
       )}
@@ -54,7 +54,7 @@ function AnalysisItem({ loading, graphData, analysisAreaName }: AnalysisItemProp
 }
 
 const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
-  const { layersTimeseriesFiltered, loading, analysisAreaName } = props
+  const { layersTimeseriesFiltered, loading, blur, analysisAreaName } = props
   if (!layersTimeseriesFiltered) {
     return (
       <div className={styles.graphContainer}>
@@ -68,6 +68,7 @@ const AnalysisEvolution: React.FC<AnalysisTypeProps> = (props) => {
         return (
           <AnalysisItem
             key={index}
+            blur={blur}
             loading={loading}
             analysisAreaName={analysisAreaName}
             graphData={layerTimeseriesFiltered}

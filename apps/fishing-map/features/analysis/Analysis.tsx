@@ -44,6 +44,7 @@ import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 import AnalysisBeforeAfter from './AnalysisBeforeAfter'
 
 export type AnalysisTypeProps = {
+  blur: boolean
   loading: boolean
   layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
   analysisAreaName: string
@@ -111,7 +112,7 @@ function Analysis() {
     dispatch(setDownloadActivityAreaKey(analysisArea.key))
   }
 
-  const { error, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
+  const { error, blur, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const timeComparisonEnabled = useMemo(() => {
     let tooltip = ''
     let enabled = true
@@ -263,7 +264,8 @@ function Analysis() {
             <AnalysisComponent
               layersTimeseriesFiltered={layersTimeseriesFiltered}
               analysisAreaName={analysisAreaName}
-              loading={!analysisGeometryLoaded || loading}
+              loading={loading}
+              blur={blur}
             />
           ) : (
             <p className={styles.placeholder}>

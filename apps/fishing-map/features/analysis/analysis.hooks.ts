@@ -97,10 +97,13 @@ export const useFilteredTimeSeries = () => {
 
   useEffect(() => {
     setTimeseries(undefined)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areaId, analysisEvolutionChange])
 
   useEffect(() => {
-    setBlur(true)
+    if (timeseries) {
+      setBlur(true)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeComparison, timebarStart, timebarEnd])
 
@@ -123,7 +126,8 @@ export const useFilteredTimeSeries = () => {
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
 
   return {
-    loading: blur && !areDataviewsFeatureLoaded(activityFeatures),
+    blur,
+    loading: !timeseries && !areDataviewsFeatureLoaded(activityFeatures),
     error: hasDataviewsFeatureError(activityFeatures),
     layersTimeseriesFiltered,
   }
