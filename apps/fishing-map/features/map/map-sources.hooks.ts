@@ -203,7 +203,11 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
 
       const chunksFeatures: DataviewChunkFeature[] | null = chunks
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
-            const chunkState = sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
+            const emptyChunkState = {} as TilesAtomSourceState
+            const chunkState = active
+              ? sourceTilesLoaded[sourceId] || { loaded: false }
+              : emptyChunkState
+
             return {
               active,
               features:
