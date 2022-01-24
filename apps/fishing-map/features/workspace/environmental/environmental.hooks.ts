@@ -9,6 +9,7 @@ import {
   DataviewFeature,
   areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
+  DataviewChunkFeature,
 } from 'features/map/map-sources.hooks'
 import { aggregateFeatures } from 'features/workspace/environmental/environmental.utils'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
@@ -23,28 +24,31 @@ export const useEnvironmentalBreaksUpdate = () => {
 
   const updateBreaksByViewportValues = useCallback(
     (dataviewFeatures: DataviewFeature[], bounds: MiniglobeBounds) => {
-      const dataviewInstances = dataviewFeatures?.flatMap(({ features, dataviewsId, metadata }) => {
-        if (features && features.length) {
-          const filteredFeatures = filterByViewport(features, bounds)
-          const data = aggregateFeatures(filteredFeatures, metadata)
-          const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
-          // TODO review if sample the features is needed by performance
-          // const featuresSample =
-          //   features.length > 100
-          //     ? sample(features, Math.round(features.length / 100), Math.random)
-          //     : features
-          // using ckmeans as jenks
-          const ck = ckmeans(data, steps).map(([clusterFirst]) => clusterFirst)
-          return {
-            id: dataviewsId[0],
-            config: {
-              opacity: undefined,
-              breaks: ck,
-            },
+      const dataviewInstances = dataviewFeatures?.flatMap(
+        ({ chunksFeatures, dataviewsId, metadata }) => {
+          const { features } = chunksFeatures?.[0] || ({} as DataviewChunkFeature)
+          if (features && features.length) {
+            const filteredFeatures = filterByViewport(features, bounds)
+            const data = aggregateFeatures(filteredFeatures, metadata)
+            const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
+            // TODO review if sample the features is needed by performance
+            // const featuresSample =
+            //   features.length > 100
+            //     ? sample(features, Math.round(features.length / 100), Math.random)
+            //     : features
+            // using ckmeans as jenks
+            const ck = ckmeans(data, steps).map(([clusterFirst]) => clusterFirst)
+            return {
+              id: dataviewsId[0],
+              config: {
+                opacity: undefined,
+                breaks: ck,
+              },
+            }
           }
+          return []
         }
-        return []
-      })
+      )
       if (dataviewInstances) {
         upsertDataviewInstance(dataviewInstances)
       }
