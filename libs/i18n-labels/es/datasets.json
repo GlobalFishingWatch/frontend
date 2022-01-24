@@ -309,7 +309,7 @@
     }
   },
   "private-costa-rica-fishing-effort": {
-    "name": "Costa Rica VMS",
+    "name": "VMS de Costa Rica",
     "description": "Description pending",
     "schema": {
       "lat": "lat",
@@ -919,7 +919,7 @@
     }
   },
   "public-costa-rica-fishing-vessels": {
-    "name": "Costa Rica VMS",
+    "name": "VMS de Costa Rica",
     "description": "Dataset for VMS Costa Rica (Public)",
     "schema": {
       "id": "id",
