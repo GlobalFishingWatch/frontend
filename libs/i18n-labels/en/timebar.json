@@ -1,7 +1,7 @@
 {
   "playback": {
     "playAnimation": "Play animation",
-    "pauseAnimation": "Pause animation",
+    "pauseAnimation": "Pause Animation",
     "toogleAnimationLooping": "Toggle animation looping",
     "moveBack": "Move back",
     "moveForward": "Move forward",
