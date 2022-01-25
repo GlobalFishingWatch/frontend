@@ -16,25 +16,25 @@ class TimeRangeSelector extends Component {
     this.lastXOptions = [
       {
         id: 'last30days',
-        label: labels.last30days,
+        label: labels.last30days || TimeRangeSelector.defaultProps.labels.last30days,
         num: 30,
         unit: 'day',
       },
       {
         id: 'last3months',
-        label: labels.last3months,
+        label: labels.last3months || TimeRangeSelector.defaultProps.labels.last3months,
         num: 3,
         unit: 'month',
       },
       {
         id: 'last6months',
-        label: labels.last6months,
+        label: labels.last6months || TimeRangeSelector.defaultProps.labels.last6months,
         num: 6,
         unit: 'month',
       },
       {
         id: 'lastYear',
-        label: labels.lastYear,
+        label: labels.lastYear || TimeRangeSelector.defaultProps.labels.lastYear,
         num: 1,
         unit: 'year',
       },
@@ -186,6 +186,9 @@ TimeRangeSelector.propTypes = {
     start: PropTypes.string,
     end: PropTypes.string,
     last30days: PropTypes.string,
+    last3months: PropTypes.string,
+    last6months: PropTypes.string,
+    lastYear: PropTypes.string,
     done: PropTypes.string,
   }),
 }
