@@ -36,3 +36,11 @@
 .radiosContainer > * {
   margin: 0 0 1rem;
 }
+
+.icon {
+  margin-right: 0.5rem;
+}
+
+.iconDisabled {
+  opacity: 0.5;
+}

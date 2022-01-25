@@ -347,6 +347,7 @@
     "maxTracksNumber": "Track detail not available for more than 10 vessels"
   },
   "timebarSettings": {
+    "title": "Timebar settings",
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
     "graphDisabled": "Not available with more than 2 vessels selected",
