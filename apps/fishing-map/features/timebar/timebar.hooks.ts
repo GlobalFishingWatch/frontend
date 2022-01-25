@@ -16,8 +16,8 @@ import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import {
   Range,
   changeSettings,
-  setHighlightedEvent,
-  selectHighlightedEvent,
+  setHighlightedEvents,
+  selectHighlightedEvents,
   selectHasChangedSettingsOnce,
   selectHighlightedTime,
   disableHighlightedTime,
@@ -105,23 +105,23 @@ export const useDisableHighlightTimeConnect = () => {
   )
 }
 
-export const useHighlightEventConnect = () => {
-  const highlightedEvent = useSelector(selectHighlightedEvent)
+export const useHighlightedEventsConnect = () => {
+  const highlightedEvents = useSelector(selectHighlightedEvents)
   const dispatch = useDispatch()
 
-  const dispatchHighlightedEvent = useCallback(
-    (event: ApiEvent | undefined) => {
-      dispatch(setHighlightedEvent(event))
+  const dispatchHighlightedEvents = useCallback(
+    (eventIds: string[]) => {
+      dispatch(setHighlightedEvents(eventIds))
     },
     [dispatch]
   )
 
   return useMemo(
     () => ({
-      highlightedEvent,
-      dispatchHighlightedEvent,
+      highlightedEvents,
+      dispatchHighlightedEvents,
     }),
-    [highlightedEvent, dispatchHighlightedEvent]
+    [highlightedEvents, dispatchHighlightedEvents]
   )
 }
 

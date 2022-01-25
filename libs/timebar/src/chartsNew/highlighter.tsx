@@ -1,4 +1,4 @@
-import { Fragment, useContext, useMemo } from 'react'
+import { Fragment, useContext, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -7,7 +7,13 @@ import { useRecoilValue } from 'recoil'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
-import { TimebarChartChunk, TimebarChartItem, TimebarChartsData } from './common/types'
+import {
+  TimebarChartChunk,
+  TimebarChartItem,
+  TimebarChartsData,
+  HighlightedChunks,
+  ChartType,
+} from './common/types'
 import chartsDataState from './chartsData.atom'
 import { useOuterScale } from './common/hooks'
 
@@ -34,10 +40,22 @@ const getCoords = (hoverStart: string, hoverEnd: string, outerScale: TimelineSca
   }
 }
 
-const findChunks = (centerMs: number, item: TimebarChartItem) => {
+const findChunks = (
+  centerMs: number,
+  item: TimebarChartItem,
+  minHighlightChunkDuration: number
+) => {
   const foundChunks = item.chunks.filter((chunk: TimebarChartChunk, chunkIndex: number) => {
     const chunkEnd = chunk.end || item.chunks[chunkIndex + 1]?.start || Number.NEGATIVE_INFINITY
-    return centerMs > chunk.start && centerMs < chunkEnd
+    const delta = chunkEnd - chunk.start
+
+    if (delta > minHighlightChunkDuration && chunk.end)
+      return centerMs > chunk.start && centerMs < chunkEnd
+
+    const center = chunk.start + delta / 2
+    const bufferedStart = center - minHighlightChunkDuration / 2
+    const bufferedEnd = center + minHighlightChunkDuration / 2
+    return centerMs > bufferedStart && centerMs < bufferedEnd
   })
   return foundChunks
 }
@@ -60,11 +78,12 @@ type HighlighterData = {
 
 const getHighlighterData = (
   centerMs: number,
+  minHighlightChunkDuration: number,
   dataRecord?: TimebarChartsData
-): (HighlighterData | undefined)[] => {
-  if (!dataRecord) return []
+) => {
+  if (!dataRecord) return { highlighterData: [] }
   const data = Object.entries(dataRecord)
-  if (!data.length) return []
+  if (!data.length) return { highlighterData: [] }
 
   let highlighterData: (HighlighterData | undefined)[] = data[0][1].map((mainItem) => {
     return {
@@ -73,10 +92,15 @@ const getHighlighterData = (
     }
   })
 
+  const highlightedChunks: HighlightedChunks = {}
+
   data.forEach((chart, chartIndex) => {
+    const chartType = chart[0] as ChartType
     const chartData = chart[1]
+    highlightedChunks[chartType] = []
     chartData.forEach((item, itemIndex) => {
-      const foundChunks = findChunks(centerMs, item)
+      const foundChunks = findChunks(centerMs, item, minHighlightChunkDuration)
+
       // TODO Case where several track events overlap. Right now prioritized by type (encounter first etc) but should we display them all
       const foundChunk = foundChunks ? foundChunks[0] : undefined
       let label = undefined
@@ -87,11 +111,15 @@ const getHighlighterData = (
             ? item.getHighlighterLabel
             : item.getHighlighterLabel(foundChunk, foundValue)
           : foundValue?.value?.toString()
-      }
-      if (label) {
-        highlighterData[itemIndex]!.labels![chartIndex] = {
-          value: label,
-          isMain: chartIndex === 0 && data.length > 1,
+
+        if (label) {
+          highlighterData[itemIndex]!.labels![chartIndex] = {
+            value: label,
+            isMain: chartIndex === 0 && data.length > 1,
+          }
+        }
+        if (foundChunk.id) {
+          highlightedChunks[chartType]?.push(foundChunk.id as string)
         }
       }
     })
@@ -103,11 +131,19 @@ const getHighlighterData = (
     return item
   })
 
-  return highlighterData
+  return { highlighterData, highlightedChunks }
 }
 
-const Highlighter = ({ hoverStart, hoverEnd }: { hoverStart: string; hoverEnd: string }) => {
-  const { graphHeight, tooltipContainer } = useContext(TimelineContext)
+const Highlighter = ({
+  hoverStart,
+  hoverEnd,
+  onHighlightChunks,
+}: {
+  hoverStart: string
+  hoverEnd: string
+  onHighlightChunks?: (data?: HighlightedChunks) => any
+}) => {
+  const { graphHeight, tooltipContainer, outerStart, outerEnd } = useContext(TimelineContext)
   const outerScale = useOuterScale()
   const { width, left, center, centerMs, centerDateLabel } = useMemo(
     () => getCoords(hoverStart, hoverEnd, outerScale),
@@ -116,9 +152,19 @@ const Highlighter = ({ hoverStart, hoverEnd }: { hoverStart: string; hoverEnd: s
 
   const chartsData = useRecoilValue(chartsDataState)
 
-  const highlighterData = useMemo(() => {
-    return getHighlighterData(centerMs, chartsData)
-  }, [centerMs, chartsData])
+  const minHighlightChunkDuration = useMemo(() => {
+    return +outerScale.invert(10) - +outerScale.invert(0)
+  }, [outerStart, outerEnd])
+
+  const { highlighterData, highlightedChunks } = useMemo(() => {
+    return getHighlighterData(centerMs, minHighlightChunkDuration, chartsData)
+  }, [centerMs, chartsData, minHighlightChunkDuration])
+
+  useEffect(() => {
+    if (onHighlightChunks) {
+      onHighlightChunks(highlightedChunks)
+    }
+  }, [highlightedChunks, onHighlightChunks])
 
   return (
     <Fragment>

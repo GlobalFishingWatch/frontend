@@ -51,13 +51,13 @@ const getTracksEventsWithCoords = (
 const TracksEvents = ({
   data,
   useTrackColor,
-  preselectedEventId,
+  highlightedEventsIds,
   onEventClick,
   onEventHover,
 }: {
   data: TimebarChartData<TrackEventChunkProps>
   useTrackColor?: boolean
-  preselectedEventId?: string
+  highlightedEventsIds?: string[]
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
   onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
@@ -68,7 +68,7 @@ const TracksEvents = ({
   const sortedTracksEvents = useSortedChartData(data)
   const clusteredTracksEvents = useClusteredChartData(sortedTracksEvents)
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
-  useUpdateChartsData('tracksEvents', sortedTracksEvents)
+  useUpdateChartsData('tracksEvents', filteredTracksEvents)
 
   const tracksEventsWithCoords = useMemo(
     () =>
@@ -81,30 +81,30 @@ const TracksEvents = ({
     [filteredTracksEvents, outerScale, graphHeight, trackGraphOrientation]
   ) as TimebarChartData<TrackEventChunkProps>
 
-  const [highlightedEvent, setHighlightedEvent] =
-    useState<TimebarChartChunk<TrackEventChunkProps> | null>(null)
-  const [preselectedEvent, setPreselectedEvent] =
-    useState<TimebarChartChunk<TrackEventChunkProps> | null>(null)
+  // const [highlightedEvent, setHighlightedEvent] =
+  //   useState<TimebarChartChunk<TrackEventChunkProps> | null>(null)
+  // const [preselectedEvent, setPreselectedEvent] =
+  //   useState<TimebarChartChunk<TrackEventChunkProps> | null>(null)
 
-  const eventHighlighted = preselectedEvent || highlightedEvent
-  // checks if preselectedEventId exist in the first trackEvents, pick it and setHighlightedEvent accordingly
-  // TODO should that work on *all* trackEvents?
-  useEffect(() => {
-    if (preselectedEventId) {
-      if (tracksEventsWithCoords && tracksEventsWithCoords.length) {
-        const preselectedHighlightedEvent = tracksEventsWithCoords[0].chunks.find(
-          (event) => event.id === preselectedEventId
-        )
-        if (preselectedHighlightedEvent) {
-          setPreselectedEvent(preselectedHighlightedEvent)
-        } else {
-          setPreselectedEvent(null)
-        }
-      }
-    } else {
-      setPreselectedEvent(null)
-    }
-  }, [preselectedEventId, tracksEventsWithCoords])
+  // const eventHighlighted = preselectedEvent || highlightedEvent
+  // // checks if preselectedEventId exist in the first trackEvents, pick it and setHighlightedEvent accordingly
+  // // TODO should that work on *all* trackEvents?
+  // useEffect(() => {
+  //   if (preselectedEventId) {
+  //     if (tracksEventsWithCoords && tracksEventsWithCoords.length) {
+  //       const preselectedHighlightedEvent = tracksEventsWithCoords[0].chunks.find(
+  //         (event) => event.id === preselectedEventId
+  //       )
+  //       if (preselectedHighlightedEvent) {
+  //         setPreselectedEvent(preselectedHighlightedEvent)
+  //       } else {
+  //         setPreselectedEvent(null)
+  //       }
+  //     }
+  //   } else {
+  //     setPreselectedEvent(null)
+  //   }
+  // }, [preselectedEventId, tracksEventsWithCoords])
 
   return (
     <div className={styles.Events}>
@@ -120,7 +120,8 @@ const TracksEvents = ({
             <div
               key={event.id}
               className={cx(styles.event, styles[event.type || 'none'], {
-                [styles.highlighted]: eventHighlighted && eventHighlighted.id === event.id,
+                [styles.highlighted]:
+                  highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
               })}
               style={
                 {
@@ -136,16 +137,16 @@ const TracksEvents = ({
                     : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
                 } as React.CSSProperties
               }
-              onMouseEnter={() => {
-                if (!event.cluster && onEventHover) {
-                  onEventHover(event)
-                }
-                setHighlightedEvent(event)
-              }}
-              onMouseLeave={() => {
-                if (onEventHover) onEventHover()
-                setHighlightedEvent(null)
-              }}
+              // onMouseEnter={() => {
+              //   if (!event.cluster && onEventHover) {
+              //     onEventHover(event)
+              //   }
+              //   setHighlightedEvent(event)
+              // }}
+              // onMouseLeave={() => {
+              //   if (onEventHover) onEventHover()
+              //   setHighlightedEvent(null)
+              // }}
               onClick={() => {
                 if (onEventClick) onEventClick(event)
               }}

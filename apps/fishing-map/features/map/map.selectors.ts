@@ -26,7 +26,7 @@ import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
-  selectHighlightedEvent,
+  selectHighlightedEvents,
   Range,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews } from 'features/app/app.selectors'
@@ -43,7 +43,7 @@ type GetGeneratorConfigParams = {
   rulers: Ruler[]
   debugOptions: DebugOptions
   highlightedTime?: Range
-  highlightedEvent?: ApiEvent
+  highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
   showTimeComparison?: boolean
 }
@@ -53,7 +53,7 @@ const getGeneratorsConfig = ({
   rulers,
   debugOptions,
   highlightedTime,
-  highlightedEvent,
+  highlightedEvents,
   bivariateDataviews,
   showTimeComparison,
 }: GetGeneratorConfigParams) => {
@@ -80,7 +80,7 @@ const getGeneratorsConfig = ({
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
     heatmapAnimatedMode,
-    highlightedEvent,
+    highlightedEvents,
     highlightedTime,
     debug: debugOptions.debug,
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
@@ -127,7 +127,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectRulers,
     selectDebugOptions,
     selectHighlightedTime,
-    selectHighlightedEvent,
+    selectHighlightedEvents,
     selectBivariateDataviews,
     selectShowTimeComparison,
   ],
@@ -137,7 +137,7 @@ const selectMapGeneratorsConfig = createSelector(
     rulers,
     debugOptions,
     highlightedTime,
-    highlightedEvent,
+    highlightedEvents,
     bivariateDataviews,
     showTimeComparison
   ) => {
@@ -147,7 +147,7 @@ const selectMapGeneratorsConfig = createSelector(
       rulers,
       debugOptions,
       highlightedTime,
-      highlightedEvent,
+      highlightedEvents,
       bivariateDataviews,
       showTimeComparison,
     })

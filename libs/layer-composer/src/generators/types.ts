@@ -273,6 +273,16 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   pointsToSegmentsSwitchLevel?: number
 }
 
+export interface VesselEventsShapesGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.VesselEventsShapes
+  data: RawEvent[]
+  color?: string
+  track?: TrackGeneratorConfigData
+  showAuthorizationStatus?: boolean
+  currentEventsIds?: string[]
+  pointsToSegmentsSwitchLevel?: number
+}
+
 /**
  * Renders rulers showing a distance between two points, using great circle if needed
  */

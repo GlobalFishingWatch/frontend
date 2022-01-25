@@ -7,7 +7,7 @@ import type {
 import { Group } from '../../types'
 import {
   GeneratorType,
-  VesselEventsGeneratorConfig,
+  VesselEventsShapesGeneratorConfig,
   MergedGeneratorConfig,
   VesselsEventsSource,
 } from '../types'
@@ -20,12 +20,13 @@ import {
   getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
 
-export type GlobalVesselEventsGeneratorConfig = MergedGeneratorConfig<VesselEventsGeneratorConfig>
+export type GlobalVesselEventsShapesGeneratorConfig =
+  MergedGeneratorConfig<VesselEventsShapesGeneratorConfig>
 
 class VesselsEventsShapesGenerator {
   type = GeneratorType.VesselEventsShapes
 
-  _showTrackSegments = (config: GlobalVesselEventsGeneratorConfig) => {
+  _showTrackSegments = (config: GlobalVesselEventsShapesGeneratorConfig) => {
     return (
       config.track &&
       config.pointsToSegmentsSwitchLevel !== undefined &&
@@ -34,9 +35,8 @@ class VesselsEventsShapesGenerator {
     )
   }
 
-  _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
+  _getStyleSources = (config: GlobalVesselEventsShapesGeneratorConfig): VesselsEventsSource[] => {
     const { id, data, track, start, end, showAuthorizationStatus } = config
-    const iconsPrefix = config.event?.iconsPrefix
 
     if (!data) {
       // console.warn(`${VESSEL_EVENTS_TYPE} source generator needs geojson data`, config)
@@ -46,7 +46,7 @@ class VesselsEventsShapesGenerator {
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(
       data,
       showAuthorizationStatus,
-      iconsPrefix,
+      null,
       config.color
     ) as FeatureCollection
 
@@ -84,14 +84,24 @@ class VesselsEventsShapesGenerator {
     return [pointsSource, segmentsSource]
   }
 
-  _getStyleLayers = (config: GlobalVesselEventsGeneratorConfig) => {
+  _getStyleLayers = (config: GlobalVesselEventsShapesGeneratorConfig) => {
     if (!config.data) {
       // console.warn(`${VESSEL_EVENTS_TYPE} source generator needs geojson data`, config)
       return []
     }
     const showTrackSegments = this._showTrackSegments(config)
 
-    const activeFilter = ['case', ['==', ['get', 'id'], config.currentEventId || null]]
+    const getExpression = (highlighted: any, fallback: any) => {
+      if (!config.currentEventsIds || !config.currentEventsIds.length) {
+        return fallback
+      }
+      const filter = [
+        'case',
+        ['any', ...config.currentEventsIds.map((id: string) => ['==', ['get', 'id'], id])],
+      ]
+      const expr = [...filter, highlighted, fallback]
+      return expr
+    }
 
     const pointsLayers: SymbolLayerSpecification[] = [
       {
@@ -100,9 +110,9 @@ class VesselsEventsShapesGenerator {
         source: `${config.id}_points`,
         ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         paint: {
-          'icon-color': [...activeFilter, '#ffffff', ['get', 'color']],
+          'icon-color': getExpression('#ffffff', ['get', 'color']),
           'icon-halo-color': config.color || '#ffffff',
-          'icon-halo-width': [...activeFilter, 2, 0],
+          'icon-halo-width': getExpression(2, 0),
         },
         layout: {
           'icon-allow-overlap': true,
@@ -111,9 +121,9 @@ class VesselsEventsShapesGenerator {
             ['linear'],
             ['zoom'],
             4,
-            [...activeFilter, ['*', 1.5, ['get', 'shapeSize']], ['get', 'shapeSize']],
+            getExpression(['*', 1.5, ['get', 'shapeSize']], ['get', 'shapeSize']),
             9,
-            [...activeFilter, ['*', 3, ['get', 'shapeSize']], ['*', 2, ['get', 'shapeSize']]],
+            getExpression(['*', 3, ['get', 'shapeSize']], ['*', 2, ['get', 'shapeSize']]),
           ],
           'icon-image': ['get', 'shape'],
           'symbol-sort-key': ['get', 'shapePriority'],
@@ -143,7 +153,7 @@ class VesselsEventsShapesGenerator {
         },
         paint: {
           'line-color': ['get', 'color'],
-          'line-width': [...activeFilter, 6, 1.5],
+          'line-width': getExpression(6, 1.5),
           'line-opacity': 1,
         },
         metadata: {
@@ -157,7 +167,7 @@ class VesselsEventsShapesGenerator {
     return [...pointsLayers, ...segmentsLayers]
   }
 
-  getStyle = (config: GlobalVesselEventsGeneratorConfig) => {
+  getStyle = (config: GlobalVesselEventsShapesGeneratorConfig) => {
     memoizeByLayerId(config.id, {
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
       getVesselEventsSegmentsGeojson: memoizeOne(
