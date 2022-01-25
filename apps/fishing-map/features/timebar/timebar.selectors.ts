@@ -29,6 +29,7 @@ import {
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
+import { selectHighlightedEvents } from './timebar.slice'
 
 export const selectTracksData = createSelector(
   [selectActiveTrackDataviews, selectResources],
@@ -67,7 +68,8 @@ export const selectTracksData = createSelector(
         }
       })
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      const shipname = getVesselLabel((resources[infoUrl] as any)?.data)
+      const vessel = (resources[infoUrl] as any)?.data
+      const shipname = vessel ? getVesselLabel(vessel) : ''
       const item: TimebarChartItem = {
         ...timebarTrack,
         chunks,
@@ -290,3 +292,17 @@ export const selectTracksEvents = createSelector(
     return tracksEvents
   }
 )
+
+// export const selectHighlightedEventsMemoized = createSelector(
+//   selectHighlightedEvents,
+//   (highlightedEvents) => highlightedEvents,
+//   {
+//     memoizeOptions: {
+//       equalityCheck: (a: string[] | undefined, b: string[] | undefined) => {
+//         const serializedA = Array.isArray(a) ? a.join('') : ''
+//         const serializedB = Array.isArray(b) ? b.join('') : ''
+//         return a === b
+//       },
+//     },
+//   }
+// )

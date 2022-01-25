@@ -46,12 +46,14 @@ const getCommonIntervals = (datasets: Dataset[]) => {
   )
 }
 
-type DataviewsGeneratorConfigsParams = {
+export type DataviewsGeneratorConfigsParams = {
   debug?: boolean
   highlightedTime?: { start: string; end: string }
   highlightedEvent?: ApiEvent
+  highlightedEvents?: string[]
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: HeatmapAnimatedMode
+  customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -87,7 +89,7 @@ export function getGeneratorConfig(
   params?: DataviewsGeneratorConfigsParams,
   resources?: DataviewsGeneratorResource
 ) {
-  const { debug = false, highlightedTime, highlightedEvent } = params || {}
+  const { debug = false, highlightedTime, highlightedEvent, highlightedEvents } = params || {}
 
   let generator: GeneratorDataviewConfig = {
     id: dataview.id,
@@ -108,6 +110,7 @@ export function getGeneratorConfig(
       return {
         ...generator,
         ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+        ...(highlightedEvents && { currentEventId: highlightedEvents[0] }),
       }
     }
     case GeneratorType.Track: {
@@ -133,17 +136,23 @@ export function getGeneratorConfig(
       if (hasEventData) {
         // TODO This flatMap will prevent the corresponding generator to memoize correctly
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
+        const type =
+          params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
+            ? params?.customGeneratorMapping.VESSEL_EVENTS
+            : GeneratorType.VesselEvents
+
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           event: dataview.config?.event,
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
-          type: GeneratorType.VesselEvents,
+          type,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
           data: data,
           color: dataview.config?.color,
           track: generator.data,
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+          ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
         }
         return [generator, eventsGenerator]
       }

@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection } from 'geojson'
 import { Segment, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { EventType } from '@globalfishingwatch/api-types'
 import { Dictionary } from '../../types'
 import filterTrackByTimerange from '../track/filterTrackByTimerange'
 import { AuthorizationOptions, RawEvent } from '../types'
@@ -13,6 +14,21 @@ const EVENTS_COLORS: Dictionary<string> = {
   port: '#99EEFF',
   port_visit: '#99EEFF',
   fishing: '#ffffff',
+}
+
+const SHAPE_BY_TYPE: Record<EventType, string> = {
+  fishing: 'circle',
+  encounter: 'rhombus',
+  loitering: 'rhombus',
+  port_visit: 'square',
+  gap: 'circle',
+}
+const SHAPE_SIZE_BY_TYPE: Record<EventType, number> = {
+  fishing: 0.4,
+  encounter: 1.5,
+  loitering: 1.5,
+  port_visit: 1,
+  gap: 1,
 }
 
 const getEncounterAuthColor = (authorizationStatus: AuthorizationOptions) => {
@@ -35,7 +51,8 @@ const getDateTimeDate = (date: string | number) => {
 export const getVesselEventsGeojson = (
   trackEvents: RawEvent[] | null,
   showAuthorizationStatus = true,
-  iconsPrefix = 'carrier_portal_'
+  iconsPrefix = 'carrier_portal_',
+  trackColor = null
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -54,6 +71,13 @@ export const getVesselEventsGeojson = (
 
     const lng = event.position.lng || event.position.lon || 0
 
+    let color = EVENTS_COLORS[event.type]
+    if (isEncounterEvent && showAuthorizationStatus) {
+      color = getEncounterAuthColor(authorizationStatus)
+    } else if (event.type === 'fishing') {
+      color = trackColor || EVENTS_COLORS[event.type]
+    }
+
     return {
       type: 'Feature',
       properties: {
@@ -71,10 +95,10 @@ export const getVesselEventsGeojson = (
           }),
         }),
         icon: `${iconsPrefix}${event.type}`,
-        color:
-          isEncounterEvent && showAuthorizationStatus
-            ? getEncounterAuthColor(authorizationStatus)
-            : EVENTS_COLORS[event.type],
+        shape: SHAPE_BY_TYPE[event.type as EventType],
+        shapeSize: SHAPE_SIZE_BY_TYPE[event.type as EventType],
+        shapePriority: event.type === 'fishing' ? 0 : 1,
+        color,
       },
       geometry: {
         type: 'Point',
@@ -186,3 +210,46 @@ export const getVesselEventsSegmentsGeojson = (
   })
   return featureCollection
 }
+
+// export const getFeaturesTypes = (data: RawEvent[]) => {
+//   const featureTypes: { [key in EventType]?: boolean } = {}
+//   data.forEach((event) => {
+//     const currentType = event.type as EventType
+//     if (!featureTypes[currentType]) {
+//       featureTypes[currentType] = true
+//     }
+//   })
+//   return Object.keys(featureTypes)
+// }
+
+// export const getSourceId = (configId: string, type: EventType) => `${configId}_points_${type}`
+
+// type SourcesByType = { [key in EventType]?: VesselsEventsSource }
+
+// export const groupSourcesByType = (
+//   featuresFiltered: any[],
+//   id: string,
+//   geojson: FeatureCollection,
+//   types: EventType[]
+// ) => {
+//   const sourcesByType: SourcesByType = featuresFiltered.reduce(
+//     (agg: SourcesByType, current: Feature) => {
+//       const currentType = current.properties?.type as EventType
+//       const group = agg[currentType]
+//       if (group && group.data) {
+//         ;(group.data as FeatureCollection).features.push(current)
+//         return agg
+//       }
+//       return {
+//         ...agg,
+//         [currentType]: {
+//           id: getSourceId(id, currentType),
+//           type: 'geojson',
+//           data: { ...geojson, features: [current] },
+//         },
+//       }
+//     },
+//     []
+//   )
+//   return Object.keys(sourcesByType).map((type) => sourcesByType[type as EventType])
+// }

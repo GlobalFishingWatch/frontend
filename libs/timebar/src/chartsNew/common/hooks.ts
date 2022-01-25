@@ -120,7 +120,7 @@ const EVENT_TYPES_SORT_ORDER = {
   [EventTypes.Fishing]: 5,
 }
 
-const sortData = (data: TimebarChartData<any>) => {
+const sortDataByType = (data: TimebarChartData<any>) => {
   return data.map((item) => {
     return {
       ...item,
@@ -136,9 +136,20 @@ const sortData = (data: TimebarChartData<any>) => {
   })
 }
 
-export const useSortedChartData = (data: TimebarChartData<any>) => {
+const sortDataByTime = (data: TimebarChartData<any>) => {
+  return data.map((item) => {
+    return {
+      ...item,
+      chunks: item.chunks.sort((chunkA, chunkB) => {
+        return chunkA.start - chunkB.start
+      }),
+    }
+  })
+}
+
+export const useSortedChartData = (data: TimebarChartData<any>, type?: 'byType' | 'byTime') => {
   // Sort events to pick prioritized event on highlight
   return useMemo(() => {
-    return sortData(data)
-  }, [data])
+    return type && type === 'byTime' ? sortDataByTime(data) : sortDataByType(data)
+  }, [data, type])
 }

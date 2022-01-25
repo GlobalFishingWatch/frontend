@@ -12,14 +12,14 @@ import {
   TimebarChartChunk,
   TrackEventChunkProps,
   TrackGraphOrientation,
+  HighlightedChunks,
 } from '@globalfishingwatch/timebar'
-import { ApiEvent } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
-  useHighlightEventConnect,
+  useHighlightedEventsConnect,
   useDisableHighlightTimeConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
@@ -32,21 +32,31 @@ import { selectIsMapDrawing } from 'features/map/map.selectors'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
-import {
-  setHighlightedTime,
-  disableHighlightedTime,
-  selectHighlightedTime,
-  Range,
-} from './timebar.slice'
+import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
 const TimebarHighlighterWrapper = () => {
+  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
+  const onHighlightChunks = useCallback(
+    (chunks: HighlightedChunks) => {
+      if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
+        dispatchHighlightedEvents(chunks.tracksEvents)
+      } else {
+        dispatchHighlightedEvents(undefined)
+      }
+    },
+    [dispatchHighlightedEvents]
+  )
   return highlightedTime ? (
-    <TimebarHighlighter hoverStart={highlightedTime.start} hoverEnd={highlightedTime.end} />
+    <TimebarHighlighter
+      hoverStart={highlightedTime.start}
+      hoverEnd={highlightedTime.end}
+      onHighlightChunks={onHighlightChunks}
+    />
   ) : null
 }
 
@@ -55,7 +65,7 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
+  const { highlightedEvents } = useHighlightedEventsConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
@@ -169,22 +179,22 @@ const TimebarWrapper = () => {
     [setMapCoordinates, zoom]
   )
 
-  const onEventHover = useCallback(
-    (event: TimebarChartChunk<TrackEventChunkProps>) => {
-      if (!event) {
-        dispatchHighlightedEvent(null)
-        return
-      }
+  // const onEventHover = useCallback(
+  //   (event: TimebarChartChunk<TrackEventChunkProps>) => {
+  //     // if (!event) {
+  //     //   dispatchHighlightedEvent(null)
+  //     //   return
+  //     // }
 
-      dispatch(disableHighlightedTime())
+  //     dispatch(disableHighlightedTime())
 
-      const apiEvent: ApiEvent = {
-        id: event.id as string,
-      } as any
-      dispatchHighlightedEvent(apiEvent)
-    },
-    [dispatch, dispatchHighlightedEvent]
-  )
+  //     // const apiEvent: ApiEvent = {
+  //     //   id: event.id as string,
+  //     // } as any
+  //     // dispatchHighlightedEvent(apiEvent)
+  //   },
+  //   [dispatch]
+  // )
   const showGraph = useMemo(() => {
     return (
       timebarGraph !== 'none' &&
@@ -241,11 +251,11 @@ const TimebarWrapper = () => {
                     <Fragment>
                       <TimebarTracksEvents
                         data={tracksEvents}
-                        useTrackColor={tracksGraphsData.length > 1}
+                        // useTrackColor={tracksGraphsData.length > 1}
                         // labels={labels?.trackEvents}
-                        preselectedEventId={highlightedEvent?.id}
+                        highlightedEventsIds={highlightedEvents}
                         onEventClick={onEventClick}
-                        onEventHover={onEventHover}
+                        // onEventHover={onEventHover}
                       />
                     </Fragment>
                   )}

@@ -28,7 +28,7 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
+import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import {
   selectShowTimeComparison,
@@ -292,34 +292,38 @@ export type TooltipEvent = {
 }
 
 export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
-  const highlightedEvent = useSelector(selectHighlightedEvent)
+  const highlightedEvents = useSelector(selectHighlightedEvents)
   const dispatch = useDispatch()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceDispatch = useCallback(
-    debounce((event: any) => {
-      dispatch(setHighlightedEvent(event))
+    debounce((eventId?: string) => {
+      dispatch(setHighlightedEvents(eventId ? [eventId] : undefined))
     }, 100),
     []
   )
 
   const setHighlightedEventDebounced = useCallback(() => {
-    let highlightEvent: { id: string } | undefined
+    let highlightEvent: string | undefined
     const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
     const clusterFeature = features?.find((f) => f.type === GeneratorType.TileCluster)
     if (!clusterFeature && vesselFeature) {
-      highlightEvent = { id: vesselFeature.properties?.id }
+      highlightEvent = vesselFeature.properties?.id
     } else if (clusterFeature) {
-      highlightEvent = { id: clusterFeature.properties?.event_id }
+      highlightEvent = clusterFeature.properties?.event_id
     }
     if (highlightEvent) {
-      if (highlightedEvent?.id !== highlightEvent.id) {
+      if (
+        !highlightedEvents ||
+        highlightedEvents.length !== 1 ||
+        highlightedEvents[0] !== highlightEvent
+      ) {
         debounceDispatch(highlightEvent)
       }
-    } else if (highlightedEvent) {
+    } else if (highlightedEvents && highlightedEvents.length) {
       debounceDispatch(undefined)
     }
-  }, [features, highlightedEvent, debounceDispatch])
+  }, [features, highlightedEvents, debounceDispatch])
 
   useEffect(() => {
     setHighlightedEventDebounced()

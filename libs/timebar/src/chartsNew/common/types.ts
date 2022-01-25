@@ -46,3 +46,5 @@ export type TimebarChartData<T = void> = TimebarChartItem<T>[]
 export type ChartType = 'tracks' | 'tracksEvents' | 'tracksGraphs' | 'activity'
 
 export type TimebarChartsData = Record<ChartType, TimebarChartData<void>>
+
+export type HighlightedChunks = Partial<Record<ChartType, string[]>>

@@ -12,6 +12,7 @@ import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'
+import VesselsEventsShapesGenerator from './vessel-events/vessel-events-shapes'
 
 export * from './heatmap/types'
 export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
@@ -37,6 +38,7 @@ const GeneratorConfig = {
   [GeneratorType.Heatmap]: new HeatmapGenerator(),
   [GeneratorType.Track]: new TrackGenerator(),
   [GeneratorType.VesselEvents]: new VesselEventsGenerator(),
+  [GeneratorType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
   [GeneratorType.Rulers]: new RulersGenerator(),
 }
 
