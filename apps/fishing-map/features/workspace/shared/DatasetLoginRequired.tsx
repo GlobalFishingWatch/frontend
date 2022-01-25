@@ -4,25 +4,32 @@ import { useTranslation } from 'react-i18next'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import Remove from '../common/Remove'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 
-function DatasetNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
+function DatasetLoginRequired({ dataview }: { dataview: UrlDataviewInstance }) {
   const { t } = useTranslation()
   return (
     <div className={cx(styles.LayerPanel, 'print-hidden')}>
       <div className={styles.header}>
-        <Tooltip content={t('errors.datasetNotFound', 'Dataset not found')}>
+        <Tooltip content={t('dataset.login', 'This is a private dataset, login to see it')}>
           <h3 className={cx(styles.name, styles.error)}>
             {dataview.datasetsConfig?.[0]?.datasetId ||
               t('errors.datasetNotFound', 'Dataset not found')}
           </h3>
         </Tooltip>
         <div className={styles.actions}>
-          <Remove dataview={dataview} />
+          <LoginButtonWrapper>
+            <IconButton
+              icon="user"
+              size="small"
+              tooltip={t('dataset.login', 'This is a private dataset, login to see it')}
+              tooltipPlacement="top"
+            />
+          </LoginButtonWrapper>
         </div>
       </div>
     </div>
   )
 }
 
-export default DatasetNotFound
+export default DatasetLoginRequired

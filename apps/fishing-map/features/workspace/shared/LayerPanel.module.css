@@ -131,6 +131,10 @@
   text-decoration: underline;
 }
 
+.error {
+  color: var(--color-danger-red);
+}
+
 @media print {
   .tagList > li > div {
     border: var(--border);

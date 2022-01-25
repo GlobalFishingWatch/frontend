@@ -125,6 +125,7 @@
     "individualIdField": "Campo de ID individual",
     "latitudeNameField": "Campo latitude",
     "longitudeNameField": "Campo longitude",
+    "login": "This is a private dataset, login to see it",
     "new": "Novo dataset",
     "notUploadedYet": "Nenhuma camada de contexto foi carregada ainda",
     "notUploadedYetEnvironment": "Nenhuma camada de ambiente foi carregada ainda",
