@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { uniqBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
@@ -12,7 +12,8 @@ import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { upperFirst } from 'utils/info'
-import layerStyles from './VesselSection.module.css'
+import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
+import layerStyles from './VesselEventsLegend.module.css'
 
 type VesselEventsLegendProps = {
   dataviews: UrlDataviewInstance[]
@@ -22,6 +23,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
   const { t } = useTranslation()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
   const { dispatchQueryParams } = useLocationConnect()
+  const tracks = useSelector(selectActiveVesselsDataviews)
   const eventDatasets = uniqBy(
     dataviews.flatMap((dataview) => getEventsDatasetsInDataview(dataview)),
     'id'
@@ -55,6 +57,24 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
     [dispatchQueryParams, allEventTypes, currentVisibleEvents]
   )
 
+  const eventTypes = useMemo(() => {
+    return eventDatasets.flatMap((dataset) => {
+      const eventType = dataset.configuration?.type
+      if (!eventType) return []
+      const active =
+        currentVisibleEvents === 'all'
+          ? true
+          : currentVisibleEvents === 'none'
+          ? false
+          : currentVisibleEvents.includes(eventType)
+      return {
+        datasetId: dataset.id,
+        active,
+        eventType,
+      }
+    })
+  }, [eventDatasets, currentVisibleEvents])
+
   if (!showLegend) {
     return null
   }
@@ -62,26 +82,28 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
   return (
     <div className={styles.content}>
       <ul className={layerStyles.eventsLegendContainer}>
-        {eventDatasets.map((dataset) => {
-          const eventType = dataset.configuration?.type
-          if (!eventType) return null
-          const active =
-            currentVisibleEvents === 'all'
-              ? true
-              : currentVisibleEvents === 'none'
-              ? false
-              : currentVisibleEvents.includes(eventType)
-
+        {eventTypes.map(({ datasetId, eventType, active }) => {
           return (
             <li
-              key={dataset.id}
-              className={cx(layerStyles.eventsLegend, { [layerStyles.active]: active })}
+              key={datasetId}
+              className={cx(layerStyles.eventsLegend, { [layerStyles.disabled]: !active })}
             >
+              <div
+                className={cx(layerStyles.icon, layerStyles[eventType], {
+                  [styles.active]: active,
+                })}
+                style={{
+                  backgroundColor:
+                    eventType === 'fishing' && tracks.length === 1
+                      ? tracks[0].config.color
+                      : EVENTS_COLORS[eventType],
+                }}
+              />
               <Switch
                 active={active}
                 onClick={onEventChange}
                 id={eventType}
-                color={EVENTS_COLORS[eventType]}
+                // color={EVENTS_COLORS[eventType]}
                 className={layerStyles.eventsLegendSwitch}
               />
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>

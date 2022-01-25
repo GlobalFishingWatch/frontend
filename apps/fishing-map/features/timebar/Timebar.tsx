@@ -252,7 +252,6 @@ const TimebarWrapper = () => {
                       <TimebarTracksEvents
                         data={tracksEvents}
                         // useTrackColor={tracksGraphsData.length > 1}
-                        // labels={labels?.trackEvents}
                         highlightedEventsIds={highlightedEvents}
                         onEventClick={onEventClick}
                         // onEventHover={onEventHover}

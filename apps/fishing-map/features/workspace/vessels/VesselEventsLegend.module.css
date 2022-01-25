@@ -23,3 +23,22 @@
   text-decoration: none;
   color: var(--color-primary-blue);
 }
+
+.icon {
+  display: block;
+  height: 8px;
+  min-width: 8px;
+  margin-right: 0.6rem;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.fishing {
+  border-radius: 99px;
+}
+
+.encounter {
+  transform: rotateZ(45deg);
+}
