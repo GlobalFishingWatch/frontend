@@ -1,30 +1,38 @@
-import React, { useContext, useMemo } from 'react'
-import PropTypes from 'prop-types'
 import { area, stack, stackOffsetSilhouette, curveStepAfter } from 'd3-shape'
 import { scaleLinear } from 'd3-scale'
 import { max } from 'd3-array'
-import ImmediateContext from '../immediateContext'
+import React, { useContext, useMemo } from 'react'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
-import TimelineContext from '../timelineContext'
+import TimelineContext, { TimelineScale } from '../timelineContext'
+import ImmediateContext from '../immediateContext'
+import { Timeseries } from './common/types'
+import { useTimeseriesToChartData } from './common/hooks'
+import { useUpdateChartsData } from './chartsData.atom'
 
 const MARGIN_BOTTOM = 20
 const MARGIN_TOP = 5
 
-const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
-  if (!data) return []
+const getPathContainers = (
+  timeseries: Timeseries,
+  graphHeight: number,
+  overallScale: TimelineScale,
+  numSublayers: number
+) => {
+  if (!timeseries) return []
 
   const stackLayout = stack()
-    .keys(Array.from(Array(numSublayers).keys()))
+    .keys(Array.from(Array(numSublayers).keys()) as any)
     .offset(stackOffsetSilhouette)
 
-  const series = stackLayout(data)
-  const maxY = max(series, (d) => max(d, (d) => d[1]))
+  const series = stackLayout(timeseries)
+  const maxY = max(series, (d) => max(d, (d) => d[1])) as number
   const y = scaleLinear()
     .domain([0, maxY])
     .range([MARGIN_TOP, graphHeight / 2 - MARGIN_BOTTOM / 2])
 
   const areaLayout = area()
-    .x((d) => overallScale(d.data.date))
+    .x((d) => overallScale((d as any).data.date))
     .y0((d) => {
       const y0 = y(d[0])
       return numSublayers === 1 && y0 < 0 ? Math.min(y0, -1) : y0
@@ -37,19 +45,28 @@ const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
 
   const layouted = series.map((s) => {
     return {
-      path: areaLayout(s),
+      path: areaLayout(s as any),
     }
   })
 
   return layouted
 }
 
-const StackedActivity = ({ data, colors, numSublayers }) => {
+const StackedActivity = ({
+  timeseries,
+  dataviews,
+}: {
+  timeseries: Timeseries
+  dataviews: UrlDataviewInstance[]
+}) => {
   const { immediate } = useContext(ImmediateContext)
+  // todo replace with outerScale hook
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
+  const dataAsTimebarChartData = useTimeseriesToChartData(timeseries, dataviews)
+  useUpdateChartsData('activity', dataAsTimebarChartData)
   const pathContainers = useMemo(() => {
-    return getPathContainers(data, graphHeight, overallScale, numSublayers)
-  }, [data, graphHeight, overallScale, numSublayers])
+    return getPathContainers(timeseries, graphHeight, overallScale, dataviews.length)
+  }, [timeseries, graphHeight, overallScale, dataviews.length])
 
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2
 
@@ -63,7 +80,10 @@ const StackedActivity = ({ data, colors, numSublayers }) => {
       >
         {pathContainers.map((pathContainer, sublayerIndex) => (
           <g key={sublayerIndex} transform={`translate(0, ${middleY})`}>
-            <path d={pathContainer.path} fill={colors ? colors[sublayerIndex] : '#ff00ff'} />
+            <path
+              d={pathContainer.path || ''}
+              fill={dataviews[sublayerIndex].config?.color || '#ffffff'}
+            />
           </g>
         ))}
       </g>
@@ -71,20 +91,4 @@ const StackedActivity = ({ data, colors, numSublayers }) => {
   )
 }
 
-StackedActivity.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      date: PropTypes.number,
-      sublayers: PropTypes.arrayOf(PropTypes.number),
-    })
-  ).isRequired,
-  colors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  numSublayers: PropTypes.number.isRequired,
-}
-
-StackedActivity.defaultProps = {
-  data: [],
-  colors: [],
-  numSublayers: 0,
-}
 export default StackedActivity

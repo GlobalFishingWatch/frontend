@@ -48,3 +48,5 @@ export type ChartType = 'tracks' | 'tracksEvents' | 'tracksGraphs' | 'activity'
 export type TimebarChartsData = Record<ChartType, TimebarChartData<void>>
 
 export type HighlightedChunks = Partial<Record<ChartType, string[]>>
+
+export type Timeseries = { frame: number; date: number; [key: number]: number }[]

@@ -157,16 +157,13 @@ const TimebarActivityGraph = () => {
     computeStackedActivity(metadata, debouncedBounds)
   }, [debouncedBounds, computeStackedActivity, map, isSmallScreen])
 
-  const dataviewsColors = temporalGridDataviews?.map((dataview) => dataview.config?.color)
-
   if (!stackedActivity) return null
   return (
     <div className={cx({ [styles.loading]: loading })}>
       <TimebarStackedActivity
         key="stackedActivity"
-        data={stackedActivity}
-        colors={dataviewsColors}
-        numSublayers={temporalGridDataviews?.length}
+        timeseries={stackedActivity}
+        dataviews={temporalGridDataviews}
       />
     </div>
   )

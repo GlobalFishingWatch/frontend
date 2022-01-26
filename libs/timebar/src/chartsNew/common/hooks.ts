@@ -2,8 +2,10 @@ import { useContext, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { scaleTime } from 'd3-scale'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import TimelineContext, { TimelineScale } from '../../timelineContext'
-import { TimebarChartData, TimebarChartChunk } from './types'
+import { TimebarChartItem, TimebarChartValue } from '..'
+import { TimebarChartData, TimebarChartChunk, Timeseries } from './types'
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
   return data.map((item) => {
@@ -152,4 +154,29 @@ export const useSortedChartData = (data: TimebarChartData<any>, type?: 'byType' 
   return useMemo(() => {
     return type && type === 'byTime' ? sortDataByTime(data) : sortDataByType(data)
   }, [data, type])
+}
+
+export const useTimeseriesToChartData = (
+  data: Timeseries,
+  dataviews: UrlDataviewInstance[]
+): TimebarChartData => {
+  if (!data || !data.length) return []
+  return dataviews.map((dataview, i) => {
+    const values: TimebarChartValue[] = data.map((frame) => {
+      return {
+        timestamp: frame.date,
+        value: frame[i],
+      }
+    })
+    const chunk: TimebarChartChunk = {
+      start: data[0].date,
+      end: data[data.length - 1].date,
+      values,
+    }
+    const item: TimebarChartItem = {
+      chunks: [chunk],
+      color: dataview.config?.color,
+    }
+    return item
+  })
 }
