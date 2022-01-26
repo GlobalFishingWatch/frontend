@@ -443,8 +443,8 @@
     }
   },
   "private-indonesia-zebrax-presence": {
-    "name": "Zebrax",
-    "description": "Zebra X Presence",
+    "name": "Pêche côtière Indonésie",
+    "description": "Cette couche de Global Fishing Watch utilise les données fournies par Rare, Aruna et AP2HI. Les données sont collectées à l'aide d'appareils de différents fournisseurs qui suivent l'emplacement et la vitesse. Les informations affichées représentent la présence du navire. La présence est déterminée en prenant toutes les positions transmises par le dispositif de repérage du navire.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -462,8 +462,8 @@
     }
   },
   "private-indonesia-zebrax-vessels": {
-    "name": "Indonesia ZebraX (Vessels)",
-    "description": "Vessels (Indonesia ZebraX)",
+    "name": "Pêche côtière Indonésie",
+    "description": "Navieres",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -1423,7 +1423,7 @@
   },
   "public-indonesia-zebrax-presence": {
     "name": "Pêche côtière Indonésie",
-    "description": "Cette couche de Global Fishing Watch utilise les données fournies par Rare, Aruna et AP2HI. Les données sont collectées à l'aide d'appareils de ZebraX qui suivent l'emplacement et la vitesse. Les informations affichées représentent la présence du navire.",
+    "description": "Cette couche de Global Fishing Watch utilise les données fournies par Rare, Aruna et AP2HI. Les données sont collectées à l'aide d'appareils de différents fournisseurs qui suivent l'emplacement et la vitesse. Les informations affichées représentent la présence du navire. La présence est déterminée en prenant toutes les positions transmises par le dispositif de repérage du navire.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
