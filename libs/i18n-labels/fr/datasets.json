@@ -462,8 +462,8 @@
     }
   },
   "private-indonesia-zebrax-vessels": {
-    "name": "Pêche côtière Indonésie",
-    "description": "Navieres",
+    "name": "Pêche côtière navieres",
+    "description": "Pêche côtière navieres",
     "schema": {
       "id": "id",
       "flag": "flag",
