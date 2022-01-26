@@ -5,4 +5,4 @@ export * from './timelineContext'
 export * from './immediateContext'
 export { default as Timebar } from './timebar'
 
-export * from './chartsNew'
+export * from './charts'
