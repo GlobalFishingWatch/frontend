@@ -443,8 +443,8 @@
     }
   },
   "private-indonesia-zebrax-presence": {
-    "name": "Zebrax",
-    "description": "Zebra X Presence",
+    "name": "Pesquerías costeras de Indonesia",
+    "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por Rare, Aruna y AP2HI. Los datos se recopilan mediante distintos dispositivos que rastrean la ubicación y la velocidad. La información mostrada representa la presencia de la embarcación. La presencia se determina tomando todas las posiciones transmitidas por el dispositivo de la embarcación.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -462,8 +462,8 @@
     }
   },
   "private-indonesia-zebrax-vessels": {
-    "name": "Indonesia ZebraX (Vessels)",
-    "description": "Vessels (Indonesia ZebraX)",
+    "name": "Embarcaciones",
+    "description": "Embarcaciones",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -1423,7 +1423,7 @@
   },
   "public-indonesia-zebrax-presence": {
     "name": "Pesquerías costeras de Indonesia",
-    "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por Rare, Aruna y AP2HI. Los datos se recopilan mediante dispositivos de ZebraX que rastrean la ubicación y la velocidad. La información mostrada representa la presencia de la embarcación.",
+    "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por Rare, Aruna y AP2HI. Los datos se recopilan mediante distintos dispositivos que rastrean la ubicación y la velocidad. La información mostrada representa la presencia de la embarcación. La presencia se determina tomando todas las posiciones transmitidas por el dispositivo de la embarcación.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
