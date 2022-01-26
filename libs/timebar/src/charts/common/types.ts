@@ -12,6 +12,7 @@ export type TrackEventChunkProps = {
 export type TimebarChartValue = {
   timestamp: number
   value?: number
+  frame?: number
 }
 
 export type TimebarChartChunkCluster = {
@@ -31,21 +32,31 @@ export type TimebarChartChunk<T = void> = {
   props?: T
 }
 
+export type HighlighterCallback =
+  | string
+  | ((
+      chunk: TimebarChartChunk<any>,
+      value: TimebarChartValue | undefined,
+      item?: TimebarChartItem,
+      itemIndex?: number
+    ) => string)
+
+export type HighlighterDateCallback = (timestamp: number) => string
+
 export type TimebarChartItem<T = void> = {
   chunks: TimebarChartChunk<T>[]
   color?: string
   status?: ResourceStatus
   y?: number
-  getHighlighterLabel?:
-    | string
-    | ((chunk: TimebarChartChunk<any>, value: TimebarChartValue | undefined) => string)
+  getHighlighterLabel?: HighlighterCallback
+  props?: any
 }
 
 export type TimebarChartData<T = void> = TimebarChartItem<T>[]
 
 export type ChartType = 'tracks' | 'tracksEvents' | 'tracksGraphs' | 'activity'
 
-export type TimebarChartsData = Record<ChartType, TimebarChartData<void>>
+export type TimebarChartsData = Record<ChartType, { data: TimebarChartData<void>; active: boolean }>
 
 export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 

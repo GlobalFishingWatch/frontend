@@ -13,13 +13,20 @@ import {
   TimebarChartsData,
   HighlightedChunks,
   ChartType,
+  HighlighterDateCallback,
 } from './common/types'
 import chartsDataState from './chartsData.atom'
 import { useOuterScale } from './common/hooks'
 
 dayjs.extend(utc)
 
-const getCoords = (hoverStart: string, hoverEnd: string, outerScale: TimelineScale) => {
+const getCoords = (
+  hoverStart: string,
+  hoverEnd: string,
+  outerScale: TimelineScale,
+  dateCallback?: HighlighterDateCallback
+) => {
+  // TODO !!!! GMT
   const hoverStartDate = new Date(hoverStart)
   const hoverEndDate = new Date(hoverEnd)
   const left = outerScale(hoverStartDate)
@@ -28,15 +35,20 @@ const getCoords = (hoverStart: string, hoverEnd: string, outerScale: TimelineSca
     hoverStartDate.getTime() + (hoverEndDate.getTime() - hoverStartDate.getTime()) / 2
   )
   const centerDate = new Date(centerMs)
-  const format = getDefaultFormat(hoverStart, hoverEnd)
-  const centerDateLabel = dayjs(centerDate).utc().format(format)
   const center = outerScale(centerDate)
+
+  let dateLabel
+  if (dateCallback) dateLabel = dateCallback(centerMs)
+  else {
+    const format = getDefaultFormat(hoverStart, hoverEnd)
+    dateLabel = dayjs(centerDate).utc().format(format)
+  }
   return {
     left,
     center,
     width,
     centerMs,
-    centerDateLabel,
+    dateLabel,
   }
 }
 
@@ -72,7 +84,7 @@ const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
 }
 
 type HighlighterData = {
-  labels?: ({ value?: string; isMain: boolean } | undefined)[]
+  labels: ({ value?: string; isMain: boolean } | undefined)[]
   color?: string
 }
 
@@ -85,20 +97,22 @@ const getHighlighterData = (
   const data = Object.entries(dataRecord)
   if (!data.length) return { highlighterData: [] }
 
-  let highlighterData: (HighlighterData | undefined)[] = data[0][1].map((mainItem) => {
-    return {
-      color: mainItem.color,
-      labels: [],
-    }
-  })
+  // let highlighterData: (HighlighterData | undefined)[] = data[0][1].map((mainItem) => {
+  //   return {
+  //     color: mainItem.color,
+  //     labels: [],
+  //   }
+  // })
 
+  let highlighterData: HighlighterData[] = []
   const highlightedChunks: HighlightedChunks = {}
 
   data.forEach((chart, chartIndex) => {
     const chartType = chart[0] as ChartType
     const chartData = chart[1]
+    if (!chartData.active) return
     highlightedChunks[chartType] = []
-    chartData.forEach((item, itemIndex) => {
+    chartData.data.forEach((item, itemIndex) => {
       const foundChunks = findChunks(centerMs, item, minHighlightChunkDuration)
 
       // TODO Case where several track events overlap. Right now prioritized by type (encounter first etc) but should we display them all
@@ -109,11 +123,17 @@ const getHighlighterData = (
         label = item.getHighlighterLabel
           ? typeof item.getHighlighterLabel === 'string'
             ? item.getHighlighterLabel
-            : item.getHighlighterLabel(foundChunk, foundValue)
+            : item.getHighlighterLabel(foundChunk, foundValue, item, itemIndex)
           : foundValue?.value?.toString()
 
         if (label) {
-          highlighterData[itemIndex]!.labels![chartIndex] = {
+          if (!highlighterData[itemIndex]) {
+            highlighterData[itemIndex] = {
+              color: item.color,
+              labels: [],
+            }
+          }
+          highlighterData[itemIndex].labels[chartIndex] = {
             value: label,
             isMain: chartIndex === 0 && data.length > 1,
           }
@@ -125,9 +145,8 @@ const getHighlighterData = (
     })
   })
 
-  highlighterData = highlighterData.map((item) => {
-    if (!item) return undefined
-    if (item.labels?.every((l) => !l?.value)) return undefined
+  highlighterData = highlighterData.flatMap((item) => {
+    if (item.labels?.every((l) => !l?.value)) return []
     return item
   })
 
@@ -138,18 +157,21 @@ const Highlighter = ({
   hoverStart,
   hoverEnd,
   onHighlightChunks,
+  dateCallback,
 }: {
   hoverStart: string
   hoverEnd: string
   onHighlightChunks?: (data?: HighlightedChunks) => any
+  dateCallback?: HighlighterDateCallback
 }) => {
   const { graphHeight, tooltipContainer, outerStart, outerEnd } = useContext(TimelineContext)
   const outerScale = useOuterScale()
-  const { width, left, center, centerMs, centerDateLabel } = useMemo(
-    () => getCoords(hoverStart, hoverEnd, outerScale),
-    [hoverStart, hoverEnd, outerScale]
+  const { width, left, center, centerMs, dateLabel } = useMemo(
+    () => getCoords(hoverStart, hoverEnd, outerScale, dateCallback),
+    [hoverStart, hoverEnd, outerScale, dateCallback]
   )
 
+  // TODO Filter active with selector
   const chartsData = useRecoilValue(chartsDataState)
 
   const minHighlightChunkDuration = useMemo(() => {
@@ -187,7 +209,7 @@ const Highlighter = ({
             }}
           >
             <div className={styles.tooltip}>
-              <span className={styles.tooltipDate}>{centerDateLabel}</span>
+              <span className={styles.tooltipDate}>{dateLabel}</span>
               {highlighterData.map((item, itemIndex) => {
                 if (!item) return null
                 else

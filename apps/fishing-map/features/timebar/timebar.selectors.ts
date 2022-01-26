@@ -229,7 +229,6 @@ const getTrackEventChunkProps = (
 }
 
 const getTrackEventHighlighterLabel = (chunk: TimebarChartChunk<TrackEventChunkProps>) => {
-  // console.log(chunk)
   if (chunk.cluster) {
     return `${chunk.props.descriptionGeneric} (${chunk.cluster.numChunks} ${t(
       'event.events',
@@ -293,6 +292,7 @@ export const selectTracksEvents = createSelector(
   }
 )
 
+// TODO
 // export const selectHighlightedEventsMemoized = createSelector(
 //   selectHighlightedEvents,
 //   (highlightedEvents) => highlightedEvents,

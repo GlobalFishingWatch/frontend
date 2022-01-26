@@ -6,7 +6,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import ImmediateContext from '../immediateContext'
-import { Timeseries } from './common/types'
+import { Timeseries, HighlighterCallback } from './common/types'
 import { useTimeseriesToChartData } from './common/hooks'
 import { useUpdateChartsData } from './chartsData.atom'
 
@@ -55,14 +55,20 @@ const getPathContainers = (
 const StackedActivity = ({
   timeseries,
   dataviews,
+  highlighterCallback,
 }: {
   timeseries: Timeseries
   dataviews: UrlDataviewInstance[]
+  highlighterCallback?: HighlighterCallback
 }) => {
   const { immediate } = useContext(ImmediateContext)
   // todo replace with outerScale hook
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
-  const dataAsTimebarChartData = useTimeseriesToChartData(timeseries, dataviews)
+  const dataAsTimebarChartData = useTimeseriesToChartData(
+    timeseries,
+    dataviews,
+    highlighterCallback
+  )
   useUpdateChartsData('activity', dataAsTimebarChartData)
   const pathContainers = useMemo(() => {
     return getPathContainers(timeseries, graphHeight, overallScale, dataviews.length)

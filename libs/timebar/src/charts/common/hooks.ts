@@ -4,8 +4,14 @@ import { scaleTime } from 'd3-scale'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import TimelineContext, { TimelineScale } from '../../timelineContext'
-import { TimebarChartItem, TimebarChartValue } from '..'
-import { TimebarChartData, TimebarChartChunk, Timeseries } from './types'
+import {
+  TimebarChartData,
+  TimebarChartChunk,
+  Timeseries,
+  TimebarChartItem,
+  TimebarChartValue,
+  HighlighterCallback,
+} from './types'
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
   return data.map((item) => {
@@ -158,9 +164,11 @@ export const useSortedChartData = (data: TimebarChartData<any>, type?: 'byType' 
 
 export const useTimeseriesToChartData = (
   data: Timeseries,
-  dataviews: UrlDataviewInstance[]
+  dataviews: UrlDataviewInstance[],
+  highlighterCallback?: HighlighterCallback
 ): TimebarChartData => {
   if (!data || !data.length) return []
+
   return dataviews.map((dataview, i) => {
     const values: TimebarChartValue[] = data.map((frame) => {
       return {
@@ -176,6 +184,10 @@ export const useTimeseriesToChartData = (
     const item: TimebarChartItem = {
       chunks: [chunk],
       color: dataview.config?.color,
+      getHighlighterLabel: highlighterCallback,
+      props: {
+        unit: 'petaboobs',
+      },
     }
     return item
   })

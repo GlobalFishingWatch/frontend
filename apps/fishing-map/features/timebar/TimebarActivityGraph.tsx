@@ -1,54 +1,39 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { useMapLegend, useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
-import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
+import {
+  TimebarStackedActivity,
+  TimebarChartChunk,
+  TimebarChartValue,
+} from '@globalfishingwatch/timebar'
 import {
   TimeChunk,
   TimeChunks,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
-  ExtendedStyle,
 } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapLibreEvent, MapSourceDataEvent } from '@globalfishingwatch/maplibre-gl'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useMapBounds, mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
 import {
   selectActiveActivityDataviews,
   selectActiveEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
-import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
+import { useMapStyle } from 'features/map/map-style.hooks'
+import { formatNumber } from 'utils/info'
 import { getTimeseries } from './timebarActivityGraph.worker'
 import styles from './Timebar.module.css'
-
-const getMetadata = (style: ExtendedStyle) => {
-  const generatorsMetadata = style?.metadata?.generatorsMetadata
-  if (!generatorsMetadata) return null
-
-  const activityHeatmapMetadata = generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
-  if (activityHeatmapMetadata?.timeChunks) {
-    return activityHeatmapMetadata
-  }
-
-  const environmentalMetadata = Object.entries(generatorsMetadata).filter(
-    ([id, metadata]) => metadata.temporalgrid === true
-  )
-  const bqEnvironmentalMetadata = environmentalMetadata.filter(([id]) =>
-    id.includes(BIG_QUERY_PREFIX)
-  )
-  if (environmentalMetadata?.length === 1 && bqEnvironmentalMetadata?.length === 1) {
-    return bqEnvironmentalMetadata[0][1]
-  }
-
-  return null
-}
+import { useActivityMetadata } from './timebar.hooks'
 
 const TimebarActivityGraph = () => {
   const activityDataviews = useSelector(selectActiveActivityDataviews)
   const environmentalDataviews = useSelector(selectActiveEnvironmentalDataviews)
-  const temporalGridDataviews = [...activityDataviews, ...environmentalDataviews]
+  const temporalGridDataviews = useMemo(
+    () => [...activityDataviews, ...environmentalDataviews],
+    [activityDataviews, environmentalDataviews]
+  )
   const [stackedActivity, setStackedActivity] = useState<any>()
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 1000)
@@ -96,6 +81,8 @@ const TimebarActivityGraph = () => {
     [map]
   )
 
+  const metadata = useActivityMetadata()
+
   const sourcesLoadedTimeout = useRef<number>(NaN)
   const [loading, setLoading] = useState(false)
   useEffect(() => {
@@ -103,8 +90,6 @@ const TimebarActivityGraph = () => {
     attachedListener.current = true
 
     const isEventSourceActiveChunk = (e: MapSourceDataEvent) => {
-      const style = (e as any).style.stylesheet
-      const metadata = getMetadata(style)
       if (!metadata) {
         return {
           isActive: false,
@@ -137,8 +122,6 @@ const TimebarActivityGraph = () => {
       if (!isNaN(sourcesLoadedTimeout.current)) {
         window.clearTimeout(sourcesLoadedTimeout.current)
         sourcesLoadedTimeout.current = NaN
-        const style = (e.target as any).style.stylesheet
-        const metadata = getMetadata(style)
 
         computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
       }
@@ -148,14 +131,23 @@ const TimebarActivityGraph = () => {
     return () => {
       attachedListener.current = false
     }
-  }, [map, computeStackedActivity, isSmallScreen])
+  }, [map, computeStackedActivity, isSmallScreen, metadata])
 
   useEffect(() => {
     // Need to check for first load to ensure getStyle doesn't crash
     if (!map || !map.loaded || !map.loaded() || !debouncedBounds || isSmallScreen) return
-    const metadata = getMetadata(map?.getStyle())
     computeStackedActivity(metadata, debouncedBounds)
-  }, [debouncedBounds, computeStackedActivity, map, isSmallScreen])
+  }, [debouncedBounds, computeStackedActivity, map, isSmallScreen, metadata])
+
+  const style = useMapStyle()
+  const mapLegends = useMapLegend(style, temporalGridDataviews)
+  const getActivityHighlighterLabel = useCallback(
+    (_: any, value: TimebarChartValue, __: any, itemIndex: number) => {
+      const unit = mapLegends[itemIndex]?.unit || ''
+      return `${formatNumber(value.value)} ${unit} on screen`
+    },
+    [mapLegends]
+  )
 
   if (!stackedActivity) return null
   return (
@@ -164,6 +156,7 @@ const TimebarActivityGraph = () => {
         key="stackedActivity"
         timeseries={stackedActivity}
         dataviews={temporalGridDataviews}
+        highlighterCallback={getActivityHighlighterLabel}
       />
     </div>
   )

@@ -15,12 +15,14 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
   useHighlightedEventsConnect,
   useDisableHighlightTimeConnect,
+  useActivityMetadata,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations } from 'types'
@@ -51,11 +53,46 @@ const TimebarHighlighterWrapper = () => {
     },
     [dispatchHighlightedEvents]
   )
+  const metadata = useActivityMetadata()
+
+  // Return precise chunk frame extent
+  const activityDateCallback = useCallback(
+    (timestamp: number) => {
+      const dt = DateTime.fromMillis(timestamp).toUTC()
+      if (!metadata) {
+        return dt.toLocaleString(DateTime.DATETIME_MED)
+      }
+      const interval = metadata.timeChunks.interval
+      if (interval === 'hour') {
+        return dt.toLocaleString(DateTime.DATETIME_MED)
+      } else if (interval === 'day') {
+        return dt.toLocaleString(DateTime.DATE_MED)
+      } else if (interval === '10days') {
+        const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
+        const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame))
+        const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame))
+        return [
+          DateTime.fromJSDate(start).toLocaleString(DateTime.DATE_MED),
+          DateTime.fromJSDate(end).toLocaleString(DateTime.DATE_MED),
+        ].join('- ')
+      } else if (interval === 'month') {
+        // TODO
+      }
+
+      return dt.toLocaleString(DateTime.DATETIME_MED)
+    },
+    [metadata]
+  )
+  const { timebarVisualisation } = useTimebarVisualisationConnect()
+  const formatDate =
+    timebarVisualisation !== TimebarVisualisations.Heatmap ? undefined : activityDateCallback
+
   return highlightedTime ? (
     <TimebarHighlighter
       hoverStart={highlightedTime.start}
       hoverEnd={highlightedTime.end}
       onHighlightChunks={onHighlightChunks}
+      dateCallback={formatDate}
     />
   ) : null
 }

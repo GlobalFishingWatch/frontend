@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
-import { ApiEvent } from '@globalfishingwatch/api-types'
 import { DEFAULT_CALLBACK_URL_KEY } from '@globalfishingwatch/react-hooks'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -13,6 +13,8 @@ import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import useMapInstance from 'features/map/map-context.hooks'
+import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import {
   Range,
   changeSettings,
@@ -196,4 +198,30 @@ export const useTimebarVisualisation = () => {
   }, [activeTrackDataviews, hasChangedSettingsOnce])
 
   return { timebarVisualisation, dispatchTimebarVisualisation }
+}
+
+export const useActivityMetadata = () => {
+  const map = useMapInstance()
+  if (!map) return null
+
+  const style = map?.getStyle()
+  const generatorsMetadata = style?.metadata?.generatorsMetadata
+  if (!generatorsMetadata) return null
+
+  const activityHeatmapMetadata = generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
+  if (activityHeatmapMetadata?.timeChunks) {
+    return activityHeatmapMetadata
+  }
+
+  const environmentalMetadata = Object.entries(generatorsMetadata).filter(
+    ([id, metadata]) => (metadata as any).temporalgrid === true
+  )
+  const bqEnvironmentalMetadata = environmentalMetadata.filter(([id]) =>
+    id.includes(BIG_QUERY_PREFIX)
+  )
+  if (environmentalMetadata?.length === 1 && bqEnvironmentalMetadata?.length === 1) {
+    return bqEnvironmentalMetadata[0][1]
+  }
+
+  return null
 }
