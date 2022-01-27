@@ -7,6 +7,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
+  selectMergedVesselId,
   selectSearchableQueryParams,
   selectUrlAkaVesselQuery,
   selectVesselProfileId,
@@ -46,11 +47,12 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastPosition] = useState(null)
   const query = useSelector(selectSearchableQueryParams)
   const vesselProfileId = useSelector(selectVesselProfileId)
-  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const { dispatchLocation } = useLocationConnect()
   const vesselStatus = useSelector(selectVesselsStatus)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
-  const vessel = useSelector(selectVesselById(vesselProfileId))
+  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
+  const mergedVesselId = useSelector(selectMergedVesselId)
+  const vessel = useSelector(selectVesselById(mergedVesselId))
   const datasets = useSelector(selectDatasets)
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
@@ -62,15 +64,32 @@ const Profile: React.FC = (props): React.ReactElement => {
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
-      const [dataset, gfwId] = (
+      let [dataset, gfwId, tmtId] = (
         Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
       ).split('_')
-      const action = await dispatch(fetchVesselByIdThunk(vesselProfileId))
-      if (dataset && gfwId && fetchVesselByIdThunk.fulfilled.match(action as any)) {
+
+      if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
+        const gfwAka = akaVesselProfileIds.find(aka => {
+          const [akaDataset] = aka.split('_')
+          return akaDataset.toLocaleLowerCase() !== 'na'
+        })
+        if (gfwAka) {
+          const [akaDataset, akaGfwId, akaTmt] = gfwAka.split('_')
+          dataset = akaDataset
+          gfwId = akaGfwId
+          tmtId = akaTmt
+        }
+      }
+      const action = await dispatch(fetchVesselByIdThunk({
+        id: vesselProfileId,
+        akas: akaVesselProfileIds
+      }))
+      if (fetchVesselByIdThunk.fulfilled.match(action as any)) {
         const vesselDataset = datasets
           .filter((ds) => ds.id === dataset)
           .slice(0, 1)
           .shift()
+
         if (vesselDataset) {
           const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
           if (trackDatasetId) {
@@ -85,9 +104,18 @@ const Profile: React.FC = (props): React.ReactElement => {
                 : []
 
             // Only merge with vessels of the same dataset that the main vessel
-            const akaVesselsIds = (akaVesselProfileIds ?? [])
-              .map((vesselProfileId) => parseVesselProfileId(vesselProfileId))
-              .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id)
+            const akaVesselsIds = [{
+              dataset,
+              id: gfwId,
+              vesselMatchId: tmtId
+            }].concat(parseVesselProfileId(vesselProfileId))
+              // I generate the list with all so doesn't care what vessel is in the path
+              .concat(
+                (akaVesselProfileIds ?? []).map((akaId) => parseVesselProfileId(akaId))
+              )
+              // Now we filter to get only gfw vessels and not repeat the main (from path o query)
+              .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId)
+
             const vesselDataviewInstance = getVesselDataviewInstance(
               { id: gfwId },
               {
@@ -97,6 +125,7 @@ const Profile: React.FC = (props): React.ReactElement => {
               },
               akaVesselsIds as { id: string }[]
             )
+
             dispatch(upsertVesselDataview(vesselDataviewInstance))
           }
         }
