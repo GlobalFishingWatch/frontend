@@ -97,13 +97,6 @@ const getHighlighterData = (
   const data = Object.entries(dataRecord)
   if (!data.length) return { highlighterData: [] }
 
-  // let highlighterData: (HighlighterData | undefined)[] = data[0][1].map((mainItem) => {
-  //   return {
-  //     color: mainItem.color,
-  //     labels: [],
-  //   }
-  // })
-
   let highlighterData: HighlighterData[] = []
   const highlightedChunks: HighlightedChunks = {}
 

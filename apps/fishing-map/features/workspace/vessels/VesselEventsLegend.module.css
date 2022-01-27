@@ -39,6 +39,7 @@
   border-radius: 99px;
 }
 
-.encounter {
+.encounter,
+.loitering {
   transform: rotateZ(45deg);
 }

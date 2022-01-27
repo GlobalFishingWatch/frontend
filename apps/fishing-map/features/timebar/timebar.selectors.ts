@@ -85,9 +85,9 @@ export const selectTracksData = createSelector(
 )
 
 const getTrackGraphSpeedHighlighterLabel = (chunk, value: TimebarChartValue) =>
-  `${value.value.toFixed(2)} knots`
+  value ? `${value.value.toFixed(2)} knots` : ''
 const getTrackGraphElevationighlighterLabel = (chunk, value: TimebarChartValue) =>
-  `${value.value} m`
+  value ? `${value.value} m` : ''
 
 export const selectTracksGraphData = createSelector(
   [selectTracksData, selectActiveVesselsDataviews, selectResources, selectTimebarGraph],

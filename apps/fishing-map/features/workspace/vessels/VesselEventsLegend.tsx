@@ -103,7 +103,6 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                 active={active}
                 onClick={onEventChange}
                 id={eventType}
-                // color={EVENTS_COLORS[eventType]}
                 className={layerStyles.eventsLegendSwitch}
               />
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>

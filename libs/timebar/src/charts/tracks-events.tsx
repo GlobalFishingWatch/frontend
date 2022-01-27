@@ -81,31 +81,6 @@ const TracksEvents = ({
     [filteredTracksEvents, outerScale, graphHeight, trackGraphOrientation]
   ) as TimebarChartData<TrackEventChunkProps>
 
-  // const [highlightedEvent, setHighlightedEvent] =
-  //   useState<TimebarChartChunk<TrackEventChunkProps> | null>(null)
-  // const [preselectedEvent, setPreselectedEvent] =
-  //   useState<TimebarChartChunk<TrackEventChunkProps> | null>(null)
-
-  // const eventHighlighted = preselectedEvent || highlightedEvent
-  // // checks if preselectedEventId exist in the first trackEvents, pick it and setHighlightedEvent accordingly
-  // // TODO should that work on *all* trackEvents?
-  // useEffect(() => {
-  //   if (preselectedEventId) {
-  //     if (tracksEventsWithCoords && tracksEventsWithCoords.length) {
-  //       const preselectedHighlightedEvent = tracksEventsWithCoords[0].chunks.find(
-  //         (event) => event.id === preselectedEventId
-  //       )
-  //       if (preselectedHighlightedEvent) {
-  //         setPreselectedEvent(preselectedHighlightedEvent)
-  //       } else {
-  //         setPreselectedEvent(null)
-  //       }
-  //     }
-  //   } else {
-  //     setPreselectedEvent(null)
-  //   }
-  // }, [preselectedEventId, tracksEventsWithCoords])
-
   return (
     <div className={styles.Events}>
       {tracksEventsWithCoords.map((trackEvents, index) => (
@@ -137,16 +112,6 @@ const TracksEvents = ({
                     : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
                 } as React.CSSProperties
               }
-              // onMouseEnter={() => {
-              //   if (!event.cluster && onEventHover) {
-              //     onEventHover(event)
-              //   }
-              //   setHighlightedEvent(event)
-              // }}
-              // onMouseLeave={() => {
-              //   if (onEventHover) onEventHover()
-              //   setHighlightedEvent(null)
-              // }}
               onClick={() => {
                 if (onEventClick) onEventClick(event)
               }}
