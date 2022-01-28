@@ -291,6 +291,8 @@
     "qf": "Qualité du signal",
     "radiance": "Radiance",
     "remove": "Supprimer le calque",
+    "removePoint": "Remove point",
+    "removePointNotAllowed": "Geometry needs at least 3 points",
     "seeDescription": "Cliquez pour voir la description du calque",
     "selectPolygonToRemove": "Sélectionnez le polygone à supprimer",
     "source": "Source",
