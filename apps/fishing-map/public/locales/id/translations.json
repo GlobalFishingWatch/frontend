@@ -291,6 +291,8 @@
     "qf": "Quality signal",
     "radiance": "Radiance",
     "remove": "Hapus layer",
+    "removePoint": "Remove point",
+    "removePointNotAllowed": "Geometry needs at least 3 points",
     "seeDescription": "Klik untuk melihat deskripsi layer",
     "selectPolygonToRemove": "Select the polygon to remove",
     "source": "Sumber",

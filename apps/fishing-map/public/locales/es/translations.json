@@ -291,6 +291,8 @@
     "qf": "Calidad de la señal",
     "radiance": "Resplandor",
     "remove": "Eliminar la capa",
+    "removePoint": "Eliminar punto",
+    "removePointNotAllowed": "La geometría necesita al menos 3 puntos",
     "seeDescription": "Haga clic para ver la descripción de la capa",
     "selectPolygonToRemove": "Selecciona el polígono para eliminar",
     "source": "Fuente",
