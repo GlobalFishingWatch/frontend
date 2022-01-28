@@ -62,7 +62,7 @@ export function addProject(host: Tree, options: NormalizedSchema) {
     },
     configurations: {
       production: {
-        buildTarget: `${options.projectName}:build:production`,
+        buildTarget: `${options.projectName}:compile:production`,
         dev: false,
       },
     },
