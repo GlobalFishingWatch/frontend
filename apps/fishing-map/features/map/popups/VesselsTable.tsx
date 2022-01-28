@@ -165,7 +165,7 @@ function VesselsTable({
               const hasDatasets =
                 vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
-              const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
+              const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
               return (
