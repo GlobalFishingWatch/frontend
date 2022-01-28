@@ -9,7 +9,7 @@ import { selectVesselById } from 'features/vessels/vessels.slice'
 import Info from 'features/map/info/Info'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { DEFAULT_VESSEL_MAP_ZOOM, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
-import { selectVesselProfileId } from 'routes/routes.selectors'
+import { selectMergedVesselId } from 'routes/routes.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { EventTypeVoyage } from 'types/voyage'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -48,9 +48,9 @@ const Map: React.FC = (): React.ReactElement => {
     style?.metadata as ExtendedStyleMeta,
     map
   )
+  const mergedVesselId = useSelector(selectMergedVesselId)
+  const vessel = useSelector(selectVesselById(mergedVesselId))
 
-  const vesselProfileId = useSelector(selectVesselProfileId)
-  const vessel = useSelector(selectVesselById(vesselProfileId))
   const [vesselDataview] = useSelector(selectActiveVesselsDataviews) ?? []
   const vesselLoaded = useMemo(() => !!vessel, [vessel])
   const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])

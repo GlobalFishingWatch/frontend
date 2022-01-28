@@ -1,5 +1,5 @@
 import { typedKeys } from 'utils/shared'
-import { ValueItem, VesselAPISource, VesselFieldsHistory, VesselWithHistory } from 'types'
+import { VesselAPISource, VesselFieldsHistory, VesselWithHistory } from 'types'
 
 type VesselFieldKey = keyof VesselWithHistory
 
@@ -29,6 +29,7 @@ const getPriorityzedFieldValue = <T = any>(
     .map((dataValue) => ({
       value: dataValue.value,
       priority: fieldPriority.indexOf(dataValue.source),
+      source: dataValue.source
     }))
     .sort((a, b) => {
       // If any of the values not exist, we use the other
@@ -74,33 +75,7 @@ const mergeHistoryFields = (
     vessel: VesselWithHistory
   }[]
 ) => {
-  const fieldValues = getPriorityzedFieldValue<VesselFieldsHistory>(field, dataValues)
-
-  const getFieldHistory = <T>(
-    fieldName: keyof VesselFieldsHistory,
-    fieldHistory: T[],
-    vessel: VesselWithHistory,
-    source: VesselAPISource
-  ): T[] => {
-    const fieldActualValue = vessel[fieldName as VesselFieldKey]
-    // When the field has no history then use the actual value of it if it's defined
-    // and using transmision dates as default on field value history time range
-    return fieldHistory.length === 0 && fieldActualValue !== undefined
-      ? [
-          {
-            source,
-            value: fieldActualValue,
-            firstSeen: vessel.firstTransmissionDate,
-            endDate: vessel.lastTransmissionDate,
-          } as any,
-        ]
-      : fieldHistory.map((item) => ({
-          firstSeen: vessel.firstTransmissionDate,
-          endDate: vessel.lastTransmissionDate,
-          ...item,
-          source,
-        }))
-  }
+  const fieldValues = getPriorityzedFieldValue(field, dataValues)
 
   return (fieldValues || []).reduce(
     (acc, current, sourceIndex) =>
@@ -109,14 +84,7 @@ const mergeHistoryFields = (
           ...history,
           [fieldName]: {
             byCount: (acc[fieldName]?.byCount || []).concat(current[fieldName].byCount),
-            byDate: (acc[fieldName]?.byDate || []).concat(
-              getFieldHistory<ValueItem>(
-                fieldName,
-                current[fieldName]?.byDate ?? [],
-                dataValues[sourceIndex].vessel,
-                dataValues[sourceIndex].source
-              )
-            ),
+            byDate: (acc[fieldName]?.byDate || []).concat(current[fieldName].byDate),
           },
         }),
         { ...acc }
@@ -139,17 +107,17 @@ export const mergeVesselFromSources = (
       const value =
         key.toString() === 'history'
           ? mergeHistoryFields(
-              key,
-              vesselData.map((data) => ({
-                source: data.source,
-                value: data.vessel[key] as VesselFieldsHistory,
-                vessel: data.vessel,
-              }))
-            )
+            key,
+            vesselData.map((data) => ({
+              source: data.source,
+              value: data.vessel[key] as VesselFieldsHistory,
+              vessel: data.vessel,
+            }))
+          )
           : priorityzeFieldValue(
-              key,
-              vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
-            )
+            key,
+            vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
+          )
       return {
         ...acc,
         [key]: value,

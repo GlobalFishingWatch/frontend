@@ -11,12 +11,13 @@ export const useVesselsConnect = (field?: VesselFieldLabel) => {
       ? t('common.GFW', 'GFW')
       : t('common.AIS', 'AIS')
   const formatSource = useCallback(
-    (source?: VesselAPISource) =>
-      source
+    (source?: VesselAPISource) => {
+      return (source
         ? source === VesselAPISource.GFW
           ? gfwSourceLabel
           : t('common.other', 'Other')
-        : DEFAULT_EMPTY_VALUE,
+        : DEFAULT_EMPTY_VALUE)
+    },
     [gfwSourceLabel, t]
   )
   return {
