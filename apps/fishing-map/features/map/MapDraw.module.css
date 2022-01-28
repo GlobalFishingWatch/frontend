@@ -43,6 +43,12 @@
   display: flex;
 }
 
+.actionButtons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .shortInput {
   width: 12rem;
 }
@@ -72,9 +78,16 @@
   padding-bottom: 1px;
 }
 
-.confirmBtn {
+.popupButtons {
+  display: flex;
+  align-items: center;
   margin-top: var(--space-S);
   width: 100%;
+}
+
+.confirmBtn {
+  margin-left: var(--space-M);
+  flex: 1;
 }
 
 .editor svg g:hover {

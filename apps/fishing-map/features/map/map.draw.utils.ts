@@ -49,6 +49,44 @@ export const getFeaturesPrecisionRounded = (features: DrawFeature[]): DrawFeatur
   )
 }
 
+export const removeFeaturePointByIndex = (
+  features: DrawFeature[],
+  featureIndex: number | undefined,
+  coordinateIndex: number | undefined
+): DrawFeature[] => {
+  if (featureIndex === undefined || coordinateIndex === undefined) {
+    return features
+  }
+  return features?.map((feature, index) => {
+    if (index !== featureIndex) {
+      return feature
+    }
+    return {
+      ...feature,
+      geometry: {
+        ...feature.geometry,
+        coordinates: feature.geometry.coordinates.map((coordinates) => {
+          const coordinatesLength = coordinates.length - 1
+          const isFirstCoordinate = coordinateIndex === 0
+          const isLastCoordinate = coordinateIndex === coordinatesLength
+          return coordinates
+            .filter((point, index) => {
+              return index !== coordinateIndex
+            })
+            .map((point, index, coordinates) => {
+              if (isFirstCoordinate && index === coordinatesLength - 1) {
+                return coordinates[1]
+              } else if (isLastCoordinate && index === 0) {
+                return coordinates[coordinatesLength - 1]
+              }
+              return point
+            })
+        }),
+      },
+    } as DrawFeature
+  })
+}
+
 export const updateFeaturePointByIndex = (
   features: DrawFeature[],
   featureIndex: number | undefined,

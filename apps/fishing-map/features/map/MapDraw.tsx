@@ -21,6 +21,7 @@ import {
   getDrawDatasetDefinition,
   getFeaturesPrecisionRounded,
   getFileWithFeatures,
+  removeFeaturePointByIndex,
   updateFeaturePointByIndex,
 } from './map.draw.utils'
 
@@ -70,6 +71,7 @@ function MapDraw() {
     currentFeature && selectedEditHandleIndex
       ? currentFeature.geometry.coordinates?.[0]?.[selectedEditHandleIndex]
       : null
+  const allowDeletePoint = currentFeature?.geometry?.coordinates?.[0]?.length > 4
 
   const onHandleLatitudeChange = useCallback((e) => {
     if (e.target.value) {
@@ -119,6 +121,18 @@ function MapDraw() {
     editingPointLongitude,
   ])
 
+  const onDeletePoint = useCallback(() => {
+    if (features && selectedFeatureIndex !== null && selectedEditHandleIndex !== null) {
+      const newFeatures = removeFeaturePointByIndex(
+        features,
+        selectedFeatureIndex,
+        selectedEditHandleIndex
+      )
+      setFeatures(newFeatures)
+      setSelectedEditHandleIndex(null)
+    }
+  }, [features, selectedFeatureIndex, selectedEditHandleIndex])
+
   const onEditorSelect = useCallback((e: EditorSelect) => {
     setSelectedFeatureIndex(e.selectedFeatureIndex)
     setSelectedEditHandleIndex(e.selectedEditHandleIndex)
@@ -155,7 +169,7 @@ function MapDraw() {
     dispatchSetDrawMode('draw')
     uaEvent({
       category: 'Reference layer',
-      action: `Draw a custom reference layer - Click + icon`
+      action: `Draw a custom reference layer - Click + icon`,
     })
   }, [dispatchSetDrawMode])
 
@@ -184,7 +198,7 @@ function MapDraw() {
     dispatchQueryParams({ sidebarOpen: true })
     uaEvent({
       category: 'Reference layer',
-      action: `Draw a custom reference layer - Click dismiss`
+      action: `Draw a custom reference layer - Click dismiss`,
     })
   }, [dispatchQueryParams, dispatchSetDrawMode, resetState])
 
@@ -218,7 +232,7 @@ function MapDraw() {
       createDataset(features, layerName)
       uaEvent({
         category: 'Reference layer',
-        action: `Draw a custom reference layer - Click save`
+        action: `Draw a custom reference layer - Click save`,
       })
     }
   }, [createDataset, features, layerName])
@@ -321,18 +335,31 @@ function MapDraw() {
                 inputSize="small"
               />
             </div>
-            <Button
-              disabled={
-                editingPointLatitude === null ||
-                editingPointLatitude === '' ||
-                editingPointLongitude === null ||
-                editingPointLongitude === ''
-              }
-              onClick={onConfirmNewPointPosition}
-              className={styles.confirmBtn}
-            >
-              {t('common.confirm', 'Confirm')}
-            </Button>
+            <div className={styles.popupButtons}>
+              <IconButton
+                icon="delete"
+                type="warning-border"
+                onClick={onDeletePoint}
+                disabled={!allowDeletePoint}
+                tooltip={
+                  allowDeletePoint
+                    ? t('layer.removePoint', 'Remove point')
+                    : t('layer.removePointNotAllowed', 'Geometry needs at least 3 points')
+                }
+              />
+              <Button
+                disabled={
+                  editingPointLatitude === null ||
+                  editingPointLatitude === '' ||
+                  editingPointLongitude === null ||
+                  editingPointLongitude === ''
+                }
+                onClick={onConfirmNewPointPosition}
+                className={styles.confirmBtn}
+              >
+                {t('common.confirm', 'Confirm')}
+              </Button>
+            </div>
           </div>
         </Popup>
       )}
@@ -380,7 +407,7 @@ function MapDraw() {
             active={createAsPublic}
             onClick={toggleCreateAsPublic}
           />
-          <div className={styles.flex}>
+          <div className={styles.actionButtons}>
             <Button className={styles.button} type="secondary" onClick={closeDraw}>
               {t('common.dismiss', 'Dismiss')}
             </Button>
