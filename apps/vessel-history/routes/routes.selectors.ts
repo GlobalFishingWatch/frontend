@@ -186,9 +186,9 @@ export const selectMergedVesselId = createSelector(
 export const selectSearchableQueryParams = createSelector(
   [selectAdvancedSearchFields, selectUrlQuery],
   (filters, query) =>
-    ({
-      q: query,
-      ...filters,
-      flags: filters?.flags.join(','),
-    } as any)
+  ({
+    q: query,
+    ...filters,
+    flags: filters?.flags.join(','),
+  } as any)
 )

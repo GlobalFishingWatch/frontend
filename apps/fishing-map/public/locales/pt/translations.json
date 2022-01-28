@@ -291,6 +291,8 @@
     "qf": "Qualidade do sinal",
     "radiance": "Radiance",
     "remove": "Remover camada",
+    "removePoint": "Remove point",
+    "removePointNotAllowed": "Geometry needs at least 3 points",
     "seeDescription": "Clique para ver a descrição da camada",
     "selectPolygonToRemove": "Selecione o polígono a ser removido",
     "source": "Fonte",
