@@ -7,7 +7,14 @@ import { Tooltip } from '../tooltip'
 import { Spinner } from '../spinner'
 import styles from './IconButton.module.css'
 
-export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning' | 'solid'
+export type IconButtonType =
+  | 'default'
+  | 'invert'
+  | 'border'
+  | 'map-tool'
+  | 'warning'
+  | 'warning-border'
+  | 'solid'
 export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
 
 export interface IconButtonProps {
@@ -51,7 +58,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
   } = props
   let spinnerColor
   if (type === 'invert' || type === 'map-tool') spinnerColor = 'white'
-  if (type === 'warning') spinnerColor = warningVarColor || '#ff3e62'
+  if (type === 'warning' || type === 'warning-border') spinnerColor = warningVarColor || '#ff3e62'
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
@@ -80,7 +87,12 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
           />
         ) : (
           <Fragment>
-            {icon && <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />}
+            {icon && (
+              <Icon
+                icon={icon}
+                type={type === 'warning' || type === 'warning-border' ? 'warning' : 'default'}
+              />
+            )}
             {children}
           </Fragment>
         )}
