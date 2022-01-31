@@ -2,7 +2,7 @@ import React, { Fragment, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
@@ -30,6 +30,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import { getDatasetLabel, getDatasetsDownloadNotSupported } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -46,7 +47,7 @@ const fallbackDataviews = []
 
 function DownloadActivityModal() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveActivityDataviews) || fallbackDataviews
   const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
@@ -166,6 +167,7 @@ function DownloadActivityModal() {
           dataview.datasets?.find((dataset) => dataset.id === id)
         )
         return {
+          filter: dataview.config?.filter || [],
           filters: dataview.config?.filters || {},
           datasets: activityDatasets.map((dataset: Dataset) => dataset.id),
         }
@@ -179,7 +181,9 @@ function DownloadActivityModal() {
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
           spatialResolution,
-          sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
         }),
       })
     }
@@ -192,26 +196,24 @@ function DownloadActivityModal() {
           temporalResolution,
           spatialResolution,
           groupBy,
-          sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
         }),
       })
     }
-    const downloadPromises = downloadDataviews.map((dataview) => {
-      const downloadParams: DownloadActivityParams = {
-        dateRange: timerange as DateRange,
-        geometry: downloadAreaGeometry as Geometry,
-        areaName: downloadAreaName,
-        dataview,
-        format,
-        temporalResolution,
-        spatialResolution,
-        groupBy,
-      }
 
-      return dispatch(downloadActivityThunk(downloadParams))
-    })
-
-    await Promise.allSettled(downloadPromises)
+    const downloadParams: DownloadActivityParams = {
+      dateRange: timerange as DateRange,
+      geometry: downloadAreaGeometry as Geometry,
+      areaName: downloadAreaName,
+      dataviews: downloadDataviews,
+      format,
+      temporalResolution,
+      spatialResolution,
+      groupBy,
+    }
+    await dispatch(downloadActivityThunk(downloadParams))
 
     uaEvent({
       category: 'Download',
@@ -319,8 +321,8 @@ function DownloadActivityModal() {
             tooltip={
               duration && duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD
                 ? t('download.timerangeTooLong', 'The maximum time range is {{count}} years', {
-                  count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
-                })
+                    count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
+                  })
                 : ''
             }
           >
