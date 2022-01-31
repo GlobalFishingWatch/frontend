@@ -15,7 +15,6 @@ Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
-          "endDate": "",
           "firstSeen": "1991-02-02T00:00:00.000Z",
           "source": "TMT",
           "value": "1951",
@@ -32,8 +31,6 @@ Object {
           "value": "IRNZ",
         },
         Object {
-          "endDate": "",
-          "firstSeen": "",
           "source": "TMT",
           "value": "IRNZ",
         },
@@ -53,7 +50,6 @@ Object {
           "value": "ITA",
         },
         Object {
-          "endDate": "",
           "firstSeen": "1991-02-02T00:00:00.000Z",
           "source": "TMT",
           "value": "ITA",
@@ -70,19 +66,15 @@ Object {
           "value": "trawlers",
         },
         Object {
-          "endDate": "",
-          "firstSeen": "",
           "source": "TMT",
           "value": "Purse seine",
         },
         Object {
-          "endDate": "",
           "firstSeen": "2001-02-02T00:00:00.000Z",
           "source": "TMT",
           "value": "Pole and line",
         },
         Object {
-          "endDate": "",
           "firstSeen": "1991-02-02T00:00:00.000Z",
           "source": "TMT",
           "value": "Otter trawl",
@@ -93,7 +85,6 @@ Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
-          "endDate": "",
           "firstSeen": "1991-02-02T00:00:00.000Z",
           "source": "TMT",
           "value": "51.000",
@@ -115,7 +106,6 @@ Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
-          "endDate": "",
           "firstSeen": "1991-02-02T00:00:00.000Z",
           "source": "TMT",
           "value": "18.550",
@@ -163,16 +153,12 @@ Object {
           "value": "MARIA MARIA",
         },
         Object {
-          "endDate": "",
-          "firstSeen": "",
           "originalEndDate": 19810100,
           "originalFirstSeen": 19800100,
           "source": "TMT",
           "value": "MAR",
         },
         Object {
-          "endDate": "",
-          "firstSeen": "",
           "originalEndDate": 19720000,
           "originalFirstSeen": 19710000,
           "source": "TMT",
@@ -190,7 +176,6 @@ Object {
           "value": "some vessel type",
         },
         Object {
-          "endDate": "",
           "firstSeen": "1991-02-02T00:00:00.000Z",
           "source": "TMT",
           "value": "Fishing Vessel",
