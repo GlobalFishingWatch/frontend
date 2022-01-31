@@ -3,6 +3,8 @@
   background: #eff5f8;
   font-family: var(--GFW-font-family);
   font-weight: 400;
+  display: flex;
+  flex-direction: column;
 }
 
 .headerLinks {
@@ -28,6 +30,13 @@
   font-weight: 400;
   padding: 8rem 5rem 0;
   margin: 0 auto;
+}
+
+.userMenu {
+  background-image: var(--background-gradient);
+  padding: 2rem;
+  display: flex;
+  justify-content: flex-end;
 }
 
 @media (max-width: 767px) {

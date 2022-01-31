@@ -1,4 +1,4 @@
-.container {
+.main {
   min-height: calc(100vh - var(--header-band-height-S));
   background-image: var(--background-gradient);
   width: 100%;
@@ -6,7 +6,7 @@
   padding-bottom: 5rem;
 }
 
-.main {
+.container {
   max-width: var(--desktop-max-width);
   margin: 0 auto;
   padding-left: 5rem;

@@ -91,9 +91,10 @@ button:disabled {
   cursor: unset;
 }
 
-a {
+body a,
+body a:visited {
   text-decoration: none;
-  color: inherit;
+  color: var(--link-color);
 }
 
 mark {
