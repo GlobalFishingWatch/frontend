@@ -1,0 +1,109 @@
+.eventCard {
+  position: relative;
+  box-sizing: content-box;
+  margin-left: 13.5rem;
+  padding: 0 3rem 6rem 3rem;
+  opacity: 0.5;
+  border-left: 0.2rem dotted var(--color-vessel-main);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  grid-gap: 1.5rem;
+  overflow: hidden;
+}
+
+.eventCard::before {
+  content: '';
+  position: absolute;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 3rem;
+  left: -1.6rem;
+  top: 0.3rem;
+  background-position: center center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  z-index: 1;
+  transition: all 100ms linear;
+  border: 0.2rem solid transparent;
+  box-shadow: 0 0 0 0.2rem transparent;
+}
+
+.eventCard.past {
+  opacity: 1;
+  border-left: 0.2rem solid var(--color-vessel-main);
+}
+
+.eventCard.past::before {
+  border: 0.2rem solid var(--color-background);
+  transition: box-shadow 200ms ease-in-out;
+  box-shadow: 0 0 0 0.2rem var(--color-vessel-main);
+}
+
+.eventCard.highlighted::before {
+  box-shadow: 0 0 0 0.2rem var(--color-vessel-main), 0 0.2rem 0.4rem 0.4rem rgba(44, 61, 108, 0.25);
+  width: 4.2rem;
+  height: 4.2rem;
+  top: -0.4rem;
+  left: -2.4rem;
+}
+
+.eventCard.highlighted::after {
+  content: '';
+  position: absolute;
+  left: 3rem;
+  bottom: 3rem;
+  width: calc(100% - 3rem);
+  border-bottom: var(--border);
+}
+
+.eventCard.encounter::before {
+  background-color: var(--color-event-encounter);
+  background-image: url('../../../assets/icons/encounter.svg');
+}
+
+.eventCard.encounter.partially::before {
+  background-color: var(--color-event-encounter-partially);
+}
+
+.eventCard.encounter.unmatched::before {
+  background-color: var(--color-event-encounter-unmatched);
+}
+
+.eventCard.loitering::before {
+  background-color: var(--color-event-loitering);
+  background-image: url('../../../assets/icons/loitering.svg');
+}
+
+.eventCard.port::before {
+  background-color: var(--color-event-port);
+  background-image: url('../../../assets/icons/port.svg');
+}
+
+.portEvent,
+.encounteredVessel {
+  pointer-events: none;
+}
+
+.eventCard.highlighted .encounteredVessel {
+  cursor: pointer;
+  background: var(--highlight-vessel-secondary);
+}
+
+.portEvent,
+.encounteredVesselHighlight {
+  pointer-events: all;
+}
+
+.eventCard.highlighted .portEvent {
+  cursor: pointer;
+  background: var(--highlight-port);
+}
+
+@media only screen and (max-width: 720px) {
+  .eventCard {
+    margin-left: 4rem;
+  }
+}

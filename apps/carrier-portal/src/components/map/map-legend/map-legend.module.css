@@ -1,0 +1,245 @@
+.legendContainer {
+  position: relative;
+  pointer-events: none;
+}
+
+.legendContainerFloating {
+  position: absolute;
+  bottom: var(--space-S);
+  left: var(--space-S);
+  right: auto;
+  color: var(--color-background);
+  z-index: 5;
+}
+
+.legendContent {
+  min-height: 8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-brand);
+  pointer-events: all;
+}
+
+.legendContainerFloating .legendContent {
+  min-height: 0;
+}
+
+.coordinates {
+  display: block;
+  padding: var(--space-S);
+  padding-bottom: 0.5rem;
+  font-size: var(--font-size-S);
+  opacity: 0.5;
+}
+
+.legendEventContainer {
+  color: var(--color-background);
+  padding: var(--space-S) var(--space-M);
+  line-height: 2rem;
+}
+
+.legendActionContainer {
+  display: flex;
+  align-items: center;
+  color: var(--color-background);
+  padding: var(--space-S);
+  line-height: 2rem;
+}
+
+.legendLabelsContainer {
+  display: flex;
+  align-items: center;
+}
+
+.legendEventLineContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.lineContainer {
+  display: flex;
+  align-items: center;
+}
+
+.legendLabel {
+  font-size: var(--font-size-S);
+  padding-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  margin-right: var(--space-L);
+}
+
+.legendLabelSecondary {
+  opacity: 0.65;
+}
+
+.positionDisclaimer {
+  display: block;
+  font-size: var(--font-size-S);
+  opacity: 0.5;
+  line-height: 1.5;
+}
+
+.actionButton {
+  flex-shrink: 0;
+  transition: none;
+  margin-right: var(--font-size-S);
+  width: var(--block-height-M);
+  height: var(--block-height-M);
+  background-color: var(--color-background-highlight);
+}
+
+.actionIcon {
+  fill: var(--color-background);
+}
+
+.actionLink {
+  width: 100%;
+  padding: 1rem;
+  line-height: 2rem;
+  text-transform: uppercase;
+  border-radius: 0.3rem;
+  background: var(--color-background);
+  color: var(--color-brand);
+  min-width: 14rem;
+  text-align: center;
+}
+
+.actionLink:focus:not(.disabled),
+.actionLink:hover:not(.disabled),
+.actionLink:visited:not(.disabled) {
+  color: var(--color-brand);
+}
+
+.disabled {
+  background-color: var(--color-brand-highlight-softer);
+  color: var(--color-brand-secondary);
+  cursor: not-allowed;
+}
+
+.downloadLink {
+  line-height: 1;
+}
+
+.downloadIcon {
+  transform: scale(0.7);
+  fill: var(--color-background);
+  opacity: 0.5;
+  margin-left: 0.5rem;
+}
+
+.mainVesselLine,
+.encounterVesselLine {
+  min-width: 20px;
+  min-height: 14px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.mainVesselLine span,
+.encounterVesselLine span {
+  width: 20px;
+  height: 1px;
+}
+
+.mainVesselLine span {
+  background-color: var(--color-vessel-main);
+}
+
+.encounterVesselLine span {
+  background-color: var(--color-vessel-secondary);
+}
+
+.legendHeatmap {
+  font-size: var(--font-size-S);
+}
+
+.legendHeatmapContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--color-background);
+  font-size: var(--font-size-S);
+}
+
+.legendTitle {
+  text-transform: uppercase;
+}
+
+.legendDimmed,
+.legendHeatmapContentStep {
+  opacity: 0.65;
+}
+
+.legendHeatmapContentRamp {
+  height: 1rem;
+  width: 100%;
+  position: relative;
+}
+
+.legendHeatmapContentRamp::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 1px solid var(--color-background-highlight);
+}
+
+.legendHeatmapCurrentValue {
+  position: absolute;
+  top: 1rem;
+  padding: 4px 8px;
+  z-index: 1;
+  background-color: var(--color-brand);
+  transform: translateX(-50%);
+  transition: left 0.1s linear;
+  line-height: 1;
+}
+
+.legendHeatmapCurrentValue::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2rem;
+  height: 1rem;
+  width: 1px;
+  z-index: 1;
+  background-color: var(--color-background);
+}
+
+.legendHeatmapContentSteps {
+  width: 100%;
+  position: relative;
+  min-height: 1.5rem;
+}
+
+.legendHeatmapContentStep {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+@media only screen and (max-width: 720px) {
+  .legendEventContainer {
+    padding: var(--space-S);
+  }
+  .legendActionContainer {
+    flex-direction: column;
+    margin-right: 5rem;
+  }
+  .legendLabel {
+    margin-right: 0;
+  }
+  .actionButton {
+    margin-right: 0;
+    margin-bottom: var(--space-S);
+  }
+  .actionLink {
+    min-width: 7rem;
+    padding: 1rem 0;
+  }
+}

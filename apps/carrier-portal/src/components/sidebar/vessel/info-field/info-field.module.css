@@ -1,0 +1,27 @@
+.property,
+.listContainer {
+  min-height: 40px;
+}
+
+.showAll {
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  display: inline;
+  color: var(--color-brand-secondary);
+}
+
+.showAll:hover {
+  color: var(--color-brand);
+}
+
+.iconInfo {
+  transform: scale(0.7);
+  fill: var(--color-brand-secondary);
+  cursor: help;
+}
+
+.hidden {
+  display: none;
+}

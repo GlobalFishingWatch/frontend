@@ -1,0 +1,48 @@
+.mapContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.map {
+  position: relative;
+  flex: 1;
+}
+
+.scale {
+  position: absolute;
+  bottom: 0.5rem;
+  right: var(--space-S);
+}
+@media only screen and (min-width: 720px) {
+  .scale {
+    bottom: 4rem;
+  }
+}
+
+:global(.mapboxgl-ctrl.mapboxgl-ctrl-scale) {
+  background-color: transparent;
+  border-width: 1px;
+  border-left: none;
+  border-right: none;
+  color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+:global(.mapboxgl-ctrl.mapboxgl-ctrl-scale)::before,
+:global(.mapboxgl-ctrl.mapboxgl-ctrl-scale)::after {
+  content: '';
+  height: 4px;
+  width: 1px;
+  left: 0;
+  bottom: 0;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+  display: block;
+}
+
+:global(.mapboxgl-ctrl.mapboxgl-ctrl-scale)::after {
+  left: auto;
+  right: 0;
+}

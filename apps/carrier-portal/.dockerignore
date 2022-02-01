@@ -1,0 +1,10 @@
+node_modules
+.github
+.vscode
+.dockerignore
+.gitignore
+.editorconfig
+.env*
+cloudbuild*.yaml
+LICENSE
+*.md

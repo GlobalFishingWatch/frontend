@@ -1,0 +1,229 @@
+.tabs {
+  width: 100%;
+  display: flex;
+  height: var(--block-height-M);
+}
+
+.tab {
+  flex: 1;
+  font-size: var(--font-size-M);
+  text-transform: uppercase;
+  position: relative;
+}
+
+.tab:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 0.1rem;
+  height: 50%;
+  top: 25%;
+  right: 0;
+  background: var(--color-border);
+}
+
+.label {
+  color: var(--color-brand-secondary);
+}
+
+.tab:hover,
+.tab:focus {
+  background: none;
+}
+
+.tab.selected {
+  cursor: default;
+  pointer-events: none;
+}
+
+.tab.selected .label,
+.tab:hover .label {
+  color: var(--color-brand);
+  background: var(--highlight);
+}
+
+.tab.selected .label .number,
+.tab:hover .label .number {
+  color: var(--color-brand-secondary);
+}
+
+.list {
+  padding-bottom: var(--space-L);
+}
+
+.name {
+  margin-left: 0.5rem;
+}
+
+.listItem {
+  display: flex;
+  height: var(--block-height-M);
+  justify-content: space-between;
+  line-height: 2rem;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.listItem input[type='checkbox'] {
+  opacity: 0;
+  width: 0;
+}
+
+.listItem .listItemLabel {
+  position: relative;
+  display: inline-block;
+  padding-left: 0;
+  transition: all 150ms ease-out;
+  cursor: pointer;
+  flex: 1;
+  text-transform: capitalize;
+  font-size: var(--font-size-L);
+  color: var(--color-brand);
+}
+
+.listItem:hover .listItemLabel,
+.list.selecting .listItem .listItemLabel {
+  padding-left: 22px;
+}
+
+.listItem .listItemLabel::before,
+.listItem .listItemLabel::after {
+  position: absolute;
+  content: '';
+  display: inline-block;
+  opacity: 0;
+  transition: opacity 150ms linear;
+}
+
+.list .listItem .listItemLabel::before {
+  height: 2rem;
+  width: 2rem;
+  left: 0;
+  top: 0;
+  background: url('../../assets/icons/filter.svg') no-repeat center center;
+}
+
+.list .listItem .listItemLabel::after {
+  height: 2rem;
+  width: 2rem;
+  left: 0;
+  top: 0;
+  background: url('../../assets/icons/filter-full.svg') no-repeat center center;
+}
+
+.listItem:hover .listItemLabel::before,
+.listItem:hover .listItemLabel::after {
+  opacity: 1;
+}
+
+.listItem input[type='checkbox'] + .listItemLabel::after {
+  content: none;
+}
+
+.list.selecting .listItem .listItemLabel::before,
+.list.selecting .listItem .listItemLabel::after {
+  opacity: 1;
+}
+
+.list.carriers .listItem .listItemLabel::after {
+  background: none;
+}
+
+.listItem input[type='checkbox'].selected + .listItemLabel::after {
+  content: '';
+}
+
+.list.carriers .listItem .listItemLabel::before {
+  background: url('../../assets/icons/link.svg') no-repeat center center;
+}
+
+.list.selecting input[type='checkbox']:not(.selected) + .listItemLabel {
+  color: var(--color-brand-secondary);
+}
+
+.list.selecting input[type='checkbox']:not(.selected):hover + .listItemLabel {
+  color: var(--color-brand);
+}
+
+.listItem .link {
+  font-size: var(--font-size-L);
+  line-height: 2rem;
+  align-items: baseline;
+  padding: 1rem 0;
+}
+
+.listItem .link .name {
+  text-transform: capitalize;
+  margin-right: 0.5rem;
+}
+
+.listItem .id,
+.listItem .numberOfEvents {
+  font-size: var(--font-size-M);
+  color: var(--color-brand-secondary);
+}
+
+.listItem .numberOfEvents {
+  display: flex;
+  align-items: center;
+}
+
+.listItem .numberOfEvents::before {
+  content: '';
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0.7;
+}
+
+.listItem .numberOfEvents.encounter::before {
+  background-image: url('../../assets/icons/encounter.svg');
+}
+
+.listItem .numberOfEvents.loitering::before {
+  background-image: url('../../assets/icons/loitering.svg');
+}
+
+.actionsContainer {
+  background: var(--color-background);
+  border-top: var(--border-light);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: var(--space-S) var(--space-M);
+}
+
+@media only screen and (max-width: 720px) {
+  .actionsContainer {
+    right: 0;
+  }
+}
+
+.primaryBtn {
+  padding: 1rem;
+  line-height: 2rem;
+  text-transform: uppercase;
+  border-radius: 0.3rem;
+  background: var(--color-brand);
+  color: var(--color-background);
+  width: 100%;
+}
+
+.showAll {
+  width: 100%;
+  padding: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: var(--font-size-M);
+  color: var(--color-brand-secondary);
+  background: var(--color-brand-highlight-softer);
+}
+
+@media only screen and (max-width: 720px) {
+  .primaryBtn {
+    width: 50%;
+  }
+}

@@ -1,0 +1,60 @@
+.graphSelector {
+  position: relative;
+  flex: 1;
+}
+
+.graphSelector.isOpen {
+  filter: var(--drop-shadow);
+}
+
+.graphSelector .toggleBtn {
+  min-height: 3rem;
+  position: relative;
+  font-size: var(--font-size-M);
+  line-height: 1.8rem;
+  padding-left: 0.5rem;
+  padding-right: 3rem;
+  border-bottom: var(--border);
+}
+
+.graphSelector.isOpen .toggleBtn {
+  background: var(--color-background);
+}
+
+.graphSelector .toggleBtn::after {
+  content: '';
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  right: 0;
+  background: url('../../../assets/icons/arrow-down.svg') center center no-repeat;
+}
+
+.graphSelector .listContainer {
+  position: absolute;
+  width: max-content;
+}
+
+.graphSelector.isOpen .listContainer {
+  background: var(--color-background);
+  z-index: 2;
+  padding: 0 3rem 0 0.5rem;
+}
+
+.graphSelector .listContainer .listItem {
+  font-size: var(--font-size-M);
+  line-height: 3rem;
+  color: var(--color-brand-secondary);
+  cursor: pointer;
+}
+
+.graphSelector .listContainer .listItem.highlighted,
+.graphSelector .listContainer .listItem.selected,
+.graphSelector .listContainer .listItem:hover {
+  color: var(--color-brand);
+}
+
+.graphSelector .listContainer .listItem.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

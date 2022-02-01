@@ -1,0 +1,36 @@
+:global(.tippy-box) {
+  position: relative;
+  font-size: var(--font-size-M);
+  border-radius: 3px;
+  background: var(--color-brand);
+  color: var(--color-background);
+  filter: var(--drop-shadow);
+  min-height: 2rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  display: flex;
+  max-width: 32rem;
+  line-height: 2rem;
+}
+@media only screen and (max-width: 720px) {
+  :global(.tippy-box) {
+    max-width: 97vw !important;
+  }
+}
+
+:global(.tippy-arrow) {
+  display: none;
+}
+
+:global(.tippy-box label) {
+  color: white;
+  opacity: 0.7;
+}
+
+:global(.tippy-box span) {
+  line-height: 1.5rem;
+}
+
+:global(.tippy-box p:not(:last-child)) {
+  margin-right: 1rem;
+}

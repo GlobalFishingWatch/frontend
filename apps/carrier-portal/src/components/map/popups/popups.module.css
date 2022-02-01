@@ -1,0 +1,115 @@
+.popup {
+  min-width: 26rem;
+  padding: 1.5rem 1rem 1rem 1rem;
+}
+
+.infoFieldContainer {
+  display: flex;
+}
+
+.infoField {
+  margin-bottom: var(--space-S);
+}
+
+.infoField + .infoField {
+  margin-left: var(--space-M);
+}
+
+.infoFieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.infoFieldButton {
+  font-size: var(--font-size-L);
+}
+
+.button {
+  background: var(--color-brand-highlight);
+  color: var(--color-brand);
+  border-radius: 0.4rem;
+  text-transform: uppercase;
+  font-size: var(--font-size-M);
+  width: 100%;
+  height: var(--block-height-S);
+}
+
+.button:hover {
+  background: var(--color-brand-hover-highlight);
+}
+
+.numberOfEvents {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-M);
+  color: var(--color-brand-secondary);
+}
+
+.numberOfEvents::before {
+  content: '';
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0.7;
+}
+
+.numberOfEvents.encounter::before {
+  background-image: url('../../../assets/icons/encounter.svg');
+}
+
+.numberOfEvents.loitering::before {
+  background-image: url('../../../assets/icons/loitering.svg');
+}
+
+:global(.overlays .mapboxgl-popup-content) {
+  cursor: default !important;
+}
+
+:global(.overlays .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip) {
+  border-top-color: var(--color-background) !important;
+}
+
+:global(.overlays .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip) {
+  border-top-color: var(--color-background) !important;
+}
+
+:global(.overlays .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+  border-top-color: var(--color-background) !important;
+}
+
+:global(.overlays .mapboxgl-popup-anchor-top .mapboxgl-popup-tip) {
+  border-bottom-color: var(--color-background) !important;
+}
+
+:global(.overlays .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip) {
+  border-bottom-color: var(--color-background) !important;
+}
+
+:global(.overlays .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip) {
+  border-bottom-color: var(--color-background) !important;
+}
+
+:global(.overlays .mapboxgl-popup-anchor-left .mapboxgl-popup-tip) {
+  border-right-color: var(--color-background) !important;
+}
+
+:global(.overlays .mapboxgl-popup-anchor-right .mapboxgl-popup-tip) {
+  border-left-color: var(--color-background) !important;
+}
+
+:global(.overlays .mapboxgl-popup .mapboxgl-popup-close-button) {
+  width: var(--block-height-S);
+  height: var(--block-height-S);
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  background: url('../../../assets/icons/close-white.svg') no-repeat center center;
+  background-color: var(--color-brand);
+  color: var(--color-background);
+  font-size: 0;
+  filter: var(--drop-shadow);
+  border-radius: var(--block-height-S);
+}

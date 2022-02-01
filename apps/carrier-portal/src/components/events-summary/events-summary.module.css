@@ -1,0 +1,12 @@
+.cursorHelp {
+  cursor: help;
+}
+
+.highlight {
+  white-space: nowrap;
+  background: var(--highlight);
+}
+
+.lowercase {
+  text-transform: lowercase;
+}

@@ -7,6 +7,7 @@
     "data-transforms": "libs/data-transforms",
     "dataviews-client": "libs/dataviews-client",
     "fishing-map": "apps/fishing-map",
+    "carrier-portal": "apps/carrier-portal",
     "fishing-map-e2e": "apps/fishing-map-e2e",
     "fourwings-aggregate": "libs/fourwings-aggregate",
     "i18n-labels": "libs/i18n-labels",

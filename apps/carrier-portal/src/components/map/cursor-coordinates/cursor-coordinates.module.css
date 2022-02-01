@@ -1,0 +1,22 @@
+.container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  color: var(--color-background);
+  z-index: 5;
+}
+
+.containerFloat {
+  bottom: 8rem;
+  left: 1rem;
+}
+
+.coordinates {
+  display: block;
+  padding: var(--space-S);
+  padding-bottom: 0.5rem;
+  font-size: var(--font-size-S);
+  color: var(--color-background);
+  opacity: 0.5;
+}

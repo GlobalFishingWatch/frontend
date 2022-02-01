@@ -1,0 +1,15 @@
+.button {
+  width: var(--block-height-M);
+  height: var(--block-height-M);
+  border-radius: 50%;
+  background-color: transparent;
+}
+
+.small {
+  width: var(--block-height-S);
+  height: var(--block-height-S);
+}
+
+.button:hover {
+  background-color: var(--color-brand-highlight);
+}

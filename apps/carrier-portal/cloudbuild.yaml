@@ -1,0 +1,106 @@
+steps:
+  # Push production image to GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '--build-arg',
+        'REACT_APP_DEPLOYED_VERSION=${_APP_VERSION}_$SHORT_SHA',
+        '--build-arg',
+        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
+        '--build-arg',
+        'REACT_APP_GEAR_TYPE_READY=$_REACT_APP_GEAR_TYPE_READY',
+        '--build-arg',
+        'REACT_APP_VESSEL_WIDTH_READY=$_REACT_APP_VESSEL_WIDTH_READY',
+        '--build-arg',
+        'REACT_APP_TRACK_INSPECTOR_URL=$_REACT_APP_TRACK_INSPECTOR_URL',
+        '--build-arg',
+        'REACT_APP_DATA_DOWNLOAD_URL=$_REACT_APP_DATA_DOWNLOAD_URL',
+        '--build-arg',
+        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
+        '--build-arg',
+        'REACT_APP_GOOGLE_ANALYTICS_GA4=$_REACT_APP_GOOGLE_ANALYTICS_GA4',
+        '--build-arg',
+        'REACT_APP_GOOGLE_TAG_MEASUREMENT_ID=$_REACT_APP_GOOGLE_TAG_MEASUREMENT_ID',
+        '--build-arg',
+        'REACT_APP_DATASET_ID=$_REACT_APP_DATASET_ID',
+        '--build-arg',
+        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+        '--build-arg',
+        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--target',
+        'build',
+        '-t',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/carrier-portal:$COMMIT_SHA',
+        '.',
+      ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'run',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/carrier-portal:$COMMIT_SHA',
+        'npm',
+        'test',
+      ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '--build-arg',
+        'REACT_APP_DEPLOYED_VERSION=${_APP_VERSION}_$SHORT_SHA',
+        '--build-arg',
+        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
+        '--build-arg',
+        'REACT_APP_GEAR_TYPE_READY=$_REACT_APP_GEAR_TYPE_READY',
+        '--build-arg',
+        'REACT_APP_VESSEL_WIDTH_READY=$_REACT_APP_VESSEL_WIDTH_READY',
+        '--build-arg',
+        'REACT_APP_TRACK_INSPECTOR_URL=$_REACT_APP_TRACK_INSPECTOR_URL',
+        '--build-arg',
+        'REACT_APP_DATA_DOWNLOAD_URL=$_REACT_APP_DATA_DOWNLOAD_URL',
+        '--build-arg',
+        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
+        '--build-arg',
+        'REACT_APP_GOOGLE_TAG_MEASUREMENT_ID=$_REACT_APP_GOOGLE_TAG_MEASUREMENT_ID',
+        '--build-arg',
+        'REACT_APP_GOOGLE_ANALYTICS_GA4=$_REACT_APP_GOOGLE_ANALYTICS_GA4',
+        '--build-arg',
+        'REACT_APP_DATASET_ID=$_REACT_APP_DATASET_ID',
+        '--build-arg',
+        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+        '--build-arg',
+        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '-t',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/carrier-portal:$COMMIT_SHA',
+        '.',
+      ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      ['push', 'gcr.io/world-fishing-827/github.com/globalfishingwatch/carrier-portal:$COMMIT_SHA']
+
+  # Deploy to the appropriate environment
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      [
+        'beta',
+        'run',
+        'deploy',
+        '$_RUN_SERVICE_NAME',
+        '--project',
+        '$_RUN_PROJECT',
+        '--image',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/carrier-portal:$COMMIT_SHA',
+        '--region',
+        '$_RUN_REGION',
+        '--platform',
+        'managed',
+        '--set-env-vars',
+        'BASIC_AUTH=$_BASIC_AUTH',
+        '--allow-unauthenticated',
+      ]
+substitutions:
+  _APP_VERSION: 1.0.0-RC1
+images:
+  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/carrier-portal:$COMMIT_SHA'
+
+timeout: 1200s

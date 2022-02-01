@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  carrier-portal:
+    container_name: carrier-portal
+    env_file: .env
+    build:
+      context: .
+    ports:
+      - '3003:3003'
+    environment:
+      - NODE_ENV=production
+      - PORT=3003

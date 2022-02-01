@@ -1,0 +1,85 @@
+.filterSelectors {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto auto 1fr auto;
+  grid-gap: var(--space-M);
+}
+
+.datePicker {
+  grid-column: span 2;
+  position: relative;
+  z-index: 2;
+}
+
+.dateInput {
+  border: none;
+  border-bottom: var(--border);
+  width: 100%;
+  padding: 1rem;
+  min-height: var(--block-height-M);
+}
+
+.dateInput:focus {
+  border: none;
+  border-bottom: 1px solid var(--color-brand);
+}
+
+.primaryBtn {
+  padding: 1rem;
+  line-height: 2rem;
+  text-transform: uppercase;
+  border-radius: 0.3rem;
+  background: var(--color-brand);
+  color: var(--color-background);
+  width: 100%;
+}
+
+.placeholder {
+  color: var(--color-brand-secondary);
+}
+
+.filterSelectors .primaryBtn {
+  grid-column-start: -2;
+}
+
+.filterSelectors .primaryBtn:hover,
+.filterSelectors .primaryBtn:focus {
+  background: var(--color-brand-hover);
+}
+
+.filterSelectors .placeholder {
+  grid-column-start: 1;
+  /* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
+  grid-column-end: -2;
+  display: flex;
+  align-items: center;
+}
+
+.filterSelectors .secondaryBtn:hover,
+.filterSelectors .secondaryBtn:focus {
+  background: var(--color-brand-hover-highlight);
+}
+
+@media only screen and (max-width: 1024px) {
+  .filterSelectors {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+  }
+}
+
+@media only screen and (max-width: 720px) {
+  .filterSelectors {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: unset;
+  }
+
+  .datePicker {
+    grid-column: unset;
+  }
+
+  .filterSelectors .placeholder {
+    grid-column-end: -1;
+  }
+}

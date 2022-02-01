@@ -1,0 +1,154 @@
+.timeline {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.rfmosColumn,
+.eventsColumn {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.rfmosColumn {
+  mix-blend-mode: darken;
+}
+
+.eventsColumn {
+  pointer-events: none;
+}
+
+.rfmo {
+  position: absolute;
+  width: 100%;
+  border-top: 2px solid var(--color-background);
+  border-bottom: 2px solid var(--color-background);
+  background-image: linear-gradient(90deg, rgba(22, 63, 137, 1) 0%, rgba(22, 63, 137, 0) 100%);
+  transition: opacity 200ms linear;
+  opacity: 0.2;
+}
+
+.rfmo.highlighted {
+  opacity: 0.4;
+}
+
+.eventBtn {
+  position: absolute;
+  display: block;
+  min-height: 1.2rem;
+  left: 1.4rem;
+  width: 1.2rem;
+  border-radius: 0.6rem;
+  border: 0.2rem solid transparent;
+  box-shadow: 0 0 0 0.2rem transparent;
+  pointer-events: all;
+}
+
+.eventBtn.past,
+.eventBtn:hover {
+  border: 0.2rem solid white;
+  box-shadow: 0 0 0 0.2rem var(--color-vessel-main);
+}
+
+.eventBtn.highlighted,
+.eventBtn:hover {
+  box-shadow: 0 0 0 0.2rem var(--color-vessel-main), 0 0.2rem 0.4rem 0.4rem rgba(44, 61, 108, 0.25);
+  z-index: unset;
+}
+
+.eventBtn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-0.5rem);
+  left: -1.6rem;
+  width: 4rem;
+  height: 1rem;
+  background: url('../../assets/icons/scrollPosition.svg') no-repeat center center;
+  z-index: -1;
+  opacity: 0;
+}
+
+.eventBtn.highlighted::before {
+  opacity: 1;
+  transition: opacity 200ms linear 300ms;
+}
+
+.eventBtn.encounter {
+  z-index: 2;
+  background-color: var(--color-event-encounter);
+}
+
+.eventBtn.encounter.partially {
+  background-color: var(--color-event-encounter-partially);
+}
+
+.eventBtn.encounter.unmatched {
+  background-color: var(--color-event-encounter-unmatched);
+}
+
+.eventBtn.loitering {
+  z-index: 1;
+  background-color: var(--color-event-loitering);
+}
+
+.eventBtn.port {
+  z-index: 0;
+  background-color: var(--color-event-port);
+}
+
+.currentScroll {
+  position: absolute;
+  transform: translateY(-1.4rem);
+  transition: top 300ms ease-out;
+  display: flex;
+  align-items: center;
+}
+
+.currentScroll .info {
+  display: inline-block;
+  font-size: var(--font-size-M);
+  white-space: nowrap;
+  background: white;
+  padding: 0.5rem;
+  margin-top: 3px;
+}
+
+.currentScroll .info label {
+  line-height: 1.2rem;
+}
+
+.futureLine {
+  position: absolute;
+  left: 1.9rem;
+  top: 0;
+  height: 100%;
+  border-left: 0.2rem dotted var(--color-vessel-main);
+}
+
+.pastLine {
+  position: absolute;
+  z-index: -1;
+  left: 1.9rem;
+  top: 1.5rem;
+  height: var(--vh, 1vh) * 100;
+  border-left: 0.2rem solid var(--color-vessel-main);
+}
+
+.vessel {
+  display: inline-block;
+  width: 3.8rem;
+  height: 2.8rem;
+  background: url('../../assets/icons/vessel.svg') no-repeat center center;
+}
+
+.endOfTimeline {
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-brand-secondary);
+}

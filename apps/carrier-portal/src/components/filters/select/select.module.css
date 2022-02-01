@@ -1,0 +1,138 @@
+.container {
+  position: relative;
+  border-bottom: var(--border);
+}
+
+.container.isOpen {
+  background: var(--color-background);
+  filter: var(--drop-shadow);
+  z-index: 2;
+}
+
+.selectedItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inputText {
+  border: none;
+  flex: 1;
+  padding: 1rem;
+  min-height: var(--block-height-M);
+}
+
+.inputText:focus {
+  border: none;
+}
+
+.inputText.active::placeholder {
+  color: var(--color-brand);
+}
+
+.inputText.active:focus::placeholder {
+  color: var(--color-brand-secondary);
+}
+
+.toggleBtn {
+  margin-right: 0.4rem;
+}
+
+.toggleBtnOpen svg {
+  transform: rotate(180deg);
+}
+
+.listContainer {
+  width: 100%;
+  position: absolute !important; /* as needs to overwrite default FixedSizeList behaviour */
+  top: 4.1rem;
+  left: 0;
+  background: var(--color-background);
+  max-height: 40rem;
+  overflow: auto;
+}
+
+.listItem {
+  color: var(--color-brand-secondary);
+  line-height: 2rem;
+  padding: var(--space-S);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.firstOfGroup {
+  border-top: var(--border);
+  position: relative;
+  padding-top: 3rem;
+}
+
+.firstOfGroup::before {
+  position: absolute;
+  top: 0.5rem;
+  left: var(--space-S);
+  content: attr(data-group);
+  font-size: var(--font-size-S);
+  text-transform: uppercase;
+  color: var(--color-brand-secondary);
+}
+
+.listItemLabel {
+  display: flex;
+  align-items: center;
+}
+
+.listItemNumber {
+  margin-left: 0.5rem;
+  font-size: var(--font-size-S);
+}
+
+.listItemLabel svg + span {
+  margin-left: 0.5rem;
+}
+
+.listItem.selected {
+  color: var(--color-brand);
+}
+
+.listItem.highlighted {
+  color: var(--color-brand);
+  background-color: var(--color-brand-highlight-softer);
+}
+
+.spinner {
+  display: inline-block;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-right: 1rem;
+  border: 1.3px solid var(--color-brand);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.listItem.highlighted::after,
+.listItem.selected::after {
+  color: var(--color-brand-secondary);
+  content: '';
+  width: 2.2rem;
+  height: 2rem;
+  background: url('../../../assets/icons/tick.svg') center no-repeat;
+  text-align: center;
+}
+
+.listItem.selected.highlighted::after {
+  color: var(--color-brand-secondary);
+  content: '';
+  width: 2.2rem;
+  height: 2rem;
+  background: url('../../../assets/icons/delete.svg') center no-repeat;
+  text-align: center;
+}

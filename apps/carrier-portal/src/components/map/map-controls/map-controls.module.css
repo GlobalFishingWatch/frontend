@@ -1,0 +1,117 @@
+.mapControls {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  z-index: 6;
+  filter: var(--drop-shadow);
+}
+
+.mapControl {
+  width: 3.6rem;
+  height: 3.6rem;
+  background-color: var(--color-background);
+  border-radius: 1.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.mapControl:hover,
+.mapControl:focus {
+  background-color: var(--color-brand-highlight);
+}
+
+.contextLayersContainer {
+  position: absolute;
+  width: 38rem;
+  top: 8.4rem;
+  right: -0.4rem;
+  background: var(--color-background);
+  filter: var(--drop-shadow);
+  padding: var(--space-S);
+  z-index: 1;
+}
+
+@media only screen and (max-width: 720px) {
+  .contextLayersContainer {
+    width: 30rem;
+  }
+}
+
+.contextLayersButton {
+  composes: mapControl;
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+}
+
+.contextLayer {
+  height: var(--block-height-M);
+  display: flex;
+  align-items: center;
+}
+
+.contextLayer input {
+  position: relative;
+  height: 1.8rem;
+  cursor: pointer;
+  appearance: none;
+  border: none;
+}
+
+.contextLayer > span {
+  cursor: pointer;
+  text-transform: none;
+  font-size: var(--font-size-L);
+  line-height: 1.9rem;
+  padding-left: 4rem;
+  color: var(--color-brand-secondary);
+  transition: color 150ms linear;
+}
+
+.contextLayer:hover span,
+.contextLayer input:checked + span {
+  color: var(--color-brand);
+}
+
+.contextLayer input::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: var(--block-height-S);
+  height: 1.8rem;
+  border-radius: 0.9rem;
+  background-color: var(--color-brand-highlight);
+  transition: background-color 150ms linear;
+}
+
+.contextLayer input::after {
+  content: '';
+  position: absolute;
+  width: 1.4rem;
+  height: 1.4rem;
+  left: 0.2rem;
+  top: 0.2rem;
+  border-radius: 0.7rem;
+  background: var(--color-background);
+  transition: left 150ms ease-in;
+  box-shadow: 0 0.2rem 0.4rem 0 var(--color-brand-secondary);
+}
+
+.contextLayer input:checked::before {
+  background: currentColor;
+}
+
+.contextLayer input:checked::after {
+  left: 1.6rem;
+}
+
+.info {
+  fill: var(--color-brand-secondary);
+  cursor: help;
+  margin-left: 0.5rem;
+}
+
+.disabled,
+.mapControl:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}

@@ -1,0 +1,85 @@
+.splitContainer {
+  width: 100%;
+  display: flex;
+  flex: 1;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorButton {
+  margin-top: 4rem;
+  padding: 1rem;
+  line-height: 2rem;
+  text-transform: uppercase;
+  border-radius: 0.3rem;
+  background: var(--color-brand);
+  color: var(--color-background);
+}
+
+:global .gutter.gutter-horizontal {
+  position: sticky;
+  top: var(--header-height);
+  height: calc(var(--vh, 1vh) * 100 - var(--header-height));
+  z-index: 1;
+}
+
+:global .gutter.gutter-horizontal::after {
+  content: '';
+  cursor: col-resize;
+  width: 1.6rem;
+  height: 5rem;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  background: #d0d9e7 url('../../assets/icons/resize.svg') no-repeat center center;
+  filter: var(--drop-shadow);
+  border-radius: 3px;
+  z-index: 1;
+}
+
+.sidebarContainer {
+  background: var(--color-background-gradient);
+  box-shadow: var(--block-shadow);
+  position: relative;
+}
+
+.mapContainer {
+  height: calc((var(--vh) * 100) - var(--header-height));
+  flex: 1;
+  background: var(--color-background-map);
+  position: fixed;
+  right: 0;
+  top: var(--header-height);
+  z-index: 0;
+}
+
+button.toggleView {
+  position: fixed;
+  bottom: var(--space-M);
+  right: var(--space-S);
+  width: 4rem;
+  height: 4rem;
+  border-radius: 2rem;
+  background: var(--color-brand);
+  filter: var(--drop-shadow);
+}
+
+button.toggleView.inverted {
+  background: var(--color-background);
+}
+
+@media only screen and (max-width: 720px) {
+  .sidebarContainer {
+    width: 100vw;
+  }
+
+  .mapContainer {
+    width: 100vw;
+  }
+}

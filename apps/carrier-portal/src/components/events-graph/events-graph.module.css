@@ -1,0 +1,11 @@
+.Graph {
+  width: 100%;
+  margin-bottom: var(--space-L);
+}
+
+.selectContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}

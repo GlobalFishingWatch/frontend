@@ -1,0 +1,113 @@
+.searchContainer {
+  flex: 1;
+  position: relative;
+}
+
+.searchInput {
+  flex: 1;
+  width: 100%;
+  height: var(--block-height-M);
+  border-radius: calc(var(--block-height-M) / 2);
+  border: var(--border);
+  padding: 0 var(--space-S);
+}
+
+.searchInput:focus {
+  background: var(--color-brand-highlight-softer);
+}
+
+.searchErrorsContainer {
+  font-size: inherit;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: transparent;
+  padding: calc(1rem + 1px); /* padding + input border  */
+  z-index: 0;
+  pointer-events: none;
+}
+
+.searchItemError {
+  text-decoration: underline;
+  text-decoration-color: red;
+}
+
+.optionListContainer {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--vh, 1vh) * 100 - var(--header-height));
+  z-index: 3;
+  background: var(--color-veil);
+  border-top: var(--border);
+  cursor: pointer;
+}
+
+.optionList {
+  margin: 0;
+  padding: 0;
+  cursor: unset;
+  background: var(--color-background);
+}
+
+.optionlistItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  height: 50px;
+  background: var(--color-background);
+  border-top: 1px solid transparent;
+}
+
+.optionListLegend {
+  color: var(--color-brand-secondary);
+}
+
+@media (min-width: 720px) {
+  .optionlistItem {
+    padding: 1rem 2.5rem;
+  }
+}
+
+.optionlistItem:not(:first-child) {
+  border-top: var(--border-light);
+}
+
+.optionlistItem.highlighted {
+  background-color: var(--color-brand-highlight);
+}
+
+.optionlistItemLoading {
+  composes: optionlistItem;
+  pointer-events: none;
+}
+
+.optionlistItemPlaceholder {
+  color: var(--color-brand-secondary);
+  font-size: var(--font-size-S);
+  text-transform: uppercase;
+}
+
+.loadingContainer {
+  position: absolute;
+  bottom: 0;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-brand);
+  border-radius: 50%;
+  border-top-color: inherit;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

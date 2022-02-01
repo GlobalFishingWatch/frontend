@@ -1,0 +1,189 @@
+.container {
+  height: calc(var(--vh, 1vh) * 100 - var(--header-height));
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  display: grid;
+  grid-template-rows: [profile] minmax(min-content, 50vh) [events] auto;
+  grid-template-columns: [timeline] 40px [profileevents] auto;
+  /* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
+  grid-template-areas:
+    'timeline profile'
+    'timeline events';
+}
+
+.profile {
+  grid-area: profile;
+  min-height: 50vh;
+  padding-top: var(--space-M);
+  padding-bottom: var(--space-L);
+}
+
+.timeline {
+  grid-area: timeline;
+  position: sticky;
+  top: 6rem;
+  height: calc(var(--vh, 1vh) * 100 - (var(--header-height) + 8rem));
+}
+@media only screen and (max-width: 720px) {
+  .timeline {
+    display: none;
+  }
+}
+
+.events {
+  grid-area: events;
+  position: relative;
+  margin-top: var(--space-L);
+}
+
+.profileHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-height: 6rem;
+  padding: 1.5rem;
+  background-color: var(--color-background);
+  border-bottom: var(--border);
+  transition: opacity 0.1s linear, transform 0.2s linear;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-100%);
+}
+
+.profileHeader.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+.infoBtn {
+  width: var(--block-height-S);
+  height: var(--block-height-S);
+  border-radius: 1.6rem;
+  opacity: 1;
+  transition: none;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fill: var(--color-brand-secondary);
+}
+
+.infoBtn:hover,
+.infoBtn:focus {
+  background-color: var(--color-brand-highlight);
+  fill: var(--color-brand);
+}
+
+.profileTitle {
+  font-size: var(--font-size-XL);
+  font-weight: var(--font-weight-regular);
+  background: var(--highlight-vessel-main);
+  white-space: nowrap;
+  display: inline-block;
+  margin-left: var(--space-M);
+}
+
+.vesseltype {
+  color: var(--color-brand-secondary);
+  font-size: var(--font-size-M);
+  margin-left: 0.5rem;
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.vesselInfoPlaceholder {
+  height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vesselInfo {
+  padding: var(--space-M);
+  padding-bottom: var(--space-L);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  grid-gap: 1.5rem;
+}
+
+.activityOverview {
+  margin-left: var(--space-M);
+  padding: var(--space-L) var(--space-L) var(--space-L) 0;
+  border-top: var(--border);
+  border-bottom: var(--border);
+}
+
+.activityOverviewSticky {
+  font-weight: 300;
+  line-height: var(--font-line-height-L);
+  font-size: var(--font-size-M);
+  margin-right: var(--space-M);
+  z-index: 2;
+}
+
+:local .activityOverviewSticky :global(.vesselHighlight) {
+  background: var(--highlight-vessel-main);
+}
+
+.activityOverview h3 {
+  font-size: var(--font-size-XL);
+  line-height: var(--font-line-height-XL);
+  font-weight: var(--font-weight-light);
+}
+
+.activityOverview h3 strong {
+  font-weight: var(--font-weight-regular);
+}
+
+@media only screen and (max-width: 500px) {
+  .container {
+    grid-template-columns: auto;
+    grid-template-areas:
+      'profile'
+      'events';
+  }
+
+  .activityOverview {
+    padding: var(--space-M) var(--space-M) var(--space-M) 0;
+  }
+}
+
+@media only screen and (max-width: 720px) {
+  .profileHeader {
+    padding: 0.5rem;
+  }
+
+  .activityOverviewSticky {
+    margin-right: var(--space-S);
+  }
+}
+
+.container[data-size='small'] {
+  grid-template-columns: [profileevents] auto;
+  grid-template-areas:
+    'profile'
+    'events';
+}
+
+.container[data-size='small'] .activityOverview {
+  padding: var(--space-M) var(--space-M) var(--space-M) 0;
+}
+
+.tooltipDatesContainer {
+  min-width: 250px;
+}
+
+.noEvents {
+  pointer-events: none;
+}

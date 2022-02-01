@@ -1,0 +1,15 @@
+.authLegend {
+  text-transform: uppercase;
+  margin-right: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.authIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  margin-right: 0.3rem;
+}

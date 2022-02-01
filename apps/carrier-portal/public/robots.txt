@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://globalfishingwatch.org/carrier-portal/sitemap.xml

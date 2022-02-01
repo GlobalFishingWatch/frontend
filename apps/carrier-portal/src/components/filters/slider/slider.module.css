@@ -1,0 +1,35 @@
+.container {
+  display: 'flex';
+  justify-content: 'center';
+  flex-wrap: 'wrap';
+}
+
+.slider {
+  height: 4rem;
+  display: flex;
+  width: 100%;
+  padding: 0 1.8rem;
+  margin-top: 2px;
+}
+
+.sliderTrack {
+  height: 2px;
+  width: 100%;
+  align-self: center;
+}
+
+.sliderThumb {
+  height: 3.6rem;
+  width: 3.6rem;
+  border-radius: 50%;
+  background-color: var(--color-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  box-shadow: 0 2px 7px 0 var(--color-brand-hover-highlight);
+}
+
+.sliderThumbCounter {
+  color: var(--color-brand);
+}

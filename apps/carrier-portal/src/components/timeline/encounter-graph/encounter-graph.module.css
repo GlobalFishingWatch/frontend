@@ -1,0 +1,55 @@
+.encounterGraph {
+  position: absolute;
+  top: 2rem;
+  left: 0;
+  stroke-width: 1.5;
+  fill: none;
+  transform: translate(-100%, -50%);
+  clip-path: circle(20px at 100% 50%);
+  transition: clip-path 1.5s ease-in 500ms;
+}
+
+.encounterGraphHighlighted {
+  clip-path: circle(100% at 50% 50%);
+}
+
+.encounterGraph .pastLine {
+  stroke: var(--color-vessel-secondary);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.encounterGraph .futureLine {
+  stroke: var(--color-vessel-secondary);
+  stroke-dasharray: 0 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.5;
+}
+
+.encounterGraph .encounterLine {
+  stroke: var(--color-vessel-main);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.3;
+}
+
+.encounterGraph .encounterCircle {
+  cursor: pointer;
+  fill: var(--color-event-encounter);
+  stroke: var(--color-background);
+}
+
+.encounterGraph .encounterCirclePartially {
+  fill: var(--color-event-encounter-partially);
+}
+
+.encounterGraph .encounterCircleUnmatched {
+  fill: var(--color-event-encounter-unmatched);
+}
+
+@media only screen and (max-width: 720px) {
+  .encounterGraph {
+    display: none;
+  }
+}

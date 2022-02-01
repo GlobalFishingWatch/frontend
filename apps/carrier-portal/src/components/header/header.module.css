@@ -1,0 +1,113 @@
+.headerContainer {
+  position: fixed;
+  top: 0;
+  z-index: 3;
+  filter: var(--drop-shadow);
+}
+
+.headerBannerContainer {
+  width: 100vw;
+  height: var(--header-height);
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  grid-gap: var(--space-S);
+  padding: var(--space-S);
+  background: var(--color-background);
+}
+
+.expanded .download {
+  opacity: 0;
+  width: 0;
+}
+
+.headerContent {
+  display: flex;
+}
+
+.headerContentCenter {
+  margin: 0 auto;
+}
+
+.filtersDrawer {
+  width: 100%;
+  height: 54rem;
+  padding: var(--space-M);
+  background: var(--color-background);
+  border-top: var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.downloadDrawer {
+  position: absolute;
+  right: 0;
+  background: var(--color-background);
+  border-top: var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.downloadLink {
+  min-width: 18rem;
+  max-width: 34rem;
+  font-size: var(--font-size-L);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  border-bottom: var(--border-light);
+  padding: var(--space-M);
+  justify-content: space-between;
+}
+
+.downloadSpinner {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  margin-left: var(--space-M);
+}
+
+.downloadLinkDisabled {
+  color: var(--color-brand-secondary);
+  pointer-events: none;
+}
+
+.logoIcon {
+  margin-right: var(--space-M);
+  max-height: 40px;
+}
+
+.inconLink path,
+.iconColor path {
+  fill: var(--color-brand);
+}
+
+.iconLink {
+  margin-left: var(--space-M);
+  margin-right: 0.2rem;
+}
+
+.eventsDisabled {
+  pointer-events: none;
+}
+
+@media only screen and (max-width: 480px) {
+  .headerBannerContainer {
+    grid-gap: 0.2rem;
+  }
+}
+@media only screen and (max-width: 720px) {
+  .logoIcon {
+    margin-right: 0;
+  }
+
+  .filtersDrawer {
+    height: calc((var(--vh) * 100) - var(--header-height));
+    overflow: auto;
+  }
+
+  .headerBannerContainer {
+    grid-template-columns: auto 1fr auto auto;
+  }
+}

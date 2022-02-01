@@ -1,0 +1,144 @@
+.events-graph {
+  width: 100%;
+
+  svg {
+    width: 100%;
+  }
+
+  circle,
+  rect,
+  path {
+    fill: var(--color-event-encounter);
+  }
+
+  text {
+    font-size: var(--font-size-M);
+    text-anchor: middle;
+  }
+
+  .axisLabel {
+    cursor: pointer;
+  }
+
+  .axisLabelDisabled {
+    pointer-events: none;
+  }
+
+  .axisLabel rect {
+    fill: var(--color-brand-highlight);
+  }
+
+  .axisLabel:hover rect {
+    fill: var(--color-brand);
+  }
+
+  .axisLabel text {
+    fill: var(--color-brand);
+    text-transform: uppercase;
+  }
+
+  .axisLabel image {
+    outline: 1px solid var(--color-border-light);
+  }
+
+  .valueLabel {
+    fill: var(--color-brand-secondary);
+  }
+
+  circle {
+    cursor: pointer;
+    stroke-width: 1.5;
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+  }
+
+  circle:hover {
+    stroke: var(--color-brand);
+  }
+
+  circle.isNew {
+    //fill-opacity: 0;
+    animation: slide-up 1s ease;
+  }
+
+  /* stylelint-disable-next-line */
+  @for $i from 1 through 2000 {
+    circle:nth-child(#{$i}n) {
+      transition-delay: #{$i * 1}ms;
+    }
+  }
+
+  @keyframes slide-up {
+    0% {
+      opacity: 0;
+      r: 10;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .partially {
+    fill: var(--color-event-encounter-partially);
+  }
+
+  .unmatched {
+    fill: var(--color-event-encounter-unmatched);
+  }
+
+  .loitering {
+    fill: var(--color-event-loitering);
+  }
+
+  .timeScale {
+    line {
+      stroke: var(--color-brand-secondary);
+      stroke-opacity: 0.25;
+      transition: stroke 150ms linear;
+    }
+
+    text {
+      fill: var(--color-brand-secondary);
+      transition: fill 150ms linear;
+      font-size: var(--font-size-XS);
+      cursor: pointer;
+    }
+
+    g:hover {
+      line {
+        stroke: var(--color-brand);
+        stroke-opacity: 0.75;
+      }
+
+      & + g {
+        line {
+          stroke: var(--color-brand);
+          stroke-opacity: 0.75;
+        }
+      }
+
+      text {
+        fill: var(--color-brand);
+      }
+    }
+  }
+}
+
+.circle-tooltip {
+  display: flex;
+}
+
+.events-graph-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-brand-secondary);
+  text-align: center;
+  font-style: italic;
+}
+
+.text-no-wrap {
+  white-space: nowrap;
+}

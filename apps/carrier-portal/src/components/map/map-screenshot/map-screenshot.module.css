@@ -1,0 +1,183 @@
+.modalOverlay {
+  background: var(--color-veil);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  padding: var(--space-M);
+  outline: none;
+  background: var(--color-background);
+  min-width: 50%;
+}
+
+.imgContainerTranslated {
+  position: absolute;
+  top: -2000px;
+}
+
+.imgContainer {
+  position: relative;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.logoContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: var(--space-S);
+  box-sizing: content-box;
+  background-image: linear-gradient(180deg, rgba(22, 63, 137, 0.3) 0%, rgba(22, 63, 137, 0) 100%);
+}
+
+.legendContainer {
+  padding: var(--space-S);
+  background-color: var(--color-brand);
+  color: var(--color-background);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mapLegend {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  z-index: 0;
+  flex-shrink: 1;
+}
+
+.eventsLegendContainer {
+  display: flex;
+}
+
+.eventsLegendList {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-right: var(--space-M);
+}
+
+.eventsLegend {
+  text-align: right;
+  margin: 0.2rem 0;
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-S);
+  line-height: 1.1rem;
+  color: white;
+}
+
+@media only screen and (max-width: 720px) {
+  .eventsLegend {
+    text-align: left;
+  }
+}
+
+.eventsLegendIcon {
+  margin-right: 1rem;
+  font-size: var(--font-size-XL);
+  color: var(--color-event-encounter-unmatched);
+  width: 1rem;
+  height: 1rem;
+  margin-top: -1px;
+  border-radius: 0.5rem;
+  background-color: currentColor;
+}
+
+.legendTitle {
+  font-size: var(--font-size-M);
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+.legendTitleSpace {
+  margin-left: 0.5rem;
+}
+
+.legendLabel {
+  font-size: var(--font-size-M);
+  color: rgba(255, 255, 255, 0.6);
+  padding-right: 0.4rem;
+  word-break: break-word;
+}
+
+.legendLabel + .legendLabel {
+  padding-left: 0.4rem;
+}
+
+.flexCenter {
+  display: flex;
+  align-items: center;
+}
+
+.mainVesselLine,
+.encounterVesselLine {
+  width: 15px;
+  height: 1px;
+  margin-right: 0.5rem;
+}
+
+.mainVesselLine {
+  background-color: var(--color-vessel-main);
+}
+
+.encounterVesselLine {
+  background-color: var(--color-vessel-secondary);
+}
+
+.imgPreviewContainer {
+  height: 80vh;
+  position: relative;
+  text-align: center;
+}
+
+.imgPreview {
+  height: 100%;
+  width: auto;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-S);
+}
+
+.footer button {
+  min-width: 20rem;
+  padding: 1rem;
+  text-transform: uppercase;
+  border-radius: 0.3rem;
+  background: var(--color-brand-highlight);
+  position: relative;
+}
+
+.footer .primaryBtn {
+  background: var(--color-brand);
+  color: var(--color-background);
+  min-height: 4rem;
+}
+
+@media only screen and (max-width: 720px) {
+  .footer button {
+    min-width: 8rem;
+  }
+}

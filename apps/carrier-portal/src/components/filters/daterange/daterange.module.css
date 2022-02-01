@@ -1,0 +1,49 @@
+.datePickerContainer {
+  display: inline-flex;
+  position: relative;
+  width: 50%;
+  border-bottom: var(--border);
+}
+
+.title::before {
+  content: attr(title);
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+.input {
+  flex: 1;
+  line-height: 2rem;
+  padding: 1rem 1rem 1rem 5.5rem;
+}
+
+.inputSecondary,
+.titleSecondary::before {
+  color: var(--color-brand-secondary);
+}
+
+.input,
+.input:focus {
+  border: none;
+}
+
+.cleanBtn {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+}
+
+.datePickerContainer:first-of-type .cleanBtn {
+  right: 1rem;
+}
+
+.datePickerContainer:not(:first-of-type) .input {
+  padding-left: 6rem;
+}
+
+.datePickerContainer:not(:first-of-type) .title::before {
+  left: 1rem;
+}

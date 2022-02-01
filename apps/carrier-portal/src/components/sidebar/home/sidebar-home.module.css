@@ -1,0 +1,76 @@
+.eventTypeSwitcher {
+  width: 100%;
+  display: flex;
+  height: var(--block-height-M);
+}
+
+button.eventType {
+  flex: 1;
+  text-transform: uppercase;
+  background: rgba(22, 63, 137, 0.15);
+  opacity: 0.7;
+}
+
+.placeholderContainer {
+  display: flex;
+
+  /* x3 due the events bar and the container padding */
+  min-height: calc(100vh - var(--header-height) - var(--block-height-M) * 3);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorButton {
+  margin-top: 1rem;
+  padding: 1rem;
+  line-height: 2rem;
+  text-transform: uppercase;
+  border-radius: 0.3rem;
+  background: var(--color-brand);
+  color: var(--color-background);
+}
+
+button.eventType.disabled {
+  cursor: not-allowed;
+}
+
+button.eventType:not(.disabled):hover {
+  opacity: 1;
+}
+
+button.eventType.active {
+  background: none;
+  opacity: 1;
+  cursor: default;
+  pointer-events: none;
+}
+
+button.eventType svg {
+  margin: -0.2rem 0.5rem 0 0;
+}
+
+.content {
+  padding: var(--space-M);
+  position: relative;
+  min-height: calc(100% - var(--block-height-M));
+}
+
+.contentHeader {
+  margin-bottom: var(--space-M);
+  position: relative; /* to have the spinner inside */
+}
+
+.container {
+  height: 100%;
+}
+
+.container h2 {
+  font-size: var(--font-size-XL);
+  line-height: var(--font-line-height-XL);
+  font-weight: var(--font-weight-light);
+}
+
+.container h2 strong {
+  font-weight: var(--font-weight-regular);
+}
