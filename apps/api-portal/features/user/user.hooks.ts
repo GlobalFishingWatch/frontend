@@ -4,17 +4,22 @@ import { useSelector, useDispatch } from 'react-redux'
 import { AsyncReducerStatus } from 'lib/async-slice'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import { UserPermission } from '@globalfishingwatch/api-types'
-import { APPLICATION_ID } from 'components/data/config'
 import {
   fetchUserThunk,
+  isGuestUser,
   logoutUserThunk,
   selectUserData,
   selectUserLogged,
   selectUserStatus,
 } from './user.slice'
 
-export const checkActionPermission = (action: string, permissions: UserPermission[]) => {
-  const permission = { type: 'application', value: APPLICATION_ID, action }
+export type UserAction = 'read' | 'create' | 'delete'
+
+export const checkUserApplicationPermission = (
+  action: UserAction,
+  permissions: UserPermission[]
+) => {
+  const permission = { type: 'entity', value: 'user-application', action }
   return checkExistPermissionInList(permissions, permission)
 }
 
@@ -23,6 +28,7 @@ export const useUser = () => {
 
   const logged = useSelector(selectUserLogged)
   const user = useSelector(selectUserData)
+  const guestUser = useSelector(isGuestUser)
   const status = useSelector(selectUserStatus)
 
   const accessToken = typeof window === 'undefined' ? null : getAccessTokenFromUrl()
@@ -30,12 +36,11 @@ export const useUser = () => {
   const refreshToken = GFWAPI.getRefreshToken()
 
   const authorized = useMemo(() => {
-    // TODO: Check for specific permission to access the minisite if required
-    return user // && checkActionPermission('read', user.permissions)
+    return user && checkUserApplicationPermission('read', user.permissions)
   }, [user])
 
   const logout = useCallback(() => {
-    dispatch(logoutUserThunk({ loginRedirect: false }))
+    dispatch(logoutUserThunk({ loginRedirect: true }))
   }, [dispatch])
 
   useEffect(() => {
@@ -48,6 +53,7 @@ export const useUser = () => {
     loading: status !== AsyncReducerStatus.Finished && status !== AsyncReducerStatus.Idle,
     logged,
     user,
+    guestUser,
     authorized,
     logout,
   }
