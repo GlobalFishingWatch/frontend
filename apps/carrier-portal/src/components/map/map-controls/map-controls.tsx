@@ -66,7 +66,7 @@ const MapControls: React.FC<MapControlsProps> = ({
       action: 'Start screenshot',
       label: hasVesselSelected ? 'vessel history page' : 'home page',
     })
-  }, [setMapDownloadVisible])
+  }, [hasVesselSelected, setMapDownloadVisible])
 
   const handleLayerToggle = (layerSelected: ContextLayer) => {
     const activeLayers = (layers || []).reduce<LayerTypes[]>((acc, layer) => {

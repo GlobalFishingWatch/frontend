@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, useCallback, Fragment, useMemo } fr
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import debounce from 'lodash/debounce'
-import CountryFlag from '@globalfishingwatch/ui-components/dist/countryflag'
+import { CountryFlag } from '@globalfishingwatch/ui-components'
 import Tooltip from 'components/tooltip/tooltip'
 import Timeline from 'components/timeline/timeline.container'
 import EventsSummary from 'components/events-summary/events-summary.container'

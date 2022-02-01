@@ -1,12 +1,6 @@
 import ReactGA from 'react-ga'
-import {
-  SearchTypes,
-  QueryParam,
-  GraphOption,
-  ContextLayer,
-  EventType,
-} from 'types/app.types'
-import { ContextLayerTypes } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { ContextLayerType } from '@globalfishingwatch/layer-composer'
+import { SearchTypes, QueryParam, GraphOption, ContextLayer, EventType } from 'types/app.types'
 
 export const BASE_URL = process.env.NODE_ENV === 'production' ? '/carrier-portal' : ''
 export const TRACK_INSPECTOR_URL = process.env.REACT_APP_TRACK_INSPECTOR_URL
@@ -174,10 +168,10 @@ export const ENCOUNTER_RISKS = {
   unmatched: 3,
 }
 
-export const CONTEXT_LAYERS_IDS: { [key in string]: ContextLayerTypes | 'cp_next_port' } = {
-  eez: 'eez-areas',
+export const CONTEXT_LAYERS_IDS: { [key in string]: ContextLayerType | 'cp_next_port' } = {
+  eez: ContextLayerType.EEZ, //'eez-areas',
   // otherRfmos: 'other_rfmos',
-  nextPort: 'cp_next_port',
+  // nextPort: 'cp_next_port',
   // rfmo: 'cp_rfmo',
   // eez: 'eez',
   // mpant: 'mpant',

@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect, useCallback } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import Modal from 'react-modal'
-import CountryFlag from '@globalfishingwatch/ui-components/dist/countryflag'
+import { CountryFlag } from '@globalfishingwatch/ui-components'
 import { ReactComponent as IconLogo } from 'assets/images/gfw-carrier-vessels-white.svg'
 import { Vessel, EventVessel } from 'types/api/models'
 import { EncounterTypes } from 'types/app.types'
@@ -55,7 +55,7 @@ const MapScreenshot: React.FC<MapScreenshotProps> = (props) => {
       label: vessel ? 'vessel history page' : 'home page',
     })
     downloadImage()
-  }, [downloadImage])
+  }, [downloadImage, vessel])
 
   const handleFinished = useCallback(() => {
     setImgPreview(null)

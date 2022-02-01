@@ -1,15 +1,20 @@
 import React, { lazy, Suspense, useMemo, useCallback, useEffect, useState, useRef } from 'react'
 import throttle from 'lodash/throttle'
 import { event as uaEvent } from 'react-ga'
-import FlyToInterpolator from '@globalfishingwatch/react-map-gl/dist/esm/utils/transition/viewport-fly-to-interpolator'
-import ScaleControl from '@globalfishingwatch/react-map-gl/dist/esm/components/scale-control'
-import Popup from '@globalfishingwatch/react-map-gl/dist/esm/components/popup'
-import GFWAPI from '@globalfishingwatch/api-client'
-import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
-import LayerComposer, { sort, Generators, Group } from '@globalfishingwatch/layer-composer'
-import defaultGenerators from '@globalfishingwatch/layer-composer/dist/generators'
-import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { MapRequest } from '@globalfishingwatch/react-map-gl'
+import FlyToInterpolator from 'react-map-gl/dist/esm/utils/transition/viewport-fly-to-interpolator'
+import ScaleControl from 'react-map-gl/dist/esm/components/scale-control'
+import Popup from 'react-map-gl/dist/esm/components/popup'
+import { MapRequest } from 'react-map-gl'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { useLayerComposer } from '@globalfishingwatch/react-hooks'
+import {
+  LayerComposer,
+  sort,
+  Group,
+  generatorsConfig,
+  GeneratorType,
+  AnyGeneratorConfig,
+} from '@globalfishingwatch/layer-composer'
 import { useViewport } from 'hooks/map.hooks'
 import { useSmallScreen } from 'hooks/screen.hooks'
 import usePrevious from 'hooks/previous.hooks'
@@ -46,18 +51,18 @@ const cursorDictionary: { [key: string]: string[] } = {
   ],
 }
 
-const MapComponent = lazy((): any => import('@globalfishingwatch/react-map-gl'))
+const MapComponent = lazy((): any => import('react-map-gl'))
 
 const layerComposerConfig = {
   generators: {
-    ...defaultGenerators,
+    ...generatorsConfig,
     ...carrierGenerators,
   },
 }
 const layerComposer = new LayerComposer(layerComposerConfig)
 const customSort = (style: any) => {
   const layers = style.layers.map((layer: any) => {
-    if (layer.metadata?.generatorType !== Generators.Type.CartoPolygons) return layer
+    if (layer.metadata?.generatorType !== GeneratorType.CartoPolygons) return layer
 
     return { ...layer, metadata: { ...layer.metadata, group: Group.OutlinePolygons } }
   })
@@ -72,7 +77,7 @@ interface MapLayerHandler {
 }
 
 interface MapProps {
-  generatorsConfig: (Generators.AnyGeneratorConfig | ClusterEventsGeneratorConfig)[]
+  generatorsConfig: (AnyGeneratorConfig | ClusterEventsGeneratorConfig)[]
   dateRange: { start: string; end: string }
   filtersBounds: MapModuleBounds | null
   trackBounds: MapModuleBounds | null
@@ -337,7 +342,7 @@ const Map: React.FC<MapProps> = (props): JSX.Element => {
     setMapReady(true)
     const map = mapRef.current?.getMap()
     if (map) {
-      const mapbox = await import('@globalfishingwatch/mapbox-gl')
+      const mapbox = await import('@globalfishingwatch/maplibre-gl')
       map.addControl(
         new mapbox.AttributionControl({
           customAttribution: `<span aria-label="${

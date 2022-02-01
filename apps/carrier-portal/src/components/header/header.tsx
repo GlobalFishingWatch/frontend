@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useCallback, useRef } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useSmallScreen } from 'hooks/screen.hooks'
 import { formatUTCDate } from 'utils'
 import { transformDownloadEvent } from 'utils/events'

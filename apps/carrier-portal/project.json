@@ -1,0 +1,6 @@
+{
+  "root": "apps/carrier-portal",
+  "sourceRoot": "apps/carrier-portal/src",
+  "projectType": "application",
+  "tags": []
+}

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import cx from 'classnames'
-import CountryFlag from '@globalfishingwatch/ui-components/dist/countryflag'
+import { CountryFlag } from '@globalfishingwatch/ui-components'
 import { getEventType, getPorts } from 'redux-modules/router/route.selectors'
 import { updateQueryParams } from 'redux-modules/router/router.actions'
 import styles from '../popups.module.css'

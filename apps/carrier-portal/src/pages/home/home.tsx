@@ -80,7 +80,16 @@ const HomePage: React.FC<HomeProps> = (props): React.ReactElement => {
         </aside>
       ),
     ]
-  }, [datasetLoaded, hasVessel, onSidebarIsReady, sidebarIsReady, sidebarType, smallScreen, view])
+  }, [
+    ComponentSidebar,
+    datasetLoaded,
+    hasVessel,
+    onSidebarIsReady,
+    sidebarIsReady,
+    sidebarType,
+    smallScreen,
+    view,
+  ])
 
   if (datasetNotFound) {
     return (

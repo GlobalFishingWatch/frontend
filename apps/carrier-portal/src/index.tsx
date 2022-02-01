@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 import { unregister } from './serviceWorker'
 import App from './app'
 import store from './store'
-import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 import './index.css'
 
 const Root: React.FC = (): React.ReactElement => (

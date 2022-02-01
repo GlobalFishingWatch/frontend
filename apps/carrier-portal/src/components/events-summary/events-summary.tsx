@@ -1,6 +1,6 @@
 import React, { Fragment, useMemo } from 'react'
 import cx from 'classnames'
-import CountryFlag from '@globalfishingwatch/ui-components/dist/countryflag'
+import { CountryFlag } from '@globalfishingwatch/ui-components'
 import Tooltip from 'components/tooltip/tooltip'
 import { formatUTCDate } from 'utils'
 import { EVENT_TYPES, TOOLTIPS } from 'data/constants'

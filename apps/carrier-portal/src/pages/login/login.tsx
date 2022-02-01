@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { ReactComponent as IconLogo } from 'assets/images/gfw-white.svg'
 import { getLocationSearch } from 'redux-modules/router/route.selectors'
 import { BASE_URL } from 'data/constants'

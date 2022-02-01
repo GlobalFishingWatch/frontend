@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, createRef } from 'react'
 import cx from 'classnames'
 import Downshift, { DownshiftState, StateChangeOptions } from 'downshift'
-import matchSorter from 'match-sorter'
+import { matchSorter } from 'match-sorter'
 import orderBy from 'lodash/orderBy'
 import Tooltip from 'components/tooltip/tooltip'
 import useAbortableFetch from 'hooks/fetch.hooks'

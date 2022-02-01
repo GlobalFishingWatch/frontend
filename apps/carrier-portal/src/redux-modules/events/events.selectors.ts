@@ -3,6 +3,7 @@ import uniq from 'lodash/uniq'
 import uniqBy from 'lodash/uniqBy'
 import groupBy from 'lodash/groupBy'
 import orderBy from 'lodash/orderBy'
+import { EventVessel } from '@globalfishingwatch/api-types'
 import { calculateEventsStats, isEventActive } from 'utils/events'
 import { filterRfmos, parseVesselType } from 'utils'
 import { AppState } from 'types/redux.types'
@@ -164,14 +165,14 @@ export const getCurrentEventsInfo = createSelector(
           eventType === 'loitering' && !hasVessel ? ' events' : 's'
         }`
 
-      eventsByType = events.reduce<{ [key: string]: number }>((acc, event) => {
+      eventsByType = events.reduce((acc, event) => {
         if (!acc[event.type]) {
           acc[event.type] = 1
         } else {
           acc[event.type] += 1
         }
         return acc
-      }, {})
+      }, {} as { [key: string]: number })
 
       rfmo = rfmos === null ? '' : joinArrayReadable(rfmos)
       if (ports !== null) {
@@ -197,7 +198,7 @@ export const getCurrentEventsFlags = createSelector(
   [getCurrentEventsListFiltered, getFlagStatesConfig],
   (events, flagsConfig) => {
     if (events === null || !flagsConfig) return null
-    const eventsByFlag = events.reduce<{ [key: string]: number }>((acc, event) => {
+    const eventsByFlag = events.reduce((acc, event) => {
       if (!event.vessel || !event.vessel.flag) return acc
 
       if (!acc[event.vessel.flag]) {
@@ -205,7 +206,7 @@ export const getCurrentEventsFlags = createSelector(
       }
       acc[event.vessel.flag] += 1
       return acc
-    }, {})
+    }, {} as { [key: string]: number })
     const flags = Object.keys(eventsByFlag).map((flag) => {
       const { id, label }: any = flagsConfig.find((f) => f.id === flag) || {}
       return {
@@ -226,7 +227,7 @@ export const getCurrentEventsCarriers = createSelector([getCurrentEventsListFilt
     .filter((k) => k !== 'undefined')
     .map((carrier) => {
       const event = eventsByCarrier[carrier][0]
-      const vessel = event.vessel || {}
+      const vessel = event.vessel || ({} as EventVessel)
       return {
         ...vessel,
         id: carrier,

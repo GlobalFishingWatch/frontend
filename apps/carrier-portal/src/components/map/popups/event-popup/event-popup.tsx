@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect } from 'react'
 import { event as uaEvent } from 'react-ga'
-import CountryFlag from '@globalfishingwatch/ui-components/dist/countryflag'
+import { CountryFlag } from '@globalfishingwatch/ui-components'
 import { formatUTCDate } from 'utils'
 import { getAuthorizationsByVesselType } from 'utils/events'
 import { Event } from 'types/api/models'
 import { updateQueryParams } from 'redux-modules/router/router.actions'
-import vesselReducer from 'redux-modules/vessel/vessel.reducer'
 import styles from '../popups.module.css'
 import AuthorizationsList from './authorizations-list/authorizations-list'
 

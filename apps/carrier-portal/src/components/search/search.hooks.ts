@@ -1,11 +1,11 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import { useEffect, useReducer } from 'react'
 import { event as uaEvent } from 'react-ga'
-import matchSorter, { rankings } from 'match-sorter'
+import { matchSorter, rankings } from 'match-sorter'
 import uniqBy from 'lodash/uniqBy'
 import memoizeOne from 'memoize-one'
 import { useDispatch } from 'react-redux'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SearchItemType } from 'types/app.types'
 import { PaginatedVesselSearch } from 'types/api/models'
 import { SEARCH_ASYNC_FIELDS, SEARCH_TYPES } from 'data/constants'
@@ -73,8 +73,8 @@ const filterOptionBySearchFields = memoizeOne(
       return matchSorter(acc, cleanValue, {
         keys: [
           { key: 'type', threshold: rankings.EQUAL },
-          { key: 'label', threshold: rankings.STRING_CASE_ACRONYM },
-          { key: 'alias', threshold: rankings.STRING_CASE },
+          { key: 'label', threshold: rankings.ACRONYM },
+          { key: 'alias', threshold: rankings.CONTAINS },
         ],
       })
     }, itemsNotSelected)

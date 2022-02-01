@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { userLogout } from 'redux-modules/user/user.actions'
 import usePrevious from './previous.hooks'
 

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { NavigationAction } from 'redux-first-router'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { AppActions } from 'redux-modules/actions'
 import { userLogout } from 'redux-modules/user/user.actions'
 

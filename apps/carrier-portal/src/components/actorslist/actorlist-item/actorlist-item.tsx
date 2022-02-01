@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import cx from 'classnames'
-import CountryFlag from '@globalfishingwatch/ui-components/dist/countryflag'
+import { CountryFlag } from '@globalfishingwatch/ui-components'
 import styles from 'components/actorslist/actorsList.module.css'
 import { Vessel } from 'types/api/models'
 import { EventType } from 'types/app.types'

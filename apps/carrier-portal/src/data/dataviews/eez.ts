@@ -1,5 +1,5 @@
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { eezDatasets } from 'data/datasets/datasets'
 
 export const EEZ_DATAVIEW_ID = 'eez'

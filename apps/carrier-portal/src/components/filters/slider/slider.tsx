@@ -57,9 +57,9 @@ const Slider: React.FC<SliderProps> = (props): React.ReactElement => {
           renderTrack={({ props, children }) => (
             <div
               onMouseDown={props.onMouseDown}
-              onTouchStart={props.onTouchStart}
+              onTouchStart={props.onTouchStart as any}
               className={styles.slider}
-              style={props.style}
+              style={props.style as any}
             >
               <div ref={props.ref} className={styles.sliderTrack} style={{ background }}>
                 {children}
@@ -71,11 +71,13 @@ const Slider: React.FC<SliderProps> = (props): React.ReactElement => {
             const isDefaultSelection = index === 0 ? value === min : value === max
             return (
               <div
-                {...props}
+                {...(props as any)}
                 className={styles.sliderThumb}
-                style={{
-                  ...props.style,
-                }}
+                style={
+                  {
+                    ...props.style,
+                  } as any
+                }
               >
                 <span
                   className={styles.sliderThumbCounter}

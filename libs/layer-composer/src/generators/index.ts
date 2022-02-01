@@ -32,7 +32,7 @@ export {
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from './heatmap/config'
 
-const GeneratorConfig = {
+export const generatorsConfig = {
   [GeneratorType.Background]: new BackgroundGenerator(),
   [GeneratorType.Basemap]: new BaseMapGenerator(),
   [GeneratorType.BasemapLabels]: new BasemapLabelsGenerator(),
@@ -51,4 +51,4 @@ const GeneratorConfig = {
   [GeneratorType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
 }
 
-export default GeneratorConfig
+export default generatorsConfig

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { StateGetter } from 'redux-first-router'
-import GFWAPI from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { AppState } from 'types/redux.types'
 import { getLocationQuery } from 'redux-modules/router/route.selectors'
 import { fetchUserInit, fetchUserComplete, fetchUserError } from './user.actions'

@@ -1,9 +1,9 @@
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { GeneratorConfig } from '@globalfishingwatch/layer-composer'
 
 type CLUSTER = 'CARRIER_PORTAL_CLUSTER'
 export const CLUSTER_TYPE: CLUSTER = 'CARRIER_PORTAL_CLUSTER'
 
-export interface ClusterEventsGeneratorConfig extends Generators.GeneratorConfig {
+export interface ClusterEventsGeneratorConfig extends GeneratorConfig {
   type: typeof CLUSTER_TYPE
   data?: any
 }

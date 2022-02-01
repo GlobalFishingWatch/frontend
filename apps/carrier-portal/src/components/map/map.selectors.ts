@@ -1,5 +1,15 @@
 import { createSelector } from 'reselect'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import {
+  BackgroundGeneratorConfig,
+  BasemapGeneratorConfig,
+  BasemapType,
+  ContextGeneratorConfig,
+  GeneratorType,
+  GlGeneratorConfig,
+  HeatmapGeneratorConfig,
+  TrackGeneratorConfig,
+  VesselEventsGeneratorConfig,
+} from '@globalfishingwatch/layer-composer'
 import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client'
 import CONTEXT_DATAVIEWS from 'data/dataviews/context'
 import {
@@ -41,14 +51,14 @@ import { AppState } from 'types/redux.types'
 import { ClusterEventsGeneratorConfig } from './layers/generators/clusters-events-generator'
 
 const FILL_SELECTED_FEATURES_COLOR = 'rgba(0, 0, 0, 0.3)'
-const background: Generators.BackgroundGeneratorConfig = {
+const background: BackgroundGeneratorConfig = {
   id: 'background',
-  type: Generators.Type.Background,
+  type: GeneratorType.Background,
 }
-const basemap: Generators.BasemapGeneratorConfig = {
+const basemap: BasemapGeneratorConfig = {
   id: 'landmass',
-  type: Generators.Type.Basemap,
-  basemap: Generators.BasemapType.Default,
+  type: GeneratorType.Basemap,
+  basemap: BasemapType.Default,
   labels: false,
 }
 
@@ -147,14 +157,14 @@ export const getClusterLayers = createSelector(
 )
 
 export const getContextualMapLayer = (layerId: string) =>
-  createSelector([getLayers], (layersActive): Generators.ContextGeneratorConfig | null => {
+  createSelector([getLayers], (layersActive): ContextGeneratorConfig | null => {
     const layer = CONTEXT_LAYERS.find((l) => l.id === layerId)
     if (!layer || !layer.id) return null
 
     return {
       id: layer.id,
       layer: layer.id,
-      type: Generators.Type.Context,
+      type: GeneratorType.Context,
       color: layer.color,
       visible: layersActive !== null && layersActive.includes(layerId),
       tilesUrl: '/v1/datasets/public-eez-areas/user-context-layer-v1/{{z}}/{{x}}/{{y}}',
@@ -213,10 +223,10 @@ export const getPortsLayer = createSelector(
     hasVesselSelected,
     getMapDownloadVisible,
   ],
-  (layer, eventPorts, vesselSelected, downloadVisible): Generators.GlGeneratorConfig => {
+  (layer, eventPorts, vesselSelected, downloadVisible): GlGeneratorConfig => {
     return {
       id: layer?.id || CONTEXT_LAYERS_IDS.nextPort,
-      type: Generators.Type.GL,
+      type: GeneratorType.GL,
       visible: layer?.visible && !vesselSelected && !downloadVisible,
       sources: [
         {
@@ -234,7 +244,7 @@ export const getPortsLayer = createSelector(
             'circle-stroke-color': BASEMAP_COLOR,
             'circle-radius': ['interpolate', ['exponential', 0.5], ['zoom'], 2, 4, 7, 10],
           },
-        },
+        } as any,
       ],
     }
   }
@@ -242,12 +252,12 @@ export const getPortsLayer = createSelector(
 
 export const getEventsLayer = createSelector(
   [getTrackEventsGeojson, hasVesselSelected, getCurrentEventByTimestamp],
-  (trackEvents, vesselSelected, currentEvent): Generators.VesselEventsGeneratorConfig[] => {
+  (trackEvents, vesselSelected, currentEvent): VesselEventsGeneratorConfig[] => {
     if (!trackEvents || !vesselSelected) return []
     return [
       {
         id: 'cp_vessel_events',
-        type: Generators.Type.VesselEvents,
+        type: GeneratorType.VesselEvents,
         data: trackEvents,
         currentEventId: currentEvent?.id,
       },
@@ -259,12 +269,7 @@ export const HeatmapLayerId = 'fishing-heatmap'
 
 const getHeatmapLayer = createSelector(
   [getLayers, getEventsLoaded, getCurrentEventsCarriers, getHasVesselFilter],
-  (
-    layersActive,
-    eventsLoaded,
-    eventsCarriers,
-    hasVesselFilter
-  ): Generators.HeatmapGeneratorConfig => {
+  (layersActive, eventsLoaded, eventsCarriers, hasVesselFilter): HeatmapGeneratorConfig => {
     const dataset = 'carriers_v8_hd'
 
     let filters = 'filters[0]=distance_from_port_m > 10000'
@@ -281,7 +286,7 @@ const getHeatmapLayer = createSelector(
     }
 
     return {
-      type: Generators.Type.Heatmap,
+      type: GeneratorType.Heatmap,
       id: HeatmapLayerId,
       visible,
       numBreaks: 6,
@@ -320,12 +325,12 @@ export const getContextualLayers = createSelector(
 
 export const getVesselTrackLayer = createSelector(
   [getVesselTrackGeojsonByDateRange, hasVesselSelected, getCurrentEventDates],
-  (vesselTrack, hasVessel, currentEventDates): Generators.TrackGeneratorConfig => {
+  (vesselTrack, hasVessel, currentEventDates): TrackGeneratorConfig => {
     return {
       id: 'cp_track',
       visible: hasVessel && vesselTrack !== null,
       data: vesselTrack,
-      type: Generators.Type.Track,
+      type: GeneratorType.Track,
       simplify: true,
       color: 'rgba(0, 193, 231, 1)',
       ...(currentEventDates && {
@@ -345,15 +350,10 @@ export const getEncounterVesselTrackLayer = createSelector(
     getCurrentEventDates,
     getEncounterEventVesselId,
   ],
-  (
-    vesselTrack,
-    hasVessel,
-    currentEventDates,
-    encounterVessel
-  ): Generators.TrackGeneratorConfig | null => {
+  (vesselTrack, hasVessel, currentEventDates, encounterVessel): TrackGeneratorConfig | null => {
     if (!vesselTrack) return null
     return {
-      type: Generators.Type.Track,
+      type: GeneratorType.Track,
       id: 'cp_encounter_track',
       visible: hasVessel && encounterVessel !== null,
       data: vesselTrack,
@@ -371,7 +371,7 @@ export const getEncounterVesselTrackLayer = createSelector(
 
 export const getTrackLayers = createSelector(
   [getVesselTrackLayer, getEncounterVesselTrackLayer],
-  (vesselTrack, encounterTrack): Generators.TrackGeneratorConfig[] => {
+  (vesselTrack, encounterTrack): TrackGeneratorConfig[] => {
     const tracks = [vesselTrack]
     if (encounterTrack) {
       tracks.push(encounterTrack)
