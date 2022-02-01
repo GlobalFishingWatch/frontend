@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import dynamic from 'next/dynamic'
 import { UserData } from '@globalfishingwatch/api-types'
-import { Button } from '../../../../libs/ui-components/src/button'
+import { Button } from '@globalfishingwatch/ui-components'
 import styles from './header.module.css'
 
 const HeaderNoSSR = dynamic(() => import('@globalfishingwatch/ui-components/dist/header'), {
