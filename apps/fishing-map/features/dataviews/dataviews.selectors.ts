@@ -136,10 +136,9 @@ export const selectActiveEnvironmentalDataviews = createSelector(
 
 export const selectActiveTemporalgridDataviews = createSelector(
   [selectActiveActivityDataviews, selectActiveEnvironmentalDataviews],
-  (activityDataviews = [], environmentalDataviews = []) => [
-    ...activityDataviews,
-    ...environmentalDataviews,
-  ]
+  (activityDataviews = [], environmentalDataviews = []) => {
+    return [...activityDataviews, ...environmentalDataviews]
+  }
 )
 
 export const selectEventsDataviews = createSelector(

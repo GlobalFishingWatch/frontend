@@ -13,6 +13,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
+import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom, TilesAtomSourceState } from 'features/map/map-sources.atom'
@@ -99,9 +100,17 @@ export const useMapSourceTilesLoadedAtom = () => {
   }, [map, setSourceTilesLoaded])
 }
 
-export const useMapSourceTiles = () => {
+export const useMapSourceTiles = (sourcesId?: SourcesHookInput) => {
   const sourceTilesLoaded = useRecoilValue(mapTilesAtom)
-  return sourceTilesLoaded
+  const sourcesIdsList = toArray(sourcesId)
+  const sources = sourcesId
+    ? Object.fromEntries(
+        Object.entries(sourceTilesLoaded).filter(([id, source]) => {
+          return sourcesIdsList.includes(id)
+        })
+      )
+    : sourceTilesLoaded
+  return useMemoCompare(sources)
 }
 
 export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
@@ -146,44 +155,52 @@ export const hasDataviewsFeatureError = (dataviews: DataviewFeature | DataviewFe
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
-  const sourceTilesLoaded = useMapSourceTiles()
+
   // Memoized to avoid re-runs on style changes like hovers
-  const generatorsMetadata = useMemo(() => style?.metadata?.generatorsMetadata, [style])
+  const memoizedDataviews = useMemoCompare(dataviews)
+  const generatorsMetadata = useMemoCompare(style?.metadata?.generatorsMetadata)
 
   const dataviewsMetadata = useMemo(() => {
     const style = { metadata: { generatorsMetadata } } as ExtendedStyle
-    const dataviewsArray = toArray(dataviews)
+    const dataviewsArray = toArray(memoizedDataviews)
     const dataviewsMetadata: {
       metadata: HeatmapLayerMeta
       sourceId: string
+      generatorSourceId: string
       dataviewsId: string[]
       filter?: string[]
     }[] = dataviewsArray.reduce((acc, dataview) => {
       const activityDataview = isActivityDataview(dataview)
       if (activityDataview) {
         const existingMergedAnimatedDataviewIndex = acc.findIndex(
-          (d) => d.sourceId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+          (d) => d.generatorSourceId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
         )
         if (existingMergedAnimatedDataviewIndex >= 0) {
           acc[existingMergedAnimatedDataviewIndex].dataviewsId.push(dataview.id)
           return acc
         }
       }
-      const sourceId = activityDataview
+      const generatorSourceId = activityDataview
         ? MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
         : dataview.id
       const metadata =
-        getHeatmapSourceMetadata(style, sourceId) ||
+        getHeatmapSourceMetadata(style, generatorSourceId) ||
         ({ sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER } as HeatmapLayerMeta)
+
+      const sourceId = metadata?.timeChunks?.activeSourceId || dataview?.id
       return acc.concat({
-        sourceId,
         metadata,
+        sourceId,
+        generatorSourceId,
         dataviewsId: [dataview.id],
         filter: dataview.config.filter,
       })
     }, [])
     return dataviewsMetadata
-  }, [dataviews, generatorsMetadata])
+  }, [memoizedDataviews, generatorsMetadata])
+
+  const sourcesIds = dataviewsMetadata.map(({ sourceId }) => sourceId)
+  const sourceTilesLoaded = useMapSourceTiles(sourcesIds)
 
   const dataviewFeatures = useMemo(() => {
     const dataviewsFeature = dataviewsMetadata.map(({ dataviewsId, metadata, filter }) => {

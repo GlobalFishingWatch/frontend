@@ -38,7 +38,7 @@ export const useStackedActivity = () => {
         }),
       }
     })
-  }, [isSmallScreen, dataviewFeatures, debouncedBounds])
+  }, [dataviewFeatures, debouncedBounds, isSmallScreen])
 
   useEffect(() => {
     if (dataviewFeaturesFiltered) {
