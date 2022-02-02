@@ -41,8 +41,8 @@ const Layout: NextPage = ({ children }) => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header title="Access Tokens" user={user} logout={logout} />
       <main className={styles.main}>
+        <Header title="Access Tokens" user={user} logout={logout} />
         <div className={styles.container}>
           {userLoading && <Spinner></Spinner>}
           {!userLoading && !user && (

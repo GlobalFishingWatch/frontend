@@ -32,13 +32,6 @@
   margin: 0 auto;
 }
 
-.userMenu {
-  background-image: var(--background-gradient);
-  padding: 2rem;
-  display: flex;
-  justify-content: flex-end;
-}
-
 @media (max-width: 767px) {
   .Header {
     height: auto;
