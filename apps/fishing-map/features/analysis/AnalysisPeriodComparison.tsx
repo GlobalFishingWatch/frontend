@@ -130,7 +130,7 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
             />
           ))}
       </div>
-      {loading && !blur && (
+      {loading && (!blur || !layersTimeseriesFiltered) && (
         <div className={styles.graphContainer}>
           <Spinner />
         </div>
