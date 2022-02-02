@@ -111,13 +111,12 @@ export const useFilteredTimeSeries = () => {
 
   useEffect(() => {
     setTimeseries(undefined)
+    setBlur(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areaId, analysisEvolutionChange])
 
   useEffect(() => {
-    if (timeseries) {
-      setBlur(true)
-    }
+    setBlur(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeComparison, timebarStart, timebarEnd])
 
