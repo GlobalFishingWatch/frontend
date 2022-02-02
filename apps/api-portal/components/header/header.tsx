@@ -1,12 +1,8 @@
 import React, { Fragment } from 'react'
-import dynamic from 'next/dynamic'
 import { UserData } from '@globalfishingwatch/api-types'
-import { Button } from '@globalfishingwatch/ui-components'
+import Button from '@globalfishingwatch/ui-components/dist/button'
+import { HeaderNoSSR } from 'components/ui'
 import styles from './header.module.css'
-
-const HeaderNoSSR = dynamic(() => import('@globalfishingwatch/ui-components/dist/header'), {
-  ssr: false,
-})
 
 interface HeaderProps {
   title: string

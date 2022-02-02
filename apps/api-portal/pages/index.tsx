@@ -1,5 +1,11 @@
 import type { NextPage } from 'next'
-import Layout from 'components/layout'
+// import Layout from 'components/layout'
+import dynamic from 'next/dynamic'
+import styles from '../styles/index.module.css'
+
+const Layout = dynamic(() => import('components/layout'), {
+  ssr: false,
+})
 
 const Home: NextPage = () => {
   return (

@@ -2,11 +2,12 @@ import { Fragment } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+// import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useUser } from 'features/user/user.hooks'
 import styles from '../styles/layout.module.css'
-import { Spinner } from '../../../libs/ui-components/src/spinner'
 import { APPLICATION_NAME } from './data/config'
 import Header from './header/header'
+import { Spinner } from './ui'
 
 const LoginNoSSR = dynamic(() => import('./login'), {
   ssr: false,
