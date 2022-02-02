@@ -167,7 +167,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
     const dataviewsArray = toArray(memoizedDataviews)
     const dataviewsMetadata: {
       metadata: HeatmapLayerMeta
-      sourceId: string
+      sourcesId: string[]
       generatorSourceId: string
       dataviewsId: string[]
       filter?: string[]
@@ -189,10 +189,11 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         getHeatmapSourceMetadata(style, generatorSourceId) ||
         ({ sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER } as HeatmapLayerMeta)
 
-      const sourceId = metadata?.timeChunks?.activeSourceId || dataview?.id
+      const sourcesId =
+        metadata?.timeChunks?.chunks.flatMap(({ sourceId }) => sourceId) || dataview?.id
       return acc.concat({
         metadata,
-        sourceId,
+        sourcesId,
         generatorSourceId,
         dataviewsId: [dataview.id],
         filter: dataview.config.filter,
@@ -201,13 +202,12 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
     return dataviewsMetadata
   }, [memoizedDataviews, generatorsMetadata])
 
-  const sourcesIds = dataviewsMetadata.map(({ sourceId }) => sourceId)
+  const sourcesIds = dataviewsMetadata.flatMap(({ sourcesId }) => sourcesId)
   const sourceTilesLoaded = useMapSourceTiles(sourcesIds)
 
   const dataviewFeatures = useMemo(() => {
     const dataviewsFeature = dataviewsMetadata.map(({ dataviewsId, metadata, filter }) => {
       const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
-      const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
       const chunks = metadata?.timeChunks?.chunks.map(({ active, sourceId, quantizeOffset }) => ({
         active,
         sourceId,
@@ -217,9 +217,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
       const chunksFeatures: DataviewChunkFeature[] | null = chunks
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const emptyChunkState = {} as TilesAtomSourceState
-            const chunkState = active
-              ? sourceTilesLoaded[sourceId] || { loaded: false }
-              : emptyChunkState
+            const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
 
             return {
               active,
@@ -232,6 +230,8 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
             }
           })
         : null
+
+      const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
       const state = chunks
         ? ({
             loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
