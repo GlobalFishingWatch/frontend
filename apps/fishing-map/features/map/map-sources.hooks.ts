@@ -122,8 +122,10 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
 }
 
 export const useAllMapSourceTilesLoaded = () => {
+  const style = useMapStyle()
+  const sources = Object.keys(style?.sources || {})
   const sourceTilesLoaded = useMapSourceTiles()
-  const allSourcesLoaded = Object.values(sourceTilesLoaded).every(({ loaded }) => loaded === true)
+  const allSourcesLoaded = sources.every((source) => sourceTilesLoaded[source]?.loaded === true)
   return allSourcesLoaded
 }
 
