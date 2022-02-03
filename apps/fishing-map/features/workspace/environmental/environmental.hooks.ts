@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { ckmeans } from 'simple-statistics'
+import { ckmeans, sample } from 'simple-statistics'
 import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
@@ -31,13 +31,12 @@ export const useEnvironmentalBreaksUpdate = () => {
             const filteredFeatures = filterByViewport(features, bounds)
             const data = aggregateFeatures(filteredFeatures, metadata)
             const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
-            // TODO review if sample the features is needed by performance
-            // const featuresSample =
-            //   features.length > 100
-            //     ? sample(features, Math.round(features.length / 100), Math.random)
-            //     : features
+            const dataSampled =
+              data.length > 100
+                ? sample(data, Math.round(data.length / 100), Math.random)
+                : features
             // using ckmeans as jenks
-            const ck = ckmeans(data, steps).map(([clusterFirst]) => clusterFirst)
+            const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) => clusterFirst)
             return {
               id: dataviewsId[0],
               config: {
