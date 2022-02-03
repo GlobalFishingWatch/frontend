@@ -1,9 +1,5 @@
 import dynamic from 'next/dynamic'
 
-export const HeaderNoSSR = dynamic(() => import('@globalfishingwatch/ui-components/dist/header'), {
-  ssr: false,
-})
-
 export const Button = dynamic(() => import('@globalfishingwatch/ui-components/dist/button'), {
   ssr: false,
 })
