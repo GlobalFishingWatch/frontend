@@ -19,6 +19,7 @@ import { ReactComponent as Close } from '../assets/icons/close.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
 import { ReactComponent as Compare } from '../assets/icons/compare.svg'
+import { ReactComponent as Copy } from '../assets/icons/copy.svg'
 import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Download } from '../assets/icons/download.svg'
@@ -84,6 +85,7 @@ export const IconComponents = {
   'color-picker': ColorPicker,
   'color-picker-filled': ColorPickerFilled,
   compare: Compare,
+  copy: Copy,
   draw: Draw,
   delete: Delete,
   download: Download,
@@ -144,6 +146,7 @@ interface IconProps {
 export function Icon(props: IconProps) {
   const { icon, tooltip, type = 'default', className = '' } = props
   const Component = IconComponents[icon]
+  console.log(icon)
   if (!Component) {
     console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
     return null
