@@ -25,11 +25,13 @@
 
 .default,
 .warning,
-.border {
+.border,
+.warning-border {
   opacity: var(--opacity-secondary);
 }
 
-.border {
+.border,
+.warning-border {
   border: var(--border);
 }
 
@@ -37,6 +39,7 @@
 .default:focus:not(:disabled),
 .warning:hover:not(:disabled),
 .warning:focus:not(:disabled),
+.warning-border:focus:not(:disabled),
 .border:hover:not(:disabled),
 .border:focus:not(:disabled) {
   opacity: 1;

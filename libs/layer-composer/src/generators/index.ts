@@ -15,6 +15,7 @@ import TileClusterGenerator from './tile-cluster/tile-cluster'
 import VesselsEventsShapesGenerator from './vessel-events/vessel-events-shapes'
 
 export * from './heatmap/types'
+export * from './heatmap/util'
 export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
 export { COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
 export {

@@ -292,6 +292,8 @@
     "qf": "Quality signal",
     "radiance": "Radiance",
     "remove": "Remove layer",
+    "removePoint": "Remove point",
+    "removePointNotAllowed": "Geometry needs at least 3 points",
     "seeDescription": "Click to see layer description",
     "selectPolygonToRemove": "Select the polygon to remove",
     "source": "Source",
