@@ -154,17 +154,6 @@ export const hasDataviewsFeatureError = (dataviews: DataviewFeature | DataviewFe
   return dataviewsArray.length ? dataviewsArray.some(({ state }) => state?.error) : false
 }
 
-const getSourceMapKey = ({
-  sourceId,
-  sourceLayer,
-  filter = [],
-}: {
-  sourceId: string
-  sourceLayer: string
-  filter?: string[]
-}) => {
-  return [sourceId, sourceLayer, filter.join(',')].join('-')
-}
 type DataviewMetadata = {
   metadata: HeatmapLayerMeta
   sourcesId: string[]
@@ -176,10 +165,8 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
   const style = useMapStyle()
   const map = useMapInstance()
 
-  const sourceFeaturesMap = useRef(new Map())
   // Memoized to avoid re-runs on style changes like hovers
   const memoizedDataviews = useMemoCompare(dataviews)
-
   // TODO: review performance as chunk activeStart timebar changes forces to rerun everything here
   const generatorsMetadata = useMemoCompare(style?.metadata?.generatorsMetadata)
 
@@ -233,19 +220,10 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const emptyChunkState = {} as TilesAtomSourceState
             const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
-            let features = null
-            const sourceFeaturesKey = getSourceMapKey({ sourceId, sourceLayer, filter })
-            if (chunkState.loaded && !chunkState.error) {
-              const cachedFeature = sourceFeaturesMap.current.get(sourceFeaturesKey)
-              if (cachedFeature) {
-                features = cachedFeature
-              } else {
-                features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
-                sourceFeaturesMap.current.set(sourceFeaturesKey, features)
-              }
-            } else {
-              sourceFeaturesMap.current.set(sourceFeaturesKey, undefined)
-            }
+            const features =
+              chunkState.loaded && !chunkState.error
+                ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
+                : null
             return {
               active,
               features,
@@ -263,21 +241,10 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
           } as TilesAtomSourceState)
         : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
-      let features: GeoJSONFeature[] | null = null
-      const sourceFeaturesKey = getSourceMapKey({ sourceId, sourceLayer, filter })
-      if (!chunks) {
-        if (state?.loaded && !state?.error) {
-          const cachedFeature = sourceFeaturesMap.current.get(sourceFeaturesKey)
-          if (cachedFeature) {
-            features = cachedFeature
-          } else {
-            features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
-            sourceFeaturesMap.current.set(sourceFeaturesKey, features)
-          }
-        } else {
-          sourceFeaturesMap.current.set(sourceFeaturesKey, undefined)
-        }
-      }
+      const features: GeoJSONFeature[] | null =
+        state?.loaded && !state?.error
+          ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
+          : null
 
       const data: DataviewFeature = {
         sourceId,
@@ -290,7 +257,9 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
       return data
     })
     return dataviewsFeature
-  }, [dataviewsMetadata, map, sourceTilesLoaded])
+    // Runs only when source tiles load change to avoid unu
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, sourceTilesLoaded])
 
   return dataviewFeatures
 }
