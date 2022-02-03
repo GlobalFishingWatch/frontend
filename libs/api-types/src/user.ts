@@ -9,6 +9,7 @@ export type UserPermissionValue =
   | 'indonesia:*'
   | 'carriers:*'
   | 'public'
+  | 'user-application'
 export type UserPermissionAction =
   | 'read'
   | 'read-all'
