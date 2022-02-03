@@ -118,13 +118,15 @@ export const useHighlightedEventsConnect = () => {
     [dispatch]
   )
 
-  return useMemo(
-    () => ({
+  const serializedHighlightedEvents = highlightedEvents?.join('')
+
+  return useMemo(() => {
+    return {
       highlightedEvents,
       dispatchHighlightedEvents,
-    }),
-    [highlightedEvents, dispatchHighlightedEvents]
-  )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serializedHighlightedEvents, dispatchHighlightedEvents])
 }
 
 export const useTimebarVisualisationConnect = () => {
