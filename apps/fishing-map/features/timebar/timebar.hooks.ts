@@ -26,7 +26,7 @@ import {
 export const TimeRangeAtom = atom<Range | null>({
   key: 'timerange',
   default: null,
-  effects_UNSTABLE: [
+  effects: [
     ({ trigger, setSelf, onSet }) => {
       const redirectUrl =
         typeof window !== undefined ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null

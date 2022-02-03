@@ -14,7 +14,7 @@ export type TimebarRange = { start: string; end: string }
 export const TimeRangeAtom = atom<TimebarRange | null>({
   key: 'timerange',
   default: DEFAULT_TIMERANGE,
-  effects_UNSTABLE: [
+  effects: [
     ({ trigger, setSelf, onSet }) => {
       const redirectUrl =
         typeof window !== undefined ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
