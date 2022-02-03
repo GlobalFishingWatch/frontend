@@ -84,8 +84,9 @@ const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
 }
 
 type HighlighterData = {
-  labels: ({ value?: string; isMain: boolean } | undefined)[]
+  labels: ({ value?: string } | undefined)[]
   color?: string
+  defaultLabel?: string
 }
 
 const getHighlighterData = (
@@ -111,6 +112,18 @@ const getHighlighterData = (
       // TODO Case where several track events overlap. Right now prioritized by type (encounter first etc) but should we display them all
       const foundChunk = foundChunks ? foundChunks[0] : undefined
       let label = undefined
+
+      if (!highlighterData[itemIndex]) {
+        highlighterData[itemIndex] = {
+          color: item.color,
+          labels: [],
+        }
+      }
+
+      if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
+        highlighterData[itemIndex].defaultLabel = item.defaultLabel
+      }
+
       if (foundChunk) {
         const foundValue = findValue(centerMs, foundChunk)
         label = item.getHighlighterLabel
@@ -120,15 +133,8 @@ const getHighlighterData = (
           : foundValue?.value?.toString()
 
         if (label) {
-          if (!highlighterData[itemIndex]) {
-            highlighterData[itemIndex] = {
-              color: item.color,
-              labels: [],
-            }
-          }
           highlighterData[itemIndex].labels[chartIndex] = {
             value: label,
-            isMain: chartIndex === 0 && data.length > 1,
           }
         }
         if (foundChunk.id) {
@@ -139,7 +145,7 @@ const getHighlighterData = (
   })
 
   highlighterData = highlighterData.flatMap((item) => {
-    if (item.labels?.every((l) => !l?.value)) return []
+    if (!item.defaultLabel && item.labels?.every((l) => !l?.value)) return []
     return item
   })
 
@@ -212,11 +218,13 @@ const Highlighter = ({
                         className={styles.tooltipColor}
                         style={{ backgroundColor: item.color }}
                       ></span>
+                      {item.defaultLabel && (
+                        <span className={cx(styles.tooltipLabel, styles.isMain)}>
+                          {item.defaultLabel}
+                        </span>
+                      )}
                       {item.labels?.map((label, labelIndex) => (
-                        <span
-                          key={labelIndex}
-                          className={cx(styles.tooltipLabel, { [styles.isMain]: label?.isMain })}
-                        >
+                        <span key={labelIndex} className={styles.tooltipLabel}>
                           {label?.value}
                         </span>
                       ))}

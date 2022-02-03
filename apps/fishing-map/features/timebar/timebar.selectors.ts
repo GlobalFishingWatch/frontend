@@ -29,7 +29,6 @@ import {
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
-import { selectHighlightedEvents } from './timebar.slice'
 
 export const selectTracksData = createSelector(
   [selectActiveTrackDataviews, selectResources],
@@ -74,7 +73,8 @@ export const selectTracksData = createSelector(
         ...timebarTrack,
         chunks,
         status: ResourceStatus.Finished,
-        getHighlighterLabel: shipname,
+        defaultLabel: shipname,
+        getHighlighterLabel: t('vessel.inTransit', 'in transit'),
         // TODO
         // segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
       }
@@ -291,18 +291,3 @@ export const selectTracksEvents = createSelector(
     return tracksEvents
   }
 )
-
-// TODO
-// export const selectHighlightedEventsMemoized = createSelector(
-//   selectHighlightedEvents,
-//   (highlightedEvents) => highlightedEvents,
-//   {
-//     memoizeOptions: {
-//       equalityCheck: (a: string[] | undefined, b: string[] | undefined) => {
-//         const serializedA = Array.isArray(a) ? a.join('') : ''
-//         const serializedB = Array.isArray(b) ? b.join('') : ''
-//         return a === b
-//       },
-//     },
-//   }
-// )

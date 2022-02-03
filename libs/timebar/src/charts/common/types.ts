@@ -48,6 +48,7 @@ export type TimebarChartItem<T = void> = {
   color?: string
   status?: ResourceStatus
   y?: number
+  defaultLabel?: string
   getHighlighterLabel?: HighlighterCallback
   props?: any
 }
