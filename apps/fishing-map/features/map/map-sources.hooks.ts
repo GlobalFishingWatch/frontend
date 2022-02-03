@@ -154,24 +154,27 @@ export const hasDataviewsFeatureError = (dataviews: DataviewFeature | DataviewFe
   return dataviewsArray.length ? dataviewsArray.some(({ state }) => state?.error) : false
 }
 
+type DataviewMetadata = {
+  metadata: HeatmapLayerMeta
+  sourcesId: string[]
+  generatorSourceId: string
+  dataviewsId: string[]
+  filter?: string[]
+}
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
 
   // Memoized to avoid re-runs on style changes like hovers
   const memoizedDataviews = useMemoCompare(dataviews)
+
+  // TODO: review performance as chunk activeStart timebar changes forces to rerun everything here
   const generatorsMetadata = useMemoCompare(style?.metadata?.generatorsMetadata)
 
   const dataviewsMetadata = useMemo(() => {
     const style = { metadata: { generatorsMetadata } } as ExtendedStyle
     const dataviewsArray = toArray(memoizedDataviews)
-    const dataviewsMetadata: {
-      metadata: HeatmapLayerMeta
-      sourcesId: string[]
-      generatorSourceId: string
-      dataviewsId: string[]
-      filter?: string[]
-    }[] = dataviewsArray.reduce((acc, dataview) => {
+    const dataviewsMetadata: DataviewMetadata[] = dataviewsArray.reduce((acc, dataview) => {
       const activityDataview = isActivityDataview(dataview)
       if (activityDataview) {
         const existingMergedAnimatedDataviewIndex = acc.findIndex(
@@ -198,7 +201,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         dataviewsId: [dataview.id],
         filter: dataview.config.filter,
       })
-    }, [])
+    }, [] as DataviewMetadata[])
     return dataviewsMetadata
   }, [memoizedDataviews, generatorsMetadata])
 
