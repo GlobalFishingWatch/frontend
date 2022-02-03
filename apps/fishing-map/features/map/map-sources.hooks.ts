@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
@@ -154,6 +154,17 @@ export const hasDataviewsFeatureError = (dataviews: DataviewFeature | DataviewFe
   return dataviewsArray.length ? dataviewsArray.some(({ state }) => state?.error) : false
 }
 
+const getSourceMapKey = ({
+  sourceId,
+  sourceLayer,
+  filter = [],
+}: {
+  sourceId: string
+  sourceLayer: string
+  filter?: string[]
+}) => {
+  return [sourceId, sourceLayer, filter.join(',')].join('-')
+}
 type DataviewMetadata = {
   metadata: HeatmapLayerMeta
   sourcesId: string[]
@@ -165,6 +176,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
   const style = useMapStyle()
   const map = useMapInstance()
 
+  const sourceFeaturesMap = useRef(new Map())
   // Memoized to avoid re-runs on style changes like hovers
   const memoizedDataviews = useMemoCompare(dataviews)
 
@@ -221,13 +233,22 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const emptyChunkState = {} as TilesAtomSourceState
             const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
-
+            let features = null
+            const sourceFeaturesKey = getSourceMapKey({ sourceId, sourceLayer, filter })
+            if (chunkState.loaded && !chunkState.error) {
+              const cachedFeature = sourceFeaturesMap.current.get(sourceFeaturesKey)
+              if (cachedFeature) {
+                features = cachedFeature
+              } else {
+                features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+                sourceFeaturesMap.current.set(sourceFeaturesKey, features)
+              }
+            } else {
+              sourceFeaturesMap.current.set(sourceFeaturesKey, undefined)
+            }
             return {
               active,
-              features:
-                chunkState.loaded && !chunkState.error
-                  ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
-                  : null,
+              features,
               quantizeOffset,
               state: chunkState,
             }
@@ -242,10 +263,21 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
           } as TilesAtomSourceState)
         : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
-      const features: GeoJSONFeature[] | null =
-        !chunks && state?.loaded && !state?.error
-          ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
-          : null
+      let features: GeoJSONFeature[] | null = null
+      const sourceFeaturesKey = getSourceMapKey({ sourceId, sourceLayer, filter })
+      if (!chunks) {
+        if (state?.loaded && !state?.error) {
+          const cachedFeature = sourceFeaturesMap.current.get(sourceFeaturesKey)
+          if (cachedFeature) {
+            features = cachedFeature
+          } else {
+            features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+            sourceFeaturesMap.current.set(sourceFeaturesKey, features)
+          }
+        } else {
+          sourceFeaturesMap.current.set(sourceFeaturesKey, undefined)
+        }
+      }
 
       const data: DataviewFeature = {
         sourceId,
