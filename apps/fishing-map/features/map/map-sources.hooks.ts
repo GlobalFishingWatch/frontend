@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
@@ -242,7 +242,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
       const features: GeoJSONFeature[] | null =
-        state?.loaded && !state?.error
+        !chunks && state?.loaded && !state?.error
           ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
           : null
 
