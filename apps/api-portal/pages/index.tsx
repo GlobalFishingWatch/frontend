@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 // import Layout from 'components/layout'
 import dynamic from 'next/dynamic'
+import AccessTokenList from 'components/access-token/AccessTokenList'
 import styles from '../styles/index.module.css'
 
 const Layout = dynamic(() => import('components/layout'), {
@@ -15,6 +16,7 @@ const Home: NextPage = () => {
         4wings activity tiles. Read more about API access tokens in{' '}
         <a href="#api-documentation">our documentation</a>
       </p>
+      <AccessTokenList></AccessTokenList>
     </Layout>
   )
 }
