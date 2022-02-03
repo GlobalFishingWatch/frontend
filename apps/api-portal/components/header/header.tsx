@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { UserData } from '@globalfishingwatch/api-types'
-// import Button from '@globalfishingwatch/ui-components/dist/button'
-import { HeaderNoSSR } from 'components/ui'
+import { Header as UIHeader } from '@globalfishingwatch/ui-components'
 import styles from './header.module.css'
 
 interface HeaderProps {
@@ -13,7 +12,7 @@ export function Header({ title = '', user, logout }: HeaderProps) {
   return (
     <Fragment>
       <div className={styles.Header}>
-        <HeaderNoSSR />
+        <UIHeader />
         <div className={styles.titleCover}>
           <h1 className={styles.title}>{title}</h1>
         </div>
