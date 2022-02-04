@@ -146,7 +146,6 @@ interface IconProps {
 export function Icon(props: IconProps) {
   const { icon, tooltip, type = 'default', className = '' } = props
   const Component = IconComponents[icon]
-  console.log(icon)
   if (!Component) {
     console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
     return null
