@@ -1333,8 +1333,8 @@
       "matched": {
         "keyword": "Matching",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "AIS Matched",
+          "false": "AIS Unmatched"
         }
       },
       "timestamp": "timestamp",
