@@ -23,6 +23,9 @@ const nextConfig = {
     }
     return config
   },
+  // experimental: {
+  //   esmExternals: false,
+  // },
   // productionBrowserSourceMaps: true,
   basePath:
     process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/api-portal' : ''),
