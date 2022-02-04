@@ -8,5 +8,10 @@
     "cloudbuildTaskId": "ui-vessel-viewer-autodeploy",
     "auto": false,
     "watch": ["apps/vessel-history/**/*"]
+  },
+  "api-portal": {
+    "cloudbuildTaskId": "ui-api-portal-autodeploy",
+    "auto": false,
+    "watch": ["apps/api-portal/**/*"]
   }
 }
