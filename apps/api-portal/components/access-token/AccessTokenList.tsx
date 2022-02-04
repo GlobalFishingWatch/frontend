@@ -44,8 +44,8 @@ export function AccessTokenList() {
             </tr>
           </thead>
           <tbody>
-            {tokenList.map((row) => (
-              <tr>
+            {tokenList.map((row, index) => (
+              <tr key={`row-token-${index}`}>
                 <td data-aria-label="Application Name" className={styles.cellApplication}>
                   {row.name}
                 </td>
@@ -54,7 +54,7 @@ export function AccessTokenList() {
                 </td>
                 <td data-aria-label="Token" className={styles.cellToken}>
                   <code>{row.token}</code>
-                  <IconButton type="default" size="default" icon="share" />
+                  <IconButton type="default" size="default" icon="copy" />
                 </td>
                 <td data-aria-label="Creation Date" className={styles.cellCreation}>
                   {row.created}
