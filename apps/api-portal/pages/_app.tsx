@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import '../../../libs/ui-components/src/base.css'
+import '@globalfishingwatch/ui-components/base.css'
 import { Provider } from 'react-redux'
 import type { AppProps } from 'next/app'
 import store from '../app/store'

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { IconButton } from 'components/ui'
 // import { UserPermission } from '@globalfishingwatch/api-types'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { checkUserApplicationPermission } from 'features/user/user.hooks'
 import { selectUserData } from 'features/user/user.slice'
 import styles from './AccessToken.module.css'
