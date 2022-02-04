@@ -59,8 +59,8 @@ export function AccessTokenList() {
                 <td data-aria-label="Creation Date" className={styles.cellCreation}>
                   {row.created}
                 </td>
-                <td>
-                  <div className={styles.actions}>
+                <td data-aria-label="action" className={styles.cellActions}>
+                  <div className={styles.content}>
                     <IconButton type="default" size="default" icon="delete" />
                   </div>
                 </td>

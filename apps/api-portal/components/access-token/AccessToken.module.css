@@ -33,24 +33,29 @@ table.list tr:first-child td {
 }
 
 .cellToken {
-  font-family: PT Mono Regular, monospace;
+  font-family: 'PT Mono Regular', monospace;
   background: var(--secondary-background-color);
   border-radius: 0.3rem;
   word-break: break-all;
   display: flex;
 }
 
-.cellCreation > * {
+.content {
   display: flex;
 }
 
-.actions {
+.content > button::before {
+  content: '';
+}
+
+.cellActions {
   display: flex;
 }
 @media (max-width: 767px) {
   table.list td,
   table.list tr {
     display: block;
+    margin: 0;
   }
 
   table.list thead tr {
@@ -63,15 +68,14 @@ table.list tr:first-child td {
     margin-top: var(--space-S);
   }
 
-  table.list td {
+  table.list td:not(.cellActions) {
     border: none;
     position: relative;
     padding-left: 50%;
     text-align: left;
-    padding-bottom: var(--space-S);
   }
 
-  table.list td::before {
+  table.list td:not(.cellActions)::before {
     font: var(--font-S);
     color: var(--color-secondary-blue);
     content: attr(data-aria-label);
@@ -85,5 +89,17 @@ table.list tr:first-child td {
     padding-right: var(--space-S);
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  table.list td.cellActions {
+    text-align: right;
+  }
+
+  table.list td:last-child {
+    padding-bottom: var(--space-S);
+  }
+
+  table.list td.cellActions .content {
+    justify-content: center;
   }
 }
