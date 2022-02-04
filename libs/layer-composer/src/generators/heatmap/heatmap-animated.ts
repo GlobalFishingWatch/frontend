@@ -166,7 +166,7 @@ class HeatmapAnimatedGenerator {
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource = config.interactive && INTERACTION_MODES.includes(config.mode)
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
-    const sublayerBreaks = breaks.map((sublayerBreaks) =>
+    const sublayerBreaks = breaks?.map((sublayerBreaks) =>
       sublayerBreaks.map((b) => b * config.breaksMultiplier)
     )
 
@@ -192,7 +192,7 @@ class HeatmapAnimatedGenerator {
         sublayerVisibility: visible,
         sublayerCount:
           config.mode === HeatmapAnimatedMode.TimeCompare ? 2 : config.sublayers.length,
-        sublayerBreaks,
+        ...(!config.dynamicBreaks && { sublayerBreaks }),
         interactive: interactiveSource,
       }
 
@@ -249,7 +249,7 @@ class HeatmapAnimatedGenerator {
     }
 
     if (SQUARE_GRID_MODES.includes(config.mode)) {
-      return getGriddedLayers(config, timeChunks)
+      return getGriddedLayers(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
       return getBlobLayer(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {

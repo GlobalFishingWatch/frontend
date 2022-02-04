@@ -314,6 +314,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   group?: Group
   tilesAPI?: string
   breaksAPI?: string
+  dynamicBreaks?: boolean
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean

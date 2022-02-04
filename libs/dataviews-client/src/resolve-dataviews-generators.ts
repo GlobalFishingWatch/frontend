@@ -210,6 +210,7 @@ export function getGeneratorConfig(
           maxZoom: 8,
           mode: HeatmapAnimatedMode.Single,
           tilesAPI,
+          dynamicBreaks: dataview.config?.dynamicBreaks || true,
           interactive: true,
           aggregationOperation: dataview.config?.aggregationOperation || AggregationOperation.Avg,
           breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
