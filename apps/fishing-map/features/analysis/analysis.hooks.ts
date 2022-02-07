@@ -124,7 +124,7 @@ export const useFilteredTimeSeries = () => {
 
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
-    if (activityFeaturesLoaded && simplifiedGeometry) {
+    if (!timeseries && activityFeaturesLoaded && simplifiedGeometry) {
       computeTimeseries(activityFeatures, simplifiedGeometry)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
