@@ -274,7 +274,7 @@ export const getCommonSchemaFieldsInDataview = (
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
         let label =
-          schemaType === 'number' || schemaType === 'boolean'
+          schemaType === 'number'
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
         if (label === field) {

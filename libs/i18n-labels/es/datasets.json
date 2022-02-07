@@ -1319,6 +1319,28 @@
       }
     }
   },
+  "public-global-sar-presence": {
+    "name": "SAR",
+    "description": "SAR",
+    "schema": {
+      "id": "id",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "cell": "cell",
+      "htime": "htime",
+      "ssvid": "ssvid",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": "AIS Matched",
+          "false": "AIS Unmatched"
+        }
+      },
+      "timestamp": "timestamp",
+      "confidence": "confidence"
+    }
+  },
   "public-global-support-vessels": {
     "name": "AIS (Buques de soporte)",
     "description": "Support vessels from AIS",
@@ -1344,16 +1366,109 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "public-global-viirs": {
-    "name": "Detecciones de luz nocturna (VIIRS)",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href='https://ngdc.noaa.gov/eog/viirs/download_boat.html' target='_blank' rel=noopener'>here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1).",
+  "public-global-viirs-presence": {
+    "name": "Night light detections",
+    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night. <br/><br/>\n\nThe satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. <br/><br/>\n\nGlobal Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href='https://ngdc.noaa.gov/eog/viirs/download_boat.html' target='_blank' rel=noopener'>here</a>.<br/><br/>\n\nThose using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. <br/><br/>\n\nThe GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1).",
     "schema": {
       "cel": "cel",
       "lat": "lat",
       "lon": "lon",
       "pos": "pos",
       "htime": "htime",
-      "radiance": "radiance",
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9,
+          "10": 10,
+          "11": 11,
+          "12": 12,
+          "13": 13,
+          "14": 14,
+          "15": 15,
+          "16": 16,
+          "17": 17,
+          "18": 18,
+          "19": 19,
+          "20": 20,
+          "21": 21,
+          "22": 22,
+          "23": 23,
+          "24": 24,
+          "25": 25,
+          "26": 26,
+          "27": 27,
+          "28": 28,
+          "29": 29,
+          "30": 30
+        }
+      },
+      "detect_id": "detect_id",
+      "qf_detect": {
+        "keyword": "qf_detect",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "5": 5,
+          "7": 7,
+          "10": 10
+        }
+      },
+      "timestamp": "timestamp"
+    }
+  },
+  "public-global-viirs": {
+    "name": "VIIRS",
+    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
+    "schema": {
+      "cel": "cel",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "htime": "htime",
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9,
+          "10": 10,
+          "11": 11,
+          "12": 12,
+          "13": 13,
+          "14": 14,
+          "15": 15,
+          "16": 16,
+          "17": 17,
+          "18": 18,
+          "19": 19,
+          "20": 20,
+          "21": 21,
+          "22": 22,
+          "23": 23,
+          "24": 24,
+          "25": 25,
+          "26": 26,
+          "27": 27,
+          "28": 28,
+          "29": 29,
+          "30": 30
+        }
+      },
       "detect_id": "detect_id",
       "qf_detect": {
         "keyword": "qf_detect",
@@ -1370,13 +1485,13 @@
     }
   },
   "public-gs-as-simplified": {
-    "name": "CGPM SZG (Fuente: FAO)",
-    "description": "La Comisión General de Pesca del Mediterráneo (CGPM) subzonas geográficas (SZG). Más información disponible en fao.org/gfcm/data/maps/gsas/en. Fuente: FAO",
+    "name": "GFCM GSAs (Source: FAO)",
+    "description": "The General Fisheries Commission for the Mediterranean (GFCM) geographical subareas (GSAs). More information available: fao.org/gfcm/data/maps/gsas/en. Source: FAO.",
     "schema": {}
   },
   "public-gulf-of-lion-french-zones": {
-    "name": "Zonas francesas del Golfo de Lion (Fuente: Légifrance)",
-    "description": "Las zonas francesas del Golfo de Lion son zonas de pesca restringidas en la cuales algunas actividades específicas de pesca están temporalmente o permanentemenete prohibidas or restringidas con el objetivo de proteger las agregaciones de desove y los hábitats sensibles de las profundidades marinas. Fuente: Légifrance.",
+    "name": "Gulf of Lion French zones (Source: Légifrance)",
+    "description": "Gulf of Lion French zones are fisheries restricted areas in which some specific fishing activities are temporarily or permanently banned or restricted in order to protect spawning aggregations and deep-sea sensitive habitats. Source: Légifrance.",
     "schema": {}
   },
   "public-high-seas": {
@@ -1666,6 +1781,165 @@
           "drifting_longlines|trawlers": "Palangre a la deriva | Red de arrastre"
         }
       },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-presence-viirs-match-prototype": {
+    "name": "VIIRS Match",
+    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
+    "schema": {
+      "cel": "cel",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "flag": "flag",
+      "htime": "htime",
+      "source": {
+        "keyword": "source",
+        "enum": {
+          "NULL": "NULL",
+          "chile_vms_aquaculture": "chile_vms_aquaculture",
+          "peru.trasat_api": "peru.trasat_api",
+          "namibia_vms": "namibia_vms",
+          "indovms": "indovms",
+          "mexico_vms": "mexico_vms",
+          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
+          "peru.historic": "peru.historic",
+          "chile_vms_industry": "chile_vms_industry",
+          "ais_scored": "ais_scored",
+          "AIS": "AIS",
+          "panama_vms": "panama_vms",
+          "chile_vms_transport": "chile_vms_transport"
+        }
+      },
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": true,
+          "false": false
+        }
+      },
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "NULL": "NULL",
+          "reefer": "reefer",
+          "Purse Seine Group (2 boat) Big Pelagics": "Purse Seine Group (2 boat) Big Pelagics",
+          "specialized_reefer": "specialized_reefer",
+          "container_reefer": "container_reefer",
+          "Transporter": "Transporter",
+          "Handline": "Handline",
+          "Purse Seine Small Pelagics": "Purse Seine Small Pelagics",
+          "fish_tender|reefer": "fish_tender|reefer",
+          "fishing|specialized_reefer": "fishing|specialized_reefer",
+          "fish_factory|reefer": "fish_factory|reefer",
+          "reefer|fish_tender": "reefer|fish_tender",
+          "drifting_longlines": "drifting_longlines",
+          "tuna_purse_seines": "tuna_purse_seines",
+          "Anchored gillnets": "Anchored gillnets",
+          "set_longlines": "set_longlines",
+          "fish_tender|purse_seines|supply_vessel": "fish_tender|purse_seines|supply_vessel",
+          "purse_seines": "purse_seines",
+          "fixed_gear": "fixed_gear",
+          "other_seines": "other_seines",
+          "purse_seine_support": "purse_seine_support",
+          "longline": "longline",
+          "trawlers|specialized_reefer|fish_factory": "trawlers|specialized_reefer|fish_factory",
+          "torchlight_net": "torchlight_net",
+          "Pots": "Pots",
+          "Lampara Seine Nets": "Lampara Seine Nets",
+          "supply": "supply",
+          "fish_tender|pots_and_traps": "fish_tender|pots_and_traps",
+          "specialized_reefer|well_boat": "specialized_reefer|well_boat",
+          "well_boat": "well_boat",
+          "Fish net/dragnet": "Fish net/dragnet",
+          "cargo": "cargo",
+          "Hand Line Tuna": "Hand Line Tuna",
+          "dredge_fishing": "dredge_fishing",
+          "trawlers": "trawlers",
+          "seiners": "seiners",
+          "reefer|well_boat": "reefer|well_boat",
+          "Stick-Held lift net": "Stick-Held lift net",
+          "Squid hooking": "Squid hooking",
+          "trollers": "trollers",
+          "Shrimp net": "Shrimp net",
+          "fish_factory": "fish_factory",
+          "Basic longline": "Basic longline",
+          "well_boat|reefer": "well_boat|reefer",
+          "well_boat|drifting_longlines|reefer": "well_boat|drifting_longlines|reefer",
+          "fish_tender|fishing": "fish_tender|fishing",
+          "pole_and_line": "pole_and_line",
+          "purse_seine": "purse_seine",
+          "Pole-and-line": "Pole-and-line",
+          "pots_and_traps": "pots_and_traps",
+          "set_gillnets": "set_gillnets",
+          "Oceanic gillnet": "Oceanic gillnet",
+          "longline_gigging": "longline_gigging",
+          "oil_tanker": "oil_tanker",
+          "gigging": "gigging",
+          "fishing": "fishing",
+          "cargo_reefer": "cargo_reefer",
+          "reefer|fish_tender|drifting_longlines": "reefer|fish_tender|drifting_longlines",
+          "driftnets|set_gillnets": "driftnets|set_gillnets",
+          "Purse Seine Group (2 boat) Small Pelagics": "Purse Seine Group (2 boat) Small Pelagics",
+          "Cast Nets": "Cast Nets",
+          "pots_and_traps|fish_tender": "pots_and_traps|fish_tender",
+          "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
+          "fish_tender": "fish_tender",
+          "other_purse_seines": "other_purse_seines",
+          "fish_tender|purse_seines": "fish_tender|purse_seines",
+          "Longline Tuna": "Longline Tuna",
+          "squid_jigger": "squid_jigger"
+        }
+      },
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9,
+          "10": 10,
+          "11": 11,
+          "12": 12,
+          "13": 13,
+          "14": 14,
+          "15": 15,
+          "16": 16,
+          "17": 17,
+          "18": 18,
+          "19": 19,
+          "20": 20,
+          "21": 21,
+          "22": 22,
+          "23": 23,
+          "24": 24,
+          "25": 25,
+          "26": 26,
+          "27": 27,
+          "28": 28,
+          "29": 29,
+          "30": 30
+        }
+      },
+      "detect_id": "detect_id",
+      "qf_detect": {
+        "keyword": "qf_detect",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "5": 5,
+          "7": 7,
+          "10": 10
+        }
+      },
+      "timestamp": "timestamp",
       "vessel_id": "vessel_id"
     }
   },

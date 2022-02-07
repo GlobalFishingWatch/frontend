@@ -26,7 +26,7 @@ const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 const viewportState = atom<MapCoordinates>({
   key: 'mapViewport',
   default: DEFAULT_VIEWPORT as MapCoordinates,
-  effects_UNSTABLE: [
+  effects: [
     ({ trigger, setSelf, onSet }) => {
       const viewport = selectViewport(store.getState() as RootState)
 
