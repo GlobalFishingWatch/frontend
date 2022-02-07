@@ -30,20 +30,22 @@ export const useEnvironmentalBreaksUpdate = () => {
           if (features && features.length) {
             const filteredFeatures = filterByViewport(features, bounds)
             const data = aggregateFeatures(filteredFeatures, metadata)
-            const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
-            const dataSampled =
-              data.length > 100
-                ? sample(data, Math.round(data.length / 100), Math.random)
-                : features
-            // using ckmeans as jenks
-            const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) => clusterFirst)
-            return {
-              id: dataviewsId[0],
-              config: {
-                opacity: undefined,
-                breaks: ck,
-              },
+            if (data && data.length) {
+              const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
+              const dataSampled =
+                data.length > 1000 ? sample(data, Math.round(data.length / 100), Math.random) : data
+
+              // using ckmeans as jenks
+              const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) => clusterFirst)
+              return {
+                id: dataviewsId[0],
+                config: {
+                  opacity: undefined,
+                  breaks: ck,
+                },
+              }
             }
+            return []
           }
           return []
         }
