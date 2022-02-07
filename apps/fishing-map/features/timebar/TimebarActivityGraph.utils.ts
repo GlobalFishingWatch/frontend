@@ -16,19 +16,11 @@ export const getChunksTimeseries = ({
   interval,
   visibleSublayers,
 }: TimeseriesParams) => {
-  let prevMaxFrame: number
-
   const allChunksValues = chunksFeatures.flatMap(({ features, quantizeOffset }) => {
     if (features?.length > 0) {
-      const { values, maxFrame } = getTimeSeries(features, numSublayers, quantizeOffset)
+      const { values } = getTimeSeries(features, numSublayers, quantizeOffset)
 
-      const valuesTimeChunkOverlapFramesFiltered = prevMaxFrame
-        ? values.filter((frameValues) => frameValues.frame > prevMaxFrame)
-        : values
-
-      prevMaxFrame = maxFrame
-
-      const finalValues = valuesTimeChunkOverlapFramesFiltered.map((frameValues) => {
+      const finalValues = values.map((frameValues) => {
         // Ideally we don't have the features not visible in 4wings but we have them
         // so this needs to be filtered by the current active ones
         const activeFrameValues = Object.fromEntries(
