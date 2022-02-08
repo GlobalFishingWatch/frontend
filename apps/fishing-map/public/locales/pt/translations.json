@@ -15,6 +15,7 @@
     "download": "Descarregar relatório",
     "downloadLogin": "Você precisa fazer login para baixar o relatório",
     "empty": "Os datasets selecionados aparecerão aqui",
+    "error": "There was a problem loading the data, please try refreshing the page",
     "errorMessage": "Algo deu errado",
     "errorPeriodComparisonDateRange": "Erro no intervalo de datas. A comparação deve ser posterior ao início da linha de base.",
     "errorTimeComparisonDataviews": "Pelo menos uma camada de atividade deve estar habilitada",
