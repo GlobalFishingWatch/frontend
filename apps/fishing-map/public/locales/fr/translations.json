@@ -15,6 +15,7 @@
     "download": "Télécharger le rapport",
     "downloadLogin": "Vous devez vous connecter pour télécharger le rapport (gratuit, 2 minutes)",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
+    "error": "There was a problem loading the data, please try refreshing the page",
     "errorMessage": "Quelque chose s'est mal passé",
     "errorPeriodComparisonDateRange": "Erreur de plage de date. Le début de la comparaison doit être après le début de la référence.",
     "errorTimeComparisonDataviews": "Au moins un calque d'activité doit être activé",
