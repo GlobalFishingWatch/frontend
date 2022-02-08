@@ -124,7 +124,7 @@ export const useFilteredTimeSeries = () => {
 
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
-    if (!timeseries && activityFeaturesLoaded && simplifiedGeometry) {
+    if (activityFeaturesLoaded && simplifiedGeometry) {
       computeTimeseries(activityFeatures, simplifiedGeometry)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -185,27 +185,29 @@ export const useAnalysisArea = () => {
   )
 
   useEffect(() => {
-    if (areaId && contextDataviews?.length) {
+    if (areaId && !datasetId && contextDataviews?.length) {
+      // Fallback for legacy url which doesn't contain datasetId in the url
+      // trying to get the dataset from the context dataview
+      const dataviewsIdBySource = contextDataviews.map(
+        ({ id }) => id.split(MULTILAYER_SEPARATOR)[0]
+      )
+      const dataview = contextDataviews.find(
+        ({ id }) => id === sourceId || dataviewsIdBySource.includes(id)
+      )
+      const datasetId = dataview?.datasets?.[0].id
       if (datasetId) {
-        const areaName = contextDataviews.find(({ id }) => id === sourceId)?.datasets?.[0].name
-        fetchAnalysisArea({ datasetId, areaId, areaName })
-      } else {
-        // Fallback for legacy url which doesn't contain datasetId in the url
-        // trying to get the dataset from the context dataview
-        const dataviewsIdBySource = contextDataviews.map(
-          ({ id }) => id.split(MULTILAYER_SEPARATOR)[0]
-        )
-        const dataview = contextDataviews.find(
-          ({ id }) => id === sourceId || dataviewsIdBySource.includes(id)
-        )
-        const datasetId = dataview?.datasets?.[0].id
-        if (datasetId) {
-          dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
-        }
+        dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areaId, datasetId, fetchAnalysisArea, contextDataviews])
+  }, [areaId, datasetId])
+
+  const areaName = contextDataviews?.find(({ id }) => id === sourceId)?.datasets?.[0].name
+  useEffect(() => {
+    if (areaId && datasetId) {
+      fetchAnalysisArea({ datasetId, areaId, areaName })
+    }
+  }, [areaId, datasetId, fetchAnalysisArea, areaName])
 
   useEffect(() => {
     if (status === AsyncReducerStatus.Finished) {
