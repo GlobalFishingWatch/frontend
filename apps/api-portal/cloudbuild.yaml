@@ -43,7 +43,7 @@ steps:
 
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['docker-prepare']
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$COMMIT_SHA',
