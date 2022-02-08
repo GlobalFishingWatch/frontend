@@ -39,12 +39,7 @@ steps:
       - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY'
       - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
-
-  - id: 'docker-prepare'
-    waitFor: ['build-app']
-    name: node:14
-    entrypoint: yarn
-    args: ['nx', 'docker-prepare', 'api-portal']
+      - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
 
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
