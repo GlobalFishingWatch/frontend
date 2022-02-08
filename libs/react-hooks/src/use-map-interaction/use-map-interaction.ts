@@ -134,6 +134,7 @@ const getExtendedFeatures = (
         return {
           ...extendedFeature,
           gfwId: feature.properties?.gfw_id,
+          datasetId: feature.layer.metadata?.datasetId,
           generatorContextLayer: feature.layer.metadata?.layer,
           geometry: feature.geometry,
         }

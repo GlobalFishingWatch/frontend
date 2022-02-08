@@ -3,8 +3,9 @@ import type {
   LayerSpecification,
   LineLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { ExtendedLayer, ExtendedLayerMeta, Group } from '../../types'
+import { ExtendedLayerMeta, Group } from '../../types'
 import { ContextLayerType } from '../types'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
 
 export const HIGHLIGHT_SUFIX = '_highlight'
 
@@ -28,6 +29,7 @@ const getDefaultContextInteraction = (): Partial<FillLayerSpecification> => {
     metadata: {
       interactive: true,
       group: Group.OutlinePolygonsBackground,
+      sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
     } as ExtendedLayerMeta,
   }
 }
@@ -45,6 +47,7 @@ const getDefaultContextLine = (color = 'white'): Partial<LineLayerSpecification>
     metadata: {
       interactive: false,
       group: Group.OutlinePolygons,
+      sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
     } as ExtendedLayerMeta,
   }
 }
@@ -62,6 +65,7 @@ const getDefaultContextHighlight = (): Partial<LineLayerSpecification> => {
     metadata: {
       interactive: false,
       group: Group.OutlinePolygonsHighlighted,
+      sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
     } as ExtendedLayerMeta,
   }
 }

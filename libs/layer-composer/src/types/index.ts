@@ -96,6 +96,7 @@ export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
  * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface ExtendedLayerMeta {
+  datasetId?: string
   generatorId?: string
   generatorType?: GeneratorType
   interactive?: boolean
@@ -107,6 +108,7 @@ export interface ExtendedLayerMeta {
   gridArea?: number
   currentValue?: number
   color?: string
+  unit?: string
 }
 
 export interface HeatmapLayerMeta {
@@ -117,21 +119,21 @@ export interface HeatmapLayerMeta {
   multiplier: number
   numSublayers: number
   sublayerCombinationMode: SublayerCombinationMode
-  sublayers: HeatmapLayerSpecification[]
+  sublayers: ExtendedLayer<HeatmapLayerSpecification>[]
   temporalgrid: true
   timeChunks: TimeChunks
   visibleSublayers: boolean[]
+  sourceLayer?: string
 }
 
 /**
  * A standard Mapbox GL Layer with layer-composer specific metadata
  */
-export type ExtendedLayer = LayerSpecification & {
+export type ExtendedLayer<L = LayerSpecification> = L & {
   metadata?: ExtendedLayerMeta
 }
 
 export interface ExtendedStyleMeta {
-  generatedAt?: number
   interactiveLayerIds?: string[]
   generatorsMetadata?: Record<string, HeatmapLayerMeta>
 }

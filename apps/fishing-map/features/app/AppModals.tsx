@@ -17,6 +17,7 @@ import useSecretMenu from 'hooks/secret-menu.hooks'
 import DebugMenu from 'features/debug/DebugMenu'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
 import BigQueryMenu from 'features/bigquery/BigQuery'
+import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import styles from './App.module.css'
 
 const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
@@ -46,6 +47,7 @@ const AppModals = () => {
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
+  const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
 
   const locationIsMarineManager =
@@ -98,7 +100,7 @@ const AppModals = () => {
           <BigQueryMenu />
         </Modal>
       )}
-      <DownloadActivityModal />
+      {downloadActivityAreaKey && <DownloadActivityModal />}
       <DownloadTrackModal />
       {welcomePopupOpen && !readOnly && (
         <Modal

@@ -3,10 +3,11 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
 import { useMapControl } from './map-context.hooks'
 import styles from './MapLegends.module.css'
-import { AnyLegend, LegendTranslated, useLegendsTranslated } from './rulers/map-legends.hooks'
+import { AnyLegend, LegendTranslated, useLegendsTranslated } from './map-legends.hooks'
 
 const MapLegendWrapper: React.FC<{ legend: LegendTranslated }> = ({ legend }) => {
   const { t } = useTranslation()
@@ -14,6 +15,7 @@ const MapLegendWrapper: React.FC<{ legend: LegendTranslated }> = ({ legend }) =>
     <MapLegend
       layer={legend}
       className={styles.legend}
+      roundValues={legend.category !== DataviewCategory.Environment}
       currentValueClassName={styles.currentValue}
       labelComponent={
         legend.label.includes('²') ? (

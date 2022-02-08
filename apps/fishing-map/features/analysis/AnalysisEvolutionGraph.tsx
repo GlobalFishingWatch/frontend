@@ -24,15 +24,16 @@ export interface EvolutionGraphData {
   max: number[]
 }
 
+export interface AnalysisSublayerGraph {
+  id: string
+  legend: {
+    color?: string
+    unit?: string
+  }
+}
 export interface AnalysisGraphProps {
   timeseries: EvolutionGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
+  sublayers: AnalysisSublayerGraph[]
   interval: Interval
 }
 
