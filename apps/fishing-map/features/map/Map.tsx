@@ -5,6 +5,7 @@ import { event as uaEvent } from 'react-ga'
 import { InteractiveMap } from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
 import dynamic from 'next/dynamic'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -37,12 +38,20 @@ import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/a
 import Hint from 'features/help/hints/Hint'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import { useMapLoaded } from 'features/map/map-style.hooks'
+import { useMapLoaded } from 'features/map/map-state.hooks'
+import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
+import { mapReadyAtom } from 'features/map/map-state.atom'
+import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
-import { useMapAndSourcesLoaded, useSetMapIdleAtom } from './map-features.hooks'
+import { useSetMapIdleAtom } from './map-state.hooks'
+import {
+  useAllMapSourceTilesLoaded,
+  useMapSourceTilesLoaded,
+  useMapSourceTilesLoadedAtom,
+} from './map-sources.hooks'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
 import { selectIsMapDrawing } from './map.selectors'
 import MapLegends from './MapLegends'
@@ -74,9 +83,13 @@ const handleError = ({ error }: any) => {
 const MapWrapper = (): React.ReactElement | null => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
+  useMapSourceTilesLoadedAtom()
+  useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const drawMode = useSelector(selectDrawMode)
+  const setMapReady = useSetRecoilState(mapReadyAtom)
+  const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
@@ -84,6 +97,7 @@ const MapWrapper = (): React.ReactElement | null => {
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
+  const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
@@ -125,6 +139,10 @@ const MapWrapper = (): React.ReactElement | null => {
     }
     return clickEvent
   }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onMapClick])
+
+  const onLoadCallback = useCallback(() => {
+    setMapReady(true)
+  }, [setMapReady])
 
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
@@ -173,7 +191,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const portalledLegend = !showTimeComparison
 
   const mapLoaded = useMapLoaded()
-  const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useMapSourceTilesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
     (state) => {
@@ -234,7 +252,7 @@ const MapWrapper = (): React.ReactElement | null => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={onViewportChange}
+          onViewportChange={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
           mapStyle={style}
           transformRequest={transformRequest}
           onResize={setMapBounds}
@@ -245,6 +263,7 @@ const MapWrapper = (): React.ReactElement | null => {
           clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={isMapDrawing ? undefined : currentClickCallback}
           onHover={isMapDrawing ? onSimpleMapHover : currentMapHoverCallback}
+          onLoad={onLoadCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
           transitionDuration={viewport.transitionDuration}
@@ -258,9 +277,10 @@ const MapWrapper = (): React.ReactElement | null => {
               closeButton
             />
           )}
-          {hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
-            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude &&
-            !clickedEvent && (
+          {hoveredTooltipEvent &&
+            !clickedEvent &&
+            hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
+            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
@@ -268,7 +288,10 @@ const MapWrapper = (): React.ReactElement | null => {
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
+      <MapControls
+        onMouseEnter={resetHoverState}
+        mapLoading={!mapLoaded || layerComposerLoading || !allSourcesLoaded}
+      />
       {isWorkspace && !isAnalyzing && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}

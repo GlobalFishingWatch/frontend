@@ -210,6 +210,7 @@ export function getGeneratorConfig(
           maxZoom: 8,
           mode: HeatmapAnimatedMode.Single,
           tilesAPI,
+          dynamicBreaks: dataview.config?.dynamicBreaks || true,
           interactive: true,
           aggregationOperation: dataview.config?.aggregationOperation || AggregationOperation.Avg,
           breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
@@ -257,15 +258,21 @@ export function getGeneratorConfig(
             dataset
           )
           if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
-          return { id, tilesUrl: url, attribution: resolvedDataset?.source }
+          return {
+            id,
+            tilesUrl: url,
+            attribution: resolvedDataset?.source,
+            datasetId: resolvedDataset.id,
+          }
         })
         // Duplicated generators when context dataview have multiple layers
-        return tilesUrls.map(({ id, tilesUrl, attribution }) => ({
+        return tilesUrls.map(({ id, tilesUrl, attribution, datasetId }) => ({
           ...generator,
           id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
           layer: id,
           attribution,
           tilesUrl,
+          datasetId,
         }))
       } else {
         generator.id = dataview.config.layers
@@ -276,6 +283,7 @@ export function getGeneratorConfig(
         if (dataset?.status !== DatasetStatus.Done) {
           return []
         }
+        generator.datasetId = dataset.id
         if (url) {
           generator.tilesUrl = url
         }
@@ -312,6 +320,14 @@ export function getGeneratorConfig(
   }
 }
 
+export function isActivityDataview(dataview: UrlDataviewInstance) {
+  return (
+    (dataview.category === DataviewCategory.Fishing ||
+      dataview.category === DataviewCategory.Presence) &&
+    dataview.config?.type === GeneratorType.HeatmapAnimated
+  )
+}
+
 /**
  * Generates generator configs to be consumed by LayerComposer, based on the list of dataviews provided,
  * and associates Resources to them when needed for the generator (ie tracks data for a track generator).
@@ -333,13 +349,11 @@ export function getDataviewsGeneratorConfigs(
 
   // Collect heatmap animated generators and filter them out from main dataview list
   const dataviewsFiltered = dataviews.filter((d) => {
-    const isActivityDataview =
-      (d.category === DataviewCategory.Fishing || d.category === DataviewCategory.Presence) &&
-      d.config?.type === GeneratorType.HeatmapAnimated
-    if (isActivityDataview) {
+    const activityDataview = isActivityDataview(d)
+    if (activityDataview) {
       activityDataviews.push(d)
     }
-    return !isActivityDataview
+    return !activityDataview
   })
 
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers

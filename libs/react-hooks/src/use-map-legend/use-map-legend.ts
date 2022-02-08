@@ -40,10 +40,12 @@ export const getLegendLayers = (
         } else {
           currentValue = getHoveredFeatureValueForSublayerId(legend.id)
         }
+        const dataview = dataviews?.find((d) => d.id === legend.id)
 
         return {
           ...legend,
           id: getLegendId(legend?.id),
+          category: dataview?.category,
           generatorId,
           generatorType: GeneratorType.HeatmapAnimated,
           currentValue,

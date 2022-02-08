@@ -37,6 +37,7 @@ export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 export type WorkspaceAnalysis = {
   areaId: string
   sourceId: string
+  datasetId: string
   bounds?: [number, number, number, number]
 }
 export type WorkspaceAnalysisType = 'evolution' | 'correlation' | 'periodComparison' | 'beforeAfter'

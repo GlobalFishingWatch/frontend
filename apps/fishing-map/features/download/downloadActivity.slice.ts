@@ -14,22 +14,13 @@ export type DateRange = {
   end: string
 }
 
-export type DownloadActivityArea = {
-  geometry: Geometry
-  name: string
-}
-
 export interface DownloadActivityState {
+  areaKey: string
   status: AsyncReducerStatus
-  geometry: Geometry | undefined
-  name: string
-  id: string
 }
 
 const initialState: DownloadActivityState = {
-  geometry: undefined,
-  name: '',
-  id: '',
+  areaKey: '',
   status: AsyncReducerStatus.Idle,
 }
 
@@ -103,17 +94,15 @@ const downloadActivitySlice = createSlice({
   name: 'downloadActivity',
   initialState,
   reducers: {
+    setDownloadActivityAreaKey: (state, action: PayloadAction<string>) => {
+      state.areaKey = action.payload
+    },
     resetDownloadActivityStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
     },
-    clearDownloadActivityGeometry: (state) => {
-      state.name = ''
-      state.geometry = undefined
+    resetDownloadActivityState: (state) => {
+      state.areaKey = ''
       state.status = AsyncReducerStatus.Idle
-    },
-    setDownloadActivityGeometry: (state, action: PayloadAction<DownloadActivityArea>) => {
-      state.name = action.payload.name
-      state.geometry = action.payload.geometry as Geometry
     },
   },
   extraReducers: (builder) => {
@@ -131,15 +120,13 @@ const downloadActivitySlice = createSlice({
 })
 
 export const {
+  setDownloadActivityAreaKey,
   resetDownloadActivityStatus,
-  clearDownloadActivityGeometry,
-  setDownloadActivityGeometry,
+  resetDownloadActivityState,
 } = downloadActivitySlice.actions
 
-export const selectDownloadActivityGeometry = (state: RootState) => state.downloadActivity.geometry
-export const selectDownloadActivityAreaName = (state: RootState) => state.downloadActivity.name
-export const selectDownloadActivityAreaId = (state: RootState) => state.downloadActivity.id
 export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
+export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
 
 export const selectDownloadActivityLoading = createSelector(
   [selectDownloadActivityStatus],

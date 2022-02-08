@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useMapLoaded, useMapStyle } from 'features/map/map-style.hooks'
-import { mapIdleAtom } from 'features/map/map-features.atom'
+import { mapIdleAtom, mapReadyAtom } from 'features/map/map-state.atom'
 
 export const useSetMapIdleAtom = () => {
   // Used it once in Map.tsx the listeners only once
@@ -35,15 +34,18 @@ export const useMapIdle = () => {
   return idle
 }
 
-export const useSourceInStyle = (sourcesIds: string | string[]) => {
-  const style = useMapStyle()
-  const sourcesIdsList = Array.isArray(sourcesIds) ? sourcesIds : [sourcesIds]
-  const sourcesLoaded = sourcesIdsList.every((source) => style?.sources?.[source] !== undefined)
-  return sourcesLoaded
+export const useMapReady = () => {
+  const loaded = useRecoilValue(mapReadyAtom)
+  return loaded
 }
 
-export const useMapAndSourcesLoaded = (sourcesIds: string | string[]) => {
-  const mapLoaded = useMapLoaded()
-  const sourcesLoaded = useSourceInStyle(sourcesIds)
-  return mapLoaded && sourcesLoaded
+export const useMapLoaded = () => {
+  const idle = useRecoilValue(mapIdleAtom)
+  const map = useMapInstance()
+  const mapInstanceReady = map !== null
+  const mapFirstLoad = (map as any)?._loaded || false
+  const mapStyleLoad = map?.isStyleLoaded() || false
+  const areTilesLoaded = map?.areTilesLoaded() || false
+  const loaded = mapInstanceReady && mapFirstLoad && (idle || areTilesLoaded || mapStyleLoad)
+  return loaded
 }

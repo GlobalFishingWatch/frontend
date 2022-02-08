@@ -134,6 +134,13 @@ export const selectActiveEnvironmentalDataviews = createSelector(
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
+export const selectActiveTemporalgridDataviews = createSelector(
+  [selectActiveActivityDataviews, selectActiveEnvironmentalDataviews],
+  (activityDataviews = [], environmentalDataviews = []) => {
+    return [...activityDataviews, ...environmentalDataviews]
+  }
+)
+
 export const selectEventsDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
   (dataviews) => dataviews

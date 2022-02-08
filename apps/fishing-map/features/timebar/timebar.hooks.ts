@@ -13,6 +13,9 @@ import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import { selectAnalysisArea, selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import {
   Range,
   changeSettings,
@@ -64,7 +67,10 @@ export const TimeRangeAtom = atom<Range | null>({
 
 export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
+  const isAnalyzing = useSelector(selectIsAnalyzing)
+  const fitMapBounds = useMapFitBounds()
   const dispatch = useDispatch()
+  const analysisAreaBounds = useSelector(selectAnalysisArea)?.bounds
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
@@ -72,8 +78,19 @@ export const useTimerangeConnect = () => {
         dispatch(setHintDismissed('changingTheTimeRange'))
       }
       setTimerange({ start, end })
+      if (isAnalyzing && analysisAreaBounds) {
+        fitMapBounds(analysisAreaBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+      }
     },
-    [dispatch, setTimerange, timerange?.end, timerange?.start]
+    [
+      analysisAreaBounds,
+      dispatch,
+      fitMapBounds,
+      isAnalyzing,
+      setTimerange,
+      timerange?.end,
+      timerange?.start,
+    ]
   )
   return useMemo(() => {
     return {

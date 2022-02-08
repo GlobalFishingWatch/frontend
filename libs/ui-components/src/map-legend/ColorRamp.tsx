@@ -130,7 +130,13 @@ export function ColorRampLegend({
                   left: `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`,
                 }}
               >
-                {formatLegendValue(currentValue, false, false, layer.divergent)}
+                {formatLegendValue({
+                  number: currentValue,
+                  roundValues,
+                  isFirst: false,
+                  isLast: false,
+                  divergent: layer.divergent,
+                })}
               </span>
             )}
             {type === 'colorramp-discrete' && (
@@ -154,12 +160,14 @@ export function ColorRampLegend({
               const valueLabel =
                 typeof value === 'string'
                   ? value
-                  : formatLegendValue(
-                      roundValue,
-                      (omitFirstBucket && i === 0) || (!omitFirstBucket && i === 1),
-                      i === cleanRamp.length - 1,
-                      layer.divergent
-                    )
+                  : formatLegendValue({
+                      number: roundValue,
+                      roundValues,
+                      isFirst: (omitFirstBucket && i === 0) || (!omitFirstBucket && i === 1),
+                      isLast: i === cleanRamp.length - 1,
+                      divergent: layer.divergent,
+                    })
+
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (
                 <span
