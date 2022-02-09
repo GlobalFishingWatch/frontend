@@ -24,6 +24,7 @@
     "experimental": "Experimental",
     "filteredBy": "filtrado por",
     "noData": "dados não disponíveis",
+    "noDataByArea": "No data available for the selected area",
     "onlyAISAllowed": "Somente datasets AIS podem ser baixados",
     "periodComparison": "comparação por período",
     "periodComparison1st": "início da base de referência",
