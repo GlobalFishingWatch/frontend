@@ -24,6 +24,7 @@
     "experimental": "Experimental",
     "filteredBy": "filtered by",
     "noData": "No data available",
+    "noDataByArea": "No data available for the selected area",
     "onlyAISAllowed": "This data is not currently available to download",
     "periodComparison": "period comparison",
     "periodComparison1st": "baseline start",
