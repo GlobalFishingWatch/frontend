@@ -1,5 +1,6 @@
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { t } from 'i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -23,6 +24,8 @@ function AnalysisItem({ blur, loading, graphData, analysisAreaName }: AnalysisIt
   }, [graphData])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
   const { description, commonProperties } = useAnalysisDescription(analysisAreaName, graphData)
+  const showSpinner = loading && (!blur || !graphData)
+  const hasData = graphData?.timeseries?.length > 0
   return (
     <div className={styles.container}>
       <Fragment>
@@ -39,14 +42,17 @@ function AnalysisItem({ blur, loading, graphData, analysisAreaName }: AnalysisIt
           ))}
         </div>
       </Fragment>
-      {loading && !blur && (
+      {showSpinner ? (
         <div className={styles.graphContainer}>
           <Spinner />
         </div>
-      )}
-      {graphData && (
+      ) : hasData ? (
         <div className={blur ? styles.blur : ''}>
           <AnalysisEvolutionGraph graphData={graphData} start={start} end={end} />
+        </div>
+      ) : (
+        <div className={styles.graphContainer}>
+          <p>{t('graph.noDataByArea', 'No data available for the selected area')}</p>
         </div>
       )}
     </div>

@@ -114,6 +114,8 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
 
   if (!timeComparison) return null
 
+  const showSpinner = loading && (!blur || !layersTimeseriesFiltered)
+  const hasData = layersTimeseriesFiltered?.[0].timeseries.length > 0
   return (
     <Fragment>
       <AnalysisDescription description={description} />
@@ -130,18 +132,21 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
             />
           ))}
       </div>
-      {loading && (!blur || !layersTimeseriesFiltered) && (
+      {showSpinner ? (
         <div className={styles.graphContainer}>
           <Spinner />
         </div>
-      )}
-      {layersTimeseriesFiltered && (
+      ) : hasData ? (
         <div className={blur ? styles.blur : ''}>
           <AnalysisPeriodComparisonGraph
             graphData={layersTimeseriesFiltered?.[0]}
             start={timeComparison.start}
             end={timeComparisonValues.end}
           />
+        </div>
+      ) : (
+        <div className={styles.graphContainer}>
+          <p>{t('graph.noDataByArea', 'No data available for the selected area')}</p>
         </div>
       )}
       <div className={styles.container}>
