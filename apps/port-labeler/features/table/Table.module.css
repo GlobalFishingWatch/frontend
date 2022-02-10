@@ -1,0 +1,27 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: rgb(var(--white-rgb), 1);
+  height: var(--size-M);
+}
+
+.iconRight {
+  float: right;
+}
+
+.sortIcon {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: var(--space-S) var(--space-XS) var(--space-S) var(--space-XS);
+}
+
+.sortIcon label {
+  color: var(--color-primary-blue);
+  font: var(--font-S);
+}

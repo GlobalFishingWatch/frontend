@@ -1,0 +1,90 @@
+{
+  "root": "apps/port-labeler",
+  "sourceRoot": "apps/port-labeler",
+  "projectType": "application",
+  "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["nx build port-labeler --parallel", "nx docker-prepare port-labeler"],
+        "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/port-labeler",
+          "cp apps/port-labeler/nginx.conf dist/apps/port-labeler"
+        ]
+      }
+    },
+    "compile": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/port-labeler",
+        "outputPath": "dist/apps/port-labeler"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "start": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx clean-locales port-labeler",
+          "nx serve i18n-labels",
+          "nx serve port-labeler"
+        ],
+        "parallel": true
+      }
+    },
+    "clean-locales": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["rm -rf dist/apps/port-labeler/public/locales"]
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "port-labeler:compile",
+        "dev": true,
+        "port": 3003
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "port-labeler:build:production",
+          "dev": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "port-labeler:build:production"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/port-labeler/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/port-labeler"],
+      "options": {
+        "jestConfig": "apps/port-labeler/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
