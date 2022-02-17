@@ -1,11 +1,13 @@
-import React from 'react'
-import { Button, Icon, InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import React, { Fragment, useCallback } from 'react'
+import { Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { PortPosition } from 'features/app/data'
+import useMapInstance from 'features/map/map-context.hooks'
 import styles from './Table.module.css'
 import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 
 type SidebarProps = {
   ports: SelectOption[],
+  hidden: boolean,
   subareas: SubareaSelectOption[],
   onSubareaChange: (id, value) => void
   onPortChange: (id, value) => void
@@ -15,6 +17,7 @@ type SidebarProps = {
 
 function TableRow({ 
   ports, 
+  hidden, 
   subareas,
   record,
   onSubareaChange,
@@ -22,9 +25,21 @@ function TableRow({
   onNewSubareaAdded 
 }: SidebarProps) {
 
+  const map = useMapInstance()
+  const onRowHover = useCallback((id: string, hover: boolean) => {
+    console.log(id, hover)
+    map.setFeatureState(
+      { source: 'pointsLayer', id: parseInt(id, 16) },
+      { hover }
+    );
+  }, [map])
 
   return (
-    <tr>
+    <tr 
+      style={{display: hidden ? 'none' : 'table-row'}}
+      onMouseEnter={() => onRowHover(record.s2id, true)}
+      onMouseLeave={() => onRowHover(record.s2id, false)}
+    >
       <td>
         <Select
           className={styles.portSelector}

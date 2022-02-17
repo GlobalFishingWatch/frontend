@@ -36,7 +36,7 @@ export const selectCountries = createSelector(
         })
         const countries = [...new Set(countriesDuplicated)];
 
-        return countries.map(e => {
+        return countries.sort().map(e => {
             return {
                 id: e,
                 label: e,

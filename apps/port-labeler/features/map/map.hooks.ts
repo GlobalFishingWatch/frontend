@@ -3,7 +3,9 @@ import { atom, useRecoilState } from 'recoil'
 import type { MapEvent, ViewportProps } from 'react-map-gl'
 import Point from '@mapbox/point-geometry';
 //import { MapEvent } from '@globalfishingwatch/maplibre-gl';
+import { useDispatch } from 'react-redux';
 import { MapCoordinates } from 'types'
+import { setSelectedPoints } from 'features/labeler/labeler.slice';
 import useMapInstance from './map-context.hooks';
 
 type UseSelector = {
@@ -13,14 +15,15 @@ type UseSelector = {
   onMouseDown: (evt: MapEvent) => void
   onMouseMove: (evt: MapEvent) => void
   onMouseUp: (evt: MapEvent) => void
+  onHover: (evt: MapEvent) => void
 }
 
 export function useSelectorConnect(): UseSelector {
-
+  const dispatch = useDispatch()
   const [start, setStart] = useState<Point | null>(null)
-  const [current, setCurrent] = useState<Point | null>(null)
   const [box, setBox] = useState(null)
   const [dragging, setDragging] = useState(false)
+  const [hoveredStateId, setHoveredStateId] = useState(null)
 
   const map = useMapInstance()
   const canvas = map?.getCanvasContainer();
@@ -35,7 +38,6 @@ export function useSelectorConnect(): UseSelector {
   }, [canvas])
 
   const onKeyDown = useCallback((e: any) => {
-    console.log(e)
     // Continue the rest of the function if the shiftkey is pressed.
     if (!(e.shiftKey && e.keyCode === 16)) return;
     setDragging(true)
@@ -43,13 +45,11 @@ export function useSelectorConnect(): UseSelector {
   }, [])
 
   const onKeyUp = useCallback((e: any) => {
-    console.log(e)
     // Continue the rest of the function if the shiftkey is pressed.
     if (!(e.keyCode === 16)) return;
     setDragging(false)
     setStart(null)
-    //setBox(null)
-    console.log('onKeyUp')
+    setBox(null)
   }, [])
 
   const onMouseDown = useCallback((e: MapEvent) => {
@@ -65,30 +65,27 @@ export function useSelectorConnect(): UseSelector {
   }, [map, mousePos])
 
   const onMouseUp = useCallback((e: MapEvent) => {
-    console.log('mouse up')
-    console.log([start,box.endPosition])
     if(dragging && start) {
-      console.log('mouse up2')
-      
       const bbox = box
       if (box) {
         setBox(null)
         
-        const features = map.queryRenderedFeatures([start,bbox.endPosition], {
+        const features = map.queryRenderedFeatures([start, bbox.endPosition], {
           layers: ['portPoints']
         });
-        console.log(features)
+        dispatch(setSelectedPoints(features.map(point => point.properties.id)))
       }
       
+    } else {
+      dispatch(setSelectedPoints([]))
     }
     map.dragPan.enable();
     setStart(null)
-  }, [box, dragging, map, start])
+  }, [box, dispatch, dragging, map, start])
 
   const onMouseMove = useCallback((e: MapEvent) => {
     if(dragging && start){
       const actualPosition = mousePos(e)
-      setCurrent(actualPosition)
       
       // Append the box element if it doesnt exist
       const newBox = box
@@ -110,9 +107,29 @@ export function useSelectorConnect(): UseSelector {
       newBox.endLng = e.lngLat[0]
       newBox.endPosition = actualPosition
       setBox(newBox)
-      console.log(start, newBox)
     }
   }, [box, dragging, mousePos, start])
 
-  return { box, onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp }
+  const onHover = useCallback((e: MapEvent) => {
+    if (e.features && e.features.length > 0) {
+        console.log(typeof e.features[0].id)
+        console.log(e.features)
+        console.log(hoveredStateId)
+        if (hoveredStateId !== null) {
+          map.setFeatureState(
+            { source: 'pointsLayer', id: hoveredStateId },
+            { hover: false }
+          );
+        }
+        setHoveredStateId(e.features[0].id);
+        map.setFeatureState(
+          { source: 'pointsLayer', id: e.features[0].id },
+          { hover: true }
+        );
+        console.log(map.getFeatureState({ source: 'pointsLayer', id: e.features[0].id }))
+      }
+    
+  }, [hoveredStateId, map])
+
+  return { box, onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onHover }
 }

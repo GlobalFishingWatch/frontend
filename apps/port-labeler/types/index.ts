@@ -15,6 +15,7 @@ export type MapCoordinates = {
 }
 
 export declare type PortPositionFeature = {
+  id: number
   type: string
   geometry: {
     type: string

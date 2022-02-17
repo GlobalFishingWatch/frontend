@@ -126,12 +126,24 @@ const style = {
       type: 'circle',
       source: 'pointsLayer',
       layout: {
-
         visibility: 'visible',
       },
       paint: {
         'circle-color': ['get', 'color'],
-        'circle-stroke-width': 1,
+        'circle-stroke-width': [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+          5,
+          1
+        ],
+        'circle-stroke-color': [
+          'case',
+          ['boolean', ['get', 'selected'], false],
+          '#ffffff',
+          ['boolean', ['feature-state', 'hover'], false],
+          '#ffffff',
+          '#002358',
+        ],
       },
     } as LayerSpecification,
   ],

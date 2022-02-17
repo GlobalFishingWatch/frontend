@@ -1,21 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { DATA } from 'features/app/data'
 import { COLORS } from 'data/config'
+import { selectCountry, selectSelectedPoints } from 'features/labeler/labeler.slice'
 import styles from './Table.module.css'
 import { SubareaSelectOption } from './components/SubareaSelector'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
 
-interface TableProps {
-  country?: string
-}
-function Table({
-  country
-}: TableProps) {
+function Table() {
 
   const [subareas, setSubareas] = useState<SubareaSelectOption[]>()
-  
+  const country = useSelector(selectCountry)
   const records = useMemo(() => {
     return DATA.filter(item => item.iso3 === country)
   }, [country])
@@ -79,6 +76,36 @@ function Table({
     })))
   }, [subareas, setSubareas])
 
+  const sortRecords = useMemo(() => {
+    if (orderColumn === 'anchorage') {
+      return records.sort((a, b) => {
+        if (orderDirection === 'desc') {
+          return (a.s2id < b.s2id) ? 1 : -1
+        }
+        return (a.s2id > b.s2id) ? 1 : -1
+      })
+    }
+    if (orderColumn === 'port') {
+      return records.sort((a, b) => {
+        if (orderDirection === 'desc') {
+          return (a.label < b.label) ? 1 : -1
+        }
+        return (a.label > b.label) ? 1 : -1
+      })
+    }
+    if (orderColumn === 'subarea') {
+      return records.sort((a, b) => {
+        if (orderDirection === 'desc') {
+          return (a.sublabel < b.sublabel) ? 1 : -1
+        }
+        return (a.sublabel > b.sublabel) ? 1 : -1
+      })
+    }
+    return records
+  }, [records, orderDirection, orderColumn])
+
+  const selected = useSelector(selectSelectedPoints)
+
   return (
     <table className={styles.table}>
       <thead>
@@ -96,9 +123,10 @@ function Table({
         </tr>
       </thead>
       <tbody>
-        {records && records.map(record => 
+        {sortRecords && sortRecords.map(record => 
           <TableRow
             key={record.s2id}
+            hidden={selected.length && selected.indexOf(record.s2id) === -1}
             ports={ports}
             subareas={subareas ?? []}
             onNewSubareaAdded={onSubareaAdded}

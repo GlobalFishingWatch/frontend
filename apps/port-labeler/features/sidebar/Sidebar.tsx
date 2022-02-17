@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import Table from 'features/table/Table'
+import { selectSelectedPoints } from 'features/labeler/labeler.slice'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
 
@@ -8,13 +10,14 @@ type SidebarProps = {
 }
 
 function Sidebar({ onMenuClick }: SidebarProps) {
-  const [country, setCountry]  = useState<string|null>('URY')
-  
+
+  console.log(useSelector(selectSelectedPoints))
+
   return (
     <div className={styles.container}>
       <div className="scrollContainer">
-        <SidebarHeader onCountryChange={setCountry}/>
-        <Table country={country}></Table>
+        <SidebarHeader/>
+        <Table></Table>
       </div>
     </div>
   )

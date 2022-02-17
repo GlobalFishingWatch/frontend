@@ -1,4 +1,5 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
+import labelerReducer from 'features/labeler/labeler.slice'
 import connectedRoutes from './routes/routes'
 import { routerQueryMiddleware } from './routes/routes.middlewares'
 import titleReducer from './routes/title.reducer'
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   location: location,
   title: titleReducer,
   user: userReducer,
+  labeler: labelerReducer
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK

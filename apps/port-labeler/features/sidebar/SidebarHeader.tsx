@@ -1,8 +1,9 @@
 import React from 'react'
 import Sticky from 'react-sticky-el'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Logo, Select, SelectOption, SubBrands } from '@globalfishingwatch/ui-components'
 import { selectCountries } from 'features/app/data'
+import { selectCountry, setCountry } from 'features/labeler/labeler.slice'
 import styles from './SidebarHeader.module.css'
 
 interface HeaderProps {
@@ -10,6 +11,8 @@ interface HeaderProps {
 }
 function SidebarHeader(props: HeaderProps) {
   const countries: SelectOption[] = useSelector(selectCountries)
+  const country = useSelector(selectCountry)
+  const dispatch = useDispatch()
 
   return (
     <Sticky scrollElement=".scrollContainer">
@@ -20,8 +23,12 @@ function SidebarHeader(props: HeaderProps) {
         <Select
           options={countries}
           onRemove={() => {}}
+          selectedOption={country ? {id: country, label: country} : undefined}
           onSelect={(selected: SelectOption) => {
-            props.onCountryChange(selected.id)
+            dispatch(setCountry(selected.id))
+            if (props.onCountryChange) {
+              props.onCountryChange(selected.id)
+            }
           }}
         />
       </div>
