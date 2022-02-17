@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { intersection } from 'lodash'
 import { event as uaEvent } from 'react-ga'
 import { useSelector, useDispatch } from 'react-redux'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
-import { AUTHORIZED_USER_GROUPS } from 'data/config'
+import { AUTHORIZED_PERMISSION } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchUserThunk,
@@ -25,7 +25,7 @@ export const useUser = () => {
   const refreshToken = GFWAPI.getRefreshToken()
 
   const authorized = useMemo(() => {
-    return user && intersection(user.groups, AUTHORIZED_USER_GROUPS).length > 0
+    return user && checkExistPermissionInList(user.permissions, AUTHORIZED_PERMISSION)
   }, [user])
 
   const logout = useCallback(() => {
