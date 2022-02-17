@@ -19,6 +19,7 @@
     "@math.gl/web-mercator": "^3.5.5",
     "@reduxjs/toolkit": "1.6.2",
     "@turf/bearing": "^6.5.0",
+    "auth-middleware": "https://github.com/GlobalFishingWatch/auth-middleware",
     "classnames": "^2.3.1",
     "dexie": "^3.0.3",
     "downshift": "6.1.7",
