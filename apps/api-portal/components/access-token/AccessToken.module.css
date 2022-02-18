@@ -1,4 +1,5 @@
 table.list {
+  width: 100%;
   margin-top: var(--space-L);
   border-collapse: collapse;
 
@@ -48,9 +49,11 @@ table.list tr:first-child td {
   content: '';
 }
 
-.cellActions {
+.cellActions,
+.cellNoData {
   display: flex;
 }
+
 @media (max-width: 767px) {
   table.list td,
   table.list tr {
@@ -68,14 +71,18 @@ table.list tr:first-child td {
     margin-top: var(--space-S);
   }
 
-  table.list td:not(.cellActions) {
+  table.list td:last-child {
+    padding-bottom: var(--space-S);
+  }
+
+  table.list td:not(.cellActions):not(.cellNoData) {
     border: none;
     position: relative;
     padding-left: 50%;
     text-align: left;
   }
 
-  table.list td:not(.cellActions)::before {
+  table.list td:not(.cellActions):not(.cellNoData)::before {
     font: var(--font-S);
     color: var(--color-secondary-blue);
     content: attr(data-aria-label);
@@ -95,11 +102,8 @@ table.list tr:first-child td {
     text-align: right;
   }
 
-  table.list td:last-child {
-    padding-bottom: var(--space-S);
-  }
-
-  table.list td.cellActions .content {
+  table.list td.cellActions .content,
+  table.list td.cellNoData {
     justify-content: center;
   }
 }

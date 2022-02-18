@@ -1,9 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
+import userApplicationsReducer from 'features/user-applications/user-applications.slice'
 import userReducer from '../features/user/user.slice'
 
 export function makeStore() {
   return configureStore({
-    reducer: { user: userReducer },
+    reducer: { user: userReducer, userApplications: userApplicationsReducer },
   })
 }
 
