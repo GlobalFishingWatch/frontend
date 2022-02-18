@@ -1,7 +1,7 @@
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { t } from 'i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
+import { t } from 'features/i18n/i18n'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
