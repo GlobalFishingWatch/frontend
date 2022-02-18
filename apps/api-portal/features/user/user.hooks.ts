@@ -51,15 +51,32 @@ export const useUser = (redirectToLogin: boolean) => {
     typeof window === 'undefined' ? '' : window.location.toString()
   )
 
-  if (redirectToLogin && !loading && ((!user && !logged) || guestUser) && !loggingIn && loginLink) {
-    router.push(loginLink)
-  }
-
   useEffect(() => {
     if (!logged && (token || refreshToken || accessToken)) {
       dispatch(fetchUserThunk({ guest: false }))
+    } else if (
+      redirectToLogin &&
+      !loading &&
+      ((!user && !logged) || guestUser) &&
+      !loggingIn &&
+      loginLink
+    ) {
+      router.push(loginLink)
     }
-  }, [accessToken, dispatch, logged, refreshToken, token])
+  }, [
+    accessToken,
+    dispatch,
+    guestUser,
+    loading,
+    logged,
+    loggingIn,
+    loginLink,
+    redirectToLogin,
+    refreshToken,
+    router,
+    token,
+    user,
+  ])
 
   return {
     loading,
