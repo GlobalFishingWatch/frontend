@@ -51,7 +51,7 @@ export const useUser = (redirectToLogin: boolean) => {
     typeof window === 'undefined' ? '' : window.location.toString()
   )
 
-  if (redirectToLogin && !loading && !user && !logged && !loggingIn && loginLink) {
+  if (redirectToLogin && !loading && ((!user && !logged) || guestUser) && !loggingIn && loginLink) {
     router.push(loginLink)
   }
 
