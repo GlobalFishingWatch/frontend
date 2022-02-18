@@ -4,8 +4,10 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
 import styles from './access-token-list.module.css'
 
-export function AccessTokenList() {
-  // const { permissions, id: userId } = useSelector(selectUserData)
+/* eslint-disable-next-line */
+export interface AccessTokenListProps {}
+
+export function AccessTokenList(props: AccessTokenListProps) {
   const response = useGetUserApplications()
   const { data, isError, isSuccess, isLoading, isAllowed } = response
   console.log(response)
