@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import cx from 'classnames'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
-import styles from './AccessToken.module.css'
+import styles from './access-token-list.module.css'
 
 export function AccessTokenList() {
   // const { permissions, id: userId } = useSelector(selectUserData)

@@ -1,7 +1,8 @@
 import type { NextPage } from 'next'
 // import Layout from 'components/layout'
 import dynamic from 'next/dynamic'
-import AccessTokenList from 'components/access-token/AccessTokenList'
+import AccessTokenList from 'components/access-token/access-token-list'
+import AccessTokenCreate from 'components/access-token/access-token-create/access-token-create'
 import styles from '../styles/index.module.css'
 
 const Layout = dynamic(() => import('components/layout'), {
@@ -17,6 +18,7 @@ const Home: NextPage = () => {
         <a href="#api-documentation">our documentation</a>
       </p>
       <AccessTokenList></AccessTokenList>
+      <AccessTokenCreate></AccessTokenCreate>
     </Layout>
   )
 }
