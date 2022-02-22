@@ -52,7 +52,7 @@ function AnalysisItem({ blur, loading, graphData, analysisAreaName }: AnalysisIt
         </div>
       ) : (
         <div className={styles.graphContainer}>
-          <p>{t('graph.noDataByArea', 'No data available for the selected area')}</p>
+          <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
         </div>
       )}
     </div>

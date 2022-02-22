@@ -270,9 +270,6 @@
     "convenedBy": "A partnership convened by",
     "supportBy": "Supported by"
   },
-  "graph": {
-    "noDataByArea": "No data available for the selected area"
-  },
   "layer": {
     "add": "Add layer",
     "color_change": "Change color",

@@ -146,7 +146,7 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
         </div>
       ) : (
         <div className={styles.graphContainer}>
-          <p>{t('graph.noDataByArea', 'No data available for the selected area')}</p>
+          <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
         </div>
       )}
       <div className={styles.container}>
