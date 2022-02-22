@@ -1,5 +1,7 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import cx from 'classnames'
+import { formatI18nDate } from 'lib/dates'
+import { UserApplication } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
 import styles from './access-token-list.module.css'
@@ -9,8 +11,19 @@ export interface AccessTokenListProps {}
 
 export function AccessTokenList(props: AccessTokenListProps) {
   const response = useGetUserApplications()
-  const { data, isError, isSuccess, isLoading, isAllowed } = response
-  console.log(response)
+  const { data, isError, isLoading, isAllowed, dispatchDelete } = response
+
+  const onDeleteClick = useCallback(
+    async ({ id }: UserApplication) => {
+      const response = await dispatchDelete({ id })
+      if (response.payload?.error) {
+        console.error(response.payload?.error)
+      } else {
+        console.log(`user application ${id} was removed succesfully`)
+      }
+    },
+    [dispatchDelete]
+  )
 
   return (
     <Fragment>
@@ -26,7 +39,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
             </tr>
           </thead>
           <tbody>
-            {isSuccess &&
+            {!isLoading &&
               data.map((row, index) => (
                 <tr key={`row-token-${index}`}>
                   <td data-aria-label="Application Name" className={styles.cellApplication}>
@@ -40,16 +53,23 @@ export function AccessTokenList(props: AccessTokenListProps) {
                     <IconButton type="default" size="default" icon="copy" />
                   </td>
                   <td data-aria-label="Creation Date" className={styles.cellCreation}>
-                    {row.createdAt}
+                    {formatI18nDate(row.createdAt)}
                   </td>
                   <td data-aria-label="action" className={styles.cellActions}>
                     <div className={styles.content}>
-                      <IconButton type="default" size="default" icon="delete" />
+                      <IconButton
+                        key={`delete-token-${index}`}
+                        type="warning"
+                        size="default"
+                        icon="delete"
+                        className={styles.delete}
+                        onClick={(e) => onDeleteClick(row)}
+                      />
                     </div>
                   </td>
                 </tr>
               ))}
-            {isSuccess && data.length === 0 && (
+            {!isLoading && data.length === 0 && (
               <tr key={`row-token-info`}>
                 <td className={cx([styles.cellNoData])} colSpan={5}>
                   <div className={styles.content}>

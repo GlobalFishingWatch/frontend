@@ -110,6 +110,36 @@ export const createUserApplicationsThunk = createAsyncThunk<
   }
 )
 
+export interface UserApplicationDeleteArguments {
+  id: number
+}
+export const deleteUserApplicationsThunk = createAsyncThunk<
+  UserApplication,
+  UserApplicationDeleteArguments,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'user-applications/delete',
+  async ({ id }: UserApplicationDeleteArguments, { rejectWithValue, signal }) => {
+    try {
+      const url = `/v2/auth/user-applications/${id}`
+      const userApplication = await GFWAPI.fetch<UserApplication>(url, {
+        method: 'DELETE',
+        responseType: 'default',
+        signal,
+      })
+      console.log(userApplication)
+      return { ...userApplication, id }
+    } catch (e: any) {
+      return rejectWithValue({
+        status: e.status || e.code,
+        message: `User Applications - ${e.message}`,
+      })
+    }
+  }
+)
+
 const { slice: userApplicationsSlice, entityAdapter } = createAsyncSlice<
   UserApplicationsState,
   UserApplications
@@ -119,6 +149,7 @@ const { slice: userApplicationsSlice, entityAdapter } = createAsyncSlice<
   thunks: {
     fetchThunk: fetchUserApplicationsThunk,
     createThunk: createUserApplicationsThunk,
+    deleteThunk: deleteUserApplicationsThunk,
   },
 })
 export const selectUserApplicationsIds = (state: AppState) => state.userApplications.ids
