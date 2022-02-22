@@ -1,11 +1,11 @@
 import { useCallback, useState, Fragment } from 'react'
+import cx from 'classnames'
 import {
   Button,
   Checkbox,
   InputText,
   Select,
   SelectOption,
-  Spinner,
 } from '@globalfishingwatch/ui-components'
 import { useCreateUserApplications } from 'features/user-applications/user-applications.hooks'
 import { UserApplicationCreateArguments } from 'features/user-applications/user-applications.slice'
@@ -14,9 +14,18 @@ import styles from './access-token-create.module.css'
 /* eslint-disable-next-line */
 export interface AccessTokenCreateProps {}
 
+const emptyToken: UserApplicationCreateArguments = {
+  description: '',
+  intendedUse: 'non-commercial',
+  name: '',
+  termsAccepted: false,
+  userId: null,
+}
+
 export function AccessTokenCreate(props: AccessTokenCreateProps) {
   const { isAllowed, dispatchCreate, isSaving, isError } = useCreateUserApplications()
-  const [token, setToken] = useState<UserApplicationCreateArguments>()
+
+  const [token, setToken] = useState<UserApplicationCreateArguments>(emptyToken)
   const displayIntendedUse = false
   const displayAcceptTerms = false
 
@@ -40,7 +49,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
     if (response.error) {
       console.error(response.error)
     } else {
-      setToken({} as any)
+      setToken(emptyToken)
     }
   }, [dispatchCreate, token])
 
@@ -50,7 +59,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
         <Fragment>
           <h1>New Token</h1>
           <div className={styles.fieldsRow}>
-            <div className={styles.field}>
+            <div className={cx([styles.field, styles.applicationName])}>
               <InputText
                 id="application_name"
                 label="Application Name"
@@ -61,7 +70,6 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
                 className={styles.input}
                 onChange={(e) => setToken({ ...token, name: e.target.value })}
               />
-              <Button onClick={() => setToken({ name: '', description: '' } as any)}>Clear</Button>
             </div>
             {displayIntendedUse && (
               <div className={styles.field}>
@@ -101,7 +109,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
                 </div>
               </div>
             )}
-            <div className={styles.field}>
+            <div className={cx([styles.field, styles.fieldsColumn])}>
               <label className={styles.label} htmlFor="new-token-description">
                 Description
               </label>
@@ -111,16 +119,22 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
                 className={styles.editor}
                 onChange={(e) => setToken({ ...token, description: e.target.value })}
               />
-              <Button className={styles.createBtn} disabled={isSaving} onClick={create}>
-                {isSaving ? <Spinner size="tiny"></Spinner> : 'Create New Token'}
+              <Button
+                className={styles.createBtn}
+                disabled={!isAllowed}
+                onClick={create}
+                loading={isSaving}
+                tooltip={
+                  isAllowed ? 'Create New Token' : 'Tokens creation is not allowed at this moment'
+                }
+              >
+                Create New Token
               </Button>
             </div>
           </div>
           {isError && (
-            <div>
-              <td className={styles.cellNoData}>
-                <div className={styles.content}>Ups, something went wrong. 🙈</div>
-              </td>
+            <div className={styles.cellNoData}>
+              <div className={styles.content}>Ups, something went wrong. 🙈</div>
             </div>
           )}
         </Fragment>

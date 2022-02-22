@@ -12,6 +12,11 @@
   flex-direction: row;
 }
 
+.fieldsColumn {
+  display: flex;
+  flex-direction: column;
+}
+
 .field {
   font: var(--font-S);
   padding: var(--space-S);
@@ -19,6 +24,10 @@
 
 .field:last-child {
   flex-grow: 2;
+}
+
+.applicationName {
+  min-width: 33%;
 }
 
 .input > input,
@@ -50,7 +59,8 @@
 
 .createBtn {
   margin-top: var(--space-M);
-  width: 100%;
+  width: 50%;
+  align-self: end;
 }
 
 @media (max-width: 767px) {
