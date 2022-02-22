@@ -14,10 +14,10 @@
       },
       "source": "fonte",
       "shipname": "nome da embarcação",
-      "normalized_shipname": "normalized_shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionData": "firstTransmissionData",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "normalized_shipname": "nome da embarcação normalizado",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionData": "primeira data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "full-indonesia-fishing-vessels": {
