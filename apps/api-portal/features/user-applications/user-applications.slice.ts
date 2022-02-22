@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import {
+  AsyncError,
   asyncInitialState,
   AsyncReducer,
   AsyncReducerStatus,
@@ -79,6 +80,36 @@ export const fetchUserApplicationsThunk = createAsyncThunk(
   }
 )
 
+export interface UserApplicationCreateArguments
+  extends Omit<UserApplication, 'id' | 'termAcceptedAt' | 'createdAt' | 'token'> {
+  termsAccepted: boolean
+}
+
+export const createUserApplicationsThunk = createAsyncThunk<
+  UserApplication,
+  UserApplicationCreateArguments,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'user-applications/create',
+  async (newUserApplication: UserApplicationCreateArguments, { rejectWithValue, signal }) => {
+    try {
+      const url = `/v2/auth/user-applications`
+      return await GFWAPI.fetch<UserApplication>(url, {
+        method: 'POST',
+        body: newUserApplication as any,
+        signal,
+      })
+    } catch (e: any) {
+      return rejectWithValue({
+        status: e.status || e.code,
+        message: `User Applications - ${e.message}`,
+      })
+    }
+  }
+)
+
 const { slice: userApplicationsSlice, entityAdapter } = createAsyncSlice<
   UserApplicationsState,
   UserApplications
@@ -87,6 +118,7 @@ const { slice: userApplicationsSlice, entityAdapter } = createAsyncSlice<
   initialState,
   thunks: {
     fetchThunk: fetchUserApplicationsThunk,
+    createThunk: createUserApplicationsThunk,
   },
 })
 export const selectUserApplicationsIds = (state: AppState) => state.userApplications.ids

@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 // import Layout from 'components/layout'
 import dynamic from 'next/dynamic'
-import AccessTokenList from 'components/access-token/access-token-list'
+import AccessTokenList from 'components/access-token/access-token-list/access-token-list'
 import AccessTokenCreate from 'components/access-token/access-token-create/access-token-create'
 import styles from '../styles/index.module.css'
 
