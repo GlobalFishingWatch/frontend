@@ -71,11 +71,9 @@ export interface TileAggregationSourceParams extends BaseTileAggregationParams {
   ['comparison-range']?: TileAggregationComparisonDateRange
 }
 
-export type TileAggregationSourceParamsSerialized = Partial<
-  {
-    [key in keyof TileAggregationSourceParams]: string
-  }
->
+export type TileAggregationSourceParamsSerialized = Partial<{
+  [key in keyof TileAggregationSourceParams]: string
+}>
 
 export type CellAggregationParams = {
   rawValues: string
@@ -96,4 +94,5 @@ export type FeatureParams = {
   numRows: number
   id: number
   addMeta?: boolean
+  h3Index?: string
 }

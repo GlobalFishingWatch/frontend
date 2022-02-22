@@ -6,7 +6,7 @@
       cellCSublayer0Frame0, cellCSublayer1Frame0, ..., cellCSublayer0FrameF, cellCSublayer1FrameF,
 ]
 */
-
+import { h3ToGeoBoundary } from 'h3-js'
 import {
   FEATURE_ROW_INDEX,
   FEATURE_COL_INDEX,
@@ -25,6 +25,12 @@ import {
   SublayerCombinationMode,
   TileAggregationParams,
 } from './types'
+
+const getH3Coordinates = (h3Index: string) => {
+  const boundaries = h3ToGeoBoundary(h3Index)
+  boundaries.push(boundaries[0])
+  return boundaries.map(([lat, lng]) => [lng, lat])
+}
 
 const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {
   const col = cell % numCols
@@ -64,7 +70,14 @@ const getPointFeature = ({ tileBBox, cell, numCols, numRows, addMeta }: FeatureP
   }
 }
 
-const getRectangleFeature = ({ tileBBox, cell, numCols, numRows, addMeta }: FeatureParams): any => {
+const getRectangleFeature = ({
+  tileBBox,
+  cell,
+  numCols,
+  numRows,
+  addMeta,
+  h3Index,
+}: FeatureParams): any => {
   const [minX, minY] = tileBBox
   const { col, row, width, height } = getCellCoords(tileBBox, cell, numCols)
 
@@ -80,12 +93,9 @@ const getRectangleFeature = ({ tileBBox, cell, numCols, numRows, addMeta }: Feat
       }
     : {}
 
-  return {
-    type: 'Feature',
-    properties,
-    geometry: {
-      type: 'Polygon',
-      coordinates: [
+  const coordinates = h3Index
+    ? [getH3Coordinates(h3Index)]
+    : [
         [
           [squareMinX, squareMinY],
           [squareMaxX, squareMinY],
@@ -93,7 +103,17 @@ const getRectangleFeature = ({ tileBBox, cell, numCols, numRows, addMeta }: Feat
           [squareMinX, squareMaxY],
           [squareMinX, squareMinY],
         ],
-      ],
+      ]
+  if (h3Index) {
+    console.log(coordinates)
+  }
+
+  return {
+    type: 'Feature',
+    properties,
+    geometry: {
+      type: 'Polygon',
+      coordinates,
     },
   }
 }
@@ -230,7 +250,11 @@ const err = (msg: string) => {
   throw new Error(`4w-agg::${msg}`)
 }
 
-export function aggregate(intArray: number[], options: TileAggregationParams) {
+export function aggregate(
+  intArray: number[],
+  options: TileAggregationParams,
+  headers: { h3Indexes: string[] }
+) {
   const {
     quantizeOffset = 0,
     tileBBox,
@@ -371,6 +395,7 @@ export function aggregate(intArray: number[], options: TileAggregationParams) {
       currentFeatureMinTimestamp = featureIntArray[CELL_START_INDEX]
       head = currentFeatureMinTimestamp
       const uniqueId = generateUniqueId(x, y, currentFeatureCell)
+      const h3Index = headers.h3Indexes?.[currentFeatureCell]
       const featureParams = {
         geomType,
         tileBBox,
@@ -379,6 +404,7 @@ export function aggregate(intArray: number[], options: TileAggregationParams) {
         numRows,
         id: uniqueId,
         addMeta: true,
+        h3Index,
       }
       currentFeature = getFeature(featureParams)
       if (interactive) {
