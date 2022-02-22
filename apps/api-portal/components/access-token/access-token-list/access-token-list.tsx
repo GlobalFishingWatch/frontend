@@ -1,6 +1,7 @@
 import React, { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { formatI18nDate } from 'lib/dates'
+import { useClipboardNotification } from 'app/clipboard.hooks'
 import { UserApplication } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
@@ -13,6 +14,8 @@ export function AccessTokenList(props: AccessTokenListProps) {
   const response = useGetUserApplications()
   const { data, isError, isLoading, isAllowed, dispatchDelete } = response
 
+  const { copyToClipboard, showClipboardNotification } = useClipboardNotification()
+
   const onDeleteClick = useCallback(
     async ({ id }: UserApplication) => {
       const response = await dispatchDelete({ id })
@@ -23,6 +26,13 @@ export function AccessTokenList(props: AccessTokenListProps) {
       }
     },
     [dispatchDelete]
+  )
+
+  const onCopyClipboardClick = useCallback(
+    (tokenText) => {
+      copyToClipboard(tokenText)
+    },
+    [copyToClipboard]
   )
 
   return (
@@ -49,8 +59,18 @@ export function AccessTokenList(props: AccessTokenListProps) {
                     {row.description}
                   </td>
                   <td data-aria-label="Token" className={styles.cellToken}>
-                    <code>{row.token}</code>
-                    <IconButton type="default" size="default" icon="copy" />
+                    <code>{row.token.substring(0, 250) + '...'}</code>
+                    <IconButton
+                      type="default"
+                      size="default"
+                      icon={showClipboardNotification(row.token) ? 'tick' : 'copy'}
+                      onClick={(e) => onCopyClipboardClick(row.token)}
+                      tooltip={
+                        showClipboardNotification(row.token)
+                          ? 'The token was copied to the clipboard'
+                          : 'Copy to clipboard'
+                      }
+                    />
                   </td>
                   <td data-aria-label="Creation Date" className={styles.cellCreation}>
                     {formatI18nDate(row.createdAt)}
