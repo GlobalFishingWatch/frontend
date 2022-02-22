@@ -270,6 +270,9 @@
     "convenedBy": "Socios fundadores",
     "supportBy": "Apoyado por"
   },
+  "graph": {
+    "noDataByArea": "No data available for the selected area"
+  },
   "layer": {
     "add": "Añadir capa",
     "color_change": "Cambiar el color",
