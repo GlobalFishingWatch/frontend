@@ -270,9 +270,6 @@
     "convenedBy": "Partenaires fondateurs",
     "supportBy": "Avec le soutien de"
   },
-  "graph": {
-    "noDataByArea": "No data available for the selected area"
-  },
   "layer": {
     "add": "Ajouter un calque",
     "color_change": "Modifier la couleur",
