@@ -1,6 +1,6 @@
 {
   "full-chile-fishing-vessels": {
-    "name": "Chile VMS (Fishing Vessels)",
+    "name": "Chile VMS (Embarcações Pesqueiras)",
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
