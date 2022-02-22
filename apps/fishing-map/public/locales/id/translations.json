@@ -270,6 +270,9 @@
     "convenedBy": "Mitra pendiri",
     "supportBy": "Didukung oleh"
   },
+  "graph": {
+    "noDataByArea": "No data available for the selected area"
+  },
   "layer": {
     "add": "Tambahkan layer",
     "color_change": "Ganti warna",
