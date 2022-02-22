@@ -4,16 +4,16 @@
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
-          "industry": "industry",
-          "small_fisheries": "small_fisheries"
+          "industry": "industria",
+          "small_fisheries": "pequena escala"
         }
       },
-      "source": "source",
-      "shipname": "shipname",
+      "source": "fonte",
+      "shipname": "nome da embarcação",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionData": "firstTransmissionData",
