@@ -49,11 +49,20 @@ table.list tr:first-child td {
   content: '';
 }
 
-.cellActions,
+.cellCreation,
+.cellActions {
+  vertical-align: middle;
+}
+
 .cellNoData {
   display: flex;
 }
 
+@media (min-width: 767px) {
+  .cellDescription {
+    width: 30%;
+  }
+}
 @media (max-width: 767px) {
   table.list td,
   table.list tr {
