@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import styles from '../styles/layout.module.css'
-import { APPLICATION_NAME } from './data/config'
+import { APPLICATION_NAME, PATH_BASENAME } from './data/config'
 import Header from './header/header'
 
 const Layout: NextPage = ({ children }) => {
@@ -33,7 +33,7 @@ const Layout: NextPage = ({ children }) => {
           content="You need an acccess token to call Global Fishing Watch API endpoints like Vessel search
           or 4wings activity tiles. Read more about API access tokens in our documentation"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href={`${PATH_BASENAME}/favicon.ico`} />
       </Head>
       <main className={styles.main}>
         <Header title="Access Tokens" user={user} logout={logout} />
