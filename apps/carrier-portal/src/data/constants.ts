@@ -168,15 +168,22 @@ export const ENCOUNTER_RISKS = {
   unmatched: 3,
 }
 
-export const CONTEXT_LAYERS_IDS: { [key in string]: ContextLayerType | 'cp_next_port' } = {
-  eez: ContextLayerType.EEZ, //'eez-areas',
-  // otherRfmos: 'other_rfmos',
-  // nextPort: 'cp_next_port',
-  // rfmo: 'cp_rfmo',
-  // eez: 'eez',
-  // mpant: 'mpant',
-  // bluefinRfmo: 'bluefin_rfmo',
-  // heatmap: 'heatmap',
+type CustomContextLayerType =
+  | 'cp_rfmo'
+  | 'other_rfmos'
+  | 'cp_next_port'
+  | 'mpant'
+  | 'bluefin_rfmo'
+  | 'heatmap'
+type ContextLayerId = ContextLayerType.EEZ | CustomContextLayerType
+export const CONTEXT_LAYERS_IDS: { [key in string]: ContextLayerId } = {
+  eez: ContextLayerType.EEZ,
+  rfmo: 'cp_rfmo',
+  otherRfmos: 'other_rfmos',
+  nextPort: 'cp_next_port',
+  mpant: 'mpant',
+  bluefinRfmo: 'bluefin_rfmo',
+  heatmap: 'heatmap',
 }
 
 export const EVENTS_LAYERS: ContextLayer[] = [

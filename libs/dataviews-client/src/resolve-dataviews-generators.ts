@@ -21,6 +21,7 @@ import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorConfig,
+  AnyGeneratorConfig,
   Interval,
 } from '@globalfishingwatch/layer-composer'
 import type {
@@ -530,7 +531,7 @@ export function getDataviewsGeneratorConfigs(
   dataviews: UrlDataviewInstance[],
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
-) {
+): AnyGeneratorConfig[] {
   const { activityDataviews, detectionDataviews, otherDataviews } = dataviews.reduce(
     (acc, dataview) => {
       if (isActivityDataview(dataview)) {

@@ -157,18 +157,21 @@ export const getClusterLayers = createSelector(
 )
 
 export const getContextualMapLayer = (layerId: string) =>
-  createSelector([getLayers], (layersActive): ContextGeneratorConfig | null => {
+  createSelector([getLayers], (layersActive) => {
     const layer = CONTEXT_LAYERS.find((l) => l.id === layerId)
     if (!layer || !layer.id) return null
 
-    return {
-      id: layer.id,
-      layer: layer.id,
-      type: GeneratorType.Context,
-      color: layer.color,
-      visible: layersActive !== null && layersActive.includes(layerId),
-      tilesUrl: '/v1/datasets/public-eez-areas/user-context-layer-v1/{{z}}/{{x}}/{{y}}',
-    }
+    const visible = layersActive !== null && layersActive.includes(layerId)
+    const layerDataview = CONTEXT_DATAVIEWS.find((l) => l.id === layer.id)
+
+    if (!layerDataview) return null
+
+    const generatorsConfig = getDataviewsGeneratorConfigs(
+      [{ ...layerDataview, config: { ...layerDataview.config, id: layer.id, visible } }],
+      generatorConfig
+    )
+
+    return generatorsConfig?.length > 1 ? generatorsConfig : generatorsConfig[0]
   })
 
 export const getRFMOLayer = createSelector(
@@ -195,13 +198,8 @@ export const getOtherRFMOSLayer = getContextualMapLayer(CONTEXT_LAYERS_IDS.other
 export const getEEZLayer = createSelector(
   [getContextualMapLayer(CONTEXT_LAYERS_IDS.eez), getEezs],
   (layer, selectedEezs) => {
-    if (!layer) return null
-
-    const generatorsConfig = getDataviewsGeneratorConfigs(CONTEXT_DATAVIEWS, generatorConfig)
-    if (generatorsConfig) {
-      return generatorsConfig
-    }
-
+    return layer || null
+    // TODO highlight selected eez with featureState
     return {
       ...layer,
       selectedFeatures: {
@@ -223,7 +221,12 @@ export const getPortsLayer = createSelector(
     hasVesselSelected,
     getMapDownloadVisible,
   ],
-  (layer, eventPorts, vesselSelected, downloadVisible): GlGeneratorConfig => {
+  (
+    layer: ContextGeneratorConfig,
+    eventPorts,
+    vesselSelected,
+    downloadVisible
+  ): GlGeneratorConfig => {
     return {
       id: layer?.id || CONTEXT_LAYERS_IDS.nextPort,
       type: GeneratorType.GL,
@@ -386,9 +389,9 @@ export const getLayerComposerLayers = createSelector(
     background,
     basemap,
     ...contextualLayers,
-    portsLayer,
-    ...clusterLayers,
-    ...trackLayers,
-    ...eventsLayer,
+    // portsLayer,
+    // ...clusterLayers,
+    // ...trackLayers,
+    // ...eventsLayer,
   ]
 )

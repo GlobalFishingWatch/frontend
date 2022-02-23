@@ -1,8 +1,9 @@
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { eezDatasets } from 'data/datasets/datasets'
 
-export const EEZ_DATAVIEW_ID = 'eez'
+export const EEZ_DATAVIEW_ID = ContextLayerType.EEZ
 
 const eezDataview: UrlDataviewInstance = {
   id: EEZ_DATAVIEW_ID,
@@ -10,6 +11,7 @@ const eezDataview: UrlDataviewInstance = {
   app: 'fishing-map',
   description:
     'Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.',
+  category: DataviewCategory.Context,
   config: {
     type: GeneratorType.Context,
     color: '#00FFBC',

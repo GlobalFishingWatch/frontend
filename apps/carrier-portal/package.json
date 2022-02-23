@@ -24,7 +24,7 @@
     "@turf/turf": "^5.1.6",
     "abortcontroller-polyfill": "^1.4.0",
     "classnames": "^2.2.6",
-    "countryflag": "^4.0.1",
+    "countryflag": "^4.1.2",
     "d3-scale": "^3.2.1",
     "date-fns": "^2.10.0",
     "dayjs": "^1.8.20",
