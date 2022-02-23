@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { history } from 'redux-first-router'
+import { back } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
@@ -49,7 +49,7 @@ const Settings: React.FC = (): React.ReactElement => {
     if (selectedOption) {
       setSelectedOption(undefined)
     } else {
-      history().goBack()
+      back()
     }
   }, [selectedOption])
 
