@@ -7,7 +7,7 @@ type ClipboardNotification = {
 
 export function useClipboardNotification(feedbackTime = 10000) {
   const timeoutRef = useRef<any>()
-  const [clipboardNotification, setClipboardNotification] = useState<ClipboardNotification>()
+  const [clipboardNotification, setClipboardNotification] = useState<ClipboardNotification>({})
 
   useEffect(() => {
     return () => {
