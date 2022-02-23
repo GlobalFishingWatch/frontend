@@ -1052,7 +1052,7 @@
     core-js-pure "^3.20.2"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.5", "@babel/runtime@^7.14.6", "@babel/runtime@^7.14.8", "@babel/runtime@^7.15.4", "@babel/runtime@^7.16.3", "@babel/runtime@^7.3.1", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.5", "@babel/runtime@^7.14.6", "@babel/runtime@^7.14.8", "@babel/runtime@^7.15.4", "@babel/runtime@^7.16.3", "@babel/runtime@^7.3.1", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.17.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.0.tgz#b8d142fc0f7664fb3d9b5833fd40dcbab89276c0"
   integrity sha512-etcO/ohMNaNA2UBdaXBBSX/3aEzFMRrVfaPv8Ptc0k+cWpWW0QFiGZ2XnVqQZI1Cf734LbPGmqBKWESfW4x/dQ==
@@ -4970,13 +4970,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/history@*":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@types/history/-/history-5.0.0.tgz#29f919f0c8e302763798118f45b19cab4a886f14"
-  integrity sha512-hy8b7Y1J8OGe6LbAjj3xniQrj3v6lsivCcrmf4TzSgPzLkhIeKgc5IZnT7ReIqmEuodjfO8EYAuoFvIrHi/+jQ==
-  dependencies:
-    history "*"
-
 "@types/history@^4.7.11":
   version "4.7.11"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.7.11.tgz#56588b17ae8f50c53983a524fc3cc47437969d64"
@@ -5341,28 +5334,12 @@
     "@types/react" "*"
     "@types/redux-first-router" "*"
 
-"@types/redux-first-router@*", "@types/redux-first-router@^2.1.5":
+"@types/redux-first-router@*", "@types/redux-first-router@2.1.8":
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/@types/redux-first-router/-/redux-first-router-2.1.8.tgz#4a959968635eb9a9d73c5cbbd01b2b5c26d42eec"
   integrity sha512-hU8HbAJ01pvZB8EOw5XENbpJp5aFvoohCboiCd0PetqqRWLDcUa46psWZpabWqt2kTQ1V/EsmB6qUMpUK9zY5w==
   dependencies:
     "@types/history" "^4.7.11"
-    redux "^4.0.0"
-
-"@types/redux-first-router@2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@types/redux-first-router/-/redux-first-router-2.1.6.tgz#75f7f11f3eb4ea62b2310c22abeefcb055ed21fd"
-  integrity sha512-viqXHI/bSYEYBUL9WX4161b2jgjTPensLCsq6I5L4baY830lbhDEaEFoWOco3gDPdy2LTm63Oh9AIkzZlC8ifA==
-  dependencies:
-    "@types/history" "*"
-    redux "^4.0.0"
-
-"@types/redux-first-router@2.1.7":
-  version "2.1.7"
-  resolved "https://registry.yarnpkg.com/@types/redux-first-router/-/redux-first-router-2.1.7.tgz#557931f309fcf3f40d54c0176fa458ff0e64c888"
-  integrity sha512-ACPrNENDqw1M1v4kkKqJUGw9qNAK+cHgfOAZ6E98f7L5SBmeTD8ru3imGKz/wX9FUY3dawz8Sei4dNo+rJOStQ==
-  dependencies:
-    "@types/history" "*"
     redux "^4.0.0"
 
 "@types/resize-observer-browser@^0.1.6":
@@ -12343,13 +12320,6 @@ hide-powered-by@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hide-powered-by/-/hide-powered-by-1.1.0.tgz#be3ea9cab4bdb16f8744be873755ca663383fa7a"
   integrity sha512-Io1zA2yOA1YJslkr+AJlWSf2yWFkKjvkcL9Ni1XSUqnGLr/qRQe2UI3Cn/J9MsJht7yEVCe0SscY1HgVMujbgg==
-
-history@*:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/history/-/history-5.2.0.tgz#7cdd31cf9bac3c5d31f09c231c9928fad0007b7c"
-  integrity sha512-uPSF6lAJb3nSePJ43hN3eKj1dTWpN9gMod0ZssbFTIsen+WehTmEadgL+kg78xLJFdRfrrC//SavDzmRVdE+Ig==
-  dependencies:
-    "@babel/runtime" "^7.7.6"
 
 hmac-drbg@^1.0.1:
   version "1.0.1"

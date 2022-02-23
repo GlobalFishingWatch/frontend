@@ -91,7 +91,7 @@
     "@types/react-redux": "7.1.20",
     "@types/react-sticky-el": "1.0.3",
     "@types/recoilize": "0.8.0",
-    "@types/redux-first-router": "2.1.6",
+    "@types/redux-first-router": "2.1.8",
     "@types/redux-first-router-link": "1.4.5",
     "@types/shpjs": "3.4.1",
     "@types/viewport-mercator-project": "6.1.2",
