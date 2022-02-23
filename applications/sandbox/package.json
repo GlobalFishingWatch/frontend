@@ -23,7 +23,7 @@
     "react-json-view": "^1.21.3",
     "react-redux": "^7.2.6",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.0",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
