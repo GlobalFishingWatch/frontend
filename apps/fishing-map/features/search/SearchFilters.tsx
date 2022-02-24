@@ -21,7 +21,13 @@ type SearchFiltersProps = {
   datasets: Dataset[]
   className?: string
 }
-const schemaFilterIds: SupportedDatasetSchema[] = ['fleet', 'origin', 'codMarinha', 'targetSpecies']
+const schemaFilterIds: SupportedDatasetSchema[] = [
+  'fleet',
+  'origin',
+  'geartype',
+  'codMarinha',
+  'targetSpecies',
+]
 
 const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDataview => {
   return {
