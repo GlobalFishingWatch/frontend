@@ -13,6 +13,7 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
 
@@ -21,6 +22,18 @@ type SearchFiltersProps = {
   className?: string
 }
 const schemaFilterIds: SupportedDatasetSchema[] = ['fleet', 'origin', 'codMarinha', 'targetSpecies']
+
+const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDataview => {
+  return {
+    config: {
+      datasets: sources?.map(({ id }) => id),
+      filters: Object.fromEntries(
+        schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f.id)])
+      ),
+    },
+    datasets,
+  }
+}
 
 function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
@@ -47,22 +60,28 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
     }
   }, [activeAfterDate, activeBeforeDate, setSearchFilters, start, end])
 
-  const dataview = useMemo(
-    () =>
-      ({
-        config: {
-          datasets: sources?.map(({ id }) => id),
-          filters: Object.fromEntries(
-            schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f.id)])
-          ),
-        },
-        datasets,
-      } as SchemaFieldDataview),
-    [datasets, searchFilters, sources]
-  )
+  const dataview = useMemo(() => {
+    return getSearchDataview(datasets, searchFilters, sources)
+  }, [datasets, searchFilters, sources])
 
   const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
 
+  const onSourceSelect = (filter) => {
+    const newSources = [...(sources || []), filter]
+    setSearchFilters({ sources: newSources })
+    // Recalculates schemaFilters to validate a new source has valid selection
+    // when not valid we need to remove the filter from the search
+    const newDataview = getSearchDataview(datasets, searchFilters, newSources)
+    const newSchemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(newDataview, id))
+    const notCompatibleSchemaFilters = newSchemaFilters.flatMap(({ id, disabled }) => {
+      return disabled && searchFilters[id] !== undefined ? id : []
+    })
+    if (notCompatibleSchemaFilters.length) {
+      notCompatibleSchemaFilters.forEach((schema) => {
+        setSearchFilters({ [schema]: undefined })
+      })
+    }
+  }
   return (
     <div className={cx(className)}>
       {sourceOptions && sourceOptions.length > 0 && (
@@ -72,9 +91,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           options={sourceOptions}
           selectedOptions={sources}
           className={styles.row}
-          onSelect={(filter) => {
-            setSearchFilters({ sources: [...(sources || []), filter] })
-          }}
+          onSelect={onSourceSelect}
           onRemove={(filter, rest) => {
             setSearchFilters({ sources: rest })
           }}
@@ -84,7 +101,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
         />
       )}
       {schemaFilters.map((schemaFilter) => {
-        if (!schemaFilter.active) {
+        if (!showSchemaFilter(schemaFilter)) {
           return null
         }
         const { id, tooltip, disabled, options, optionsSelected } = schemaFilter
