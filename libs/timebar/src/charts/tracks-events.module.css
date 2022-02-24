@@ -10,27 +10,39 @@
 .event {
   transform: translateY(-50%);
   cursor: pointer;
-  background: var(--background-color);
+  /* background: var(--background-color); */
 }
 
-.event:hover,
+/* .event:hover,
 .event.highlighted {
   background: white;
-}
+} */
 
 .fishing {
   border-radius: 99px;
   height: 4px;
   min-width: 4px;
+  background: var(--background-color);
 }
 
 .port_visit {
   z-index: 1;
-  height: 10px;
-  min-width: 10px;
+  height: 8px;
+  min-width: 8px;
   border: 1px solid var(--timebar-main-background-color);
 }
 
+.encounter {
+  height: 0;
+  box-sizing: border-box;
+  border-style: solid;
+  border-image-repeat: round;
+  border-image: url('https://gist.githubusercontent.com/nerik/712b34019316b97a85d5b63d9d53e31f/raw/58c146ff3184df6fcf595f22695d33b91a7ddcc1/encounter.svg');
+  border-width: 4px;
+  border-image-slice: 50% 6 fill;
+  border-image: url('../icons/events-shapes/encounter.svg');
+}
+/* 
 .encounter,
 .loitering {
   height: 12px;
@@ -66,4 +78,4 @@
 .loitering:hover .eventInner,
 .loitering.highlighted .eventInner {
   background: white;
-}
+} */

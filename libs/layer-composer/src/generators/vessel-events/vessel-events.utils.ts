@@ -16,17 +16,27 @@ const EVENTS_COLORS: Dictionary<string> = {
   fishing: '#ffffff',
 }
 
+const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
+  encounter: '#C3C09A',
+  partially: '#F59E84',
+  unmatched: '#CE2C54',
+  loitering: '#A595DD',
+  port: '#99EEFF',
+  port_visit: '#99EEFF',
+  fishing: '#ffffff',
+}
+
 const SHAPE_BY_TYPE: Record<EventType, string> = {
   fishing: 'circle',
-  encounter: 'rhombus',
-  loitering: 'rhombus',
-  port_visit: 'square',
+  encounter: 'encounter',
+  loitering: 'loitering',
+  port_visit: 'port',
   gap: 'circle',
 }
 const SHAPE_SIZE_BY_TYPE: Record<EventType, number> = {
   fishing: 0.4,
-  encounter: 1.5,
-  loitering: 1.5,
+  encounter: 1,
+  loitering: 1,
   port_visit: 1,
   gap: 1,
 }
@@ -72,6 +82,7 @@ export const getVesselEventsGeojson = (
     const lng = event.position.lng || event.position.lon || 0
 
     let color = EVENTS_COLORS[event.type]
+    const colorOutline = EVENTS_COLORS_OUTLINE[event.type]
     if (isEncounterEvent && showAuthorizationStatus) {
       color = getEncounterAuthColor(authorizationStatus)
     } else if (event.type === 'fishing') {
@@ -99,6 +110,7 @@ export const getVesselEventsGeojson = (
         shapeSize: SHAPE_SIZE_BY_TYPE[event.type as EventType],
         shapePriority: event.type === 'fishing' ? 0 : 1,
         color,
+        colorOutline
       },
       geometry: {
         type: 'Point',

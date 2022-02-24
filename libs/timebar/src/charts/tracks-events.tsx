@@ -100,12 +100,12 @@ const TracksEvents = ({
               })}
               style={
                 {
+                  left: `${event.x}px`,
+                  width: `${event.width}px`,
                   '--background-color':
                     useTrackColor || event.type === 'fishing'
                       ? trackEvents.color
                       : event.props?.color || 'white',
-                  left: `${event.x}px`,
-                  width: `${event.width}px`,
                   '--encounterWidth': `${Math.max(12, event.width || 0)}px`,
                   transition: immediate
                     ? 'none'

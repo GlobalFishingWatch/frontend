@@ -112,7 +112,9 @@ class VesselsEventsShapesGenerator {
         paint: {
           'icon-color': getExpression('#ffffff', ['get', 'color']),
           'icon-halo-color': config.color || '#ffffff',
-          'icon-halo-width': getExpression(2, 0),
+          // 'icon-halo-color': '#000',
+          // 'icon-halo-width': getExpression(2, 0),
+          'icon-halo-width': 1,
         },
         layout: {
           'icon-allow-overlap': true,
