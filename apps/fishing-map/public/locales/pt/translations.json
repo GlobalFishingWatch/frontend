@@ -154,7 +154,7 @@
   "download": {
     "activity": "Atividade",
     "activityAction": "Baixar camadas de atividade para esta área",
-    "activityLogin": "Register and login to download activity (free, 2 minutes)",
+    "activityLogin": "Registre-se e faça login para baixar a atividade (anômino, 2 minutos)",
     "area": "Área",
     "daily": "Diário",
     "datasetsNotAllowed": "Você não tem permissão para baixar os seguintes conjuntos de dados:",
@@ -173,7 +173,7 @@
     "track": "Rota da embarcação",
     "trackAction": "Baixar rota da embarcação",
     "trackNotAllowed": "Você não tem permissão para baixar rotas desta fonte",
-    "vesselTrackLogin": "Register and login to download vessel tracks (free, 2 minutes)",
+    "vesselTrackLogin": "Registre-se e faça login para baixar a atividade (anômino, 2 minutos)",
     "yearly": "Anual",
     "yearlyNotAvailable": "Seu intervalo de tempo é menor que 1 ano"
   },
@@ -411,7 +411,7 @@
       "set_longlines": "Espinhel de fundo",
       "squid_jigger": "Pesca de lulas",
       "squid_jiggers": "Petrecho pesca de lulas",
-      "trap net": "Trap Net",
+      "trap net": "Rede de Armadilha",
       "trawlers": "Arrasto",
       "trollers": "Corrico",
       "tuna_purse_seines": "Rede de cerco para atuns"
@@ -427,9 +427,9 @@
     "loadingInfo": "Carregando informações da embarcação",
     "login": "Você precisa <1>login</1> para ver mais detalhes",
     "mainGear": "Petrecho pricipal",
-    "matched": "Match",
+    "matched": "Encontrado",
     "matricula": "Matrícula",
-    "notMatched": "No data matched",
+    "notMatched": "Nenhum dado encontrado",
     "mmsi": "MMSI",
     "nationalId": "Identificação nacional",
     "origin": "Origem",
@@ -440,7 +440,7 @@
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
     "transmission_other": "Transmissões",
-    "unmatched": "unmatched",
+    "unmatched": "não encontrado",
     "unkwownVesselByGeartype": "{{gearType}} desconhecido",
     "vesselType_other": "Tipos de embarcação",
     "widthRange": "Intervalo de largura"
