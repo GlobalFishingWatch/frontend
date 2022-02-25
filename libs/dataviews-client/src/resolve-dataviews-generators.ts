@@ -14,12 +14,14 @@ import {
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
+  DEFAULT_ENVIRONMENT_INTERVALS,
   GeneratorDataviewConfig,
   GeneratorType,
   Group,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorConfig,
+  Interval,
 } from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
@@ -36,15 +38,9 @@ import {
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
 
-const getCommonIntervals = (datasets: Dataset[]) => {
-  const interval = DEFAULT_HEATMAP_INTERVALS.find((interval) =>
-    datasets.every((dataset) => dataset.configuration?.resolution === interval)
-  )
-  return (
-    interval &&
-    DEFAULT_HEATMAP_INTERVALS.slice(DEFAULT_HEATMAP_INTERVALS.findIndex((i) => i === interval))
-  )
-}
+// TODO Maybe this should rather be in dataset.endpoints[id = 4wings-tiles].query[id = interval].options
+// or something similar ??
+const getDatasetAvailableIntervals = (dataset?: Dataset) => dataset?.configuration?.intervals as Interval[]
 
 type DataviewsGeneratorConfigsParams = {
   debug?: boolean
@@ -204,6 +200,7 @@ export function getGeneratorConfig(
         ]
 
         const { url: tilesAPI } = resolveDataviewDatasetResource(dataview, DatasetTypes.Fourwings)
+        const availableIntervals = (dataview.config?.interval ? [dataview.config?.interval] : getDatasetAvailableIntervals(dataset)) || DEFAULT_ENVIRONMENT_INTERVALS
 
         environmentalConfig = {
           sublayers,
@@ -214,7 +211,7 @@ export function getGeneratorConfig(
           interactive: true,
           aggregationOperation: dataview.config?.aggregationOperation || AggregationOperation.Avg,
           breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
-          interval: dataview.config?.interval || 'month',
+          availableIntervals,
         }
       }
 
@@ -365,6 +362,8 @@ export function getDataviewsGeneratorConfigs(
       }
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
       if (!dataview.datasets?.length) return []
+      const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+
       const units = uniq(dataview.datasets?.map((dataset) => dataset.unit))
       if (units.length > 0 && units.length !== 1) {
         throw new Error('Shouldnt have distinct units for the same heatmap layer')
@@ -386,6 +385,8 @@ export function getDataviewsGeneratorConfigs(
             : 'presence'
           : (interactionTypes[0] as HeatmapAnimatedInteractionType)
 
+      const availableIntervals = getDatasetAvailableIntervals(dataset) || DEFAULT_HEATMAP_INTERVALS
+
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
         datasets,
@@ -399,14 +400,12 @@ export function getDataviewsGeneratorConfigs(
           color: dataview?.config?.color,
         },
         interactionType,
+        availableIntervals,
       }
 
       return sublayer
     })
-    const intervalDatasets = activityDataviews
-      .flatMap((dataview) => dataview.datasets || [])
-      .filter((d) => d?.configuration?.resolution)
-    const interval = getCommonIntervals(intervalDatasets)
+
 
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
@@ -414,7 +413,6 @@ export function getDataviewsGeneratorConfigs(
         type: GeneratorType.HeatmapAnimated,
         sublayers: activitySublayers,
         mode: heatmapAnimatedMode,
-        ...(interval && { interval }),
       },
     }
     dataviewsFiltered.push(mergedActivityDataview)
