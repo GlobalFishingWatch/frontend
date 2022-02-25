@@ -7,26 +7,20 @@ type DebugMenu = [boolean, () => void]
 
 type SecretMenuProps = {
   key: string
-  repeatNumber?: number
-  selectMenuActive: (state: RootState) => boolean
   onToggle: () => void
+  repeatNumber?: number
+  selectMenuActive?: (state: RootState) => boolean
 }
 
-const useSecretMenu = ({
+export const useSecretKeyboardCombo = ({
   key,
   onToggle,
   repeatNumber = 7,
-  selectMenuActive,
-}: SecretMenuProps): DebugMenu => {
-  const dispatch = useDispatch()
+}: SecretMenuProps) => {
   const gfwUser = useSelector(isGFWUser)
-  const menuActive = useSelector(selectMenuActive)
   const numTimesDebugKeyDown = useRef(0)
   const debugKeyDownInterval = useRef<number>(0)
 
-  const dispatchToggleMenu = useCallback(() => {
-    dispatch(onToggle())
-  }, [dispatch, onToggle])
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -38,11 +32,11 @@ const useSecretMenu = ({
         }, 2000)
       }
       if (numTimesDebugKeyDown.current === repeatNumber) {
-        dispatchToggleMenu()
+        onToggle()
         numTimesDebugKeyDown.current = 0
       }
     },
-    [dispatchToggleMenu, key, repeatNumber]
+    [onToggle, key, repeatNumber]
   )
 
   useEffect(() => {
@@ -53,8 +47,22 @@ const useSecretMenu = ({
       document.removeEventListener('keydown', onKeyDown)
     }
   }, [gfwUser, onKeyDown])
+}
 
+
+const useSecretMenu = ({
+  key,
+  onToggle,
+  repeatNumber,
+  selectMenuActive = (state: RootState) => false,
+}: SecretMenuProps): DebugMenu => {
+  const dispatch = useDispatch()
+  const dispatchToggleMenu = useCallback(() => {
+    dispatch(onToggle())
+  }, [dispatch, onToggle])
+  useSecretKeyboardCombo({ key, onToggle: dispatchToggleMenu, repeatNumber })
+  const menuActive = useSelector(selectMenuActive)
   return [menuActive, dispatchToggleMenu]
 }
 
-export default useSecretMenu
+export default useSecretMenu 
