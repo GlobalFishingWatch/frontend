@@ -49,6 +49,9 @@
     "context_area_other": "Áreas de contexto",
     "copiedToClipboard": "O link para compartilhar este modo de exibição foi copiado para a área de transferência.",
     "country_other": "países",
+    "date": "Date",
+    "date_one": "Date",
+    "date_other": "Dates",
     "dateRange": "entre {{start}} e {{end}}",
     "days": "Dia",
     "days_one": "Dia",
@@ -126,8 +129,8 @@
     "importing": "Dataset está sendo importado",
     "individualIdField": "Campo de ID individual",
     "latitudeNameField": "Campo latitude",
-    "longitudeNameField": "Campo longitude",
     "login": "Este é um conjunto de dados privado, faça o login para vê-lo",
+    "longitudeNameField": "Campo longitude",
     "new": "Novo dataset",
     "notUploadedYet": "Nenhuma camada de contexto foi carregada ainda",
     "notUploadedYetEnvironment": "Nenhuma camada de ambiente foi carregada ainda",
@@ -348,6 +351,8 @@
     "selected": "selecionado"
   },
   "timebar": {
+    "fitOnThisDates": "Fit time range to these dates",
+    "focusOnThisDay": "Focus time range on this day",
     "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de 10 navios"
   },
   "timebarSettings": {
@@ -429,9 +434,9 @@
     "mainGear": "Petrecho pricipal",
     "matched": "Encontrado",
     "matricula": "Matrícula",
-    "notMatched": "Nenhum dado encontrado",
     "mmsi": "MMSI",
     "nationalId": "Identificação nacional",
+    "notMatched": "Nenhum dado encontrado",
     "origin": "Origem",
     "registeredGearType": "Tipo de petrecho registrado",
     "shiptype": "Tipo de embarcação",
@@ -440,8 +445,8 @@
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
     "transmission_other": "Transmissões",
-    "unmatched": "não encontrado",
     "unkwownVesselByGeartype": "{{gearType}} desconhecido",
+    "unmatched": "não encontrado",
     "vesselType_other": "Tipos de embarcação",
     "widthRange": "Intervalo de largura"
   },
