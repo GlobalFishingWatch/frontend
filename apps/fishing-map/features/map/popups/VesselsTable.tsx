@@ -238,7 +238,7 @@ function VesselsTable({
                         (
                         {hasMultipleDetectionsTimestamps ? (
                           <Tooltip
-                            content={t('timebar.fitOnThisDates', 'Fit time range to this dates')}
+                            content={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
                           >
                             <button
                               className={styles.timestampBtn}
