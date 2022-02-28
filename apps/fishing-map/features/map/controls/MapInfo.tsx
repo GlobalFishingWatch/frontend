@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
@@ -17,14 +17,29 @@ export const pickDateFormatByRange = (start: string, end: string): DateTimeForma
   return timeΔ <= A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
 }
 
+export const TimeRangeDates = ({
+  start,
+  end,
+  format = pickDateFormatByRange(start, end),
+}: {
+  start: string
+  end: string
+  format?: DateTimeFormatOptions
+}) => {
+  return (
+    <Fragment>
+      <I18nDate date={start} format={format} /> - <I18nDate date={end} format={format} />
+    </Fragment>
+  )
+}
+
 export const TimelineDatesRange = () => {
   const { start, end } = useTimerangeConnect()
   if (!start || !end) return null
 
-  const dateFormat = pickDateFormatByRange(start, end)
   return (
     <div className={styles.dateRange}>
-      <I18nDate date={start} format={dateFormat} /> - <I18nDate date={end} format={dateFormat} />
+      <TimeRangeDates start={start} end={end} />
     </div>
   )
 }
