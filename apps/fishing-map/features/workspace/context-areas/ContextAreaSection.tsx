@@ -9,25 +9,23 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
-import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
-  const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const { dispatchSetDrawMode } = useMapDrawConnect()
   const { dispatchQueryParams } = useLocationConnect()
 
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectContextAreasDataviews)
-  const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onDrawClick = useCallback(() => {
@@ -35,11 +33,13 @@ function ContextAreaSection(): React.ReactElement {
     dispatchQueryParams({ sidebarOpen: false })
     uaEvent({
       category: 'Reference layer',
-      action: `Draw a custom reference layer - Start`
+      action: `Draw a custom reference layer - Start`,
     })
   }, [dispatchQueryParams, dispatchSetDrawMode])
 
-  const onAddClick = useCallback(() => {
+  const [newDatasetOpen, setNewDatasetOpen] = useState(false)
+  const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
+  const onAdd = useCallback(() => {
     uaEvent({
       category: 'Reference layer',
       action: `Open panel to upload new reference layer`,
@@ -103,7 +103,7 @@ function ContextAreaSection(): React.ReactElement {
                 tooltip={t('dataset.addContext', 'Add context dataset')}
                 tooltipPlacement="top"
                 className="print-hidden"
-                onClick={onAddClick}
+                onClick={onAdd}
               />
             </TooltipContainer>
           </Fragment>

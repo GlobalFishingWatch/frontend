@@ -152,7 +152,8 @@
     "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
-    "uploadPublic": "Allow other users to see this dataset when you share a workspace"
+    "uploadPublic": "Allow other users to see this dataset when you share a workspace",
+    "uploadYourOwn": "Upload your own"
   },
   "download": {
     "activity": "Activity",

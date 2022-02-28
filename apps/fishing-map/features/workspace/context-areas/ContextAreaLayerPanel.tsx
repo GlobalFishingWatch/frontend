@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
+import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
+import { Tooltip, ColorBarOption, Modal } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
+import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
-import { PRIVATE_SUFIX } from 'data/config'
+import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -23,11 +23,18 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
+const DATASOURCE_WARNING = ['public-eez-land', 'public-mpa-all']
+
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
+  const onDataWarningModalClose = useCallback(() => {
+    setModalDataWarningOpen(false)
+  }, [setModalDataWarningOpen])
   const guestUser = useSelector(isGuestUser)
+  const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -111,6 +118,35 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           {isUserLayer && <Remove dataview={dataview} />}
         </div>
       </div>
+      {layerActive && DATASOURCE_WARNING.includes(dataset?.id) && (
+        <div className={cx(styles.properties, styles.dataWarning)}>
+          <div>
+            {t(
+              `datasets:${dataset?.id}.dataWarning` as any,
+              'This platform uses a reference layer from an external source.'
+            )}
+          </div>
+          <div className={styles.dataWarningLinks}>
+            <button onClick={onAddNewClick}>{t('dataset.uploadYourOwn', 'Upload your own')}</button>{' '}
+            |{' '}
+            <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
+              {t('common.learnMore', 'Learn more')}
+            </button>
+            <Modal
+              appSelector={ROOT_DOM_ELEMENT}
+              title={title}
+              isOpen={modalDataWarningOpen}
+              onClose={onDataWarningModalClose}
+              contentClassName={styles.modalContent}
+            >
+              {t(
+                `datasets:${dataset?.id}.dataWarningDetail` as any,
+                'This platform uses a reference layer from an external source.'
+              )}
+            </Modal>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
