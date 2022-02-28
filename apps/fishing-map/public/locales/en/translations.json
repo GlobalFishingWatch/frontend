@@ -49,6 +49,9 @@
     "context_area_other": "Reference layers",
     "copiedToClipboard": "The link to share this workspace has been copied to your clipboard.",
     "country_other": "countries",
+    "date": "Date",
+    "date_one": "Date",
+    "date_other": "Dates",
     "dateRange": "between {{start}} and {{end}}",
     "days": "Day",
     "days_one": "Day",
@@ -126,8 +129,8 @@
     "importing": "Dataset is being imported",
     "individualIdField": "Individual ID field",
     "latitudeNameField": "Latitude field",
-    "longitudeNameField": "Longitude field",
     "login": "This is a private dataset, login to see it",
+    "longitudeNameField": "Longitude field",
     "new": "New dataset",
     "notUploadedYet": "No reference layers uploaded yet.",
     "notUploadedYetEnvironment": "No environment layers uploaded yet",
@@ -348,6 +351,8 @@
     "selected": "selected"
   },
   "timebar": {
+    "fitOnThisDates": "Fit time range to these dates",
+    "focusOnThisDay": "Focus time range on this day",
     "maxTracksNumber": "Track detail not available for more than 10 vessels."
   },
   "timebarSettings": {
@@ -429,9 +434,9 @@
     "mainGear": "Main gear",
     "matched": "Matching",
     "matricula": "Matricula",
-    "notMatched": "No data matched",
     "mmsi": "MMSI",
     "nationalId": "National ID",
+    "notMatched": "No data matched",
     "origin": "Origin",
     "registeredGearType": "Registered gear type",
     "shiptype": "Ship type",
@@ -440,8 +445,8 @@
     "target_species": "Target species",
     "targetSpecies": "Target species",
     "transmission_other": "Transmissions",
-    "unmatched": "unmatched",
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
+    "unmatched": "unmatched",
     "vesselType_other": "Vessel types",
     "widthRange": "Width range"
   },
