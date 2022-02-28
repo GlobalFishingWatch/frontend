@@ -29,6 +29,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { t } from 'features/i18n/i18n'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
@@ -248,9 +249,7 @@ function VesselsTable({
                                 })
                               }}
                             >
-                              <I18nDate date={start} />
-                              {' - '}
-                              <I18nDate date={end} />
+                              <TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />
                             </button>
                           </Tooltip>
                         ) : (
