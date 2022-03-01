@@ -337,9 +337,9 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   datasetsEnd?: string
   interactive?: boolean
   /**
-   * Defines a fixed or a supported list of intervals in an Array format
+   * Defines a supported list of intervals in an Array format
    */
-  interval?: Interval | Interval[]
+  availableIntervals?: Interval[]
   aggregationOperation?: AggregationOperation
   breaksMultiplier?: number
 }
@@ -433,6 +433,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   breaks?: number[]
   legend?: GeneratorLegend
   interactionType?: HeatmapAnimatedInteractionType
+  availableIntervals?: Interval[]
 }
 
 // ---- Heatmap Generator color ramps types

@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { replace } from 'redux-first-router'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { WorkspaceCategories } from 'data/workspaces'
@@ -13,7 +14,7 @@ import EditorMenu from 'features/editor/EditorMenu'
 import DownloadActivityModal from 'features/download/DownloadActivityModal'
 import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import useSecretMenu from 'hooks/secret-menu.hooks'
+import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import DebugMenu from 'features/debug/DebugMenu'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
 import BigQueryMenu from 'features/bigquery/BigQuery'
@@ -40,6 +41,13 @@ const BigQueryMenuConfig = {
   selectMenuActive: selectBigQueryActive,
 }
 
+const ResetWorkspaceConfig = {
+  key: 'w',
+  onToggle: () => {
+    replace(window.location.origin)
+  },
+}
+
 const AppModals = () => {
   const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
   const readOnly = useSelector(selectReadOnly)
@@ -47,6 +55,7 @@ const AppModals = () => {
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
+  useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
 
@@ -93,7 +102,7 @@ const AppModals = () => {
       {gfwUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title="Big query datasets creation"
+          title="Big query datasets creation 🧠"
           isOpen={bigqueryActive}
           onClose={dispatchBigQueryMenu}
         >

@@ -19,9 +19,10 @@ export * from './heatmap/util'
 export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
 export { DEFAULT_BACKGROUND_COLOR } from './background/config'
 export { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/config'
-export { COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
 export {
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
   DEFAULT_HEATMAP_INTERVALS,
+  DEFAULT_ENVIRONMENT_INTERVALS,
   TEMPORALGRID_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from './heatmap/config'

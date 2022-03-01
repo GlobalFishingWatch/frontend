@@ -2,11 +2,11 @@
   "fishing-map": {
     "cloudbuildTaskId": "ui-fishing-map-autodeploy",
     "auto": false,
-    "watch": ["apps/fishing-map/**/*"]
+    "watch": ["apps/fishing-map/**/*", "yarn.lock"]
   },
   "vessel-history": {
     "cloudbuildTaskId": "ui-vessel-viewer-autodeploy",
     "auto": false,
-    "watch": ["apps/vessel-history/**/*"]
+    "watch": ["apps/vessel-history/**/*", "yarn.lock"]
   }
 }
