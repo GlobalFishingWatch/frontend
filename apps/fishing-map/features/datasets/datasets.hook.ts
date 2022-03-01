@@ -202,7 +202,7 @@ export const useAutoRefreshImportingDataset = (
 
 export const useAddDataset = ({datasetCategory, onSelect}: NewDatasetTooltipProps) => {
   const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
-  return async () => {
+  return () => {
     if (datasetCategory === DatasetCategory.Context) {
       uaEvent({
         category: 'Reference layer',
