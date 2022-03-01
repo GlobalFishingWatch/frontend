@@ -41,6 +41,10 @@ table.list tr:first-child td {
   display: flex;
 }
 
+.blur {
+  filter: blur(0.5rem);
+}
+
 .content {
   display: flex;
 }

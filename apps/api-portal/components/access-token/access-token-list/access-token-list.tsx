@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { formatI18nDate } from 'lib/dates'
 import { useClipboardNotification } from 'app/clipboard.hooks'
@@ -13,7 +13,17 @@ export interface AccessTokenListProps {}
 export function AccessTokenList(props: AccessTokenListProps) {
   const response = useGetUserApplications()
   const { data, isError, isLoading, isAllowed, dispatchDelete } = response
+  const [tokenVisibility, setTokenVisibility] = useState<{ [id: string]: boolean }>({})
 
+  const defaultTokenVisibility = false
+  const toggleTokenVisibility = useCallback(
+    (id: string) =>
+      setTokenVisibility({
+        ...tokenVisibility,
+        [id]: !(tokenVisibility[id] || defaultTokenVisibility),
+      }),
+    [defaultTokenVisibility, tokenVisibility]
+  )
   const { copyToClipboard, showClipboardNotification } = useClipboardNotification()
 
   const onDeleteClick = useCallback(
@@ -59,18 +69,31 @@ export function AccessTokenList(props: AccessTokenListProps) {
                     {row.description}
                   </td>
                   <td data-aria-label="Token" className={styles.cellToken}>
-                    <code>{row.token.substring(0, 250) + '...'}</code>
-                    <IconButton
-                      type="default"
-                      size="default"
-                      icon={showClipboardNotification(row.token) ? 'tick' : 'copy'}
-                      onClick={(e) => onCopyClipboardClick(row.token)}
-                      tooltip={
-                        showClipboardNotification(row.token)
-                          ? 'The token was copied to the clipboard'
-                          : 'Copy to clipboard'
-                      }
-                    />
+                    <code className={!tokenVisibility[`${row.id}`] && styles.blur}>
+                      {tokenVisibility[`${row.id}`]
+                        ? row.token
+                        : row.token.substring(0, 100) + '...'}
+                    </code>
+                    <div>
+                      <IconButton
+                        type="default"
+                        size="default"
+                        icon={tokenVisibility[`${row.id}`] ? 'visibility-off' : 'visibility-on'}
+                        onClick={() => toggleTokenVisibility(`${row.id}`)}
+                        tooltip={tokenVisibility[`${row.id}`] ? 'Hide token' : 'Display token'}
+                      />
+                      <IconButton
+                        type="default"
+                        size="default"
+                        icon={showClipboardNotification(row.token) ? 'tick' : 'copy'}
+                        onClick={(e) => onCopyClipboardClick(row.token)}
+                        tooltip={
+                          showClipboardNotification(row.token)
+                            ? 'The token was copied to the clipboard'
+                            : 'Copy to clipboard'
+                        }
+                      />
+                    </div>
                   </td>
                   <td data-aria-label="Creation Date" className={styles.cellCreation}>
                     {formatI18nDate(row.createdAt)}
