@@ -145,6 +145,10 @@
   color: var(--color-danger-red);
 }
 
+.modalContent a {
+  text-decoration: underline;
+}
+
 @media print {
   .tagList > li > div {
     border: var(--border);
