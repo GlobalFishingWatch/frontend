@@ -1,6 +1,8 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment } from 'react'
 import { UserData } from '@globalfishingwatch/api-types'
-import { Header as UIHeader } from '@globalfishingwatch/ui-components'
+import { Header as UIHeader, HeaderMenuItem, IconButton } from '@globalfishingwatch/ui-components'
+import { MenuItem } from '@globalfishingwatch/ui-components/header/Header.links'
 import styles from './header.module.css'
 
 interface HeaderProps {
@@ -9,10 +11,36 @@ interface HeaderProps {
   logout?: () => void
 }
 export function Header({ title = '', user, logout }: HeaderProps) {
+  const userInitials = [user?.firstName.slice(0, 1), user?.lastName.slice(0, 1)].join('')
+  const userMenuItem: MenuItem = user && {
+    className: styles.userMenuItem,
+    label: (
+      <Fragment>
+        <IconButton type="solid" className={styles.userInitials}>
+          {userInitials.toLocaleUpperCase()}
+        </IconButton>
+      </Fragment>
+    ),
+    childs: [
+      {
+        label: (
+          <Fragment>
+            <p className={styles.userFullname}>{`${user.firstName} ${user.lastName || ''}`}</p>
+            <p className={styles.secondary}>{user.email}</p>
+          </Fragment>
+        ),
+      },
+      {
+        className: styles.logoutLink,
+        onClick: logout,
+        label: 'Logout',
+      },
+    ],
+  }
   return (
     <Fragment>
       <div className={styles.Header}>
-        <UIHeader />
+        <UIHeader>{user && <HeaderMenuItem index={100} item={userMenuItem} />}</UIHeader>
         <div className={styles.titleCover}>
           <h1 className={styles.title}>{title}</h1>
         </div>

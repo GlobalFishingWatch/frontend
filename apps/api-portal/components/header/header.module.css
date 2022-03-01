@@ -11,20 +11,8 @@
   font-family: Roboto, sans-serif !important;
 }
 
-.titleCover {
-  /* background: url('./header-bg.jpg') center center no-repeat; */
-
-  /* background-size: cover; */
-
-  /* width: 100%; */
-
-  /* height: 400px; */
-}
-
 .titleCover .title {
   font: var(--GFW-font-XXL);
-
-  /* color: var(--white); */
   width: 100%;
   max-width: var(--desktop-max-width);
   font-weight: 400;
@@ -32,18 +20,41 @@
   margin: 0 auto;
 }
 
-@media (max-width: 767px) {
+.userInitials {
+  font-weight: 600;
+}
+
+.userFullname {
+  font-weight: bolder;
+}
+
+.logoutLink {
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 860px) {
+  .userMenuItem > ul.userMenuItem,
+  .userMenuItem > ul.userMenuItem > li {
+    min-width: fit-content !important;
+  }
+}
+
+@media (max-width: 860px) {
   .Header {
     height: auto;
   }
 
   .titleCover {
-    /* height: 250px; */
     background-position-x: left;
   }
 
   .titleCover .title {
     font-size: 32px;
     padding: 6rem 2rem 0;
+  }
+
+  ul li.userMenuItem > a {
+    padding-top: var(--space-XS) !important;
+    padding-bottom: var(--space-XS) !important;
   }
 }
