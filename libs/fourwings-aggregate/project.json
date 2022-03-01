@@ -4,6 +4,26 @@
   "projectType": "library",
   "tags": [],
   "targets": {
+    "start": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/fourwings-aggregate",
+        "tsConfig": "libs/fourwings-aggregate/tsconfig.lib.json",
+        "project": "libs/fourwings-aggregate/package.json",
+        "entryFile": "libs/fourwings-aggregate/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "watch": true,
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/fourwings-aggregate/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
     "build": {
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
