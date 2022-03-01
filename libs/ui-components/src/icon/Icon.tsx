@@ -64,6 +64,8 @@ import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as Upload } from '../assets/icons/upload.svg'
 import { ReactComponent as User } from '../assets/icons/user.svg'
 import { ReactComponent as ViewOnMap } from '../assets/icons/view-on-map.svg'
+import { ReactComponent as VisibilityOff } from '../assets/icons/visibility-off.svg'
+import { ReactComponent as VisibilityOn } from '../assets/icons/visibility-on.svg'
 import { ReactComponent as Warning } from '../assets/icons/warning.svg'
 import styles from './Icon.module.css'
 
@@ -130,6 +132,8 @@ export const IconComponents = {
   upload: Upload,
   user: User,
   'view-on-map': ViewOnMap,
+  'visibility-off': VisibilityOff,
+  'visibility-on': VisibilityOn,
   warning: Warning,
 }
 
