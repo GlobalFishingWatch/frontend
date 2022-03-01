@@ -1022,7 +1022,7 @@
     }
   },
   "public-eez-areas": {
-    "name": "EEZs (Source: Marine Regions)",
+    "name": "EEZs",
     "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
@@ -1032,7 +1032,7 @@
     "schema": {}
   },
   "public-eez-land": {
-    "name": "EEZs (Source: Marine Regions)",
+    "name": "EEZs",
     "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
@@ -1676,7 +1676,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs (Source: WDPA)",
+    "name": "MPAs",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "schema": {}
   },
@@ -1857,7 +1857,7 @@
     "schema": {}
   },
   "public-wdpa-may-2021-marine": {
-    "name": "MPAs (Source: WDPA)",
+    "name": "MPAs",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "schema": {}
   },
