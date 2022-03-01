@@ -118,7 +118,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   datasetsEnd: DateTime.now().toUTC().toISO(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
-  interval: DEFAULT_HEATMAP_INTERVALS,
+  availableIntervals: DEFAULT_HEATMAP_INTERVALS,
   aggregationOperation: AggregationOperation.Sum,
   breaksMultiplier: VALUE_MULTIPLIER,
 }
