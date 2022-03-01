@@ -49,6 +49,9 @@
     "context_area_other": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
     "country_other": "paises",
+    "date": "Date",
+    "date_one": "Date",
+    "date_other": "Dates",
     "dateRange": "entre {{start}} y {{end}}",
     "days": "días",
     "days_one": "día",
@@ -126,8 +129,8 @@
     "importing": "Se están importando los datos",
     "individualIdField": "Campo ID Individual",
     "latitudeNameField": "Campo Latitud",
-    "longitudeNameField": "Campo de longitud",
     "login": "Conjunto de datos privado, inicie sesión para verlo",
+    "longitudeNameField": "Campo de longitud",
     "new": "Nuevos datos",
     "notUploadedYet": "No hay capas de referencia subidas aún",
     "notUploadedYetEnvironment": "No hay capas de entorno subidas aún",
@@ -149,7 +152,18 @@
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir datos (gratis y toma 2 minutos)",
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental",
-    "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo"
+    "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
+    "uploadYourOwn": "Upload your own",
+    "datasetSpecific": {
+      "public-eez-land": {
+        "dataWarning": "This platform uses EEZ reference layers from Marine Regions",
+        "dataWarningDetail": "This platform uses reference layers (shapefiles) from Marine Regions for exclusive economic zones and boundaries. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.marineregions.org'>www.marineregions.org</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+      },
+      "public-mpa-all": {
+        "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
+        "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+      }
+    }
   },
   "download": {
     "activity": "Actividad",
@@ -348,6 +362,8 @@
     "selected": "seleccionado"
   },
   "timebar": {
+    "fitOnThisDates": "Fit time range to these dates",
+    "focusOnThisDay": "Focus time range on this day",
     "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
   },
   "timebarSettings": {
@@ -429,9 +445,9 @@
     "mainGear": "Equipo principal",
     "matched": "Coincidencia con AIS",
     "matricula": "Matrícula",
-    "notMatched": "No hay datos coincidentes",
     "mmsi": "MMSI",
     "nationalId": "Identificación Nacional",
+    "notMatched": "No hay datos coincidentes",
     "origin": "Origen",
     "registeredGearType": "Arte de pesca registrado",
     "shiptype": "Tipo de buque",
@@ -440,8 +456,8 @@
     "target_species": "Especies objetivo",
     "targetSpecies": "Especies objetivo",
     "transmission_other": "Transmisión",
-    "unmatched": "Sin coincidencia con AIS",
     "unkwownVesselByGeartype": "{{gearType}} desconocida",
+    "unmatched": "Sin coincidencia con AIS",
     "vesselType_other": "Tipos de embarcaciones",
     "widthRange": "Rango de ancho"
   },

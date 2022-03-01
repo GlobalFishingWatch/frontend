@@ -49,6 +49,9 @@
     "context_area_other": "Áreas de contexto",
     "copiedToClipboard": "O link para compartilhar este modo de exibição foi copiado para a área de transferência.",
     "country_other": "países",
+    "date": "Date",
+    "date_one": "Date",
+    "date_other": "Dates",
     "dateRange": "entre {{start}} e {{end}}",
     "days": "Dia",
     "days_one": "Dia",
@@ -126,8 +129,8 @@
     "importing": "Dataset está sendo importado",
     "individualIdField": "Campo de ID individual",
     "latitudeNameField": "Campo latitude",
-    "longitudeNameField": "Campo longitude",
     "login": "Este é um conjunto de dados privado, faça o login para vê-lo",
+    "longitudeNameField": "Campo longitude",
     "new": "Novo dataset",
     "notUploadedYet": "Nenhuma camada de contexto foi carregada ainda",
     "notUploadedYetEnvironment": "Nenhuma camada de ambiente foi carregada ainda",
@@ -149,12 +152,23 @@
     "uploadLogin": "Você precisa <1>login</1> para enviar conjuntos de dados",
     "uploadNewContext": "Carregar nova camada de referência",
     "uploadNewEnviroment": "Carregar novo conjunto de dados no ambiente",
-    "uploadPublic": "Permitir que outros usuários vejam este conjunto de dados quando você compartilha uma área de trabalho"
+    "uploadPublic": "Permitir que outros usuários vejam este conjunto de dados quando você compartilha uma área de trabalho",
+    "uploadYourOwn": "Upload your own",
+    "datasetSpecific": {
+      "public-eez-land": {
+        "dataWarning": "This platform uses EEZ reference layers from Marine Regions",
+        "dataWarningDetail": "This platform uses reference layers (shapefiles) from Marine Regions for exclusive economic zones and boundaries. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.marineregions.org'>www.marineregions.org</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+      },
+      "public-mpa-all": {
+        "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
+        "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+      }
+    }
   },
   "download": {
     "activity": "Atividade",
     "activityAction": "Baixar camadas de atividade para esta área",
-    "activityLogin": "Register and login to download activity (free, 2 minutes)",
+    "activityLogin": "Registre-se e faça login para baixar a atividade (anômino, 2 minutos)",
     "area": "Área",
     "daily": "Diário",
     "datasetsNotAllowed": "Você não tem permissão para baixar os seguintes conjuntos de dados:",
@@ -173,7 +187,7 @@
     "track": "Rota da embarcação",
     "trackAction": "Baixar rota da embarcação",
     "trackNotAllowed": "Você não tem permissão para baixar rotas desta fonte",
-    "vesselTrackLogin": "Register and login to download vessel tracks (free, 2 minutes)",
+    "vesselTrackLogin": "Registre-se e faça login para baixar a atividade (anômino, 2 minutos)",
     "yearly": "Anual",
     "yearlyNotAvailable": "Seu intervalo de tempo é menor que 1 ano"
   },
@@ -348,6 +362,8 @@
     "selected": "selecionado"
   },
   "timebar": {
+    "fitOnThisDates": "Fit time range to these dates",
+    "focusOnThisDay": "Focus time range on this day",
     "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de 10 navios"
   },
   "timebarSettings": {
@@ -411,7 +427,7 @@
       "set_longlines": "Espinhel de fundo",
       "squid_jigger": "Pesca de lulas",
       "squid_jiggers": "Petrecho pesca de lulas",
-      "trap net": "Trap Net",
+      "trap net": "Rede de Armadilha",
       "trawlers": "Arrasto",
       "trollers": "Corrico",
       "tuna_purse_seines": "Rede de cerco para atuns"
@@ -427,11 +443,11 @@
     "loadingInfo": "Carregando informações da embarcação",
     "login": "Você precisa <1>login</1> para ver mais detalhes",
     "mainGear": "Petrecho pricipal",
-    "matched": "Match",
+    "matched": "Encontrado",
     "matricula": "Matrícula",
-    "notMatched": "No data matched",
     "mmsi": "MMSI",
     "nationalId": "Identificação nacional",
+    "notMatched": "Nenhum dado encontrado",
     "origin": "Origem",
     "registeredGearType": "Tipo de petrecho registrado",
     "shiptype": "Tipo de embarcação",
@@ -440,8 +456,8 @@
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
     "transmission_other": "Transmissões",
-    "unmatched": "unmatched",
     "unkwownVesselByGeartype": "{{gearType}} desconhecido",
+    "unmatched": "não encontrado",
     "vesselType_other": "Tipos de embarcação",
     "widthRange": "Intervalo de largura"
   },
