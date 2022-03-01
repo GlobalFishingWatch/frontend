@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
-import { batch, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
 import { isGuestUser } from 'features/user/user.slice'
-import { useDatasetModalConnect, useAddDataviewFromDatasetToWorkspace } from './datasets.hook'
+import { useAddDataviewFromDatasetToWorkspace, useAddDataset } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
   fetchAllDatasetsThunk,
@@ -17,7 +16,7 @@ import {
   selectDatasetsStatus,
 } from './datasets.slice'
 
-interface NewDatasetTooltipProps {
+export interface NewDatasetTooltipProps {
   datasetCategory: DatasetCategory
   onSelect?: (dataset?: Dataset) => void
 }
@@ -25,7 +24,6 @@ interface NewDatasetTooltipProps {
 function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const datasets = useSelector(selectUserDatasetsNotUsed(datasetCategory))
   const guestuser = useSelector(isGuestUser)
@@ -38,22 +36,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
     }
   }, [allDatasetsRequested, dispatch])
 
-  const onAddNewClick = async () => {
-    if (datasetCategory === DatasetCategory.Context) {
-      uaEvent({
-        category: 'Reference layer',
-        action: 'Start upload reference layer flow',
-        label: datasetCategory,
-      })
-    }
-    batch(() => {
-      dispatchDatasetModal('new')
-      dispatchDatasetCategory(datasetCategory)
-    })
-    if (onSelect) {
-      onSelect()
-    }
-  }
+  const onAddNewClick = useAddDataset({ onSelect, datasetCategory })
 
   const onSelectClick = async (dataset: any) => {
     addDataviewFromDatasetToWorkspace(dataset)
