@@ -12,9 +12,11 @@ type ViirsMatchTooltipRowProps = {
 function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
   // Avoid showing not matched detections
-  const matchedVessels = (feature.vesselsInfo?.vessels || []).filter((v) => v.id !== null)
+  const matchedVessels = feature.vesselsInfo?.vessels || []
   const matchedDetections = matchedVessels
-    ? matchedVessels.reduce((acc, vessel) => acc + vessel.detections, 0)
+    ? matchedVessels
+        .filter((v) => v.id !== null)
+        .reduce((acc, vessel) => acc + vessel.detections, 0)
     : 0
   const featureVesselsFilter = {
     ...feature,
