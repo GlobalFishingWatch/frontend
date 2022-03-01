@@ -14,6 +14,7 @@
   "scripts": {
     "start:fishing-map": "nx start fishing-map",
     "start:vessel-history": "nx start vessel-history",
+    "start:tile-inspector": "nx start tile-inspector",
     "build": "nx build",
     "test": "nx test",
     "dist": "nx run-many --target=dist --all --with-deps",
