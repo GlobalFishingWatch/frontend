@@ -53,8 +53,7 @@
     padding: 6rem 2rem 0;
   }
 
-  ul li.userMenuItem > a {
-    padding-top: var(--space-XS) !important;
-    padding-bottom: var(--space-XS) !important;
+  ul li.userMenuItem > div {
+    padding: var(--space-XS) var(--space-M);
   }
 }
