@@ -1270,10 +1270,10 @@
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/maplibre-gl@2.1.1-gfw.10":
-  version "2.1.1-gfw.10"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.1.1-gfw.10.tgz#c5361b7991cf69662f1e159b7bc2ea789b7eec1f"
-  integrity sha512-ULK1O1ulAO+3Mn2XBtfx5dkcyFDpT1Lx+0vKPHYW84culZXEuYUkKU4JRO6z0sqfaeE1tkG6+PSrG52bIulqVg==
+"@globalfishingwatch/maplibre-gl@^2.1.6-gfw.11":
+  version "2.1.6-gfw.11"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.1.6-gfw.11.tgz#90371b8b516e17fc1782f1b49557ce52c2fcab81"
+  integrity sha512-1S0agKMMK6ZbqWrx/cIGeSTJB950xWJx+AMcE1MtVAnczspGHgGyLKaJdtKv519MYTOMqImqc+JaCnc3ms41Eg==
   dependencies:
     "@globalfishingwatch/fourwings-aggregate" "4.1.0"
     "@mapbox/geojson-rewind" "^0.5.1"
@@ -13624,6 +13624,13 @@ next@^12.1.0:
     "@next/swc-win32-arm64-msvc" "12.1.0"
     "@next/swc-win32-ia32-msvc" "12.1.0"
     "@next/swc-win32-x64-msvc" "12.1.0"
+
+ngx-deploy-npm@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-3.1.2.tgz#101072cad4afa2921df02e5e9250520685b17fda"
+  integrity sha512-7O014b38txPFppi6wBZtFFAx36IISXudI4nY4Eyv2MKOzgjay3xeFI7SFXA2/5zniamueQ+OqBX8xmjADS0VzQ==
+  dependencies:
+    "@nrwl/devkit" "13.8.3"
 
 nice-try@^1.0.4:
   version "1.0.5"
