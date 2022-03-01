@@ -1,4 +1,5 @@
 import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
+import { intersection } from 'lodash'
 import { DEFAULT_HEATMAP_INTERVALS } from '../config'
 import { Interval } from '../types'
 import { getSourceId } from '.'
@@ -39,6 +40,8 @@ const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 const getVisibleStartFrame = (rawFrame: number) => {
   return Math.floor(rawFrame)
 }
+
+const INTERVAL_ORDER: Interval[] = ['hour', 'day', '10days', 'month']
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
@@ -112,24 +115,40 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
 /**
  * Returns the type of interval for a given delta in ms
  * @param delta delta in ms
+ * @param availableIntervals a set of availableIntervals (ie one for each sublayer)
+ * @param omitIntervals remove intervals for consideration (ie TimeCompare mode)
  */
 const getInterval = (
   deltaMs: number,
-  supportedIntervals: Interval[] = DEFAULT_HEATMAP_INTERVALS
+  availableIntervals: Interval[][],
+  omitIntervals: Interval[] = []
 ): Interval => {
-  const duration = Duration.fromMillis(deltaMs)
-  if (
-    CONFIG_BY_INTERVAL.day.isValid(duration) &&
-    (supportedIntervals.includes('day') || supportedIntervals.includes('hour'))
-  ) {
-    if (CONFIG_BY_INTERVAL.hour.isValid(duration) && supportedIntervals.includes('hour')) {
-      return 'hour'
-    }
+  // Get intervals that are common to all dataset (initial array provided to ensure order)
+  const commonIntervals = intersection(INTERVAL_ORDER, ...availableIntervals)
+  const intervals = commonIntervals.filter(interval => !omitIntervals.includes(interval))
+  if (!intervals.length) {
+    console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
     return 'day'
   }
-  // If interval is not valid on hour or day, fallback on biggest interval (assumed to be last item of supportedIntervals)
-  // Should be 10days, or day in the case of TimeCompare mode
-  return supportedIntervals[supportedIntervals.length - 1]
+
+  const duration = Duration.fromMillis(deltaMs)
+
+  // Get smallest interval common to all datasets
+  let validInterval
+  for (let i = intervals.length - 1; i >= 0; i--) {
+    const interval = intervals[i]
+    if (!CONFIG_BY_INTERVAL[interval]) continue
+    // If isValid not present on interval config, consider it's valid for any duration
+    if (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration)) {
+      validInterval = interval
+      break
+    }
+  }
+  if (!validInterval) {
+    console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
+    return 'day'
+  }
+  return validInterval
 }
 
 /**
@@ -214,6 +233,7 @@ const getTimeChunks = (
   return { chunks, activeChunkFrame, activeSourceId }
 }
 
+
 /**
  * Returns the time chunks that should be loaded for a viewed time range
  * @param activeStart   active time range start (timebar selection)
@@ -227,14 +247,11 @@ export const getActiveTimeChunks = (
   activeEnd: string,
   datasetStart: string,
   datasetEnd: string,
-  interval?: Interval | Interval[]
+  availableIntervals: Interval[][],
+  omitIntervals: Interval[] = []
 ): TimeChunks => {
   const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
-
-  const finalInterval: Interval =
-    !interval || Array.isArray(interval)
-      ? getInterval(deltaMs, interval as Interval[])
-      : (interval as any)
+  const finalInterval = getInterval(deltaMs, availableIntervals, omitIntervals)
 
   const finalIntervalConfig = CONFIG_BY_INTERVAL[finalInterval]
   const visibleStartFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeStart))

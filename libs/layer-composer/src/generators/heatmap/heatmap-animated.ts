@@ -280,11 +280,6 @@ class HeatmapAnimatedGenerator {
       sublayers: config.sublayers?.map((s) => ({ ...s, visible: getSubLayerVisible(s) })),
     }
 
-    // Remove 10days interval in TimeCompare mode
-    if (config.mode === HeatmapAnimatedMode.TimeCompare && Array.isArray(finalConfig.interval)) {
-      finalConfig.interval = finalConfig.interval.filter((i) => i !== '10days')
-    }
-
     if (!config.start || !config.end) {
       return {
         id: finalConfig.id,
@@ -293,13 +288,16 @@ class HeatmapAnimatedGenerator {
       }
     }
 
+    const availableIntervals = config.availableIntervals ? [config.availableIntervals] : config.sublayers.map(s => s.availableIntervals)
+    const omitIntervals = config.mode === HeatmapAnimatedMode.TimeCompare ? ['month', '10days'] : []
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
       finalConfig.start,
       finalConfig.end,
       finalConfig.datasetsStart,
       finalConfig.datasetsEnd,
-      finalConfig.interval
+      availableIntervals,
+      omitIntervals
     )
 
     if (
