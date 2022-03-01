@@ -1,6 +1,5 @@
 import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
 import { intersection } from 'lodash'
-import { DEFAULT_HEATMAP_INTERVALS } from '../config'
 import { Interval } from '../types'
 import { getSourceId } from '.'
 
@@ -98,14 +97,20 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     },
   },
   month: {
-    getRawFrame: (start: number) => {
+    getRawFrame: (start: number, POC = false) => {
+      if (POC) {
+        const dt = DateTime.fromMillis(start)
+        return dt.year*12 + dt.month - 1
+      }
       return LuxonInterval.fromDateTimes(
         DateTime.fromMillis(0).toUTC(),
         DateTime.fromMillis(start).toUTC()
       ).toDuration('month').months
     },
     getDate: (frame: number) => {
-      const year = 1970 + Math.floor(frame / 12)
+      const yearOffset = Math.floor(frame / 12)
+      const baseYear = yearOffset > 2000 ? 0 : yearOffset
+      const year = baseYear + yearOffset
       const month = frame % 12
       return new Date(Date.UTC(year, month, 1))
     },
@@ -289,7 +294,7 @@ export const getActiveTimeChunks = (
     timeChunks.activeChunkFrame = frame
     return timeChunks
   } else if (timeChunks.interval === 'month') {
-    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
+    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval, baseId === 'mergedAnimatedHeatmap')
     const chunk: TimeChunk = {
       quantizeOffset: 0,
       id: 'heatmapchunk_month',
@@ -329,11 +334,11 @@ export const getActiveTimeChunks = (
   return timeChunks
 }
 
-const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interval) => {
+const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interval, POC = false) => {
   const config = CONFIG_BY_INTERVAL[interval]
   // TODO Use Luxon to use UTC!!!!
   const ms = new Date(date).getTime()
-  const frame = getVisibleStartFrame(config.getRawFrame(ms))
+  const frame = getVisibleStartFrame(config.getRawFrame(ms, POC))
   return frame - quantizeOffset
 }
 
