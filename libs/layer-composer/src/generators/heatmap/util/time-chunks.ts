@@ -100,17 +100,20 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     getRawFrame: (start: number, POC = false) => {
       if (POC) {
         const dt = DateTime.fromMillis(start)
-        return dt.year*12 + dt.month - 1
+        return dt.year * 12 + dt.month - 1
       }
       return LuxonInterval.fromDateTimes(
         DateTime.fromMillis(0).toUTC(),
         DateTime.fromMillis(start).toUTC()
       ).toDuration('month').months
     },
-    getDate: (frame: number) => {
-      const yearOffset = Math.floor(frame / 12)
-      const baseYear = yearOffset > 2000 ? 0 : yearOffset
-      const year = baseYear + yearOffset
+    getDate: (frame: number, POC = false) => {
+      let year = 1970 + Math.floor(frame / 12)
+      if (POC) {
+        const yearOffset = Math.floor(frame / 12)
+        const baseYear = yearOffset > 2000 ? 0 : yearOffset
+        year = baseYear + yearOffset
+      }
       const month = frame % 12
       return new Date(Date.UTC(year, month, 1))
     },
@@ -130,7 +133,7 @@ const getInterval = (
 ): Interval => {
   // Get intervals that are common to all dataset (initial array provided to ensure order)
   const commonIntervals = intersection(INTERVAL_ORDER, ...availableIntervals)
-  const intervals = commonIntervals.filter(interval => !omitIntervals.includes(interval))
+  const intervals = commonIntervals.filter((interval) => !omitIntervals.includes(interval))
   if (!intervals.length) {
     console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
     return 'day'
@@ -238,7 +241,6 @@ const getTimeChunks = (
   return { chunks, activeChunkFrame, activeSourceId }
 }
 
-
 /**
  * Returns the time chunks that should be loaded for a viewed time range
  * @param activeStart   active time range start (timebar selection)
@@ -294,7 +296,12 @@ export const getActiveTimeChunks = (
     timeChunks.activeChunkFrame = frame
     return timeChunks
   } else if (timeChunks.interval === 'month') {
-    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval, baseId === 'mergedAnimatedHeatmap')
+    const frame = toQuantizedFrame(
+      activeStart,
+      0,
+      timeChunks.interval,
+      baseId === 'mergedAnimatedHeatmap'
+    )
     const chunk: TimeChunk = {
       quantizeOffset: 0,
       id: 'heatmapchunk_month',
@@ -334,20 +341,29 @@ export const getActiveTimeChunks = (
   return timeChunks
 }
 
-const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interval, POC = false) => {
+const toQuantizedFrame = (
+  date: string,
+  quantizeOffset: number,
+  interval: Interval,
+  POC = false
+) => {
   const config = CONFIG_BY_INTERVAL[interval]
-  // TODO Use Luxon to use UTC!!!!
-  const ms = new Date(date).getTime()
+  const ms = DateTime.fromISO(date).toUTC().toMillis()
   const frame = getVisibleStartFrame(config.getRawFrame(ms, POC))
   return frame - quantizeOffset
 }
 
-export const frameToDate = (frame: number, quantizeOffset: number, interval: Interval) => {
+export const frameToDate = (
+  frame: number,
+  quantizeOffset: number,
+  interval: Interval,
+  POC = false
+) => {
   const offsetedFrame = frame + quantizeOffset
   const config = CONFIG_BY_INTERVAL[interval]
-  return config.getDate(offsetedFrame) as Date
+  return config.getDate(offsetedFrame, POC) as Date
 }
 
-export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval) => {
-  return frameToDate(0, quantizeOffset, interval)
+export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval, POC = false) => {
+  return frameToDate(0, quantizeOffset, interval, POC)
 }
