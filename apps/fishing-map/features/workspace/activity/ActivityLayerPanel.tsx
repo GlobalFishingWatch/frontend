@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -15,6 +15,12 @@ import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/data
 import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectDataviewStatsById,
+  selectDataviewStatsStatus,
+} from 'features/dataview-stats/dataview-stats.slice'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -47,6 +53,8 @@ function ActivityLayerPanel({
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const readOnly = useSelector(selectReadOnly)
+  const dataviewStatsStatus = useSelector(selectDataviewStatsStatus)
+  const stats = useSelector(selectDataviewStatsById(dataview.id))
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -122,6 +130,8 @@ function ActivityLayerPanel({
     [t]
   )
 
+  const showStats = stats && (stats.vessel_id > 0 || stats.flag > 0)
+
   return (
     <div
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
@@ -173,6 +183,41 @@ function ActivityLayerPanel({
       </div>
       {layerActive && (
         <div className={styles.properties}>
+          {stats && (
+            <div
+              className={cx(styles.stats, {
+                [styles.statsLoading]: dataviewStatsStatus === AsyncReducerStatus.Loading,
+              })}
+            >
+              {showStats ? (
+                <Fragment>
+                  {stats.vessel_id > 0 && (
+                    <span>
+                      <I18nNumber number={stats.vessel_id} />{' '}
+                      {t('common.vessel', {
+                        count: stats.vessel_id,
+                        defaultValue: 'vessels',
+                      }).toLocaleLowerCase()}
+                    </span>
+                  )}
+                  {stats.flag > 0 && !dataview.config?.filters?.flag && (
+                    <Fragment>
+                      <span> {t('common.from', 'from')} </span>
+                      <span>
+                        <I18nNumber number={stats.flag} />{' '}
+                        {t('layer.flagState', {
+                          count: stats.flag,
+                          defaultValue: 'flag states',
+                        }).toLocaleLowerCase()}
+                      </span>
+                    </Fragment>
+                  )}
+                </Fragment>
+              ) : (
+                t('workspace.noVesselInFilters', 'No vessels match your filters')
+              )}
+            </div>
+          )}
           <div className={styles.filters}>
             <div className={styles.filters}>
               <DatasetFilterSource dataview={dataview} />
