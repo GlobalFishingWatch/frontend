@@ -227,7 +227,7 @@ function VesselsTable({
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
-              const hasMultipleDetectionsTimestamps = getDetectionsTimestamps(vessel)?.length > 1
+              const detectionsTimestamps = getDetectionsTimestamps(vessel)
               return (
                 <tr key={i}>
                   {!pinTrackDisabled && (
@@ -265,11 +265,15 @@ function VesselsTable({
                   <td
                     className={cx(styles.columnSpace, {
                       [styles.vesselsTableHour]: vesselProperty !== 'detections',
-                      [styles.largeColumn]: hasMultipleDetectionsTimestamps,
+                      [styles.largeColumn]: detectionsTimestamps?.length > 1,
                     })}
                   >
-                    <I18nNumber number={vessel[vesselProperty]} /> (
-                    <VesselDetectionTimestamps vessel={vessel} />)
+                    <I18nNumber number={vessel[vesselProperty]} />{' '}
+                    {detectionsTimestamps?.lenth > 0 && (
+                      <Fragment>
+                        (<VesselDetectionTimestamps vessel={vessel} />)
+                      </Fragment>
+                    )}
                   </td>
                 </tr>
               )
