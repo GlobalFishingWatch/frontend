@@ -54,7 +54,7 @@ export const getVesselTableTitle = (feature: TooltipEventFeature) => {
 }
 
 const getDetectionsTimestamps = (vessel: ExtendedFeatureVessel) => {
-  return vessel.timestamp?.split(',').sort()
+  return vessel?.timestamp?.split(',').sort()
 }
 
 export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
