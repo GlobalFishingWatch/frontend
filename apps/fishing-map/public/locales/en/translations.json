@@ -292,6 +292,8 @@
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
+    "flagState": "Flag State",
+    "flagState_one": "Flag State",
     "flagState_other": "Flag States",
     "fleet_other": "Fleets",
     "gearType_other": "Gear types",

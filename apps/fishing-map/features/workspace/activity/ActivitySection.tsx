@@ -1,6 +1,6 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
@@ -14,6 +14,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { fetchDataviewStats } from 'features/dataview-stats/dataview-stats.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   getFishingDataviewInstance,
@@ -35,6 +36,8 @@ import activityStyles from './ActivitySection.module.css'
 
 function ActivitySection(): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const statsPromiseRef = useRef<any>()
   const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
   const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
   const readOnly = useSelector(selectReadOnly)
@@ -45,7 +48,7 @@ function ActivitySection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const { start, end } = useTimerangeConnect()
+  const { timerange, start, end } = useTimerangeConnect()
 
   const ACTIVITY_OPTIONS: ChoiceOption[] = useMemo(
     () => [
@@ -64,6 +67,16 @@ function ActivitySection(): React.ReactElement {
   useEffect(() => {
     setAddedDataviewId(undefined)
   }, [activityCategory])
+
+  useEffect(() => {
+    if (dataviews && dataviews.length > 0) {
+      if (statsPromiseRef.current) {
+        statsPromiseRef.current.abort()
+      }
+      // TODO do this only on dataview creation or dataview filters change
+      statsPromiseRef.current = dispatch(fetchDataviewStats({ dataviews, timerange }))
+    }
+  }, [dataviews, timerange, dispatch])
 
   const onActivityOptionClick = useCallback(
     (activityOption: ChoiceOption) => {
