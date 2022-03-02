@@ -40,7 +40,8 @@ export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeat
 
 // TODO Maybe this should rather be in dataset.endpoints[id = 4wings-tiles].query[id = interval].options
 // or something similar ??
-const getDatasetAvailableIntervals = (dataset?: Dataset) => dataset?.configuration?.intervals as Interval[]
+const getDatasetAvailableIntervals = (dataset?: Dataset) =>
+  dataset?.configuration?.intervals as Interval[]
 
 type DataviewsGeneratorConfigsParams = {
   debug?: boolean
@@ -200,7 +201,10 @@ export function getGeneratorConfig(
         ]
 
         const { url: tilesAPI } = resolveDataviewDatasetResource(dataview, DatasetTypes.Fourwings)
-        const availableIntervals = (dataview.config?.interval ? [dataview.config?.interval] : getDatasetAvailableIntervals(dataset)) || DEFAULT_ENVIRONMENT_INTERVALS
+        const availableIntervals =
+          (dataview.config?.interval
+            ? [dataview.config?.interval]
+            : getDatasetAvailableIntervals(dataset)) || DEFAULT_ENVIRONMENT_INTERVALS
 
         environmentalConfig = {
           sublayers,
@@ -364,7 +368,10 @@ export function getDataviewsGeneratorConfigs(
       if (!dataview.datasets?.length) return []
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
 
-      const units = uniq(dataview.datasets?.map((dataset) => dataset.unit))
+      const activeDatasets = dataview.datasets.filter((dataset) =>
+        dataview?.config?.datasets.includes(dataset.id)
+      )
+      const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
       if (units.length > 0 && units.length !== 1) {
         throw new Error('Shouldnt have distinct units for the same heatmap layer')
       }
@@ -405,7 +412,6 @@ export function getDataviewsGeneratorConfigs(
 
       return sublayer
     })
-
 
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,

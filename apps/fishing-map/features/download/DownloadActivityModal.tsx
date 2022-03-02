@@ -182,7 +182,6 @@ function DownloadActivityModal() {
         }
       })
       .filter((dataview) => dataview.datasets.length > 0)
-    console.log(downloadDataviews)
 
     if (format === Format.GeoTIFF) {
       uaEvent({
