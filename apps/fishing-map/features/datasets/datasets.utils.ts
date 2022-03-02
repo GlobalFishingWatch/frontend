@@ -276,7 +276,7 @@ export const getCommonSchemaFieldsInDataview = (
         let label =
           schemaType === 'number'
             ? field
-            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
+            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field.toString())
         if (label === field) {
           if (schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
