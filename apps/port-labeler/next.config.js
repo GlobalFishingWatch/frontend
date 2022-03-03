@@ -37,7 +37,7 @@ const nextConfig = {
     return config
   },
   // productionBrowserSourceMaps: true,
-  basePath: process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : ''),
+  basePath: process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/port-labeler' : ''),
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
