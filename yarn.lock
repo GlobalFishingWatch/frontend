@@ -1235,60 +1235,21 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@globalfishingwatch/fourwings-aggregate@4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.1.0.tgz#5524bdceff90cc3fd7a42ecea7794c7341e414f6"
-  integrity sha512-e/+2JutMQ3+c9mCMcRKMYjpioMgIKe1xJGARx5mn6bPT+lyJfSwGtRIL5ez8rtFwjqfvEaWKkXr4MQTm1BcUZw==
-
-"@globalfishingwatch/linting@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/linting/-/linting-2.0.0.tgz#a2aab40f9c8cb4f9b50fb32eb2a315f17a8664c7"
-  integrity sha512-tiN1x4j39CkaL6pINh+J64scO0iFYX/VCp1TcfwEdFzkbMDN0eygJXGpJ4WBXmQQtExpsJE6+PLtI+otLRJkgA==
-  dependencies:
-    "@next/eslint-plugin-next" "^12.x"
-    "@typescript-eslint/eslint-plugin" "^4.x"
-    "@typescript-eslint/parser" "^4.x"
-    "@typescript-eslint/scope-manager" "^4.x"
-    babel-eslint "^10.x"
-    eslint "7.x"
-    eslint-config-prettier "^8.x"
-    eslint-config-react-app "^6.x"
-    eslint-import-resolver-typescript "^2.x"
-    eslint-plugin-flowtype "^5.x"
-    eslint-plugin-import "^2.x"
-    eslint-plugin-jsx-a11y "^6.x"
-    eslint-plugin-react "^7.x"
-    eslint-plugin-react-hooks "^4.x"
-    prettier "2.3.0"
-    prettier-eslint "^12.0.0"
-    stylelint "14.x"
-    stylelint-config-css-modules "2.x"
-    stylelint-config-prettier "9.x"
-    stylelint-config-standard "23.x"
+"@globalfishingwatch/fourwings-aggregate@4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.2.0.tgz#5049cb7202eb7d7ad41be9f73808302b731657e3"
+  integrity sha512-2kez/1g+gbLeh1Hy17qD8st0RwhLnKotZoCdzLx6mllPlpff4WCq9MwL9FLT7+Dlmb5fRv+XT2oKv1U8jWptnw==
 
 "@globalfishingwatch/map-convert@github:GlobalFishingWatch/map-convert":
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/maplibre-gl-style-spec@^14.0.2":
-  version "14.0.2"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl-style-spec/-/maplibre-gl-style-spec-14.0.2.tgz#9185476f00045466cd9ffa78e3531a8038aac4dd"
-  integrity sha512-j5CPmQ8jXE0lKs12hTGQro1V70ZAPCVKdVsfP6IMHLGiHidDL1NxhPYNRTCyH62awTRmNYIY9zFAS32+/3i7Gg==
+"@globalfishingwatch/maplibre-gl@^2.1.6-gfw.13":
+  version "2.1.6-gfw.13"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.1.6-gfw.13.tgz#328dc5d55fc818c860d48269ac4381133ad7d98b"
+  integrity sha512-GbtRgYAGmzUY8SSUVDPYLik88oMwMBUxoWLFN1r3AZSblHZXMlrEJSZ42rk8o82VCPYDdm0F0mV8TtwMFX1AZQ==
   dependencies:
-    "@mapbox/jsonlint-lines-primitives" "~2.0.2"
-    "@mapbox/unitbezier" "^0.0.0"
-    csscolorparser "~1.0.2"
-    json-stringify-pretty-compact "^2.0.0"
-    minimist "^1.2.5"
-    rw "^1.3.3"
-    sort-object "^0.3.2"
-
-"@globalfishingwatch/maplibre-gl@2.1.1-gfw.10":
-  version "2.1.1-gfw.10"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.1.1-gfw.10.tgz#c5361b7991cf69662f1e159b7bc2ea789b7eec1f"
-  integrity sha512-ULK1O1ulAO+3Mn2XBtfx5dkcyFDpT1Lx+0vKPHYW84culZXEuYUkKU4JRO6z0sqfaeE1tkG6+PSrG52bIulqVg==
-  dependencies:
-    "@globalfishingwatch/fourwings-aggregate" "4.1.0"
+    "@globalfishingwatch/fourwings-aggregate" "4.2.0"
     "@mapbox/geojson-rewind" "^0.5.1"
     "@mapbox/jsonlint-lines-primitives" "^2.0.2"
     "@mapbox/mapbox-gl-supported" "^2.0.1"
@@ -1659,7 +1620,7 @@
   resolved "https://registry.yarnpkg.com/@mapbox/geojson-types/-/geojson-types-1.0.2.tgz#9aecf642cb00eab1080a57c4f949a65b4a5846d6"
   integrity sha512-e9EBqHHv3EORHrSfbR9DqecPNn+AmuAoQxV6aL8Xu30bJMJR1o8PZLZzpk1Wq7/NfCbuhmakHTPYRhoqLsXRnw==
 
-"@mapbox/jsonlint-lines-primitives@^2.0.2", "@mapbox/jsonlint-lines-primitives@~2.0.2":
+"@mapbox/jsonlint-lines-primitives@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@mapbox/jsonlint-lines-primitives/-/jsonlint-lines-primitives-2.0.2.tgz#ce56e539f83552b58d10d672ea4d6fc9adc7b234"
   integrity sha1-zlblOfg1UrWNENZy6k1vya3HsjQ=
@@ -7800,7 +7761,7 @@ css@^3.0.0:
     source-map "^0.6.1"
     source-map-resolve "^0.6.0"
 
-csscolorparser@~1.0.2, csscolorparser@~1.0.3:
+csscolorparser@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/csscolorparser/-/csscolorparser-1.0.3.tgz#b34f391eea4da8f3e98231e2ccd8df9c041f171b"
   integrity sha1-s085HupNqPPpgjHizNjfnAQfFxs=
@@ -12470,11 +12431,6 @@ json-stable-stringify@^1.0.1:
   dependencies:
     jsonify "~0.0.0"
 
-json-stringify-pretty-compact@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/json-stringify-pretty-compact/-/json-stringify-pretty-compact-2.0.0.tgz#e77c419f52ff00c45a31f07f4c820c2433143885"
-  integrity sha512-WRitRfs6BGq4q8gTgOy4ek7iPFXjbra0H3PmDLKm2xnZ+Gh1HUhiKGgCZkSPNULlP7mvfu6FV/mOLhCarspADQ==
-
 json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
@@ -13642,6 +13598,13 @@ next@^12.1.0:
     "@next/swc-win32-arm64-msvc" "12.1.0"
     "@next/swc-win32-ia32-msvc" "12.1.0"
     "@next/swc-win32-x64-msvc" "12.1.0"
+
+ngx-deploy-npm@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-3.1.2.tgz#101072cad4afa2921df02e5e9250520685b17fda"
+  integrity sha512-7O014b38txPFppi6wBZtFFAx36IISXudI4nY4Eyv2MKOzgjay3xeFI7SFXA2/5zniamueQ+OqBX8xmjADS0VzQ==
+  dependencies:
+    "@nrwl/devkit" "13.8.3"
 
 nice-try@^1.0.4:
   version "1.0.5"
@@ -17143,30 +17106,12 @@ sockjs@^0.3.21:
     uuid "^8.3.2"
     websocket-driver "^0.7.4"
 
-sort-asc@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/sort-asc/-/sort-asc-0.1.0.tgz#ab799df61fc73ea0956c79c4b531ed1e9e7727e9"
-  integrity sha1-q3md9h/HPqCVbHnEtTHtHp53J+k=
-
-sort-desc@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/sort-desc/-/sort-desc-0.1.1.tgz#198b8c0cdeb095c463341861e3925d4ee359a9ee"
-  integrity sha1-GYuMDN6wlcRjNBhh45JdTuNZqe4=
-
 sort-keys@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/sort-keys/-/sort-keys-4.2.0.tgz#6b7638cee42c506fff8c1cecde7376d21315be18"
   integrity sha512-aUYIEU/UviqPgc8mHR6IW1EGxkAXpeRETYcrzg8cLAvUPZcpAlleSXHV2mY7G12GphSH6Gzv+4MMVSSkbdteHg==
   dependencies:
     is-plain-obj "^2.0.0"
-
-sort-object@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/sort-object/-/sort-object-0.3.2.tgz#98e0d199ede40e07c61a84403c61d6c3b290f9e2"
-  integrity sha1-mODRme3kDgfGGoRAPGHWw7KQ+eI=
-  dependencies:
-    sort-asc "^0.1.0"
-    sort-desc "^0.1.1"
 
 source-map-explorer@2.5.2:
   version "2.5.2"

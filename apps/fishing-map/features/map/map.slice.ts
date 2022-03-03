@@ -187,16 +187,13 @@ export const fetchVesselInfo = async (
 export type ActivityProperty = 'hours' | 'detections'
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  { fishingActivityFeatures: ExtendedFeature[]; activityProperty?: ActivityProperty },
+  { fishingActivityFeatures: ExtendedFeature[]; activityProperties?: ActivityProperty[] },
   {
     dispatch: AppDispatch
   }
 >(
   'map/fetchFishingActivityInteraction',
-  async (
-    { fishingActivityFeatures, activityProperty = 'hours' },
-    { getState, signal, dispatch }
-  ) => {
+  async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
     const temporalgridDataviews = selectActivityDataviews(state) || []
@@ -238,7 +235,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       })
 
       const topActivityVessels = vesselsBySource
-        .map((source) => {
+        .map((source, i) => {
+          const activityProperty = activityProperties?.[i] || 'hours'
           return source
             .flatMap((source) => source)
             .sort((a, b) => b[activityProperty] - a[activityProperty])
@@ -282,6 +280,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
+        const activityProperty = activityProperties?.[i] || 'hours'
         return {
           sublayerId: sublayersIds[i],
           vessels: sublayerVessels

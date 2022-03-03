@@ -24,7 +24,7 @@
     "recharts": "^2.0.9"
   },
   "devDependencies": {
-    "@globalfishingwatch/linting": "2.0.0",
+    "@globalfishingwatch/linting": "2.0.2",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "@types/luxon": "^1.26.4",

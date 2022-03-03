@@ -1,5 +1,10 @@
 import { uniqBy } from 'lodash'
-import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
+import { DateTime } from 'luxon'
+import {
+  AggregationOperation,
+  getTimeSeries,
+  TimeSeriesFrame,
+} from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, Interval } from '@globalfishingwatch/layer-composer'
 import { DataviewChunkFeature, DataviewFeature } from 'features/map/map-sources.hooks'
 
@@ -8,6 +13,7 @@ type TimeseriesParams = {
   numSublayers: number
   interval: Interval
   visibleSublayers: boolean[]
+  aggregationOperation: AggregationOperation
 }
 
 export const getChunksTimeseries = ({
@@ -15,6 +21,7 @@ export const getChunksTimeseries = ({
   numSublayers,
   interval,
   visibleSublayers,
+  aggregationOperation,
 }: TimeseriesParams) => {
   const allChunksValues = chunksFeatures.flatMap(({ features, quantizeOffset }) => {
     if (features?.length > 0) {
@@ -29,12 +36,23 @@ export const getChunksTimeseries = ({
               key === 'frame' || visibleSublayers[parseInt(key)] === true ? value : 0
             return [key, cleanValue]
           })
-        )
+        ) as TimeSeriesFrame
         return {
           ...activeFrameValues,
           date: quantizeOffsetToDate(frameValues.frame, interval).getTime(),
         }
       })
+      if (aggregationOperation === AggregationOperation.Avg) {
+        const lastItem = finalValues[finalValues.length - 1]
+        const month = DateTime.fromMillis(lastItem.date)
+        const nextMonth = DateTime.fromMillis(lastItem.date).plus({ month: 1 })
+        const millisOffset = nextMonth.diff(month).milliseconds
+        return finalValues.concat({
+          ...lastItem,
+          frame: lastItem.frame + 1,
+          date: lastItem.date + millisOffset,
+        })
+      }
       return finalValues
     } else {
       return []
@@ -56,6 +74,7 @@ export const getTimeseriesFromDataviews = (dataviewFeatures: DataviewFeature[]) 
       interval: timeChunks.interval,
       numSublayers: metadata.numSublayers,
       visibleSublayers: metadata.visibleSublayers,
+      aggregationOperation: metadata.aggregationOperation,
     })
     return timeseries
   })

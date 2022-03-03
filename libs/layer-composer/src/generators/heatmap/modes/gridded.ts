@@ -24,14 +24,7 @@ export default function gridded(
   const layers: LayerSpecification[] = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
     // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
     const pickValueAt = timeChunk.frame.toString()
-    const exprPick: FilterSpecification =
-      //   breaks && !config.staticBreaks ?
-      // ["interpolate",
-      //     timeChunk.frame,
-      //     ["linear"],
-      //   ...colorRampBaseExpression.map(([], i) => [])
-      // ] :
-      ['coalesce', ['get', pickValueAt], 0]
+    const exprPick: FilterSpecification = ['coalesce', ['get', pickValueAt], 0]
 
     const exprColorRamp =
       breaks && config.dynamicBreaks

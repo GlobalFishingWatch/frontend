@@ -276,7 +276,7 @@ export const getCommonSchemaFieldsInDataview = (
         let label =
           schemaType === 'number'
             ? field
-            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
+            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field.toString())
         if (label === field) {
           if (schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
@@ -290,14 +290,22 @@ export const getCommonSchemaFieldsInDataview = (
   return commonSchemaFields.sort(sortFields)
 }
 
+export const getSchemaOptionsSelectedInDataview = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema,
+  options: ReturnType<typeof getCommonSchemaFieldsInDataview>
+) => {
+  return options?.filter((option) =>
+    dataview.config?.filters?.[schema]?.map((o) => o.toString())?.includes(option.id)
+  )
+}
+
 export const getSchemaFieldsSelectedInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
-  const optionsSelected = options?.filter((option) =>
-    dataview.config?.filters?.[schema]?.includes(option.id)
-  )
+  const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   return optionsSelected
 }
 
@@ -325,10 +333,7 @@ export const getFiltersBySchema = (
 
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
   const type = getCommonSchemaTypeInDataview(dataview, schema)
-
-  const optionsSelected = options?.filter((option) =>
-    dataview.config?.filters?.[schema]?.includes(option.id)
-  )
+  const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
 
   const tooltip = disabled
     ? t('errors.notSupportedBy', {

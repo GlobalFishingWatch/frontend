@@ -53,6 +53,61 @@ export const getVesselTableTitle = (feature: TooltipEventFeature) => {
   return title
 }
 
+const getDetectionsTimestamps = (vessel: ExtendedFeatureVessel) => {
+  return vessel?.timestamp?.split(',').sort()
+}
+
+export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
+  const { setTimerange } = useTimerangeConnect()
+  const detectionsTimestamps = getDetectionsTimestamps(vessel)
+  const hasDetectionsTimestamps = detectionsTimestamps && detectionsTimestamps.length > 0
+  const hasMultipleDetectionsTimestamps = hasDetectionsTimestamps && detectionsTimestamps.length > 1
+
+  const start = hasDetectionsTimestamps
+    ? DateTime.fromISO(detectionsTimestamps[0], { zone: 'utc' }).startOf('day').toISO()
+    : ''
+
+  const end = hasDetectionsTimestamps
+    ? DateTime.fromISO(detectionsTimestamps[detectionsTimestamps.length - 1], {
+        zone: 'utc',
+      })
+        .endOf('day')
+        .toISO()
+    : ''
+
+  if (!hasDetectionsTimestamps) return null
+
+  return hasMultipleDetectionsTimestamps ? (
+    <Tooltip content={t('timebar.fitOnThisDates', 'Fit time range to these dates')}>
+      <button
+        className={styles.timestampBtn}
+        onClick={() => {
+          setTimerange({
+            start,
+            end,
+          })
+        }}
+      >
+        <TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />
+      </button>
+    </Tooltip>
+  ) : (
+    <Tooltip content={t('timebar.focusOnThisDay', 'Focus time range on this day')}>
+      <button
+        className={styles.timestampBtn}
+        onClick={() => {
+          setTimerange({
+            start,
+            end: DateTime.fromISO(start, { zone: 'utc' }).endOf('day').toISO(),
+          })
+        }}
+      >
+        <I18nDate date={start} />
+      </button>
+    </Tooltip>
+  )
+}
+
 function VesselsTable({
   feature,
   showFullList,
@@ -64,7 +119,6 @@ function VesselsTable({
 }) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const { setTimerange } = useTimerangeConnect()
   const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
   const { eventManager } = useMapContext()
@@ -173,24 +227,7 @@ function VesselsTable({
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
-
-              const detectionsTimestamps = vessel.timestamp?.split(',').sort()
-              const hasDetectionsTimestamps =
-                detectionsTimestamps && detectionsTimestamps.length > 0
-              const hasMultipleDetectionsTimestamps =
-                hasDetectionsTimestamps && detectionsTimestamps.length > 1
-
-              const start = hasDetectionsTimestamps
-                ? DateTime.fromISO(detectionsTimestamps[0], { zone: 'utc' }).startOf('day').toISO()
-                : ''
-
-              const end = hasDetectionsTimestamps
-                ? DateTime.fromISO(detectionsTimestamps[detectionsTimestamps.length - 1], {
-                    zone: 'utc',
-                  })
-                    .endOf('day')
-                    .toISO()
-                : ''
+              const detectionsTimestamps = getDetectionsTimestamps(vessel)
               return (
                 <tr key={i}>
                   {!pinTrackDisabled && (
@@ -228,50 +265,13 @@ function VesselsTable({
                   <td
                     className={cx(styles.columnSpace, {
                       [styles.vesselsTableHour]: vesselProperty !== 'detections',
-                      [styles.largeColumn]: hasMultipleDetectionsTimestamps,
+                      [styles.largeColumn]: detectionsTimestamps?.length > 1,
                     })}
                   >
-                    <I18nNumber number={vessel[vesselProperty]} />
-                    {hasDetectionsTimestamps && (
+                    <I18nNumber number={vessel[vesselProperty]} />{' '}
+                    {detectionsTimestamps?.lenth > 0 && (
                       <Fragment>
-                        {' '}
-                        (
-                        {hasMultipleDetectionsTimestamps ? (
-                          <Tooltip
-                            content={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
-                          >
-                            <button
-                              className={styles.timestampBtn}
-                              onClick={() => {
-                                setTimerange({
-                                  start,
-                                  end,
-                                })
-                              }}
-                            >
-                              <TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />
-                            </button>
-                          </Tooltip>
-                        ) : (
-                          <Tooltip
-                            content={t('timebar.focusOnThisDay', 'Focus time range on this day')}
-                          >
-                            <button
-                              className={styles.timestampBtn}
-                              onClick={() => {
-                                setTimerange({
-                                  start,
-                                  end: DateTime.fromISO(start, { zone: 'utc' })
-                                    .endOf('day')
-                                    .toISO(),
-                                })
-                              }}
-                            >
-                              <I18nDate date={start} />
-                            </button>
-                          </Tooltip>
-                        )}
-                        )
+                        (<VesselDetectionTimestamps vessel={vessel} />)
                       </Fragment>
                     )}
                   </td>
