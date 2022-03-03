@@ -7,6 +7,7 @@ import { event as uaEvent } from 'react-ga'
 import { IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import {
   selectActivityDataviews,
   selectAvailableFishingDataviews,
@@ -68,15 +69,18 @@ function ActivitySection(): React.ReactElement {
     setAddedDataviewId(undefined)
   }, [activityCategory])
 
+  const memoDataviews = useMemoCompare(dataviews)
   useEffect(() => {
-    if (dataviews && dataviews.length > 0) {
+    if (memoDataviews && memoDataviews.length > 0) {
       if (statsPromiseRef.current) {
         statsPromiseRef.current.abort()
       }
       // TODO do this only on dataview creation or dataview filters change
-      statsPromiseRef.current = dispatch(fetchDataviewStats({ dataviews, timerange }))
+      statsPromiseRef.current = dispatch(
+        fetchDataviewStats({ dataviews: memoDataviews, timerange })
+      )
     }
-  }, [dataviews, timerange, dispatch])
+  }, [memoDataviews, timerange, dispatch])
 
   const onActivityOptionClick = useCallback(
     (activityOption: ChoiceOption) => {
