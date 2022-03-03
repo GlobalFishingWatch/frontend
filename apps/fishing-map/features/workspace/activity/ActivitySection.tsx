@@ -30,6 +30,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { isGuestUser } from 'features/user/user.slice'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
@@ -41,6 +42,7 @@ function ActivitySection(): React.ReactElement {
   const statsPromiseRef = useRef<any>()
   const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
   const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
+  const guestuser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
   const activityCategory = useSelector(selectActivityCategory)
@@ -71,7 +73,7 @@ function ActivitySection(): React.ReactElement {
 
   const memoDataviews = useMemoCompare(dataviews)
   useEffect(() => {
-    if (memoDataviews && memoDataviews.length > 0) {
+    if (!guestuser && memoDataviews && memoDataviews.length > 0) {
       if (statsPromiseRef.current) {
         statsPromiseRef.current.abort()
       }
@@ -80,7 +82,7 @@ function ActivitySection(): React.ReactElement {
         fetchDataviewStats({ dataviews: memoDataviews, timerange })
       )
     }
-  }, [memoDataviews, timerange, dispatch])
+  }, [guestuser, memoDataviews, timerange, dispatch])
 
   const onActivityOptionClick = useCallback(
     (activityOption: ChoiceOption) => {
