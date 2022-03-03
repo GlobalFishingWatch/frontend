@@ -107,13 +107,11 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
         DateTime.fromMillis(start).toUTC()
       ).toDuration('month').months
     },
-    getDate: (frame: number, POC = false) => {
-      let year = 1970 + Math.floor(frame / 12)
-      if (POC) {
-        const yearOffset = Math.floor(frame / 12)
-        const baseYear = yearOffset > 2000 ? 0 : yearOffset
-        year = baseYear + yearOffset
-      }
+    getDate: (frame: number) => {
+      const yearOffset = Math.floor(frame / 12)
+      // TODO This logic only needed for PresenceBQ POC, we have to decide on an offset mechanism with monthly interval
+      const baseYear = yearOffset > 2000 ? 0 : 1970
+      const year = baseYear + yearOffset
       const month = frame % 12
       return new Date(Date.UTC(year, month, 1))
     },
@@ -357,13 +355,12 @@ export const frameToDate = (
   frame: number,
   quantizeOffset: number,
   interval: Interval,
-  POC = false
 ) => {
   const offsetedFrame = frame + quantizeOffset
   const config = CONFIG_BY_INTERVAL[interval]
-  return config.getDate(offsetedFrame, POC) as Date
+  return config.getDate(offsetedFrame) as Date
 }
 
-export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval, POC = false) => {
-  return frameToDate(0, quantizeOffset, interval, POC)
+export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval) => {
+  return frameToDate(0, quantizeOffset, interval)
 }
