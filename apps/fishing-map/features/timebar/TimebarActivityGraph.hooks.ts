@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'

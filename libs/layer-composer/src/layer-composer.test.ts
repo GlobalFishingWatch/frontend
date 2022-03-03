@@ -1,4 +1,4 @@
-import { validate as mapboxStyleValidator } from '@globalfishingwatch/maplibre-gl-style-spec'
+import { validate as mapboxStyleValidator } from '@globalfishingwatch/maplibre-gl/dist/style-spec'
 import generators from './generators'
 import { DEFAULT_STYLE } from './config'
 import LayerComposer from '.'

@@ -8,6 +8,7 @@ import { atom, selector, useRecoilState } from 'recoil'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { MULTILAYER_SEPARATOR } from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -120,7 +121,18 @@ export const useFilteredTimeSeries = () => {
       setBlur(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeComparison, timebarStart, timebarEnd])
+  }, [timeComparison])
+
+  useEffect(() => {
+    const hasActivityLayers = temporalgridDataviews.some(
+      ({ category }) =>
+        category === DataviewCategory.Fishing || category === DataviewCategory.Presence
+    )
+    if (timeseries && hasActivityLayers) {
+      setBlur(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timebarStart, timebarEnd])
 
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)

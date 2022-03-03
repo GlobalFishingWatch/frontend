@@ -48,7 +48,7 @@ export const getTimeSeries = (
     for (let i = CELL_VALUES_START_INDEX; i < values.length; i++) {
       const sublayerIndex = (i - CELL_VALUES_START_INDEX) % numSublayers
       const rawValue = values[i]
-      if (!isNaN(rawValue)) {
+      if (rawValue !== null && !isNaN(rawValue)) {
         if (currentFrameIndex > maxFrame) maxFrame = currentFrameIndex
         if (!valuesByFrame[offsetedCurrentFrameIndex]) {
           valuesByFrame[offsetedCurrentFrameIndex] = {
