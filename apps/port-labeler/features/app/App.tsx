@@ -52,7 +52,6 @@ function App(): React.ReactElement {
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  console.log(sidebarOpen)
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))
   }, [dispatch])

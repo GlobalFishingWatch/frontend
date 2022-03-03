@@ -3,9 +3,39 @@
   border-collapse: collapse;
 }
 
-.table thead {
+.table td {
+  border: 1px solid rgba(22, 63, 137, 0.1);
+  padding: auto;
+}
+
+.table tr td:last-child {
+  border-right: none;
+  padding: 0 1rem;
+}
+
+.table .head {
   background: rgb(var(--white-rgb), 1);
   height: var(--size-M);
+  box-shadow: 0 2px 4px 0 rgba(22, 63, 137, 0.15);
+  display: flex;
+  flex-direction: row;
+}
+
+.row {
+  display: flex;
+}
+
+.row .col,
+.table .head div.col {
+  flex: 1;
+  align-self: center;
+  width: 25%;
+}
+
+.table .body {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 20px);
 }
 
 .iconRight {
@@ -24,4 +54,16 @@
 .sortIcon label {
   color: var(--color-primary-blue);
   font: var(--font-S);
+}
+
+.rowHover {
+  background: rgba(22, 63, 137, 0.1);
+}
+
+.rowHidden {
+  display: none;
+}
+
+.portSelector {
+  border: none;
 }

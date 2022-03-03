@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { initialize as uaInitialize, set as uaSet, event as uaEvent, pageview } from 'react-ga'
+import { initialize as uaInitialize, set as uaSet, event as uaEvent } from 'react-ga'
 import { selectUserData } from 'features/user/user.slice'
 import { GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/config'
 

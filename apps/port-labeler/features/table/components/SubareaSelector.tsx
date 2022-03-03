@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
-import { Button, Icon, IconButton, InputText, SelectOnChange, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, InputText, SelectOnChange, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
 import styles from './SubareaSelector.module.css'
 
 export interface SubareaSelectOption<T = any> extends SelectOption {
@@ -87,11 +87,12 @@ export function SubareaSelector(props: SelectProps) {
         )}
       >
         <div className={styles.placeholderContainer}>
-          <InputText value={selectedOption?.label ?? placeholder} onChange={(e) => {
-            if (selectedOption) {
-              onSubareaChange(selectedOption.id, e.target.value)
-            }
-          }} />
+          <InputText value={selectedOption?.label ?? placeholder}
+            className={styles.noBorder} onChange={(e) => {
+              if (selectedOption) {
+                onSubareaChange(selectedOption.id, e.target.value)
+              }
+            }} />
         </div>
         <div className={styles.buttonsContainer}>
           {onCleanClick !== undefined && hasSelectedOptions && (
@@ -113,12 +114,11 @@ export function SubareaSelector(props: SelectProps) {
               return (
                 <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
                   <li
-                    className={cx(styles.optionItem, {
-                    })}
+                    className={cx(styles.optionItem)}
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    <div className={styles.dot} style={{background: `${item.color}`}}></div>
+                    <div className={styles.dot} style={{ background: `${item.color}` }}></div>
                   </li>
                 </Tooltip>
               )
@@ -129,10 +129,10 @@ export function SubareaSelector(props: SelectProps) {
           </li>}
         </ul>
         {selectedOption && <div className={styles.selectedDot}
-            style={{
-              background: `${selectedOption.color}`,
-            }}
-          ></div>
+          style={{
+            background: `${selectedOption.color}`,
+          }}
+        ></div>
         }
       </div>
     </div>

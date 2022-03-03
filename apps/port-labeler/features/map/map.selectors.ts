@@ -1,53 +1,178 @@
 import { createSelector } from "@reduxjs/toolkit"
-import { DATA } from "features/app/data"
-import { selectCountry, selectSelectedPoints } from "features/labeler/labeler.slice"
-import { PortPositionFeature, PortPositionsGeneratorConfig } from "types"
+import { featureCollection, point } from "@turf/helpers"
+import buffer from "@turf/buffer"
+import concave from "@turf/concave"
+import { selectCountry, selectMapData, selectPortValues, selectSelectedPoints, selectSubareaValues } from "features/labeler/labeler.slice"
+import { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
+import { groupBy } from "utils/group-by"
+import { selectSubareaColors } from "features/labeler/labeler.selectors"
 
+
+/**
+ * filter the poins by country
+ */
+export const selectMapStyle = createSelector([selectCountry],
+  (selectedCountry): PortPosition[] => []
+)
+
+export const selectCountries = createSelector([selectMapData],
+  (data) => {
+    if (!data) {
+      return []
+    }
+    const countriesDuplicated: string[] = data.map(e => {
+      return e.iso3
+    })
+    const countries = [...new Set(countriesDuplicated)];
+
+    return countries.sort().map(e => {
+      return {
+        id: e,
+        label: e,
+      }
+    })
+  }
+)
+
+/**
+ * filter the poins by country
+ */
+export const selectPortPointsByCountry = createSelector([selectMapData, selectCountry],
+  (data, selectedCountry): PortPosition[] => data?.filter((point) => point.iso3 === selectedCountry) || []
+  /*.map(point => ({
+    ...point,
+    lat: parseFloat(point.lat.toString()),
+    lon: parseFloat(point.lon.toString()),
+  }))*/
+)
 
 /**
  * Creates a custom features for the port points
  */
- export const selectPortPoints = createSelector([selectSelectedPoints, selectCountry],
-  (selectedPoints, selectedCountry): PortPositionFeature[] => {
-      const colors = {
-          NA: '#ff0000',
-          'MONTEVIDEO OFFSHORE': '#0000ff'
-      }
-      const points: PortPositionFeature[] = DATA.filter((point) => point.iso3 === selectedCountry)
-      .map((point) => {
-        console.log(point.s2id)
-        console.log(parseInt(point.s2id, 16))
-        return {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [point.lon, point.lat],
-          },
-          properties: {
-            id: point.s2id,
-            color: colors[point.sublabel] ?? '#ffffff',
-            selected: selectedPoints.indexOf(point.s2id) !== -1
-          },
-          id: parseInt(point.s2id, 16),
-        } as PortPositionFeature
+export const selectPortPointsFeatures = createSelector([
+  selectSelectedPoints,
+  selectPortPointsByCountry,
+  selectSubareaColors,
+  selectSubareaValues]
+  ,
+  (selectedPoints, countryPoints, colors, subareaValues): PortPositionFeature[] => {
+    const points: PortPositionFeature[] = countryPoints?.map((point) => {
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [point.lon, point.lat],
+        },
+        properties: {
+          id: point.s2id,
+          color: colors[subareaValues[point.s2id]] ?? '#ffffff',
+          selected: selectedPoints.indexOf(point.s2id) !== -1
+        },
+        id: parseInt(point.s2id, 16),
+      } as PortPositionFeature
+    })
+
+    return points
+  }
+)
+
+export const selectPointsByPort = createSelector([selectPortPointsByCountry, selectPortValues],
+  (countryPoints, portValues): PortPosition[][] => {
+    const areas = groupBy(countryPoints, portValues, 'label')
+    const areaNames = Object.keys(areas)
+    return areaNames.map(areaName => {
+      return areas[areaName].length > 2 ? areas[areaName] : null
+    }).filter(area => area)
+  }
+)
+export const selectPointsByPortAndSubarea = createSelector([selectPointsByPort, selectSubareaValues],
+  (portPoints, subareasValues): PortPosition[][] => {
+    const subareas = portPoints.flatMap((poins) => groupBy(poins, subareasValues, 'community_iso3'))
+
+    return subareas.flatMap(subarea => {
+      const subareaNames = Object.keys(subarea)
+      return subareaNames.map(subareaName => {
+        return subarea[subareaName].length > 2 ? subarea[subareaName] : null
       })
- 
-      return points
-    }
+    }).filter(area => area)
+  }
+)
+/**
+ * Creates a custom features for the port points
+ */
+export const selectPortAreaFeatures = createSelector([selectPointsByPort],
+  (areas): any[] => {
+    const result = areas.map(areaPositions => {
+      const positions = areaPositions.map((p) => point([p.lon, p.lat]))
+      if (positions.length < 3) return null
+      const collection = featureCollection(
+        positions
+      )
+      const concav = concave(collection, { units: 'miles', maxEdge: 10000 })
+      console.log('selectPortAreaFeatures', concav)
+      return concav ? {
+        ...buffer(concav, 0.2, { units: 'miles' }),
+        properties: {
+          color: '#ffffff'
+        }
+      } : null
+    }).filter(feature => feature)
+
+    return result
+  }
+)
+/**
+ * Creates a custom features for the port points
+ */
+export const selectSubareaFeatures = createSelector([selectPointsByPortAndSubarea, selectSubareaColors, selectSubareaValues],
+  (areas, colors, subareaValues): any[] => {
+    const result = areas.map(areaPositions => {
+      const positions = areaPositions.map((p) => point([p.lon, p.lat]))
+      if (positions.length < 3) return null
+      const collection = featureCollection(
+        positions
+      )
+      const concav = concave(collection, { units: 'miles', maxEdge: 10000 })
+      return concav ? {
+        ...buffer(concav, 0.1, { units: 'miles' }),
+        properties: {
+          color: colors[subareaValues[areaPositions[0].s2id]]
+        }
+      } : null
+    }).filter(feature => feature)
+
+    return result
+  }
 )
 
 /**
  * Using the custom Mapbox GL features, it return the layer needed to render port points
  */
- export const selectPortPositionLayer = createSelector(
-    [selectPortPoints],
-    (points): PortPositionsGeneratorConfig => {
-      return {
-        type: 'geojson',
-        data: {
-          features: points,
-          type: 'FeatureCollection',
-        },
-      }
+export const selectAreaLayer = createSelector(
+  [selectPortAreaFeatures, selectSubareaFeatures],
+  (areas, subareas): AreaGeneratorConfig => {
+    return {
+      type: 'geojson',
+      data: {
+        features: [...areas, ...subareas],
+        type: 'FeatureCollection',
+      },
     }
-  )
+  }
+)
+
+/**
+ * Using the custom Mapbox GL features, it return the layer needed to render port points
+ */
+export const selectPortPositionLayer = createSelector(
+  [selectPortPointsFeatures],
+  (points): PortPositionsGeneratorConfig => {
+    return {
+      type: 'geojson',
+      data: {
+        features: points,
+        type: 'FeatureCollection',
+      },
+    }
+  }
+)

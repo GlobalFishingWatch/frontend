@@ -1,7 +1,5 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React from 'react'
 import Table from 'features/table/Table'
-import { selectSelectedPoints } from 'features/labeler/labeler.slice'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
 
@@ -11,12 +9,10 @@ type SidebarProps = {
 
 function Sidebar({ onMenuClick }: SidebarProps) {
 
-  console.log(useSelector(selectSelectedPoints))
-
   return (
     <div className={styles.container}>
       <div className="scrollContainer">
-        <SidebarHeader/>
+        <SidebarHeader />
         <Table></Table>
       </div>
     </div>

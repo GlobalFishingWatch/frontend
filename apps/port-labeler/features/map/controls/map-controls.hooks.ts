@@ -4,10 +4,10 @@ import { useViewport } from '../map-viewport.hooks'
 import useMapInstance from '../map-context.hooks'
 
 
-export const useMapBounds = (mapRef: any) => {
+export const useMapBounds = () => {
     const { viewport } = useViewport()
     const instance = useMapInstance()
-    const [bounds, setBounds] = useState<MiniglobeBounds | any>(null)
+    const [bounds, setBounds] = useState<MiniglobeBounds>(null)
     useEffect(() => {
         if (instance) {
             const rawBounds = instance.getBounds()

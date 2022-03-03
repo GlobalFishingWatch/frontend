@@ -1,15 +1,14 @@
-import React, { useRef, useMemo, useCallback, useEffect } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { InteractiveMap, MapRequest } from 'react-map-gl'
 import { useSelector } from 'react-redux'
-import Point from '@mapbox/point-geometry';
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import mapStyle from 'features/map/map-style'
+import { selectCountry } from 'features/labeler/labeler.slice';
 import { useViewport } from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
 import styles from './Map.module.css'
 import { useMapBounds } from './controls/map-controls.hooks'
-import { selectPortPositionLayer } from './map.selectors'
-import useMapInstance from './map-context.hooks'
+import { selectAreaLayer, selectPortPointsByCountry, selectPortPositionLayer } from './map.selectors'
 import { useSelectorConnect } from './map.hooks';
 
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
@@ -34,22 +33,35 @@ const mapOptions = {
 
 const Map = (): React.ReactElement => {
   const { viewport, onViewportChange } = useViewport()
+  const country = useSelector(selectCountry)
 
-  const mapRef = useRef<any>(null)
-  const mapBounds = useMapBounds(mapRef ?? null)
-  
+  const mapBounds = useMapBounds()
   const pointsLayer = useSelector(selectPortPositionLayer)
+  const areaLayer = useSelector(selectAreaLayer)
   const style = useMemo(() => {
     return {
       ...mapStyle,
       sources: {
         ...mapStyle.sources,
-        pointsLayer
+        areaLayer,
+        pointsLayer,
       }
     }
-  }, [pointsLayer])
-  console.log(style)
+  }, [areaLayer, pointsLayer])
   const { box, onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp, onHover } = useSelectorConnect()
+
+  const points = useSelector(selectPortPointsByCountry)
+
+  useEffect(() => {
+    if (points.length) {
+      onViewportChange({
+        latitude: parseFloat((points[0].lat.toString())),
+        longitude: parseFloat((points[0].lon.toString())),
+        zoom: 12
+      })
+    }
+  }, [onViewportChange, points])
+
   return (
     <div className={styles.container}
       onKeyDown={onKeyDown}
@@ -71,14 +83,14 @@ const Map = (): React.ReactElement => {
         mapOptions={mapOptions}
       ></InteractiveMap>
       <MapControls bounds={mapBounds}></MapControls>
-      {box && 
-        <div 
-        style={{
-          width: box.width,
-          height: box.height,
-          transform: box.transform
-        }}
-        className={styles.mapSelection}></div>
+      {box &&
+        <div
+          style={{
+            width: box.width,
+            height: box.height,
+            transform: box.transform
+          }}
+          className={styles.mapSelection}></div>
       }
     </div>
   )

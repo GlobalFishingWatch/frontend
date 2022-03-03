@@ -25,3 +25,22 @@
     margin-left: 0;
   }
 }
+
+.importButton {
+  width: var(--size-M);
+  height: var(--size-M);
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  transition: var(--transition);
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: var(--color-primary-blue);
+  background-color: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+}

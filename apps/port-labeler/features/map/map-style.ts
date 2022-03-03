@@ -122,6 +122,16 @@ const style = {
       },
     },
     {
+      id: 'subareas',
+      type: 'fill',
+      source: 'areaLayer',
+      layout: {},
+      paint: {
+        'fill-color': ['get', 'color'],
+        'fill-opacity': 0.4
+      }
+    },
+    {
       id: 'portPoints',
       type: 'circle',
       source: 'pointsLayer',
@@ -146,6 +156,7 @@ const style = {
         ],
       },
     } as LayerSpecification,
+
   ],
 }
 export default style
