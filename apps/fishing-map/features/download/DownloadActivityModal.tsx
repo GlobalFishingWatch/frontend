@@ -117,7 +117,7 @@ function DownloadActivityModal() {
   const filteredTemporalResolutionOptions: ChoiceOption[] = useMemo(
     () =>
       temporalResolutionOptions.map((option) => {
-        if (option.id === TemporalResolution.Yearly && duration && duration.years < 1) {
+        if (option.id === TemporalResolution.Yearly && duration?.years < 1) {
           return {
             ...option,
             disabled: true,
@@ -125,7 +125,11 @@ function DownloadActivityModal() {
             tooltipPlacement: 'top',
           }
         }
-        if (option.id === TemporalResolution.Monthly && duration && duration.months < 1) {
+        if (
+          option.id === TemporalResolution.Monthly &&
+          duration?.years < 1 &&
+          duration?.months < 1
+        ) {
           return {
             ...option,
             disabled: true,
