@@ -101,19 +101,6 @@
   flex-wrap: wrap;
 }
 
-.stats {
-  font: var(--font-S);
-  color: var(--color-secondary-blue);
-  margin-bottom: var(--space-XS);
-  transition: filter 0.2s linear;
-}
-
-.statsLoading {
-  filter: blur(3px);
-  pointer-events: none;
-  user-select: none;
-}
-
 .filter:not(:last-of-type) {
   margin-right: var(--space-M);
 }

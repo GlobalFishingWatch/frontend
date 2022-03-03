@@ -185,34 +185,42 @@ function ActivityLayerPanel({
         <div className={styles.properties}>
           {stats && (
             <div
-              className={cx(styles.stats, {
-                [styles.statsLoading]: dataviewStatsStatus === AsyncReducerStatus.Loading,
+              className={cx(activityStyles.stats, {
+                [activityStyles.statsLoading]: dataviewStatsStatus === AsyncReducerStatus.Loading,
               })}
             >
               {showStats ? (
-                <Fragment>
-                  {stats.vessel_id > 0 && (
-                    <span>
-                      <I18nNumber number={stats.vessel_id} />{' '}
-                      {t('common.vessel', {
-                        count: stats.vessel_id,
-                        defaultValue: 'vessels',
-                      }).toLocaleLowerCase()}
-                    </span>
+                <Tooltip
+                  // placement="bottom"
+                  content={t(
+                    'layer.statsHelp',
+                    'The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.'
                   )}
-                  {stats.flag > 0 && !dataview.config?.filters?.flag && (
-                    <Fragment>
-                      <span> {t('common.from', 'from')} </span>
+                >
+                  <div className={activityStyles.help}>
+                    {stats.vessel_id > 0 && (
                       <span>
-                        <I18nNumber number={stats.flag} />{' '}
-                        {t('layer.flagState', {
-                          count: stats.flag,
-                          defaultValue: 'flag states',
+                        <I18nNumber number={stats.vessel_id} />{' '}
+                        {t('common.vessel', {
+                          count: stats.vessel_id,
+                          defaultValue: 'vessels',
                         }).toLocaleLowerCase()}
                       </span>
-                    </Fragment>
-                  )}
-                </Fragment>
+                    )}
+                    {stats.flag > 0 && !dataview.config?.filters?.flag && (
+                      <Fragment>
+                        <span> {t('common.from', 'from')} </span>
+                        <span>
+                          <I18nNumber number={stats.flag} />{' '}
+                          {t('layer.flagState', {
+                            count: stats.flag,
+                            defaultValue: 'flag states',
+                          }).toLocaleLowerCase()}
+                        </span>
+                      </Fragment>
+                    )}
+                  </div>
+                </Tooltip>
               ) : (
                 t('workspace.noVesselInFilters', 'No vessels match your filters')
               )}
