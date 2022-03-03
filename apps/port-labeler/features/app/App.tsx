@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
-import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { MapContext } from 'features/map/map-context.hooks'
 import menuBgImage from 'assets/images/menubg.jpg'
@@ -48,7 +47,6 @@ function App(): React.ReactElement {
   useAnalytics()
   useReplaceLoginUrl()
   const dispatch = useDispatch()
-  const i18n = useTranslation()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -65,10 +63,6 @@ function App(): React.ReactElement {
   }, [dispatchQueryParams, sidebarOpen])
 
   const asideWidth = '50%'
-
-  if (!i18n.ready) {
-    return null
-  }
 
   return (
     <MapContextProvider>

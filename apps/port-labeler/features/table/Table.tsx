@@ -103,11 +103,11 @@ function Table() {
   }, [dispatch, subareas])
 
   const onSubareaChange = useCallback((id, value) => {
-    dispatch(changeSubareaValue({ id, value, selected }))
+    dispatch(changeSubareaValue({ id, value }))
   }, [dispatch])
 
   const onPortChange = useCallback((id, value) => {
-    dispatch(changePortValue({ id, value, selected }))
+    dispatch(changePortValue({ id, value }))
   }, [dispatch])
 
   const sortRecords = useMemo(() => {

@@ -6,7 +6,10 @@
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": ["nx build port-labeler --parallel", "nx docker-prepare port-labeler"],
+        "commands": [
+          "nx build port-labeler --parallel",
+          "nx docker-prepare port-labeler"
+        ],
         "parallel": false
       }
     },
@@ -22,7 +25,9 @@
     },
     "compile": {
       "executor": "@nrwl/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "root": "apps/port-labeler",
@@ -47,7 +52,9 @@
       "executor": "@nrwl/workspace:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/port-labeler/public/locales"]
+        "commands": [
+          "rm -rf dist/apps/port-labeler/public/locales"
+        ]
       }
     },
     "serve": {
@@ -59,7 +66,7 @@
       },
       "configurations": {
         "production": {
-          "buildTarget": "port-labeler:build:production",
+          "buildTarget": "port-labeler:compile:production",
           "dev": false
         }
       }
@@ -67,19 +74,25 @@
     "build": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "port-labeler:build:production"
+        "buildTarget": "port-labeler:compile:production"
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/port-labeler/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/port-labeler/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/port-labeler"],
+      "outputs": [
+        "coverage/apps/port-labeler"
+      ],
       "options": {
         "jestConfig": "apps/port-labeler/jest.config.js",
         "passWithNoTests": true

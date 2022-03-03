@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 export const useI18nFlag = (iso: string) => {
   const { t } = useTranslation('flags')
@@ -8,7 +7,7 @@ export const useI18nFlag = (iso: string) => {
 }
 
 const I18nFlag = ({ iso }: { iso: string }) => {
-  const flagTranslated = useI18nFlag(iso) || EMPTY_FIELD_PLACEHOLDER
+  const flagTranslated = useI18nFlag(iso)
   return <Fragment>{flagTranslated}</Fragment>
 }
 
