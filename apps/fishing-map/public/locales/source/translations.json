@@ -317,6 +317,7 @@
     "source": "Source",
     "source_one": "Source",
     "source_other": "Sources",
+    "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combine layers",
       "split": "Split layers"
