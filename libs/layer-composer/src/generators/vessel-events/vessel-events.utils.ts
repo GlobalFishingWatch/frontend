@@ -6,7 +6,7 @@ import { Dictionary } from '../../types'
 import filterTrackByTimerange from '../track/filterTrackByTimerange'
 import { AuthorizationOptions, RawEvent } from '../types'
 
-const EVENTS_COLORS: Dictionary<string> = {
+export const EVENTS_COLORS: Dictionary<string> = {
   encounter: '#FAE9A0',
   partially: '#F59E84',
   unmatched: '#CE2C54',
@@ -16,7 +16,7 @@ const EVENTS_COLORS: Dictionary<string> = {
   fishing: '#ffffff',
 }
 
-const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
+export const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
   encounter: '#C3C09A',
   partially: '#F59E84',
   unmatched: '#CE2C54',
@@ -26,14 +26,15 @@ const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
   fishing: '#ffffff',
 }
 
-const SHAPE_BY_TYPE: Record<EventType, string> = {
+export const SHAPE_BY_TYPE: Record<EventType, string> = {
   fishing: 'circle',
   encounter: 'encounter',
   loitering: 'loitering',
   port_visit: 'port',
   gap: 'circle',
 }
-const SHAPE_SIZE_BY_TYPE: Record<EventType, number> = {
+
+export const SHAPE_SIZE_BY_TYPE: Record<EventType, number> = {
   fishing: 0.4,
   encounter: 1,
   loitering: 1,
@@ -111,7 +112,7 @@ export const getVesselEventsGeojson = (
         shapeSize: SHAPE_SIZE_BY_TYPE[event.type as EventType],
         shapePriority: event.type === 'fishing' ? 0 : 1,
         color,
-        colorOutline
+        colorOutline,
       },
       geometry: {
         type: 'Point',

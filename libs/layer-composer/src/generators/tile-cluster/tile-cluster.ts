@@ -2,8 +2,12 @@ import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
-import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { Group } from '../../types'
+import {
+  EVENTS_COLORS,
+  SHAPE_BY_TYPE,
+  SHAPE_SIZE_BY_TYPE,
+} from '../vessel-events/vessel-events.utils'
 
 const MAX_ZOOM_TO_CLUSTER_POINTS = 4
 
@@ -103,15 +107,23 @@ class TileClusterGenerator {
       },
       {
         id: 'unclustered_point',
-        type: 'circle',
+        type: 'symbol',
         source: config.id,
         'source-layer': 'points',
         filter: ['<=', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         paint: {
-          'circle-color': config.color || '#FAE9A0',
-          'circle-radius': [...activeFilter, 8, 5],
-          'circle-stroke-width': 1,
-          'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
+          'icon-color': EVENTS_COLORS.encounter,
+          'icon-halo-color': config.color || '#ffffff',
+          'icon-halo-width': 1,
+        },
+        layout: {
+          'icon-allow-overlap': true,
+          'icon-size': [
+            ...activeFilter,
+            ['*', 1.5, SHAPE_SIZE_BY_TYPE.encounter],
+            SHAPE_SIZE_BY_TYPE.encounter,
+          ],
+          'icon-image': SHAPE_BY_TYPE.encounter,
         },
         metadata: {
           interactive: true,
