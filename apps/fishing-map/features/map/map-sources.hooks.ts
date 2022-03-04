@@ -6,7 +6,7 @@ import {
   HeatmapLayerMeta,
   DEFAULT_CONTEXT_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
-  TRACK_HIGHLIGHT_SUFIX,
+  TRACK_HIGHLIGHT_SUFFIX,
 } from '@globalfishingwatch/layer-composer'
 import {
   isActivityDataview,
@@ -54,7 +54,7 @@ export const useSourceInStyle = (sourcesIds: SourcesHookInput) => {
 
 // Don't consider loading states for our interaction layers
 const isInteractionSource = (sourceId: string) => {
-  return sourceId.includes(TRACK_HIGHLIGHT_SUFIX)
+  return sourceId.includes(TRACK_HIGHLIGHT_SUFFIX)
 }
 
 export const useMapSourceTilesLoadedAtom = () => {
