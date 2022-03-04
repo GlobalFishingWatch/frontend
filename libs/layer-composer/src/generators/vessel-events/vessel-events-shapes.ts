@@ -3,6 +3,7 @@ import { FeatureCollection } from 'geojson'
 import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
+  CircleLayerSpecification
 } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
 import {
@@ -18,6 +19,7 @@ import {
   filterGeojsonByTimerange,
   filterFeaturesByTimerange,
   getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
+  groupFeaturesByType
 } from './vessel-events.utils'
 
 export type GlobalVesselEventsShapesGeneratorConfig =
@@ -56,16 +58,23 @@ class VesselsEventsShapesGenerator {
       end
     )
 
-    const pointsSource: VesselsEventsSource = {
-      id: `${id}_points`,
+    const { fishing, other } = memoizeCache[config.id].groupFeaturesByType(featuresFiltered)
+
+    const fishingEventsSource: VesselsEventsSource = {
+      id: `${id}_fishingEvents`,
       type: 'geojson',
-      data: { ...geojson, features: featuresFiltered },
+      data: { ...geojson, features: fishing },
+    }
+    const otherEventsSource: VesselsEventsSource = {
+      id: `${id}_otherEvents`,
+      type: 'geojson',
+      data: { ...geojson, features: other },
     }
 
     const showTrackSegments = this._showTrackSegments(config)
 
     if (!showTrackSegments) {
-      return [pointsSource]
+      return [fishingEventsSource, otherEventsSource]
     }
 
     const segments = memoizeCache[config.id].getVesselEventsSegmentsGeojson(
@@ -81,7 +90,7 @@ class VesselsEventsShapesGenerator {
       type: 'geojson',
       data: segmentsFiltered,
     }
-    return [pointsSource, segmentsSource]
+    return [fishingEventsSource, otherEventsSource, segmentsSource]
   }
 
   _getStyleLayers = (config: GlobalVesselEventsShapesGeneratorConfig) => {
@@ -103,11 +112,34 @@ class VesselsEventsShapesGenerator {
       return expr
     }
 
-    const pointsLayers: SymbolLayerSpecification[] = [
+    const pointsLayers: (CircleLayerSpecification | SymbolLayerSpecification)[] = [
+      {
+        type: 'circle',
+        id: `${config.id}_fishingEvents`,
+        source: `${config.id}_fishingEvents`,
+        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
+        paint: {
+          'circle-color': getExpression('#ffffff', ['get', 'color']),
+          'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            4,
+            getExpression(5, 3),
+            9,
+            getExpression(10, 6),
+          ],
+        },
+        metadata: {
+          group: Group.Point,
+          interactive: true,
+          generatorId: config.id,
+        },
+      } as CircleLayerSpecification,
       {
         type: 'symbol',
-        id: `${config.id}_points`,
-        source: `${config.id}_points`,
+        id: `${config.id}_otherEvents`,
+        source: `${config.id}_otherEvents`,
         ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
         layout: {
           'icon-allow-overlap': true,
@@ -128,7 +160,7 @@ class VesselsEventsShapesGenerator {
           interactive: true,
           generatorId: config.id,
         },
-      } as SymbolLayerSpecification,
+      } as SymbolLayerSpecification
     ]
 
     if (!showTrackSegments) {
@@ -172,6 +204,7 @@ class VesselsEventsShapesGenerator {
       ),
       filterGeojsonByTimerange: memoizeOne(filterGeojsonByTimerange),
       filterFeaturesByTimerange: memoizeOne(filterFeaturesByTimerange),
+      groupFeaturesByType: memoizeOne(groupFeaturesByType),
     })
 
     return {

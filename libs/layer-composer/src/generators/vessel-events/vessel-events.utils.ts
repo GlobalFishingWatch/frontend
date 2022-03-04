@@ -224,45 +224,13 @@ export const getVesselEventsSegmentsGeojson = (
   return featureCollection
 }
 
-// export const getFeaturesTypes = (data: RawEvent[]) => {
-//   const featureTypes: { [key in EventType]?: boolean } = {}
-//   data.forEach((event) => {
-//     const currentType = event.type as EventType
-//     if (!featureTypes[currentType]) {
-//       featureTypes[currentType] = true
-//     }
-//   })
-//   return Object.keys(featureTypes)
-// }
+type FeaturesByType = { 'fishing': Feature[], 'other': Feature[] }
 
-// export const getSourceId = (configId: string, type: EventType) => `${configId}_points_${type}`
-
-// type SourcesByType = { [key in EventType]?: VesselsEventsSource }
-
-// export const groupSourcesByType = (
-//   featuresFiltered: any[],
-//   id: string,
-//   geojson: FeatureCollection,
-//   types: EventType[]
-// ) => {
-//   const sourcesByType: SourcesByType = featuresFiltered.reduce(
-//     (agg: SourcesByType, current: Feature) => {
-//       const currentType = current.properties?.type as EventType
-//       const group = agg[currentType]
-//       if (group && group.data) {
-//         ;(group.data as FeatureCollection).features.push(current)
-//         return agg
-//       }
-//       return {
-//         ...agg,
-//         [currentType]: {
-//           id: getSourceId(id, currentType),
-//           type: 'geojson',
-//           data: { ...geojson, features: [current] },
-//         },
-//       }
-//     },
-//     []
-//   )
-//   return Object.keys(sourcesByType).map((type) => sourcesByType[type as EventType])
-// }
+export const groupFeaturesByType = (
+  features: Feature[],
+): FeaturesByType => {
+  return {
+    fishing: features.filter(e => e.properties?.type === 'fishing'),
+    other: features.filter(e => e.properties?.type !== 'fishing')
+    }
+  }
