@@ -1,8 +1,8 @@
 import React, { useMemo, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { useMapLegend } from '@globalfishingwatch/react-hooks'
-import { TimebarStackedActivity, TimebarChartValue } from '@globalfishingwatch/timebar'
+import { getLegendId, useMapLegend } from '@globalfishingwatch/react-hooks'
+import { TimebarStackedActivity, HighlighterCallbackFn } from '@globalfishingwatch/timebar'
 import {
   selectActiveActivityDataviews,
   selectActiveEnvironmentalDataviews,
@@ -27,9 +27,10 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   const { loading, stackedActivity } = useStackedActivityDataview(activeDataviews)
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
-  const getActivityHighlighterLabel = useCallback(
-    (_: any, value: TimebarChartValue, __: any, itemIndex: number) => {
-      const unit = mapLegends[itemIndex]?.unit || ''
+  const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
+    (chunk, value, item) => {
+      const dataviewId = item.props?.dataviewId
+      const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
       return `${formatNumber(value.value)} ${unit} on screen`
     },
     [mapLegends]

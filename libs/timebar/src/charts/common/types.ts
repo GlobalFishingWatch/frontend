@@ -32,14 +32,13 @@ export type TimebarChartChunk<T = void> = {
   props?: T
 }
 
-export type HighlighterCallback =
-  | string
-  | ((
-      chunk: TimebarChartChunk<any>,
-      value: TimebarChartValue | undefined,
-      item?: TimebarChartItem,
-      itemIndex?: number
-    ) => string)
+export type HighlighterCallbackFn = (
+  chunk: TimebarChartChunk<any>,
+  value: TimebarChartValue | undefined,
+  item?: TimebarChartItem,
+  itemIndex?: number
+) => string
+export type HighlighterCallback = string | HighlighterCallbackFn
 
 export type HighlighterDateCallback = (timestamp: number) => string
 

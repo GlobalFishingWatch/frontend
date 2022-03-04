@@ -187,6 +187,7 @@ export const useTimeseriesToChartData = (
       getHighlighterLabel: highlighterCallback,
       props: {
         unit: 'petaboobs',
+        dataviewId: dataview.id,
       },
     }
     return item
