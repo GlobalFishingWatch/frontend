@@ -92,12 +92,14 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                 className={cx(layerStyles.icon, layerStyles[eventType], {
                   [styles.active]: active,
                 })}
-                style={{
-                  backgroundColor:
-                    eventType === 'fishing' && tracks.length === 1
-                      ? tracks[0].config.color
-                      : EVENTS_COLORS[eventType],
-                }}
+                style={
+                  {
+                    '--color':
+                      eventType === 'fishing' && tracks.length === 1
+                        ? tracks[0].config.color
+                        : EVENTS_COLORS[eventType],
+                  } as React.CSSProperties
+                }
               />
               <Switch
                 active={active}

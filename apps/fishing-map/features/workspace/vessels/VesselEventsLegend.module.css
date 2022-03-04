@@ -29,6 +29,7 @@
   height: 8px;
   min-width: 8px;
   margin-right: 0.6rem;
+  background: var(--color);
 }
 
 .disabled {
@@ -42,4 +43,9 @@
 .encounter,
 .loitering {
   transform: rotateZ(45deg);
+}
+
+.loitering {
+  background: transparent;
+  border: 2px solid var(--color);
 }
