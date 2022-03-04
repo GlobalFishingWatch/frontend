@@ -12,6 +12,7 @@ import { formatNumber } from 'utils/info'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { TimebarVisualisations } from 'types'
 import { useTimebarEnvironmentConnect } from 'features/timebar/timebar.hooks'
+import { t } from 'features/i18n/i18n'
 import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
@@ -27,13 +28,25 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   const { loading, stackedActivity } = useStackedActivityDataview(activeDataviews)
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
+
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     (chunk, value, item) => {
       const dataviewId = item.props?.dataviewId
       const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
-      return `${formatNumber(value.value)} ${unit} on screen`
+      const maxHighlighterFractionDigits =
+        visualisation === TimebarVisualisations.Environment ? 2 : undefined
+      const labels = [
+        formatNumber(value.value, maxHighlighterFractionDigits),
+        unit,
+        t('common.onScreen', 'on screen'),
+      ]
+      if (visualisation === TimebarVisualisations.Environment) {
+        labels.push(t('common.averageAbbreviated', 'avg.'))
+      }
+
+      return labels.join(' ')
     },
-    [mapLegends]
+    [mapLegends, visualisation]
   )
 
   if (!stackedActivity || !stackedActivity.length) return null
