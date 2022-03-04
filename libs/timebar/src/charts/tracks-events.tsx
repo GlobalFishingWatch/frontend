@@ -1,8 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
+import EncounterIcon from '../icons/events-shapes/encounter.svg'
+import LoiteringIcon from '../icons/events-shapes/loitering.svg'
 import {
   TimebarChartData,
   TimebarChartItem,
@@ -102,11 +104,12 @@ const TracksEvents = ({
                 {
                   left: `${event.x}px`,
                   width: `${event.width}px`,
+                  '--encounterIcon': `url(${EncounterIcon})`,
+                  '--loiteringIcon': `url(${LoiteringIcon})`,
                   '--background-color':
                     useTrackColor || event.type === 'fishing'
                       ? trackEvents.color
                       : event.props?.color || 'white',
-                  '--encounterWidth': `${Math.max(12, event.width || 0)}px`,
                   transition: immediate
                     ? 'none'
                     : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,

@@ -10,13 +10,13 @@
 .event {
   transform: translateY(-50%);
   cursor: pointer;
-  /* background: var(--background-color); */
+  background: var(--background-color);
 }
 
-/* .event:hover,
+.event:hover,
 .event.highlighted {
   background: white;
-} */
+}
 
 .fishing {
   border-radius: 99px;
@@ -32,50 +32,31 @@
   border: 1px solid var(--timebar-main-background-color);
 }
 
-.encounter {
+.encounter,
+.loitering {
+  background: transparent;
   height: 0;
   box-sizing: border-box;
   border-style: solid;
   border-image-repeat: round;
-  border-image: url('https://gist.githubusercontent.com/nerik/712b34019316b97a85d5b63d9d53e31f/raw/58c146ff3184df6fcf595f22695d33b91a7ddcc1/encounter.svg');
+}
+
+.encounter {
+  border-image: var(--encounterIcon);
   border-width: 4px;
   border-image-slice: 50% 6 fill;
-  border-image: url('../icons/events-shapes/encounter.svg');
 }
-/* 
-.encounter,
+
 .loitering {
-  height: 12px;
-  min-width: 12px;
-  z-index: 1;
-  background: var(--timebar-main-background-color);
+  border-image: var(--loiteringIcon);
+  border-width: 4px;
+  border-image-slice: 50% 6 fill;
 }
 
 .encounter:hover,
-.encounter.highlighted {
-  background: var(--timebar-main-background-color);
+.encounter.highlighted,
+.loitering:hover,
+.loitering.highlighted {
+  filter: brightness(1.75);
+  background: transparent;
 }
-
-.encounter .eventInner,
-.loitering .eventInner {
-  background: var(--background-color);
-  width: 100%;
-  height: 12px;
-  display: block;
-  clip-path: polygon(
-    0 50%,
-    6px 0,
-    calc(var(--encounterWidth) - 6px) 0,
-    var(--encounterWidth) 50%,
-    calc(var(--encounterWidth) - 6px) 100%,
-    6px 100%
-  );
-  z-index: 1;
-}
-
-.encounter:hover .eventInner,
-.encounter.highlighted .eventInner,
-.loitering:hover .eventInner,
-.loitering.highlighted .eventInner {
-  background: white;
-} */
