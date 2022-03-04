@@ -257,7 +257,7 @@ class Timebar extends Component {
 
     return (
       <ImmediateContext.Provider value={{ immediate, toggleImmediate: this.toggleImmediate }}>
-        <RecoilRoot>
+        <RecoilRoot override={false}>
           <div className={styles.Timebar}>
             {enablePlayback && (
               <Playback
