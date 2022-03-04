@@ -109,14 +109,14 @@ export const useMapSourceTilesLoadedAtom = () => {
 export const useMapSourceTiles = (sourcesId?: SourcesHookInput) => {
   const sourceTilesLoaded = useRecoilValue(mapTilesAtom)
   const sourcesIdsList = toArray(sourcesId)
-  const sources = sourcesId
+  const sourcesLoaded = sourcesId
     ? Object.fromEntries(
         Object.entries(sourceTilesLoaded).filter(([id, source]) => {
           return sourcesIdsList.includes(id)
         })
       )
     : sourceTilesLoaded
-  return useMemoCompare(sources)
+  return sourcesLoaded
 }
 
 export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
@@ -169,6 +169,7 @@ type DataviewMetadata = {
   dataviewsId: string[]
   filter?: string[]
 }
+
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
@@ -180,7 +181,10 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
 
   const dataviewsMetadata = useMemo(() => {
     const style = { metadata: { generatorsMetadata } } as ExtendedStyle
-    const dataviewsArray = toArray(memoizedDataviews)
+    const dataviewsArray = toArray(memoizedDataviews || [])
+    if (!dataviewsArray || !dataviewsArray.length) {
+      return []
+    }
     const dataviewsMetadata: DataviewMetadata[] = dataviewsArray.reduce((acc, dataview) => {
       const activityDataview = isActivityDataview(dataview)
       if (activityDataview) {
@@ -223,7 +227,6 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         sourceId,
         quantizeOffset,
       }))
-
       const chunksFeatures: DataviewChunkFeature[] | null = chunks
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const emptyChunkState = {} as TilesAtomSourceState

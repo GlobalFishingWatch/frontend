@@ -265,7 +265,10 @@ const TimebarWrapper = () => {
       >
         {!isSmallScreen ? (
           <Fragment>
-            {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
+            {(timebarVisualisation === TimebarVisualisations.Heatmap ||
+              timebarVisualisation === TimebarVisualisations.Environment) && (
+              <TimebarActivityGraph visualisation={timebarVisualisation} />
+            )}
             {timebarVisualisation === TimebarVisualisations.Vessel &&
               (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
                 <Fragment>

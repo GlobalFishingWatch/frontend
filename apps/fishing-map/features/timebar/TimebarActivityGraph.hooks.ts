@@ -1,21 +1,19 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
 import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { getTimeseriesFromDataviews } from 'features/timebar/TimebarActivityGraph.utils'
 import { filterByViewport } from 'features/map/map.utils'
 
-export const useStackedActivity = () => {
+export const useStackedActivityDataview = (dataviews: UrlDataviewInstance[]) => {
   const [stackedActivity, setStackedActivity] = useState<Timeseries>()
   const isSmallScreen = useSmallScreen()
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 400)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const dataviewFeatures = useMapDataviewFeatures(temporalgridDataviews)
+  const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
   const loading = boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures)
 
