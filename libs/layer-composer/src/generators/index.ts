@@ -16,6 +16,7 @@ import VesselsEventsShapesGenerator from './vessel-events/vessel-events-shapes'
 
 export * from './heatmap/types'
 export * from './heatmap/util'
+export { TRACK_HIGHLIGHT_SUFIX } from './track/track'
 export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
 export { DEFAULT_BACKGROUND_COLOR } from './background/config'
 export { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/config'

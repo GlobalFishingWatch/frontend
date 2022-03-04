@@ -12,6 +12,8 @@ import { isConfigVisible } from '../utils'
 import filterTrackByTimerange from './filterTrackByTimerange'
 import { simplifyTrack } from './simplify-track'
 
+export const TRACK_HIGHLIGHT_SUFIX = '_highlighted'
+
 const mapZoomToMinPosΔ = (zoomLoadLevel: number) => {
   // first normalize and invert z level
   const normalizedZoom = scaleLinear().clamp(true).range([1, 0]).domain([3, 12])(zoomLoadLevel)
@@ -88,8 +90,8 @@ export type GlobalTrackGeneratorConfig = MergedGeneratorConfig<TrackGeneratorCon
 
 class TrackGenerator {
   type = GeneratorType.Track
-  highlightSufix = '_highlighted'
-  highlightEventSufix = `${this.highlightSufix}_event`
+  highlightSufix = TRACK_HIGHLIGHT_SUFIX
+  highlightEventSufix = `${TRACK_HIGHLIGHT_SUFIX}_event`
 
   _getStyleSources = (config: GlobalTrackGeneratorConfig) => {
     const defaultGeoJSON: FeatureCollection = {
