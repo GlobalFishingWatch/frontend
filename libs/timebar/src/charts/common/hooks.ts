@@ -168,7 +168,6 @@ export const useTimeseriesToChartData = (
   highlighterCallback?: HighlighterCallback
 ): TimebarChartData => {
   if (!data || !data.length) return []
-
   return dataviews.map((dataview, i) => {
     const values: TimebarChartValue[] = data.map((frame) => {
       return {
@@ -186,7 +185,7 @@ export const useTimeseriesToChartData = (
       color: dataview.config?.color,
       getHighlighterLabel: highlighterCallback,
       props: {
-        unit: 'petaboobs',
+        unit: '',
         dataviewId: dataview.id,
       },
     }
