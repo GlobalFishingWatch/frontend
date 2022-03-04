@@ -69,7 +69,12 @@ export function HeaderMenuItem({ index, item, mini = false }: HeaderMenuItemProp
           />
           <ul role="menu" className={cx([styles.navListSubMenu, item.className])}>
             {item.childs.map((child, childIndex) => (
-              <HeaderMenuItem index={childIndex} item={child} mini={mini} />
+              <HeaderMenuItem
+                key={`${index}-child-${childIndex}`}
+                index={childIndex}
+                item={child}
+                mini={mini}
+              />
             ))}
           </ul>
         </Fragment>
