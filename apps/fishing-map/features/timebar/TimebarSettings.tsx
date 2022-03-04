@@ -4,9 +4,13 @@ import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveActivityDataviews,
+  selectActiveEnvironmentalDataviews,
+} from 'features/dataviews/dataviews.selectors'
 import { selectActivityCategory } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
@@ -18,7 +22,11 @@ import { ReactComponent as TracksIcon } from 'assets/icons/timebar-tracks.svg'
 import { ReactComponent as TrackSpeedIcon } from 'assets/icons/timebar-track-speed.svg'
 import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-depth.svg'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
-import { useTimebarVisualisationConnect, useTimebarGraphConnect } from './timebar.hooks'
+import {
+  useTimebarVisualisationConnect,
+  useTimebarGraphConnect,
+  useTimebarEnvironmentConnect,
+} from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
 const Icon = ({
@@ -30,7 +38,7 @@ const Icon = ({
   SvgIcon: ComponentType
   label: string
   color: string
-  disabled: boolean
+  disabled?: boolean
 }) => {
   const svgProps = {
     fill: color,
@@ -51,9 +59,11 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
+  const activeEnvironmentalDataviews = useSelector(selectActiveEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
+  const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const activityCategory = useSelector(selectActivityCategory)
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length <= 2
@@ -71,6 +81,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   }
   const setHeatmapActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Heatmap)
+  }
+  const setEnvironmentActive = (environmentalDataviewId: string) => {
+    dispatchTimebarVisualisation(TimebarVisualisations.Environment)
+    dispatchTimebarSelectedEnvId(environmentalDataviewId)
   }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
@@ -212,6 +226,31 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               }
               onClick={setVesselGraphDepth}
             />
+            {activeEnvironmentalDataviews.map((envDataview) => {
+              const dataset = envDataview.datasets?.find(
+                (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+              )
+
+              const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+              return (
+                <Radio
+                  key={envDataview.id}
+                  label={
+                    <Icon
+                      SvgIcon={AreaIcon}
+                      label={title}
+                      color={envDataview?.config.color || COLOR_PRIMARY_BLUE}
+                    />
+                  }
+                  active={
+                    timebarVisualisation === TimebarVisualisations.Environment &&
+                    timebarSelectedEnvId === envDataview.id
+                  }
+                  tooltip={activityTooltipLabel}
+                  onClick={() => setEnvironmentActive(envDataview.id)}
+                />
+              )
+            })}
           </div>
         </div>
       )}
