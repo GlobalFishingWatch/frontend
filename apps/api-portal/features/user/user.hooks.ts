@@ -52,7 +52,7 @@ export const useUser = (redirectToLogin: boolean) => {
   )
 
   useEffect(() => {
-    if (!logged && (token || refreshToken || accessToken)) {
+    if (!logged && !loading && (token || refreshToken || accessToken)) {
       dispatch(fetchUserThunk({ guest: false }))
     } else if (
       redirectToLogin &&
