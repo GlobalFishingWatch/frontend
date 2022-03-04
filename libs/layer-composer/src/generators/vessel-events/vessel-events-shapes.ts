@@ -109,13 +109,6 @@ class VesselsEventsShapesGenerator {
         id: `${config.id}_points`,
         source: `${config.id}_points`,
         ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
-        paint: {
-          'icon-color': getExpression('#ffffff', ['get', 'color']),
-          'icon-halo-color': config.color || '#ffffff',
-          // 'icon-halo-color': '#000',
-          // 'icon-halo-width': getExpression(2, 0),
-          'icon-halo-width': 1,
-        },
         layout: {
           'icon-allow-overlap': true,
           'icon-size': [
@@ -127,7 +120,7 @@ class VesselsEventsShapesGenerator {
             9,
             getExpression(['*', 3, ['get', 'shapeSize']], ['*', 2, ['get', 'shapeSize']]),
           ],
-          'icon-image': ['get', 'shape'],
+          'icon-image': getExpression(['get', 'shapeHighlight'], ['get', 'shape']),
           'symbol-sort-key': ['get', 'shapePriority'],
         },
         metadata: {

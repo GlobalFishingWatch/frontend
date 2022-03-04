@@ -88,7 +88,7 @@ export const getVesselEventsGeojson = (
     } else if (event.type === 'fishing') {
       color = trackColor || EVENTS_COLORS[event.type]
     }
-
+    const shape = SHAPE_BY_TYPE[event.type as EventType]
     return {
       type: 'Feature',
       properties: {
@@ -106,7 +106,8 @@ export const getVesselEventsGeojson = (
           }),
         }),
         icon: `${iconsPrefix}${event.type}`,
-        shape: SHAPE_BY_TYPE[event.type as EventType],
+        shape,
+        shapeHighlight: `${shape}-highlight`,
         shapeSize: SHAPE_SIZE_BY_TYPE[event.type as EventType],
         shapePriority: event.type === 'fishing' ? 0 : 1,
         color,
