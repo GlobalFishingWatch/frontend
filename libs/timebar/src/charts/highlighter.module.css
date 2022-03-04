@@ -64,7 +64,7 @@
 }
 
 .tooltipLabel:not(:last-child, .isMain)::after {
-  content: ' - ';
+  content: ', ';
 }
 
 .tooltipLabel.isMain {

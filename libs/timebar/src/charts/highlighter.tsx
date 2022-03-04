@@ -175,6 +175,7 @@ const Highlighter = ({
 
   const minHighlightChunkDuration = useMemo(() => {
     return +outerScale.invert(10) - +outerScale.invert(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [outerStart, outerEnd])
 
   const { highlighterData, highlightedChunks } = useMemo(() => {
