@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
+import React, { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
@@ -16,6 +16,7 @@ import {
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
+import { ResourceStatus } from '@globalfishingwatch/api-types'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -216,22 +217,6 @@ const TimebarWrapper = () => {
     [setMapCoordinates, zoom]
   )
 
-  // const onEventHover = useCallback(
-  //   (event: TimebarChartChunk<TrackEventChunkProps>) => {
-  //     // if (!event) {
-  //     //   dispatchHighlightedEvent(null)
-  //     //   return
-  //     // }
-
-  //     dispatch(disableHighlightedTime())
-
-  //     // const apiEvent: ApiEvent = {
-  //     //   id: event.id as string,
-  //     // } as any
-  //     // dispatchHighlightedEvent(apiEvent)
-  //   },
-  //   [dispatch]
-  // )
   const showGraph = useMemo(() => {
     return (
       timebarGraph !== 'none' &&
@@ -250,6 +235,10 @@ const TimebarWrapper = () => {
   }, [timebarGraph, tracksGraphsData])
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
+
+  const trackGraphsLoading = tracksGraphsData?.some(
+    ({ status }) => status === ResourceStatus.Loading
+  )
 
   return (
     <div className={styles.timebarWrapper}>
@@ -288,10 +277,8 @@ const TimebarWrapper = () => {
                     <Fragment>
                       <TimebarTracksEvents
                         data={tracksEvents}
-                        // useTrackColor={tracksGraphsData.length > 1}
                         highlightedEventsIds={highlightedEvents}
                         onEventClick={onEventClick}
-                        // onEventHover={onEventHover}
                       />
                     </Fragment>
                   )}
@@ -312,7 +299,7 @@ const TimebarWrapper = () => {
           </Fragment>
         ) : null}
       </Timebar>
-      {!isSmallScreen && <TimebarSettings />}
+      {!isSmallScreen && <TimebarSettings loading={trackGraphsLoading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>
   )

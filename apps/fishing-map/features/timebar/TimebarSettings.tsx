@@ -47,7 +47,7 @@ const Icon = ({
   )
 }
 
-const TimebarSettings = () => {
+const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
@@ -110,6 +110,7 @@ const TimebarSettings = () => {
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
       <IconButton
         icon={optionsPanelOpen ? 'close' : 'settings'}
+        loading={loading}
         type="map-tool"
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
