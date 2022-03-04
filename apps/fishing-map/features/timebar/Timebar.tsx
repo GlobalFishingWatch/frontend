@@ -216,22 +216,6 @@ const TimebarWrapper = () => {
     [setMapCoordinates, zoom]
   )
 
-  // const onEventHover = useCallback(
-  //   (event: TimebarChartChunk<TrackEventChunkProps>) => {
-  //     // if (!event) {
-  //     //   dispatchHighlightedEvent(null)
-  //     //   return
-  //     // }
-
-  //     dispatch(disableHighlightedTime())
-
-  //     // const apiEvent: ApiEvent = {
-  //     //   id: event.id as string,
-  //     // } as any
-  //     // dispatchHighlightedEvent(apiEvent)
-  //   },
-  //   [dispatch]
-  // )
   const showGraph = useMemo(() => {
     return (
       timebarGraph !== 'none' &&
@@ -291,7 +275,6 @@ const TimebarWrapper = () => {
                         // useTrackColor={tracksGraphsData.length > 1}
                         highlightedEventsIds={highlightedEvents}
                         onEventClick={onEventClick}
-                        // onEventHover={onEventHover}
                       />
                     </Fragment>
                   )}

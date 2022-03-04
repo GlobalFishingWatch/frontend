@@ -196,11 +196,14 @@ const getTrackEventChunkProps = (
       descriptionGeneric = t('event.unknown', 'Unknown event')
   }
   const duration = DateTime.fromMillis(event.end as number)
-    .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
+    .diff(DateTime.fromMillis(event.start as number), ['days', 'hours', 'minutes'])
     .toObject()
 
   description = [
     description,
+    duration.days && duration.days > 0
+      ? t('event.dayAbbreviated', '{{count}}d', { count: duration.days })
+      : '',
     duration.hours && duration.hours > 0
       ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
       : '',
