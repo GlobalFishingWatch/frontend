@@ -6,6 +6,7 @@ import {
   HeatmapLayerMeta,
   DEFAULT_CONTEXT_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
+  TRACK_HIGHLIGHT_SUFFIX,
 } from '@globalfishingwatch/layer-composer'
 import {
   isActivityDataview,
@@ -51,6 +52,11 @@ export const useSourceInStyle = (sourcesIds: SourcesHookInput) => {
   return sourcesLoaded
 }
 
+// Don't consider loading states for our interaction layers
+const isInteractionSource = (sourceId: string) => {
+  return sourceId.includes(TRACK_HIGHLIGHT_SUFFIX)
+}
+
 export const useMapSourceTilesLoadedAtom = () => {
   // Used it once in Map.tsx the listeners only once
   const map = useMapInstance()
@@ -61,7 +67,7 @@ export const useMapSourceTilesLoadedAtom = () => {
 
     const onSourceDataLoading = (e: CustomMapDataEvent) => {
       const { sourceId } = e
-      if (sourceId) {
+      if (sourceId && !isInteractionSource(sourceId)) {
         setSourceTilesLoaded((state) => {
           const source = { ...state[sourceId], loaded: false }
           return {
@@ -74,7 +80,7 @@ export const useMapSourceTilesLoadedAtom = () => {
 
     const onSourceTilesLoaded = (e: CustomMapDataEvent) => {
       const { sourceId, error: tileError } = e
-      if (sourceId) {
+      if (sourceId && !isInteractionSource(sourceId)) {
         setSourceTilesLoaded((state) => {
           let error = state[sourceId]?.error
           if (error === undefined && tileError !== undefined) {
@@ -103,14 +109,14 @@ export const useMapSourceTilesLoadedAtom = () => {
 export const useMapSourceTiles = (sourcesId?: SourcesHookInput) => {
   const sourceTilesLoaded = useRecoilValue(mapTilesAtom)
   const sourcesIdsList = toArray(sourcesId)
-  const sources = sourcesId
+  const sourcesLoaded = sourcesId
     ? Object.fromEntries(
         Object.entries(sourceTilesLoaded).filter(([id, source]) => {
           return sourcesIdsList.includes(id)
         })
       )
     : sourceTilesLoaded
-  return useMemoCompare(sources)
+  return sourcesLoaded
 }
 
 export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
@@ -125,7 +131,9 @@ export const useAllMapSourceTilesLoaded = () => {
   const style = useMapStyle()
   const sources = Object.keys(style?.sources || {})
   const sourceTilesLoaded = useMapSourceTiles()
-  const allSourcesLoaded = sources.every((source) => sourceTilesLoaded[source]?.loaded === true)
+  const allSourcesLoaded = sources
+    .filter((sourceId) => !isInteractionSource(sourceId))
+    .every((source) => sourceTilesLoaded[source]?.loaded === true)
   return allSourcesLoaded
 }
 
@@ -161,6 +169,7 @@ type DataviewMetadata = {
   dataviewsId: string[]
   filter?: string[]
 }
+
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
@@ -172,7 +181,10 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
 
   const dataviewsMetadata = useMemo(() => {
     const style = { metadata: { generatorsMetadata } } as ExtendedStyle
-    const dataviewsArray = toArray(memoizedDataviews)
+    const dataviewsArray = toArray(memoizedDataviews || [])
+    if (!dataviewsArray || !dataviewsArray.length) {
+      return []
+    }
     const dataviewsMetadata: DataviewMetadata[] = dataviewsArray.reduce((acc, dataview) => {
       const activityDataview = isActivityDataview(dataview)
       if (activityDataview) {
@@ -215,7 +227,6 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         sourceId,
         quantizeOffset,
       }))
-
       const chunksFeatures: DataviewChunkFeature[] | null = chunks
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const emptyChunkState = {} as TilesAtomSourceState

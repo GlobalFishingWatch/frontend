@@ -18,10 +18,10 @@ export const formatInfoField = (fieldValue: string, type: string) => {
   return fieldValue
 }
 
-export const formatNumber = (num: string | number) => {
+export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {
   const number = typeof num === 'string' ? parseFloat(num) : num
   return number.toLocaleString(undefined, {
-    maximumFractionDigits: number < 10 ? 2 : 0,
+    maximumFractionDigits: maximumFractionDigits || (number < 10 ? 2 : 0),
   })
 }
 

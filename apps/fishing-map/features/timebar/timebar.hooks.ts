@@ -5,7 +5,11 @@ import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY } from '@globalfishingwatch/react-hooks'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
+import {
+  selectTimebarGraph,
+  selectTimebarSelectedEnvId,
+  selectTimebarVisualisation,
+} from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import store, { RootState } from 'store'
@@ -162,6 +166,20 @@ export const useTimebarVisualisationConnect = () => {
   )
 
   return { timebarVisualisation, dispatchTimebarVisualisation }
+}
+
+export const useTimebarEnvironmentConnect = () => {
+  const { dispatchQueryParams } = useLocationConnect()
+  const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
+
+  const dispatchTimebarSelectedEnvId = useCallback(
+    (timebarSelectedEnvId: string) => {
+      dispatchQueryParams({ timebarSelectedEnvId })
+    },
+    [dispatchQueryParams]
+  )
+
+  return { timebarSelectedEnvId, dispatchTimebarSelectedEnvId }
 }
 
 export const useTimebarGraphConnect = () => {

@@ -121,6 +121,13 @@ export const selectTimebarVisualisation = createSelector(
   }
 )
 
+export const selectTimebarSelectedEnvId = createSelector(
+  [selectWorkspaceStateProperty('timebarSelectedEnvId')],
+  (timebarSelectedEnvId): string => {
+    return timebarSelectedEnvId
+  }
+)
+
 export const selectVisibleEvents = createSelector(
   [selectWorkspaceStateProperty('visibleEvents')],
   (visibleEvents): VisibleEvents => {
