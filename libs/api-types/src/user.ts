@@ -38,4 +38,9 @@ export interface UserData {
   country?: string
   organization?: string
   organizationType?: string
+  intendedUse?: string
+  whoEndUsers?: string
+  problemToResolve?: string
+  pullingDataOtherAPIS?: string
+  apiTerms?: Date
 }

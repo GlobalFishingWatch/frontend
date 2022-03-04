@@ -8,6 +8,7 @@ import {
   createUserApplicationsThunk,
   deleteUserApplicationsThunk,
   fetchUserApplicationsThunk,
+  selectUserApplicationsRequiredInfoCompleted,
   selectUserApplications,
   selectUserApplicationsIds,
   selectUserApplicationsStatus,
@@ -23,6 +24,9 @@ export const useGetUserApplications = () => {
   const userApplicationsList = useSelector(selectUserApplications)
   const userApplicationsStatus = useSelector(selectUserApplicationsStatus)
   const isAllowed = checkUserApplicationPermission('read', user.permissions)
+  const isUserApplicationsRequiredInfoCompleted = useSelector(
+    selectUserApplicationsRequiredInfoCompleted
+  )
 
   const dispatchDelete = useCallback(
     async ({ id }: UserApplicationDeleteArguments) => {
@@ -56,6 +60,7 @@ export const useGetUserApplications = () => {
     isError: userApplicationsStatus === AsyncReducerStatus.Error,
     isAborted: userApplicationsStatus === AsyncReducerStatus.Aborted,
     isAllowed,
+    isUserApplicationsRequiredInfoCompleted,
     dispatchDelete,
   }
 }
@@ -65,6 +70,9 @@ export const useCreateUserApplications = () => {
   const user: UserData = useSelector(selectUserData)
   const userApplicationsStatus = useSelector(selectUserApplicationsStatus)
   const isAllowed = checkUserApplicationPermission('create', user.permissions)
+  const isUserApplicationsRequiredInfoCompleted = useSelector(
+    selectUserApplicationsRequiredInfoCompleted
+  )
 
   const dispatchCreate = useCallback(
     async (newUserApplication: UserApplicationCreateArguments) => {
@@ -85,6 +93,7 @@ export const useCreateUserApplications = () => {
     isError: userApplicationsStatus === AsyncReducerStatus.Error,
     isAborted: userApplicationsStatus === AsyncReducerStatus.Aborted,
     isAllowed,
+    isUserApplicationsRequiredInfoCompleted,
     dispatchCreate,
   }
 }

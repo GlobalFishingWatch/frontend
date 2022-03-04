@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import {
   AsyncError,
   asyncInitialState,
@@ -10,6 +10,7 @@ import { AppState } from 'app/store'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { UserApplication } from '@globalfishingwatch/api-types'
+import { selectUserData } from 'features/user/user.slice'
 
 export enum UserApplicationsStatus {
   AsyncReducerStatus,
@@ -155,6 +156,11 @@ const { slice: userApplicationsSlice, entityAdapter } = createAsyncSlice<
 export const selectUserApplicationsIds = (state: AppState) => state.userApplications.ids
 export const selectUserApplications = (state: AppState) => state.userApplications.entities
 export const selectUserApplicationsStatus = (state: AppState) => state.userApplications.status
+
+export const selectUserApplicationsRequiredInfoCompleted = createSelector(
+  [selectUserData],
+  (user) => user.intendedUse && user.whoEndUsers && user.problemToResolve && !!user.apiTerms
+)
 
 export const userApplicationsEntityAdapter = entityAdapter
 export default userApplicationsSlice.reducer
