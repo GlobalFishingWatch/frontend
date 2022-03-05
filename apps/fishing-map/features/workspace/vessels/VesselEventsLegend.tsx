@@ -13,8 +13,11 @@ import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { upperFirst } from 'utils/info'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
+import EncounterIcon from '../../../assets/icons/event-encounter.svg'
+import LoiteringIcon from '../../../assets/icons/event-loitering.svg'
+import PortIcon from '../../../assets/icons/event-port.svg'
 import layerStyles from './VesselEventsLegend.module.css'
-
+console.log(PortIcon)
 type VesselEventsLegendProps = {
   dataviews: UrlDataviewInstance[]
 }
@@ -83,33 +86,38 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
     <div className={styles.content}>
       <ul className={layerStyles.eventsLegendContainer}>
         {eventTypes.map(({ datasetId, eventType, active }) => {
+          const color =
+            eventType === 'fishing' && tracks.length === 1
+              ? tracks[0].config.color
+              : EVENTS_COLORS[eventType]
           return (
             <li
               key={datasetId}
               className={cx(layerStyles.eventsLegend, { [layerStyles.disabled]: !active })}
             >
+              <Switch
+                active={active}
+                onClick={onEventChange}
+                id={eventType}
+                className={layerStyles.eventsLegendSwitch}
+                color={color}
+              />
+              <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
+                {upperFirst(t(`event.${eventType}` as any, eventType))}
+              </label>
               <div
                 className={cx(layerStyles.icon, layerStyles[eventType], {
                   [styles.active]: active,
                 })}
                 style={
                   {
-                    '--color':
-                      eventType === 'fishing' && tracks.length === 1
-                        ? tracks[0].config.color
-                        : EVENTS_COLORS[eventType],
+                    '--color': color,
+                    '--encounterIcon': `url(${EncounterIcon})`,
+                    '--loiteringIcon': `url(${LoiteringIcon})`,
+                    '--portIcon': `url(${PortIcon})`,
                   } as React.CSSProperties
                 }
               />
-              <Switch
-                active={active}
-                onClick={onEventChange}
-                id={eventType}
-                className={layerStyles.eventsLegendSwitch}
-              />
-              <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
-                {upperFirst(t(`event.${eventType}` as any, eventType))}
-              </label>
             </li>
           )
         })}
