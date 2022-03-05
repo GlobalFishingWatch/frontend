@@ -15,8 +15,9 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
+import { CONFIG_BY_INTERVAL, getTimeChunksInterval } from '@globalfishingwatch/layer-composer'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -35,6 +36,7 @@ import { selectIsMapDrawing } from 'features/map/map.selectors'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
+import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -113,6 +115,24 @@ const TimebarWrapper = () => {
   const tracksEvents = useSelector(selectTracksEvents)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const { generatorsConfig } = useGeneratorsConnect()
+
+  const stickToUnit = useCallback(
+    (start, end) => {
+      const heatmapConfig = generatorsConfig.find(
+        (c) => c.id === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+      )
+      if (timebarVisualisation === TimebarVisualisations.Heatmap && heatmapConfig) {
+        const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
+        return interval === '10days' ? 'day' : interval
+      } else if (timebarVisualisation === TimebarVisualisations.Environment) {
+        // TODO decide interval for stick unit depending on available intervals when env layers have interval < month
+        return 'month'
+      }
+    },
+    [generatorsConfig, timebarVisualisation]
+  )
+
   const dispatch = useDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
@@ -260,6 +280,7 @@ const TimebarWrapper = () => {
         bookmarkPlacement="bottom"
         minimumRange={1}
         minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
+        stickToUnit={stickToUnit}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}
       >

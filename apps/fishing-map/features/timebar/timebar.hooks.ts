@@ -237,7 +237,7 @@ export const useTimebarVisualisation = () => {
   return { timebarVisualisation, dispatchTimebarVisualisation }
 }
 
-export const useActivityMetadata = () => {
+export const useActivityMetadata = (forceEnvironmental = false) => {
   const map = useMapInstance()
   if (!map) return null
 
@@ -246,7 +246,7 @@ export const useActivityMetadata = () => {
   if (!generatorsMetadata) return null
 
   const activityHeatmapMetadata = generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
-  if (activityHeatmapMetadata?.timeChunks) {
+  if (activityHeatmapMetadata?.timeChunks && !forceEnvironmental) {
     return activityHeatmapMetadata
   }
 

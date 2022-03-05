@@ -266,7 +266,7 @@ class Timeline extends PureComponent {
   }
 
   onMouseUp = (event) => {
-    const { start, end, onChange } = this.props
+    const { start, end, onChange, stickToUnit } = this.props
     const { dragging, outerX, innerStartPx, outerDrag } = this.state
 
     if (dragging === null) {
@@ -293,9 +293,15 @@ class Timeline extends PureComponent {
       }
     }
     // on release, "stick" to day/hour
-    const stickUnit = isMoreThanADay(newStart, newEnd) ? 'day' : 'hour'
+    const stickedToUnit = (stickToUnit) ? stickToUnit(newStart, newEnd) : null
+    const stickUnit = stickedToUnit ||  (isMoreThanADay(newStart, newEnd) ? 'day' : 'hour')
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
+    if (newStart === newEnd) {
+      const mDate = dayjs(newStart).utc()
+      const mEndOf = mDate.add(1, stickUnit)
+      newEnd = mEndOf.toISOString()
+    }
 
     let source
     if (outerDrag === true) {
@@ -533,6 +539,7 @@ Timeline.propTypes = {
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
   bookmarkPlacement: PropTypes.string,
+  stickToUnit: PropTypes.func,
   showLastUpdate: PropTypes.bool,
 }
 

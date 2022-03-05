@@ -17,7 +17,7 @@ import EncounterIcon from '../../../assets/icons/event-encounter.svg'
 import LoiteringIcon from '../../../assets/icons/event-loitering.svg'
 import PortIcon from '../../../assets/icons/event-port.svg'
 import layerStyles from './VesselEventsLegend.module.css'
-console.log(PortIcon)
+
 type VesselEventsLegendProps = {
   dataviews: UrlDataviewInstance[]
 }

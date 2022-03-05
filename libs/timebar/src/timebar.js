@@ -230,6 +230,7 @@ class Timebar extends Component {
       minimumRangeUnit,
       maximumRange,
       maximumRangeUnit,
+      stickToUnit
     } = this.props
     const { immediate } = this.state
 
@@ -347,6 +348,7 @@ class Timebar extends Component {
               showLastUpdate={this.props.showLastUpdate}
               latestAvailableDataDate={this.props.latestAvailableDataDate}
               trackGraphOrientation={this.props.trackGraphOrientation}
+              stickToUnit={stickToUnit}
             />
           </div>
         </RecoilRoot>
@@ -409,6 +411,7 @@ Timebar.propTypes = {
   minimumRangeUnit: PropTypes.string,
   maximumRange: PropTypes.number,
   maximumRangeUnit: PropTypes.string,
+  stickToUnit: PropTypes.func,
   showLastUpdate: PropTypes.bool,
   locale: PropTypes.oneOf(['en', 'es', 'fr', 'id']),
 }
