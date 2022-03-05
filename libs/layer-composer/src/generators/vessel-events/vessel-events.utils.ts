@@ -34,14 +34,6 @@ export const SHAPE_BY_TYPE: Record<EventType, string> = {
   gap: 'circle',
 }
 
-export const SHAPE_SIZE_BY_TYPE: Record<EventType, number> = {
-  fishing: 0.4,
-  encounter: 1,
-  loitering: 1,
-  port_visit: 1,
-  gap: 1,
-}
-
 const getEncounterAuthColor = (authorizationStatus: AuthorizationOptions) => {
   switch (authorizationStatus) {
     case 'authorized':
@@ -109,7 +101,6 @@ export const getVesselEventsGeojson = (
         icon: `${iconsPrefix}${event.type}`,
         shape,
         shapeHighlight: `${shape}-highlight`,
-        shapeSize: SHAPE_SIZE_BY_TYPE[event.type as EventType],
         shapePriority: event.type === 'fishing' ? 0 : 1,
         color,
         colorOutline,

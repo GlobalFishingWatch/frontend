@@ -43,13 +43,13 @@
 
 .encounter {
   border-image: var(--encounterIcon);
-  border-width: 4px;
+  border-width: 6px;
   border-image-slice: 50% 6 fill;
 }
 
 .loitering {
   border-image: var(--loiteringIcon);
-  border-width: 4px;
+  border-width: 6px;
   border-image-slice: 50% 6 fill;
 }
 
