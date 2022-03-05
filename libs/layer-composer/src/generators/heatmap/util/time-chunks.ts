@@ -129,7 +129,7 @@ const getInterval = (
   availableIntervals: Interval[][],
   omitIntervals: Interval[] = []
 ): Interval => {
-  // Get intervals that are common to all dataset (initial array provided to ensure order)
+  // Get intervals that are common to all dataset (initial array provided to ensure order from smallest to largest)
   const commonIntervals = intersection(INTERVAL_ORDER, ...availableIntervals)
   const intervals = commonIntervals.filter((interval) => !omitIntervals.includes(interval))
   if (!intervals.length) {
@@ -139,22 +139,23 @@ const getInterval = (
 
   const duration = Duration.fromMillis(deltaMs)
 
-  // Get smallest interval common to all datasets
-  let validInterval
-  for (let i = intervals.length - 1; i >= 0; i--) {
-    const interval = intervals[i]
-    if (!CONFIG_BY_INTERVAL[interval]) continue
-    // If isValid not present on interval config, consider it's valid for any duration
-    if (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration)) {
-      validInterval = interval
-      break
-    }
+  const validIntervals = intervals.filter(interval => CONFIG_BY_INTERVAL[interval] && (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration)))
+  
+  let selectedInterval: Interval
+
+  // if only available intervals are 10days and month, favor month
+  if (validIntervals.includes('10days') && validIntervals.includes('month') && validIntervals.length === 2) {
+    selectedInterval = 'month'
+  } else {
+    // else, use smallest interval
+    selectedInterval = validIntervals[0]
   }
-  if (!validInterval) {
+
+  if (!selectedInterval) {
     console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
     return 'day'
   }
-  return validInterval
+  return selectedInterval
 }
 
 /**
