@@ -11,7 +11,7 @@ import {
   selectTimebarVisualisation,
 } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveActivityDataviews, selectActiveEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
@@ -204,15 +204,27 @@ export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeEnvDataviews = useSelector(selectActiveEnvironmentalDataviews)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
+  // Fallback mechanisms to avoid empty timebar
   useEffect(() => {
-    if (timebarVisualisation === TimebarVisualisations.Heatmap) {
-      // fallback to vessels if heatmap = 0 (only if at least 1 vessel is available)
-      if (
-        (!activeHeatmapDataviews || activeHeatmapDataviews.length === 0) &&
-        activeTrackDataviews?.length
-      ) {
+    if (timebarVisualisation === TimebarVisualisations.Heatmap && !activeHeatmapDataviews?.length) {
+      if (activeTrackDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
+      } else if (activeEnvDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
+      }
+    } else if (timebarVisualisation === TimebarVisualisations.Vessel && !activeTrackDataviews?.length) {
+      if (activeHeatmapDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      } else if (activeEnvDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
+      }
+    } else if (timebarVisualisation === TimebarVisualisations.Environment && !activeEnvDataviews?.length) {
+      if (activeHeatmapDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       }
     }
@@ -224,11 +236,6 @@ export const useTimebarVisualisation = () => {
       // switch to vessel if track shown "for the first time"
       if (!hasChangedSettingsOnce && activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
-      }
-    } else {
-      // fallback to heatmap if vessel = 0
-      if (!activeTrackDataviews || activeTrackDataviews.length === 0) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
