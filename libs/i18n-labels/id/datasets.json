@@ -443,8 +443,8 @@
     }
   },
   "private-indonesia-zebrax-presence": {
-    "name": "Zebrax",
-    "description": "Zebra X Presence",
+    "name": "Perikanan Pesisir Indonesia",
+    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat ZebraX yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -462,8 +462,41 @@
     }
   },
   "private-indonesia-zebrax-vessels": {
-    "name": "Indonesia ZebraX (Vessels)",
-    "description": "Vessels (Indonesia ZebraX)",
+    "name": "Kapal Perikanan Pesisir",
+    "description": "Kapal Perikanan Pesisir menggunakan perangkat ZebraX",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-indonesia-pelagic-presence": {
+    "name": "\nPerikanan Pesisir - Perangkat Baru",
+    "description": "\nLapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat Pelagic yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "trap net": "trap net",
+          "purse seine": "purse seine"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-pelagic-vessels": {
+    "name": "Perikanan Pesisir - Perangkat Baru",
+    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat Pelagic yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -1539,6 +1572,25 @@
   "public-indonesia-zebrax-presence": {
     "name": "Coastal Fisheries Indonesia",
     "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat ZebraX yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "trap net": "trap net",
+          "purse seine": "purse seine"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-indonesia-pelagic-presence": {
+    "name": "Perikanan Pesisir - Perangkat Baru",
+    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat Pelagic yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
