@@ -89,7 +89,7 @@
     "vt-pbf": "^3.1.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/maplibre-gl": "^2.1.7-gfw.14",
+    "@globalfishingwatch/maplibre-gl": "^2.1.7-gfw.16",
     "@nrwl/cli": "13.8.3",
     "@nrwl/cypress": "13.8.3",
     "@nrwl/eslint-plugin-nx": "13.8.3",
@@ -146,7 +146,7 @@
     "react-test-renderer": "17.0.2",
     "serve": "^13.0.2",
     "ts-jest": "27.0.7",
-    "typescript": "4.3.5",
+    "typescript": "^4.6.2",
     "yarn-deduplicate": "^3.1.0"
   },
   "resolutions": {
