@@ -89,7 +89,7 @@
     "vt-pbf": "^3.1.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/maplibre-gl": "^2.1.6-gfw.13",
+    "@globalfishingwatch/maplibre-gl": "^2.1.7-gfw.14",
     "@nrwl/cli": "13.8.3",
     "@nrwl/cypress": "13.8.3",
     "@nrwl/eslint-plugin-nx": "13.8.3",

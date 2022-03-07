@@ -1244,10 +1244,10 @@
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/maplibre-gl@^2.1.6-gfw.13":
-  version "2.1.6-gfw.13"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.1.6-gfw.13.tgz#328dc5d55fc818c860d48269ac4381133ad7d98b"
-  integrity sha512-GbtRgYAGmzUY8SSUVDPYLik88oMwMBUxoWLFN1r3AZSblHZXMlrEJSZ42rk8o82VCPYDdm0F0mV8TtwMFX1AZQ==
+"@globalfishingwatch/maplibre-gl@^2.1.7-gfw.14":
+  version "2.1.7-gfw.14"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.1.7-gfw.14.tgz#482f03a3e3034415e3f1acdfd8813ff5afd0b97c"
+  integrity sha512-6UknvatzHqs9blGwdlRrL3mSTL+1FiSJV8e3Gv1UxASTqWmuCC/FFwNGFzdJW8LieglPX46Vw8pZ7C40OBA1nA==
   dependencies:
     "@globalfishingwatch/fourwings-aggregate" "4.2.0"
     "@mapbox/geojson-rewind" "^0.5.1"
