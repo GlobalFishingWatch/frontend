@@ -74,13 +74,17 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
           const newClusteredEvent: TimebarChartChunk = {
             ...currentEvent,
             cluster: {
+              ids: [currentEvent.id as string],
               numChunks: 1,
             },
           }
           return [...currentClusteredEvents, newClusteredEvent]
         }
         lastClusteredEvent.end = currentEvent.end
-        if (lastClusteredEvent.cluster) lastClusteredEvent.cluster.numChunks++
+        if (lastClusteredEvent.cluster) {
+          lastClusteredEvent.cluster.numChunks++
+          lastClusteredEvent.cluster.ids.push(currentEvent.id as string)
+        }
         return currentClusteredEvents
       },
       []
@@ -89,6 +93,7 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
     if (lastChunk && lastChunk.cluster?.numChunks === 1) {
       delete lastChunk.cluster
     }
+
     return {
       ...item,
       chunks: aggregatedChunks,

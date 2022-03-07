@@ -61,8 +61,9 @@ const findChunks = (
     const chunkEnd = chunk.end || item.chunks[chunkIndex + 1]?.start || Number.NEGATIVE_INFINITY
     const delta = chunkEnd - chunk.start
 
-    if (delta > minHighlightChunkDuration && chunk.end)
+    if (delta > minHighlightChunkDuration && chunk.end) {
       return centerMs > chunk.start && centerMs < chunkEnd
+    }
 
     const center = chunk.start + delta / 2
     const bufferedStart = center - minHighlightChunkDuration / 2
@@ -137,8 +138,11 @@ const getHighlighterData = (
             value: label,
           }
         }
-        if (foundChunk.id) {
-          highlightedChunks[chartType]?.push(foundChunk.id as string)
+
+        if (foundChunk.cluster?.ids) {
+          highlightedChunks[chartType] = foundChunk.cluster?.ids || []
+        } else if (foundChunk.id) {
+          highlightedChunks[chartType] = [foundChunk.id as string]
         }
       }
     })

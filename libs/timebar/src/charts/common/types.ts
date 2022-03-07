@@ -16,6 +16,7 @@ export type TimebarChartValue = {
 }
 
 export type TimebarChartChunkCluster = {
+  ids: string[]
   numChunks: number
 }
 

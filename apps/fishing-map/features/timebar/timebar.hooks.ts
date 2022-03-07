@@ -5,13 +5,17 @@ import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY } from '@globalfishingwatch/react-hooks'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { useMapStyle } from 'features/map/map-style.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
   selectTimebarVisualisation,
 } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectActiveActivityDataviews, selectActiveEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveActivityDataviews,
+  selectActiveEnvironmentalDataviews,
+} from 'features/dataviews/dataviews.selectors'
 import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
@@ -215,13 +219,19 @@ export const useTimebarVisualisation = () => {
       } else if (activeEnvDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
-    } else if (timebarVisualisation === TimebarVisualisations.Vessel && !activeTrackDataviews?.length) {
+    } else if (
+      timebarVisualisation === TimebarVisualisations.Vessel &&
+      !activeTrackDataviews?.length
+    ) {
       if (activeHeatmapDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
       } else if (activeEnvDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
-    } else if (timebarVisualisation === TimebarVisualisations.Environment && !activeEnvDataviews?.length) {
+    } else if (
+      timebarVisualisation === TimebarVisualisations.Environment &&
+      !activeEnvDataviews?.length
+    ) {
       if (activeHeatmapDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
       } else if (activeTrackDataviews?.length) {
@@ -246,9 +256,10 @@ export const useTimebarVisualisation = () => {
 
 export const useActivityMetadata = (forceEnvironmental = false) => {
   const map = useMapInstance()
+  const style = useMapStyle()
+
   if (!map) return null
 
-  const style = map?.getStyle()
   const generatorsMetadata = style?.metadata?.generatorsMetadata
   if (!generatorsMetadata) return null
 
