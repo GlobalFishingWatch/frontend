@@ -3,6 +3,7 @@ import { uniqBy, memoize } from 'lodash'
 import {
   DatasetConfigsTransforms,
   getDataviewsForResourceQuerying,
+  getVesselIdFromDatasetConfig,
   mergeWorkspaceUrlDataviewInstances,
   resolveDataviews,
   UrlDataviewInstance,
@@ -24,7 +25,6 @@ import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { TimebarGraphs } from 'types'
-import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { selectThinningConfig } from 'features/resources/resources.slice'
 import { RootState } from 'store'
@@ -216,7 +216,7 @@ export const selectDataviewsForResourceQuerying = createSelector(
 
         // Clean resources when mandatory vesselId is missing
         // needed for vessels with no info datasets (zebraX)
-        const vesselData = hasDatasetConfigVesselData(info)
+        const vesselData = getVesselIdFromDatasetConfig(info)
         return [
           trackWithoutSpeed,
           ...events,
