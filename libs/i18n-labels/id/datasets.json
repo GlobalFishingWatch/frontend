@@ -444,7 +444,7 @@
   },
   "private-indonesia-zebrax-presence": {
     "name": "Perikanan Pesisir Indonesia",
-    "description": "Perikanan Pesisir Indonesia",
+    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat ZebraX yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -462,8 +462,8 @@
     }
   },
   "private-indonesia-zebrax-vessels": {
-    "name": "Indonesia ZebraX (Vessels)",
-    "description": "Vessels (Indonesia ZebraX)",
+    "name": "Kapal Perikanan Pesisir",
+    "description": "Kapal Perikanan Pesisir menggunakan perangkat ZebraX",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -476,8 +476,8 @@
     }
   },
   "private-indonesia-pelagic-presence": {
-    "name": "Coastal Fisheries - New Devices",
-    "description": "Coastal Fisheries - New Devices Presence",
+    "name": "\nPerikanan Pesisir - Perangkat Baru",
+    "description": "\nLapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat Pelagic yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -495,8 +495,8 @@
     }
   },
   "private-indonesia-pelagic-vessels": {
-    "name": "Coastal Fisheries - New Devices (Vessels)",
-    "description": "Vessels (Coastal Fisheries - New Devices)",
+    "name": "Perikanan Pesisir - Perangkat Baru",
+    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat Pelagic yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -1589,8 +1589,8 @@
     }
   },
   "public-indonesia-pelagic-presence": {
-    "name": "Coastal Fisheries - New Devices",
-    "description": "Coastal Fisheries - New Devices Presence",
+    "name": "Perikanan Pesisir - Perangkat Baru",
+    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat Pelagic yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
