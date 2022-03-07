@@ -23,7 +23,7 @@ export const useGetUserApplications = () => {
   const userApplicationsIds = useSelector(selectUserApplicationsIds)
   const userApplicationsList = useSelector(selectUserApplications)
   const userApplicationsStatus = useSelector(selectUserApplicationsStatus)
-  const isAllowed = checkUserApplicationPermission('read', user.permissions)
+  const isAllowed = checkUserApplicationPermission('read', user?.permissions || [])
   const isUserApplicationsRequiredInfoCompleted = useSelector(
     selectUserApplicationsRequiredInfoCompleted
   )

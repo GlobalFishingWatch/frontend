@@ -1,0 +1,31 @@
+.fieldsWrapper {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+}
+
+.field {
+  width: 67%;
+  margin-bottom: var(--space-M);
+}
+
+.input > input,
+.selectContainer > div,
+.select li {
+  background: var(--secondary-background-color);
+  border: 0;
+}
+
+.select,
+.select:hover {
+  background: var(--secondary-background-color);
+  border: 0;
+}
+
+.select button {
+  padding: 0;
+}
+
+.button {
+  width: 100%;
+}

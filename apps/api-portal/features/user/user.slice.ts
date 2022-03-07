@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { AsyncReducerStatus } from 'lib/async-slice'
+import { AsyncError, AsyncReducerStatus } from 'lib/async-slice'
 import {
   GFWAPI,
   getAccessTokenFromUrl,
@@ -19,6 +19,13 @@ const initialState: UserState = {
   logged: false,
   status: AsyncReducerStatus.Idle,
   data: null,
+}
+export interface UserApiAdditionalInformation {
+  intendedUse?: string
+  whoEndUsers?: string
+  problemToResolve?: string
+  pullingDataOtherAPIS?: string
+  apiTerms?: Date
 }
 
 export const GUEST_USER_TYPE = 'guest'
@@ -48,6 +55,27 @@ export const fetchUserThunk = createAsyncThunk(
       return await GFWAPI.login({ accessToken })
     } catch (e: any) {
       return await fetchGuestUser()
+    }
+  }
+)
+
+export const updateUserAdditionaInformationThunk = createAsyncThunk<
+  UserData,
+  UserApiAdditionalInformation,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'user/fetch',
+  async (userAdditionalInformation: UserApiAdditionalInformation, { rejectWithValue }) => {
+    try {
+      const updatedUser = await GFWAPI.fetch<UserData>(`/auth/me`, {
+        method: 'PATCH',
+        body: userAdditionalInformation as any,
+      })
+      return updatedUser
+    } catch (e: any) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
 )

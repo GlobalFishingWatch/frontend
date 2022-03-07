@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { AsyncReducerStatus } from 'lib/async-slice'
 import { useRouter } from 'next/router'
+import { useAppDispatch } from 'app/hooks'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import { UserPermission } from '@globalfishingwatch/api-types'
 import {
@@ -12,6 +13,8 @@ import {
   selectUserData,
   selectUserLogged,
   selectUserStatus,
+  updateUserAdditionaInformationThunk,
+  UserApiAdditionalInformation,
 } from './user.slice'
 
 export type UserAction = 'read' | 'create' | 'delete'
@@ -25,7 +28,7 @@ export const checkUserApplicationPermission = (
 }
 
 export const useUser = (redirectToLogin: boolean) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const logged = useSelector(selectUserLogged)
   const user = useSelector(selectUserData)
@@ -85,5 +88,24 @@ export const useUser = (redirectToLogin: boolean) => {
     guestUser,
     authorized,
     logout,
+  }
+}
+
+export const useUserAdditionalInformation = () => {
+  const dispatch = useAppDispatch()
+  const user: UserApiAdditionalInformation = useSelector(selectUserData)
+  const status = useSelector(selectUserStatus)
+  const [userAdditionalInformation, setUserAdditionalInformation] =
+    useState<UserApiAdditionalInformation>(user)
+
+  const update = useCallback(() => {
+    dispatch(updateUserAdditionaInformationThunk(userAdditionalInformation))
+  }, [dispatch, userAdditionalInformation])
+
+  return {
+    userAdditionalInformation,
+    setUserAdditionalInformation,
+    status,
+    update,
   }
 }
