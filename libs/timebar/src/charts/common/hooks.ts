@@ -126,25 +126,27 @@ export const useClusteredChartData = (data: TimebarChartData<any>) => {
 }
 
 const EVENT_TYPES_SORT_ORDER = {
-  [EventTypes.Encounter]: 1,
-  [EventTypes.Loitering]: 2,
+  [EventTypes.Fishing]: 1,
+  [EventTypes.Port]: 2,
   [EventTypes.Gap]: 3,
-  [EventTypes.Port]: 4,
-  [EventTypes.Fishing]: 5,
+  [EventTypes.Loitering]: 4,
+  [EventTypes.Encounter]: 5,
+}
+
+export const sortChunksByType = (chunkA: TimebarChartChunk, chunkB: TimebarChartChunk) => {
+  const first = chunkA.type ? EVENT_TYPES_SORT_ORDER[chunkA.type] : Number.MAX_SAFE_INTEGER
+  const second = chunkB.type ? EVENT_TYPES_SORT_ORDER[chunkB.type] : Number.MAX_SAFE_INTEGER
+  let result = 0
+  if (first < second) result = -1
+  else if (first > second) result = 1
+  return result
 }
 
 const sortDataByType = (data: TimebarChartData<any>) => {
   return data.map((item) => {
     return {
       ...item,
-      chunks: item.chunks.sort((chunkA, chunkB) => {
-        const first = chunkA.type ? EVENT_TYPES_SORT_ORDER[chunkA.type] : Number.MAX_SAFE_INTEGER
-        const second = chunkB.type ? EVENT_TYPES_SORT_ORDER[chunkB.type] : Number.MAX_SAFE_INTEGER
-        let result = 0
-        if (first < second) result = -1
-        else if (first > second) result = 1
-        return result
-      }),
+      chunks: item.chunks.sort(sortChunksByType),
     }
   })
 }
