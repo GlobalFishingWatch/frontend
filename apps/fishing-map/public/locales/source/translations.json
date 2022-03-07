@@ -466,8 +466,7 @@
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
     "unmatched": "unmatched",
     "vesselType_other": "Vessel types",
-    "widthRange": "Width range",
-    "inTransit": "in transit"
+    "widthRange": "Width range"
   },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",

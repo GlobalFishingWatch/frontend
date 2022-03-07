@@ -74,7 +74,7 @@ export const selectTracksData = createSelector(
         chunks,
         status: ResourceStatus.Finished,
         defaultLabel: shipname,
-        getHighlighterLabel: t('vessel.inTransit', 'in transit'),
+        // getHighlighterLabel: t('vessel.inTransit', 'in transit'),
         // TODO
         // segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
       }
@@ -245,10 +245,14 @@ export const selectTracksEvents = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
     const tracksEvents: TimebarChartData<TrackEventChunkProps> = trackDataviews.map((dataview) => {
+      const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+      const vessel = (resources[infoUrl] as any)?.data
+      const shipname = vessel ? getVesselLabel(vessel) : ''
       const trackEvents: TimebarChartItem<TrackEventChunkProps> = {
         color: dataview.config?.color,
         chunks: [],
         status: ResourceStatus.Idle,
+        defaultLabel: shipname,
         getHighlighterLabel: getTrackEventHighlighterLabel,
       }
       if (Array.isArray(visibleEvents) && visibleEvents?.length === 0) return trackEvents

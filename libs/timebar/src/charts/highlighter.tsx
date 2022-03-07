@@ -121,12 +121,12 @@ const getHighlighterData = (
         }
       }
 
-      if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
-        highlighterData[itemIndex].defaultLabel = item.defaultLabel
-      }
-
       if (foundChunk) {
+        if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
+          highlighterData[itemIndex].defaultLabel = item.defaultLabel
+        }
         const foundValue = findValue(centerMs, foundChunk)
+
         label = item.getHighlighterLabel
           ? typeof item.getHighlighterLabel === 'string'
             ? item.getHighlighterLabel
