@@ -476,8 +476,8 @@
     }
   },
   "private-indonesia-pelagic-presence": {
-    "name": "Coastal Fisheries - New Devices",
-    "description": "Coastal Fisheries - New Devices Presence",
+    "name": "Coastal Fisheries Indonesia - New Devices",
+    "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices from different providers that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking all positions transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -496,7 +496,7 @@
   },
   "private-indonesia-pelagic-vessels": {
     "name": "Coastal Fisheries - New Devices (Vessels)",
-    "description": "Vessels (Coastal Fisheries - New Devices)",
+    "description": "Coastal Fisheries Vessels - New devices",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -1590,7 +1590,7 @@
   },
   "public-indonesia-pelagic-presence": {
     "name": "Coastal Fisheries - New Devices",
-    "description": "Coastal Fisheries - New Devices Presence",
+    "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices from different providers that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking all positions transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
