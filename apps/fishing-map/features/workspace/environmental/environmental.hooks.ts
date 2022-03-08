@@ -42,7 +42,6 @@ export const useEnvironmentalBreaksUpdate = () => {
               return {
                 id: dataviewsId[0],
                 config: {
-                  opacity: undefined,
                   breaks: ck,
                 },
               }
@@ -59,28 +58,9 @@ export const useEnvironmentalBreaksUpdate = () => {
     [upsertDataviewInstance]
   )
 
-  const hideLayerWhileLoading = useCallback(
-    (dataviews) => {
-      const dataviewInstances = dataviews?.flatMap((dataview) => {
-        return {
-          id: dataview.id,
-          config: {
-            opacity: 0,
-          },
-        }
-      })
-      if (dataviewInstances) {
-        upsertDataviewInstance(dataviewInstances)
-      }
-    },
-    [upsertDataviewInstance]
-  )
-
   useEffect(() => {
     if (sourcesLoaded) {
       updateBreaksByViewportValues(dataviewFeatures, bounds)
-    } else {
-      hideLayerWhileLoading(dataviews)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourcesLoaded])
