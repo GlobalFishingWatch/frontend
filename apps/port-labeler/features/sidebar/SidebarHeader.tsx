@@ -15,50 +15,50 @@ function SidebarHeader(props: HeaderProps) {
   const country = useSelector(selectCountry)
   const dispatch = useDispatch()
   const {
+    onCountryChange,
     dispatchDownloadSelectedTracks,
     dispatchImportHandler,
   } = useSelectedTracksConnect()
   return (
-    <Sticky scrollElement=".scrollContainer">
-      <div className={styles.sidebarHeader}>
-        <a href="https://globalfishingwatch.org" className={styles.logoLink}>
-          <Logo className={styles.logo} subBrand={SubBrands.PortLabeler} />
-        </a>
-        <div className={styles.actionButtons}>
-          <label className={styles.importButton}>
-            <input
-              id="file-upload"
-              type="file"
-              style={{ display: 'none' }}
-              onChange={dispatchImportHandler}
-            />
-            <Icon
-              icon="upload"
-            />
-          </label>
 
-          <IconButton
-            type="default"
-            icon="save"
-            className={styles.actionButton}
-            onClick={() => dispatchDownloadSelectedTracks()}
+    <div className={styles.sidebarHeader}>
+      <a href="https://globalfishingwatch.org" className={styles.logoLink}>
+        <Logo className={styles.logo} subBrand={SubBrands.PortLabeler} />
+      </a>
+      <div className={styles.actionButtons}>
+        <label className={styles.importButton}>
+          <input
+            id="file-upload"
+            type="file"
+            style={{ display: 'none' }}
+            onChange={dispatchImportHandler}
           />
-        </div>
-        <Select
-          options={countries}
-          onRemove={() => { }}
-          selectedOption={country ? { id: country, label: country } : undefined}
-          onSelect={(selected: SelectOption) => {
-            dispatch(setCountry(selected.id))
-            dispatch(setCountry(selected.id))
+          <Icon
+            icon="upload"
+          />
+        </label>
 
-            if (props.onCountryChange) {
-              props.onCountryChange(selected.id)
-            }
-          }}
+        <IconButton
+          type="default"
+          icon="save"
+          className={styles.actionButton}
+          onClick={() => dispatchDownloadSelectedTracks()}
         />
       </div>
-    </Sticky>
+      <Select
+        options={countries}
+        onRemove={() => { }}
+        selectedOption={country ? { id: country, label: country } : undefined}
+        onSelect={(selected: SelectOption) => {
+          onCountryChange(selected.id)
+
+          if (props.onCountryChange) {
+            props.onCountryChange(selected.id)
+          }
+        }}
+      />
+    </div>
+
   )
 }
 

@@ -73,6 +73,7 @@ export interface PortPosition {
   s2id: string;
   label: string;
   sublabel: string;
+  point_label: string;
   label_source: string;
   iso3: string;
   distance_from_shore_m: string;

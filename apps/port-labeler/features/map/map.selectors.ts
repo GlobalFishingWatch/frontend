@@ -5,7 +5,7 @@ import concave from "@turf/concave"
 import { selectCountry, selectMapData, selectPortValues, selectSelectedPoints, selectSubareaValues } from "features/labeler/labeler.slice"
 import { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
 import { groupBy } from "utils/group-by"
-import { selectSubareaColors } from "features/labeler/labeler.selectors"
+import { selectPortPointsByCountry, selectPortValuesByCountry, selectSubareaColors, selectSubareaValuesByCountry } from "features/labeler/labeler.selectors"
 
 
 /**
@@ -34,17 +34,6 @@ export const selectCountries = createSelector([selectMapData],
   }
 )
 
-/**
- * filter the poins by country
- */
-export const selectPortPointsByCountry = createSelector([selectMapData, selectCountry],
-  (data, selectedCountry): PortPosition[] => data?.filter((point) => point.iso3 === selectedCountry) || []
-  /*.map(point => ({
-    ...point,
-    lat: parseFloat(point.lat.toString()),
-    lon: parseFloat(point.lon.toString()),
-  }))*/
-)
 
 /**
  * Creates a custom features for the port points
@@ -53,7 +42,7 @@ export const selectPortPointsFeatures = createSelector([
   selectSelectedPoints,
   selectPortPointsByCountry,
   selectSubareaColors,
-  selectSubareaValues]
+  selectSubareaValuesByCountry]
   ,
   (selectedPoints, countryPoints, colors, subareaValues): PortPositionFeature[] => {
     const points: PortPositionFeature[] = countryPoints?.map((point) => {
@@ -76,7 +65,7 @@ export const selectPortPointsFeatures = createSelector([
   }
 )
 
-export const selectPointsByPort = createSelector([selectPortPointsByCountry, selectPortValues],
+export const selectPointsByPort = createSelector([selectPortPointsByCountry, selectPortValuesByCountry],
   (countryPoints, portValues): PortPosition[][] => {
     const areas = groupBy(countryPoints, portValues, 'label')
     const areaNames = Object.keys(areas)
@@ -85,7 +74,7 @@ export const selectPointsByPort = createSelector([selectPortPointsByCountry, sel
     }).filter(area => area)
   }
 )
-export const selectPointsByPortAndSubarea = createSelector([selectPointsByPort, selectSubareaValues],
+export const selectPointsByPortAndSubarea = createSelector([selectPointsByPort, selectSubareaValuesByCountry],
   (portPoints, subareasValues): PortPosition[][] => {
     const subareas = portPoints.flatMap((poins) => groupBy(poins, subareasValues, 'community_iso3'))
 
@@ -109,7 +98,6 @@ export const selectPortAreaFeatures = createSelector([selectPointsByPort],
         positions
       )
       const concav = concave(collection, { units: 'miles', maxEdge: 10000 })
-      console.log('selectPortAreaFeatures', concav)
       return concav ? {
         ...buffer(concav, 0.2, { units: 'miles' }),
         properties: {
@@ -124,7 +112,7 @@ export const selectPortAreaFeatures = createSelector([selectPointsByPort],
 /**
  * Creates a custom features for the port points
  */
-export const selectSubareaFeatures = createSelector([selectPointsByPortAndSubarea, selectSubareaColors, selectSubareaValues],
+export const selectSubareaFeatures = createSelector([selectPointsByPortAndSubarea, selectSubareaColors, selectSubareaValuesByCountry],
   (areas, colors, subareaValues): any[] => {
     const result = areas.map(areaPositions => {
       const positions = areaPositions.map((p) => point([p.lon, p.lat]))

@@ -4,6 +4,8 @@
   padding: 0 var(--space-S);
   border-bottom: var(--border);
   height: 5.2rem;
+  z-index: 1000;
+  position: relative;
 }
 
 .logoLink {

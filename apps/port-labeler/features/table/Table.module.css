@@ -1,6 +1,8 @@
 .table {
   width: 100%;
   border-collapse: collapse;
+  position: relative;
+  z-index: 100;
 }
 
 .table td {
@@ -23,6 +25,7 @@
 
 .row {
   display: flex;
+  z-index: 50;
 }
 
 .row .col,

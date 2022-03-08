@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
 import type { MapEvent } from 'react-map-gl'
 import Point from '@mapbox/point-geometry';
-import { useDispatch } from 'react-redux';
-import { setHoverPoint, setSelectedPoints } from 'features/labeler/labeler.slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectSelectedPoints, setHoverPoint, setSelectedPoints } from 'features/labeler/labeler.slice';
 import useMapInstance from './map-context.hooks';
 
 type UseSelector = {
@@ -13,6 +13,7 @@ type UseSelector = {
   onMouseMove: (evt: MapEvent) => void
   onMouseUp: (evt: MapEvent) => void
   onHover: (evt: MapEvent) => void
+  onMapclick: () => void
 }
 
 export function useSelectorConnect(): UseSelector {
@@ -21,7 +22,7 @@ export function useSelectorConnect(): UseSelector {
   const [box, setBox] = useState(null)
   const [dragging, setDragging] = useState(false)
   const [hoveredStateId, setHoveredStateId] = useState(null)
-
+  const selected = useSelector(selectSelectedPoints)
   const map = useMapInstance()
   const canvas = map?.getCanvasContainer();
 
@@ -67,15 +68,31 @@ export function useSelectorConnect(): UseSelector {
         const features = map.queryRenderedFeatures([start, bbox.endPosition], {
           layers: ['portPoints']
         });
-        dispatch(setSelectedPoints(features.map(point => point.properties.id)))
+        dispatch(setSelectedPoints(selected.concat(features.map(point => point.properties.id))))
       }
 
-    } else {
+    }/* else {
       dispatch(setSelectedPoints([]))
-    }
+    }*/
     map.dragPan.enable();
     setStart(null)
   }, [box, dispatch, dragging, map, start])
+
+  const onMapclick = useCallback((e: MapEvent) => {
+    if (e) {
+      const pointsOnClick = e.features?.filter(point => point.source === 'pointsLayer')
+      pointsOnClick.map(point => point.properties.id).forEach(point => {
+        const i = selected.indexOf(point)
+        if (i === -1) {
+          selected.push(point)
+        } else {
+          selected.splice(i, 1)
+        }
+      })
+    } else {
+      dispatch(setSelectedPoints([]))
+    }
+  }, [])
 
   const onMouseMove = useCallback((e: MapEvent) => {
     if (dragging && start) {
@@ -102,7 +119,7 @@ export function useSelectorConnect(): UseSelector {
   }, [box, dragging, mousePos, start])
 
   const onHover = useCallback((e: MapEvent) => {
-    if (e.features && e.features.length > 0) {
+    if (e.features && e.features.length > 0 && e.features[0].source === "pointsLayer") {
       if (hoveredStateId !== null) {
         map.setFeatureState(
           { source: 'pointsLayer', id: hoveredStateId },
@@ -119,5 +136,5 @@ export function useSelectorConnect(): UseSelector {
 
   }, [dispatch, hoveredStateId, map])
 
-  return { box, onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onHover }
+  return { box, onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onHover, onMapclick }
 }

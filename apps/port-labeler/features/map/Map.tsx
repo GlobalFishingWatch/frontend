@@ -8,8 +8,9 @@ import { useViewport } from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
 import styles from './Map.module.css'
 import { useMapBounds } from './controls/map-controls.hooks'
-import { selectAreaLayer, selectPortPointsByCountry, selectPortPositionLayer } from './map.selectors'
+import { selectAreaLayer, selectPortPositionLayer } from './map.selectors'
 import { useSelectorConnect } from './map.hooks';
+import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
 
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
   const response: MapRequest = { url }
@@ -48,7 +49,7 @@ const Map = (): React.ReactElement => {
       }
     }
   }, [areaLayer, pointsLayer])
-  const { box, onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp, onHover } = useSelectorConnect()
+  const { box, onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp, onHover, onMapclick } = useSelectorConnect()
 
   const points = useSelector(selectPortPointsByCountry)
 
@@ -60,7 +61,7 @@ const Map = (): React.ReactElement => {
         zoom: 12
       })
     }
-  }, [onViewportChange, points])
+  }, [onViewportChange, country])
 
   return (
     <div className={styles.container}
@@ -76,6 +77,7 @@ const Map = (): React.ReactElement => {
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
+        onClick={onMapclick}
         onHover={onHover}
         onViewportChange={onViewportChange}
         transformRequest={transformRequest}

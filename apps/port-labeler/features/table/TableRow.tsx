@@ -1,40 +1,34 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
-import { useDispatch } from 'react-redux'
-import { Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { useDispatch, useSelector } from 'react-redux'
+import { InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
-import { PortPosition } from 'types'
-import { setHoverPoint } from 'features/labeler/labeler.slice'
+import { PortPosition, PortSubarea } from 'types'
+import { changePointValue, changeSubareaValue, selectCountry, selectHoverPoint, selectPointValues, selectSelectedPoints, selectSubareas, selectSubareaValues, setHoverPoint, setSubareas } from 'features/labeler/labeler.slice'
 import styles from './Table.module.css'
 import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
+import { getFixedColorForUnknownLabel } from 'utils/colors'
+import { selectPointValuesByCountry, selectPortValuesByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
+import { useValueManagerConnect } from './Table.hooks'
 
 type TableRowProps = {
   ports: SelectOption[],
-  hover: boolean,
-  subareas: SubareaSelectOption[],
-  selectedPort: string,
-  selectedSubarea: string,
-  onSubareaNameChange: (id, value) => void
-  onSubareaChange: (id, value) => void
-  onPortChange: (id, value) => void
   record: PortPosition
-  onNewSubareaAdded: () => void
 }
 
 function TableRow({
   ports,
-  hover,
-  subareas,
   record,
-  selectedPort,
-  selectedSubarea,
-  onSubareaNameChange,
-  onSubareaChange,
-  onPortChange,
-  onNewSubareaAdded
 }: TableRowProps) {
   const map = useMapInstance()
   const dispatch = useDispatch()
+
+  const {
+    onSubareaChange,
+    onPointValueChange,
+    onPortChange
+  } = useValueManagerConnect()
+
   const onRowHover = useCallback((id: string, hover: boolean) => {
     dispatch(setHoverPoint(id))
     map.setFeatureState(
@@ -43,10 +37,46 @@ function TableRow({
     );
   }, [dispatch, map])
 
+  const country = useSelector(selectCountry)
+  const pointValues = useSelector(selectPointValuesByCountry)
+  const pointValue = pointValues[record.s2id] ?? ''
+  const portValues = useSelector(selectPortValuesByCountry)
+  const selectedPort = portValues[record.s2id]
+
+  const subareaValues = useSelector(selectSubareaValuesByCountry)
+  const selectedSubarea = subareaValues[record.s2id]
+  const hoverPoint = useSelector(selectHoverPoint)
+
+  const subareas = useSelector(selectSubareas)
+  const subareaOptions: SubareaSelectOption[] = useMemo(() => {
+    return subareas.map((subarea: PortSubarea) => ({
+      label: subarea.name,
+      id: subarea.id,
+      color: subarea.color
+    }))
+  }, [subareas])
+
+  const onSubareaAdded = useCallback(() => {
+    console.log('Adding a new subarea')
+    const newId = Math.max.apply(null, subareas.map((subarea) => parseInt(subarea.id.replace(country + '-', ''))).filter(number => !isNaN(number))) + 1
+    dispatch(setSubareas([...subareas, {
+      id: country + '-' + newId,
+      name: country + '-' + newId,
+      color: getFixedColorForUnknownLabel(newId)
+    }]))
+  }, [country, dispatch, subareas])
+
+  const onSubareaNameChange = useCallback((id, value) => {
+    dispatch(setSubareas(subareas.map(subarea => ({
+      ...subarea,
+      name: subarea.id === id ? value : subarea.name
+    }))))
+  }, [dispatch, subareas])
+
   return (
     <div
       className={cx(styles.row, {
-        [styles.rowHover]: hover,
+        [styles.rowHover]: hoverPoint === record.s2id,
       })}
       onMouseEnter={() => onRowHover(record.s2id, true)}
       onMouseLeave={() => onRowHover(record.s2id, false)}
@@ -72,14 +102,17 @@ function TableRow({
           onSelect={(selected: SelectOption) => {
             onSubareaChange(record.s2id, selected.id)
           }}
-          selectedOption={subareas.find(subarea => subarea.id === selectedSubarea)}
-          onAddNew={onNewSubareaAdded}
+          selectedOption={subareaOptions.find(subarea => subarea.id === selectedSubarea)}
+          onAddNew={onSubareaAdded}
           onSubareaChange={onSubareaNameChange}
-          options={subareas}
+          options={subareaOptions}
         ></SubareaSelector>
       </div>
       <div className={styles.col}>
-        {record.community_iso3} ({record.s2id})
+        <InputText value={pointValue} onChange={(value) => {
+          onPointValueChange(record.s2id, value.target.value)
+        }}></InputText>
+
       </div>
       <div className={styles.col}>
         {record.top_destination}
