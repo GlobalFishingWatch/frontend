@@ -158,6 +158,8 @@ export const resolveResourcesFromDatasetConfigs = (
     .flatMap((dataview) => {
       if (!dataview.datasetsConfig) return []
       return dataview.datasetsConfig.flatMap((datasetConfig) => {
+        // Only load info endpoint when dataview visibility is set to false
+        if (!dataview.config?.visible && datasetConfig.endpoint !== EndpointId.Vessel) return []
         const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
         if (!dataset) return []
         const url = resolveEndpoint(dataset, datasetConfig)
