@@ -42,5 +42,5 @@ export interface UserData {
   whoEndUsers?: string
   problemToResolve?: string
   pullingDataOtherAPIS?: string
-  apiTerms?: Date
+  apiTerms?: string
 }

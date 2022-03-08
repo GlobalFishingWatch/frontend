@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 // import Layout from 'components/layout'
 import dynamic from 'next/dynamic'
-import { Fragment } from 'react'
-import Router from 'next/router'
+import { Fragment, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import AccessTokenList from 'components/access-token/access-token-list/access-token-list'
 import AccessTokenCreate from 'components/access-token/access-token-create/access-token-create'
 import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
@@ -12,12 +12,15 @@ const Layout = dynamic(() => import('components/layout'), {
   ssr: false,
 })
 
-const Home: NextPage = () => {
+const Home: NextPage = (context) => {
   const { isUserApplicationsRequiredInfoCompleted } = useGetUserApplications()
+  const router = useRouter()
 
-  if (!isUserApplicationsRequiredInfoCompleted) {
-    Router.push('/signup')
-  }
+  useEffect(() => {
+    if (!isUserApplicationsRequiredInfoCompleted) {
+      router.push('/signup')
+    }
+  }, [isUserApplicationsRequiredInfoCompleted, router])
   return (
     <Layout>
       <p className={styles.description}>

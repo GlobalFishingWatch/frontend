@@ -25,7 +25,7 @@ export interface UserApiAdditionalInformation {
   whoEndUsers?: string
   problemToResolve?: string
   pullingDataOtherAPIS?: string
-  apiTerms?: Date
+  apiTerms?: string
 }
 
 export const GUEST_USER_TYPE = 'guest'

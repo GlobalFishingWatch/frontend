@@ -1,7 +1,9 @@
 .fieldsWrapper {
+  margin-top: var(--space-L);
   display: flex;
   flex-flow: column;
   justify-content: center;
+  align-items: center;
 }
 
 .field {
@@ -24,6 +26,18 @@
 
 .select button {
   padding: 0;
+}
+
+.checkbox {
+  margin-top: 0.2rem;
+}
+
+.checkboxContainer {
+  align-items: flex-start;
+}
+
+.label {
+  line-height: var(--size-S);
 }
 
 .button {

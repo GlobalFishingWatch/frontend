@@ -1,17 +1,17 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import { AsyncReducerStatus } from 'lib/async-slice'
-import { Button, InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
-import { useUser, useUserAdditionalInformation } from 'features/user/user.hooks'
+import {
+  Button,
+  Checkbox,
+  InputText,
+  Select,
+  SelectOption,
+} from '@globalfishingwatch/ui-components'
+import { useUserAdditionalInformation } from 'features/user/user.hooks'
 import styles from './user-additional-fields.module.css'
 
 /* eslint-disable-next-line */
 export interface UserAdditionalFieldsProps {}
-
-// intendedUse?: string
-// whoEndUsers?: string
-// problemToResolve?: string
-// pullingDataOtherAPIS?: string
-// apiTerms?: Date
 
 export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
   const { setUserAdditionalInformation, status, update, userAdditionalInformation } =
@@ -49,11 +49,15 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
     [setUserAdditionalInformation, userAdditionalInformation]
   )
 
+  const termsAccepted = useMemo(
+    () => !!userAdditionalInformation?.apiTerms,
+    [userAdditionalInformation?.apiTerms]
+  )
   return (
     <div className={styles.fieldsWrapper}>
       <div className={styles.field}>
         <Select
-          label="Intended use (*)"
+          label="Intended use (*) (*)"
           options={INTENDED_USE_OPTIONS}
           onSelect={onSelectIntendedUse}
           onRemove={onRemoveIntendedUse}
@@ -64,10 +68,9 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
       <div className={styles.field}>
         <InputText
           id="whoEndUsers"
-          label="Who are your end users?"
+          label="Who are your end users? (*)"
           type={'text'}
-          maxLength={100}
-          // inputSize={'small'}
+          maxLength={500}
           value={userAdditionalInformation.whoEndUsers}
           className={styles.input}
           onChange={(e) =>
@@ -81,10 +84,9 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
       <div className={styles.field}>
         <InputText
           id="problemToResolve"
-          label="What problem are you trying to solve?"
+          label="What problem are you trying to solve? (*)"
           type={'text'}
-          maxLength={100}
-          // inputSize={'small'}
+          maxLength={500}
           value={userAdditionalInformation.problemToResolve}
           className={styles.input}
           onChange={(e) =>
@@ -100,8 +102,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           id="pullingDataOtherAPIS"
           label="Are you pulling data from APIs from other organizations?"
           type={'text'}
-          maxLength={100}
-          // inputSize={'small'}
+          maxLength={500}
           value={userAdditionalInformation.pullingDataOtherAPIS}
           className={styles.input}
           onChange={(e) =>
@@ -113,10 +114,29 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
         />
       </div>
       <div className={styles.field}>
+        <Checkbox
+          label="I agree to the Global Fishing Watch API Terms of Use and Attribution. If I am
+                registering for use by an organization, I represent that I have the authority to
+                bind that organization to these terms."
+          labelClassname={styles.label}
+          className={styles.checkbox}
+          containerClassName={styles.checkboxContainer}
+          active={termsAccepted}
+          onClick={() =>
+            setUserAdditionalInformation({
+              ...userAdditionalInformation,
+              apiTerms: termsAccepted ? null : new Date().toISOString(),
+            })
+          }
+        />
+      </div>
+      <div className={styles.field}>
         <Button
           onClick={update}
           loading={status === AsyncReducerStatus.LoadingUpdate}
           className={styles.button}
+          disabled={!termsAccepted}
+          tooltip={termsAccepted ? '' : 'You must accept the terms to use our APIs'}
         >
           Continue
         </Button>
