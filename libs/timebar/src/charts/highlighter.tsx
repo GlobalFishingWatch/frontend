@@ -110,8 +110,8 @@ const getHighlighterData = (
     chartData.data.forEach((item, itemIndex) => {
       const foundChunks = findChunks(centerMs, item, minHighlightChunkDuration)
 
-      // TODO Case where several track events overlap. Right now prioritized by type (encounter first etc) but should we display them all
-      const foundChunk = foundChunks ? foundChunks[0] : undefined
+      // Case where several track events overlap (reverse order as this is paint order)
+      const foundChunk = foundChunks ? foundChunks[foundChunks.length - 1] : undefined
       let label = undefined
 
       if (!highlighterData[itemIndex]) {
@@ -178,7 +178,7 @@ const Highlighter = ({
   const chartsData = useRecoilValue(chartsDataState)
 
   const minHighlightChunkDuration = useMemo(() => {
-    return +outerScale.invert(10) - +outerScale.invert(0)
+    return +outerScale.invert(15) - +outerScale.invert(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [outerStart, outerEnd])
 
