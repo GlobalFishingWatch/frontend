@@ -212,7 +212,11 @@ const Highlighter = ({
               left: center,
             }}
           >
-            <div className={styles.tooltip}>
+            <div
+              className={cx(styles.tooltip, {
+                [styles.overflowRight]: window.innerWidth - center < 700,
+              })}
+            >
               <span className={styles.tooltipDate}>{dateLabel}</span>
               {highlighterData.map((item, itemIndex) => {
                 if (!item) return null
