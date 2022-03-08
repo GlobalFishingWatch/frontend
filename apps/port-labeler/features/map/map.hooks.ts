@@ -13,7 +13,7 @@ type UseSelector = {
   onMouseMove: (evt: MapEvent) => void
   onMouseUp: (evt: MapEvent) => void
   onHover: (evt: MapEvent) => void
-  onMapclick: () => void
+  onMapclick: (evt: MapEvent) => void
 }
 
 export function useSelectorConnect(): UseSelector {
