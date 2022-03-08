@@ -36,7 +36,9 @@ export const useEnvironmentalBreaksUpdate = () => {
                 data.length > 1000 ? sample(data, Math.round(data.length / 100), Math.random) : data
 
               // using ckmeans as jenks
-              const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) => clusterFirst)
+              const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) =>
+                parseFloat(clusterFirst.toFixed(2))
+              )
               return {
                 id: dataviewsId[0],
                 config: {
