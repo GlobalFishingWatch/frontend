@@ -53,7 +53,7 @@ function ActivityLayerPanel({
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
-  const { data: stats, isLoading } = useGetStatsByDataviewQuery(
+  const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
       dataview,
       timerange,
@@ -193,7 +193,7 @@ function ActivityLayerPanel({
           {stats && (
             <div
               className={cx(activityStyles.stats, {
-                [activityStyles.statsLoading]: isLoading,
+                [activityStyles.statsLoading]: isFetching,
               })}
             >
               {showStats ? (
