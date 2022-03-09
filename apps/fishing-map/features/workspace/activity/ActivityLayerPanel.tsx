@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
+import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -14,12 +15,8 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
-import {
-  selectDataviewStatsById,
-  selectDataviewStatsStatus,
-} from 'features/dataview-stats/dataview-stats.slice'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -50,10 +47,14 @@ function ActivityLayerPanel({
 
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
+  const { timerange } = useTimerangeConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const readOnly = useSelector(selectReadOnly)
-  const dataviewStatsStatus = useSelector(selectDataviewStatsStatus)
-  const stats = useSelector(selectDataviewStatsById(dataview.id))
+  // TODO fetch only for logged users
+  const { data: stats, isLoading } = useGetStatsByDataviewQuery({
+    dataview,
+    timerange,
+  })
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -185,7 +186,7 @@ function ActivityLayerPanel({
           {stats && (
             <div
               className={cx(activityStyles.stats, {
-                [activityStyles.statsLoading]: dataviewStatsStatus === AsyncReducerStatus.Loading,
+                [activityStyles.statsLoading]: isLoading,
               })}
             >
               {showStats ? (
