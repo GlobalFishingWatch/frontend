@@ -1,6 +1,8 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
 import { gfwBaseQuery } from 'queries/base'
+import { BaseQueryArg, BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSerializeQueryArgs'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Range } from 'features/timebar/timebar.slice'
 
@@ -18,9 +20,18 @@ export type FetchDataviewStatsParams = {
   fields?: StatField[]
 }
 
+interface CustomBaseQueryArg extends BaseQueryArg<BaseQueryFn> {
+  url: string
+  dataview: UrlDataviewInstance
+}
+const serializeQueryArgs: SerializeQueryArgs<CustomBaseQueryArg> = ({ queryArgs }) => {
+  return queryArgs.dataview.id
+}
+
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
+  serializeQueryArgs,
   baseQuery: gfwBaseQuery({
     baseUrl: '/proto/4wings/stats',
   }),
