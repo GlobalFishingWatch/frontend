@@ -20,15 +20,20 @@ export type FetchDataviewStatsParams = {
 interface CustomBaseQueryArg extends BaseQueryArg<BaseQueryFn> {
   url: string
   dataview: UrlDataviewInstance
+  timerange: Range
 }
-const serializeQueryArgs: SerializeQueryArgs<CustomBaseQueryArg> = ({ queryArgs }) => {
-  return queryArgs.dataview.id
+const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ queryArgs }) => {
+  return [
+    queryArgs.dataview.id,
+    JSON.stringify(queryArgs.dataview.config),
+    JSON.stringify(queryArgs.timerange),
+  ].join('-')
 }
 
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
-  serializeQueryArgs,
+  serializeQueryArgs: serializeStatsDataviewKey,
   baseQuery: gfwBaseQuery({
     baseUrl: '/proto/4wings/stats',
   }),
