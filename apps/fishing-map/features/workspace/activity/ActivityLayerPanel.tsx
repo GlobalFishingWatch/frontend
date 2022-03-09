@@ -17,6 +17,7 @@ import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
+import { isGuestUser } from 'features/user/user.slice'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -49,12 +50,17 @@ function ActivityLayerPanel({
   const { dispatchQueryParams } = useLocationConnect()
   const { timerange } = useTimerangeConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
-  // TODO fetch only for logged users
-  const { data: stats, isLoading } = useGetStatsByDataviewQuery({
-    dataview,
-    timerange,
-  })
+  const { data: stats, isLoading } = useGetStatsByDataviewQuery(
+    {
+      dataview,
+      timerange,
+    },
+    {
+      skip: guestUser,
+    }
+  )
 
   const layerActive = dataview?.config?.visible ?? true
 

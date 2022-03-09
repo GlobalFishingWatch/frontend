@@ -10,9 +10,6 @@ export type StatField = 'flag' | 'vessel_id' | 'geartype'
 export type StatFields = {
   [key in StatField]: number
 }
-export type DataviewStats = {
-  [key: string]: StatFields
-}
 
 export type FetchDataviewStatsParams = {
   timerange: Range
@@ -36,7 +33,7 @@ export const dataviewStatsApi = createApi({
     baseUrl: '/proto/4wings/stats',
   }),
   endpoints: (builder) => ({
-    getStatsByDataview: builder.query<DataviewStats, FetchDataviewStatsParams>({
+    getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
       query: ({ dataview, timerange, fields = ['vessel_id', 'flag'] }) => {
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
@@ -49,7 +46,7 @@ export const dataviewStatsApi = createApi({
           })}`,
         }
       },
-      transformResponse: (response: DataviewStats[], meta, arg) => {
+      transformResponse: (response: StatFields[]) => {
         return response?.[0]
       },
     }),
