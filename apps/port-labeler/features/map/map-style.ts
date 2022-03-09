@@ -16,6 +16,11 @@ const style = {
     satellite: {
       type: 'raster',
       url: 'https://api.maptiler.com/tiles/satellite/tiles.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+      tileSize: 256,
+    },
+    location_labels: {
+      type: 'raster',
+      tiles: ['https://gtiles.api.dev.globalfishingwatch.org/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}'],
       tileSize: 256
     },
     bathymetry: {
@@ -62,7 +67,14 @@ const style = {
     {
       id: 'satellite',
       type: 'raster',
-      source: 'satellite'
+      source: 'satellite',
+
+    },
+    {
+      id: 'location_labels',
+      type: 'raster',
+      source: 'location_labels',
+      maxzoom: 24,
     },
     {
       id: 'graticules_10',

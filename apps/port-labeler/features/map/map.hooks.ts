@@ -4,6 +4,12 @@ import Point from '@mapbox/point-geometry';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectSelectedPoints, setHoverPoint, setSelectedPoints } from 'features/labeler/labeler.slice';
 import useMapInstance from './map-context.hooks';
+import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors';
+import { fitBounds } from 'viewport-mercator-project';
+import { useViewport } from './map-viewport.hooks';
+import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { PortPosition } from 'types';
+
 
 type UseSelector = {
   box: any
@@ -132,9 +138,51 @@ export function useSelectorConnect(): UseSelector {
         { hover: true }
       );
       dispatch(setHoverPoint(e.features[0].properties.id))
+    } else if (hoveredStateId !== null) {
+      map.setFeatureState(
+        { source: 'pointsLayer', id: hoveredStateId },
+        { hover: false }
+      );
     }
 
   }, [dispatch, hoveredStateId, map])
 
   return { box, onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onHover, onMapclick }
+}
+
+
+type UseMap = {
+  centerPoints: (points: PortPosition[]) => void
+}
+
+export function useMapConnect(): UseMap {
+  const map = useMapInstance()
+  const { setMapCoordinates } = useViewport()
+
+  const centerPoints = useCallback(
+    (points) => {
+      if (points) {
+        const bbox = points?.length ? segmentsToBbox([points.map(point => ({
+          latitude: point.lon,
+          longitude: point.lat
+        }))]) : undefined
+        const { width, height } = map?.transform || {}
+        if (width && height && bbox) {
+          const [minLng, minLat, maxLng, maxLat] = bbox
+          const { latitude, longitude, zoom } = fitBounds({
+            bounds: [
+              [minLat, minLng],
+              [maxLat, maxLng],
+            ],
+            width,
+            height,
+            padding: 60,
+          })
+          setMapCoordinates({ latitude, longitude, zoom })
+        }
+      }
+    },
+    [map, setMapCoordinates]
+  )
+  return { centerPoints }
 }

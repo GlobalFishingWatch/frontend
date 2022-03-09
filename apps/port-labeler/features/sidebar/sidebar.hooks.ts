@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { selectUserData } from 'features/user/user.slice'
 import { selectMapData, selectPointValues, selectPortValues, selectSubareas, selectSubareaValues, setCountry, setData, setPointValues, setPorts, setPortValues, setSubareas, setSubareaValues } from 'features/labeler/labeler.slice'
 import { PortPosition } from 'types'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
+import { useMapConnect } from 'features/map/map.hooks'
 
 export const useSelectedTracksConnect = () => {
   const dispatch = useDispatch()
@@ -12,7 +12,7 @@ export const useSelectedTracksConnect = () => {
   const pointValues = useSelector(selectPointValues)
   const subareaValues = useSelector(selectSubareaValues)
   const subareas = useSelector(selectSubareas)
-  const user = useSelector(selectUserData)
+  const { centerPoints } = useMapConnect()
   let fileReader: FileReader
 
   const assignLabeledValues = (points: PortPosition[]) => {
@@ -73,9 +73,11 @@ export const useSelectedTracksConnect = () => {
 
   const onCountryChange = (country: string) => {
     dispatch(setCountry(country))
+
     const tempPorts = []
     const tempSubareas = []
     const countryRecords = allRecords?.filter((point) => point.iso3 === country) || []
+    centerPoints(countryRecords)
     countryRecords.forEach(e => {
       tempPorts.push(e.label)
       tempSubareas.push(e.community_iso3)

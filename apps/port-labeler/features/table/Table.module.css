@@ -3,6 +3,7 @@
   border-collapse: collapse;
   position: relative;
   z-index: 100;
+  height: calc(100% - 52px);
 }
 
 .table td {
@@ -38,7 +39,7 @@
 .table .body {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 20px);
+  height: calc(100% - 40px);
 }
 
 .iconRight {

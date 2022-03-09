@@ -19,6 +19,8 @@ function SidebarHeader(props: HeaderProps) {
     dispatchDownloadSelectedTracks,
     dispatchImportHandler,
   } = useSelectedTracksConnect()
+
+
   return (
 
     <div className={styles.sidebarHeader}>

@@ -53,7 +53,7 @@ const Map = (): React.ReactElement => {
 
   const points = useSelector(selectPortPointsByCountry)
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (points.length) {
       onViewportChange({
         latitude: parseFloat((points[0].lat.toString())),
@@ -61,7 +61,7 @@ const Map = (): React.ReactElement => {
         zoom: 12
       })
     }
-  }, [onViewportChange, country])
+  }, [onViewportChange, country])*/
 
   return (
     <div className={styles.container}

@@ -1,18 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { SelectOption } from '@globalfishingwatch/ui-components'
-import { changePointValue, changePortValue, changeSubareaValue, selectCountry, selectHoverPoint, selectPointValues, selectPorts, selectPortValues, selectSelectedPoints, selectSubareas, selectSubareaValues, setPointValues, setPorts, setPortValues, setSubareas, setSubareaValues, sortPoints } from 'features/labeler/labeler.slice'
+import { selectPorts, sortPoints } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
-import { PortPosition, PortSubarea } from 'types'
-import { getFixedColorForUnknownLabel } from 'utils/colors'
+import { PortPosition } from 'types'
 import styles from './Table.module.css'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
-import { useValueManagerConnect } from './Table.hooks'
-import { selectFilteredPoints, selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
-//import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
+import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
 
 function Table() {
 
@@ -73,40 +70,40 @@ function Table() {
           label="Destination" order={orderColumn === 'top_destination' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('top_destination', order)} />
       </div>
-      <div>
-        {screenFilteredRecords && screenFilteredRecords.length ? (
-          <div className={styles.body}>
-            <AutoSizer disableWidth={true}>
-              {({ width, height }) => (
-                <List
-                  width={width}
-                  height={height}
-                  itemCount={screenFilteredRecords.length}
-                  itemData={screenFilteredRecords}
-                  itemSize={() => 40}
-                >
-                  {({ index, style }) => {
-                    const record = screenFilteredRecords[index]
-                    return (
-                      <div style={style}>
-                        <TableRow
-                          key={record.s2id}
-                          ports={portOptions}
-                          //pointValue={pointValues[record.s2id]}
-                          record={record}
-                        ></TableRow>
-                      </div>
-                    )
-                  }}
-                </List>
-              )}
-            </AutoSizer>
-          </div>
-        ) : (
-          <p>No points found</p>
-        )}
-      </div>
+
+      {screenFilteredRecords && screenFilteredRecords.length ? (
+        <div className={styles.body}>
+          <AutoSizer disableWidth={true}>
+            {({ width, height }) => (
+              <List
+                width={width}
+                height={height}
+                itemCount={screenFilteredRecords.length}
+                itemData={screenFilteredRecords}
+                itemSize={() => 40}
+              >
+                {({ index, style }) => {
+                  const record = screenFilteredRecords[index]
+                  return (
+                    <div style={style}>
+                      <TableRow
+                        key={record.s2id}
+                        ports={portOptions}
+                        //pointValue={pointValues[record.s2id]}
+                        record={record}
+                      ></TableRow>
+                    </div>
+                  )
+                }}
+              </List>
+            )}
+          </AutoSizer>
+        </div>
+      ) : (
+        <p>No points found</p>
+      )}
     </div>
+
   )
 }
 
