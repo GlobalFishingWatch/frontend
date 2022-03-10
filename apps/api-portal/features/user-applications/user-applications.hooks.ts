@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { AsyncError, AsyncReducerStatus } from 'lib/async-slice'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { UserData } from '@globalfishingwatch/api-types'
 import { checkUserApplicationPermission } from 'features/user/user.hooks'
 import { selectUserData } from '../user/user.slice'
@@ -17,14 +17,14 @@ import {
 } from './user-applications.slice'
 
 export const useGetUserApplications = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
-  const user: UserData = useSelector(selectUserData)
-  const userApplicationsIds = useSelector(selectUserApplicationsIds)
-  const userApplicationsList = useSelector(selectUserApplications)
-  const userApplicationsStatus = useSelector(selectUserApplicationsStatus)
+  const user: UserData = useAppSelector(selectUserData)
+  const userApplicationsIds = useAppSelector(selectUserApplicationsIds)
+  const userApplicationsList = useAppSelector(selectUserApplications)
+  const userApplicationsStatus = useAppSelector(selectUserApplicationsStatus)
   const isAllowed = checkUserApplicationPermission('read', user?.permissions || [])
-  const isUserApplicationsRequiredInfoCompleted = useSelector(
+  const isUserApplicationsRequiredInfoCompleted = useAppSelector(
     selectUserApplicationsRequiredInfoCompleted
   )
 
@@ -66,11 +66,11 @@ export const useGetUserApplications = () => {
 }
 
 export const useCreateUserApplications = () => {
-  const dispatch = useDispatch()
-  const user: UserData = useSelector(selectUserData)
-  const userApplicationsStatus = useSelector(selectUserApplicationsStatus)
+  const dispatch = useAppDispatch()
+  const user: UserData = useAppSelector(selectUserData)
+  const userApplicationsStatus = useAppSelector(selectUserApplicationsStatus)
   const isAllowed = checkUserApplicationPermission('create', user.permissions)
-  const isUserApplicationsRequiredInfoCompleted = useSelector(
+  const isUserApplicationsRequiredInfoCompleted = useAppSelector(
     selectUserApplicationsRequiredInfoCompleted
   )
 

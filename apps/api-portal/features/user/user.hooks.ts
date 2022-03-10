@@ -3,7 +3,7 @@ import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { useSelector } from 'react-redux'
 import { AsyncReducerStatus } from 'lib/async-slice'
 import { useRouter } from 'next/router'
-import { useAppDispatch } from 'app/hooks'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import {
   UserApiAdditionalInformation,
@@ -34,10 +34,10 @@ export const checkUserApplicationPermission = (
 export const useUser = (redirectToLogin: boolean) => {
   const dispatch = useAppDispatch()
 
-  const logged = useSelector(selectUserLogged)
-  const user = useSelector(selectUserData)
-  const guestUser = useSelector(isGuestUser)
-  const status = useSelector(selectUserStatus)
+  const logged = useAppSelector(selectUserLogged)
+  const user = useAppSelector(selectUserData)
+  const guestUser = useAppSelector(isGuestUser)
+  const status = useAppSelector(selectUserStatus)
   const router = useRouter()
 
   const accessToken = typeof window === 'undefined' ? null : getAccessTokenFromUrl()
@@ -101,7 +101,7 @@ type FieldValidationError<T> = {
 
 export const useUserAdditionalInformation = () => {
   const dispatch = useAppDispatch()
-  const user = useSelector(selectUserData)
+  const user = useAppSelector(selectUserData)
   const defaultUserAdditionalInformation: UserApiAdditionalInformation = {
     apiTerms: user.apiTerms,
     intendedUse: user.intendedUse,
@@ -109,8 +109,8 @@ export const useUserAdditionalInformation = () => {
     pullingDataOtherAPIS: user.pullingDataOtherAPIS,
     whoEndUsers: user.whoEndUsers,
   }
-  const fetchStatus = useSelector(selectUserStatus)
-  const status = useSelector(selectUserUpdateStatus)
+  const fetchStatus = useAppSelector(selectUserStatus)
+  const status = useAppSelector(selectUserUpdateStatus)
   const [userAdditionalInformation, setUserAdditionalInformation] =
     useState<UserApiAdditionalInformation>(defaultUserAdditionalInformation)
   const router = useRouter()
