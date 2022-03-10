@@ -10,9 +10,7 @@ export interface AccessTokenCreateProps {}
 
 const emptyToken: UserApplicationCreateArguments = {
   description: '',
-  intendedUse: 'non-commercial',
   name: '',
-  termsAccepted: false,
   userId: null,
 }
 
@@ -24,8 +22,6 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
   const create = useCallback(async () => {
     const response = await dispatchCreate({
       ...token,
-      termsAccepted: true,
-      intendedUse: 'non-commercial',
     })
     if (response.error) {
       console.error(response.error)

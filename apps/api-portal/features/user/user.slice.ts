@@ -66,11 +66,11 @@ export const updateUserAdditionaInformationThunk = createAsyncThunk<
     try {
       const data = { ...userAdditionalInformation }
       Object.keys(data).forEach((key) => data[key] == null && delete data[key])
-      const updatedUser = await GFWAPI.fetch<UserData>(`/v2/auth/me`, {
+      const result = await GFWAPI.fetch(`/v2/auth/me`, {
         method: 'PATCH',
         body: data as any,
       })
-      return updatedUser
+      return (result ? result : data) as any
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
@@ -118,7 +118,7 @@ const userSlice = createSlice({
     builder.addCase(updateUserAdditionaInformationThunk.fulfilled, (state, action) => {
       state.updateStatus = AsyncReducerStatus.Finished
       state.logged = true
-      state.data = action.payload
+      state.data = { ...state.data, ...action.payload }
     })
     builder.addCase(updateUserAdditionaInformationThunk.rejected, (state) => {
       state.updateStatus = AsyncReducerStatus.Error

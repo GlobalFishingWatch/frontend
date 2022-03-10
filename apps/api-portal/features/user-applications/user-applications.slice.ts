@@ -81,10 +81,7 @@ export const fetchUserApplicationsThunk = createAsyncThunk(
   }
 )
 
-export interface UserApplicationCreateArguments
-  extends Omit<UserApplication, 'id' | 'termAcceptedAt' | 'createdAt' | 'token'> {
-  termsAccepted: boolean
-}
+export type UserApplicationCreateArguments = Omit<UserApplication, 'id' | 'token' | 'createdAt'>
 
 export const createUserApplicationsThunk = createAsyncThunk<
   UserApplication,
