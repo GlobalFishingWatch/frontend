@@ -1,15 +1,20 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { Button, InputText, Select, SwitchRow } from '@globalfishingwatch/ui-components'
+import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { ResponseError } from '@globalfishingwatch/api-client'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { getBigQueryDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  getBigQuery4WingsDataviewInstance,
+  getBigQueryEventsDataviewInstance,
+} from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
+  BigQueryVisualisation,
   createBigQueryDatasetThunk,
   fetchBigQueryRunCostThunk,
   selectCreationStatus,
@@ -18,6 +23,19 @@ import {
   toggleBigQueryMenu,
 } from './bigquery.slice'
 import styles from './BigQuery.module.css'
+
+const VisualisationOptions: { id: BigQueryVisualisation; label: string; fieldsHint: string }[] = [
+  {
+    id: '4wings',
+    label: 'Activity (heatmap)',
+    fieldsHint: '(Ensure id, lat, lon, timestamp and value are all present)',
+  },
+  {
+    id: 'events',
+    label: 'Events (clusters)',
+    fieldsHint: '(Ensure id, timestamp, event_end, geom are all present)',
+  },
+]
 
 const AggregationOptions = [
   {
@@ -38,6 +56,7 @@ const BigQueryMenu: React.FC = () => {
   const creationStatus = useSelector(selectCreationStatus)
   const [name, setName] = useState('')
   const [error, setError] = useState('')
+  const [visualisationMode, setVisualisationMode] = useState<BigQueryVisualisation | null>(null)
   const [aggregationOperation, setAggregationOperation] = useState<AggregationOperation | null>(
     null
   )
@@ -46,11 +65,14 @@ const BigQueryMenu: React.FC = () => {
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [query, setQuery] = useState('')
 
+  const currentVisualisationMode = VisualisationOptions.find(({ id }) => id === visualisationMode)
+
   const onRunCostClick = async () => {
+    setRunCostChecked(false)
     if (error) {
       setError('')
     }
-    const action = await dispatch(fetchBigQueryRunCostThunk({ query }))
+    const action = await dispatch(fetchBigQueryRunCostThunk({ query, visualisationMode }))
     if (fetchBigQueryRunCostThunk.fulfilled.match(action)) {
       setRunCostChecked(true)
     } else {
@@ -59,10 +81,17 @@ const BigQueryMenu: React.FC = () => {
   }
 
   const onCreateClick = async () => {
-    const action = await dispatch(createBigQueryDatasetThunk({ name, createAsPublic, query }))
+    const action = await dispatch(
+      createBigQueryDatasetThunk({ name, createAsPublic, query, visualisationMode })
+    )
     if (createBigQueryDatasetThunk.fulfilled.match(action)) {
       const dataset = action.payload.payload as Dataset
-      const dataviewInstance = getBigQueryDataviewInstance(dataset.id, { aggregationOperation })
+      const dataviewInstance =
+        visualisationMode === '4wings'
+          ? getBigQuery4WingsDataviewInstance(dataset.id, {
+              aggregationOperation,
+            })
+          : getBigQueryEventsDataviewInstance(dataset.id)
       addNewDataviewInstances([dataviewInstance])
       dispatch(toggleBigQueryMenu())
     } else {
@@ -72,7 +101,9 @@ const BigQueryMenu: React.FC = () => {
   }
 
   const hasQuery = query !== ''
-  const disableCreation = !runCostChecked || name === '' || !hasQuery || !aggregationOperation
+  const disableCheckCost =
+    !hasQuery || !visualisationMode || (visualisationMode === '4wings' && !aggregationOperation)
+  const disableCreation = !runCostChecked || name === '' || disableCheckCost || error !== ''
 
   return (
     <div className={styles.container}>
@@ -86,24 +117,47 @@ const BigQueryMenu: React.FC = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <Select
-          label="Aggregation mode *"
+          label="Visualisation mode"
           placeholder={t('selects.placeholder', 'Select an option')}
-          options={AggregationOptions}
+          options={VisualisationOptions}
           containerClassName={styles.inputShort}
-          selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}
+          selectedOption={currentVisualisationMode}
           onSelect={(selected) => {
-            setAggregationOperation(selected.id)
+            setVisualisationMode(selected.id)
           }}
           onRemove={() => {}}
         />
+        {visualisationMode === '4wings' && (
+          <Select
+            label="Aggregation mode *"
+            placeholder={t('selects.placeholder', 'Select an option')}
+            options={AggregationOptions}
+            containerClassName={styles.inputShort}
+            selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}
+            onSelect={(selected) => {
+              setAggregationOperation(selected.id)
+            }}
+            onRemove={() => {}}
+          />
+        )}
       </div>
       <div className={styles.row}>
-        <label>Query (Ensure id, lat, lon, timestamp and value are all present)</label>
-        <textarea
-          value={query}
-          className={styles.editor}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+        <label>
+          Query{' '}
+          {currentVisualisationMode && (
+            <span className={styles.lowercase}>{currentVisualisationMode.fieldsHint}</span>
+          )}
+        </label>
+        <Tooltip content={!visualisationMode ? 'Select a visualisation mode first' : ''}>
+          <div>
+            <textarea
+              value={query}
+              disabled={!visualisationMode}
+              className={cx(styles.editor, { [styles.notAllowed]: !visualisationMode })}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+        </Tooltip>
       </div>
       <SwitchRow
         className={styles.row}
@@ -116,10 +170,10 @@ const BigQueryMenu: React.FC = () => {
       />
       <div className={styles.footer}>
         {error && <p className={styles.error}>{error}</p>}
-        {runCost !== null && <p>This query will move: {runCost.totalBytesPretty}</p>}
+        {runCost !== null && <p>This query will move: {runCost?.totalBytesPretty}</p>}
         <Button
-          disabled={!hasQuery}
-          tooltip={hasQuery ? '' : 'Query is required'}
+          disabled={disableCheckCost}
+          tooltip={disableCheckCost ? 'Query and visualisation mode is required' : ''}
           loading={runCostStatus === AsyncReducerStatus.Loading}
           onClick={onRunCostClick}
         >
@@ -128,8 +182,10 @@ const BigQueryMenu: React.FC = () => {
         <Button
           disabled={disableCreation || creationStatus === AsyncReducerStatus.Loading}
           tooltip={
-            disableCreation
-              ? 'Query, name, aggregation mode and checking creation cost are required'
+            error
+              ? 'There is an error in the query'
+              : disableCreation
+              ? 'Query, name, visualisation mode, aggregation mode and checking creation cost are required'
               : ''
           }
           loading={creationStatus === AsyncReducerStatus.Loading}

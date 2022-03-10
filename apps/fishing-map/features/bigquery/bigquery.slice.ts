@@ -5,21 +5,35 @@ import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+export type BigQueryVisualisation = '4wings' | 'events'
+
 export type RunCostResponse = {
   totalBytes: number
   totalBytesPretty: string
 }
 
+export type CreateBigQueryDataset = {
+  query: string
+  visualisationMode: BigQueryVisualisation
+  name: string
+  ttl?: number
+  createAsPublic?: boolean
+}
+
 export const fetchBigQueryRunCostThunk = createAsyncThunk(
   'bigQuery/fetchRunCost',
-  async ({ query }: { query: string }, { rejectWithValue }) => {
+  async (
+    { query, visualisationMode }: Omit<CreateBigQueryDataset, 'name'>,
+    { rejectWithValue }
+  ) => {
     try {
       const response = await GFWAPI.fetch<RunCostResponse>(
-        '/v1/4wings/bq/create-temporal-dataset?dryRun=true',
+        `/v1/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
         {
           method: 'POST',
           body: {
             name: 'Calculating cost using dryRun',
+            public: true,
             ttl: 1, // days
             query,
           } as any,
@@ -35,13 +49,6 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
   }
 )
 
-export type CreateBigQueryDataset = {
-  query: string
-  name: string
-  ttl?: number
-  createAsPublic?: boolean
-}
-
 export type CreateBigQueryDatasetResponse = {
   id: string
   startDate: string
@@ -51,9 +58,12 @@ export type CreateBigQueryDatasetResponse = {
 
 export const createBigQueryDatasetThunk = createAsyncThunk(
   'bigQuery/createDataset',
-  async ({ query, name, ttl = 30, createAsPublic = true }: CreateBigQueryDataset, { dispatch }) => {
+  async (
+    { query, name, ttl = 30, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
+    { dispatch }
+  ) => {
     const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
-      '/v1/4wings/bq/create-temporal-dataset',
+      `/v1/${visualisationMode}/bq/create-temporal-dataset`,
       {
         method: 'POST',
         body: { query, name: kebabCase(name), ttl, public: createAsPublic } as any,

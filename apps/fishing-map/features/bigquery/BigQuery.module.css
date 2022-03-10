@@ -16,7 +16,7 @@
 }
 
 .inputShort {
-  flex: 0.35;
+  flex: 0.45;
 }
 
 .inputLabel {
@@ -25,6 +25,10 @@
 
 .row {
   margin-top: var(--space-M);
+}
+
+.lowercase {
+  text-transform: lowercase;
 }
 
 .editor {
@@ -44,11 +48,16 @@
   align-items: center;
   justify-content: flex-end;
   margin-top: auto;
-  gap: var(--space-M);
+  gap: var(--space-S);
+  flex-wrap: wrap;
 }
 
 .error {
-  flex: 1;
-  text-transform: uppercase;
+  width: 100%;
   color: var(--color-danger-red);
+  margin-top: var(--space-S);
+}
+
+.notAllowed {
+  cursor: not-allowed;
 }

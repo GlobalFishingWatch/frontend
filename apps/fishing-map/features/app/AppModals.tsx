@@ -106,6 +106,7 @@ const AppModals = () => {
           title="Big query datasets creation 🧠"
           isOpen={bigqueryActive}
           onClose={dispatchBigQueryMenu}
+          contentClassName={styles.bqModal}
         >
           <BigQueryMenu />
         </Modal>
