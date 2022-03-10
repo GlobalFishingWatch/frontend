@@ -69,7 +69,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
                     {row.description}
                   </td>
                   <td data-aria-label="Token" className={styles.cellToken}>
-                    <code className={!tokenVisibility[`${row.id}`] && styles.blur}>
+                    <code className={tokenVisibility[`${row.id}`] ? '' : styles.blur}>
                       {tokenVisibility[`${row.id}`]
                         ? row.token
                         : row.token.substring(0, 100) + '...'}
