@@ -28,6 +28,8 @@ import { isPrivateDataset } from 'features/datasets/datasets.utils'
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
 export const FISHING_LAYER_PREFIX = 'fishing-'
 export const BIG_QUERY_PREFIX = 'bq-'
+export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
+export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
@@ -217,7 +219,7 @@ export const getBigQuery4WingsDataviewInstance = (
   { aggregationOperation = AggregationOperation.Sum } = {}
 ): DataviewInstance<GeneratorType> => {
   const contextDataviewInstance = {
-    id: `${BIG_QUERY_PREFIX}4wings-${Date.now()}`,
+    id: `${BIG_QUERY_4WINGS_PREFIX}${Date.now()}`,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
       aggregationOperation,
@@ -243,7 +245,7 @@ export const getBigQueryEventsDataviewInstance = (
   datasetId: string
 ): DataviewInstance<GeneratorType> => {
   const contextDataviewInstance = {
-    id: `${BIG_QUERY_PREFIX}events-${Date.now()}`,
+    id: `${BIG_QUERY_EVENTS_PREFIX}${Date.now()}`,
     dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_ID,
     datasetsConfig: [
       {

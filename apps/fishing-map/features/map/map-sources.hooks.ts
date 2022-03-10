@@ -18,6 +18,10 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom, TilesAtomSourceState } from 'features/map/map-sources.atom'
 import { getHeatmapSourceMetadata } from 'features/map/map-sources.utils'
+import {
+  BIG_QUERY_EVENTS_PREFIX,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+} from 'features/dataviews/dataviews.utils'
 
 type SourcesHookInput = string | string[]
 // TODO: move this to fork and include sourceId in the event for tiles loaded
@@ -119,6 +123,14 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
   const sourceInStyle = useSourceInStyle(sourcesId)
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesId)
   return sourceInStyle && sourcesIdsList.every((source) => sourceTilesLoaded[source]?.loaded)
+}
+
+const CLUSTERS_SOURCES_IDS = [ENCOUNTER_EVENTS_SOURCE_ID, BIG_QUERY_EVENTS_PREFIX]
+export const useMapClusterTilesLoaded = () => {
+  const sourceTilesLoaded = useMapSourceTiles()
+  return Object.entries(sourceTilesLoaded)
+    .filter(([source]) => CLUSTERS_SOURCES_IDS.some((id) => source.includes(id)))
+    .every(([source, state]) => state?.loaded)
 }
 
 export const useAllMapSourceTilesLoaded = () => {

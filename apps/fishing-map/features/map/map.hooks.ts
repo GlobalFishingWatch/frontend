@@ -19,7 +19,6 @@ import {
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -33,7 +32,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/analysis/analysis.selectors'
-import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
+import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -116,7 +115,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useMapSourceTilesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
   const viirsPromiseRef = useRef<any>()
@@ -159,12 +158,13 @@ export const useClickedEventConnect = () => {
       (f) => f.generatorType === GeneratorType.TileCluster
     )
     if (clusterFeature?.properties?.expansionZoom) {
-      const { count, expansionZoom, lat, lng } = clusterFeature.properties
+      const { count, expansionZoom, lat, lng, lon } = clusterFeature.properties
+      const longitude = lng || lon
       if (count > 1) {
-        if (encounterSourceLoaded) {
+        if (tilesClusterLoaded && lat && longitude) {
           setMapCoordinates({
             latitude: lat,
-            longitude: lng,
+            longitude,
             zoom: expansionZoom,
           })
           cleanFeatureState('click')
