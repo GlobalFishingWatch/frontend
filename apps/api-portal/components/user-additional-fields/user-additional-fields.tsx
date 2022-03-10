@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, Fragment } from 'react'
 import { AsyncReducerStatus } from 'lib/async-slice'
 import _ from 'lodash'
 import {
@@ -121,9 +121,15 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
       </div>
       <div className={styles.field}>
         <Checkbox
-          label="I agree to the Global Fishing Watch API Terms of Use and Attribution. If I am
-                registering for use by an organization, I represent that I have the authority to
-                bind that organization to these terms."
+          label={
+            <Fragment>
+              I agree to the Global Fishing Watch API{' '}
+              <a href="https://globalfishingwatch.org/terms-of-use/">Terms of Use</a> and{' '}
+              <a href="https://globalfishingwatch.org/terms-of-use/">Attribution</a>. If I am
+              registering for use by an organization, I represent that I have the authority to bind
+              that organization to these terms.
+            </Fragment>
+          }
           labelClassname={styles.label}
           className={styles.checkbox}
           containerClassName={styles.checkboxContainer}

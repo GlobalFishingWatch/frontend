@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import { Tooltip } from '../tooltip'
@@ -8,7 +8,7 @@ import styles from './Checkbox.module.css'
 
 interface CheckboxProps {
   active: boolean
-  label?: string
+  label?: string | ReactNode
   disabled?: boolean
   onClick: (event: React.MouseEvent) => void
   tooltip?: TooltipTypes
