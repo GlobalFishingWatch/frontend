@@ -10,8 +10,14 @@ import styles from './access-token-list.module.css'
 /* eslint-disable-next-line */
 export interface AccessTokenListProps {}
 
+type ActionMessage = {
+  type: 'error' | 'success' | 'info'
+  message: string
+}
+
 export function AccessTokenList(props: AccessTokenListProps) {
   const response = useGetUserApplications()
+  const [actionMessage, setActionMessage] = useState<ActionMessage>()
   const { data, isError, isLoading, isAllowed, dispatchDelete } = response
   const [tokenVisibility, setTokenVisibility] = useState<{ [id: string]: boolean }>({})
 
@@ -40,13 +46,19 @@ export function AccessTokenList(props: AccessTokenListProps) {
         return
       const response = await dispatchDelete({ id })
       if (response.payload?.error) {
-        console.error(response.payload?.error)
+        setActionMessage({
+          type: 'error',
+          message: 'There was a problem deleting the token.',
+        })
       } else {
-        console.log(`user application ${id} was removed succesfully`)
+        setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
       }
     },
     [dispatchDelete]
   )
+  const clearActionMessage = useCallback(() => {
+    return setActionMessage(undefined)
+  }, [])
 
   const onCopyClipboardClick = useCallback(
     (tokenText) => {
@@ -149,6 +161,18 @@ export function AccessTokenList(props: AccessTokenListProps) {
             )}
           </tbody>
         </table>
+      )}
+      {!!actionMessage && (
+        <div className={cx([styles.actionMessage, styles[`${actionMessage.type}Message`]])}>
+          <div className={styles.content}>{actionMessage.message}</div>
+          <IconButton
+            icon="close"
+            onClick={clearActionMessage}
+            className={styles.actionMessageClose}
+            tooltip="Close"
+            type={actionMessage?.type === 'error' ? 'warning' : 'default'}
+          ></IconButton>
+        </div>
       )}
     </Fragment>
   )

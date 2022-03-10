@@ -59,7 +59,25 @@ table.list tr:first-child td {
 }
 
 .cellNoData {
+  display: table-cell;
+}
+
+.actionMessage {
+  margin: var(--space-S);
+  padding: var(--space-S);
   display: flex;
+  border: var(--border);
+}
+
+.actionMessage .content {
+  line-height: 4rem;
+  flex-grow: 1;
+}
+
+.errorMessage {
+  /* background-color: var(--color-danger-red-background); */
+  border-color: var(--color-danger-red);
+  color: var(--color-danger-red);
 }
 
 @media (min-width: 767px) {
