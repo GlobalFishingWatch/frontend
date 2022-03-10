@@ -24,7 +24,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-const DATASOURCE_WARNING = ['public-eez-land', 'public-mpa-all']
+const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa']
 
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
@@ -119,7 +119,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           {isUserLayer && <Remove dataview={dataview} />}
         </div>
       </div>
-      {layerActive && DATASOURCE_WARNING.includes(dataset?.id) && (
+      {layerActive && DATAVIEWS_WARNING.includes(dataview?.id) && (
         <div className={cx(styles.properties, styles.dataWarning)}>
           <div>
             {t(
