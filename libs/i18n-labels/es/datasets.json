@@ -1676,7 +1676,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "AMPs (Fuente: WDPA)",
+    "name": "AMPs",
     "description": "El término Áreas Marinas Protegidas incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas sin tomar santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección y el abanico de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. La capa de áreas sin actividad pesquera se creó utilizando los datos disponibles en el Planeta Marino Protegido WDPA usando el filtro NO_TAKE = 'Todos'. Fuente: Base de datos mundial sobre áreas protegidas (WDPA). Última actualización: Mayo 2021.",
     "schema": {}
   },
@@ -1857,7 +1857,7 @@
     "schema": {}
   },
   "public-wdpa-may-2021-marine": {
-    "name": "AMPs (Fuente: WDPA)",
+    "name": "AMPs",
     "description": "El término Áreas Marinas Protegidas (AMPs) incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: World Database on Protected Areas. (WDPA). Última actualización: Mayo 2021.",
     "schema": {}
   },
