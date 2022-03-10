@@ -5,7 +5,11 @@ import { AsyncReducerStatus } from 'lib/async-slice'
 import { useRouter } from 'next/router'
 import { useAppDispatch } from 'app/hooks'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
-import { UserPermission } from '@globalfishingwatch/api-types'
+import {
+  UserApiAdditionalInformation,
+  UserPermission,
+  USER_APPLICATION_INTENDED_USES,
+} from '@globalfishingwatch/api-types'
 import {
   fetchUserThunk,
   isGuestUser,
@@ -13,8 +17,8 @@ import {
   selectUserData,
   selectUserLogged,
   selectUserStatus,
+  selectUserUpdateStatus,
   updateUserAdditionaInformationThunk,
-  UserApiAdditionalInformation,
 } from './user.slice'
 
 export type UserAction = 'read' | 'create' | 'delete'
@@ -91,21 +95,67 @@ export const useUser = (redirectToLogin: boolean) => {
   }
 }
 
+type FieldValidationError<T> = {
+  [Field in keyof T]: string
+}
+
 export const useUserAdditionalInformation = () => {
   const dispatch = useAppDispatch()
-  const user: UserApiAdditionalInformation = useSelector(selectUserData)
-  const status = useSelector(selectUserStatus)
+  const user = useSelector(selectUserData)
+  const defaultUserAdditionalInformation: UserApiAdditionalInformation = {
+    apiTerms: user.apiTerms,
+    intendedUse: user.intendedUse,
+    problemToResolve: user.problemToResolve,
+    pullingDataOtherAPIS: user.pullingDataOtherAPIS,
+    whoEndUsers: user.whoEndUsers,
+  }
+  const fetchStatus = useSelector(selectUserStatus)
+  const status = useSelector(selectUserUpdateStatus)
   const [userAdditionalInformation, setUserAdditionalInformation] =
-    useState<UserApiAdditionalInformation>(user)
+    useState<UserApiAdditionalInformation>(defaultUserAdditionalInformation)
+  const router = useRouter()
+
+  const error = useMemo(() => {
+    const errors: FieldValidationError<UserApiAdditionalInformation> = {}
+    const { apiTerms, intendedUse, problemToResolve, whoEndUsers } = userAdditionalInformation
+
+    if (!intendedUse || !USER_APPLICATION_INTENDED_USES.includes(intendedUse as any)) {
+      errors.intendedUse = 'Intended Use is required'
+    }
+    if (!whoEndUsers) {
+      errors.whoEndUsers = 'Who are your end users is required'
+    }
+    if (!problemToResolve) {
+      errors.problemToResolve = 'Problems to solve is required'
+    }
+    if (!apiTerms) {
+      errors.apiTerms = 'API terms of use and attribution must be accepted.'
+    }
+    return errors
+  }, [userAdditionalInformation])
+
+  const valid = useMemo(() => Object.keys(error).length === 0, [error])
+
+  const loading =
+    fetchStatus !== AsyncReducerStatus.Finished && fetchStatus !== AsyncReducerStatus.Idle
 
   const update = useCallback(() => {
-    dispatch(updateUserAdditionaInformationThunk(userAdditionalInformation))
-  }, [dispatch, userAdditionalInformation])
+    if (valid) {
+      dispatch(updateUserAdditionaInformationThunk(userAdditionalInformation))
+    }
+  }, [dispatch, userAdditionalInformation, valid])
+
+  useEffect(() => {
+    status === AsyncReducerStatus.Finished && router.replace('/')
+  }, [router, status])
 
   return {
-    userAdditionalInformation,
+    error,
+    loading,
     setUserAdditionalInformation,
     status,
     update,
+    userAdditionalInformation,
+    valid,
   }
 }

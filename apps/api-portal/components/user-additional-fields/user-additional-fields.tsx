@@ -1,12 +1,15 @@
 import { useCallback, useMemo } from 'react'
 import { AsyncReducerStatus } from 'lib/async-slice'
+import _ from 'lodash'
 import {
   Button,
   Checkbox,
   InputText,
   Select,
   SelectOption,
+  Spinner,
 } from '@globalfishingwatch/ui-components'
+import { USER_APPLICATION_INTENDED_USES } from '@globalfishingwatch/api-types'
 import { useUserAdditionalInformation } from 'features/user/user.hooks'
 import styles from './user-additional-fields.module.css'
 
@@ -14,20 +17,21 @@ import styles from './user-additional-fields.module.css'
 export interface UserAdditionalFieldsProps {}
 
 export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
-  const { setUserAdditionalInformation, status, update, userAdditionalInformation } =
-    useUserAdditionalInformation()
+  const {
+    setUserAdditionalInformation,
+    loading,
+    status,
+    update,
+    userAdditionalInformation,
+    valid,
+  } = useUserAdditionalInformation()
 
   const INTENDED_USE_OPTIONS: SelectOption[] = useMemo(
-    () => [
-      {
-        id: 'commercial',
-        label: 'Commercial',
-      },
-      {
-        id: 'non-commercial',
-        label: 'Non Commercial',
-      },
-    ],
+    () =>
+      USER_APPLICATION_INTENDED_USES.map((item) => ({
+        id: item,
+        label: _.startCase(item),
+      })),
     []
   )
 
@@ -53,11 +57,13 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
     () => !!userAdditionalInformation?.apiTerms,
     [userAdditionalInformation?.apiTerms]
   )
+  if (loading) return <Spinner></Spinner>
+
   return (
     <div className={styles.fieldsWrapper}>
       <div className={styles.field}>
         <Select
-          label="Intended use (*) (*)"
+          label="Intended use (*)"
           options={INTENDED_USE_OPTIONS}
           onSelect={onSelectIntendedUse}
           onRemove={onRemoveIntendedUse}
@@ -135,11 +141,14 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           onClick={update}
           loading={status === AsyncReducerStatus.LoadingUpdate}
           className={styles.button}
-          disabled={!termsAccepted}
-          tooltip={termsAccepted ? '' : 'You must accept the terms to use our APIs'}
+          disabled={!valid}
+          tooltip={valid ? '' : 'Complete the required fields (*) and accept the terms to Continue'}
         >
           Continue
         </Button>
+        {status === AsyncReducerStatus.Error && (
+          <div className={styles.error}>Ups, something went wrong. 🙈. Please try again later.</div>
+        )}
       </div>
     </div>
   )

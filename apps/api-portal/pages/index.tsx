@@ -17,7 +17,10 @@ const Home: NextPage = (context) => {
   const router = useRouter()
 
   useEffect(() => {
-    if (!isUserApplicationsRequiredInfoCompleted) {
+    if (
+      isUserApplicationsRequiredInfoCompleted !== null &&
+      !isUserApplicationsRequiredInfoCompleted
+    ) {
       router.push('/signup')
     }
   }, [isUserApplicationsRequiredInfoCompleted, router])

@@ -43,3 +43,8 @@
 .button {
   width: 100%;
 }
+
+.error {
+  margin: var(--space-M);
+  text-align: center;
+}

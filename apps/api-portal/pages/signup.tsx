@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import { Fragment } from 'react'
 import Router from 'next/router'
 import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
 import UserAdditionalFields from 'components/user-additional-fields/user-additional-fields'
@@ -13,7 +12,10 @@ const Layout = dynamic(() => import('components/layout'), {
 const Signup: NextPage = () => {
   const { isUserApplicationsRequiredInfoCompleted } = useGetUserApplications()
 
-  if (isUserApplicationsRequiredInfoCompleted) {
+  if (
+    isUserApplicationsRequiredInfoCompleted &&
+    !Object.keys(Router?.query || {}).includes('edit')
+  ) {
     Router.push('/')
   }
   return (
