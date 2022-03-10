@@ -12,19 +12,14 @@ type SecretMenuProps = {
   selectMenuActive?: (state: RootState) => boolean
 }
 
-export const useSecretKeyboardCombo = ({
-  key,
-  onToggle,
-  repeatNumber = 7,
-}: SecretMenuProps) => {
+export const useSecretKeyboardCombo = ({ key, onToggle, repeatNumber = 7 }: SecretMenuProps) => {
   const gfwUser = useSelector(isGFWUser)
   const numTimesDebugKeyDown = useRef(0)
   const debugKeyDownInterval = useRef<number>(0)
 
-
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key.toLocaleLowerCase() === key.toLocaleLowerCase()) {
+      if (event?.key?.toLocaleLowerCase() === key.toLocaleLowerCase()) {
         window.clearTimeout(debugKeyDownInterval.current)
         numTimesDebugKeyDown.current++
         debugKeyDownInterval.current = window.setTimeout(() => {
@@ -49,7 +44,6 @@ export const useSecretKeyboardCombo = ({
   }, [gfwUser, onKeyDown])
 }
 
-
 const useSecretMenu = ({
   key,
   onToggle,
@@ -65,4 +59,4 @@ const useSecretMenu = ({
   return [menuActive, dispatchToggleMenu]
 }
 
-export default useSecretMenu 
+export default useSecretMenu

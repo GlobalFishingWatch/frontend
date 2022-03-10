@@ -47,7 +47,7 @@
     "color-blend": "^3.0.1",
     "color-convert": "^2.0.1",
     "core-js": "^3.6.5",
-    "countryflag": "4.0.1",
+    "countryflag": "^4.1.2",
     "cross-env": "^7.0.3",
     "d3-collection": "^1.0.7",
     "d3-ease": "1.0.5",

@@ -7523,6 +7523,11 @@ core-js@3.1.4:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.1.4.tgz#3a2837fc48e582e1ae25907afcd6cf03b0cc7a07"
   integrity sha512-YNZN8lt82XIMLnLirj9MhKDFZHalwzzrL9YLt6eb0T5D0EDl4IQ90IGkua8mHbnxNrkj1d8hbdizMc0Qmg1WnQ==
 
+core-js@3.16.1:
+  version "3.16.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.16.1.tgz#f4485ce5c9f3c6a7cb18fa80488e08d362097249"
+  integrity sha512-AAkP8i35EbefU+JddyWi12AWE9f2N/qr/pwnDtWz4nyUIBGMJPX99ANFFRSw6FefM374lDujdtLDyhN2A/btHw==
+
 core-js@^2.5.3:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
@@ -7577,6 +7582,16 @@ countryflag@4.0.1:
   dependencies:
     core-js "3.1.4"
     cross-env "^7.0.2"
+    if-emoji "0.1.0"
+    world-countries "4.0.0"
+
+countryflag@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/countryflag/-/countryflag-4.1.2.tgz#84fac8c2626a5f22d5eda5cceba2226358599fc2"
+  integrity sha512-0s9Rb/bkvJI3Z/MWIYRXAw2SJ83oINJ7yT88DrqbIhUG6Eumt2bOG3/Mta2vUNemnWoR3DwxJci/cXMCFB9f/A==
+  dependencies:
+    core-js "3.16.1"
+    cross-env "^7.0.3"
     if-emoji "0.1.0"
     world-countries "4.0.0"
 

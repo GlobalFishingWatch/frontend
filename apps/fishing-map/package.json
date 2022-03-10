@@ -29,7 +29,7 @@
     "auth-middleware": "https://github.com/GlobalFishingWatch/auth-middleware",
     "bowser": "2.11.0",
     "classnames": "2.3.1",
-    "countryflag": "4.0.1",
+    "countryflag": "^4.1.2",
     "d3-format": "3.0.1",
     "d3-scale": "4.0.0",
     "dayjs": "1.8.36",
