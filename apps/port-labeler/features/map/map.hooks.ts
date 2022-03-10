@@ -2,13 +2,13 @@ import { useCallback, useState } from 'react'
 import type { MapEvent } from 'react-map-gl'
 import Point from '@mapbox/point-geometry';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectSelectedPoints, setHoverPoint, setSelectedPoints } from 'features/labeler/labeler.slice';
-import useMapInstance from './map-context.hooks';
-import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors';
 import { fitBounds } from 'viewport-mercator-project';
-import { useViewport } from './map-viewport.hooks';
 import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { selectSelectedPoints, setHoverPoint, setSelectedPoints } from 'features/labeler/labeler.slice';
+import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors';
 import { PortPosition } from 'types';
+import useMapInstance from './map-context.hooks';
+import { useViewport } from './map-viewport.hooks';
 
 
 type UseSelector = {
@@ -86,19 +86,23 @@ export function useSelectorConnect(): UseSelector {
 
   const onMapclick = useCallback((e: MapEvent) => {
     if (e) {
+      const newSelected = [...selected]
       const pointsOnClick = e.features?.filter(point => point.source === 'pointsLayer')
       pointsOnClick.map(point => point.properties.id).forEach(point => {
-        const i = selected.indexOf(point)
+        const i = newSelected.indexOf(point)
         if (i === -1) {
-          selected.push(point)
+          console.log(newSelected)
+          console.log(point)
+          newSelected.push(point)
         } else {
-          selected.splice(i, 1)
+          newSelected.splice(i, 1)
         }
       })
+      dispatch(setSelectedPoints(newSelected))
     } else {
       dispatch(setSelectedPoints([]))
     }
-  }, [])
+  }, [selected])
 
   const onMouseMove = useCallback((e: MapEvent) => {
     if (dragging && start) {

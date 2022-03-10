@@ -2,6 +2,7 @@ import { createSelector } from "@reduxjs/toolkit"
 import { featureCollection, point } from "@turf/helpers"
 import buffer from "@turf/buffer"
 import concave from "@turf/concave"
+import { flags } from "@globalfishingwatch/i18n-labels"
 import { selectCountry, selectMapData, selectPortValues, selectSelectedPoints, selectSubareaValues } from "features/labeler/labeler.slice"
 import { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
 import { groupBy } from "utils/group-by"
@@ -28,7 +29,7 @@ export const selectCountries = createSelector([selectMapData],
     return countries.sort().map(e => {
       return {
         id: e,
-        label: e,
+        label: flags[e] ?? e,
       }
     })
   }
