@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
@@ -7,7 +7,11 @@ import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
-import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
+import {
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  getVesselDataviewInstance,
+  getVesselInWorkspace,
+} from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -20,11 +24,6 @@ import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/data
 import useViewport from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
-
-type UserContextLayersProps = {
-  features: TooltipEventFeature[]
-  showFeaturesDetails: boolean
-}
 
 const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEvent | undefined => {
   if (!event) return event
@@ -44,7 +43,12 @@ const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEve
   }
 }
 
-function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLayersProps) {
+type EncountersLayerProps = {
+  feature: TooltipEventFeature
+  showFeaturesDetails: boolean
+}
+
+function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const datasets = useSelector(selectAllDatasets)
@@ -91,150 +95,184 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
     }
   }
 
+  const event = parseEvent(feature.event)
+  const linkParams = {
+    ...viewport,
+    dataset: carrierLatest?.id,
+    ...(event && {
+      vessel: event.vessel.id,
+      timestamp: new Date(event.start).getTime(),
+    }),
+    start,
+    end,
+  }
+  const isEventInDatasetRange =
+    event !== undefined &&
+    carrierLatest?.endDate !== undefined &&
+    carrierLatest?.startDate !== undefined &&
+    event.start >= carrierLatest.startDate &&
+    event.end <= carrierLatest.endDate
+
+  const urlLink = `${CARRIER_PORTAL_URL}/?${stringify(linkParams)}`
+  let linkTooltip = ''
+  if (carrierLatestStatus === AsyncReducerStatus.Error) {
+    linkTooltip = t('errors.latestCarrierNotFound', 'Latest carrier dataset not found')
+  }
+  if (carrierLatestStatus === AsyncReducerStatus.Finished && !isEventInDatasetRange) {
+    linkTooltip = t(
+      'event.notInCVP',
+      'This event happened outside the timerange of the Carrier Vessel Portal data'
+    )
+  }
+
+  const carrierInWorkspace = getVesselInWorkspace(vessels, event?.vessel?.id)
+  const donorInWorkspace = getVesselInWorkspace(vessels, event?.encounter?.vessel?.id)
+
   return (
-    <Fragment>
-      {features.map((feature, index) => {
-        const event = parseEvent(feature.event)
-        const linkParams = {
-          ...viewport,
-          dataset: carrierLatest?.id,
-          ...(event && {
-            vessel: event.vessel.id,
-            timestamp: new Date(event.start).getTime(),
-          }),
-          start,
-          end,
-        }
-        const isEventInDatasetRange =
-          event !== undefined &&
-          carrierLatest?.endDate !== undefined &&
-          carrierLatest?.startDate !== undefined &&
-          event.start >= carrierLatest.startDate &&
-          event.end <= carrierLatest.endDate
-
-        const urlLink = `${CARRIER_PORTAL_URL}/?${stringify(linkParams)}`
-        let linkTooltip = ''
-        if (carrierLatestStatus === AsyncReducerStatus.Error) {
-          linkTooltip = t('errors.latestCarrierNotFound', 'Latest carrier dataset not found')
-        }
-        if (carrierLatestStatus === AsyncReducerStatus.Finished && !isEventInDatasetRange) {
-          linkTooltip = t(
-            'event.notInCVP',
-            'This event happened outside the timerange of the Carrier Vessel Portal data'
-          )
-        }
-
-        const carrierInWorkspace = getVesselInWorkspace(vessels, event?.vessel?.id)
-        const donorInWorkspace = getVesselInWorkspace(vessels, event?.encounter?.vessel?.id)
-
-        return (
-          <div key={`${feature.title}-${index}`} className={styles.popupSection}>
-            <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
-            <div className={styles.popupSectionContent}>
-              {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
-              {showFeaturesDetails && (
-                <div className={styles.row}>
-                  {event ? (
-                    <div className={styles.rowContainer}>
-                      <span className={styles.rowText}>
-                        <I18nDate date={event.start as string} />
-                      </span>
-                      <div className={styles.flex}>
-                        {event.vessel && (
-                          <div className={styles.rowColum}>
-                            <p className={styles.rowTitle}>{t('vessel.carrier', 'Carrier')}</p>
-                            <div className={styles.centered}>
-                              <span className={styles.rowText}>
-                                {formatInfoField(event.vessel?.name, 'name')}
-                              </span>
-                              {(event.vessel as ExtendedEventVessel).dataset && (
-                                <IconButton
-                                  icon={carrierInWorkspace ? 'pin-filled' : 'pin'}
-                                  style={{
-                                    color: carrierInWorkspace
-                                      ? carrierInWorkspace.config.color
-                                      : '',
-                                  }}
-                                  size="small"
-                                  tooltip={
-                                    carrierInWorkspace
-                                      ? t(
-                                          'search.vesselAlreadyInWorkspace',
-                                          'This vessel is already in your workspace'
-                                        )
-                                      : t('vessel.addToWorkspace', 'Add vessel to view')
-                                  }
-                                  onClick={(e) =>
-                                    onPinClick(e, event.vessel as ExtendedEventVessel)
-                                  }
-                                />
-                              )}
-                            </div>
-                          </div>
+    <div className={styles.popupSection}>
+      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <div className={styles.popupSectionContent}>
+        {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
+        {showFeaturesDetails && (
+          <div className={styles.row}>
+            {event ? (
+              <div className={styles.rowContainer}>
+                <span className={styles.rowText}>
+                  <I18nDate date={event.start as string} />
+                </span>
+                <div className={styles.flex}>
+                  {event.vessel && (
+                    <div className={styles.rowColum}>
+                      <p className={styles.rowTitle}>{t('vessel.carrier', 'Carrier')}</p>
+                      <div className={styles.centered}>
+                        <span className={styles.rowText}>
+                          {formatInfoField(event.vessel?.name, 'name')}
+                        </span>
+                        {(event.vessel as ExtendedEventVessel).dataset && (
+                          <IconButton
+                            icon={carrierInWorkspace ? 'pin-filled' : 'pin'}
+                            style={{
+                              color: carrierInWorkspace ? carrierInWorkspace.config.color : '',
+                            }}
+                            size="small"
+                            tooltip={
+                              carrierInWorkspace
+                                ? t(
+                                    'search.vesselAlreadyInWorkspace',
+                                    'This vessel is already in your workspace'
+                                  )
+                                : t('vessel.addToWorkspace', 'Add vessel to view')
+                            }
+                            onClick={(e) => onPinClick(e, event.vessel as ExtendedEventVessel)}
+                          />
                         )}
-                        {event.encounter?.vessel && (
-                          <div className={styles.row}>
-                            <div className={styles.rowColum}>
-                              <span className={styles.rowTitle}>
-                                {t('vessel.donor', 'Donor vessel')}
-                              </span>
-                              <div className={styles.centered}>
-                                <span className={styles.rowText}>
-                                  {formatInfoField(event.encounter?.vessel?.name, 'name')}
-                                </span>
-                                {(event.vessel as ExtendedEventVessel).dataset && (
-                                  <IconButton
-                                    icon={donorInWorkspace ? 'pin-filled' : 'pin'}
-                                    style={{
-                                      color: donorInWorkspace ? donorInWorkspace.config.color : '',
-                                    }}
-                                    size="small"
-                                    tooltip={
-                                      donorInWorkspace
-                                        ? t(
-                                            'search.vesselAlreadyInWorkspace',
-                                            'This vessel is already in your workspace'
-                                          )
-                                        : t('vessel.addToWorkspace', 'Add vessel to view')
-                                    }
-                                    onClick={(e) =>
-                                      onPinClick(e, event.encounter?.vessel as ExtendedEventVessel)
-                                    }
-                                  />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <div className={styles.row}>
-                        <Button
-                          href={urlLink}
-                          target="_blank"
-                          size="small"
-                          className={styles.btnLarge}
-                          disabled={
-                            carrierLatestStatus === AsyncReducerStatus.Loading ||
-                            !isEventInDatasetRange
-                          }
-                          tooltip={linkTooltip}
-                          loading={carrierLatestStatus === AsyncReducerStatus.Loading}
-                        >
-                          {t('event.seeInCVP', 'See in Carrier Vessel Portal')}
-                        </Button>
                       </div>
                     </div>
-                  ) : (
-                    t('event.noData', 'No data available')
+                  )}
+                  {event.encounter?.vessel && (
+                    <div className={styles.row}>
+                      <div className={styles.rowColum}>
+                        <span className={styles.rowTitle}>{t('vessel.donor', 'Donor vessel')}</span>
+                        <div className={styles.centered}>
+                          <span className={styles.rowText}>
+                            {formatInfoField(event.encounter?.vessel?.name, 'name')}
+                          </span>
+                          {(event.vessel as ExtendedEventVessel).dataset && (
+                            <IconButton
+                              icon={donorInWorkspace ? 'pin-filled' : 'pin'}
+                              style={{
+                                color: donorInWorkspace ? donorInWorkspace.config.color : '',
+                              }}
+                              size="small"
+                              tooltip={
+                                donorInWorkspace
+                                  ? t(
+                                      'search.vesselAlreadyInWorkspace',
+                                      'This vessel is already in your workspace'
+                                    )
+                                  : t('vessel.addToWorkspace', 'Add vessel to view')
+                              }
+                              onClick={(e) =>
+                                onPinClick(e, event.encounter?.vessel as ExtendedEventVessel)
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
+                <div className={styles.row}>
+                  <Button
+                    href={urlLink}
+                    target="_blank"
+                    size="small"
+                    className={styles.btnLarge}
+                    disabled={
+                      carrierLatestStatus === AsyncReducerStatus.Loading || !isEventInDatasetRange
+                    }
+                    tooltip={linkTooltip}
+                    loading={carrierLatestStatus === AsyncReducerStatus.Loading}
+                  >
+                    {t('event.seeInCVP', 'See in Carrier Vessel Portal')}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              t('event.noData', 'No data available')
+            )}
           </div>
-        )
-      })}
-    </Fragment>
+        )}
+      </div>
+    </div>
   )
+}
+
+function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
+  return (
+    <div className={styles.popupSection}>
+      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <div className={styles.popupSectionContent}>
+        {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
+        {showFeaturesDetails && feature.properties && (
+          <div className={styles.row}>
+            <ul>
+              {Object.entries(feature.properties).map(([key, value]) => (
+                <li key={key}>{`${key}: ${value}`}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+type UserContextLayersProps = {
+  features: TooltipEventFeature[]
+  showFeaturesDetails: boolean
+}
+
+function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLayersProps) {
+  return features.map((feature, index) => {
+    const key = `${feature.title}-${index}`
+    if (feature.source === ENCOUNTER_EVENTS_SOURCE_ID) {
+      return (
+        <EncounterTooltipRow
+          key={key}
+          feature={feature}
+          showFeaturesDetails={showFeaturesDetails}
+        />
+      )
+    }
+    return (
+      <GenericClusterTooltipRow
+        key={key}
+        feature={feature}
+        showFeaturesDetails={showFeaturesDetails}
+      />
+    )
+  })
 }
 
 export default TileClusterTooltipRow
