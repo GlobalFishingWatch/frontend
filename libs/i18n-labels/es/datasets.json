@@ -1022,7 +1022,7 @@
     }
   },
   "public-eez-areas": {
-    "name": "ZEE (Fuente: Marine Regions)",
+    "name": "ZEE",
     "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200MN), versión 11. Fuente: marineregions.org",
     "schema": {}
   },
@@ -1032,7 +1032,7 @@
     "schema": {}
   },
   "public-eez-land": {
-    "name": "ZEE (Fuente: Marine Regions)",
+    "name": "ZEE",
     "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200MN), versión 11. Fuente: marineregions.org",
     "schema": {}
   },
