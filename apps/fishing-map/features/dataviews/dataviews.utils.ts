@@ -20,6 +20,7 @@ import {
   TEMPLATE_USER_TRACK_ID,
   VESSEL_PRESENCE_DATAVIEW_ID,
   TEMPLATE_POINTS_DATAVIEW_ID,
+  TEMPLATE_CLUSTERS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 
@@ -211,12 +212,12 @@ export const getActivityDataviewInstanceFromDataview = (
   }
 }
 
-export const getBigQueryDataviewInstance = (
+export const getBigQuery4WingsDataviewInstance = (
   datasetId: string,
   { aggregationOperation = AggregationOperation.Sum } = {}
 ): DataviewInstance<GeneratorType> => {
   const contextDataviewInstance = {
-    id: `${BIG_QUERY_PREFIX}${Date.now()}`,
+    id: `${BIG_QUERY_PREFIX}4wings-${Date.now()}`,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
       aggregationOperation,
@@ -232,6 +233,23 @@ export const getBigQueryDataviewInstance = (
           },
         ],
         endpoint: EndpointId.FourwingsTiles,
+      },
+    ],
+  }
+  return contextDataviewInstance
+}
+
+export const getBigQueryEventsDataviewInstance = (
+  datasetId: string
+): DataviewInstance<GeneratorType> => {
+  const contextDataviewInstance = {
+    id: `${BIG_QUERY_PREFIX}events-${Date.now()}`,
+    dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_ID,
+    datasetsConfig: [
+      {
+        datasetId,
+        params: [],
+        endpoint: EndpointId.ClusterTiles,
       },
     ],
   }
