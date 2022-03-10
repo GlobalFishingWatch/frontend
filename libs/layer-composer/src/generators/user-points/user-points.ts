@@ -1,11 +1,11 @@
 import type { LayerSpecification, CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/context'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
-import { DEFAULT_BACKGROUND_COLOR } from '../background/background'
+import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 
 class UserContextGenerator {
   type = GeneratorType.UserContext
@@ -46,6 +46,7 @@ class UserContextGenerator {
         interactive: !config.disableInteraction,
         generatorId,
         uniqueFeatureInteraction: true,
+        datasetId: config.datasetId,
         legend: {
           ...config.metadata?.legend,
           group: Group.OutlinePolygonsHighlighted,

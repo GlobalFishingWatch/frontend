@@ -20,3 +20,8 @@
   align-items: center;
   justify-content: center;
 }
+
+.blur {
+  filter: blur(5px);
+  pointer-events: none;
+}

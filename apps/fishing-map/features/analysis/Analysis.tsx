@@ -4,7 +4,13 @@ import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  IconButton,
+  Choice,
+  ChoiceOption,
+  Spinner,
+} from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
@@ -16,31 +22,32 @@ import {
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
 import { getActivityDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
-import { selectAnalysisQuery, selectAnalysisTimeComparison, selectAnalysisTypeQuery } from 'features/app/app.selectors'
+import {
+  selectAnalysisQuery,
+  selectAnalysisTimeComparison,
+  selectAnalysisTypeQuery,
+} from 'features/app/app.selectors'
 import { WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { setDownloadActivityGeometry } from 'features/download/downloadActivity.slice'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import styles from './Analysis.module.css'
-import {
-  clearAnalysisGeometry,
-  selectAnalysisAreaName,
-  selectAnalysisGeometry,
-} from './analysis.slice'
 import AnalysisEvolution from './AnalysisEvolution'
-import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
+import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
 import AnalysisBeforeAfter from './AnalysisBeforeAfter'
 
 export type AnalysisTypeProps = {
+  blur: boolean
+  loading: boolean
   layersTimeseriesFiltered?: AnalysisGraphProps[] | ComparisonGraphProps[]
-  hasAnalysisLayers: boolean
   analysisAreaName: string
-  analysisGeometryLoaded?: boolean
 }
 
 const ANALYSIS_COMPONENTS_BY_TYPE: Record<
@@ -61,13 +68,17 @@ function Analysis() {
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const dataviews = useSelector(selectActiveActivityDataviews)
-  const analysisGeometry = useSelector(selectAnalysisGeometry)
   const userData = useSelector(selectUserData)
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
 
-  const analysisAreaName = useSelector(selectAnalysisAreaName)
+  const analysisArea = useAnalysisArea()
+  const analysisAreaName = analysisArea?.name
+  const analysisAreaError = analysisArea.status === AsyncReducerStatus.Error
+  const analysisAreaLoading = analysisArea.status === AsyncReducerStatus.Loading
+
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
     dataviews,
@@ -90,7 +101,6 @@ function Analysis() {
     cleanFeatureState('highlight')
     cleanFeatureState('click')
     batch(() => {
-      dispatch(clearAnalysisGeometry())
       dispatchQueryParams({
         analysis: undefined,
         analysisType: undefined,
@@ -100,13 +110,10 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    dispatch(
-      setDownloadActivityGeometry({ geometry: analysisGeometry.geometry, name: analysisAreaName })
-    )
+    dispatch(setDownloadActivityAreaKey(analysisArea.key))
   }
 
-  const layersTimeseriesFiltered = useFilteredTimeSeries()
-  const analysisGeometryLoaded = useAnalysisGeometry()
+  const { error, blur, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const timeComparisonEnabled = useMemo(() => {
     let tooltip = ''
     let enabled = true
@@ -170,8 +177,10 @@ function Analysis() {
           action: `Click '${option.title}' in analysis mode`,
           label: JSON.stringify({
             regionName: analysisAreaName,
-            sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-          })
+            sourceNames: dataviews.flatMap((dataview) =>
+              getSourcesSelectedInDataview(dataview).map((source) => source.label)
+            ),
+          }),
         })
       }
       if (option.id === 'periodComparison' && timeComparison) {
@@ -181,21 +190,23 @@ function Analysis() {
           label: JSON.stringify({
             duration: timeComparison.duration + ' ' + timeComparison.durationType,
             regionName: analysisAreaName,
-            sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-          })
+            sourceNames: dataviews.flatMap((dataview) =>
+              getSourcesSelectedInDataview(dataview).map((source) => source.label)
+            ),
+          }),
         })
       }
       fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       dispatchQueryParams({ analysisType: option.id as WorkspaceAnalysisType })
     },
-    [bounds, dispatchQueryParams, fitMapBounds, dataviews, getSourcesSelectedInDataview, timeComparison]
+    [timeComparison, fitMapBounds, bounds, dispatchQueryParams, analysisAreaName, dataviews]
   )
 
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
 
   const disableReportDownload =
     timeRangeTooLong ||
-    !analysisGeometryLoaded ||
+    analysisAreaLoading ||
     !layersTimeseriesFiltered ||
     !hasAnalysisLayers ||
     !datasetsReportSupported
@@ -212,6 +223,14 @@ function Analysis() {
     )
   } else if (!datasetsReportSupported) {
     downloadTooltip = t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
+  }
+
+  if (workspaceStatus !== AsyncReducerStatus.Finished || analysisAreaLoading) {
+    return (
+      <div className={styles.container}>
+        <Spinner />
+      </div>
+    )
   }
 
   return (
@@ -231,63 +250,77 @@ function Analysis() {
           />
         </div>
       </div>
-
-      <div className={styles.content}>
-        {AnalysisComponent && (
-          <AnalysisComponent
-            layersTimeseriesFiltered={layersTimeseriesFiltered}
-            hasAnalysisLayers={hasAnalysisLayers}
-            analysisAreaName={analysisAreaName}
-            analysisGeometryLoaded={analysisGeometryLoaded}
-          />
-        )}
-        <div>
-          <Choice
-            options={ANALYSIS_TYPE_OPTIONS}
-            className={cx('print-hidden', styles.typeChoice)}
-            activeOption={analysisType}
-            onOptionClick={onAnalysisTypeClick}
-            disabled={!bounds}
-          />
-        </div>
-        <div>
+      {error || analysisAreaError ? (
+        <div className={cx(styles.content, styles.center)}>
           <p className={styles.placeholder}>
-            <Trans i18nKey="analysis.disclaimer">
-              The data shown above should be taken as an estimate.
-              <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
-                Find out more about Global Fishing Watch analysis tools and methods.
-              </a>
-            </Trans>
+            {t(
+              'analysis.error',
+              'There was a problem loading the data, please try refreshing the page'
+            )}
           </p>
         </div>
-        {showReportDownload && (
-          <Fragment>
-            <div>
-              <p className={styles.placeholder}>
-                {t(
-                  'analysis.disclaimerReport',
-                  'Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-                )}
-              </p>
-            </div>
-            <div className={styles.footer}>
-              <LoginButtonWrapper
-                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
-              >
-                <Button
-                  className={styles.saveBtn}
-                  onClick={onDownloadClick}
-                  tooltip={downloadTooltip}
-                  tooltipPlacement="top"
-                  disabled={disableReportDownload}
+      ) : (
+        <div className={styles.content}>
+          {hasAnalysisLayers && AnalysisComponent ? (
+            <AnalysisComponent
+              layersTimeseriesFiltered={layersTimeseriesFiltered}
+              analysisAreaName={analysisAreaName}
+              loading={loading}
+              blur={blur}
+            />
+          ) : (
+            <p className={styles.placeholder}>
+              {t('analysis.empty', 'Your selected datasets will appear here')}
+            </p>
+          )}
+          <div>
+            <Choice
+              options={ANALYSIS_TYPE_OPTIONS}
+              className={cx('print-hidden', styles.typeChoice)}
+              activeOption={analysisType}
+              onOptionClick={onAnalysisTypeClick}
+              disabled={!bounds}
+            />
+          </div>
+          <div>
+            <p className={styles.placeholder}>
+              <Trans i18nKey="analysis.disclaimer">
+                The data shown above should be taken as an estimate.
+                <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
+                  Find out more about Global Fishing Watch analysis tools and methods.
+                </a>
+              </Trans>
+            </p>
+          </div>
+          {showReportDownload && (
+            <Fragment>
+              <div>
+                <p className={styles.placeholder}>
+                  {t(
+                    'analysis.disclaimerReport',
+                    'Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+                  )}
+                </p>
+              </div>
+              <div className={styles.footer}>
+                <LoginButtonWrapper
+                  tooltip={t('analysis.downloadLogin', 'Please login to download report')}
                 >
-                  {t('analysis.download', 'Download report')}
-                </Button>
-              </LoginButtonWrapper>
-            </div>
-          </Fragment>
-        )}
-      </div>
+                  <Button
+                    className={styles.saveBtn}
+                    onClick={onDownloadClick}
+                    tooltip={downloadTooltip}
+                    tooltipPlacement="top"
+                    disabled={disableReportDownload}
+                  >
+                    {t('analysis.download', 'Download report')}
+                  </Button>
+                </LoginButtonWrapper>
+              </div>
+            </Fragment>
+          )}
+        </div>
+      )}
     </div>
   )
 }

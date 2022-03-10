@@ -104,7 +104,8 @@ const getExtendedFeatures = (
           console.log(properties.rawValues)
         }
 
-        if (!values || !values.filter((v: number) => v !== 0).length) return []
+        // Clean values with 0 for sum aggregation and with NaN for avg aggregation layers
+        if (!values || !values.filter((v: number) => v !== 0 && !isNaN(v)).length) return []
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
         const sublayers = generatorMetadata?.sublayers
         return values.flatMap((value: any, i: number) => {
@@ -134,6 +135,7 @@ const getExtendedFeatures = (
         return {
           ...extendedFeature,
           gfwId: feature.properties?.gfw_id,
+          datasetId: feature.layer.metadata?.datasetId,
           generatorContextLayer: feature.layer.metadata?.layer,
           geometry: feature.geometry,
         }

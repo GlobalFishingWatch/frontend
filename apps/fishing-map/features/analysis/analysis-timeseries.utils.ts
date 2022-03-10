@@ -9,9 +9,10 @@ import {
   pickActiveTimeChunk,
   quantizeOffsetToDate,
 } from '@globalfishingwatch/layer-composer'
-import { AnalysisGraphProps } from 'features/analysis/AnalysisEvolutionGraph'
+import { AnalysisGraphProps, AnalysisSublayerGraph } from 'features/analysis/AnalysisEvolutionGraph'
 import { FilteredPolygons } from 'features/analysis/analysis-geo.utils'
-import { DateTimeSeries, LayerWithFeatures } from 'features/analysis/analysis.hooks'
+import { DateTimeSeries } from 'features/analysis/analysis.hooks'
+import { DataviewFeature } from 'features/map/map-sources.hooks'
 
 export const removeTimeseriesPadding = (timeseries?: AnalysisGraphProps[]) => {
   return timeseries?.map((timeserie) => {
@@ -69,13 +70,16 @@ export const featuresToTimeseries = (
     showTimeComparison,
     compareDeltaMillis,
   }: {
-    layersWithFeatures: LayerWithFeatures[]
+    layersWithFeatures: DataviewFeature[]
     showTimeComparison: boolean
     compareDeltaMillis: number
   }
 ) => {
-  return filteredFeatures.map((filteredFeatures, sourceIndex) => {
-    const sourceMetadata = layersWithFeatures[sourceIndex].metadata
+  return filteredFeatures.flatMap((filteredFeatures, sourceIndex) => {
+    const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
+    if (!sourceMetadata) {
+      return []
+    }
     const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
     // TODO handle multiple timechunks
     const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
@@ -125,7 +129,7 @@ export const featuresToTimeseries = (
     return {
       timeseries,
       interval: sourceInterval,
-      sublayers: sourceMetadata.sublayers,
+      sublayers: sourceMetadata.sublayers as unknown as AnalysisSublayerGraph[],
     }
   })
 }

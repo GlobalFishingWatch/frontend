@@ -1,7 +1,8 @@
 import { LayerSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
+import { VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
-import { ExtendedLayer, Group } from '../../../types'
+import { Group } from '../../../types'
 import { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer, {
   getBaseDebugLabelsLayer,
@@ -10,12 +11,14 @@ import getBaseLayer, {
 } from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
 import { TEMPORALGRID_SOURCE_LAYER } from '../config'
+import { Breaks } from '../util/fetch-breaks'
 
 export default function gridded(
   config: GlobalHeatmapAnimatedGeneratorConfig,
-  timeChunks: TimeChunks
+  timeChunks: TimeChunks,
+  breaks?: Breaks
 ) {
-  const { colorRampBaseExpression } = getColorRampBaseExpression(config)
+  const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(config)
 
   // TODO only active chunk needed?
   const layers: LayerSpecification[] = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
@@ -23,10 +26,25 @@ export default function gridded(
     const pickValueAt = timeChunk.frame.toString()
     const exprPick: FilterSpecification = ['coalesce', ['get', pickValueAt], 0]
 
-    const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
+    const exprColorRamp =
+      breaks && config.dynamicBreaks
+        ? [
+            'interpolate',
+            ['linear'],
+            ['/', exprPick, VALUE_MULTIPLIER],
+            ...colorRamp.flatMap((color, index) => [
+              breaks[0][index - 1] !== undefined
+                ? breaks[0][index - 1]
+                : breaks[0][0] === 0
+                ? -1
+                : 0,
+              color,
+            ]),
+          ]
+        : ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 
     const paint = {
-      'fill-color': timeChunk.active ? (exprColorRamp as any) : 'rgba(0,0,0,0)',
+      'fill-color': timeChunk.active ? exprColorRamp : 'rgba(0,0,0,0)',
       'fill-outline-color': 'transparent',
     }
 

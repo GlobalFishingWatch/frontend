@@ -16,8 +16,15 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return schemaFilter.active && schemaFilter.options.length > 1
 }
 
+const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): [number, number] => {
+  const { options } = schemaFilter
+  const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+  return [optionValues[0], optionValues[optionValues.length - 1]]
+}
+
 const getRangeBySchema = (schemaFilter: SchemaFilter): [number, number] => {
   const { options, optionsSelected } = schemaFilter
+
   const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
   const rangeValues =
     optionsSelected?.length > 0
@@ -42,7 +49,7 @@ function ActivitySchemaFilter({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSliderCb = useCallback(
     debounce((rangeSelected) => {
-      const filterRange = getRangeBySchema(schemaFilter)
+      const filterRange = getRangeLimitsBySchema(schemaFilter)
       if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
         onClean(id)
       } else {

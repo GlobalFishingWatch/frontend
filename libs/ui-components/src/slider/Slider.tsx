@@ -17,10 +17,13 @@ interface SliderProps {
 }
 
 const activeColor =
-  getComputedStyle(document.body).getPropertyValue('---color-primary-blue') ||
+  (typeof window !== 'undefined' &&
+    getComputedStyle(document.body).getPropertyValue('---color-primary-blue')) ||
   'rgba(22, 63, 137, 1)'
 const borderColor =
-  getComputedStyle(document.body).getPropertyValue('--color-border') || 'rgba(22, 63, 137, 0.15)'
+  (typeof window !== 'undefined' &&
+    getComputedStyle(document.body).getPropertyValue('--color-border')) ||
+  'rgba(22, 63, 137, 0.15)'
 
 export function Slider(props: SliderProps) {
   const { range, label, config = {}, onChange, className } = props

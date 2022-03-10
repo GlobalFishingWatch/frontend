@@ -7,7 +7,7 @@ import type { Map } from '@globalfishingwatch/maplibre-gl'
 import { getCSSVarValue } from 'utils/dom'
 import styles from './Map.module.css'
 import { selectEditing } from './rulers/rulers.slice'
-import { useMapIdle } from './map-features.hooks'
+import { useMapIdle } from './map-state.hooks'
 
 type PrintSize = {
   px: number

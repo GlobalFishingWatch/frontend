@@ -43,6 +43,12 @@
   overflow-y: auto;
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .placeholder {
   font: var(--font-S);
   color: var(--color-secondary-blue);
@@ -71,6 +77,11 @@
   justify-content: center;
   color: var(--color-secondary-blue);
   min-height: 24rem;
+}
+
+.blur {
+  filter: blur(5px);
+  pointer-events: none;
 }
 
 .error,
