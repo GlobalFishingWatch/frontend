@@ -26,12 +26,12 @@ export const selectCountries = createSelector([selectMapData],
     })
     const countries = [...new Set(countriesDuplicated)];
 
-    return countries.sort().map(e => {
+    return countries.map(e => {
       return {
         id: e,
         label: flags[e] ?? e,
       }
-    })
+    }).sort((a, b) => a.label > b.label ? 1 : -1)
   }
 )
 

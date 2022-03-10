@@ -88,17 +88,20 @@ export function useSelectorConnect(): UseSelector {
     if (e) {
       const newSelected = [...selected]
       const pointsOnClick = e.features?.filter(point => point.source === 'pointsLayer')
-      pointsOnClick.map(point => point.properties.id).forEach(point => {
-        const i = newSelected.indexOf(point)
-        if (i === -1) {
-          console.log(newSelected)
-          console.log(point)
-          newSelected.push(point)
-        } else {
-          newSelected.splice(i, 1)
-        }
-      })
-      dispatch(setSelectedPoints(newSelected))
+      if (pointsOnClick.length) {
+
+        pointsOnClick.map(point => point.properties.id).forEach(point => {
+          const i = newSelected.indexOf(point)
+          if (i === -1) {
+            newSelected.push(point)
+          } else {
+            newSelected.splice(i, 1)
+          }
+        })
+        dispatch(setSelectedPoints(newSelected))
+      } else {
+        dispatch(setSelectedPoints([]))
+      }
     } else {
       dispatch(setSelectedPoints([]))
     }

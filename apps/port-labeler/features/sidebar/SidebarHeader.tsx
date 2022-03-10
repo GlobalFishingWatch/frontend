@@ -2,6 +2,7 @@ import React from 'react'
 import Sticky from 'react-sticky-el'
 import { useDispatch, useSelector } from 'react-redux'
 import { Icon, IconButton, Logo, Select, SelectOption, SubBrands } from '@globalfishingwatch/ui-components'
+import { flags } from '@globalfishingwatch/i18n-labels'
 import { selectCountry, setCountry } from 'features/labeler/labeler.slice'
 import { selectCountries } from 'features/map/map.selectors'
 import styles from './SidebarHeader.module.css'
@@ -50,7 +51,7 @@ function SidebarHeader(props: HeaderProps) {
       <Select
         options={countries}
         onRemove={() => { }}
-        selectedOption={country ? { id: country, label: country } : undefined}
+        selectedOption={country ? { id: country, label: flags[country] ?? country } : undefined}
         onSelect={(selected: SelectOption) => {
           onCountryChange(selected.id)
 
