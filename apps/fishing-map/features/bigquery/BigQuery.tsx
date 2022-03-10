@@ -33,7 +33,7 @@ const VisualisationOptions: { id: BigQueryVisualisation; label: string; fieldsHi
   {
     id: 'events',
     label: 'Events (clusters)',
-    fieldsHint: '(Ensure id, timestamp, event_end, geom are all present)',
+    fieldsHint: '(Ensure event_id, event_start, event_end and geom are all present)',
   },
 ]
 
