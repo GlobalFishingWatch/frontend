@@ -22,6 +22,7 @@ import {
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -352,11 +353,13 @@ export const fetchEncounterEventThunk = createAsyncThunk<
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const bqPocQuery = eventFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
   if (dataset) {
     const datasetConfig = {
       datasetId: dataset.id,
       endpoint: EndpointId.EventsDetail,
       params: [{ id: 'eventId', value: eventFeature.id }],
+      query: [{ id: 'raw', value: bqPocQuery }],
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
