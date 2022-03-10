@@ -22,7 +22,6 @@ import {
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -353,13 +352,12 @@ export const fetchEncounterEventThunk = createAsyncThunk<
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  const bqPocQuery = eventFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
+
   if (dataset) {
     const datasetConfig = {
       datasetId: dataset.id,
       endpoint: EndpointId.EventsDetail,
       params: [{ id: 'eventId', value: eventFeature.id }],
-      query: [{ id: 'raw', value: bqPocQuery }],
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
@@ -421,6 +419,36 @@ export const fetchEncounterEventThunk = createAsyncThunk<
           dataset,
         }
       }
+    } else {
+      console.warn('Missing url for endpoints', dataset, datasetConfig)
+    }
+  }
+  return
+})
+
+type BQClusterEvent = Record<string, any>
+export const fetchBQEventThunk = createAsyncThunk<
+  BQClusterEvent | undefined,
+  ExtendedFeature,
+  {
+    dispatch: AppDispatch
+  }
+>('map/fetchBQEvent', async (eventFeature, { signal, getState }) => {
+  const state = getState() as RootState
+  const eventDataviews = selectEventsDataviews(state) || []
+  const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
+  const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  if (dataset) {
+    const datasetConfig = {
+      datasetId: dataset.id,
+      endpoint: EndpointId.EventsDetail,
+      params: [{ id: 'eventId', value: eventFeature.id }],
+      query: [{ id: 'raw', value: true }],
+    }
+    const url = resolveEndpoint(dataset, datasetConfig)
+    if (url) {
+      const clusterEvent = await GFWAPI.fetch<BQClusterEvent>(url, { signal })
+      return clusterEvent
     } else {
       console.warn('Missing url for endpoints', dataset, datasetConfig)
     }
@@ -504,6 +532,24 @@ const slice = createSlice({
       }
     })
     builder.addCase(fetchEncounterEventThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.apiEventStatus = AsyncReducerStatus.Idle
+      } else {
+        state.apiEventStatus = AsyncReducerStatus.Error
+      }
+    })
+    builder.addCase(fetchBQEventThunk.pending, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchBQEventThunk.fulfilled, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Finished
+      if (!state.clicked || !state.clicked.features || !action.payload) return
+      const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
+      if (feature && action.payload) {
+        feature.properties = { ...feature.properties, ...action.payload }
+      }
+    })
+    builder.addCase(fetchBQEventThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.apiEventStatus = AsyncReducerStatus.Idle
       } else {

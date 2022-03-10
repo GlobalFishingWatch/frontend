@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
@@ -237,9 +237,12 @@ function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLa
         {showFeaturesDetails && feature.properties && (
           <div className={styles.row}>
             <ul>
-              {Object.entries(feature.properties).map(([key, value]) => (
-                <li key={key}>{`${key}: ${value}`}</li>
-              ))}
+              {Object.entries(feature.properties).map(([key, value]) => {
+                if (key === 'count' || key === 'expansionZoom') {
+                  return null
+                }
+                return <li key={key}>{`${key}: ${value}`}</li>
+              })}
             </ul>
           </div>
         )}
@@ -254,25 +257,29 @@ type UserContextLayersProps = {
 }
 
 function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLayersProps) {
-  return features.map((feature, index) => {
-    const key = `${feature.title}-${index}`
-    if (feature.source === ENCOUNTER_EVENTS_SOURCE_ID) {
-      return (
-        <EncounterTooltipRow
-          key={key}
-          feature={feature}
-          showFeaturesDetails={showFeaturesDetails}
-        />
-      )
-    }
-    return (
-      <GenericClusterTooltipRow
-        key={key}
-        feature={feature}
-        showFeaturesDetails={showFeaturesDetails}
-      />
-    )
-  })
+  return (
+    <Fragment>
+      {features.map((feature, index) => {
+        const key = `${feature.title}-${index}`
+        if (feature.source === ENCOUNTER_EVENTS_SOURCE_ID) {
+          return (
+            <EncounterTooltipRow
+              key={key}
+              feature={feature}
+              showFeaturesDetails={showFeaturesDetails}
+            />
+          )
+        }
+        return (
+          <GenericClusterTooltipRow
+            key={key}
+            feature={feature}
+            showFeaturesDetails={showFeaturesDetails}
+          />
+        )
+      })}
+    </Fragment>
+  )
 }
 
 export default TileClusterTooltipRow

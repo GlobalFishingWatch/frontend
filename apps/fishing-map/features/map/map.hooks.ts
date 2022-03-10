@@ -33,6 +33,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/analysis/analysis.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -53,6 +54,7 @@ import {
   fetchViirsInteractionThunk,
   selectViirsInteractionStatus,
   ApiViirsStats,
+  fetchBQEventThunk,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 
@@ -240,9 +242,12 @@ export const useClickedEventConnect = () => {
       (f) => f.generatorType === GeneratorType.TileCluster
     )
     if (encounterFeature) {
-      eventsPromiseRef.current = dispatch(fetchEncounterEventThunk(encounterFeature))
+      const bqPocQuery = encounterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
+      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
+      eventsPromiseRef.current = dispatch(fetchFn(encounterFeature))
     }
   }
+
   return {
     clickedEvent,
     fishingInteractionStatus,
