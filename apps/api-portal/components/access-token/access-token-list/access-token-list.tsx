@@ -28,6 +28,16 @@ export function AccessTokenList(props: AccessTokenListProps) {
 
   const onDeleteClick = useCallback(
     async ({ id }: UserApplication) => {
+      if (
+        // eslint-disable-next-line no-restricted-globals
+        !confirm(
+          'Deleting an application token will cause any application or service using it ' +
+            'to lose the connection with our API. \n' +
+            'This action can not be undone. \n' +
+            'Are you sure you want to delete this application token?'
+        )
+      )
+        return
       const response = await dispatchDelete({ id })
       if (response.payload?.error) {
         console.error(response.payload?.error)
