@@ -18,7 +18,7 @@ type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
 type ViewportProps = Record<ViewportKeys, number>
 type UseViewport = {
   viewport: MapCoordinates
-  onViewportChange: (ev: ViewStateChangeEvent) => void
+  onViewportChange: (e: ViewStateChangeEvent) => void
   setMapCoordinates: (viewport: ViewportProps) => void
 }
 

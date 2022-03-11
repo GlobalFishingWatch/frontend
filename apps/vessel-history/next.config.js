@@ -19,10 +19,6 @@ const nextConfig = {
     ]
   },
   webpack: function (config) {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'mapbox-gl': '@globalfishingwatch/maplibre-gl',
-    }
     config.resolve.fallback = {
       ...config.resolve.fallback,
       child_process: false,
@@ -30,6 +26,7 @@ const nextConfig = {
       net: false,
       tls: false,
     }
+    config.externals = [...config.externals, 'mapbox-gl']
     return config
   },
 

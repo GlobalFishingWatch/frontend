@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { InteractiveMap } from 'react-map-gl'
+import { Map, MapboxStyle } from 'react-map-gl'
+import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
@@ -23,11 +24,12 @@ import { selectHighlightedEvent } from './map.slice'
 import styles from './Map.module.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
-const mapOptions: any = {
-  customAttribution: '© Copyright Global Fishing Watch 2020',
+const mapStyles = {
+  width: '100%',
+  height: '100%',
 }
 
-const Map: React.FC = (): React.ReactElement => {
+const MapWrapper: React.FC = (): React.ReactElement => {
   const map = useMapInstance()
   const dispatch = useAppDispatch()
   const mapRef = useRef<any>(null)
@@ -179,19 +181,17 @@ const Map: React.FC = (): React.ReactElement => {
   return (
     <div className={styles.container}>
       {style && (
-        <InteractiveMap
-          disableTokenWarning={true}
-          ref={mapRef}
-          width="100%"
-          height="100%"
+        <Map
+          mapLib={maplibregl}
+          style={mapStyles}
           zoom={viewport.zoom}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
-          onViewportChange={onViewportChange}
+          onMove={onViewportChange}
           onClick={onMapClick}
-          mapStyle={style}
-          mapOptions={mapOptions}
-        ></InteractiveMap>
+          mapStyle={style as MapboxStyle}
+          customAttribution={'© Copyright Global Fishing Watch 2020'}
+        ></Map>
       )}
       <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
       <Info onEventChange={onEventChange}></Info>
@@ -199,4 +199,4 @@ const Map: React.FC = (): React.ReactElement => {
   )
 }
 
-export default Map
+export default MapWrapper
