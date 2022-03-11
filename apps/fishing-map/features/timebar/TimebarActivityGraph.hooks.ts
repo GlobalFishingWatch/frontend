@@ -8,14 +8,16 @@ import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/
 import { getTimeseriesFromDataviews } from 'features/timebar/TimebarActivityGraph.utils'
 import { filterByViewport } from 'features/map/map.utils'
 
-export const useStackedActivityDataview = (dataviews: UrlDataviewInstance[]) => {
-  const [stackedActivity, setStackedActivity] = useState<Timeseries>()
+export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
+  const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
+  const [stackedActivity, setStackedActivity] = useState<Timeseries[]>()
   const isSmallScreen = useSmallScreen()
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 400)
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
-  const loading = boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures)
+  const loading =
+    boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures) || generatingStackedActivity
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetStackedActivity = useCallback(
@@ -32,17 +34,18 @@ export const useStackedActivityDataview = (dataviews: UrlDataviewInstance[]) => 
         }
       })
       const stackedActivity = getTimeseriesFromDataviews(dataviewFeaturesFiltered)
-      setStackedActivity(stackedActivity as Timeseries)
+      setStackedActivity(stackedActivity)
+      setGeneratingStackedActivity(false)
     }, 400),
     []
   )
 
   useEffect(() => {
     const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
-    if (isSmallScreen || !dataviewFeaturesLoaded) {
-      return
+    if (!isSmallScreen && dataviewFeaturesLoaded) {
+      setGeneratingStackedActivity(true)
+      debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
     }
-    debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
   }, [dataviewFeatures, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
 
   return { loading, stackedActivity }
