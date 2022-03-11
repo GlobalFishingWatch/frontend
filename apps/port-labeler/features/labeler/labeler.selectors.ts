@@ -1,5 +1,13 @@
 import { createSelector } from "@reduxjs/toolkit"
-import { selectCountry, selectMapData, selectPointValues, selectPortValues, selectSelectedPoints, selectSubareas, selectSubareaValues } from "features/labeler/labeler.slice"
+import {
+  selectCountry,
+  selectMapData,
+  selectPointValues,
+  selectPortValues,
+  selectSelectedPoints,
+  selectSubareas,
+  selectSubareaValues
+} from "features/labeler/labeler.slice"
 import { PortPosition } from "types"
 
 

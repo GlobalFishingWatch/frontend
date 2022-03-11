@@ -1,8 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { selectMapData, selectPointValues, selectPortValues, selectSubareas, selectSubareaValues, setCountry, setData, setPointValues, setPorts, setPortValues, setSubareas, setSubareaValues } from 'features/labeler/labeler.slice'
+import {
+  selectMapData,
+  selectPointValues,
+  selectPortValues,
+  selectSubareas,
+  selectSubareaValues,
+  setCountry,
+  setData,
+  setPointValues,
+  setPorts,
+  setPortValues,
+  setSubareas,
+  setSubareaValues
+} from 'features/labeler/labeler.slice'
 import { PortPosition } from 'types'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
-import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
 import { useMapConnect } from 'features/map/map.hooks'
 
 export const useSelectedTracksConnect = () => {

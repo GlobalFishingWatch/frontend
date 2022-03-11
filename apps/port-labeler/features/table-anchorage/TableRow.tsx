@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition, PortSubarea } from 'types'
-import { changePointValue, changeSubareaValue, selectCountry, selectHoverPoint, selectPointValues, selectSelectedPoints, selectSubareas, selectSubareaValues, setHoverPoint, setSubareas } from 'features/labeler/labeler.slice'
-import styles from './Table.module.css'
+import { selectCountry, selectHoverPoint, selectSubareas, setHoverPoint, setSubareas } from 'features/labeler/labeler.slice'
+import styles from './TableAnchorage.module.css'
 import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 import { selectPointValuesByCountry, selectPortValuesByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
-import { useValueManagerConnect } from './Table.hooks'
+import { useValueManagerConnect } from './TableAnchorage.hooks'
 
 type TableRowProps = {
   ports: SelectOption[],

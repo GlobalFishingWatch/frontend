@@ -1,14 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { MapContext } from 'features/map/map-context.hooks'
 import menuBgImage from 'assets/images/menubg.jpg'
-import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+import { useReplaceLoginUrl } from 'routes/routes.hook'
 import Sidebar from 'features/sidebar/Sidebar'
 import { t } from 'features/i18n/i18n'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { selectSidebarOpen } from 'routes/routes.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
@@ -47,8 +46,7 @@ function App(): React.ReactElement {
   useAnalytics()
   useReplaceLoginUrl()
   const dispatch = useDispatch()
-  const sidebarOpen = useSelector(selectSidebarOpen)
-  const { dispatchQueryParams } = useLocationConnect()
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))
@@ -59,8 +57,8 @@ function App(): React.ReactElement {
   }, [])
 
   const onToggle = useCallback(() => {
-    dispatchQueryParams({ sidebarOpen: !sidebarOpen })
-  }, [dispatchQueryParams, sidebarOpen])
+    setSidebarOpen(!sidebarOpen)
+  }, [sidebarOpen])
 
   const asideWidth = '50%'
 

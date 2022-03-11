@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon } from '@globalfishingwatch/ui-components'
-import styles from './Table.module.css'
+import styles from './TableAnchorage.module.css'
 
 type SidebarProps = {
     order: 'asc' | 'desc' | '',

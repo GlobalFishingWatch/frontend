@@ -50,12 +50,13 @@ export const useReplaceLoginUrl = () => {
 export const useLocationConnect = () => {
   const dispatch = useDispatch()
   const location = useSelector(selectCurrentLocation)
+  const payload = useSelector(selectLocationPayload)
 
   const dispatchQueryParams = useCallback(
     (query: QueryParams, replaceQuery = false) => {
-      dispatch(updateLocation(location.type, { query, replaceQuery }))
+      dispatch(updateLocation(location.type, { query, payload, replaceQuery }))
     },
-    [dispatch, location.type]
+    [dispatch, location.type, payload]
   )
 
   return { location, dispatchQueryParams }

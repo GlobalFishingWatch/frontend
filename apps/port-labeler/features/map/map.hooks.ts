@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fitBounds } from 'viewport-mercator-project';
 import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { selectSelectedPoints, setHoverPoint, setSelectedPoints } from 'features/labeler/labeler.slice';
-import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors';
 import { PortPosition } from 'types';
 import useMapInstance from './map-context.hooks';
 import { useViewport } from './map-viewport.hooks';

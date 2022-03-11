@@ -1,5 +1,5 @@
 import React from 'react'
-import Table from 'features/table/Table'
+import Table from 'features/table-anchorage/TableAnchorage'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
 

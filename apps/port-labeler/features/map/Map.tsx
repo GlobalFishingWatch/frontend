@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useMemo } from 'react'
 import { InteractiveMap, MapRequest } from 'react-map-gl'
 import { useSelector } from 'react-redux'
 import { GFWAPI } from '@globalfishingwatch/api-client'
