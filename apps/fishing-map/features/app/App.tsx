@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux'
 // import RecoilizeDebugger from 'recoilize'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
+import { MapProvider } from 'react-map-gl'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
-import { MapContext } from 'features/map/map-context.hooks'
 import {
   isWorkspaceLocation,
   selectLocationType,
@@ -43,9 +43,6 @@ import { useAnalytics } from './analytics.hooks'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
 const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
-
-/* Using any to avoid Typescript complaining about the value */
-const MapContextProvider: any = MapContext.Provider
 
 declare global {
   interface Window {
@@ -198,7 +195,7 @@ function App(): React.ReactElement {
   }
 
   return (
-    <MapContextProvider>
+    <MapProvider>
       {/* <RecoilizeDebugger /> */}
       <SplitView
         isOpen={sidebarOpen}
@@ -221,7 +218,7 @@ function App(): React.ReactElement {
         />
       )}
       <AppModals />
-    </MapContextProvider>
+    </MapProvider>
   )
 }
 

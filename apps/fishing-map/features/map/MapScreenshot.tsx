@@ -30,8 +30,10 @@ export const getMapImage = (map: Map): Promise<string> => {
       const canvas = map.getCanvas()
       resolve(canvas.toDataURL())
     })
-    // trigger render
-    ;(map as any)._render()
+    const renderFn = (map as any)._render
+    if (renderFn) {
+      renderFn()
+    }
   })
 }
 

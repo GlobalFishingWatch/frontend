@@ -13,7 +13,6 @@ import {
   useDatasetsAPI,
 } from 'features/datasets/datasets.hook'
 import { useMapDrawConnect } from './map-draw.hooks'
-import { useMapControl } from './map-context.hooks'
 import styles from './MapDraw.module.css'
 import {
   featureStyle,
@@ -60,7 +59,7 @@ function MapDraw() {
   const { drawMode, dispatchSetDrawMode } = useMapDrawConnect()
 
   const { dispatchQueryParams } = useLocationConnect()
-  const { containerRef } = useMapControl()
+  // const { containerRef } = useMapControl()
   const { dispatchCreateDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
@@ -312,7 +311,6 @@ function MapDraw() {
           closeOnClick={true}
           onClose={resetEditHandler}
           className={cx(styles.popup)}
-          captureClick
         >
           <div className={styles.popupContent}>
             <div className={styles.flex}>
@@ -363,7 +361,9 @@ function MapDraw() {
           </div>
         </Popup>
       )}
-      <div ref={containerRef} className={cx(styles.container, { [styles.hidden]: !editorMode })}>
+      <div
+        /*ref={containerRef}*/ className={cx(styles.container, { [styles.hidden]: !editorMode })}
+      >
         {(features?.length > 0 || hasOverLapInFeatures) && (
           <div className={cx(styles.hint, { [styles.warning]: hasOverLapInFeatures })}>
             <IconButton

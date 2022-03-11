@@ -2,10 +2,10 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
 import { event as uaEvent } from 'react-ga'
-import { InteractiveMap } from 'react-map-gl'
-import type { MapRequest } from 'react-map-gl'
+import { Map, MapboxStyle } from 'react-map-gl'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -19,7 +19,8 @@ import {
   defaultStyleTransformations,
   useDebounce,
 } from '@globalfishingwatch/react-hooks'
-import { LayerComposer, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
+import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
@@ -61,8 +62,11 @@ const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDra
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
 // TODO: Abstract this away
-const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
-  const response: MapRequest = { url }
+const transformRequest: (...args: any[]) => RequestParameters = (
+  url: string,
+  resourceType: string
+) => {
+  const response: RequestParameters = { url }
   if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
     response.headers = {
       Authorization: 'Bearer ' + GFWAPI.getToken(),
@@ -80,10 +84,10 @@ const handleError = ({ error }: any) => {
   }
 }
 
-const layerComposer = new LayerComposer({
-  sprite:
-    'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-map',
-})
+const mapStyles = {
+  width: '100%',
+  height: '100%',
+}
 
 const MapWrapper = () => {
   // Used it only once here to attach the listener only once
@@ -258,33 +262,36 @@ const MapWrapper = () => {
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 2000)
 
+  const onMouseMove: any = useMemo(() => {
+    return isMapDrawing ? onSimpleMapHover : currentMapHoverCallback
+  }, [currentMapHoverCallback, isMapDrawing, onSimpleMapHover])
+
   return (
     <div className={styles.container}>
       {style && (
-        <InteractiveMap
-          disableTokenWarning={true}
-          width="100%"
-          height="100%"
+        <Map
+          id="map"
+          style={mapStyles}
           keyboard={!isMapDrawing}
           zoom={viewport.zoom}
+          mapLib={maplibregl}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
-          mapStyle={style}
+          onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+          mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
           onResize={setMapBounds}
-          getCursor={rulersEditing ? getRulersCursor : getCursor}
+          // cursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={
             rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
           }
-          clickRadius={clickRadiusScale(viewport.zoom)}
+          // clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={isMapDrawing ? undefined : currentClickCallback}
-          onHover={isMapDrawing ? onSimpleMapHover : currentMapHoverCallback}
+          onMouseMove={onMouseMove}
           onLoad={onLoadCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
-          transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (
             <PopupWrapper
@@ -304,7 +311,7 @@ const MapWrapper = () => {
           <MapInfo center={hoveredEvent} />
           {drawMode !== 'disabled' && <MapDraw />}
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
-        </InteractiveMap>
+        </Map>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
       {isWorkspace && !isAnalyzing && (

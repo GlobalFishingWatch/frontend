@@ -90,6 +90,7 @@
   padding: 0;
   box-shadow: none;
   border: none;
+  width: fit-content;
 }
 
 .printing .mapboxgl-popup {
