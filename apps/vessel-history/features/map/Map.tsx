@@ -182,6 +182,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
     <div className={styles.container}>
       {style && (
         <Map
+          id="map"
           mapLib={maplibregl}
           style={mapStyles}
           zoom={viewport.zoom}
