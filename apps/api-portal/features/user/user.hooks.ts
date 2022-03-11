@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { useSelector } from 'react-redux'
 import { AsyncReducerStatus } from 'lib/async-slice'
 import { useRouter } from 'next/router'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { FieldValidationError } from 'lib/types'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import {
   UserApiAdditionalInformation,
@@ -93,10 +93,6 @@ export const useUser = (redirectToLogin: boolean) => {
     authorized,
     logout,
   }
-}
-
-type FieldValidationError<T> = {
-  [Field in keyof T]: string
 }
 
 export const useUserAdditionalInformation = () => {
