@@ -73,7 +73,7 @@
     "react": "^18.1.0",
     "react-dom": "^18.0.0",
     "react-is": "18.0.0",
-    "react-map-gl": "^5.3.17",
+    "react-map-gl": "^7.0.9",
     "react-modal": "^3.11.2",
     "react-range": "^1.8.11",
     "react-spring": "^8.0.27",
@@ -90,6 +90,7 @@
   },
   "devDependencies": {
     "@globalfishingwatch/maplibre-gl": "^2.1.7-gfw.19",
+    "@next/bundle-analyzer": "^12.1.0",
     "@nrwl/cli": "13.10.2",
     "@nrwl/cypress": "13.10.2",
     "@nrwl/eslint-plugin-nx": "13.10.2",

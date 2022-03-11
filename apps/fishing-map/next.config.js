@@ -1,5 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withNx = require('@nrwl/next/plugins/with-nx')
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 // const { i18n } = require('./next-i18next.config')
@@ -33,6 +36,7 @@ const nextConfig = {
       net: false,
       tls: false,
     }
+    config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
     // config.plugins.push(
     //   new CircularDependencyPlugin({
@@ -55,4 +59,4 @@ const nextConfig = {
   productionBrowserSourceMaps: !IS_PRODUCTION,
 }
 
-module.exports = withNx(nextConfig)
+module.exports = withBundleAnalyzer(withNx(nextConfig))
