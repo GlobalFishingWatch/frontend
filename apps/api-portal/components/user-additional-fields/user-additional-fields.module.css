@@ -48,3 +48,9 @@
   margin: var(--space-M);
   text-align: center;
 }
+
+@media (max-width: 767px) {
+  .field {
+    width: 100%;
+  }
+}
