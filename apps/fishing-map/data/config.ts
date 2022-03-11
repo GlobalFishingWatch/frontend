@@ -1,6 +1,6 @@
 import ReactGA from 'react-ga'
 import { DateObject, DateTime } from 'luxon'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -82,11 +82,34 @@ export const EVENTS_COLORS: Record<string, string> = {
 }
 
 export enum ThinningLevels {
+  Insane = 'Insane',
+  VeryAggressive = 'VeryAggressive',
   Aggressive = 'aggressive',
   Default = 'default',
 }
 
-export const THINNING_LEVELS = {
+
+export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
+  [ThinningLevels.Insane]: {
+    distanceFishing: 10000,
+    bearingValFishing: 20,
+    changeSpeedFishing: 1000,
+    minAccuracyFishing: 400,
+    distanceTransit: 20000,
+    bearingValTransit: 20,
+    changeSpeedTransit: 1000,
+    minAccuracyTransit: 800,
+  },
+  [ThinningLevels.VeryAggressive]: {
+    distanceFishing: 10000,
+    bearingValFishing: 10,
+    changeSpeedFishing: 500,
+    minAccuracyFishing: 100,
+    distanceTransit: 20000,
+    bearingValTransit: 10,
+    changeSpeedTransit: 500,
+    minAccuracyTransit: 200,
+  },
   [ThinningLevels.Aggressive]: {
     distanceFishing: 1000,
     bearingValFishing: 5,
@@ -108,6 +131,27 @@ export const THINNING_LEVELS = {
     minAccuracyTransit: 30,
   },
 }
+
+export const THINNING_LEVEL_BY_ZOOM: Record<number, { user: ThinningConfig, guest: ThinningConfig }> = {
+  0: {
+    user: THINNING_LEVELS[ThinningLevels.Insane],
+    guest: THINNING_LEVELS[ThinningLevels.Insane],
+  },
+  2: {
+    user: THINNING_LEVELS[ThinningLevels.VeryAggressive],
+    guest: THINNING_LEVELS[ThinningLevels.VeryAggressive],
+  },
+  4: {
+    user: THINNING_LEVELS[ThinningLevels.Aggressive],
+    guest: THINNING_LEVELS[ThinningLevels.Aggressive],
+  },
+  6: {
+    user: THINNING_LEVELS[ThinningLevels.Default],
+    guest: THINNING_LEVELS[ThinningLevels.Aggressive],
+  },
+}
+
+export const THINNING_LEVEL_ZOOMS = Object.keys(THINNING_LEVEL_BY_ZOOM) as unknown as number[]
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']

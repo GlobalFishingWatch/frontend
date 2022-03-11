@@ -131,3 +131,14 @@ export interface Dataset {
   relatedDatasets: RelatedDataset[] | null
   fieldsAllowed: string[]
 }
+
+export interface ThinningConfig {
+  distanceFishing?: number,
+  bearingValFishing?: number,
+  changeSpeedFishing?: number,
+  minAccuracyFishing?: number,
+  distanceTransit?: number,
+  bearingValTransit?: number,
+  changeSpeedTransit?: number,
+  minAccuracyTransit?: number,
+}
