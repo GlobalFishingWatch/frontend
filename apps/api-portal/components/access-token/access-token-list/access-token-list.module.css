@@ -75,7 +75,6 @@ table.list tr:first-child td {
 }
 
 .errorMessage {
-  /* background-color: var(--color-danger-red-background); */
   border-color: var(--color-danger-red);
   color: var(--color-danger-red);
 }
