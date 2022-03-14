@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { debounce } from 'lodash'
@@ -8,14 +8,11 @@ import {
   MultiSelectOption,
 } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getFlags, getFlagsByIds } from 'utils/flags'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
-  getFiltersBySchema,
   getCommonSchemaFieldsInDataview,
-  isDataviewSchemaSupported,
-  SupportedDatasetSchema,
+  geSchemaFiltersInDataview,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import ActivitySchemaFilter, {
@@ -64,10 +61,6 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const allSelected = areAllSourcesSelectedInDataview(dataview)
   const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
 
-  const flagOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
-  const flags = useMemo(getFlags, [])
-
-  const flagFiltersSupported = isDataviewSchemaSupported(dataview, 'flag')
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
   const schemaFilters = filterIds.map((id) => getFiltersBySchema(dataview, id))
@@ -185,8 +178,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     })
   }
 
-  const showSchemaFilters =
-    flagFiltersSupported || showSourceFilter || schemaFilters.some(showSchemaFilter)
+  const showSchemaFilters = showSourceFilter || schemaFilters.some(showSchemaFilter)
 
   if (!showSchemaFilters) {
     return <p className={styles.placeholder}>{t('dataset.emptyFilters', 'No filters available')}</p>
@@ -202,18 +194,6 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           selectedOptions={sourcesSelected}
           onSelect={onSelectSourceClick}
           onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
-        />
-      )}
-      {flagFiltersSupported && (
-        <MultiSelect
-          label={t('layer.flagState_other', 'Flag States')}
-          placeholder={getPlaceholderBySelections(flagOptions)}
-          options={flags}
-          selectedOptions={flagOptions}
-          className={styles.multiSelect}
-          onSelect={(selection) => onSelectFilterClick('flag', selection)}
-          onRemove={(selection, rest) => onRemoveFilterClick('flag', rest)}
-          onCleanClick={() => onCleanFilterClick('flag')}
         />
       )}
       {schemaFilters.map((schemaFilter) => {

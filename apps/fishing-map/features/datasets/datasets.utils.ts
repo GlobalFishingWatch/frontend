@@ -23,6 +23,7 @@ import {
   VIIRS_DATAVIEW_ID,
   VIIRS_MATCH_DATAVIEW_ID,
 } from 'data/workspaces'
+import { getFlags, getFlagsByIds } from 'utils/flags'
 
 export type SupportedDatasetSchema =
   | 'flag'
@@ -216,6 +217,10 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
+  if (schema === 'flag') {
+    // returning true as the schema fields enum comes from the static list in getFlags()
+    return true
+  }
   return dataset.schema?.[schema]?.enum !== undefined && dataset.schema?.[schema].enum.length > 0
 }
 
@@ -265,6 +270,9 @@ export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ): SchemaFieldSelection[] => {
+  if (schema === 'flag') {
+    return getFlags()
+  }
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
   )
@@ -295,6 +303,9 @@ export const getSchemaOptionsSelectedInDataview = (
   schema: SupportedDatasetSchema,
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
 ) => {
+  if (schema === 'flag') {
+    return getFlagsByIds(dataview.config?.filters?.flag || [])
+  }
   return options?.filter((option) =>
     dataview.config?.filters?.[schema]?.map((o) => o.toString())?.includes(option.id)
   )
