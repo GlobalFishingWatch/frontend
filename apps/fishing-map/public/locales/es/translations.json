@@ -35,6 +35,23 @@
     "title": "Análisis",
     "vesselFlags": "de embarcaciones abanderadas con"
   },
+  "bigQuery": {
+    "aggregateAvg": "Average",
+    "aggregateSum": "Sum",
+    "aggregationMode": "Aggregation mode *",
+    "create": "Create",
+    "query": "Query",
+    "queryError": "There is an error in the query",
+    "runCost": "This query will move:",
+    "runCostCheck": "Check creation cost",
+    "selectVisualisation": "Select a visualisation mode first",
+    "validationError": "Query, name, visualisation mode, aggregation mode and checking creation cost are required",
+    "visualiationMode": "Visualisation mode",
+    "visualisationActivity": "Activity (heatmap)",
+    "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
+    "visualisationEvents": "Events (clusters)",
+    "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
+  },
   "common": {
     "active_after": "Activo después de",
     "active_before": "Activo antes de",
