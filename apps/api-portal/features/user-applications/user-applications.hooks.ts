@@ -103,9 +103,9 @@ export const useCreateUserApplications = () => {
         createUserApplicationsThunk({ ...newUserApplication, userId: user.id })
       )
       if (createUserApplicationsThunk.fulfilled.match(action as any)) {
+        setToken(emptyToken)
         return { payload: (action as any)?.payload }
       } else {
-        setToken(emptyToken)
         return { error: (action as any)?.payload as AsyncError }
       }
     },
