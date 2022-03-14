@@ -137,13 +137,9 @@ export const THINNING_LEVEL_BY_ZOOM: Record<number, { user: ThinningConfig, gues
     user: THINNING_LEVELS[ThinningLevels.Insane],
     guest: THINNING_LEVELS[ThinningLevels.Insane],
   },
-  2: {
+  3: {
     user: THINNING_LEVELS[ThinningLevels.VeryAggressive],
     guest: THINNING_LEVELS[ThinningLevels.VeryAggressive],
-  },
-  4: {
-    user: THINNING_LEVELS[ThinningLevels.Aggressive],
-    guest: THINNING_LEVELS[ThinningLevels.Aggressive],
   },
   6: {
     user: THINNING_LEVELS[ThinningLevels.Default],

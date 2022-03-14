@@ -3,6 +3,7 @@ import {
   ResourcesState as CommonResourcesState,
   resourcesSlice,
 } from '@globalfishingwatch/dataviews-client'
+import {  ThinningConfig } from '@globalfishingwatch/api-types'
 import { THINNING_LEVEL_BY_ZOOM, THINNING_LEVEL_ZOOMS } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { isGuestUser } from 'features/user/user.slice'
@@ -18,15 +19,13 @@ export const selectThinningConfig = createSelector(
   [(state) => isGuestUser(state), selectDebugOptions, selectUrlMapZoomQuery],
   (guestUser, { thinning }, currentZoom) => {
     if (!thinning) return null
-
-    let thinningConfig
+    let thinningConfig: ThinningConfig
     for (let i = 0; i < THINNING_LEVEL_ZOOMS.length; i++) {
       const zoom = THINNING_LEVEL_ZOOMS[i]
       if (currentZoom < zoom) break
       thinningConfig = THINNING_LEVEL_BY_ZOOM[zoom][guestUser ? 'guest' : 'user']
       
     }
-    // console.log(currentZoom, thinningConfig)
 
     return thinningConfig
   }
