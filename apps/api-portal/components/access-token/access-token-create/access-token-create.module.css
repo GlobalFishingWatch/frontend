@@ -48,7 +48,7 @@
 
 .editor {
   font: var(--font-M);
-  color: var(--color-secondary-blue);
+  color: var(--color-primary-blue);
   background: var(--secondary-background-color);
   word-break: break-all;
   display: flex;
