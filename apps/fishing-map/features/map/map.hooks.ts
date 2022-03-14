@@ -238,13 +238,13 @@ export const useClickedEventConnect = () => {
       viirsPromiseRef.current = dispatch(fetchViirsInteractionThunk({ feature: viirsFeature }))
     }
 
-    const encounterFeature = event.features.find(
+    const tileClusterFeature = event.features.find(
       (f) => f.generatorType === GeneratorType.TileCluster
     )
-    if (encounterFeature) {
-      const bqPocQuery = encounterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
+    if (tileClusterFeature) {
+      const bqPocQuery = tileClusterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
       const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
-      eventsPromiseRef.current = dispatch(fetchFn(encounterFeature))
+      eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
     }
   }
 
