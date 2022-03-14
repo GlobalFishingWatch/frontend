@@ -24,30 +24,6 @@ import {
 } from './bigquery.slice'
 import styles from './BigQuery.module.css'
 
-const VisualisationOptions: { id: BigQueryVisualisation; label: string; fieldsHint: string }[] = [
-  {
-    id: '4wings',
-    label: 'Activity (heatmap)',
-    fieldsHint: '(Ensure id, lat, lon, timestamp and value are all present)',
-  },
-  {
-    id: 'events',
-    label: 'Events (clusters)',
-    fieldsHint: '(Ensure event_id, event_start, event_end and geom are all present)',
-  },
-]
-
-const AggregationOptions = [
-  {
-    id: AggregationOperation.Avg,
-    label: 'Average',
-  },
-  {
-    id: AggregationOperation.Sum,
-    label: 'Sum',
-  },
-]
-
 const BigQueryMenu: React.FC = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
@@ -64,6 +40,36 @@ const BigQueryMenu: React.FC = () => {
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [query, setQuery] = useState('')
+
+  const VisualisationOptions: { id: BigQueryVisualisation; label: string; fieldsHint: string }[] = [
+    {
+      id: '4wings',
+      label: t('bigQuery.visualisationActivity', 'Activity (heatmap)'),
+      fieldsHint: t(
+        'bigQuery.visualisationActivityHint',
+        '(Ensure id, lat, lon, timestamp and value are all present)'
+      ),
+    },
+    {
+      id: 'events',
+      label: t('bigQuery.visualisationEvents', 'Events (clusters)'),
+      fieldsHint: t(
+        'bigQuery.visualisationEventsHint',
+        '(Ensure event_id, event_start, event_end and geom are all present)'
+      ),
+    },
+  ]
+
+  const AggregationOptions = [
+    {
+      id: AggregationOperation.Avg,
+      label: t('bigQuery.aggregateAvg', 'Average'),
+    },
+    {
+      id: AggregationOperation.Sum,
+      label: t('bigQuery.aggregateSum', 'Sum'),
+    },
+  ]
 
   const currentVisualisationMode = VisualisationOptions.find(({ id }) => id === visualisationMode)
 
@@ -117,7 +123,7 @@ const BigQueryMenu: React.FC = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <Select
-          label="Visualisation mode"
+          label={t('bigQuery.visualiationMode', 'Visualisation mode')}
           placeholder={t('selects.placeholder', 'Select an option')}
           options={VisualisationOptions}
           containerClassName={styles.inputShort}
@@ -129,7 +135,7 @@ const BigQueryMenu: React.FC = () => {
         />
         {visualisationMode === '4wings' && (
           <Select
-            label="Aggregation mode *"
+            label={t('bigQuery.aggregationMode', 'Aggregation mode *')}
             placeholder={t('selects.placeholder', 'Select an option')}
             options={AggregationOptions}
             containerClassName={styles.inputShort}
@@ -143,12 +149,18 @@ const BigQueryMenu: React.FC = () => {
       </div>
       <div className={styles.row}>
         <label>
-          Query{' '}
+          {t('bigQuery.query', 'Query')}{' '}
           {currentVisualisationMode && (
             <span className={styles.lowercase}>{currentVisualisationMode.fieldsHint}</span>
           )}
         </label>
-        <Tooltip content={!visualisationMode ? 'Select a visualisation mode first' : ''}>
+        <Tooltip
+          content={
+            !visualisationMode
+              ? t('bigQuery.selectVisualisation', 'Select a visualisation mode first')
+              : ''
+          }
+        >
           <div>
             <textarea
               value={query}
@@ -170,28 +182,35 @@ const BigQueryMenu: React.FC = () => {
       />
       <div className={styles.footer}>
         {error && <p className={styles.error}>{error}</p>}
-        {runCost !== null && <p>This query will move: {runCost?.totalBytesPretty}</p>}
+        {runCost !== null && (
+          <p>
+            {t('bigQuery.runCost', 'This query will move:')} {runCost?.totalBytesPretty}
+          </p>
+        )}
         <Button
           disabled={disableCheckCost}
           tooltip={disableCheckCost ? 'Query and visualisation mode is required' : ''}
           loading={runCostStatus === AsyncReducerStatus.Loading}
           onClick={onRunCostClick}
         >
-          Check creation cost
+          {t('bigQuery.runCostCheck', 'Check creation cost')}
         </Button>
         <Button
           disabled={disableCreation || creationStatus === AsyncReducerStatus.Loading}
           tooltip={
             error
-              ? 'There is an error in the query'
+              ? t('bigQuery.queryError', 'There is an error in the query')
               : disableCreation
-              ? 'Query, name, visualisation mode, aggregation mode and checking creation cost are required'
+              ? t(
+                  'bigQuery.validationError',
+                  'Query, name, visualisation mode, aggregation mode and checking creation cost are required'
+                )
               : ''
           }
           loading={creationStatus === AsyncReducerStatus.Loading}
           onClick={onCreateClick}
         >
-          Create
+          {t('bigQuery.create', 'Create')}
         </Button>
       </div>
     </div>
