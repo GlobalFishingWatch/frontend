@@ -2,6 +2,7 @@ import { scaleLinear } from 'd3-scale'
 import { uniq } from 'lodash'
 import {
   Resource,
+  ResourceStatus,
   TrackResourceData,
   DatasetTypes,
   EndpointId,
@@ -117,12 +118,24 @@ export function getGeneratorConfig(
         dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
           ? DatasetTypes.UserTracks
           : DatasetTypes.Tracks
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, trackType)
+      
+      
+      const trackResourcesQueries = resolveDataviewDatasetResources(dataview, trackType)
+      const highestThinningTrackResource = trackResourcesQueries.find(trackResource => {
+        const url = trackResource.url
+        const resource = resources?.[url]
+        if (resource?.status === ResourceStatus.Finished) {
+          return resource
+        }
+      })
+
+      const trackUrl = highestThinningTrackResource?.url
 
       if (trackUrl && resources?.[trackUrl]) {
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data
       }
+
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)

@@ -7,6 +7,7 @@ import {
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
+  ThinningConfig
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -258,23 +259,14 @@ export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: s
   return vesselInWorkspace
 }
 
-export const trackDatasetConfigsCallback = (thinningConfig, timebarGraph) => {
+export const trackDatasetConfigsCallback = (thinningConfigs: Record<number, ThinningConfig>, timebarGraph) => {
   return ([info, track, ...events]) => {
-  const trackWithThinning = track
-  if (thinningConfig) {
-    const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-      id,
-      value,
-    }))
-    trackWithThinning.query = [...(track.query || []), ...thinningQuery]
-  }
 
-  const trackWithoutSpeed = trackWithThinning
-  const query = [...(trackWithoutSpeed.query || [])]
+  const query = [...(track.query || [])]
   const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
   let trackGraph
   if (timebarGraph !== TimebarGraphs.None) {
-    trackGraph = { ...trackWithoutSpeed }
+    trackGraph = { ...track }
     const fieldsQuery = {
       id: 'fields',
       value: timebarGraph,
@@ -290,8 +282,28 @@ export const trackDatasetConfigsCallback = (thinningConfig, timebarGraph) => {
   // Clean resources when mandatory vesselId is missing
   // needed for vessels with no info datasets (zebraX)
   const vesselData = hasDatasetConfigVesselData(info)
+
+  const tracksWithThinning = Object.keys(thinningConfigs).map((thinningConfigZoom) => {
+    const thinningConfig = thinningConfigs[thinningConfigZoom]
+    const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+      id,
+      value,
+    }))
+    const trackAtZoom = {
+      ...track,
+      query: [...(track.query || []), ...thinningQuery],
+      metadata: {
+        zoom: parseInt(thinningConfigZoom)
+      }
+    }
+    return trackAtZoom
+  })
+
+  // Highest zoom is prioritary
+  tracksWithThinning.sort((a, b) => b.metadata.zoom - a.metadata.zoom)
+
   return [
-    trackWithoutSpeed,
+    ...tracksWithThinning,
     ...events,
     ...(vesselData ? [info] : []),
     ...(trackGraph ? [trackGraph] : []),

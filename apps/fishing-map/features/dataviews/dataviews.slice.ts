@@ -173,8 +173,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
 )
 
 /**
- * Calls getDataviewsForResourceQuerying to prepare track dataviews' datasetConfigs.
- * Injects app-specific logic by using getDataviewsForResourceQuerying's callback
+ * Calls getResources to prepare track dataviews' datasetConfigs.
+ * Injects app-specific logic by using getResources's callback
  */
 export const selectDataviewsResources = createSelector(
   [
