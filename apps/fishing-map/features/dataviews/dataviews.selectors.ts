@@ -3,7 +3,6 @@ import { DataviewCategory, Dataset } from '@globalfishingwatch/api-types'
 import {
   UrlDataviewInstance,
   getGeneratorConfig,
-  resolveResourcesFromDatasetConfigs,
 } from '@globalfishingwatch/dataviews-client'
 import {
   GeneratorType,
@@ -20,8 +19,8 @@ import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data
 import { RootState } from 'store'
 import {
   selectActiveVesselsDataviews,
+  selectAllDataviewInstancesResolved,
   selectDataviewInstancesResolved,
-  selectDataviewsForResourceQuerying,
 } from 'features/dataviews/dataviews.slice'
 import { selectAllDataviews } from './dataviews.slice'
 
@@ -52,13 +51,6 @@ export const selectDefaultBasemapGenerator = createSelector(
   }
 )
 
-export const selectDataviewsResourceQueries = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviews) => {
-    return resolveResourcesFromDatasetConfigs(dataviews)
-  }
-)
-
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [selectDataviewInstancesResolved, selectWorkspaceStateProperty('activityCategory')],
   (dataviews = []) => {
@@ -79,7 +71,7 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
 }
 
 export const selectBasemapDataviewInstance = createSelector(
-  [selectDataviewsForResourceQuerying],
+  [selectAllDataviewInstancesResolved],
   (dataviews) => {
     const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
     return basemapDataview || defaultBasemapDataview

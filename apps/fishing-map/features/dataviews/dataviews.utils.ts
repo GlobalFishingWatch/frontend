@@ -21,7 +21,8 @@ import {
   VESSEL_PRESENCE_DATAVIEW_ID,
   TEMPLATE_POINTS_DATAVIEW_ID,
 } from 'data/workspaces'
-import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { hasDatasetConfigVesselData, isPrivateDataset } from 'features/datasets/datasets.utils'
+import { TimebarGraphs } from 'types'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -255,4 +256,45 @@ export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: s
     return isVesselInEndpointParams ? v : undefined
   })
   return vesselInWorkspace
+}
+
+export const trackDatasetConfigsCallback = (thinningConfig, timebarGraph) => {
+  return ([info, track, ...events]) => {
+  const trackWithThinning = track
+  if (thinningConfig) {
+    const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+      id,
+      value,
+    }))
+    trackWithThinning.query = [...(track.query || []), ...thinningQuery]
+  }
+
+  const trackWithoutSpeed = trackWithThinning
+  const query = [...(trackWithoutSpeed.query || [])]
+  const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
+  let trackGraph
+  if (timebarGraph !== TimebarGraphs.None) {
+    trackGraph = { ...trackWithoutSpeed }
+    const fieldsQuery = {
+      id: 'fields',
+      value: timebarGraph,
+    }
+    if (fieldsQueryIndex > -1) {
+      query[fieldsQueryIndex] = fieldsQuery
+      trackGraph.query = query
+    } else {
+      trackGraph.query = [...query, fieldsQuery]
+    }
+  }
+
+  // Clean resources when mandatory vesselId is missing
+  // needed for vessels with no info datasets (zebraX)
+  const vesselData = hasDatasetConfigVesselData(info)
+  return [
+    trackWithoutSpeed,
+    ...events,
+    ...(vesselData ? [info] : []),
+    ...(trackGraph ? [trackGraph] : []),
+  ]
+}
 }

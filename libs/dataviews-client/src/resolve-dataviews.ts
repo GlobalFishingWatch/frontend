@@ -68,7 +68,7 @@ export const mergeWorkspaceUrlDataviewInstances = (
   return [...urlDataviews.new, ...workspaceDataviewInstancesMerged]
 }
 
-const getDatasetConfigsByDatasetType = (
+export const getDatasetConfigsByDatasetType = (
   dataview: UrlDataviewInstance,
   type: DatasetTypes
 ): DataviewDatasetConfig[] => {
@@ -82,7 +82,7 @@ const getDatasetConfigsByDatasetType = (
   return datasetConfigs
 }
 
-const getDatasetConfigByDatasetType = (
+export const getDatasetConfigByDatasetType = (
   dataview: UrlDataviewInstance,
   type: DatasetTypes
 ): DataviewDatasetConfig => {
@@ -115,6 +115,7 @@ export type DatasetConfigsTransforms = Partial<
 >
 
 /**
+ * DEPRECATED: use resources/getResources
  * Prepare dataviews for querying resources, by altering datasetConfigs
  * - Filter out non track dvs
  * - Add thinning query params
@@ -148,6 +149,7 @@ export const getDataviewsForResourceQuerying = (
 }
 
 /**
+ * DEPRECATED: use resources/getResources
  * Collect available datasetConfigs from dataviews and prepare resource
  */
 export const resolveResourcesFromDatasetConfigs = (
