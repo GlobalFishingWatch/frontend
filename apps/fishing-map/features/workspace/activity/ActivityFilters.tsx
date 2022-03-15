@@ -13,6 +13,8 @@ import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   getCommonSchemaFieldsInDataview,
   geSchemaFiltersInDataview,
+  getIncompatibleFilterSelection,
+  SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import ActivitySchemaFilter, {
@@ -110,20 +112,32 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   }
 
   const onSelectFilterClick = (
-    filterKey: string,
+    filterKey: SupportedDatasetSchema,
     selection: MultiSelectOption | MultiSelectOption[]
   ) => {
     const filterValues = Array.isArray(selection)
       ? selection.map(({ id }) => id).sort((a, b) => a - b)
       : [...(dataview.config?.filters?.[filterKey] || []), selection.id]
+    const newDataviewConfig = {
+      filters: {
+        ...(dataview.config?.filters || {}),
+        [filterKey]: filterValues,
+      },
+    }
+    const newDataview = { ...dataview, config: { ...dataview.config, ...newDataviewConfig } }
+    const incompatibleFilters = Object.keys(newDataview.config?.filters || {}).flatMap((key) => {
+      const incompatibleFilterSelection =
+        getIncompatibleFilterSelection(newDataview, key as SupportedDatasetSchema)?.length > 0
+      return incompatibleFilterSelection ? key : []
+    })
+    if (incompatibleFilters.length) {
+      incompatibleFilters.forEach((f) => {
+        delete newDataviewConfig.filters[f]
+      })
+    }
     upsertDataviewInstance({
       id: dataview.id,
-      config: {
-        filters: {
-          ...(dataview.config?.filters || {}),
-          [filterKey]: filterValues,
-        },
-      },
+      config: newDataviewConfig,
     })
     const eventLabel = getEventLabel([
       'select',
