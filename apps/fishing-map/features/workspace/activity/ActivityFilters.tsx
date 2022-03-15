@@ -29,19 +29,6 @@ type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
 }
 
-const filterIds: SupportedDatasetSchema[] = [
-  'geartype',
-  'fleet',
-  'shiptype',
-  'origin',
-  'matched',
-  'source',
-  'radiance',
-  'target_species',
-  'license_category',
-  'vessel_type',
-]
-
 const trackEvent = debounce((filterKey: string, label: string) => {
   uaEvent({
     category: 'Activity data',
@@ -63,7 +50,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
-  const schemaFilters = filterIds.map((id) => getFiltersBySchema(dataview, id))
+  const schemaFilters = geSchemaFiltersInDataview(dataview)
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     let datasets: string[] = []
