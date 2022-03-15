@@ -40,13 +40,13 @@ export type SupportedDatasetSchema =
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
 
-type IncomptibleFilter = {
+type IncompatibleFilter = {
   id: SupportedDatasetSchema
   value: any
   disabled: SupportedDatasetSchema[]
 }
-type IncomptibleFiltersDict = Record<string, IncomptibleFilter[]>
-const INCOMPATIBLE_FILTERS_DICT: IncomptibleFiltersDict = {
+type IncompatibleFiltersDict = Record<string, IncompatibleFilter[]>
+const INCOMPATIBLE_FILTERS_DICT: IncompatibleFiltersDict = {
   'public-presence-viirs-match-prototype:v20220112': [
     { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
   ],
