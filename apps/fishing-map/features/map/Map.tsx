@@ -44,6 +44,7 @@ import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -53,14 +54,12 @@ import {
   useMapClusterTilesLoaded,
   useMapSourceTilesLoadedAtom,
 } from './map-sources.hooks'
-import { selectDrawMode, SliceInteractionEvent } from './map.slice'
-import { selectIsMapDrawing } from './map.selectors'
+import { SliceInteractionEvent } from './map.slice'
 import MapLegends from './MapLegends'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
-
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => RequestParameters = (
   url: string,
@@ -96,10 +95,9 @@ const MapWrapper = () => {
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-  const drawMode = useSelector(selectDrawMode)
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
-  const isMapDrawing = useSelector(selectIsMapDrawing)
+  const { isMapDrawing } = useMapDrawConnect()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
 
@@ -210,7 +208,7 @@ const MapWrapper = () => {
   const getCursor = useCallback(
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
-      if (drawMode === 'draw') {
+      if (isMapDrawing) {
         return 'crosshair'
       } else if (state.isHovering && hoveredTooltipEvent) {
         // Workaround to fix cluster events duplicated, only working for encounters and needs
@@ -242,7 +240,7 @@ const MapWrapper = () => {
       }
       return 'grab'
     },
-    [drawMode, hoveredTooltipEvent, dataviews, tilesClusterLoaded]
+    [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded]
   )
 
   useEffect(() => {
@@ -309,7 +307,7 @@ const MapWrapper = () => {
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
-          {drawMode !== 'disabled' && <MapDraw />}
+          {isMapDrawing && <MapDraw />}
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </Map>
       )}

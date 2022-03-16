@@ -21,7 +21,7 @@ import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
-  const { dispatchSetDrawMode } = useMapDrawConnect()
+  const { dispatchSetMapDrawing } = useMapDrawConnect()
   const { dispatchQueryParams } = useLocationConnect()
 
   const readOnly = useSelector(selectReadOnly)
@@ -29,13 +29,13 @@ function ContextAreaSection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onDrawClick = useCallback(() => {
-    dispatchSetDrawMode('draw')
+    dispatchSetMapDrawing(true)
     dispatchQueryParams({ sidebarOpen: false })
     uaEvent({
       category: 'Reference layer',
       action: `Draw a custom reference layer - Start`,
     })
-  }, [dispatchQueryParams, dispatchSetDrawMode])
+  }, [dispatchQueryParams, dispatchSetMapDrawing])
 
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))

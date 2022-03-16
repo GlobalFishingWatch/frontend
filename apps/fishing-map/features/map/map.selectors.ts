@@ -35,7 +35,6 @@ import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import { selectDrawMode } from './map.slice'
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
@@ -318,7 +317,3 @@ export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
     return generators?.filter((generator) => generator.visible)
   }
 )
-
-export const selectIsMapDrawing = createSelector([selectDrawMode], (drawMode): boolean => {
-  return drawMode !== 'disabled'
-})
