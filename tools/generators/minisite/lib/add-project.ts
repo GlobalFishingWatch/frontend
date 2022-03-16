@@ -49,20 +49,8 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   targets.start = {
     executor: '@nrwl/workspace:run-commands',
     options: {
-      commands: [
-        `nx clean-locales ${options.projectName}`,
-        'nx serve i18n-labels',
-        `nx serve ${options.projectName}`,
-      ],
+      commands: [`nx serve ${options.projectName}`],
       parallel: true,
-    },
-  }
-
-  targets['clean-locales'] = {
-    executor: '@nrwl/workspace:run-commands',
-    outputs: [],
-    options: {
-      commands: [`rm -rf ${joinPathFragments('dist', options.appProjectRoot)}/public/locales`],
     },
   }
 
