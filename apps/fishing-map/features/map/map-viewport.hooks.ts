@@ -26,7 +26,7 @@ const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 const viewportState = atom<MapCoordinates>({
   key: 'mapViewport',
   default: DEFAULT_VIEWPORT as MapCoordinates,
-  effects_UNSTABLE: [
+  effects: [
     ({ trigger, setSelf, onSet }) => {
       const viewport = selectViewport(store.getState() as RootState)
 
@@ -70,6 +70,16 @@ const boundsState = atom<MiniglobeBounds | undefined>({
   key: 'mapBounds',
   default: undefined,
 })
+
+export function checkEqualBounds(bounds1: MiniglobeBounds, bounds2: MiniglobeBounds) {
+  if (!bounds1 || !bounds2) return false
+  return (
+    bounds1.north === bounds2.north &&
+    bounds1.south === bounds2.south &&
+    bounds1.west === bounds2.west &&
+    bounds1.east === bounds2.east
+  )
+}
 
 export function mglToMiniGlobeBounds(mglBounds: LngLatBounds) {
   return {

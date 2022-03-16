@@ -9,6 +9,7 @@ export interface DataviewConfig<Type = any> {
   colorCyclingType?: ColorCyclingType
   visible?: boolean
   filters?: Record<string, any>
+  dynamicBreaks?: boolean
   [key: string]: any
 }
 

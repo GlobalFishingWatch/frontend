@@ -7,7 +7,6 @@ import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { transformFilters } from 'features/analysis/analysis.utils'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
 export type DateRange = {
@@ -15,31 +14,22 @@ export type DateRange = {
   end: string
 }
 
-export type DownloadActivityArea = {
-  geometry: Geometry
-  name: string
-}
-
 export interface DownloadActivityState {
-  geometry: Geometry | undefined
-  name: string
-  id: string
-  requests: { id: string; status: AsyncReducerStatus }[]
+  areaKey: string
+  status: AsyncReducerStatus
 }
 
 const initialState: DownloadActivityState = {
-  geometry: undefined,
-  name: '',
-  id: '',
-  requests: [],
+  areaKey: '',
+  status: AsyncReducerStatus.Idle,
 }
 
 export type DownloadActivityParams = {
   dateRange: DateRange
-  dataview: {
+  dataviews: {
     datasets: string[]
-    filters?: Record<string, any>
-  }
+    filter?: string
+  }[]
   geometry: Geometry
   areaName: string
   format: Format
@@ -58,7 +48,7 @@ export const downloadActivityThunk = createAsyncThunk<
   try {
     const {
       dateRange,
-      dataview,
+      dataviews,
       geometry,
       areaName,
       format,
@@ -70,8 +60,8 @@ export const downloadActivityThunk = createAsyncThunk<
     const toDate = DateTime.fromISO(dateRange.end).toUTC()
 
     const downloadActivityParams = {
-      datasets: [dataview.datasets.join(',')],
-      filters: [dataview.filters && transformFilters(dataview.filters)],
+      datasets: dataviews.map(({ datasets }) => datasets.join(',')),
+      filters: dataviews.map(({ filter }) => filter),
       'date-range': [fromDate, toDate].join(','),
       format,
       spatialResolution,
@@ -104,70 +94,53 @@ const downloadActivitySlice = createSlice({
   name: 'downloadActivity',
   initialState,
   reducers: {
+    setDownloadActivityAreaKey: (state, action: PayloadAction<string>) => {
+      state.areaKey = action.payload
+    },
     resetDownloadActivityStatus: (state) => {
-      state.requests = []
+      state.status = AsyncReducerStatus.Idle
     },
-    clearDownloadActivityGeometry: (state) => {
-      state.geometry = undefined
-      state.name = ''
-      state.requests = []
-    },
-    setDownloadActivityGeometry: (state, action: PayloadAction<DownloadActivityArea>) => {
-      state.geometry = action.payload.geometry as Geometry
-      state.name = action.payload.name
+    resetDownloadActivityState: (state) => {
+      state.areaKey = ''
+      state.status = AsyncReducerStatus.Idle
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(downloadActivityThunk.pending, (state, action) => {
-      state.requests = [
-        ...state.requests,
-        { id: action.meta.requestId, status: AsyncReducerStatus.Loading },
-      ]
+    builder.addCase(downloadActivityThunk.pending, (state) => {
+      state.status = AsyncReducerStatus.Loading
     })
-    builder.addCase(downloadActivityThunk.fulfilled, (state, action) => {
-      const { requestId } = action.meta
-      state.requests = state.requests.map((request) => {
-        return request.id === requestId
-          ? { id: requestId, status: AsyncReducerStatus.Finished }
-          : request
-      })
+    builder.addCase(downloadActivityThunk.fulfilled, (state) => {
+      state.status = AsyncReducerStatus.Finished
     })
     builder.addCase(downloadActivityThunk.rejected, (state, action) => {
-      const { requestId } = action.meta
-      const status =
+      state.status =
         action.error.message === 'Aborted' ? AsyncReducerStatus.Aborted : AsyncReducerStatus.Error
-      state.requests = state.requests.map((request) => {
-        return request.id === requestId ? { id: requestId, status } : request
-      })
     })
   },
 })
 
 export const {
+  setDownloadActivityAreaKey,
   resetDownloadActivityStatus,
-  clearDownloadActivityGeometry,
-  setDownloadActivityGeometry,
+  resetDownloadActivityState,
 } = downloadActivitySlice.actions
 
-export const selectDownloadActivityGeometry = (state: RootState) => state.downloadActivity.geometry
-export const selectDownloadActivityAreaName = (state: RootState) => state.downloadActivity.name
-export const selectDownloadActivityAreaId = (state: RootState) => state.downloadActivity.id
-export const selectDownloadActivityRequests = (state: RootState) => state.downloadActivity.requests
+export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
+export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
 
 export const selectDownloadActivityLoading = createSelector(
-  [selectDownloadActivityRequests],
-  (requests) => requests.some(({ status }) => status === AsyncReducerStatus.Loading)
+  [selectDownloadActivityStatus],
+  (status) => status === AsyncReducerStatus.Loading
 )
 
 export const selectDownloadActivityError = createSelector(
-  [selectDownloadActivityRequests],
-  (requests) => requests.some(({ status }) => status === AsyncReducerStatus.Error)
+  [selectDownloadActivityStatus],
+  (status) => status === AsyncReducerStatus.Error
 )
 
 export const selectDownloadActivityFinished = createSelector(
-  [selectDownloadActivityRequests],
-  (requests) =>
-    requests.length > 0 && requests.every(({ status }) => status === AsyncReducerStatus.Finished)
+  [selectDownloadActivityStatus],
+  (status) => status === AsyncReducerStatus.Finished
 )
 
 export default downloadActivitySlice.reducer

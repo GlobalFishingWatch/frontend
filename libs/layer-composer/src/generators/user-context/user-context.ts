@@ -4,7 +4,7 @@ import type {
   FillLayerSpecification,
   LineLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/context'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
@@ -59,6 +59,7 @@ class UserContextGenerator {
           interactive,
           generatorId,
           group: Group.CustomLayer,
+          datasetId: config.datasetId,
           uniqueFeatureInteraction: true,
           legend: {
             type: 'colorramp',
@@ -100,6 +101,7 @@ class UserContextGenerator {
       metadata: {
         interactive,
         generatorId: generatorId,
+        datasetId: config.datasetId,
         group: Group.CustomLayer,
       },
     }

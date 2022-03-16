@@ -23,6 +23,7 @@ import {
   VIIRS_DATAVIEW_ID,
   VIIRS_MATCH_DATAVIEW_ID,
 } from 'data/workspaces'
+import { getFlags, getFlagsByIds } from 'utils/flags'
 
 export type SupportedDatasetSchema =
   | 'flag'
@@ -38,6 +39,18 @@ export type SupportedDatasetSchema =
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
+
+type IncompatibleFilter = {
+  id: SupportedDatasetSchema
+  value: any
+  disabled: SupportedDatasetSchema[]
+}
+type IncompatibleFiltersDict = Record<string, IncompatibleFilter[]>
+const INCOMPATIBLE_FILTERS_DICT: IncompatibleFiltersDict = {
+  'public-presence-viirs-match-prototype:v20220112': [
+    { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
+  ],
+}
 
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
@@ -202,9 +215,12 @@ export const isDataviewSchemaSupported = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
-  const schemaSupported = dataview?.datasets?.every((dataset) => {
-    return dataset.fieldsAllowed.includes(schema)
-  })
+  const activeDatasets = dataview.config?.datasets
+  const schemaSupported = dataview?.datasets
+    ?.filter((dataset) => activeDatasets.includes(dataset.id))
+    .every((dataset) => {
+      return dataset.fieldsAllowed.includes(schema)
+    })
   return schemaSupported
 }
 
@@ -216,6 +232,10 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
+  if (schema === 'flag') {
+    // returning true as the schema fields enum comes from the static list in getFlags()
+    return true
+  }
   return dataset.schema?.[schema]?.enum !== undefined && dataset.schema?.[schema].enum.length > 0
 }
 
@@ -244,6 +264,23 @@ export const getNotSupportedSchemaFieldsDatasets = (
   })
   return datasetsWithoutSchemaFieldsSupport
 }
+export const getIncompatibleFilterSelection = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema
+) => {
+  return dataview?.datasets?.flatMap((dataset) => {
+    const hasIncompatibility = INCOMPATIBLE_FILTERS_DICT[dataset.id] !== undefined
+    if (!hasIncompatibility) return []
+    return INCOMPATIBLE_FILTERS_DICT[dataset.id].filter(({ id, value, disabled }) => {
+      const selectedFilterValue = dataview.config?.filters?.[id]
+      return (
+        disabled.includes(schema) &&
+        selectedFilterValue?.length === 1 &&
+        (selectedFilterValue?.includes(value) || selectedFilterValue?.includes(value.toString()))
+      )
+    })
+  })
+}
 
 const getCommonSchemaTypeInDataview = (
   dataview: SchemaFieldDataview,
@@ -265,6 +302,9 @@ export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ): SchemaFieldSelection[] => {
+  if (schema === 'flag') {
+    return getFlags()
+  }
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
   )
@@ -274,9 +314,9 @@ export const getCommonSchemaFieldsInDataview = (
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
         let label =
-          schemaType === 'number' || schemaType === 'boolean'
+          schemaType === 'number'
             ? field
-            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field)
+            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field.toString())
         if (label === field) {
           if (schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
@@ -290,51 +330,65 @@ export const getCommonSchemaFieldsInDataview = (
   return commonSchemaFields.sort(sortFields)
 }
 
+export const getSchemaOptionsSelectedInDataview = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema,
+  options: ReturnType<typeof getCommonSchemaFieldsInDataview>
+) => {
+  if (schema === 'flag') {
+    return getFlagsByIds(dataview.config?.filters?.flag || [])
+  }
+  return options?.filter((option) =>
+    dataview.config?.filters?.[schema]?.map((o) => o.toString())?.includes(option.id)
+  )
+}
+
 export const getSchemaFieldsSelectedInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
-  const optionsSelected = options?.filter((option) =>
-    dataview.config?.filters?.[schema]?.includes(option.id)
-  )
+  const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   return optionsSelected
 }
 
 export type SchemaFilter = {
   id: SupportedDatasetSchema
-  active: boolean
   disabled: boolean
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
-  tooltip: string
   type: DatasetSchemaType
 }
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ): SchemaFilter => {
-  const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)
-  const datasetsWithSchemaIds = datasetsWithSchema?.map(({ id }) => id)
-  const active = dataview.config?.datasets?.some((dataset: string) =>
-    datasetsWithSchemaIds?.includes(dataset)
-  )
-
-  const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)
-  const disabled = datasetsWithoutSchema !== undefined && datasetsWithoutSchema.length > 0
-
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
   const type = getCommonSchemaTypeInDataview(dataview, schema)
+  const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
 
-  const optionsSelected = options?.filter((option) =>
-    dataview.config?.filters?.[schema]?.includes(option.id)
-  )
+  const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)?.length > 0
+  const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)?.length > 0
+  const disabled = datasetsWithoutSchema || incompatibleFilterSelection
 
-  const tooltip = disabled
-    ? t('errors.notSupportedBy', {
-        list: datasetsWithoutSchema?.map((d) => d.name).join(','),
-        defaultValue: 'Not supported by {{list}}',
+  return { id: schema, disabled, options, optionsSelected, type }
+}
+
+export const geSchemaFiltersInDataview = (dataview: SchemaFieldDataview): SchemaFilter[] => {
+  const fieldsIds = uniq(
+    dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
+  ) as SupportedDatasetSchema[]
+  const fieldsOrder =
+    dataview.datasets.length === 1 &&
+    (dataview.datasets[0].configuration?.fieldsOrder as SupportedDatasetSchema[])
+  const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
+  const fielsAllowedOrdered = fieldsOrder
+    ? fieldsAllowed.sort((a, b) => {
+        const aIndex = fieldsOrder.findIndex((f) => f === a)
+        const bIndex = fieldsOrder.findIndex((f) => f === b)
+        return aIndex - bIndex
       })
-    : ''
-  return { id: schema, active, disabled, options, optionsSelected, tooltip, type }
+    : fieldsAllowed
+  const schemaFilters = fielsAllowedOrdered.map((id) => getFiltersBySchema(dataview, id))
+  return schemaFilters
 }

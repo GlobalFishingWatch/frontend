@@ -57,7 +57,10 @@ export function Menu(props: MenuProps) {
     bgImageSource = '',
     activeLinkId,
   } = props
-  const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
+  const appElement = useMemo(
+    () => (typeof window !== 'undefined' ? document.getElementById(appSelector) : null),
+    [appSelector]
+  )
   if (!appElement) {
     console.warn(`Invalid appSelector (${appSelector}) provided`)
     return null

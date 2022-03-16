@@ -8,7 +8,10 @@ import hintsConfig from './hints.content'
 import { resetHints, selectHintsDismissed } from './hints.slice'
 import styles from './Hint.module.css'
 
-const HELP_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-help')
+const HELP_COLOR =
+  (typeof window !== 'undefined' &&
+    getComputedStyle(document.documentElement).getPropertyValue('--color-help')) ||
+  '#fff8cd'
 
 function HintsHub() {
   const { t } = useTranslation()

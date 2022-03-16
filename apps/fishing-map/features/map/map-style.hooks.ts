@@ -1,18 +1,6 @@
-import { useRecoilValue } from 'recoil'
 import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
 import useMapInstance from 'features/map/map-context.hooks'
-import { mapIdleAtom } from 'features/map/map-features.atom'
-
-export const useMapLoaded = () => {
-  const idle = useRecoilValue(mapIdleAtom)
-  const map = useMapInstance()
-  const mapInstanceReady = map !== null
-  const mapFirstLoad = (map as any)?._loaded || false
-  const mapStyleLoad = map?.isStyleLoaded() || false
-  const areTilesLoaded = map?.areTilesLoaded() || false
-  const loaded = mapInstanceReady && mapFirstLoad && (idle || areTilesLoaded || mapStyleLoad)
-  return loaded
-}
+import { useMapLoaded } from 'features/map/map-state.hooks'
 
 export const useMapStyle = () => {
   const map = useMapInstance()

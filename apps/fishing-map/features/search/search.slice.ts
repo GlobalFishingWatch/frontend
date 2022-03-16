@@ -29,8 +29,8 @@ export type VesselWithDatasets = Omit<Vessel, 'dataset'> & {
 }
 export type SearchType = 'basic' | 'advanced'
 export type SearchFilter = {
-  activeAfterDate?: string
-  activeBeforeDate?: string
+  lastTransmissionDate?: string
+  firstTransmissionDate?: string
   sources?: MultiSelectOption<string>[]
 } & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
 
@@ -92,69 +92,43 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         const fieldsAllowed = Array.from(
           new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
         )
-        console.log(fieldsAllowed)
+
+        const andCombinedFields: AdvancedSearchQueryFieldKey[] = [
+          'geartype',
+          'target_species',
+          'flag',
+          'fleet',
+          'origin',
+          'lastTransmissionDate',
+          'firstTransmissionDate',
+        ]
+        const orCombinedFields: AdvancedSearchQueryFieldKey[] = [
+          'shipname',
+          'mmsi',
+          'imo',
+          'codMarinha',
+        ]
 
         const fields: AdvancedSearchQueryField[] = [
-          {
-            key: 'shipname',
-            value: query,
-            combinedWithOR: true,
-          },
-          ...(fieldsAllowed.includes('mmsi')
-            ? [
-                {
-                  key: 'mmsi' as AdvancedSearchQueryFieldKey,
-                  value: query,
-                  combinedWithOR: true,
-                },
-              ]
-            : []),
-          ...(fieldsAllowed.includes('imo')
-            ? [
-                {
-                  key: 'imo' as AdvancedSearchQueryFieldKey,
-                  value: query,
-                  combinedWithOR: true,
-                },
-              ]
-            : []),
-          ...(fieldsAllowed.includes('codMarinha')
-            ? [
-                {
-                  key: 'codMarinha' as AdvancedSearchQueryFieldKey,
-                  value: query,
-                  combinedWithOR: true,
-                },
-              ]
-            : []),
-          {
-            key: 'geartype',
-            value: filters.geartype,
-          },
-          {
-            key: 'target_species',
-            value: filters.target_species,
-          },
-          {
-            key: 'flag',
-            value: filters.flag,
-          },
-          {
-            key: 'fleet',
-            value: filters.fleet,
-          },
-          {
-            key: 'origin',
-            value: filters.origin,
-          },
-          {
-            key: 'lastTransmissionDate',
-            value: filters.activeAfterDate,
-          },
-          {
-            key: 'firstTransmissionDate',
-            value: filters.activeBeforeDate,
-          },
+          ...orCombinedFields.flatMap((field) => {
+            if (fieldsAllowed.includes(field)) {
+              return {
+                key: field,
+                value: query,
+                combinedWithOR: true,
+              }
+            }
+            return []
+          }),
+          ...andCombinedFields.flatMap((field) => {
+            if (filters[field] && fieldsAllowed.includes(field)) {
+              return {
+                key: field,
+                value: filters[field],
+              }
+            }
+            return []
+          }),
         ]
         advancedQuery = getAdvancedSearchQuery(fields)
       }

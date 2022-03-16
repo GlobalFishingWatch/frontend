@@ -1,8 +1,7 @@
 import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
 import { GeneratorType, BackgroundGeneratorConfig } from '../types'
-
-export const DEFAULT_BACKGROUND_COLOR = 'rgb(0, 36, 87)'
+import { DEFAULT_BACKGROUND_COLOR } from './config'
 
 class BackgroundGenerator {
   type = GeneratorType.Background

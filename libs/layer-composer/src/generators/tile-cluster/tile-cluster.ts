@@ -2,7 +2,7 @@ import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
-import { DEFAULT_BACKGROUND_COLOR } from '../background/background'
+import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { Group } from '../../types'
 
 const MAX_ZOOM_TO_CLUSTER_POINTS = 4
@@ -53,7 +53,7 @@ class TileClusterGenerator {
     const activeFilter = ['case', ['==', ['get', 'event_id'], config.currentEventId || null]]
     const layers = [
       {
-        id: 'clusters',
+        id: `${config.id}-clusters`,
         type: 'circle',
         source: config.id,
         'source-layer': 'points',
@@ -79,7 +79,7 @@ class TileClusterGenerator {
         },
       },
       {
-        id: 'cluster_count',
+        id: `${config.id}-cluster_count`,
         type: 'symbol',
         source: config.id,
         'source-layer': 'points',
@@ -102,7 +102,7 @@ class TileClusterGenerator {
         },
       },
       {
-        id: 'unclustered_point',
+        id: `${config.id}-unclustered_point`,
         type: 'circle',
         source: config.id,
         'source-layer': 'points',
@@ -120,20 +120,6 @@ class TileClusterGenerator {
           group: Group.Cluster,
         },
       },
-      // {
-      //   id: 'unclustered_point_icon',
-      //   source: config.id,
-      //   'source-layer': 'points',
-      //   type: 'symbol',
-      //   filter: ['==', ['get', 'count'], 1],
-      //   layout: {
-      //     'icon-image': 'carrier_portal_encounter',
-      //     'icon-allow-overlap': true,
-      //   },
-      //   metadata: {
-      //     group: Group.Cluster,
-      //   },
-      // },
     ]
     return layers as LayerSpecification[]
   }

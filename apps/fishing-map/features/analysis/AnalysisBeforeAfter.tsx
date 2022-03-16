@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import React, { Fragment, useCallback, useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
@@ -16,12 +16,12 @@ import {
   MAX_DAYS_TO_COMPARE,
   MAX_MONTHS_TO_COMPARE,
   useAnalysisTimeCompareConnect,
-} from './analysis.hooks'
+} from './analysis-timecomparison.hooks'
 import AnalysisBeforeAfterGraph from './AnalysisBeforeAfterGraph'
 import { selectTimeComparisonValues } from './analysis.selectors'
 
 const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
-  const { layersTimeseriesFiltered, analysisAreaName } = props
+  const { layersTimeseriesFiltered, analysisAreaName, loading, blur } = props
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
@@ -33,65 +33,70 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
     MIN_DATE,
     MAX_DATE,
   } = useAnalysisTimeCompareConnect('beforeAfter')
+  const dataviewsIds = useMemo(() => {
+    if (!layersTimeseriesFiltered) return []
+    return layersTimeseriesFiltered[0].sublayers.map((s) => s.id)
+  }, [layersTimeseriesFiltered])
+  const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
 
-  const trackAndChangeDate = useCallback((date) => {
+  const trackAndChangeDate = (date) => {
     uaEvent({
       category: 'Analysis',
       action: `Select date in 'before/after'`,
       label: JSON.stringify({
         date: date.target.value,
         regionName: analysisAreaName,
-        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-      })
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
     })
     onCompareStartChange(date)
-  }, [onCompareStartChange])
+  }
 
-  const trackAndChangeDuration = useCallback((duration) => {
+  const trackAndChangeDuration = (duration) => {
     uaEvent({
       category: 'Analysis',
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
-        duration: duration.target.value + ' ' + durationTypeOption.label,
+        duration: duration.target.value + ' ' + durationTypeOption?.label,
         durationAmount: duration.target.value,
-        durationType: durationTypeOption.label,
+        durationType: durationTypeOption?.label,
         regionName: analysisAreaName,
-        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-      })
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
     })
     onDurationChange(duration)
-  }, [onCompareStartChange])
+  }
 
-  const trackAndChangeDurationType = useCallback((duration) => {
+  const trackAndChangeDurationType = (duration) => {
     uaEvent({
       category: 'Analysis',
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
-        duration: timeComparison.duration + ' ' + duration.label,
-        durationAmount: timeComparison.duration,
+        duration: timeComparison?.duration + ' ' + duration.label,
+        durationAmount: timeComparison?.duration,
         durationType: duration.label,
         regionName: analysisAreaName,
-        sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
-      })
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
     })
     onDurationTypeSelect(duration)
-  }, [onCompareStartChange])
+  }
 
   const { description, commonProperties } = useAnalysisDescription(
     analysisAreaName,
     layersTimeseriesFiltered?.[0]
   )
-  const dataviewsIds = useMemo(() => {
-    if (!layersTimeseriesFiltered) return []
-    return layersTimeseriesFiltered[0].sublayers.map((s) => s.id)
-  }, [layersTimeseriesFiltered])
-  const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
+
   if (!timeComparison) return null
 
-  const isLoading =
-    !layersTimeseriesFiltered ||
-    !layersTimeseriesFiltered[0] ||
-    !layersTimeseriesFiltered[0].timeseries
+  const showSpinner = loading && (!blur || !layersTimeseriesFiltered)
+  const hasData = layersTimeseriesFiltered?.[0].timeseries.length > 0
 
   return (
     <Fragment>
@@ -109,16 +114,22 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
             />
           ))}
       </div>
-      {isLoading ? (
+      {showSpinner ? (
         <div className={styles.graphContainer}>
           <Spinner />
         </div>
+      ) : hasData ? (
+        <div className={blur ? styles.blur : ''}>
+          <AnalysisBeforeAfterGraph
+            graphData={layersTimeseriesFiltered?.[0]}
+            start={timeComparison.start}
+            end={timeComparisonValues.end}
+          />
+        </div>
       ) : (
-        <AnalysisBeforeAfterGraph
-          graphData={layersTimeseriesFiltered?.[0]}
-          start={timeComparison.start}
-          end={timeComparisonValues.end}
-        />
+        <div className={styles.graphContainer}>
+          <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
+        </div>
       )}
       <div className={styles.container}>
         <div className={styles.timeSelection}>
@@ -149,7 +160,7 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
               <Select
                 options={DURATION_TYPES_OPTIONS}
                 onSelect={trackAndChangeDurationType}
-                onRemove={() => { }}
+                onRemove={() => {}}
                 className={styles.durationType}
                 selectedOption={durationTypeOption}
               />
