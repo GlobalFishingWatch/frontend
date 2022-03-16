@@ -90,18 +90,6 @@
   flex: 1;
 }
 
-.editor svg g:hover {
-  cursor: pointer;
-}
-
-.editing svg g:hover {
-  cursor: grab;
-}
-
-.editing svg g:hover rect[data-type='editHandle'] {
-  cursor: pointer;
-}
-
 .buttonsContainer {
   margin-left: var(--space-L);
 }
