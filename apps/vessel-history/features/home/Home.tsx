@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -29,6 +29,7 @@ import { useSearchConnect, useSearchResultsConnect } from 'features/search/searc
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserData } from 'features/user/user.slice'
+import FeedbackModal from 'features/feedback/FeedbackModal'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -135,7 +136,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   }, [setSelectedVessels, vessels])
 
   const { email = '' } = useSelector(selectUserData) || { email: '' }
-
+  const userData = useSelector(selectUserData)
   const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
   const searchContext = useMemo(
@@ -191,108 +192,127 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     })
   }, [advancedSearch, query, vesselIds])
 
+  // const [modalHelpOpen, setModalHelpOpen] = useState(false)
+  const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
+
+  const onFeedbackClick = useCallback(() => {
+    if (userData) {
+      setModalFeedbackOpen(true)
+    }
+  }, [userData])
+
   return (
-    <div className={styles.homeContainer} data-testid="home">
-      <header>
-        <Logo className={styles.logo}></Logo>
-        <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
-        <IconButton
-          onClick={onSettingsClick}
-          type="default"
-          size="default"
-          icon="settings"
-        ></IconButton>
-        <LanguageToggle />
-      </header>
-      <div className={styles.search}>
-        <AdvancedSearch />
-        {!hasSearch && (
-          <div className={styles.content}>
-            <h2 className={styles.offlineTitle}>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
-            {offlineVessels.length > 0 ? (
-              <div className={styles.content}>
-                {offlineVessels.map((vessel, index) => (
-                  <VesselListItem
-                    key={index}
-                    index={index}
-                    vessel={vessel}
-                    saved={vessel.savedOn}
-                    onVesselClick={onOpenVesselProfile(vessel)}
-                    onDeleteClick={() => trackRemoveOffline(vessel)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className={styles.offlineAccessEmptyState}>
-                {t(
-                  'common.offlineAccessEmptyState',
-                  'The vessels you save for offline access will appear here.'
-                )}
-              </div>
-            )}
-          </div>
-        )}
-        {hasSearch && (
-          <Fragment>
-            <div className={styles.searchResults}>
-              {searching && offset === 0 && (
-                <SearchPlaceholder>
-                  <Spinner className={styles.loader}></Spinner>
-                </SearchPlaceholder>
-              )}
-              {(!searching || offset > 0) && vessels.length > 0 && (
+    <Fragment>
+      <div className={styles.homeContainer} data-testid="home">
+        <header>
+          <Logo className={styles.logo}></Logo>
+          <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
+          <IconButton
+            onClick={onSettingsClick}
+            type="default"
+            size="default"
+            icon="settings"
+          ></IconButton>
+          <IconButton
+            // className={cx(styles.tabContent, 'print-hidden')}
+            icon="feedback"
+            onClick={onFeedbackClick}
+            tooltip={t('common.feedback', 'Feedback')}
+            tooltipPlacement="right"
+          />
+          <LanguageToggle />
+        </header>
+        <div className={styles.search}>
+          <AdvancedSearch />
+          {!hasSearch && (
+            <div className={styles.content}>
+              <h2 className={styles.offlineTitle}>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
+              {offlineVessels.length > 0 ? (
                 <div className={styles.content}>
-                  {vessels.map((vessel: VesselSearch, index) => (
+                  {offlineVessels.map((vessel, index) => (
                     <VesselListItem
                       key={index}
-                      vessel={vessel}
                       index={index}
-                      onVesselClick={onVesselClick(index)}
-                      selected={selectedVessels.includes(index)}
+                      vessel={vessel}
+                      saved={vessel.savedOn}
+                      onVesselClick={onOpenVesselProfile(vessel)}
+                      onDeleteClick={() => trackRemoveOffline(vessel)}
                     />
                   ))}
-                  {selectedVessels.length > 0 && (
-                    <div className={styles.bottomActions}>
-                      {selectedVessels.length === 1 && (
-                        <Button className={styles.bottomActionsBtn} onClick={onSeeVesselClick}>
-                          {t('search.seeVessel', 'See Vessel')}
-                        </Button>
-                      )}
-                      {selectedVessels.length > 1 && (
-                        <Button className={styles.bottomActionsBtn} onClick={onMergeVesselClick}>
-                          {t('search.mergeSelectedVessels', 'Merge Selected Vessels')}
-                        </Button>
-                      )}
-                    </div>
+                </div>
+              ) : (
+                <div className={styles.offlineAccessEmptyState}>
+                  {t(
+                    'common.offlineAccessEmptyState',
+                    'The vessels you save for offline access will appear here.'
                   )}
                 </div>
               )}
-              {totalResults > 0 && !searching && vessels.length < totalResults && (
-                <div className={styles.listFooter}>
-                  <Button
-                    className={styles.loadMoreBtn}
-                    onClick={() => fetchResults(offset + RESULTS_PER_PAGE)}
-                  >
-                    {t('search.loadMore', 'LOAD MORE')}
-                  </Button>
-                </div>
-              )}
-              {searching && offset > 0 && (
-                <div className={styles.listFooter}>
-                  <Spinner className={styles.loader}></Spinner>
-                </div>
-              )}
-              {!searching && vessels.length >= 0 && (
-                <SearchNoResultsState
-                  contactUsLink={contactUsLink}
-                  onContactUsClick={onContactUsClick}
-                />
-              )}
             </div>
-          </Fragment>
-        )}
+          )}
+          {hasSearch && (
+            <Fragment>
+              <div className={styles.searchResults}>
+                {searching && offset === 0 && (
+                  <SearchPlaceholder>
+                    <Spinner className={styles.loader}></Spinner>
+                  </SearchPlaceholder>
+                )}
+                {(!searching || offset > 0) && vessels.length > 0 && (
+                  <div className={styles.content}>
+                    {vessels.map((vessel: VesselSearch, index) => (
+                      <VesselListItem
+                        key={index}
+                        vessel={vessel}
+                        index={index}
+                        onVesselClick={onVesselClick(index)}
+                        selected={selectedVessels.includes(index)}
+                      />
+                    ))}
+                    {selectedVessels.length > 0 && (
+                      <div className={styles.bottomActions}>
+                        {selectedVessels.length === 1 && (
+                          <Button className={styles.bottomActionsBtn} onClick={onSeeVesselClick}>
+                            {t('search.seeVessel', 'See Vessel')}
+                          </Button>
+                        )}
+                        {selectedVessels.length > 1 && (
+                          <Button className={styles.bottomActionsBtn} onClick={onMergeVesselClick}>
+                            {t('search.mergeSelectedVessels', 'Merge Selected Vessels')}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {totalResults > 0 && !searching && vessels.length < totalResults && (
+                  <div className={styles.listFooter}>
+                    <Button
+                      className={styles.loadMoreBtn}
+                      onClick={() => fetchResults(offset + RESULTS_PER_PAGE)}
+                    >
+                      {t('search.loadMore', 'LOAD MORE')}
+                    </Button>
+                  </div>
+                )}
+                {searching && offset > 0 && (
+                  <div className={styles.listFooter}>
+                    <Spinner className={styles.loader}></Spinner>
+                  </div>
+                )}
+                {!searching && vessels.length >= 0 && (
+                  <SearchNoResultsState
+                    contactUsLink={contactUsLink}
+                    onContactUsClick={onContactUsClick}
+                  />
+                )}
+              </div>
+            </Fragment>
+          )}
+        </div>
       </div>
-    </div>
+      <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} />
+    </Fragment>
   )
 }
 
