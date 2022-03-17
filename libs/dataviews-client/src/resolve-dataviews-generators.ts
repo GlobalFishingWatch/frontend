@@ -2,8 +2,6 @@ import { scaleLinear } from 'd3-scale'
 import { uniq } from 'lodash'
 import {
   Resource,
-  ResourceStatus,
-  TrackResourceData,
   DatasetTypes,
   EndpointId,
   DatasetStatus,

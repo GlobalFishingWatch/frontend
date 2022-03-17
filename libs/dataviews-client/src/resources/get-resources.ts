@@ -83,7 +83,7 @@ export const pickTrackResource = (
 
   loadedVesselResources.sort((resA, resB) => {
     // TODO abstract this using a generic priority field?
-    return resB.datasetConfig.metadata.zoom - resA.datasetConfig.metadata.zoom 
+    return resB.datasetConfig.metadata?.zoom - resA.datasetConfig.metadata?.zoom 
   })
 
   return loadedVesselResources?.[0]
