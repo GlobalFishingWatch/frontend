@@ -183,7 +183,7 @@ export const selectDataviewsResources = createSelector(
     selectWorkspaceStateProperty('timebarGraph'),
   ],
   (dataviewInstances, thinningConfig, timebarGraph) => {
-    return getResources(dataviewInstances || [], trackDatasetConfigsCallback(thinningConfig, timebarGraph))
+   return getResources(dataviewInstances || [], trackDatasetConfigsCallback(thinningConfig, timebarGraph))
 }
 )
 

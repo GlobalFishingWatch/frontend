@@ -15,30 +15,21 @@ export {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 
-let thinningConfigsCache: Record<number, ThinningConfig> = {}
-
 // DO NOT MOVE TO RESOURCES.SELECTORS, IT CREATES A CIRCULAR DEPENDENCY
 export const selectThinningConfig = createSelector(
   [(state) => isGuestUser(state), selectDebugOptions, selectUrlMapZoomQuery],
   (guestUser, { thinning }, currentZoom) => {
     if (!thinning) return null
-    let thinningConfig: ThinningConfig
+    let config: ThinningConfig
     let selectedZoom: number
     for (let i = 0; i < THINNING_LEVEL_ZOOMS.length; i++) {
       const zoom = THINNING_LEVEL_ZOOMS[i]
       if (currentZoom < zoom) break
-      thinningConfig = THINNING_LEVEL_BY_ZOOM[zoom][guestUser ? 'guest' : 'user']
+      config = THINNING_LEVEL_BY_ZOOM[zoom][guestUser ? 'guest' : 'user']
       selectedZoom = zoom
     }
 
-    if (selectedZoom && !thinningConfigsCache[selectedZoom]) {
-      thinningConfigsCache = {
-        ...thinningConfigsCache, 
-        [selectedZoom]: thinningConfig
-      }
-    }
-
-    return thinningConfigsCache
+    return { config, zoom: selectedZoom }
   }
 )
 

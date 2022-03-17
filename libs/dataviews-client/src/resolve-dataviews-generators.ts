@@ -35,6 +35,7 @@ import {
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
 } from './resolve-dataviews'
+import { pickTrackResource } from './resources'
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
@@ -113,28 +114,17 @@ export function getGeneratorConfig(
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
       }
-      // Try to retrieve resource if it exists
-      const trackType =
+      
+      const endpointType =
         dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
-          ? DatasetTypes.UserTracks
-          : DatasetTypes.Tracks
-      
-      
-      const trackResourcesQueries = resolveDataviewDatasetResources(dataview, trackType)
-      const highestThinningTrackResource = trackResourcesQueries.find(trackResource => {
-        const url = trackResource.url
-        const resource = resources?.[url]
-        if (resource?.status === ResourceStatus.Finished) {
-          return resource
-        }
-      })
+          ? EndpointId.UserTracks
+          : EndpointId.Tracks
 
-      const trackUrl = highestThinningTrackResource?.url
 
-      if (trackUrl && resources?.[trackUrl]) {
-        const resource = resources?.[trackUrl] as Resource<TrackResourceData>
-        generator.data = resource.data
-      }
+      const trackResource = pickTrackResource(dataview, endpointType, resources)
+
+
+      if (trackResource) generator.data = trackResource.data
 
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =

@@ -259,7 +259,7 @@ export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: s
   return vesselInWorkspace
 }
 
-export const trackDatasetConfigsCallback = (thinningConfigs: Record<number, ThinningConfig>, timebarGraph) => {
+export const trackDatasetConfigsCallback = (thinningConfig: { zoom: number, config: ThinningConfig }, timebarGraph) => {
   return ([info, track, ...events]) => {
 
   const query = [...(track.query || [])]
@@ -283,27 +283,20 @@ export const trackDatasetConfigsCallback = (thinningConfigs: Record<number, Thin
   // needed for vessels with no info datasets (zebraX)
   const vesselData = hasDatasetConfigVesselData(info)
 
-  const tracksWithThinning = Object.keys(thinningConfigs).map((thinningConfigZoom) => {
-    const thinningConfig = thinningConfigs[thinningConfigZoom]
-    const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-      id,
-      value,
-    }))
-    const trackAtZoom = {
-      ...track,
-      query: [...(track.query || []), ...thinningQuery],
-      metadata: {
-        zoom: parseInt(thinningConfigZoom)
-      }
+  const thinningQuery = Object.entries(thinningConfig.config).map(([id, value]) => ({
+    id,
+    value,
+  }))
+  const trackWithThinning = {
+    ...track,
+    query: [...(track.query || []), ...thinningQuery],
+    metadata: {
+      zoom: thinningConfig.zoom
     }
-    return trackAtZoom
-  })
-
-  // Highest zoom is prioritary
-  tracksWithThinning.sort((a, b) => b.metadata.zoom - a.metadata.zoom)
-
+  }
+  
   return [
-    ...tracksWithThinning,
+    trackWithThinning,
     ...events,
     ...(vesselData ? [info] : []),
     ...(trackGraph ? [trackGraph] : []),

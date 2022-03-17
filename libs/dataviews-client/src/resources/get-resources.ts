@@ -1,4 +1,4 @@
-import { DatasetTypes, DataviewDatasetConfig, EndpointId, Resource } from "@globalfishingwatch/api-types";
+import { DatasetTypes, DataviewDatasetConfig, DataviewDatasetConfigParam, EndpointId, Resource, ResourceStatus } from "@globalfishingwatch/api-types";
 import { GeneratorType } from "@globalfishingwatch/layer-composer";
 import { getDatasetConfigByDatasetType, getDatasetConfigsByDatasetType, UrlDataviewInstance } from "../resolve-dataviews";
 import { resolveEndpoint } from "../resolve-endpoint";
@@ -62,4 +62,29 @@ export const getResources = (
       ...otherDataviews
     ]
   }
+}
+
+export const pickTrackResource = (
+  dataview: UrlDataviewInstance,
+  endpointType: EndpointId,
+  resources?: Record<string, Resource>,
+) => {
+  if (!resources) return undefined
+  const datasetConfig = dataview.datasetsConfig?.find(dc => dc.endpoint === endpointType)
+  const vesselId = datasetConfig?.params?.find(
+    (p: DataviewDatasetConfigParam) => p.id === 'vesselId'
+  )?.value as string
+  if (!vesselId) return undefined
+  const loadedVesselResources = Object.values(resources)
+    .filter(resource => {
+      const vesselIdField = resource.datasetConfig.params.find(p => p.id === 'vesselId')
+      return resource.datasetConfig.endpoint === endpointType && vesselIdField?.value === vesselId && resource.status === ResourceStatus.Finished
+    })
+
+  loadedVesselResources.sort((resA, resB) => {
+    // TODO abstract this using a generic priority field?
+    return resB.datasetConfig.metadata.zoom - resA.datasetConfig.metadata.zoom 
+  })
+
+  return loadedVesselResources?.[0]
 }
