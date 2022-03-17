@@ -233,7 +233,7 @@ const MapWrapper = () => {
         return 'grab'
       }
       return 'pointer'
-    } else if (map.isMoving()) {
+    } else if (map?.isMoving()) {
       return 'grabbing'
     }
     return 'grab'
