@@ -67,7 +67,7 @@
     "redux-first-router-link": "2.1.1",
     "shpjs": "3.6.3",
     "simple-statistics": "7.7.0",
-    "typescript": "4.3.5",
+    "typescript": "4.6.2",
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
@@ -85,10 +85,10 @@
     "@types/node": "16.9.1",
     "@types/papaparse": "5.3.1",
     "@types/qs": "6.9.7",
-    "@types/react": "17.0.20",
-    "@types/react-dom": "17.0.9",
+    "@types/react": "17.0.40",
+    "@types/react-dom": "17.0.13",
     "@types/react-html-parser": "2.0.2",
-    "@types/react-redux": "7.1.20",
+    "@types/react-redux": "7.1.23",
     "@types/react-sticky-el": "1.0.3",
     "@types/recoilize": "0.8.0",
     "@types/redux-first-router": "2.1.8",
