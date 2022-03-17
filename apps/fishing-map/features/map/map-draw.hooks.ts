@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDrawMode, setDrawMode, DrawMode } from './map.slice'
 
 export const useMapDrawConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const drawMode = useSelector(selectDrawMode)
 
   const dispatchSetDrawMode = useCallback(

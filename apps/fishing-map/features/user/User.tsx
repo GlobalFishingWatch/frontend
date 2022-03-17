@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { DatasetCategory } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
@@ -10,6 +10,7 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './User.module.css'
 import { GUEST_USER_TYPE, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'
@@ -19,7 +20,7 @@ import UserDatasets from './UserDatasets'
 import UserInfo from './UserInfo'
 
 function User() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
   const { datasetModal, editingDatasetId } = useDatasetModalConnect()

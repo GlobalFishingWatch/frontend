@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import {
@@ -34,6 +34,7 @@ import {
 } from 'features/analysis/analysis.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -108,7 +109,7 @@ export const useGeneratorsConnect = () => {
 
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
@@ -294,7 +295,7 @@ export type TooltipEvent = {
 
 export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
   const highlightedEvent = useSelector(selectHighlightedEvent)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceDispatch = useCallback(
