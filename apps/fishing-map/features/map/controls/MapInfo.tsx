@@ -51,9 +51,7 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
   return (
     <div className={styles.info}>
       <div className={styles.flex}>
-        <div className={styles.scale}>
-          {zoom > 2 && <ScaleControl maxWidth={100} unit="nautical" />}
-        </div>
+        {zoom > 2 && <ScaleControl maxWidth={100} unit="nautical" />}
         {center && (
           <div className={cx('print-hidden', styles.mouseCoordinates)}>
             {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
