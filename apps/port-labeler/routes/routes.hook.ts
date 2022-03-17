@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import { parse } from 'qs'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'

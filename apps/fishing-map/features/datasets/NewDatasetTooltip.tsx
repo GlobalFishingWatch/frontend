@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
 import { isGuestUser } from 'features/user/user.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useAddDataviewFromDatasetToWorkspace, useAddDataset } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
@@ -23,7 +24,7 @@ export interface NewDatasetTooltipProps {
 
 function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps) {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const datasets = useSelector(selectUserDatasetsNotUsed(datasetCategory))
   const guestuser = useSelector(isGuestUser)

@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Spinner, Button } from '@globalfishingwatch/ui-components'
 import Search from 'features/search/Search'
 import {
@@ -19,6 +19,7 @@ import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { PRIVATE_SUFIX, SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -33,7 +34,7 @@ function WorkspaceError(): React.ReactElement {
   const guestUser = useSelector(isGuestUser)
   const userData = useSelector(selectUserData)
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const ErrorPlaceHolder = ({ title, children }: { title: string; children?: React.ReactNode }) => (
     <div className={styles.placeholder}>
@@ -109,7 +110,7 @@ function WorkspaceError(): React.ReactElement {
 }
 
 function Workspace() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const workspace = useSelector(selectWorkspace)

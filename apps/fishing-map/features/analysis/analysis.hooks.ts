@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
@@ -37,6 +37,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { Area, fetchAreaThunk, FetchAreaThunkParam } from 'features/areas/areas.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { filterByPolygon } from './analysis-geo.utils'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectAnalysisArea, selectShowTimeComparison } from './analysis.selectors'
@@ -162,7 +163,7 @@ export const useFilteredTimeSeries = () => {
 
 export const useAnalysisArea = () => {
   const map = useMapInstance()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const fitMapBounds = useMapFitBounds()
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)

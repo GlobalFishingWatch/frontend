@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
@@ -16,6 +16,7 @@ import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectAnalysisArea, selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   Range,
   changeSettings,
@@ -69,7 +70,7 @@ export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const fitMapBounds = useMapFitBounds()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const analysisAreaBounds = useSelector(selectAnalysisArea)?.bounds
 
   const onTimebarChange = useCallback(
@@ -105,7 +106,7 @@ export const useTimerangeConnect = () => {
 
 export const useDisableHighlightTimeConnect = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dispatchDisableHighlightedTime = useCallback(() => {
     if (highlightedTime !== undefined) {
@@ -124,7 +125,7 @@ export const useDisableHighlightTimeConnect = () => {
 
 export const useHighlightEventConnect = () => {
   const highlightedEvent = useSelector(selectHighlightedEvent)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvent = useCallback(
     (event: ApiEvent | undefined) => {
@@ -143,7 +144,7 @@ export const useHighlightEventConnect = () => {
 }
 
 export const useTimebarVisualisationConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
 
   const { dispatchQueryParams } = useLocationConnect()

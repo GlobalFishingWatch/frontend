@@ -6,13 +6,13 @@ import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwat
 import { Dataset } from '@globalfishingwatch/api-types'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { ResponseError } from '@globalfishingwatch/api-client'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   getBigQuery4WingsDataviewInstance,
   getBigQueryEventsDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   BigQueryVisualisation,
   createBigQueryDatasetThunk,
