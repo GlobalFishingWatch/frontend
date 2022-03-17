@@ -38,9 +38,9 @@ export const MIN_DATASET_NAME_LENGTH = 3
 function MapDraw() {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
-  const mapReady = useMapReady()
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
+  const [initialized, setInitialized] = useState<boolean>(false)
   const [selectedFeature, setSelectedFeature] = useState<DrawFeature | null>(null)
   const selectedFeatureId = selectedFeature?.id as string
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
@@ -54,6 +54,7 @@ function MapDraw() {
   const onCreate = useCallback((e: DrawCreateEvent) => {
     const currentFeature = e.features?.[0] as DrawFeature
     setSelectedFeature(currentFeature)
+    setInitialized(true)
   }, [])
 
   const onUpdate = useCallback((e: DrawUpdateEvent) => {
@@ -259,8 +260,7 @@ function MapDraw() {
     [createDataset, layerName]
   )
 
-  const features =
-    mapReady && drawControl?.getAll ? (drawControl.getAll()?.features as DrawFeature[]) : null
+  const features = initialized ? (drawControl.getAll()?.features as DrawFeature[]) : null
 
   const overLapInFeatures = useMemo(() => {
     if (features?.length) {
