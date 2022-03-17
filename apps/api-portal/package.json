@@ -27,6 +27,7 @@
     "react-ga": "3.3.0",
     "react-i18next": "11.14.3",
     "react-map-gl": "^5.3.17",
+    "react-query": "^3.34.16",
     "react-redux": "^7.2.6",
     "recoil": "0.5.2",
     "redux": "4.1.2",

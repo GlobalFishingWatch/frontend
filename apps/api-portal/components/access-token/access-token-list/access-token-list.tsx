@@ -2,9 +2,11 @@ import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { formatI18nDate } from 'lib/dates'
 import { useClipboardNotification } from 'app/clipboard.hooks'
-import { UserApplication } from '@globalfishingwatch/api-types'
+import { useAppSelector } from 'app/hooks'
+import { UserApplication, UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
-import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
+import { selectUserData } from 'features/user/user.slice'
+import useUserApplications from 'features/user-applications/user-applications'
 import styles from './access-token-list.module.css'
 
 /* eslint-disable-next-line */
@@ -16,9 +18,15 @@ type ActionMessage = {
 }
 
 export function AccessTokenList(props: AccessTokenListProps) {
-  const response = useGetUserApplications()
+  const user: UserData = useAppSelector(selectUserData)
+  const { isError, isLoading, data } = useUserApplications(user.id)
+
+  // TODO implement isAllowed and dispatchDelete
+  const isAllowed = true
+  const dispatchDelete = useCallback(() => {}, [])
+
+  // const response = useGetUserApplications()
   const [actionMessage, setActionMessage] = useState<ActionMessage>()
-  const { data, isError, isLoading, isAllowed, dispatchDelete } = response
   const [tokenVisibility, setTokenVisibility] = useState<{ [id: string]: boolean }>({})
 
   const defaultTokenVisibility = false
@@ -82,7 +90,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
           </thead>
           <tbody>
             {!isLoading &&
-              data.map((row, index) => (
+              data?.entries?.map((row, index) => (
                 <tr key={`row-token-${index}`}>
                   <td data-aria-label="Application Name" className={styles.cellApplication}>
                     {row.name}
