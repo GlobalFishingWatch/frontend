@@ -68,7 +68,8 @@
       "@globalfishingwatch/ui-components": [
         "../../libs/ui-components/src/index.ts"
       ]
-    }
+    },
+    "incremental": true
   },
   "include": [
     "**/*.ts",
