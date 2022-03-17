@@ -17,8 +17,9 @@ import {
   useLayerComposer,
   defaultStyleTransformations,
   useDebounce,
+  useMemoCompare,
 } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -80,6 +81,11 @@ const handleError = ({ error }: any) => {
     GFWAPI.refreshAPIToken()
   }
 }
+
+const layerComposer = new LayerComposer({
+  sprite:
+    'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-map',
+})
 
 const mapStyles = {
   width: '100%',
@@ -205,9 +211,8 @@ const MapWrapper = () => {
 
   const getCursor = useCallback(() => {
     if (isMapDrawing) {
-      // TODO update cursor here depending on the feature hover
-      // probably using queryRenderedFeature
-      return 'crosshair'
+      // updating cursor using css at style.css as the library sets classes depending on the state
+      return undefined
     } else if (hoveredTooltipEvent) {
       // Workaround to fix cluster events duplicated, only working for encounters and needs
       // TODO if wanted to scale it to other layers
@@ -260,6 +265,14 @@ const MapWrapper = () => {
     return isMapDrawing ? onSimpleMapHover : currentMapHoverCallback
   }, [currentMapHoverCallback, isMapDrawing, onSimpleMapHover])
 
+  const styleInteractiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
+  const interactiveLayerIds = useMemo(() => {
+    if (rulersEditing || isMapDrawing) {
+      return undefined
+    }
+    return styleInteractiveLayerIds
+  }, [isMapDrawing, rulersEditing, styleInteractiveLayerIds])
+
   return (
     <div className={styles.container}>
       {style && (
@@ -277,9 +290,7 @@ const MapWrapper = () => {
           transformRequest={transformRequest}
           onResize={setMapBounds}
           cursor={rulersEditing ? rulesCursor : getCursor()}
-          interactiveLayerIds={
-            rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
-          }
+          interactiveLayerIds={interactiveLayerIds}
           onClick={isMapDrawing ? undefined : currentClickCallback}
           onMouseMove={onMouseMove}
           onLoad={onLoadCallback}

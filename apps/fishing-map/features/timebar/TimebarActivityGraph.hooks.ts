@@ -8,7 +8,7 @@ import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/
 import { getTimeseriesFromDataviews } from 'features/timebar/TimebarActivityGraph.utils'
 import { filterByViewport } from 'features/map/map.utils'
 
-export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
+export const useStackedActivityDataview = (dataviews: UrlDataviewInstance[]) => {
   const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
   const [stackedActivity, setStackedActivity] = useState<Timeseries>()
   const isSmallScreen = useSmallScreen()

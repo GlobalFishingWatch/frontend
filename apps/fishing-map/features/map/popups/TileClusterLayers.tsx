@@ -56,7 +56,6 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()
   const vessels = useSelector(selectActiveTrackDataviews)
-  // const { eventManager } = useMapContext()
 
   useEffect(() => {
     if (!carrierLatest) {
