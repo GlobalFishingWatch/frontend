@@ -112,7 +112,7 @@ const MapWrapper = () => {
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
   const { cleanFeatureState } = useFeatureState(map)
-  const { onMapHoverWithRuler, onMapClickWithRuler, getRulersCursor, rulersEditing } = useRulers()
+  const { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing } = useRulers()
 
   const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
 
@@ -203,43 +203,41 @@ const MapWrapper = () => {
   const mapLoaded = useMapLoaded()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
-  const getCursor = useCallback(
-    (state) => {
-      // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
-      if (isMapDrawing) {
-        return 'crosshair'
-      } else if (state.isHovering && hoveredTooltipEvent) {
-        // Workaround to fix cluster events duplicated, only working for encounters and needs
-        // TODO if wanted to scale it to other layers
-        const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
-        const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
+  const getCursor = useCallback(() => {
+    if (isMapDrawing) {
+      // TODO update cursor here depending on the feature hover
+      // probably using queryRenderedFeature
+      return 'crosshair'
+    } else if (hoveredTooltipEvent) {
+      // Workaround to fix cluster events duplicated, only working for encounters and needs
+      // TODO if wanted to scale it to other layers
+      const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
+      const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
-        const clusterFeature = hoveredTooltipEvent.features.find(
-          (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
-        )
+      const clusterFeature = hoveredTooltipEvent.features.find(
+        (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
+      )
 
-        if (clusterFeature) {
-          if (!tilesClusterLoaded) {
-            return 'progress'
-          }
-          const { expansionZoom, lat, lng, lon } = clusterFeature.properties
-          const longitude = lng || lon
-          return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
+      if (clusterFeature) {
+        if (!tilesClusterLoaded) {
+          return 'progress'
         }
-        const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
-          (f) => f.category === DataviewCategory.Vessels
-        )
-        if (vesselFeatureEvents.length > 0) {
-          return 'grab'
-        }
-        return 'pointer'
-      } else if (state.isDragging) {
-        return 'grabbing'
+        const { expansionZoom, lat, lng, lon } = clusterFeature.properties
+        const longitude = lng || lon
+        return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
       }
-      return 'grab'
-    },
-    [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded]
-  )
+      const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
+        (f) => f.category === DataviewCategory.Vessels
+      )
+      if (vesselFeatureEvents.length > 0) {
+        return 'grab'
+      }
+      return 'pointer'
+    } else if (map.isMoving()) {
+      return 'grabbing'
+    }
+    return 'grab'
+  }, [isMapDrawing, hoveredTooltipEvent, map, dataviews, tilesClusterLoaded])
 
   useEffect(() => {
     if (map) {
@@ -278,7 +276,7 @@ const MapWrapper = () => {
           mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
           onResize={setMapBounds}
-          // cursor={rulersEditing ? getRulersCursor : getCursor}
+          cursor={rulersEditing ? rulesCursor : getCursor()}
           interactiveLayerIds={
             rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
           }

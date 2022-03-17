@@ -71,7 +71,7 @@ type MapState = {
 const initialState: MapState = {
   clicked: null,
   hovered: null,
-  isDrawing: true,
+  isDrawing: false,
   fishingStatus: AsyncReducerStatus.Idle,
   viirsStatus: AsyncReducerStatus.Idle,
   apiEventStatus: AsyncReducerStatus.Idle,
