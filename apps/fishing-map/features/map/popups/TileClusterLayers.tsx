@@ -65,7 +65,6 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
   }, [carrierLatest, dispatchFetchLatestCarrier])
 
   const onPinClick = (ev: React.MouseEvent<Element, MouseEvent>, vessel: ExtendedEventVessel) => {
-    // eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
     const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
     if (vesselInWorkspace) {
       deleteDataviewInstance(vesselInWorkspace.id)

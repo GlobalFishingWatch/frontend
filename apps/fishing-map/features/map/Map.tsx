@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { scaleLinear } from 'd3-scale'
 import { event as uaEvent } from 'react-ga'
 import { Map, MapboxStyle } from 'react-map-gl'
 import dynamic from 'next/dynamic'
@@ -59,7 +58,6 @@ import MapLegends from './MapLegends'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 
-const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => RequestParameters = (
   url: string,
@@ -284,7 +282,6 @@ const MapWrapper = () => {
           interactiveLayerIds={
             rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
           }
-          // clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={isMapDrawing ? undefined : currentClickCallback}
           onMouseMove={onMouseMove}
           onLoad={onLoadCallback}

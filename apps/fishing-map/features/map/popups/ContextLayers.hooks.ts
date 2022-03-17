@@ -41,8 +41,6 @@ export const useContextInteractions = () => {
 
   const onDownloadClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      // eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
       if (!feature.properties?.gfw_id) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
@@ -99,8 +97,6 @@ export const useContextInteractions = () => {
 
   const onAnalysisClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      // eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
       if (!feature.properties?.gfw_id) {
         console.warn('No gfw_id available in the feature to report', feature)
         return

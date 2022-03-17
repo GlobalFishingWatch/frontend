@@ -150,7 +150,6 @@ export default function useDrawControl(props: DrawControlProps) {
       map.on('draw.update', onUpdate)
       map.on('draw.modechange', onModeChange)
       map.on('draw.selectionchange', onSelectionChange)
-      window.mapap = map
       return new MapboxDraw({ ...props, styles })
     },
     ({ map }: { map: MapRef }) => {

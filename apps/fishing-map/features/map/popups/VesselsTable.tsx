@@ -149,8 +149,6 @@ function VesselsTable({
     ev: React.MouseEvent<Element, MouseEvent>,
     vessel: ExtendedFeatureVessel
   ) => {
-    // eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
     const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
     if (vesselInWorkspace) {
       deleteDataviewInstance(vesselInWorkspace.id)

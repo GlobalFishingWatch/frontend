@@ -36,7 +36,6 @@ interface MapLegendsProps {
 
 const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: MapLegendsProps) => {
   const { t } = useTranslation()
-  // const { containerRef } = useMapControl()
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const legendsTranslated = useLegendsTranslated(legends, portalled)
@@ -44,7 +43,7 @@ const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: M
   if (!legends || !legends.length) return null
 
   return (
-    <div /* ref={containerRef} */ className={cx({ [styles.legendContainer]: !portalled })}>
+    <div className={cx({ [styles.legendContainer]: !portalled })}>
       {timeCompareTimeDescription && !portalled && <div>{timeCompareTimeDescription}</div>}
       {legendsTranslated?.map((legend: LegendTranslated, i: number) => {
         if (portalled) {
