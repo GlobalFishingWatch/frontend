@@ -67,15 +67,14 @@
 }
 
 .popup {
-  background: var(--color-white);
   color: var(--color-primary-blue);
   box-shadow: var(--box-shadow);
   max-width: 40vw;
 }
 
-.popupContent {
+.popup .popupContent {
+  background: var(--color-white);
   padding: var(--space-S);
-  padding-bottom: 1px;
 }
 
 .popupButtons {

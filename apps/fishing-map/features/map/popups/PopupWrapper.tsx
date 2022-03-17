@@ -93,6 +93,7 @@ function PopupWrapper({
       onClose={onClose}
       className={cx(styles.popup, styles[type], className)}
       anchor={anchor}
+      maxWidth="600px"
     >
       {popupNeedsLoading ? (
         <div className={styles.loading}>

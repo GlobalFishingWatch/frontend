@@ -1,3 +1,4 @@
+import { Position } from 'geojson'
 import {
   Dataset,
   DatasetCategory,
@@ -5,6 +6,10 @@ import {
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { DrawFeature, DrawPointPosition } from './MapDraw'
+
+export const getCoordinatePrecisionRounded = (coordinate: Position): Position => {
+  return coordinate.map((points) => Math.round(points * 100000) / 100000)
+}
 
 export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
   return {

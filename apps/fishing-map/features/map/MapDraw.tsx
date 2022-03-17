@@ -19,10 +19,10 @@ import {
   useDatasetsAPI,
 } from 'features/datasets/datasets.hook'
 import useDrawControl from 'features/map/MapDrawControl'
-import { useMapReady } from 'features/map/map-state.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
 import styles from './MapDraw.module.css'
 import {
+  getCoordinatePrecisionRounded,
   getDrawDatasetDefinition,
   getFileWithFeatures,
   removeFeaturePointByIndex,
@@ -51,43 +51,46 @@ function MapDraw() {
   const { dispatchCreateDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
-  const onCreate = useCallback((e: DrawCreateEvent) => {
+  const onCreate = (e: DrawCreateEvent) => {
     const currentFeature = e.features?.[0] as DrawFeature
     setSelectedFeature(currentFeature)
     setInitialized(true)
-  }, [])
+  }
 
-  const onUpdate = useCallback((e: DrawUpdateEvent) => {
+  const onUpdate = (e: DrawUpdateEvent) => {
+    console.log('on update')
     const currentFeature = e.features?.[0] as DrawFeature
     setSelectedFeature(currentFeature)
-  }, [])
+  }
 
   // Goes directly to direct mode after crearing a polygon
-  const onModeChange = useCallback((e: DrawModeChageEvent) => {
+  const onModeChange = (e: DrawModeChageEvent) => {
     const feature = drawControl.getSelected().features[0]
     if (e.mode === 'simple_select' && feature) {
       setDrawingMode('direct_select', feature.id as string)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }
 
-  const onSelectionChange = useCallback((e: DrawSelectionChangeEvent) => {
-    if (e.features?.[0]) {
-      const selectedFeature = e.features?.[0] as DrawFeature
-      setSelectedFeature(selectedFeature)
+  const onSelectionChange = (e: DrawSelectionChangeEvent) => {
+    const feature = e.features?.[0] as DrawFeature
+    if (feature) {
+      setSelectedFeature(feature)
+      if (drawControl.getMode() === 'simple_select') {
+        setDrawingMode('direct_select', feature.id as string)
+      }
       const currentPoint = e.points?.[0]
       if (currentPoint) {
-        const pointIndex = selectedFeature.geometry.coordinates[0].findIndex(
+        const pointIndex = feature.geometry.coordinates[0].findIndex(
           ([lng, lat]) =>
             currentPoint.geometry.coordinates[0] === lng &&
             currentPoint.geometry.coordinates[1] === lat
         )
-        setSelectedPointIndex(pointIndex ?? null)
+        setSelectedPointIndex(pointIndex > -1 ? pointIndex : null)
       }
     } else {
       setSelectedFeature(null)
     }
-  }, [])
+  }
 
   const drawControl = useDrawControl({
     displayControlsDefault: false,
@@ -97,11 +100,12 @@ function MapDraw() {
     onModeChange: onModeChange,
     onSelectionChange: onSelectionChange,
   })
-
   const hasFeatureSelected = selectedFeature !== null
   const currentPointCoordinates =
-    selectedFeature && selectedPointIndex
-      ? selectedFeature.geometry.coordinates?.[0]?.[selectedPointIndex]
+    selectedFeature && selectedPointIndex !== null
+      ? getCoordinatePrecisionRounded(
+          selectedFeature.geometry.coordinates?.[0]?.[selectedPointIndex]
+        )
       : null
   const allowDeletePoint = selectedFeature?.geometry?.coordinates?.[0]?.length > 4
 
@@ -293,8 +297,9 @@ function MapDraw() {
           latitude={currentPointCoordinates[1]}
           longitude={currentPointCoordinates[0]}
           closeButton={true}
-          closeOnClick={true}
+          closeOnClick={false}
           onClose={resetEditHandler}
+          maxWidth="320px"
           className={cx(styles.popup)}
         >
           <div className={styles.popupContent}>
