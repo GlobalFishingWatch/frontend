@@ -19,12 +19,7 @@ import {
 import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
 import { Group } from '../../types'
-import {
-  API_ENDPOINTS,
-  DEFAULT_HEATMAP_INTERVALS,
-  HEATMAP_DEFAULT_MAX_ZOOM,
-  HEATMAP_MODE_COMBINATION,
-} from './config'
+import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, pickActiveTimeChunk } from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
@@ -118,7 +113,6 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   datasetsEnd: DateTime.now().toUTC().toISO(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
-  interval: DEFAULT_HEATMAP_INTERVALS,
   aggregationOperation: AggregationOperation.Sum,
   breaksMultiplier: VALUE_MULTIPLIER,
 }
@@ -166,7 +160,7 @@ class HeatmapAnimatedGenerator {
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource = config.interactive && INTERACTION_MODES.includes(config.mode)
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
-    const sublayerBreaks = breaks.map((sublayerBreaks) =>
+    const sublayerBreaks = breaks?.map((sublayerBreaks) =>
       sublayerBreaks.map((b) => b * config.breaksMultiplier)
     )
 
@@ -192,7 +186,7 @@ class HeatmapAnimatedGenerator {
         sublayerVisibility: visible,
         sublayerCount:
           config.mode === HeatmapAnimatedMode.TimeCompare ? 2 : config.sublayers.length,
-        sublayerBreaks,
+        ...(!config.dynamicBreaks && { sublayerBreaks }),
         interactive: interactiveSource,
       }
 
@@ -249,7 +243,7 @@ class HeatmapAnimatedGenerator {
     }
 
     if (SQUARE_GRID_MODES.includes(config.mode)) {
-      return getGriddedLayers(config, timeChunks)
+      return getGriddedLayers(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
       return getBlobLayer(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
@@ -280,11 +274,6 @@ class HeatmapAnimatedGenerator {
       sublayers: config.sublayers?.map((s) => ({ ...s, visible: getSubLayerVisible(s) })),
     }
 
-    // Remove 10days interval in TimeCompare mode
-    if (config.mode === HeatmapAnimatedMode.TimeCompare && Array.isArray(finalConfig.interval)) {
-      finalConfig.interval = finalConfig.interval.filter((i) => i !== '10days')
-    }
-
     if (!config.start || !config.end) {
       return {
         id: finalConfig.id,
@@ -293,13 +282,18 @@ class HeatmapAnimatedGenerator {
       }
     }
 
+    const availableIntervals = config.availableIntervals
+      ? [config.availableIntervals]
+      : config.sublayers.map((s) => s.availableIntervals)
+    const omitIntervals = config.mode === HeatmapAnimatedMode.TimeCompare ? ['month', '10days'] : []
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
       finalConfig.start,
       finalConfig.end,
       finalConfig.datasetsStart,
       finalConfig.datasetsEnd,
-      finalConfig.interval
+      availableIntervals,
+      omitIntervals
     )
 
     if (

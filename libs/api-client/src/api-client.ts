@@ -57,7 +57,7 @@ const processStatus = (response: Response): Promise<Response> => {
         authError = await response.text().then((text) => {
           try {
             const res = JSON.parse(text)
-            return res?.error || res?.message
+            return res?.message || res?.error
           } catch (e: any) {
             return response.statusText
           }
@@ -348,7 +348,10 @@ export class GFW_API_CLASS {
               throw e
             }
           }
-          return this._internalFetch(url, options, ++refreshRetries, waitLogin)
+          if (e.status !== 400) {
+            return this._internalFetch(url, options, ++refreshRetries, waitLogin)
+          }
+          throw e
         } else {
           if (this.debug) {
             if (refreshRetries >= this.maxRefreshRetries) {

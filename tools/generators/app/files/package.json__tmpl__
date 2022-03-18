@@ -15,7 +15,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "1.6.2",
+    "@reduxjs/toolkit": "1.8.0",
     "classnames": "2.3.1",
     "i18next": "21.6.0",
     "i18next-browser-languagedetector": "6.1.2",
@@ -29,14 +29,14 @@
     "react-i18next": "11.14.3",
     "react-map-gl": "^5.3.17",
     "react-redux": "^7.2.6",
-    "recoil": "0.5.2",
+    "recoil": "0.6.1",
     "redux": "4.1.2",
     "redux-first-router": "2.1.5",
     "redux-first-router-link": "2.1.1",
-    "typescript": "4.3.5"
+    "typescript": "4.6.2"
   },
   "devDependencies": {
-    "@globalfishingwatch/linting": "2.0.0",
+    "@globalfishingwatch/linting": "2.0.2",
     "@next/eslint-plugin-next": "12.0.3",
     "@testing-library/react": "12.1.0",
     "@testing-library/user-event": "13.2.1",
@@ -46,8 +46,8 @@
     "@types/qs": "6.9.7",
     "@types/react": "17.0.20",
     "@types/react-dom": "17.0.9",
-    "@types/react-redux": "7.1.20",
-    "@types/redux-first-router": "2.1.6",
+    "@types/react-redux": "7.1.23",
+    "@types/redux-first-router": "2.1.8",
     "@types/redux-first-router-link": "1.4.5",
     "@types/viewport-mercator-project": "6.1.2",
     "@typescript-eslint/eslint-plugin": "4.31.0",

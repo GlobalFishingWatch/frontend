@@ -13,6 +13,7 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
 
@@ -20,13 +21,31 @@ type SearchFiltersProps = {
   datasets: Dataset[]
   className?: string
 }
-const schemaFilterIds: SupportedDatasetSchema[] = ['fleet', 'origin', 'codMarinha', 'targetSpecies']
+const schemaFilterIds: SupportedDatasetSchema[] = [
+  'fleet',
+  'origin',
+  'geartype',
+  'codMarinha',
+  'targetSpecies',
+]
+
+const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDataview => {
+  return {
+    config: {
+      datasets: sources?.map(({ id }) => id),
+      filters: Object.fromEntries(
+        schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f.id)])
+      ),
+    },
+    datasets,
+  }
+}
 
 function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
-  const { flag, sources, activeAfterDate, activeBeforeDate } = searchFilters
+  const { flag, sources, lastTransmissionDate, firstTransmissionDate } = searchFilters
 
   const flagOptions = useMemo(getFlags, [])
   const sourceOptions = useMemo(() => {
@@ -39,29 +58,36 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   }, [datasets])
 
   useEffect(() => {
-    if (activeAfterDate === undefined) {
-      setSearchFilters({ activeAfterDate: start?.split('T')[0] })
+    if (lastTransmissionDate === undefined) {
+      setSearchFilters({ lastTransmissionDate: start?.split('T')[0] })
     }
-    if (activeBeforeDate === undefined) {
-      setSearchFilters({ activeBeforeDate: end?.split('T')[0] })
+    if (firstTransmissionDate === undefined) {
+      setSearchFilters({ firstTransmissionDate: end?.split('T')[0] })
     }
-  }, [activeAfterDate, activeBeforeDate, setSearchFilters, start, end])
+  }, [lastTransmissionDate, firstTransmissionDate, setSearchFilters, start, end])
 
-  const dataview = useMemo(
-    () =>
-      ({
-        config: {
-          datasets: sources?.map(({ id }) => id),
-          filters: Object.fromEntries(
-            schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f.id)])
-          ),
-        },
-        datasets,
-      } as SchemaFieldDataview),
-    [datasets, searchFilters, sources]
-  )
+  const dataview = useMemo(() => {
+    return getSearchDataview(datasets, searchFilters, sources)
+  }, [datasets, searchFilters, sources])
 
   const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
+
+  const onSourceSelect = (filter) => {
+    const newSources = [...(sources || []), filter]
+    setSearchFilters({ sources: newSources })
+    // Recalculates schemaFilters to validate a new source has valid selection
+    // when not valid we need to remove the filter from the search
+    const newDataview = getSearchDataview(datasets, searchFilters, newSources)
+    const newSchemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(newDataview, id))
+    const notCompatibleSchemaFilters = newSchemaFilters.flatMap(({ id, disabled }) => {
+      return disabled && searchFilters[id] !== undefined ? id : []
+    })
+    if (notCompatibleSchemaFilters.length) {
+      notCompatibleSchemaFilters.forEach((schema) => {
+        setSearchFilters({ [schema]: undefined })
+      })
+    }
+  }
 
   return (
     <div className={cx(className)}>
@@ -72,9 +98,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           options={sourceOptions}
           selectedOptions={sources}
           className={styles.row}
-          onSelect={(filter) => {
-            setSearchFilters({ sources: [...(sources || []), filter] })
-          }}
+          onSelect={onSourceSelect}
           onRemove={(filter, rest) => {
             setSearchFilters({ sources: rest })
           }}
@@ -84,15 +108,14 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
         />
       )}
       {schemaFilters.map((schemaFilter) => {
-        if (!schemaFilter.active) {
+        if (!showSchemaFilter(schemaFilter)) {
           return null
         }
-        const { id, tooltip, disabled, options, optionsSelected } = schemaFilter
+        const { id, disabled, options, optionsSelected } = schemaFilter
         return (
           <MultiSelect
             key={id}
             disabled={disabled}
-            disabledMsg={tooltip}
             label={t(`vessel.${id}` as any, id)}
             placeholder={getPlaceholderBySelections(optionsSelected)}
             options={options}
@@ -130,36 +153,36 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
       />
       <div className={styles.row}>
         <InputDate
-          value={activeAfterDate}
+          value={lastTransmissionDate}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
           onChange={(e) => {
-            if (e.target.value !== activeAfterDate) {
-              setSearchFilters({ activeAfterDate: e.target.value })
+            if (e.target.value !== lastTransmissionDate) {
+              setSearchFilters({ lastTransmissionDate: e.target.value })
             }
           }}
           onRemove={() => {
-            if (activeAfterDate !== '') {
-              setSearchFilters({ activeAfterDate: '' })
+            if (lastTransmissionDate !== '') {
+              setSearchFilters({ lastTransmissionDate: '' })
             }
           }}
         />
       </div>
       <div className={styles.row}>
         <InputDate
-          value={activeBeforeDate}
+          value={firstTransmissionDate}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
           onChange={(e) => {
-            if (e.target.value !== activeBeforeDate) {
-              setSearchFilters({ activeBeforeDate: e.target.value })
+            if (e.target.value !== firstTransmissionDate) {
+              setSearchFilters({ firstTransmissionDate: e.target.value })
             }
           }}
           onRemove={() => {
-            if (activeBeforeDate !== '') {
-              setSearchFilters({ activeBeforeDate: '' })
+            if (firstTransmissionDate !== '') {
+              setSearchFilters({ firstTransmissionDate: '' })
             }
           }}
         />

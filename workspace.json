@@ -13,6 +13,7 @@
     "layer-composer": "libs/layer-composer",
     "ocean-areas": "libs/ocean-areas",
     "pbf": "libs/pbf-decoders",
+    "port-labeler": "apps/port-labeler",
     "react-hooks": "libs/react-hooks",
     "tile-inspector": "apps/tile-inspector",
     "timebar": "libs/timebar",

@@ -32,7 +32,8 @@
       "@globalfishingwatch/react-hooks": ["../../libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.js"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"]
-    }
+    },
+    "incremental": true
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
   "exclude": ["node_modules"]

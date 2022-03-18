@@ -113,6 +113,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   tilesUrl: string
   /**
+   * Id for API dataset in case you need to fetch geometries by gfw_id
+   */
+  datasetId?: string
+  /**
    * Custom color ramp for filled layers
    */
   steps?: number[]
@@ -135,6 +139,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    * Id for the layers dictionary, see CONTEXT_LAYERS from /generators/context/context-layers
    */
   layer: ContextLayerType
+  /**
+   * Id for API dataset in case you need to fetch geometries by gfw_id
+   */
+  datasetId?: string
   /**
    * Contains the attribution to be displayed when the map is showing the layer.
    */
@@ -306,6 +314,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   group?: Group
   tilesAPI?: string
   breaksAPI?: string
+  dynamicBreaks?: boolean
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
@@ -313,9 +322,9 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   datasetsEnd?: string
   interactive?: boolean
   /**
-   * Defines a fixed or a supported list of intervals in an Array format
+   * Defines a supported list of intervals in an Array format
    */
-  interval?: Interval | Interval[]
+  availableIntervals?: Interval[]
   aggregationOperation?: AggregationOperation
   breaksMultiplier?: number
 }
@@ -409,6 +418,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   breaks?: number[]
   legend?: GeneratorLegend
   interactionType?: HeatmapAnimatedInteractionType
+  availableIntervals?: Interval[]
 }
 
 // ---- Heatmap Generator color ramps types

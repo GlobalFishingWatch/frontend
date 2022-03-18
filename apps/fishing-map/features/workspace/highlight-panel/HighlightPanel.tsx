@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useMapReady } from 'features/map/map-state.hooks'
 import TooltipContainer from '../shared/TooltipContainer'
 import HighlightConfig from './highlight-panel.content'
 import styles from './HighlightPanel.module.css'
@@ -17,32 +17,27 @@ export const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
 
 const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
   const { t, i18n } = useTranslation()
-  const map = useMapInstance()
+  const mapReady = useMapReady()
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
   const [dataviewIdDismissed, setDataviewIdDismissed] = useLocalStorage(HIGHLIGHT_POPUP_KEY, '')
   const matchDataviewInstance = HighlightConfig.dataviewInstanceId === dataviewInstanceId
 
-  const onMapLoaded = useCallback(() => {
-    if (matchDataviewInstance && dataviewIdDismissed !== HighlightConfig.dataviewInstanceId) {
-      if (ref.current?.scrollIntoView) {
-        ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
-      }
-      setVisible(true)
+  const setHighlightPanel = () => {
+    if (ref.current?.scrollIntoView) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
     }
-    map?.off('idle', onMapLoaded)
-  }, [map, dataviewIdDismissed, matchDataviewInstance])
+    setVisible(true)
+  }
+
+  const showHighlightPanel =
+    mapReady && matchDataviewInstance && dataviewIdDismissed !== HighlightConfig.dataviewInstanceId
 
   useEffect(() => {
-    if (map) {
-      map.on('idle', onMapLoaded)
+    if (showHighlightPanel) {
+      setHighlightPanel()
     }
-    return () => {
-      if (map) {
-        map.off('idle', onMapLoaded)
-      }
-    }
-  }, [map, onMapLoaded])
+  }, [showHighlightPanel])
 
   const onDismiss = () => {
     setVisible(false)

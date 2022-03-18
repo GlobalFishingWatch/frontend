@@ -2,16 +2,21 @@
   "fishing-map": {
     "cloudbuildTaskId": "ui-fishing-map-autodeploy",
     "auto": false,
-    "watch": ["apps/fishing-map/**/*"]
+    "watch": ["apps/fishing-map/**/*", "yarn.lock"]
   },
   "vessel-history": {
     "cloudbuildTaskId": "ui-vessel-viewer-autodeploy",
     "auto": false,
-    "watch": ["apps/vessel-history/**/*"]
+    "watch": ["apps/vessel-history/**/*", "yarn.lock"]
   },
   "api-portal": {
     "cloudbuildTaskId": "ui-api-portal-autodeploy",
     "auto": false,
-    "watch": ["apps/api-portal/**/*"]
+    "watch": ["apps/api-portal/**/*", "yarn.lock"]
+  },
+  "port-labeler": {
+    "cloudbuildTaskId": "ui-port-labeler-autodeploy",
+    "auto": false,
+    "watch": ["apps/port-labeler/**/*", "yarn.lock"]
   }
 }

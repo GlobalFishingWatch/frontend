@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { batch, useDispatch, useSelector } from 'react-redux'
+import { batch, useSelector } from 'react-redux'
 import { Button, Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
@@ -14,6 +14,7 @@ import InfoError from 'features/workspace/common/InfoError'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './User.module.css'
 import { selectUserDatasetsByCategory } from './user.selectors'
 
@@ -27,7 +28,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { dispatchDatasetModal, dispatchDatasetCategory, dispatchEditingDatasetId } =
     useDatasetModalConnect()
 

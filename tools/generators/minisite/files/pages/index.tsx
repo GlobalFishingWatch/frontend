@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import HeaderComponent from '../components/header/header'
-import APPLICATION_NAME from '../components/data/config'
+import { APPLICATION_NAME } from '../components/data/config'
 import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {

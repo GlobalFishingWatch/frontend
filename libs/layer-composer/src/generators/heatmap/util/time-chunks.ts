@@ -1,5 +1,5 @@
 import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
-import { DEFAULT_HEATMAP_INTERVALS } from '../config'
+import { intersection } from 'lodash'
 import { Interval } from '../types'
 import { getSourceId } from '.'
 
@@ -39,6 +39,8 @@ const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 const getVisibleStartFrame = (rawFrame: number) => {
   return Math.floor(rawFrame)
 }
+
+const INTERVAL_ORDER: Interval[] = ['hour', 'day', '10days', 'month']
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
@@ -95,14 +97,21 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     },
   },
   month: {
-    getRawFrame: (start: number) => {
+    getRawFrame: (start: number, POC = false) => {
+      if (POC) {
+        const dt = DateTime.fromMillis(start)
+        return dt.year * 12 + dt.month - 1
+      }
       return LuxonInterval.fromDateTimes(
         DateTime.fromMillis(0).toUTC(),
         DateTime.fromMillis(start).toUTC()
       ).toDuration('month').months
     },
     getDate: (frame: number) => {
-      const year = 1970 + Math.floor(frame / 12)
+      const yearOffset = Math.floor(frame / 12)
+      // TODO This logic only needed for PresenceBQ POC, we have to decide on an offset mechanism with monthly interval
+      const baseYear = yearOffset > 2000 ? 0 : 1970
+      const year = baseYear + yearOffset
       const month = frame % 12
       return new Date(Date.UTC(year, month, 1))
     },
@@ -112,24 +121,41 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
 /**
  * Returns the type of interval for a given delta in ms
  * @param delta delta in ms
+ * @param availableIntervals a set of availableIntervals (ie one for each sublayer)
+ * @param omitIntervals remove intervals for consideration (ie TimeCompare mode)
  */
 const getInterval = (
   deltaMs: number,
-  supportedIntervals: Interval[] = DEFAULT_HEATMAP_INTERVALS
+  availableIntervals: Interval[][],
+  omitIntervals: Interval[] = []
 ): Interval => {
-  const duration = Duration.fromMillis(deltaMs)
-  if (
-    CONFIG_BY_INTERVAL.day.isValid(duration) &&
-    (supportedIntervals.includes('day') || supportedIntervals.includes('hour'))
-  ) {
-    if (CONFIG_BY_INTERVAL.hour.isValid(duration) && supportedIntervals.includes('hour')) {
-      return 'hour'
-    }
+  // Get intervals that are common to all dataset (initial array provided to ensure order from smallest to largest)
+  const commonIntervals = intersection(INTERVAL_ORDER, ...availableIntervals)
+  const intervals = commonIntervals.filter((interval) => !omitIntervals.includes(interval))
+  if (!intervals.length) {
+    console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
     return 'day'
   }
-  // If interval is not valid on hour or day, fallback on biggest interval (assumed to be last item of supportedIntervals)
-  // Should be 10days, or day in the case of TimeCompare mode
-  return supportedIntervals[supportedIntervals.length - 1]
+
+  const duration = Duration.fromMillis(deltaMs)
+
+  const validIntervals = intervals.filter(interval => CONFIG_BY_INTERVAL[interval] && (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration)))
+  
+  let selectedInterval: Interval
+
+  // if only available intervals are 10days and month, favor month
+  if (validIntervals.includes('10days') && validIntervals.includes('month') && validIntervals.length === 2) {
+    selectedInterval = 'month'
+  } else {
+    // else, use smallest interval
+    selectedInterval = validIntervals[0]
+  }
+
+  if (!selectedInterval) {
+    console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
+    return 'day'
+  }
+  return selectedInterval
 }
 
 /**
@@ -227,14 +253,11 @@ export const getActiveTimeChunks = (
   activeEnd: string,
   datasetStart: string,
   datasetEnd: string,
-  interval?: Interval | Interval[]
+  availableIntervals: Interval[][],
+  omitIntervals: Interval[] = []
 ): TimeChunks => {
   const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
-
-  const finalInterval: Interval =
-    !interval || Array.isArray(interval)
-      ? getInterval(deltaMs, interval as Interval[])
-      : (interval as any)
+  const finalInterval = getInterval(deltaMs, availableIntervals, omitIntervals)
 
   const finalIntervalConfig = CONFIG_BY_INTERVAL[finalInterval]
   const visibleStartFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeStart))
@@ -272,7 +295,12 @@ export const getActiveTimeChunks = (
     timeChunks.activeChunkFrame = frame
     return timeChunks
   } else if (timeChunks.interval === 'month') {
-    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
+    const frame = toQuantizedFrame(
+      activeStart,
+      0,
+      timeChunks.interval,
+      baseId === 'mergedAnimatedHeatmap'
+    )
     const chunk: TimeChunk = {
       quantizeOffset: 0,
       id: 'heatmapchunk_month',
@@ -312,15 +340,23 @@ export const getActiveTimeChunks = (
   return timeChunks
 }
 
-const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interval) => {
+const toQuantizedFrame = (
+  date: string,
+  quantizeOffset: number,
+  interval: Interval,
+  POC = false
+) => {
   const config = CONFIG_BY_INTERVAL[interval]
-  // TODO Use Luxon to use UTC!!!!
-  const ms = new Date(date).getTime()
-  const frame = getVisibleStartFrame(config.getRawFrame(ms))
+  const ms = DateTime.fromISO(date).toUTC().toMillis()
+  const frame = getVisibleStartFrame(config.getRawFrame(ms, POC))
   return frame - quantizeOffset
 }
 
-export const frameToDate = (frame: number, quantizeOffset: number, interval: Interval) => {
+export const frameToDate = (
+  frame: number,
+  quantizeOffset: number,
+  interval: Interval,
+) => {
   const offsetedFrame = frame + quantizeOffset
   const config = CONFIG_BY_INTERVAL[interval]
   return config.getDate(offsetedFrame) as Date

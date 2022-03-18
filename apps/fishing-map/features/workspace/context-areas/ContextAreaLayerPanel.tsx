@@ -1,16 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
+import ReactHtmlParser from 'react-html-parser'
+import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
+import { Tooltip, ColorBarOption, Modal } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
+import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
-import { PRIVATE_SUFIX } from 'data/config'
+import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -23,11 +24,18 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
+const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa']
+
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
+  const onDataWarningModalClose = useCallback(() => {
+    setModalDataWarningOpen(false)
+  }, [setModalDataWarningOpen])
   const guestUser = useSelector(isGuestUser)
+  const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -111,6 +119,37 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           {isUserLayer && <Remove dataview={dataview} />}
         </div>
       </div>
+      {layerActive && DATAVIEWS_WARNING.includes(dataview?.id) && (
+        <div className={cx(styles.properties, styles.dataWarning)}>
+          <div>
+            {t(
+              `dataview.${dataview?.id}.dataWarning` as any,
+              'This platform uses a reference layer from an external source.'
+            )}
+          </div>
+          <div className={styles.dataWarningLinks}>
+            <button onClick={onAddNewClick}>{t('dataset.uploadYourOwn', 'Upload your own')}</button>{' '}
+            |{' '}
+            <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
+              {t('common.learnMore', 'Learn more')}
+            </button>
+            <Modal
+              appSelector={ROOT_DOM_ELEMENT}
+              title={title}
+              isOpen={modalDataWarningOpen}
+              onClose={onDataWarningModalClose}
+              contentClassName={styles.modalContent}
+            >
+              {ReactHtmlParser(
+                t(
+                  `dataview.${dataview?.id}.dataWarningDetail` as any,
+                  'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
+                )
+              )}
+            </Modal>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

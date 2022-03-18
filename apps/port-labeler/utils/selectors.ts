@@ -1,0 +1,9 @@
+import { createSelectorCreator, defaultMemoize } from 'reselect'
+import { isEqual } from 'lodash'
+
+/**
+ * Returns a deep equal selector creator to prevent selectors recalculation
+ * when input variables are objects thus not equal using the reference
+ * equality selector (===) that createSelector uses by default.
+ */
+export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual)

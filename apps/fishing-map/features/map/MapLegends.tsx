@@ -6,13 +6,14 @@ import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hoo
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
 import { useMapControl } from './map-context.hooks'
 import styles from './MapLegends.module.css'
 
 type AnyLegend = LegendLayer | LegendLayerBivariate
-type LegendTranslated = AnyLegend & { label: string }
+type LegendTranslated = AnyLegend & { category: DataviewCategory; label: string }
 
 const MapLegendWrapper: React.FC<{ legend: LegendTranslated }> = ({ legend }) => {
   const { t } = useTranslation()
@@ -20,6 +21,7 @@ const MapLegendWrapper: React.FC<{ legend: LegendTranslated }> = ({ legend }) =>
     <MapLegend
       layer={legend}
       className={styles.legend}
+      roundValues={legend.category !== DataviewCategory.Environment}
       currentValueClassName={styles.currentValue}
       labelComponent={
         legend.label.includes('²') ? (

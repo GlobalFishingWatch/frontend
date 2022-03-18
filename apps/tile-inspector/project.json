@@ -37,7 +37,7 @@
       "options": {
         "buildTarget": "tile-inspector:compile",
         "dev": true,
-        "port": 3003
+        "port": 3004
       },
       "configurations": {
         "production": {

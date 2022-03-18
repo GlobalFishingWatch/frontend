@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { Popup } from 'react-map-gl'
@@ -18,7 +18,6 @@ import {
   selectFishingInteractionStatus,
   selectViirsInteractionStatus,
 } from '../map.slice'
-import useViewport from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 import FishingTooltipRow from './FishingLayers'
 import PresenceTooltipRow from './PresenceLayers'
@@ -50,6 +49,14 @@ function PopupWrapper({
 }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
+  const [position, setPosition] = useState(
+    event
+      ? {
+          latitude: event?.latitude,
+          longitude: event?.longitude,
+        }
+      : null
+  )
 
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
@@ -59,18 +66,15 @@ function PopupWrapper({
     (s) => s === AsyncReducerStatus.Loading
   )
 
-  const { setMapCoordinates, viewport } = useViewport()
-
-  // Force-trigger a rerender of the map to avoid popup repositioning flash
+  // Force-trigger a rerender of the tooltip to avoid popup repositioning flash
   useEffect(() => {
-    setMapCoordinates({
-      ...viewport,
-      latitude: viewport.latitude + 0.00001,
-    })
+    if (type === 'click') {
+      setPosition({ latitude: event.latitude, longitude: event.longitude + 0.0000001 })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [popupNeedsLoading])
 
-  if (!event) return null
+  if (!event || !position) return null
 
   const visibleFeatures = event.features.filter((feature) => feature.visible)
   const featureByCategory = groupBy(
@@ -82,8 +86,8 @@ function PopupWrapper({
 
   return (
     <Popup
-      latitude={event.latitude}
-      longitude={event.longitude}
+      latitude={position.latitude}
+      longitude={position.longitude}
       closeButton={closeButton && !popupNeedsLoading}
       closeOnClick={closeOnClick}
       onClose={onClose}

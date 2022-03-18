@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import VesselsTable from 'features/map/popups/VesselsTable'
+import VesselsTable, { VesselDetectionTimestamps } from 'features/map/popups/VesselsTable'
 import styles from './Popup.module.css'
 
 type ViirsMatchTooltipRowProps = {
@@ -23,7 +23,9 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
       vessels: matchedVessels,
     },
   }
-  const notMatchedDetections = parseInt(feature.value) - matchedDetections
+  const notMatchedDetectionsCount = parseInt(feature.value) - matchedDetections
+  const notMatchedDetection = feature.vesselsInfo?.vessels?.find((v) => v.id === null)
+
   return (
     <div className={styles.popupSection}>
       <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
@@ -35,9 +37,12 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             {t([`common.${feature.temporalgrid?.unit}` as any, 'common.detection'], 'detections', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}{' '}
-            {showFeaturesDetails && (
+            {showFeaturesDetails && notMatchedDetectionsCount > 0 && (
               <Fragment>
-                (<I18nNumber number={notMatchedDetections} /> {t('vessel.unmatched', 'unmatched')})
+                (<I18nNumber number={notMatchedDetectionsCount} />{' '}
+                {t('vessel.unmatched', 'unmatched')}
+                {' - '}
+                <VesselDetectionTimestamps vessel={notMatchedDetection} />)
               </Fragment>
             )}
           </span>

@@ -1,5 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   SearchFilter,
   selectSearchFilters,
@@ -18,7 +19,7 @@ export const useSearchConnect = () => {
 
 export const useSearchFiltersConnect = () => {
   const searchFilters = useSelector(selectSearchFilters)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const setSearchFilters = useCallback(
     (filter: SearchFilter) => {

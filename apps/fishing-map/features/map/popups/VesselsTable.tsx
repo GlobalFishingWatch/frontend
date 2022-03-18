@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
 import { IconButton, Modal, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -26,7 +27,9 @@ import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datase
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { t } from 'features/i18n/i18n'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
@@ -48,6 +51,61 @@ export const getVesselTableTitle = (feature: TooltipEventFeature) => {
     ].join(' ')
   }
   return title
+}
+
+const getDetectionsTimestamps = (vessel: ExtendedFeatureVessel) => {
+  return vessel?.timestamp?.split(',').sort()
+}
+
+export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
+  const { setTimerange } = useTimerangeConnect()
+  const detectionsTimestamps = getDetectionsTimestamps(vessel)
+  const hasDetectionsTimestamps = detectionsTimestamps && detectionsTimestamps.length > 0
+  const hasMultipleDetectionsTimestamps = hasDetectionsTimestamps && detectionsTimestamps.length > 1
+
+  const start = hasDetectionsTimestamps
+    ? DateTime.fromISO(detectionsTimestamps[0], { zone: 'utc' }).startOf('day').toISO()
+    : ''
+
+  const end = hasDetectionsTimestamps
+    ? DateTime.fromISO(detectionsTimestamps[detectionsTimestamps.length - 1], {
+        zone: 'utc',
+      })
+        .endOf('day')
+        .toISO()
+    : ''
+
+  if (!hasDetectionsTimestamps) return null
+
+  return hasMultipleDetectionsTimestamps ? (
+    <Tooltip content={t('timebar.fitOnThisDates', 'Fit time range to these dates')}>
+      <button
+        className={styles.timestampBtn}
+        onClick={() => {
+          setTimerange({
+            start,
+            end,
+          })
+        }}
+      >
+        <TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />
+      </button>
+    </Tooltip>
+  ) : (
+    <Tooltip content={t('timebar.focusOnThisDay', 'Focus time range on this day')}>
+      <button
+        className={styles.timestampBtn}
+        onClick={() => {
+          setTimerange({
+            start,
+            end: DateTime.fromISO(start, { zone: 'utc' }).endOf('day').toISO(),
+          })
+        }}
+      >
+        <I18nDate date={start} />
+      </button>
+    </Tooltip>
+  )
 }
 
 function VesselsTable({
@@ -144,8 +202,9 @@ function VesselsTable({
               <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
               <th>{t('vessel.flag_short', 'iso3')}</th>
               <th>{t('vessel.gearType_short', 'gear')}</th>
-              <th>{t('vessel.source_short', 'source')}</th>
-              <th className={styles.vesselsTableHeaderRight}>
+              {/* Disabled for detections to allocate some space for timestamps interaction */}
+              {vesselProperty !== 'detections' && <th>{t('vessel.source_short', 'source')}</th>}
+              <th className={vesselProperty !== 'detections' ? styles.vesselsTableHeaderRight : ''}>
                 {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
                 {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
                 {feature.temporalgrid?.unit === 'detections' &&
@@ -168,6 +227,7 @@ function VesselsTable({
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
+              const detectionsTimestamps = getDetectionsTimestamps(vessel)
               return (
                 <tr key={i}>
                   {!pinTrackDisabled && (
@@ -197,11 +257,23 @@ function VesselsTable({
                     </Tooltip>
                   </td>
                   <td className={styles.columnSpace}>{vesselGearType}</td>
-                  <td className={styles.columnSpace}>
-                    {getDatasetLabel(vessel.infoDataset) || EMPTY_FIELD_PLACEHOLDER}
-                  </td>
-                  <td className={cx(styles.vesselsTableHour, styles.columnSpace)}>
-                    <I18nNumber number={vessel[vesselProperty]} />
+                  {vesselProperty !== 'detections' && (
+                    <td className={styles.columnSpace}>
+                      {getDatasetLabel(vessel.infoDataset) || EMPTY_FIELD_PLACEHOLDER}
+                    </td>
+                  )}
+                  <td
+                    className={cx(styles.columnSpace, {
+                      [styles.vesselsTableHour]: vesselProperty !== 'detections',
+                      [styles.largeColumn]: detectionsTimestamps?.length > 1,
+                    })}
+                  >
+                    <I18nNumber number={vessel[vesselProperty]} />{' '}
+                    {detectionsTimestamps?.lenth > 0 && (
+                      <Fragment>
+                        (<VesselDetectionTimestamps vessel={vessel} />)
+                      </Fragment>
+                    )}
                   </td>
                 </tr>
               )

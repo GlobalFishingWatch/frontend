@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import { parse } from 'qs'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
@@ -11,12 +11,13 @@ import {
   selectLocationType,
 } from 'routes/routes.selectors'
 // import { initialDispatch } from 'store'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 
 export const useReplaceLoginUrl = () => {
   const { redirectUrl, cleanRedirectUrl } = useLoginRedirect()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const locationPayload = useSelector(selectLocationPayload)
   const locationType = useSelector(selectLocationType)
 
@@ -49,7 +50,7 @@ export const useReplaceLoginUrl = () => {
 }
 
 export const useLocationConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const location = useSelector(selectCurrentLocation)
   const payload = useSelector(selectLocationPayload)
 

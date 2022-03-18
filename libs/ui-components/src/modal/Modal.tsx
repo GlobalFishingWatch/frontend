@@ -37,7 +37,10 @@ export function Modal(props: ModalProps) {
     shouldCloseOnEsc = false,
     children,
   } = props
-  const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
+  const appElement = useMemo(
+    () => (typeof window !== 'undefined' ? document.getElementById(appSelector) : null),
+    [appSelector]
+  )
   if (!appElement) {
     console.warn(`Invalid appSelector (${appSelector}) provided`)
     return null
