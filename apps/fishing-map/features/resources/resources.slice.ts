@@ -1,13 +1,19 @@
-import {  createSelector } from '@reduxjs/toolkit'
+import { createSelector } from '@reduxjs/toolkit'
+import { DateTime, Duration } from 'luxon'
+import { range } from 'lodash'
 import {
   ResourcesState as CommonResourcesState,
   resourcesSlice,
 } from '@globalfishingwatch/dataviews-client'
 import { ThinningConfig } from '@globalfishingwatch/api-types'
-import { THINNING_LEVEL_BY_ZOOM, THINNING_LEVEL_ZOOMS } from 'data/config'
+import { DEFAULT_WORKSPACE, THINNING_LEVEL_BY_ZOOM, THINNING_LEVEL_ZOOMS } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { isGuestUser } from 'features/user/user.slice'
-import { selectUrlMapZoomQuery } from 'routes/routes.selectors'
+import {
+  selectUrlEndQuery,
+  selectUrlMapZoomQuery,
+  selectUrlStartQuery,
+} from 'routes/routes.selectors'
 
 export {
   fetchResourceThunk,
@@ -16,7 +22,7 @@ export {
 } from '@globalfishingwatch/dataviews-client'
 
 // DO NOT MOVE TO RESOURCES.SELECTORS, IT CREATES A CIRCULAR DEPENDENCY
-export const selectThinningConfig = createSelector(
+export const selectTrackThinningConfig = createSelector(
   [(state) => isGuestUser(state), selectDebugOptions, selectUrlMapZoomQuery],
   (guestUser, { thinning }, currentZoom) => {
     if (!thinning) return null
@@ -30,6 +36,42 @@ export const selectThinningConfig = createSelector(
     }
 
     return { config, zoom: selectedZoom }
+  }
+)
+
+const AVAILABLE_START_YEAR = new Date(DEFAULT_WORKSPACE.availableStart).getFullYear()
+const AVAILABLE_END_YEAR = new Date(DEFAULT_WORKSPACE.availableEnd).getFullYear()
+const YEARS = range(AVAILABLE_START_YEAR, AVAILABLE_END_YEAR + 1)
+
+export const selectTrackChunksConfig = createSelector(
+  [selectUrlStartQuery, selectUrlEndQuery],
+  (start, end) => {
+    if (!start || !end) return null
+    const startDT = DateTime.fromISO(start).toUTC()
+    const endDT = DateTime.fromISO(end).toUTC()
+
+    const delta = Duration.fromMillis(+endDT - +startDT)
+
+    if (delta.as('years') > 2) return null
+
+    const bufferedStart = startDT.minus({ month: 1 })
+    const bufferedEnd = endDT.plus({ month: 1 })
+
+    const chunks = []
+
+    YEARS.forEach((year) => {
+      const yearStart = DateTime.fromObject({ year }, { zone: 'utc' })
+      const yearEnd = DateTime.fromObject({ year: year + 1 }, { zone: 'utc' })
+
+      if (+bufferedEnd > +yearStart && +bufferedStart < +yearEnd) {
+        chunks.push({
+          start: yearStart.toISO(),
+          end: yearEnd.toISO(),
+        })
+      }
+    })
+
+    return chunks
   }
 )
 

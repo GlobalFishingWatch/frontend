@@ -7,7 +7,6 @@ import {
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
-  ThinningConfig
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -22,8 +21,7 @@ import {
   VESSEL_PRESENCE_DATAVIEW_ID,
   TEMPLATE_POINTS_DATAVIEW_ID,
 } from 'data/workspaces'
-import { hasDatasetConfigVesselData, isPrivateDataset } from 'features/datasets/datasets.utils'
-import { TimebarGraphs } from 'types'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -257,49 +255,4 @@ export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: s
     return isVesselInEndpointParams ? v : undefined
   })
   return vesselInWorkspace
-}
-
-export const trackDatasetConfigsCallback = (thinningConfig: { zoom: number, config: ThinningConfig }, timebarGraph) => {
-  return ([info, track, ...events]) => {
-
-  const query = [...(track.query || [])]
-  const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
-  let trackGraph
-  if (timebarGraph !== TimebarGraphs.None) {
-    trackGraph = { ...track }
-    const fieldsQuery = {
-      id: 'fields',
-      value: timebarGraph,
-    }
-    if (fieldsQueryIndex > -1) {
-      query[fieldsQueryIndex] = fieldsQuery
-      trackGraph.query = query
-    } else {
-      trackGraph.query = [...query, fieldsQuery]
-    }
-  }
-
-  // Clean resources when mandatory vesselId is missing
-  // needed for vessels with no info datasets (zebraX)
-  const vesselData = hasDatasetConfigVesselData(info)
-
-  const thinningQuery = Object.entries(thinningConfig.config).map(([id, value]) => ({
-    id,
-    value,
-  }))
-  const trackWithThinning = {
-    ...track,
-    query: [...(track.query || []), ...thinningQuery],
-    metadata: {
-      zoom: thinningConfig.zoom
-    }
-  }
-  
-  return [
-    trackWithThinning,
-    ...events,
-    ...(vesselData ? [info] : []),
-    ...(trackGraph ? [trackGraph] : []),
-  ]
-}
 }

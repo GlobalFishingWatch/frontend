@@ -23,9 +23,9 @@ import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
-import { selectThinningConfig } from 'features/resources/resources.slice'
+import { selectTrackThinningConfig, selectTrackChunksConfig } from 'features/resources/resources.slice'
 import { RootState } from 'store'
-import { trackDatasetConfigsCallback } from './dataviews.utils'
+import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
@@ -179,11 +179,12 @@ export const selectAllDataviewInstancesResolved = createSelector(
 export const selectDataviewsResources = createSelector(
   [
     selectAllDataviewInstancesResolved,
-    selectThinningConfig,
+    selectTrackThinningConfig,
+    selectTrackChunksConfig,
     selectWorkspaceStateProperty('timebarGraph'),
   ],
-  (dataviewInstances, thinningConfig, timebarGraph) => {
-   return getResources(dataviewInstances || [], trackDatasetConfigsCallback(thinningConfig, timebarGraph))
+  (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
+   return getResources(dataviewInstances || [], trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph))
 }
 )
 

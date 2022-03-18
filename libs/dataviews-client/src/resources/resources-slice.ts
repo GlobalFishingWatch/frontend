@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
-import { Field, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+import {
+  Field,
+  mergeTrackChunks,
+  trackValueArrayToSegments,
+} from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   Resource,
@@ -34,7 +38,7 @@ export const fetchResourceThunk = createAsyncThunk(
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
-        resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
+      resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
         ? 'vessel'
         : 'json'
 
@@ -78,7 +82,34 @@ export const resourcesSlice = createSlice({
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
       const { url } = action.payload
-      state[url] = { status: ResourceStatus.Finished, ...action.payload }
+      const resource = { status: ResourceStatus.Finished, ...action.payload }
+      state[url] = resource
+
+      if (action.payload.datasetConfig.metadata?.chunkSetId) {
+        const thisChunkSetId = action.payload.datasetConfig.metadata?.chunkSetId
+        const chunks = Object.keys(state)
+          .map((k) => state[k])
+          .filter((resource) => resource.datasetConfig.metadata?.chunkSetId === thisChunkSetId)
+
+        if (
+          chunks.map((chunk) => chunk.status).every((status) => status === ResourceStatus.Finished)
+        ) {
+          const mergedData = mergeTrackChunks(chunks.map((chunk) => chunk.data) as any)
+
+          // TODO should we always use URL as key or is this ok?
+          state[thisChunkSetId] = {
+            ...resource,
+            data: mergedData,
+            datasetConfig: {
+              ...resource.datasetConfig,
+              metadata: {
+                ...resource.datasetConfig.metadata,
+                chunkSetMerged: true,
+              },
+            },
+          }
+        }
+      }
     })
     builder.addCase(fetchResourceThunk.rejected, (state, action) => {
       const { url } = action.meta.arg

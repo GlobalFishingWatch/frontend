@@ -112,15 +112,13 @@ export function getGeneratorConfig(
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
       }
-      
+
       const endpointType =
         dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
           ? EndpointId.UserTracks
           : EndpointId.Tracks
 
-
       const trackResource = pickTrackResource(dataview, endpointType, resources)
-
 
       if (trackResource) generator.data = trackResource.data
 

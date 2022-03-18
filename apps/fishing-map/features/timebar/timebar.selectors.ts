@@ -8,10 +8,12 @@ import {
   ResourceStatus,
   TrackResourceData,
   Vessel,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
+  pickTrackResource,
 } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
@@ -41,12 +43,14 @@ export const selectTracksData = createSelector(
       const timebarTrack = {
         color: dataview.config?.color || '',
       }
-      const { url } = resolveDataviewDatasetResource(dataview, [
-        DatasetTypes.Tracks,
-        DatasetTypes.UserTracks,
-      ])
-      if (!url) return timebarTrack
-      const trackResource = resources[url] as Resource<TrackResourceData>
+
+      const endpointType =
+        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+          ? EndpointId.UserTracks
+          : EndpointId.Tracks
+
+      const trackResource = pickTrackResource(dataview, endpointType, resources)
+
       if (!trackResource || trackResource.status === ResourceStatus.Loading) {
         return timebarTrack
       } else if (
@@ -56,7 +60,7 @@ export const selectTracksData = createSelector(
         return { ...timebarTrack, segments: [] }
       }
 
-      const segments = (trackResource.data as any)?.features
+      const segments: any = (trackResource.data as any)?.features
         ? geoJSONToSegments(trackResource.data as any)
         : trackResource.data || []
 
