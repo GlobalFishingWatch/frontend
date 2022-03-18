@@ -1,5 +1,5 @@
 import { stringify } from 'qs'
-import { useMutation, useQuery } from 'react-query'
+import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { UserApplication } from '@globalfishingwatch/api-types'
 
@@ -37,6 +37,15 @@ async function deleteUserApplication(id: number) {
   return { ...userApplication, id }
 }
 
-export const useDeleteUserApplication = () => useMutation(deleteUserApplication)
+export const useDeleteUserApplication = (userId) => {
+  const url = `/v2/auth/user-applications?user-id=${userId}`
+
+  const queryClient = useQueryClient()
+  return useMutation(deleteUserApplication, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(url)
+    },
+  })
+}
 
 export default useUserApplications

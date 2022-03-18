@@ -6,7 +6,9 @@ import { useAppSelector } from 'app/hooks'
 import { UserApplication, UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { selectUserData } from 'features/user/user.slice'
-import useUserApplications from 'features/user-applications/user-applications'
+import useUserApplications, {
+  useDeleteUserApplication,
+} from 'features/user-applications/user-applications'
 import styles from './access-token-list.module.css'
 
 /* eslint-disable-next-line */
@@ -19,12 +21,10 @@ type ActionMessage = {
 
 export function AccessTokenList(props: AccessTokenListProps) {
   const user: UserData = useAppSelector(selectUserData)
-  const { isError, isLoading, data } = useUserApplications(user.id)
+  const { isError, isLoading, data, refetch } = useUserApplications(user.id)
+  const deleteUserApplication = useDeleteUserApplication()
 
-  // TODO implement isAllowed and dispatchDelete
   const isAllowed = true
-  const dispatchDelete = useCallback(() => {}, [])
-
   // const response = useGetUserApplications()
   const [actionMessage, setActionMessage] = useState<ActionMessage>()
   const [tokenVisibility, setTokenVisibility] = useState<{ [id: string]: boolean }>({})
@@ -52,17 +52,21 @@ export function AccessTokenList(props: AccessTokenListProps) {
         )
       )
         return
-      const response = await dispatchDelete({ id })
-      if (response.payload?.error) {
+
+      try {
+        const response = await deleteUserApplication.mutate(id)
+        console.log(response)
+        // const refetchResponse = await refetch({})
+        // console.log(refetchResponse)
+        setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
+      } catch (e) {
         setActionMessage({
           type: 'error',
           message: 'There was a problem deleting the token.',
         })
-      } else {
-        setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
       }
     },
-    [dispatchDelete]
+    [deleteUserApplication]
   )
   const clearActionMessage = useCallback(() => {
     return setActionMessage(undefined)
