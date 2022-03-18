@@ -1,23 +1,25 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { AsyncReducerStatus } from 'lib/async-slice'
+import { AsyncError, AsyncReducerStatus } from 'lib/async-slice'
 import {
   GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
-import { UserData } from '@globalfishingwatch/api-types'
+import { UserApiAdditionalInformation, UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { AppState } from '../../app/store'
 
 interface UserState {
   logged: boolean
   status: AsyncReducerStatus
+  updateStatus: AsyncReducerStatus
   data: UserData | null
 }
 
 const initialState: UserState = {
   logged: false,
   status: AsyncReducerStatus.Idle,
+  updateStatus: AsyncReducerStatus.Idle,
   data: null,
 }
 
@@ -48,6 +50,29 @@ export const fetchUserThunk = createAsyncThunk(
       return await GFWAPI.login({ accessToken })
     } catch (e: any) {
       return await fetchGuestUser()
+    }
+  }
+)
+
+export const updateUserAdditionaInformationThunk = createAsyncThunk<
+  UserData,
+  UserApiAdditionalInformation,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'user/update',
+  async (userAdditionalInformation: UserApiAdditionalInformation, { rejectWithValue }) => {
+    try {
+      const data = { ...userAdditionalInformation }
+      Object.keys(data).forEach((key) => data[key] === null && delete data[key])
+      const result = await GFWAPI.fetch(`/v2/auth/me`, {
+        method: 'PATCH',
+        body: data as any,
+      })
+      return (result ? result : data) as any
+    } catch (e: any) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
 )
@@ -86,11 +111,24 @@ const userSlice = createSlice({
       state.logged = false
       state.data = null
     })
+
+    builder.addCase(updateUserAdditionaInformationThunk.pending, (state) => {
+      state.updateStatus = AsyncReducerStatus.LoadingUpdate
+    })
+    builder.addCase(updateUserAdditionaInformationThunk.fulfilled, (state, action) => {
+      state.updateStatus = AsyncReducerStatus.Finished
+      state.logged = true
+      state.data = { ...state.data, ...action.payload }
+    })
+    builder.addCase(updateUserAdditionaInformationThunk.rejected, (state) => {
+      state.updateStatus = AsyncReducerStatus.Error
+    })
   },
 })
 
 export const selectUserData = (state: AppState) => state.user.data
 export const selectUserStatus = (state: AppState) => state.user.status
+export const selectUserUpdateStatus = (state: AppState) => state.user.updateStatus
 export const selectUserLogged = (state: AppState) => state.user.logged
 export const isGFWUser = (state: AppState) => state.user.data?.groups.includes(GFW_GROUP_ID)
 

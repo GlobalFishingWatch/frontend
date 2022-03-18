@@ -1,38 +1,26 @@
-import { useCallback, useState, Fragment } from 'react'
+import { useCallback, Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { useCreateUserApplications } from 'features/user-applications/user-applications.hooks'
-import { UserApplicationCreateArguments } from 'features/user-applications/user-applications.slice'
 import styles from './access-token-create.module.css'
 
 /* eslint-disable-next-line */
 export interface AccessTokenCreateProps {}
 
-const emptyToken: UserApplicationCreateArguments = {
-  description: '',
-  intendedUse: 'non-commercial',
-  name: '',
-  termsAccepted: false,
-  userId: null,
-}
-
 export function AccessTokenCreate(props: AccessTokenCreateProps) {
-  const { isAllowed, dispatchCreate, isSaving, isError } = useCreateUserApplications()
-
-  const [token, setToken] = useState<UserApplicationCreateArguments>(emptyToken)
+  const { error, isAllowed, dispatchCreate, isSaving, isError, token, setToken, valid } =
+    useCreateUserApplications()
 
   const create = useCallback(async () => {
     const response = await dispatchCreate({
       ...token,
-      termsAccepted: true,
-      intendedUse: 'non-commercial',
     })
     if (response.error) {
       console.error(response.error)
-    } else {
-      setToken(emptyToken)
     }
   }, [dispatchCreate, token])
+
+  const validationMessage = useMemo(() => Object.values(error).map((e) => <p>{e}</p>), [error])
 
   return (
     <div className={styles.container}>
@@ -43,7 +31,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
             <div className={cx([styles.field, styles.applicationName])}>
               <InputText
                 id="application_name"
-                label="Application Name"
+                label="Application Name (*)"
                 type={'text'}
                 maxLength={100}
                 inputSize={'small'}
@@ -54,7 +42,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
             </div>
             <div className={cx([styles.field, styles.fieldsColumn])}>
               <label className={styles.label} htmlFor="new-token-description">
-                Description
+                Description (*)
               </label>
               <textarea
                 id="new-token-description"
@@ -64,12 +52,10 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
               />
               <Button
                 className={styles.createBtn}
-                disabled={!isAllowed}
+                disabled={!valid}
                 onClick={create}
                 loading={isSaving}
-                tooltip={
-                  isAllowed ? 'Create New Token' : 'Tokens creation is not allowed at this moment'
-                }
+                tooltip={valid ? 'Create New Token' : validationMessage}
               >
                 Create New Token
               </Button>

@@ -292,7 +292,12 @@ export class GFW_API_CLASS {
               case 'default':
                 return res
               case 'json':
-                return parseJSON(res)
+                return parseJSON(res).catch((e) => {
+                  // When an error occurs while parsing and
+                  // http response is no content, returns an
+                  // empty response instead of an raising error
+                  if (res.status === 204) return
+                })
               case 'blob':
                 return res.blob()
               case 'text':

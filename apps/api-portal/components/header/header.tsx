@@ -11,7 +11,10 @@ interface HeaderProps {
   logout?: () => void
 }
 export function Header({ title = '', user, logout }: HeaderProps) {
-  const userInitials = [user?.firstName.slice(0, 1), user?.lastName.slice(0, 1)].join('')
+  const userInitials = [
+    (user?.firstName && user?.firstName?.slice(0, 1)) || '',
+    (user?.lastName && user?.lastName?.slice(0, 1)) || '',
+  ].join('')
   const userMenuItem: MenuItem = user && {
     className: styles.userMenuItem,
     label: (
