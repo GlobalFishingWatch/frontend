@@ -32,6 +32,7 @@ export const MPA_RESTRICTED_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 100 
 export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 export const HIGH_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 97 : 174
+export const GRATICULES_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 246 : undefined
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
