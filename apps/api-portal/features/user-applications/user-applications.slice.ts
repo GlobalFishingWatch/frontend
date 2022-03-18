@@ -156,7 +156,12 @@ export const selectUserApplicationsStatus = (state: AppState) => state.userAppli
 
 export const selectUserApplicationsRequiredInfoCompleted = createSelector(
   [selectUserData],
-  (user) => user && user.intendedUse && user.whoEndUsers && user.problemToResolve && !!user.apiTerms
+  (user) =>
+    !!user &&
+    user?.intendedUse !== null &&
+    user?.whoEndUsers !== null &&
+    user?.problemToResolve !== null &&
+    user?.apiTerms !== null
 )
 
 export const userApplicationsEntityAdapter = entityAdapter
