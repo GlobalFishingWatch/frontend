@@ -360,6 +360,7 @@ export enum ContextLayerType {
   MPARestricted = 'mpa-restricted',
   TunaRfmo = 'tuna-rfmo',
   WPPNRI = 'wpp-nri',
+  Graticules = 'graticules',
 }
 
 export type RawEvent = {
