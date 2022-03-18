@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   Vessel,
@@ -30,6 +30,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
+import { useAppDispatch } from 'features/app/app.hooks'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -43,7 +44,7 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const { url: trackUrl, dataset: trackDataset } = resolveDataviewDatasetResource(

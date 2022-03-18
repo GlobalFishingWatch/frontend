@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -14,6 +14,7 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -39,7 +40,7 @@ function ActivityLayerPanel({
   onToggle,
 }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
 
   const { deleteDataviewInstance } = useDataviewInstancesConnect()

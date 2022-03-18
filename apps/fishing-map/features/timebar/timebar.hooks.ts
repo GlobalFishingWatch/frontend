@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
@@ -13,6 +13,10 @@ import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import { selectAnalysisArea, selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   Range,
   changeSettings,
@@ -26,10 +30,10 @@ import {
 export const TimeRangeAtom = atom<Range | null>({
   key: 'timerange',
   default: null,
-  effects_UNSTABLE: [
+  effects: [
     ({ trigger, setSelf, onSet }) => {
       const redirectUrl =
-        typeof window !== undefined ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
+        typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
       const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
 
       if (trigger === 'get') {
@@ -64,7 +68,10 @@ export const TimeRangeAtom = atom<Range | null>({
 
 export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
-  const dispatch = useDispatch()
+  const isAnalyzing = useSelector(selectIsAnalyzing)
+  const fitMapBounds = useMapFitBounds()
+  const dispatch = useAppDispatch()
+  const analysisAreaBounds = useSelector(selectAnalysisArea)?.bounds
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
@@ -72,8 +79,19 @@ export const useTimerangeConnect = () => {
         dispatch(setHintDismissed('changingTheTimeRange'))
       }
       setTimerange({ start, end })
+      if (isAnalyzing && analysisAreaBounds) {
+        fitMapBounds(analysisAreaBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+      }
     },
-    [dispatch, setTimerange, timerange?.end, timerange?.start]
+    [
+      analysisAreaBounds,
+      dispatch,
+      fitMapBounds,
+      isAnalyzing,
+      setTimerange,
+      timerange?.end,
+      timerange?.start,
+    ]
   )
   return useMemo(() => {
     return {
@@ -88,7 +106,7 @@ export const useTimerangeConnect = () => {
 
 export const useDisableHighlightTimeConnect = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dispatchDisableHighlightedTime = useCallback(() => {
     if (highlightedTime !== undefined) {
@@ -107,7 +125,7 @@ export const useDisableHighlightTimeConnect = () => {
 
 export const useHighlightEventConnect = () => {
   const highlightedEvent = useSelector(selectHighlightedEvent)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvent = useCallback(
     (event: ApiEvent | undefined) => {
@@ -126,7 +144,7 @@ export const useHighlightEventConnect = () => {
 }
 
 export const useTimebarVisualisationConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
 
   const { dispatchQueryParams } = useLocationConnect()

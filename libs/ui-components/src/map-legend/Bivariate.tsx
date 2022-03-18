@@ -169,7 +169,7 @@ export function BivariateLegend({
                         return (
                           <text key={value}>
                             <tspan x={x} y={y}>
-                              {formatLegendValue(roundedValue)}
+                              {formatLegendValue({ number: roundedValue })}
                             </tspan>
                           </text>
                         )

@@ -1,0 +1,126 @@
+.container {
+  position: relative;
+  height: var(--size-M);
+  display: flex;
+  line-height: var(--size-M);
+}
+
+.noBorder input {
+  border: none;
+}
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.labelIconWarning {
+  margin: 0 0.9rem;
+}
+
+.placeholderShown {
+  color: var(--color-secondary-blue);
+}
+
+.isOpen {
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  z-index: 1100;
+}
+
+.placeholderContainer {
+  height: 100%;
+  cursor: pointer;
+  flex: 1;
+  padding: 0 var(--space-XS);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buttonsContainer {
+  display: flex;
+  align-items: center;
+  margin-right: var(--space-XS);
+}
+
+.optionsContainer {
+  width: 100%;
+  position: absolute !important;
+
+  /* as needs to overwrite default FixedSizeList behaviour */
+  top: var(--size-M);
+  left: 0;
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  max-height: 24rem;
+  overflow: auto;
+  z-index: 1000;
+}
+
+.optionsContainer.bottom {
+  top: var(--size-M);
+}
+
+.optionsContainer.top {
+  bottom: var(--size-M);
+  top: auto;
+}
+
+.optionItem {
+  color: var(--color-secondary-blue);
+  line-height: 2rem;
+  padding: var(--space-S);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.optionItem:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.highlight {
+  color: var(--color-primary-blue);
+  background-color: var(--color-terthiary-blue);
+}
+
+.selected {
+  background-color: var(--color-terthiary-blue);
+}
+
+.notAllowed {
+  cursor: not-allowed;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.selectedDot,
+.dot {
+  height: 13px;
+  width: 13px;
+  content: ' ';
+  border: 1px solid rgba(22, 63, 137, 0.15);
+  position: absolute;
+  top: calc(50% - 7.5px);
+  right: 34px;
+  border-radius: 50%;
+}
+
+.dot {
+  right: 10px;
+}
+
+.actionItem {
+  text-align: center;
+  flex-direction: column;
+}
+
+.actionItem::after {
+  display: none;
+}

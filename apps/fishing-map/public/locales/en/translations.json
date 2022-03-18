@@ -15,6 +15,7 @@
     "download": "Download report",
     "downloadLogin": "Register and login to download reports (free, 2 minutes)",
     "empty": "Your selected datasets will appear here",
+    "error": "There was a problem loading the data, please try refreshing the page",
     "errorMessage": "Something went wrong",
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
     "errorTimeComparisonDataviews": "At least one activity layer must be enabled",
@@ -23,7 +24,8 @@
     "experimental": "Experimental",
     "filteredBy": "filtered by",
     "noData": "No data available",
-    "onlyAISAllowed": "Only AIS datasets are allowed to download",
+    "noDataByArea": "No data available for the selected area",
+    "onlyAISAllowed": "This data is not currently available to download",
     "periodComparison": "period comparison",
     "periodComparison1st": "baseline start",
     "periodComparison2nd": "comparison start",
@@ -32,6 +34,23 @@
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
     "title": "Analysis",
     "vesselFlags": "for vessels flagged by"
+  },
+  "bigQuery": {
+    "aggregateAvg": "Average",
+    "aggregateSum": "Sum",
+    "aggregationMode": "Aggregation mode *",
+    "create": "Create",
+    "query": "Query",
+    "queryError": "There is an error in the query",
+    "runCost": "This query will move:",
+    "runCostCheck": "Check creation cost",
+    "selectVisualisation": "Select a visualisation mode first",
+    "validationError": "Query, name, visualisation mode, aggregation mode and checking creation cost are required",
+    "visualiationMode": "Visualisation mode",
+    "visualisationActivity": "Activity (heatmap)",
+    "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
+    "visualisationEvents": "Events (clusters)",
+    "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
   },
   "common": {
     "active_after": "Active after",
@@ -47,12 +66,15 @@
     "context_area_other": "Reference layers",
     "copiedToClipboard": "The link to share this workspace has been copied to your clipboard.",
     "country_other": "countries",
+    "date": "Date",
+    "date_one": "Date",
+    "date_other": "Dates",
     "dateRange": "between {{start}} and {{end}}",
     "days": "Day",
     "days_one": "Day",
     "days_other": "days",
     "description": "Description",
-    "detection": "Detection",
+    "detection": "Detections",
     "detection_one": "Detection",
     "detection_other": "Detections",
     "dismiss": "Dismiss",
@@ -124,8 +146,8 @@
     "importing": "Dataset is being imported",
     "individualIdField": "Individual ID field",
     "latitudeNameField": "Latitude field",
-    "longitudeNameField": "Longitude field",
     "login": "This is a private dataset, login to see it",
+    "longitudeNameField": "Longitude field",
     "new": "New dataset",
     "notUploadedYet": "No reference layers uploaded yet.",
     "notUploadedYetEnvironment": "No environment layers uploaded yet",
@@ -147,7 +169,18 @@
     "uploadLogin": "Register and <1>login</1> to upload datasets (free, 2 minutes)",
     "uploadNewContext": "Upload new reference layer",
     "uploadNewEnviroment": "Upload new environment dataset",
-    "uploadPublic": "Allow other users to see this dataset when you share a workspace"
+    "uploadPublic": "Allow other users to see this dataset when you share a workspace",
+    "uploadYourOwn": "Upload your own"
+  },
+  "dataview": {
+    "context-layer-eez": {
+      "dataWarning": "This platform uses EEZ reference layers from Marine Regions",
+      "dataWarningDetail": "This platform uses reference layers (shapefiles) from Marine Regions for exclusive economic zones and boundaries. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.marineregions.org'>www.marineregions.org</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+    },
+    "context-layer-mpa": {
+      "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
+      "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+    }
   },
   "download": {
     "activity": "Activity",
@@ -291,6 +324,8 @@
     "qf": "Quality signal",
     "radiance": "Radiance",
     "remove": "Remove layer",
+    "removePoint": "Remove point",
+    "removePointNotAllowed": "Geometry needs at least 3 points",
     "seeDescription": "Click to see layer description",
     "selectPolygonToRemove": "Select the polygon to remove",
     "source": "Source",
@@ -344,6 +379,8 @@
     "selected": "selected"
   },
   "timebar": {
+    "fitOnThisDates": "Fit time range to these dates",
+    "focusOnThisDay": "Focus time range on this day",
     "maxTracksNumber": "Track detail not available for more than 10 vessels."
   },
   "timebarSettings": {
@@ -423,11 +460,11 @@
     "loadingInfo": "Loading vessel info",
     "login": "Register and <1>login</1> to see more details (free, 2 minutes)",
     "mainGear": "Main gear",
-    "matched": "Match",
+    "matched": "Matching",
     "matricula": "Matricula",
-    "notMatched": "No data matched",
     "mmsi": "MMSI",
     "nationalId": "National ID",
+    "notMatched": "No data matched",
     "origin": "Origin",
     "registeredGearType": "Registered gear type",
     "shiptype": "Ship type",
@@ -436,8 +473,8 @@
     "target_species": "Target species",
     "targetSpecies": "Target species",
     "transmission_other": "Transmissions",
-    "unmatched": "unmatched",
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
+    "unmatched": "unmatched",
     "vesselType_other": "Vessel types",
     "widthRange": "Width range"
   },

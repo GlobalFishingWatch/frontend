@@ -1,6 +1,7 @@
 // import { bindActionCreators } from 'redux'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, batch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
+import { event as uaEvent } from 'react-ga'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { AsyncError } from 'utils/async-slice'
 import {
@@ -28,6 +29,7 @@ import {
   setEditingDatasetId,
   updateDatasetThunk,
 } from './datasets.slice'
+import type { NewDatasetTooltipProps } from './NewDatasetTooltip'
 
 const DATASET_REFRESH_TIMEOUT = 10000
 
@@ -62,7 +64,7 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
 }
 
 export const useDatasetModalConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const datasetModal = useSelector(selectDatasetModal)
   const datasetCategory = useSelector(selectDatasetCategory)
   const editingDatasetId = useSelector(selectEditingDatasetId)
@@ -196,4 +198,24 @@ export const useAutoRefreshImportingDataset = (
       }
     }
   }, [dataset, dispatchFetchDataset, refreshTimeout])
+}
+
+export const useAddDataset = ({ datasetCategory, onSelect }: NewDatasetTooltipProps) => {
+  const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
+  return () => {
+    if (datasetCategory === DatasetCategory.Context) {
+      uaEvent({
+        category: 'Reference layer',
+        action: 'Start upload reference layer flow',
+        label: datasetCategory,
+      })
+    }
+    batch(() => {
+      dispatchDatasetModal('new')
+      dispatchDatasetCategory(datasetCategory)
+    })
+    if (onSelect) {
+      onSelect()
+    }
+  }
 }

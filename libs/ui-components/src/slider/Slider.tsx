@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from 'react'
 import { Range, getTrackBackground } from 'react-range'
+import { format } from 'd3-format'
 import styles from './slider.module.css'
 
 export type SliderRange = number[]
@@ -90,7 +91,7 @@ export function Slider(props: SliderProps) {
                   className={styles.sliderThumbCounter}
                   style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
                 >
-                  {value}
+                  {`${format('~s')(value)}${value === max ? '+' : ''}`}
                 </span>
               </div>
             )

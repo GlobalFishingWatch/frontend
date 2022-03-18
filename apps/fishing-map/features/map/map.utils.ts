@@ -1,7 +1,17 @@
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import { Bbox } from 'types'
 
-export const filterByViewport = (features: GeoJSONFeature[], bounds: MiniglobeBounds) => {
+export const parsePropertiesBbox = (bbox: string) => {
+  if (!bbox) return
+  return wrapBBoxLongitudes(bbox.split(',').map((b) => parseFloat(b)) as Bbox)
+}
+
+export const filterByViewport = <P = unknown>(
+  features: GeoJSONFeature<P>[],
+  bounds: MiniglobeBounds
+) => {
   if (!bounds) {
     return []
   }

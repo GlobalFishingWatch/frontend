@@ -115,7 +115,10 @@ const writeValueToFeature = (
   feature: any
 ) => {
   const propertiesKey = quantizedTail.toString()
-  if (valueToWrite !== undefined) feature.properties[propertiesKey] = valueToWrite
+  if (valueToWrite !== undefined) {
+    // Saving NaN in feature property value complicates the expressions a lot, saving null instead
+    feature.properties[propertiesKey] = isNaN(valueToWrite as number) ? null : valueToWrite
+  }
 }
 
 // Given breaks [[0, 10, 20, 30], [-15, -5, 0, 5, 15]]:
@@ -410,7 +413,7 @@ export function aggregate(intArray: number[], options: TileAggregationParams) {
         let realValueAtFrameForDatasetWorkingValue = 0
         if (sublayerVisibility[datasetIndex]) {
           if (aggregationOperation === AggregationOperation.Avg) {
-            // if isNan, value is just for padding - stop incrementing running sum (just remove tail)
+            // if isNaN, value is just for padding - stop incrementing running sum (just remove tail)
             // and take into account one less frame to compute teh avg
             realValueAtFrameForDatasetWorkingValue = isNaN(value)
               ? currentAggregatedValues[datasetIndex] - tailValue

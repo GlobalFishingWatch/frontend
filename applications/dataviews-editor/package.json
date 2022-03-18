@@ -7,9 +7,9 @@
     "@globalfishingwatch/dataviews-client": "^14.0.0",
     "@globalfishingwatch/layer-composer": "10.1.3",
     "@globalfishingwatch/timebar": "^2.0.8",
-    "@reduxjs/toolkit": "1.6.2",
+    "@reduxjs/toolkit": "1.8.0",
     "cra-template-typescript": "1.0.3",
-    "react-scripts": "4.0.3"
+    "react-scripts": "5.0.0"
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",

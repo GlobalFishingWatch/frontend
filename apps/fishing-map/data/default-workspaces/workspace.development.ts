@@ -14,6 +14,7 @@ import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -88,7 +89,7 @@ const workspace: Workspace<WorkspaceState> = {
       datasetsConfig: [],
     },
     {
-      id: 'encounter-events',
+      id: ENCOUNTER_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
       config: {
         visible: false,

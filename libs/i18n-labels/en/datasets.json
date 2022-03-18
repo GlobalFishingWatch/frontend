@@ -475,6 +475,39 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "private-indonesia-pelagic-presence": {
+    "name": "Coastal Fisheries Indonesia - New Devices",
+    "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices from different providers that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking all positions transmitted by the vessel's tracking device.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "trap net": "trap net",
+          "purse seine": "purse seine"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-pelagic-vessels": {
+    "name": "Coastal Fisheries - New Devices (Vessels)",
+    "description": "Coastal Fisheries Vessels - New devices",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-panama-fishing-effort": {
     "name": "Panama VMS",
     "description": "Vessel monitoring system (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). Data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Panama’s carrier vessel data is also available here. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. In the future, we expect to be able to display more positions. Click on a carrier vessel’s position to view the vessel’s complete track. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
@@ -989,7 +1022,7 @@
     }
   },
   "public-eez-areas": {
-    "name": "EEZs (Source: Marine Regions)",
+    "name": "EEZs",
     "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
@@ -999,7 +1032,7 @@
     "schema": {}
   },
   "public-eez-land": {
-    "name": "EEZs (Source: Marine Regions)",
+    "name": "EEZs",
     "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
@@ -1319,6 +1352,28 @@
       }
     }
   },
+  "public-global-sar-presence": {
+    "name": "Radar detections (SAR)",
+    "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures greater than approximately 20 meters in length, in any weather conditions.\n\nSAR imaging is one of the power tools of remote sensing. SAR is a satellite-based active sensor that shoots radio waves to the Earth surface and measures the amplitude and phase of the signals that are reflected back from objects on the ground and water. The return signals contain rich information about size, orientation, composition, condition, and texture of the features encountered. These imaging systems overcome any weather condition and illumination level, including clouds or rain, daylight or darkness.They give an advantage over passive satellite sensors, such as electro-optical imagery, which is similar to taking a picture with a camera and relies on sunlight and/or the infrared radiation emitted by objects on the ground. This latter method can be confounded by cloud cover, haze, weather events, and seasonal darkness at high latitudes. SAR by comparison has proven to be the most consistent option for detecting vessels at sea.\n\nHow do we detect vessels with SAR? \n\nWe use SAR imagery from the Copernicus Sentinel-1 mission of the European Space Agency (ESA), which is sourced from two polar-orbiting satellites (S1A and S1B), to detect all vessels and offshore infrastructure on each scene. Our approach combines a modified version of a well established ship detection method (Constant False Alarm Rate) with modern machine learning to classify the detected vessels into fishing and non-fishing. This detection approach consists of identifying the pixels with a “brightness” level above the mean backscatter of the background, representing the sea clutter around the target.\n\nHow do we match SAR detections to automatic identification system (AIS) transmitters? \n\nAIS transmitters broadcast the vessel’s GPS positions to help nearby vessels avoid collisions, and these AIS messages can be recorded by satellite constellations. Global Fishing Watch has developed a sophisticated system to match available AIS data to respective SAR vessel detections. This matching is done using a probabilistic model that determines AIS-message/SAR-detection pairs based on all available AIS records right before and right after the time the SAR image was taken, as well as the probability of pairing a specific AIS message to any of the vessels appearing on that image.\n\nWhat do the terms AIS matched and AIS unmatched mean? \n\nNot all vessels are required to carry AIS transmitters (e.g. the European Union only requires use of AIS for vessels over 20 meters in length), and vessels engaged in unlawful activity may shut off their AIS transmitters. These vessels are referred to as “dark targets”. This means that for all “AIS matched” SAR detections, we have information available about the detected vessel from its AIS, such as the characteristics of the ship and whether it is fishing or not. On the other hand, all “AIS unmatched” SAR detections correspond to vessels that cannot be tracked with AIS, some of which may be engaged in illegal, unreported and unregulated (IUU) fishing. In any case, unmatched SAR detections provide the missing information about vessel traffic in the ocean.\nSource. We use SAR imagery from ESA’s Sentinel-1 Interferometric Wide swath mode (IW) Level-1 Ground Range Detected (GRD) product, covering all near-shore areas around the world with a resolution of about 20 meters. We process SAR scenes and detect objects using Google Earth Engine platform.",
+    "schema": {
+      "id": "id",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "cell": "cell",
+      "htime": "htime",
+      "ssvid": "ssvid",
+      "matched": {
+        "keyword": "Matching",
+        "enum": {
+          "true": "AIS Matched",
+          "false": "AIS Unmatched"
+        }
+      },
+      "timestamp": "timestamp",
+      "confidence": "confidence"
+    }
+  },
   "public-global-support-vessels": {
     "name": "AIS (Support Vessels)",
     "description": "Support vessels from AIS",
@@ -1344,16 +1399,109 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "public-global-viirs": {
+  "public-global-viirs-presence": {
     "name": "Night light detections",
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night. <br/><br/>\n\nThe satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. <br/><br/>\n\nGlobal Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href='https://ngdc.noaa.gov/eog/viirs/download_boat.html' target='_blank' rel=noopener'>here</a>.<br/><br/>\n\nThose using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. <br/><br/>\n\nThe GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1).",
+    "schema": {
+      "cel": "cel",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "htime": "htime",
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9,
+          "10": 10,
+          "11": 11,
+          "12": 12,
+          "13": 13,
+          "14": 14,
+          "15": 15,
+          "16": 16,
+          "17": 17,
+          "18": 18,
+          "19": 19,
+          "20": 20,
+          "21": 21,
+          "22": 22,
+          "23": 23,
+          "24": 24,
+          "25": 25,
+          "26": 26,
+          "27": 27,
+          "28": 28,
+          "29": 29,
+          "30": 30
+        }
+      },
+      "detect_id": "detect_id",
+      "qf_detect": {
+        "keyword": "qf_detect",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "5": 5,
+          "7": 7,
+          "10": 10
+        }
+      },
+      "timestamp": "timestamp"
+    }
+  },
+  "public-global-viirs": {
+    "name": "VIIRS",
+    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
     "schema": {
       "cel": "cel",
       "lat": "Latitude",
       "lon": "Longitude",
       "pos": "pos",
       "htime": "htime",
-      "radiance": "Radiance",
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9,
+          "10": 10,
+          "11": 11,
+          "12": 12,
+          "13": 13,
+          "14": 14,
+          "15": 15,
+          "16": 16,
+          "17": 17,
+          "18": 18,
+          "19": 19,
+          "20": 20,
+          "21": 21,
+          "22": 22,
+          "23": 23,
+          "24": 24,
+          "25": 25,
+          "26": 26,
+          "27": 27,
+          "28": 28,
+          "29": 29,
+          "30": 30
+        }
+      },
       "detect_id": "detect_id",
       "qf_detect": {
         "keyword": "Quality flag(s)",
@@ -1440,6 +1588,25 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-indonesia-pelagic-presence": {
+    "name": "Coastal Fisheries - New Devices",
+    "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices from different providers that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking all positions transmitted by the vessel's tracking device.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "trap net": "trap net",
+          "purse seine": "purse seine"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Inshore fishing zone",
     "description": "50 nautical miles around the Tristan da Cunha northern islands and 40 nautical miles around Gough Island (eight percent of the exclusive economic zone), Source: RSPB.",
@@ -1509,7 +1676,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs (Source: WDPA)",
+    "name": "MPAs",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "schema": {}
   },
@@ -1690,7 +1857,7 @@
     "schema": {}
   },
   "public-wdpa-may-2021-marine": {
-    "name": "MPAs (Source: WDPA)",
+    "name": "MPAs",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "schema": {}
   },

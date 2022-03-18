@@ -42,7 +42,7 @@ export const aggregateCell = ({
       if (sublayerIndex === 0) numValues++
     }
   }
-  if (aggregationOperation === AggregationOperation.Avg) {
+  if (aggregationOperation === AggregationOperation.Avg && numValues > 0) {
     aggregatedValues = aggregatedValues.map((sublayerValue) => sublayerValue / numValues)
   }
 

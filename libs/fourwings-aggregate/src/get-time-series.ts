@@ -1,11 +1,10 @@
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { CELL_VALUES_START_INDEX } from './constants'
 import { AggregationOperation } from './types'
 import { getCellValues } from './util'
 
-type Feature = {
-  properties: {
-    rawValues: string
-  }
+export type TimeseriesFeatureProps = {
+  rawValues: string
 }
 
 export interface TimeSeriesFrame {
@@ -23,7 +22,7 @@ export type TimeSeries = {
 }
 
 export const getTimeSeries = (
-  features: Feature[],
+  features: GeoJSONFeature<TimeseriesFeatureProps>[],
   numSublayers: number,
   quantizeOffset = 0,
   aggregationOperation = AggregationOperation.Sum
@@ -40,7 +39,7 @@ export const getTimeSeries = (
   }
 
   const valuesByFrame: { sublayersValues: number[]; numValues: number }[] = []
-  features.forEach((feature, j) => {
+  features.forEach((feature) => {
     const rawValues: string = feature.properties.rawValues
     const { values, minCellOffset } = getCellValues(rawValues)
     if (minCellOffset < minFrame) minFrame = minCellOffset
@@ -49,7 +48,7 @@ export const getTimeSeries = (
     for (let i = CELL_VALUES_START_INDEX; i < values.length; i++) {
       const sublayerIndex = (i - CELL_VALUES_START_INDEX) % numSublayers
       const rawValue = values[i]
-      if (!isNaN(rawValue)) {
+      if (rawValue !== null && !isNaN(rawValue)) {
         if (currentFrameIndex > maxFrame) maxFrame = currentFrameIndex
         if (!valuesByFrame[offsetedCurrentFrameIndex]) {
           valuesByFrame[offsetedCurrentFrameIndex] = {

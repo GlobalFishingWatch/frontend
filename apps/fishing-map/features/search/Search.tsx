@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { batch, useDispatch, useSelector } from 'react-redux'
+import { batch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
@@ -31,6 +31,7 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -62,7 +63,7 @@ import {
 
 function Search() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const urlQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)

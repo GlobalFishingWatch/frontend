@@ -187,16 +187,13 @@ export const fetchVesselInfo = async (
 export type ActivityProperty = 'hours' | 'detections'
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  { fishingActivityFeatures: ExtendedFeature[]; activityProperty?: ActivityProperty },
+  { fishingActivityFeatures: ExtendedFeature[]; activityProperties?: ActivityProperty[] },
   {
     dispatch: AppDispatch
   }
 >(
   'map/fetchFishingActivityInteraction',
-  async (
-    { fishingActivityFeatures, activityProperty = 'hours' },
-    { getState, signal, dispatch }
-  ) => {
+  async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
     const temporalgridDataviews = selectActivityDataviews(state) || []
@@ -238,7 +235,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       })
 
       const topActivityVessels = vesselsBySource
-        .map((source) => {
+        .map((source, i) => {
+          const activityProperty = activityProperties?.[i] || 'hours'
           return source
             .flatMap((source) => source)
             .sort((a, b) => b[activityProperty] - a[activityProperty])
@@ -282,6 +280,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
+        const activityProperty = activityProperties?.[i] || 'hours'
         return {
           sublayerId: sublayersIds[i],
           vessels: sublayerVessels
@@ -353,6 +352,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+
   if (dataset) {
     const datasetConfig = {
       datasetId: dataset.id,
@@ -419,6 +419,36 @@ export const fetchEncounterEventThunk = createAsyncThunk<
           dataset,
         }
       }
+    } else {
+      console.warn('Missing url for endpoints', dataset, datasetConfig)
+    }
+  }
+  return
+})
+
+type BQClusterEvent = Record<string, any>
+export const fetchBQEventThunk = createAsyncThunk<
+  BQClusterEvent | undefined,
+  ExtendedFeature,
+  {
+    dispatch: AppDispatch
+  }
+>('map/fetchBQEvent', async (eventFeature, { signal, getState }) => {
+  const state = getState() as RootState
+  const eventDataviews = selectEventsDataviews(state) || []
+  const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
+  const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  if (dataset) {
+    const datasetConfig = {
+      datasetId: dataset.id,
+      endpoint: EndpointId.EventsDetail,
+      params: [{ id: 'eventId', value: eventFeature.id }],
+      query: [{ id: 'raw', value: true }],
+    }
+    const url = resolveEndpoint(dataset, datasetConfig)
+    if (url) {
+      const clusterEvent = await GFWAPI.fetch<BQClusterEvent>(url, { signal })
+      return clusterEvent
     } else {
       console.warn('Missing url for endpoints', dataset, datasetConfig)
     }
@@ -502,6 +532,24 @@ const slice = createSlice({
       }
     })
     builder.addCase(fetchEncounterEventThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.apiEventStatus = AsyncReducerStatus.Idle
+      } else {
+        state.apiEventStatus = AsyncReducerStatus.Error
+      }
+    })
+    builder.addCase(fetchBQEventThunk.pending, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchBQEventThunk.fulfilled, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Finished
+      if (!state.clicked || !state.clicked.features || !action.payload) return
+      const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
+      if (feature && action.payload) {
+        feature.properties = { ...feature.properties, ...action.payload }
+      }
+    })
+    builder.addCase(fetchBQEventThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.apiEventStatus = AsyncReducerStatus.Idle
       } else {

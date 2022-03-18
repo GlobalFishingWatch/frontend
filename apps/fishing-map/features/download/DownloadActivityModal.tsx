@@ -2,24 +2,22 @@ import React, { Fragment, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
-import { Geometry, MultiPolygon, Polygon } from 'geojson'
+import { Geometry } from 'geojson'
 import { Icon, Modal, Button, Choice, ChoiceOption, Tag } from '@globalfishingwatch/ui-components'
-import { Dataset } from '@globalfishingwatch/api-types'
 import {
-  clearDownloadActivityGeometry,
+  resetDownloadActivityState,
   DownloadActivityParams,
   downloadActivityThunk,
   resetDownloadActivityStatus,
   selectDownloadActivityLoading,
   selectDownloadActivityFinished,
-  selectDownloadActivityAreaName,
-  selectDownloadActivityGeometry,
   selectDownloadActivityError,
   DateRange,
+  selectDownloadActivityAreaKey,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -28,8 +26,15 @@ import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.sele
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
-import { getDatasetLabel, getDatasetsDownloadNotSupported } from 'features/datasets/datasets.utils'
+import {
+  checkDatasetReportPermission,
+  getDatasetLabel,
+  getDatasetsDownloadNotSupported,
+} from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDownloadActivityArea } from 'features/download/download.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -46,7 +51,7 @@ const fallbackDataviews = []
 
 function DownloadActivityModal() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveActivityDataviews) || fallbackDataviews
   const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
@@ -112,7 +117,7 @@ function DownloadActivityModal() {
   const filteredTemporalResolutionOptions: ChoiceOption[] = useMemo(
     () =>
       temporalResolutionOptions.map((option) => {
-        if (option.id === TemporalResolution.Yearly && duration && duration.years < 1) {
+        if (option.id === TemporalResolution.Yearly && duration?.years < 1) {
           return {
             ...option,
             disabled: true,
@@ -120,7 +125,11 @@ function DownloadActivityModal() {
             tooltipPlacement: 'top',
           }
         }
-        if (option.id === TemporalResolution.Monthly && duration && duration.months < 1) {
+        if (
+          option.id === TemporalResolution.Monthly &&
+          duration?.years < 1 &&
+          duration?.months < 1
+        ) {
           return {
             ...option,
             disabled: true,
@@ -137,11 +146,14 @@ function DownloadActivityModal() {
     filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
 
-  const downloadAreaGeometry = useSelector(selectDownloadActivityGeometry)
-  const downloadAreaName = useSelector(selectDownloadActivityAreaName)
+  const areaKey = useSelector(selectDownloadActivityAreaKey)
+  const downloadArea = useSelector(selectDownloadActivityArea)
+  const downloadAreaName = downloadArea?.name
+  const downloadAreaGeometry = downloadArea?.geometry
+  const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
   const areaIsTooBigForHighRes = useMemo(() => {
     return downloadAreaGeometry
-      ? area(downloadAreaGeometry as Polygon | MultiPolygon) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
+      ? area(downloadAreaGeometry) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
       : false
   }, [downloadAreaGeometry])
   const filteredSpatialResolutionOptions = SPATIAL_RESOLUTION_OPTIONS.map((option) => {
@@ -162,12 +174,15 @@ function DownloadActivityModal() {
   const onDownloadClick = async () => {
     const downloadDataviews = dataviews
       .map((dataview) => {
-        const activityDatasets: Dataset[] = (dataview?.config?.datasets || []).map((id: string) =>
-          dataview.datasets?.find((dataset) => dataset.id === id)
+        const activityDatasets: string[] = (dataview?.config?.datasets || []).filter(
+          (id: string) => {
+            return id ? checkDatasetReportPermission(id, userData?.permissions) : false
+          }
         )
         return {
+          filter: dataview.config?.filter || [],
           filters: dataview.config?.filters || {},
-          datasets: activityDatasets.map((dataset: Dataset) => dataset.id),
+          datasets: activityDatasets,
         }
       })
       .filter((dataview) => dataview.datasets.length > 0)
@@ -179,7 +194,9 @@ function DownloadActivityModal() {
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
           spatialResolution,
-          sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
         }),
       })
     }
@@ -192,26 +209,24 @@ function DownloadActivityModal() {
           temporalResolution,
           spatialResolution,
           groupBy,
-          sourceNames: dataviews.flatMap(dataview => getSourcesSelectedInDataview(dataview).map(source => source.label))
+          sourceNames: dataviews.flatMap((dataview) =>
+            getSourcesSelectedInDataview(dataview).map((source) => source.label)
+          ),
         }),
       })
     }
-    const downloadPromises = downloadDataviews.map((dataview) => {
-      const downloadParams: DownloadActivityParams = {
-        dateRange: timerange as DateRange,
-        geometry: downloadAreaGeometry as Geometry,
-        areaName: downloadAreaName,
-        dataview,
-        format,
-        temporalResolution,
-        spatialResolution,
-        groupBy,
-      }
 
-      return dispatch(downloadActivityThunk(downloadParams))
-    })
-
-    await Promise.allSettled(downloadPromises)
+    const downloadParams: DownloadActivityParams = {
+      dateRange: timerange as DateRange,
+      geometry: downloadAreaGeometry as Geometry,
+      areaName: downloadAreaName,
+      dataviews: downloadDataviews,
+      format,
+      temporalResolution,
+      spatialResolution,
+      groupBy,
+    }
+    await dispatch(downloadActivityThunk(downloadParams))
 
     uaEvent({
       category: 'Download',
@@ -230,14 +245,14 @@ function DownloadActivityModal() {
   }
 
   const onClose = () => {
-    dispatch(clearDownloadActivityGeometry())
+    dispatch(resetDownloadActivityState())
   }
 
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={`${t('download.title', 'Download')} - ${t('download.activity', 'Activity')}`}
-      isOpen={downloadAreaGeometry !== undefined}
+      isOpen={areaKey !== ''}
       onClose={onClose}
       contentClassName={styles.modalContent}
     >
@@ -314,13 +329,15 @@ function DownloadActivityModal() {
           )}
           <Button
             onClick={onDownloadClick}
-            loading={downloadLoading}
-            disabled={!duration || duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD}
+            loading={downloadLoading || downloadAreaLoading}
+            disabled={
+              !duration || duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD || downloadAreaLoading
+            }
             tooltip={
               duration && duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD
                 ? t('download.timerangeTooLong', 'The maximum time range is {{count}} years', {
-                  count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
-                })
+                    count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
+                  })
                 : ''
             }
           >

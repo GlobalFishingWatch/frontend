@@ -1,5 +1,5 @@
 import React, { Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
@@ -29,6 +29,7 @@ import { selectIsMapDrawing } from 'features/map/map.selectors'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -72,7 +73,7 @@ const TimebarWrapper = () => {
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const showTimeComparison = useSelector(selectShowTimeComparison)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
