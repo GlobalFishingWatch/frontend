@@ -76,13 +76,17 @@ function ActivitySchemaFilter({
 
   if (type === 'number') {
     const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+    //dividing by 250 to match the width of the slider on screen
+    const minStepPossible = Math.floor(
+      (optionValues?.[optionValues.length - 1] - optionValues?.[0]) / 250
+    )
     return (
       <Slider
         className={styles.multiSelect}
         range={range}
         label={t(`vessel.${id}` as any, id)}
         config={{
-          step: 1,
+          step: Math.max(1, minStepPossible),
           min: optionValues?.[0],
           max: optionValues?.[optionValues.length - 1],
         }}

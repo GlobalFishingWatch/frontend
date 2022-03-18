@@ -338,6 +338,13 @@ export const getSchemaOptionsSelectedInDataview = (
   if (schema === 'flag') {
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
+  if (schema === 'radiance' && dataview.config?.filters?.[schema]) {
+    return dataview.config?.filters?.[schema]?.map((o) => ({
+      id: o.toString(),
+      label: o.toString(),
+    }))
+  }
+
   return options?.filter((option) =>
     dataview.config?.filters?.[schema]?.map((o) => o.toString())?.includes(option.id)
   )
