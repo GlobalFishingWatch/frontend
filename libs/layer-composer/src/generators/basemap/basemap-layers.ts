@@ -35,49 +35,6 @@ export const layers: Dictionary<LayerSpecification[]> = {
       },
     },
     {
-      id: 'graticules_30',
-      type: 'line',
-      source: 'basemap_default',
-      'source-layer': 'graticules',
-      filter: ['==', ['get', 'thirties'], true],
-      paint: {
-        'line-color': 'white',
-        'line-opacity': 0.2,
-      },
-      metadata: {
-        group: Group.Basemap,
-      },
-    },
-    {
-      id: 'graticules_10',
-      type: 'line',
-      source: 'basemap_default',
-      'source-layer': 'graticules',
-      filter: ['==', ['get', 'tens'], true],
-      minzoom: 2,
-      paint: {
-        'line-color': 'white',
-        'line-opacity': ['interpolate', ['linear'], ['zoom'], 2, 0, 4, 0.2],
-      },
-      metadata: {
-        group: Group.Basemap,
-      },
-    },
-    {
-      id: 'graticules_1',
-      type: 'line',
-      source: 'basemap_default',
-      'source-layer': 'graticules',
-      minzoom: 5,
-      paint: {
-        'line-color': 'white',
-        'line-opacity': ['interpolate', ['linear'], ['zoom'], 5, 0, 7, 0.2],
-      },
-      metadata: {
-        group: Group.Basemap,
-      },
-    },
-    {
       id: 'countries',
       type: 'fill',
       source: 'basemap_default',
