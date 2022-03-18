@@ -17,14 +17,17 @@ interface SliderProps {
   className?: string
 }
 
+const fallbackActiveColor = 'rgba(22, 63, 137, 1)'
+const fallbackBorderColor = 'rgba(22, 63, 137, 0.15)'
 const activeColor =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.body).getPropertyValue('---color-primary-blue')) ||
-  'rgba(22, 63, 137, 1)'
+  typeof window !== 'undefined'
+    ? getComputedStyle(document.body).getPropertyValue('---color-primary-blue') ||
+      fallbackActiveColor
+    : fallbackActiveColor
 const borderColor =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.body).getPropertyValue('--color-border')) ||
-  'rgba(22, 63, 137, 0.15)'
+  typeof window !== 'undefined'
+    ? getComputedStyle(document.body).getPropertyValue('--color-border') || fallbackBorderColor
+    : fallbackBorderColor
 
 export function Slider(props: SliderProps) {
   const { range, label, config = {}, onChange, className } = props

@@ -6,10 +6,10 @@ import { SelectOption } from '@globalfishingwatch/ui-components'
 import { selectPorts, sortPoints } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
 import { PortPosition } from 'types'
+import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
-import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
 
 function TableAnchorage() {
 

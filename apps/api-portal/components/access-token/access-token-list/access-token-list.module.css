@@ -1,0 +1,122 @@
+table.list {
+  width: 100%;
+  margin-top: var(--space-L);
+  border-collapse: collapse;
+
+  /* font: var(--font-S); */
+}
+
+table.list tbody tr {
+  border-bottom: 1px solid var(--border-color);
+}
+
+table.list th {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 0 var(--space-S);
+}
+
+table.list td {
+  margin: var(--space-M) var(--space-S);
+  padding: var(--space-S);
+}
+
+table.list tr:first-child td {
+  margin-top: var(--space-S);
+}
+
+.cellDescription {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.cellToken {
+  font-family: 'PT Mono Regular', monospace;
+  background: var(--secondary-background-color);
+  border-radius: 0.3rem;
+  word-break: break-all;
+  display: flex;
+}
+
+.blur {
+  filter: blur(0.5rem);
+}
+
+.content {
+  display: flex;
+}
+
+.content > button::before {
+  content: '';
+}
+
+.cellCreation,
+.cellActions {
+  vertical-align: middle;
+}
+
+.cellNoData {
+  display: flex;
+}
+
+@media (min-width: 767px) {
+  .cellDescription {
+    width: 30%;
+  }
+}
+@media (max-width: 767px) {
+  table.list td,
+  table.list tr {
+    display: block;
+    margin: 0;
+  }
+
+  table.list thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  table.list tr + tr {
+    margin-top: var(--space-S);
+  }
+
+  table.list td:last-child {
+    padding-bottom: var(--space-S);
+  }
+
+  table.list td:not(.cellActions):not(.cellNoData) {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+  }
+
+  table.list td:not(.cellActions):not(.cellNoData)::before {
+    font: var(--font-S);
+    color: var(--color-secondary-blue);
+    content: attr(data-aria-label);
+    text-transform: uppercase;
+    text-align: right;
+    display: inline-block;
+    line-height: 1.65;
+    vertical-align: bottom;
+    margin-left: calc(-100% - var(--space-S));
+    width: 100%;
+    padding-right: var(--space-S);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  table.list td.cellActions {
+    text-align: right;
+  }
+
+  table.list td.cellActions .content,
+  table.list td.cellNoData {
+    justify-content: center;
+  }
+}

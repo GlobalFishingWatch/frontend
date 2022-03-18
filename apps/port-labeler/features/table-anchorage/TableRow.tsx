@@ -5,10 +5,10 @@ import { InputText, Select, SelectOption } from '@globalfishingwatch/ui-componen
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition, PortSubarea } from 'types'
 import { selectCountry, selectHoverPoint, selectSubareas, setHoverPoint, setSubareas } from 'features/labeler/labeler.slice'
-import styles from './TableAnchorage.module.css'
-import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 import { selectPointValuesByCountry, selectPortValuesByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
+import styles from './TableAnchorage.module.css'
+import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 import { useValueManagerConnect } from './TableAnchorage.hooks'
 
 type TableRowProps = {

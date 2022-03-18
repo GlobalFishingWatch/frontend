@@ -1,6 +1,6 @@
-import { changePointValue, changePortValue, changeSubareaValue } from "features/labeler/labeler.slice"
 import { useCallback } from "react"
 import { useDispatch } from "react-redux"
+import { changePointValue, changePortValue, changeSubareaValue } from "features/labeler/labeler.slice"
 
 type ValueManager = {
     onPointValueChange: (id: string, value: string) => void

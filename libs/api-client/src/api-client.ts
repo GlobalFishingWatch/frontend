@@ -122,7 +122,7 @@ export class GFW_API_CLASS {
   getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
       locale ||
-      (typeof localStorage !== undefined ? localStorage.getItem('i18nextLng') : '') ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
     return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`

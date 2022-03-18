@@ -1,7 +1,7 @@
 export * from './types/types'
 export * from './button'
 export * from './color-bar'
-export * from './countryflag'
+// export * from './countryflag'
 export * from './choice'
 export * from './header'
 export * from './icon'

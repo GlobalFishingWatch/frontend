@@ -2,10 +2,12 @@
   display: flex;
   height: 100%;
 }
-.header{
+
+.header {
   position: relative;
   z-index: 200;
 }
+
 .placeholder {
   height: calc(100% - 5.2rem);
   flex: 1;
@@ -20,4 +22,3 @@
 .errorBtn {
   margin-top: var(--space-M);
 }
-
