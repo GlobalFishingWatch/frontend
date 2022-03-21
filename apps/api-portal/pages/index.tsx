@@ -5,7 +5,7 @@ import { Fragment, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import AccessTokenList from 'components/access-token/access-token-list/access-token-list'
 import AccessTokenCreate from 'components/access-token/access-token-create/access-token-create'
-import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
+import { useUser } from 'features/user/user'
 import styles from '../styles/index.module.css'
 
 const Layout = dynamic(() => import('components/layout'), {
@@ -13,12 +13,12 @@ const Layout = dynamic(() => import('components/layout'), {
 })
 
 const Home: NextPage = (context) => {
-  const { isUserApplicationsRequiredInfoCompleted } = useGetUserApplications()
+  const { isUserApplicationsRequiredInfoCompleted, isFetched, isSuccess } = useUser()
   const router = useRouter()
-
+  console.log({ isUserApplicationsRequiredInfoCompleted, isFetched, isSuccess })
   useEffect(() => {
     if (
-      isUserApplicationsRequiredInfoCompleted !== null &&
+      isUserApplicationsRequiredInfoCompleted !== undefined &&
       !isUserApplicationsRequiredInfoCompleted
     ) {
       router.push('/signup')

@@ -1,27 +1,32 @@
 import { useCallback, Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { Button, InputText } from '@globalfishingwatch/ui-components'
-import { useCreateUserApplications } from 'features/user-applications/user-applications.hooks'
+import { useCreateUserApplication } from 'features/user-applications/user-applications'
 import styles from './access-token-create.module.css'
 
 /* eslint-disable-next-line */
 export interface AccessTokenCreateProps {}
 
 export function AccessTokenCreate(props: AccessTokenCreateProps) {
-  const { error, isAllowed, dispatchCreate, isSaving, isError, token, setToken, valid } =
-    useCreateUserApplications()
+  const {
+    mutate,
+    error,
+    isAllowed,
+    isLoading: isSaving,
+    isError,
+    token,
+    setToken,
+    valid,
+  } = useCreateUserApplication()
 
   const create = useCallback(async () => {
-    const response = await dispatchCreate({
+    await mutate({
       ...token,
     })
-    if (response.error) {
-      console.error(response.error)
-    }
-  }, [dispatchCreate, token])
+  }, [mutate, token])
 
   const validationMessage = useMemo(
-    () => Object.values(error).map((e, index) => <p key={`msg-${index}`}>{e}</p>),
+    () => error && Object.values(error).map((e, index) => <p key={`msg-${index}`}>{e}</p>),
     [error]
   )
 

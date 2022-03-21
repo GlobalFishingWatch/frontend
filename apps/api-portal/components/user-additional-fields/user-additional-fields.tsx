@@ -1,6 +1,7 @@
-import { useCallback, useMemo, Fragment } from 'react'
-import { AsyncReducerStatus } from 'lib/async-slice'
+import { useCallback, useMemo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
+import { useRouter } from 'next/router'
+import { FieldValidationError } from 'lib/types'
 import {
   Button,
   Checkbox,
@@ -9,22 +10,52 @@ import {
   SelectOption,
   Spinner,
 } from '@globalfishingwatch/ui-components'
-import { USER_APPLICATION_INTENDED_USES } from '@globalfishingwatch/api-types'
-import { useUserAdditionalInformation } from 'features/user/user.hooks'
+import {
+  UserApiAdditionalInformation,
+  USER_APPLICATION_INTENDED_USES,
+} from '@globalfishingwatch/api-types'
+import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
 import styles from './user-additional-fields.module.css'
 
 /* eslint-disable-next-line */
 export interface UserAdditionalFieldsProps {}
 
 export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
-  const {
-    setUserAdditionalInformation,
-    loading,
-    status,
-    update,
-    userAdditionalInformation,
-    valid,
-  } = useUserAdditionalInformation()
+  const { data: user, isLoading } = useUser()
+  const { mutate, isLoading: isUpdating, isSuccess, isError } = useUpdateUserAdditionalInformation()
+
+  const defaultUserAdditionalInformation: UserApiAdditionalInformation = {
+    apiTerms: user.apiTerms,
+    intendedUse: user.intendedUse,
+    problemToResolve: user.problemToResolve,
+    pullingDataOtherAPIS: user.pullingDataOtherAPIS,
+    whoEndUsers: user.whoEndUsers,
+  }
+
+  const [userAdditionalInformation, setUserAdditionalInformation] =
+    useState<UserApiAdditionalInformation>(defaultUserAdditionalInformation)
+  const router = useRouter()
+
+  const error = useMemo(() => {
+    const errors: FieldValidationError<UserApiAdditionalInformation> = {}
+    const { apiTerms, intendedUse, problemToResolve, whoEndUsers } = userAdditionalInformation
+
+    if (!intendedUse || !USER_APPLICATION_INTENDED_USES.includes(intendedUse as any)) {
+      errors.intendedUse = 'Intended Use is required'
+    }
+    if (!whoEndUsers) {
+      errors.whoEndUsers = 'Who are your end users is required'
+    }
+    if (!problemToResolve) {
+      errors.problemToResolve = 'Problems to solve is required'
+    }
+    if (!apiTerms) {
+      errors.apiTerms = 'API terms of use and attribution must be accepted.'
+    }
+    return errors
+  }, [userAdditionalInformation])
+
+  const valid = useMemo(() => Object.keys(error).length === 0, [error])
 
   const INTENDED_USE_OPTIONS: SelectOption[] = useMemo(
     () =>
@@ -57,7 +88,12 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
     () => !!userAdditionalInformation?.apiTerms,
     [userAdditionalInformation?.apiTerms]
   )
-  if (loading) return <Spinner></Spinner>
+
+  useEffect(() => {
+    isSuccess && router.replace('/')
+  }, [router, isSuccess])
+
+  if (isLoading) return <Spinner></Spinner>
 
   return (
     <div className={styles.fieldsWrapper}>
@@ -144,15 +180,15 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
       </div>
       <div className={styles.field}>
         <Button
-          onClick={update}
-          loading={status === AsyncReducerStatus.LoadingUpdate}
+          onClick={() => mutate(userAdditionalInformation)}
+          loading={isUpdating}
           className={styles.button}
           disabled={!valid}
           tooltip={valid ? '' : 'Complete the required fields (*) and accept the terms to Continue'}
         >
           Continue
         </Button>
-        {status === AsyncReducerStatus.Error && (
+        {isError && (
           <div className={styles.error}>Ups, something went wrong. 🙈. Please try again later.</div>
         )}
       </div>

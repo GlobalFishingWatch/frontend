@@ -9,6 +9,7 @@ import { selectUserData } from 'features/user/user.slice'
 import useUserApplications, {
   useDeleteUserApplication,
 } from 'features/user-applications/user-applications'
+import useUser from 'features/user/user'
 import styles from './access-token-list.module.css'
 
 /* eslint-disable-next-line */
@@ -20,9 +21,9 @@ type ActionMessage = {
 }
 
 export function AccessTokenList(props: AccessTokenListProps) {
-  const user: UserData = useAppSelector(selectUserData)
-  const { isError, isLoading, data } = useUserApplications(user.id)
-  const deleteUserApplication = useDeleteUserApplication(user.id)
+  const { data: user } = useUser()
+  const { isError, isLoading, data } = useUserApplications(user?.id)
+  const deleteUserApplication = useDeleteUserApplication(user?.id)
 
   const isAllowed = true
   // const response = useGetUserApplications()
