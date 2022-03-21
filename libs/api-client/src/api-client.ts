@@ -57,7 +57,7 @@ const processStatus = (response: Response): Promise<Response> => {
         authError = await response.text().then((text) => {
           try {
             const res = JSON.parse(text)
-            return res?.error || res?.message
+            return res?.message || res?.error
           } catch (e: any) {
             return response.statusText
           }
@@ -122,7 +122,7 @@ export class GFW_API_CLASS {
   getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
       locale ||
-      (typeof localStorage !== undefined ? localStorage.getItem('i18nextLng') : '') ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
     return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`
@@ -292,7 +292,12 @@ export class GFW_API_CLASS {
               case 'default':
                 return res
               case 'json':
-                return parseJSON(res)
+                return parseJSON(res).catch((e) => {
+                  // When an error occurs while parsing and
+                  // http response is no content, returns an
+                  // empty response instead of an raising error
+                  if (res.status === 204) return
+                })
               case 'blob':
                 return res.blob()
               case 'text':
@@ -343,7 +348,10 @@ export class GFW_API_CLASS {
               throw e
             }
           }
-          return this._internalFetch(url, options, ++refreshRetries, waitLogin)
+          if (e.status !== 400) {
+            return this._internalFetch(url, options, ++refreshRetries, waitLogin)
+          }
+          throw e
         } else {
           if (this.debug) {
             if (refreshRetries >= this.maxRefreshRetries) {

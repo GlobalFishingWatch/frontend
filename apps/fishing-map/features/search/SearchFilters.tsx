@@ -111,12 +111,11 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
         if (!showSchemaFilter(schemaFilter)) {
           return null
         }
-        const { id, tooltip, disabled, options, optionsSelected } = schemaFilter
+        const { id, disabled, options, optionsSelected } = schemaFilter
         return (
           <MultiSelect
             key={id}
             disabled={disabled}
-            disabledMsg={tooltip}
             label={t(`vessel.${id}` as any, id)}
             placeholder={getPlaceholderBySelections(optionsSelected)}
             options={options}

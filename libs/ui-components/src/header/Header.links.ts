@@ -1,8 +1,12 @@
+import React from 'react'
+
 export type MenuItem = {
-  link: string
-  label: string
+  className?: string
+  link?: string
+  label: string | React.ReactNode
   mini?: boolean
   childs?: MenuItem[]
+  onClick?: React.MouseEventHandler
 }
 
 const navigation: MenuItem[] = [
@@ -33,7 +37,10 @@ const navigation: MenuItem[] = [
         link: 'https://globalfishingwatch.org/carrier-vessel-portal/',
         label: 'Carrier Vessel Portal',
       },
-      { link: 'https://globalfishingwatch.org/marine-manager-portal/', label: 'Marine Manager Portal' },
+      {
+        link: 'https://globalfishingwatch.org/marine-manager-portal/',
+        label: 'Marine Manager Portal',
+      },
       { link: 'https://globalfishingwatch.org/datasets-and-code/', label: 'Datasets and Code' },
     ],
   },

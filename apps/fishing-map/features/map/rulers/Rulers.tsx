@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
-import { useSelector, useDispatch, batch } from 'react-redux'
+import { useSelector, batch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import useMapInstance from '../map-context.hooks'
 import { selectIsMapDrawing } from '../map.selectors'
 import {
@@ -22,7 +23,7 @@ const Rulers = () => {
   const numRulers = useSelector(selectNumRulers)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const onToggleClick = useCallback(() => {
     dispatch(toggleRulersEditing())
     if (editing) {

@@ -2,19 +2,19 @@ import React, { memo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
-import { useDispatch } from 'react-redux'
 import { InputText, IconButton } from '@globalfishingwatch/ui-components'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { OceanArea, searchOceanAreas, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
 import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'
 
 const MapSearch = () => {
   const { t, i18n } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [query, setQuery] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])

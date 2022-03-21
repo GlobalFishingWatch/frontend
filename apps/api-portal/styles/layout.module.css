@@ -1,0 +1,17 @@
+.main {
+  min-height: calc(100vh - var(--header-band-height-S));
+  background-image: var(--background-gradient);
+  width: 100%;
+}
+
+.container {
+  max-width: var(--desktop-max-width);
+  margin: 0 auto;
+  padding: 5rem;
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding: 6rem 2rem 0;
+  }
+}

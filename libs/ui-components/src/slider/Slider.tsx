@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from 'react'
 import { Range, getTrackBackground } from 'react-range'
+import { format } from 'd3-format'
 import styles from './slider.module.css'
 
 export type SliderRange = number[]
@@ -16,14 +17,17 @@ interface SliderProps {
   className?: string
 }
 
+const fallbackActiveColor = 'rgba(22, 63, 137, 1)'
+const fallbackBorderColor = 'rgba(22, 63, 137, 0.15)'
 const activeColor =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.body).getPropertyValue('---color-primary-blue')) ||
-  'rgba(22, 63, 137, 1)'
+  typeof window !== 'undefined'
+    ? getComputedStyle(document.body).getPropertyValue('---color-primary-blue') ||
+      fallbackActiveColor
+    : fallbackActiveColor
 const borderColor =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.body).getPropertyValue('--color-border')) ||
-  'rgba(22, 63, 137, 0.15)'
+  typeof window !== 'undefined'
+    ? getComputedStyle(document.body).getPropertyValue('--color-border') || fallbackBorderColor
+    : fallbackBorderColor
 
 export function Slider(props: SliderProps) {
   const { range, label, config = {}, onChange, className } = props
@@ -87,7 +91,7 @@ export function Slider(props: SliderProps) {
                   className={styles.sliderThumbCounter}
                   style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
                 >
-                  {value}
+                  {`${format('~s')(value)}${value === max ? '+' : ''}`}
                 </span>
               </div>
             )

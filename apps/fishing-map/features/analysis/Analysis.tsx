@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback, Fragment } from 'reac
 import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import { batch, useDispatch, useSelector } from 'react-redux'
+import { batch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import {
   Button,
@@ -35,6 +35,7 @@ import { getSourcesSelectedInDataview } from 'features/workspace/activity/activi
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './Analysis.module.css'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
@@ -64,7 +65,7 @@ function Analysis() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const fitMapBounds = useMapFitBounds()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const dataviews = useSelector(selectActiveActivityDataviews)

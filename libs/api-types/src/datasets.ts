@@ -30,6 +30,7 @@ export enum EndpointId {
   VesselList = 'carriers-list-vessels',
   VesselSearch = 'carriers-search-vessels',
   VesselAdvancedSearch = 'carriers-advanced-search-vessels',
+  ClusterTiles = 'carriers-events-cluster-tiles',
 }
 
 export interface Endpoint {

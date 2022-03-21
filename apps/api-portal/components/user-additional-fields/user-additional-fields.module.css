@@ -1,0 +1,56 @@
+.fieldsWrapper {
+  margin-top: var(--space-L);
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.field {
+  width: 67%;
+  margin-bottom: var(--space-M);
+}
+
+.input > input,
+.selectContainer > div,
+.select li {
+  background: var(--secondary-background-color);
+  border: 0;
+}
+
+.select,
+.select:hover {
+  background: var(--secondary-background-color);
+  border: 0;
+}
+
+.select button {
+  padding: 0;
+}
+
+.checkbox {
+  margin-top: 0.2rem;
+}
+
+.checkboxContainer {
+  align-items: flex-start;
+}
+
+.label {
+  line-height: var(--size-S);
+}
+
+.button {
+  width: 100%;
+}
+
+.error {
+  margin: var(--space-M);
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .field {
+    width: 100%;
+  }
+}

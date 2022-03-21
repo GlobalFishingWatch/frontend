@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import type { MapEvent } from 'react-map-gl'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { editRuler, moveCurrentRuler, selectEditing } from './rulers.slice'
 
 const useRulers = () => {
   const rulersEditing = useSelector(selectEditing)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const onMapHoverWithRuler = useCallback(
     (event: MapEvent) => {
       dispatch(

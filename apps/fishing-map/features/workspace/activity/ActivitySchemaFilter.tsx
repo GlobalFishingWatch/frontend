@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
-import { MultiSelect, MultiSelectOption, Slider } from '@globalfishingwatch/ui-components'
+import { MultiSelect, MultiSelectOption, Select, Slider } from '@globalfishingwatch/ui-components'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
 import styles from './ActivityFilters.module.css'
@@ -13,7 +13,7 @@ type ActivitySchemaFilterProps = {
   onClean: (filterKey: string) => void
 }
 export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
-  return schemaFilter.active && schemaFilter.options.length > 1
+  return !schemaFilter.disabled && schemaFilter.options.length > 1
 }
 
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): [number, number] => {
@@ -40,7 +40,7 @@ function ActivitySchemaFilter({
   onRemove,
   onClean,
 }: ActivitySchemaFilterProps): React.ReactElement {
-  const { id, tooltip, disabled, options, optionsSelected, type } = schemaFilter
+  const { id, disabled, options, optionsSelected, type } = schemaFilter
   const [range, setRange] = useState<number[] | null>(
     type === 'number' ? getRangeBySchema(schemaFilter) : null
   )
@@ -76,13 +76,17 @@ function ActivitySchemaFilter({
 
   if (type === 'number') {
     const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+    //dividing by 250 to match the width of the slider on screen
+    const minStepPossible = Math.floor(
+      (optionValues?.[optionValues.length - 1] - optionValues?.[0]) / 250
+    )
     return (
       <Slider
         className={styles.multiSelect}
         range={range}
         label={t(`vessel.${id}` as any, id)}
         config={{
-          step: 1,
+          step: Math.max(1, minStepPossible),
           min: optionValues?.[0],
           max: optionValues?.[optionValues.length - 1],
         }}
@@ -91,11 +95,27 @@ function ActivitySchemaFilter({
     )
   }
 
+  if (type === 'boolean') {
+    return (
+      <Select
+        key={id}
+        disabled={disabled}
+        label={t(`vessel.${id}` as any, id)}
+        placeholder={getPlaceholderBySelections(optionsSelected)}
+        options={options}
+        selectedOption={optionsSelected?.[0]}
+        containerClassName={styles.multiSelect}
+        onSelect={(selection) => onSelect(id, [selection])}
+        onRemove={() => onRemove(id, [])}
+        onCleanClick={() => onClean(id)}
+      />
+    )
+  }
+
   return (
     <MultiSelect
       key={id}
       disabled={disabled}
-      disabledMsg={tooltip}
       label={t(`vessel.${id}` as any, id)}
       placeholder={getPlaceholderBySelections(optionsSelected)}
       options={options}

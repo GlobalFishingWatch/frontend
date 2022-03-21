@@ -88,7 +88,11 @@ const store = configureStore({
 })
 
 export type RootState = ReturnType<typeof rootReducer>
-export type AppDispatch = typeof store.dispatch
+// TODO: fix this once issue solved
+// https://github.com/reduxjs/redux-toolkit/issues/1854
+// export type AppDispatch = typeof store.dispatch
+export type AppDispatch = any
+
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   RootState,

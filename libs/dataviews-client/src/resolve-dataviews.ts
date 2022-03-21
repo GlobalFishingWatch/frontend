@@ -329,10 +329,21 @@ export function resolveDataviews(
           const datasetSchema = dataviewInstance.datasets?.find(
             (d) => d.schema?.[filterKey] !== undefined
           )?.schema?.[filterKey]
+
           if (datasetSchema && datasetSchema.type === 'number') {
-            return `${filterKey} >= ${filterValues[0]} AND ${filterKey} <= ${
-              filterValues[filterValues.length - 1]
-            }`
+            const minPossible = Number(datasetSchema.enum[0])
+            const minSelected = Number(filterValues[0])
+            const maxPossible = Number(datasetSchema.enum[datasetSchema.enum.length - 1])
+            const maxSelected = Number(filterValues[filterValues.length - 1])
+            if (minSelected !== minPossible && maxSelected !== maxPossible) {
+              return `${filterKey} >= ${minSelected} AND ${filterKey} <= ${maxSelected}`
+            }
+            if (minSelected !== minPossible) {
+              return `${filterKey} >= ${minSelected}`
+            }
+            if (maxSelected !== maxPossible) {
+              return `${filterKey} <= ${maxSelected}`
+            }
           }
           return `${filterKey} IN (${filterValues.map((f: string) => `'${f}'`).join(', ')})`
         })
