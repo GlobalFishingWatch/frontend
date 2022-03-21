@@ -15,9 +15,14 @@ export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
 const AUTH_PATH = 'auth'
 
+export interface V2MessageError {
+  detail: string
+  title: string
+}
 export interface ResponseError {
   status: number
   message: string
+  messages?: V2MessageError[]
 }
 
 interface UserTokens {
@@ -52,18 +57,27 @@ const processStatus = (response: Response): Promise<Response> => {
       if (response.status >= 200 && response.status < 300) {
         return resolve(response)
       }
-      let authError
+      // Compatibility with v1 and v2 errors format
+      const errors = {
+        message: '',
+        messages: [],
+      }
       if (response.status >= 400 && response.status < 500) {
-        authError = await response.text().then((text) => {
+        await response.text().then((text) => {
           try {
             const res = JSON.parse(text)
-            return res?.message || res?.error
+            errors.message = res.message
+            errors.messages = res.messages
           } catch (e: any) {
-            return response.statusText
+            errors.message = statusText
           }
         })
       }
-      return reject({ status, message: authError || statusText })
+      return reject({
+        status,
+        message: errors?.message || statusText,
+        messages: errors.messages,
+      })
     } catch (e: any) {
       return reject({ status, message: statusText })
     }

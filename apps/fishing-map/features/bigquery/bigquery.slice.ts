@@ -44,6 +44,7 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
       return rejectWithValue({
         status: e.status || e.code,
         message: e.message,
+        messages: e.messages,
       })
     }
   }
@@ -60,17 +61,25 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
   'bigQuery/createDataset',
   async (
     { query, name, ttl = 30, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
-    { dispatch }
+    { dispatch, rejectWithValue }
   ) => {
-    const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
-      `/v1/${visualisationMode}/bq/create-temporal-dataset`,
-      {
-        method: 'POST',
-        body: { query, name: kebabCase(name), ttl, public: createAsPublic } as any,
-      }
-    )
-    const dataset = await dispatch(fetchDatasetByIdThunk(id))
-    return dataset
+    try {
+      const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
+        `/v1/${visualisationMode}/bq/create-temporal-dataset`,
+        {
+          method: 'POST',
+          body: { query, name: kebabCase(name), ttl, public: createAsPublic } as any,
+        }
+      )
+      const dataset = await dispatch(fetchDatasetByIdThunk(id))
+      return dataset
+    } catch (e: any) {
+      return rejectWithValue({
+        status: e.status || e.code,
+        message: e.message,
+        messages: e.messages,
+      })
+    }
   }
 )
 
