@@ -21,8 +21,8 @@ type ActionMessage = {
 
 export function AccessTokenList(props: AccessTokenListProps) {
   const user: UserData = useAppSelector(selectUserData)
-  const { isError, isLoading, data, refetch } = useUserApplications(user.id)
-  const deleteUserApplication = useDeleteUserApplication()
+  const { isError, isLoading, data } = useUserApplications(user.id)
+  const deleteUserApplication = useDeleteUserApplication(user.id)
 
   const isAllowed = true
   // const response = useGetUserApplications()
