@@ -46,7 +46,7 @@ export const trackDatasetConfigsCallback = (
     let allTracks = [trackWithThinning]
 
     if (chunks) {
-      const chunkSetVesselId = trackWithThinning.params.find((p) => p.id === 'vesselId').value
+      const chunkSetVesselId = trackWithThinning.params?.find((p) => p.id === 'vesselId').value
       const chunkSetZoom = trackWithThinning.metadata.zoom
       const chunkSetId = ['track', chunkSetVesselId, chunkSetZoom].join('-')
       allTracks = chunks.map((chunk) => {
