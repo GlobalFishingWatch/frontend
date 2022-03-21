@@ -20,7 +20,10 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
     }
   }, [dispatchCreate, token])
 
-  const validationMessage = useMemo(() => Object.values(error).map((e) => <p>{e}</p>), [error])
+  const validationMessage = useMemo(
+    () => Object.values(error).map((e, index) => <p key={`msg-${index}`}>{e}</p>),
+    [error]
+  )
 
   return (
     <div className={styles.container}>
