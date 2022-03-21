@@ -82,7 +82,9 @@ const BigQueryMenu: React.FC = () => {
     if (fetchBigQueryRunCostThunk.fulfilled.match(action)) {
       setRunCostChecked(true)
     } else {
-      setError((action.payload as ResponseError).message)
+      const error = action.payload as ResponseError
+      const errorMsg = error.messages?.length > 0 ? error.messages[0]?.detail : error.message
+      setError(errorMsg)
     }
   }
 
@@ -101,8 +103,9 @@ const BigQueryMenu: React.FC = () => {
       addNewDataviewInstances([dataviewInstance])
       dispatch(toggleBigQueryMenu())
     } else {
-      const error = (action.payload as ResponseError).message || 'There was an unexpected error'
-      setError(error)
+      const error = action.payload as ResponseError
+      const errorMsg = error.messages?.length > 0 ? error.messages[0]?.detail : error.message
+      setError(errorMsg)
     }
   }
 
