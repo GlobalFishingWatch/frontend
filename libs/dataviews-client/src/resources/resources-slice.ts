@@ -92,7 +92,7 @@ export const resourcesSlice = createSlice({
           .filter((resource) => resource.datasetConfig.metadata?.chunkSetId === thisChunkSetId)
 
         if (
-          chunks.map((chunk) => chunk.status).every((status) => status === ResourceStatus.Finished)
+          chunks.map((chunk) => chunk.status).some((status) => status === ResourceStatus.Finished)
         ) {
           const mergedData = mergeTrackChunks(chunks.map((chunk) => chunk.data) as any)
 
