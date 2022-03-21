@@ -1,5 +1,5 @@
 import ReactGA from 'react-ga'
-import { DateObject, DateTime } from 'luxon'
+import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 
@@ -28,11 +28,11 @@ export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
 export const PRIVATE_SUFIX = 'private'
 
-// TODO: remove when luxon types are updated to version 2
-// https://moment.github.io/luxon/#/upgrading?id=fromobject
-const fromObject = DateTime.fromObject as (obj: DateObject, config: any) => DateTime
 // used when no url data and no workspace data
-export const LAST_DATA_UPDATE = fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
+export const LAST_DATA_UPDATE = DateTime.fromObject(
+  { hour: 0, minute: 0, second: 0 },
+  { zone: 'utc' }
+)
   .minus({ days: 3 })
   .toISO()
 
@@ -88,7 +88,6 @@ export enum ThinningLevels {
   Default = 'default',
 }
 
-
 export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
   [ThinningLevels.Insane]: {
     distanceFishing: 10000,
@@ -132,7 +131,10 @@ export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
   },
 }
 
-export const THINNING_LEVEL_BY_ZOOM: Record<number, { user: ThinningConfig, guest: ThinningConfig }> = {
+export const THINNING_LEVEL_BY_ZOOM: Record<
+  number,
+  { user: ThinningConfig; guest: ThinningConfig }
+> = {
   0: {
     user: THINNING_LEVELS[ThinningLevels.Insane],
     guest: THINNING_LEVELS[ThinningLevels.Insane],
