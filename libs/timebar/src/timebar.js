@@ -9,6 +9,7 @@ import 'dayjs/locale/en'
 import 'dayjs/locale/es'
 import 'dayjs/locale/fr'
 import 'dayjs/locale/id'
+import { RecoilRoot } from 'recoil'
 import ImmediateContext from './immediateContext'
 import {
   getTime,
@@ -27,6 +28,7 @@ import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg
 import { ReactComponent as IconMinus } from './icons/minus.svg'
 import { ReactComponent as IconPlus } from './icons/plus.svg'
 import { EVENT_SOURCE } from './constants'
+
 dayjs.extend(relativeTime)
 dayjs.extend(utc)
 
@@ -228,6 +230,7 @@ class Timebar extends Component {
       minimumRangeUnit,
       maximumRange,
       maximumRangeUnit,
+      stickToUnit
     } = this.props
     const { immediate } = this.state
 
@@ -255,96 +258,100 @@ class Timebar extends Component {
 
     return (
       <ImmediateContext.Provider value={{ immediate, toggleImmediate: this.toggleImmediate }}>
-        <div className={styles.Timebar}>
-          {enablePlayback && (
-            <Playback
-              labels={labels.playback}
-              start={start}
-              end={end}
-              absoluteStart={absoluteStart}
-              absoluteEnd={absoluteEnd}
-              onTick={this.onPlaybackTick}
-              onTogglePlay={this.onTogglePlay}
-            />
-          )}
-
-          <div className={cx('print-hidden', styles.timeActions)}>
-            {showTimeRangeSelector && (
-              <TimeRangeSelector
-                labels={labels.timerange}
+        <RecoilRoot override={false}>
+          <div className={styles.Timebar}>
+            {enablePlayback && (
+              <Playback
+                labels={labels.playback}
                 start={start}
                 end={end}
                 absoluteStart={absoluteStart}
                 absoluteEnd={absoluteEnd}
-                onSubmit={this.onTimeRangeSelectorSubmit}
-                onDiscard={this.toggleTimeRangeSelector}
-                latestAvailableDataDate={this.props.latestAvailableDataDate}
+                onTick={this.onPlaybackTick}
+                onTogglePlay={this.onTogglePlay}
               />
             )}
-            <div className={cx('print-hidden', styles.timeRangeContainer)}>
-              <button
-                type="button"
-                title={labels.timerange.title}
-                className={cx(styles.uiButton, styles.timeRange)}
-                disabled={immediate}
-                onClick={this.toggleTimeRangeSelector}
-              >
-                <IconTimeRange />
-              </button>
-            </div>
-            <button
-              type="button"
-              title={labels.setBookmark}
-              className={cx('print-hidden', styles.uiButton, styles.bookmark)}
-              onClick={this.setBookmark}
-              disabled={immediate || bookmarkDisabled === true}
-            >
-              {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
-            </button>
-            <div className={cx('print-hidden', styles.timeScale)}>
-              <button
-                type="button"
-                title={labels.zoomOut}
-                disabled={immediate || canZoomOut === false}
-                onClick={() => {
-                  this.zoom('out')
-                }}
-                className={cx(styles.uiButton, styles.out)}
-              >
-                <IconMinus />
-              </button>
-              <button
-                type="button"
-                title={labels.zoomIn}
-                disabled={immediate || canZoomIn === false}
-                onClick={() => {
-                  this.zoom('in')
-                }}
-                className={cx(styles.uiButton, styles.in)}
-              >
-                <IconPlus />
-              </button>
-            </div>
-          </div>
 
-          <Timeline
-            children={this.props.children}
-            start={start}
-            end={end}
-            labels={labels}
-            onChange={this.notifyChange}
-            onMouseLeave={this.props.onMouseLeave}
-            onMouseMove={this.props.onMouseMove}
-            absoluteStart={absoluteStart}
-            absoluteEnd={absoluteEnd}
-            onBookmarkChange={this.props.onBookmarkChange}
-            bookmarkStart={bookmarkStart}
-            bookmarkEnd={bookmarkEnd}
-            bookmarkPlacement={bookmarkPlacement}
-            showLastUpdate={this.props.showLastUpdate}
-            latestAvailableDataDate={this.props.latestAvailableDataDate}
-          />
-        </div>
+            <div className={cx('print-hidden', styles.timeActions)}>
+              {showTimeRangeSelector && (
+                <TimeRangeSelector
+                  labels={labels.timerange}
+                  start={start}
+                  end={end}
+                  absoluteStart={absoluteStart}
+                  absoluteEnd={absoluteEnd}
+                  onSubmit={this.onTimeRangeSelectorSubmit}
+                  onDiscard={this.toggleTimeRangeSelector}
+                  latestAvailableDataDate={this.props.latestAvailableDataDate}
+                />
+              )}
+              <div className={cx('print-hidden', styles.timeRangeContainer)}>
+                <button
+                  type="button"
+                  title={labels.timerange.title}
+                  className={cx(styles.uiButton, styles.timeRange)}
+                  disabled={immediate}
+                  onClick={this.toggleTimeRangeSelector}
+                >
+                  <IconTimeRange />
+                </button>
+              </div>
+              <button
+                type="button"
+                title={labels.setBookmark}
+                className={cx('print-hidden', styles.uiButton, styles.bookmark)}
+                onClick={this.setBookmark}
+                disabled={immediate || bookmarkDisabled === true}
+              >
+                {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
+              </button>
+              <div className={cx('print-hidden', styles.timeScale)}>
+                <button
+                  type="button"
+                  title={labels.zoomOut}
+                  disabled={immediate || canZoomOut === false}
+                  onClick={() => {
+                    this.zoom('out')
+                  }}
+                  className={cx(styles.uiButton, styles.out)}
+                >
+                  <IconMinus />
+                </button>
+                <button
+                  type="button"
+                  title={labels.zoomIn}
+                  disabled={immediate || canZoomIn === false}
+                  onClick={() => {
+                    this.zoom('in')
+                  }}
+                  className={cx(styles.uiButton, styles.in)}
+                >
+                  <IconPlus />
+                </button>
+              </div>
+            </div>
+
+            <Timeline
+              children={this.props.children}
+              start={start}
+              end={end}
+              labels={labels}
+              onChange={this.notifyChange}
+              onMouseLeave={this.props.onMouseLeave}
+              onMouseMove={this.props.onMouseMove}
+              absoluteStart={absoluteStart}
+              absoluteEnd={absoluteEnd}
+              onBookmarkChange={this.props.onBookmarkChange}
+              bookmarkStart={bookmarkStart}
+              bookmarkEnd={bookmarkEnd}
+              bookmarkPlacement={bookmarkPlacement}
+              showLastUpdate={this.props.showLastUpdate}
+              latestAvailableDataDate={this.props.latestAvailableDataDate}
+              trackGraphOrientation={this.props.trackGraphOrientation}
+              stickToUnit={stickToUnit}
+            />
+          </div>
+        </RecoilRoot>
       </ImmediateContext.Provider>
     )
   }
@@ -365,6 +372,9 @@ Timebar.propTypes = {
       start: PropTypes.string,
       end: PropTypes.string,
       last30days: PropTypes.string,
+      last3months: PropTypes.string,
+      last6months: PropTypes.string,
+      lastYear: PropTypes.string,
       done: PropTypes.string,
     }),
     bookmark: PropTypes.shape({
@@ -401,6 +411,7 @@ Timebar.propTypes = {
   minimumRangeUnit: PropTypes.string,
   maximumRange: PropTypes.number,
   maximumRangeUnit: PropTypes.string,
+  stickToUnit: PropTypes.func,
   showLastUpdate: PropTypes.bool,
   locale: PropTypes.oneOf(['en', 'es', 'fr', 'id']),
 }
@@ -421,6 +432,9 @@ Timebar.defaultProps = {
       start: 'start',
       end: 'end',
       last30days: 'Last 30 days',
+      last3months: 'Last 3 months',
+      last6months: 'Last 6 months',
+      lastYear: 'Last year',
       done: 'Done',
     },
     bookmark: {

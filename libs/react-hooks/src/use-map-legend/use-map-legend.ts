@@ -8,7 +8,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { InteractionEvent } from '../use-map-interaction'
 import type { LegendLayer, LegendLayerBivariate } from './index'
 
-const getLegendId = (id = '') => {
+export const getLegendId = (id = '') => {
   return `legend_${id}`
 }
 

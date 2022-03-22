@@ -59,7 +59,6 @@
   cursor: pointer;
   font: var(--font-M);
   margin-left: var(--space-XS);
-  opacity: var(--opacity-secondary);
   color: var(--color-primary-blue);
   text-transform: none;
   max-width: calc(100% - 2rem);
@@ -68,8 +67,5 @@
 
 .disabled .Label {
   pointer-events: none;
-}
-
-.active {
-  opacity: var(--opacity-primary);
+  opacity: var(--opacity-secondary);
 }

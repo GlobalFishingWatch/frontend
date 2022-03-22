@@ -12,6 +12,7 @@ import {
   getDataviewsGeneratorConfigs,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
+  DataviewsGeneratorConfigsParams,
 } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import {
@@ -25,7 +26,7 @@ import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
-  selectHighlightedEvent,
+  selectHighlightedEvents,
   Range,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews } from 'features/app/app.selectors'
@@ -42,7 +43,7 @@ type GetGeneratorConfigParams = {
   rulers: Ruler[]
   debugOptions: DebugOptions
   highlightedTime?: Range
-  highlightedEvent?: ApiEvent
+  highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
   showTimeComparison?: boolean
 }
@@ -52,7 +53,7 @@ const getGeneratorsConfig = ({
   rulers,
   debugOptions,
   highlightedTime,
-  highlightedEvent,
+  highlightedEvents,
   bivariateDataviews,
   showTimeComparison,
 }: GetGeneratorConfigParams) => {
@@ -77,12 +78,15 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 
-  const generatorOptions = {
+  const generatorOptions: DataviewsGeneratorConfigsParams = {
     heatmapAnimatedMode,
-    highlightedEvent,
+    highlightedEvents,
     highlightedTime,
     debug: debugOptions.debug,
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+    customGeneratorMapping: {
+      [GeneratorType.VesselEvents]: GeneratorType.VesselEventsShapes,
+    },
   }
 
   try {
@@ -123,7 +127,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectRulers,
     selectDebugOptions,
     selectHighlightedTime,
-    selectHighlightedEvent,
+    selectHighlightedEvents,
     selectBivariateDataviews,
     selectShowTimeComparison,
   ],
@@ -133,7 +137,7 @@ const selectMapGeneratorsConfig = createSelector(
     rulers,
     debugOptions,
     highlightedTime,
-    highlightedEvent,
+    highlightedEvents,
     bivariateDataviews,
     showTimeComparison
   ) => {
@@ -143,7 +147,7 @@ const selectMapGeneratorsConfig = createSelector(
       rulers,
       debugOptions,
       highlightedTime,
-      highlightedEvent,
+      highlightedEvents,
       bivariateDataviews,
       showTimeComparison,
     })

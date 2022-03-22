@@ -9,6 +9,7 @@ import {
   DatasetTypes,
   ApiEvent,
   ApiEvents,
+  DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
 
 export type ResourcesState = Record<any, Resource>
@@ -18,10 +19,15 @@ export interface PartialStoreResources {
 
 const initialState: ResourcesState = {}
 
-const parseFishingEvent = (event: ApiEvent, index: number): ApiEvent => {
+export const getVesselIdFromDatasetConfig = (datasetConfig: DataviewDatasetConfig) => {
+  return (datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
+    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value) as string
+}
+
+const parseFishingEvent = (vesselId = '', event: ApiEvent, index: number): ApiEvent => {
   return {
     ...event,
-    id: `${event.type}-${index}`,
+    id: `${vesselId}-${event.type}-${index}`,
     start: DateTime.fromISO(event.start as string).toMillis(),
     end: DateTime.fromISO(event.end as string).toMillis(),
   }
@@ -34,7 +40,7 @@ export const fetchResourceThunk = createAsyncThunk(
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
-        resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
+      resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
         ? 'vessel'
         : 'json'
 
@@ -49,7 +55,11 @@ export const fetchResourceThunk = createAsyncThunk(
       }
       // TODO check by eventType when needed
       if (isEventsResource) {
-        return (data as ApiEvents).entries.map(parseFishingEvent)
+        const vesselId =
+          getVesselIdFromDatasetConfig(resource?.datasetConfig) || resource.url.split('/')[3] // grab vesselId from url
+        return (data as ApiEvents).entries.map((entry, index) =>
+          parseFishingEvent(vesselId, entry, index)
+        )
       }
       return data
     })

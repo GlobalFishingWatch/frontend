@@ -4,10 +4,14 @@ import type {
   CircleLayerSpecification,
   LineLayerSpecification,
   SymbolLayerSpecification,
-  GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
-import { GeneratorType, VesselEventsGeneratorConfig, MergedGeneratorConfig } from '../types'
+import {
+  GeneratorType,
+  VesselEventsGeneratorConfig,
+  MergedGeneratorConfig,
+  VesselsEventsSource,
+} from '../types'
 import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {
@@ -17,10 +21,6 @@ import {
   filterFeaturesByTimerange,
   getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
-
-interface VesselsEventsSource extends GeoJSONSourceSpecification {
-  id: string
-}
 
 export type GlobalVesselEventsGeneratorConfig = MergedGeneratorConfig<VesselEventsGeneratorConfig>
 
@@ -52,6 +52,7 @@ class VesselsEventsGenerator {
       showAuthorizationStatus,
       iconsPrefix
     ) as FeatureCollection
+
     const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
       geojson.features,
       start,
@@ -63,6 +64,7 @@ class VesselsEventsGenerator {
       type: 'geojson',
       data: { ...geojson, features: featuresFiltered },
     }
+
     const showTrackSegments = this._showTrackSegments(config)
 
     if (!showTrackSegments) {

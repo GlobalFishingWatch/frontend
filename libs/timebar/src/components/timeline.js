@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { scaleTime } from 'd3-scale'
 import dayjs from 'dayjs'
 import { throttle } from 'lodash'
-import { animated, Spring } from 'react-spring/renderprops'
+import { animated, Spring } from 'react-spring'
 import ResizeObserver from 'resize-observer-polyfill'
 import ImmediateContext from '../immediateContext'
 import {
@@ -17,6 +17,7 @@ import {
 } from '../utils/internal-utils'
 import { EVENT_SOURCE } from '../constants'
 import { getLast30Days } from '../utils'
+import TimelineContext from '../timelineContext'
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
@@ -25,8 +26,6 @@ import styles from './timeline.module.css'
 const DRAG_INNER = 'DRAG_INNER'
 const DRAG_START = 'DRAG_START'
 const DRAG_END = 'DRAG_END'
-
-export const TimelineContext = React.createContext({})
 
 class Timeline extends PureComponent {
   static contextType = ImmediateContext
@@ -267,7 +266,7 @@ class Timeline extends PureComponent {
   }
 
   onMouseUp = (event) => {
-    const { start, end, onChange } = this.props
+    const { start, end, onChange, stickToUnit } = this.props
     const { dragging, outerX, innerStartPx, outerDrag } = this.state
 
     if (dragging === null) {
@@ -294,9 +293,15 @@ class Timeline extends PureComponent {
       }
     }
     // on release, "stick" to day/hour
-    const stickUnit = isMoreThanADay(newStart, newEnd) ? 'day' : 'hour'
+    const stickedToUnit = (stickToUnit) ? stickToUnit(newStart, newEnd) : null
+    const stickUnit = stickedToUnit ||  (isMoreThanADay(newStart, newEnd) ? 'day' : 'hour')
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
+    if (newStart === newEnd) {
+      const mDate = dayjs(newStart).utc()
+      const mEndOf = mDate.add(1, stickUnit)
+      newEnd = mEndOf.toISOString()
+    }
 
     let source
     if (outerDrag === true) {
@@ -335,6 +340,7 @@ class Timeline extends PureComponent {
       onChange,
       onBookmarkChange,
       showLastUpdate,
+      trackGraphOrientation,
     } = this.props
     const {
       dragging,
@@ -378,6 +384,7 @@ class Timeline extends PureComponent {
           overallScale,
           svgTransform,
           tooltipContainer: this.tooltipContainer,
+          trackGraphOrientation,
         }}
       >
         <div
@@ -532,6 +539,7 @@ Timeline.propTypes = {
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
   bookmarkPlacement: PropTypes.string,
+  stickToUnit: PropTypes.func,
   showLastUpdate: PropTypes.bool,
 }
 

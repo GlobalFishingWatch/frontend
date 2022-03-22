@@ -13,8 +13,9 @@ interface SelectProps {
   options: SelectOption[]
   selectedOption?: SelectOption
   onSelect: SelectOnChange
-  onRemove: SelectOnChange
+  onRemove?: SelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
+  onToggleButtonClick?: (currentSelectedOption?: SelectOption) => void
   containerClassName?: string
   className?: string
   direction?: 'bottom' | 'top'
@@ -38,6 +39,7 @@ export function Select(props: SelectProps) {
     className = '',
     direction = 'bottom',
     disabled = false,
+    onToggleButtonClick,
   } = props
   const {
     isOpen,
@@ -59,7 +61,7 @@ export function Select(props: SelectProps) {
 
   const handleChange = useCallback(
     (option: SelectOption) => {
-      if (isItemSelected(selectedOption, option)) {
+      if (onRemove && isItemSelected(selectedOption, option)) {
         onRemove(option)
       } else {
         onSelect(option)
@@ -68,7 +70,16 @@ export function Select(props: SelectProps) {
     [onRemove, onSelect, selectedOption]
   )
 
+  const handleToggleButtonClick = useCallback(
+    (e) => {
+      if (onToggleButtonClick) onToggleButtonClick(selectedOption)
+    },
+    [onToggleButtonClick, selectedOption]
+  )
+
   const hasSelectedOptions = selectedOption !== undefined
+
+  const toggleButtonProps = getToggleButtonProps()
 
   return (
     <div className={containerClassName}>
@@ -81,7 +92,11 @@ export function Select(props: SelectProps) {
           className
         )}
       >
-        <div {...getToggleButtonProps()} className={styles.placeholderContainer}>
+        <div
+          {...toggleButtonProps}
+          className={styles.placeholderContainer}
+          onClick={onToggleButtonClick ? handleToggleButtonClick : toggleButtonProps.onClick}
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </div>
         <div className={styles.buttonsContainer}>
@@ -112,7 +127,9 @@ export function Select(props: SelectProps) {
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {highlight && !itemDisabled && <Icon icon={selected ? 'close' : 'tick'} />}
+                    {highlight && !itemDisabled && onRemove && (
+                      <Icon icon={selected ? 'close' : 'tick'} />
+                    )}
                   </li>
                 </Tooltip>
               )

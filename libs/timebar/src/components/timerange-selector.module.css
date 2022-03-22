@@ -56,7 +56,7 @@
 
 .actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .cta {
@@ -80,16 +80,23 @@
   outline: none;
 }
 
-.secondary {
+.lastX {
+  display: flex;
   background: transparent;
   border: 0.1rem solid var(--timebar-cta-btn-color);
   margin-right: 0.5rem;
 }
 
-.secondary:hover,
-.secondary:focus {
+.lastX path {
+  fill: white;
+}
+
+.lastX:hover,
+.lastX:focus {
+  color: white;
   background: rgba(255, 255, 255, 0.05);
   outline: none;
+  border: 0.1rem solid var(--timebar-cta-btn-color);
 }
 
 .disabled {

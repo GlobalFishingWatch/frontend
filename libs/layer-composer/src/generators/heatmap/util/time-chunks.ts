@@ -124,11 +124,15 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
  * @param availableIntervals a set of availableIntervals (ie one for each sublayer)
  * @param omitIntervals remove intervals for consideration (ie TimeCompare mode)
  */
-const getInterval = (
-  deltaMs: number,
+export const getInterval = (
+  activeStart: string,
+  activeEnd: string,
   availableIntervals: Interval[][],
   omitIntervals: Interval[] = []
 ): Interval => {
+
+  const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
+
   // Get intervals that are common to all dataset (initial array provided to ensure order from smallest to largest)
   const commonIntervals = intersection(INTERVAL_ORDER, ...availableIntervals)
   const intervals = commonIntervals.filter((interval) => !omitIntervals.includes(interval))
@@ -253,13 +257,11 @@ export const getActiveTimeChunks = (
   activeEnd: string,
   datasetStart: string,
   datasetEnd: string,
-  availableIntervals: Interval[][],
-  omitIntervals: Interval[] = []
+  interval: Interval
 ): TimeChunks => {
   const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
-  const finalInterval = getInterval(deltaMs, availableIntervals, omitIntervals)
 
-  const finalIntervalConfig = CONFIG_BY_INTERVAL[finalInterval]
+  const finalIntervalConfig = CONFIG_BY_INTERVAL[interval]
   const visibleStartFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeStart))
   const visibleStartFrame = getVisibleStartFrame(visibleStartFrameRaw)
   const visibleEndFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeEnd))
@@ -273,7 +275,7 @@ export const getActiveTimeChunks = (
     delta: deltaMs,
     deltaInIntervalUnits,
     deltaInDays: Duration.fromMillis(deltaMs).as('days'),
-    interval: finalInterval,
+    interval,
     activeChunkFrame: 0,
     activeSourceId: '',
     visibleStartFrame,

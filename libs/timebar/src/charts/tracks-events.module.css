@@ -9,47 +9,54 @@
 
 .event {
   transform: translateY(-50%);
-  border-radius: 7px;
-  border: 2px solid transparent;
   cursor: pointer;
+  background: var(--background-color);
 }
 
 .event:hover,
 .event.highlighted {
-  height: 18px !important;
+  background: white;
 }
 
-.tooltip {
-  background: var(--timebar-white);
-  position: absolute;
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-  color: var(--timebar-main-background-color);
-  padding: 6px 8px;
-  transform: translate(-50%, -100%);
-  top: 10px;
-  z-index: var(--timebar-z-tooltips);
-  font-weight: normal;
-  min-width: fit-content;
+.fishing {
+  border-radius: 99px;
+  height: 4px;
+  min-width: 4px;
+  background: var(--background-color);
 }
 
-.tooltip::after {
-  background: var(--timebar-white);
-  content: ' ';
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  left: calc(50% - 2px);
-  transform: rotate(45deg);
-  bottom: -5px;
+.port_visit {
+  z-index: 1;
+  height: 8px;
+  min-width: 8px;
+  border: 1px solid var(--timebar-main-background-color);
 }
 
-.tooltipText {
-  margin-left: 10px;
+.encounter,
+.loitering {
+  background: transparent;
+  height: 0;
+  box-sizing: border-box;
+  border-style: solid;
+  border-image-repeat: round;
 }
 
-.tooltipDate {
-  text-transform: uppercase;
-  font-weight: bold;
+.encounter {
+  border-image: var(--encounterIcon);
+  border-width: 6px;
+  border-image-slice: 50% 6 fill;
+}
+
+.loitering {
+  border-image: var(--loiteringIcon);
+  border-width: 6px;
+  border-image-slice: 50% 6 fill;
+}
+
+.encounter:hover,
+.encounter.highlighted,
+.loitering:hover,
+.loitering.highlighted {
+  filter: brightness(1.75);
+  background: transparent;
 }
