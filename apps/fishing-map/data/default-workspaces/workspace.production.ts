@@ -98,22 +98,6 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: EEZ_DATAVIEW_ID,
     },
-    // {
-    //   id: 'context-layer-mpa-no-take',
-    //   config: {
-    //     color: '#F4511F',
-    //     visible: false,
-    //   },
-    //   dataviewId: MPA_NO_TAKE_DATAVIEW_ID,
-    // },
-    // {
-    //   id: 'context-layer-mpa-restricted',
-    //   config: {
-    //     color: '#F09300',
-    //     visible: false,
-    //   },
-    //   dataviewId: MPA_RESTRICTED_DATAVIEW_ID,
-    // },
     {
       id: 'context-layer-mpa',
       config: {
@@ -121,6 +105,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: MPA_DATAVIEW_ID,
+    },
+    {
+      id: 'context-layer-fao-areas',
+      config: {
+        visible: false,
+      },
+      dataviewId: FAO_AREAS_DATAVIEW_ID,
     },
     {
       id: 'context-layer-rfmo',
@@ -131,13 +122,6 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: RFMO_DATAVIEW_ID,
     },
     {
-      id: 'context-layer-high-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: HIGH_SEAS_DATAVIEW_ID,
-    },
-    {
       id: 'context-layer-graticules',
       config: {
         visible: false,
@@ -145,11 +129,11 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: GRATICULES_DATAVIEW_ID,
     },
     {
-      id: 'context-layer-fao-areas',
+      id: 'context-layer-high-seas',
       config: {
         visible: false,
       },
-      dataviewId: FAO_AREAS_DATAVIEW_ID,
+      dataviewId: HIGH_SEAS_DATAVIEW_ID,
     },
   ],
 }
