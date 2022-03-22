@@ -1,0 +1,59 @@
+.Header {
+  height: var(--header-band-height-S);
+  background: #eff5f8;
+  font-family: var(--GFW-font-family);
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+}
+
+.headerLinks {
+  font-family: Roboto, sans-serif !important;
+}
+
+.titleCover .title {
+  font: var(--GFW-font-XXL);
+  width: 100%;
+  max-width: var(--desktop-max-width);
+  font-weight: 400;
+  padding: 8rem 5rem 0;
+  margin: 0 auto;
+}
+
+.userInitials {
+  font-weight: 600;
+}
+
+.userFullname {
+  font-weight: bolder;
+}
+
+.logoutLink {
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 860px) {
+  .userMenuItem > ul.userMenuItem,
+  .userMenuItem > ul.userMenuItem > li {
+    min-width: fit-content !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .Header {
+    height: auto;
+  }
+
+  .titleCover {
+    background-position-x: left;
+  }
+
+  .titleCover .title {
+    font-size: 32px;
+    padding: 6rem 2rem 0;
+  }
+
+  ul li.userMenuItem > div {
+    padding: var(--space-XS) var(--space-M);
+  }
+}

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
@@ -26,6 +26,7 @@ import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectAnalysisArea, selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   Range,
   changeSettings,
@@ -42,7 +43,7 @@ export const TimeRangeAtom = atom<Range | null>({
   effects: [
     ({ trigger, setSelf, onSet }) => {
       const redirectUrl =
-        typeof window !== undefined ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
+        typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
       const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
 
       if (trigger === 'get') {
@@ -79,7 +80,7 @@ export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const fitMapBounds = useMapFitBounds()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const analysisAreaBounds = useSelector(selectAnalysisArea)?.bounds
 
   const onTimebarChange = useCallback(
@@ -115,7 +116,7 @@ export const useTimerangeConnect = () => {
 
 export const useDisableHighlightTimeConnect = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dispatchDisableHighlightedTime = useCallback(() => {
     if (highlightedTime !== undefined) {
@@ -134,7 +135,7 @@ export const useDisableHighlightTimeConnect = () => {
 
 export const useHighlightedEventsConnect = () => {
   const highlightedEvents = useSelector(selectHighlightedEvents)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvents = useCallback(
     (eventIds: string[]) => {
@@ -155,7 +156,7 @@ export const useHighlightedEventsConnect = () => {
 }
 
 export const useTimebarVisualisationConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
 
   const { dispatchQueryParams } = useLocationConnect()

@@ -34,9 +34,10 @@ export interface IconButtonProps {
   style?: CSSProperties
 }
 
-const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(
-  '--color-danger-red'
-)
+const warningVarColor =
+  typeof window !== 'undefined'
+    ? getComputedStyle(document.documentElement).getPropertyValue('--color-danger-red')
+    : 'rgb(360, 62, 98)'
 
 function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   const {

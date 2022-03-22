@@ -2,9 +2,10 @@ import React, { useState, useCallback } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { selectReadOnly } from 'features/app/app.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
 import TooltipContainer from '../../workspace/shared/TooltipContainer'
 import hintsConfig, { HintId } from './hints.content'
 import styles from './Hint.module.css'
@@ -21,7 +22,7 @@ function Hint({ id, className }: HintProps) {
   const { t, ready } = useTranslation(['translations', 'helpHints'])
   const { placement, imageUrl, pulse, openedByDefault } = hintsConfig[id]
   const isReadOnly = useSelector(selectReadOnly)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [visible, setVisible] = useState(openedByDefault || false)
   const hintsDismissed = useSelector(selectHintsDismissed)
 

@@ -1,15 +1,16 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBasemapDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { useMapStyle } from 'features/map/map-style.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
 
 const DebugMenu: React.FC = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const debugOptions = useSelector(selectDebugOptions)
   const locationQuery = useSelector(selectLocationQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()

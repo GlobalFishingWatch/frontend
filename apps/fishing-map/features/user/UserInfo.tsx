@@ -1,17 +1,18 @@
 import React, { useCallback, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import { Button, Spinner } from '@globalfishingwatch/ui-components'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { SUPPORT_EMAIL } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './User.module.css'
 import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged, selectUserGroupsClean } from './user.selectors'
 
 function UserInfo() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
   const userGroups = useSelector(selectUserGroupsClean)

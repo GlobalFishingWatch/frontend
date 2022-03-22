@@ -1,0 +1,70 @@
+.container {
+  margin-top: var(--space-L);
+}
+
+.container h1 {
+  text-transform: uppercase;
+  padding: var(--space-S);
+}
+
+.fieldsRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.fieldsColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  font: var(--font-S);
+  padding: var(--space-S);
+}
+
+.field:last-child {
+  flex-grow: 2;
+}
+
+.applicationName {
+  min-width: 33%;
+}
+
+.input > input,
+.selectContainer > div,
+.select li {
+  background: var(--secondary-background-color);
+  border: 0;
+}
+
+.select,
+.select:hover {
+  border: 0;
+}
+
+.field label {
+  margin-bottom: var(--space-XS);
+}
+
+.editor {
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+  background: var(--secondary-background-color);
+  word-break: break-all;
+  display: flex;
+  width: 100%;
+  height: var(--size-XL);
+  padding: var(--space-XS);
+}
+
+.createBtn {
+  margin-top: var(--space-M);
+  width: 50%;
+  align-self: end;
+}
+
+@media (max-width: 767px) {
+  .fieldsRow {
+    flex-direction: column;
+  }
+}

@@ -1,7 +1,8 @@
 import { useEffect, useCallback, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { isGFWUser } from 'features/user/user.slice'
 import { RootState } from 'store'
+import { useAppDispatch } from 'features/app/app.hooks'
 
 type DebugMenu = [boolean, () => void]
 
@@ -12,19 +13,14 @@ type SecretMenuProps = {
   selectMenuActive?: (state: RootState) => boolean
 }
 
-export const useSecretKeyboardCombo = ({
-  key,
-  onToggle,
-  repeatNumber = 7,
-}: SecretMenuProps) => {
+export const useSecretKeyboardCombo = ({ key, onToggle, repeatNumber = 7 }: SecretMenuProps) => {
   const gfwUser = useSelector(isGFWUser)
   const numTimesDebugKeyDown = useRef(0)
   const debugKeyDownInterval = useRef<number>(0)
 
-
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key.toLocaleLowerCase() === key.toLocaleLowerCase()) {
+      if (event?.key?.toLocaleLowerCase() === key.toLocaleLowerCase()) {
         window.clearTimeout(debugKeyDownInterval.current)
         numTimesDebugKeyDown.current++
         debugKeyDownInterval.current = window.setTimeout(() => {
@@ -49,14 +45,13 @@ export const useSecretKeyboardCombo = ({
   }, [gfwUser, onKeyDown])
 }
 
-
 const useSecretMenu = ({
   key,
   onToggle,
   repeatNumber,
   selectMenuActive = (state: RootState) => false,
 }: SecretMenuProps): DebugMenu => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const dispatchToggleMenu = useCallback(() => {
     dispatch(onToggle())
   }, [dispatch, onToggle])
@@ -65,4 +60,4 @@ const useSecretMenu = ({
   return [menuActive, dispatchToggleMenu]
 }
 
-export default useSecretMenu 
+export default useSecretMenu

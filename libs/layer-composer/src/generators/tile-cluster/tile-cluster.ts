@@ -52,7 +52,7 @@ class TileClusterGenerator {
     const activeFilter = ['case', ['==', ['get', 'event_id'], config.currentEventId || null]]
     const layers = [
       {
-        id: 'clusters',
+        id: `${config.id}-clusters`,
         type: 'circle',
         source: config.id,
         'source-layer': 'points',
@@ -78,7 +78,7 @@ class TileClusterGenerator {
         },
       },
       {
-        id: 'cluster_count',
+        id: `${config.id}-cluster_count`,
         type: 'symbol',
         source: config.id,
         'source-layer': 'points',
@@ -101,23 +101,15 @@ class TileClusterGenerator {
         },
       },
       {
-        id: 'unclustered_point',
+        id: `${config.id}-unclustered_point`,
         type: 'symbol',
         source: config.id,
         'source-layer': 'points',
         filter: ['<=', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         layout: {
           'icon-allow-overlap': true,
-          'icon-size': [
-            ...activeFilter,
-            1.5,
-            1,
-          ],
-          'icon-image': [
-            ...activeFilter,
-            'encounter-highlight',
-            'encounter',
-          ],
+          'icon-size': [...activeFilter, 1.5, 1],
+          'icon-image': [...activeFilter, 'encounter-highlight', 'encounter'],
         },
         metadata: {
           interactive: true,
@@ -126,20 +118,6 @@ class TileClusterGenerator {
           group: Group.Cluster,
         },
       },
-      // {
-      //   id: 'unclustered_point_icon',
-      //   source: config.id,
-      //   'source-layer': 'points',
-      //   type: 'symbol',
-      //   filter: ['==', ['get', 'count'], 1],
-      //   layout: {
-      //     'icon-image': 'carrier_portal_encounter',
-      //     'icon-allow-overlap': true,
-      //   },
-      //   metadata: {
-      //     group: Group.Cluster,
-      //   },
-      // },
     ]
     return layers as LayerSpecification[]
   }

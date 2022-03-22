@@ -49,7 +49,8 @@ const ResetWorkspaceConfig = {
 }
 
 const AppModals = () => {
-  const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
+  const isFirstTimeVisit =
+    typeof window !== 'undefined' ? !localStorage.getItem(MARINE_MANAGER_LAST_VISIT) : false
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(isGFWUser)
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
@@ -105,6 +106,7 @@ const AppModals = () => {
           title="Big query datasets creation 🧠"
           isOpen={bigqueryActive}
           onClose={dispatchBigQueryMenu}
+          contentClassName={styles.bqModal}
         >
           <BigQueryMenu />
         </Modal>

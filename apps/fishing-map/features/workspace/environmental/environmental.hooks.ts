@@ -36,11 +36,12 @@ export const useEnvironmentalBreaksUpdate = () => {
                 data.length > 1000 ? sample(data, Math.round(data.length / 100), Math.random) : data
 
               // using ckmeans as jenks
-              const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) => clusterFirst)
+              const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) =>
+                parseFloat(clusterFirst.toFixed(2))
+              )
               return {
                 id: dataviewsId[0],
                 config: {
-                  opacity: undefined,
                   breaks: ck,
                 },
               }
@@ -57,28 +58,9 @@ export const useEnvironmentalBreaksUpdate = () => {
     [upsertDataviewInstance]
   )
 
-  const hideLayerWhileLoading = useCallback(
-    (dataviews) => {
-      const dataviewInstances = dataviews?.flatMap((dataview) => {
-        return {
-          id: dataview.id,
-          config: {
-            opacity: 0,
-          },
-        }
-      })
-      if (dataviewInstances) {
-        upsertDataviewInstance(dataviewInstances)
-      }
-    },
-    [upsertDataviewInstance]
-  )
-
   useEffect(() => {
     if (sourcesLoaded) {
       updateBreaksByViewportValues(dataviewFeatures, bounds)
-    } else {
-      hideLayerWhileLoading(dataviews)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourcesLoaded])

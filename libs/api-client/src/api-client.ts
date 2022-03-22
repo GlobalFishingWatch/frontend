@@ -15,9 +15,14 @@ export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
 const AUTH_PATH = 'auth'
 
+export interface V2MessageError {
+  detail: string
+  title: string
+}
 export interface ResponseError {
   status: number
   message: string
+  messages?: V2MessageError[]
 }
 
 interface UserTokens {
@@ -52,18 +57,27 @@ const processStatus = (response: Response): Promise<Response> => {
       if (response.status >= 200 && response.status < 300) {
         return resolve(response)
       }
-      let authError
+      // Compatibility with v1 and v2 errors format
+      const errors = {
+        message: '',
+        messages: [],
+      }
       if (response.status >= 400 && response.status < 500) {
-        authError = await response.text().then((text) => {
+        await response.text().then((text) => {
           try {
             const res = JSON.parse(text)
-            return res?.error || res?.message
+            errors.message = res.message
+            errors.messages = res.messages
           } catch (e: any) {
-            return response.statusText
+            errors.message = statusText
           }
         })
       }
-      return reject({ status, message: authError || statusText })
+      return reject({
+        status,
+        message: errors?.message || statusText,
+        messages: errors.messages,
+      })
     } catch (e: any) {
       return reject({ status, message: statusText })
     }
@@ -122,7 +136,7 @@ export class GFW_API_CLASS {
   getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
       locale ||
-      (typeof localStorage !== undefined ? localStorage.getItem('i18nextLng') : '') ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
     return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`
@@ -292,7 +306,12 @@ export class GFW_API_CLASS {
               case 'default':
                 return res
               case 'json':
-                return parseJSON(res)
+                return parseJSON(res).catch((e) => {
+                  // When an error occurs while parsing and
+                  // http response is no content, returns an
+                  // empty response instead of an raising error
+                  if (res.status === 204) return
+                })
               case 'blob':
                 return res.blob()
               case 'text':
@@ -343,7 +362,10 @@ export class GFW_API_CLASS {
               throw e
             }
           }
-          return this._internalFetch(url, options, ++refreshRetries, waitLogin)
+          if (e.status !== 400) {
+            return this._internalFetch(url, options, ++refreshRetries, waitLogin)
+          }
+          throw e
         } else {
           if (this.debug) {
             if (refreshRetries >= this.maxRefreshRetries) {

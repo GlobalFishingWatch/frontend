@@ -17,7 +17,7 @@
   "dependencies": {
     "@globalfishingwatch/ui-components": "12.5.0",
     "@math.gl/web-mercator": "^3.5.5",
-    "@reduxjs/toolkit": "1.7.2",
+    "@reduxjs/toolkit": "1.8.0",
     "@turf/bearing": "^6.5.0",
     "auth-middleware": "https://github.com/GlobalFishingWatch/auth-middleware",
     "classnames": "^2.3.1",
@@ -56,7 +56,7 @@
     "@types/react-dom": "^16.9.9",
     "@types/react-image-gallery": "^1.0.3",
     "@types/react-map-gl": "^5.2.7",
-    "@types/react-redux": "^7.1.20",
+    "@types/react-redux": "7.1.23",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
     "@types/redux-first-router": "2.1.8",

@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import {
@@ -19,7 +19,6 @@ import {
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -33,7 +32,9 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/analysis/analysis.selectors'
-import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
+import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -54,6 +55,7 @@ import {
   fetchViirsInteractionThunk,
   selectViirsInteractionStatus,
   ApiViirsStats,
+  fetchBQEventThunk,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 
@@ -107,7 +109,7 @@ export const useGeneratorsConnect = () => {
 
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
@@ -116,7 +118,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useMapSourceTilesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
   const viirsPromiseRef = useRef<any>()
@@ -159,12 +161,13 @@ export const useClickedEventConnect = () => {
       (f) => f.generatorType === GeneratorType.TileCluster
     )
     if (clusterFeature?.properties?.expansionZoom) {
-      const { count, expansionZoom, lat, lng } = clusterFeature.properties
+      const { count, expansionZoom, lat, lng, lon } = clusterFeature.properties
+      const longitude = lng || lon
       if (count > 1) {
-        if (encounterSourceLoaded) {
+        if (tilesClusterLoaded && lat && longitude) {
           setMapCoordinates({
             latitude: lat,
-            longitude: lng,
+            longitude,
             zoom: expansionZoom,
           })
           cleanFeatureState('click')
@@ -236,13 +239,16 @@ export const useClickedEventConnect = () => {
       viirsPromiseRef.current = dispatch(fetchViirsInteractionThunk({ feature: viirsFeature }))
     }
 
-    const encounterFeature = event.features.find(
+    const tileClusterFeature = event.features.find(
       (f) => f.generatorType === GeneratorType.TileCluster
     )
-    if (encounterFeature) {
-      eventsPromiseRef.current = dispatch(fetchEncounterEventThunk(encounterFeature))
+    if (tileClusterFeature) {
+      const bqPocQuery = tileClusterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
+      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
+      eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
     }
   }
+
   return {
     clickedEvent,
     fishingInteractionStatus,
@@ -289,7 +295,7 @@ export type TooltipEvent = {
 
 export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
   const highlightedEvents = useSelector(selectHighlightedEvents)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceDispatch = useCallback(

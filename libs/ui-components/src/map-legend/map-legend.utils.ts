@@ -31,6 +31,8 @@ export const formatLegendValue = ({
   }
   let formattedValue = roundValues ? number.toFixed(0) : number.toFixed(DECIMALS)
   if (number === 0) formattedValue = '0'
+  else if (Math.abs(number) >= 1000000000)
+    formattedValue = `${(number / 1000000000).toFixed(DECIMALS).replace(/\.?0+$/, '')}B`
   else if (Math.abs(number) >= 1000000)
     formattedValue = `${(number / 1000000).toFixed(DECIMALS).replace(/\.?0+$/, '')}M`
   else if (Math.abs(number) >= 1000)

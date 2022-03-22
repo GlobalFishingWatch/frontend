@@ -1,0 +1,48 @@
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-S);
+  border-bottom: var(--border);
+  height: 5.2rem;
+  z-index: 1000;
+  position: relative;
+}
+
+.logoLink {
+  line-height: 0;
+  margin-right: auto;
+}
+
+.logo {
+  width: 18rem;
+  height: auto;
+}
+
+:global(.printing) .logo {
+  margin-left: 0;
+}
+
+@media print {
+  .logo {
+    margin-left: 0;
+  }
+}
+
+.importButton {
+  width: var(--size-M);
+  height: var(--size-M);
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  transition: var(--transition);
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: var(--color-primary-blue);
+  background-color: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+}

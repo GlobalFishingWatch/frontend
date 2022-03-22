@@ -73,8 +73,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   const initialFeedbackState = {
     date: new Date().toISOString(),
-    userAgent: navigator.userAgent,
-    resolution: `${window.innerWidth}x${window.innerHeight}px`,
+    userAgent: typeof window !== 'undefined' ? navigator.userAgent : '',
+    resolution: typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}px` : '',
   }
 
   const [feedbackData, setFeedbackData] = useState<FeedbackData>(initialFeedbackState)

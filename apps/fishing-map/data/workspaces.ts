@@ -27,11 +27,11 @@ export enum WorkspaceCategories {
 // Contextual layers dataviews by environment
 export const BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
 export const EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
-export const MPA_NO_TAKE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 99 : 179
-export const MPA_RESTRICTED_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 100 : 180
 export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 export const HIGH_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 97 : 174
+export const GRATICULES_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 246 : undefined
+export const FAO_AREAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 245 : 285
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
@@ -47,6 +47,7 @@ export const TEMPLATE_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 12
 export const TEMPLATE_POINTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 207 : 274
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223
 export const TEMPLATE_ACTIVITY_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 234 : 275
+export const TEMPLATE_CLUSTERS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 243 : 284
 
 export const TEMPLATE_DATAVIEW_IDS = [
   TEMPLATE_USER_TRACK_ID,
@@ -55,6 +56,7 @@ export const TEMPLATE_DATAVIEW_IDS = [
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
   TEMPLATE_POINTS_DATAVIEW_ID,
   TEMPLATE_ACTIVITY_DATAVIEW_ID,
+  TEMPLATE_CLUSTERS_DATAVIEW_ID,
 ]
 
 export const PRESENCE_DATAVIEWS = [

@@ -1,5 +1,5 @@
 // import { bindActionCreators } from 'redux'
-import { useSelector, useDispatch, batch } from 'react-redux'
+import { useSelector, batch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
@@ -64,7 +64,7 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
 }
 
 export const useDatasetModalConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const datasetModal = useSelector(selectDatasetModal)
   const datasetCategory = useSelector(selectDatasetCategory)
   const editingDatasetId = useSelector(selectEditingDatasetId)
@@ -200,7 +200,7 @@ export const useAutoRefreshImportingDataset = (
   }, [dataset, dispatchFetchDataset, refreshTimeout])
 }
 
-export const useAddDataset = ({datasetCategory, onSelect}: NewDatasetTooltipProps) => {
+export const useAddDataset = ({ datasetCategory, onSelect }: NewDatasetTooltipProps) => {
   const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
   return () => {
     if (datasetCategory === DatasetCategory.Context) {

@@ -96,7 +96,7 @@ class Timeline extends PureComponent {
   }
 
   onWindowResize = () => {
-    if (this.graphContainer !== null) {
+    if (this.graphContainer !== null && typeof window !== 'undefined') {
       const graphStyle = window.getComputedStyle(this.graphContainer)
       const outerX = parseFloat(this.graphContainer.getBoundingClientRect().left)
       const relativeOffsetX = -this.node.offsetLeft

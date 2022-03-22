@@ -154,6 +154,8 @@ cp apps/fishing-map/.build.env.sample apps/fishing-map/.build.env
 # Edit apps/fishing-map/.build.env and save your changes
 cp apps/vessel-history/.build.env.sample apps/vessel-history/.build.env
 # Edit apps/vessel-history/.build.env and save your changes
+cp apps/vessel-history/.build.env.sample apps/api-portal/.build.env
+# Edit apps/api-portal/.build.env and save your changes
 ```
 
 3. Build the apps:
@@ -163,6 +165,7 @@ npx env-cmd -f apps/fishing-map/.build.env nx build fishing-map --parallel
 nx run fishing-map:docker-prepare
 npx env-cmd -f apps/vessel-history/.build.env nx build vessel-history --parallel
 nx run vessel-history:docker-prepare
+npx env-cmd -f apps/api-portal/.build.env nx build api-portal --parallel
 ```
 
 4. Spin up docker compose:

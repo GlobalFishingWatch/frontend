@@ -15,7 +15,7 @@
     "download": "Descargar informe",
     "downloadLogin": "Necesita iniciar sesión para descargar el informe (gratis, 2 minutos)",
     "empty": "Los datos seleccionados aparecerán aquí",
-    "error": "There was a problem loading the data, please try refreshing the page",
+    "error": "Hubo un problema al cargar los datos, por favor intente actualizar la página",
     "errorMessage": "Ha habido un error",
     "errorPeriodComparisonDateRange": "Error en el rango de fechas. La comparación debe iniciarse después del inicio de la línea base.",
     "errorTimeComparisonDataviews": "Al menos una capa de actividad debe estar habilitada",
@@ -24,7 +24,7 @@
     "experimental": "Experimental",
     "filteredBy": "filtrado por",
     "noData": "No hay datos disponibles",
-    "noDataByArea": "No data available for the selected area",
+    "noDataByArea": "no hay datos disponibles para el area seleccionada",
     "onlyAISAllowed": "Sólo los conjuntos de datos AIS pueden descargarse",
     "periodComparison": "Comparación entre periodos",
     "periodComparison1st": "inicio de línea base",
@@ -34,6 +34,23 @@
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
     "vesselFlags": "de embarcaciones abanderadas con"
+  },
+  "bigQuery": {
+    "aggregateAvg": "Average",
+    "aggregateSum": "Sum",
+    "aggregationMode": "Aggregation mode *",
+    "create": "Create",
+    "query": "Query",
+    "queryError": "There is an error in the query",
+    "runCost": "This query will move:",
+    "runCostCheck": "Check creation cost",
+    "selectVisualisation": "Select a visualisation mode first",
+    "validationError": "Query, name, visualisation mode, aggregation mode and checking creation cost are required",
+    "visualiationMode": "Visualisation mode",
+    "visualisationActivity": "Activity (heatmap)",
+    "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
+    "visualisationEvents": "Events (clusters)",
+    "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
   },
   "common": {
     "active_after": "Activo después de",
@@ -49,9 +66,9 @@
     "context_area_other": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
     "country_other": "paises",
-    "date": "Date",
-    "date_one": "Date",
-    "date_other": "Dates",
+    "date": "Fecha",
+    "date_one": "Fecha",
+    "date_other": "Fechas",
     "dateRange": "entre {{start}} y {{end}}",
     "days": "días",
     "days_one": "día",
@@ -153,16 +170,16 @@
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental",
     "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
-    "uploadYourOwn": "Upload your own",
-    "datasetSpecific": {
-      "public-eez-land": {
-        "dataWarning": "This platform uses EEZ reference layers from Marine Regions",
-        "dataWarningDetail": "This platform uses reference layers (shapefiles) from Marine Regions for exclusive economic zones and boundaries. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.marineregions.org'>www.marineregions.org</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
-      },
-      "public-mpa-all": {
-        "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
-        "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
-      }
+    "uploadYourOwn": "Subir una propia"
+  },
+  "dataview": {
+    "context-layer-eez": {
+      "dataWarning": "Esta plataforma utiliza capas de referencia ZEE de la fuente Marine Regions",
+      "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente Marine Regions para Zonas Económicas Exclusivas y límites. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite <a href='http://www.marineregions.org'>www.marineregions.org</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> and <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
+    },
+    "context-layer-mpa": {
+      "dataWarning": "Esta plataforma utiliza capas de referencia AMP de la fuente World Database on Protected Areas.",
+      "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente World Database on Protected Areas para áreas marinas protegidas. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> and <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
     }
   },
   "download": {
@@ -362,8 +379,8 @@
     "selected": "seleccionado"
   },
   "timebar": {
-    "fitOnThisDates": "Fit time range to these dates",
-    "focusOnThisDay": "Focus time range on this day",
+    "fitOnThisDates": "Ajustar rango de tiempo a estas fechas",
+    "focusOnThisDay": "Ajustar rango de tiempo a este día",
     "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
   },
   "timebarSettings": {

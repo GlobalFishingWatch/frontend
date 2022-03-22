@@ -2,14 +2,20 @@ import React, { Fragment } from 'react'
 import cx from 'classnames'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './Header.module.css'
-import navigation from './Header.links'
+import navigation, { MenuItem } from './Header.links'
 
 interface HeaderProps {
+  children?: React.ReactNode
   mini?: boolean
   inverted?: boolean
 }
+interface HeaderMenuItemProps {
+  index: number
+  item: MenuItem
+  mini?: boolean
+}
 
-export function Header({ mini = false, inverted = false }: HeaderProps) {
+export function Header({ children, mini = false, inverted = false }: HeaderProps) {
   return (
     <div
       className={cx(styles.gfwHeaderContainer, { [styles.gfwHeaderContainerInverted]: inverted })}
@@ -35,34 +41,44 @@ export function Header({ mini = false, inverted = false }: HeaderProps) {
             <ul className={styles.navList} role="menubar">
               {navigation.map(
                 (item, index) =>
-                  (!mini || (mini && item.mini)) && (
-                    <li key={index} role="menuitem">
-                      <a href={item.link}>{item.label}</a>
-                      {!mini && item.childs && item.childs.length > 0 && (
-                        <Fragment>
-                          <input
-                            name={`accordion-toggle-${index}`}
-                            className={styles.accordionToggle}
-                            type="checkbox"
-                          />
-                          <ul role="menu" className={styles.navListSubMenu}>
-                            {item.childs.map((child, index) => (
-                              <li key={index} role="menuitem">
-                                <a href={child.link}>
-                                  <span>{child.label}</span>
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </Fragment>
-                      )}
-                    </li>
-                  )
+                  (!mini || (mini && item.mini)) && HeaderMenuItem({ index, item, mini })
               )}
+              {!!children && children}
             </ul>
           </nav>
         </div>
       </header>
     </div>
+  )
+}
+
+export function HeaderMenuItem({ index, item, mini = false }: HeaderMenuItemProps): JSX.Element {
+  return (
+    <li key={index} role="menuitem" className={item.className}>
+      {((item.link || item.onClick) && (
+        <a href={item.link} onClick={item.onClick}>
+          {item.label}
+        </a>
+      )) || <div>{item.label}</div>}
+      {!mini && item.childs && item.childs.length > 0 && (
+        <Fragment>
+          <input
+            name={`accordion-toggle-${index}`}
+            className={styles.accordionToggle}
+            type="checkbox"
+          />
+          <ul role="menu" className={cx([styles.navListSubMenu, item.className])}>
+            {item.childs.map((child, childIndex) => (
+              <HeaderMenuItem
+                key={`${index}-child-${childIndex}`}
+                index={childIndex}
+                item={child}
+                mini={mini}
+              />
+            ))}
+          </ul>
+        </Fragment>
+      )}
+    </li>
   )
 }

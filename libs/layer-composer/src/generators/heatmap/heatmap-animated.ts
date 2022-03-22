@@ -19,11 +19,7 @@ import {
 import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
 import { Group } from '../../types'
-import {
-  API_ENDPOINTS,
-  HEATMAP_DEFAULT_MAX_ZOOM,
-  HEATMAP_MODE_COMBINATION,
-} from './config'
+import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, pickActiveTimeChunk } from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
