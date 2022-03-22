@@ -84,6 +84,7 @@
     "events": "Eventos",
     "feedback": "Retorno",
     "fishing": "Pesca",
+    "from": "from",
     "help": "Ajuda",
     "hideAllHelpHints": "Ignorar Todos",
     "hideHelpHint": "Ignorar",
@@ -316,6 +317,8 @@
     "editPolygonHint": "Clique nos cantos do polígono para ajustar suas coordenadas",
     "filterClose": "Fechar filtros",
     "filterOpen": "Abrir filtros",
+    "flagState": "Flag State",
+    "flagState_one": "Flag State",
     "flagState_other": "Estado de Bandeira",
     "fleet_other": "Frotas",
     "gearType_other": "Petrechos de pesca",
@@ -338,6 +341,7 @@
     "source": "Fonte",
     "source_one": "Fonte",
     "source_other": "Fontes",
+    "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combinar camadas",
       "split": "Separar camadas"
@@ -494,6 +498,7 @@
     "emptyStateEnvironment": "Carregue espaços de trabalho personalizados como telemetria animal clicando no ícone de 'mais'.",
     "emptyStateVessels": "As embarcações selecionadas na busca ou clicando nas células grid de atividade aparecerão aqui.",
     "nameInput": "Nome do espaço de trabalho",
+    "noVesselInFilters": "No vessels match your current filters",
     "new": "Novo espaço de trabalho",
     "privateTitle_other": "Espaço de trabalho privado",
     "remove": "Remover espaço de trabalho",
