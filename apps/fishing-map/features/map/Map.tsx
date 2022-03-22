@@ -32,7 +32,6 @@ import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
@@ -49,7 +48,7 @@ import useRulers from './rulers/rulers.hooks'
 import { useSetMapIdleAtom } from './map-state.hooks'
 import {
   useAllMapSourceTilesLoaded,
-  useMapSourceTilesLoaded,
+  useMapClusterTilesLoaded,
   useMapSourceTilesLoadedAtom,
 } from './map-sources.hooks'
 import { selectDrawMode, SliceInteractionEvent } from './map.slice'
@@ -191,7 +190,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const portalledLegend = !showTimeComparison
 
   const mapLoaded = useMapLoaded()
-  const encounterSourceLoaded = useMapSourceTilesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const tilesClusterLoaded = useMapClusterTilesLoaded()
 
   const getCursor = useCallback(
     (state) => {
@@ -204,11 +203,17 @@ const MapWrapper = (): React.ReactElement | null => {
         const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
         const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
-        const isCluster = hoveredTooltipEvent.features.find(
+        const clusterFeature = hoveredTooltipEvent.features.find(
           (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
         )
-        if (isCluster) {
-          return encounterSourceLoaded ? 'zoom-in' : 'progress'
+
+        if (clusterFeature) {
+          if (!tilesClusterLoaded) {
+            return 'progress'
+          }
+          const { expansionZoom, lat, lng, lon } = clusterFeature.properties
+          const longitude = lng || lon
+          return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
         }
         const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
           (f) => f.category === DataviewCategory.Vessels
@@ -222,7 +227,7 @@ const MapWrapper = (): React.ReactElement | null => {
       }
       return 'grab'
     },
-    [drawMode, hoveredTooltipEvent, dataviews, encounterSourceLoaded]
+    [drawMode, hoveredTooltipEvent, dataviews, tilesClusterLoaded]
   )
 
   useEffect(() => {

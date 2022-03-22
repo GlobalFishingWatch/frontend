@@ -1,3 +1,5 @@
+import { UserApplicationIntendedUse } from './user-applications'
+
 export type UserPermissionType = 'application' | 'dataset' | 'entity'
 export type UserPermissionValue =
   | 'workspace'
@@ -9,6 +11,7 @@ export type UserPermissionValue =
   | 'indonesia:*'
   | 'carriers:*'
   | 'public'
+  | 'user-application'
 export type UserPermissionAction =
   | 'read'
   | 'read-all'
@@ -37,4 +40,9 @@ export interface UserData {
   country?: string
   organization?: string
   organizationType?: string
+  intendedUse?: UserApplicationIntendedUse
+  whoEndUsers?: string
+  problemToResolve?: string
+  pullingDataOtherAPIS?: string
+  apiTerms?: string
 }

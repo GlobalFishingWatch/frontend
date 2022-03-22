@@ -1,0 +1,69 @@
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.container.disabled {
+  cursor: not-allowed;
+}
+
+.inline {
+  display: inline-flex;
+}
+
+.Checkbox {
+  width: 1.4rem;
+  height: 1.4rem;
+  position: relative;
+  background-color: var(--color-terthiary-blue);
+  border: 0.1rem solid transparent;
+  box-shadow: 0 0 0.2rem 0.2rem transparent;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
+.Checkbox:focus {
+  box-shadow: var(--box-shadow-highlight);
+}
+
+.Checkbox .nib {
+  padding-top: var(--space-XS);
+}
+
+.Checkbox[aria-checked='true'] {
+  background-color: var(--color-primary-blue);
+  color: var(--color-white);
+}
+
+.Checkbox[aria-checked='true'] .nib {
+  background-repeat: no-repeat;
+}
+
+.Checkbox:not(:disabled):not([aria-checked='true']):hover,
+.Checkbox:not(:disabled):not([aria-checked='true']):focus {
+  border: 0.1rem solid var(--color-secondary-blue);
+}
+
+.Checkbox:not(:disabled):not([aria-checked='true']):hover .nib,
+.Checkbox:not(:disabled):not([aria-checked='true']):focus .nib {
+  background-color: var(--color-primary-blue);
+}
+
+.Label {
+  cursor: pointer;
+  font: var(--font-M);
+  margin-left: var(--space-XS);
+  opacity: var(--opacity-secondary);
+  color: var(--color-primary-blue);
+  text-transform: none;
+  max-width: calc(100% - 2rem);
+  line-height: 1;
+}
+
+.disabled .Label {
+  pointer-events: none;
+}
+
+.active {
+  opacity: var(--opacity-primary);
+}

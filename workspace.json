@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "api-client": "libs/api-client",
+    "api-portal": "apps/api-portal",
     "api-types": "libs/api-types",
     "data-transforms": "libs/data-transforms",
     "dataviews-client": "libs/dataviews-client",
@@ -12,6 +13,7 @@
     "layer-composer": "libs/layer-composer",
     "ocean-areas": "libs/ocean-areas",
     "pbf": "libs/pbf-decoders",
+    "port-labeler": "apps/port-labeler",
     "react-hooks": "libs/react-hooks",
     "tile-inspector": "apps/tile-inspector",
     "timebar": "libs/timebar",

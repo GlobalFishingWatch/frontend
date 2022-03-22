@@ -1,9 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { useAppDispatch } from 'features/app/app.hooks'
 import hintsConfig from './hints.content'
 import { resetHints, selectHintsDismissed } from './hints.slice'
 import styles from './Hint.module.css'
@@ -15,7 +16,7 @@ const HELP_COLOR =
 
 function HintsHub() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const hintsConfigArray = Object.keys(hintsConfig || {})
   const hintsDismissed = useSelector(selectHintsDismissed)
   const hintsDismissedArray = Object.keys(hintsDismissed || {})

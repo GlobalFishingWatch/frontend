@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Choice, Icon, Tag, Modal } from '@globalfishingwatch/ui-components'
 import {
   DownloadTrackParams,
@@ -19,12 +19,13 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DateRange } from 'features/download/downloadActivity.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
 function DownloadTrackModal() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
   const downloadStatus = useSelector(selectDownloadTrackStatus)
   const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)

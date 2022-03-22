@@ -108,7 +108,7 @@ const getOceanAreas = (
   if (!matchingAreas.length) {
     const filteredFeatures = oceanAreas.features.map((feature) => ({
       ...feature,
-      distance: distance(point, nearest(point, explode(feature as any))),
+      distance: distance(point, nearest(point, explode(feature as any)) as any),
     }))
     const closestFeature = filteredFeatures.sort((featureA, featureB) => {
       return featureA.distance - featureB.distance

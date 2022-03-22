@@ -92,10 +92,9 @@ export const fetchVesselByIdThunk = createAsyncThunk(
           )
         })
       }
-      const vesselsToFetchFiltered = [
-        // TODO added any to stop build failures, review it
-        ...(new Map(vesselsToFetch.map((item) => [item.sourceId.id, item])).values() as any),
-      ].filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
+      const vesselsToFetchFiltered = Array.from(
+        new Map(vesselsToFetch.map((item) => [item.sourceId.id, item])).values()
+      ).filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
 
       const vessels = await Promise.all(
         vesselsToFetchFiltered.map(async ({ source, sourceId }) => ({

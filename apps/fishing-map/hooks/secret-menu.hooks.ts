@@ -1,7 +1,8 @@
 import { useEffect, useCallback, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { isGFWUser } from 'features/user/user.slice'
 import { RootState } from 'store'
+import { useAppDispatch } from 'features/app/app.hooks'
 
 type DebugMenu = [boolean, () => void]
 
@@ -50,7 +51,7 @@ const useSecretMenu = ({
   repeatNumber,
   selectMenuActive = (state: RootState) => false,
 }: SecretMenuProps): DebugMenu => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const dispatchToggleMenu = useCallback(() => {
     dispatch(onToggle())
   }, [dispatch, onToggle])

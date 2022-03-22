@@ -19,6 +19,7 @@ import { ReactComponent as Close } from '../assets/icons/close.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
 import { ReactComponent as Compare } from '../assets/icons/compare.svg'
+import { ReactComponent as Copy } from '../assets/icons/copy.svg'
 import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Download } from '../assets/icons/download.svg'
@@ -63,6 +64,8 @@ import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as Upload } from '../assets/icons/upload.svg'
 import { ReactComponent as User } from '../assets/icons/user.svg'
 import { ReactComponent as ViewOnMap } from '../assets/icons/view-on-map.svg'
+import { ReactComponent as VisibilityOff } from '../assets/icons/visibility-off.svg'
+import { ReactComponent as VisibilityOn } from '../assets/icons/visibility-on.svg'
 import { ReactComponent as Warning } from '../assets/icons/warning.svg'
 import styles from './Icon.module.css'
 
@@ -84,6 +87,7 @@ export const IconComponents = {
   'color-picker': ColorPicker,
   'color-picker-filled': ColorPickerFilled,
   compare: Compare,
+  copy: Copy,
   draw: Draw,
   delete: Delete,
   download: Download,
@@ -128,6 +132,8 @@ export const IconComponents = {
   upload: Upload,
   user: User,
   'view-on-map': ViewOnMap,
+  'visibility-off': VisibilityOff,
+  'visibility-on': VisibilityOn,
   warning: Warning,
 }
 
