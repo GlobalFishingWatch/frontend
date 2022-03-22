@@ -59,6 +59,8 @@
     "analysis": "Criar uma análise para esta área",
     "analysisNotAvailable": "Alternar entre uma camada de atividade ou de ambiente para analisá-la nesta área",
     "apparentFishing": "Esforço de pesca aparente",
+    "average": "average",
+    "averageAbbreviated": "avg.",
     "cancel": "Cancelar",
     "category": "Categoria",
     "comingSoon": "Em breve!",
@@ -108,6 +110,7 @@
     "more": "mais",
     "name": "Nome",
     "optional": "Opcional",
+    "onScreen": "on screen",
     "or": "ou",
     "presence": "Presença",
     "report": "Relatório",
@@ -235,6 +238,7 @@
     "workspaceNotFound": "A visualização solicitada não foi encontrada"
   },
   "event": {
+    "events": "events",
     "during": "durante",
     "encounter": "Encontro",
     "encounterAction": "teve um encontro com",
@@ -242,6 +246,9 @@
     "encounterAnotherVessel": "outra embarcação",
     "fishing": "Pesca",
     "fishingAction": "Pescado por",
+    "dayAbbreviated": "{{count}}d",
+    "dayAbbreviated_one": "{{count}}d",
+    "dayAbbreviated_other": "{{count}}d",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
@@ -384,14 +391,14 @@
     "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de 10 navios"
   },
   "timebarSettings": {
+    "title": "Timebar settings",
     "fishingEffortDisabled": "Selecione pelo menos uma camada de esforço de pesca aparente",
     "graph": "Gráfico",
-    "graphOptions": {
-      "depth": "Profundidade $t(common.comingSoon)",
-      "none": "Nenhum",
-      "speed": "Velocidade",
-      "speedDisabled": "Não disponível com mais de 1 embarcação selecionada"
-    },
+    "graphDisabled": "Not available with more than 2 vessels selected",
+    "graphSpeed": "Track speed",
+    "showGraphSpeed": "Show track speed graph",
+    "graphDepth": "Track depth",
+    "showGraphDepth": "Show track depth graph",
     "presenceDisabled": "Selecione pelo menos uma camada de presença",
     "settings_close": "Fechar configurações da barra de tempo",
     "settings_open": "Abrir configurações da barra de tempo",
