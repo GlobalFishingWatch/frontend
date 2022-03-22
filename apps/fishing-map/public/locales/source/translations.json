@@ -59,8 +59,6 @@
     "analysis": "Create an analysis for this area",
     "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
     "apparentFishing": "Apparent Fishing Effort",
-    "average": "average",
-    "averageAbbreviated": "avg.",
     "cancel": "Cancel",
     "category": "Category",
     "comingSoon": "coming soon!",
@@ -110,7 +108,6 @@
     "more": "more",
     "name": "Name",
     "optional": "Optional",
-    "onScreen": "on screen",
     "or": "or",
     "presence": "Presence",
     "report": "Report",
@@ -238,7 +235,6 @@
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
-    "events": "events",
     "during": "during",
     "encounter": "Encounter",
     "encounterAction": "had an encounter with",
@@ -246,9 +242,6 @@
     "encounterAnotherVessel": "another vessel",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
-    "dayAbbreviated": "{{count}}d",
-    "dayAbbreviated_one": "{{count}}d",
-    "dayAbbreviated_other": "{{count}}d",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
@@ -391,14 +384,14 @@
     "maxTracksNumber": "Track detail not available for more than 10 vessels"
   },
   "timebarSettings": {
-    "title": "Timebar settings",
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
-    "graphDisabled": "Not available with more than 2 vessels selected",
-    "graphSpeed": "Track speed",
-    "showGraphSpeed": "Show track speed graph",
-    "graphDepth": "Track depth",
-    "showGraphDepth": "Show track depth graph",
+    "graphOptions": {
+      "depth": "Depth $t(common.comingSoon)",
+      "none": "None",
+      "speed": "Speed",
+      "speedDisabled": "Not available with more than 1 vessel selected"
+    },
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
