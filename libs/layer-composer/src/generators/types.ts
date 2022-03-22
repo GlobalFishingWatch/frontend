@@ -361,6 +361,7 @@ export enum ContextLayerType {
   TunaRfmo = 'tuna-rfmo',
   WPPNRI = 'wpp-nri',
   Graticules = 'graticules',
+  FAO = 'fao',
 }
 
 export type RawEvent = {

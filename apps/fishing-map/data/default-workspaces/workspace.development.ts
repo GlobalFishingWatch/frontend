@@ -14,6 +14,7 @@ import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_ID,
+  FAO_AREAS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { WorkspaceState } from 'types'
@@ -156,6 +157,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: GRATICULES_DATAVIEW_ID,
+    },
+    {
+      id: 'context-layer-fao-areas',
+      config: {
+        visible: false,
+      },
+      dataviewId: FAO_AREAS_DATAVIEW_ID,
     },
   ],
 }

@@ -13,6 +13,7 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 | MPA                          | 98     | 176    |
 | MPA No take                  | 99     | 179    |
 | MPA Restricted               | 100    | 180    |
+| FAO Areas                    | 245    | 285    |
 | Default (used on new layers) | 123    | 220    |
 
 ## Events
