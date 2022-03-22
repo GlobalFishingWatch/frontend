@@ -56,6 +56,8 @@ const getPaintPropertyByType = (layer: LayerSpecification, config: any) => {
       'circle-stroke-color': circleStrokeColor,
     }
     return circlePaint
+  } else if (layer.type === 'symbol') {
+    return layer.paint
   }
   return {}
 }
