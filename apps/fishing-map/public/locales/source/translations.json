@@ -84,6 +84,7 @@
     "events": "Events",
     "feedback": "Feedback",
     "fishing": "Fishing",
+    "from": "from",
     "help": "Help",
     "hideAllHelpHints": "Dismiss all",
     "hideHelpHint": "Dismiss",
@@ -316,6 +317,8 @@
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
+    "flagState": "Flag State",
+    "flagState_one": "Flag State",
     "flagState_other": "Flag States",
     "fleet_other": "Fleets",
     "gearType_other": "Gear types",
@@ -338,6 +341,7 @@
     "source": "Source",
     "source_one": "Source",
     "source_other": "Sources",
+    "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combine layers",
       "split": "Split layers"
@@ -494,6 +498,7 @@
     "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
     "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
     "nameInput": "Workspace name",
+    "noVesselInFilters": "No vessels match your current filters",
     "new": "New Workspace",
     "privateTitle_other": "Private workspaces",
     "remove": "Remove workspace",
