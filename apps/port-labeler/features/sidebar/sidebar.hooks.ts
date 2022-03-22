@@ -45,9 +45,7 @@ export const useSelectedTracksConnect = () => {
       const ciso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
       const port = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.port_label
       const pointValue = pointValues[point.iso3] ? pointValues[point.iso3][point.s2id] : point.point_label
-      console.log(portValues)
-      console.log(port)
-      console.log('*******')
+
       return {
         ...point,
         port_label: mapPorts[port],
