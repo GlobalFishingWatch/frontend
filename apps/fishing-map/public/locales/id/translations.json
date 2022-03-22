@@ -59,6 +59,8 @@
     "analysis": "Buat analisis untuk area ini",
     "analysisNotAvailable": "Alihkan aktivitas atau lapisan lingkungan untuk menganalisisnya di area ini",
     "apparentFishing": "Upaya Penangkapan Ikan yang terlihat",
+    "average": "average",
+    "averageAbbreviated": "avg.",
     "cancel": "Cancel",
     "category": "Category",
     "comingSoon": "segera akan datang!",
@@ -108,6 +110,7 @@
     "more": "tambah",
     "name": "Nama",
     "optional": "Opsional",
+    "onScreen": "on screen",
     "or": "or",
     "presence": "Kehadiran",
     "report": "Laporan",
@@ -235,6 +238,7 @@
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
   },
   "event": {
+    "events": "events",
     "during": "during",
     "encounter": "Encounter",
     "encounterAction": "had an encounter with",
@@ -242,6 +246,9 @@
     "encounterAnotherVessel": "another vessel",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
+    "dayAbbreviated": "{{count}}d",
+    "dayAbbreviated_one": "{{count}}d",
+    "dayAbbreviated_other": "{{count}}d",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
@@ -384,14 +391,14 @@
     "maxTracksNumber": "Track detail not available for more than 10 vessels"
   },
   "timebarSettings": {
+    "title": "Timebar settings",
     "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
     "graph": "Grafik",
-    "graphOptions": {
-      "depth": "Depth $t(common.comingSoon)",
-      "none": "None",
-      "speed": "Speed",
-      "speedDisabled": "Not available with more than 1 vessel selected"
-    },
+    "graphDisabled": "Not available with more than 2 vessels selected",
+    "graphSpeed": "Track speed",
+    "showGraphSpeed": "Show track speed graph",
+    "graphDepth": "Track depth",
+    "showGraphDepth": "Show track depth graph",
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Tutup pengaturan timebar",
     "settings_open": "Buka pengaturan timebar",
