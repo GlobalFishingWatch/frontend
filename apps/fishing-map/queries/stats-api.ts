@@ -42,7 +42,7 @@ export const dataviewStatsApi = createApi({
       query: ({ dataview, timerange, fields = ['vessel_id', 'flag'] }) => {
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
-          filters: dataview.config?.filter || [],
+          filters: [dataview.config?.filter] || [],
           'date-range': [timerange.start, timerange.end].join(','),
         }
         return {

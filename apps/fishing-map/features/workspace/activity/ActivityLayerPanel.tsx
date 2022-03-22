@@ -59,7 +59,7 @@ function ActivityLayerPanel({
       timerange,
     },
     {
-      skip: guestUser,
+      skip: guestUser || !timerange,
     }
   )
 
