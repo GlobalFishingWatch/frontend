@@ -58,7 +58,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                 generatorContextLayer === 'tuna-rfmo' ||
                 generatorContextLayer === 'eez-areas' ||
                 generatorContextLayer === 'wpp-nri' ||
-                generatorContextLayer === 'high-seas'
+                generatorContextLayer === 'high-seas' ||
+                generatorContextLayer === 'fao'
 
               if (isGFWLayer) {
                 let id = gfw_id

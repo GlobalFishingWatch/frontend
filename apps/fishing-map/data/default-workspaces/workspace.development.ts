@@ -13,6 +13,8 @@ import {
   VIIRS_DATAVIEW_ID,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  GRATICULES_DATAVIEW_ID,
+  FAO_AREAS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { WorkspaceState } from 'types'
@@ -103,22 +105,6 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: EEZ_DATAVIEW_ID,
     },
-    // {
-    //   id: 'context-layer-mpa-no-take',
-    //   config: {
-    //     color: '#F4511F',
-    //     visible: false,
-    //   },
-    //   dataviewId: MPA_NO_TAKE_DATAVIEW_ID,
-    // },
-    // {
-    //   id: 'context-layer-mpa-restricted',
-    //   config: {
-    //     color: '#F09300',
-    //     visible: false,
-    //   },
-    //   dataviewId: MPA_RESTRICTED_DATAVIEW_ID,
-    // },
     {
       id: 'context-layer-mpa',
       config: {
@@ -128,6 +114,13 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: MPA_DATAVIEW_ID,
     },
     {
+      id: 'context-layer-fao-areas',
+      config: {
+        visible: false,
+      },
+      dataviewId: FAO_AREAS_DATAVIEW_ID,
+    },
+    {
       id: 'context-layer-rfmo',
       config: {
         color: '#6b67e5',
@@ -135,13 +128,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: RFMO_DATAVIEW_ID,
     },
-    // {
-    //   id: 'context-layer-wpp-nri',
-    //   config: {
-    //     visible: false,
-    //   },
-    //   dataviewId: 96,
-    // },
+    {
+      id: 'context-layer-graticules',
+      config: {
+        visible: false,
+      },
+      dataviewId: GRATICULES_DATAVIEW_ID,
+    },
     {
       id: 'context-layer-high-seas',
       config: {
