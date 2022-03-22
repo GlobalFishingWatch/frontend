@@ -59,6 +59,8 @@
     "analysis": "Créer une analyse pour cette zone",
     "analysisNotAvailable": "Activer/désactiver un calque d'activité ou d'environnement pour l'analyser dans cette zone",
     "apparentFishing": "Effort de pêche apparent",
+    "average": "average",
+    "averageAbbreviated": "avg.",
     "cancel": "Annuler",
     "category": "Catégorie",
     "comingSoon": "à venir!",
@@ -108,6 +110,7 @@
     "more": "plus",
     "name": "Nom",
     "optional": "Optionnel",
+    "onScreen": "on screen",
     "or": "ou",
     "presence": "Présence",
     "report": "Rapporter",
@@ -235,6 +238,7 @@
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
+    "events": "events",
     "during": "pendant",
     "encounter": "Rencontre",
     "encounterAction": "a eu une rencontre avec",
@@ -242,6 +246,9 @@
     "encounterAnotherVessel": "un autre navire",
     "fishing": "Pêche",
     "fishingAction": "À pêché pendant",
+    "dayAbbreviated": "{{count}}d",
+    "dayAbbreviated_one": "{{count}}d",
+    "dayAbbreviated_other": "{{count}}d",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
@@ -384,14 +391,14 @@
     "maxTracksNumber": "Détail des trajectoires non disponible pour plus de 10 navires"
   },
   "timebarSettings": {
+    "title": "Timebar settings",
     "fishingEffortDisabled": "Sélectionnez au moins un calque d'effort de pêche apparent",
     "graph": "Graphique",
-    "graphOptions": {
-      "depth": "Profondeur",
-      "none": "Aucun",
-      "speed": "Vitesse",
-      "speedDisabled": "Non disponible avec plus d'un navire sélectionné"
-    },
+    "graphDisabled": "Not available with more than 2 vessels selected",
+    "graphSpeed": "Track speed",
+    "showGraphSpeed": "Show track speed graph",
+    "graphDepth": "Track depth",
+    "showGraphDepth": "Show track depth graph",
     "presenceDisabled": "Sélectionnez au moins un calque de présence",
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Ouvrir les paramètres de la barre de temps",
