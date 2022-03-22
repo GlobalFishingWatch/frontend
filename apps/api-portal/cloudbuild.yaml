@@ -53,7 +53,7 @@ steps:
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
         '--target',
-        'production',
+        'runner',
         '-f',
         './apps/api-portal/Dockerfile',
         '-c',
