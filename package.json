@@ -82,7 +82,6 @@
     "resize-observer-polyfill": "^1.5.1",
     "simple-statistics": "^7.7.0",
     "topojson-client": "^3.1.0",
-    "tracks-cloud-function": "https://github.com/GlobalFishingWatch/api-function-vessels",
     "tslib": "^2.3.0",
     "use-debounce": "^7.0.1",
     "typescript-json-schema": "^0.47.0",
@@ -100,7 +99,7 @@
     "@nrwl/react": "13.9.2",
     "@nrwl/web": "13.9.2",
     "@nrwl/workspace": "13.9.2",
-    "@svgr/rollup": "^5.5.0",
+    "@svgr/rollup": "^6.2.1",
     "@testing-library/react": "12.1.4",
     "@testing-library/react-hooks": "7.0.2",
     "@types/color-convert": "^2.0.0",
@@ -150,9 +149,13 @@
     "nx": "13.9.2"
   },
   "resolutions": {
-    "gl-matrix": "3.3.0",
-    "reselect": "4.0.0",
     "@popperjs/core": "2.10.2",
+    "gl-matrix": "3.3.0",
+    "minimist": "^1.2.6",
+    "mkdirp": "^1.0.4",
+    "node-fetch": "2.6.7",
+    "reselect": "4.0.0",
+    "underscore": "^1.12.1",
     "webpack-sources": "3.2.1"
   },
   "husky": {
