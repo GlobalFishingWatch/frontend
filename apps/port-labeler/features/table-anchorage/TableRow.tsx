@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition, PortSubarea } from 'types'
-import { selectCountry, selectHoverPoint, selectSubareas, setHoverPoint, setSubareas } from 'features/labeler/labeler.slice'
+import { selectCountry, selectHoverPoint, selectPorts, selectSubareas, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 import { selectPointValuesByCountry, selectPortValuesByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
@@ -12,12 +12,10 @@ import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelect
 import { useValueManagerConnect } from './TableAnchorage.hooks'
 
 type TableRowProps = {
-  ports: SelectOption[],
   record: PortPosition
 }
 
 function TableRow({
-  ports,
   record,
 }: TableRowProps) {
   const map = useMapInstance()
@@ -47,6 +45,7 @@ function TableRow({
   const selectedSubarea = subareaValues[record.s2id]
   const hoverPoint = useSelector(selectHoverPoint)
 
+  const ports = useSelector(selectPorts)
   const subareas = useSelector(selectSubareas)
   const subareaOptions: SubareaSelectOption[] = useMemo(() => {
     return subareas.map((subarea: PortSubarea) => ({
@@ -55,6 +54,13 @@ function TableRow({
       color: subarea.color
     }))
   }, [subareas])
+
+  const portOptions: SubareaSelectOption[] = useMemo(() => {
+    return ports.map((port: PortSubarea) => ({
+      label: port.name,
+      id: port.id
+    }))
+  }, [ports])
 
   const onSubareaAdded = useCallback(() => {
     console.log('Adding a new subarea')
@@ -66,12 +72,27 @@ function TableRow({
     }]))
   }, [country, dispatch, subareas])
 
+  const onPortAdded = useCallback(() => {
+    console.log('Adding a new port')
+    dispatch(setPorts([...ports, {
+      id: country + ' - ' + 'new port ' + ports.length,
+      name: country + ' - ' + 'new port ' + ports.length,
+    }]))
+  }, [country, dispatch, subareas])
+
   const onSubareaNameChange = useCallback((id, value) => {
     dispatch(setSubareas(subareas.map(subarea => ({
       ...subarea,
       name: subarea.id === id ? value : subarea.name
     }))))
   }, [dispatch, subareas])
+
+  const onPortNameChange = useCallback((id, value) => {
+    dispatch(setPorts(ports.map(port => ({
+      ...port,
+      name: port.id === id ? value : port.name
+    }))))
+  }, [dispatch, ports])
 
   return (
     <div
@@ -82,30 +103,30 @@ function TableRow({
       onMouseLeave={() => onRowHover(record.s2id, false)}
     >
       <div className={styles.col}>
-        <Select
+        <SubareaSelector
           className={styles.portSelector}
-          options={ports}
-          selectedOption={{ id: selectedPort, label: selectedPort }}
-          onRemove={() => {
-
-          }}
+          onRemove={() => { }}
           onSelect={(selected: SelectOption) => {
             onPortChange(record.s2id, selected.id)
           }}
-        />
+          selectedOption={portOptions.find(port => port.id === selectedPort)}
+          onAddNew={onPortAdded}
+          onSelectedNameChange={onPortNameChange}
+          options={portOptions}
+          placeholder="Select a port"
+        ></SubareaSelector>
       </div>
       <div className={styles.col}>
         <SubareaSelector
-          onRemove={() => {
-
-          }}
+          onRemove={() => { }}
           onSelect={(selected: SelectOption) => {
             onSubareaChange(record.s2id, selected.id)
           }}
           selectedOption={subareaOptions.find(subarea => subarea.id === selectedSubarea)}
           onAddNew={onSubareaAdded}
-          onSubareaChange={onSubareaNameChange}
+          onSelectedNameChange={onSubareaNameChange}
           options={subareaOptions}
+          placeholder="Select a community"
         ></SubareaSelector>
       </div>
       <div className={styles.col}>

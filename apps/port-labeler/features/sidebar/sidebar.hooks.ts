@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   selectMapData,
   selectPointValues,
+  selectPorts,
   selectPortValues,
   selectSubareas,
   selectSubareaValues,
@@ -24,6 +25,7 @@ export const useSelectedTracksConnect = () => {
   const pointValues = useSelector(selectPointValues)
   const subareaValues = useSelector(selectSubareaValues)
   const subareas = useSelector(selectSubareas)
+  const ports = useSelector(selectPorts)
   const { centerPoints } = useMapConnect()
   let fileReader: FileReader
 
@@ -34,14 +36,22 @@ export const useSelectedTracksConnect = () => {
 
       return result
     }, {})
+    const mapPorts = ports.reduce((result, port) => {
+      result[port.id] = port.name
+
+      return result
+    }, {})
     return points.map(point => {
       const ciso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
+      const port = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.port_label
       const pointValue = pointValues[point.iso3] ? pointValues[point.iso3][point.s2id] : point.point_label
+      console.log(portValues)
+      console.log(port)
+      console.log('*******')
       return {
         ...point,
-        label: portValues[point.s2id],
-        community_iso3: ciso3,
-        sublabel: mapSubareas[ciso3],
+        port_label: mapPorts[port],
+        community_label: mapSubareas[ciso3],
         point_label: pointValue ?? null
       }
     })
@@ -106,7 +116,12 @@ export const useSelectedTracksConnect = () => {
         color: getFixedColorForUnknownLabel(index)
       }
     })))
-    dispatch(setPorts(uniqueTempPorts))
+    dispatch(setPorts(uniqueTempPorts.map((e, index) => {
+      return {
+        id: e,
+        name: e
+      }
+    })))
     const portMap = countryRecords.reduce((ac, value, i, v) => {
       ac[value.s2id] = value.port_label
       return ac

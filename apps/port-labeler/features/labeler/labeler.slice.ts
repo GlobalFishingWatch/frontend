@@ -18,7 +18,7 @@ export type ProjectSlice = {
   hover: string | null
   selected: string[]
   subareas: PortSubarea[]
-  ports: string[]
+  ports: PortSubarea[]
 }
 
 const initialState: ProjectSlice = {
@@ -52,7 +52,7 @@ const slice = createSlice({
     setSubareas: (state, action: PayloadAction<PortSubarea[]>) => {
       state.subareas = action.payload
     },
-    setPorts: (state, action: PayloadAction<string[]>) => {
+    setPorts: (state, action: PayloadAction<PortSubarea[]>) => {
       state.ports = action.payload
     },
     setPortValues: (state, action: PayloadAction<ValuesObject>) => {
