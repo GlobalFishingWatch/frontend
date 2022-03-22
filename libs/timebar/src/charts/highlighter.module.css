@@ -12,27 +12,66 @@
 
 .tooltipContainer {
   pointer-events: none;
-  top: -23px;
+  bottom: -2px;
   z-index: var(--timebar-z-highlighter-tooltips);
 }
 
+.highlighterCenter {
+  position: absolute;
+  content: ' ';
+  width: 1px;
+  height: 100%;
+  background: white;
+}
+
 .tooltip {
-  left: 50%;
   transform: translateX(-50%);
-  text-align: center;
   background: var(--timebar-ui-btn-color);
-  white-space: nowrap;
-  color: white;
-  padding: 6px;
+  color: var(--timebar-white);
+  padding: 6px 10px;
   border-radius: 6px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
+  min-width: 280px;
+  overflow: auto;
+}
+
+.overflowRight {
+  transform: translateX(calc(-100% + 70px));
+}
+
+.tooltipDate,
+.tooltipItem {
+  display: block;
+  line-height: 1.8rem;
 }
 
 .tooltipDate {
+  font-weight: bold;
   text-transform: uppercase;
+  margin-right: 1rem;
 }
 
-.tooltipValue {
-  opacity: 0.5;
-  margin-left: 5px;
+.tooltipItem {
+  color: var(--timebar-white-faded);
+}
+
+.tooltipItem:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.tooltipColor {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.4rem;
+  border-radius: 99px;
+}
+
+.tooltipLabel:not(:last-child, .isMain)::after {
+  content: ', ';
+}
+
+.tooltipLabel.isMain {
+  color: var(--timebar-white);
+  margin-right: 0.4rem;
 }

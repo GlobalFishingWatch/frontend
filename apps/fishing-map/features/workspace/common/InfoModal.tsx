@@ -1,11 +1,14 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'lodash'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromDatasetConfig,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { Tabs, Tab, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { getDatasetLabel, hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './InfoModal.module.css'
@@ -30,7 +33,7 @@ const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoMod
           (datasetConfig) => datasetConfig.datasetId === dataset.id
         )
         if (!datasetConfig) return []
-        const hasDatasetVesselId = hasDatasetConfigVesselData(datasetConfig)
+        const hasDatasetVesselId = getVesselIdFromDatasetConfig(datasetConfig)
         if (!hasDatasetVesselId) return []
       } else if (dataview.config?.datasets && !dataview.config?.datasets?.includes(dataset.id)) {
         return []

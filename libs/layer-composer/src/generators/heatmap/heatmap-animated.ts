@@ -28,6 +28,7 @@ import getExtrudedLayer from './modes/extruded'
 import { getSourceId, toURLArray } from './util'
 import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
 import griddedTimeCompare from './modes/gridded-time-compare'
+import { getTimeChunksInterval } from './util/get-time-chunks-interval'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
@@ -282,18 +283,15 @@ class HeatmapAnimatedGenerator {
       }
     }
 
-    const availableIntervals = config.availableIntervals
-      ? [config.availableIntervals]
-      : config.sublayers.map((s) => s.availableIntervals)
-    const omitIntervals = config.mode === HeatmapAnimatedMode.TimeCompare ? ['month', '10days'] : []
+    const timeChunksInterval = getTimeChunksInterval(config, finalConfig.start, finalConfig.end)
+
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
       finalConfig.start,
       finalConfig.end,
       finalConfig.datasetsStart,
       finalConfig.datasetsEnd,
-      availableIntervals,
-      omitIntervals
+      timeChunksInterval
     )
 
     if (

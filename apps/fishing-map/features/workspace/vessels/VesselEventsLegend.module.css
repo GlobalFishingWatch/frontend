@@ -1,0 +1,61 @@
+.eventsLegendContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.eventsLegend {
+  display: flex;
+  align-items: center;
+}
+
+.eventsLegendSwitch {
+  transform-origin: left;
+  transform: scale(0.75);
+}
+
+.eventLegendLabel {
+  cursor: pointer;
+  margin-left: -0.2rem;
+  text-transform: none;
+}
+
+.active .eventLegendLabel {
+  text-decoration: none;
+  color: var(--color-primary-blue);
+}
+
+.icon {
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin-left: 0.6rem;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.fishing {
+  border-radius: 99px;
+  border: 1px solid var(--color);
+  width: 8px;
+  height: 8px;
+}
+
+.encounter,
+.loitering,
+.port_visit {
+  background-repeat: no-repeat;
+}
+
+.encounter {
+  background-image: var(--encounterIcon);
+}
+
+.loitering {
+  background-image: var(--loiteringIcon);
+}
+
+.port_visit {
+  background-image: var(--portIcon);
+}

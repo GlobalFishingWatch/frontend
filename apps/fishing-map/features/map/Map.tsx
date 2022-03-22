@@ -16,8 +16,9 @@ import {
   useSimpleMapHover,
   InteractionEventCallback,
   useLayerComposer,
+  defaultStyleTransformations,
 } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { LayerComposer, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
@@ -79,6 +80,11 @@ const handleError = ({ error }: any) => {
   }
 }
 
+const layerComposer = new LayerComposer({
+  sprite:
+    'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-map',
+})
+
 const MapWrapper = (): React.ReactElement | null => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -95,7 +101,12 @@ const MapWrapper = (): React.ReactElement | null => {
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
+  const { style, loading: layerComposerLoading } = useLayerComposer(
+    generatorsConfig,
+    globalConfig,
+    defaultStyleTransformations,
+    layerComposer
+  )
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()

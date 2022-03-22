@@ -6,10 +6,17 @@
   z-index: 100;
 }
 
+.container h1 {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  margin: 0 0 1.5rem;
+  text-transform: uppercase;
+}
+
 .optionsContainer {
   position: absolute;
   width: 24rem;
-  padding: var(--space-S);
+  padding: var(--space-M);
   background-color: var(--color-white);
   bottom: 5rem;
   right: 0;
@@ -26,10 +33,14 @@
   bottom: -0.5rem;
 }
 
-.vesselTrackOptions {
-  padding-left: var(--space-M);
+.radiosContainer > * {
+  margin: 0 0 1rem;
 }
 
-.vesselTrackOptions > * {
-  margin-top: var(--space-S);
+.icon {
+  margin-right: 0.5rem;
+}
+
+.iconDisabled {
+  opacity: 0.5;
 }

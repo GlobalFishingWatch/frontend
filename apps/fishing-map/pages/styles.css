@@ -4,8 +4,20 @@
   --color-help: #fff8cd;
 }
 
+.printing * {
+  transition: none !important;
+}
+
+.print-only {
+  display: none !important;
+}
+
 .printing .print-hidden {
   display: none !important;
+}
+
+.printing .print-only {
+  display: block !important;
 }
 
 #__next {

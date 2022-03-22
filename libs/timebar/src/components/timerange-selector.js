@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import classNames from 'classnames'
-import { InputDate } from '@globalfishingwatch/ui-components'
+import { InputDate, Select } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
-import { getLast30Days } from '../utils'
+import { getLastX } from '../utils'
 import styles from './timerange-selector.module.css'
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24 - 1
@@ -12,12 +12,39 @@ const ONE_DAY_MS = 1000 * 60 * 60 * 24 - 1
 class TimeRangeSelector extends Component {
   constructor(props) {
     super(props)
-    const { start, end } = props
+    const { start, end, labels } = props
+    this.lastXOptions = [
+      {
+        id: 'last30days',
+        label: labels.last30days || TimeRangeSelector.defaultProps.labels.last30days,
+        num: 30,
+        unit: 'day',
+      },
+      {
+        id: 'last3months',
+        label: labels.last3months || TimeRangeSelector.defaultProps.labels.last3months,
+        num: 3,
+        unit: 'month',
+      },
+      {
+        id: 'last6months',
+        label: labels.last6months || TimeRangeSelector.defaultProps.labels.last6months,
+        num: 6,
+        unit: 'month',
+      },
+      {
+        id: 'lastYear',
+        label: labels.lastYear || TimeRangeSelector.defaultProps.labels.lastYear,
+        num: 1,
+        unit: 'year',
+      },
+    ]
     this.state = {
       start,
       end,
       startValid: true,
       endValid: true,
+      currentLastXSelectedOption: this.lastXOptions[0],
     }
   }
 
@@ -38,10 +65,14 @@ class TimeRangeSelector extends Component {
     onSubmit(newStart, newEnd)
   }
 
-  last30days = () => {
-    const { onSubmit, latestAvailableDataDate } = this.props
-    const { start, end } = getLast30Days(latestAvailableDataDate)
-    onSubmit(start, end)
+  onLastXSelect = (option) => {
+    const { latestAvailableDataDate } = this.props
+    const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
+    this.setState({ currentLastXSelectedOption: option })
+    this.setState({
+      start,
+      end,
+    })
   }
 
   onStartChange = (e) => {
@@ -62,8 +93,9 @@ class TimeRangeSelector extends Component {
   }
 
   render() {
-    const { start, end, startValid, endValid } = this.state
+    const { start, end, startValid, endValid, currentLastXSelectedOption } = this.state
     const { labels, absoluteStart, absoluteEnd } = this.props
+
     if (start === undefined) {
       return null
     }
@@ -115,13 +147,16 @@ class TimeRangeSelector extends Component {
             </div>
           </div>
           <div className={styles.actions}>
-            <button
-              type="button"
-              className={classNames(styles.cta, styles.secondary)}
-              onClick={this.last30days}
-            >
-              {labels.last30days}
-            </button>
+            <Select
+              className={classNames(styles.cta, styles.lastX)}
+              direction="top"
+              options={this.lastXOptions}
+              selectedOption={currentLastXSelectedOption}
+              onSelect={(selected) => {
+                this.onLastXSelect(selected)
+              }}
+            />
+
             <button
               type="button"
               className={classNames(styles.cta, { [styles.disabled]: !startValid || !endValid })}
@@ -151,6 +186,9 @@ TimeRangeSelector.propTypes = {
     start: PropTypes.string,
     end: PropTypes.string,
     last30days: PropTypes.string,
+    last3months: PropTypes.string,
+    last6months: PropTypes.string,
+    lastYear: PropTypes.string,
     done: PropTypes.string,
   }),
 }
@@ -161,6 +199,9 @@ TimeRangeSelector.defaultProps = {
     start: 'start',
     end: 'end',
     last30days: 'Last 30 days',
+    last3months: 'Last 3 months',
+    last6months: 'Last 6 months',
+    lastYear: 'Last year',
     done: 'done',
   },
 }

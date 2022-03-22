@@ -23,6 +23,7 @@ export type WorkspaceStateProperty =
   | 'timebarVisualisation'
   | 'visibleEvents'
   | 'timebarGraph'
+  | 'timebarSelectedEnvId'
   | 'bivariateDataviews'
   | 'version'
   | 'activityCategory'
@@ -62,6 +63,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarVisualisation?: TimebarVisualisations
   visibleEvents?: VisibleEvents
   timebarGraph?: TimebarGraphs
+  timebarSelectedEnvId?: string
   bivariateDataviews?: BivariateDataviews
   activityCategory?: WorkspaceActivityCategory
 }
@@ -85,13 +87,14 @@ export type MapCoordinates = {
 export enum TimebarVisualisations {
   Heatmap = 'heatmap',
   Vessel = 'vessel',
+  Environment = 'environment',
 }
 
 export type VisibleEvents = EventType[] | 'all' | 'none'
 
 export enum TimebarGraphs {
   Speed = 'speed',
-  Depth = 'depth',
+  Depth = 'elevation',
   None = 'none',
 }
 

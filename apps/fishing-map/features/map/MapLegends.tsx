@@ -1,19 +1,13 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
-import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hooks'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
 import { useMapControl } from './map-context.hooks'
 import styles from './MapLegends.module.css'
-
-type AnyLegend = LegendLayer | LegendLayerBivariate
-type LegendTranslated = AnyLegend & { category: DataviewCategory; label: string }
+import { AnyLegend, LegendTranslated, useLegendsTranslated } from './map-legends.hooks'
 
 const MapLegendWrapper: React.FC<{ legend: LegendTranslated }> = ({ legend }) => {
   const { t } = useTranslation()
@@ -42,36 +36,10 @@ interface MapLegendsProps {
 }
 
 const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: MapLegendsProps) => {
-  const { t } = useTranslation()
   const { containerRef } = useMapControl()
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
-  const legendsTranslated = useMemo(() => {
-    return legends
-      ?.filter(
-        (legend) =>
-          portalled ||
-          (!portalled && legend.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
-      )
-      .map((legend) => {
-        const isSquareKm = (legend.gridArea as number) > 50000
-        let label = legend.unit || ''
-        if (legend.generatorType === GeneratorType.HeatmapAnimated) {
-          const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-          const gridAreaFormatted = gridArea
-            ? formatI18nNumber(gridArea, {
-                style: 'unit',
-                unit: isSquareKm ? 'kilometer' : 'meter',
-                unitDisplay: 'short',
-              })
-            : ''
-          if (legend.unit === 'hours') {
-            label = `${t('common.hour_other', 'hours')} / ${gridAreaFormatted}²`
-          }
-        }
-        return { ...legend, label }
-      })
-  }, [legends, t, portalled])
+  const legendsTranslated = useLegendsTranslated(legends, portalled)
 
   if (!legends || !legends.length) return null
 

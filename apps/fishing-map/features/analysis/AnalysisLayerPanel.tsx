@@ -47,7 +47,8 @@ function AnalysisLayerPanel({
   const areAllPropertiesHidden =
     hiddenProperties?.includes('dataset') &&
     hiddenProperties?.includes('source') &&
-    hiddenProperties?.includes('flag')
+    hiddenProperties?.includes('flag') &&
+    availableFields.every((f) => hiddenProperties?.includes(f[0]))
 
   if (areAllPropertiesHidden) {
     // TODO I don't understand that logic
