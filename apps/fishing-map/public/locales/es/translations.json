@@ -84,6 +84,7 @@
     "events": "Eventos",
     "feedback": "Comentarios",
     "fishing": "Pesca",
+    "from": "from",
     "help": "Ayuda",
     "hideAllHelpHints": "Ocultar todos",
     "hideHelpHint": "Ocultar",
@@ -316,6 +317,8 @@
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
+    "flagState": "Flag State",
+    "flagState_one": "Flag State",
     "flagState_other": "Estados de bandera",
     "fleet_other": "Flotas",
     "gearType_other": "Artes de pesca",
@@ -338,6 +341,7 @@
     "source": "Fuente",
     "source_one": "Fuente",
     "source_other": "Fuentes",
+    "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combinar las capas",
       "split": "Separar las capas"
@@ -494,6 +498,7 @@
     "emptyStateEnvironment": "Sube conjuntos de datos personalizados como telemetría de animales haciendo clic en el icono de más.",
     "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
     "nameInput": "Nombre del espacio de trabajo",
+    "noVesselInFilters": "No vessels match your current filters",
     "new": "Nuevo espacio de trabajo",
     "privateTitle_other": "Espacios de trabajo privados",
     "remove": "Eliminar el espacio de trabajo",
