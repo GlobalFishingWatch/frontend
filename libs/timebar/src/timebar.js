@@ -230,7 +230,7 @@ class Timebar extends Component {
       minimumRangeUnit,
       maximumRange,
       maximumRangeUnit,
-      stickToUnit
+      stickToUnit,
     } = this.props
     const { immediate } = this.state
 
@@ -413,7 +413,7 @@ Timebar.propTypes = {
   maximumRangeUnit: PropTypes.string,
   stickToUnit: PropTypes.func,
   showLastUpdate: PropTypes.bool,
-  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id']),
+  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt']),
 }
 
 Timebar.defaultProps = {
