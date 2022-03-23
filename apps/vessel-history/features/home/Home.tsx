@@ -29,6 +29,7 @@ import { useSearchConnect, useSearchResultsConnect } from 'features/search/searc
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserData } from 'features/user/user.slice'
+import { FEEDBACK_EN, FEEDBACK_FR } from 'data/config'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -42,6 +43,8 @@ interface LoaderProps {
 
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
+  const { i18n } = useTranslation()
+
   const dispatch = useDispatch()
   const { logout } = useUser()
   const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchResultsConnect()
@@ -52,6 +55,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const vessels = useSelector(selectSearchResults)
   const offset = useSelector(selectSearchOffset)
   const totalResults = useSelector(selectSearchTotalResults)
+  const userData = useSelector(selectUserData)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
 
@@ -191,6 +195,16 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     })
   }, [advancedSearch, query, vesselIds])
 
+  const onFeedbackClick = useCallback(() => {
+    if (userData) {
+      if (i18n.language === 'fr') {
+        window.open(FEEDBACK_FR, '_blank').focus();
+      } else {
+        window.open(FEEDBACK_EN, '_blank').focus();
+      }
+    }
+  }, [userData, i18n.language])
+
   return (
     <div className={styles.homeContainer} data-testid="home">
       <header>
@@ -202,6 +216,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           size="default"
           icon="settings"
         ></IconButton>
+        <IconButton
+          icon="feedback"
+          onClick={onFeedbackClick}
+          tooltip={t('common.feedback', 'Feedback')}
+          tooltipPlacement="bottom"
+        />
         <LanguageToggle />
       </header>
       <div className={styles.search}>
