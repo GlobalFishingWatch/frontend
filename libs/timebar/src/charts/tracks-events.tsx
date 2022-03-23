@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import ImmediateContext from '../immediateContext'
@@ -72,16 +72,19 @@ const TracksEvents = ({
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
   useUpdateChartsData('tracksEvents', filteredTracksEvents)
 
-  const tracksEventsWithCoords = useMemo(
-    () =>
-      getTracksEventsWithCoords(
-        filteredTracksEvents,
-        outerScale,
-        graphHeight,
-        trackGraphOrientation
-      ),
-    [filteredTracksEvents, outerScale, graphHeight, trackGraphOrientation]
-  ) as TimebarChartData<TrackEventChunkProps>
+  const tracksEventsWithCoords = useMemo(() => {
+    return getTracksEventsWithCoords(
+      filteredTracksEvents,
+      outerScale,
+      graphHeight,
+      trackGraphOrientation
+    )
+  }, [
+    filteredTracksEvents,
+    outerScale,
+    graphHeight,
+    trackGraphOrientation,
+  ]) as TimebarChartData<TrackEventChunkProps>
 
   return (
     <div className={styles.Events}>

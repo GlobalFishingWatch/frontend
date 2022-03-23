@@ -24,6 +24,7 @@ import {
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { createDeepEqualSelector } from 'utils/selectors'
 import { TimebarGraphs } from 'types'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { selectThinningConfig } from 'features/resources/resources.slice'
@@ -258,12 +259,14 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
   )
 })
 
-export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
+export const selectActiveVesselsDataviews = createDeepEqualSelector(
+  [selectVesselsDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
+export const selectActiveTrackDataviews = createDeepEqualSelector(
+  [selectTrackDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
 export default dataviewsSlice.reducer

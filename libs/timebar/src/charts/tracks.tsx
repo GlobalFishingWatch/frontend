@@ -51,10 +51,9 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
 
   const filteredTracks = useFilteredChartData(data)
   useUpdateChartsData('tracks', filteredTracks)
-  const tracksWithCoords = useMemo(
-    () => getTracksWithCoords(filteredTracks, outerScale, graphHeight, trackGraphOrientation),
-    [filteredTracks, outerScale, graphHeight, trackGraphOrientation]
-  )
+  const tracksWithCoords = useMemo(() => {
+    return getTracksWithCoords(filteredTracks, outerScale, graphHeight, trackGraphOrientation)
+  }, [filteredTracks, outerScale, graphHeight, trackGraphOrientation])
 
   if (!tracksWithCoords) return null
 

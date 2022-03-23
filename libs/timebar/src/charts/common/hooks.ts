@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { scaleTime } from 'd3-scale'
 import { EventTypes } from '@globalfishingwatch/api-types'
@@ -38,7 +38,7 @@ export const useFilteredChartData = (data: TimebarChartData<any>) => {
     { maxWait: 1000, leading: true }
   )
 
-  useMemo(() => {
+  useEffect(() => {
     debouncedSetFilteredData(data, outerStart, outerEnd)
   }, [outerStart, outerEnd, data, debouncedSetFilteredData])
 
