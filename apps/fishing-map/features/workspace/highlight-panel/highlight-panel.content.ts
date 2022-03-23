@@ -43,7 +43,7 @@ const highlightPanelConfig: HighlighPanelConfig = {
   pt: {
     title: 'Rastreamento de embarcações da Belice está disponível',
     description:
-      'Os dados de rastreamento de embarcações de pesca são fornecidos pelo XXX. É possível visualizar a rota e as atividades de mais de 50 embarcações industriais e artesanais.',
+      'Os dados de rastreamento de embarcações de pesca são fornecidos pela Unidade de Pesca de Alto Mar de Belize. É possível visualizar a rota e as atividades de mais de 50 embarcações da frota pesqueira internacional de Belize.',
     // TBD
     learnMoreUrl: 'https://globalfishingwatch.org/pt/belize',
   },
