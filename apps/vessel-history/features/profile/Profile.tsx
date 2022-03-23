@@ -36,8 +36,8 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { selectUserData } from 'features/user/user.slice'
 import { FEEDBACK_EN, FEEDBACK_FR } from 'data/config'
+import { useApp } from 'features/app/app.hooks'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -45,8 +45,7 @@ import styles from './Profile.module.css'
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { i18n } = useTranslation()
-  const userData = useSelector(selectUserData)
+  const { openFeedback } = useApp()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const query = useSelector(selectSearchableQueryParams)
@@ -248,16 +247,6 @@ const Profile: React.FC = (props): React.ReactElement => {
     return gfwVesselName ? gfwVesselName.value : vessel?.shipname
   }, [vessel])
 
-  const onFeedbackClick = useCallback(() => {
-    if (userData) {
-      if (i18n.language === 'fr') {
-        window.open(FEEDBACK_FR, '_blank').focus();
-      } else {
-        window.open(FEEDBACK_EN, '_blank').focus();
-      }
-    }
-  }, [userData])
-
   return (
     <Fragment>
       <header className={styles.header}>
@@ -293,7 +282,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         <IconButton
           icon="feedback"
           className={styles.feedback}
-          //onClick={onFeedbackClick}
+          onClick={openFeedback}
           tooltip={t('common.feedback', 'Feedback')}
           tooltipPlacement="bottom"
         />
