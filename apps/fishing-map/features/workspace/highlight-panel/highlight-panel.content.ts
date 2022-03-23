@@ -36,7 +36,7 @@ const highlightPanelConfig: HighlighPanelConfig = {
   fr: {
     title: 'Les données VMS du Bélize sont maintenant disponibles',
     description:
-      "Les données du système de suivi des navires par satellite (VMS) sont fournies par XXX. Il est possible de suivre la position et l'activité de plus de 100 navires qui composent les flottes industrielles et internationales de pêche du Bélize.",
+      "Les données du système de suivi des navires par satellite (VMS) sont fournies par Belize High Seas Fisheries Unit (BHSFU). Il est possible de suivre la position et l'activité de plus de 50 navires qui composent la flotte de pêche en haute mer de Bélize.",
     // TBD
     learnMoreUrl: 'https://globalfishingwatch.org/fr/belize',
   },
