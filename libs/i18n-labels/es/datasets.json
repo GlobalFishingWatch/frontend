@@ -358,6 +358,28 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "private-belize-presence": {
+    "name": "VMS de Belice",
+    "description": "Presence (Belize private)",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "Palangre",
+          "reefer": "reefer"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "private-bra-onyxsat-presence": {
     "name": "VMS Brazil",
     "description": "Presence (Brazil private)",
