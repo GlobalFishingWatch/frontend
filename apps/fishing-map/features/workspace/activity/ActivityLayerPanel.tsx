@@ -19,6 +19,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
+import { selectUrlTimeRange } from 'routes/routes.selectors'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -49,17 +50,17 @@ function ActivityLayerPanel({
 
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
-  const { timerange } = useTimerangeConnect()
+  const urlTimeRange = useSelector(selectUrlTimeRange)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
       dataview,
-      timerange,
+      timerange: urlTimeRange,
     },
     {
-      skip: guestUser || !timerange,
+      skip: guestUser || !urlTimeRange,
     }
   )
 
