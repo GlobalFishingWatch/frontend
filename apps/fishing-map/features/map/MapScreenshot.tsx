@@ -38,6 +38,8 @@ export const getMapImage = (map: Map): Promise<string> => {
   })
 }
 
+// Component to render an invisible image with the canvas data so ideally
+// when printing with crtl + p the image is there but it is too heavy
 function MapScreenshot({ map }: { map?: Map }) {
   const idle = useMapIdle()
   const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
