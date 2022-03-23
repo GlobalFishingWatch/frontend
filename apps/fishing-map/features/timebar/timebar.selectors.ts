@@ -25,11 +25,12 @@ import {
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
+import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 
 export const selectTracksData = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
-    if (!trackDataviews || !resources) return
+    if (!trackDataviews || trackDataviews.length > MAX_TIMEBAR_VESSELS || !resources) return
     const tracksSegments: TimebarChartData = trackDataviews.flatMap((dataview) => {
       const timebarTrack: TimebarChartItem = {
         color: dataview.config?.color,
@@ -167,6 +168,9 @@ const getTrackEventHighlighterLabel = (chunk: TimebarChartChunk<TrackEventChunkP
 export const selectTracksEvents = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
+    if (!trackDataviews || trackDataviews.length > MAX_TIMEBAR_VESSELS) {
+      return []
+    }
     const tracksEvents: TimebarChartData<TrackEventChunkProps> = trackDataviews.map((dataview) => {
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
       const vessel = (resources[infoUrl] as any)?.data

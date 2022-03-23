@@ -247,7 +247,8 @@ const TimebarWrapper = () => {
   }, [timebarGraph, tracksGraphsData])
 
   const trackGraphOrientation = useMemo<TrackGraphOrientation>(() => {
-    if (tracksGraphsData.length === 0 || tracksGraphsData.length > 2) return 'mirrored'
+    if (tracksGraphsData && (tracksGraphsData.length === 0 || tracksGraphsData.length > 2))
+      return 'mirrored'
     return {
       none: 'mirrored',
       speed: 'mirrored',
