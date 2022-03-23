@@ -257,9 +257,9 @@ const TimebarWrapper = () => {
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
-  const trackGraphsLoading = tracksGraphsData?.some(
-    ({ status }) => status === ResourceStatus.Loading
-  )
+  const trackGraphsLoading =
+    tracksGraphsData?.some(({ status }) => status === ResourceStatus.Loading) ||
+    tracksEvents?.some(({ status }) => status === ResourceStatus.Loading)
 
   return (
     <div className={styles.timebarWrapper}>
