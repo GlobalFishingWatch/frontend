@@ -33,7 +33,6 @@ import {
 import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
-import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
@@ -234,7 +233,7 @@ const MapWrapper = () => {
       const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
         (f) => f.category === DataviewCategory.Vessels
       )
-      if (vesselFeatureEvents.length > 0) {
+      if (vesselFeatureEvents.length > 1) {
         return 'grab'
       }
       return 'pointer'
@@ -292,7 +291,9 @@ const MapWrapper = () => {
           cursor={rulersEditing ? rulesCursor : getCursor()}
           interactiveLayerIds={interactiveLayerIds}
           onClick={isMapDrawing ? undefined : currentClickCallback}
+          onMouseEnter={onMouseMove}
           onMouseMove={onMouseMove}
+          onMouseLeave={resetHoverState}
           onLoad={onLoadCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
