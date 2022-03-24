@@ -1,6 +1,9 @@
 import { PATH_BASENAME } from 'routes/routes'
 import { Locale } from 'types'
 
+// Update with a new id when a new release
+export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'highlight-vms-with-costarica'
+
 type HighlighPanelConfigLocale = {
   [locale in Locale]?: {
     title: string
@@ -16,7 +19,7 @@ export type HighlighPanelConfig = {
 } & HighlighPanelConfigLocale
 
 const highlightPanelConfig: HighlighPanelConfig = {
-  dataviewInstanceId: 'highlight-vms-with-costarica',
+  dataviewInstanceId: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
   imageUrl: `${PATH_BASENAME}/images/costa-rica-vms.jpg`,
   learnMoreUrl: 'https://globalfishingwatch.org/costa-rica',
   en: {
@@ -34,7 +37,6 @@ const highlightPanelConfig: HighlighPanelConfig = {
     title: 'Les données VMS du Costa Rica sont maintenant disponibles',
     description:
       "Les données du système de suivi des navires par satellite (VMS) sont fournies par l'Institut costaricien des pêches et de l'aquaculture. Il est possible de suivre la position et l'activité de plus de 100 navires qui composent les flottes industrielles et internationales de pêche du Costa Rica.",
-    learnMoreUrl: 'https://globalfishingwatch.org/es/costa-rica',
   },
   pt: {
     title: 'Rastreamento de embarcações da Costa Rica está disponível',
