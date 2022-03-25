@@ -318,11 +318,11 @@ export const getCommonSchemaFieldsInDataview = (
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field.toString())
         if (label === field) {
+          label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
           if (schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
             label = t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
           }
-          label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
         }
         return { id: field.toString(), label }
       })
