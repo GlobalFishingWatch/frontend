@@ -1,21 +1,27 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback, useState } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { format } from 'd3-format'
+import { scaleLinear } from 'd3-scale'
 import styles from './slider.module.css'
 
 export type SliderRange = number[]
 type SliderConfig = {
-  step: number
+  // step: number
+  steps: number[]
   min: number
   max: number
 }
 interface SliderProps {
   label: string
-  range: SliderRange
-  config?: SliderConfig
+  initialRange: SliderRange
+  config: SliderConfig
   onChange: (range: SliderRange) => void
   className?: string
 }
+
+const MIN = 0
+const MAX = 200
+const STEP = 1
 
 const fallbackActiveColor = 'rgba(22, 63, 137, 1)'
 const fallbackBorderColor = 'rgba(22, 63, 137, 0.15)'
@@ -29,29 +35,50 @@ const borderColor =
     ? getComputedStyle(document.body).getPropertyValue('--color-border') || fallbackBorderColor
     : fallbackBorderColor
 
+export const formatNumber = (num: number): string => {
+  if (num >= 1000) return format('.2s')(num)
+  if (num > 9) return format('.0f')(num)
+  if (num >= 1) return format('.1')(num)
+  return format('.1f')(num)
+}
+
 export function Slider(props: SliderProps) {
-  const { range, label, config = {}, onChange, className } = props
-  const { step = 1, min = 0, max = 100 } = config as SliderConfig
-  const values = useMemo(() => range || [min, max], [max, min, range])
+  const { initialRange, label, config = {}, onChange, className } = props
+  const { min = MIN, max = MAX, steps } = config as SliderConfig
+  const scale = useMemo(() => {
+    return scaleLinear()
+      .domain(steps.map((_, i) => (MAX / (steps.length - 1)) * i))
+      .range(steps)
+      .nice()
+  }, [steps])
+
+  const initialValues = (initialRange || [min, max]).map((v) => scale.invert(v))
+  const [values, setValues] = useState(initialValues)
 
   const handleChange = useCallback(
     (values: SliderRange) => {
       if (values[1] > values[0]) {
-        onChange(values)
+        setValues(values)
       }
     },
-    [onChange]
+    [setValues]
+  )
+  const handleFinalChange = useCallback(
+    (values: SliderRange) => {
+      onChange([scale(values[0]), scale(values[1])])
+    },
+    [onChange, scale]
   )
 
   const background = useMemo(
     () =>
       getTrackBackground({
-        min,
-        max,
+        min: MIN,
+        max: MAX,
         values,
         colors: [borderColor, activeColor, borderColor],
       }),
-    [max, min, values]
+    [values]
   )
 
   return (
@@ -60,10 +87,11 @@ export function Slider(props: SliderProps) {
       <div className={styles.container}>
         <Range
           values={values}
-          step={step}
-          min={min}
-          max={max}
+          step={STEP}
+          min={MIN}
+          max={MAX}
           onChange={handleChange}
+          onFinalChange={handleFinalChange}
           renderTrack={({ props, children }) => (
             <div
               onMouseDown={props.onMouseDown}
@@ -78,6 +106,7 @@ export function Slider(props: SliderProps) {
           )}
           renderThumb={({ index, props }) => {
             const value = values[index]
+            const scaledValue = scale(value)
             const isDefaultSelection = index === 0 ? value === min : value === max
             return (
               <div
@@ -91,7 +120,7 @@ export function Slider(props: SliderProps) {
                   className={styles.sliderThumbCounter}
                   style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
                 >
-                  {`${format('~s')(value)}${value === max ? '+' : ''}`}
+                  {formatNumber(scaledValue)}
                 </span>
               </div>
             )
