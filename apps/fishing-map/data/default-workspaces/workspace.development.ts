@@ -17,6 +17,7 @@ import {
   FAO_AREAS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -56,11 +57,12 @@ const workspace: Workspace<WorkspaceState> = {
       // update it here if you want to show it again or go to
       // apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
       // and update the `dataviewInstanceId`
-      id: 'highlight-vms-with-costarica',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
         datasets: [
+          'public-belize-fishing-effort:v20220304',
           'public-bra-onyxsat-fishing-effort:v20211126',
           'public-chile-fishing-effort:v20211126',
           'public-costa-rica-fishing-effort:v20211126',
