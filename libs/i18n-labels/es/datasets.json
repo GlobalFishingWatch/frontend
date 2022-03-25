@@ -94,7 +94,7 @@
         "enum": {
           "trawler": "Trawler",
           "reefer": "Reefer",
-          "longline": "Longline",
+          "longline": "Palangre",
           "purse_seine": "Purse Seine"
         }
       },
@@ -117,7 +117,7 @@
         "enum": {
           "trawler": "Trawler",
           "reefer": "Reefer",
-          "longline": "Longline",
+          "longline": "Palangre",
           "purse_seine": "Purse Seine"
         }
       },
@@ -142,7 +142,7 @@
         "enum": {
           "trawler": "Trawler",
           "reefer": "Reefer",
-          "longline": "Longline",
+          "longline": "Palangre",
           "purse_seine": "Purse Seine"
         }
       },
@@ -370,7 +370,7 @@
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "longline": "longline",
+          "longline": "Palangre",
           "reefer": "reefer"
         }
       },
@@ -833,7 +833,7 @@
         "enum": {
           "trawler": "Trawler",
           "reefer": "Reefer",
-          "longline": "Longline",
+          "longline": "Palangre",
           "purse_seine": "Purse Seine"
         }
       },
@@ -856,7 +856,7 @@
         "enum": {
           "trawler": "Trawler",
           "reefer": "Reefer",
-          "longline": "Longline",
+          "longline": "Palangre",
           "purse_seine": "Purse Seine"
         }
       },
