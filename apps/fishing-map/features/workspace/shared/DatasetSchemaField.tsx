@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { TagList } from '@globalfishingwatch/ui-components'
+import { formatNumber, TagList } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import {
@@ -22,7 +22,9 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
     valuesSelected.length > 1 && valuesSelected.every((value) => Number(value.label))
 
   if (valuesAreRangeOfNumbers) {
-    const range = `${valuesSelected[0].label} - ${valuesSelected[valuesSelected.length - 1].label}`
+    const range = `${formatNumber(valuesSelected[0].label)} - ${formatNumber(
+      valuesSelected[valuesSelected.length - 1].label
+    )}`
     valuesSelected = [
       {
         id: range,
