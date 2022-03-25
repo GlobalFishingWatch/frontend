@@ -1,12 +1,12 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { InputText, SelectOption } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
-import { PortPosition, PortSubarea } from 'types'
+import { PortPosition } from 'types'
 import { selectCountry, selectHoverPoint, selectPorts, selectSubareas, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
-import { selectPointValuesByCountry, selectPortValuesByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
+import { selectPointValuesByCountry, selectPortsOptions, selectPortValuesByCountry, selectSubareaOptions, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
 import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 import { useValueManagerConnect } from './TableAnchorage.hooks'
@@ -47,20 +47,9 @@ function TableRow({
 
   const ports = useSelector(selectPorts)
   const subareas = useSelector(selectSubareas)
-  const subareaOptions: SubareaSelectOption[] = useMemo(() => {
-    return subareas.map((subarea: PortSubarea) => ({
-      label: subarea.name,
-      id: subarea.id,
-      color: subarea.color
-    }))
-  }, [subareas])
+  const subareaOptions: SubareaSelectOption[] = useSelector(selectSubareaOptions)
 
-  const portOptions: SubareaSelectOption[] = useMemo(() => {
-    return ports.map((port: PortSubarea) => ({
-      label: port.name,
-      id: port.id
-    }))
-  }, [ports])
+  const portOptions: SubareaSelectOption[] = useSelector(selectPortsOptions)
 
   const onSubareaAdded = useCallback(() => {
     console.log('Adding a new subarea')
@@ -74,11 +63,13 @@ function TableRow({
 
   const onPortAdded = useCallback(() => {
     console.log('Adding a new port')
-    dispatch(setPorts([...ports, {
-      id: country + ' - ' + 'new port ' + ports.length,
-      name: country + ' - ' + 'new port ' + ports.length,
-    }]))
-  }, [country, dispatch, subareas])
+    const newPorts = [...ports, {
+      id: country + '-' + (ports.length + 1),
+      name: country + '-' + (ports.length + 1),
+    }]
+    console.log(newPorts)
+    dispatch(setPorts(newPorts))
+  }, [country, dispatch, ports])
 
   const onSubareaNameChange = useCallback((id, value) => {
     dispatch(setSubareas(subareas.map(subarea => ({
@@ -114,6 +105,7 @@ function TableRow({
           onSelectedNameChange={onPortNameChange}
           options={portOptions}
           placeholder="Select a port"
+          addButtonLabel='Add new port'
         ></SubareaSelector>
       </div>
       <div className={styles.col}>
@@ -127,6 +119,7 @@ function TableRow({
           onSelectedNameChange={onSubareaNameChange}
           options={subareaOptions}
           placeholder="Select a community"
+          addButtonLabel='Add new community'
         ></SubareaSelector>
       </div>
       <div className={styles.col}>

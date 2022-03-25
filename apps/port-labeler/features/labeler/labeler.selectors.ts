@@ -3,6 +3,7 @@ import {
   selectCountry,
   selectMapData,
   selectPointValues,
+  selectPorts,
   selectPortValues,
   selectSelectedPoints,
   selectSubareas,
@@ -62,3 +63,19 @@ export const selectSubareaColors = createSelector([selectSubareas],
     return colorsMap
   }
 )
+
+export const selectPortsOptions = createSelector([selectPorts], (ports) => {
+  const options = ports.map(port => { return { label: port.name, id: port.id } })
+  return options.sort((a, b) => a.label > b.label ? 1 : -1)
+})
+
+export const selectSubareaOptions = createSelector([selectSubareas], (subareas) => {
+  const options = subareas.map(subarea => {
+    return {
+      label: subarea.name,
+      id: subarea.id,
+      color: subarea.color
+    }
+  })
+  return options.sort((a, b) => a.label > b.label ? 1 : -1)
+})

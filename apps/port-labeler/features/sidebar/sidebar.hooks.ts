@@ -43,7 +43,7 @@ export const useSelectedTracksConnect = () => {
     }, {})
     return points.map(point => {
       const ciso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
-      const port = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.port_label
+      const port = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.label
       const pointValue = pointValues[point.iso3] ? pointValues[point.iso3][point.s2id] : point.point_label
 
       return {
@@ -74,6 +74,7 @@ export const useSelectedTracksConnect = () => {
 
     dispatch(setData(records.map(record => ({
       ...record,
+      port_label: record.port_label ?? record.label,
       lat: typeof record.lat === 'string' ? parseFloat(record.lat) : record.lat,
       lon: typeof record.lon === 'string' ? parseFloat(record.lon) : record.lon
     }))))

@@ -10,6 +10,7 @@ export interface SubareaSelectOption<T = any> extends SelectOption {
 
 interface SelectProps {
   label?: string
+  addButtonLabel?: string
   placeholder?: string
   options: SubareaSelectOption[]
   selectedOption?: SubareaSelectOption
@@ -32,6 +33,7 @@ const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOpti
 export function SubareaSelector(props: SelectProps) {
   const {
     label = '',
+    addButtonLabel = 'CREATE NEW',
     placeholder = '---?',
     options,
     selectedOption,
@@ -122,7 +124,7 @@ export function SubareaSelector(props: SelectProps) {
             })}
           {isOpen && <li className={cx(
             styles.optionItem, styles.actionItem, className)}>
-            <Button size="small" type="secondary" onClick={onAddNew}>CREATE NEW SUBAREA</Button>
+            <Button size="small" type="secondary" onClick={onAddNew}>{addButtonLabel}</Button>
           </li>}
         </ul>
         {selectedOption && selectedOption.color && <div className={styles.selectedDot}
