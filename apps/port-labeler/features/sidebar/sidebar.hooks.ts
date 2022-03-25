@@ -29,18 +29,23 @@ export const useSelectedTracksConnect = () => {
   const { centerPoints } = useMapConnect()
   let fileReader: FileReader
 
+  const findPortName = (country: string, portId: string) => {
+    const port = ports[country]?.find(p => p.id === portId)
+    if (port) {
+      return port.name
+    }
+    return portId
+  }
+  const findSubareaName = (country: string, subareaId: string) => {
+    const subarea = subareas[country]?.find(s => s.id === subareaId)
+    if (subarea) {
+      return subarea.name
+    }
+    return subareaId
+  }
+
   const assignLabeledValues = (points: PortPosition[]) => {
 
-    const mapSubareas = subareas.reduce((result, subarea) => {
-      result[subarea.id] = subarea.name
-
-      return result
-    }, {})
-    const mapPorts = ports.reduce((result, port) => {
-      result[port.id] = port.name
-
-      return result
-    }, {})
     return points.map(point => {
       const ciso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
       const port = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.label
@@ -48,8 +53,8 @@ export const useSelectedTracksConnect = () => {
 
       return {
         ...point,
-        port_label: mapPorts[port],
-        community_label: mapSubareas[ciso3],
+        port_label: findPortName(point.iso3, port),
+        community_label: findSubareaName(point.iso3, ciso3),
         point_label: pointValue ?? null
       }
     })

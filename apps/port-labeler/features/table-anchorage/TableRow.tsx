@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { InputText, SelectOption } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition } from 'types'
-import { selectCountry, selectHoverPoint, selectPorts, selectSubareas, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
+import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
-import { selectPointValuesByCountry, selectPortsOptions, selectPortValuesByCountry, selectSubareaOptions, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
+import { selectPointValuesByCountry, selectPortsByCountry, selectPortsOptions, selectPortValuesByCountry, selectSubareaOptions, selectSubareasByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
 import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 import { useValueManagerConnect } from './TableAnchorage.hooks'
@@ -45,8 +45,8 @@ function TableRow({
   const selectedSubarea = subareaValues[record.s2id]
   const hoverPoint = useSelector(selectHoverPoint)
 
-  const ports = useSelector(selectPorts)
-  const subareas = useSelector(selectSubareas)
+  const ports = useSelector(selectPortsByCountry)
+  const subareas = useSelector(selectSubareasByCountry)
   const subareaOptions: SubareaSelectOption[] = useSelector(selectSubareaOptions)
 
   const portOptions: SubareaSelectOption[] = useSelector(selectPortsOptions)

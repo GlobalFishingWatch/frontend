@@ -53,29 +53,42 @@ export const selectPortValuesByCountry = createSelector([selectPortValues, selec
 /**
  * return a map of the subarea colors
  */
-export const selectSubareaColors = createSelector([selectSubareas],
-  (subareas): any => {
+export const selectSubareaColors = createSelector([selectSubareas, selectCountry],
+  (subareas, country): any => {
     const colorsMap = {}
-    subareas.forEach(subarea => {
-      colorsMap[subarea.id] = subarea.color
-    })
-
+    if (subareas[country]) {
+      subareas[country].forEach((subarea) => {
+        colorsMap[subarea.id] = subarea.color
+      })
+    }
     return colorsMap
   }
 )
 
-export const selectPortsOptions = createSelector([selectPorts], (ports) => {
-  const options = ports.map(port => { return { label: port.name, id: port.id } })
-  return options.sort((a, b) => a.label > b.label ? 1 : -1)
-})
-
-export const selectSubareaOptions = createSelector([selectSubareas], (subareas) => {
-  const options = subareas.map(subarea => {
-    return {
-      label: subarea.name,
-      id: subarea.id,
-      color: subarea.color
-    }
+export const selectPortsByCountry = createSelector([selectPorts, selectCountry],
+  (ports, country): any => {
+    return ports[country]
   })
-  return options.sort((a, b) => a.label > b.label ? 1 : -1)
-})
+
+export const selectSubareasByCountry = createSelector([selectSubareas, selectCountry],
+  (subareas, country): any => {
+    return subareas[country]
+  })
+
+export const selectPortsOptions = createSelector([selectPorts, selectCountry],
+  (ports, country) => {
+    const options = ports[country].map(port => { return { label: port.name, id: port.id } })
+    return options.sort((a, b) => a.label > b.label ? 1 : -1)
+  })
+
+export const selectSubareaOptions = createSelector([selectSubareas, selectCountry],
+  (subareas, country) => {
+    const options = subareas[country].map(subarea => {
+      return {
+        label: subarea.name,
+        id: subarea.id,
+        color: subarea.color
+      }
+    })
+    return options.sort((a, b) => a.label > b.label ? 1 : -1)
+  })
