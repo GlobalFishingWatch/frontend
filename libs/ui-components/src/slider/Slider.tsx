@@ -17,6 +17,8 @@ interface SliderProps {
   config: SliderConfig
   onChange: (range: SliderRange) => void
   className?: string
+  //static for now for the VIIRS release
+  histogram?: boolean
 }
 
 const MIN = 0
@@ -38,12 +40,11 @@ const borderColor =
 export const formatNumber = (num: number): string => {
   if (num >= 1000) return format('.2s')(num)
   if (num > 9) return format('.0f')(num)
-  if (num >= 1) return format('.1')(num)
   return format('.1f')(num)
 }
 
 export function Slider(props: SliderProps) {
-  const { initialRange, label, config = {}, onChange, className } = props
+  const { initialRange, label, config = {}, onChange, className, histogram } = props
   const { min = MIN, max = MAX, steps } = config as SliderConfig
   const scale = useMemo(() => {
     return scaleLinear()
@@ -85,6 +86,18 @@ export function Slider(props: SliderProps) {
     <div className={className}>
       <label>{label}</label>
       <div className={styles.container}>
+        {histogram && (
+          <svg
+            className={styles.histogram}
+            xmlns="http://www.w3.org/2000/svg"
+            width="262"
+            height="25"
+          >
+            <g fill="#163F89" fill-rule="evenodd" opacity=".2">
+              <path d="M0 24h7.4v1H0zM9.51 24h7.4v1h-7.4zM19.01 24h7.4v1h-7.4zM28.52 23.95h7.4v1h-7.4zM38.02 17.96h7.4v6.99h-7.4zM47.53 6.99h7.4v17.96h-7.4zM57.03 2.99h7.4v21.96h-7.4zM66.54 1h7.4v23.95h-7.4zM76.04 0h7.4v24.95h-7.4zM85.55 0h7.4v24.95h-7.4zM95.05 1h7.4v23.95h-7.4zM104.56 2.99h7.4v21.96h-7.4zM114.06 3.99h7.4v20.96h-7.4zM123.57 5.99h7.4v18.96h-7.4zM133.07 9.98h7.4v14.97h-7.4zM142.58 12.97h7.4v11.98h-7.4zM152.08 16.97h7.4v7.98h-7.4zM161.59 19.96h7.4v4.99h-7.4zM171.09 20.96h7.4v3.99h-7.4zM180.6 21.96h7.4v2.99h-7.4zM190.1 21.96h7.4v2.99h-7.4zM199.61 22.95h7.4v2h-7.4zM209.11 22.95h7.4v2h-7.4zM218.62 23.95h7.4v1h-7.4zM228.12 24h7.4v1h-7.4zM237.63 24h7.4v1h-7.4zM247.13 24h7.4v1h-7.4zM256.64 24h7.4v1h-7.4z" />
+            </g>
+          </svg>
+        )}
         <Range
           values={values}
           step={STEP}
