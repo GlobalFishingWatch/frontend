@@ -41,14 +41,11 @@ function ActivitySchemaFilter({
   onClean,
 }: ActivitySchemaFilterProps): React.ReactElement {
   const { id, disabled, options, optionsSelected, type } = schemaFilter
-  const [range, setRange] = useState<number[] | null>(
-    type === 'number' ? getRangeBySchema(schemaFilter) : null
-  )
   const { t } = useTranslation()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSliderCb = useCallback(
-    debounce((rangeSelected) => {
+  const onSliderChange = useCallback(
+    (rangeSelected) => {
       const filterRange = getRangeLimitsBySchema(schemaFilter)
       if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
         onClean(id)
@@ -59,38 +56,26 @@ function ActivitySchemaFilter({
         }))
         onSelect(id, selection)
       }
-    }, 300),
-    []
+    },
+    [id, onClean, onSelect, schemaFilter]
   )
-
-  useEffect(() => {
-    if (type === 'number') {
-      debouncedSliderCb(range)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [range])
 
   if (!showSchemaFilter(schemaFilter)) {
     return null
   }
 
   if (type === 'number') {
-    const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
-    //dividing by 250 to match the width of the slider on screen
-    const minStepPossible = Math.floor(
-      (optionValues?.[optionValues.length - 1] - optionValues?.[0]) / 250
-    )
     return (
       <Slider
         className={styles.multiSelect}
-        range={range}
+        initialRange={getRangeBySchema(schemaFilter)}
         label={t(`vessel.${id}` as any, id)}
         config={{
-          step: Math.max(1, minStepPossible),
-          min: optionValues?.[0],
-          max: optionValues?.[optionValues.length - 1],
+          steps: [0, 1, 10, 100, 1000, 10000],
+          min: 0,
+          max: 10000,
         }}
-        onChange={setRange}
+        onChange={onSliderChange}
       ></Slider>
     )
   }
