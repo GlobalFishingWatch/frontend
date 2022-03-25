@@ -36,6 +36,8 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
+import { FEEDBACK_EN, FEEDBACK_FR } from 'data/config'
+import { useApp } from 'features/app/app.hooks'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -43,6 +45,7 @@ import styles from './Profile.module.css'
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const { openFeedback } = useApp()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const query = useSelector(selectSearchableQueryParams)
@@ -276,6 +279,13 @@ const Profile: React.FC = (props): React.ReactElement => {
             )}
           </h1>
         )}
+        <IconButton
+          icon="feedback"
+          className={styles.feedback}
+          onClick={openFeedback}
+          tooltip={t('common.feedback', 'Feedback')}
+          tooltipPlacement="bottom"
+        />
       </header>
       <div className={styles.profileContainer}>
         <Tabs
