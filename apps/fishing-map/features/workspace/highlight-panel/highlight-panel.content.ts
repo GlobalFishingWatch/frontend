@@ -20,7 +20,7 @@ export type HighlighPanelConfig = {
 
 const highlightPanelConfig: HighlighPanelConfig = {
   dataviewInstanceId: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-  imageUrl: `${PATH_BASENAME}/images/costa-rica-vms.jpg`,
+  imageUrl: `${PATH_BASENAME}/images/belize-vms.jpg`,
   learnMoreUrl: 'https://globalfishingwatch.org/belize',
   en: {
     title: 'Belize VMS data is now available',
