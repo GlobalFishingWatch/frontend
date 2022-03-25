@@ -67,7 +67,6 @@ function TableRow({
       id: country + '-' + (ports.length + 1),
       name: country + '-' + (ports.length + 1),
     }]
-    console.log(newPorts)
     dispatch(setPorts(newPorts))
   }, [country, dispatch, ports])
 
@@ -129,7 +128,8 @@ function TableRow({
 
       </div>
       <div className={styles.col}>
-        {record.top_destination}
+        {record.top_destination} -
+        {record.community_iso3} - {selectedSubarea}
       </div>
     </div>
   )
