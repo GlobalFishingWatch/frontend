@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
 import { MultiSelect, MultiSelectOption, Select, Slider } from '@globalfishingwatch/ui-components'
@@ -76,6 +76,7 @@ function ActivitySchemaFilter({
           max: 10000,
         }}
         onChange={onSliderChange}
+        histogram
       ></Slider>
     )
   }
