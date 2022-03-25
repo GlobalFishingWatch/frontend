@@ -108,12 +108,13 @@ export const useSelectedTracksConnect = () => {
       if (e.port_label) {
         tempPorts.push(e.port_label)
       }
-      tempSubareas.push(e.community_iso3)
+      tempSubareas.push(e.community_label)
     })
     const uniqueTempPorts = [...new Set(tempPorts)];
     const uniqueTempSubareas = [...new Set(tempSubareas)];
     dispatch(setSubareas(uniqueTempSubareas.map((e, index) => {
-      const record = countryRecords.find(record => record.community_iso3 === e)
+      const record = countryRecords.find(record => record.community_label === e)
+      console.log(record)
       return {
         id: e,
         name: record.community_label ?? record.community_iso3,
@@ -132,7 +133,8 @@ export const useSelectedTracksConnect = () => {
     }, {})
     dispatch(setPortValues(portMap))
     const subareaMap = countryRecords.reduce((ac, value, i, v) => {
-      ac[value.s2id] = value.community_iso3
+      console.log(value)
+      ac[value.s2id] = value.community_label
       return ac
     }, {})
     dispatch(setSubareaValues(subareaMap))
