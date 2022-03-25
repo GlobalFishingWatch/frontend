@@ -92,10 +92,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
+          "trawler": "trawler",
+          "reefer": "reefer",
           "longline": "Palangre",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -115,10 +115,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
+          "trawler": "trawler",
+          "reefer": "reefer",
           "longline": "Palangre",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine"
         }
       },
       "callsign": "callsign",
@@ -140,10 +140,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
+          "trawler": "trawler",
+          "reefer": "reefer",
           "longline": "Palangre",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine"
         }
       },
       "callsign": "callsign",
@@ -831,10 +831,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
+          "trawler": "trawler",
+          "reefer": "reefer",
           "longline": "Palangre",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -854,10 +854,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
+          "trawler": "trawler",
+          "reefer": "reefer",
           "longline": "Palangre",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine"
         }
       },
       "callsign": "callsign",
