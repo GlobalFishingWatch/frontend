@@ -35,24 +35,26 @@ export default setInlineStyles
 
 export const getOperatingSystem = () => {
   const userAgent = window.navigator.userAgent,
-    platform = window.navigator?.userAgentData ? window.navigator.userAgentData.platform : window.navigator.platform,
+    platform = (window.navigator as any).userAgentData
+      ? (window.navigator as any)?.userAgentData.platform
+      : window.navigator.platform,
     macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K', 'macOS'],
     windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-    iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+    iosPlatforms = ['iPhone', 'iPad', 'iPod']
 
   if (macosPlatforms.indexOf(platform) !== -1) {
-    return 'Mac OS';
+    return 'Mac OS'
   } else if (iosPlatforms.indexOf(platform) !== -1) {
-    return 'iOS';
+    return 'iOS'
   } else if (windowsPlatforms.indexOf(platform) !== -1) {
-    return 'Windows 10';
+    return 'Windows 10'
   } else if (/Android/.test(userAgent)) {
-    return 'Android';
+    return 'Android'
   } else if (/Linux/.test(platform)) {
-    return 'Linux (Ubuntu, etc)';
+    return 'Linux (Ubuntu, etc)'
   }
 
-  return 'unknown';
+  return 'unknown'
 }
 
 export const getBrowser = () => {
@@ -63,15 +65,15 @@ export const getBrowser = () => {
       firefox: /firefox/i,
       ie: /internet explorer/i,
       edge: /edge/i,
-    };
+    }
 
   for (const key in browsers) {
     if (browsers[key].test(userAgent)) {
-      return key[0].toUpperCase() + key.substring(1).toLowerCase();
+      return key[0].toUpperCase() + key.substring(1).toLowerCase()
     }
   }
 
-  return 'unknown';
+  return 'unknown'
 }
 
 export const getHref = () => {
