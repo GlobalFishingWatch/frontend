@@ -36,6 +36,8 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
+import { FEEDBACK_EN, FEEDBACK_FR } from 'data/config'
+import { useApp } from 'features/app/app.hooks'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -43,6 +45,7 @@ import styles from './Profile.module.css'
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const { openFeedback } = useApp()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const query = useSelector(selectSearchableQueryParams)
@@ -69,7 +72,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       ).split('_')
 
       if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
-        const gfwAka = akaVesselProfileIds.find(aka => {
+        const gfwAka = akaVesselProfileIds.find((aka) => {
           const [akaDataset] = aka.split('_')
           return akaDataset.toLocaleLowerCase() !== 'na'
         })
@@ -80,10 +83,12 @@ const Profile: React.FC = (props): React.ReactElement => {
           tmtId = akaTmt
         }
       }
-      const action = await dispatch(fetchVesselByIdThunk({
-        id: vesselProfileId,
-        akas: akaVesselProfileIds
-      }))
+      const action = await dispatch(
+        fetchVesselByIdThunk({
+          id: vesselProfileId,
+          akas: akaVesselProfileIds,
+        })
+      )
       if (fetchVesselByIdThunk.fulfilled.match(action as any)) {
         const vesselDataset = datasets
           .filter((ds) => ds.id === dataset)
@@ -104,17 +109,21 @@ const Profile: React.FC = (props): React.ReactElement => {
                 : []
 
             // Only merge with vessels of the same dataset that the main vessel
-            const akaVesselsIds = [{
-              dataset,
-              id: gfwId,
-              vesselMatchId: tmtId
-            }].concat(parseVesselProfileId(vesselProfileId))
+            const akaVesselsIds = [
+              {
+                dataset,
+                id: gfwId,
+                vesselMatchId: tmtId,
+              },
+            ]
+              .concat(parseVesselProfileId(vesselProfileId))
               // I generate the list with all so doesn't care what vessel is in the path
-              .concat(
-                (akaVesselProfileIds ?? []).map((akaId) => parseVesselProfileId(akaId))
-              )
+              .concat((akaVesselProfileIds ?? []).map((akaId) => parseVesselProfileId(akaId)))
               // Now we filter to get only gfw vessels and not repeat the main (from path o query)
-              .filter((akaVessel) => akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId)
+              .filter(
+                (akaVessel) =>
+                  akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId
+              )
 
             const vesselDataviewInstance = getVesselDataviewInstance(
               { id: gfwId },
@@ -151,8 +160,8 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   useEffect(() => {
     if (vesselDataviewLoaded && resourceQueries && resourceQueries.length > 0) {
-      resourceQueries.forEach((resourceQuery) => {
-        dispatch(fetchResourceThunk(resourceQuery))
+      resourceQueries.forEach((resource) => {
+        dispatch(fetchResourceThunk({ resource }))
       })
     }
   }, [dispatch, loading, resourceQueries, vessel, vesselDataviewLoaded])
@@ -270,6 +279,13 @@ const Profile: React.FC = (props): React.ReactElement => {
             )}
           </h1>
         )}
+        <IconButton
+          icon="feedback"
+          className={styles.feedback}
+          onClick={openFeedback}
+          tooltip={t('common.feedback', 'Feedback')}
+          tooltipPlacement="bottom"
+        />
       </header>
       <div className={styles.profileContainer}>
         <Tabs

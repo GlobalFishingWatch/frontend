@@ -69,10 +69,17 @@
         "passWithNoTests": true
       }
     },
-    "deploy": {
+    "publish": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
+      }
+    },
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["nx publish i18n-labels", "./libs/i18n-labels/purge_jsdelivr.sh"],
+        "parallel": false
       }
     }
   }

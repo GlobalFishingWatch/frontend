@@ -29,6 +29,7 @@ import { useSearchConnect, useSearchResultsConnect } from 'features/search/searc
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserData } from 'features/user/user.slice'
+import { useApp } from 'features/app/app.hooks'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -42,6 +43,8 @@ interface LoaderProps {
 
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
+  const { openFeedback } = useApp()
+
   const dispatch = useDispatch()
   const { logout } = useUser()
   const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchResultsConnect()
@@ -202,6 +205,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           size="default"
           icon="settings"
         ></IconButton>
+        <IconButton
+          icon="feedback"
+          onClick={openFeedback}
+          tooltip={t('common.feedback', 'Feedback')}
+          tooltipPlacement="bottom"
+        />
         <LanguageToggle />
       </header>
       <div className={styles.search}>

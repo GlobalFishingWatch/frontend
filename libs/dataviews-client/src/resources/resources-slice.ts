@@ -28,18 +28,21 @@ export const getVesselIdFromDatasetConfig = (datasetConfig: DataviewDatasetConfi
     datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value) as string
 }
 
-const parseFishingEvent = (vesselId = '', event: ApiEvent, index: number): ApiEvent => {
+const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   return {
     ...event,
-    id: `${vesselId}-${event.type}-${index}`,
+    id: eventKey,
     start: DateTime.fromISO(event.start as string).toMillis(),
     end: DateTime.fromISO(event.end as string).toMillis(),
   }
 }
 
+export type FetchResourceThunkParams = { resource: Resource; parseEventCb?: ParseEventCallback }
+export type ParseEventCallback = (event: ApiEvent, idKey: string) => unknown
+
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
-  async (resource: Resource) => {
+  async ({ resource, parseEventCb }: FetchResourceThunkParams) => {
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
@@ -61,9 +64,10 @@ export const fetchResourceThunk = createAsyncThunk(
       if (isEventsResource) {
         const vesselId =
           getVesselIdFromDatasetConfig(resource?.datasetConfig) || resource.url.split('/')[3] // grab vesselId from url
-        return (data as ApiEvents).entries.map((entry, index) =>
-          parseFishingEvent(vesselId, entry, index)
-        )
+        return (data as ApiEvents).entries.map((event, index) => {
+          const eventKey = `${vesselId}-${event.type}-${index}`
+          return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
+        })
       }
       return data
     })
@@ -73,7 +77,7 @@ export const fetchResourceThunk = createAsyncThunk(
     }
   },
   {
-    condition: (resource: Resource, { getState }) => {
+    condition: ({ resource }: FetchResourceThunkParams, { getState }) => {
       const { resources } = getState() as PartialStoreResources
       const { status } = resources[resource.url] || {}
       return !status || (status !== ResourceStatus.Loading && status !== ResourceStatus.Finished)
@@ -87,7 +91,7 @@ export const resourcesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
-      const resource = action.meta.arg
+      const { resource } = action.meta.arg
       state[resource.url] = { status: ResourceStatus.Loading, ...resource }
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
@@ -122,7 +126,7 @@ export const resourcesSlice = createSlice({
       }
     })
     builder.addCase(fetchResourceThunk.rejected, (state, action) => {
-      const { url } = action.meta.arg
+      const { url } = action.meta.arg.resource
       state[url].status = ResourceStatus.Error
     })
   },

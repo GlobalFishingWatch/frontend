@@ -377,7 +377,7 @@ export function getDataviewsGeneratorConfigs(
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
 
       const activeDatasets = dataview.datasets.filter((dataset) =>
-        dataview?.config?.datasets.includes(dataset.id)
+        dataview?.config?.datasets?.includes(dataset.id)
       )
       const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
       if (units.length > 0 && units.length !== 1) {

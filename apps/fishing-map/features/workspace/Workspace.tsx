@@ -20,6 +20,7 @@ import { PRIVATE_SUFIX, SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -121,8 +122,8 @@ function Workspace() {
   useEffect(() => {
     if (dataviewsResources) {
       const { resources } = dataviewsResources
-      resources.forEach((resourceQuery) => {
-        dispatch(fetchResourceThunk(resourceQuery))
+      resources.forEach((resource) => {
+        dispatch(fetchResourceThunk({ resource, parseEventCb: parseTrackEventChunkProps }))
       })
     }
   }, [dispatch, dataviewsResources])
