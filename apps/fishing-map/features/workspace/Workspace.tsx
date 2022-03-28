@@ -18,7 +18,7 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { PRIVATE_SUFIX, SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
-import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
+import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import ActivitySection from './activity/ActivitySection'
@@ -117,15 +117,16 @@ function Workspace() {
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
-  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const dataviewsResources = useSelector(selectDataviewsResources)
 
   useEffect(() => {
-    if (resourceQueries) {
-      resourceQueries.forEach((resource) => {
+    if (dataviewsResources) {
+      const { resources } = dataviewsResources
+      resources.forEach((resource) => {
         dispatch(fetchResourceThunk({ resource, parseEventCb: parseTrackEventChunkProps }))
       })
     }
-  }, [dispatch, resourceQueries])
+  }, [dispatch, dataviewsResources])
 
   if (
     workspaceStatus === AsyncReducerStatus.Idle ||

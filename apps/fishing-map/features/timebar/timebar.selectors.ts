@@ -4,10 +4,12 @@ import {
   Resource,
   ResourceStatus,
   TrackResourceData,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
+  pickTrackResource,
 } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import {
@@ -37,12 +39,14 @@ export const selectTracksData = createSelector(
         chunks: [],
         status: ResourceStatus.Idle,
       }
-      const { url } = resolveDataviewDatasetResource(dataview, [
-        DatasetTypes.Tracks,
-        DatasetTypes.UserTracks,
-      ])
-      if (!url) return timebarTrack
-      const trackResource = resources[url] as Resource<TrackResourceData>
+
+      const endpointType =
+        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+          ? EndpointId.UserTracks
+          : EndpointId.Tracks
+
+      const trackResource = pickTrackResource(dataview, endpointType, resources)
+
       if (!trackResource || trackResource.status === ResourceStatus.Loading) {
         return { ...timebarTrack, status: ResourceStatus.Loading }
       } else if (
@@ -52,7 +56,7 @@ export const selectTracksData = createSelector(
         return { ...timebarTrack, status: ResourceStatus.Error }
       }
 
-      const segments = (trackResource.data as any)?.features
+      const segments: any = (trackResource.data as any)?.features
         ? geoJSONToSegments(trackResource.data as any)
         : trackResource.data || []
 
@@ -184,15 +188,12 @@ export const selectTracksEvents = createSelector(
       }
       if (Array.isArray(visibleEvents) && visibleEvents?.length === 0) return trackEvents
 
-      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-      const trackResource = resources[tracksUrl]
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       if (!eventsResources.length) {
         return trackEvents
       }
       const hasEventData = eventsResources.some(({ url }) => resources[url]?.data)
-      const tracksResourceResolved = tracksUrl && trackResource?.status === ResourceStatus.Finished
-      if (!hasEventData || !tracksResourceResolved) {
+      if (!hasEventData) {
         return { ...trackEvents, status: ResourceStatus.Loading }
       }
 
