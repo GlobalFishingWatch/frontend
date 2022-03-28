@@ -1,12 +1,15 @@
 {
-  "root": "apps/<%= name %>",
-  "sourceRoot": "apps/<%= name %>",
+  "root": "apps/user-groups-admin",
+  "sourceRoot": "apps/user-groups-admin",
   "projectType": "application",
   "targets": {
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": ["nx build <%= name %> --parallel", "nx docker-prepare <%= name %>"],
+        "commands": [
+          "nx build user-groups-admin --parallel",
+          "nx docker-prepare user-groups-admin"
+        ],
         "parallel": false
       }
     },
@@ -15,8 +18,8 @@
       "outputs": [],
       "options": {
         "commands": [
-          "cp config/entrypoint.sh dist/apps/<%= name %>",
-          "cp apps/<%= name %>/nginx.conf dist/apps/<%= name %>"
+          "cp config/entrypoint.sh dist/apps/user-groups-admin",
+          "cp apps/user-groups-admin/nginx.conf dist/apps/user-groups-admin"
         ]
       }
     },
@@ -25,8 +28,8 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/<%= name %>",
-        "outputPath": "dist/apps/<%= name %>"
+        "root": "apps/user-groups-admin",
+        "outputPath": "dist/apps/user-groups-admin"
       },
       "configurations": {
         "production": {}
@@ -35,20 +38,20 @@
     "start": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": ["nx serve <%= name %>"],
+        "commands": ["nx serve user-groups-admin"],
         "parallel": true
       }
     },
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "<%= name %>:compile",
+        "buildTarget": "user-groups-admin:compile",
         "dev": true,
         "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "<%= name %>:build:production",
+          "buildTarget": "user-groups-admin:build:production",
           "dev": false
         }
       }
@@ -56,21 +59,21 @@
     "build": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "<%= name %>:compile:production"
+        "buildTarget": "user-groups-admin:compile:production"
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/<%= name %>/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/user-groups-admin/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/<%= name %>"],
+      "outputs": ["coverage/apps/user-groups-admin"],
       "options": {
-        "jestConfig": "apps/<%= name %>/jest.config.js",
+        "jestConfig": "apps/user-groups-admin/jest.config.js",
         "passWithNoTests": true
       }
     }
