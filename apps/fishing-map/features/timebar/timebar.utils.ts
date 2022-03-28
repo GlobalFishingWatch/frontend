@@ -43,7 +43,7 @@ export const parseTrackEventChunkProps = (
   }
   const start = DateTime.fromISO(event.start as string)
   const end = DateTime.fromISO(event.end as string)
-  const duration = start.diff(end, ['days', 'hours', 'minutes']).toObject()
+  const duration = end.diff(start, ['days', 'hours', 'minutes']).toObject()
 
   description = [
     description,
