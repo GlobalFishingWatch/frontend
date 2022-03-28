@@ -56,7 +56,7 @@
     "build": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "<%= name %>:build:production"
+        "buildTarget": "<%= name %>:compile:production"
       }
     },
     "lint": {

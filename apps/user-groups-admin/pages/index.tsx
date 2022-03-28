@@ -5,11 +5,11 @@ import UserGroupsList from 'components/user-groups/list'
 import styles from './pages.module.css'
 
 const Home: NextPage = () => {
-  const [groupId, setGroupId] = useState()
+  const [groupId, setGroupId] = useState<number | undefined>()
   return (
     <Fragment>
       <aside className={styles.aside}>
-        <UserGroupsList onGroupClick={setGroupId} />
+        <UserGroupsList groupId={groupId} onGroupClick={setGroupId} />
       </aside>
       <main className={styles.main}>
         {groupId ? (

@@ -59,7 +59,7 @@
     "build": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "user-groups-admin:build:production"
+        "buildTarget": "user-groups-admin:compile:production"
       }
     },
     "lint": {
