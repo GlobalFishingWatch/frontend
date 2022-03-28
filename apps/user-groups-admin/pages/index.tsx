@@ -1,25 +1,23 @@
-import { Fragment } from 'react'
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import HeaderComponent from '../components/header/header'
-import { APPLICATION_NAME } from '../components/data/config'
-import styles from '../styles/Home.module.css'
+import { Fragment, useState } from 'react'
+import UserGroupDetail from 'components/user-groups/detail'
+import UserGroupsList from 'components/user-groups/list'
+import styles from './pages.module.css'
 
 const Home: NextPage = () => {
+  const [groupId, setGroupId] = useState()
   return (
     <Fragment>
-      <HeaderComponent title="GFW Minisite" />
-      <div className={styles.container}>
-        <Head>
-          <title>{APPLICATION_NAME}</title>
-          <meta name="description" content="Some description for your GFW Minisite" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
-        <main className={styles.main}>
-          <p className={styles.description}>Some description for your GFW Minisite</p>
-        </main>
-      </div>
+      <aside className={styles.aside}>
+        <UserGroupsList onGroupClick={setGroupId} />
+      </aside>
+      <main className={styles.main}>
+        {groupId ? (
+          <UserGroupDetail groupId={groupId} />
+        ) : (
+          <p className={styles.flex}>Select a group to see their users</p>
+        )}
+      </main>
     </Fragment>
   )
 }
