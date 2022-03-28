@@ -1,1 +1,17 @@
-{}
+{
+    "common": {
+        "port": "Port",
+        "subarea": "Subarea",
+        "anchorage": "Anchorage",
+        "destination": "Destination",
+        "zoom_more": "Increase zoom",
+        "zoom_less": "Decrease zoom"
+    },
+    "messages": {
+        "no_anchorages": "No anchorages found",
+        "country_selection": "Select a country",
+        "add_port": "Add new Port",
+        "add_subarea": "Add new community",
+        "select_subarea": "Select a community"
+    }
+}

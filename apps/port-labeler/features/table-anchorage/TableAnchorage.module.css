@@ -71,3 +71,8 @@
 .portSelector {
   border: none;
 }
+
+.alert {
+  padding: var(--font-S);
+  text-align: center;
+}

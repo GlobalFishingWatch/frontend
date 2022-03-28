@@ -1,29 +1,19 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
-import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import MiniGlobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { BasemapType } from '@globalfishingwatch/layer-composer'
-import { updateQueryParams } from 'routes/routes.actions'
-import { selectSatellite } from 'routes/routes.selectors'
 import { useViewport } from '../map-viewport.hooks'
 import styles from './MapControls.module.css'
 
 const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
   const { viewport, onViewportChange } = useViewport()
-  const dispatch = useDispatch()
+  const { t } = useTranslation()
 
   const [showCoords, setShowCoords] = useState(false)
   const [pinned, setPinned] = useState(false)
   const [showDMS, setShowDMS] = useState(false)
-  const isSatellite = useSelector(selectSatellite)
-  const currentBasemap = isSatellite
-    ? BasemapType.Satellite
-    : BasemapType.Default
-  const switchBasemap = () => {
-    dispatch(updateQueryParams({ satellite: !isSatellite }))
-  }
 
   return (
     <div className={styles.mapControls}>
@@ -42,7 +32,7 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         icon="plus"
         type="map-tool"
         data-tip-pos="left"
-        tooltip="Increase zoom"
+        tooltip={t('common.zoom_more', 'Increase zoom')}
         onClick={() => {
           onViewportChange({ ...viewport, zoom: viewport.zoom + 1 })
         }}
@@ -51,15 +41,11 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         icon="minus"
         type="map-tool"
         data-tip-pos="left"
-        tooltip="Decrease zoom"
+        tooltip={t('common.zoom_less', 'Decrease zoom')}
         onClick={() => {
           onViewportChange({ ...viewport, zoom: viewport.zoom - 1 })
         }}
       />
-      <button
-        className={cx(styles.basemapSwitcher, styles[currentBasemap])}
-        onClick={switchBasemap}
-      ></button>
 
       {(pinned || showCoords) && (
         <div

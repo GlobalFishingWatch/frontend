@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { InputText, SelectOption } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition } from 'types'
@@ -20,7 +21,7 @@ function TableRow({
 }: TableRowProps) {
   const map = useMapInstance()
   const dispatch = useDispatch()
-
+  const { t } = useTranslation()
   const {
     onSubareaChange,
     onPointValueChange,
@@ -103,8 +104,8 @@ function TableRow({
           onAddNew={onPortAdded}
           onSelectedNameChange={onPortNameChange}
           options={portOptions}
-          placeholder="Select a port"
-          addButtonLabel='Add new port'
+          placeholder={t('common.select_port', 'Select a port')}
+          addButtonLabel={t('common.add_port', 'Add new port')}
         ></SubareaSelector>
       </div>
       <div className={styles.col}>
@@ -117,8 +118,8 @@ function TableRow({
           onAddNew={onSubareaAdded}
           onSelectedNameChange={onSubareaNameChange}
           options={subareaOptions}
-          placeholder="Select a community"
-          addButtonLabel='Add new community'
+          placeholder={t('common.select_subarea', 'Select a community')}
+          addButtonLabel={t('common.select_subarea', 'Add new community')}
         ></SubareaSelector>
       </div>
       <div className={styles.col}>

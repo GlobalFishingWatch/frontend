@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
+import { useTranslation } from 'react-i18next'
 import { selectPorts, sortPoints } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
 import { PortPosition } from 'types'
@@ -12,6 +13,7 @@ import TableRow from './TableRow'
 
 function TableAnchorage() {
 
+  const { t } = useTranslation()
   const records = useSelector(selectFilteredPoints)
   const dispatch = useDispatch()
 
@@ -43,17 +45,17 @@ function TableAnchorage() {
     <div className={styles.table}>
       <div className={styles.head}>
         <TableHeader
-          label="Port" order={orderColumn === 'port' ? orderDirection : ''}
+          label={t('common.port', 'Port2')} order={orderColumn === 'port' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('port', order)}
         />
         <TableHeader
-          label="Subarea" order={orderColumn === 'subarea' ? orderDirection : ''}
+          label={t('common.subarea', 'Subarea')} order={orderColumn === 'subarea' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('subarea', order)} />
         <TableHeader
-          label="Anchorage" order={orderColumn === 'anchorage' ? orderDirection : ''}
+          label={t('common.anchorage', 'Anchorage')} order={orderColumn === 'anchorage' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('anchorage', order)} />
         <TableHeader
-          label="Destination" order={orderColumn === 'top_destination' ? orderDirection : ''}
+          label={t('common.destination', 'Destination')} order={orderColumn === 'top_destination' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('top_destination', order)} />
       </div>
 
@@ -84,7 +86,7 @@ function TableAnchorage() {
           </AutoSizer>
         </div>
       ) : (
-        <p>No points found</p>
+        <p className={styles.alert}>{t('messages.no_anchorages', 'No anchorages found')}</p>
       )}
     </div>
 
