@@ -188,15 +188,12 @@ export const selectTracksEvents = createSelector(
       }
       if (Array.isArray(visibleEvents) && visibleEvents?.length === 0) return trackEvents
 
-      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-      const trackResource = resources[tracksUrl]
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       if (!eventsResources.length) {
         return trackEvents
       }
       const hasEventData = eventsResources.some(({ url }) => resources[url]?.data)
-      const tracksResourceResolved = tracksUrl && trackResource?.status === ResourceStatus.Finished
-      if (!hasEventData || !tracksResourceResolved) {
+      if (!hasEventData) {
         return { ...trackEvents, status: ResourceStatus.Loading }
       }
 
