@@ -28,6 +28,13 @@ export const getVesselIdFromDatasetConfig = (datasetConfig: DataviewDatasetConfi
     datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value) as string
 }
 
+export const getTracksChunkSetId = (datasetConfig: DataviewDatasetConfig) => {
+  const chunkSetVesselId = datasetConfig.params?.find((p) => p.id === 'vesselId')?.value
+  const chunkSetZoom = datasetConfig.metadata?.zoom
+  const chunkSetId = ['track', chunkSetVesselId, chunkSetZoom].join('-')
+  return chunkSetId
+}
+
 const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   return {
     ...event,
@@ -99,6 +106,7 @@ export const resourcesSlice = createSlice({
       const resource = { status: ResourceStatus.Finished, ...action.payload }
       state[url] = resource
 
+      // If resource is part of a chunk set (ie tracks by year), rebuild the whole set into a single resource
       if (action.payload.datasetConfig.metadata?.chunkSetId) {
         const thisChunkSetId = action.payload.datasetConfig.metadata?.chunkSetId
         const chunks = Object.keys(state)

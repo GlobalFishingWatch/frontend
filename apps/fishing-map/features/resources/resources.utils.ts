@@ -1,4 +1,5 @@
 import { ThinningConfig } from '@globalfishingwatch/api-types'
+import { getTracksChunkSetId } from '@globalfishingwatch/dataviews-client'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 
@@ -46,9 +47,7 @@ export const trackDatasetConfigsCallback = (
     let allTracks = [trackWithThinning]
 
     if (chunks) {
-      const chunkSetVesselId = trackWithThinning.params?.find((p) => p.id === 'vesselId').value
-      const chunkSetZoom = trackWithThinning.metadata.zoom
-      const chunkSetId = ['track', chunkSetVesselId, chunkSetZoom].join('-')
+      const chunkSetId = getTracksChunkSetId(trackWithThinning)
       allTracks = chunks.map((chunk) => {
         const trackChunk = { ...trackWithThinning }
         const trackQuery = [...(trackWithThinning.query || [])]
