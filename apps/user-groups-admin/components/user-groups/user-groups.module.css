@@ -1,0 +1,39 @@
+.title {
+  font: var(--font-L);
+  border-bottom: var(--border);
+}
+
+.subTitle {
+  font: var(--font-L);
+  margin-top: var(--space-M);
+}
+
+.content {
+  padding-left: var(--space-M);
+}
+
+.list {
+  margin-top: var(--space-S);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.list > li {
+  display: flex;
+  align-items: center;
+}
+
+.active {
+  font-weight: bold;
+}
+
+.input {
+  flex: 1;
+  margin-top: var(--space-L);
+}
+
+.button {
+  margin-top: var(--space-S);
+}

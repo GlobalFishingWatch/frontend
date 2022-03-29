@@ -257,7 +257,8 @@ const MapWrapper = (): React.ReactElement | null => {
 
   return (
     <div className={styles.container}>
-      {<MapScreenshot map={map} />}
+      {/* Disabled for now for performance issues */}
+      {/* {<MapScreenshot map={map} />} */}
       {style && (
         <InteractiveMap
           disableTokenWarning={true}

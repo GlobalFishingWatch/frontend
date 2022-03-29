@@ -1,0 +1,7 @@
+.container {
+  display: flex;
+  min-height: calc(100vh - var(--header-band-height-S));
+  background-image: var(--background-gradient);
+  width: 100%;
+  padding: var(--space-M);
+}

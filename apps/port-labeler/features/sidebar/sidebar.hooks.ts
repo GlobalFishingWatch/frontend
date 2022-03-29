@@ -91,23 +91,24 @@ export const useSelectedTracksConnect = () => {
     const countryRecords = allRecords?.filter((point) => point.iso3 === country) || []
     centerPoints(countryRecords)
     countryRecords.forEach(e => {
-      tempPorts.push(e.label)
+      if (e.port_label) {
+        tempPorts.push(e.port_label)
+      }
       tempSubareas.push(e.community_iso3)
     })
     const uniqueTempPorts = [...new Set(tempPorts)];
     const uniqueTempSubareas = [...new Set(tempSubareas)];
-
     dispatch(setSubareas(uniqueTempSubareas.map((e, index) => {
       const record = countryRecords.find(record => record.community_iso3 === e)
       return {
         id: e,
-        name: record.sublabel ?? record.community_iso3,
+        name: record.community_label ?? record.community_iso3,
         color: getFixedColorForUnknownLabel(index)
       }
     })))
     dispatch(setPorts(uniqueTempPorts))
     const portMap = countryRecords.reduce((ac, value, i, v) => {
-      ac[value.s2id] = value.label
+      ac[value.s2id] = value.port_label
       return ac
     }, {})
     dispatch(setPortValues(portMap))

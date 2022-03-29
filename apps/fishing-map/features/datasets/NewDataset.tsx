@@ -1,6 +1,6 @@
 import React, { useState, useCallback, Fragment } from 'react'
 import { featureCollection, point } from '@turf/helpers'
-import { FeatureCollectionWithFilename } from 'shpjs'
+import type { FeatureCollectionWithFilename } from 'shpjs'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'lodash'

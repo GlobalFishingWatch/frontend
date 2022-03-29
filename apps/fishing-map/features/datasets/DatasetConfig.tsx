@@ -1,4 +1,4 @@
-import { FeatureCollectionWithFilename } from 'shpjs'
+import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment, useMemo } from 'react'
