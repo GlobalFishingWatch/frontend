@@ -128,8 +128,7 @@ function TableRow({
 
       </div>
       <div className={styles.col}>
-        {record.top_destination} -
-        {record.community_iso3} - {selectedSubarea}
+        {record.top_destination}
       </div>
     </div>
   )
