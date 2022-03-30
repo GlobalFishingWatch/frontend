@@ -10,7 +10,7 @@ import {
   BASEMAP_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
   PRESENCE_DATAVIEW_ID,
-  VIIRS_DATAVIEW_ID,
+  VIIRS_MATCH_DATAVIEW_ID,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_ID,
@@ -89,7 +89,7 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'yellow',
         visible: false,
       },
-      dataviewId: VIIRS_DATAVIEW_ID,
+      dataviewId: VIIRS_MATCH_DATAVIEW_ID,
       datasetsConfig: [],
     },
     {
