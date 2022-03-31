@@ -1,13 +1,12 @@
 import Head from 'next/head'
-import { Login } from '@globalfishingwatch/react-hooks'
-import UserGroupsList from 'components/user-groups/list'
+import { Fragment } from 'react'
 import HeaderComponent from '../header/header'
 import { APPLICATION_NAME } from '../../data/config'
 import styles from './layout.module.css'
 
 export function Layout({ children }) {
   return (
-    <Login>
+    <Fragment>
       <HeaderComponent />
       <div className={styles.container}>
         <Head>
@@ -17,6 +16,6 @@ export function Layout({ children }) {
         </Head>
         {children}
       </div>
-    </Login>
+    </Fragment>
   )
 }

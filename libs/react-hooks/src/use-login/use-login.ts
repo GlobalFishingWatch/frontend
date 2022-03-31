@@ -13,6 +13,12 @@ interface GFWLoginHook {
   error: string | undefined
 }
 
+export const useGFWLoginRedirect = ({ logged, loading }: GFWLoginHook) => {
+  if (logged === false && loading === false && typeof window !== 'undefined') {
+    window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+  }
+}
+
 export const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => {
   const [state, setState] = useState<GFWLoginHook>({
     logged: false,

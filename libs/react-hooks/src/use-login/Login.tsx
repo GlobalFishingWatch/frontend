@@ -1,12 +1,8 @@
-/* global window */
-import { useGFWLogin } from '@globalfishingwatch/react-hooks'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks'
 
 export function Login({ children }: any) {
-  const { logged, loading } = useGFWLogin()
-  if (logged === false && loading === false && typeof window !== 'undefined') {
-    window.location.href = GFWAPI.getLoginUrl(window.location.toString())
-  }
-  if (!logged) return null
+  const login = useGFWLogin()
+  useGFWLoginRedirect(login)
+  if (!login.logged) return null
   return children
 }
