@@ -177,7 +177,7 @@
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "Tipos de embarcaciones",
         "enum": {
           "unknown": "unknown",
           "fishing": "fishing",
