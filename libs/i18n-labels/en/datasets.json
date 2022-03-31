@@ -1321,7 +1321,7 @@
     "schema": {}
   },
   "public-fao-areas-major-subareas": {
-    "name": "FAO major fishing areas and sub-areas",
+    "name": "FAO major fishing areas",
     "description": "Boundaries of major fishing areas and subareas (Source: <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>FAO</a>).",
     "schema": {}
   },
@@ -1807,8 +1807,8 @@
     }
   },
   "public-graticules": {
-    "name": "Graticules",
-    "description": "Grids at 1, 5, 10, and 30° intervals. <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules' target='_blank'>Source</a>",
+    "name": "Latitude longitude grids",
+    "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map (Source: <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules/'_blank'>Natural Earth</a>).",
     "schema": {}
   },
   "public-gs-as-simplified": {
