@@ -82,38 +82,38 @@
     }
   },
   "public-ais-presence-viirs-match-prototype": {
-    "name": "VIIRS Match",
+    "name": "VIIRS",
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
     "schema": {
       "cel": "cel",
       "lat": "lat",
       "lon": "lon",
       "pos": "pos",
-      "flag": "flag",
+      "flag": "Bandera",
       "htime": "htime",
       "source": {
-        "keyword": "source",
+        "keyword": "Fuente",
         "enum": {
           "unknown": "unknown",
           "AIS": "AIS"
         }
       },
       "matched": {
-        "keyword": "matched",
+        "keyword": "coincidencia",
         "enum": {
-          "true": true,
-          "false": false
+          "true": "AIS Matched",
+          "false": "AIS Unmatched"
         }
       },
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Arte de pesca",
         "enum": {
           "unknown": "unknown",
-          "cargo": "cargo",
+          "cargo": "Carga",
           "container_reefer": "container_reefer",
           "container_reefer,reefer": "container_reefer,reefer",
           "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
+          "drifting_longlines": "Palangres a la deriva",
           "drifting_longlines,purse_seine_support": "drifting_longlines,purse_seine_support",
           "drifting_longlines,specialized_reefer": "drifting_longlines,specialized_reefer",
           "fish_factory": "fish_factory",
@@ -126,12 +126,12 @@
           "fish_tender|reefer,well_boat|reefer": "fish_tender|reefer,well_boat|reefer",
           "fishing": "fishing",
           "fishing|fish_tender,fish_tender": "fishing|fish_tender,fish_tender",
-          "fixed_gear": "fixed_gear",
+          "fixed_gear": "Equipo fijo",
           "geartype": "geartype",
           "other_purse_seines": "other_purse_seines",
-          "other_seines": "other_seines",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
+          "other_seines": "Otras cerqueros",
+          "pole_and_line": "Polo y línea",
+          "pots_and_traps": "Trampas y nasas",
           "pots_and_traps,fish_tender": "pots_and_traps,fish_tender",
           "pots_and_traps|fish_tender": "pots_and_traps|fish_tender",
           "purse_seine_support": "purse_seine_support",
@@ -212,10 +212,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
+          "trawler": "Trawler",
+          "reefer": "Reefer",
           "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "purse_seine": "Purse Seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -235,10 +235,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
+          "trawler": "Trawler",
+          "reefer": "Reefer",
           "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
@@ -260,10 +260,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
+          "trawler": "Trawler",
+          "reefer": "Reefer",
           "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
@@ -951,10 +951,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
+          "trawler": "Trawler",
+          "reefer": "Reefer",
           "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "purse_seine": "Purse Seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -974,10 +974,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
+          "trawler": "Trawler",
+          "reefer": "Reefer",
           "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
@@ -1321,8 +1321,8 @@
     "schema": {}
   },
   "public-fao-areas-major-subareas": {
-    "name": "Fao areas (major & subareas)",
-    "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas.. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>",
+    "name": "Principales zonas de pesca de la FAO",
+    "description": "Límites de las principales zonas y subzonas de pesca (Fuente: <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>FAO</a>). ",
     "schema": {}
   },
   "public-fd-chlorophyl-ascension-v3": {
@@ -1807,8 +1807,8 @@
     }
   },
   "public-graticules": {
-    "name": "Graticules",
-    "description": "Grids at 1, 5, 10, and 30° intervals. <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules' target='_blank'>Source</a>",
+    "name": "Cuadrículas de latitud y longitud",
+    "description": "Cuadrículas y retículas de latitud y longitud en intervalos de 1, 5, 10 y 30° según el nivel de zoom del mapa (Fuente: <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules/'_blank'>Natural Earth</a>).",
     "schema": {}
   },
   "public-gs-as-simplified": {
@@ -2135,7 +2135,7 @@
     }
   },
   "public-presence-viirs-match-prototype": {
-    "name": "VIIRS Match",
+    "name": "VIIRS",
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
     "schema": {
       "cel": "cel",
