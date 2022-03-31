@@ -212,10 +212,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "longline",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -235,10 +235,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "longline",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
@@ -260,10 +260,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "longline",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
@@ -951,10 +951,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "longline",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -974,10 +974,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "longline",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
