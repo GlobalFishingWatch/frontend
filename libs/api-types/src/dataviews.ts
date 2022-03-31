@@ -23,6 +23,7 @@ export interface DataviewDatasetConfig {
   endpoint: string
   params: DataviewDatasetConfigParam[]
   query?: DataviewDatasetConfigParam[]
+  metadata?: Record<string, any>
 }
 
 export interface DataviewCreation<T = any> {

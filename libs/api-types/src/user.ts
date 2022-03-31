@@ -27,6 +27,22 @@ export interface UserPermission {
   action: UserPermissionAction
 }
 
+export interface UserGroup {
+  id: number
+  name: string
+  default: boolean
+  createdAt: string
+  description: string | null
+  roles?: { id: string; description: string }[]
+  users?: UserData[]
+}
+
+export interface FutureUserData {
+  id: number
+  email: string
+  groups: UserGroup[]
+}
+
 export interface UserData {
   id: number
   type: string
