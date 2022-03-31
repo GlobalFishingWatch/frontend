@@ -102,7 +102,7 @@
         "keyword": "matched",
         "enum": {
           "true": true,
-          "false": false
+          "false": true
         }
       },
       "geartype": {
