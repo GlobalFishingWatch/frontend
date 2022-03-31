@@ -481,7 +481,7 @@
     "notMatched": "No data matched",
     "origin": "Asal",
     "registeredGearType": "Jenis peralatan terdaftar",
-    "shiptype": "Ship type",
+    "shiptype": "Vessel type",
     "source": "Sumber",
     "source_short": "Source",
     "target_species": "Target species",
@@ -489,6 +489,7 @@
     "transmission_other": "Transmissions",
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
     "unmatched": "unmatched",
+    "vessel_type": "Vessel type",
     "vesselType_other": "Vessel types",
     "widthRange": "Rentang lebar"
   },
