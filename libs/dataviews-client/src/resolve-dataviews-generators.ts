@@ -361,11 +361,14 @@ export function getDataviewsGeneratorConfigs(
   if (activityDataviews.length) {
     const activitySublayers = activityDataviews.flatMap((dataview) => {
       const { config, datasetsConfig } = dataview
-      if (!config || !datasetsConfig || !datasetsConfig.length || !dataview?.datasets?.length) {
+      if (!dataview?.datasets?.length) {
+        console.warn('No datasets found on dataview:', dataview)
+        return []
+      }
+      if (!config || !datasetsConfig || !datasetsConfig.length) {
         return []
       }
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
-      if (!dataview.datasets?.length) return []
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
 
       const activeDatasets = dataview.datasets.filter((dataset) =>

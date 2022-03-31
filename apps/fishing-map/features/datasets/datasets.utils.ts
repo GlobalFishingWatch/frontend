@@ -17,12 +17,7 @@ import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
-import {
-  FISHING_DATAVIEW_ID,
-  PRESENCE_DATAVIEW_ID,
-  VIIRS_DATAVIEW_ID,
-  VIIRS_MATCH_DATAVIEW_ID,
-} from 'data/workspaces'
+import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } from 'data/workspaces'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 
 export type SupportedDatasetSchema =
@@ -48,6 +43,9 @@ type IncompatibleFilter = {
 type IncompatibleFiltersDict = Record<string, IncompatibleFilter[]>
 const INCOMPATIBLE_FILTERS_DICT: IncompatibleFiltersDict = {
   'public-presence-viirs-match-prototype:v20220112': [
+    { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
+  ],
+  'public-ais-presence-viirs-match-prototype:v20220112': [
     { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
   ],
 }
@@ -81,10 +79,7 @@ export const getDatasetTitleByDataview = (
     datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
   } else if (dataviewInstance.dataviewId === PRESENCE_DATAVIEW_ID) {
     datasetTitle = t(`common.presence`, 'Vessel presence')
-  } else if (
-    dataviewInstance.dataviewId === VIIRS_DATAVIEW_ID ||
-    dataviewInstance.dataviewId === VIIRS_MATCH_DATAVIEW_ID
-  ) {
+  } else if (dataviewInstance.dataviewId === VIIRS_MATCH_DATAVIEW_ID) {
     datasetTitle = t(`common.viirs`, 'Night light detections (VIIRS)')
   } else if (activeDatasets) {
     if (hasDatasetsConfig && activeDatasets?.length !== 1) {

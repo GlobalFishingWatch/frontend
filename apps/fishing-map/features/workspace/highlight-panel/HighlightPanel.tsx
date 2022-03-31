@@ -27,7 +27,7 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
     if (ref.current?.scrollIntoView) {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
     }
-    setVisible(true)
+    if (!HighlightConfig.delayed) setVisible(true)
   }
 
   const showHighlightPanel =
@@ -37,6 +37,15 @@ const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
     if (showHighlightPanel) {
       setHighlightPanel()
     }
+  }, [showHighlightPanel])
+
+  useEffect(() => {
+    if (!showHighlightPanel || !HighlightConfig.delayed) return
+    setTimeout(() => {
+      const container = document.querySelector('.scrollContainer')
+      container.scrollTop = 1
+      setVisible(true)
+    }, 5000)
   }, [showHighlightPanel])
 
   const onDismiss = () => {
