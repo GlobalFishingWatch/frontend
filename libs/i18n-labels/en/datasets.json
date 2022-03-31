@@ -101,8 +101,8 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "AIS Matched",
+          "false": "AIS Unmatched"
         }
       },
       "geartype": {
