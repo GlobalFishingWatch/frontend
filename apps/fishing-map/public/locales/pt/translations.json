@@ -481,7 +481,7 @@
     "notMatched": "Nenhum dado encontrado",
     "origin": "Origem",
     "registeredGearType": "Tipo de petrecho registrado",
-    "shiptype": "Tipo de embarcação",
+    "shiptype": "Vessel type",
     "source": "Fonte",
     "source_short": "Fonte",
     "target_species": "Espécie alvo",
@@ -489,6 +489,7 @@
     "transmission_other": "Transmissões",
     "unkwownVesselByGeartype": "{{gearType}} desconhecido",
     "unmatched": "não encontrado",
+    "vessel_type": "Vessel type",
     "vesselType_other": "Tipos de embarcação",
     "widthRange": "Intervalo de largura"
   },
