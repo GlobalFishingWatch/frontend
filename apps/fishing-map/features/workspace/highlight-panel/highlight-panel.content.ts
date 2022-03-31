@@ -16,11 +16,13 @@ export type HighlighPanelConfig = {
   dataviewInstanceId: string
   imageUrl: string
   learnMoreUrl: string
+  delayed?: boolean
 } & HighlighPanelConfigLocale
 
 const highlightPanelConfig: HighlighPanelConfig = {
   dataviewInstanceId: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-  imageUrl: `${PATH_BASENAME}/TODO`,
+  delayed: true,
+  imageUrl: `${PATH_BASENAME}/images/belize-vms.jpg`,
   learnMoreUrl: 'https://globalfishingwatch.org/belize',
   en: {
     title: 'TODO',
