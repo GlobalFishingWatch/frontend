@@ -108,13 +108,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: MPA_DATAVIEW_ID,
     },
-    // {
-    //   id: 'context-layer-fao-areas',
-    //   config: {
-    //     visible: false,
-    //   },
-    //   dataviewId: FAO_AREAS_DATAVIEW_ID,
-    // },
+    {
+      id: 'context-layer-fao-areas',
+      config: {
+        visible: false,
+      },
+      dataviewId: FAO_AREAS_DATAVIEW_ID,
+    },
     {
       id: 'context-layer-rfmo',
       config: {
@@ -123,13 +123,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: RFMO_DATAVIEW_ID,
     },
-    // {
-    //   id: 'context-layer-graticules',
-    //   config: {
-    //     visible: false,
-    //   },
-    //   dataviewId: GRATICULES_DATAVIEW_ID,
-    // },
+    {
+      id: 'context-layer-graticules',
+      config: {
+        visible: true,
+      },
+      dataviewId: GRATICULES_DATAVIEW_ID,
+    },
     {
       id: 'context-layer-high-seas',
       config: {
