@@ -481,7 +481,7 @@
     "notMatched": "No data matched",
     "origin": "Origin",
     "registeredGearType": "Registered Gear Type",
-    "shiptype": "Vessel type",
+    "shiptype": "Ship type",
     "source": "Source",
     "source_short": "Source",
     "target_species": "Target species",
@@ -489,7 +489,6 @@
     "transmission_other": "Transmissions",
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
     "unmatched": "unmatched",
-    "vessel_type": "Vessel type",
     "vesselType_other": "Vessel types",
     "widthRange": "Width range"
   },
