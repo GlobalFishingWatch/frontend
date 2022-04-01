@@ -7,6 +7,8 @@ import type { MapRequest } from 'react-map-gl'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import DeckGL from '@deck.gl/react'
+import { GeoJsonLayer } from '@deck.gl/layers'
+import { MVTLayer } from '@deck.gl/geo-layers'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -270,13 +272,48 @@ const MapWrapper = (): React.ReactElement | null => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
 
+  const deckLayers = useMemo(() => {
+    return [
+      new GeoJsonLayer({
+        pointType: 'circle',
+        getPointRadius: 100000,
+        getFillColor: [160, 160, 180, 200],
+        filled: true,
+        data: {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'Point',
+                coordinates: [-2.131497859954834, 47.6925334728506],
+              },
+            },
+          ],
+        },
+      }),
+      new MVTLayer({
+        // data: 'https://raw.githubusercontent.com/GlobalFishingWatch/live-positions-poc/main/tiles/{z}/{x}/{y}.pbf?raw=true',
+        data: 'http://localhost:9090/{z}/{x}/{y}.pbf?raw=true',
+        // binary: false,
+        minZoom: 0,
+        maxZoom: 5,
+        pointType: 'circle',
+        getPointRadius: 10000,
+        getFillColor: [255, 0, 255, 255],
+        filled: true,
+      }),
+    ]
+  }, [])
+
   return (
     <div className={styles.container}>
       {/* Disabled for now for performance issues */}
       {/* {<MapScreenshot map={map} />} */}
       {style && (
         <DeckGL
-          layers={[]}
+          layers={deckLayers}
           controller={true}
           viewState={deckViewState}
           onViewStateChange={onViewStateChange}
