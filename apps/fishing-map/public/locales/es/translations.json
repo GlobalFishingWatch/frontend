@@ -481,7 +481,7 @@
     "notMatched": "No hay datos coincidentes",
     "origin": "Origen",
     "registeredGearType": "Arte de pesca registrado",
-    "shiptype": "Tipo de buque",
+    "shiptype": "Tipos de embarcaciones",
     "source": "Fuente",
     "source_short": "Fuente",
     "target_species": "Especies objetivo",
@@ -489,6 +489,7 @@
     "transmission_other": "Transmisión",
     "unkwownVesselByGeartype": "{{gearType}} desconocida",
     "unmatched": "Sin coincidencia con AIS",
+    "vessel_type": "Vessel type",
     "vesselType_other": "Tipos de embarcaciones",
     "widthRange": "Rango de ancho"
   },

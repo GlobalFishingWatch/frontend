@@ -481,7 +481,7 @@
     "notMatched": "No data matched",
     "origin": "Origine",
     "registeredGearType": "Type d'équipement enregistré",
-    "shiptype": "Type de navire",
+    "shiptype": "Types de navires",
     "source": "Source",
     "source_short": "Source",
     "target_species": "Espèces pêchées",
@@ -489,6 +489,7 @@
     "transmission_other": "Transmissions",
     "unkwownVesselByGeartype": "{{gearType}} inconnu",
     "unmatched": "unmatched",
+    "vessel_type": "Vessel type",
     "vesselType_other": "Types de navires",
     "widthRange": "Plage de largeur"
   },

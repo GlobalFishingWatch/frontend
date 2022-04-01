@@ -489,7 +489,7 @@
     "transmission_other": "Transmissions",
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
     "unmatched": "unmatched",
-    "vesselType": "Vessel type",
+    "vessel_type": "Vessel type",
     "vesselType_other": "Vessel types",
     "widthRange": "Width range"
   },

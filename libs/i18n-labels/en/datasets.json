@@ -1632,7 +1632,7 @@
       "flag": "flag",
       "vessel_id": "vessel_id",
       "vessel_type": {
-        "keyword": "vessel_type",
+        "keyword": "Vessel type",
         "enum": {
           "fishing": "Fishing",
           "carrier": "Carrier",
