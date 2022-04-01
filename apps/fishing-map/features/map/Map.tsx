@@ -99,6 +99,10 @@ const MapWrapper = (): React.ReactElement | null => {
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
+  const isAnalyzing = useSelector(selectIsAnalyzing)
+  const isWorkspace = useSelector(isWorkspaceLocation)
+  const debugOptions = useSelector(selectDebugOptions)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
@@ -187,16 +191,26 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const { viewport, onViewportChange } = useViewport()
 
+  const onViewStateChange = useCallback(
+    ({ viewState }) => {
+      if (isAnalyzing && !hasTimeseries) return
+      onViewportChange(viewState)
+    },
+    [onViewportChange, isAnalyzing, hasTimeseries]
+  )
+
+  const deckViewState = useMemo(() => {
+    return {
+      ...viewport,
+      pitch: debugOptions.extruded ? 40 : 0,
+    }
+  }, [viewport, debugOptions])
+
   const { setMapBounds } = useMapBounds()
   useEffect(() => {
     setMapBounds()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewport])
-
-  const showTimeComparison = useSelector(selectShowTimeComparison)
-  const isAnalyzing = useSelector(selectIsAnalyzing)
-  const isWorkspace = useSelector(isWorkspaceLocation)
-  const debugOptions = useSelector(selectDebugOptions)
 
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
   const portalledLegend = !showTimeComparison
@@ -261,17 +275,17 @@ const MapWrapper = (): React.ReactElement | null => {
       {/* Disabled for now for performance issues */}
       {/* {<MapScreenshot map={map} />} */}
       {style && (
-        <DeckGL controller={true} layers={[]} initialViewState={viewport}>
+        <DeckGL
+          layers={[]}
+          controller={true}
+          viewState={deckViewState}
+          onViewStateChange={onViewStateChange}
+        >
           <InteractiveMap
             disableTokenWarning={true}
             width="100%"
             height="100%"
             keyboard={!isMapDrawing}
-            zoom={viewport.zoom}
-            latitude={viewport.latitude}
-            longitude={viewport.longitude}
-            pitch={debugOptions.extruded ? 40 : 0}
-            onViewportChange={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
             mapStyle={style}
             transformRequest={transformRequest}
             onResize={setMapBounds}
