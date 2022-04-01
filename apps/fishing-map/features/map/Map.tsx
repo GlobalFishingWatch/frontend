@@ -6,6 +6,7 @@ import { InteractiveMap } from 'react-map-gl'
 import type { MapRequest } from 'react-map-gl'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+import DeckGL from '@deck.gl/react'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -260,50 +261,52 @@ const MapWrapper = (): React.ReactElement | null => {
       {/* Disabled for now for performance issues */}
       {/* {<MapScreenshot map={map} />} */}
       {style && (
-        <InteractiveMap
-          disableTokenWarning={true}
-          width="100%"
-          height="100%"
-          keyboard={!isMapDrawing}
-          zoom={viewport.zoom}
-          latitude={viewport.latitude}
-          longitude={viewport.longitude}
-          pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
-          mapStyle={style}
-          transformRequest={transformRequest}
-          onResize={setMapBounds}
-          getCursor={rulersEditing ? getRulersCursor : getCursor}
-          interactiveLayerIds={
-            rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
-          }
-          clickRadius={clickRadiusScale(viewport.zoom)}
-          onClick={isMapDrawing ? undefined : currentClickCallback}
-          onHover={isMapDrawing ? onSimpleMapHover : currentMapHoverCallback}
-          onLoad={onLoadCallback}
-          onError={handleError}
-          onMouseOut={resetHoverState}
-          transitionDuration={viewport.transitionDuration}
-        >
-          {clickedEvent && (
-            <PopupWrapper
-              type="click"
-              event={clickedTooltipEvent}
-              onClose={closePopup}
-              closeOnClick={false}
-              closeButton
-            />
-          )}
-          {hoveredTooltipEvent &&
-            !clickedEvent &&
-            hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
-            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
-              <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
+        <DeckGL controller={true} layers={[]} initialViewState={viewport}>
+          <InteractiveMap
+            disableTokenWarning={true}
+            width="100%"
+            height="100%"
+            keyboard={!isMapDrawing}
+            zoom={viewport.zoom}
+            latitude={viewport.latitude}
+            longitude={viewport.longitude}
+            pitch={debugOptions.extruded ? 40 : 0}
+            onViewportChange={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+            mapStyle={style}
+            transformRequest={transformRequest}
+            onResize={setMapBounds}
+            getCursor={rulersEditing ? getRulersCursor : getCursor}
+            interactiveLayerIds={
+              rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
+            }
+            clickRadius={clickRadiusScale(viewport.zoom)}
+            onClick={isMapDrawing ? undefined : currentClickCallback}
+            onHover={isMapDrawing ? onSimpleMapHover : currentMapHoverCallback}
+            onLoad={onLoadCallback}
+            onError={handleError}
+            onMouseOut={resetHoverState}
+            transitionDuration={viewport.transitionDuration}
+          >
+            {clickedEvent && (
+              <PopupWrapper
+                type="click"
+                event={clickedTooltipEvent}
+                onClose={closePopup}
+                closeOnClick={false}
+                closeButton
+              />
             )}
-          <MapInfo center={hoveredEvent} />
-          {drawMode !== 'disabled' && <MapDraw />}
-          {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
-        </InteractiveMap>
+            {hoveredTooltipEvent &&
+              !clickedEvent &&
+              hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
+              hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
+                <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
+              )}
+            <MapInfo center={hoveredEvent} />
+            {drawMode !== 'disabled' && <MapDraw />}
+            {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
+          </InteractiveMap>
+        </DeckGL>
       )}
       <MapControls
         onMouseEnter={resetHoverState}
