@@ -36,8 +36,9 @@ const getTracksWithCoords = (
             }
           }),
       y: baseTrackY.defaultY,
-      // TODO
-      // segmentsOffsetY: track.segmentsOffsetY,
+      props: {
+        segmentsOffsetY: track.props?.segmentsOffsetY,
+      },
     }
     trackWithCoords.push(trackItemWithCoords)
   })
@@ -70,9 +71,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                     className={styles.segment}
                     style={{
                       backgroundColor: track.color,
-                      // TODO
-                      // top: segmentsOffsetY ? y + i : y,
-                      top: track.y,
+                      top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,
                       left: chunk.x,
                       width: chunk.width,
                       transition: immediate
@@ -85,9 +84,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
             ) : (
               <div
                 style={{
-                  // TODO
-                  // top: track.segmentsOffsetY ? y + i : y,
-                  top: track.y,
+                  top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,
                 }}
                 className={styles.loading}
               >

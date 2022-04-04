@@ -75,15 +75,16 @@ export const selectTracksData = createSelector(
       })
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
       const vessel = (resources[infoUrl] as any)?.data
-      const shipname = vessel ? getVesselLabel(vessel) : ''
+      const shipname = vessel ? getVesselLabel(vessel) : dataview.datasets[0]?.name
       const item: TimebarChartItem = {
         ...timebarTrack,
         chunks,
         status: ResourceStatus.Finished,
         defaultLabel: shipname,
         // getHighlighterLabel: t('vessel.inTransit', 'in transit'),
-        // TODO
-        // segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
+        props: {
+          segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
+        },
       }
       return item
     })
