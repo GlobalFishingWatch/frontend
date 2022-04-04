@@ -127,7 +127,8 @@
     "vessel_other": "Embarcaciones",
     "viirs": "Detección de luz nocturna (VIIRS)",
     "welcomePopupDisable": "No volver a mostrar",
-    "whatsNew": "Novedades"
+    "whatsNew": "Novedades",
+    "view_layer": "Ver la capa"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
