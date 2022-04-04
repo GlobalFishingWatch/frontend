@@ -21,28 +21,24 @@ export type HighlighPanelConfig = {
 
 const highlightPanelConfig: HighlighPanelConfig = {
   dataviewInstanceId: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-  delayed: true,
-  imageUrl: `${PATH_BASENAME}/images/viirs-match.webp`,
-  learnMoreUrl: 'https://globalfishingwatch.org/TODO',
+  imageUrl: `${PATH_BASENAME}/TODO`,
+  learnMoreUrl: 'https://globalfishingwatch.org/belize',
   en: {
-    title: 'New VIIRS-AIS match layer',
-    description:
-      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
+    title: 'TODO',
+    description: 'TODO',
   },
   es: {
-    title: 'New VIIRS-AIS match layer',
-    description:
-      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
-    // learnMoreUrl: 'https://globalfishingwatch.org/es/TODO',
+    title: 'TODO',
+    description: 'TODO',
+    learnMoreUrl: 'https://globalfishingwatch.org/es/belize',
   },
   fr: {
-    title: 'New VIIRS-AIS match layer',
-    description: 'VIIRS AIS match data is now available.',
+    title: 'TODO',
+    description: 'TODO',
   },
   pt: {
-    title: 'New VIIRS-AIS match layer',
-    description:
-      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
+    title: 'TODO',
+    description: 'TODO',
   },
 }
 
