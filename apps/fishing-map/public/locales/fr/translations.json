@@ -124,7 +124,8 @@
     "vessel_other": "Navires",
     "viirs": "Détection de lumière de nuit (VIIRS)",
     "welcomePopupDisable": "Ne plus afficher",
-    "whatsNew": "What's new?"
+    "whatsNew": "What's new?",
+    "view_layer": "Voir le calque"
   },
   "dataset": {
     "addContext": "Ajouter un calque de référence",

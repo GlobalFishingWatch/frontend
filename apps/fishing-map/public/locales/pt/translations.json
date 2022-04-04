@@ -124,7 +124,8 @@
     "vessel_other": "Embarcações",
     "viirs": "Detecção de luz noturna (VIIRS)",
     "welcomePopupDisable": "Não mostrar novamente",
-    "whatsNew": "O que há de novo?"
+    "whatsNew": "O que há de novo?",
+    "view_layer": "View the layer"
   },
   "dataset": {
     "addContext": "Adicionar conjunto de dados de contexto",
