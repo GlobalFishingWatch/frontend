@@ -45,7 +45,13 @@ export const selectTracksData = createSelector(
           ? EndpointId.UserTracks
           : EndpointId.Tracks
 
-      const trackResource = pickTrackResource(dataview, endpointType, resources)
+      let trackResource
+      if (endpointType === EndpointId.Tracks) {
+        trackResource = pickTrackResource(dataview, endpointType, resources)
+      } else {
+        const { url } = resolveDataviewDatasetResource(dataview, [DatasetTypes.UserTracks])
+        trackResource = resources[url] as Resource<TrackResourceData>
+      }
 
       if (!trackResource || trackResource.status === ResourceStatus.Loading) {
         return { ...timebarTrack, status: ResourceStatus.Loading }
