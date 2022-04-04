@@ -29,6 +29,10 @@ import {
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 
+const getUserTrackHighlighterLabel = (chunk: TimebarChartChunk<any>) => {
+  return chunk.props?.id || null
+}
+
 export const selectTracksData = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
@@ -66,22 +70,34 @@ export const selectTracksData = createSelector(
         ? geoJSONToSegments(trackResource.data as any)
         : trackResource.data || []
 
+      console.log(segments)
+
       const chunks: TimebarChartChunk[] = segments.map((segment) => {
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
           values: segment as TimebarChartValue[],
+          props: {
+            id: segment[0]?.id,
+          },
         }
       })
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
       const vessel = (resources[infoUrl] as any)?.data
-      const shipname = vessel ? getVesselLabel(vessel) : dataview.datasets[0]?.name
+      const shipname =
+        trackResource.dataset.type === DatasetTypes.UserTracks
+          ? dataview.datasets[0]?.name
+          : getVesselLabel(vessel)
+
       const item: TimebarChartItem = {
         ...timebarTrack,
         chunks,
         status: ResourceStatus.Finished,
-        defaultLabel: shipname,
-        // getHighlighterLabel: t('vessel.inTransit', 'in transit'),
+        defaultLabel: shipname || '',
+        getHighlighterLabel:
+          trackResource.dataset.type === DatasetTypes.UserTracks
+            ? getUserTrackHighlighterLabel
+            : null,
         props: {
           segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
         },
