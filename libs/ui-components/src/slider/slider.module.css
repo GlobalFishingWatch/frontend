@@ -2,6 +2,12 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  position: relative;
+}
+
+.histogram {
+  position: absolute;
+  bottom: 50%;
 }
 
 .slider {
