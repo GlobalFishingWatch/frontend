@@ -1,80 +1,96 @@
 import React, { useState, useRef, useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import type { Placement } from 'tippy.js'
 import { Button } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
 import { useMapReady } from 'features/map/map-state.hooks'
 import TooltipContainer from '../shared/TooltipContainer'
-import HighlightConfig from './highlight-panel.content'
+import DEFAULT_HIGHLIGHT_CONFIG, { HighlightPanelConfig } from './highlight-panel.content'
 import styles from './HighlightPanel.module.css'
 
 type HighlightPanelProps = {
   dataviewInstanceId: string
+  placement?: Placement
+  highlightConfig?: HighlightPanelConfig
 }
 
-export const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
-
-const HighlightPanel = ({ dataviewInstanceId }: HighlightPanelProps) => {
+const HighlightPanel = ({
+  dataviewInstanceId,
+  placement,
+  highlightConfig,
+}: HighlightPanelProps) => {
   const { t, i18n } = useTranslation()
   const mapReady = useMapReady()
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
-  const [dataviewIdDismissed, setDataviewIdDismissed] = useLocalStorage(HIGHLIGHT_POPUP_KEY, '')
-  const matchDataviewInstance = HighlightConfig.dataviewInstanceId === dataviewInstanceId
-
-  const setHighlightPanel = () => {
-    if (ref.current?.scrollIntoView) {
-      ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
-    }
-    if (!HighlightConfig.delayed) setVisible(true)
-  }
+  const config = highlightConfig || DEFAULT_HIGHLIGHT_CONFIG
+  const [dataviewIdDismissed, setDataviewIdDismissed] = useLocalStorage(config.localStorageKey, '')
+  const matchDataviewInstance = config.dataviewInstanceId === dataviewInstanceId
 
   const showHighlightPanel =
-    mapReady && matchDataviewInstance && dataviewIdDismissed !== HighlightConfig.dataviewInstanceId
+    mapReady && matchDataviewInstance && dataviewIdDismissed !== config.dataviewInstanceId
 
   useEffect(() => {
     if (showHighlightPanel) {
-      setHighlightPanel()
+      if (ref.current?.scrollIntoView) {
+        ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+      }
+      if (!config.delayed) setVisible(true)
     }
-  }, [showHighlightPanel])
+  }, [showHighlightPanel, config.delayed])
 
   useEffect(() => {
-    if (!showHighlightPanel || !HighlightConfig.delayed) return
+    if (!showHighlightPanel || !config.delayed) return
     setTimeout(() => {
       const container = document.querySelector('.scrollContainer')
       container.scrollTop = 1
       setVisible(true)
     }, 5000)
-  }, [showHighlightPanel])
+  }, [showHighlightPanel, config.delayed])
 
   const onDismiss = () => {
     setVisible(false)
-    setDataviewIdDismissed(HighlightConfig.dataviewInstanceId)
+    setDataviewIdDismissed(config.dataviewInstanceId)
   }
 
   if (!matchDataviewInstance) {
     return null
   }
 
-  const highlightContent = HighlightConfig[i18n.language as Locale] || HighlightConfig[Locale.en]
+  const highlightContent = config[i18n.language as Locale] || config[Locale.en]
   if (!highlightContent) {
     console.warn('Missing every welcome modal content by languages')
     return null
   }
 
-  const learnMoreUrl = highlightContent.learnMoreUrl || HighlightConfig.learnMoreUrl
+  const learnMoreUrl = highlightContent.learnMoreUrl || config.learnMoreUrl
 
   return (
     <TooltipContainer
       visible={visible}
       className={styles.highlightPanel}
+      placement={placement || 'auto'}
       component={
         <div className={styles.container}>
-          <img className={styles.img} src={HighlightConfig.imageUrl} alt="highlight dataview" />
+          <img className={styles.img} src={config.imageUrl} alt="highlight dataview" />
           <div className={styles.content}>
             <h3 className={styles.title}>{highlightContent.title}</h3>
-            <p className={styles.text}>{highlightContent.description}</p>
+            <p className={styles.text}>
+              {highlightContent.description}{' '}
+              {config.workspaceUrl && (
+                <a
+                  href={[
+                    window.location.origin,
+                    window.location.pathname,
+                    config.workspaceUrl,
+                  ].join('')}
+                >
+                  {t('common.view_layer', 'View the layer')}
+                </a>
+              )}
+            </p>
           </div>
           <div className={styles.footer}>
             <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
