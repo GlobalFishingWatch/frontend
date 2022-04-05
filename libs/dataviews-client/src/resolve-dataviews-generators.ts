@@ -52,6 +52,7 @@ export type DataviewsGeneratorConfigsParams = {
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: HeatmapAnimatedMode
   customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
+  singleTrack?: boolean
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -131,6 +132,10 @@ export function getGeneratorConfig(
       }
 
       if (trackResource) generator.data = trackResource.data
+
+      if (params?.singleTrack) {
+        generator.useOwnColor = true
+      }
 
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =

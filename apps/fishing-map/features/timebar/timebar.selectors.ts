@@ -70,8 +70,6 @@ export const selectTracksData = createSelector(
         ? geoJSONToSegments(trackResource.data as any)
         : trackResource.data || []
 
-      console.log(segments)
-
       const chunks: TimebarChartChunk[] = segments.map((segment) => {
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,

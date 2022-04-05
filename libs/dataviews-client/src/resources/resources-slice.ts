@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
+import { FeatureCollection } from 'geojson'
 import {
   Field,
   mergeTrackChunks,
@@ -58,7 +59,7 @@ export const fetchResourceThunk = createAsyncThunk(
         ? 'vessel'
         : 'json'
 
-    const data = await GFWAPI.fetch(resource.url, { responseType }).then((data) => {
+    const data = await GFWAPI.fetch(resource.url, { responseType }).then((data: any) => {
       // TODO Replace with enum?
       if (isTrackResource) {
         const fields = (
@@ -75,6 +76,27 @@ export const fetchResourceThunk = createAsyncThunk(
           const eventKey = `${vesselId}-${event.type}-${index}`
           return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
         })
+      }
+      if (resource.dataset.type === DatasetTypes.UserTracks) {
+        const geojson = { ...data } as FeatureCollection
+        geojson.features = geojson.features.map((feature) => {
+          const color = [
+            '#',
+            new Array(3)
+              .fill(0)
+              .map(() => Math.floor(Math.random() * 255).toString(16))
+              .join(''),
+          ].join('')
+
+          return {
+            ...feature,
+            properties: {
+              ...feature.properties,
+              color,
+            },
+          }
+        })
+        return geojson
       }
       return data
     })

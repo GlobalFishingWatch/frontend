@@ -2,18 +2,19 @@ import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { FeatureCollection } from 'geojson'
 import { DatasetTypes, Resource, ResourceStatus } from '@globalfishingwatch/api-types'
 import { Tooltip, IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { Segment } from '@globalfishingwatch/data-transforms'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
+import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -32,6 +33,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
   const [colorOpen, setColorOpen] = useState(false)
+  const allTracks = useSelector(selectActiveTrackDataviews)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -58,7 +60,9 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
   const isCustomUserLayer = dataset?.ownerId === userId
 
   const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
-  const trackResource: Resource<Segment[]> = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const trackResource: Resource<FeatureCollection> = useSelector(
+    selectResourceByUrl<FeatureCollection>(trackUrl)
+  )
   const trackError = trackResource?.status === ResourceStatus.Error
 
   const loading = trackResource?.status === ResourceStatus.Loading
@@ -129,7 +133,24 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
 
       {layerActive && (
         <div className={styles.properties}>
-          <div id={`legend_${dataview.id}`}></div>
+          {/* <div id={`legend_${dataview.id}`}></div> */}
+          {allTracks.length === 1 &&
+            trackResource &&
+            trackResource.data &&
+            trackResource.data.features.map((feature) => {
+              return (
+                <div
+                  className={styles.trackColor}
+                  style={
+                    {
+                      '--color': feature.properties.color,
+                    } as React.CSSProperties
+                  }
+                >
+                  {feature.properties.id}
+                </div>
+              )
+            })}
         </div>
       )}
     </div>

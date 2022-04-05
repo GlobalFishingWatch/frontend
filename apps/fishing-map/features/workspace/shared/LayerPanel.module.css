@@ -149,6 +149,15 @@
   text-decoration: underline;
 }
 
+.trackColor::before {
+  content: ' ';
+  display: inline-block;
+  width: 20px;
+  height: 6px;
+  border-top: 2px solid var(--color);
+  margin-right: 6px;
+}
+
 @media print {
   .tagList > li > div {
     border: var(--border);
