@@ -80,15 +80,7 @@ const HighlightPanel = ({
             <p className={styles.text}>
               {highlightContent.description}{' '}
               {config.workspaceUrl && (
-                <a
-                  href={[
-                    window.location.origin,
-                    window.location.pathname,
-                    config.workspaceUrl,
-                  ].join('')}
-                >
-                  {t('common.view_layer', 'View the layer')}
-                </a>
+                <a href={config.workspaceUrl}>{t('common.view_layer', 'View the layer')}</a>
               )}
             </p>
           </div>
