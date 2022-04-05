@@ -121,13 +121,13 @@ export const useSelectedTracksConnect = () => {
         name: record.community_label ?? record.community_iso3,
         color: getFixedColorForUnknownLabel(index)
       }
-    })))
+    }).sort((a, b) => a.name > b.name ? 1 : -1)))
     dispatch(setPorts(uniqueTempPorts.map((e, index) => {
       return {
         id: e,
         name: e
       }
-    })))
+    }).sort((a, b) => a.name > b.name ? 1 : -1)))
     const portMap = countryRecords.reduce((ac, value, i, v) => {
       ac[value.s2id] = value.port_label
       return ac

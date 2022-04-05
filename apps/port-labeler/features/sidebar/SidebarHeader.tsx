@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Icon, IconButton, Logo, Select, SelectOption, SubBrands } from '@globalfishingwatch/ui-components'
 import { flags } from '@globalfishingwatch/i18n-labels'
-import { selectCountry } from 'features/labeler/labeler.slice'
+import { selectCountry, sortOptions } from 'features/labeler/labeler.slice'
 import { selectCountries } from 'features/map/map.selectors'
 import styles from './SidebarHeader.module.css'
 import { useSelectedTracksConnect } from './sidebar.hooks'
@@ -29,6 +29,14 @@ function SidebarHeader(props: HeaderProps) {
         <Logo className={styles.logo} subBrand={SubBrands.PortLabeler} />
       </a>
       <div className={styles.actionButtons}>
+        <IconButton
+          type="default"
+          icon="split"
+          tooltip="Sort selectors"
+          tooltipPlacement="bottom"
+          className={styles.actionButton}
+          onClick={() => dispatch(sortOptions())}
+        />
         <label className={styles.importButton}>
           <input
             id="file-upload"
@@ -38,12 +46,16 @@ function SidebarHeader(props: HeaderProps) {
           />
           <Icon
             icon="upload"
+            tooltip="Upload file"
+            tooltipPlacement="bottom"
           />
         </label>
 
         <IconButton
           type="default"
           icon="save"
+          tooltip="Save file"
+          tooltipPlacement="bottom"
           className={styles.actionButton}
           onClick={() => dispatchDownloadSelectedTracks()}
         />

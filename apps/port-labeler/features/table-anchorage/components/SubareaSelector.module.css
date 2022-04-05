@@ -128,3 +128,7 @@
 .addButton {
   padding: var(--space-XS);
 }
+
+.filterItem {
+  padding: 0;
+}

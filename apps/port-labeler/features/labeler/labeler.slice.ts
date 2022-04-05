@@ -58,6 +58,12 @@ const slice = createSlice({
     setPorts: (state, action: PayloadAction<PortSubarea[]>) => {
       state.ports[state.country] = action.payload
     },
+    sortOptions: (state) => {
+      const portOptions = [...state.ports[state.country]]
+      state.ports[state.country] = portOptions.sort((a, b) => a.name > b.name ? 1 : -1)
+      const subareaOptions = [...state.subareas[state.country]]
+      state.subareas[state.country] = subareaOptions.sort((a, b) => a.name > b.name ? 1 : -1)
+    },
     setPortValues: (state, action: PayloadAction<ValuesObject>) => {
       if (!state.portValues[state.country])
         state.portValues[state.country] = action.payload
@@ -156,7 +162,8 @@ export const {
   changePortValue,
   changeSubareaValue,
   changePointValue,
-  sortPoints
+  sortPoints,
+  sortOptions
 } = slice.actions
 
 export default slice.reducer
