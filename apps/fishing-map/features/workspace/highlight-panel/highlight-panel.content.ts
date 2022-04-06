@@ -2,7 +2,7 @@ import { PATH_BASENAME } from 'routes/routes'
 import { Locale } from 'types'
 
 // Update with a new id when a new release
-export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'highlight-vms-with-belize'
+export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'highlight-viirs-match'
 
 type HighlighPanelConfigLocale = {
   [locale in Locale]?: {
@@ -12,39 +12,52 @@ type HighlighPanelConfigLocale = {
   }
 }
 
-export type HighlighPanelConfig = {
+export type HighlightPanelConfig = {
   dataviewInstanceId: string
+  localStorageKey: string
   imageUrl: string
   learnMoreUrl: string
   delayed?: boolean
+  workspaceUrl?: string
 } & HighlighPanelConfigLocale
 
-const highlightPanelConfig: HighlighPanelConfig = {
+const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
+
+const DEFAULT_HIGHLIGHT_CONFIG: HighlightPanelConfig = {
   dataviewInstanceId: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-  delayed: true,
-  imageUrl: `${PATH_BASENAME}/images/belize-vms.jpg`,
-  learnMoreUrl: 'https://globalfishingwatch.org/belize',
+  localStorageKey: HIGHLIGHT_POPUP_KEY,
+  // delayed: true,
+  imageUrl: `${PATH_BASENAME}/images/viirs-match.webp`,
+  learnMoreUrl: 'https://globalfishingwatch.org/data/ais-viirs-reveals-dark-fleet/',
   en: {
-    title: 'Belize VMS data is now available',
+    title: 'Who is fishing at night?',
     description:
-      'Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). It is possible to track the position and activity of 50+ vessels comprising Belize’s international fishing fleets.',
+      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
   },
   es: {
-    title: 'Los datos de VMS de Belize ya están disponibles',
+    title: '¿Quién pesca de noche?',
     description:
-      'Los datos del sistema de seguimiento de embarcaciones (VMS) son proporcionados por la Unidad de Pesca de Alta Mar de Belice (BHSFU, por sus siglas en inglés). Es posible rastrear la posición y actividad de más de 50 embarcaciones que comprenden las flotas pesqueras internacionales de Belice.',
-    learnMoreUrl: 'https://globalfishingwatch.org/es/belize',
+      'La identidad de los buques pesqueros que usan luces brillantes por la noche se agrega a través de un proceso de comparación avanzado.',
   },
   fr: {
-    title: 'Les données VMS du Bélize sont maintenant disponibles',
+    title: 'New VIIRS-AIS match layer',
     description:
-      "Les données du système de suivi des navires par satellite (VMS) sont fournies par Belize High Seas Fisheries Unit (BHSFU). Il est possible de suivre la position et l'activité de plus de 50 navires qui composent la flotte de pêche en haute mer de Bélize.",
+      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
   },
   pt: {
-    title: 'Rastreamento de embarcações da Belice está disponível',
+    title: 'New VIIRS-AIS match layer',
     description:
-      'Os dados de rastreamento de embarcações de pesca são fornecidos pela Unidade de Pesca de Alto Mar de Belize. É possível visualizar a rota e as atividades de mais de 50 embarcações da frota pesqueira internacional de Belize.',
+      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
   },
 }
 
-export default highlightPanelConfig
+export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID = `${HIGHLIGHT_POPUP_KEY}_ActivitySwitch`
+export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH: HighlightPanelConfig = {
+  ...DEFAULT_HIGHLIGHT_CONFIG,
+  dataviewInstanceId: HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
+  localStorageKey: HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
+  workspaceUrl:
+    'https://globalfishingwatch.org/map/fishing-activity/night_light_viirs_matching-public',
+}
+
+export default DEFAULT_HIGHLIGHT_CONFIG
