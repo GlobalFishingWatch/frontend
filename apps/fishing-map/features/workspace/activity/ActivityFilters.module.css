@@ -67,3 +67,11 @@
 .multiSelect {
   margin-top: var(--space-S);
 }
+
+.experimental label::after {
+  content: '(experimental)';
+  color: red;
+  margin-left: 0.4rem;
+  font: var(--font-XS);
+  vertical-align: super;
+}
