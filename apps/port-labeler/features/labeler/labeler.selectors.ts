@@ -90,5 +90,5 @@ export const selectSubareaOptions = createSelector([selectSubareas, selectCountr
         color: subarea.color
       }
     })
-    return options.sort((a, b) => a.label > b.label ? 1 : -1)
+    return options
   })
