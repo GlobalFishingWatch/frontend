@@ -24,6 +24,10 @@
   font-size: 18px;
 }
 
+.logo text:last-child {
+  font-size: 14px;
+}
+
 .homeContainer h2 {
   color: var(--color-secondary-blue);
   font: var(--font-S);
@@ -96,10 +100,29 @@
   flex: 1;
 }
 
+.partners {
+  bottom: 0;
+  padding: 20px 0 42px;
+  height: 100px;
+  width: 100%;
+  text-align: center;
+}
+
+.gfwLogo {
+  max-height: 120%;
+  max-width: 50%;
+}
+
+.tmtLogo {
+  max-height: 100%;
+  max-width: 50%;
+}
+
 @media only screen and (min-width: 1000px) {
   .search {
     flex-direction: row;
   }
+
   .bottomActions {
     width: 67%;
   }

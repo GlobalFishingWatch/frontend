@@ -5,7 +5,8 @@ import styles from './Logo.module.css'
 export enum SubBrands {
   MarineManager = 'Marine Manager',
   CarrierVessels = 'Carrier Vessels',
-  PortLabeler = 'Port Labeler'
+  PortLabeler = 'Port Labeler',
+  VesselViewer = 'Vessel Viewer'
 }
 
 export type LogoTypes = 'default' | 'invert'
