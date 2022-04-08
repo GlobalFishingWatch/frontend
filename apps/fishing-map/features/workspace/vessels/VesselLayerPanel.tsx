@@ -31,6 +31,7 @@ import {
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -257,7 +258,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           })}
         >
           <Fragment>
-            {gfwUser && (
+            <LoginButtonWrapper
+              tooltip={t(
+                'download.vesselTrackLogin',
+                'Register and login to download vessel tracks (free, 2 minutes)'
+              )}
+            >
               <IconButton
                 icon="download"
                 disabled={!downloadSupported}
@@ -273,8 +279,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 onClick={onDownloadClick}
                 size="small"
               />
-            )}
-
+            </LoginButtonWrapper>
             <Color
               dataview={dataview}
               open={colorOpen}
