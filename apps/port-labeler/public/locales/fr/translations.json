@@ -5,7 +5,11 @@
         "anchorage": "Ancrage",
         "destination": "Destination",
         "zoom_more": "Augmenter le zoom",
-        "zoom_less": "Réduire le zoom"
+        "zoom_less": "Réduire le zoom",
+        "select_port": "Sélectionner le port",
+        "add_port": "Ajouter un port",
+        "select_subarea": "Sélectionner une sous-zone",
+        "add_subarea": "Ajouter une sous-zone"
     },
     "messages": {
         "no_anchorages": "Aucun ancrage trouvé",

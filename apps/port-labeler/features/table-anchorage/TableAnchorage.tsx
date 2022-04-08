@@ -45,7 +45,7 @@ function TableAnchorage() {
     <div className={styles.table}>
       <div className={styles.head}>
         <TableHeader
-          label={t('common.port', 'Port2')} order={orderColumn === 'port' ? orderDirection : ''}
+          label={t('common.port', 'Port')} order={orderColumn === 'port' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('port', order)}
         />
         <TableHeader
