@@ -62,7 +62,6 @@ export interface PortPosition {
   lat: number;
   lon: number;
   top_destination: string;
-  label: string;
   port_label: string;
   community_label: string;
   point_label: string;
