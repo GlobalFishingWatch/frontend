@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { SelectOption } from '@globalfishingwatch/ui-components'
 import { selectPorts, sortPoints } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
 import { PortPosition } from 'types'
@@ -13,21 +12,8 @@ import TableRow from './TableRow'
 
 function TableAnchorage() {
 
-  const ports = useSelector(selectPorts)
-
   const records = useSelector(selectFilteredPoints)
   const dispatch = useDispatch()
-
-
-
-  const portOptions: SelectOption[] = useMemo(() => {
-    return ports.map(e => {
-      return {
-        id: e,
-        label: e,
-      }
-    })
-  }, [ports])
 
   type orderDirectionType = 'asc' | 'desc' | ''
 
@@ -88,8 +74,6 @@ function TableAnchorage() {
                     <div style={style}>
                       <TableRow
                         key={record.s2id}
-                        ports={portOptions}
-                        //pointValue={pointValues[record.s2id]}
                         record={record}
                       ></TableRow>
                     </div>

@@ -54,7 +54,7 @@ export interface AreaGeneratorConfig {
 export interface PortSubarea {
   id: string
   name: string
-  color: string
+  color?: string
 }
 
 export interface PortPosition {
@@ -62,7 +62,6 @@ export interface PortPosition {
   lat: number;
   lon: number;
   top_destination: string;
-
   port_label: string;
   community_label: string;
   point_label: string;

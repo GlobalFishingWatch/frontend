@@ -5,18 +5,19 @@ import { Button, IconButton, InputText, SelectOnChange, SelectOption, Tooltip } 
 import styles from './SubareaSelector.module.css'
 
 export interface SubareaSelectOption<T = any> extends SelectOption {
-  color: string
+  color?: string
 }
 
 interface SelectProps {
   label?: string
+  addButtonLabel?: string
   placeholder?: string
   options: SubareaSelectOption[]
   selectedOption?: SubareaSelectOption
   onSelect: SelectOnChange
   onRemove: SelectOnChange
   onAddNew: () => void
-  onSubareaChange: (id, label) => void
+  onSelectedNameChange: (id, label) => void
   onCleanClick?: (e: React.MouseEvent) => void
   containerClassName?: string
   className?: string
@@ -32,6 +33,7 @@ const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOpti
 export function SubareaSelector(props: SelectProps) {
   const {
     label = '',
+    addButtonLabel = 'CREATE NEW',
     placeholder = '---?',
     options,
     selectedOption,
@@ -39,7 +41,7 @@ export function SubareaSelector(props: SelectProps) {
     onRemove,
     onAddNew,
     onCleanClick,
-    onSubareaChange,
+    onSelectedNameChange,
     containerClassName = '',
     className = '',
     direction = 'bottom',
@@ -90,7 +92,7 @@ export function SubareaSelector(props: SelectProps) {
           <InputText value={selectedOption?.label ?? placeholder}
             className={styles.noBorder} onChange={(e) => {
               if (selectedOption) {
-                onSubareaChange(selectedOption.id, e.target.value)
+                onSelectedNameChange(selectedOption.id, e.target.value)
               }
             }} />
         </div>
@@ -108,9 +110,6 @@ export function SubareaSelector(props: SelectProps) {
           {isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
-              const highlight = highlightedIndex === index
-              const selected = isItemSelected(selectedOption, item)
-              const itemDisabled = disabled || item.disabled
               return (
                 <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
                   <li
@@ -118,17 +117,17 @@ export function SubareaSelector(props: SelectProps) {
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    <div className={styles.dot} style={{ background: `${item.color}` }}></div>
+                    {item.color && <div className={styles.dot} style={{ background: `${item.color}` }}></div>}
                   </li>
                 </Tooltip>
               )
             })}
           {isOpen && <li className={cx(
             styles.optionItem, styles.actionItem, className)}>
-            <Button size="small" type="secondary" onClick={onAddNew}>CREATE NEW SUBAREA</Button>
+            <Button size="small" type="secondary" onClick={onAddNew}>{addButtonLabel}</Button>
           </li>}
         </ul>
-        {selectedOption && <div className={styles.selectedDot}
+        {selectedOption && selectedOption.color && <div className={styles.selectedDot}
           style={{
             background: `${selectedOption.color}`,
           }}
