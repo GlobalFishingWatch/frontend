@@ -124,7 +124,7 @@ export function SubareaSelector(props: SelectProps) {
             })}
           {isOpen && <li className={cx(
             styles.optionItem, styles.actionItem, className)}>
-            <Button size="small" type="secondary" onClick={onAddNew}>{addButtonLabel}</Button>
+            <Button size="small" className={styles.addButton} type="secondary" onClick={onAddNew}>{addButtonLabel}</Button>
           </li>}
         </ul>
         {selectedOption && selectedOption.color && <div className={styles.selectedDot}
