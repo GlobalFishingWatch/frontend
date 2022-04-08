@@ -65,7 +65,7 @@ function TableRow({
   const onPortAdded = useCallback(() => {
     console.log('Adding a new port')
     const newPorts = [...ports, {
-      id: country + '-' + (ports.length + 1),
+      id: country + '-' + Math.floor(Math.random() * 10000000),
       name: country + '-' + (ports.length + 1),
     }]
     dispatch(setPorts(newPorts))
