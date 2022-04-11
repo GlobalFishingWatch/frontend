@@ -198,7 +198,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   return (
     <div className={styles.homeContainer} data-testid="home">
       <header>
-        <Logo className={styles.logo} subBrand={SubBrands.VesselViewer}></Logo>
+        <h1 className={styles.logo} >
+          Vessel Viewer
+        </h1>
         <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
         <IconButton
           onClick={onSettingsClick}

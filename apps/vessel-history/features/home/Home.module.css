@@ -17,7 +17,10 @@
 }
 
 .logo {
-  margin-left: 20px;
+  margin-left: var(--size-S);
+  display: inline-block;
+  font: var(--font-XL);
+  line-height: var(--header-height);
 }
 
 .logo text {
