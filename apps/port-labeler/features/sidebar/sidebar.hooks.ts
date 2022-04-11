@@ -45,7 +45,6 @@ export const useSelectedTracksConnect = () => {
   }
 
   const assignLabeledValues = (points: PortPosition[]) => {
-    console.log(ports['ABW'])
     return points.map(point => {
       const communityIso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
       const communityLabel = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : (point.community_label ?? point.community_iso3)
