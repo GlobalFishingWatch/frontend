@@ -5,7 +5,7 @@ import { event as uaEvent } from 'react-ga'
 import { redirect } from 'redux-first-router'
 import { DateTime, Interval } from 'luxon'
 import { VesselSearch } from '@globalfishingwatch/api-types'
-import { Logo, Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
+import { Logo, Spinner, IconButton, Button, SubBrands } from '@globalfishingwatch/ui-components'
 import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
@@ -30,6 +30,7 @@ import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserData } from 'features/user/user.slice'
 import { useApp } from 'features/app/app.hooks'
+import tmtLogo from '../../assets/images/tmt_logo_final_full_colour@2x.png'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -197,7 +198,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   return (
     <div className={styles.homeContainer} data-testid="home">
       <header>
-        <Logo className={styles.logo}></Logo>
+        <h1 className={styles.logo} >
+          Vessel Viewer
+        </h1>
         <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
         <IconButton
           onClick={onSettingsClick}
@@ -297,6 +300,10 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   onContactUsClick={onContactUsClick}
                 />
               )}
+              <div className={styles.partners}>
+                <img src={tmtLogo.src} className={styles.tmtLogo} alt="Trygg Mat Tracking" />
+                <Logo className={styles.gfwLogo} />
+              </div>
             </div>
           </Fragment>
         )}
