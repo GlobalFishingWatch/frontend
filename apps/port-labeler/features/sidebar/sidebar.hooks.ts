@@ -121,17 +121,19 @@ export const useSelectedTracksConnect = () => {
         name: record.community_label ?? record.community_iso3,
         color: getFixedColorForUnknownLabel(index)
       }
-    })))
-    dispatch(setPorts(uniqueTempPorts.map((e, index) => {
+    }).sort((a, b) => a.name > b.name ? 1 : -1)))
+    const countryPorts = uniqueTempPorts.map((e, index) => {
       return {
-        id: e,
+        id: country + '-' + Math.floor(Math.random() * 10000000),
         name: e
       }
-    })))
+    })
+    dispatch(setPorts(countryPorts.sort((a, b) => a.name > b.name ? 1 : -1)))
     const portMap = countryRecords.reduce((ac, value, i, v) => {
-      ac[value.s2id] = value.port_label
+      ac[value.s2id] = countryPorts.find(port => port.name === (value.port_label)).id
       return ac
     }, {})
+
     dispatch(setPortValues(portMap))
     const subareaMap = countryRecords.reduce((ac, value, i, v) => {
       ac[value.s2id] = value.community_iso3

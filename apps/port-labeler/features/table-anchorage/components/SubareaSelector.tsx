@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback , useState } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
 import { Button, IconButton, InputText, SelectOnChange, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
@@ -50,7 +50,6 @@ export function SubareaSelector(props: SelectProps) {
   const {
     isOpen,
     selectItem,
-    highlightedIndex,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
@@ -65,12 +64,14 @@ export function SubareaSelector(props: SelectProps) {
     },
   })
 
+  const [filterQuery, setFilterQuery] = useState('')
   const handleChange = useCallback(
     (option: SelectOption) => {
       if (isItemSelected(selectedOption, option)) {
         onRemove(option)
       } else {
         onSelect(option)
+        setFilterQuery('')
       }
     },
     [onRemove, onSelect, selectedOption]
@@ -107,12 +108,21 @@ export function SubareaSelector(props: SelectProps) {
           ></IconButton>
         </div>
         <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
+          {isOpen && <li className={cx(
+            styles.optionItem, styles.filterItem)}>
+            <InputText value={filterQuery} placeholder="Filter by"
+              className={styles.noBorder} onChange={(e) => {
+                setFilterQuery(e.target.value)
+              }} />
+          </li>}
           {isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
               return (
-                <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
+                <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start"
+                >
                   <li
+                    style={{ display: !filterQuery || item.label.toLowerCase().includes(filterQuery.toLowerCase()) ? "block" : "none" }}
                     className={cx(styles.optionItem)}
                     {...getItemProps({ item, index })}
                   >
