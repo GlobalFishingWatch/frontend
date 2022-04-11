@@ -20,6 +20,7 @@ const getHistoryField = (historyField: AnyValueList[]): VesselFieldHistory<any> 
   byDate: historyField.reverse().map((field) => ({ ...field, source: VesselAPISource.TMT }))
 })
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
+  console.log(data)
   const {
     vesselMatchId,
     valueList,
@@ -82,7 +83,10 @@ const vesselThunk: VesselAPIThunk = {
     }
     const url = `/v1/vessel-history/${id}`
 
-    return await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
+    return await GFWAPI.fetch<TMTDetail>(url).then(toVessel).catch((error) => {
+      console.error(error)
+      return undefined
+    })
   },
 }
 
