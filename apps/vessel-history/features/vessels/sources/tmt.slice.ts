@@ -20,7 +20,6 @@ const getHistoryField = (historyField: AnyValueList[]): VesselFieldHistory<any> 
   byDate: historyField.reverse().map((field) => ({ ...field, source: VesselAPISource.TMT }))
 })
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
-  console.log(data)
   const {
     vesselMatchId,
     valueList,
