@@ -125,10 +125,10 @@
     "vessel": "Navire",
     "vessel_one": "Navire",
     "vessel_other": "Navires",
+    "view_layer": "Voir le calque",
     "viirs": "Détection de lumière de nuit (VIIRS)",
     "welcomePopupDisable": "Ne plus afficher",
-    "whatsNew": "What's new?",
-    "view_layer": "Voir le calque"
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Ajouter un calque de référence",
@@ -443,6 +443,7 @@
       "fishing": "Pêche",
       "fixed_gear": "Apparaux de pêche fixe",
       "gillnets": "Gillnets",
+      "Handline": "Handline",
       "longline": "Longline",
       "other_fishing": "Autres techniques de pêches",
       "other_purse_seines": "Autres sennes coulissantes",
@@ -459,6 +460,7 @@
       "squid_jigger": "Pêcheur de calamar (jigger)",
       "squid_jiggers": "Gear Squid Jiggers",
       "trap net": "Trap Net",
+      "traps": "Traps",
       "trawler": "Chalutier",
       "trawlers": "Chalutier",
       "trollers": "Pêche à la traîne",
