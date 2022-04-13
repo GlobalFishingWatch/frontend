@@ -218,7 +218,7 @@ function VesselsTable({
 
               const vesselGearType = `${t(
                 `vessel.gearTypes.${vessel.geartype}` as any,
-                EMPTY_FIELD_PLACEHOLDER
+                vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
               )}`
 
               const hasDatasets =
