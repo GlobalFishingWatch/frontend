@@ -28,6 +28,10 @@
   padding: 1.5rem;
 }
 
+.text a {
+  text-decoration: underline;
+}
+
 .title {
   font: var(--font-L);
 }

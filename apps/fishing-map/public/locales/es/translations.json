@@ -59,6 +59,8 @@
     "analysis": "Crear un análisis para esta área",
     "analysisNotAvailable": "Activa una actividad o capa de referencia para analizarla en este área",
     "apparentFishing": "Esfuerzo de pesca aparente",
+    "average": "average",
+    "averageAbbreviated": "avg.",
     "cancel": "Cancelar",
     "category": "Categoría",
     "comingSoon": "¡próximamente!",
@@ -82,6 +84,7 @@
     "events": "Eventos",
     "feedback": "Comentarios",
     "fishing": "Pesca",
+    "from": "from",
     "help": "Ayuda",
     "hideAllHelpHints": "Ocultar todos",
     "hideHelpHint": "Ocultar",
@@ -107,6 +110,7 @@
     "months_other": "meses",
     "more": "más",
     "name": "Nombre",
+    "onScreen": "on screen",
     "optional": "Opcional",
     "or": "o",
     "presence": "Presencia",
@@ -123,7 +127,8 @@
     "vessel_other": "Embarcaciones",
     "viirs": "Detección de luz nocturna (VIIRS)",
     "welcomePopupDisable": "No volver a mostrar",
-    "whatsNew": "Novedades"
+    "whatsNew": "Novedades",
+    "view_layer": "Ver la capa"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
@@ -174,12 +179,12 @@
   },
   "dataview": {
     "context-layer-eez": {
-      "dataWarning": "This platform uses EEZ reference layers from Marine Regions",
-      "dataWarningDetail": "This platform uses reference layers (shapefiles) from Marine Regions for exclusive economic zones and boundaries. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.marineregions.org'>www.marineregions.org</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+      "dataWarning": "Esta plataforma utiliza capas de referencia ZEE de la fuente Marine Regions",
+      "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente Marine Regions para Zonas Económicas Exclusivas y límites. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite <a href='http://www.marineregions.org'>www.marineregions.org</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> and <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
     },
     "context-layer-mpa": {
-      "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
-      "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+      "dataWarning": "Esta plataforma utiliza capas de referencia AMP de la fuente World Database on Protected Areas.",
+      "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente World Database on Protected Areas para áreas marinas protegidas. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> and <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
     }
   },
   "download": {
@@ -235,11 +240,15 @@
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "event": {
+    "dayAbbreviated": "{{count}}d",
+    "dayAbbreviated_one": "{{count}}d",
+    "dayAbbreviated_other": "{{count}}d",
     "during": "durante",
     "encounter": "Encuentro",
     "encounterAction": "tuvo un encuentro con",
     "encounterActionWith": "tuvo un encuentro con",
     "encounterAnotherVessel": "otra embarcación",
+    "events": "events",
     "fishing": "Pesca",
     "fishingAction": "Pescó durante",
     "hourAbbreviated": "{{count}}h",
@@ -309,6 +318,8 @@
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
+    "flagState": "Flag State",
+    "flagState_one": "Flag State",
     "flagState_other": "Estados de bandera",
     "fleet_other": "Flotas",
     "gearType_other": "Artes de pesca",
@@ -331,6 +342,7 @@
     "source": "Fuente",
     "source_one": "Fuente",
     "source_other": "Fuentes",
+    "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combinar las capas",
       "split": "Separar las capas"
@@ -386,18 +398,18 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
     "graph": "Gráfico",
-    "graphOptions": {
-      "depth": "Profundidad $t(common.comingSoon)",
-      "none": "Ninguna",
-      "speed": "Velocidad",
-      "speedDisabled": "No disponible con más de 1 buque seleccionado"
-    },
+    "graphDepth": "Track depth",
+    "graphDisabled": "Not available with more than 2 vessels selected",
+    "graphSpeed": "Track speed",
     "presenceDisabled": "Selecciona al menos una capa de presencia",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
+    "showGraphDepth": "Show track depth graph",
+    "showGraphSpeed": "Show track speed graph",
     "showPresence": "Mostrar gráfico de presencia",
     "showTracks": "Mostrar gráfico de las trayectorias",
+    "title": "Timebar settings",
     "tracks": "Trayectorias",
     "tracksDisabled": "Seleccione al menos una embarcación"
   },
@@ -438,13 +450,16 @@
       "pole_and_line": "Vara",
       "pots_and_traps": "Trampas y nasas",
       "purse seine": "Purse seine",
+      "purse_seine": "Red de cerco",
       "purse_seines": "Red de cerco",
+      "reefer": "Buque frigorífico",
       "seiners": "Cerqueros",
       "set_gillnets": "Redes de enmalle",
       "set_longlines": "Palangres",
       "squid_jigger": "Jigger calamar",
       "squid_jiggers": "Jiggers de calamar",
       "trap net": "Trap net",
+      "trawler": "Arrastre",
       "trawlers": "Red de arrastre",
       "trollers": "Curricaneros",
       "tuna_purse_seines": "Red de cerco atunera"
@@ -467,7 +482,7 @@
     "notMatched": "No hay datos coincidentes",
     "origin": "Origen",
     "registeredGearType": "Arte de pesca registrado",
-    "shiptype": "Tipo de buque",
+    "shiptype": "Tipos de embarcaciones",
     "source": "Fuente",
     "source_short": "Fuente",
     "target_species": "Especies objetivo",
@@ -475,6 +490,7 @@
     "transmission_other": "Transmisión",
     "unkwownVesselByGeartype": "{{gearType}} desconocida",
     "unmatched": "Sin coincidencia con AIS",
+    "vessel_type": "Vessel type",
     "vesselType_other": "Tipos de embarcaciones",
     "widthRange": "Rango de ancho"
   },
@@ -488,6 +504,7 @@
     "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
+    "noVesselInFilters": "No vessels match your current filters",
     "privateTitle_other": "Espacios de trabajo privados",
     "remove": "Eliminar el espacio de trabajo",
     "save": "Guardar el mapa actual",

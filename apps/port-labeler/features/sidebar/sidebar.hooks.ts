@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   selectMapData,
   selectPointValues,
+  selectPorts,
   selectPortValues,
   selectSubareas,
   selectSubareaValues,
@@ -24,24 +25,38 @@ export const useSelectedTracksConnect = () => {
   const pointValues = useSelector(selectPointValues)
   const subareaValues = useSelector(selectSubareaValues)
   const subareas = useSelector(selectSubareas)
+  const ports = useSelector(selectPorts)
   const { centerPoints } = useMapConnect()
   let fileReader: FileReader
 
+  const findPortName = (country: string, portId: string) => {
+    const port = ports[country]?.find(p => p.id === portId)
+    if (port) {
+      return port.name
+    }
+    return portId
+  }
+  const findSubareaName = (country: string, subareaId: string, defaultValue: string) => {
+    const subarea = subareas[country]?.find(s => s.id === subareaId)
+    if (subarea) {
+      return subarea.name
+    }
+    return defaultValue
+  }
+
   const assignLabeledValues = (points: PortPosition[]) => {
 
-    const mapSubareas = subareas.reduce((result, subarea) => {
-      result[subarea.id] = subarea.name
-
-      return result
-    }, {})
     return points.map(point => {
-      const ciso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
+      const communityIso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
+      const communityLabel = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : (point.community_label ?? point.community_iso3)
+      const port = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.port_label
       const pointValue = pointValues[point.iso3] ? pointValues[point.iso3][point.s2id] : point.point_label
+
       return {
         ...point,
-        label: portValues[point.s2id],
-        community_iso3: ciso3,
-        sublabel: mapSubareas[ciso3],
+        port_label: findPortName(point.iso3, port),
+        community_label: findSubareaName(point.iso3, communityIso3, communityLabel),
+        community_iso3: communityIso3,
         point_label: pointValue ?? null
       }
     })
@@ -66,6 +81,7 @@ export const useSelectedTracksConnect = () => {
 
     dispatch(setData(records.map(record => ({
       ...record,
+      port_label: record.port_label ?? record.label,
       lat: typeof record.lat === 'string' ? parseFloat(record.lat) : record.lat,
       lon: typeof record.lon === 'string' ? parseFloat(record.lon) : record.lon
     }))))
@@ -91,25 +107,33 @@ export const useSelectedTracksConnect = () => {
     const countryRecords = allRecords?.filter((point) => point.iso3 === country) || []
     centerPoints(countryRecords)
     countryRecords.forEach(e => {
-      tempPorts.push(e.label)
+      if (e.port_label) {
+        tempPorts.push(e.port_label)
+      }
       tempSubareas.push(e.community_iso3)
     })
     const uniqueTempPorts = [...new Set(tempPorts)];
     const uniqueTempSubareas = [...new Set(tempSubareas)];
-
     dispatch(setSubareas(uniqueTempSubareas.map((e, index) => {
       const record = countryRecords.find(record => record.community_iso3 === e)
       return {
         id: e,
-        name: record.sublabel ?? record.community_iso3,
+        name: record.community_label ?? record.community_iso3,
         color: getFixedColorForUnknownLabel(index)
       }
-    })))
-    dispatch(setPorts(uniqueTempPorts))
+    }).sort((a, b) => a.name > b.name ? 1 : -1)))
+    const countryPorts = uniqueTempPorts.map((e, index) => {
+      return {
+        id: country + '-' + Math.floor(Math.random() * 10000000),
+        name: e
+      }
+    })
+    dispatch(setPorts(countryPorts.sort((a, b) => a.name > b.name ? 1 : -1)))
     const portMap = countryRecords.reduce((ac, value, i, v) => {
-      ac[value.s2id] = value.label
+      ac[value.s2id] = countryPorts.find(port => port.name === (value.port_label)).id
       return ac
     }, {})
+
     dispatch(setPortValues(portMap))
     const subareaMap = countryRecords.reduce((ac, value, i, v) => {
       ac[value.s2id] = value.community_iso3

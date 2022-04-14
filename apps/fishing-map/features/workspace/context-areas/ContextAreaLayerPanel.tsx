@@ -127,7 +127,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               'This platform uses a reference layer from an external source.'
             )}
           </div>
-          <div className={styles.dataWarningLinks}>
+          <div className={cx('print-hidden', styles.dataWarningLinks)}>
             <button onClick={onAddNewClick}>{t('dataset.uploadYourOwn', 'Upload your own')}</button>{' '}
             |{' '}
             <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>

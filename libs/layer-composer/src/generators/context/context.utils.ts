@@ -13,7 +13,6 @@ export const getLinePaintWithFeatureState = (
   opacity = 1
 ): LineLayerSpecification['paint'] => {
   return {
-    'line-opacity': opacity,
     'line-color': [
       'case',
       ['boolean', ['feature-state', 'hover'], false],

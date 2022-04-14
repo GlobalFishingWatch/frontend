@@ -1,0 +1,16 @@
+.flex {
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aside {
+  width: 240px;
+  border-right: var(--border);
+}
+
+.main {
+  flex: 1;
+}

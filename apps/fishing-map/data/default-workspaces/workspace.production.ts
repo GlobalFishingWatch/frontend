@@ -10,11 +10,14 @@ import {
   BASEMAP_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
   PRESENCE_DATAVIEW_ID,
-  VIIRS_DATAVIEW_ID,
+  VIIRS_MATCH_DATAVIEW_ID,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  GRATICULES_DATAVIEW_ID,
+  FAO_AREAS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -43,15 +46,12 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FISHING_DATAVIEW_ID,
     },
     {
-      // This id is used for highlighting the dataview with a popup on the right
-      // update it here if you want to show it again or go to
-      // apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
-      // and update the `dataviewInstanceId`
-      id: 'highlight-vms-with-costarica',
+      id: 'vms',
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
         datasets: [
+          'public-belize-fishing-effort:v20220304',
           'public-bra-onyxsat-fishing-effort:v20211126',
           'public-costa-rica-fishing-effort:v20211126',
           'public-chile-fishing-effort:v20211126',
@@ -72,13 +72,17 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: PRESENCE_DATAVIEW_ID,
     },
     {
-      id: 'viirs',
+      // This id is used for highlighting the dataview with a popup on the right
+      // update it here if you want to show it again or go to
+      // apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
+      // and update the `dataviewInstanceId`
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFEA00',
         colorRamp: 'yellow',
         visible: false,
       },
-      dataviewId: VIIRS_DATAVIEW_ID,
+      dataviewId: VIIRS_MATCH_DATAVIEW_ID,
       datasetsConfig: [],
     },
     {
@@ -96,22 +100,6 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: EEZ_DATAVIEW_ID,
     },
-    // {
-    //   id: 'context-layer-mpa-no-take',
-    //   config: {
-    //     color: '#F4511F',
-    //     visible: false,
-    //   },
-    //   dataviewId: MPA_NO_TAKE_DATAVIEW_ID,
-    // },
-    // {
-    //   id: 'context-layer-mpa-restricted',
-    //   config: {
-    //     color: '#F09300',
-    //     visible: false,
-    //   },
-    //   dataviewId: MPA_RESTRICTED_DATAVIEW_ID,
-    // },
     {
       id: 'context-layer-mpa',
       config: {
@@ -120,6 +108,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: MPA_DATAVIEW_ID,
     },
+    // {
+    //   id: 'context-layer-fao-areas',
+    //   config: {
+    //     visible: false,
+    //   },
+    //   dataviewId: FAO_AREAS_DATAVIEW_ID,
+    // },
     {
       id: 'context-layer-rfmo',
       config: {
@@ -128,6 +123,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: RFMO_DATAVIEW_ID,
     },
+    // {
+    //   id: 'context-layer-graticules',
+    //   config: {
+    //     visible: false,
+    //   },
+    //   dataviewId: GRATICULES_DATAVIEW_ID,
+    // },
     {
       id: 'context-layer-high-seas',
       config: {

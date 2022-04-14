@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
+import { dataviewStatsApi } from 'queries/stats-api'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from './routes/routes.middlewares'
 import areasReducer from './features/areas/areas.slice'
 import bigQueryReducer from './features/bigquery/bigquery.slice'
 import connectedRoutes from './routes/routes'
 import datasetsReducer from './features/datasets/datasets.slice'
 import dataviewsReducer from './features/dataviews/dataviews.slice'
+import dataviewStatsReducer from './features/dataview-stats/dataview-stats.slice'
 import debugReducer from './features/debug/debug.slice'
 import downloadActivityReducer from './features/download/downloadActivity.slice'
 import downloadTrackReducer from './features/download/downloadTrack.slice'
@@ -32,6 +34,7 @@ const rootReducer = combineReducers({
   bigQuery: bigQueryReducer,
   datasets: datasetsReducer,
   dataviews: dataviewsReducer,
+  dataviewStats: dataviewStatsReducer,
   debug: debugReducer,
   downloadActivity: downloadActivityReducer,
   downloadTrack: downloadTrackReducer,
@@ -47,6 +50,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   workspace: workspaceReducer,
   workspaces: workspacesReducer,
+  [dataviewStatsApi.reducerPath]: dataviewStatsApi.reducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
@@ -83,7 +87,8 @@ const store = configureStore({
     getDefaultMiddleware(defaultMiddlewareOptions)
       .concat(routerQueryMiddleware)
       .concat(routerWorkspaceMiddleware)
-      .concat(routerMiddleware),
+      .concat(routerMiddleware)
+      .concat(dataviewStatsApi.middleware),
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 

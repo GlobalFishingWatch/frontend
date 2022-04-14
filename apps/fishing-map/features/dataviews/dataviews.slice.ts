@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy, memoize } from 'lodash'
 import {
-  DatasetConfigsTransforms,
-  getDataviewsForResourceQuerying,
   mergeWorkspaceUrlDataviewInstances,
   resolveDataviews,
   UrlDataviewInstance,
+  getResources,
 } from '@globalfishingwatch/dataviews-client'
 import {
   DatasetTypes,
@@ -23,11 +22,14 @@ import {
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { TimebarGraphs } from 'types'
-import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
+import { createDeepEqualSelector } from 'utils/selectors'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
-import { selectThinningConfig } from 'features/resources/resources.slice'
+import {
+  selectTrackThinningConfig,
+  selectTrackChunksConfig,
+} from 'features/resources/resources.slice'
 import { RootState } from 'store'
+import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
@@ -175,63 +177,28 @@ export const selectAllDataviewInstancesResolved = createSelector(
 )
 
 /**
- * Calls getDataviewsForResourceQuerying to prepare track dataviews' datasetConfigs.
- * Injects app-specific logic by using getDataviewsForResourceQuerying's callback
+ * Calls getResources to prepare track dataviews' datasetConfigs.
+ * Injects app-specific logic by using getResources's callback
  */
-export const selectDataviewsForResourceQuerying = createSelector(
+export const selectDataviewsResources = createSelector(
   [
     selectAllDataviewInstancesResolved,
-    selectThinningConfig,
+    selectTrackThinningConfig,
+    selectTrackChunksConfig,
     selectWorkspaceStateProperty('timebarGraph'),
   ],
-  (dataviewInstances, thinningConfig, timebarGraph) => {
-    const datasetConfigsTransforms: DatasetConfigsTransforms = {
-      [GeneratorType.Track]: ([info, track, ...events]) => {
-        const trackWithThinning = track
-        if (thinningConfig) {
-          const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-            id,
-            value,
-          }))
-          trackWithThinning.query = [...(track.query || []), ...thinningQuery]
-        }
-
-        const trackWithoutSpeed = trackWithThinning
-        const query = [...(trackWithoutSpeed.query || [])]
-        const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
-        let trackGraph
-        if (timebarGraph !== TimebarGraphs.None) {
-          trackGraph = { ...trackWithoutSpeed }
-          const fieldsQuery = {
-            id: 'fields',
-            value: timebarGraph,
-          }
-          if (fieldsQueryIndex > -1) {
-            query[fieldsQueryIndex] = fieldsQuery
-            trackGraph.query = query
-          } else {
-            trackGraph.query = [...query, fieldsQuery]
-          }
-        }
-
-        // Clean resources when mandatory vesselId is missing
-        // needed for vessels with no info datasets (zebraX)
-        const vesselData = hasDatasetConfigVesselData(info)
-        return [
-          trackWithoutSpeed,
-          ...events,
-          ...(vesselData ? [info] : []),
-          ...(trackGraph ? [trackGraph] : []),
-        ]
-      },
-    }
-    return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)
+  (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
+    return getResources(
+      dataviewInstances || [],
+      trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph)
+    )
   }
 )
 
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsForResourceQuerying, selectWorkspaceStateProperty('activityCategory')],
-  (dataviews = [], activityCategory) => {
+  [selectDataviewsResources, selectWorkspaceStateProperty('activityCategory')],
+  (dataviewsResources, activityCategory) => {
+    const dataviews = dataviewsResources.dataviews || []
     return dataviews.filter((dataview) => {
       const activityDataview = isActivityDataview(dataview)
       return activityDataview ? dataview.category === activityCategory : true
@@ -258,12 +225,14 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
   )
 })
 
-export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
+export const selectActiveVesselsDataviews = createDeepEqualSelector(
+  [selectVesselsDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
+export const selectActiveTrackDataviews = createDeepEqualSelector(
+  [selectTrackDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
 export default dataviewsSlice.reducer

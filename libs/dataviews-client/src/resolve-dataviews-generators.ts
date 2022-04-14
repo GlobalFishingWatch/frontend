@@ -2,7 +2,6 @@ import { scaleLinear } from 'd3-scale'
 import { uniq } from 'lodash'
 import {
   Resource,
-  TrackResourceData,
   DatasetTypes,
   EndpointId,
   DatasetStatus,
@@ -34,6 +33,7 @@ import {
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
 } from './resolve-dataviews'
+import { pickTrackResource } from './resources'
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
@@ -43,12 +43,14 @@ export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeat
 const getDatasetAvailableIntervals = (dataset?: Dataset) =>
   dataset?.configuration?.intervals as Interval[]
 
-type DataviewsGeneratorConfigsParams = {
+export type DataviewsGeneratorConfigsParams = {
   debug?: boolean
   highlightedTime?: { start: string; end: string }
   highlightedEvent?: ApiEvent
+  highlightedEvents?: string[]
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: HeatmapAnimatedMode
+  customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -84,7 +86,7 @@ export function getGeneratorConfig(
   params?: DataviewsGeneratorConfigsParams,
   resources?: DataviewsGeneratorResource
 ) {
-  const { debug = false, highlightedTime, highlightedEvent } = params || {}
+  const { debug = false, highlightedTime, highlightedEvent, highlightedEvents } = params || {}
 
   let generator: GeneratorDataviewConfig = {
     id: dataview.id,
@@ -105,6 +107,7 @@ export function getGeneratorConfig(
       return {
         ...generator,
         ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+        ...(highlightedEvents && { currentEventId: highlightedEvents[0] }),
       }
     }
     case GeneratorType.Track: {
@@ -112,17 +115,16 @@ export function getGeneratorConfig(
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
       }
-      // Try to retrieve resource if it exists
-      const trackType =
-        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
-          ? DatasetTypes.UserTracks
-          : DatasetTypes.Tracks
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, trackType)
 
-      if (trackUrl && resources?.[trackUrl]) {
-        const resource = resources?.[trackUrl] as Resource<TrackResourceData>
-        generator.data = resource.data
-      }
+      const endpointType =
+        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+          ? EndpointId.UserTracks
+          : EndpointId.Tracks
+
+      const trackResource = pickTrackResource(dataview, endpointType, resources)
+
+      if (trackResource) generator.data = trackResource.data
+
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
@@ -130,17 +132,23 @@ export function getGeneratorConfig(
       if (hasEventData) {
         // TODO This flatMap will prevent the corresponding generator to memoize correctly
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
+        const type =
+          params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
+            ? params?.customGeneratorMapping.VESSEL_EVENTS
+            : GeneratorType.VesselEvents
+
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           event: dataview.config?.event,
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
-          type: GeneratorType.VesselEvents,
+          type,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
           data: data,
           color: dataview.config?.color,
           track: generator.data,
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+          ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
         }
         return [generator, eventsGenerator]
       }
@@ -369,7 +377,7 @@ export function getDataviewsGeneratorConfigs(
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
 
       const activeDatasets = dataview.datasets.filter((dataset) =>
-        dataview?.config?.datasets.includes(dataset.id)
+        dataview?.config?.datasets?.includes(dataset.id)
       )
       const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
       if (units.length > 0 && units.length !== 1) {

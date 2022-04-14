@@ -295,7 +295,7 @@ function Analysis() {
           </div>
           {showReportDownload && (
             <Fragment>
-              <div>
+              <div className="print-hidden">
                 <p className={styles.placeholder}>
                   {t(
                     'analysis.disclaimerReport',
@@ -303,7 +303,7 @@ function Analysis() {
                   )}
                 </p>
               </div>
-              <div className={styles.footer}>
+              <div className={cx('print-hidden', styles.footer)}>
                 <LoginButtonWrapper
                   tooltip={t('analysis.downloadLogin', 'Please login to download report')}
                 >

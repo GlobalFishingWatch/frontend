@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
+import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -15,6 +16,10 @@ import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/data
 import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { isGuestUser } from 'features/user/user.slice'
+import { selectUrlTimeRange } from 'routes/routes.selectors'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -45,8 +50,19 @@ function ActivityLayerPanel({
 
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
+  const urlTimeRange = useSelector(selectUrlTimeRange)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
+  const { data: stats, isFetching } = useGetStatsByDataviewQuery(
+    {
+      dataview,
+      timerange: urlTimeRange,
+    },
+    {
+      skip: guestUser || !urlTimeRange,
+    }
+  )
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -122,6 +138,8 @@ function ActivityLayerPanel({
     [t]
   )
 
+  const showStats = stats && (stats.vessel_id > 0 || stats.flag > 0)
+
   return (
     <div
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
@@ -173,6 +191,49 @@ function ActivityLayerPanel({
       </div>
       {layerActive && (
         <div className={styles.properties}>
+          {stats && (
+            <div
+              className={cx(activityStyles.stats, {
+                [activityStyles.statsLoading]: isFetching,
+              })}
+            >
+              {showStats ? (
+                <Tooltip
+                  // placement="bottom"
+                  content={t(
+                    'layer.statsHelp',
+                    'The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.'
+                  )}
+                >
+                  <div className={activityStyles.help}>
+                    {stats.vessel_id > 0 && (
+                      <span>
+                        <I18nNumber number={stats.vessel_id} />{' '}
+                        {t('common.vessel', {
+                          count: stats.vessel_id,
+                          defaultValue: 'vessels',
+                        }).toLocaleLowerCase()}
+                      </span>
+                    )}
+                    {stats.flag > 0 && !dataview.config?.filters?.flag && (
+                      <Fragment>
+                        <span> {t('common.from', 'from')} </span>
+                        <span>
+                          <I18nNumber number={stats.flag} />{' '}
+                          {t('layer.flagState', {
+                            count: stats.flag,
+                            defaultValue: 'flag states',
+                          }).toLocaleLowerCase()}
+                        </span>
+                      </Fragment>
+                    )}
+                  </div>
+                </Tooltip>
+              ) : (
+                t('workspace.noVesselInFilters', 'No vessels match your filters')
+              )}
+            </div>
+          )}
           <div className={styles.filters}>
             <div className={styles.filters}>
               <DatasetFilterSource dataview={dataview} />

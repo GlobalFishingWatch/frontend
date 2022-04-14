@@ -12,9 +12,13 @@ import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'
+import VesselsEventsShapesGenerator from './vessel-events/vessel-events-shapes'
 
 export * from './heatmap/types'
 export * from './heatmap/util'
+export * from './heatmap/util/get-time-chunks-interval'
+export * from './vessel-events/vessel-events.utils'
+export { TRACK_HIGHLIGHT_SUFFIX } from './track/track'
 export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
 export { DEFAULT_BACKGROUND_COLOR } from './background/config'
 export { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/config'
@@ -39,6 +43,7 @@ const GeneratorConfig = {
   [GeneratorType.Heatmap]: new HeatmapGenerator(),
   [GeneratorType.Track]: new TrackGenerator(),
   [GeneratorType.VesselEvents]: new VesselEventsGenerator(),
+  [GeneratorType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
   [GeneratorType.Rulers]: new RulersGenerator(),
 }
 

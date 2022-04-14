@@ -97,14 +97,20 @@ export const fetchVesselByIdThunk = createAsyncThunk(
       ).filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
 
       const vessels = await Promise.all(
-        vesselsToFetchFiltered.map(async ({ source, sourceId }) => ({
-          source,
-          vessel: await getVesselFromSourceAPI(source).fetchById(sourceId),
-        }))
-      )
+        vesselsToFetchFiltered.map(async ({ source, sourceId }) => {
+          const vesselResult = await getVesselFromSourceAPI(source).fetchById(sourceId)
+          if (vesselResult) {
+            return {
+              source,
+              vessel: vesselResult,
+            }
+          }
+          return undefined
 
+        })
+      )
       return {
-        ...mergeVesselFromSources(vessels),
+        ...mergeVesselFromSources(vessels.filter((v) => v)),
         id: [id, ...(idData.akas ?? [])].join('|'),
       }
     } catch (e: any) {

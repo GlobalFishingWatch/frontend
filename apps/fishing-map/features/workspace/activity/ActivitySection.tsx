@@ -30,6 +30,11 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import HighlightPanel from '../highlight-panel/HighlightPanel'
+import {
+  HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH,
+  HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
+} from '../highlight-panel/highlight-panel.content'
 import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
 
@@ -197,6 +202,13 @@ function ActivitySection(): React.ReactElement {
           activeOption={activityCategory}
           onOptionClick={onActivityOptionClick}
         />
+        {activityCategory === 'fishing' && (
+          <HighlightPanel
+            dataviewInstanceId={HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID}
+            highlightConfig={HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH}
+            placement="right"
+          />
+        )}
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
             {activityCategory === 'presence' && (
