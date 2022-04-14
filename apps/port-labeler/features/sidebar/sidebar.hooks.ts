@@ -119,49 +119,55 @@ export const useSelectedTracksConnect = () => {
     })
     const uniqueTempPortsNames = [...new Set(tempPortsNames)];
     const uniqueTempPortsIds = [...new Set(tempPortsIds)];
-    const uniqueTempSubareas = [...new Set(tempSubareas)];
 
     //here we know that community_iso3 exists
-    dispatch(setSubareas(uniqueTempSubareas.map((e, index) => {
-      const record = countryRecords.find(record => record.community_iso3 === e)
-      return {
-        id: e,
-        name: record.community_label ?? record.community_iso3,
-        color: getFixedColorForUnknownLabel(index)
-      }
-    }).sort((a, b) => a.name > b.name ? 1 : -1)))
+    if (!subareas[country]) {
+      const uniqueTempSubareas = [...new Set(tempSubareas)];
+      dispatch(setSubareas(uniqueTempSubareas.map((e, index) => {
+        const record = countryRecords.find(record => record.community_iso3 === e)
+        return {
+          id: e,
+          name: record.community_label ?? record.community_iso3,
+          color: getFixedColorForUnknownLabel(index)
+        }
+      }).sort((a, b) => a.name > b.name ? 1 : -1)))
 
-    // first use the ids to generate the port selectors
-    const countryPorts = uniqueTempPortsIds.map((e) => {
-      const record = countryRecords.find(record => record.port_iso3 === e)
-      return {
-        id: e,
-        name: record.port_label ?? record.port_iso3,
-      }
-    })
-    // then use the names to generate the port selectors only if the name is not used before
-    uniqueTempPortsNames.forEach((e) => {
-      const portAlreadyExist = countryPorts.some(record => record.name === e)
-      // Only add a new selector if the name is not used before
-      if (!portAlreadyExist) {
-        countryPorts.push({
-          name: e,
-          id: country + '-' + Math.floor(Math.random() * 10000000),
-        })
-      }
-    })
-    dispatch(setPorts(countryPorts.sort((a, b) => a.name > b.name ? 1 : -1)))
-    const portMap = countryRecords.reduce((ac, value, i, v) => {
-      ac[value.s2id] = value.port_iso3 ?? countryPorts.find(port => port.name === value.port_label).id
-      return ac
-    }, {})
+      const subareaMap = countryRecords.reduce((ac, value, i, v) => {
+        ac[value.s2id] = value.community_iso3
+        return ac
+      }, {})
+      dispatch(setSubareaValues(subareaMap))
+    }
 
-    dispatch(setPortValues(portMap))
-    const subareaMap = countryRecords.reduce((ac, value, i, v) => {
-      ac[value.s2id] = value.community_iso3
-      return ac
-    }, {})
-    dispatch(setSubareaValues(subareaMap))
+    if (!ports[country]) {
+      // first use the ids to generate the port selectors
+      const countryPorts = uniqueTempPortsIds.map((e) => {
+        const record = countryRecords.find(record => record.port_iso3 === e)
+        return {
+          id: e,
+          name: record.port_label ?? record.port_iso3,
+        }
+      })
+      // then use the names to generate the port selectors only if the name is not used before
+      uniqueTempPortsNames.forEach((e) => {
+        const portAlreadyExist = countryPorts.some(record => record.name === e)
+        // Only add a new selector if the name is not used before
+        if (!portAlreadyExist) {
+          countryPorts.push({
+            name: e,
+            id: country + '-' + Math.floor(Math.random() * 10000000),
+          })
+        }
+      })
+      dispatch(setPorts(countryPorts.sort((a, b) => a.name > b.name ? 1 : -1)))
+      const portMap = countryRecords.reduce((ac, value, i, v) => {
+        ac[value.s2id] = value.port_iso3 ?? countryPorts.find(port => port.name === value.port_label).id
+        return ac
+      }, {})
+
+      dispatch(setPortValues(portMap))
+    }
+
     const pointMap = countryRecords.reduce((ac, value, i, v) => {
       ac[value.s2id] = value.point_label
       return ac
