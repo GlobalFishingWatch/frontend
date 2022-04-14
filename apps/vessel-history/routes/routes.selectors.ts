@@ -178,6 +178,14 @@ export const selectUrlAkaVesselQuery = createSelector(
   (aka: string[]) => aka
 )
 
+export const isOfflineForced = createSelector(
+  [selectQueryParam('offline')],
+  (offline: string) => {
+    console.log(offline)
+    return offline === 'true'
+  }
+)
+
 export const selectMergedVesselId = createSelector(
   [selectVesselProfileId, selectUrlAkaVesselQuery],
   (vesselProfileId, akaVesselId) => [vesselProfileId, ...(akaVesselId ?? [])].join('|')

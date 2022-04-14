@@ -1,7 +1,11 @@
 import React, { memo, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
+import { redirect } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@globalfishingwatch/ui-components'
+import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { useUser } from 'features/user/user.hooks'
+import { HOME } from 'routes/routes'
 import { useLoginRedirect } from 'routes/routes.hook'
 import Partners from 'features/partners/Partners'
 import vesselHistoryLogo from '../../assets/images/splash-screen-image@2x.png'
@@ -11,11 +15,24 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
   const { t } = useTranslation()
   const { loading, logout, user, authorized } = useUser()
   const { onLoginClick } = useLoginRedirect()
+  const dispatch = useDispatch()
+  const { online } = useNavigatorOnline()
 
   const requestAccess = useCallback(() => {
     window.location.href =
       'mailto:support@globalfishingwatch.org?subject=Requesting access to Vessel Viewer App'
   }, [])
+
+  const goToOfflineHome = useCallback(() => {
+    dispatch(
+      redirect({
+        type: HOME,
+        query: {
+          offline: 'true',
+        },
+      })
+    )
+  }, [dispatch])
 
   return (
     <div className={styles.container} data-testid="splash">
@@ -45,6 +62,7 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
             <div className={styles.buttons}>
               <Button onClick={onLoginClick}>{t('user.login', 'Log in')}</Button>
             </div>
+            {!online && <span className={styles.offlineLink} onClick={() => goToOfflineHome()}>continue offline</span>}
           </div>
         )}
       </div>

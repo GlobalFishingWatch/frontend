@@ -4,6 +4,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel'
+export type WorkspaceOfflineOptions = 'offline'
 export type WorkspaceAdvancedSearchParam =
   | 'imo'
   | 'mmsi'
@@ -19,6 +20,7 @@ export type WorkspaceParam =
   | WorkspaceStateProperty
   | WorkspaceAdvancedSearchParam
   | WorkspaceMergeVesselsParam
+  | WorkspaceOfflineOptions
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
