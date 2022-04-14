@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path')
 const withNx = require('@nrwl/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
@@ -9,12 +8,6 @@ const withNx = require('@nrwl/next/plugins/with-nx')
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
-  experimental: {
-    outputStandalone: true,
-    // this includes files from the monorepo base two directories up
-    outputFileTracingRoot: path.join(__dirname, '../../'),
-  },
-
   nx: {
     // Set this to true if you would like to to use SVGR
     // See: https://github.com/gregberge/svgr
