@@ -125,10 +125,10 @@
     "vessel": "Vessel",
     "vessel_one": "Vessel",
     "vessel_other": "Vessels",
+    "view_layer": "View the layer",
     "viirs": "Night light detections (VIIRS)",
     "welcomePopupDisable": "Don't show again",
-    "whatsNew": "What's new?",
-    "view_layer": "View the layer"
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -443,6 +443,7 @@
       "fishing": "Fishing",
       "fixed_gear": "Fixed Gear",
       "gillnets": "Gillnets",
+      "Handline": "Handline",
       "longline": "Longline",
       "other_fishing": "Other Fishing",
       "other_purse_seines": "Other Purse Seines",
@@ -459,6 +460,7 @@
       "squid_jigger": "Squid Jigger",
       "squid_jiggers": "Gear Squid Jiggers",
       "trap net": "Trap Net",
+      "traps": "Traps",
       "trawler": "Trawler",
       "trawlers": "Trawler",
       "trollers": "Troller",
