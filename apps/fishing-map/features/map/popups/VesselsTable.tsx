@@ -228,7 +228,6 @@ function VesselsTable({
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
               const detectionsTimestamps = getDetectionsTimestamps(vessel)
-              console.log(detectionsTimestamps?.lenth > 0)
               return (
                 <tr key={i}>
                   {!pinTrackDisabled && (
