@@ -28,6 +28,8 @@ import {
 export type DrawFeature = FeatureOf<Polygon>
 export type DrawPointPosition = [number, number]
 
+const EditorComp = Editor as any
+
 type EditorUpdate = {
   data: DrawFeature[]
   editType: 'addFeature' | 'addPosition' | 'finishMovePosition'
@@ -292,7 +294,7 @@ function MapDraw() {
             [styles.editing]: selectedFeatureIndex !== null,
           })}
         >
-          <Editor
+          <EditorComp
             ref={editorRef}
             clickRadius={12}
             features={features}

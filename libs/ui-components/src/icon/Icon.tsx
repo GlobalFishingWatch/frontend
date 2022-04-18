@@ -2,6 +2,7 @@ import React from 'react'
 import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import { Tooltip } from '../tooltip'
+import { TooltipTypes } from '../types/types'
 import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
 import { ReactComponent as Analysis } from '../assets/icons/analysis.svg'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
@@ -158,7 +159,7 @@ interface IconProps {
   icon: IconType
   style?: React.CSSProperties
   type?: 'default' | 'warning'
-  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltip?: TooltipTypes
   tooltipPlacement?: Placement
 }
 
@@ -170,8 +171,8 @@ export function Icon(props: IconProps) {
     return null
   }
   return (
-    <Tooltip content={tooltip} placement="auto">
-      <Component className={cx(styles.icon, styles[type], className)} style={style} />
+    <Tooltip content={tooltip as React.ReactNode} placement="auto">
+      <Component className={cx(styles.icon, styles[type], className)} />
     </Tooltip>
   )
 }
