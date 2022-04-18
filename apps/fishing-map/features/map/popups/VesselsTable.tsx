@@ -228,6 +228,7 @@ function VesselsTable({
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
               const detectionsTimestamps = getDetectionsTimestamps(vessel)
+              console.log(detectionsTimestamps?.lenth > 0)
               return (
                 <tr key={i}>
                   {!pinTrackDisabled && (
@@ -269,10 +270,8 @@ function VesselsTable({
                     })}
                   >
                     <I18nNumber number={vessel[vesselProperty]} />{' '}
-                    {detectionsTimestamps?.lenth > 0 && (
-                      <Fragment>
-                        (<VesselDetectionTimestamps vessel={vessel} />)
-                      </Fragment>
+                    {detectionsTimestamps?.length > 0 && (
+                      <VesselDetectionTimestamps vessel={vessel} />
                     )}
                   </td>
                 </tr>
