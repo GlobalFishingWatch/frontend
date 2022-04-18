@@ -125,10 +125,10 @@
     "vessel": "Vessel",
     "vessel_one": "Vessel",
     "vessel_other": "Vessels",
+    "view_layer": "View the layer",
     "viirs": "Night light detections (VIIRS)",
     "welcomePopupDisable": "Don't show again",
-    "whatsNew": "What's new?",
-    "view_layer": "View the layer"
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Add reference layer",

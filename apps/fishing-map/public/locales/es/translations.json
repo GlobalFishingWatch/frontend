@@ -125,10 +125,10 @@
     "vessel": "Embarcación",
     "vessel_one": "Embarcación",
     "vessel_other": "Embarcaciones",
+    "view_layer": "Ver la capa",
     "viirs": "Detección de luz nocturna (VIIRS)",
     "welcomePopupDisable": "No volver a mostrar",
-    "whatsNew": "Novedades",
-    "view_layer": "Ver la capa"
+    "whatsNew": "Novedades"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
@@ -443,6 +443,7 @@
       "fishing": "Pesca",
       "fixed_gear": "Equipo fijo",
       "gillnets": "Gillnets",
+      "Handline": "Handline",
       "longline": "Longline",
       "other_fishing": "Otras pesquerías",
       "other_purse_seines": "Otras redes de cerco",
@@ -459,6 +460,7 @@
       "squid_jigger": "Jigger calamar",
       "squid_jiggers": "Jiggers de calamar",
       "trap net": "Trap net",
+      "traps": "Traps",
       "trawler": "Arrastre",
       "trawlers": "Red de arrastre",
       "trollers": "Curricaneros",

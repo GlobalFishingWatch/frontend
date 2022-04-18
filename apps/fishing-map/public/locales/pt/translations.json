@@ -125,10 +125,10 @@
     "vessel": "Embarcação",
     "vessel_one": "Embarcação",
     "vessel_other": "Embarcações",
+    "view_layer": "View the layer",
     "viirs": "Detecção de luz noturna (VIIRS)",
     "welcomePopupDisable": "Não mostrar novamente",
-    "whatsNew": "O que há de novo?",
-    "view_layer": "View the layer"
+    "whatsNew": "O que há de novo?"
   },
   "dataset": {
     "addContext": "Adicionar conjunto de dados de contexto",
@@ -443,6 +443,7 @@
       "fishing": "Pesca",
       "fixed_gear": "Petrecho fixo",
       "gillnets": "Emalhe",
+      "Handline": "Handline",
       "longline": "Espinhel",
       "other_fishing": "Outras Pescarias",
       "other_purse_seines": "Outras traineiras",
@@ -459,6 +460,7 @@
       "squid_jigger": "Pesca de lulas",
       "squid_jiggers": "Petrecho pesca de lulas",
       "trap net": "Rede de Armadilha",
+      "traps": "Traps",
       "trawler": "Arrasto",
       "trawlers": "Arrasto",
       "trollers": "Corrico",
