@@ -1,7 +1,12 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
-import { Field, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+import { Feature, FeatureCollection, LineString } from 'geojson'
+import {
+  Field,
+  trackValueArrayToSegments,
+  wrapFeaturesLongitudes,
+} from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   Resource,
@@ -31,10 +36,11 @@ export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async (resource: Resource) => {
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
+    const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
-        resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
+      resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
         ? 'vessel'
         : 'json'
 
@@ -50,6 +56,14 @@ export const fetchResourceThunk = createAsyncThunk(
       // TODO check by eventType when needed
       if (isEventsResource) {
         return (data as ApiEvents).entries.map(parseFishingEvent)
+      }
+
+      if (isUserTrackResource) {
+        const fc = data as FeatureCollection
+        return {
+          ...fc,
+          features: wrapFeaturesLongitudes(fc.features as Feature<LineString>[]),
+        }
       }
       return data
     })
