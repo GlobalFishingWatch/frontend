@@ -71,7 +71,7 @@ export function Select(props: SelectProps) {
   )
 
   const handleToggleButtonClick = useCallback(
-    (e) => {
+    (e: any) => {
       if (onToggleButtonClick) onToggleButtonClick(selectedOption)
     },
     [onToggleButtonClick, selectedOption]

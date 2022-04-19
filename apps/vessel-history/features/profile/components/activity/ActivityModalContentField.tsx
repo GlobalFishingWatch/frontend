@@ -16,17 +16,23 @@ const ActivityModalContentField: React.FC<ActivityModalContentFieldProps> = ({
   label,
   value,
   onHelpClick,
-  onValueClick
+  onValueClick,
 }: ActivityModalContentFieldProps): React.ReactElement => {
   return (
     <Fragment>
       <div className={cx(className, styles.field)}>
         <label className={styles.label}>{label}</label>
         <span className={styles.value}>
-          {onValueClick ? (
-            <span className={styles.valueLink} onClick={onValueClick}>{value}</span>
-          ) : value}
-          {onHelpClick && <IconButton icon="info" size="tiny" onClick={onHelpClick} />}
+          <Fragment>
+            {onValueClick ? (
+              <span className={styles.valueLink} onClick={onValueClick}>
+                {value}
+              </span>
+            ) : (
+              value
+            )}
+            {onHelpClick && <IconButton icon="info" size="tiny" onClick={onHelpClick} />}
+          </Fragment>
         </span>
       </div>
     </Fragment>

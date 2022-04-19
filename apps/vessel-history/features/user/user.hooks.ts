@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { event as uaEvent } from 'react-ga'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import { AUTHORIZED_PERMISSION } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   fetchUserThunk,
   logoutUserThunk,
@@ -14,7 +15,7 @@ import {
 } from './user.slice'
 
 export const useUser = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const logged = useSelector(selectUserLogged)
   const user = useSelector(selectUserData)
