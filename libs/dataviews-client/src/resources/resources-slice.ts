@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
+import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
   Field,
   mergeTrackChunks,
   trackValueArrayToSegments,
+  wrapFeaturesLongitudes,
 } from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -51,6 +53,7 @@ export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async ({ resource, parseEventCb }: FetchResourceThunkParams) => {
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
+    const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
@@ -75,6 +78,14 @@ export const fetchResourceThunk = createAsyncThunk(
           const eventKey = `${vesselId}-${event.type}-${index}`
           return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
         })
+      }
+
+      if (isUserTrackResource) {
+        const fc = data as FeatureCollection
+        return {
+          ...fc,
+          features: wrapFeaturesLongitudes(fc.features as Feature<LineString>[]),
+        }
       }
       return data
     })
