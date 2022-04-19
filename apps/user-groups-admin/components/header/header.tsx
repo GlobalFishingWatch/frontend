@@ -1,28 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Button, Logo } from '@globalfishingwatch/ui-components'
-import { redirectToLogin, useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWLoginHook } from '@globalfishingwatch/react-hooks'
 import styles from './header.module.css'
 
-export function HeaderComponent() {
-  const [loading, setLoading] = useState(false)
-  const login = useGFWLogin()
-  useGFWLoginRedirect(login)
+type HeaderProps = {
+  login: GFWLoginHook
+  loading: boolean
+  onLogoutClick: () => void
+}
 
-  const onLogoutClick = () => {
-    setLoading(true)
-    GFWAPI.logout().then(() => {
-      setLoading(false)
-      redirectToLogin()
-    })
-  }
+export function Header({ login, loading, onLogoutClick }: HeaderProps) {
   return (
     <div className={styles.Header}>
       <Logo />
       {login && login.user && (
         <div>
           {login.user.email}
-          <Button loading={loading} disabled={loading} onClick={onLogoutClick}>
+          <Button
+            className={styles.logout}
+            loading={loading}
+            disabled={loading}
+            onClick={onLogoutClick}
+          >
             Logout
           </Button>
         </div>
@@ -31,4 +30,4 @@ export function HeaderComponent() {
   )
 }
 
-export default HeaderComponent
+export default Header
