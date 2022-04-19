@@ -31,7 +31,7 @@ export function Layout({ children }) {
 
         {login.logged === false && login.loading === false && typeof window !== 'undefined' ? (
           <div className={styles.login}>
-            <Button href={getLoginUrl()}>Login</Button>
+            <Button href={getLoginUrl('')}>Login</Button>
           </div>
         ) : (
           children
