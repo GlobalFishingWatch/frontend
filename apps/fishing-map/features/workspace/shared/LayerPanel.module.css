@@ -142,6 +142,19 @@
   cursor: pointer;
 }
 
+.more,
+.less {
+  text-transform: capitalize;
+}
+
+.more::after {
+  content: ' ▾';
+}
+
+.less::after {
+  content: ' ▴';
+}
+
 .error {
   color: var(--color-danger-red);
 }

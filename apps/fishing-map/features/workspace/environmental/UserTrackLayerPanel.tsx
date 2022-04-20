@@ -161,8 +161,14 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
               )
             })}
           {trackResource.data.features.length > SEE_MORE_LENGTH && (
-            <button className={styles.link} onClick={onSeeMoreClick}>
-              {!seeMoreOpen ? t('common.more', 'more') : t('common.less', 'less')}...
+            <button
+              className={cx(styles.link, {
+                [styles.more]: !seeMoreOpen,
+                [styles.less]: seeMoreOpen,
+              })}
+              onClick={onSeeMoreClick}
+            >
+              {seeMoreOpen ? t('common.less', 'less') : t('common.more', 'more')}
             </button>
           )}
         </div>
