@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -28,11 +28,14 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
+const SEE_MORE_LENGTH = 5
+
 function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
   const [colorOpen, setColorOpen] = useState(false)
+  const [seeMoreOpen, setSeeMoreOpen] = useState(false)
   const allTracksActive = useSelector(selectActiveTrackDataviews)
   const singleTrack = allTracksActive.length === 1
 
@@ -55,6 +58,10 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
   const closeExpandedContainer = () => {
     setColorOpen(false)
   }
+
+  const onSeeMoreClick = useCallback(() => {
+    setSeeMoreOpen(!seeMoreOpen)
+  }, [seeMoreOpen])
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.UserTracks)
   useAutoRefreshImportingDataset(dataset)
@@ -134,15 +141,14 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
         </div>
       </div>
 
-      {layerActive && (
+      {layerActive && singleTrack && trackResource && trackResource.data && (
         <div className={styles.properties}>
-          {/* <div id={`legend_${dataview.id}`}></div> */}
-          {singleTrack &&
-            trackResource &&
-            trackResource.data &&
-            trackResource.data.features.map((feature) => {
+          {trackResource.data.features
+            .slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH)
+            .map((feature, index) => {
               return (
                 <div
+                  key={index}
                   className={styles.trackColor}
                   style={
                     {
@@ -154,6 +160,11 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
                 </div>
               )
             })}
+          {trackResource.data.features.length > SEE_MORE_LENGTH && (
+            <button className={styles.link} onClick={onSeeMoreClick}>
+              {!seeMoreOpen ? t('common.more', 'more') : t('common.less', 'less')}...
+            </button>
+          )}
         </div>
       )}
     </div>

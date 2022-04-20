@@ -139,6 +139,7 @@
 
 .link {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .error {
