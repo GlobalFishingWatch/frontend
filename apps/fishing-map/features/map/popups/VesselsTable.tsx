@@ -218,7 +218,7 @@ function VesselsTable({
 
               const vesselGearType = `${t(
                 `vessel.gearTypes.${vessel.geartype}` as any,
-                EMPTY_FIELD_PLACEHOLDER
+                vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
               )}`
 
               const hasDatasets =
@@ -269,10 +269,8 @@ function VesselsTable({
                     })}
                   >
                     <I18nNumber number={vessel[vesselProperty]} />{' '}
-                    {detectionsTimestamps?.lenth > 0 && (
-                      <Fragment>
-                        (<VesselDetectionTimestamps vessel={vessel} />)
-                      </Fragment>
+                    {detectionsTimestamps?.length > 0 && (
+                      <VesselDetectionTimestamps vessel={vessel} />
                     )}
                   </td>
                 </tr>

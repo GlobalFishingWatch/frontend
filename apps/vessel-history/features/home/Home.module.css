@@ -17,11 +17,18 @@
 }
 
 .logo {
-  margin-left: 20px;
+  margin-left: var(--size-S);
+  display: inline-block;
+  font: var(--font-XL);
+  line-height: var(--header-height);
 }
 
 .logo text {
   font-size: 18px;
+}
+
+.logo text:last-child {
+  font-size: 14px;
 }
 
 .homeContainer h2 {
@@ -96,10 +103,29 @@
   flex: 1;
 }
 
+.partners {
+  bottom: 0;
+  padding: 20px 0 42px;
+  height: 100px;
+  width: 100%;
+  text-align: center;
+}
+
+.gfwLogo {
+  max-height: 120%;
+  max-width: 50%;
+}
+
+.tmtLogo {
+  max-height: 100%;
+  max-width: 50%;
+}
+
 @media only screen and (min-width: 1000px) {
   .search {
     flex-direction: row;
   }
+
   .bottomActions {
     width: 67%;
   }

@@ -8,6 +8,9 @@ interface ValuesObject {
 interface CountryMap {
   [key: string]: ValuesObject
 }
+interface CountrySelectMap {
+  [key: string]: PortSubarea[]
+}
 
 export type ProjectSlice = {
   data: PortPosition[]
@@ -17,8 +20,8 @@ export type ProjectSlice = {
   country: string | null
   hover: string | null
   selected: string[]
-  subareas: PortSubarea[]
-  ports: string[]
+  subareas: CountrySelectMap
+  ports: CountrySelectMap
 }
 
 const initialState: ProjectSlice = {
@@ -29,8 +32,8 @@ const initialState: ProjectSlice = {
   country: null,
   hover: null,
   selected: [],
-  subareas: [],
-  ports: [],
+  subareas: {},
+  ports: {},
 }
 
 const slice = createSlice({
@@ -50,10 +53,16 @@ const slice = createSlice({
       state.hover = action.payload
     },
     setSubareas: (state, action: PayloadAction<PortSubarea[]>) => {
-      state.subareas = action.payload
+      state.subareas[state.country] = action.payload
     },
-    setPorts: (state, action: PayloadAction<string[]>) => {
-      state.ports = action.payload
+    setPorts: (state, action: PayloadAction<PortSubarea[]>) => {
+      state.ports[state.country] = action.payload
+    },
+    sortOptions: (state) => {
+      const portOptions = [...state.ports[state.country]]
+      state.ports[state.country] = portOptions.sort((a, b) => a.name > b.name ? 1 : -1)
+      const subareaOptions = [...state.subareas[state.country]]
+      state.subareas[state.country] = subareaOptions.sort((a, b) => a.name > b.name ? 1 : -1)
     },
     setPortValues: (state, action: PayloadAction<ValuesObject>) => {
       if (!state.portValues[state.country])
@@ -153,7 +162,8 @@ export const {
   changePortValue,
   changeSubareaValue,
   changePointValue,
-  sortPoints
+  sortPoints,
+  sortOptions
 } = slice.actions
 
 export default slice.reducer

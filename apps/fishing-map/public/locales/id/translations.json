@@ -125,10 +125,10 @@
     "vessel": "Kapal",
     "vessel_one": "Vessel",
     "vessel_other": "Vessels",
+    "view_layer": "View the layer",
     "viirs": "Night light detections (VIIRS)",
     "welcomePopupDisable": "Don't show again",
-    "whatsNew": "What's new?",
-    "view_layer": "View the layer"
+    "whatsNew": "What's new?"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
@@ -443,6 +443,7 @@
       "fishing": "Memancing",
       "fixed_gear": "Alat tangkap tetap",
       "gillnets": "Gillnets",
+      "Handline": "Handline",
       "longline": "Longline",
       "other_fishing": "Memancing lainnya",
       "other_purse_seines": "Pukat Cincin lainnya",
@@ -459,6 +460,7 @@
       "squid_jigger": "Pancing Cumi",
       "squid_jiggers": "Gear Squid Jiggers",
       "trap net": "Trap Net",
+      "traps": "Traps",
       "trawler": "Trawler",
       "trawlers": "Pukat Hela",
       "trollers": "Tonda",

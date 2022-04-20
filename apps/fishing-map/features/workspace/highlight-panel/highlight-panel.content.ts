@@ -28,17 +28,16 @@ const DEFAULT_HIGHLIGHT_CONFIG: HighlightPanelConfig = {
   localStorageKey: HIGHLIGHT_POPUP_KEY,
   // delayed: true,
   imageUrl: `${PATH_BASENAME}/images/viirs-match.webp`,
-  learnMoreUrl: 'https://globalfishingwatch.org/belize',
+  learnMoreUrl: 'https://globalfishingwatch.org/data/ais-viirs-reveals-dark-fleet/',
   en: {
-    title: 'New VIIRS-AIS match layer',
+    title: 'Who is fishing at night?',
     description:
       'Identity of fishing vessels using bright lights at night added through advanced matching process.',
   },
   es: {
-    title: 'New VIIRS-AIS match layer',
+    title: '¿Quién pesca de noche?',
     description:
       'La identidad de los buques pesqueros que usan luces brillantes por la noche se agrega a través de un proceso de comparación avanzado.',
-    learnMoreUrl: 'https://globalfishingwatch.org/es/belize',
   },
   fr: {
     title: 'New VIIRS-AIS match layer',
@@ -52,13 +51,13 @@ const DEFAULT_HIGHLIGHT_CONFIG: HighlightPanelConfig = {
   },
 }
 
-export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID = `${HIGHLIGHT_POPUP_KEY}_ActivitySwtch`
+export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID = `${HIGHLIGHT_POPUP_KEY}_ActivitySwitch`
 export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH: HighlightPanelConfig = {
   ...DEFAULT_HIGHLIGHT_CONFIG,
   dataviewInstanceId: HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
   localStorageKey: HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
   workspaceUrl:
-    '?start=2022-01-01T01%3A00%3A00.000Z&end=2022-04-01T00%3A00%3A00.000Z&latitude=19&longitude=26&zoom=1.5&activityCategory=~0&dvIn[0][id]=~0&dvIn[0][cfg][vis]=false&dvIn[1][id]=highlight-viirs-match&dvIn[1][cfg][vis]=true&tk[0]=presence',
+    'https://globalfishingwatch.org/map/fishing-activity/night_light_viirs_matching-public',
 }
 
 export default DEFAULT_HIGHLIGHT_CONFIG

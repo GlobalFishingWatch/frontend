@@ -1,6 +1,6 @@
-import React, { useCallback, useState, useEffect, Fragment } from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { debounce } from 'lodash'
+import cx from 'classnames'
 import { MultiSelect, MultiSelectOption, Select, Slider } from '@globalfishingwatch/ui-components'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
@@ -90,7 +90,7 @@ function ActivitySchemaFilter({
         placeholder={getPlaceholderBySelections(optionsSelected)}
         options={options}
         selectedOption={optionsSelected?.[0]}
-        containerClassName={styles.multiSelect}
+        containerClassName={cx(styles.multiSelect, { [styles.experimental]: id === 'matched' })}
         onSelect={(selection) => onSelect(id, [selection])}
         onRemove={() => onRemove(id, [])}
         onCleanClick={() => onClean(id)}

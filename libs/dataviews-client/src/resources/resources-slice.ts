@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
-import { FeatureCollection } from 'geojson'
+import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
   Field,
   mergeTrackChunks,
   trackValueArrayToSegments,
+  wrapFeaturesLongitudes,
 } from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -52,6 +53,7 @@ export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async ({ resource, parseEventCb }: FetchResourceThunkParams) => {
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
+    const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
@@ -77,9 +79,18 @@ export const fetchResourceThunk = createAsyncThunk(
           return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
         })
       }
-      if (resource.dataset.type === DatasetTypes.UserTracks) {
-        const geojson = { ...data } as FeatureCollection
-        geojson.features = geojson.features.map((feature) => {
+
+      if (isUserTrackResource) {
+        const geoJSON = data as FeatureCollection
+
+        // Wrap longitudes
+        const wrappedGeoJSON = {
+          ...geoJSON,
+          features: wrapFeaturesLongitudes(geoJSON.features as Feature<LineString>[]),
+        }
+
+        // Associate colors
+        wrappedGeoJSON.features = wrappedGeoJSON.features.map((feature) => {
           const color = [
             '#',
             new Array(3)
@@ -96,8 +107,9 @@ export const fetchResourceThunk = createAsyncThunk(
             },
           }
         })
-        return geojson
+        return wrappedGeoJSON
       }
+
       return data
     })
     return {
