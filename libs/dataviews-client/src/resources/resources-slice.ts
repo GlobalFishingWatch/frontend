@@ -46,12 +46,17 @@ const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   }
 }
 
-export type FetchResourceThunkParams = { resource: Resource; parseEventCb?: ParseEventCallback }
+export type FetchResourceThunkParams = {
+  resource: Resource
+  parseEventCb?: ParseEventCallback
+  parseUserTrackCb?: ParseTrackCallback
+}
 export type ParseEventCallback = (event: ApiEvent, idKey: string) => unknown
+export type ParseTrackCallback = (data: FeatureCollection) => FeatureCollection
 
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
-  async ({ resource, parseEventCb }: FetchResourceThunkParams) => {
+  async ({ resource, parseEventCb, parseUserTrackCb }: FetchResourceThunkParams) => {
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
     const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
@@ -89,24 +94,10 @@ export const fetchResourceThunk = createAsyncThunk(
           features: wrapFeaturesLongitudes(geoJSON.features as Feature<LineString>[]),
         }
 
-        // Associate colors
-        wrappedGeoJSON.features = wrappedGeoJSON.features.map((feature) => {
-          const color = [
-            '#',
-            new Array(3)
-              .fill(0)
-              .map(() => Math.floor(Math.random() * 255).toString(16))
-              .join(''),
-          ].join('')
+        if (parseUserTrackCb) {
+          return parseUserTrackCb(wrappedGeoJSON)
+        }
 
-          return {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              color,
-            },
-          }
-        })
         return wrappedGeoJSON
       }
 

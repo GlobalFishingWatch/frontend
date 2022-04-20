@@ -21,6 +21,7 @@ import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
+import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -123,7 +124,13 @@ function Workspace() {
     if (dataviewsResources) {
       const { resources } = dataviewsResources
       resources.forEach((resource) => {
-        dispatch(fetchResourceThunk({ resource, parseEventCb: parseTrackEventChunkProps }))
+        dispatch(
+          fetchResourceThunk({
+            resource,
+            parseEventCb: parseTrackEventChunkProps,
+            parseUserTrackCb: parseUserTrackCallback,
+          })
+        )
       })
     }
   }, [dispatch, dataviewsResources])
