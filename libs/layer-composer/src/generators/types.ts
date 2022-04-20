@@ -242,6 +242,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
   color?: string
+  useOwnColor?: boolean
   /**
    * Sets the opacity for the track line
    */

@@ -71,12 +71,14 @@ export const selectTracksData = createSelector(
         : trackResource.data || []
 
       const chunks: TimebarChartChunk[] = segments.map((segment) => {
+        const useOwnColor = trackDataviews.length === 1 && endpointType === EndpointId.UserTracks
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
           values: segment as TimebarChartValue[],
           props: {
             id: segment[0]?.id,
+            color: useOwnColor ? segment[0]?.color : undefined,
           },
         }
       })

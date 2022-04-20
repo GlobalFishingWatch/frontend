@@ -9,9 +9,17 @@ type LayerSwitchProps = {
   className: string
   disabled?: boolean
   onToggle?: (active: boolean) => void
+  color?: string
 }
 
-const LayerSwitch = ({ active, dataview, className, disabled, onToggle }: LayerSwitchProps) => {
+const LayerSwitch = ({
+  active,
+  dataview,
+  className,
+  disabled,
+  onToggle,
+  color,
+}: LayerSwitchProps) => {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true
@@ -34,7 +42,7 @@ const LayerSwitch = ({ active, dataview, className, disabled, onToggle }: LayerS
       tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
       tooltipPlacement="top"
       className={className}
-      color={dataview.config?.color}
+      color={color || dataview.config?.color}
     />
   )
 }
