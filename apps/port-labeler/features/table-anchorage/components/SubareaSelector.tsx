@@ -1,22 +1,23 @@
-import React, { useCallback } from 'react'
+import React, { useCallback , useState } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
 import { Button, IconButton, InputText, SelectOnChange, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
 import styles from './SubareaSelector.module.css'
 
 export interface SubareaSelectOption<T = any> extends SelectOption {
-  color: string
+  color?: string
 }
 
 interface SelectProps {
   label?: string
+  addButtonLabel?: string
   placeholder?: string
   options: SubareaSelectOption[]
   selectedOption?: SubareaSelectOption
   onSelect: SelectOnChange
   onRemove: SelectOnChange
   onAddNew: () => void
-  onSubareaChange: (id, label) => void
+  onSelectedNameChange: (id, label) => void
   onCleanClick?: (e: React.MouseEvent) => void
   containerClassName?: string
   className?: string
@@ -32,6 +33,7 @@ const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOpti
 export function SubareaSelector(props: SelectProps) {
   const {
     label = '',
+    addButtonLabel = 'CREATE NEW',
     placeholder = '---?',
     options,
     selectedOption,
@@ -39,7 +41,7 @@ export function SubareaSelector(props: SelectProps) {
     onRemove,
     onAddNew,
     onCleanClick,
-    onSubareaChange,
+    onSelectedNameChange,
     containerClassName = '',
     className = '',
     direction = 'bottom',
@@ -48,7 +50,6 @@ export function SubareaSelector(props: SelectProps) {
   const {
     isOpen,
     selectItem,
-    highlightedIndex,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
@@ -63,12 +64,14 @@ export function SubareaSelector(props: SelectProps) {
     },
   })
 
+  const [filterQuery, setFilterQuery] = useState('')
   const handleChange = useCallback(
     (option: SelectOption) => {
       if (isItemSelected(selectedOption, option)) {
         onRemove(option)
       } else {
         onSelect(option)
+        setFilterQuery('')
       }
     },
     [onRemove, onSelect, selectedOption]
@@ -90,7 +93,7 @@ export function SubareaSelector(props: SelectProps) {
           <InputText value={selectedOption?.label ?? placeholder}
             className={styles.noBorder} onChange={(e) => {
               if (selectedOption) {
-                onSubareaChange(selectedOption.id, e.target.value)
+                onSelectedNameChange(selectedOption.id, e.target.value)
               }
             }} />
         </div>
@@ -105,30 +108,36 @@ export function SubareaSelector(props: SelectProps) {
           ></IconButton>
         </div>
         <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
+          {isOpen && <li className={cx(
+            styles.optionItem, styles.filterItem)}>
+            <InputText value={filterQuery} placeholder="Filter by"
+              className={styles.noBorder} onChange={(e) => {
+                setFilterQuery(e.target.value)
+              }} />
+          </li>}
           {isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
-              const highlight = highlightedIndex === index
-              const selected = isItemSelected(selectedOption, item)
-              const itemDisabled = disabled || item.disabled
               return (
-                <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
+                <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start"
+                >
                   <li
+                    style={{ display: !filterQuery || item.label.toLowerCase().includes(filterQuery.toLowerCase()) ? "block" : "none" }}
                     className={cx(styles.optionItem)}
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    <div className={styles.dot} style={{ background: `${item.color}` }}></div>
+                    {item.color && <div className={styles.dot} style={{ background: `${item.color}` }}></div>}
                   </li>
                 </Tooltip>
               )
             })}
           {isOpen && <li className={cx(
             styles.optionItem, styles.actionItem, className)}>
-            <Button size="small" type="secondary" onClick={onAddNew}>CREATE NEW SUBAREA</Button>
+            <Button size="small" className={styles.addButton} type="secondary" onClick={onAddNew}>{addButtonLabel}</Button>
           </li>}
         </ul>
-        {selectedOption && <div className={styles.selectedDot}
+        {selectedOption && selectedOption.color && <div className={styles.selectedDot}
           style={{
             background: `${selectedOption.color}`,
           }}

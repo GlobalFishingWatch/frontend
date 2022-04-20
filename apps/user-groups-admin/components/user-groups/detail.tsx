@@ -23,7 +23,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
   }, [])
 
   const onAddUserClick = async () => {
-    const users = await GFWAPI.fetch<UserData[]>(`/auth/user?email=${email}`)
+    const users = await GFWAPI.fetch<UserData[]>(`/auth/user?email=${encodeURIComponent(email)}`)
     if (users.length === 1) {
       const userId = users[0]?.id
       await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}/user/${userId}`, {

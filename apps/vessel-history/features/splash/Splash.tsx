@@ -1,10 +1,10 @@
 import React, { memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Logo, Button } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import { useLoginRedirect } from 'routes/routes.hook'
+import Partners from 'features/partners/Partners'
 import vesselHistoryLogo from '../../assets/images/splash-screen-image@2x.png'
-import tmtLogo from '../../assets/images/tmt_logo_final_full_colour@2x.png'
 import styles from './Splash.module.css'
 
 const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
@@ -48,10 +48,7 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
           </div>
         )}
       </div>
-      <div className={styles.secondary}>
-        <img src={tmtLogo.src} className={styles.tmtLogo} alt="Trygg Mat Tracking" />
-        <Logo className={styles.gfwLogo} />
-      </div>
+      <Partners />
     </div>
   )
 }

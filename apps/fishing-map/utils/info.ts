@@ -26,6 +26,7 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 }
 
 export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearType = false) => {
+  if (!vessel) return t('common.unknownVessel', 'Unknown vessel')
   if (vessel.shipname && vessel.geartype && vessel.flag && withGearType) {
     return `${formatInfoField(vessel.shipname, 'name')}
     (${t(`flags:${vessel.flag}`)}, ${t(

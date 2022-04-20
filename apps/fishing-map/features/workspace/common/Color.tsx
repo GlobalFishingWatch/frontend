@@ -18,6 +18,7 @@ type ColorProps = {
   onToggleClick: (e: any) => void
   onClickOutside: () => void
   className?: string
+  disabled?: boolean
 }
 
 const Color = (props: ColorProps) => {
@@ -29,11 +30,12 @@ const Color = (props: ColorProps) => {
     onColorClick,
     onClickOutside,
     className,
+    disabled,
   } = props
   const { t } = useTranslation()
   return (
     <ExpandedContainer
-      visible={open}
+      visible={open && !disabled}
       onClickOutside={onClickOutside}
       component={
         <ColorBar
@@ -46,11 +48,12 @@ const Color = (props: ColorProps) => {
       <IconButton
         icon={open ? 'color-picker' : 'color-picker-filled'}
         size="small"
-        style={open ? {} : { color: dataview.config?.color }}
+        style={open || disabled ? {} : { color: dataview.config?.color }}
         tooltip={t('layer.color_change', 'Change color')}
         tooltipPlacement="top"
         onClick={onToggleClick}
         className={className}
+        disabled={disabled}
       />
     </ExpandedContainer>
   )

@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
+import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
   Field,
   mergeTrackChunks,
   trackValueArrayToSegments,
+  wrapFeaturesLongitudes,
 } from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -44,13 +46,19 @@ const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   }
 }
 
-export type FetchResourceThunkParams = { resource: Resource; parseEventCb?: ParseEventCallback }
+export type FetchResourceThunkParams = {
+  resource: Resource
+  parseEventCb?: ParseEventCallback
+  parseUserTrackCb?: ParseTrackCallback
+}
 export type ParseEventCallback = (event: ApiEvent, idKey: string) => unknown
+export type ParseTrackCallback = (data: FeatureCollection) => FeatureCollection
 
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
-  async ({ resource, parseEventCb }: FetchResourceThunkParams) => {
+  async ({ resource, parseEventCb, parseUserTrackCb }: FetchResourceThunkParams) => {
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
+    const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
@@ -58,7 +66,7 @@ export const fetchResourceThunk = createAsyncThunk(
         ? 'vessel'
         : 'json'
 
-    const data = await GFWAPI.fetch(resource.url, { responseType }).then((data) => {
+    const data = await GFWAPI.fetch(resource.url, { responseType }).then((data: any) => {
       // TODO Replace with enum?
       if (isTrackResource) {
         const fields = (
@@ -76,6 +84,23 @@ export const fetchResourceThunk = createAsyncThunk(
           return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
         })
       }
+
+      if (isUserTrackResource) {
+        const geoJSON = data as FeatureCollection
+
+        // Wrap longitudes
+        const wrappedGeoJSON = {
+          ...geoJSON,
+          features: wrapFeaturesLongitudes(geoJSON.features as Feature<LineString>[]),
+        }
+
+        if (parseUserTrackCb) {
+          return parseUserTrackCb(wrappedGeoJSON)
+        }
+
+        return wrappedGeoJSON
+      }
+
       return data
     })
     return {

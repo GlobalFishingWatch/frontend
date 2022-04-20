@@ -5,7 +5,7 @@ import { event as uaEvent } from 'react-ga'
 import { redirect } from 'redux-first-router'
 import { DateTime, Interval } from 'luxon'
 import { VesselSearch } from '@globalfishingwatch/api-types'
-import { Logo, Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
+import { Spinner, IconButton, Button, SubBrands } from '@globalfishingwatch/ui-components'
 import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
@@ -30,6 +30,7 @@ import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserData } from 'features/user/user.slice'
 import { useApp } from 'features/app/app.hooks'
+import Partners from 'features/partners/Partners'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -197,7 +198,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   return (
     <div className={styles.homeContainer} data-testid="home">
       <header>
-        <Logo className={styles.logo}></Logo>
+        <h1 className={styles.logo} >
+          Vessel Viewer
+        </h1>
         <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
         <IconButton
           onClick={onSettingsClick}
@@ -230,16 +233,21 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                     onDeleteClick={() => trackRemoveOffline(vessel)}
                   />
                 ))}
+
               </div>
             ) : (
-              <div className={styles.offlineAccessEmptyState}>
-                {t(
-                  'common.offlineAccessEmptyState',
-                  'The vessels you save for offline access will appear here.'
-                )}
+              <div className={styles.content}>
+                <div className={styles.offlineAccessEmptyState}>
+                  {t(
+                    'common.offlineAccessEmptyState',
+                    'The vessels you save for offline access will appear here.'
+                  )}
+                </div>
               </div>
             )}
+            <Partners />
           </div>
+
         )}
         {hasSearch && (
           <Fragment>
@@ -297,6 +305,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   onContactUsClick={onContactUsClick}
                 />
               )}
+              <Partners />
             </div>
           </Fragment>
         )}

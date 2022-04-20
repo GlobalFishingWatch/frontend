@@ -11,13 +11,7 @@ const Home: NextPage = () => {
       <aside className={styles.aside}>
         <UserGroupsList groupId={groupId} onGroupClick={setGroupId} />
       </aside>
-      <main className={styles.main}>
-        {groupId ? (
-          <UserGroupDetail groupId={groupId} />
-        ) : (
-          <p className={styles.flex}>Select a group to see their users</p>
-        )}
-      </main>
+      <main className={styles.main}>{groupId && <UserGroupDetail groupId={groupId} />}</main>
     </Fragment>
   )
 }

@@ -14,7 +14,12 @@ export function UserGroupsList({ groupId, onGroupClick }: UserGroupsListProps) {
     fetchGroups()
   }, [])
 
-  if (!groups) {
+  const groupsList = groups?.filter(
+    (g) =>
+      !g.default && g.name.toLowerCase() !== 'anonymous' && g.name.toLowerCase() !== 'admin-group'
+  )
+
+  if (!groupsList || !groupsList.length) {
     return null
   }
 
@@ -23,11 +28,16 @@ export function UserGroupsList({ groupId, onGroupClick }: UserGroupsListProps) {
       <h2 className={styles.title}>Groups</h2>
       <ul className={styles.list}>
         {groups
-          ?.filter((g) => !g.default && g.name.toLowerCase() !== 'anonymous')
+          ?.filter(
+            (g) =>
+              !g.default &&
+              g.name.toLowerCase() !== 'anonymous' &&
+              g.name.toLowerCase() !== 'admin-group'
+          )
           ?.map((group) => {
             return (
-              <li className={group.id === groupId ? styles.active : ''}>
-                <button key={group.id} onClick={() => onGroupClick(group.id)}>
+              <li key={group.id} className={group.id === groupId ? styles.active : ''}>
+                <button className={styles.group} onClick={() => onGroupClick(group.id)}>
                   {group.name}
                 </button>
               </li>
