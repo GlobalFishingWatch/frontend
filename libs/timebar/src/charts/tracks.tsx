@@ -6,23 +6,23 @@ import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'
 import styles from './tracks.module.css'
 import { useFilteredChartData, useOuterScale } from './common/hooks'
-import { TimebarChartData, TimebarChartItem } from './common/types'
+import { TimebarChartData, TimebarChartItem, TrackChunkProps } from './common/types'
 import { useUpdateChartsData } from './chartsData.atom'
 
 const getTracksWithCoords = (
-  tracks: TimebarChartData,
+  tracks: TimebarChartData<TrackChunkProps>,
   outerScale: TimelineScale,
   graphHeight: number,
   orientation: TrackGraphOrientation
 ) => {
   if (tracks === null || !outerScale) return null
-  const trackWithCoords: TimebarChartData = []
+  const trackWithCoords: TimebarChartData<TrackChunkProps> = []
   tracks.forEach((track, trackIndex) => {
     if (!track) {
       return
     }
     const baseTrackY = getTrackY(tracks.length, trackIndex, graphHeight, orientation)
-    const trackItemWithCoords: TimebarChartItem = {
+    const trackItemWithCoords: TimebarChartItem<TrackChunkProps> = {
       ...track,
       chunks: !track.chunks
         ? []
@@ -70,7 +70,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                     key={chunk.id}
                     className={styles.segment}
                     style={{
-                      backgroundColor: track.color,
+                      backgroundColor: chunk.props?.color || track.color,
                       top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,
                       left: chunk.x,
                       width: chunk.width,
