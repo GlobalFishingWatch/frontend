@@ -106,6 +106,7 @@
 .content {
   position: relative;
   width: 100%;
+  min-height: calc(100vh - 208px);
 }
 
 .offlineFooter {

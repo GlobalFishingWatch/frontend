@@ -236,11 +236,13 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
               </div>
             ) : (
-              <div className={styles.offlineAccessEmptyState}>
-                {t(
-                  'common.offlineAccessEmptyState',
-                  'The vessels you save for offline access will appear here.'
-                )}
+              <div className={styles.content}>
+                <div className={styles.offlineAccessEmptyState}>
+                  {t(
+                    'common.offlineAccessEmptyState',
+                    'The vessels you save for offline access will appear here.'
+                  )}
+                </div>
               </div>
             )}
             <Partners />
