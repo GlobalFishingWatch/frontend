@@ -33,7 +33,8 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
   const [colorOpen, setColorOpen] = useState(false)
-  const allTracks = useSelector(selectActiveTrackDataviews)
+  const allTracksActive = useSelector(selectActiveTrackDataviews)
+  const singleTrack = allTracksActive.length === 1
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -96,6 +97,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
+          color={singleTrack ? '#163f89' : undefined}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
@@ -120,6 +122,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
                     onColorClick={changeColor}
                     onToggleClick={onToggleColorOpen}
                     onClickOutside={closeExpandedContainer}
+                    disabled={singleTrack}
                   />
                   <FitBounds hasError={trackError} trackResource={trackResource} />
                 </Fragment>
@@ -134,7 +137,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
       {layerActive && (
         <div className={styles.properties}>
           {/* <div id={`legend_${dataview.id}`}></div> */}
-          {allTracks.length === 1 &&
+          {singleTrack &&
             trackResource &&
             trackResource.data &&
             trackResource.data.features.map((feature) => {
