@@ -156,6 +156,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
     ).split('_')
 
+    // this is for update the vessel dataview in case that keep cached with the dataview of another vessel
     if (!vesselDataview || 'vessel-' + gfwId !== vesselDataview.id) {
       updateDataview(dataset, gfwId, tmtId)
     }
