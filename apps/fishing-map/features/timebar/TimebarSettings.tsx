@@ -226,7 +226,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               }
               onClick={setVesselGraphDepth}
             />
-            {activeEnvironmentalDataviews.map((envDataview) => {
+            {activeEnvironmentalDataviews.map((envDataview, i) => {
               const dataset = envDataview.datasets?.find(
                 (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
               )
@@ -244,7 +244,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   }
                   active={
                     timebarVisualisation === TimebarVisualisations.Environment &&
-                    timebarSelectedEnvId === envDataview.id
+                    (timebarSelectedEnvId === envDataview.id || (!timebarSelectedEnvId && i === 0))
                   }
                   tooltip={activityTooltipLabel}
                   onClick={() => setEnvironmentActive(envDataview.id)}
