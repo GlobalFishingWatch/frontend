@@ -66,7 +66,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const activityCategory = useSelector(selectActivityCategory)
-  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length <= 2
+  const timebarGraphEnabled =
+    activeVesselsDataviews && activeVesselsDataviews.length && activeVesselsDataviews.length <= 2
 
   const openOptions = () => {
     uaEvent({
