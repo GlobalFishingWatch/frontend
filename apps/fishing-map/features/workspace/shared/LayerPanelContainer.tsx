@@ -12,7 +12,7 @@ function LayerPanelContainer({ dataview, children }: LayerPanelProps): React.Rea
   return (
     <div className={styles.LayerPanelContainer}>
       {children}
-      <HighlightPanel dataviewInstanceId={dataview.id} />
+      <HighlightPanel dataviewInstanceId={dataview.id} placement="right" />
     </div>
   )
 }

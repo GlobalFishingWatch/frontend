@@ -21,8 +21,7 @@ import {
   selectActiveVesselsDataviews,
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesResolved,
-} from 'features/dataviews/dataviews.slice'
-import { selectAllDataviews } from './dataviews.slice'
+ selectAllDataviews } from 'features/dataviews/dataviews.slice'
 
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,

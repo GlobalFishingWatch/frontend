@@ -12,32 +12,37 @@ type HighlighPanelConfigLocale = {
   }
 }
 
-export type HighlighPanelConfig = {
+export type HighlightPanelConfig = {
   dataviewInstanceId: string
+  localStorageKey: string
   imageUrl: string
   learnMoreUrl: string
   delayed?: boolean
+  workspaceUrl?: string
 } & HighlighPanelConfigLocale
 
-const highlightPanelConfig: HighlighPanelConfig = {
+const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
+
+const DEFAULT_HIGHLIGHT_CONFIG: HighlightPanelConfig = {
   dataviewInstanceId: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-  delayed: true,
+  localStorageKey: HIGHLIGHT_POPUP_KEY,
+  // delayed: true,
   imageUrl: `${PATH_BASENAME}/images/viirs-match.webp`,
-  learnMoreUrl: 'https://globalfishingwatch.org/TODO',
+  learnMoreUrl: 'https://globalfishingwatch.org/data/ais-viirs-reveals-dark-fleet/',
   en: {
-    title: 'New VIIRS-AIS match layer',
+    title: 'Who is fishing at night?',
     description:
       'Identity of fishing vessels using bright lights at night added through advanced matching process.',
   },
   es: {
-    title: 'New VIIRS-AIS match layer',
+    title: '¿Quién pesca de noche?',
     description:
-      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
-    // learnMoreUrl: 'https://globalfishingwatch.org/es/TODO',
+      'La identidad de los buques pesqueros que usan luces brillantes por la noche se agrega a través de un proceso de comparación avanzado.',
   },
   fr: {
     title: 'New VIIRS-AIS match layer',
-    description: 'VIIRS AIS match data is now available.',
+    description:
+      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
   },
   pt: {
     title: 'New VIIRS-AIS match layer',
@@ -46,4 +51,13 @@ const highlightPanelConfig: HighlighPanelConfig = {
   },
 }
 
-export default highlightPanelConfig
+export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID = `${HIGHLIGHT_POPUP_KEY}_ActivitySwitch`
+export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH: HighlightPanelConfig = {
+  ...DEFAULT_HIGHLIGHT_CONFIG,
+  dataviewInstanceId: HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
+  localStorageKey: HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
+  workspaceUrl:
+    'https://globalfishingwatch.org/map/fishing-activity/night_light_viirs_matching-public',
+}
+
+export default DEFAULT_HIGHLIGHT_CONFIG

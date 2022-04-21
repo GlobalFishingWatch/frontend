@@ -6,7 +6,7 @@ import {
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 
-interface GFWLoginHook {
+export interface GFWLoginHook {
   logged: boolean
   loading: boolean
   user: UserData | null

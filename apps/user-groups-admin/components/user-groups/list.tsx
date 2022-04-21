@@ -36,8 +36,8 @@ export function UserGroupsList({ groupId, onGroupClick }: UserGroupsListProps) {
           )
           ?.map((group) => {
             return (
-              <li className={group.id === groupId ? styles.active : ''}>
-                <button key={group.id} onClick={() => onGroupClick(group.id)}>
+              <li key={group.id} className={group.id === groupId ? styles.active : ''}>
+                <button className={styles.group} onClick={() => onGroupClick(group.id)}>
                   {group.name}
                 </button>
               </li>

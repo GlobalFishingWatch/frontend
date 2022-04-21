@@ -1632,7 +1632,7 @@
       "flag": "flag",
       "vessel_id": "vessel_id",
       "vessel_type": {
-        "keyword": "vessel_type",
+        "keyword": "Vessel type",
         "enum": {
           "fishing": "Fishing",
           "carrier": "Carrier",
@@ -1864,8 +1864,8 @@
     }
   },
   "public-indonesia-pelagic-presence": {
-    "name": "Pelagic",
-    "description": "Pelagic Presence",
+    "name": "Coastal Fisheries - New Devices",
+    "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking one position per hour transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
