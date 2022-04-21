@@ -17,6 +17,7 @@ import {
   clearVesselDataview,
   fetchVesselByIdThunk,
   selectVesselById,
+  selectVesselDataview,
   selectVesselsStatus,
   upsertVesselDataview,
 } from 'features/vessels/vessels.slice'
@@ -52,6 +53,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   const vesselProfileId = useSelector(selectVesselProfileId)
   const { dispatchLocation } = useLocationConnect()
   const vesselStatus = useSelector(selectVesselsStatus)
+  const vesselDataview = useSelector(selectVesselDataview)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
   const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const mergedVesselId = useSelector(selectMergedVesselId)
@@ -64,7 +66,60 @@ const Profile: React.FC = (props): React.ReactElement => {
     [akaVesselProfileIds]
   )
 
+
   useEffect(() => {
+    const updateDataview = async (dataset: string, gfwId: string, tmtId: string) => {
+
+      const vesselDataset = datasets
+        .filter((ds) => ds.id === dataset)
+        .slice(0, 1)
+        .shift()
+
+      if (vesselDataset) {
+        const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
+        if (trackDatasetId) {
+          const eventsRelatedDatasets = getRelatedDatasetsByType(
+            vesselDataset,
+            DatasetTypes.Events
+          )
+
+          const eventsDatasetsId =
+            eventsRelatedDatasets && eventsRelatedDatasets?.length
+              ? eventsRelatedDatasets.map((d) => d.id)
+              : []
+
+          // Only merge with vessels of the same dataset that the main vessel
+          const akaVesselsIds = [
+            {
+              dataset,
+              id: gfwId,
+              vesselMatchId: tmtId,
+            },
+          ]
+            .concat(parseVesselProfileId(vesselProfileId))
+            // I generate the list with all so doesn't care what vessel is in the path
+            .concat((akaVesselProfileIds ?? []).map((akaId) => parseVesselProfileId(akaId)))
+            // Now we filter to get only gfw vessels and not repeat the main (from path o query)
+            .filter(
+              (akaVessel) =>
+                akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId
+            )
+
+          const vesselDataviewInstance = getVesselDataviewInstance(
+            { id: gfwId },
+            {
+              trackDatasetId: trackDatasetId as string,
+              infoDatasetId: dataset,
+              ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+            },
+            akaVesselsIds as { id: string }[]
+          )
+
+          dispatch(upsertVesselDataview(vesselDataviewInstance))
+        }
+      }
+    }
+
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
       let [dataset, gfwId, tmtId] = (
@@ -83,62 +138,12 @@ const Profile: React.FC = (props): React.ReactElement => {
           tmtId = akaTmt
         }
       }
-      const action = await dispatch(
+      await dispatch(
         fetchVesselByIdThunk({
           id: vesselProfileId,
           akas: akaVesselProfileIds,
         })
       )
-      if (fetchVesselByIdThunk.fulfilled.match(action as any)) {
-        const vesselDataset = datasets
-          .filter((ds) => ds.id === dataset)
-          .slice(0, 1)
-          .shift()
-
-        if (vesselDataset) {
-          const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
-          if (trackDatasetId) {
-            const eventsRelatedDatasets = getRelatedDatasetsByType(
-              vesselDataset,
-              DatasetTypes.Events
-            )
-
-            const eventsDatasetsId =
-              eventsRelatedDatasets && eventsRelatedDatasets?.length
-                ? eventsRelatedDatasets.map((d) => d.id)
-                : []
-
-            // Only merge with vessels of the same dataset that the main vessel
-            const akaVesselsIds = [
-              {
-                dataset,
-                id: gfwId,
-                vesselMatchId: tmtId,
-              },
-            ]
-              .concat(parseVesselProfileId(vesselProfileId))
-              // I generate the list with all so doesn't care what vessel is in the path
-              .concat((akaVesselProfileIds ?? []).map((akaId) => parseVesselProfileId(akaId)))
-              // Now we filter to get only gfw vessels and not repeat the main (from path o query)
-              .filter(
-                (akaVessel) =>
-                  akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId
-              )
-
-            const vesselDataviewInstance = getVesselDataviewInstance(
-              { id: gfwId },
-              {
-                trackDatasetId: trackDatasetId as string,
-                infoDatasetId: dataset,
-                ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-              },
-              akaVesselsIds as { id: string }[]
-            )
-
-            dispatch(upsertVesselDataview(vesselDataviewInstance))
-          }
-        }
-      }
     }
 
     if (datasets.length > 0 && !vessel) {
@@ -147,7 +152,16 @@ const Profile: React.FC = (props): React.ReactElement => {
       dispatch(setHighlightedEvent(undefined))
       dispatch(setVoyageTime(undefined))
     }
-  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds, vessel])
+    const [dataset, gfwId, tmtId] = (
+      Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
+    ).split('_')
+
+    // this is for update the vessel dataview in case that keep cached with the dataview of another vessel
+    if (!vesselDataview || 'vessel-' + gfwId !== vesselDataview.id) {
+      updateDataview(dataset, gfwId, tmtId)
+    }
+
+  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds, vessel, vesselDataview])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
