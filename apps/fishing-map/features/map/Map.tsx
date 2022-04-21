@@ -294,8 +294,9 @@ const MapWrapper = () => {
       }),
       new MVTLayer({
         // data: 'https://raw.githubusercontent.com/GlobalFishingWatch/live-positions-poc/main/tiles/{z}/{x}/{y}.pbf?raw=true',
-        data: 'http://localhost:9090/{z}/{x}/{y}.pbf?raw=true',
-        // binary: false,
+        // data: 'http://localhost:9090/{z}/{x}/{y}.pbf',
+        data: 'https://storage.googleapis.com/live-positions-poc/tiles/{z}/{x}/{y}.pbf',
+        binary: true,
         minZoom: 0,
         maxZoom: 5,
         pointType: 'circle',
