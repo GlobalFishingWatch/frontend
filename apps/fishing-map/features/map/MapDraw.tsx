@@ -58,7 +58,6 @@ function MapDraw() {
   }
 
   const onUpdate = (e: DrawUpdateEvent) => {
-    console.log('on update')
     const currentFeature = e.features?.[0] as DrawFeature
     setSelectedFeature(currentFeature)
   }

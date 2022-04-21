@@ -70,7 +70,7 @@ const styles = [
     type: 'circle',
     filter: ['all', ['==', '$type', 'Point'], ['==', 'meta', 'midpoint']],
     paint: {
-      'circle-radius': 3,
+      'circle-radius': 4,
       'circle-color': 'rgb(122,202,67)',
     },
   },
@@ -106,8 +106,10 @@ const styles = [
     type: 'circle',
     filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point'], ['!=', 'mode', 'static']],
     paint: {
-      'circle-radius': 3,
+      'circle-radius': 5,
       'circle-color': 'rgb(122,202,67)',
+      'circle-stroke-color': 'rgb(38, 181, 242)',
+      'circle-stroke-width': 1,
     },
   },
   // polygon fill
