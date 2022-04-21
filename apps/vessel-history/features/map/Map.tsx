@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
-import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
+import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
@@ -43,6 +43,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
+  const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 
   const onMapClick = useMapClick(
@@ -191,6 +192,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
           onMove={onViewportChange}
           onClick={onMapClick}
           mapStyle={style as MapboxStyle}
+          interactiveLayerIds={interactiveLayerIds}
           customAttribution={'© Copyright Global Fishing Watch 2020'}
         ></Map>
       )}
