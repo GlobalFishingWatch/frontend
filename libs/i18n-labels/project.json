@@ -47,6 +47,11 @@
             "output": "."
           },
           {
+            "glob": "libs/i18n-labels/pt",
+            "input": ".",
+            "output": "."
+          },
+          {
             "glob": "libs/i18n-labels/source",
             "input": ".",
             "output": "."
