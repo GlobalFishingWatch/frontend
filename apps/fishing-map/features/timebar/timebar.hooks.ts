@@ -242,24 +242,21 @@ export const useTimebarVisualisation = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeHeatmapDataviews, activeTrackDataviews, activeEnvDataviews])
 
-  // Automatically switch to last-activated layer type ig settings never have been changed manually
+  // Automatically switch to last-activated layer type if settings never have been changed manually
   useEffect(() => {
     if (!hasChangedSettingsOnce) {
-      if (
-        timebarVisualisation !== TimebarVisualisations.Environment &&
-        activeEnvDataviews?.length
-      ) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
-      } else if (
-        timebarVisualisation !== TimebarVisualisations.Vessel &&
-        activeTrackDataviews?.length
-      ) {
+      if (timebarVisualisation !== TimebarVisualisations.Vessel && activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
+      } else if (
+        timebarVisualisation !== TimebarVisualisations.Heatmap &&
+        activeHeatmapDataviews?.length
+      ) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
       }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTrackDataviews, activeEnvDataviews, hasChangedSettingsOnce])
+  }, [activeTrackDataviews, activeHeatmapDataviews, hasChangedSettingsOnce])
 
   return { timebarVisualisation, dispatchTimebarVisualisation }
 }
