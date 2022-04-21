@@ -14,7 +14,7 @@ import {
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveActivityDataviews,
-  selectActiveEnvironmentalDataviews,
+  selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
@@ -209,7 +209,7 @@ export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
-  const activeEnvDataviews = useSelector(selectActiveEnvironmentalDataviews)
+  const activeEnvDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
   // Fallback mechanisms to avoid empty timebar

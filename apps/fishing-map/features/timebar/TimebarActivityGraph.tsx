@@ -5,7 +5,7 @@ import { getLegendId, useMapLegend } from '@globalfishingwatch/react-hooks'
 import { TimebarStackedActivity, HighlighterCallbackFn } from '@globalfishingwatch/timebar'
 import {
   selectActiveActivityDataviews,
-  selectActiveEnvironmentalDataviews,
+  selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { useStackedActivityDataview } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
@@ -17,7 +17,7 @@ import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
   const activityDataviews = useSelector(selectActiveActivityDataviews)
-  const environmentDataviews = useSelector(selectActiveEnvironmentalDataviews)
+  const environmentDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const { timebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const activeDataviews = useMemo(() => {
     if (visualisation === TimebarVisualisations.Heatmap) {

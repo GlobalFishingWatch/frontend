@@ -9,7 +9,7 @@ import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveActivityDataviews,
-  selectActiveEnvironmentalDataviews,
+  selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { selectActivityCategory } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -59,7 +59,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
-  const activeEnvironmentalDataviews = useSelector(selectActiveEnvironmentalDataviews)
+  const activeEnvironmentalDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
