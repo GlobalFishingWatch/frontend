@@ -100,6 +100,13 @@ function App(): React.ReactElement {
     dispatch(initializeHints())
   }, [dispatch])
 
+  useEffect(() => {
+    if (map) {
+      map.resize()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAnalysing])
+
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
   const { setTimerange } = useTimerangeConnect()
