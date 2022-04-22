@@ -37,7 +37,6 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { FEEDBACK_EN, FEEDBACK_FR } from 'data/config'
 import { useApp } from 'features/app/app.hooks'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
@@ -66,10 +65,41 @@ const Profile: React.FC = (props): React.ReactElement => {
     [akaVesselProfileIds]
   )
 
+  useEffect(() => {
+    const fetchVessel = async () => {
+      dispatch(clearVesselDataview(null))
+      let [dataset] = (Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? '').split(
+        '_'
+      )
+
+      if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
+        const gfwAka = akaVesselProfileIds.find((aka) => {
+          const [akaDataset] = aka.split('_')
+          return akaDataset.toLocaleLowerCase() !== 'na'
+        })
+        if (gfwAka) {
+          const [akaDataset] = gfwAka.split('_')
+          dataset = akaDataset
+        }
+      }
+      await dispatch(
+        fetchVesselByIdThunk({
+          id: vesselProfileId,
+          akas: akaVesselProfileIds,
+        })
+      )
+      dispatch(resetFilters())
+      dispatch(setHighlightedEvent(undefined))
+      dispatch(setVoyageTime(undefined))
+    }
+
+    if (datasets.length > 0 && !vessel) {
+      fetchVessel()
+    }
+  }, [dispatch, datasets, vessel, vesselProfileId, akaVesselProfileIds])
 
   useEffect(() => {
     const updateDataview = async (dataset: string, gfwId: string, tmtId: string) => {
-
       const vesselDataset = datasets
         .filter((ds) => ds.id === dataset)
         .slice(0, 1)
@@ -78,10 +108,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       if (vesselDataset) {
         const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
         if (trackDatasetId) {
-          const eventsRelatedDatasets = getRelatedDatasetsByType(
-            vesselDataset,
-            DatasetTypes.Events
-          )
+          const eventsRelatedDatasets = getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)
 
           const eventsDatasetsId =
             eventsRelatedDatasets && eventsRelatedDatasets?.length
@@ -101,8 +128,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             .concat((akaVesselProfileIds ?? []).map((akaId) => parseVesselProfileId(akaId)))
             // Now we filter to get only gfw vessels and not repeat the main (from path o query)
             .filter(
-              (akaVessel) =>
-                akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId
+              (akaVessel) => akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId
             )
 
           const vesselDataviewInstance = getVesselDataviewInstance(
@@ -119,39 +145,6 @@ const Profile: React.FC = (props): React.ReactElement => {
         }
       }
     }
-
-    const fetchVessel = async () => {
-      dispatch(clearVesselDataview(null))
-      let [dataset, gfwId, tmtId] = (
-        Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
-      ).split('_')
-
-      if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
-        const gfwAka = akaVesselProfileIds.find((aka) => {
-          const [akaDataset] = aka.split('_')
-          return akaDataset.toLocaleLowerCase() !== 'na'
-        })
-        if (gfwAka) {
-          const [akaDataset, akaGfwId, akaTmt] = gfwAka.split('_')
-          dataset = akaDataset
-          gfwId = akaGfwId
-          tmtId = akaTmt
-        }
-      }
-      await dispatch(
-        fetchVesselByIdThunk({
-          id: vesselProfileId,
-          akas: akaVesselProfileIds,
-        })
-      )
-    }
-
-    if (datasets.length > 0 && !vessel) {
-      fetchVessel()
-      dispatch(resetFilters())
-      dispatch(setHighlightedEvent(undefined))
-      dispatch(setVoyageTime(undefined))
-    }
     const [dataset, gfwId, tmtId] = (
       Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
     ).split('_')
@@ -160,8 +153,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     if (!vesselDataview || 'vessel-' + gfwId !== vesselDataview.id) {
       updateDataview(dataset, gfwId, tmtId)
     }
-
-  }, [dispatch, vesselProfileId, datasets, akaVesselProfileIds, vessel, vesselDataview])
+  }, [akaVesselProfileIds, datasets, dispatch, vesselDataview, vesselProfileId])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
