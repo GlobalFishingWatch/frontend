@@ -106,6 +106,7 @@ export const selectDataviewsForResourceQuerying = createDeepEqualSelector(
           value,
         }))
         trackWithThinning.query = [...(track.query || []), ...thinningQuery]
+        trackWithThinning.metadata = { ...(trackWithThinning.metadata || {}), zoom: 12 }
         return [trackWithThinning, info, ...events]
       },
     }
