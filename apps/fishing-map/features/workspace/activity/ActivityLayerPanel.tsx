@@ -16,7 +16,6 @@ import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/data
 import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectUrlTimeRange } from 'routes/routes.selectors'

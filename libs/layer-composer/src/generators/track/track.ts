@@ -173,21 +173,26 @@ class TrackGenerator {
     }
 
     if (uniqIds.length > 1) {
-      const HUE_CHANGE_DELTA = 40
-      const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
-      const hsl = convert.hex.hsl(config.color || '')
-      const baseHue = hsl[0]
-      const exprLineColor = [
-        'match',
-        ['get', 'id'],
-        ...uniqIds.flatMap((id, index) => {
-          const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
-          const hue = (rawHue + 360) % 360
-          const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
-          return [id, color]
-        }),
-        config.color,
-      ]
+      let exprLineColor
+      if (config.useOwnColor) {
+        exprLineColor = ['get', 'color']
+      } else {
+        const HUE_CHANGE_DELTA = 40
+        const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
+        const hsl = convert.hex.hsl(config.color || '')
+        const baseHue = hsl[0]
+        exprLineColor = [
+          'match',
+          ['get', 'id'],
+          ...uniqIds.flatMap((id, index) => {
+            const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
+            const hue = (rawHue + 360) % 360
+            const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
+            return [id, color]
+          }),
+          config.color,
+        ]
+      }
       paint['line-color'] = exprLineColor as any
     }
 

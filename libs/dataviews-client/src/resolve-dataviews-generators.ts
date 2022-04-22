@@ -10,6 +10,7 @@ import {
   DataviewCategory,
   Dataset,
   ApiEvent,
+  TrackResourceData,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -51,6 +52,7 @@ export type DataviewsGeneratorConfigsParams = {
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: HeatmapAnimatedMode
   customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
+  singleTrack?: boolean
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -121,9 +123,19 @@ export function getGeneratorConfig(
           ? EndpointId.UserTracks
           : EndpointId.Tracks
 
-      const trackResource = pickTrackResource(dataview, endpointType, resources)
+      let trackResource
+      if (endpointType === EndpointId.Tracks) {
+        trackResource = pickTrackResource(dataview, endpointType, resources)
+      } else {
+        const { url } = resolveDataviewDatasetResource(dataview, [DatasetTypes.UserTracks])
+        if (resources) trackResource = resources[url] as Resource<TrackResourceData>
+      }
 
       if (trackResource) generator.data = trackResource.data
+
+      if (params?.singleTrack) {
+        generator.useOwnColor = true
+      }
 
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =

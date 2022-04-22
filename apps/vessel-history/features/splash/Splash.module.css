@@ -54,26 +54,6 @@
   width: 300px;
 }
 
-.secondary {
-  position: fixed;
-  bottom: 0;
-  padding: 20px 0 42px;
-  height: 100px;
-  width: 100%;
-  background: #fff;
-  text-align: center;
-}
-
-.gfwLogo {
-  max-height: 120%;
-  max-width: 50%;
-}
-
-.tmtLogo {
-  max-height: 100%;
-  max-width: 50%;
-}
-
 .buttons {
   margin-top: 2rem;
 }

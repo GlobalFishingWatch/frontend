@@ -1,5 +1,7 @@
+import { FeatureCollection } from 'geojson'
 import { ThinningConfig } from '@globalfishingwatch/api-types'
 import { getTracksChunkSetId } from '@globalfishingwatch/dataviews-client'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 
@@ -81,4 +83,18 @@ export const trackDatasetConfigsCallback = (
       ...(trackGraph ? [trackGraph] : []),
     ]
   }
+}
+
+export const parseUserTrackCallback = (geoJSON: FeatureCollection) => {
+  geoJSON.features = geoJSON.features.map((feature, i) => {
+    const color = LineColorBarOptions[i % LineColorBarOptions.length].value
+    return {
+      ...feature,
+      properties: {
+        ...feature.properties,
+        color,
+      },
+    }
+  })
+  return geoJSON
 }

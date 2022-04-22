@@ -1,5 +1,10 @@
 import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 
+export type TrackChunkProps = {
+  id?: string
+  color?: string
+}
+
 export type TrackEventChunkProps = {
   color: string
   colorLabels?: string

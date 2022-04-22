@@ -65,8 +65,8 @@ export interface PortPosition {
   port_label: string;
   community_label: string;
   point_label: string;
-
   iso3: string;
   distance_from_shore_m: string;
   community_iso3: string;
+  port_iso3: string;
 }

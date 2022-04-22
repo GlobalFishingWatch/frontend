@@ -38,6 +38,7 @@ export const geoJSONToSegments = (geoJSON: FeatureCollection): Segment[] => {
   return geoJSON.features.map((feature) => {
     const timestamps = feature.properties?.coordinateProperties.times
     const id = feature.properties?.id
+    const color = feature.properties?.color
     const segment = (feature.geometry as LineString).coordinates.map((coordinate, i) => {
       const point: Point = {
         longitude: coordinate[0],
@@ -47,6 +48,7 @@ export const geoJSONToSegments = (geoJSON: FeatureCollection): Segment[] => {
       return point
     })
     segment[0].id = id
+    segment[0].color = color
     return segment
   })
 }

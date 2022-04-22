@@ -18,7 +18,7 @@ function SidebarHeader(props: HeaderProps) {
   const country = useSelector(selectCountry)
   const {
     onCountryChange,
-    dispatchDownloadSelectedTracks,
+    dispatchDownload,
     dispatchImportHandler,
   } = useSelectedTracksConnect()
 
@@ -58,7 +58,7 @@ function SidebarHeader(props: HeaderProps) {
           tooltip="Save file"
           tooltipPlacement="bottom"
           className={styles.actionButton}
-          onClick={() => dispatchDownloadSelectedTracks()}
+          onClick={() => dispatchDownload()}
         />
       </div>
       <Select

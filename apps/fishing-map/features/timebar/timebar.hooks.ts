@@ -240,17 +240,26 @@ export const useTimebarVisualisation = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeHeatmapDataviews, activeTrackDataviews])
+  }, [activeHeatmapDataviews, activeTrackDataviews, activeEnvDataviews])
 
+  // Automatically switch to last-activated layer type ig settings never have been changed manually
   useEffect(() => {
-    if (timebarVisualisation !== TimebarVisualisations.Vessel) {
-      // switch to vessel if track shown "for the first time"
-      if (!hasChangedSettingsOnce && activeTrackDataviews?.length) {
+    if (!hasChangedSettingsOnce) {
+      if (
+        timebarVisualisation !== TimebarVisualisations.Environment &&
+        activeEnvDataviews?.length
+      ) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
+      } else if (
+        timebarVisualisation !== TimebarVisualisations.Vessel &&
+        activeTrackDataviews?.length
+      ) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTrackDataviews, hasChangedSettingsOnce])
+  }, [activeTrackDataviews, activeEnvDataviews, hasChangedSettingsOnce])
 
   return { timebarVisualisation, dispatchTimebarVisualisation }
 }
