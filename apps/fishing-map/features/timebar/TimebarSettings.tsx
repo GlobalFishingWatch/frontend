@@ -177,7 +177,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TrackSpeedIcon}
-                  label={t('timebarSettings.graphSpeed', 'Track Speed')}
+                  label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
                   color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
                 />
@@ -204,7 +204,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TrackDepthIcon}
-                  label={t('timebarSettings.graphDepth', 'Track Depth')}
+                  label={t('timebarSettings.graphDepth', 'Vessel Depth')}
                   color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
                 />
