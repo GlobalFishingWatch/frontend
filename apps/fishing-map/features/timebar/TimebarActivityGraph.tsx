@@ -7,7 +7,7 @@ import {
   selectActiveActivityDataviews,
   selectActiveEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import { useStackedActivityDataview } from 'features/timebar/TimebarActivityGraph.hooks'
+import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { TimebarVisualisations } from 'types'
@@ -25,7 +25,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
     }
     return environmentDataviews.filter((d) => d.id === timebarSelectedEnvId)
   }, [activityDataviews, environmentDataviews, timebarSelectedEnvId, visualisation])
-  const { loading, stackedActivity } = useStackedActivityDataview(activeDataviews)
+  const { loading, stackedActivity } = useStackedActivity(activeDataviews)
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
 
