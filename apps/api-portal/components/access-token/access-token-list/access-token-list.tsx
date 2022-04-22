@@ -2,10 +2,8 @@ import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { formatI18nDate } from 'lib/dates'
 import { useClipboardNotification } from 'app/clipboard.hooks'
-import { useAppSelector } from 'app/hooks'
 import { UserApplication, UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
-import { selectUserData } from 'features/user/user.slice'
 import useUserApplications, {
   useDeleteUserApplication,
 } from 'features/user-applications/user-applications'
@@ -147,7 +145,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
                   </td>
                 </tr>
               ))}
-            {!isLoading && data.length === 0 && (
+            {!isLoading && data && data?.length === 0 && (
               <tr key={`row-token-info`}>
                 <td className={cx([styles.cellNoData])} colSpan={5}>
                   <div className={styles.content}>

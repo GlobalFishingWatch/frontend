@@ -5,8 +5,8 @@ import { FieldValidationError } from 'lib/types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { UserApplication } from '@globalfishingwatch/api-types'
 import useUser, { checkUserApplicationPermission } from 'features/user/user'
-import { UserApplicationCreateArguments } from './user-applications.slice'
 
+export type UserApplicationCreateArguments = Omit<UserApplication, 'id' | 'token' | 'createdAt'>
 export interface UserApplicationFetchResponse {
   offset: number
   metadata: any

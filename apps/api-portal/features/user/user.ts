@@ -8,6 +8,10 @@ import {
 } from '@globalfishingwatch/api-client'
 import { UserApiAdditionalInformation, UserPermission } from '@globalfishingwatch/api-types'
 
+export const GUEST_USER_TYPE = 'guest'
+export const GFW_GROUP_ID = 'GFW Staff'
+export const GFW_DEV_GROUP_ID = 'development-group'
+
 const fetchUser = async (accessToken) => {
   // const accessToken = getAccessTokenFromUrl()
   if (accessToken) {
