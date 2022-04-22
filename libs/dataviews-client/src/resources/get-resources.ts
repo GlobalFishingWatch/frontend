@@ -98,32 +98,30 @@ export const pickTrackResource = (
     return resB.datasetConfig.metadata?.zoom - resA.datasetConfig.metadata?.zoom
   })
 
-  if (loadedVesselResources?.[0]?.datasetConfig.metadata?.zoom) {
-    const highestZoom = loadedVesselResources?.[0]?.datasetConfig.metadata?.zoom
+  const highestZoom = loadedVesselResources?.[0]?.datasetConfig.metadata?.zoom
 
-    if (highestZoom === undefined) return undefined
+  if (highestZoom === undefined) return undefined
 
-    const loadedVesselResourcesAtHighestZoom = loadedVesselResources.filter(
-      (r) => r.datasetConfig.metadata?.zoom === highestZoom
-    )
+  const loadedVesselResourcesAtHighestZoom = loadedVesselResources.filter(
+    (r) => r.datasetConfig.metadata?.zoom === highestZoom
+  )
 
-    // Whole non chunked track has priority
-    const wholeTrack = loadedVesselResourcesAtHighestZoom.find(
-      (r) => !r.datasetConfig.metadata?.chunkSetId
-    )
-    if (wholeTrack) {
-      return wholeTrack
-    }
+  // Whole non chunked track has priority
+  const wholeTrack = loadedVesselResourcesAtHighestZoom.find(
+    (r) => !r.datasetConfig.metadata?.chunkSetId
+  )
+  if (wholeTrack) {
+    return wholeTrack
+  }
 
-    // Else pick merged chunks track
-    const mergedTrack = loadedVesselResourcesAtHighestZoom.find(
-      (r) => r.datasetConfig.metadata?.chunkSetMerged
-    )
-    if (mergedTrack) {
-      return mergedTrack
-    }
+  // Else pick merged chunks track
+  const mergedTrack = loadedVesselResourcesAtHighestZoom.find(
+    (r) => r.datasetConfig.metadata?.chunkSetMerged
+  )
+  if (mergedTrack) {
+    return mergedTrack
   }
 
   // Else no usable track for this vessel (we don't display a chunk alone)
-  return loadedVesselResources || undefined
+  return undefined
 }
