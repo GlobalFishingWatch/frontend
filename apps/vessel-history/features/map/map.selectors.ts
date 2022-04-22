@@ -68,6 +68,7 @@ const getGeneratorsConfig = ({
     highlightedTime,
     debug: DEBUG_MODE,
   }
+
   const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
 
   return generatorsConfig.reverse()
@@ -149,8 +150,10 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     offlineDataviewsGenerators,
     vesselLastPositionGenerator
   ) => {
-    return vesselStatus !== AsyncReducerStatus.Finished
-      ? [...offlineDataviewsGenerators, basemapGenerator]
-      : [...offlineDataviewsGenerators, ...mapGeneratorsConfig, vesselLastPositionGenerator]
+    const generators =
+      vesselStatus !== AsyncReducerStatus.Finished
+        ? [...offlineDataviewsGenerators, basemapGenerator]
+        : [...offlineDataviewsGenerators, ...mapGeneratorsConfig, vesselLastPositionGenerator]
+    return generators.filter(Boolean)
   }
 )
