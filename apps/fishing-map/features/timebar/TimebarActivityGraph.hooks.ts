@@ -10,7 +10,7 @@ import { filterByViewport } from 'features/map/map.utils'
 
 export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
-  const [stackedActivity, setStackedActivity] = useState<Timeseries[]>()
+  const [stackedActivity, setStackedActivity] = useState<Timeseries>()
   const isSmallScreen = useSmallScreen()
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 400)
