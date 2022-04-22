@@ -127,8 +127,10 @@ export class LayerComposer {
     config: AnyGeneratorConfig,
     globalConfig?: GlobalGeneratorConfig
   ): GeneratorStyles => {
-    if (!this.generators[config.type]) {
-      throw new Error(`There is no generator loaded for the config: ${config.type}}`)
+    if (!this.generators[config?.type]) {
+      throw new Error(
+        `There is no generator loaded for the config: ${config ? config.type : config}}`
+      )
     }
     const finalConfig = {
       ...this._getGlobalConfig(globalConfig),
