@@ -9,7 +9,6 @@ import { APPLICATION_NAME, PATH_BASENAME } from './data/config'
 import Header from './header/header'
 
 const Layout: NextPage = ({ children }) => {
-  // const { user, loading: isLoading, authorized, logout } = useUser(true)
   const { data: user, isLoading, authorized, logout, loginLink } = useUser()
 
   const errorInfo = [
@@ -31,9 +30,6 @@ const Layout: NextPage = ({ children }) => {
   const guestUser = user && user.type === GUEST_USER_TYPE
   const router = useRouter()
   useEffect(() => {
-    // if (!logged && !isLoading && (token || refreshToken || accessToken)) {
-    //   dispatch(fetchUserThunk({ guest: false }))
-    // } else
     if (redirectToLogin && !isLoading && ((!user && !logged) || guestUser) && loginLink) {
       router.push(loginLink)
     }

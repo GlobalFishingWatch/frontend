@@ -9,11 +9,8 @@ import {
 import { UserApiAdditionalInformation, UserPermission } from '@globalfishingwatch/api-types'
 
 export const GUEST_USER_TYPE = 'guest'
-export const GFW_GROUP_ID = 'GFW Staff'
-export const GFW_DEV_GROUP_ID = 'development-group'
 
 const fetchUser = async (accessToken) => {
-  // const accessToken = getAccessTokenFromUrl()
   if (accessToken) {
     removeAccessTokenFromUrl()
   }
@@ -76,7 +73,6 @@ export const useUser = () => {
 const updateUserAdditionalFields = async (
   userAdditionalInformation: UserApiAdditionalInformation
 ) => {
-  // try {
   const data = { ...userAdditionalInformation }
   Object.keys(data).forEach((key) => data[key] === null && delete data[key])
   const result = await GFWAPI.fetch(`/v2/auth/me`, {
@@ -84,9 +80,6 @@ const updateUserAdditionalFields = async (
     body: data as any,
   })
   return (result ? result : data) as any
-  // } catch (e: any) {
-  //   return rejectWithValue({ status: e.status || e.code, message: e.message })
-  // }
 }
 export const useUpdateUserAdditionalInformation = () => {
   const queryClient = useQueryClient()

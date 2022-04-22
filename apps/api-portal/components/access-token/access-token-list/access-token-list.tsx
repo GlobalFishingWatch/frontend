@@ -24,7 +24,6 @@ export function AccessTokenList(props: AccessTokenListProps) {
   const deleteUserApplication = useDeleteUserApplication(user?.id)
 
   const isAllowed = true
-  // const response = useGetUserApplications()
   const [actionMessage, setActionMessage] = useState<ActionMessage>()
   const [tokenVisibility, setTokenVisibility] = useState<{ [id: string]: boolean }>({})
 
@@ -54,9 +53,6 @@ export function AccessTokenList(props: AccessTokenListProps) {
 
       try {
         const response = await deleteUserApplication.mutate(id)
-        console.log(response)
-        // const refetchResponse = await refetch({})
-        // console.log(refetchResponse)
         setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
       } catch (e) {
         setActionMessage({

@@ -42,8 +42,6 @@ async function deleteUserApplication(id: number) {
 }
 
 export const useDeleteUserApplication = (userId) => {
-  // const url = `/v2/auth/user-applications?user-id=${userId}`
-
   const queryClient = useQueryClient()
   return useMutation(deleteUserApplication, {
     onSuccess: () => {
@@ -65,7 +63,6 @@ async function createUserApplication(newUserApplication: UserApplicationCreateAr
   return await GFWAPI.fetch<UserApplication>(url, {
     method: 'POST',
     body: newUserApplication as any,
-    // signal,
   })
 }
 export const useCreateUserApplication = () => {
@@ -93,8 +90,6 @@ export const useCreateUserApplication = () => {
   const queryClient = useQueryClient()
   const mutation = useMutation(createUserApplication, {
     onSuccess: () => {
-      const url = `/v2/auth/user-applications?user-id=${user?.id}`
-      console.log(url)
       queryClient.invalidateQueries(['user-applications', user?.id])
       setToken(emptyToken)
     },
