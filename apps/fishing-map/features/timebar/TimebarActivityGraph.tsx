@@ -23,9 +23,11 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
     if (visualisation === TimebarVisualisations.Heatmap) {
       return activityDataviews
     }
-    return timebarSelectedEnvId
-      ? environmentDataviews.filter((d) => d.id === timebarSelectedEnvId)
-      : [environmentDataviews[0]]
+    const selectedEnvDataview =
+      timebarSelectedEnvId && environmentDataviews.find((d) => d.id === timebarSelectedEnvId)
+
+    if (selectedEnvDataview) return [selectedEnvDataview]
+    else if (environmentDataviews[0]) return [environmentDataviews[0]]
   }, [activityDataviews, environmentDataviews, timebarSelectedEnvId, visualisation])
   const { loading, stackedActivity } = useStackedActivityDataview(activeDataviews)
   const style = useMapStyle()
