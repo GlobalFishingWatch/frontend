@@ -15,6 +15,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
 import styles from './user-additional-fields.module.css'
+import Link from 'next/link'
 
 /* eslint-disable-next-line */
 export interface UserAdditionalFieldsProps {}
@@ -40,6 +41,15 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
 
     if (!intendedUse || !USER_APPLICATION_INTENDED_USES.includes(intendedUse as any)) {
       errors.intendedUse = 'Intended Use is required'
+    }
+    if (intendedUse === 'commercial') {
+      errors.intendedUse = (
+        <Fragment>
+          For the moment we only allow API for non commercial purposes, if you are interested in a
+          commercial option please contact us at{' '}
+          <Link href={`mailto:apis@globalfishingwatch.org`}>apis@globalfishingwatch.org</Link>.
+        </Fragment>
+      )
     }
     if (!whoEndUsers) {
       errors.whoEndUsers = 'Who are your end users is required'
@@ -100,6 +110,9 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           className={styles.select}
           selectedOption={selectedIntendedUse}
         />
+        {!!selectedIntendedUse && !!error.intendedUse && (
+          <div className={styles.validationErrorMessage}>{error.intendedUse}</div>
+        )}
       </div>
       <div className={styles.field}>
         <InputText
@@ -107,7 +120,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           label="Who are your end users? (*)"
           type={'text'}
           maxLength={500}
-          value={userAdditionalInformation.whoEndUsers}
+          value={userAdditionalInformation.whoEndUsers ?? ''}
           className={styles.input}
           onChange={(e) =>
             setUserAdditionalInformation({
@@ -123,7 +136,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           label="What problem are you trying to solve? (*)"
           type={'text'}
           maxLength={500}
-          value={userAdditionalInformation.problemToResolve}
+          value={userAdditionalInformation.problemToResolve ?? ''}
           className={styles.input}
           onChange={(e) =>
             setUserAdditionalInformation({
@@ -139,7 +152,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           label="Are you pulling data from APIs from other organizations?"
           type={'text'}
           maxLength={500}
-          value={userAdditionalInformation.pullingDataOtherAPIS}
+          value={userAdditionalInformation.pullingDataOtherAPIS ?? ''}
           className={styles.input}
           onChange={(e) =>
             setUserAdditionalInformation({
@@ -178,7 +191,13 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           loading={isUpdating}
           className={styles.button}
           disabled={!valid}
-          tooltip={valid ? '' : 'Complete the required fields (*) and accept the terms to Continue'}
+          tooltip={
+            valid
+              ? ''
+              : !!selectedIntendedUse && !!error.intendedUse
+              ? error.intendedUse
+              : 'Complete the required fields (*) and accept the terms to Continue'
+          }
         >
           Continue
         </Button>
