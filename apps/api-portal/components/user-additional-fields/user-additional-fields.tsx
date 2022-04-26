@@ -1,6 +1,5 @@
 import { useCallback, useMemo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
-import { useRouter } from 'next/router'
 import { FieldValidationError } from 'lib/types'
 import {
   Button,
@@ -34,7 +33,6 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
 
   const [userAdditionalInformation, setUserAdditionalInformation] =
     useState<UserApiAdditionalInformation>(defaultUserAdditionalInformation)
-  const router = useRouter()
 
   const error = useMemo(() => {
     const errors: FieldValidationError<UserApiAdditionalInformation> = {}
@@ -88,10 +86,6 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
     () => !!userAdditionalInformation?.apiTerms,
     [userAdditionalInformation?.apiTerms]
   )
-
-  useEffect(() => {
-    isSuccess && router.replace('/')
-  }, [router, isSuccess])
 
   if (isLoading) return <Spinner></Spinner>
 

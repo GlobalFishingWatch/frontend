@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { useMemo } from 'react'
+import { useRouter } from 'next/router'
 import {
   getAccessTokenFromUrl,
   GFWAPI,
@@ -83,9 +84,11 @@ const updateUserAdditionalFields = async (
 }
 export const useUpdateUserAdditionalInformation = () => {
   const queryClient = useQueryClient()
+  const router = useRouter()
   return useMutation(updateUserAdditionalFields, {
     onSuccess: () => {
       queryClient.invalidateQueries(['user'])
+      router.replace('/')
     },
   })
 }
