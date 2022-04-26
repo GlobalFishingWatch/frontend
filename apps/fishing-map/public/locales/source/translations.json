@@ -399,9 +399,9 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
-    "graphDepth": "Track depth",
+    "graphDepth": "Vessel depth",
     "graphDisabled": "Not available with more than 2 vessels selected",
-    "graphSpeed": "Track speed",
+    "graphSpeed": "Vessel speed",
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
