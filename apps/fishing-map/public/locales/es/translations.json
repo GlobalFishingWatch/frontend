@@ -399,9 +399,9 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
     "graph": "Gráfico",
-    "graphDepth": "Track depth",
+    "graphDepth": "Vessel depth",
     "graphDisabled": "Not available with more than 2 vessels selected",
-    "graphSpeed": "Track speed",
+    "graphSpeed": "Vessel speed",
     "presenceDisabled": "Selecciona al menos una capa de presencia",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
