@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { Fragment, ReactNode, useEffect } from 'react'
-import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
+import useUser from 'features/user/user'
 
 /* eslint-disable-next-line */
 export interface RequireAdditionalInfoProps {
@@ -8,12 +8,12 @@ export interface RequireAdditionalInfoProps {
 }
 
 export function RequireAdditionalInfo({ children }: RequireAdditionalInfoProps) {
-  const { isUserApplicationsRequiredInfoCompleted } = useGetUserApplications()
+  const { isUserApplicationsRequiredInfoCompleted, isFetched, isSuccess } = useUser()
   const router = useRouter()
 
   useEffect(() => {
     if (
-      isUserApplicationsRequiredInfoCompleted !== null &&
+      isUserApplicationsRequiredInfoCompleted !== undefined &&
       !isUserApplicationsRequiredInfoCompleted
     ) {
       router.push('/signup')
