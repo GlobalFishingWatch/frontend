@@ -399,9 +399,9 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
     "graph": "Grafik",
-    "graphDepth": "Track depth",
+    "graphDepth": "Vessel depth",
     "graphDisabled": "Not available with more than 2 vessels selected",
-    "graphSpeed": "Track speed",
+    "graphSpeed": "Vessel speed",
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Tutup pengaturan timebar",
     "settings_open": "Buka pengaturan timebar",
