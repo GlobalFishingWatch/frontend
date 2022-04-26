@@ -15,6 +15,7 @@ import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import { COLOR_SECONDARY_BLUE } from 'features/app/App'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -104,7 +105,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
-          color={singleTrack ? '#163f89' : undefined}
+          color={singleTrack ? COLOR_SECONDARY_BLUE : undefined}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
