@@ -18,6 +18,7 @@ import {
   TimebarChartItem,
   TimebarChartValue,
   TrackEventChunkProps,
+  HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
 import { t } from 'features/i18n/i18n'
@@ -29,7 +30,7 @@ import {
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 
-const getUserTrackHighlighterLabel = (chunk: TimebarChartChunk<any>) => {
+const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
 }
 
@@ -108,9 +109,9 @@ export const selectTracksData = createSelector(
   }
 )
 
-const getTrackGraphSpeedHighlighterLabel = (chunk, value: TimebarChartValue) =>
+const getTrackGraphSpeedHighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value.toFixed(2)} knots` : ''
-const getTrackGraphElevationighlighterLabel = (chunk, value: TimebarChartValue) =>
+const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value} m` : ''
 
 export const selectTracksGraphData = createSelector(
@@ -182,14 +183,17 @@ export const selectTracksGraphData = createSelector(
   }
 )
 
-const getTrackEventHighlighterLabel = (chunk: TimebarChartChunk<TrackEventChunkProps>) => {
+const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs) => {
   if (chunk.cluster) {
     return `${chunk.props?.descriptionGeneric} (${chunk.cluster.numChunks} ${t(
       'event.events',
       'events'
     )})`
   }
-  return chunk.props?.description
+  if (expanded) {
+    return chunk.props?.description
+  }
+  return chunk.props?.descriptionGeneric
 }
 
 export const selectTracksEvents = createSelector(

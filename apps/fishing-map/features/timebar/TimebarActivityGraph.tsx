@@ -2,7 +2,11 @@ import React, { useMemo, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { getLegendId, useMapLegend } from '@globalfishingwatch/react-hooks'
-import { TimebarStackedActivity, HighlighterCallbackFn } from '@globalfishingwatch/timebar'
+import {
+  TimebarStackedActivity,
+  HighlighterCallbackFn,
+  HighlighterCallbackFnArgs,
+} from '@globalfishingwatch/timebar'
 import {
   selectActiveActivityDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
@@ -34,7 +38,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   const mapLegends = useMapLegend(style, activeDataviews)
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
-    (chunk, value, item) => {
+    ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
       const dataviewId = item.props?.dataviewId
       const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
       const maxHighlighterFractionDigits =

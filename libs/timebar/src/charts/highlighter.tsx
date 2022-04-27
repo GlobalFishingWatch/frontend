@@ -15,7 +15,7 @@ import {
   ChartType,
   HighlighterDateCallback,
 } from './common/types'
-import chartsDataState from './chartsData.atom'
+import chartsDataState, { hoveredEventState } from './chartsData.atom'
 import { useOuterScale } from './common/hooks'
 
 dayjs.extend(utc)
@@ -85,15 +85,16 @@ const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
 }
 
 type HighlighterData = {
-  labels: ({ value?: string } | undefined)[]
+  labels: ({ value?: string; expanded?: boolean } | undefined)[]
   color?: string
-  defaultLabel?: string
+  defaultLabel?: { value?: string; expanded?: boolean }
 }
 
 const getHighlighterData = (
   centerMs: number,
   minHighlightChunkDuration: number,
-  dataRecord?: TimebarChartsData
+  dataRecord?: TimebarChartsData,
+  hoveredEventId?: string
 ) => {
   if (!dataRecord) return { highlighterData: [] }
   const data = Object.entries(dataRecord)
@@ -112,7 +113,6 @@ const getHighlighterData = (
 
       // Case where several track events overlap (reverse order as this is paint order)
       const foundChunk = foundChunks ? foundChunks[foundChunks.length - 1] : undefined
-      let label = undefined
 
       if (!highlighterData[itemIndex]) {
         highlighterData[itemIndex] = {
@@ -122,20 +122,31 @@ const getHighlighterData = (
       }
 
       if (foundChunk) {
+        const expanded = foundChunk.id === hoveredEventId
         if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
-          highlighterData[itemIndex].defaultLabel = item.defaultLabel
+          highlighterData[itemIndex].defaultLabel = {
+            value: item.defaultLabel,
+            expanded,
+          }
         }
         const foundValue = findValue(centerMs, foundChunk)
 
-        label = item.getHighlighterLabel
+        const label = item.getHighlighterLabel
           ? typeof item.getHighlighterLabel === 'string'
             ? item.getHighlighterLabel
-            : item.getHighlighterLabel(foundChunk, foundValue, item, itemIndex)
+            : item.getHighlighterLabel({
+                chunk: foundChunk,
+                value: foundValue,
+                item,
+                itemIndex,
+                expanded,
+              })
           : foundValue?.value?.toString()
 
         if (label) {
           highlighterData[itemIndex].labels[chartIndex] = {
             value: label,
+            expanded,
           }
         }
 
@@ -178,6 +189,7 @@ const Highlighter = ({
 
   // TODO Filter active with selector
   const chartsData = useRecoilValue(chartsDataState)
+  const hoveredEventId = useRecoilValue(hoveredEventState)
 
   const minHighlightChunkDuration = useMemo(() => {
     return +outerScale.invert(15) - +outerScale.invert(0)
@@ -185,8 +197,8 @@ const Highlighter = ({
   }, [outerStart, outerEnd])
 
   const { highlighterData, highlightedChunks } = useMemo(() => {
-    return getHighlighterData(centerMs, minHighlightChunkDuration, chartsData)
-  }, [centerMs, chartsData, minHighlightChunkDuration])
+    return getHighlighterData(centerMs, minHighlightChunkDuration, chartsData, hoveredEventId)
+  }, [centerMs, chartsData, minHighlightChunkDuration, hoveredEventId])
 
   useEffect(() => {
     if (onHighlightChunks) {
@@ -231,11 +243,16 @@ const Highlighter = ({
                       ></span>
                       {item.defaultLabel && (
                         <span className={cx(styles.tooltipLabel, styles.isMain)}>
-                          {item.defaultLabel}
+                          {item.defaultLabel.value}
                         </span>
                       )}
                       {item.labels?.map((label, labelIndex) => (
-                        <span key={labelIndex} className={styles.tooltipLabel}>
+                        <span
+                          key={labelIndex}
+                          className={cx(styles.tooltipLabel, {
+                            [styles.expanded]: label?.expanded,
+                          })}
+                        >
                           {label?.value}
                         </span>
                       ))}

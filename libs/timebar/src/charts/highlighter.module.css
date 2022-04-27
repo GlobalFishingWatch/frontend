@@ -75,3 +75,7 @@
   color: var(--timebar-white);
   margin-right: 0.4rem;
 }
+
+.tooltipLabel.expanded {
+  color: var(--timebar-white);
+}
