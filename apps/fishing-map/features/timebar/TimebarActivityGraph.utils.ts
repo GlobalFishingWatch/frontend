@@ -30,10 +30,9 @@ export const getChunksTimeseries = ({
   const allChunksValues = chunksFeatures.flatMap(({ features, quantizeOffset }) => {
     if (features?.length > 0) {
       const { values } = getTimeSeries(features, numSublayers, quantizeOffset, aggregationOperation)
-
       const finalValues = values.map((frameValues) => {
         // Ideally we don't have the features not visible in 4wings but we have them
-        // so this needs to be filtered by the current active ones
+        // so this needs to be filtered by the current active ones)
         const activeFrameValues = Object.fromEntries(
           Object.entries(frameValues).map(([key, value]) => {
             const cleanValue =

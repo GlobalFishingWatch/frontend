@@ -50,7 +50,6 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   )
 
   if (!stackedActivity || !stackedActivity.length) return null
-
   return (
     <div className={cx({ [styles.loading]: loading })}>
       <TimebarStackedActivity

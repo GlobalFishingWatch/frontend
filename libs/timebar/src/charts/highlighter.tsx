@@ -109,7 +109,6 @@ const getHighlighterData = (
     highlightedChunks[chartType] = []
     chartData.data.forEach((item, itemIndex) => {
       const foundChunks = findChunks(centerMs, item, minHighlightChunkDuration)
-
       // Case where several track events overlap (reverse order as this is paint order)
       const foundChunk = foundChunks ? foundChunks[foundChunks.length - 1] : undefined
       let label = undefined
@@ -125,6 +124,7 @@ const getHighlighterData = (
         if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
           highlighterData[itemIndex].defaultLabel = item.defaultLabel
         }
+
         const foundValue = findValue(centerMs, foundChunk)
 
         label = item.getHighlighterLabel
@@ -173,10 +173,8 @@ const Highlighter = ({
     () => getCoords(hoverStart, hoverEnd, outerScale, dateCallback),
     [hoverStart, hoverEnd, outerScale, dateCallback]
   )
-
   // TODO Filter active with selector
   const chartsData = useRecoilValue(chartsDataState)
-
   const minHighlightChunkDuration = useMemo(() => {
     return +outerScale.invert(15) - +outerScale.invert(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps

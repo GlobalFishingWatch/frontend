@@ -69,6 +69,7 @@ const StackedActivity = ({
     dataviews,
     highlighterCallback
   )
+
   useUpdateChartsData('activity', dataAsTimebarChartData)
   const pathContainers = useMemo(() => {
     return getPathContainers(timeseries, graphHeight, overallScale, dataviews.length)

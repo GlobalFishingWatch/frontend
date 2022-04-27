@@ -41,6 +41,7 @@ export const getTimeSeries = (
   const valuesByFrame: { sublayersValues: number[]; numValues: number }[] = []
   features.forEach((feature) => {
     const rawValues: string = feature.properties.rawValues
+
     const { values, minCellOffset } = getCellValues(rawValues)
     if (minCellOffset < minFrame) minFrame = minCellOffset
     let currentFrameIndex = minCellOffset
@@ -48,6 +49,7 @@ export const getTimeSeries = (
     for (let i = CELL_VALUES_START_INDEX; i < values.length; i++) {
       const sublayerIndex = (i - CELL_VALUES_START_INDEX) % numSublayers
       const rawValue = values[i]
+
       if (rawValue !== null && !isNaN(rawValue)) {
         if (currentFrameIndex > maxFrame) maxFrame = currentFrameIndex
         if (!valuesByFrame[offsetedCurrentFrameIndex]) {
@@ -63,6 +65,7 @@ export const getTimeSeries = (
         }
       }
       if (sublayerIndex === numSublayers - 1) {
+
         offsetedCurrentFrameIndex++
         currentFrameIndex++
       }
@@ -73,7 +76,10 @@ export const getTimeSeries = (
   const finalValues = new Array(numValues)
   for (let i = 0; i <= numValues; i++) {
     const frame = minFrame + i
-    const frameValues = valuesByFrame[frame - quantizeOffset]
+    const frameValues = valuesByFrame[frame - quantizeOffset] ?? {
+      sublayersValues: new Array(numSublayers).fill(0),
+      numValues: 0,
+    }
     let sublayersValues
     if (frameValues) {
       sublayersValues = frameValues.sublayersValues
@@ -88,6 +94,5 @@ export const getTimeSeries = (
       ...sublayersValues,
     }
   }
-
   return { values: finalValues, minFrame, maxFrame }
 }
