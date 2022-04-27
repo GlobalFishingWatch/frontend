@@ -142,7 +142,9 @@ const getHighlighterData = (
         if (foundChunk.cluster?.ids) {
           highlightedChunks[chartType] = foundChunk.cluster?.ids || []
         } else if (foundChunk.id) {
-          highlightedChunks[chartType] = [foundChunk.id as string]
+          highlightedChunks[chartType] = highlightedChunks[chartType]?.concat([
+            foundChunk.id as string,
+          ])
         }
       }
     })
