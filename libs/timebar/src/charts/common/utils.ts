@@ -26,3 +26,5 @@ export const getTrackY = (
     defaultY,
   }
 }
+
+console.log('??')
