@@ -85,9 +85,10 @@ const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
 }
 
 type HighlighterData = {
-  labels: ({ value?: string; expanded?: boolean } | undefined)[]
+  expanded?: boolean
+  labels: ({ value?: string } | undefined)[]
   color?: string
-  defaultLabel?: { value?: string; expanded?: boolean }
+  defaultLabel?: { value?: string }
 }
 
 const getHighlighterData = (
@@ -123,10 +124,10 @@ const getHighlighterData = (
 
       if (foundChunk) {
         const expanded = foundChunk.id === hoveredEventId
+        highlighterData[itemIndex].expanded = expanded
         if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
           highlighterData[itemIndex].defaultLabel = {
             value: item.defaultLabel,
-            expanded,
           }
         }
         const foundValue = findValue(centerMs, foundChunk)
@@ -146,7 +147,6 @@ const getHighlighterData = (
         if (label) {
           highlighterData[itemIndex].labels[chartIndex] = {
             value: label,
-            expanded,
           }
         }
 
@@ -236,7 +236,10 @@ const Highlighter = ({
                 if (!item) return null
                 else
                   return (
-                    <span key={itemIndex} className={styles.tooltipItem}>
+                    <span
+                      key={itemIndex}
+                      className={cx(styles.tooltipItem, { [styles.expanded]: item.expanded })}
+                    >
                       <span
                         className={styles.tooltipColor}
                         style={{ backgroundColor: item.color }}
@@ -247,12 +250,7 @@ const Highlighter = ({
                         </span>
                       )}
                       {item.labels?.map((label, labelIndex) => (
-                        <span
-                          key={labelIndex}
-                          className={cx(styles.tooltipLabel, {
-                            [styles.expanded]: label?.expanded,
-                          })}
-                        >
+                        <span key={labelIndex} className={styles.tooltipLabel}>
                           {label?.value}
                         </span>
                       ))}
