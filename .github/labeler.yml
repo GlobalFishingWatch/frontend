@@ -34,4 +34,4 @@ react-hooks:
 timebar:
   - libs/timebar/**/*
 ui-components:
-  - ui-component/**/*
+  - ui-components/**/*
