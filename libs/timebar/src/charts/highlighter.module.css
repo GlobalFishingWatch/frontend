@@ -60,18 +60,14 @@
 
 .tooltipItem.expanded {
   background-color: var(--timebar-ui-btn-color-hover);
+  display: flex;
+  line-height: 1.8rem;
+  align-items: center;
+  flex: 1;
 }
 
 .tooltipItem:not(:last-child) {
   margin-right: 1rem;
-}
-
-.tooltipColor {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 0.4rem;
-  border-radius: 99px;
 }
 
 .tooltipLabel:not(:last-child, .isMain)::after {

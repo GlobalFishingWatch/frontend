@@ -101,6 +101,7 @@ export const selectTracksData = createSelector(
             : null,
         props: {
           segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
+          userTrack: trackResource.dataset.type === DatasetTypes.UserTracks,
         },
       }
       return item
