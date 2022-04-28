@@ -16,6 +16,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
       <Provider store={store}>
+        <h1>Test labeler PR</h1>
         <Component {...pageProps} />
       </Provider>
     </RecoilRoot>
