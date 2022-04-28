@@ -76,7 +76,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       })
     )
   }, [dispatch])
-  console.log(online)
+
   const openVesselProfile = useCallback(
     (vessel, aka: string[] = []) => {
       dispatch(
@@ -217,18 +217,22 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </h1>
         {online && hasAccess && <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>}
         {(online && !hasAccess) && <IconButton type="default" size="default" icon="user" onClick={onLoginClick}></IconButton>}
-        <IconButton
-          onClick={onSettingsClick}
-          type="default"
-          size="default"
-          icon="settings"
-        ></IconButton>
-        <IconButton
-          icon="feedback"
-          onClick={openFeedback}
-          tooltip={t('common.feedback', 'Feedback')}
-          tooltipPlacement="bottom"
-        />
+        {online &&
+          <IconButton
+            onClick={onSettingsClick}
+            type="default"
+            size="default"
+            icon="settings"
+          ></IconButton>
+        }
+        {online &&
+          <IconButton
+            icon="feedback"
+            onClick={openFeedback}
+            tooltip={t('common.feedback', 'Feedback')}
+            tooltipPlacement="bottom"
+          />
+        }
         <LanguageToggle />
       </header>
       <div className={styles.search}>

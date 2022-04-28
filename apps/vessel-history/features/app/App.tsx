@@ -18,7 +18,7 @@ function App() {
   const [minLoading, setMinLoading] = useState(true)
   const locationType = useSelector(getLocationType)
   const forceOffline = useSelector(isOfflineForced)
-  console.log('forceOffline', forceOffline)
+
   // Splash screen is shown at least one second
   useEffect(() => {
     const timer = setTimeout(() => setMinLoading(false), SPLASH_TIMEOUT)

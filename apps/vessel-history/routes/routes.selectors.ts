@@ -181,7 +181,6 @@ export const selectUrlAkaVesselQuery = createSelector(
 export const isOfflineForced = createSelector(
   [selectQueryParam('offline')],
   (offline: string) => {
-    console.log(offline)
     return offline === 'true'
   }
 )
