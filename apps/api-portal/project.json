@@ -10,6 +10,16 @@
         "parallel": false
       }
     },
+    "docker-prepare": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/api-portal",
+          "cp apps/api-portal/nginx.conf dist/apps/api-portal"
+        ]
+      }
+    },
     "compile": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
@@ -38,7 +48,7 @@
       },
       "configurations": {
         "production": {
-          "buildTarget": "api-portal:build:production",
+          "buildTarget": "api-portal:compile:production",
           "dev": false
         }
       }

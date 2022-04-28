@@ -10,6 +10,7 @@ export enum Field {
   distanceFromPort = 'distance_from_port',
   elevation = 'elevation',
   id = 'id',
+  color = 'color',
 }
 
 export type Point = Partial<Record<Field, number | null>>

@@ -216,13 +216,11 @@ export const getVesselEventsSegmentsGeojson = (
   return featureCollection
 }
 
-type FeaturesByType = { 'fishing': Feature[], 'other': Feature[] }
+type FeaturesByType = { fishing: Feature[]; other: Feature[] }
 
-export const groupFeaturesByType = (
-  features: Feature[],
-): FeaturesByType => {
+export const groupFeaturesByType = (features: Feature[]): FeaturesByType => {
   return {
-    fishing: features.filter(e => e.properties?.type === 'fishing'),
-    other: features.filter(e => e.properties?.type !== 'fishing')
-    }
+    fishing: features.filter((e) => e.properties?.type === 'fishing'),
+    other: features.filter((e) => e.properties?.type !== 'fishing'),
   }
+}

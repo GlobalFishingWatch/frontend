@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  height: 100%;
+  background-image: var(--background-gradient);
+  width: 100%;
+  padding: var(--space-M);
+}
+
+.login {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

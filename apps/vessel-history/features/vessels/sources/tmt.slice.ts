@@ -82,7 +82,10 @@ const vesselThunk: VesselAPIThunk = {
     }
     const url = `/v1/vessel-history/${id}`
 
-    return await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
+    return await GFWAPI.fetch<TMTDetail>(url).then(toVessel).catch((error) => {
+      console.error(error)
+      return undefined
+    })
   },
 }
 

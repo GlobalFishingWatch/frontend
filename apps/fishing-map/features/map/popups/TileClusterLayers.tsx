@@ -236,12 +236,16 @@ function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLa
         {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
         {showFeaturesDetails && feature.properties && (
           <div className={styles.row}>
-            <ul>
+            <ul className={styles.list}>
               {Object.entries(feature.properties).map(([key, value]) => {
                 if (key === 'count' || key === 'expansionZoom') {
                   return null
                 }
-                return <li key={key}>{`${key}: ${value}`}</li>
+                return (
+                  <li key={key}>
+                    <span className={styles.strong}>{key}</span>: {JSON.stringify(value)}
+                  </li>
+                )
               })}
             </ul>
           </div>

@@ -2,7 +2,6 @@ import { scaleLinear } from 'd3-scale'
 import { uniq } from 'lodash'
 import {
   Resource,
-  TrackResourceData,
   DatasetTypes,
   EndpointId,
   DatasetStatus,
@@ -11,6 +10,7 @@ import {
   DataviewCategory,
   Dataset,
   ApiEvent,
+  TrackResourceData,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -34,6 +34,7 @@ import {
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
 } from './resolve-dataviews'
+import { pickTrackResource } from './resources'
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
@@ -51,6 +52,7 @@ export type DataviewsGeneratorConfigsParams = {
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: HeatmapAnimatedMode
   customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
+  singleTrack?: boolean
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -115,17 +117,26 @@ export function getGeneratorConfig(
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
       }
-      // Try to retrieve resource if it exists
-      const trackType =
-        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
-          ? DatasetTypes.UserTracks
-          : DatasetTypes.Tracks
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, trackType)
 
-      if (trackUrl && resources?.[trackUrl]) {
-        const resource = resources?.[trackUrl] as Resource<TrackResourceData>
-        generator.data = resource.data
+      const endpointType =
+        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+          ? EndpointId.UserTracks
+          : EndpointId.Tracks
+
+      let trackResource
+      if (endpointType === EndpointId.Tracks) {
+        trackResource = pickTrackResource(dataview, endpointType, resources)
+      } else {
+        const { url } = resolveDataviewDatasetResource(dataview, [DatasetTypes.UserTracks])
+        if (resources) trackResource = resources[url] as Resource<TrackResourceData>
       }
+
+      if (trackResource) generator.data = trackResource.data
+
+      if (params?.singleTrack) {
+        generator.useOwnColor = true
+      }
+
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
@@ -378,7 +389,7 @@ export function getDataviewsGeneratorConfigs(
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
 
       const activeDatasets = dataview.datasets.filter((dataset) =>
-        dataview?.config?.datasets.includes(dataset.id)
+        dataview?.config?.datasets?.includes(dataset.id)
       )
       const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
       if (units.length > 0 && units.length !== 1) {

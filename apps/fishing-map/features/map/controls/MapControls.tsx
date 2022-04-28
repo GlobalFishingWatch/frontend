@@ -26,7 +26,7 @@ import { toFixed } from 'utils/shared'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+import MapScreenshot, { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
 
@@ -159,6 +159,7 @@ const MapControls = ({
   const isAnalyzing = useSelector(selectIsAnalyzing)
   return (
     <Fragment>
+      {modalOpen && <MapScreenshot />}
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div
           onMouseEnter={() => setMiniGlobeHovered(true)}

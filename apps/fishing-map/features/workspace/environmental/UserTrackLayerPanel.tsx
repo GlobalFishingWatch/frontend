@@ -1,19 +1,21 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { FeatureCollection } from 'geojson'
 import { DatasetTypes, Resource, ResourceStatus } from '@globalfishingwatch/api-types'
 import { Tooltip, IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { Segment } from '@globalfishingwatch/data-transforms'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
+import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import { COLOR_SECONDARY_BLUE } from 'features/app/App'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -27,11 +29,16 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
+const SEE_MORE_LENGTH = 5
+
 function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
   const [colorOpen, setColorOpen] = useState(false)
+  const [seeMoreOpen, setSeeMoreOpen] = useState(false)
+  const allTracksActive = useSelector(selectActiveTrackDataviews)
+  const singleTrack = allTracksActive.length === 1
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -53,12 +60,18 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
     setColorOpen(false)
   }
 
+  const onSeeMoreClick = useCallback(() => {
+    setSeeMoreOpen(!seeMoreOpen)
+  }, [seeMoreOpen])
+
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.UserTracks)
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = dataset?.ownerId === userId
 
   const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
-  const trackResource: Resource<Segment[]> = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const trackResource: Resource<FeatureCollection> = useSelector(
+    selectResourceByUrl<FeatureCollection>(trackUrl)
+  )
   const trackError = trackResource?.status === ResourceStatus.Error
 
   const loading = trackResource?.status === ResourceStatus.Loading
@@ -92,6 +105,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
+          color={singleTrack ? COLOR_SECONDARY_BLUE : undefined}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
@@ -116,6 +130,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
                     onColorClick={changeColor}
                     onToggleClick={onToggleColorOpen}
                     onClickOutside={closeExpandedContainer}
+                    disabled={singleTrack}
                   />
                   <FitBounds hasError={trackError} trackResource={trackResource} />
                 </Fragment>
@@ -127,9 +142,36 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
         </div>
       </div>
 
-      {layerActive && (
+      {layerActive && singleTrack && trackResource && trackResource.data && (
         <div className={styles.properties}>
-          <div id={`legend_${dataview.id}`}></div>
+          {trackResource.data.features
+            .slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH)
+            .map((feature, index) => {
+              return (
+                <div
+                  key={index}
+                  className={styles.trackColor}
+                  style={
+                    {
+                      '--color': feature.properties.color,
+                    } as React.CSSProperties
+                  }
+                >
+                  {feature.properties.id}
+                </div>
+              )
+            })}
+          {trackResource.data.features.length > SEE_MORE_LENGTH && (
+            <button
+              className={cx(styles.link, {
+                [styles.more]: !seeMoreOpen,
+                [styles.less]: seeMoreOpen,
+              })}
+              onClick={onSeeMoreClick}
+            >
+              {seeMoreOpen ? t('common.less', 'less') : t('common.more', 'more')}
+            </button>
+          )}
         </div>
       )}
     </div>

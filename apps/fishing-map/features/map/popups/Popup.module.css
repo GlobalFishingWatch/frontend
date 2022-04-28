@@ -87,7 +87,7 @@
 }
 
 .vesselRow {
-  color: currentColor;
+  color: currentcolor;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -119,6 +119,20 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--space-S);
+}
+
+/* .list {
+  max-height: 400px;
+  overflow: auto;
+} */
+
+.list > li {
+  max-width: 50rem;
+  word-wrap: break-word;
+}
+
+.strong {
+  font-weight: 500;
 }
 
 .hover .row {

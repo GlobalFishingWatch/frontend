@@ -73,7 +73,10 @@ export const getTimeSeries = (
   const finalValues = new Array(numValues)
   for (let i = 0; i <= numValues; i++) {
     const frame = minFrame + i
-    const frameValues = valuesByFrame[frame - quantizeOffset]
+    const frameValues = valuesByFrame[frame - quantizeOffset] ?? {
+      sublayersValues: new Array(numSublayers).fill(0),
+      numValues: 0,
+    }
     let sublayersValues
     if (frameValues) {
       sublayersValues = frameValues.sublayersValues

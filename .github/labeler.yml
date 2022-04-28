@@ -1,0 +1,37 @@
+api-portal:
+  - apps/api-portal/**/*
+fishing-map:
+  - apps/fishing-map/**/*
+port-labeler:
+  - apps/port-labeler/**/*
+tile-inspector:
+  - apps/tile-inspector/**/*
+user-groups-admin:
+  - apps/user-groups-admin/**/*
+vessel-history:
+  - apps/vessel-history/**/*
+
+api-client:
+  - libs/api-client/**/*
+api-types:
+  - libs/api-types/**/*
+data-transforms:
+  - libs/data-transforms/**/*
+dataviews-client:
+  - libs/dataviews-client/**/*
+fourwings-aggregate:
+  - libs/fourwings-aggregate/**/*
+i18n-labels:
+  - libs/i18n-labels/**/*
+layer-composer:
+  - libs/layer-composer/**/*
+ocean-areas:
+  - libs/ocean-areas/**/*
+pbf-decoders:
+  - libs/pbf-decoders/**/*
+react-hooks:
+  - libs/react-hooks/**/*
+timebar:
+  - libs/timebar/**/*
+ui-components:
+  - ui-components/**/*

@@ -9,7 +9,7 @@ import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveActivityDataviews,
-  selectActiveEnvironmentalDataviews,
+  selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { selectActivityCategory } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -59,14 +59,15 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
-  const activeEnvironmentalDataviews = useSelector(selectActiveEnvironmentalDataviews)
+  const activeEnvironmentalDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const activityCategory = useSelector(selectActivityCategory)
-  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length <= 2
+  const timebarGraphEnabled =
+    activeVesselsDataviews && activeVesselsDataviews.length && activeVesselsDataviews.length <= 2
 
   const openOptions = () => {
     uaEvent({
@@ -176,7 +177,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TrackSpeedIcon}
-                  label={t('timebarSettings.graphSpeed', 'Track Speed')}
+                  label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
                   color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
                 />
@@ -203,7 +204,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TrackDepthIcon}
-                  label={t('timebarSettings.graphDepth', 'Track Depth')}
+                  label={t('timebarSettings.graphDepth', 'Vessel Depth')}
                   color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
                 />
@@ -226,7 +227,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               }
               onClick={setVesselGraphDepth}
             />
-            {activeEnvironmentalDataviews.map((envDataview) => {
+            {activeEnvironmentalDataviews.map((envDataview, i) => {
               const dataset = envDataview.datasets?.find(
                 (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
               )
@@ -244,7 +245,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   }
                   active={
                     timebarVisualisation === TimebarVisualisations.Environment &&
-                    timebarSelectedEnvId === envDataview.id
+                    (timebarSelectedEnvId === envDataview.id || (!timebarSelectedEnvId && i === 0))
                   }
                   tooltip={activityTooltipLabel}
                   onClick={() => setEnvironmentActive(envDataview.id)}

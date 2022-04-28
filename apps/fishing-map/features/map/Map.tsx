@@ -38,7 +38,7 @@ import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/a
 import Hint from 'features/help/hints/Hint'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import { useMapLoaded } from 'features/map/map-state.hooks'
+import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
@@ -46,7 +46,6 @@ import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
-import { useSetMapIdleAtom } from './map-state.hooks'
 import {
   useAllMapSourceTilesLoaded,
   useMapClusterTilesLoaded,
@@ -85,7 +84,7 @@ const layerComposer = new LayerComposer({
     'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-map',
 })
 
-const MapWrapper = (): React.ReactElement | null => {
+const MapWrapper = () => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   useMapSourceTilesLoadedAtom()
@@ -257,7 +256,6 @@ const MapWrapper = (): React.ReactElement | null => {
 
   return (
     <div className={styles.container}>
-      {<MapScreenshot map={map} />}
       {style && (
         <InteractiveMap
           disableTokenWarning={true}

@@ -120,7 +120,7 @@ export const useMapSourceTiles = (sourcesId?: SourcesHookInput) => {
         })
       )
     : sourceTilesLoaded
-  return sourcesLoaded
+  return useMemoCompare(sourcesLoaded)
 }
 
 export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {

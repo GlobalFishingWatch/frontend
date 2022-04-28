@@ -2,9 +2,12 @@ import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { formatI18nDate } from 'lib/dates'
 import { useClipboardNotification } from 'app/clipboard.hooks'
-import { UserApplication } from '@globalfishingwatch/api-types'
+import { UserApplication, UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
-import { useGetUserApplications } from 'features/user-applications/user-applications.hooks'
+import useUserApplications, {
+  useDeleteUserApplication,
+} from 'features/user-applications/user-applications'
+import useUser from 'features/user/user'
 import styles from './access-token-list.module.css'
 
 /* eslint-disable-next-line */
@@ -16,9 +19,12 @@ type ActionMessage = {
 }
 
 export function AccessTokenList(props: AccessTokenListProps) {
-  const response = useGetUserApplications()
+  const { data: user } = useUser()
+  const { isError, isLoading, data } = useUserApplications(user?.id)
+  const deleteUserApplication = useDeleteUserApplication(user?.id)
+
+  const isAllowed = true
   const [actionMessage, setActionMessage] = useState<ActionMessage>()
-  const { data, isError, isLoading, isAllowed, dispatchDelete } = response
   const [tokenVisibility, setTokenVisibility] = useState<{ [id: string]: boolean }>({})
 
   const defaultTokenVisibility = false
@@ -44,17 +50,18 @@ export function AccessTokenList(props: AccessTokenListProps) {
         )
       )
         return
-      const response = await dispatchDelete({ id })
-      if (response.payload?.error) {
+
+      try {
+        const response = await deleteUserApplication.mutate(id)
+        setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
+      } catch (e) {
         setActionMessage({
           type: 'error',
           message: 'There was a problem deleting the token.',
         })
-      } else {
-        setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
       }
     },
-    [dispatchDelete]
+    [deleteUserApplication]
   )
   const clearActionMessage = useCallback(() => {
     return setActionMessage(undefined)
@@ -82,7 +89,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
           </thead>
           <tbody>
             {!isLoading &&
-              data.map((row, index) => (
+              data?.entries?.map((row, index) => (
                 <tr key={`row-token-${index}`}>
                   <td data-aria-label="Application Name" className={styles.cellApplication}>
                     {row.name}
@@ -134,7 +141,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
                   </td>
                 </tr>
               ))}
-            {!isLoading && data.length === 0 && (
+            {!isLoading && data && data?.length === 0 && (
               <tr key={`row-token-info`}>
                 <td className={cx([styles.cellNoData])} colSpan={5}>
                   <div className={styles.content}>
