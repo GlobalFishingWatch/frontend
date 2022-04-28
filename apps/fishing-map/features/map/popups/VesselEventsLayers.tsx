@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { DateTime } from 'luxon'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { MAX_TOOLTIP_LIST } from '../map.slice'
@@ -20,9 +21,10 @@ function VesselEventsTooltipSection({ features }: VesselEventsTooltipRowProps) {
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
         <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
-          <span
-            className={styles.popupSectionColor}
-            style={{ backgroundColor: featureByType[0].color }}
+          <Icon
+            icon="vessel"
+            className={styles.layerIcon}
+            style={{ color: featureByType[0].color }}
           />
           <div className={styles.popupSectionContent}>
             {featureByType.map((feature, index) => {
