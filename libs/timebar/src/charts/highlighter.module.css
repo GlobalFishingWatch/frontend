@@ -53,6 +53,14 @@
   padding-bottom: 4px;
 }
 
+.tooltipColor {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.4rem;
+  border-radius: 99px;
+}
+
 .tooltipItem {
   color: var(--timebar-white-faded);
   width: 100%;

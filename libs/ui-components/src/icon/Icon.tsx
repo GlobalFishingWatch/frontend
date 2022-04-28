@@ -153,7 +153,7 @@ export type IconType = keyof typeof IconComponents
 
 interface IconProps {
   className?: string
-  icon: keyof typeof IconComponents
+  icon: IconType
   style: React.CSSProperties
   type?: 'default' | 'warning'
   tooltip?: React.ReactChild | React.ReactChild[] | string

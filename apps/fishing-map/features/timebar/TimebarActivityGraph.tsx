@@ -66,6 +66,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
         timeseries={stackedActivity}
         dataviews={activeDataviews}
         highlighterCallback={getActivityHighlighterLabel}
+        highlighterIconCallback="heatmap"
       />
     </div>
   )

@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import cx from 'classnames'
 import { useRecoilValue } from 'recoil'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, IconType } from '@globalfishingwatch/ui-components'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
@@ -89,6 +89,7 @@ type HighlighterData = {
   expanded?: boolean
   labels: ({ value?: string } | undefined)[]
   color?: string
+  icon?: string
   defaultLabel?: { value?: string }
 }
 
@@ -105,7 +106,6 @@ const getHighlighterData = (
   let highlighterData: HighlighterData[] = []
   const highlightedChunks: HighlightedChunks = {}
 
-  console.log(data)
   data.forEach((chart, chartIndex) => {
     const chartType = chart[0] as ChartType
     const chartData = chart[1]
@@ -119,7 +119,6 @@ const getHighlighterData = (
 
       if (!highlighterData[itemIndex]) {
         highlighterData[itemIndex] = {
-          chartType: item.props?.userTrack ? 'userTrack' : chartType,
           color: item.color,
           labels: [],
         }
@@ -152,6 +151,20 @@ const getHighlighterData = (
             value: label,
           }
         }
+
+        const icon = item.getHighlighterIcon
+          ? typeof item.getHighlighterIcon === 'string'
+            ? item.getHighlighterIcon
+            : item.getHighlighterIcon({
+                chunk: foundChunk,
+                value: foundValue,
+                item,
+                itemIndex,
+                expanded,
+              })
+          : ''
+
+        highlighterData[itemIndex].icon = icon
 
         if (foundChunk.cluster?.ids) {
           highlightedChunks[chartType] = foundChunk.cluster?.ids || []
@@ -192,7 +205,6 @@ const Highlighter = ({
 
   // TODO Filter active with selector
   const chartsData = useRecoilValue(chartsDataState)
-  console.log(chartsData)
   const hoveredEventId = useRecoilValue(hoveredEventState)
 
   const minHighlightChunkDuration = useMemo(() => {
@@ -203,7 +215,6 @@ const Highlighter = ({
   const { highlighterData, highlightedChunks } = useMemo(() => {
     return getHighlighterData(centerMs, minHighlightChunkDuration, chartsData, hoveredEventId)
   }, [centerMs, chartsData, minHighlightChunkDuration, hoveredEventId])
-  console.log(highlighterData)
 
   useEffect(() => {
     if (onHighlightChunks) {
@@ -247,17 +258,14 @@ const Highlighter = ({
                           key={itemIndex}
                           className={cx(styles.tooltipItem, { [styles.expanded]: item.expanded })}
                         >
-                          <Icon
-                            icon={
-                              item.chartType === 'activity'
-                                ? 'heatmap'
-                                : item.chartType === 'userTrack'
-                                ? 'track'
-                                : 'vessel'
-                            }
-                            className={styles.tooltipColor}
-                            style={{ color: item.color }}
-                          ></Icon>
+                          {item.icon ? (
+                            <Icon icon={item.icon as IconType} style={{ color: item.color }}></Icon>
+                          ) : (
+                            <span
+                              className={styles.tooltipColor}
+                              style={{ backgroundColor: item.color }}
+                            ></span>
+                          )}
                           <div>
                             {item.defaultLabel && (
                               <span className={cx(styles.tooltipLabel, styles.isMain)}>
