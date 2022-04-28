@@ -76,6 +76,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
           >
             {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
           </Modal>
+          <h1>Hello</h1>
           <div className={styles.activityContainer}>
             {events && events.length > 0 ? (
               <AutoSizer disableWidth={true}>

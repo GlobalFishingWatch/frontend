@@ -55,6 +55,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
         {...rest}
       />
       <div className={styles.actionsContainer}>
+        hello, world
         {onRemove && value && (
           <IconButton icon="delete" className={styles.action} onClick={onRemove} />
         )}
