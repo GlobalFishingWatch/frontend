@@ -126,7 +126,9 @@ const getHighlighterData = (
 
       if (foundChunk) {
         const expanded = foundChunk.id === hoveredEventId
-        highlighterData[itemIndex].expanded = expanded
+        if (chartType === 'tracksEvents' || chartType === 'tracksGraphs') {
+          highlighterData[itemIndex].expanded = expanded
+        }
         if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
           highlighterData[itemIndex].defaultLabel = {
             value: item.defaultLabel,
