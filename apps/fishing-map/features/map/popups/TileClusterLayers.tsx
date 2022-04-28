@@ -130,7 +130,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
 
   return (
     <div className={styles.popupSection}>
-      <Icon icon="clusters" className={styles.layerIcon} style={{ color: feature.color }} />
+      <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
         {showFeaturesDetails && (

@@ -25,6 +25,7 @@ import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Dots } from '../assets/icons/dots.svg'
 import { ReactComponent as Download } from '../assets/icons/download.svg'
+import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
 import { ReactComponent as EventEncounter } from '../assets/icons/event-encounter.svg'
@@ -110,6 +111,7 @@ export const IconComponents = {
   delete: Delete,
   dots: Dots,
   download: Download,
+  encounters: Encounters,
   draw: Draw,
   edit: Edit,
   email: Email,
