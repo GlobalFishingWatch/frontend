@@ -39,6 +39,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
+      if (!value || !value.value) return ''
       const dataviewId = item.props?.dataviewId
       const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
       const maxHighlighterFractionDigits =
