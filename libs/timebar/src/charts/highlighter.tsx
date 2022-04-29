@@ -219,7 +219,7 @@ const Highlighter = ({
       onHighlightChunks(highlightedChunks)
     }
   }, [highlightedChunks, onHighlightChunks])
-  console.log(highlighterData.length)
+
   return (
     <Fragment>
       <div
