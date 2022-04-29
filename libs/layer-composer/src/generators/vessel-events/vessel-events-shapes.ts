@@ -3,7 +3,7 @@ import { FeatureCollection } from 'geojson'
 import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
-  CircleLayerSpecification
+  CircleLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
 import {
@@ -19,7 +19,7 @@ import {
   filterGeojsonByTimerange,
   filterFeaturesByTimerange,
   getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
-  groupFeaturesByType
+  groupFeaturesByType,
 } from './vessel-events.utils'
 
 export type GlobalVesselEventsShapesGeneratorConfig =
@@ -160,7 +160,7 @@ class VesselsEventsShapesGenerator {
           interactive: true,
           generatorId: config.id,
         },
-      } as SymbolLayerSpecification
+      } as SymbolLayerSpecification,
     ]
 
     if (!showTrackSegments) {
@@ -195,6 +195,7 @@ class VesselsEventsShapesGenerator {
   }
 
   getStyle = (config: GlobalVesselEventsShapesGeneratorConfig) => {
+    console.log(config)
     memoizeByLayerId(config.id, {
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
       getVesselEventsSegmentsGeojson: memoizeOne(

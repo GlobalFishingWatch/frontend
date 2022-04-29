@@ -156,7 +156,7 @@ export function getGeneratorConfig(
           type,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
-          data: data,
+          data,
           color: dataview.config?.color,
           track: generator.data,
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
