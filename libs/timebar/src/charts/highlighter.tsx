@@ -136,16 +136,18 @@ const getHighlighterData = (
         }
         const foundValue = findValue(centerMs, foundChunk)
 
+        const callbacksArgs = {
+          chunk: foundChunk,
+          value: foundValue,
+          item,
+          itemIndex,
+          expanded,
+        }
+
         const label = item.getHighlighterLabel
           ? typeof item.getHighlighterLabel === 'string'
             ? item.getHighlighterLabel
-            : item.getHighlighterLabel({
-                chunk: foundChunk,
-                value: foundValue,
-                item,
-                itemIndex,
-                expanded,
-              })
+            : item.getHighlighterLabel(callbacksArgs)
           : foundValue?.value?.toString()
 
         if (label) {
@@ -157,13 +159,7 @@ const getHighlighterData = (
         const icon = item.getHighlighterIcon
           ? typeof item.getHighlighterIcon === 'string'
             ? item.getHighlighterIcon
-            : item.getHighlighterIcon({
-                chunk: foundChunk,
-                value: foundValue,
-                item,
-                itemIndex,
-                expanded,
-              })
+            : item.getHighlighterIcon(callbacksArgs)
           : ''
 
         highlighterData[itemIndex].icon = icon
