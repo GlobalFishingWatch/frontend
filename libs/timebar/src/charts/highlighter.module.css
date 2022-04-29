@@ -43,7 +43,7 @@
 .tooltipItem {
   display: block;
   line-height: 1.8rem;
-  padding: 0 10px 2px;
+  padding: 1px 10px 2px;
 }
 
 .tooltipDate {

@@ -219,7 +219,7 @@ const Highlighter = ({
       onHighlightChunks(highlightedChunks)
     }
   }, [highlightedChunks, onHighlightChunks])
-
+  console.log(highlighterData.length)
   return (
     <Fragment>
       <div
@@ -254,7 +254,9 @@ const Highlighter = ({
                       return (
                         <li
                           key={itemIndex}
-                          className={cx(styles.tooltipItem, { [styles.expanded]: item.expanded })}
+                          className={cx(styles.tooltipItem, {
+                            [styles.expanded]: item.expanded && highlighterData.length > 1,
+                          })}
                         >
                           {item.icon ? (
                             <Icon icon={item.icon as IconType} style={{ color: item.color }}></Icon>
