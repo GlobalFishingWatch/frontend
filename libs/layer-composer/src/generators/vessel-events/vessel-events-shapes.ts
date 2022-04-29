@@ -128,7 +128,7 @@ class VesselsEventsShapesGenerator {
       id: `${config.id}_fishingEvents`,
       source: `${config.id}_fishingEvents`,
       paint: {
-        'circle-color': getExpression('#ffffff', ['get', 'color']),
+        'circle-color': ['get', 'color'],
         'circle-radius': [
           'interpolate',
           ['linear'],
@@ -136,8 +136,10 @@ class VesselsEventsShapesGenerator {
           4,
           getExpression(5, 3),
           9,
-          getExpression(10, 6),
+          getExpression(8, 6),
         ],
+        'circle-stroke-color': getExpression('#ffffff', 'transparent'),
+        'circle-stroke-width': 2,
       },
       metadata: {
         group: Group.Point,
