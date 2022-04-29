@@ -55,7 +55,8 @@ export const getVesselEventsGeojson = (
   trackEvents: RawEvent[] | null,
   showAuthorizationStatus = true,
   iconsPrefix = 'carrier_portal_',
-  trackColor = null
+  trackColor = null,
+  vesselId?: string
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -86,6 +87,7 @@ export const getVesselEventsGeojson = (
       type: 'Feature',
       properties: {
         id: event.id,
+        vesselId,
         type: event.type,
         timestamp: event.start,
         start: getDateTimeDate(event.start).toUTC().toISO(),

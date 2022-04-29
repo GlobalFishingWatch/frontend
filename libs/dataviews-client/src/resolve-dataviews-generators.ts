@@ -142,6 +142,10 @@ export function getGeneratorConfig(
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       if (hasEventData) {
+        const vesselId = dataview.datasetsConfig
+          ?.find((dc) => dc.endpoint === EndpointId.Tracks)
+          ?.params.find((p) => p.id === 'vesselId')?.value
+
         // TODO This flatMap will prevent the corresponding generator to memoize correctly
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
         const type =
@@ -151,14 +155,15 @@ export function getGeneratorConfig(
 
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
+          vesselId,
+          type,
+          data,
+          track: generator.data,
+          color: dataview.config?.color,
           event: dataview.config?.event,
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
-          type,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
-          data,
-          color: dataview.config?.color,
-          track: generator.data,
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
           ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
         }

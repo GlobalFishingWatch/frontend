@@ -75,7 +75,7 @@
 .popupSectionTitle {
   opacity: var(--opacity-secondary);
   line-height: 1.2;
-  margin-bottom: var(--space-XS);
+  margin-bottom: var(--space-S);
 }
 
 .click .largeContent .popupSectionTitle {
@@ -118,7 +118,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-S);
+  margin-bottom: var(--space-XS);
 }
 
 /* .list {

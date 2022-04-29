@@ -49,7 +49,8 @@ class VesselsEventsShapesGenerator {
       data,
       showAuthorizationStatus,
       null,
-      config.color
+      config.color,
+      config.vesselId
     ) as FeatureCollection
 
     const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
@@ -195,7 +196,6 @@ class VesselsEventsShapesGenerator {
   }
 
   getStyle = (config: GlobalVesselEventsShapesGeneratorConfig) => {
-    console.log(config)
     memoizeByLayerId(config.id, {
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
       getVesselEventsSegmentsGeojson: memoizeOne(
