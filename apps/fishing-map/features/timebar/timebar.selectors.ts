@@ -18,6 +18,7 @@ import {
   TimebarChartItem,
   TimebarChartValue,
   TrackEventChunkProps,
+  HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
 import { t } from 'features/i18n/i18n'
@@ -29,7 +30,7 @@ import {
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 
-const getUserTrackHighlighterLabel = (chunk: TimebarChartChunk<any>) => {
+const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
 }
 
@@ -98,6 +99,8 @@ export const selectTracksData = createSelector(
           trackResource.dataset.type === DatasetTypes.UserTracks
             ? getUserTrackHighlighterLabel
             : null,
+        getHighlighterIcon:
+          trackResource.dataset.type === DatasetTypes.UserTracks ? 'track' : 'vessel',
         props: {
           segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
         },
@@ -108,9 +111,9 @@ export const selectTracksData = createSelector(
   }
 )
 
-const getTrackGraphSpeedHighlighterLabel = (chunk, value: TimebarChartValue) =>
+const getTrackGraphSpeedHighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value.toFixed(2)} knots` : ''
-const getTrackGraphElevationighlighterLabel = (chunk, value: TimebarChartValue) =>
+const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value} m` : ''
 
 export const selectTracksGraphData = createSelector(
@@ -182,14 +185,17 @@ export const selectTracksGraphData = createSelector(
   }
 )
 
-const getTrackEventHighlighterLabel = (chunk: TimebarChartChunk<TrackEventChunkProps>) => {
+const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs) => {
   if (chunk.cluster) {
     return `${chunk.props?.descriptionGeneric} (${chunk.cluster.numChunks} ${t(
       'event.events',
       'events'
     )})`
   }
-  return chunk.props?.description
+  if (expanded) {
+    return chunk.props?.description
+  }
+  return chunk.props?.descriptionGeneric
 }
 
 export const selectTracksEvents = createSelector(
@@ -208,16 +214,13 @@ export const selectTracksEvents = createSelector(
         status: ResourceStatus.Idle,
         defaultLabel: shipname,
         getHighlighterLabel: getTrackEventHighlighterLabel,
+        getHighlighterIcon: 'vessel',
       }
       if (Array.isArray(visibleEvents) && visibleEvents?.length === 0) return trackEvents
 
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       if (!eventsResources.length) {
         return trackEvents
-      }
-      const hasEventData = eventsResources.some(({ url }) => resources[url]?.data)
-      if (!hasEventData) {
-        return { ...trackEvents, status: ResourceStatus.Loading }
       }
 
       const eventsResourcesFiltered = eventsResources.filter(({ dataset }) => {
@@ -228,12 +231,18 @@ export const selectTracksEvents = createSelector(
       })
 
       trackEvents.chunks = eventsResourcesFiltered.flatMap(({ url }) => {
-        if (!url || !resources[url].data) {
+        if (!url || !resources[url] || !resources[url].data) {
           return []
         }
 
         return resources[url].data as TimebarChartChunk<TrackEventChunkProps>[]
       })
+      trackEvents.status = eventsResourcesFiltered.every(
+        ({ url }) => resources[url]?.status === ResourceStatus.Finished
+      )
+        ? ResourceStatus.Finished
+        : ResourceStatus.Loading
+
       return trackEvents
     })
     return tracksEvents
