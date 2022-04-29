@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Icon } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
@@ -13,7 +14,7 @@ function PresenceTooltipRow({ feature, showFeaturesDetails }: PresenceTooltipRow
 
   return (
     <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <Icon icon="heatmap" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
         {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
         <div className={styles.row}>

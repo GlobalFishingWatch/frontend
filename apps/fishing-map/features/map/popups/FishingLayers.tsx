@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Icon } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import popupStyles from './Popup.module.css'
@@ -17,10 +18,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   return (
     <Fragment>
       <div className={popupStyles.popupSection}>
-        <span
-          className={popupStyles.popupSectionColor}
-          style={{ backgroundColor: feature.color }}
-        />
+        <Icon icon="heatmap" className={popupStyles.layerIcon} style={{ color: feature.color }} />
         <div className={popupStyles.popupSectionContent}>
           {showFeaturesDetails && <h3 className={popupStyles.popupSectionTitle}>{title}</h3>}
           <div className={popupStyles.row}>

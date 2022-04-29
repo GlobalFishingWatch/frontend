@@ -99,6 +99,8 @@ export const selectTracksData = createSelector(
           trackResource.dataset.type === DatasetTypes.UserTracks
             ? getUserTrackHighlighterLabel
             : null,
+        getHighlighterIcon:
+          trackResource.dataset.type === DatasetTypes.UserTracks ? 'track' : 'vessel',
         props: {
           segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
         },
@@ -212,6 +214,7 @@ export const selectTracksEvents = createSelector(
         status: ResourceStatus.Idle,
         defaultLabel: shipname,
         getHighlighterLabel: getTrackEventHighlighterLabel,
+        getHighlighterIcon: 'vessel',
       }
       if (Array.isArray(visibleEvents) && visibleEvents?.length === 0) return trackEvents
 

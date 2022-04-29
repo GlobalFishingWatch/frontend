@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import cx from 'classnames'
 import { useRecoilValue } from 'recoil'
+import { Icon, IconType } from '@globalfishingwatch/ui-components'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
@@ -88,6 +89,7 @@ type HighlighterData = {
   expanded?: boolean
   labels: ({ value?: string } | undefined)[]
   color?: string
+  icon?: string
   defaultLabel?: { value?: string }
 }
 
@@ -124,7 +126,9 @@ const getHighlighterData = (
 
       if (foundChunk) {
         const expanded = foundChunk.id === hoveredEventId
-        highlighterData[itemIndex].expanded = expanded
+        if (chartType === 'tracksEvents' || chartType === 'tracksGraphs') {
+          highlighterData[itemIndex].expanded = expanded
+        }
         if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
           highlighterData[itemIndex].defaultLabel = {
             value: item.defaultLabel,
@@ -132,16 +136,18 @@ const getHighlighterData = (
         }
         const foundValue = findValue(centerMs, foundChunk)
 
+        const callbacksArgs = {
+          chunk: foundChunk,
+          value: foundValue,
+          item,
+          itemIndex,
+          expanded,
+        }
+
         const label = item.getHighlighterLabel
           ? typeof item.getHighlighterLabel === 'string'
             ? item.getHighlighterLabel
-            : item.getHighlighterLabel({
-                chunk: foundChunk,
-                value: foundValue,
-                item,
-                itemIndex,
-                expanded,
-              })
+            : item.getHighlighterLabel(callbacksArgs)
           : foundValue?.value?.toString()
 
         if (label) {
@@ -149,6 +155,14 @@ const getHighlighterData = (
             value: label,
           }
         }
+
+        const icon = item.getHighlighterIcon
+          ? typeof item.getHighlighterIcon === 'string'
+            ? item.getHighlighterIcon
+            : item.getHighlighterIcon(callbacksArgs)
+          : ''
+
+        highlighterData[itemIndex].icon = icon
 
         if (foundChunk.cluster?.ids) {
           highlightedChunks[chartType] = foundChunk.cluster?.ids || []
@@ -232,31 +246,41 @@ const Highlighter = ({
               })}
             >
               <span className={styles.tooltipDate}>{dateLabel}</span>
-              {highlighterData.map((item, itemIndex) => {
-                if (!item) return null
-                else
-                  return (
-                    <span
-                      key={itemIndex}
-                      className={cx(styles.tooltipItem, { [styles.expanded]: item.expanded })}
-                    >
-                      <span
-                        className={styles.tooltipColor}
-                        style={{ backgroundColor: item.color }}
-                      ></span>
-                      {item.defaultLabel && (
-                        <span className={cx(styles.tooltipLabel, styles.isMain)}>
-                          {item.defaultLabel.value}
-                        </span>
-                      )}
-                      {item.labels?.map((label, labelIndex) => (
-                        <span key={labelIndex} className={styles.tooltipLabel}>
-                          {label?.value}
-                        </span>
-                      ))}
-                    </span>
-                  )
-              })}
+              {highlighterData?.length > 0 && (
+                <ul>
+                  {highlighterData.map((item, itemIndex) => {
+                    if (!item) return null
+                    else
+                      return (
+                        <li
+                          key={itemIndex}
+                          className={cx(styles.tooltipItem, { [styles.expanded]: item.expanded })}
+                        >
+                          {item.icon ? (
+                            <Icon icon={item.icon as IconType} style={{ color: item.color }}></Icon>
+                          ) : (
+                            <span
+                              className={styles.tooltipColor}
+                              style={{ backgroundColor: item.color }}
+                            ></span>
+                          )}
+                          <div>
+                            {item.defaultLabel && (
+                              <span className={cx(styles.tooltipLabel, styles.isMain)}>
+                                {item.defaultLabel.value}
+                              </span>
+                            )}
+                            {item.labels?.map((label, labelIndex) => (
+                              <span key={labelIndex} className={cx(styles.tooltipLabel)}>
+                                {label?.value}
+                              </span>
+                            ))}
+                          </div>
+                        </li>
+                      )
+                  })}
+                </ul>
+              )}
             </div>
           </div>,
           tooltipContainer

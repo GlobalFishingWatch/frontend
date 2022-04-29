@@ -56,10 +56,12 @@ const StackedActivity = ({
   timeseries,
   dataviews,
   highlighterCallback,
+  highlighterIconCallback,
 }: {
   timeseries: Timeseries
   dataviews: UrlDataviewInstance[]
   highlighterCallback?: HighlighterCallback
+  highlighterIconCallback?: HighlighterCallback
 }) => {
   const { immediate } = useContext(ImmediateContext)
   // todo replace with outerScale hook
@@ -67,7 +69,8 @@ const StackedActivity = ({
   const dataAsTimebarChartData = useTimeseriesToChartData(
     timeseries,
     dataviews,
-    highlighterCallback
+    highlighterCallback,
+    highlighterIconCallback
   )
   useUpdateChartsData('activity', dataAsTimebarChartData)
   const pathContainers = useMemo(() => {

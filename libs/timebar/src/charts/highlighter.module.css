@@ -56,6 +56,10 @@
 .tooltipItem {
   color: var(--timebar-white-faded);
   width: 100%;
+  flex: 1;
+  align-items: center;
+  line-height: 1.6rem;
+  display: flex;
 }
 
 .tooltipItem.expanded {
@@ -64,14 +68,6 @@
 
 .tooltipItem:not(:last-child) {
   margin-right: 1rem;
-}
-
-.tooltipColor {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 0.4rem;
-  border-radius: 99px;
 }
 
 .tooltipLabel:not(:last-child, .isMain)::after {
