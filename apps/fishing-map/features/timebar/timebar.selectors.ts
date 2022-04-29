@@ -222,10 +222,6 @@ export const selectTracksEvents = createSelector(
       if (!eventsResources.length) {
         return trackEvents
       }
-      const hasEventData = eventsResources.some(({ url }) => resources[url]?.data)
-      if (!hasEventData) {
-        return { ...trackEvents, status: ResourceStatus.Loading }
-      }
 
       const eventsResourcesFiltered = eventsResources.filter(({ dataset }) => {
         if (visibleEvents === 'all') {
@@ -235,12 +231,18 @@ export const selectTracksEvents = createSelector(
       })
 
       trackEvents.chunks = eventsResourcesFiltered.flatMap(({ url }) => {
-        if (!url || !resources[url].data) {
+        if (!url || !resources[url] || !resources[url].data) {
           return []
         }
 
         return resources[url].data as TimebarChartChunk<TrackEventChunkProps>[]
       })
+      trackEvents.status = eventsResourcesFiltered.every(
+        ({ url }) => resources[url]?.status === ResourceStatus.Finished
+      )
+        ? ResourceStatus.Finished
+        : ResourceStatus.Loading
+
       return trackEvents
     })
     return tracksEvents

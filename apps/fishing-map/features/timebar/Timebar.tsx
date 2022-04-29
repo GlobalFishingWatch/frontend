@@ -260,7 +260,8 @@ const TimebarWrapper = () => {
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
-  const trackGraphsLoading =
+  const loading =
+    tracks?.some(({ status }) => status === ResourceStatus.Loading) ||
     tracksGraphsData?.some(({ status }) => status === ResourceStatus.Loading) ||
     tracksEvents?.some(({ status }) => status === ResourceStatus.Loading)
 
@@ -327,7 +328,7 @@ const TimebarWrapper = () => {
           </Fragment>
         ) : null}
       </Timebar>
-      {!isSmallScreen && <TimebarSettings loading={trackGraphsLoading} />}
+      {!isSmallScreen && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>
   )
