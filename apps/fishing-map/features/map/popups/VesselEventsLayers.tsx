@@ -2,6 +2,7 @@ import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
+import { feature } from 'topojson-client'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
@@ -22,9 +23,10 @@ function VesselEventsTooltipSection({
 }: VesselEventsTooltipRowProps) {
   const { t } = useTranslation()
   const overflows = features?.length > MAX_TOOLTIP_LIST
+  console.log(features)
   const featuresByType = useMemo(() => {
     const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
-    return groupBy(maxFeatures, 'layerId')
+    return groupBy(maxFeatures, 'properties.vesselId')
   }, [overflows, features])
 
   const resources = useSelector(selectVisibleResources)
