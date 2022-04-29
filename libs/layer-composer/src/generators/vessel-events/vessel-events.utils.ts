@@ -195,6 +195,7 @@ export const getVesselEventsSegmentsGeojson = (
           type: event.type,
           start: getDateTimeDate(event.start).toUTC().toISO(),
           end: getDateTimeDate(event.end).toUTC().toISO(),
+          width: event.type === 'fishing' ? 4 : 1,
           color:
             isEncounterEvent && showAuthorizationStatus
               ? getEncounterAuthColor(authorizationStatus)

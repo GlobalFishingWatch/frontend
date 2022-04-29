@@ -42,7 +42,7 @@
   border: 0.5px solid var(--color-secondary-blue);
   position: absolute;
   width: 15px;
-  top: 3.5px;
+  top: 3px;
   left: -4px;
   z-index: 0;
 }

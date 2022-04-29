@@ -180,8 +180,8 @@ class VesselsEventsShapesGenerator {
           visibility: 'visible',
         },
         paint: {
-          'line-color': ['get', 'color'],
-          'line-width': getExpression(6, 1.5),
+          'line-color': getExpression('#ffffff', config.color),
+          'line-width': ['get', 'width'],
           'line-opacity': 1,
         },
         metadata: {
