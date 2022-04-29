@@ -168,7 +168,8 @@ export const getVesselEventsSegmentsGeojsonMemoizeEqualityCheck = (
 export const getVesselEventsSegmentsGeojson = (
   track: any,
   events: RawEvent[],
-  showAuthorizationStatus = true
+  showAuthorizationStatus = true,
+  vesselId?: string
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -192,6 +193,7 @@ export const getVesselEventsSegmentsGeojson = (
         ...feature,
         properties: {
           id: event.id,
+          vesselId,
           type: event.type,
           start: getDateTimeDate(event.start).toUTC().toISO(),
           end: getDateTimeDate(event.end).toUTC().toISO(),
