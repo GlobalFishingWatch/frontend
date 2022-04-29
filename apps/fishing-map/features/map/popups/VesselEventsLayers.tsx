@@ -23,7 +23,6 @@ function VesselEventsTooltipSection({
 }: VesselEventsTooltipRowProps) {
   const { t } = useTranslation()
   const overflows = features?.length > MAX_TOOLTIP_LIST
-  console.log(features)
   const featuresByType = useMemo(() => {
     const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
     return groupBy(maxFeatures, 'properties.vesselId')
