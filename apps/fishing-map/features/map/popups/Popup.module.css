@@ -121,10 +121,10 @@
   margin-bottom: var(--space-S);
 }
 
-/* .list {
-  max-height: 400px;
+.list {
+  max-height: 60vh;
   overflow: auto;
-} */
+}
 
 .list > li {
   max-width: 50rem;
