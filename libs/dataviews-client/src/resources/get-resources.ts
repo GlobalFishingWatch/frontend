@@ -97,6 +97,7 @@ export const pickTrackResource = (
     // TODO abstract this using a generic priority field?
     return resB.datasetConfig.metadata?.zoom - resA.datasetConfig.metadata?.zoom
   })
+
   const highestZoom = loadedVesselResources?.[0]?.datasetConfig.metadata?.zoom
 
   if (highestZoom === undefined) return undefined

@@ -27,8 +27,8 @@
 
 .port_visit {
   z-index: 1;
-  height: 8px;
-  min-width: 8px;
+  height: 10px;
+  min-width: 10px;
   border: 1px solid var(--timebar-main-background-color);
 }
 

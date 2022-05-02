@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
-import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -130,7 +130,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
 
   return (
     <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
         {showFeaturesDetails && (
@@ -231,17 +231,21 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
 function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
   return (
     <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <Icon icon="clusters" style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
         {showFeaturesDetails && feature.properties && (
           <div className={styles.row}>
-            <ul>
+            <ul className={styles.list}>
               {Object.entries(feature.properties).map(([key, value]) => {
                 if (key === 'count' || key === 'expansionZoom') {
                   return null
                 }
-                return <li key={key}>{`${key}: ${value}`}</li>
+                return (
+                  <li key={key}>
+                    <span className={styles.strong}>{key}</span>: {JSON.stringify(value)}
+                  </li>
+                )
               })}
             </ul>
           </div>

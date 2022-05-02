@@ -309,8 +309,6 @@ const MapWrapper = () => {
 
   return (
     <div className={styles.container}>
-      {/* Disabled for now for performance issues */}
-      {/* {<MapScreenshot map={map} />} */}
       {style && (
         <DeckGL
           layers={deckLayers}

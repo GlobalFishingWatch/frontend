@@ -1,5 +1,10 @@
-.default path {
-  fill: currentColor;
+.icon {
+  min-width: fit-content;
+}
+
+.default path,
+.default rect {
+  fill: currentcolor;
 }
 
 .warning path {

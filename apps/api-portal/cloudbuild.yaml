@@ -41,9 +41,15 @@ steps:
       - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
 
+  - id: 'docker-prepare'
+    waitFor: ['build-app']
+    name: node:14
+    entrypoint: yarn
+    args: ['nx', 'docker-prepare', 'api-portal']
+
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['build-app']
+    waitFor: ['docker-prepare']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$COMMIT_SHA',

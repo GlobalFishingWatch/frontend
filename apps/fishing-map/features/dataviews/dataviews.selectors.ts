@@ -1,9 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewCategory, Dataset } from '@globalfishingwatch/api-types'
-import {
-  UrlDataviewInstance,
-  getGeneratorConfig,
-} from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
 import {
   GeneratorType,
   BasemapGeneratorConfig,
@@ -21,7 +18,8 @@ import {
   selectActiveVesselsDataviews,
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesResolved,
- selectAllDataviews } from 'features/dataviews/dataviews.slice'
+  selectAllDataviews,
+} from 'features/dataviews/dataviews.slice'
 
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -123,6 +121,13 @@ export const selectEnvironmentalDataviews = createSelector(
 export const selectActiveEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
+  [selectActiveEnvironmentalDataviews],
+  (dataviews) => {
+    return dataviews.filter((dv) => dv.datasets.every((ds) => ds.type !== DatasetTypes.UserTracks))
+  }
 )
 
 export const selectActiveTemporalgridDataviews = createSelector(

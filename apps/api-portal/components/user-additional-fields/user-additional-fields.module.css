@@ -49,6 +49,12 @@
   text-align: center;
 }
 
+.validationErrorMessage {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  margin: var(--space-S);
+}
+
 @media (max-width: 767px) {
   .field {
     width: 100%;

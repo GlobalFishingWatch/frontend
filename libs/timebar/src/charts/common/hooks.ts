@@ -172,7 +172,8 @@ export const useSortedChartData = (data: TimebarChartData<any>, type?: 'byType' 
 export const useTimeseriesToChartData = (
   data: Timeseries,
   dataviews: UrlDataviewInstance[],
-  highlighterCallback?: HighlighterCallback
+  highlighterCallback?: HighlighterCallback,
+  highlighterIconCallback?: HighlighterCallback
 ): TimebarChartData => {
   if (!data || !data.length) return []
   return dataviews.map((dataview, i) => {
@@ -191,6 +192,7 @@ export const useTimeseriesToChartData = (
       chunks: [chunk],
       color: dataview.config?.color,
       getHighlighterLabel: highlighterCallback,
+      getHighlighterIcon: highlighterIconCallback,
       props: {
         unit: '',
         dataviewId: dataview.id,

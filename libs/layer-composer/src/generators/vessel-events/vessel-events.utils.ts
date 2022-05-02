@@ -55,7 +55,8 @@ export const getVesselEventsGeojson = (
   trackEvents: RawEvent[] | null,
   showAuthorizationStatus = true,
   iconsPrefix = 'carrier_portal_',
-  trackColor = null
+  trackColor = null,
+  vesselId?: string
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -86,6 +87,7 @@ export const getVesselEventsGeojson = (
       type: 'Feature',
       properties: {
         id: event.id,
+        vesselId,
         type: event.type,
         timestamp: event.start,
         start: getDateTimeDate(event.start).toUTC().toISO(),
@@ -166,7 +168,8 @@ export const getVesselEventsSegmentsGeojsonMemoizeEqualityCheck = (
 export const getVesselEventsSegmentsGeojson = (
   track: any,
   events: RawEvent[],
-  showAuthorizationStatus = true
+  showAuthorizationStatus = true,
+  vesselId?: string
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -190,9 +193,11 @@ export const getVesselEventsSegmentsGeojson = (
         ...feature,
         properties: {
           id: event.id,
+          vesselId,
           type: event.type,
           start: getDateTimeDate(event.start).toUTC().toISO(),
           end: getDateTimeDate(event.end).toUTC().toISO(),
+          width: event.type === 'fishing' ? 4 : 1,
           color:
             isEncounterEvent && showAuthorizationStatus
               ? getEncounterAuthColor(authorizationStatus)
