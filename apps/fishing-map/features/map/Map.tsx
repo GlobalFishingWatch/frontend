@@ -303,8 +303,13 @@ const MapWrapper = () => {
         getPointRadius: 10000,
         getFillColor: [255, 0, 255, 255],
         filled: true,
+        pickable: true,
       }),
     ]
+  }, [])
+
+  const onDeckLayerClick = useCallback((info) => {
+    console.log(info)
   }, [])
 
   return (
@@ -315,6 +320,7 @@ const MapWrapper = () => {
           controller={true}
           viewState={deckViewState}
           onViewStateChange={onViewStateChange}
+          onClick={onDeckLayerClick}
         >
           <InteractiveMap
             disableTokenWarning={true}
