@@ -163,8 +163,10 @@ interface IconProps {
   tooltipPlacement?: Placement
 }
 
+const defaultStyle = {}
+
 export function Icon(props: IconProps) {
-  const { icon, tooltip, type = 'default', className = '', style = {} } = props
+  const { icon, tooltip, type = 'default', className = '', style = defaultStyle } = props
   const Component = IconComponents[icon]
   if (!Component) {
     console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
@@ -172,7 +174,7 @@ export function Icon(props: IconProps) {
   }
   return (
     <Tooltip content={tooltip as React.ReactNode} placement="auto">
-      <Component className={cx(styles.icon, styles[type], className)} />
+      <Component className={cx(styles.icon, styles[type], className)} style={style} />
     </Tooltip>
   )
 }
