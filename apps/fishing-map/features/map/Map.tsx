@@ -7,7 +7,7 @@ import type { MapRequest } from 'react-map-gl'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import DeckGL from '@deck.gl/react'
-import { GeoJsonLayer } from '@deck.gl/layers'
+import { GeoJsonLayer, IconLayer } from '@deck.gl/layers'
 import { MVTLayer } from '@deck.gl/geo-layers'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -296,14 +296,50 @@ const MapWrapper = () => {
         // data: 'https://raw.githubusercontent.com/GlobalFishingWatch/live-positions-poc/main/tiles/{z}/{x}/{y}.pbf?raw=true',
         // data: 'http://localhost:9090/{z}/{x}/{y}.pbf',
         data: 'https://storage.googleapis.com/live-positions-poc/tiles/{z}/{x}/{y}.pbf',
-        binary: true,
-        minZoom: 0,
-        maxZoom: 5,
+        binary: false,
+        // minZoom: 0,
+        // maxZoom: 5,
         pointType: 'circle',
         getPointRadius: 10000,
         getFillColor: [255, 0, 255, 255],
-        filled: true,
-        pickable: true,
+        // filled: true,
+        // pickable: true,
+        renderSubLayers: (props) => {
+          console.log(props)
+          // return new GeoJsonLayer(props)
+          const ICON_MAPPING = {
+            marker: { x: 0, y: 0, width: 128, height: 128, mask: true },
+          }
+
+          return new IconLayer({
+            ...props,
+            // data: [
+            //   {
+            //     name: 'Colma (COLM)',
+            //     address: '365 D Street, Colma CA 94014',
+            //     exits: 4214,
+            //     coordinates: [-122.466233, 37.684638],
+            //   },
+            // ],
+            // pickable: true,
+            // iconAtlas and iconMapping are required
+            // getIcon: return a string
+            iconAtlas:
+              'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+            iconMapping: ICON_MAPPING,
+            getIcon: (d) => 'marker',
+
+            sizeScale: 5,
+            getPosition: (d) => {
+              // console.log(d)
+              return d.geometry.coordinates
+              // return d.coordinates
+            },
+            getSize: (d) => 5,
+            getColor: (d) => [255, 140, 0],
+            getAngle: (d) => d.properties.c,
+          })
+        },
       }),
     ]
   }, [])
