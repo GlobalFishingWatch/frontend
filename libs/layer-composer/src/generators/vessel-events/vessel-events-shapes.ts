@@ -127,6 +127,9 @@ class VesselsEventsShapesGenerator {
       type: 'circle',
       id: `${config.id}_fishingEvents`,
       source: `${config.id}_fishingEvents`,
+      layout: {
+        'circle-sort-key': getExpression(1, 0),
+      },
       paint: {
         'circle-color': ['get', 'color'],
         'circle-radius': [
