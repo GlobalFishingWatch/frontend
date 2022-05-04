@@ -167,7 +167,10 @@ class VesselsEventsShapesGenerator {
           getExpression(1.5, 1),
         ],
         'icon-image': getExpression(['get', 'shapeHighlight'], ['get', 'shape']),
-        'symbol-sort-key': ['get', 'shapePriority'],
+        'symbol-sort-key': getExpression(
+          ['*', 10, ['get', 'shapePriority']],
+          ['get', 'shapePriority']
+        ),
       },
       metadata: {
         group: Group.Point,
