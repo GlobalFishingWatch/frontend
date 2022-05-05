@@ -514,6 +514,11 @@
     "saveAsNew": "Guardar nuevo",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
     "saveLogin": "Necesita iniciar sesión para guardar la vista actual (gratis y toma 2 minutos)",
+    "siteDescription": {
+      "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
+    },
     "title_other": "Espacios de trabajo",
     "update": "Actualizar",
     "uploadPublic": "Permitir a otros usuarios ver este espacio de trabajo",
