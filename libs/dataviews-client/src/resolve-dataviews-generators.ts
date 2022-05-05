@@ -146,7 +146,8 @@ export function getGeneratorConfig(
           ?.find((dc) => dc.endpoint === EndpointId.Tracks)
           ?.params.find((p) => p.id === 'vesselId')?.value
 
-        // TODO This flatMap will prevent the corresponding generator to memoize correctly
+        // This flatMap will prevent the corresponding generator to memoize correctly,
+        // which is handled by the events generator
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
         const type =
           params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS

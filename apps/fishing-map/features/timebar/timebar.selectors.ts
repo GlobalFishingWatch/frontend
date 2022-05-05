@@ -132,10 +132,12 @@ export const selectTracksGraphData = createSelector(
               : getTrackGraphElevationighlighterLabel,
         }
 
-        const { url: graphUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks, {
-          id: 'fields',
-          value: timebarGraphType,
-        })
+        const resourcesQueries = resolveDataviewDatasetResources(dataview, DatasetTypes.Tracks)
+        const resourceQuery = resourcesQueries.find((r) =>
+          r.datasetConfig.query?.find((q) => q.id === 'fields' && q.value === timebarGraphType)
+        )
+
+        const graphUrl = resourceQuery?.url
         if (!graphUrl) return trackGraphData
         const graphResource = resources[graphUrl] as Resource<TrackResourceData>
 
