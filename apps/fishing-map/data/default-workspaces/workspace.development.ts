@@ -10,11 +10,11 @@ import {
   BASEMAP_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
   PRESENCE_DATAVIEW_ID,
+  VIIRS_MATCH_DATAVIEW_ID,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
-  VIIRS_MATCH_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -57,7 +57,7 @@ const workspace: Workspace<WorkspaceState> = {
       // update it here if you want to show it again or go to
       // apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
       // and update the `dataviewInstanceId`
-      id: 'vms',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',

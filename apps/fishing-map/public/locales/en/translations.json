@@ -129,7 +129,8 @@
     "view_layer": "View the layer",
     "viirs": "Night light detections (VIIRS)",
     "welcomePopupDisable": "Don't show again",
-    "whatsNew": "What's new?"
+    "whatsNew": "What's new?",
+    "view_layer": "View the layer"
   },
   "dataset": {
     "addContext": "Add reference layer",
