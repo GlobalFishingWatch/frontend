@@ -1,5 +1,6 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
+import { DateTime, Duration } from 'luxon'
 import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
@@ -112,8 +113,16 @@ class VesselsEventsShapesGenerator {
     }
     const showTrackSegments = this._showTrackSegments(config)
 
+    let highlightEvents = true
+    if (config.start && config.end) {
+      const startDT = DateTime.fromISO(config.start).toUTC()
+      const endDT = DateTime.fromISO(config.end).toUTC()
+      const delta = Duration.fromMillis(+endDT - +startDT)
+      if (delta.as('years') > 1) highlightEvents = false
+    }
+
     const getExpression = (highlighted: any, fallback: any) => {
-      if (!config.currentEventsIds || !config.currentEventsIds.length) {
+      if (!config.currentEventsIds || !config.currentEventsIds.length || !highlightEvents) {
         return fallback
       }
       const filter = [
