@@ -51,11 +51,15 @@ const getDateTimeDate = (date: string | number) => {
   return typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
 }
 
+const filterEventByTimerange = (startMs: number, endMs: number, feature: Feature) =>
+  feature.properties && feature.properties.startMs < endMs && feature.properties.endMs > startMs
+
 export const getVesselEventsGeojson = (
   trackEvents: RawEvent[] | null,
   showAuthorizationStatus = true,
   iconsPrefix = 'carrier_portal_',
-  trackColor = null
+  trackColor = null,
+  vesselId?: string
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -82,14 +86,20 @@ export const getVesselEventsGeojson = (
       color = trackColor || EVENTS_COLORS[event.type]
     }
     const shape = SHAPE_BY_TYPE[event.type as EventType]
+
+    const startDT = getDateTimeDate(event.start).toUTC()
+    const endDT = getDateTimeDate(event.end).toUTC()
+
     return {
       type: 'Feature',
       properties: {
         id: event.id,
+        vesselId,
         type: event.type,
-        timestamp: event.start,
-        start: getDateTimeDate(event.start).toUTC().toISO(),
-        end: getDateTimeDate(event.end).toUTC().toISO(),
+        startMs: +startDT,
+        endMs: +endDT,
+        start: startDT.toISO(),
+        end: endDT.toISO(),
         ...(isEncounterEvent && {
           encounterVesselId: event.encounter?.vessel?.id,
           encounterVesselName: event.encounter?.vessel?.name,
@@ -117,14 +127,11 @@ export const getVesselEventsGeojson = (
 
 export const filterFeaturesByTimerange = (features: Feature[], start: string, end: string) => {
   if (start && end) {
-    const startMs = new Date(start).getTime()
-    const endMs = new Date(end).getTime()
+    const startMs = +getDateTimeDate(start).toUTC()
+    const endMs = +getDateTimeDate(end).toUTC()
+
     return features.filter((feature) => {
-      return (
-        feature.properties &&
-        feature.properties.timestamp >= startMs &&
-        feature.properties.timestamp <= endMs
-      )
+      return filterEventByTimerange(startMs, endMs, feature)
     })
   }
   return features
@@ -145,8 +152,11 @@ export const filterGeojsonByTimerange = (
     return geojson
   }
 
+  const startMs = +getDateTimeDate(start).toUTC()
+  const endMs = +getDateTimeDate(end).toUTC()
+
   const featuresFiltered = geojson.features.filter((feature) => {
-    return feature.properties?.start >= start && feature.properties?.end <= end
+    return filterEventByTimerange(startMs, endMs, feature)
   })
 
   const geojsonFiltered: FeatureCollection = {
@@ -166,7 +176,8 @@ export const getVesselEventsSegmentsGeojsonMemoizeEqualityCheck = (
 export const getVesselEventsSegmentsGeojson = (
   track: any,
   events: RawEvent[],
-  showAuthorizationStatus = true
+  showAuthorizationStatus = true,
+  vesselId?: string
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -186,13 +197,20 @@ export const getVesselEventsSegmentsGeojson = (
       const authorizationStatus = event?.encounter
         ? event.encounter?.authorizationStatus
         : ('unmatched' as AuthorizationOptions)
+      const startDT = getDateTimeDate(event.start).toUTC()
+      const endDT = getDateTimeDate(event.end).toUTC()
+
       return {
         ...feature,
         properties: {
           id: event.id,
+          vesselId,
           type: event.type,
-          start: getDateTimeDate(event.start).toUTC().toISO(),
-          end: getDateTimeDate(event.end).toUTC().toISO(),
+          startMs: +startDT,
+          endMs: +endDT,
+          start: startDT.toISO(),
+          end: endDT.toISO(),
+          width: event.type === 'fishing' ? 4 : 1,
           color:
             isEncounterEvent && showAuthorizationStatus
               ? getEncounterAuthColor(authorizationStatus)

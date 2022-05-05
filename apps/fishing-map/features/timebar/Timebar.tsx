@@ -44,6 +44,8 @@ import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './t
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
+const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
+
 const TimebarHighlighterWrapper = () => {
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
@@ -232,7 +234,7 @@ const TimebarWrapper = () => {
       setMapCoordinates({
         latitude: event.props.latitude,
         longitude: event.props.longitude,
-        zoom: zoom < 8 ? 8 : zoom,
+        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
     },
     [setMapCoordinates, zoom]
@@ -258,7 +260,8 @@ const TimebarWrapper = () => {
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
-  const trackGraphsLoading =
+  const loading =
+    tracks?.some(({ status }) => status === ResourceStatus.Loading) ||
     tracksGraphsData?.some(({ status }) => status === ResourceStatus.Loading) ||
     tracksEvents?.some(({ status }) => status === ResourceStatus.Loading)
 
@@ -325,7 +328,7 @@ const TimebarWrapper = () => {
           </Fragment>
         ) : null}
       </Timebar>
-      {!isSmallScreen && <TimebarSettings loading={trackGraphsLoading} />}
+      {!isSmallScreen && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>
   )

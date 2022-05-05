@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { groupBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -18,7 +18,7 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
 
   return (
     <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <Icon icon="heatmap" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
         {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
         <div className={styles.row}>

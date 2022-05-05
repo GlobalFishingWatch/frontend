@@ -40,12 +40,12 @@ const DEFAULT_HIGHLIGHT_CONFIG: HighlightPanelConfig = {
       'La identidad de los buques pesqueros que usan luces brillantes por la noche se agrega a través de un proceso de comparación avanzado.',
   },
   fr: {
-    title: 'New VIIRS-AIS match layer',
+    title: 'Qui pêche la nuit?',
     description:
-      'Identity of fishing vessels using bright lights at night added through advanced matching process.',
+      "L'identité des navires de pêche utilisant des lumières de nuit a été ajoutée grace à un processus de correspondance avancé.",
   },
   pt: {
-    title: 'New VIIRS-AIS match layer',
+    title: 'Who is fishing at night?',
     description:
       'Identity of fishing vessels using bright lights at night added through advanced matching process.',
   },

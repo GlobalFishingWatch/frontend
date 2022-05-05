@@ -34,3 +34,8 @@ export const useUpdateChartsData = (key: ChartType, data: TimebarChartData<void>
     }
   }, [data, key, setChartDataKeyActive])
 }
+
+export const hoveredEventState = atom({
+  key: 'hovered-event',
+  default: undefined as string | undefined,
+})
