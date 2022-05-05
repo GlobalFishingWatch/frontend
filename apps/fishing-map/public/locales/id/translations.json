@@ -514,6 +514,11 @@
     "saveAsNew": "Save as new workspace",
     "saved": "Tampilan saat ini telah disimpan dan tersedia di profil Anda",
     "saveLogin": "Anda harus masuk untuk menyimpan tampilan (gratis, 2 menit)",
+    "siteDescription": {
+      "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
+    },
     "title_other": "Workspaces",
     "update": "Update",
     "uploadPublic": "Allow other users to see this workspace",
