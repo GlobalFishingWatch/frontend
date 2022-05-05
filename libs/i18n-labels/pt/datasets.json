@@ -91,9 +91,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "purse_seine": "purse_seine",
-          "trawler": "trawler",
-          "longline": "longline"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -107,20 +108,21 @@
     "description": "Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
-      "imo": "imo",
       "flag": "flag",
-      "mmsi": "mmsi",
       "source": "source",
-      "callsign": "callsign",
+      "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "purse_seine": "purse_seine",
-          "trawler": "trawler",
-          "longline": "longline",
-          "reefer": "reefer"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
+      "callsign": "callsign",
+      "mmsi": "mmsi",
+      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -131,20 +133,21 @@
     "description": "Non Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
-      "imo": "imo",
       "flag": "flag",
-      "mmsi": "mmsi",
       "source": "source",
-      "callsign": "callsign",
+      "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "purse_seine": "purse_seine",
-          "trawler": "trawler",
-          "longline": "longline",
-          "reefer": "reefer"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
+      "callsign": "callsign",
+      "mmsi": "mmsi",
+      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -458,7 +461,9 @@
       "callsign": "callsign",
       "geartype": {
         "keyword": "Aparelho de pesca",
-        "enum": {}
+        "enum": {
+          "Purse Seine Support Vessel": "Purse Seine Support Vessel"
+        }
       },
       "msgCount": "msgCount",
       "posCount": "posCount",
@@ -874,9 +879,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "purse_seine": "purse_seine",
-          "trawler": "trawler",
-          "longline": "longline"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -886,21 +892,26 @@
     }
   },
   "public-belize-fishing-vessels": {
-    "name": "Belize VMS",
-    "description": "Dataset for VMS Belize (Public)",
+    "name": "VMS Belize (Fishing Vessels)",
+    "description": "Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
       "flag": "flag",
       "source": "source",
+      "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "purse_seine": "purse_seine",
-          "trawler": "trawler",
-          "longline": "longline",
-          "reefer": "reefer"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
+      "callsign": "callsign",
+      "mmsi": "mmsi",
+      "imo": "imo",
+      "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -1465,7 +1476,6 @@
     "description": "Carriers from AIS",
     "schema": {
       "id": "id",
-      "imo": "imo",
       "dataset": "dataset",
       "msgCount": "msgCount",
       "posCount": "posCount",
@@ -1586,6 +1596,22 @@
       "normalized_shipname": "Embarcação normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-global-presence": {
+    "name": "AIS",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessel's AIS.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "fishing": "fishing",
+          "carrier": "carrier",
+          "unknown": "unknown"
+        }
+      }
     }
   },
   "public-global-sar-presence": {
