@@ -224,7 +224,7 @@ class VesselsEventsShapesGenerator {
         (data) => data,
         // Do not use shallow equality as data structures is generated on the fly in getGeneratorConfig
         (newArgs: any, lastArgs: any) => {
-          return newArgs.length === lastArgs.length
+          return newArgs.length !== lastArgs.length
         }
       ),
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
