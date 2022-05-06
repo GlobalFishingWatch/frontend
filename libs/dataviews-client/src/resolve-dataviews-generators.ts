@@ -53,6 +53,7 @@ export type DataviewsGeneratorConfigsParams = {
   heatmapAnimatedMode?: HeatmapAnimatedMode
   customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
   singleTrack?: boolean
+  disableHighlight?: boolean
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -153,7 +154,7 @@ export function getGeneratorConfig(
           params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
             ? params?.customGeneratorMapping.VESSEL_EVENTS
             : GeneratorType.VesselEvents
-
+        console.log(params?.disableHighlight)
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           vesselId,
@@ -165,8 +166,10 @@ export function getGeneratorConfig(
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
-          ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
-          ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
+          ...(highlightedEvent &&
+            !params?.disableHighlight && { currentEventId: highlightedEvent.id }),
+          ...(highlightedEvents &&
+            !params?.disableHighlight && { currentEventsIds: highlightedEvents }),
         }
         return [generator, eventsGenerator]
       }

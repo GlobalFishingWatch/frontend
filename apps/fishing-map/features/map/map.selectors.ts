@@ -78,7 +78,9 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 
-  const singleTrack = dataviews.filter((d) => d.config.type === GeneratorType.Track).length === 1
+  const trackDataviews = dataviews.filter((d) => d.config.type === GeneratorType.Track)
+  const singleTrack = trackDataviews.length === 1
+  const disableHighlight = trackDataviews.length >= 5
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
     heatmapAnimatedMode,
@@ -90,6 +92,7 @@ const getGeneratorsConfig = ({
       [GeneratorType.VesselEvents]: GeneratorType.VesselEventsShapes,
     },
     singleTrack,
+    disableHighlight,
   }
 
   try {
