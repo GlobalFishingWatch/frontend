@@ -80,11 +80,18 @@
         "access": "public"
       }
     },
-    "deploy": {
+    "purge": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": ["nx publish i18n-labels", "./libs/i18n-labels/purge_jsdelivr.sh"],
+        "commands": ["PACKAGE_TAG=latest ./libs/i18n-labels/purge_jsdelivr.sh"],
         "parallel": false
+      }
+    },
+    "deploy": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "releaseAs": "patch",
+        "postTargets": ["i18n-labels:publish", "i18n-labels:purge"]
       }
     }
   }

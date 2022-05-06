@@ -90,6 +90,7 @@
   },
   "devDependencies": {
     "@globalfishingwatch/maplibre-gl": "^2.1.7-gfw.19",
+    "@jscutlery/semver": "^2.23.3",
     "@nrwl/cli": "13.8.3",
     "@nrwl/cypress": "13.9.2",
     "@nrwl/eslint-plugin-nx": "13.9.2",
