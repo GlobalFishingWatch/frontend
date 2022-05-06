@@ -64,11 +64,11 @@
 }
 
 .encounter.compact {
-  border-width: 3.5px;
+  border-width: 3px;
 }
 
 .loitering.compact {
-  border-width: 3.5px;
+  border-width: 3px;
 }
 
 .encounter:hover,
