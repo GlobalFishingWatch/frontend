@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -64,6 +65,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
+  const { online } = useNavigatorOnline()
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -285,13 +287,15 @@ const Profile: React.FC = (props): React.ReactElement => {
             )}
           </h1>
         )}
-        <IconButton
-          icon="feedback"
-          className={styles.feedback}
-          onClick={openFeedback}
-          tooltip={t('common.feedback', 'Feedback')}
-          tooltipPlacement="bottom"
-        />
+        {online &&
+          <IconButton
+            icon="feedback"
+            className={styles.feedback}
+            onClick={openFeedback}
+            tooltip={t('common.feedback', 'Feedback')}
+            tooltipPlacement="bottom"
+          />
+        }
       </header>
       <div className={styles.profileContainer}>
         <Tabs
