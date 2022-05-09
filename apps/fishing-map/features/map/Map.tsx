@@ -17,6 +17,7 @@ import {
   InteractionEventCallback,
   useLayerComposer,
   defaultStyleTransformations,
+  useDebounce,
 } from '@globalfishingwatch/react-hooks'
 import { LayerComposer, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
@@ -254,6 +255,9 @@ const MapWrapper = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
 
+  const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
+  const debouncedMapLoading = useDebounce(mapLoading, 2000)
+
   return (
     <div className={styles.container}>
       {style && (
@@ -302,10 +306,7 @@ const MapWrapper = () => {
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </InteractiveMap>
       )}
-      <MapControls
-        onMouseEnter={resetHoverState}
-        mapLoading={!mapLoaded || layerComposerLoading || !allSourcesLoaded}
-      />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
       {isWorkspace && !isAnalyzing && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}

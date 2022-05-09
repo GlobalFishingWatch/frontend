@@ -53,6 +53,7 @@ export type DataviewsGeneratorConfigsParams = {
   heatmapAnimatedMode?: HeatmapAnimatedMode
   customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
   singleTrack?: boolean
+  disableHighlight?: boolean
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -146,7 +147,8 @@ export function getGeneratorConfig(
           ?.find((dc) => dc.endpoint === EndpointId.Tracks)
           ?.params.find((p) => p.id === 'vesselId')?.value
 
-        // TODO This flatMap will prevent the corresponding generator to memoize correctly
+        // This flatMap will prevent the corresponding generator to memoize correctly,
+        // which is handled by the events generator
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
         const type =
           params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
@@ -164,8 +166,10 @@ export function getGeneratorConfig(
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
-          ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
-          ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
+          ...(highlightedEvent &&
+            !params?.disableHighlight && { currentEventId: highlightedEvent.id }),
+          ...(highlightedEvents &&
+            !params?.disableHighlight && { currentEventsIds: highlightedEvents }),
         }
         return [generator, eventsGenerator]
       }
