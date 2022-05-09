@@ -31,6 +31,7 @@ import {
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -59,6 +60,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [infoOpen, setInfoOpen] = useState(false)
   const [datasetModalOpen, setDatasetModalOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
+  const userPrivateGroups = useSelector(selectPrivateUserGroups)
   const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
     dataview,
     userData?.permissions
@@ -257,7 +259,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           })}
         >
           <Fragment>
-            {gfwUser && (
+            {(gfwUser || userPrivateGroups?.length > 0) && (
               <IconButton
                 icon="download"
                 disabled={!downloadSupported}
