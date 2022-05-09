@@ -255,9 +255,7 @@ const MapWrapper = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
 
-  const mapLoading = useMemo(() => {
-    return !mapLoaded || layerComposerLoading || !allSourcesLoaded
-  }, [mapLoaded, layerComposerLoading, allSourcesLoaded])
+  const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 2000)
 
   return (
