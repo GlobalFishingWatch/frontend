@@ -18,7 +18,7 @@ export const trackDatasetConfigsCallback = (
       trackGraph = { ...track }
       const fieldsQuery = {
         id: 'fields',
-        value: timebarGraph,
+        value: ['timestamp', timebarGraph].join(','),
       }
       if (fieldsQueryIndex > -1) {
         query[fieldsQueryIndex] = fieldsQuery
