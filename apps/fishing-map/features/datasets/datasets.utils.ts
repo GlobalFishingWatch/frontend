@@ -138,6 +138,13 @@ export const checkDatasetReportPermission = (datasetId: string, permissions: Use
   const permission = { type: 'dataset', value: datasetId, action: 'report' }
   return checkExistPermissionInList(permissions, permission)
 }
+export const checkDatasetDownloadTrackPermission = (
+  datasetId: string,
+  permissions: UserPermission[]
+) => {
+  const permission = { type: 'dataset', value: datasetId, action: 'download-track' }
+  return checkExistPermissionInList(permissions, permission)
+}
 
 export const getActivityDatasetsDownloadSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
@@ -151,7 +158,7 @@ export const getActivityDatasetsDownloadSupported = (
   })
 }
 
-export const getVesselDatasetsDownloadSupported = (
+export const getVesselDatasetsDownloadTrackSupported = (
   dataview: UrlDataviewInstance<GeneratorType>,
   permissions: UserPermission[] = []
 ) => {
@@ -162,7 +169,7 @@ export const getVesselDatasetsDownloadSupported = (
     )
     .filter((dataset) => {
       if (!dataset) return false
-      return checkDatasetReportPermission(dataset.datasetId, permissions)
+      return checkDatasetDownloadTrackPermission(dataset.datasetId, permissions)
     })
   return datasets
 }
