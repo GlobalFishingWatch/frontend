@@ -129,7 +129,9 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
         type="map-tool"
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
-          optionsPanelOpen
+          loading
+            ? t('vessel.loadingInfo')
+            : optionsPanelOpen
             ? t('timebarSettings.settings_close', 'Close timebar settings')
             : t('timebarSettings.settings_open', 'Open timebar settings')
         }
