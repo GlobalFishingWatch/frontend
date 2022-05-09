@@ -13,15 +13,15 @@
     "dayjs": "1.8.36",
     "luxon": "^1.24.1",
     "qs": "6.10.1",
-    "react": "^18.0.0",
+    "react": "^18.1.0",
     "react-dom": "^18.0.0",
     "react-map-gl": "^5.3.17",
     "react-scripts": "5.0.0"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.10",
-    "@types/react": "^18.0.5",
-    "@types/react-dom": "^18.0.1"
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -12,9 +12,6 @@ import { SettingEventSectionName, SettingsEvents } from '../settings.slice'
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
 
-// Remove once https://github.com/i18next/react-i18next/issues/1483 fixed
-const TransComponent = Trans as any
-
 interface SettingsProps {
   settings: SettingsEvents
   section: SettingEventSectionName
@@ -101,7 +98,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             type="default"
             title={t('settings.eezs.label', 'Events in these EEZs')}
           >
-            <TransComponent i18nKey="settings.eezs.description" values={{ eventType }}>
+            <Trans i18nKey="settings.eezs.description" values={{ eventType }}>
               Highlight all {{ eventType }} that may have occured inside an EEZ. We calculate a
               bounding box for the event location based on the minimum and maximum coordinates and
               verify if it overlaps with the bounding box of the EEZ. For example, if you select
@@ -111,7 +108,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
               Argentina EEZ OR the Chile EEZ. Because a bounding box method is used, it is possible
               the actual track coordinates do not overlap with the EEZ. Please investigate the
               highlighted events further on the map.
-            </TransComponent>
+            </Trans>
           </DataAndTerminology>
         </label>
         <MultiSelect
@@ -132,7 +129,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             type="default"
             title={t('settings.rfmos.label', 'Events in these RFMOS')}
           >
-            <TransComponent i18nKey="settings.rfmos.description" values={{ eventType }}>
+            <Trans i18nKey="settings.rfmos.description" values={{ eventType }}>
               Highlight all {{ eventType }} that occurred inside and RFMO. We calculate a bounding
               box for the event location based on the minimum and maximum coordinates and verify if
               it overlaps with the RFMO. Example if you select IOTC and WCPFC, you will see all
@@ -140,7 +137,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
               the events overlapped with the minimum and maximum coordinates of IOTC OR WCPFC.
               Because a bounding box method is used, it is possible the actual track coordinates do
               not overlap with the RFMO. Please invesitage highlighted event further on the map.
-            </TransComponent>
+            </Trans>
           </DataAndTerminology>
         </label>
         <MultiSelect
@@ -161,7 +158,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             type="default"
             title={t('settings.mpas.label', 'Events in these MPAs')}
           >
-            <TransComponent i18nKey="settings.mpas.description" values={{ eventType }}>
+            <Trans i18nKey="settings.mpas.description" values={{ eventType }}>
               Highlight all {{ eventType }} that occurred inside an MPA. We calculate a bounding box
               for the event location based on the minimum and maximum coordinates and verify if it
               overlaps with the MPA. For example, if you select Galápagos and Ascension Island, you
@@ -170,7 +167,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
               Galápagos OR Ascension Island MPA. Because a bounding box method is used, it is
               possible the actual track coordinates do not overlap with the MPA. Please invesitage
               highlighted event further on the map.
-            </TransComponent>
+            </Trans>
           </DataAndTerminology>
         </label>
         <MultiSelect
@@ -188,11 +185,11 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
         <label className={styles.settingsLabel}>
           {t('settings.duration', 'DURATION')}
           <DataAndTerminology size="tiny" type="default" title={t('settings.duration', 'Duration')}>
-            <TransComponent i18nKey="settings.durationDescription" values={{ eventType }}>
+            <Trans i18nKey="settings.durationDescription" values={{ eventType }}>
               Highlight all {{ eventType }} that had a duration longer than the value configured.
               Example if you configure 5 hours, you will see all {{ eventType }} with duration more
               or equal to 5 hours
-            </TransComponent>
+            </Trans>
           </DataAndTerminology>
         </label>
         <div>
@@ -217,12 +214,12 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             type="default"
             title={t('settings.distanceShore', 'Distance from shore')}
           >
-            <TransComponent i18nKey="settings.distanceShoreDescription" values={{ eventType }}>
+            <Trans i18nKey="settings.distanceShoreDescription" values={{ eventType }}>
               Highlight all {{ eventType }} that had a distance longer than the value configured.
               Example if you configure 8 km, you will see all {{ eventType }} with distance more or
               equal to 8 km from the shore. Distance from shore will be highlighted if either the
               start or end position is more or equal to the specified distance.
-            </TransComponent>
+            </Trans>
           </DataAndTerminology>
         </label>
         <div>
@@ -247,14 +244,14 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
             type="default"
             title={t('settings.distancePort', 'Distance from port')}
           >
-            <TransComponent i18nKey="settings.distancePortDescription" values={{ eventType }}>
+            <Trans i18nKey="settings.distancePortDescription" values={{ eventType }}>
               Highlight all {{ eventType }} that had a distance from port longer than the value
               configured. Example if you configure 8 km, you will see all {{ eventType }} with
               distance more or equal to 8 km. Distance from port is will be highlighted if either
               the start or end position is more or equal to the specified distance. Ports include
               all GFW identified anchorages (for more details on anchorage including its definition
               here)
-            </TransComponent>
+            </Trans>
           </DataAndTerminology>
         </label>
         <div>
