@@ -154,7 +154,7 @@ export function getGeneratorConfig(
           params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
             ? params?.customGeneratorMapping.VESSEL_EVENTS
             : GeneratorType.VesselEvents
-        console.log(params?.disableHighlight)
+
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           vesselId,
