@@ -26,7 +26,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import {
   getDatasetLabel,
-  getVesselDatasetsDownloadSupported,
+  getVesselDatasetsDownloadTrackSupported,
 } from 'features/datasets/datasets.utils'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
@@ -59,7 +59,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [infoOpen, setInfoOpen] = useState(false)
   const [datasetModalOpen, setDatasetModalOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
-  const downloadDatasetsSupported = getVesselDatasetsDownloadSupported(
+  const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
     dataview,
     userData?.permissions
   )
