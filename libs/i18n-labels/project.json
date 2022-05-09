@@ -88,10 +88,17 @@
       }
     },
     "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["nx i18n-labels:publish", "nx i18n-labels:purge"],
+        "parallel": false
+      }
+    },
+    "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "releaseAs": "patch",
-        "postTargets": ["i18n-labels:publish", "i18n-labels:purge"]
+        "commitMessageFormat": "release: bump ${projectName} to ${version} [skip ci]",
+        "releaseAs": "patch"
       }
     }
   }

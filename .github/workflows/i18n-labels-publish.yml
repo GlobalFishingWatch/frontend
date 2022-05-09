@@ -1,0 +1,64 @@
+name: Version
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'libs/i18n-labels/**'
+      # Exclude to prevent infinite loop
+      - '!libs/i18n-labels/package.json'
+      - '!libs/i18n-labels/CHANGELOG.md'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Setup Git
+        run: |
+          git config user.name "Github Action"
+          git config user.email "action@github.com"
+      - run: yarn install --frozen-lockfile --prefer-offline
+      - name: Lib Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          LIB_AFFECTED=`yarn nx affected:libs --base=i18n-labels@latest --exclude=api-client,api-types,data-transforms,dataviews-client,fourwings-aggregate,layer-composer,ocean-areas,pbf,timebar,react-hooks,ui-components  --plain`
+          [[ $LIB_AFFECTED = 'i18n-labels' ]] && NOT_AFFECTED="false" || NOT_AFFECTED="true"
+          echo "##[set-output name=not-affected;]$(echo $NOT_AFFECTED)"
+        id: lib-changes
+
+      - name: Bump version
+        if: steps.lib-changes.outputs.not-affected == 'false'
+        shell: bash
+        run: nx version i18n-labels
+
+      - name: Tag i18n-labels@latest
+        if: steps.lib-changes.outputs.not-affected == 'false'
+        shell: bash
+        run: git tag -f i18n-labels@latest
+
+      - name: Push changes
+        if: steps.lib-changes.outputs.not-affected == 'false'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          force: true
+          tags: true
+
+      - name: Publish to NPM & purge jsdelivr cache
+        if: steps.lib-changes.outputs.not-affected == 'false'
+        shell: bash
+        run: nx deploy i18n-labels
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
