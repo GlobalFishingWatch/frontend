@@ -130,6 +130,7 @@ export const selectTracksGraphData = createSelector(
           timebarGraphType === 'speed'
             ? getTrackGraphSpeedHighlighterLabel
             : getTrackGraphElevationighlighterLabel,
+        getHighlighterIcon: 'vessel',
       }
 
       const resourcesQueries = resolveDataviewDatasetResources(dataview, DatasetTypes.Tracks)
