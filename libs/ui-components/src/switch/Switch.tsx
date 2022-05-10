@@ -43,7 +43,7 @@ export function Switch(props: SwitchProps) {
   }
 
   return (
-    <Tooltip content={tooltip} placement={tooltipPlacement}>
+    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       <button
         id={id}
         type="button"

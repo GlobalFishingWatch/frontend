@@ -207,7 +207,7 @@ export const useMapClick = (
 ) => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
-    (event) => {
+    (event: MapEvent) => {
       cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
@@ -271,7 +271,7 @@ export const useMapHover = (
   }, [debounced, hoverCallback])
 
   const onMapHover = useCallback(
-    (event) => {
+    (event: MapEvent) => {
       const hoverEvent = parseHoverEvent(event)
       const isLinkHover = event.target.tagName.toLowerCase() === 'a'
       if (isLinkHover) {
@@ -307,7 +307,7 @@ export const useMapHover = (
 
 export const useSimpleMapHover = (hoverCallback: InteractionEventCallback) => {
   const onMapHover = useCallback(
-    (event) => {
+    (event: MapEvent) => {
       const hoverEvent = parseHoverEvent(event)
       if (hoverCallback) {
         hoverCallback(hoverEvent)

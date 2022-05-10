@@ -2,6 +2,7 @@ import React from 'react'
 import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import { Tooltip } from '../tooltip'
+import { TooltipTypes } from '../types/types'
 import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
 import { ReactComponent as Analysis } from '../assets/icons/analysis.svg'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
@@ -158,19 +159,21 @@ interface IconProps {
   icon: IconType
   style?: React.CSSProperties
   type?: 'default' | 'warning'
-  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltip?: TooltipTypes
   tooltipPlacement?: Placement
 }
 
+const defaultStyle = {}
+
 export function Icon(props: IconProps) {
-  const { icon, tooltip, type = 'default', className = '', style = {} } = props
+  const { icon, tooltip, type = 'default', className = '', style = defaultStyle } = props
   const Component = IconComponents[icon]
   if (!Component) {
     console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
     return null
   }
   return (
-    <Tooltip content={tooltip} placement="auto">
+    <Tooltip content={tooltip as React.ReactNode} placement="auto">
       <Component className={cx(styles.icon, styles[type], className)} style={style} />
     </Tooltip>
   )

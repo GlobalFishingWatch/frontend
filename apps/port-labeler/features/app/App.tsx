@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { MapContext } from 'features/map/map-context.hooks'
@@ -9,6 +8,7 @@ import Sidebar from 'features/sidebar/Sidebar'
 import { t } from 'features/i18n/i18n'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { fetchUserThunk } from 'features/user/user.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
@@ -45,11 +45,11 @@ const Main = () => {
 function App(): React.ReactElement {
   useAnalytics()
   useReplaceLoginUrl()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
-    dispatch(fetchUserThunk({ guest: false }))
+    dispatch(fetchUserThunk({ guest: false }) as any)
   }, [dispatch])
 
   const onMenuClick = useCallback(() => {
