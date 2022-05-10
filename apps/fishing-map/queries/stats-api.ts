@@ -24,8 +24,8 @@ interface CustomBaseQueryArg extends BaseQueryArg<BaseQueryFn> {
 }
 const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ queryArgs }) => {
   return [
-    queryArgs.dataview.id,
-    JSON.stringify(queryArgs.dataview.config),
+    queryArgs.dataview?.id,
+    JSON.stringify(queryArgs.dataview?.config),
     JSON.stringify(queryArgs.timerange),
   ].join('-')
 }
