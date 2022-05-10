@@ -4,7 +4,6 @@ import {
   DataviewDatasetConfigParam,
   EndpointId,
   Resource,
-  ResourceStatus,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
@@ -86,11 +85,7 @@ export const pickTrackResource = (
   if (!vesselId) return undefined
   const loadedVesselResources = Object.values(resources).filter((resource) => {
     const vesselIdField = resource.datasetConfig.params.find((p) => p.id === 'vesselId')
-    return (
-      resource.datasetConfig.endpoint === endpointType &&
-      vesselIdField?.value === vesselId &&
-      resource.status === ResourceStatus.Finished
-    )
+    return resource.datasetConfig.endpoint === endpointType && vesselIdField?.value === vesselId
   })
 
   loadedVesselResources.sort((resA, resB) => {
@@ -110,6 +105,7 @@ export const pickTrackResource = (
   const wholeTrack = loadedVesselResourcesAtHighestZoom.find(
     (r) => !r.datasetConfig.metadata?.chunkSetId
   )
+
   if (wholeTrack) {
     return wholeTrack
   }
@@ -121,6 +117,8 @@ export const pickTrackResource = (
   if (mergedTrack) {
     return mergedTrack
   }
+
+  debugger
 
   // Else no usable track for this vessel (we don't display a chunk alone)
   return undefined

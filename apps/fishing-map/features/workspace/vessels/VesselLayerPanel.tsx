@@ -8,12 +8,14 @@ import {
   ResourceStatus,
   DataviewDatasetConfigParam,
   Resource,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
-import { Segment } from '@globalfishingwatch/data-transforms'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
+  pickTrackResource,
+  selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -48,12 +50,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-  const { url: trackUrl, dataset: trackDataset } = resolveDataviewDatasetResource(
-    dataview,
-    DatasetTypes.Tracks
-  )
+  const resources = useSelector(selectResources)
+  const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
-  const trackResource: Resource<Segment[]> = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+
   const guestUser = useSelector(isGuestUser)
   const userData = useSelector(selectUserData)
   const [colorOpen, setColorOpen] = useState(false)
@@ -111,7 +111,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     />
   )
 
-  const trackLoading = trackResource?.status === ResourceStatus.Loading
+  const trackLoading = !trackResource || trackResource?.status === ResourceStatus.Loading
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const loading = trackLoading || infoLoading
 
@@ -166,7 +166,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       tooltip={t('vessel.loading', 'Loading vessel track')}
     />
   ) : (
-    <FitBounds hasError={trackError} trackResource={trackResource} />
+    <FitBounds hasError={trackError} trackResource={trackResource as any} />
   )
 
   const InfoIconComponent = infoLoading ? (
@@ -237,7 +237,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       setDownloadTrackVessel({
         id: vesselId,
         name: vesselTitle,
-        datasets: trackDataset.id,
+        datasets: trackResource?.dataset.id,
       })
     )
   }

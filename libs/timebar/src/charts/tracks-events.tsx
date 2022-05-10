@@ -109,6 +109,7 @@ const TracksEvents = ({
               })}
               style={
                 {
+                  opacity: 0.5,
                   left: `${event.x}px`,
                   width: `${event.width}px`,
                   '--encounterIcon': `url(${EncounterIcon})`,

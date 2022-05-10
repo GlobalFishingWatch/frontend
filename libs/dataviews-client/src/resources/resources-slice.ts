@@ -124,12 +124,26 @@ export const resourcesSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
       const { resource } = action.meta.arg
+
+      const thisChunkSetId = resource.datasetConfig?.metadata?.chunkSetId
+      if (thisChunkSetId) {
+        state[thisChunkSetId] = {
+          ...resource,
+          status: ResourceStatus.Loading,
+          datasetConfig: {
+            ...resource.datasetConfig,
+            metadata: {
+              ...resource.datasetConfig.metadata,
+              chunkSetMerged: true,
+            },
+          },
+        }
+      }
       state[resource.url] = { status: ResourceStatus.Loading, ...resource }
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
       const { url } = action.payload
       const resource = { status: ResourceStatus.Finished, ...action.payload }
-      state[url] = resource
 
       // If resource is part of a chunk set (ie tracks by year), rebuild the whole set into a single resource
       if (action.payload.datasetConfig.metadata?.chunkSetId) {
@@ -143,20 +157,14 @@ export const resourcesSlice = createSlice({
         ) {
           const mergedData = mergeTrackChunks(chunks.map((chunk) => chunk.data) as any)
 
-          // TODO should we always use URL as key or is this ok?
           state[thisChunkSetId] = {
-            ...resource,
+            ...state[thisChunkSetId],
             data: mergedData,
-            datasetConfig: {
-              ...resource.datasetConfig,
-              metadata: {
-                ...resource.datasetConfig.metadata,
-                chunkSetMerged: true,
-              },
-            },
+            status: ResourceStatus.Finished,
           }
         }
       }
+      state[url] = resource
     })
     builder.addCase(fetchResourceThunk.rejected, (state, action) => {
       const { url } = action.meta.arg.resource
