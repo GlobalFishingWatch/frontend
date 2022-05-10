@@ -131,6 +131,7 @@
     "@typescript-eslint/scope-manager": "5.23.0",
     "babel-jest": "28.1.0",
     "circular-dependency-plugin": "^5.2.2",
+    "click-to-react-component": "^1.0.8",
     "cypress": "^9.6.1",
     "eslint": "8.15.0",
     "eslint-config-next": "^12.1.6",
