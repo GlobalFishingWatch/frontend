@@ -1,5 +1,4 @@
 {
-  "root": "apps/api-portal",
   "sourceRoot": "apps/api-portal",
   "projectType": "application",
   "targets": {
@@ -50,8 +49,13 @@
         "production": {
           "buildTarget": "api-portal:compile:production",
           "dev": false
+        },
+        "development": {
+          "buildTarget": "api-portal:build:development",
+          "dev": true
         }
-      }
+      },
+      "defaultConfiguration": "development"
     },
     "build": {
       "executor": "@nrwl/next:export",
@@ -70,7 +74,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/api-portal"],
       "options": {
-        "jestConfig": "apps/api-portal/jest.config.js",
+        "jestConfig": "apps/api-portal/jest.config.ts",
         "passWithNoTests": true
       }
     }

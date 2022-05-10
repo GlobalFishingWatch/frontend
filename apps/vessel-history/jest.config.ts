@@ -1,6 +1,6 @@
 module.exports = {
   displayName: 'vessel-history',
-  preset: '../../jest.preset.js',
+
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nrwl/next/babel'] }],
@@ -24,4 +24,5 @@ module.exports = {
   },
   coverageDirectory: '../../coverage/apps/vessel-history',
   transformIgnorePatterns: ['/node_modules/', '^.+\\.module\\.(css|sass|scss)$'],
+  preset: '../../jest.preset.ts',
 }

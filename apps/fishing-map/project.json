@@ -1,5 +1,4 @@
 {
-  "root": "apps/fishing-map",
   "sourceRoot": "apps/fishing-map",
   "projectType": "application",
   "targets": {
@@ -61,8 +60,13 @@
         "production": {
           "buildTarget": "fishing-map:compile:production",
           "dev": false
+        },
+        "development": {
+          "buildTarget": "fishing-map:build:development",
+          "dev": true
         }
-      }
+      },
+      "defaultConfiguration": "development"
     },
     "build": {
       "executor": "@nrwl/next:export",
@@ -74,7 +78,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/fishing-map"],
       "options": {
-        "jestConfig": "apps/fishing-map/jest.config.js",
+        "jestConfig": "apps/fishing-map/jest.config.ts",
         "passWithNoTests": true
       }
     },

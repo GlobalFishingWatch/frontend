@@ -1,9 +1,10 @@
 module.exports = {
-  displayName: 'timebar',
-  preset: '../../jest.preset.js',
+  displayName: 'pbf-decoders',
+
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/timebar',
-};
+  coverageDirectory: '../../coverage/libs/pbf-decoders',
+  preset: '../../jest.preset.ts',
+}

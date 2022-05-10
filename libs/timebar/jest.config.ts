@@ -1,9 +1,10 @@
 module.exports = {
-  displayName: 'i18n-labels',
-  preset: '../../jest.preset.js',
+  displayName: 'timebar',
+
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/i18n-labels',
-};
+  coverageDirectory: '../../coverage/libs/timebar',
+  preset: '../../jest.preset.ts',
+}

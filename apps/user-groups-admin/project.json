@@ -1,5 +1,4 @@
 {
-  "root": "apps/user-groups-admin",
   "sourceRoot": "apps/user-groups-admin",
   "projectType": "application",
   "targets": {
@@ -53,8 +52,13 @@
         "production": {
           "buildTarget": "user-groups-admin:build:production",
           "dev": false
+        },
+        "development": {
+          "buildTarget": "user-groups-admin:build:development",
+          "dev": true
         }
-      }
+      },
+      "defaultConfiguration": "development"
     },
     "build": {
       "executor": "@nrwl/next:export",
@@ -73,7 +77,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/user-groups-admin"],
       "options": {
-        "jestConfig": "apps/user-groups-admin/jest.config.js",
+        "jestConfig": "apps/user-groups-admin/jest.config.ts",
         "passWithNoTests": true
       }
     }

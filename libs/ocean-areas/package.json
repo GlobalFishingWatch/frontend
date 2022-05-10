@@ -15,9 +15,9 @@
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
   "dependencies": {
-    "@turf/helpers": "^6.3.0",
-    "@turf/turf": "^5.1.6",
-    "match-sorter": "^6.0.2"
+    "@turf/helpers": "^6.5.0",
+    "@turf/turf": "^6.5.0",
+    "match-sorter": "^6.3.1"
   },
   "peerDependencies": {
     "geojson": "^0.5.0"

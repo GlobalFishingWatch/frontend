@@ -1,9 +1,10 @@
 module.exports = {
-  displayName: 'react-hooks',
-  preset: '../../jest.preset.js',
+  displayName: 'api-types',
+
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/react-hooks',
-};
+  coverageDirectory: '../../coverage/libs/api-types',
+  preset: '../../jest.preset.ts',
+}

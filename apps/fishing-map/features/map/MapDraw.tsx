@@ -30,7 +30,6 @@ import {
 } from './map.draw.utils'
 
 export type DrawFeature = Feature<Polygon, { id: string }>
-export type DrawControlFeatures = Record<string, DrawFeature>
 export type DrawPointPosition = [number, number]
 export type DrawMode = DrawModes['DIRECT_SELECT'] | DrawModes['DRAW_POLYGON']
 export const MIN_DATASET_NAME_LENGTH = 3
