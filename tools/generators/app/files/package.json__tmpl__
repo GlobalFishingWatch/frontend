@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",
-    "@next/eslint-plugin-next": "12.0.3",
+    "@next/eslint-plugin-next": "12.1.6",
     "@testing-library/react": "12.1.0",
     "@testing-library/user-event": "13.2.1",
     "@types/lodash": "4.14.172",
@@ -54,7 +54,7 @@
     "@typescript-eslint/scope-manager": "5.23.0",
     "depcheck": "1.4.2",
     "eslint": "8.13.0",
-    "eslint-config-next": "12.1.5",
+    "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "8.5.0",
     "eslint-config-react-app": "7.0.1",
     "eslint-import-resolver-typescript": "2.7.1",
