@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - feature/sandbox-i18n-labels-autodeploy
     paths:
       - 'libs/i18n-labels/**'
       # Exclude to prevent infinite loop
@@ -38,7 +39,7 @@ jobs:
         id: lib-changes
 
       - name: Bump version
-        if: steps.lib-changes.outputs.not-affected == 'false'
+        if: ${{ steps.lib-changes.outputs.not-affected == 'false' }}
         shell: bash
         run: nx version i18n-labels
 
@@ -56,9 +57,14 @@ jobs:
           force: true
           tags: true
 
-      - name: Publish to NPM & purge jsdelivr cache
+      - name: Publish to NPM
         if: steps.lib-changes.outputs.not-affected == 'false'
         shell: bash
-        run: nx deploy i18n-labels
+        run: nx publish i18n-labels --tag alpha --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Purge jsdelivr cache
+        if: steps.lib-changes.outputs.not-affected == 'false'
+        shell: bash
+        run: nx purge i18n-labels
