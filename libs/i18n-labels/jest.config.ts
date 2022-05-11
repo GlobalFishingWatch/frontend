@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'i18n-labels',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

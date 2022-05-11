@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'ocean-areas',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

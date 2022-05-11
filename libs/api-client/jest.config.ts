@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'api-client',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

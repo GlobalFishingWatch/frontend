@@ -60,13 +60,8 @@
         "production": {
           "buildTarget": "port-labeler:compile:production",
           "dev": false
-        },
-        "development": {
-          "buildTarget": "port-labeler:build:development",
-          "dev": true
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "build": {
       "executor": "@nrwl/next:export",

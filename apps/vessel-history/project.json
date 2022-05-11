@@ -60,13 +60,8 @@
         "production": {
           "buildTarget": "vessel-history:compile:production",
           "dev": false
-        },
-        "development": {
-          "buildTarget": "vessel-history:build:development",
-          "dev": true
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "build": {
       "executor": "@nrwl/next:export",

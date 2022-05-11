@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'timebar',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

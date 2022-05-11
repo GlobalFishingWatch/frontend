@@ -52,13 +52,8 @@
         "production": {
           "buildTarget": "user-groups-admin:build:production",
           "dev": false
-        },
-        "development": {
-          "buildTarget": "user-groups-admin:build:development",
-          "dev": true
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "build": {
       "executor": "@nrwl/next:export",

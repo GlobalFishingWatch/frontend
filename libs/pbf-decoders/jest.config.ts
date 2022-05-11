@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'pbf-decoders',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

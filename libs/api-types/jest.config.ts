@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'api-types',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

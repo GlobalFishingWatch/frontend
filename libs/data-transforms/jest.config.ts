@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'data-transforms',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

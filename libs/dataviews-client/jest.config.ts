@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'dataviews-client',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

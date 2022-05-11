@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'fourwings-aggregate',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

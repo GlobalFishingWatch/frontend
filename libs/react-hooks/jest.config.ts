@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'react-hooks',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

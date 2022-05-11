@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'layer-composer',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },

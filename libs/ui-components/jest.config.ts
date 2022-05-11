@@ -1,6 +1,5 @@
 module.exports = {
   displayName: 'ui-components',
-
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
