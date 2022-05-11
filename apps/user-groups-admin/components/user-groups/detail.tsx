@@ -61,7 +61,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
   }, [fetchGroup, groupId])
 
   const onRemoveUserClick = async (id: number) => {
-    const confirmation = window.confirm('Are you sure you want to permanently delete this user?')
+    const confirmation = window.confirm('Are you sure you want to remove the user from this group?')
     if (confirmation) {
       setUserLoading(true)
       await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}/user/${id}`, {
