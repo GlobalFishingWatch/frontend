@@ -17,8 +17,7 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: node
-          package-name: '@globalfishingwatch/i18n-labels'
+          command: manifest
 
       - uses: actions/checkout@v3
         with:

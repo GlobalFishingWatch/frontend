@@ -1,0 +1,7 @@
+{
+  "packages": {
+    "libs/i18n-labels": {
+      "release-type": "node"
+    }
+  }
+}
