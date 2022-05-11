@@ -15,7 +15,7 @@
     "qs": "6.10.1",
     "react": "^18.1.0",
     "react-dom": "^18.0.0",
-    "react-map-gl": "^5.3.17",
+    "react-map-gl": "^7.0.11",
     "react-scripts": "5.0.0"
   },
   "devDependencies": {

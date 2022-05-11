@@ -1,11 +1,10 @@
-import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useCallback, useEffect, useLayoutEffect, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 // import RecoilizeDebugger from 'recoilize'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
-import { MapContext } from 'features/map/map-context.hooks'
 import {
   isWorkspaceLocation,
   selectLocationType,
@@ -36,6 +35,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints/hints.slice'
 import AppModals from 'features/app/AppModals'
+import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -43,9 +43,6 @@ import { useAnalytics } from './analytics.hooks'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
 const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
-
-/* Using any to avoid Typescript complaining about the value */
-const MapContextProvider: any = MapContext.Provider
 
 declare global {
   interface Window {
@@ -83,6 +80,7 @@ const Main = () => {
 function App(): React.ReactElement {
   useAnalytics()
   useReplaceLoginUrl()
+  const map = useMapInstance()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const readOnly = useSelector(selectReadOnly)
@@ -101,6 +99,13 @@ function App(): React.ReactElement {
   useEffect(() => {
     dispatch(initializeHints())
   }, [dispatch])
+
+  useEffect(() => {
+    if (map) {
+      map.resize()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAnalysing])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
@@ -175,6 +180,12 @@ function App(): React.ReactElement {
     dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
 
+  useEffect(() => {
+    if (map) {
+      map.resize()
+    }
+  }, [map, sidebarOpen])
+
   const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
   }, [dispatchQueryParams, sidebarOpen])
@@ -198,7 +209,7 @@ function App(): React.ReactElement {
   }
 
   return (
-    <MapContextProvider>
+    <Fragment>
       {/* <RecoilizeDebugger /> */}
       <SplitView
         isOpen={sidebarOpen}
@@ -221,7 +232,7 @@ function App(): React.ReactElement {
         />
       )}
       <AppModals />
-    </MapContextProvider>
+    </Fragment>
   )
 }
 

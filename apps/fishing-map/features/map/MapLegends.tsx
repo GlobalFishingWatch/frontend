@@ -5,7 +5,6 @@ import { createPortal } from 'react-dom'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
-import { useMapControl } from './map-context.hooks'
 import styles from './MapLegends.module.css'
 import { AnyLegend, LegendTranslated, useLegendsTranslated } from './map-legends.hooks'
 
@@ -36,7 +35,7 @@ interface MapLegendsProps {
 }
 
 const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: MapLegendsProps) => {
-  const { containerRef } = useMapControl()
+  const { t } = useTranslation()
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const legendsTranslated = useLegendsTranslated(legends, portalled)
@@ -44,7 +43,7 @@ const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: M
   if (!legends || !legends.length) return null
 
   return (
-    <div ref={containerRef} className={cx({ [styles.legendContainer]: !portalled })}>
+    <div className={cx({ [styles.legendContainer]: !portalled })}>
       {timeCompareTimeDescription && !portalled && <div>{timeCompareTimeDescription}</div>}
       {legendsTranslated?.map((legend: LegendTranslated, i: number) => {
         if (portalled) {

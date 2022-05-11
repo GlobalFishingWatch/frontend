@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { Popup } from 'react-map-gl'
-import type { PositionType } from 'react-map-gl/src/utils/dynamic-position'
+import type { Anchor } from 'react-map-gl'
 import { useSelector } from 'react-redux'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -35,7 +35,7 @@ type PopupWrapperProps = {
   closeOnClick?: boolean
   className?: string
   onClose?: () => void
-  anchor?: PositionType
+  anchor?: Anchor
   type?: 'hover' | 'click'
 }
 function PopupWrapper({
@@ -49,14 +49,6 @@ function PopupWrapper({
 }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
-  const [position, setPosition] = useState(
-    event
-      ? {
-          latitude: event?.latitude,
-          longitude: event?.longitude,
-        }
-      : null
-  )
 
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
@@ -66,15 +58,7 @@ function PopupWrapper({
     (s) => s === AsyncReducerStatus.Loading
   )
 
-  // Force-trigger a rerender of the tooltip to avoid popup repositioning flash
-  useEffect(() => {
-    if (type === 'click') {
-      setPosition({ latitude: event.latitude, longitude: event.longitude + 0.0000001 })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [popupNeedsLoading])
-
-  if (!event || !position) return null
+  if (!event) return null
 
   const visibleFeatures = event.features.filter((feature) => feature.visible)
   const featureByCategory = groupBy(
@@ -86,14 +70,14 @@ function PopupWrapper({
 
   return (
     <Popup
-      latitude={position.latitude}
-      longitude={position.longitude}
+      latitude={event.latitude}
+      longitude={event.longitude}
       closeButton={closeButton && !popupNeedsLoading}
       closeOnClick={closeOnClick}
       onClose={onClose}
       className={cx(styles.popup, styles[type], className)}
       anchor={anchor}
-      captureClick
+      maxWidth="600px"
     >
       {popupNeedsLoading ? (
         <div className={styles.loading}>

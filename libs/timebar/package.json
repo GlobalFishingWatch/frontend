@@ -30,7 +30,6 @@
     "use-debounce": "^7.0.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/maplibre-gl": "^2.1.7-gfw.16",
     "@mapbox/geojsonhint": "^3.0.0",
     "dayjs": "1.8.36",
     "geojson-validation": "^0.2.1",
