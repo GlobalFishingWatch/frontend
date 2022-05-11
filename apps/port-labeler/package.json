@@ -28,7 +28,7 @@
     "react-dom": "^18.0.0",
     "react-ga": "3.3.0",
     "react-i18next": "11.16.9",
-    "react-map-gl": "^5.3.17",
+    "react-map-gl": "^7.0.11",
     "react-redux": "^8.0.1",
     "react-window": "^1.8.6",
     "recoil": "0.7.2",
@@ -39,6 +39,7 @@
     "typescript": "4.6.2"
   },
   "devDependencies": {
+    "@math.gl/web-mercator": "^3.5.7",
     "@globalfishingwatch/linting": "2.0.2",
     "@next/eslint-plugin-next": "12.0.3",
     "@testing-library/react": "12.1.0",
@@ -53,7 +54,6 @@
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/redux-first-router": "2.1.6",
     "@types/redux-first-router-link": "1.4.5",
-    "@types/viewport-mercator-project": "6.1.2",
     "@typescript-eslint/eslint-plugin": "5.20.0",
     "@typescript-eslint/parser": "5.20.0",
     "@typescript-eslint/scope-manager": "5.20.0",

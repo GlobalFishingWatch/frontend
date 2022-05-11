@@ -8,7 +8,7 @@ import { useViewport } from '../map-viewport.hooks'
 import styles from './MapControls.module.css'
 
 const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
-  const { viewport, onViewportChange } = useViewport()
+  const { viewport, setMapCoordinates } = useViewport()
   const { t } = useTranslation()
 
   const [showCoords, setShowCoords] = useState(false)
@@ -26,7 +26,8 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         <MiniGlobe
           center={{ latitude: viewport.latitude, longitude: viewport.longitude }}
           size={60}
-          bounds={bounds} />
+          bounds={bounds}
+        />
       </div>
       <IconButton
         icon="plus"
@@ -34,7 +35,7 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         data-tip-pos="left"
         tooltip={t('common.zoom_more', 'Increase zoom')}
         onClick={() => {
-          onViewportChange({ ...viewport, zoom: viewport.zoom + 1 })
+          setMapCoordinates({ ...viewport, zoom: viewport.zoom + 1 })
         }}
       />
       <IconButton
@@ -43,7 +44,7 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         data-tip-pos="left"
         tooltip={t('common.zoom_less', 'Decrease zoom')}
         onClick={() => {
-          onViewportChange({ ...viewport, zoom: viewport.zoom - 1 })
+          setMapCoordinates({ ...viewport, zoom: viewport.zoom - 1 })
         }}
       />
 
@@ -54,9 +55,9 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         >
           {showDMS
             ? formatcoords(viewport.latitude, viewport.longitude).format('DDMMssX', {
-              latLonSeparator: '',
-              decimalPlaces: 2,
-            })
+                latLonSeparator: '',
+                decimalPlaces: 2,
+              })
             : `${viewport.latitude},${viewport.longitude}`}
         </div>
       )}
