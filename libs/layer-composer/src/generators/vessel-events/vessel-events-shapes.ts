@@ -6,6 +6,7 @@ import type {
   SymbolLayerSpecification,
   CircleLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { Group } from '../../types'
 import {
   GeneratorType,
@@ -24,6 +25,11 @@ import {
 
 export type GlobalVesselEventsShapesGeneratorConfig =
   MergedGeneratorConfig<VesselEventsShapesGeneratorConfig>
+
+export const getEventsSourceId = (vesselId: string, type?: EventTypes) => {
+  const sourceType = type === EventTypes.Fishing ? 'fishing' : 'other'
+  return `${vesselId}-${sourceType}`
+}
 
 class VesselsEventsShapesGenerator {
   type = GeneratorType.VesselEventsShapes
@@ -64,13 +70,15 @@ class VesselsEventsShapesGenerator {
     const { fishing, other } = memoizeCache[config.id].groupFeaturesByType(featuresFiltered)
 
     const fishingEventsSource: VesselsEventsSource = {
-      id: `${id}_fishingEvents`,
+      id: getEventsSourceId(config.vesselId as string, EventTypes.Fishing),
       type: 'geojson',
+      generateId: true,
       data: { ...geojson, features: fishing },
     }
     const otherEventsSource: VesselsEventsSource = {
-      id: `${id}_otherEvents`,
+      id: getEventsSourceId(config.vesselId as string),
       type: 'geojson',
+      generateId: true,
       data: { ...geojson, features: other },
     }
 
@@ -125,6 +133,7 @@ class VesselsEventsShapesGenerator {
       if (!config.currentEventsIds || !config.currentEventsIds.length || !highlightEvents) {
         return fallback
       }
+      // TODO use feature state instead
       const filter = [
         'case',
         ['any', ...config.currentEventsIds.map((id: string) => ['==', ['get', 'id'], id])],
@@ -136,7 +145,7 @@ class VesselsEventsShapesGenerator {
     const fishingPointsLayer: CircleLayerSpecification = {
       type: 'circle',
       id: `${config.id}_fishingEvents`,
-      source: `${config.id}_fishingEvents`,
+      source: getEventsSourceId(config.vesselId as string, EventTypes.Fishing),
       layout: {
         'circle-sort-key': getExpression(1, 0),
       },
@@ -164,7 +173,7 @@ class VesselsEventsShapesGenerator {
     const otherPointsLayer: SymbolLayerSpecification = {
       type: 'symbol',
       id: `${config.id}_otherEvents`,
-      source: `${config.id}_otherEvents`,
+      source: getEventsSourceId(config.vesselId as string),
       layout: {
         'icon-allow-overlap': true,
         'icon-size': [
@@ -234,11 +243,13 @@ class VesselsEventsShapesGenerator {
       groupFeaturesByType: memoizeOne(groupFeaturesByType),
     })
 
-    return {
+    const conf = {
       id: config.id,
       sources: this._getStyleSources(config),
       layers: this._getStyleLayers(config),
     }
+    // console.log(conf)
+    return conf
   }
 }
 

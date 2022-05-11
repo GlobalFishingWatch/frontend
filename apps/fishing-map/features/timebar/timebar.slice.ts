@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { FeatureStateSource } from '@globalfishingwatch/react-hooks'
 import { RootState } from 'store'
 
 export type Range = {
@@ -8,7 +9,7 @@ export type Range = {
 
 type TimebarSlice = {
   highlightedTime: Range | undefined
-  highlightedEvents: string[] | undefined
+  highlightedEvents: FeatureStateSource[] | undefined
   hasChangedSettingsOnce: boolean
 }
 
@@ -25,7 +26,7 @@ const slice = createSlice({
     setHighlightedTime: (state, action: PayloadAction<Range>) => {
       state.highlightedTime = action.payload
     },
-    setHighlightedEvents: (state, action: PayloadAction<string[] | undefined>) => {
+    setHighlightedEvents: (state, action: PayloadAction<FeatureStateSource[] | undefined>) => {
       state.highlightedEvents = action.payload
     },
     disableHighlightedTime: (state) => {

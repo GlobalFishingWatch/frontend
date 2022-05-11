@@ -168,8 +168,6 @@ export function getGeneratorConfig(
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
           ...(highlightedEvent &&
             !params?.disableHighlight && { currentEventId: highlightedEvent.id }),
-          ...(highlightedEvents &&
-            !params?.disableHighlight && { currentEventsIds: highlightedEvents }),
         }
         return [generator, eventsGenerator]
       }

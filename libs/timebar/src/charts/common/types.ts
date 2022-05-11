@@ -12,6 +12,8 @@ export type TrackEventChunkProps = {
   descriptionGeneric: string
   latitude: number
   longitude: number
+  sourceId: string
+  index: number
 }
 
 export type TimebarChartValue = {
@@ -22,6 +24,7 @@ export type TimebarChartValue = {
 
 export type TimebarChartChunkCluster = {
   ids: string[]
+  indices: number[]
   numChunks: number
 }
 
@@ -68,6 +71,7 @@ export type ChartType = 'tracks' | 'tracksEvents' | 'tracksGraphs' | 'activity'
 
 export type TimebarChartsData = Record<ChartType, { data: TimebarChartData<void>; active: boolean }>
 
-export type HighlightedChunks = Partial<Record<ChartType, string[]>>
+export type HighlightedChunks<T> = Partial<Record<ChartType, TimebarChartChunk<T>[]>>
+// export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 
 export type Timeseries = { frame: number; date: number; [key: number]: number }[]

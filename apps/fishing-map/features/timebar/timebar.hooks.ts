@@ -4,6 +4,7 @@ import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
+import { TimebarChartChunk } from '@globalfishingwatch/timebar'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import {
@@ -138,8 +139,8 @@ export const useHighlightedEventsConnect = () => {
   const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvents = useCallback(
-    (eventIds: string[]) => {
-      dispatch(setHighlightedEvents(eventIds))
+    (highlightedEvents) => {
+      dispatch(setHighlightedEvents(highlightedEvents))
     },
     [dispatch]
   )

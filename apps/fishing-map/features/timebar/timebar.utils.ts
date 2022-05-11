@@ -1,11 +1,17 @@
 import { DateTime } from 'luxon'
-import { ApiEvent } from '@globalfishingwatch/api-types'
+import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 import { TrackEventChunkProps } from '@globalfishingwatch/timebar'
 import { getEventDescription } from 'utils/events'
 
+export const getEventsSourceId = (vesselId: string, type?: EventTypes) => {
+  const sourceType = type === EventTypes.Fishing ? 'fishing' : 'other'
+  return `${vesselId}-${sourceType}`
+}
+
 export const parseTrackEventChunkProps = (
   event: ApiEvent,
-  eventKey: string
+  eventKey: string,
+  index: number
 ): ApiEvent & { props: TrackEventChunkProps } => {
   const { description, descriptionGeneric, color, colorLabels } = getEventDescription({
     start: event.start as string,
@@ -31,6 +37,8 @@ export const parseTrackEventChunkProps = (
       descriptionGeneric,
       latitude: event.position.lat,
       longitude: event.position.lon,
+      sourceId: getEventsSourceId(event.vessel?.id, event.type),
+      index,
     },
   }
 }

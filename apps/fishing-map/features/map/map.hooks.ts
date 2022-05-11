@@ -86,6 +86,12 @@ export const useGeneratorsConnect = () => {
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const highlightedEvents = useSelector(selectHighlightedEvents)
+  console.log(highlightedEvents)
+  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
+  // updateFeatureState()
+
+  // TODO call updateFeatureState with enriched highlightedEvents (they should have numerical id and source id), for each highlightedEvent
 
   return useMemo(() => {
     let globalConfig: GlobalGeneratorConfig = {

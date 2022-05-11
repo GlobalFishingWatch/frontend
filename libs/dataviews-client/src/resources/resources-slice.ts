@@ -81,7 +81,9 @@ export const fetchResourceThunk = createAsyncThunk(
           getVesselIdFromDatasetConfig(resource?.datasetConfig) || resource.url.split('/')[3] // grab vesselId from url
         return (data as ApiEvents).entries.map((event, index) => {
           const eventKey = `${vesselId}-${event.type}-${index}`
-          return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
+          return parseEventCb
+            ? parseEventCb({ ...event, vessel: { id: vesselId } as any }, eventKey, index)
+            : parseEvent(event, eventKey)
         })
       }
 

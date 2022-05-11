@@ -50,9 +50,23 @@ const TimebarHighlighterWrapper = () => {
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
-    (chunks: HighlightedChunks) => {
+    (chunks: HighlightedChunks<TrackEventChunkProps>) => {
       if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
-        dispatchHighlightedEvents(chunks.tracksEvents)
+        const highlightedEvents = chunks.tracksEvents.flatMap((chunk) => {
+          if (chunk.cluster) {
+            return chunk.cluster.indices.map((index) => ({
+              source: chunk.props.sourceId,
+              id: index,
+            }))
+          } else
+            return [
+              {
+                source: chunk.props.sourceId,
+                id: chunk.props.index,
+              },
+            ]
+        })
+        dispatchHighlightedEvents(highlightedEvents)
       } else {
         dispatchHighlightedEvents(undefined)
       }

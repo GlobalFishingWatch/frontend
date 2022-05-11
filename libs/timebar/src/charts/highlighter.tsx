@@ -164,13 +164,14 @@ const getHighlighterData = (
 
         highlighterData[itemIndex].icon = icon
 
-        if (foundChunk.cluster?.ids) {
-          highlightedChunks[chartType] = foundChunk.cluster?.ids || []
-        } else if (foundChunk.id) {
-          highlightedChunks[chartType] = highlightedChunks[chartType]?.concat([
-            foundChunk.id as string,
-          ])
-        }
+        highlightedChunks[chartType] = highlightedChunks[chartType]?.concat([foundChunk])
+        // if (foundChunk.cluster?.ids) {
+        //   highlightedChunks[chartType] = foundChunk.cluster?.ids || []
+        // } else if (foundChunk.id) {
+        //   highlightedChunks[chartType] = highlightedChunks[chartType]?.concat([
+        //     foundChunk.id as string,
+        //   ])
+        // }
       }
     })
   })

@@ -205,7 +205,7 @@ export const selectTracksEvents = createSelector(
         getHighlighterIcon: 'vessel',
       }
       if (Array.isArray(visibleEvents) && visibleEvents?.length === 0) return trackEvents
-
+      debugger
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       if (!eventsResources.length) {
         return trackEvents

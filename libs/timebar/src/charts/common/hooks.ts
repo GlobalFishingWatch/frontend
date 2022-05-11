@@ -11,6 +11,7 @@ import {
   TimebarChartItem,
   TimebarChartValue,
   HighlighterCallback,
+  TrackEventChunkProps,
 } from './types'
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
@@ -50,7 +51,10 @@ const MIN_DISTANCE_PX_TO_CLUSTER = 4
 export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineScale) => {
   return data.map((item) => {
     const aggregatedChunks = item.chunks.reduce(
-      (currentClusteredEvents: TimebarChartChunk[], currentEvent: TimebarChartChunk) => {
+      (
+        currentClusteredEvents: TimebarChartChunk<TrackEventChunkProps>[],
+        currentEvent: TimebarChartChunk<TrackEventChunkProps>
+      ) => {
         const lastClusteredEvent = currentClusteredEvents[currentClusteredEvents.length - 1]
         const lastType = lastClusteredEvent ? lastClusteredEvent.type : null
         const lastEnd =
@@ -71,10 +75,11 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
             delete lastClusteredEvent.cluster
           }
           // create new agg event
-          const newClusteredEvent: TimebarChartChunk = {
+          const newClusteredEvent: TimebarChartChunk<TrackEventChunkProps> = {
             ...currentEvent,
             cluster: {
               ids: [currentEvent.id as string],
+              indices: currentEvent.props ? [currentEvent.props.index] : [],
               numChunks: 1,
             },
           }
@@ -84,6 +89,9 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
         if (lastClusteredEvent.cluster) {
           lastClusteredEvent.cluster.numChunks++
           lastClusteredEvent.cluster.ids.push(currentEvent.id as string)
+          if (currentEvent.props) {
+            lastClusteredEvent.cluster.indices.push(currentEvent.props.index)
+          }
         }
         return currentClusteredEvents
       },
