@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - develop
-      - feature/sandbox-release-please
+      - feature/MAP-635-i18n-labels-release-please
 name: i18n-labels-release-please
 permissions:
   contents: read
