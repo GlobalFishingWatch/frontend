@@ -13,12 +13,20 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
 
   const fetchGroup = useCallback(async (groupId: number) => {
     setLoading(true)
-    const group = await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}`)
-    const futureUsers = await GFWAPI.fetch<FutureUserData[]>(
-      `/auth/future-user?user-group=${groupId}`
-    )
-    setGroup(group)
-    setFutureUsers(futureUsers)
+    try {
+      const group = await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}`)
+      setGroup(group)
+    } catch (e) {
+      console.warn(e)
+    }
+    try {
+      const futureUsers = await GFWAPI.fetch<FutureUserData[]>(
+        `/auth/future-user?user-group=${groupId}`
+      )
+      setFutureUsers(futureUsers)
+    } catch (e) {
+      console.warn(e)
+    }
     setLoading(false)
   }, [])
 
