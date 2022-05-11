@@ -1,0 +1,94 @@
+on:
+  push:
+    branches:
+      - develop
+      - feature/sandbox-release-please
+name: i18n-labels-release-please
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    permissions:
+      contents: write # for google-github-actions/release-please-action to create release PR's and commit message
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+          package-name: '@globalfishingwatch/i18n-labels'
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Setup Git
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - name: Install yarn
+        run: npm install -g yarn
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            **\node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - run: yarn nx build i18n-labels
+
+      - name: push i18n-labels release
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git remote add gh-token "https://${{ secrets.GITHUB_TOKEN}}@github.com/GlobalFishingWatch/frontend.git"
+          git checkout -b i18n-labels
+          git add -f build
+          git commit -a -m 'chore: ${{ steps.release.outputs.tag_name }} release'
+          git push origin +i18n-labels
+          git tag -a ${{ steps.release.outputs.tag_name }}-i18n-labels -m 'chore: ${{ steps.release.outputs.tag_name }} release'
+          git push origin ${{ steps.release.outputs.tag_name }}-i18n-labels
+        if: ${{ steps.release.outputs.release_created }}
+      # - uses: actions/setup-node@v1
+      #   with:
+      #     node-version: 14
+      #     registry-url: 'https://external-dot-oss-automation.appspot.com/'
+      #   if: ${{ steps.release.outputs.release_created }}
+      # - run: npm install
+      #   if: ${{ steps.release.outputs.release_created }}
+      # - run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      #   if: ${{ steps.release.outputs.release_created }}
+
+      - name: Publish to NPM
+        if: ${{ steps.release.outputs.release_created }}
+        shell: bash
+        run: yarn nx publish i18n-labels --tag alpha --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Purge jsdelivr cache
+        if: ${{ steps.release.outputs.release_created }}
+        shell: bash
+        run: yarn nx purge i18n-labels
