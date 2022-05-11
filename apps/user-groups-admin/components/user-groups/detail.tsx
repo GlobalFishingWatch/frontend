@@ -56,6 +56,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     return () => {
       setEmail('')
       setGroup(undefined)
+      setFutureUsers(undefined)
     }
   }, [fetchGroup, groupId])
 

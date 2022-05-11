@@ -12,6 +12,10 @@
   padding-left: var(--space-M);
 }
 
+.content:last-child {
+  padding-bottom: 2rem;
+}
+
 .list {
   margin-top: var(--space-S);
   padding: var(--space-S) 0;
