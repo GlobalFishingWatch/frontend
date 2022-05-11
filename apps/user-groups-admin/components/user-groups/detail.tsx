@@ -1,6 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { Button, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import sortBy from 'lodash/sortBy'
 import { FutureUserData, UserData, UserGroup } from '@globalfishingwatch/api-types'
 import styles from './user-groups.module.css'
 
@@ -15,7 +16,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     setLoading(true)
     try {
       const group = await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}`)
-      setGroup(group)
+      setGroup({ ...group, users: sortBy(group.users, 'email') })
     } catch (e) {
       console.warn(e)
     }
@@ -23,7 +24,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
       const futureUsers = await GFWAPI.fetch<FutureUserData[]>(
         `/auth/future-user?user-group=${groupId}`
       )
-      setFutureUsers(futureUsers)
+      setFutureUsers(sortBy(futureUsers, 'email'))
     } catch (e) {
       console.warn(e)
     }
