@@ -134,6 +134,8 @@ export const createDatasetThunk = createAsyncThunk<
       },
     }
 
+    delete (datasetWithFilePath as any).public
+
     const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
       method: 'POST',
       body: datasetWithFilePath as any,
