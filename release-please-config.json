@@ -1,4 +1,6 @@
 {
+  "bootstrap-sha": "06551ecc1e5f0d534eb572c5904bd527114cdca7",
+
   "packages": {
     "libs/i18n-labels": {
       "release-type": "node"
