@@ -9,7 +9,12 @@ import {
   ExtendedLayer,
 } from '@globalfishingwatch/layer-composer'
 import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
+import type {
+  Map,
+  GeoJSONFeature,
+  MapLayerMouseEvent,
+  MapEvent,
+} from '@globalfishingwatch/maplibre-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 export type MaplibreGeoJSONFeature = GeoJSONFeature & {
@@ -206,7 +211,7 @@ export const useMapClick = (
 ) => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
-    (event: MapEvent) => {
+    (event: MapLayerMouseEvent) => {
       cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
@@ -217,7 +222,7 @@ export const useMapClick = (
       }
       if (event.features?.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
-          event.features,
+          event.features as MaplibreGeoJSONFeature[],
           metadata,
           false
         )
@@ -270,12 +275,15 @@ export const useMapHover = (
   }, [debounced, hoverCallback])
 
   const onMapHover = useCallback(
-    (event: MapEvent) => {
+    (event: MapLayerMouseEvent) => {
       const hoverEvent = parseHoverEvent(event)
       // Turn all sources with active feature states off
       cleanFeatureState()
       if (event.features?.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
+          event.features as MaplibreGeoJSONFeature[],
+          metadata
+        )
         const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
         if (extendedFeaturesLimit.length) {
