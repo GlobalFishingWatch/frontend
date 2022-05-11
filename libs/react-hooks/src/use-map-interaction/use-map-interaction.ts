@@ -9,12 +9,7 @@ import {
   ExtendedLayer,
 } from '@globalfishingwatch/layer-composer'
 import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import type {
-  Map,
-  GeoJSONFeature,
-  MapLayerMouseEvent,
-  MapEvent,
-} from '@globalfishingwatch/maplibre-gl'
+import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 export type MaplibreGeoJSONFeature = GeoJSONFeature & {

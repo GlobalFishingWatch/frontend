@@ -46,7 +46,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
   const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 
-  const onMapClick = useMapClick(
+  const onMapClick: any = useMapClick(
     selectVesselEventOnClick,
     style?.metadata as ExtendedStyleMeta,
     map
