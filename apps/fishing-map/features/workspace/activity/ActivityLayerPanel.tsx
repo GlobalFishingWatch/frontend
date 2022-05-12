@@ -19,6 +19,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
+import ActivitySubLayerPanel from 'features/workspace/activity/ActivitySubLayerPanel'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -53,17 +54,16 @@ function ActivityLayerPanel({
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
+  const layerActive = dataview?.config?.visible ?? true
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
       dataview,
       timerange: urlTimeRange,
     },
     {
-      skip: guestUser || !urlTimeRange,
+      skip: guestUser || !urlTimeRange || !layerActive,
     }
   )
-
-  const layerActive = dataview?.config?.visible ?? true
 
   const disableBivariate = () => {
     dispatchQueryParams({ bivariateDataviews: undefined })
@@ -258,6 +258,7 @@ function ActivityLayerPanel({
           </div>
         </div>
       )}
+      {layerActive && <ActivitySubLayerPanel dataview={dataview} />}
     </div>
   )
 }
