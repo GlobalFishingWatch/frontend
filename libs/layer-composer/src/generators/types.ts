@@ -423,7 +423,7 @@ export type Ruler = {
 export type HeatmapAnimatedInteractionType =
   | 'presence'
   | 'presence-detail'
-  | 'viirs'
+  | 'sars'
   | 'viirs-match'
   | 'fishing-effort'
 

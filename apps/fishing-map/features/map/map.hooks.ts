@@ -52,10 +52,10 @@ import {
   ExtendedFeatureVessel,
   ExtendedFeatureEvent,
   fetchFishingActivityInteractionThunk,
-  fetchViirsInteractionThunk,
-  selectViirsInteractionStatus,
-  ApiViirsStats,
+  fetchSarsInteractionThunk,
+  selectSarsInteractionStatus,
   fetchBQEventThunk,
+  ApiSarStats,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 
@@ -64,8 +64,8 @@ export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   'presence-detail',
   'viirs-match',
 ]
-// TODO remove once match-prototype is ready for production
-export const SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION = ['viirs']
+
+export const SUBLAYER_INTERACTION_TYPES_WITH_SARS_INTERACTION = ['sars']
 
 export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
   return {
@@ -113,7 +113,7 @@ export const useClickedEventConnect = () => {
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
-  const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
+  const sarsInteractionStatus = useSelector(selectSarsInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
@@ -121,7 +121,7 @@ export const useClickedEventConnect = () => {
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
-  const viirsPromiseRef = useRef<any>()
+  const sarsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
@@ -177,7 +177,7 @@ export const useClickedEventConnect = () => {
     }
 
     // Cancel all pending promises
-    const promisesRef = [fishingPromiseRef, presencePromiseRef, viirsPromiseRef, eventsPromiseRef]
+    const promisesRef = [fishingPromiseRef, presencePromiseRef, sarsPromiseRef, eventsPromiseRef]
     promisesRef.forEach((ref) => {
       if (ref.current) {
         ref.current.abort()
@@ -224,19 +224,19 @@ export const useClickedEventConnect = () => {
       )
     }
 
-    const viirsFeature = event.features?.find((feature) => {
+    const sarsFeature = event.features?.find((feature) => {
       if (!feature.temporalgrid) {
         return false
       }
       const isFeatureVisible = feature.temporalgrid.visible
-      const isViirsFeature = SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION.includes(
+      const isSarsFeature = SUBLAYER_INTERACTION_TYPES_WITH_SARS_INTERACTION.includes(
         feature.temporalgrid.sublayerInteractionType
       )
-      return isFeatureVisible && isViirsFeature
+      return isFeatureVisible && isSarsFeature
     })
 
-    if (viirsFeature) {
-      viirsPromiseRef.current = dispatch(fetchViirsInteractionThunk({ feature: viirsFeature }))
+    if (sarsFeature) {
+      sarsPromiseRef.current = dispatch(fetchSarsInteractionThunk({ feature: sarsFeature }))
     }
 
     const tileClusterFeature = event.features.find(
@@ -252,7 +252,7 @@ export const useClickedEventConnect = () => {
   return {
     clickedEvent,
     fishingInteractionStatus,
-    viirsInteractionStatus,
+    sarsInteractionStatus,
     apiEventStatus,
     dispatchClickedEvent,
   }
@@ -282,7 +282,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
-  viirs?: ApiViirsStats[]
+  sars?: ApiSarStats[]
   temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }

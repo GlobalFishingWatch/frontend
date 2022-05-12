@@ -16,18 +16,18 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectApiEventStatus,
   selectFishingInteractionStatus,
-  selectViirsInteractionStatus,
+  selectSarsInteractionStatus,
 } from '../map.slice'
 import styles from './Popup.module.css'
 import FishingTooltipRow from './FishingLayers'
 import PresenceTooltipRow from './PresenceLayers'
-import ViirsTooltipRow from './ViirsLayers'
 import TileClusterRow from './TileClusterLayers'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
 import ComparisonRow from './ComparisonRow'
+import SarsTooltipRow from './SarsLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -51,10 +51,10 @@ function PopupWrapper({
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
-  const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
+  const sarsInteractionStatus = useSelector(selectSarsInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
 
-  const popupNeedsLoading = [fishingInteractionStatus, viirsInteractionStatus, apiEventStatus].some(
+  const popupNeedsLoading = [fishingInteractionStatus, sarsInteractionStatus, apiEventStatus].some(
     (s) => s === AsyncReducerStatus.Loading
   )
 
@@ -127,8 +127,8 @@ function PopupWrapper({
                       />
                     )
                   }
-                  return feature.temporalgrid?.sublayerInteractionType === 'viirs' ? (
-                    <ViirsTooltipRow
+                  return feature.temporalgrid?.sublayerInteractionType === 'sars' ? (
+                    <SarsTooltipRow
                       key={i + (feature.title as string)}
                       feature={feature}
                       showFeaturesDetails={type === 'click'}

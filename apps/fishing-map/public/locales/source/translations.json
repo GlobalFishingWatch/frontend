@@ -488,6 +488,7 @@
     "registeredGearType": "Registered Gear Type",
     "shiptype": "Vessel type",
     "source": "Source",
+    "ssvid": "Ssvid",
     "source_short": "Source",
     "target_species": "Target species",
     "targetSpecies": "Target species",

@@ -5,16 +5,19 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { MAX_TOOLTIP_LIST } from '../map.slice'
 import styles from './Popup.module.css'
 
-type ViirsTooltipRowProps = {
+type SarsTooltipRowProps = {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
 }
-function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps) {
+function SarsTooltipRow({ feature, showFeaturesDetails }: SarsTooltipRowProps) {
+  console.log(feature)
   const { t } = useTranslation()
-  const { viirsInteractionStatus } = useClickedEventConnect()
-  const viirsGroupedByQf = groupBy(feature.viirs, 'qf_detect')
+  const { sarsInteractionStatus } = useClickedEventConnect()
+  const sarsGroupedById = groupBy(feature.sars?.slice(0, MAX_TOOLTIP_LIST), 'ssvid')
+  const overflows = feature.sars?.length > MAX_TOOLTIP_LIST
 
   return (
     <div className={styles.popupSection}>
@@ -29,19 +32,19 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
             })}
           </span>
         </div>
-        {viirsInteractionStatus === AsyncReducerStatus.Loading && (
+        {sarsInteractionStatus === AsyncReducerStatus.Loading && (
           <div className={styles.loading}>
             <Spinner size="small" />
           </div>
         )}
         {showFeaturesDetails &&
-          viirsInteractionStatus === AsyncReducerStatus.Finished &&
-          viirsGroupedByQf && (
+          sarsInteractionStatus === AsyncReducerStatus.Finished &&
+          sarsGroupedById && (
             <Fragment>
               <table className={styles.viirsTable}>
                 <thead>
                   <tr>
-                    <th>{t('layer.qf', 'Quality signal')}</th>
+                    <th>{t('vessel.ssvid', 'Ssvid')}</th>
                     <th>
                       {t(
                         [`common.${feature.temporalgrid?.unit}` as any, 'common.detection'],
@@ -54,15 +57,11 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.keys(viirsGroupedByQf).map((qf) => {
-                    const detections = viirsGroupedByQf[qf]
-                    const label = t(
-                      `datasets:public-global-viirs.schema.qf_detect.enum.${qf}` as any,
-                      qf
-                    )
+                  {Object.keys(sarsGroupedById).map((id) => {
+                    const detections = sarsGroupedById[id]
                     return (
-                      <tr key={qf}>
-                        <td>{label}</td>
+                      <tr key={id}>
+                        <td>{id}</td>
                         <td>{<I18nNumber number={detections.length} />}</td>
                       </tr>
                     )
@@ -71,9 +70,14 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
               </table>
             </Fragment>
           )}
+        {overflows && (
+          <div className={styles.vesselsMore}>
+            + {feature.sars.length - MAX_TOOLTIP_LIST} {t('common.more', 'more')}
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-export default ViirsTooltipRow
+export default SarsTooltipRow
