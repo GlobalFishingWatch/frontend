@@ -218,6 +218,7 @@
     "contactUs": "Harap <1> hubungi kami </1> untuk melaporkan masalah tersebut.",
     "datasetNotFound": "Dataset tidak ditemukan",
     "datasetNotValid": "Tampaknya ada yang salah dengan file Anda",
+    "datasetShapefileMultiple": "Shapefiles containing multiple components (mutiple file names) are not supported yet",
     "fields": "Kesalahan dengan bidang {{fields}}",
     "generic": "Ada yang tidak beres, Silahkan coba lagi atau hubungi:",
     "genericShort": "Ada yang tidak beres",
