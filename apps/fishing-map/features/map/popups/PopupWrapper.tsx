@@ -72,7 +72,7 @@ function PopupWrapper({
     <Popup
       latitude={event.latitude}
       longitude={event.longitude}
-      closeButton={closeButton && !popupNeedsLoading}
+      closeButton={closeButton}
       closeOnClick={closeOnClick}
       onClose={onClose}
       className={cx(styles.popup, styles[type], className)}
