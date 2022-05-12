@@ -408,7 +408,7 @@ export function getDataviewsGeneratorConfigs(
         throw new Error('Shouldnt have distinct units for the same heatmap layer')
       }
       const interactionTypes = uniq(
-        dataview.datasets?.map((dataset) => dataset.configuration?.type || 'fishing-effort')
+        activeDatasets?.map((dataset) => dataset.configuration?.type || 'fishing-effort')
       ) as HeatmapAnimatedInteractionType[]
       if (interactionTypes.length > 0 && interactionTypes.length !== 1) {
         throw new Error(
