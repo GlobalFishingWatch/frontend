@@ -14,7 +14,7 @@
     "postinstall": "yarn prerender"
   },
   "dependencies": {
-    "@tippyjs/react": "4.2.5",
+    "@tippyjs/react": "4.2.6",
     "countryflag": "^4.1.2",
     "d3-format": "^3.1.0",
     "d3-geo": "1.12.0",

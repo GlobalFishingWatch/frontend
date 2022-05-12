@@ -1,10 +1,10 @@
 module.exports = {
-  displayName: 'user-groups-admin',
-  preset: '../../jest.preset.js',
+  displayName: 'tile-inspector',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nrwl/next/babel'] }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/user-groups-admin',
+  coverageDirectory: '../../coverage/applicaitons/tile-inspector',
+  preset: '../../jest.preset.ts',
 }

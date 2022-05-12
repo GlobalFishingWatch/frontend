@@ -1,5 +1,4 @@
 {
-  "root": "apps/vessel-history",
   "sourceRoot": "apps/vessel-history",
   "projectType": "application",
   "targets": {
@@ -74,7 +73,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/vessel-history"],
       "options": {
-        "jestConfig": "apps/vessel-history/jest.config.js",
+        "jestConfig": "apps/vessel-history/jest.config.ts",
         "passWithNoTests": true
       }
     },

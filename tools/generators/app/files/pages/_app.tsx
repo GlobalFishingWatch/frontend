@@ -2,7 +2,7 @@
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
-import { MapProvider } from 'react-map-gl'
+import { MapProvider as OrigMapProvider } from 'react-map-gl'
 import store from '../store'
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
@@ -12,6 +12,8 @@ import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 // }
+
+export const MapProvider: React.FC<{ children: React.ReactNode }> = OrigMapProvider
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (

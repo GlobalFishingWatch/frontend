@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect, Fragment } from 'react'
 import { useSelector } from 'react-redux'
-// import RecoilizeDebugger from 'recoilize'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -210,7 +209,6 @@ function App(): React.ReactElement {
 
   return (
     <Fragment>
-      {/* <RecoilizeDebugger /> */}
       <SplitView
         isOpen={sidebarOpen}
         showToggle={workspaceLocation}

@@ -1,5 +1,4 @@
 {
-  "root": "apps/user-groups-admin",
   "sourceRoot": "apps/user-groups-admin",
   "projectType": "application",
   "targets": {
@@ -73,7 +72,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/user-groups-admin"],
       "options": {
-        "jestConfig": "apps/user-groups-admin/jest.config.js",
+        "jestConfig": "apps/user-groups-admin/jest.config.ts",
         "passWithNoTests": true
       }
     }

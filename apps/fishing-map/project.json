@@ -74,7 +74,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/fishing-map"],
       "options": {
-        "jestConfig": "apps/fishing-map/jest.config.js",
+        "jestConfig": "apps/fishing-map/jest.config.ts",
         "passWithNoTests": true
       }
     },
