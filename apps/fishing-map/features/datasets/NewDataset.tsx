@@ -269,20 +269,7 @@ function NewDataset(): React.ReactElement {
     if (file) {
       let validityError
       let onTheFlyGeoJSONFile
-      if (
-        metadata?.category === DatasetCategory.Environment &&
-        datasetGeometryType === 'polygons'
-      ) {
-        if (!metadata?.configuration?.propertyToInclude) {
-          validityError = t('dataset.requiredFields', {
-            fields: 'value',
-            defaultValue: 'Required field value',
-          }) as string
-        }
-      } else if (
-        metadata?.category === DatasetCategory.Environment &&
-        datasetGeometryType === 'tracks'
-      ) {
+      if (metadata?.category === DatasetCategory.Environment && datasetGeometryType === 'tracks') {
         if (
           !metadata.configuration?.latitude ||
           !metadata.configuration?.longitude ||
