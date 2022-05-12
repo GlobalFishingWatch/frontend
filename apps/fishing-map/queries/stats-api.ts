@@ -1,8 +1,8 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
-import { gfwBaseQuery } from 'queries/base'
 import type { BaseQueryArg, BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import type { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSerializeQueryArgs'
+import { gfwBaseQuery } from 'queries/base'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { Range } from 'features/timebar/timebar.slice'
 
