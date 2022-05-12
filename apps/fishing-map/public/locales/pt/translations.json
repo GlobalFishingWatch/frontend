@@ -218,6 +218,7 @@
     "contactUs": "Por favor <1>contact us</1> para reportar o problema.",
     "datasetNotFound": "Dataset não encontrado",
     "datasetNotValid": "Parece haver algo errado com o seu arquivo",
+    "datasetShapefileMultiple": "Shapefiles containing multiple components (mutiple file names) are not supported yet",
     "fields": "Erros com os campos {{fields}}",
     "generic": "Algo deu errado. Tente novamente ou entre em contato:",
     "genericShort": "Algo deu errado",
