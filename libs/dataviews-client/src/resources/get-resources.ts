@@ -17,12 +17,26 @@ export const getResources = (
   dataviews: UrlDataviewInstance[],
   trackDatasetConfigsCallback?: (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]
 ): { resources: Resource[]; dataviews: UrlDataviewInstance[] } => {
-  // We are only interested in tracks for now
-  const trackDataviews = dataviews.filter(
-    (dataview) => dataview.config?.type === GeneratorType.Track
-  )
-  const otherDataviews = dataviews.filter(
-    (dataview) => dataview.config?.type !== GeneratorType.Track
+  const { trackDataviews, activityContextDataviews, otherDataviews } = dataviews.reduce(
+    (acc, dataview) => {
+      const isTrack = dataview.config?.type === GeneratorType.Track
+      const isActivityWithContext =
+        dataview.config?.type === GeneratorType.HeatmapAnimated &&
+        dataview.datasetsConfig?.some((d) => d.endpoint === EndpointId.ContextGeojson)
+      if (isTrack) {
+        acc.trackDataviews.push(dataview)
+      } else if (isActivityWithContext) {
+        acc.activityContextDataviews.push(dataview)
+      } else {
+        acc.otherDataviews.push(dataview)
+      }
+      return acc
+    },
+    {
+      trackDataviews: [] as UrlDataviewInstance[],
+      activityContextDataviews: [] as UrlDataviewInstance[],
+      otherDataviews: [] as UrlDataviewInstance[],
+    }
   )
 
   // Create dataset configs needed to load all tracks related endpoints
@@ -67,9 +81,32 @@ export const getResources = (
     })
   })
 
+  const activityContextResources = activityContextDataviews.flatMap((dataview) => {
+    if (!dataview.config?.subLayerActive) {
+      return []
+    }
+    const subLayerConfig = dataview.datasetsConfig?.find(
+      (d) => d.endpoint === EndpointId.ContextGeojson
+    )
+    const dataset = dataview.datasets?.find((d) => d.id === subLayerConfig?.datasetId)
+    if (!subLayerConfig || !dataset) {
+      return []
+    }
+    const url = resolveEndpoint(dataset, subLayerConfig)
+
+    if (!url) return []
+    return [
+      { dataset, datasetConfig: subLayerConfig, url, dataviewId: dataview.dataviewId as number },
+    ]
+  })
+
   return {
-    resources: trackResources,
-    dataviews: [...trackDataviewsWithDatasetConfigs, ...otherDataviews],
+    resources: [...trackResources, ...activityContextResources],
+    dataviews: [
+      ...trackDataviewsWithDatasetConfigs,
+      ...activityContextDataviews,
+      ...otherDataviews,
+    ],
   }
 }
 

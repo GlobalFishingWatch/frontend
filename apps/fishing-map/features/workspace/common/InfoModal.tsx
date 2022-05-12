@@ -34,7 +34,6 @@ const InfoModal = ({
 
   const tabs = useMemo(() => {
     const uniqDatasets = dataview.datasets ? uniqBy(dataview.datasets, (dataset) => dataset.id) : []
-    debugger
     return uniqDatasets.flatMap((dataset) => {
       if (dataview.config?.type === GeneratorType.Track) {
         const datasetConfig = dataview.datasetsConfig?.find(

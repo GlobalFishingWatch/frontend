@@ -52,6 +52,7 @@ export enum DatasetTypes {
   Tracks = 'carriers-tracks:v1',
   Fourwings = '4wings:v1',
   Context = 'user-context-layer:v1',
+  TemporalContext = 'temporal-context-layer:v1',
   Download = 'data-download:v1',
   // TODO
   UserTracks = 'user-tracks:v1',

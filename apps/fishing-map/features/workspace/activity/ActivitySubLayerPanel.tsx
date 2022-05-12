@@ -1,9 +1,14 @@
 import React, { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { EndpointId } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Switch, Tooltip } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import { DatasetTypes, EndpointId, ResourceStatus } from '@globalfishingwatch/api-types'
+import {
+  resolveDataviewDatasetResource,
+  selectResources,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import { Spinner, Switch, Tooltip } from '@globalfishingwatch/ui-components'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import Title from 'features/workspace/common/Title'
@@ -15,19 +20,14 @@ type LayerPanelProps = {
 
 function ActivityLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
+  const resources = useSelector(selectResources)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const subLayerActive = dataview?.config?.subLayerActive ?? true
-  console.log(dataview)
-  const subLayerConfig = dataview.datasetsConfig?.find(
-    (d) => d.endpoint === EndpointId.ContextGeojson
-  )
-  if (!subLayerConfig) {
+  const { dataset, url } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
+  if (!dataset || !url) {
     return null
   }
-  const dataset = dataview.datasets?.find((d) => d.id === subLayerConfig.datasetId)
-  if (!dataset) {
-    return null
-  }
+  const resource = resources[url]
 
   const onSubLayerSwitchToggle = () => {
     upsertDataviewInstance({
@@ -66,6 +66,7 @@ function ActivityLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
+        {resource?.status === ResourceStatus.Loading && <Spinner size="tiny" />}
       </div>
     </div>
   )
