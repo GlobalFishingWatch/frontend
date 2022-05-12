@@ -15,7 +15,6 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "@globalfishingwatch/ui-components": "12.5.0",
     "@math.gl/web-mercator": "^3.5.5",
     "@reduxjs/toolkit": "^1.8.1",
     "@turf/bearing": "^6.5.0",
