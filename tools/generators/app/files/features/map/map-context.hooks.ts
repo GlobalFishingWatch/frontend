@@ -1,6 +1,6 @@
 import { useMap } from 'react-map-gl'
 
 export default function useMapInstance() {
-  const { current } = useMap()
-  return current?.getMap() as any as maplibregl.Map
+  const { map } = useMap()
+  return map?.getMap() as any as maplibregl.Map
 }
