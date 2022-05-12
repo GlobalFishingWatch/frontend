@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "yarn lint:js && yarn lint:css",
-    "lint:js": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix --resolve-plugins-relative-to .",
+    "lint:js": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix",
     "lint:css": "stylelint ./**/*.{css,scss,sass} --config .stylelintrc.js --fix",
     "serve": "serve -s build",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
@@ -77,7 +77,7 @@
   ],
   "eslintConfig": {
     "extends": [
-      "@globalfishingwatch/linting"
+      "@globalfishingwatch/linting/next"
     ],
     "ignorePatterns": "public/"
   },

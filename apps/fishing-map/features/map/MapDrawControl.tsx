@@ -36,7 +36,9 @@ type DrawControlProps = {
   onSelectionChange?: (e: DrawSelectionChangeEvent) => void
 }
 
-const defaultFn = () => {}
+const defaultFn = () => {
+  return
+}
 const styles = [
   // line stroke
   {

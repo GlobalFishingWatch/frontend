@@ -1,5 +1,3 @@
-/* eslint import/no-unresolved: 0 */
-
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { BASE_URL } from 'data/constants'
 

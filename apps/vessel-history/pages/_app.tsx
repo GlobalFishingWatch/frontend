@@ -1,5 +1,3 @@
-/* eslint import/no-unresolved: 0 */
-
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'

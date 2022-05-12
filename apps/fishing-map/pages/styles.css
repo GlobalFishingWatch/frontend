@@ -187,10 +187,10 @@
   cursor: grab !important;
 }
 
-.mapboxgl-map.mode-direct_select.feature-vertex.mouse-move
+.mapboxgl-map.mode-static.mouse-pointer
   .mapboxgl-canvas-container.mapboxgl-interactive
   .mapboxgl-canvas {
-  cursor: move !important;
+  cursor: grab !important;
 }
 
 .mapboxgl-map.mode-direct_select.feature-midpoint.mouse-pointer
@@ -209,10 +209,4 @@
   .mapboxgl-canvas-container.mapboxgl-interactive
   .mapboxgl-canvas {
   cursor: pointer !important;
-}
-
-.mapboxgl-map.mode-static.mouse-pointer
-  .mapboxgl-canvas-container.mapboxgl-interactive
-  .mapboxgl-canvas {
-  cursor: grab !important;
 }
