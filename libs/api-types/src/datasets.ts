@@ -24,6 +24,7 @@ export enum EndpointId {
   FourwingsLegend = '4wings-legend',
   FourwingsInteraction = '4wings-interaction',
   Tracks = 'carriers-tracks',
+  ContextGeojson = 'temporal-context-geojson',
   UserContextTiles = 'user-context-tiles',
   UserTracks = 'user-tracks-data',
   Vessel = 'carriers-vessel',
@@ -134,12 +135,12 @@ export interface Dataset {
 }
 
 export interface ThinningConfig {
-  distanceFishing?: number,
-  bearingValFishing?: number,
-  changeSpeedFishing?: number,
-  minAccuracyFishing?: number,
-  distanceTransit?: number,
-  bearingValTransit?: number,
-  changeSpeedTransit?: number,
-  minAccuracyTransit?: number,
+  distanceFishing?: number
+  bearingValFishing?: number
+  changeSpeedFishing?: number
+  minAccuracyFishing?: number
+  distanceTransit?: number
+  bearingValTransit?: number
+  changeSpeedTransit?: number
+  minAccuracyTransit?: number
 }
