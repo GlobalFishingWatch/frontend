@@ -48,6 +48,7 @@ const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
 
 export type FetchResourceThunkParams = {
   resource: Resource
+  resourceKey?: string
   parseEventCb?: ParseEventCallback
   parseUserTrackCb?: ParseTrackCallback
 }
@@ -124,7 +125,8 @@ export const resourcesSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
       const { resource } = action.meta.arg
-      state[resource.url] = { status: ResourceStatus.Loading, ...resource }
+      const key = action.meta.arg.resourceKey || resource.url
+      state[key] = { status: ResourceStatus.Loading, ...resource }
       const thisChunkSetId = resource.datasetConfig?.metadata?.chunkSetId
       if (thisChunkSetId) {
         state[thisChunkSetId] = {
@@ -142,7 +144,8 @@ export const resourcesSlice = createSlice({
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
       const { url } = action.payload
-      state[url] = { status: ResourceStatus.Finished, ...action.payload }
+      const key = action.meta.arg.resourceKey || url
+      state[key] = { status: ResourceStatus.Finished, ...action.payload }
 
       // If resource is part of a chunk set (ie tracks by year), rebuild the whole set into a single resource
       if (action.payload.datasetConfig.metadata?.chunkSetId) {
@@ -169,7 +172,8 @@ export const resourcesSlice = createSlice({
     })
     builder.addCase(fetchResourceThunk.rejected, (state, action) => {
       const { url } = action.meta.arg.resource
-      state[url].status = ResourceStatus.Error
+      const key = action.meta.arg.resourceKey || url
+      state[key].status = ResourceStatus.Error
     })
   },
 })

@@ -23,12 +23,15 @@ function ActivityLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const resources = useSelector(selectResources)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const subLayerActive = dataview?.config?.subLayerActive ?? true
-  const { dataset, url } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
+  const { dataset, url, key } = resolveDataviewDatasetResource(
+    dataview,
+    DatasetTypes.TemporalContext
+  )
   if (!dataset || !url) {
     return null
   }
 
-  const resource = resources[url]
+  const resource = resources[key] || resources[url]
 
   const onSubLayerSwitchToggle = () => {
     upsertDataviewInstance({

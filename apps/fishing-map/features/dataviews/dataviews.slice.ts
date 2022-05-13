@@ -195,8 +195,8 @@ export const selectAllDataviewInstancesResolvedWithAppConfig = createSelector(
               return {
                 ...dc,
                 query: [
-                  { id: 'startDate', value: timerange.start },
-                  { id: 'endDate', value: timerange.end },
+                  { id: 'start-date', value: timerange.start },
+                  { id: 'end-date', value: timerange.end },
                 ],
               }
             }

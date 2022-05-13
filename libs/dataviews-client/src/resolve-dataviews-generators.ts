@@ -463,14 +463,14 @@ export function getDataviewsGeneratorConfigs(
           (d) => d.endpoint === EndpointId.ContextGeojson && dataview.config?.subLayerActive
         )
       ) {
-        const { dataset, url } = resolveDataviewDatasetResource(
+        const { dataset, url, key } = resolveDataviewDatasetResource(
           dataview,
           DatasetTypes.TemporalContext
         )
         if (!dataset || !url) {
           return []
         }
-        const resource = resources?.[url]
+        const resource = resources?.[key as string] || resources?.[url]
         if (!resource || resource.status !== ResourceStatus.Finished) {
           return []
         }

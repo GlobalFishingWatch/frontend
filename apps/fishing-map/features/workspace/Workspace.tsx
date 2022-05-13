@@ -127,6 +127,7 @@ function Workspace() {
         dispatch(
           fetchResourceThunk({
             resource,
+            resourceKey: resource.key,
             parseEventCb: parseTrackEventChunkProps,
             parseUserTrackCb: parseUserTrackCallback,
           })

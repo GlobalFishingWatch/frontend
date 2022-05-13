@@ -205,6 +205,7 @@ export const resolveDataviewDatasetResources = (
           dataset,
           datasetConfig,
           dataviewId: dataview.dataviewId as number,
+          key: dataset.id,
         } as Resource,
       ]
     })
