@@ -13,9 +13,13 @@ import {
 } from '../resolve-dataviews'
 import { resolveEndpoint } from '../resolve-endpoint'
 
+export type GetDatasetConfigsCallbacks = {
+  tracks?: (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]
+  activityContext?: (datasetConfigs: DataviewDatasetConfig) => DataviewDatasetConfig
+}
 export const getResources = (
   dataviews: UrlDataviewInstance[],
-  trackDatasetConfigsCallback?: (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]
+  callbacks: GetDatasetConfigsCallbacks
 ): { resources: Resource[]; dataviews: UrlDataviewInstance[] } => {
   const { trackDataviews, activityContextDataviews, otherDataviews } = dataviews.reduce(
     (acc, dataview) => {
@@ -55,8 +59,8 @@ export const getResources = (
 
     let preparedDatasetConfigs = [info, track, ...events]
 
-    if (trackDatasetConfigsCallback) {
-      preparedDatasetConfigs = trackDatasetConfigsCallback(preparedDatasetConfigs)
+    if (callbacks.tracks) {
+      preparedDatasetConfigs = callbacks.tracks(preparedDatasetConfigs)
     }
 
     const preparedDataview = {
@@ -85,19 +89,24 @@ export const getResources = (
     if (!dataview.config?.subLayerActive) {
       return []
     }
-    const subLayerConfig = dataview.datasetsConfig?.find(
+    const dataviewDatasetConfig = dataview.datasetsConfig?.find(
       (d) => d.endpoint === EndpointId.ContextGeojson
     )
-    const dataset = dataview.datasets?.find((d) => d.id === subLayerConfig?.datasetId)
-    if (!subLayerConfig || !dataset) {
+    if (!dataviewDatasetConfig) {
       return []
     }
-    const url = resolveEndpoint(dataset, subLayerConfig)
+    const datasetConfig = callbacks.activityContext
+      ? callbacks.activityContext(dataviewDatasetConfig)
+      : dataviewDatasetConfig
+
+    const dataset = dataview.datasets?.find((d) => d.id === datasetConfig?.datasetId)
+    if (!datasetConfig || !dataset) {
+      return []
+    }
+    const url = resolveEndpoint(dataset, datasetConfig)
 
     if (!url) return []
-    return [
-      { dataset, datasetConfig: subLayerConfig, url, dataviewId: dataview.dataviewId as number },
-    ]
+    return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
   })
 
   return {

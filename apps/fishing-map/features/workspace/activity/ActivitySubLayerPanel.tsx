@@ -27,6 +27,7 @@ function ActivityLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   if (!dataset || !url) {
     return null
   }
+
   const resource = resources[url]
 
   const onSubLayerSwitchToggle = () => {
