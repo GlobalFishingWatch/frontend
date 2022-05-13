@@ -11,6 +11,7 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
+  ResourceStatus,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -454,6 +455,43 @@ export function getDataviewsGeneratorConfigs(
       },
     }
     dataviewsFiltered.push(mergedActivityDataview)
+
+    // New sublayers as context for activity layers
+    const activityWithContextDataviews = activityDataviews.flatMap((dataview) => {
+      if (
+        dataview.datasetsConfig?.some(
+          (d) => d.endpoint === EndpointId.ContextGeojson && dataview.config?.subLayerActive
+        )
+      ) {
+        const { dataset, url } = resolveDataviewDatasetResource(
+          dataview,
+          DatasetTypes.TemporalContext
+        )
+        if (!dataset || !url) {
+          return []
+        }
+        const resource = resources?.[url]
+        if (!resource || resource.status !== ResourceStatus.Finished) {
+          return []
+        }
+        // Prepare a new dataview only for the context activity layer
+        return {
+          ...dataview,
+          config: {
+            color: dataview.config?.color,
+            visible: dataview.config?.subLayerActive,
+            type: GeneratorType.Polygons,
+            data: resource?.data,
+          },
+          datasets: dataview.datasets?.filter((d) => d.type === DatasetTypes.TemporalContext),
+          datasetsConfig: dataview.datasetsConfig?.filter(
+            (dc) => dc.endpoint === EndpointId.ContextGeojson
+          ),
+        }
+      }
+      return []
+    })
+    dataviewsFiltered.push(...activityWithContextDataviews)
   }
 
   const generatorsConfig = dataviewsFiltered.flatMap((dataview) => {
