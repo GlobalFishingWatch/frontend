@@ -2,6 +2,13 @@
   "sourceRoot": "apps/vessel-history",
   "projectType": "application",
   "targets": {
+    "changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["./changelog.sh vessel-history \"Vessel Viewer\""],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {

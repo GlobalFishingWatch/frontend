@@ -2,6 +2,14 @@
   "sourceRoot": "apps/user-groups-admin",
   "projectType": "application",
   "targets": {
+    "changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["./changelog.sh user-groups-admin \"User groups admin\""],
+        "parallel": false
+      }
+    },
+
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
