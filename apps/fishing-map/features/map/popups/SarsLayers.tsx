@@ -13,7 +13,6 @@ type SarsTooltipRowProps = {
   showFeaturesDetails: boolean
 }
 function SarsTooltipRow({ feature, showFeaturesDetails }: SarsTooltipRowProps) {
-  console.log(feature)
   const { t } = useTranslation()
   const { sarsInteractionStatus } = useClickedEventConnect()
   const sarsGroupedById = groupBy(feature.sars?.slice(0, MAX_TOOLTIP_LIST), 'ssvid')

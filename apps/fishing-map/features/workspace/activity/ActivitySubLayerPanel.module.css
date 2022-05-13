@@ -6,6 +6,7 @@
 
 .name {
   margin-left: var(--space-XS);
+  margin-right: var(--space-S);
   font: var(--font-S);
   cursor: pointer;
 }
