@@ -178,3 +178,7 @@ chrome.exe --user-data-dir=/tmp/foo --ignore-certificate-errors --unsafely-treat
 ```
 
 _Pending: Add `https://localhost` (or a more meaningful hostname) to the list of redirectUrls in the GFW application_
+
+## Generating release notes for github releases
+
+To generate the release notes you can run `nx changelog <app_or_lib_name>`. Note that such output is still not filtered by app or lib so you'll have to filter the list before using it in the release notes.
