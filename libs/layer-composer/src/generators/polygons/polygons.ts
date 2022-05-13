@@ -29,7 +29,7 @@ class PolygonsGenerator {
   _getStyleLayers = (config: GlobalPolygonsConfig): LineLayerSpecification[] => {
     const paint = {
       'line-color': config.color || DEFAULT_COLOR,
-      'line-width': 1.5,
+      'line-width': 0.5,
       'line-opacity': config.opacity || 1,
     }
 
