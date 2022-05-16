@@ -118,8 +118,6 @@ export const pickTrackResource = (
     return mergedTrack
   }
 
-  debugger
-
   // Else no usable track for this vessel (we don't display a chunk alone)
   return undefined
 }
