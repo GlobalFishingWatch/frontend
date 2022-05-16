@@ -21,6 +21,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
+import { selectResourcesLoading } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
@@ -103,6 +104,7 @@ const MapWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
+  const resourcesLoading = useSelector(selectResourcesLoading)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
@@ -259,7 +261,7 @@ const MapWrapper = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
 
-  const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
+  const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded || resourcesLoading
   const debouncedMapLoading = useDebounce(mapLoading, 300)
 
   const onMouseMove: any = useMemo(() => {
