@@ -80,7 +80,9 @@ const getGeneratorsConfig = ({
 
   const trackDataviews = dataviews.filter((d) => d.config.type === GeneratorType.Track)
   const singleTrack = trackDataviews.length === 1
-  const disableHighlight = trackDataviews.length >= 5
+  // const disableHighlight = trackDataviews.length >= 5
+  // For now always disable event highlight
+  const disableHighlight = true
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
     heatmapAnimatedMode,
