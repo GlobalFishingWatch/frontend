@@ -142,15 +142,7 @@ class VesselsEventsShapesGenerator {
       },
       paint: {
         'circle-color': ['get', 'color'],
-        'circle-radius': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          4,
-          getExpression(5, 3),
-          9,
-          getExpression(8, 6),
-        ],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 1.5, 9, 4],
         'circle-stroke-color': getExpression('#ffffff', 'transparent'),
         'circle-stroke-width': 2,
       },
