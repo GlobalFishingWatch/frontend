@@ -57,7 +57,7 @@ export type ParseTrackCallback = (data: FeatureCollection) => FeatureCollection
 
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
-  async ({ resource, parseEventCb, parseUserTrackCb }: FetchResourceThunkParams) => {
+  async ({ resource, parseEventCb, parseUserTrackCb }: FetchResourceThunkParams, { signal }) => {
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
     const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
@@ -67,7 +67,7 @@ export const fetchResourceThunk = createAsyncThunk(
         ? 'vessel'
         : 'json'
 
-    const data = await GFWAPI.fetch(resource.url, { responseType }).then((data: any) => {
+    const data = await GFWAPI.fetch(resource.url, { responseType, signal }).then((data: any) => {
       // TODO Replace with enum?
       if (isTrackResource) {
         const fields = (
@@ -173,7 +173,10 @@ export const resourcesSlice = createSlice({
     builder.addCase(fetchResourceThunk.rejected, (state, action) => {
       const { url } = action.meta.arg.resource
       const key = action.meta.arg.resourceKey || url
-      state[key].status = ResourceStatus.Error
+      const resource = state[key]
+      if (action.meta.arg.resource.url === resource.url) {
+        resource.status = ResourceStatus.Error
+      }
     })
   },
 })
