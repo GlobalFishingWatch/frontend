@@ -320,7 +320,10 @@ export function getGeneratorConfig(
         if (dataset?.source) {
           generator.attribution = dataset.source
         }
-        if (dataset.category === DatasetCategory.Environment) {
+
+        const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
+          ?.propertyToInclude
+        if (dataset.category === DatasetCategory.Environment && propertyToInclude) {
           const { min, max } =
             (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
             {}

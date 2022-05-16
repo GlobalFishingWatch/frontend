@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: 'ui-components',
-  preset: '../../jest.preset.js',
+  displayName: 'ocean-areas',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/ui-components',
-};
+  coverageDirectory: '../../coverage/libs/ocean-areas',
+  preset: '../../jest.preset.ts',
+}

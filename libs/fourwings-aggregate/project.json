@@ -1,5 +1,4 @@
 {
-  "root": "libs/fourwings-aggregate",
   "sourceRoot": "libs/fourwings-aggregate/src",
   "projectType": "library",
   "tags": [],
@@ -54,7 +53,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/fourwings-aggregate"],
       "options": {
-        "jestConfig": "libs/fourwings-aggregate/jest.config.js",
+        "jestConfig": "libs/fourwings-aggregate/jest.config.ts",
         "passWithNoTests": true
       }
     },

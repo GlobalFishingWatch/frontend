@@ -23,10 +23,6 @@ const nextConfig = {
     svgr: true,
   },
   webpack: function (config) {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'mapbox-gl': '@globalfishingwatch/maplibre-gl',
-    }
     config.resolve.fallback = {
       ...config.resolve.fallback,
       child_process: false,

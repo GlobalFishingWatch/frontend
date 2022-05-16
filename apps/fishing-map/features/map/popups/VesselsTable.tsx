@@ -35,7 +35,6 @@ import {
   SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
   TooltipEventFeature,
 } from '../map.hooks'
-import { useMapContext } from '../map-context.hooks'
 import styles from './VesselsTable.module.css'
 
 export const getVesselTableTitle = (feature: TooltipEventFeature) => {
@@ -121,7 +120,6 @@ function VesselsTable({
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
-  const { eventManager } = useMapContext()
 
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -151,8 +149,6 @@ function VesselsTable({
     ev: React.MouseEvent<Element, MouseEvent>,
     vessel: ExtendedFeatureVessel
   ) => {
-    eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
     const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
     if (vesselInWorkspace) {
       deleteDataviewInstance(vesselInWorkspace.id)

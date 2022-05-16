@@ -149,8 +149,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 )
 
 const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
+  const { id, ownerId, ...restWorkspace } = workspace
   return {
-    ...workspace,
+    ...restWorkspace,
     ...(workspace.dataviews && { dataviews: workspace.dataviews.map(({ id }) => id) }),
     ...(workspace.aoi && { aoi: workspace.aoi.id }),
   }

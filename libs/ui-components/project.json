@@ -1,5 +1,4 @@
 {
-  "root": "libs/ui-components",
   "sourceRoot": "libs/ui-components/src",
   "projectType": "library",
   "tags": [],
@@ -34,7 +33,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/ui-components"],
       "options": {
-        "jestConfig": "libs/ui-components/jest.config.js",
+        "jestConfig": "libs/ui-components/jest.config.ts",
         "passWithNoTests": true
       }
     },

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { selectFilters, updateFilters, availableEventFilters } from './filters.slice'
+import { selectFilters, updateFilters, availableEventFilters, resetFilters } from './filters.slice'
 
 export const useApplyFiltersConnect = () => {
   const dispatch = useDispatch()
@@ -21,13 +21,13 @@ export const useApplyFiltersConnect = () => {
     dispatch(updateFilters(newFilters))
   }
 
-  const resetFilters = () => {
+  const dispatchResetFilters = () => {
     dispatch(resetFilters())
   }
 
   return {
     setFilter,
     setDate,
-    resetFilters,
+    resetFilters: dispatchResetFilters,
   }
 }

@@ -13,7 +13,7 @@ class MyDocument extends Document {
         <Head>
           <head>
             <meta charSet="utf-8" />
-            <title>GFW | Default Map</title>
+            <title>GFW | Map</title>
 
             <meta
               property="og:description"

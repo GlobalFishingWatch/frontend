@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: 'ocean-areas',
-  preset: '../../jest.preset.js',
+  displayName: 'api-types',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/ocean-areas',
-};
+  coverageDirectory: '../../coverage/libs/api-types',
+  preset: '../../jest.preset.ts',
+}
