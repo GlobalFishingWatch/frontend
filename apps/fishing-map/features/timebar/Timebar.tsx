@@ -46,8 +46,8 @@ import styles from './Timebar.module.css'
 
 const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = () => {
-  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
+  // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
     (chunks: HighlightedChunks) => {
@@ -108,7 +108,8 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  const { highlightedEvents } = useHighlightedEventsConnect()
+  // const { highlightedEvents } = useHighlightedEventsConnect()
+  const [highlightedEvents, dispatchHighlightedEvents] = useState([])
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
@@ -324,7 +325,7 @@ const TimebarWrapper = () => {
                   </label>
                 </div>
               ))}
-            <TimebarHighlighterWrapper />
+            <TimebarHighlighterWrapper dispatchHighlightedEvents={dispatchHighlightedEvents} />
           </Fragment>
         ) : null}
       </Timebar>

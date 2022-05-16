@@ -113,16 +113,8 @@ class VesselsEventsShapesGenerator {
     }
     const showTrackSegments = this._showTrackSegments(config)
 
-    let highlightEvents = true
-    if (config.start && config.end) {
-      const startDT = DateTime.fromISO(config.start).toUTC()
-      const endDT = DateTime.fromISO(config.end).toUTC()
-      const delta = Duration.fromMillis(+endDT - +startDT)
-      if (delta.as('years') > 1) highlightEvents = false
-    }
-
     const getExpression = (highlighted: any, fallback: any) => {
-      if (!config.currentEventsIds || !config.currentEventsIds.length || !highlightEvents) {
+      if (!config.currentEventsIds || !config.currentEventsIds.length) {
         return fallback
       }
       const filter = [
