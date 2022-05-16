@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Generate a Markdown change log of pull requests from commits between two tags
 # Author: Russell Heimlich
 # URL: https://gist.github.com/kingkool68/09a201a35c83e43af08fcbacee5c315a
@@ -12,10 +12,10 @@
 # Repo URL to base links off of
 REPOSITORY_URL=https://github.com/GlobalFishingWatch/frontend
 
-PACKAGE_VERSION=$(grep '"version": ' package.json)
+PACKAGE_VERSION=$(grep '"version": ' apps/$1/package.json)
 CURRENT_PACKAGE_VERSION=`grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' <<< "$PACKAGE_VERSION"`
 
-TAG_PREFIX="@globalfishingwatchapp/user-groups-admin@"
+TAG_PREFIX="@globalfishingwatchapp/$1@"
 
 # Get a list of all tags in reverse order
 # Assumes the tags are in version format like v1.2.3
@@ -24,7 +24,7 @@ GIT_TAGS=$(git tag -l --sort=-version:refname | grep $TAG_PREFIX)
 # Make the tags an array
 TAGS=($GIT_TAGS)
 
-LATEST_VERSION_RELEASED=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.?[0-9]+' <<< ${TAGS[0]})
+LATEST_VERSION_RELEASED=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.?[0-9]*' <<< ${TAGS[0]})
 echo Latest Version Released: ${LATEST_VERSION_RELEASED}
 echo Current Package Version: ${CURRENT_PACKAGE_VERSION}
 
@@ -50,9 +50,10 @@ COMMITS=$(git log $PREVIOUS_TAG..$LATEST_TAG --pretty=format:"%H")
 
 # Store our changelog in a variable to be saved to a file at the end
 MARKDOWN=\
-"$NEW_PACKAGE_VERSION
+"
+$NEW_PACKAGE_VERSION
 
-# User groups admin $new_version
+$2 $new_version
 
 ## What's Changed
 "
@@ -88,5 +89,5 @@ done
 MARKDOWN+='\n\n'
 MARKDOWN+="**Full Changelog**: $REPOSITORY_URL/compare/$PREVIOUS_TAG...$NEW_PACKAGE_VERSION"
 
-# Output the markdown to a file
-echo -e "$MARKDOWN\n\n"
+# Output the markdown
+echo "$MARKDOWN\n\n"

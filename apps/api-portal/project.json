@@ -2,6 +2,13 @@
   "sourceRoot": "apps/api-portal",
   "projectType": "application",
   "targets": {
+    "changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["./changelog.sh api-portal \"API Portal\""],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
