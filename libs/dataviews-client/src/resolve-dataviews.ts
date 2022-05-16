@@ -170,6 +170,17 @@ export const resolveResourcesFromDatasetConfigs = (
     })
 }
 
+export const generateDataviewDatasetResourceKey = (
+  dataset: Dataset,
+  datasetConfig: DataviewDatasetConfig
+) => {
+  return [
+    dataset.id,
+    ...(datasetConfig.params || []).map((p) => p.value),
+    ...(datasetConfig.query || []).map((q) => q.value),
+  ].join(',')
+}
+
 /**
  * Get resources for a dataview
  */
@@ -205,7 +216,7 @@ export const resolveDataviewDatasetResources = (
           dataset,
           datasetConfig,
           dataviewId: dataview.dataviewId as number,
-          key: dataset.id,
+          key: generateDataviewDatasetResourceKey(dataset, datasetConfig),
         } as Resource,
       ]
     })

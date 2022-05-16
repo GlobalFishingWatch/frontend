@@ -110,9 +110,10 @@ export const fetchResourceThunk = createAsyncThunk(
     }
   },
   {
-    condition: ({ resource }: FetchResourceThunkParams, { getState }) => {
+    condition: ({ resource, resourceKey }: FetchResourceThunkParams, { getState }) => {
       const { resources } = getState() as PartialStoreResources
-      const { status } = resources[resource.url] || {}
+      const key = resourceKey || resource.url
+      const { status } = resources[key] || {}
       return !status || (status !== ResourceStatus.Loading && status !== ResourceStatus.Finished)
     },
   }

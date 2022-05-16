@@ -7,6 +7,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
+  generateDataviewDatasetResourceKey,
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
   UrlDataviewInstance,
@@ -108,7 +109,13 @@ export const getResources = (
 
     if (!url) return []
     return [
-      { dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number, key: dataset.id },
+      {
+        dataset,
+        datasetConfig,
+        url,
+        dataviewId: dataview.dataviewId as number,
+        key: generateDataviewDatasetResourceKey(dataset, datasetConfig),
+      },
     ]
   })
 
