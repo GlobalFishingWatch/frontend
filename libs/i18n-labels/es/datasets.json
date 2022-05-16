@@ -517,8 +517,9 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "trap net": "trap net",
-          "purse seine": "purse seine"
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
         }
       },
       "vessel_id": "vessel_id"
@@ -1735,8 +1736,9 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "trap net": "trap net",
-          "purse seine": "purse seine"
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
         }
       },
       "vessel_id": "vessel_id"
