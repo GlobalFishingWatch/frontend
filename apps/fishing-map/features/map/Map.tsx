@@ -241,7 +241,7 @@ const MapWrapper = () => {
       return 'grabbing'
     }
     return 'grab'
-  }, [isMapDrawing, hoveredTooltipEvent, map, dataviews, tilesClusterLoaded])
+  }, [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded])
 
   useEffect(() => {
     if (map) {
@@ -258,7 +258,7 @@ const MapWrapper = () => {
   }, [map, debugOptions])
 
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
-  const debouncedMapLoading = useDebounce(mapLoading, 2000)
+  const debouncedMapLoading = useDebounce(mapLoading, 300)
 
   const onMouseMove: any = useMemo(() => {
     return isMapDrawing ? onSimpleMapHover : currentMapHoverCallback
