@@ -53,7 +53,6 @@ export type DataviewsGeneratorConfigsParams = {
   heatmapAnimatedMode?: HeatmapAnimatedMode
   customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
   singleTrack?: boolean
-  disableHighlight?: boolean
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -166,10 +165,8 @@ export function getGeneratorConfig(
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
-          ...(highlightedEvent &&
-            !params?.disableHighlight && { currentEventId: highlightedEvent.id }),
-          ...(highlightedEvents &&
-            !params?.disableHighlight && { currentEventsIds: highlightedEvents }),
+          ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+          ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
         }
         return [generator, eventsGenerator]
       }

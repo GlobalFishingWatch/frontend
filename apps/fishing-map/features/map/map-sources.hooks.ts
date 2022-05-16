@@ -57,7 +57,7 @@ export const useSourceInStyle = (sourcesIds: SourcesHookInput) => {
 }
 
 // Don't consider loading states for our interaction layers
-const isInteractionSource = (sourceId: string) => {
+export const isInteractionSource = (sourceId: string) => {
   return sourceId.includes(TRACK_HIGHLIGHT_SUFFIX)
 }
 

@@ -104,7 +104,7 @@ function App(): React.ReactElement {
       map.resize()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAnalysing])
+  }, [isAnalysing, sidebarOpen])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
@@ -178,12 +178,6 @@ function App(): React.ReactElement {
   useEffect(() => {
     dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
-
-  useEffect(() => {
-    if (map) {
-      map.resize()
-    }
-  }, [map, sidebarOpen])
 
   const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })

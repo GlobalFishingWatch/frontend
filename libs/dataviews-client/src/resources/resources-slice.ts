@@ -125,35 +125,44 @@ export const resourcesSlice = createSlice({
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
       const { resource } = action.meta.arg
       state[resource.url] = { status: ResourceStatus.Loading, ...resource }
+      const thisChunkSetId = resource.datasetConfig?.metadata?.chunkSetId
+      if (thisChunkSetId) {
+        state[thisChunkSetId] = {
+          ...resource,
+          status: ResourceStatus.Loading,
+          datasetConfig: {
+            ...resource.datasetConfig,
+            metadata: {
+              ...resource.datasetConfig.metadata,
+              chunkSetMerged: true,
+            },
+          },
+        }
+      }
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
       const { url } = action.payload
-      const resource = { status: ResourceStatus.Finished, ...action.payload }
-      state[url] = resource
+      state[url] = { status: ResourceStatus.Finished, ...action.payload }
 
       // If resource is part of a chunk set (ie tracks by year), rebuild the whole set into a single resource
       if (action.payload.datasetConfig.metadata?.chunkSetId) {
         const thisChunkSetId = action.payload.datasetConfig.metadata?.chunkSetId
         const chunks = Object.keys(state)
           .map((k) => state[k])
-          .filter((resource) => resource.datasetConfig.metadata?.chunkSetId === thisChunkSetId)
-
+          .filter(
+            (resource) =>
+              resource.datasetConfig.metadata?.chunkSetId === thisChunkSetId &&
+              !resource.datasetConfig.metadata?.chunkSetMerged
+          )
         if (
           chunks.map((chunk) => chunk.status).some((status) => status === ResourceStatus.Finished)
         ) {
           const mergedData = mergeTrackChunks(chunks.map((chunk) => chunk.data) as any)
 
-          // TODO should we always use URL as key or is this ok?
           state[thisChunkSetId] = {
-            ...resource,
+            ...state[thisChunkSetId],
             data: mergedData,
-            datasetConfig: {
-              ...resource.datasetConfig,
-              metadata: {
-                ...resource.datasetConfig.metadata,
-                chunkSetMerged: true,
-              },
-            },
+            status: ResourceStatus.Finished,
           }
         }
       }

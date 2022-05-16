@@ -52,7 +52,7 @@ export const selectTracksData = createSelector(
 
       let trackResource
       if (endpointType === EndpointId.Tracks) {
-        trackResource = pickTrackResource(dataview, endpointType, resources)
+        trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
       } else {
         const { url } = resolveDataviewDatasetResource(dataview, [DatasetTypes.UserTracks])
         trackResource = resources[url] as Resource<TrackResourceData>
