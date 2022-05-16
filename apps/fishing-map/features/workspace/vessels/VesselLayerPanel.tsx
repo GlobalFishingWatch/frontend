@@ -111,7 +111,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     />
   )
 
-  const trackLoading = !trackResource || trackResource?.status === ResourceStatus.Loading
+  const trackLoading = trackResource?.status === ResourceStatus.Loading
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const loading = trackLoading || infoLoading
 
