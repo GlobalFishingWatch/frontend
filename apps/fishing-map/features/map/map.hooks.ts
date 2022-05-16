@@ -124,6 +124,15 @@ export const useClickedEventConnect = () => {
   const sarsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
+  const cancelPendingInteractionRequests = useCallback(() => {
+    const promisesRef = [fishingPromiseRef, presencePromiseRef, sarsPromiseRef, eventsPromiseRef]
+    promisesRef.forEach((ref) => {
+      if (ref.current) {
+        ref.current.abort()
+      }
+    })
+  }, [])
+
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
     if (event === null) {
       dispatch(setClickedEvent(null))
@@ -177,12 +186,7 @@ export const useClickedEventConnect = () => {
     }
 
     // Cancel all pending promises
-    const promisesRef = [fishingPromiseRef, presencePromiseRef, sarsPromiseRef, eventsPromiseRef]
-    promisesRef.forEach((ref) => {
-      if (ref.current) {
-        ref.current.abort()
-      }
-    })
+    cancelPendingInteractionRequests()
 
     if (!event || !event.features) {
       if (clickedEvent) {
@@ -255,6 +259,7 @@ export const useClickedEventConnect = () => {
     sarsInteractionStatus,
     apiEventStatus,
     dispatchClickedEvent,
+    cancelPendingInteractionRequests,
   }
 }
 
