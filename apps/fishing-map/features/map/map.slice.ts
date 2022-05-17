@@ -165,20 +165,23 @@ export const fetchVesselInfo = async (
   signal: AbortSignal
 ) => {
   const vesselsInfoUrl = getVesselInfoEndpoint(datasets, vesselIds)
-  if (vesselsInfoUrl) {
-    try {
-      const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
-        signal,
-      })
-      // TODO remove entries once the API is stable
-      const vesselsInfoList: Vessel[] =
-        !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
-          ? vesselsInfoResponse
-          : (vesselsInfoResponse as any)?.entries
-      return vesselsInfoList || []
-    } catch (e: any) {
-      console.warn(e)
-    }
+  if (!vesselsInfoUrl) {
+    console.warn('No vessel info found for dataset', datasets)
+    console.warn('and vesselIds', vesselIds)
+    return
+  }
+  try {
+    const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
+      signal,
+    })
+    // TODO remove entries once the API is stable
+    const vesselsInfoList: Vessel[] =
+      !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
+        ? vesselsInfoResponse
+        : (vesselsInfoResponse as any)?.entries
+    return vesselsInfoList || []
+  } catch (e: any) {
+    console.warn(e)
   }
 }
 
@@ -292,6 +295,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   DatasetTypes.Tracks,
                   userLogged
                 )?.id
+                if (!trackDatasetId) {
+                  console.warn('No track dataset found for dataset', trackFromRelatedDataset)
+                }
                 const trackDataset = selectDatasetById(trackDatasetId as string)(state)
                 return {
                   ...vesselInfo,
