@@ -38,7 +38,6 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { FEEDBACK_EN, FEEDBACK_FR } from 'data/config'
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
@@ -288,7 +287,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             )}
           </h1>
         )}
-        {online &&
+        {online && (
           <IconButton
             icon="feedback"
             className={styles.feedback}
@@ -296,7 +295,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             tooltip={t('common.feedback', 'Feedback')}
             tooltipPlacement="bottom"
           />
-        }
+        )}
       </header>
       <div className={styles.profileContainer}>
         <Tabs
