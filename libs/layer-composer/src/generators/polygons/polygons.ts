@@ -3,8 +3,6 @@ import { Group } from '../../types'
 import { GeneratorType, MergedGeneratorConfig, PolygonsGeneratorConfig } from '../types'
 import { isConfigVisible } from '../utils'
 
-export const TRACK_HIGHLIGHT_SUFFIX = '_highlighted'
-
 const DEFAULT_COLOR = 'rgba(0, 193, 231, 1)'
 
 export type GlobalPolygonsConfig = MergedGeneratorConfig<PolygonsGeneratorConfig>

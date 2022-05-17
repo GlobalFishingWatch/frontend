@@ -1,4 +1,4 @@
-import { FeatureCollection } from 'geojson'
+import { FeatureCollection, LineString } from 'geojson'
 import {
   SourceSpecification,
   LayerSpecification,
@@ -224,7 +224,10 @@ export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
   radius?: number
 }
 
-export type TrackGeneratorConfigData = FeatureCollection | Segment[] | null
+export type TrackGeneratorConfigData =
+  | FeatureCollection<LineString, { coordinateProperties: { times: number[] } }>
+  | Segment[]
+  | null
 
 /**
  * Renders a vessel track that can be filtered by time. Will use `start` and `end` from the global generator config, if set
@@ -267,7 +270,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
 export interface PolygonsGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.Polygons
   /**
-   * A GeoJSON made of one or more LineStrings. Features should have `coordinateProperties` set in order to filter by time
+   * A GeoJSON feature collection
    */
   data: FeatureCollection
   /**

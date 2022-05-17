@@ -19,7 +19,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
-import ActivitySubLayerPanel from 'features/workspace/activity/ActivitySubLayerPanel'
+import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
 import { SAR_DATAVIEW_ID } from 'data/workspaces'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
@@ -187,7 +187,7 @@ function ActivityLayerPanel({
           )}
           <InfoModal
             dataview={dataview}
-            // Workaround to always show the sublayer dataset too
+            // Workaround to always show the auxiliar dataset too
             showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_ID}
           />
           {!readOnly && <Remove onClick={onRemoveLayerClick} />}
@@ -263,7 +263,7 @@ function ActivityLayerPanel({
           </div>
         </div>
       )}
-      {layerActive && <ActivitySubLayerPanel dataview={dataview} />}
+      {layerActive && <ActivityAuxiliaryLayerPanel dataview={dataview} />}
     </div>
   )
 }

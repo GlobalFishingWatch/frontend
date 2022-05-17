@@ -10,7 +10,7 @@ export interface SwitchEvent extends MouseEvent {
   active: boolean
 }
 
-type SwitchSize = 'default' | 'mini'
+type SwitchSize = 'default' | 'small'
 
 export interface SwitchProps {
   id?: string

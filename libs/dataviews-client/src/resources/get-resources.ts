@@ -87,8 +87,8 @@ export const getResources = (
   })
 
   const activityContextResources = activityContextDataviews.flatMap((dataview) => {
-    const subLayerActive = dataview.config?.subLayerActive ?? true
-    if (!subLayerActive) {
+    const auxiliaryLayerActive = dataview.config?.auxiliaryLayerActive ?? true
+    if (!auxiliaryLayerActive) {
       return []
     }
     const dataviewDatasetConfig = dataview.datasetsConfig?.find(
