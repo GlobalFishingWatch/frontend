@@ -1,0 +1,60 @@
+.modalContainer {
+  height: 54rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.parameters {
+  display: flex;
+  height: 80px;
+  margin-bottom: 2rem;
+}
+
+.parameters > * {
+  flex: 1;
+  max-width: 25rem;
+  margin-right: 2rem;
+}
+
+.vesselGroup {
+  display: flex;
+}
+
+.ids {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 25rem;
+  margin-right: 2rem;
+}
+
+.footerMsg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hint {
+  color: var(--color-secondary-blue);
+  text-decoration: underline;
+}
+
+.errorMsg {
+  color: var(--color-danger-red);
+}
+
+.warning {
+  color: var(--color-danger-red);
+}

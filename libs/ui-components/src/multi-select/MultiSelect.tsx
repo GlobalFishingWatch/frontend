@@ -20,6 +20,8 @@ export type MultiSelectOption<T = any> = {
   label: string
   alias?: string[]
   tooltip?: string
+  disableSelection?: boolean
+  className?: string
 }
 /**
  * Callback on selecting or removing options
@@ -279,11 +281,13 @@ export function MultiSelect(props: MultiSelectProps) {
             filteredItems.map((item, index) => {
               const highlight = highlightedIndex === index
               const isSelected =
-                hasSelectedOptions && selectedOptions.some(({ id }) => item.id === id)
+                hasSelectedOptions &&
+                selectedOptions.some(({ id }) => item.id === id) &&
+                !item.disableSelection
               const icon =
                 highlight && isSelected
                   ? 'close'
-                  : highlight || isSelected
+                  : (highlight || isSelected) && !item.disableSelection
                   ? 'tick'
                   : ('' as IconType)
               return (
@@ -291,6 +295,7 @@ export function MultiSelect(props: MultiSelectProps) {
                   <li
                     className={cx(styles.optionItem, {
                       [styles.highlight]: highlight,
+                      [item.className]: item.className,
                     })}
                     {...getItemProps({ item, index })}
                   >

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import { debounce } from 'lodash'
+import { debounce, identity } from 'lodash'
 import {
   MultiSelect,
   MultiSelectOnChange,
@@ -26,6 +26,7 @@ import {
   getSourcesOptionsInDataview,
   getSourcesSelectedInDataview,
 } from './activity.utils'
+import ActivityVesselGroupFilter from './ActivityVesselGroupFilter'
 
 type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
@@ -38,6 +39,11 @@ const trackEvent = debounce((filterKey: string, label: string) => {
     label: label,
   })
 }, 200)
+
+const VESSEL_GROUP_MOCK = [
+  { id: 'vesselGroup1', numVessels: 164, name: 'Long Xing' },
+  { id: 'vesselGroup2', numVessels: 54, name: 'My Custom vessel group 1' },
+]
 
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
@@ -185,6 +191,14 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     return <p className={styles.placeholder}>{t('dataset.emptyFilters', 'No filters available')}</p>
   }
 
+  const vesselGroups: MultiSelectOption[] = VESSEL_GROUP_MOCK.map(({ id, name, numVessels }) => ({
+    id,
+    label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
+      name,
+      count: numVessels,
+    }),
+  }))
+
   return (
     <Fragment>
       {showSourceFilter && (
@@ -211,6 +225,18 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           />
         )
       })}
+      <ActivityVesselGroupFilter
+        schemaFilter={{
+          id: 'vesselGroup',
+          disabled: false,
+          options: vesselGroups,
+          optionsSelected: [vesselGroups[0]],
+          type: 'string',
+        }}
+        onSelect={onSelectFilterClick}
+        onRemove={onRemoveFilterClick}
+        onClean={onCleanFilterClick}
+      />
     </Fragment>
   )
 }

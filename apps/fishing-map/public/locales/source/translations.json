@@ -498,6 +498,17 @@
     "vesselType_other": "Vessel types",
     "widthRange": "Width range"
   },
+  "vesselGroup": {
+    "vesselGroup": "Vessel group",
+    "label": "{{name}} ({{count}} IDs)",
+    "createNewGroup": "Create new group",
+    "groupName": "Group name",
+    "source": "Source",
+    "idField": "ID field",
+    "ids": "IDs",
+    "idsWithCount": "IDs ({{count}})",
+    "idsPlaceholder": "Type here or paste a list of IDs separated by commas, spaces or line breaks"
+  },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
     "create": "Create as new",

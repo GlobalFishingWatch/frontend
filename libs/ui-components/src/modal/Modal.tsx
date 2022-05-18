@@ -18,6 +18,7 @@ interface ModalProps {
    * Id of the html root selector, normally in CRA 'root'
    */
   appSelector?: string
+  fullScreen?: boolean
   children: React.ReactNode
   onClose: (e: React.MouseEvent) => void
 }
@@ -35,6 +36,7 @@ export function Modal(props: ModalProps) {
     overlayClassName,
     closeButtonClassName,
     shouldCloseOnEsc = false,
+    fullScreen = false,
     children,
   } = props
   const appElement = useMemo(
@@ -50,7 +52,7 @@ export function Modal(props: ModalProps) {
       portalClassName={portalClassName}
       overlayClassName={cx(styles.modalOverlay, overlayClassName)}
       shouldCloseOnEsc={shouldCloseOnEsc}
-      className={cx(styles.modalContentWrapper, className)}
+      className={cx(styles.modalContentWrapper, className, { [styles.fullScreen]: fullScreen })}
       appElement={appElement}
       isOpen={isOpen}
       onRequestClose={onClose}

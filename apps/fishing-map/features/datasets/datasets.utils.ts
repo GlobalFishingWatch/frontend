@@ -34,6 +34,7 @@ export type SupportedDatasetSchema =
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
+  | 'vesselGroup'
 
 type IncompatibleFilter = {
   id: SupportedDatasetSchema
