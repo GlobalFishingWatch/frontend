@@ -1,16 +1,16 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
-  selectResources,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { Spinner, Switch, Tooltip } from '@globalfishingwatch/ui-components'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import Title from 'features/workspace/common/Title'
+import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 import styles from './ActivityAuxiliaryLayer.module.css'
 
 type LayerPanelProps = {
@@ -19,18 +19,15 @@ type LayerPanelProps = {
 
 function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const resources = useSelector(selectResources)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const auxiliarLayerActive = dataview?.config?.auxiliarLayerActive ?? true
-  const { dataset, url, key } = resolveDataviewDatasetResource(
-    dataview,
-    DatasetTypes.TemporalContext
-  )
-  if (!dataset || !url) {
+  const { dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
+  const layerLoaded = useMapSourceTilesLoaded(dataview.id)
+  const isLayerLoadedDebounced = useDebounce(layerLoaded, 200)
+
+  if (!dataset) {
     return null
   }
-
-  const resource = resources[key] || resources[url]
 
   const onAuxiliarLayerSwitchToggle = () => {
     upsertDataviewInstance({
@@ -69,7 +66,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps): React.ReactEleme
         ) : (
           TitleComponent
         )}
-        {resource?.status === ResourceStatus.Loading && <Spinner size="tiny" />}
+        {!isLayerLoadedDebounced && <Spinner size="tiny" />}
       </div>
     </div>
   )

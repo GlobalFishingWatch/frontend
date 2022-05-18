@@ -1,5 +1,7 @@
 import type { LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
+import { isUrlAbsolute } from '../../utils'
+import { API_GATEWAY } from '../../config'
 import { GeneratorType, MergedGeneratorConfig, PolygonsGeneratorConfig } from '../types'
 import { isConfigVisible } from '../utils'
 
@@ -11,15 +13,21 @@ class PolygonsGenerator {
   type = GeneratorType.Polygons
 
   _getStyleSources = (config: GlobalPolygonsConfig) => {
-    if (!config.data) {
-      throw new Error(`Polygon layer should specify data ${config}`)
+    if (!config.data && !config.url) {
+      throw new Error(`Polygon layer should specify data or url ${config}`)
     }
+
+    const data = config.url
+      ? isUrlAbsolute(config.url)
+        ? config.url
+        : API_GATEWAY + config.url
+      : config.data
 
     return [
       {
         id: config.id,
         type: 'geojson',
-        data: config.data,
+        data,
       },
     ]
   }

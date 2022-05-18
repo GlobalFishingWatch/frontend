@@ -7,7 +7,6 @@ import {
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
-  generateDataviewDatasetResourceKey,
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
   UrlDataviewInstance,
@@ -22,16 +21,11 @@ export const getResources = (
   dataviews: UrlDataviewInstance[],
   callbacks: GetDatasetConfigsCallbacks
 ): { resources: Resource[]; dataviews: UrlDataviewInstance[] } => {
-  const { trackDataviews, activityContextDataviews, otherDataviews } = dataviews.reduce(
+  const { trackDataviews, otherDataviews } = dataviews.reduce(
     (acc, dataview) => {
       const isTrack = dataview.config?.type === GeneratorType.Track
-      const isActivityWithContext =
-        dataview.config?.type === GeneratorType.HeatmapAnimated &&
-        dataview.datasetsConfig?.some((d) => d.endpoint === EndpointId.ContextGeojson)
       if (isTrack) {
         acc.trackDataviews.push(dataview)
-      } else if (isActivityWithContext) {
-        acc.activityContextDataviews.push(dataview)
       } else {
         acc.otherDataviews.push(dataview)
       }
@@ -39,7 +33,6 @@ export const getResources = (
     },
     {
       trackDataviews: [] as UrlDataviewInstance[],
-      activityContextDataviews: [] as UrlDataviewInstance[],
       otherDataviews: [] as UrlDataviewInstance[],
     }
   )
@@ -86,46 +79,9 @@ export const getResources = (
     })
   })
 
-  const activityContextResources = activityContextDataviews.flatMap((dataview) => {
-    const auxiliaryLayerActive = dataview.config?.auxiliaryLayerActive ?? true
-    if (!auxiliaryLayerActive) {
-      return []
-    }
-    const dataviewDatasetConfig = dataview.datasetsConfig?.find(
-      (d) => d.endpoint === EndpointId.ContextGeojson
-    )
-    if (!dataviewDatasetConfig) {
-      return []
-    }
-    const datasetConfig = callbacks.activityContext
-      ? callbacks.activityContext(dataviewDatasetConfig)
-      : dataviewDatasetConfig
-
-    const dataset = dataview.datasets?.find((d) => d.id === datasetConfig?.datasetId)
-    if (!datasetConfig || !dataset) {
-      return []
-    }
-    const url = resolveEndpoint(dataset, datasetConfig)
-
-    if (!url) return []
-    return [
-      {
-        dataset,
-        datasetConfig,
-        url,
-        dataviewId: dataview.dataviewId as number,
-        key: generateDataviewDatasetResourceKey(dataset, datasetConfig),
-      },
-    ]
-  })
-
   return {
-    resources: [...trackResources, ...activityContextResources],
-    dataviews: [
-      ...trackDataviewsWithDatasetConfigs,
-      ...activityContextDataviews,
-      ...otherDataviews,
-    ],
+    resources: trackResources,
+    dataviews: [...trackDataviewsWithDatasetConfigs, ...otherDataviews],
   }
 }
 

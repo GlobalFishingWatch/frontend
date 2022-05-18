@@ -179,50 +179,19 @@ export const selectAllDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectAllDataviewInstancesResolvedWithAppConfig = createSelector(
-  [selectAllDataviewInstancesResolved, selectTimeRange],
-  (dataviewInstances, timerange): UrlDataviewInstance[] | undefined => {
-    if (!dataviewInstances) return
-    return dataviewInstances.map((dataview) => {
-      const isActivityWithContext =
-        dataview.config?.type === GeneratorType.HeatmapAnimated &&
-        dataview.datasetsConfig?.some((d) => d.endpoint === EndpointId.ContextGeojson)
-      if (isActivityWithContext) {
-        return {
-          ...dataview,
-          datasetsConfig: dataview.datasetsConfig?.map((dc) => {
-            if (dc.endpoint === EndpointId.ContextGeojson) {
-              return {
-                ...dc,
-                query: [
-                  { id: 'start-date', value: timerange.start },
-                  { id: 'end-date', value: timerange.end },
-                ],
-              }
-            }
-            return dc
-          }),
-        }
-      }
-      return dataview
-    })
-  }
-)
-
 /**
  * Calls getResources to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getResources's callback
  */
 export const selectDataviewsResources = createSelector(
   [
-    selectAllDataviewInstancesResolvedWithAppConfig,
+    selectAllDataviewInstancesResolved,
     selectTrackThinningConfig,
     selectTrackChunksConfig,
     selectWorkspaceStateProperty('timebarGraph'),
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      // TODO review if this is needed or we can do it in the selectAllDataviewInstancesResolvedWithAppConfig step
       tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
     }
     return getResources(dataviewInstances || [], callbacks)
