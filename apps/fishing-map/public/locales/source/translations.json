@@ -345,6 +345,7 @@
     "source_one": "Source",
     "source_other": "Sources",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combine layers",
       "split": "Split layers"
@@ -510,6 +511,7 @@
     "nameInput": "Workspace name",
     "new": "New Workspace",
     "noVesselInFilters": "No vessels match your current filters",
+    "noDetectionInFilters": "No detections match your current filters",
     "privateTitle_other": "Private workspaces",
     "remove": "Remove workspace",
     "save": "Save the current view",

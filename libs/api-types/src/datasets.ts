@@ -104,6 +104,7 @@ export type DatasetSchema = {
   enum: string[]
   minimum: number
   maximum: number
+  stats?: boolean
 }
 
 export enum DatasetCategory {
