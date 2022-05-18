@@ -37,7 +37,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
       setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
     }, 400),
-    []
+    [setStackedActivity]
   )
 
   const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
