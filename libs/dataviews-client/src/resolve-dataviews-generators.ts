@@ -409,21 +409,16 @@ export function getDataviewsGeneratorConfigs(
         throw new Error('Shouldnt have distinct units for the same heatmap layer')
       }
       const interactionTypes = uniq(
-        activeDatasets?.map((dataset) => dataset.configuration?.type || 'fishing-effort')
+        activeDatasets?.map((dataset) =>
+          dataset.unit === 'detections' ? 'detections' : 'activity'
+        )
       ) as HeatmapAnimatedInteractionType[]
       if (interactionTypes.length > 0 && interactionTypes.length !== 1) {
         throw new Error(
           `Shouldnt have distinct dataset config types for the same heatmap layer: ${interactionTypes.toString()}`
         )
       }
-      const interactionType =
-        // Some VMS presence layers have interaction, this is the way of
-        // allowing it but keeping it disabled in the global one
-        interactionTypes[0] === 'presence'
-          ? dataview?.config?.presenceInteraction
-            ? (`presence-${dataview?.config?.presenceInteraction}` as HeatmapAnimatedInteractionType)
-            : 'presence'
-          : (interactionTypes[0] as HeatmapAnimatedInteractionType)
+      const interactionType = interactionTypes[0]
 
       const availableIntervals = getDatasetAvailableIntervals(dataset) || DEFAULT_HEATMAP_INTERVALS
 

@@ -441,12 +441,7 @@ export type Ruler = {
   isNew?: boolean
 }
 
-export type HeatmapAnimatedInteractionType =
-  | 'presence'
-  | 'presence-detail'
-  | 'sars'
-  | 'viirs-match'
-  | 'fishing-effort'
+export type HeatmapAnimatedInteractionType = 'activity' | 'detections'
 
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string
