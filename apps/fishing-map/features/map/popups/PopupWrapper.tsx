@@ -10,24 +10,18 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
-import ViirsMatchTooltipRow from 'features/map/popups/ViirsMatchLayers'
+import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
 import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import {
-  selectApiEventStatus,
-  selectFishingInteractionStatus,
-  selectSarsInteractionStatus,
-} from '../map.slice'
+import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
 import styles from './Popup.module.css'
-import FishingTooltipRow from './FishingLayers'
-import PresenceTooltipRow from './PresenceLayers'
+import ActivityTooltipRow from './ActivityLayers'
 import TileClusterRow from './TileClusterLayers'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
 import ComparisonRow from './ComparisonRow'
-import SarsTooltipRow from './SarsLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -51,10 +45,9 @@ function PopupWrapper({
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
-  const sarsInteractionStatus = useSelector(selectSarsInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
 
-  const popupNeedsLoading = [fishingInteractionStatus, sarsInteractionStatus, apiEventStatus].some(
+  const popupNeedsLoading = [fishingInteractionStatus, apiEventStatus].some(
     (s) => s === AsyncReducerStatus.Loading
   )
 
@@ -101,7 +94,7 @@ function PopupWrapper({
                 )
               case DataviewCategory.Fishing:
                 return features.map((feature, i) => (
-                  <FishingTooltipRow
+                  <ActivityTooltipRow
                     key={i + (feature.title as string)}
                     feature={feature}
                     showFeaturesDetails={type === 'click'}
@@ -109,32 +102,14 @@ function PopupWrapper({
                 ))
               case DataviewCategory.Presence:
                 return features.map((feature, i) => {
-                  if (feature.temporalgrid?.sublayerInteractionType === 'presence-detail') {
-                    return (
-                      <FishingTooltipRow
-                        key={i + (feature.title as string)}
-                        feature={feature}
-                        showFeaturesDetails={type === 'click'}
-                      />
-                    )
-                  }
-                  if (feature.temporalgrid?.sublayerInteractionType === 'viirs-match') {
-                    return (
-                      <ViirsMatchTooltipRow
-                        key={i + (feature.title as string)}
-                        feature={feature}
-                        showFeaturesDetails={type === 'click'}
-                      />
-                    )
-                  }
-                  return feature.temporalgrid?.sublayerInteractionType === 'sars' ? (
-                    <SarsTooltipRow
+                  return feature.temporalgrid?.sublayerInteractionType === 'detections' ? (
+                    <DetectionsTooltipRow
                       key={i + (feature.title as string)}
                       feature={feature}
                       showFeaturesDetails={type === 'click'}
                     />
                   ) : (
-                    <PresenceTooltipRow
+                    <ActivityTooltipRow
                       key={i + (feature.title as string)}
                       feature={feature}
                       showFeaturesDetails={type === 'click'}
