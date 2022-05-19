@@ -2,17 +2,16 @@ import React, { useMemo } from 'react'
 import { Map, MapboxStyle } from 'react-map-gl'
 import { useSelector } from 'react-redux'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import maplibregl, { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import mapStyle from 'features/map/map-style'
 import { selectCountry } from 'features/labeler/labeler.slice'
 import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
 import { useViewport } from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
-import maplibregl from '@globalfishingwatch/maplibre-gl'
 import styles from './Map.module.css'
 import { useMapBounds } from './controls/map-controls.hooks'
 import { selectAreaLayer, selectPortPositionLayer } from './map.selectors'
 import { useSelectorConnect } from './map.hooks'
-import { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 
 const mapStyles = {
   width: '100%',
@@ -60,15 +59,6 @@ const MapWrapper = (): React.ReactElement => {
 
   const points = useSelector(selectPortPointsByCountry)
 
-  /*useEffect(() => {
-    if (points.length) {
-      onViewportChange({
-        latitude: parseFloat((points[0].lat.toString())),
-        longitude: parseFloat((points[0].lon.toString())),
-        zoom: 12
-      })
-    }
-  }, [onViewportChange, country])*/
 
   return (
     <div className={styles.container} onKeyDown={onKeyDown} onKeyUp={onKeyUp}>

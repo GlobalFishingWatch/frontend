@@ -36,6 +36,7 @@ const initialState: ProjectSlice = {
   ports: {},
 }
 
+// This slice in in change of manage the values of the points and sort the table
 const slice = createSlice({
   name: 'labeler',
   initialState,

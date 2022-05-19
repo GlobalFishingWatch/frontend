@@ -19,15 +19,6 @@ declare global {
   }
 }
 
-export const COLOR_PRIMARY_BLUE =
-  typeof window !== 'undefined'
-    ? getComputedStyle(document.documentElement).getPropertyValue('--color-primary-blue')
-    : 'rgb(22, 63, 137)'
-export const COLOR_GRADIENT =
-  typeof window !== 'undefined'
-    ? getComputedStyle(document.documentElement).getPropertyValue('--color-gradient')
-    : 'rgb(229, 240, 242)'
-
 const Main = () => {
   return (
     <div className={styles.main}>
