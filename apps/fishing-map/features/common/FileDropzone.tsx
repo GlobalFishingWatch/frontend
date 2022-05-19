@@ -42,7 +42,6 @@ const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, className = '' }) => {
   const fileTypesConfigs = fileTypes.map((fileType) => FILE_TYPES_CONFIG[fileType])
-  console.log(fileTypesConfigs)
   const filesAcceptedExtensions = fileTypesConfigs.flatMap(({ files }) => files)
   const fileAcceptedByMime = filesAcceptedExtensions.reduce((acc, extension) => {
     const mime = MIME_TYPES_BY_EXTENSION[extension]

@@ -27,7 +27,7 @@ import { capitalize } from 'utils/shared'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
-import FileDropzone, { FileType } from 'features/common/FileDropzone'
+import FileDropzone from 'features/common/FileDropzone'
 import {
   useDatasetsAPI,
   useDatasetModalConnect,

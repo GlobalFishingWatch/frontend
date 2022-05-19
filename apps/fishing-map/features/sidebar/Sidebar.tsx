@@ -76,7 +76,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       {!readOnly && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
       <NewDataset />
-      {/* <VesselGroupModal /> */}
+      <VesselGroupModal />
       <div className="scrollContainer">
         <SidebarHeader />
         {sidebarComponent}

@@ -3,6 +3,7 @@ import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 // import { parse as parseCSV } from 'papaparse'
 import { Feature } from 'geojson'
+import { parse as parseCSV } from 'papaparse'
 import {
   Modal,
   Button,
@@ -12,21 +13,93 @@ import {
   TextArea,
 } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
+import FileDropzone from 'features/common/FileDropzone'
+import { readBlobAs } from 'utils/files'
 import styles from './VesselGroupModal.module.css'
 
 export type CSV = Record<string, any>[]
 
+type IdColumn = 'ID' | 'MMSI' | 'SSVID'
+
+// Look for these ID columns by order of preference
+const ID_COLUMN_LOOKUP: IdColumn[] = ['ID', 'MMSI', 'SSVID']
+
+const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
+  id: key,
+  label: key,
+}))
+
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
-  const [file, setFile] = useState<File | undefined>()
-  const [fileData, setFileData] = useState<
-    Feature | FeatureCollectionWithFilename | CSV | undefined
-  >()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const onClose = useCallback(() => {
     console.log('close')
+  }, [])
+
+  const [groupName, setGroupName] = useState<string>('Long Xing')
+  const [IDs, setIDs] = useState<string[]>(['1234567, 123242432, 2312321'])
+  const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('MMSI')
+
+  const onCSVLoaded = useCallback(
+    async (file: File) => {
+      const fileData = await readBlobAs(file, 'text')
+      const { data } = parseCSV(fileData, {
+        header: true,
+        skipEmptyLines: true,
+      })
+      console.log(data)
+      if (data.length) {
+        const firstRow = data[0]
+        const columns = Object.keys(firstRow)
+
+        let foundIdColumn
+        // Try to find a CSV column matching preset ids
+        for (let i = 0; i < ID_COLUMN_LOOKUP.length; i++) {
+          const presetColumn = ID_COLUMN_LOOKUP[i]
+          if (columns.includes(presetColumn)) {
+            foundIdColumn = presetColumn
+            setSelectedIDColumn(presetColumn)
+            break
+          }
+        }
+
+        if (columns.length > 1 && !foundIdColumn) {
+          setError(
+            t(
+              'vesselGroup.csvError',
+              'Uploaded CSV file has multiple columns and there is no obvious ID column'
+            )
+          )
+          return
+        }
+        setError('')
+        foundIdColumn = foundIdColumn || columns[0]
+        console.log(foundIdColumn)
+        if (foundIdColumn) {
+          setIDs(data.map((row) => row[foundIdColumn]))
+        }
+      }
+    },
+    [t]
+  )
+
+  const selectedIDColumnOption = {
+    id: selectedIDColumn,
+    label: selectedIDColumn,
+  }
+
+  const onGroupNameChange = useCallback((e) => {
+    setGroupName(e.target.value)
+  }, [])
+
+  const onIdFieldChange = useCallback((option: SelectOption) => {
+    setSelectedIDColumn(option.id)
+  }, [])
+
+  const onIdsTextareaChange = useCallback((e) => {
+    setIDs(e.target.value.split(/[\s|,]+/))
   }, [])
 
   return (
@@ -45,8 +118,8 @@ function VesselGroupModal(): React.ReactElement {
             id="groupName"
             label={t('vesselGroup.groupName', 'Group name')}
             type={'text'}
-            value={'Long Xing'}
-            onChange={(e) => console.log(e)}
+            value={groupName}
+            onChange={onGroupNameChange}
           />
           <Select
             key="source"
@@ -58,15 +131,15 @@ function VesselGroupModal(): React.ReactElement {
           <Select
             key="IDfield"
             label={t('vesselGroup.idField', 'ID field')}
-            options={[{ id: 'MMSI', label: 'MMSI' }]}
-            selectedOption={{ id: 'MMSI', label: 'MMSI' }}
-            onSelect={(e) => console.log(e)}
+            options={ID_COLUMNS_OPTIONS}
+            selectedOption={selectedIDColumnOption}
+            onSelect={onIdFieldChange}
           />
         </div>
         <div className={styles.vesselGroup}>
           <div className={styles.ids}>
             <TextArea
-              value={'1234567, 123242432, 2312321'}
+              value={IDs.join(', ')}
               label={t('vesselGroup.ids', 'IDs')}
               //   label={t('vesselGroup.idsWithCount', 'IDs ({{count}})', {
               //     count: 123,
@@ -75,25 +148,13 @@ function VesselGroupModal(): React.ReactElement {
                 'vesselGroup.idsPlaceholder',
                 'Type here or paste a list of IDs separated by commas, spaces or line breaks'
               )}
+              onChange={onIdsTextareaChange}
             />
           </div>
-          <div>drag n drop or vessel list here</div>
+          <div>
+            <FileDropzone onFileLoaded={onCSVLoaded} fileTypes={['csv']} />
+          </div>
         </div>
-        {/* <Fragment>
-
-          file here
-          <DatasetFile onFileLoaded={onFileLoaded} type={datasetGeometryType} />
-            {fileData && metadata && (
-              <DatasetConfig
-                fileData={fileData as FeatureCollectionWithFilename}
-                metadata={metadata}
-                datasetCategory={datasetCategory}
-                // eslint-disable-next-line
-                datasetGeometryType={datasetGeometryType!}
-                onDatasetFieldChange={onDatasetFieldChange}
-              />
-            )}
-        </Fragment> */}
       </div>
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
