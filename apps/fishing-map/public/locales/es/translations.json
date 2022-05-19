@@ -345,6 +345,7 @@
     "source_one": "Fuente",
     "source_other": "Fuentes",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combinar las capas",
       "split": "Separar las capas"
@@ -488,6 +489,7 @@
     "registeredGearType": "Arte de pesca registrado",
     "shiptype": "Tipos de embarcaciones",
     "source": "Fuente",
+    "ssvid": "Ssvid",
     "source_short": "Fuente",
     "target_species": "Especies objetivo",
     "targetSpecies": "Especies objetivo",
@@ -509,6 +511,7 @@
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
     "noVesselInFilters": "Ningún resultado coincide con sus filtros actuales",
+    "noDetectionInFilters": "No detections match your current filters",
     "privateTitle_other": "Espacios de trabajo privados",
     "remove": "Eliminar el espacio de trabajo",
     "save": "Guardar el mapa actual",
