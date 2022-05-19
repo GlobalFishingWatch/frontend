@@ -123,15 +123,13 @@ export const useMapSourceTiles = (sourcesId?: SourcesHookInput) => {
   return useMemoCompare(sourcesLoaded)
 }
 
-export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput, returnAll?: boolean) => {
+export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
   const style = useMapStyle()
   const sourceTilesLoaded = useMapSourceTiles()
   const sourceInStyle = useSourceInStyle(sourcesId)
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesId)
   const allSourcesLoaded = sourcesIdsList.map((source) => sourceTilesLoaded[source]?.loaded)
-
-  if (returnAll) return allSourcesLoaded
-  else return sourceInStyle && allSourcesLoaded.every((loaded) => loaded)
+  return sourceInStyle && allSourcesLoaded.every((loaded) => loaded)
 }
 
 const CLUSTERS_SOURCES_IDS = [ENCOUNTER_EVENTS_SOURCE_ID, BIG_QUERY_EVENTS_PREFIX]
