@@ -47,6 +47,7 @@ const getDatasetAvailableIntervals = (dataset?: Dataset) =>
 
 export type DataviewsGeneratorConfigsParams = {
   debug?: boolean
+  timeRange?: { start: string; end: string }
   highlightedTime?: { start: string; end: string }
   highlightedEvent?: ApiEvent
   highlightedEvents?: string[]
@@ -374,7 +375,7 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
-  const { heatmapAnimatedMode = HeatmapAnimatedMode.Compare } = params || {}
+  const { heatmapAnimatedMode = HeatmapAnimatedMode.Compare, timeRange } = params || {}
 
   const activityDataviews: UrlDataviewInstance[] = []
 
@@ -451,7 +452,7 @@ export function getDataviewsGeneratorConfigs(
     }
     dataviewsFiltered.push(mergedActivityDataview)
 
-    // New sublayers as context for activity layers
+    // New sublayers as auxiliar activity layers
     const activityWithContextDataviews = activityDataviews.flatMap((dataview) => {
       const auxiliaryLayerActive = dataview.config?.auxiliaryLayerActive ?? true
       if (
@@ -459,32 +460,36 @@ export function getDataviewsGeneratorConfigs(
           (d) => d.endpoint === EndpointId.ContextGeojson && auxiliaryLayerActive
         )
       ) {
-        const { dataset, url, key } = resolveDataviewDatasetResource(
-          dataview,
+        const datasetsConfig = dataview.datasetsConfig?.flatMap((dc) => {
+          if (dc.endpoint !== EndpointId.ContextGeojson) {
+            return []
+          }
+          return {
+            ...dc,
+            query: [
+              ...(dc.query || []),
+              { id: 'start-date', value: timeRange?.start || '' },
+              { id: 'end-date', value: timeRange?.end || '' },
+            ],
+          }
+        })
+        // Prepare a new dataview only for the auxiliar activity layer
+        const auxiliarDataview: UrlDataviewInstance = {
+          ...dataview,
+          datasets: dataview.datasets?.filter((d) => d.type === DatasetTypes.TemporalContext),
+          datasetsConfig,
+        }
+        const { url } = resolveDataviewDatasetResource(
+          auxiliarDataview,
           DatasetTypes.TemporalContext
         )
-
-        if (!dataset || !url) {
-          return []
+        auxiliarDataview.config = {
+          color: dataview.config?.color,
+          visible: auxiliaryLayerActive,
+          type: GeneratorType.Polygons,
+          url,
         }
-        const resource = resources?.[key as string] || resources?.[url]
-        if (!resource || resource.status !== ResourceStatus.Finished) {
-          return []
-        }
-        // Prepare a new dataview only for the context activity layer
-        return {
-          ...dataview,
-          config: {
-            color: dataview.config?.color,
-            visible: auxiliaryLayerActive,
-            type: GeneratorType.Polygons,
-            data: resource?.data,
-          },
-          datasets: dataview.datasets?.filter((d) => d.type === DatasetTypes.TemporalContext),
-          datasetsConfig: dataview.datasetsConfig?.filter(
-            (dc) => dc.endpoint === EndpointId.ContextGeojson
-          ),
-        }
+        return auxiliarDataview
       }
       return []
     })

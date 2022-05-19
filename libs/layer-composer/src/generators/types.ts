@@ -272,7 +272,11 @@ export interface PolygonsGeneratorConfig extends GeneratorConfig {
   /**
    * A GeoJSON feature collection
    */
-  data: FeatureCollection
+  data?: FeatureCollection
+  /**
+   * The url to grab the geojson
+   */
+  url?: string
   /**
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
