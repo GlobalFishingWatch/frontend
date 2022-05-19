@@ -345,6 +345,7 @@
     "source_one": "Fonte",
     "source_other": "Fontes",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combinar camadas",
       "split": "Separar camadas"
@@ -488,6 +489,7 @@
     "registeredGearType": "Tipo de petrecho registrado",
     "shiptype": "Tipos de embarcação",
     "source": "Fonte",
+    "ssvid": "Ssvid",
     "source_short": "Fonte",
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
@@ -509,6 +511,7 @@
     "nameInput": "Nome do espaço de trabalho",
     "new": "Novo espaço de trabalho",
     "noVesselInFilters": "No vessels match your current filters",
+    "noDetectionInFilters": "No detections match your current filters",
     "privateTitle_other": "Espaço de trabalho privado",
     "remove": "Remover espaço de trabalho",
     "save": "Salvar visualização atual",
