@@ -70,6 +70,7 @@ export interface GeneratorConfig {
   visible?: boolean
   opacity?: number
   metadata?: GeneratorMetadata
+  loaded?: boolean
 }
 
 /**

@@ -32,7 +32,7 @@ const toArray = (elem) => (Array.isArray(elem) ? elem : [elem])
 
 const getSourcesFromMergedGenerator = (style: ExtendedStyle) => {
   const meta = getHeatmapSourceMetadata(style, MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
-  return meta.timeChunks.activeSourceId
+  return meta?.timeChunks.activeSourceId
 }
 
 const getGeneratorSourcesIds = (style: ExtendedStyle, sourcesIds: SourcesHookInput) => {
@@ -123,12 +123,15 @@ export const useMapSourceTiles = (sourcesId?: SourcesHookInput) => {
   return useMemoCompare(sourcesLoaded)
 }
 
-export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
+export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput, returnAll?: boolean) => {
   const style = useMapStyle()
   const sourceTilesLoaded = useMapSourceTiles()
   const sourceInStyle = useSourceInStyle(sourcesId)
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesId)
-  return sourceInStyle && sourcesIdsList.every((source) => sourceTilesLoaded[source]?.loaded)
+  const allSourcesLoaded = sourcesIdsList.map((source) => sourceTilesLoaded[source]?.loaded)
+
+  if (returnAll) return allSourcesLoaded
+  else return sourceInStyle && allSourcesLoaded.every((loaded) => loaded)
 }
 
 const CLUSTERS_SOURCES_IDS = [ENCOUNTER_EVENTS_SOURCE_ID, BIG_QUERY_EVENTS_PREFIX]

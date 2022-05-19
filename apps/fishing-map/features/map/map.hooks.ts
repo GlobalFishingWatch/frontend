@@ -32,7 +32,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/analysis/analysis.selectors'
-import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
+import { useMapClusterTilesLoaded, useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -78,6 +78,22 @@ export const useGeneratorsConnect = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
+  // TODO memoize allIds?
+  const allIds = generatorsConfig.map((g) => g.id)
+  const layersLoaded = useMapSourceTilesLoaded(allIds || [], true)
+  const layersLoadedSerialized = (layersLoaded as boolean[]).join('')
+  const updatedGeneratosConfig = useMemo(() => {
+    return generatorsConfig.map((generatorConfig, i) => {
+      if (generatorConfig.type === GeneratorType.Polygons) {
+        return {
+          ...generatorConfig,
+          loaded: layersLoaded[i],
+        }
+      }
+      return generatorConfig
+    })
+  }, [generatorsConfig, layersLoadedSerialized])
+
   return useMemo(() => {
     let globalConfig: GlobalGeneratorConfig = {
       zoom: viewport.zoom,
@@ -92,10 +108,10 @@ export const useGeneratorsConnect = () => {
       }
     }
     return {
-      generatorsConfig,
+      generatorsConfig: updatedGeneratosConfig,
       globalConfig,
     }
-  }, [generatorsConfig, viewport.zoom, start, end, timeComparisonValues, showTimeComparison])
+  }, [updatedGeneratosConfig, viewport.zoom, start, end, timeComparisonValues, showTimeComparison])
 }
 
 export const useClickedEventConnect = () => {
