@@ -10,6 +10,7 @@ import {
   EndpointId,
   EventTypes,
   UserPermission,
+  DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -19,6 +20,7 @@ import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } from 'data/workspaces'
 import { getFlags, getFlagsByIds } from 'utils/flags'
+import { FileType } from 'features/common/FileDropzone'
 
 export type SupportedDatasetSchema =
   | 'flag'
@@ -52,6 +54,16 @@ const INCOMPATIBLE_FILTERS_DICT: IncompatibleFiltersDict = {
 }
 
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
+
+type DatasetGeometryTypesSupported = Extract<DatasetGeometryType, 'polygons' | 'tracks' | 'points'>
+export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
+  polygons: ['shapefile', 'geojson'],
+  tracks: ['csv'],
+  points: ['shapefile', 'geojson', 'csv'],
+}
+
+export const getFileTypes = (datasetGeometryType) =>
+  datasetGeometryType ? FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType] : 'polygons'
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   (dataset?.id || '').includes(PRIVATE_SUFIX)

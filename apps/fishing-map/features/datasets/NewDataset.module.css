@@ -63,10 +63,6 @@
   flex-direction: column;
 }
 
-.icons svg:not(:first-of-type) {
-  margin-left: 1rem;
-}
-
 .hint {
   color: var(--color-secondary-blue);
   text-decoration: underline;
@@ -81,43 +77,11 @@
   flex: 1;
 }
 
-.dropFiles {
-  flex: 1;
-  margin-right: var(--space-S);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: var(--space-M);
-  text-align: center;
-  background: var(--color-terthiary-blue);
-  border: 0.2rem dotted var(--color-secondary-blue);
-  color: var(--color-secondary-blue);
-  font: var(--font-S);
-  border-radius: 3px;
-  margin-bottom: var(--space-L);
-  cursor: pointer;
-}
-
 .datasetConfig {
   flex: 1;
   margin-left: var(--space-S);
   display: flex;
   flex-direction: column;
-}
-
-.dropFiles:hover {
-  border-style: solid;
-}
-
-.fileAccepted {
-  flex: 0.5;
-}
-
-.fileText {
-  line-height: 1.2;
-  margin-top: var(--space-S);
-  max-width: 30rem;
 }
 
 .selectContainer {
@@ -127,10 +91,6 @@
 .shortSelect,
 .shortSelect:hover {
   width: 15rem;
-}
-
-.warning {
-  color: var(--color-danger-red);
 }
 
 .multipleSelectContainer {

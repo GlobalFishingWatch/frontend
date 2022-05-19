@@ -66,7 +66,7 @@ function VesselGroupModal(): React.ReactElement {
         <div className={styles.vesselGroup}>
           <div className={styles.ids}>
             <TextArea
-              content={'1234567, 123242432, 2312321'}
+              value={'1234567, 123242432, 2312321'}
               label={t('vesselGroup.ids', 'IDs')}
               //   label={t('vesselGroup.idsWithCount', 'IDs ({{count}})', {
               //     count: 123,

@@ -21,9 +21,7 @@ function TextAreaComponent(props: TextAreaProps) {
           {label}
         </label>
       )}
-      <textarea className={styles.textarea} id={label} name={label} {...rest}>
-        {content}
-      </textarea>
+      <textarea className={styles.textarea} id={label} name={label} {...rest} />
     </div>
   )
 }

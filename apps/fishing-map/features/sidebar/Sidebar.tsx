@@ -27,7 +27,7 @@ const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/s
 const NewDataset = dynamic(
   () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/NewDataset')
 )
-const VesselGroup = dynamic(
+const VesselGroupModal = dynamic(
   () => import(/* webpackChunkName: "VesselGroup" */ 'features/vesselGroup/VesselGroupModal')
 )
 
@@ -76,7 +76,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       {!readOnly && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
       <NewDataset />
-      <VesselGroup />
+      {/* <VesselGroupModal /> */}
       <div className="scrollContainer">
         <SidebarHeader />
         {sidebarComponent}
