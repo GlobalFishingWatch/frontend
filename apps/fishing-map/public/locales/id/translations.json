@@ -345,6 +345,7 @@
     "source_one": "Source",
     "source_other": "Sources",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Gabungkan layer",
       "split": "Pisahkan layer"
@@ -488,6 +489,7 @@
     "registeredGearType": "Jenis peralatan terdaftar",
     "shiptype": "Vessel type",
     "source": "Sumber",
+    "ssvid": "Ssvid",
     "source_short": "Source",
     "target_species": "Target species",
     "targetSpecies": "Target species",
@@ -509,6 +511,7 @@
     "nameInput": "Nama ruang kerja",
     "new": "Ruang kerja baru",
     "noVesselInFilters": "No vessels match your current filters",
+    "noDetectionInFilters": "No detections match your current filters",
     "privateTitle_other": "Private workspaces",
     "remove": "Hapus ruang kerja",
     "save": "Simpan tampilan saat ini",
