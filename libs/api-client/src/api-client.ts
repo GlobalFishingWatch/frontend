@@ -343,7 +343,8 @@ export class GFW_API_CLASS {
         // 403 = not authorized => trying to refresh the token
         // 401 + refreshError = true => refresh token failed
         if (refreshRetries <= this.maxRefreshRetries) {
-          if (e.status === 401 || e.status === 403) {
+          const isAuthError = e.status === 401 || e.status === 403
+          if (isAuthError) {
             if (this.debug) {
               console.log(`GFWAPI: Trying to refresh the token attempt: ${refreshRetries}`)
             }
@@ -362,7 +363,7 @@ export class GFW_API_CLASS {
               throw e
             }
           }
-          if (e.status !== 400) {
+          if (isAuthError || e.status >= 500) {
             return this._internalFetch(url, options, ++refreshRetries, waitLogin)
           }
           throw e
