@@ -72,12 +72,16 @@ const transformRequest: (...args: any[]) => RequestParameters = (
   return response
 }
 
-const handleError = ({ error }: any) => {
+const handleError = async ({ error }: any) => {
   if (
     (error?.status === 401 || error?.status === 403) &&
     error?.url.includes('globalfishingwatch')
   ) {
-    GFWAPI.refreshAPIToken()
+    try {
+      await GFWAPI.refreshAPIToken()
+    } catch (e) {
+      console.warn(e)
+    }
   }
 }
 
