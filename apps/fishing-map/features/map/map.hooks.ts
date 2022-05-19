@@ -32,7 +32,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/analysis/analysis.selectors'
-import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
+import { useMapClusterTilesLoaded, useMapSourceTiles } from 'features/map/map-sources.hooks'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -52,20 +52,11 @@ import {
   ExtendedFeatureVessel,
   ExtendedFeatureEvent,
   fetchFishingActivityInteractionThunk,
-  fetchViirsInteractionThunk,
-  selectViirsInteractionStatus,
-  ApiViirsStats,
   fetchBQEventThunk,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 
-export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
-  'fishing-effort',
-  'presence-detail',
-  'viirs-match',
-]
-// TODO remove once match-prototype is ready for production
-export const SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION = ['viirs']
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
 export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
   return {
@@ -87,6 +78,19 @@ export const useGeneratorsConnect = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
+  const sourceTilesLoaded = useMapSourceTiles()
+  const updatedGeneratorConfig = useMemo(() => {
+    return generatorsConfig.map((generatorConfig, i) => {
+      if (generatorConfig.type === GeneratorType.Polygons) {
+        return {
+          ...generatorConfig,
+          opacity: sourceTilesLoaded[generatorConfig.id]?.loaded ? 1 : 0,
+        }
+      }
+      return generatorConfig
+    })
+  }, [generatorsConfig])
+
   return useMemo(() => {
     let globalConfig: GlobalGeneratorConfig = {
       zoom: viewport.zoom,
@@ -101,10 +105,10 @@ export const useGeneratorsConnect = () => {
       }
     }
     return {
-      generatorsConfig,
+      generatorsConfig: updatedGeneratorConfig,
       globalConfig,
     }
-  }, [generatorsConfig, viewport.zoom, start, end, timeComparisonValues, showTimeComparison])
+  }, [updatedGeneratorConfig, viewport.zoom, start, end, timeComparisonValues, showTimeComparison])
 }
 
 export const useClickedEventConnect = () => {
@@ -113,7 +117,6 @@ export const useClickedEventConnect = () => {
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
-  const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
@@ -121,8 +124,16 @@ export const useClickedEventConnect = () => {
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
-  const viirsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
+
+  const cancelPendingInteractionRequests = useCallback(() => {
+    const promisesRef = [fishingPromiseRef, presencePromiseRef, eventsPromiseRef]
+    promisesRef.forEach((ref) => {
+      if (ref.current) {
+        ref.current.abort()
+      }
+    })
+  }, [])
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
     if (event === null) {
@@ -177,12 +188,7 @@ export const useClickedEventConnect = () => {
     }
 
     // Cancel all pending promises
-    const promisesRef = [fishingPromiseRef, presencePromiseRef, viirsPromiseRef, eventsPromiseRef]
-    promisesRef.forEach((ref) => {
-      if (ref.current) {
-        ref.current.abort()
-      }
-    })
+    cancelPendingInteractionRequests()
 
     if (!event || !event.features) {
       if (clickedEvent) {
@@ -217,26 +223,11 @@ export const useClickedEventConnect = () => {
     if (fishingActivityFeatures?.length) {
       dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
       const activityProperties = fishingActivityFeatures.map((feature) =>
-        feature.temporalgrid.sublayerInteractionType === 'viirs-match' ? 'detections' : 'hours'
+        feature.temporalgrid.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
       )
       fishingPromiseRef.current = dispatch(
         fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
       )
-    }
-
-    const viirsFeature = event.features?.find((feature) => {
-      if (!feature.temporalgrid) {
-        return false
-      }
-      const isFeatureVisible = feature.temporalgrid.visible
-      const isViirsFeature = SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION.includes(
-        feature.temporalgrid.sublayerInteractionType
-      )
-      return isFeatureVisible && isViirsFeature
-    })
-
-    if (viirsFeature) {
-      viirsPromiseRef.current = dispatch(fetchViirsInteractionThunk({ feature: viirsFeature }))
     }
 
     const tileClusterFeature = event.features.find(
@@ -252,9 +243,9 @@ export const useClickedEventConnect = () => {
   return {
     clickedEvent,
     fishingInteractionStatus,
-    viirsInteractionStatus,
     apiEventStatus,
     dispatchClickedEvent,
+    cancelPendingInteractionRequests,
   }
 }
 
@@ -282,7 +273,6 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
-  viirs?: ApiViirsStats[]
   temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }

@@ -114,7 +114,8 @@ const MapWrapper = () => {
   )
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
-  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
+    useClickedEventConnect()
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
   const { cleanFeatureState } = useFeatureState(map)
   const { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing } = useRulers()
@@ -162,7 +163,8 @@ const MapWrapper = () => {
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
     dispatchClickedEvent(null)
-  }, [cleanFeatureState, dispatchClickedEvent])
+    cancelPendingInteractionRequests()
+  }, [cancelPendingInteractionRequests, cleanFeatureState, dispatchClickedEvent])
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 

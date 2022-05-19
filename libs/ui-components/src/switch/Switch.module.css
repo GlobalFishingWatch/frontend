@@ -1,12 +1,20 @@
 .switch {
-  width: 2.4rem;
-  height: 1.4rem;
   position: relative;
   background-color: transparent;
   border: var(--border);
   border-radius: 0.7rem;
   transition: var(--transition);
   cursor: pointer;
+}
+
+.switch.default {
+  width: 2.4rem;
+  height: 1.4rem;
+}
+
+.switch.small {
+  height: 1rem;
+  width: 1.8rem;
 }
 
 .switch:focus {
@@ -19,14 +27,24 @@
 
 .switch .nib {
   position: absolute;
-  width: 1rem;
-  height: 1rem;
-  top: 0.1rem;
-  left: 0.1rem;
   border-radius: 0.5rem;
   border: 1px solid white;
   background-color: var(--color-secondary-blue);
   transition: var(--transition);
+}
+
+.switch.default .nib {
+  width: 1rem;
+  height: 1rem;
+  top: 0.1rem;
+  left: 0.1rem;
+}
+
+.switch.small .nib {
+  width: 0.8rem;
+  height: 0.8rem;
+  top: 0;
+  left: 0;
 }
 
 .switch[aria-checked='true'] {
@@ -34,14 +52,21 @@
 }
 
 .switch[aria-checked='true'].customColor {
-  background-color: currentColor;
+  background-color: currentcolor;
 }
 
 .switch[aria-checked='true'] .nib {
-  left: 1.1rem;
   background-color: var(--color-white);
   border: var(--border);
   box-shadow: var(--box-shadow);
+}
+
+.switch.default[aria-checked='true'] .nib {
+  left: 1.1rem;
+}
+
+.switch.small[aria-checked='true'] .nib {
+  left: 0.75rem;
 }
 
 .switch:not(.disabled):not([aria-checked='true']):hover,

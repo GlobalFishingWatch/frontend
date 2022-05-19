@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Spinner, Button } from '@globalfishingwatch/ui-components'
@@ -119,18 +119,27 @@ function Workspace() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
+  const resourcesPromiseRef = useRef<any[]>([])
 
   useEffect(() => {
+    resourcesPromiseRef.current.forEach((promise) => {
+      if (promise) {
+        promise.abort()
+      }
+    })
+    resourcesPromiseRef.current = []
     if (dataviewsResources) {
       const { resources } = dataviewsResources
-      resources.forEach((resource) => {
-        dispatch(
+      resourcesPromiseRef.current = resources.map((resource) => {
+        const promise = dispatch(
           fetchResourceThunk({
             resource,
+            resourceKey: resource.key,
             parseEventCb: parseTrackEventChunkProps,
             parseUserTrackCb: parseUserTrackCallback,
           })
         )
+        return promise
       })
     }
   }, [dispatch, dataviewsResources])

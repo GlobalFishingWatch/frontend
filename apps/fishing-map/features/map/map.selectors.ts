@@ -29,7 +29,7 @@ import {
   selectHighlightedEvents,
   Range,
 } from 'features/timebar/timebar.slice'
-import { selectBivariateDataviews } from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -41,6 +41,7 @@ type GetGeneratorConfigParams = {
   resources: ResourcesState
   rulers: Ruler[]
   debugOptions: DebugOptions
+  timeRange?: Range
   highlightedTime?: Range
   highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
@@ -51,6 +52,7 @@ const getGeneratorsConfig = ({
   resources,
   rulers,
   debugOptions,
+  timeRange,
   highlightedTime,
   highlightedEvents,
   bivariateDataviews,
@@ -81,6 +83,7 @@ const getGeneratorsConfig = ({
   const singleTrack = trackDataviews.length === 1
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
+    timeRange,
     heatmapAnimatedMode,
     highlightedEvents,
     highlightedTime,
@@ -133,6 +136,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectHighlightedEvents,
     selectBivariateDataviews,
     selectShowTimeComparison,
+    selectTimeRange,
   ],
   (
     dataviews = [],
@@ -142,7 +146,8 @@ const selectMapGeneratorsConfig = createSelector(
     highlightedTime,
     highlightedEvents,
     bivariateDataviews,
-    showTimeComparison
+    showTimeComparison,
+    timeRange
   ) => {
     const generators = getGeneratorsConfig({
       dataviews,
@@ -153,6 +158,7 @@ const selectMapGeneratorsConfig = createSelector(
       highlightedEvents,
       bivariateDataviews,
       showTimeComparison,
+      timeRange,
     })
     return generators
   }

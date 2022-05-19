@@ -32,7 +32,6 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-  SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
   TooltipEventFeature,
 } from '../map.hooks'
 import styles from './VesselsTable.module.css'
@@ -127,10 +126,9 @@ function VesselsTable({
     setModalOpen(false)
   }, [setModalOpen])
 
-  const interactionAllowed = [
-    ...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-    ...SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
-  ].includes(feature.temporalgrid?.sublayerInteractionType || '')
+  const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
+    feature.temporalgrid?.sublayerInteractionType || ''
+  )
 
   const title = getVesselTableTitle(feature)
   const vessels = showFullList

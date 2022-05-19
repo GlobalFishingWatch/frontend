@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
-import { useGetStatsByDataviewQuery } from 'queries/stats-api'
+import { DEFAULT_STATS_FIELDS, useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -19,6 +19,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
+import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
+import { SAR_DATAVIEW_ID } from 'data/workspaces'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -53,17 +55,22 @@ function ActivityLayerPanel({
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
+  const layerActive = dataview?.config?.visible ?? true
+  const datasetStatsFields = dataview.datasets.flatMap((d) =>
+    Object.entries(d.schema).flatMap(([id, schema]) => (schema.stats ? id : []))
+  )
+
+  const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
       dataview,
       timerange: urlTimeRange,
+      fields,
     },
     {
-      skip: guestUser || !urlTimeRange,
+      skip: guestUser || !urlTimeRange || !layerActive,
     }
   )
-
-  const layerActive = dataview?.config?.visible ?? true
 
   const disableBivariate = () => {
     dispatchQueryParams({ bivariateDataviews: undefined })
@@ -137,7 +144,8 @@ function ActivityLayerPanel({
     [t]
   )
 
-  const showStats = stats && (stats.vessel_id > 0 || stats.flag > 0)
+  const statsValue = stats && (stats.vessel_id || stats.id)
+  const showStats = statsValue > 0
 
   return (
     <div
@@ -184,7 +192,11 @@ function ActivityLayerPanel({
               </div>
             </ExpandedContainer>
           )}
-          <InfoModal dataview={dataview} />
+          <InfoModal
+            dataview={dataview}
+            // Workaround to always show the auxiliar dataset too
+            showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_ID}
+          />
           {!readOnly && <Remove onClick={onRemoveLayerClick} />}
         </div>
       </div>
@@ -199,22 +211,34 @@ function ActivityLayerPanel({
               {showStats ? (
                 <Tooltip
                   // placement="bottom"
-                  content={t(
-                    'layer.statsHelp',
-                    'The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.'
-                  )}
+                  content={
+                    stats.type === 'vessels'
+                      ? t(
+                          'layer.statsHelp',
+                          'The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.'
+                        )
+                      : t(
+                          'layer.statsHelpDetection',
+                          'The number of detections is calculated for your current filters and time range globally. Some double counting may occur.'
+                        )
+                  }
                 >
                   <div className={activityStyles.help}>
-                    {stats.vessel_id > 0 && (
+                    {statsValue > 0 && (
                       <span>
-                        <I18nNumber number={stats.vessel_id} />{' '}
-                        {t('common.vessel', {
-                          count: stats.vessel_id,
-                          defaultValue: 'vessels',
-                        }).toLocaleLowerCase()}
+                        <I18nNumber number={statsValue} />{' '}
+                        {stats.type === 'vessels'
+                          ? t('common.vessel', {
+                              count: statsValue,
+                              defaultValue: 'vessels',
+                            }).toLocaleLowerCase()
+                          : t('common.detection', {
+                              count: statsValue,
+                              defaultValue: 'detections',
+                            }).toLocaleLowerCase()}
                       </span>
                     )}
-                    {stats.flag > 0 && !dataview.config?.filters?.flag && (
+                    {stats.type === 'vessels' && stats.flag > 0 && !dataview.config?.filters?.flag && (
                       <Fragment>
                         <span> {t('common.from', 'from')} </span>
                         <span>
@@ -228,8 +252,10 @@ function ActivityLayerPanel({
                     )}
                   </div>
                 </Tooltip>
-              ) : (
+              ) : stats.type === 'vessels' ? (
                 t('workspace.noVesselInFilters', 'No vessels match your filters')
+              ) : (
+                t('workspace.noDetectionInFilters', 'No detections match your filters')
               )}
             </div>
           )}
@@ -258,6 +284,7 @@ function ActivityLayerPanel({
           </div>
         </div>
       )}
+      {layerActive && <ActivityAuxiliaryLayerPanel dataview={dataview} />}
     </div>
   )
 }

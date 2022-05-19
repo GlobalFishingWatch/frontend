@@ -5,12 +5,14 @@ import {
   resolveDataviews,
   UrlDataviewInstance,
   getResources,
+  GetDatasetConfigsCallbacks,
 } from '@globalfishingwatch/dataviews-client'
 import {
   DatasetTypes,
   DataviewCategory,
   DataviewInstance,
   Dataview,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -29,6 +31,7 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
+import { selectTimeRange } from 'features/app/app.selectors'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -188,10 +191,10 @@ export const selectDataviewsResources = createSelector(
     selectWorkspaceStateProperty('timebarGraph'),
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
-    return getResources(
-      dataviewInstances || [],
-      trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph)
-    )
+    const callbacks: GetDatasetConfigsCallbacks = {
+      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+    }
+    return getResources(dataviewInstances || [], callbacks)
   }
 )
 

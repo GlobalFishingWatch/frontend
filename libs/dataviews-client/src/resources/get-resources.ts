@@ -13,16 +13,28 @@ import {
 } from '../resolve-dataviews'
 import { resolveEndpoint } from '../resolve-endpoint'
 
+export type GetDatasetConfigsCallbacks = {
+  tracks?: (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]
+  activityContext?: (datasetConfigs: DataviewDatasetConfig) => DataviewDatasetConfig
+}
 export const getResources = (
   dataviews: UrlDataviewInstance[],
-  trackDatasetConfigsCallback?: (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]
+  callbacks: GetDatasetConfigsCallbacks
 ): { resources: Resource[]; dataviews: UrlDataviewInstance[] } => {
-  // We are only interested in tracks for now
-  const trackDataviews = dataviews.filter(
-    (dataview) => dataview.config?.type === GeneratorType.Track
-  )
-  const otherDataviews = dataviews.filter(
-    (dataview) => dataview.config?.type !== GeneratorType.Track
+  const { trackDataviews, otherDataviews } = dataviews.reduce(
+    (acc, dataview) => {
+      const isTrack = dataview.config?.type === GeneratorType.Track
+      if (isTrack) {
+        acc.trackDataviews.push(dataview)
+      } else {
+        acc.otherDataviews.push(dataview)
+      }
+      return acc
+    },
+    {
+      trackDataviews: [] as UrlDataviewInstance[],
+      otherDataviews: [] as UrlDataviewInstance[],
+    }
   )
 
   // Create dataset configs needed to load all tracks related endpoints
@@ -41,8 +53,8 @@ export const getResources = (
 
     let preparedDatasetConfigs = [info, track, ...events]
 
-    if (trackDatasetConfigsCallback) {
-      preparedDatasetConfigs = trackDatasetConfigsCallback(preparedDatasetConfigs)
+    if (callbacks.tracks) {
+      preparedDatasetConfigs = callbacks.tracks(preparedDatasetConfigs)
     }
 
     const preparedDataview = {
