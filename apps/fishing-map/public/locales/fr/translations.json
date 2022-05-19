@@ -345,6 +345,7 @@
     "source_one": "Source",
     "source_other": "Sources",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combiner les calques",
       "split": "Séparer les calques"
@@ -488,6 +489,7 @@
     "registeredGearType": "Type d'équipement enregistré",
     "shiptype": "Types de navires",
     "source": "Source",
+    "ssvid": "Ssvid",
     "source_short": "Source",
     "target_species": "Espèces pêchées",
     "targetSpecies": "Espèces pêchées",
@@ -509,6 +511,7 @@
     "nameInput": "Nom de la vue",
     "new": "Nouvelle vue",
     "noVesselInFilters": "No vessels match your current filters",
+    "noDetectionInFilters": "No detections match your current filters",
     "privateTitle_other": "Espace de travail privé",
     "remove": "Supprimer la vue",
     "save": "Enregistrer la vue actuelle",
