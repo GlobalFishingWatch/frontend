@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useLayoutEffect, Fragment } from 'react'
+import { useState, useCallback, useEffect, useLayoutEffect, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
@@ -40,7 +40,7 @@ import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.se
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
-const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
+const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
 const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 declare global {
