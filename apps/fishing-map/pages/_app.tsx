@@ -3,7 +3,7 @@ import { ClickToComponent } from 'click-to-react-component'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
-import { MapProvider as OrigMapProvider } from 'react-map-gl'
+import { MapProvider } from 'react-map-gl'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'
 import store from '../store'
@@ -19,8 +19,6 @@ import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 // }
-
-export const MapProvider: React.FC<{ children: React.ReactNode }> = OrigMapProvider
 
 function CustomApp({ Component, pageProps }: AppProps) {
   // const [root, setRoot] = useState(null)
