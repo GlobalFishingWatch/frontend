@@ -15,6 +15,7 @@ import { useViewport } from './map-viewport.hooks'
 
 type UseSelector = {
   box: any
+  dragging: boolean
   onKeyDown: (evt: any) => void
   onKeyUp: (evt: any) => void
   onMouseDown: (evt: MapLayerMouseEvent) => void
@@ -166,7 +167,17 @@ export function useSelectorConnect(): UseSelector {
     [dispatch, hoveredStateId, map]
   )
 
-  return { box, onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onHover, onMapclick }
+  return {
+    box,
+    dragging,
+    onKeyDown,
+    onKeyUp,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
+    onHover,
+    onMapclick,
+  }
 }
 
 type UseMap = {
@@ -183,11 +194,11 @@ export function useMapConnect(): UseMap {
       if (points) {
         const bbox = points?.length
           ? segmentsToBbox([
-            points.map((point) => ({
-              latitude: point.lon,
-              longitude: point.lat,
-            })),
-          ])
+              points.map((point) => ({
+                latitude: point.lon,
+                longitude: point.lat,
+              })),
+            ])
           : undefined
         const { width, height } = map?.transform || {}
         if (width && height && bbox) {
