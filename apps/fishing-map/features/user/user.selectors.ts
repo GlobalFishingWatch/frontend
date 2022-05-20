@@ -17,7 +17,7 @@ import {
   selectUserData,
   DEFAULT_GROUP_ID,
   PRIVATE_SUPPORTED_GROUPS,
-  isGFWAdminUser,
+  isGFWUser,
 } from './user.slice'
 
 export const isUserLogged = createSelector(
@@ -69,9 +69,9 @@ export const selectUserWorkspaces = createSelector(
 )
 
 export const selectPrivateUserGroups = createSelector(
-  [selectUserGroups, isGFWAdminUser],
-  (userGroups = [], gfwAdminUser) => {
-    const groupsWithAccess = gfwAdminUser
+  [selectUserGroups, isGFWUser],
+  (userGroups = [], gfwUser) => {
+    const groupsWithAccess = gfwUser
       ? PRIVATE_SUPPORTED_GROUPS.map((g) => g.toLowerCase())
       : userGroups.filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g)).map((g) => g.toLowerCase())
 
