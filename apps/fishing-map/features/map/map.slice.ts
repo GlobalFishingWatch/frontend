@@ -287,8 +287,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   DatasetTypes.Tracks,
                   userLogged
                 )?.id
-                if (!trackDatasetId) {
-                  console.warn('No track dataset found for dataset', trackFromRelatedDataset)
+                if (vessel.id && !trackDatasetId) {
+                  console.warn('No track dataset found for dataset:', trackFromRelatedDataset)
+                  console.warn('and vessel:', vessel)
                 }
                 const trackDataset = selectDatasetById(trackDatasetId as string)(state)
                 return {

@@ -86,7 +86,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
           })
         }}
       >
-        <TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />
+        (<TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />)
       </button>
     </Tooltip>
   ) : (
@@ -100,7 +100,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
           })
         }}
       >
-        <I18nDate date={start} />
+        (<I18nDate date={start} />)
       </button>
     </Tooltip>
   )
