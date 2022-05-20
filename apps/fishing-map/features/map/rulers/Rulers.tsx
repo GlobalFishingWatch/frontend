@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector, batch } from 'react-redux'
 import { useTranslation } from 'react-i18next'

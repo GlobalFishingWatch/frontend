@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useState, useMemo } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'

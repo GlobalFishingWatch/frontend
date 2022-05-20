@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'

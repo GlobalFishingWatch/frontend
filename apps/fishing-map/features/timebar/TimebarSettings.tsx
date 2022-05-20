@@ -1,4 +1,4 @@
-import React, { Fragment, useState, ComponentType } from 'react'
+import { Fragment, useState, ComponentType } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'

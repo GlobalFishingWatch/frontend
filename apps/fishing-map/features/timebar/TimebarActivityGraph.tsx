@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import { useMemo, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { getLegendId, useMapLegend } from '@globalfishingwatch/react-hooks'

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
 import { useSelector } from 'react-redux'

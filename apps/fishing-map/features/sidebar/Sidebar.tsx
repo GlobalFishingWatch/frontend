@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'

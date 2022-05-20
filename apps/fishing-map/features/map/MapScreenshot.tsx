@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 // import { getParser } from 'bowser'
 import type { Map } from '@globalfishingwatch/maplibre-gl'
