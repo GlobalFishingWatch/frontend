@@ -89,7 +89,8 @@ export const useGeneratorsConnect = () => {
       }
       return generatorConfig
     })
-  }, [generatorsConfig])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [generatorsConfig, sourceTilesLoaded])
 
   return useMemo(() => {
     let globalConfig: GlobalGeneratorConfig = {
