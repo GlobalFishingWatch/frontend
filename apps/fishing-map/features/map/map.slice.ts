@@ -34,6 +34,7 @@ export type ExtendedFeatureVesselDatasets = Vessel & {
   trackDataset?: Dataset
 }
 
+// TODO extract this type in app types
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
   hours: number
   [key: string]: any

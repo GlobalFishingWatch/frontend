@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Modal, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
@@ -50,10 +50,6 @@ export const getVesselTableTitle = (feature: TooltipEventFeature) => {
     ].join(' ')
   }
   return title
-}
-
-const getDetectionsTimestamps = (vessel: ExtendedFeatureVessel) => {
-  return vessel?.timestamp?.split(',').sort()
 }
 
 export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {

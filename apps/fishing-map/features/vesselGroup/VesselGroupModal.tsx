@@ -1,9 +1,8 @@
-import React, { useState, useCallback, Fragment } from 'react'
-import type { FeatureCollectionWithFilename } from 'shpjs'
+import React, { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-// import { parse as parseCSV } from 'papaparse'
-import { Feature } from 'geojson'
+import cx from 'classnames'
 import { parse as parseCSV } from 'papaparse'
+import { Vessel } from '@globalfishingwatch/api-types'
 import {
   Modal,
   Button,
@@ -11,10 +10,15 @@ import {
   SelectOption,
   InputText,
   TextArea,
+  IconButton,
+  Tooltip,
+  TransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
-import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL, FIRST_YEAR_OF_DATA } from 'data/config'
 import FileDropzone from 'features/common/FileDropzone'
 import { readBlobAs } from 'utils/files'
+import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './VesselGroupModal.module.css'
 
 export type CSV = Record<string, any>[]
@@ -31,16 +35,19 @@ const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
+  // TODO move that to a slice
+  const [isOpen, setIsOpen] = useState<boolean>(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const onClose = useCallback(() => {
-    console.log('close')
+    setIsOpen(false)
   }, [])
 
   const [groupName, setGroupName] = useState<string>('Long Xing')
-  const [IDs, setIDs] = useState<string[]>(['1234567, 123242432, 2312321'])
+  const [IDs, setIDs] = useState<string[]>([])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('MMSI')
+  const [vessels, setVessels] = useState<Vessel[]>()
 
   const onCSVLoaded = useCallback(
     async (file: File) => {
@@ -49,7 +56,6 @@ function VesselGroupModal(): React.ReactElement {
         header: true,
         skipEmptyLines: true,
       })
-      console.log(data)
       if (data.length) {
         const firstRow = data[0]
         const columns = Object.keys(firstRow)
@@ -102,12 +108,68 @@ function VesselGroupModal(): React.ReactElement {
     setIDs(e.target.value.split(/[\s|,]+/))
   }, [])
 
+  const onVesselRemoveClick = useCallback(
+    (vesselId: string) => {
+      const index = vessels.findIndex((vessel) => vessel.id === vesselId)
+      setVessels([...vessels.slice(0, index), ...vessels.slice(index + 1)])
+    },
+    [vessels]
+  )
+
+  const onConfirmClick = useCallback(() => {
+    setLoading(true)
+    if (!vessels) {
+      setTimeout(() => {
+        setLoading(false)
+
+        const VESSELS: Vessel[] = [
+          {
+            id: '12345',
+            mmsi: '12345',
+            shipname: 'Long Xing 42',
+            flag: 'CHN',
+            firstTransmissionDate: '2016-01-01T00:00:Z',
+            lastTransmissionDate: '2018-01-01T00:00:Z',
+            geartype: 'squid_jigger',
+          },
+          {
+            id: '12346',
+            mmsi: '12346',
+            shipname: 'Long Xing 123',
+            flag: 'CHN',
+            firstTransmissionDate: '2014-01-01T00:00:Z',
+            lastTransmissionDate: '2020-01-01T00:00:Z',
+            geartype: 'trawler',
+          },
+          {
+            id: '12347',
+            mmsi: '12347',
+            shipname: 'Long Xing Piña',
+            flag: 'ESP',
+            firstTransmissionDate: '2018-01-01T00:00:Z',
+            lastTransmissionDate: '2019-01-01T00:00:Z',
+            // geartype: 'squid_jigger',
+          },
+        ]
+        setVessels(VESSELS)
+        // TODO if invalid ids from API
+        // setIDs
+        // setInvalidIDs
+      }, 1000)
+      return
+    }
+    console.log('call API with created vessel group')
+    setTimeout(() => {
+      setLoading(false)
+      setIsOpen(false)
+    }, 1000)
+  }, [vessels])
+
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={t('vesselGroup.vesselGroup', 'Vessel group')}
-      isOpen={true}
-      //   isOpen={datasetModal === 'new'}
+      isOpen={isOpen}
       contentClassName={styles.modalContainer}
       onClose={onClose}
       fullScreen={true}
@@ -139,20 +201,99 @@ function VesselGroupModal(): React.ReactElement {
         <div className={styles.vesselGroup}>
           <div className={styles.ids}>
             <TextArea
+              className={styles.idsArea}
               value={IDs.join(', ')}
-              label={t('vesselGroup.ids', 'IDs')}
-              //   label={t('vesselGroup.idsWithCount', 'IDs ({{count}})', {
-              //     count: 123,
-              //   })}
+              label={
+                IDs && IDs.length
+                  ? t('vesselGroup.idsWithCount', 'IDs ({{count}})', {
+                      count: IDs.length,
+                    })
+                  : t('vesselGroup.ids', 'IDs')
+              }
               placeholder={t(
                 'vesselGroup.idsPlaceholder',
                 'Type here or paste a list of IDs separated by commas, spaces or line breaks'
               )}
               onChange={onIdsTextareaChange}
+              disabled={!!vessels}
             />
           </div>
-          <div>
-            <FileDropzone onFileLoaded={onCSVLoaded} fileTypes={['csv']} />
+          <div className={styles.main}>
+            {vessels ? (
+              <table className={styles.vesselsTable}>
+                <thead>
+                  <tr>
+                    <th>{t('vessel.mmsi', 'MMSI')}</th>
+                    <th>{t('common.name', 'Name')}</th>
+                    <th>{t('vessel.flag_short', 'iso3')}</th>
+                    <th>{t('vessel.gearType_short', 'gear')}</th>
+                    <th>{t('vessel.transmissionDates', 'Transmission dates')}</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {vessels.map((vessel, i) => {
+                    const vesselName = formatInfoField(vessel.shipname, 'name')
+
+                    const vesselGearType = `${t(
+                      `vessel.gearTypes.${vessel.geartype}` as any,
+                      vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
+                    )}`
+
+                    const { mmsi, firstTransmissionDate, lastTransmissionDate } = vessel
+                    return (
+                      <tr key={i}>
+                        <td>{mmsi}</td>
+                        <td>{vesselName}</td>
+                        <td>
+                          <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
+                            <span>{vessel.flag || EMPTY_FIELD_PLACEHOLDER}</span>
+                          </Tooltip>
+                        </td>
+                        <td>{vesselGearType}</td>
+                        <td>
+                          {firstTransmissionDate && lastTransmissionDate && (
+                            // TODO tooltip not working
+                            <Tooltip
+                              content={
+                                <span>
+                                  from <I18nDate date={firstTransmissionDate} /> to{' '}
+                                  <I18nDate date={lastTransmissionDate} />
+                                </span>
+                              }
+                            >
+                              <TransmissionsTimeline
+                                firstTransmissionDate={firstTransmissionDate}
+                                lastTransmissionDate={lastTransmissionDate}
+                                firstYearOfData={FIRST_YEAR_OF_DATA}
+                                shortYears
+                              />
+                            </Tooltip>
+                          )}
+                        </td>
+                        <td>
+                          <IconButton
+                            icon={'delete'}
+                            style={{
+                              color: 'rgb(var(--danger-red-rgb))',
+                            }}
+                            tooltip={t('vesselGroup.remove', 'Remove vessel from vessel group')}
+                            onClick={(e) => onVesselRemoveClick(vessel.id)}
+                            size="small"
+                          />
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <FileDropzone
+                className={styles.dropzone}
+                onFileLoaded={onCSVLoaded}
+                fileTypes={['csv']}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -171,8 +312,8 @@ function VesselGroupModal(): React.ReactElement {
         </div>
 
         <Button
-          disabled={true}
-          // onClick={onConfirmClick}
+          disabled={loading || (vessels && !vessels.length)}
+          onClick={onConfirmClick}
           loading={loading}
         >
           {t('common.save', 'Save')}
