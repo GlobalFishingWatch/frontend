@@ -32,6 +32,8 @@ import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+// import { useVesselGroupsOptions } from 'features/vesselGroup/vessel-groups.hooks'
+// import VesselsGroupList from 'features/vesselGroup/VesselGroupsList'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -79,6 +81,11 @@ function Search() {
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
+  // const vesselGroupsOptions = useVesselGroupsOptions()
+  // const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
+  // const onToggleVesselGroups = useCallback(() => {
+  //   setVesselGroupsOpen(!vesselGroupsOpen)
+  // }, [vesselGroupsOpen])
   const searchOptions = useMemo(() => {
     return [
       {
@@ -506,15 +513,14 @@ function Search() {
             </div>
           )}
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            {vesselsSelected.length > 1 && (
+            {/* {vesselGroupsOpen && <VesselsGroupList />} */}
+            {vesselsSelected.length && (
               <Button
-                disabled
                 type="secondary"
-                tooltip={t('common.comingSoon', 'Coming Soon')}
-                tooltipPlacement="top"
                 className={styles.footerAction}
+                onClick={onToggleVesselGroups}
               >
-                See as fleet
+                {t('vesselGroup.addVesselToGroup', 'Add to vessel group')}
               </Button>
             )}
             <Button className={styles.footerAction} onClick={onConfirmSelection}>

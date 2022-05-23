@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
-import { debounce, identity } from 'lodash'
-import { useSelector } from 'react-redux'
+import { debounce } from 'lodash'
 import {
   MultiSelect,
   MultiSelectOnChange,
@@ -21,7 +20,7 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import ActivitySchemaFilter, {
   showSchemaFilter,
 } from 'features/workspace/activity/ActivitySchemaFilter'
-import { selectVesselGroups } from 'features/vesselGroup/vessel-groups.selectors'
+import { useVesselGroupsOptions } from 'features/vesselGroup/vessel-groups.hooks'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -45,7 +44,7 @@ const trackEvent = debounce((filterKey: string, label: string) => {
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const vesselGroups = useSelector(selectVesselGroups)
+  const vesselGroupsOptions = useVesselGroupsOptions()
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
   // insert the "All" option only when more than one option available
@@ -188,14 +187,6 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   if (!showSchemaFilters) {
     return <p className={styles.placeholder}>{t('dataset.emptyFilters', 'No filters available')}</p>
   }
-
-  const vesselGroupsOptions: MultiSelectOption[] = vesselGroups.map(({ id, name, vesselIDs }) => ({
-    id,
-    label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
-      name,
-      count: vesselIDs.length,
-    }),
-  }))
 
   return (
     <Fragment>
