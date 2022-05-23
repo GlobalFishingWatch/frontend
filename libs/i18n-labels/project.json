@@ -80,10 +80,27 @@
         "access": "public"
       }
     },
+
+    "publish:stable": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "export LATEST=`npm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed -n 's/latest: //p'`;npm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable"
+        ],
+        "parallel": false
+      }
+    },
     "purge": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": ["PACKAGE_TAG=latest ./libs/i18n-labels/purge_jsdelivr.sh"],
+        "parallel": false
+      }
+    },
+    "purge:stable": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"],
         "parallel": false
       }
     },
