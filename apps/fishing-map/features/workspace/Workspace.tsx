@@ -25,6 +25,7 @@ import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
+import RealTimeSection from './realtime/RealTimeSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
@@ -170,6 +171,7 @@ function Workspace() {
         )}
       <ActivitySection />
       <VesselsSection />
+      <RealTimeSection />
       <EventsSection />
       <EnvironmentalSection />
       <ContextAreaSection />
