@@ -7,6 +7,7 @@ import GLStyleGenerator from './gl/gl'
 import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
 import PolygonsGenerator from './polygons/polygons'
+import PointsGenerator from './points/points'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'
 import TrackGenerator from './track/track'
@@ -39,6 +40,7 @@ const GeneratorConfig = {
   [GeneratorType.GL]: new GLStyleGenerator(),
   [GeneratorType.Heatmap]: new HeatmapGenerator(),
   [GeneratorType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
+  [GeneratorType.Points]: new PointsGenerator(),
   [GeneratorType.Polygons]: new PolygonsGenerator(),
   [GeneratorType.Rulers]: new RulersGenerator(),
   [GeneratorType.TileCluster]: new TileClusterGenerator(),

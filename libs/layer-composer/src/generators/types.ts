@@ -20,6 +20,7 @@ export enum GeneratorType {
   Heatmap = 'HEATMAP',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   Polygons = 'POLYGONS',
+  Points = 'POINTS',
   Rulers = 'RULERS',
   TileCluster = 'TILE_CLUSTER',
   Track = 'TRACK',
@@ -267,8 +268,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
   }
 }
 
-export interface PolygonsGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Polygons
+export interface GeometryGeneratorConfig extends GeneratorConfig {
   /**
    * A GeoJSON feature collection
    */
@@ -285,6 +285,14 @@ export interface PolygonsGeneratorConfig extends GeneratorConfig {
    * Sets the opacity for the track line
    */
   opacity?: number
+}
+
+export interface PointsGeneratorConfig extends GeometryGeneratorConfig {
+  type: GeneratorType.Points
+}
+
+export interface PolygonsGeneratorConfig extends GeometryGeneratorConfig {
+  type: GeneratorType.Polygons
 }
 
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {
@@ -378,6 +386,7 @@ export type AnyGeneratorConfig =
   | GlGeneratorConfig
   | HeatmapAnimatedGeneratorConfig
   | HeatmapGeneratorConfig
+  | PointsGeneratorConfig
   | PolygonsGeneratorConfig
   | RulersGeneratorConfig
   | TileClusterGeneratorConfig

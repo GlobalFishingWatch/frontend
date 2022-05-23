@@ -1,3 +1,4 @@
+import { waitForDebugger } from 'inspector'
 import { scaleLinear } from 'd3-scale'
 import { uniq } from 'lodash'
 import {
@@ -342,6 +343,29 @@ export function getGeneratorConfig(
       }
       if (!generator.tilesUrl) {
         console.warn('Missing tiles url for dataview', dataview)
+        return []
+      }
+      return generator
+    }
+    case GeneratorType.Points: {
+      generator.id = dataview.id
+      const { dataset, url } = resolveDataviewDatasetResource(
+        dataview,
+        DatasetTypes.TemporalContext
+      )
+      if (dataset?.status !== DatasetStatus.Done) {
+        return []
+      }
+      generator.datasetId = dataset.id
+      if (url) {
+        generator.url = url
+      }
+      if (dataset?.source) {
+        generator.attribution = dataset.source
+      }
+
+      if (!generator.url) {
+        console.warn('Missing url for points dataview', dataview)
         return []
       }
       return generator
