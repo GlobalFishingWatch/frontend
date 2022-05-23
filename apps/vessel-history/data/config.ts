@@ -81,6 +81,12 @@ export const AUTHORIZED_PERMISSION = {
   value: 'vessel-viewer',
   action: 'ui.load',
 }
+export const INSURER_PERMISSION = {
+  // @TODO Update this with the permission defined for insurers
+  type: 'application',
+  value: 'vessel-viewer',
+  action: 'ui.load',
+}
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION

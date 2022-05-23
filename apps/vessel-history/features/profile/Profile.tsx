@@ -38,7 +38,9 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
+import { useUser } from 'features/user/user.hooks'
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
+import RiskSummary from 'features/risk-summary/risk-summary'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -66,6 +68,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     [akaVesselProfileIds]
   )
   const { online } = useNavigatorOnline()
+  const { authorizedInsurer } = useUser()
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -178,6 +181,19 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const tabs: Tab[] = useMemo(
     () => [
+      ...(authorizedInsurer
+        ? [
+            {
+              id: 'risk',
+              title: t('common.riskSummary', 'Risk Summary').toLocaleUpperCase(),
+              content: vessel ? (
+                <RiskSummary />
+              ) : (
+                <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
+              ),
+            },
+          ]
+        : []),
       {
         id: 'info',
         title: t('common.info', 'INFO').toLocaleUpperCase(),
@@ -223,7 +239,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         ),
       },
     ],
-    [t, vessel, lastPosition, lastPortVisit, loading, visibleHighlights]
+    [authorizedInsurer, t, vessel, loading, lastPosition, lastPortVisit, visibleHighlights]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
