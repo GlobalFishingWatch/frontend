@@ -50,6 +50,7 @@ export enum DataviewCategory {
   Context = 'context',
   Events = 'events',
   Environment = 'environment',
+  RealTime = 'realtime',
   Fishing = 'fishing',
   Presence = 'presence',
   Vessels = 'vessels',

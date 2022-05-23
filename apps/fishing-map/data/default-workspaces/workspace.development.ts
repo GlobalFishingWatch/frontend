@@ -16,6 +16,7 @@ import {
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
 } from 'data/workspaces'
+import { SKYLIGHT_ENCOUNTERS_DATAVIEW_ID } from 'features/dataviews/dataviews.mock'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
@@ -93,6 +94,13 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
       config: {
         visible: false,
+      },
+    },
+    {
+      id: SKYLIGHT_ENCOUNTERS_DATAVIEW_ID.toString(),
+      dataviewId: SKYLIGHT_ENCOUNTERS_DATAVIEW_ID,
+      config: {
+        visible: true,
       },
     },
     {

@@ -12,6 +12,7 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
+import { SKYLIGHT_ENCOUNTERS_DATASET_ID } from 'features/datasets/datasets.mock'
 
 export const PRESENCE_DATASET_ID = 'public-global-presence'
 export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
@@ -32,6 +33,24 @@ const parsePOCsDatasets = (dataset: Dataset) => {
         }
         return endpoint
       }),
+    }
+    return pocDataset
+  }
+  if (dataset.id.includes(SKYLIGHT_ENCOUNTERS_DATASET_ID)) {
+    const pocDataset = {
+      ...dataset,
+      endpoints: [
+        {
+          id: EndpointId.ContextGeojson,
+          description: 'Endpoint to retrieve geojson from temporal context layers',
+          downloadable: true,
+          method: 'GET',
+          pathTemplate:
+            'https://gist.githubusercontent.com/j8seangel/bd4fcf6bdafba1a47f831006f6da893d/raw/e745a17fb834ed18e116e5a633047bd36e09effe/rendervouz.geo.json',
+          params: [],
+          query: [],
+        },
+      ],
     }
     return pocDataset
   }
