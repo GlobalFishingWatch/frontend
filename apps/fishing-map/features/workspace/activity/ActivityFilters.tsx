@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { debounce, identity } from 'lodash'
+import { useSelector } from 'react-redux'
 import {
   MultiSelect,
   MultiSelectOnChange,
@@ -20,6 +21,7 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import ActivitySchemaFilter, {
   showSchemaFilter,
 } from 'features/workspace/activity/ActivitySchemaFilter'
+import { selectVesselGroups } from 'features/vesselGroup/vessel-groups.selectors'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -40,14 +42,10 @@ const trackEvent = debounce((filterKey: string, label: string) => {
   })
 }, 200)
 
-const VESSEL_GROUP_MOCK = [
-  { id: 'vesselGroup1', numVessels: 164, name: 'Long Xing' },
-  { id: 'vesselGroup2', numVessels: 54, name: 'My Custom vessel group 1' },
-]
-
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const vesselGroups = useSelector(selectVesselGroups)
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
   // insert the "All" option only when more than one option available
@@ -191,11 +189,11 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     return <p className={styles.placeholder}>{t('dataset.emptyFilters', 'No filters available')}</p>
   }
 
-  const vesselGroups: MultiSelectOption[] = VESSEL_GROUP_MOCK.map(({ id, name, numVessels }) => ({
+  const vesselGroupsOptions: MultiSelectOption[] = vesselGroups.map(({ id, name, vesselIDs }) => ({
     id,
     label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
       name,
-      count: numVessels,
+      count: vesselIDs.length,
     }),
   }))
 
@@ -229,8 +227,8 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         schemaFilter={{
           id: 'vesselGroup',
           disabled: false,
-          options: vesselGroups,
-          optionsSelected: [vesselGroups[0]],
+          options: vesselGroupsOptions,
+          optionsSelected: [vesselGroupsOptions[0]],
           type: 'string',
         }}
         onSelect={onSelectFilterClick}

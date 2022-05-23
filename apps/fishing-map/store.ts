@@ -22,6 +22,7 @@ import titleReducer from './routes/title.reducer'
 import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 import workspacesReducer from './features/workspaces-list/workspaces-list.slice'
+import vesselGroupsReducer from './features/vesselGroup/vessel-groups.slice'
 
 const {
   reducer: location,
@@ -52,6 +53,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   workspace: workspaceReducer,
   workspaces: workspacesReducer,
+  vesselGroups: vesselGroupsReducer,
   [dataviewStatsApi.reducerPath]: dataviewStatsApi.reducer,
 })
 

@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { parse as parseCSV } from 'papaparse'
+import { useDispatch, useSelector } from 'react-redux'
 import { Vessel } from '@globalfishingwatch/api-types'
 import {
   Modal,
@@ -20,6 +21,8 @@ import FileDropzone from 'features/common/FileDropzone'
 import { readBlobAs } from 'utils/files'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './VesselGroupModal.module.css'
+import { selectVesselGroupModalOpen } from './vessel-groups.selectors'
+import { setModalClosed } from './vessel-groups.slice'
 
 export type CSV = Record<string, any>[]
 
@@ -35,14 +38,14 @@ const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
-  // TODO move that to a slice
-  const [isOpen, setIsOpen] = useState<boolean>(true)
+  const dispatch = useDispatch()
+  const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const onClose = useCallback(() => {
-    setIsOpen(false)
-  }, [])
+    dispatch(setModalClosed())
+  }, [dispatch])
 
   const [groupName, setGroupName] = useState<string>('Long Xing')
   const [IDs, setIDs] = useState<string[]>([])
@@ -161,15 +164,15 @@ function VesselGroupModal(): React.ReactElement {
     console.log('call API with created vessel group')
     setTimeout(() => {
       setLoading(false)
-      setIsOpen(false)
+      dispatch(setModalClosed())
     }, 1000)
-  }, [vessels])
+  }, [vessels, dispatch])
 
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={t('vesselGroup.vesselGroup', 'Vessel group')}
-      isOpen={isOpen}
+      isOpen={isModalOpen}
       contentClassName={styles.modalContainer}
       onClose={onClose}
       fullScreen={true}

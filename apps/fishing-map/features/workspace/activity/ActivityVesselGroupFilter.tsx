@@ -1,7 +1,9 @@
 import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import { MultiSelect, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
+import { setModalOpen } from 'features/vesselGroup/vessel-groups.slice'
 import styles from './ActivityFilters.module.css'
 
 type ActivityVesselGroupFilterProps = {
@@ -24,6 +26,7 @@ function ActivityVesselGroupFilter({
 }: ActivityVesselGroupFilterProps): React.ReactElement {
   const { id, disabled, options, optionsSelected } = schemaFilter
   const { t } = useTranslation()
+  const dispatch = useDispatch()
 
   const optionsWithModal: MultiSelectOption[] = useMemo(
     () =>
@@ -41,12 +44,12 @@ function ActivityVesselGroupFilter({
   const onSelectCallback = useCallback(
     (selection: MultiSelectOption) => {
       if (selection.id === OPEN_MODAL_ID) {
-        console.log('open modal')
+        dispatch(setModalOpen())
         return
       }
       if (onSelect) onSelect(id, selection)
     },
-    [id, onSelect]
+    [id, onSelect, dispatch]
   )
 
   return (
