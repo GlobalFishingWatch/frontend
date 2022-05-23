@@ -52,7 +52,7 @@ jobs:
         if: steps.lib-changes.outputs.not-affected == 'false'
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_PA_TOKEN }}
           branch: ${{ github.ref }}
           force: true
           tags: true
