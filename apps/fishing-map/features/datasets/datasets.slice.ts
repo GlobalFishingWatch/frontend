@@ -63,7 +63,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('datasets/fetchById', async (id: string, { rejectWithValue }) => {
+>('datasets/fetchById', async (id: string, { rejectWithValue }: any) => {
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
     return parsePOCsDatasets(dataset)

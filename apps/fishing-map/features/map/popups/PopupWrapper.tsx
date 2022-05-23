@@ -17,6 +17,7 @@ import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.sli
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
 import TileClusterRow from './TileClusterLayers'
+import RealTimeRow from './RealTimeRow'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
@@ -119,6 +120,14 @@ function PopupWrapper({
               case DataviewCategory.Events:
                 return (
                   <TileClusterRow
+                    key={featureCategory}
+                    features={features}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                )
+              case DataviewCategory.RealTime:
+                return (
+                  <RealTimeRow
                     key={featureCategory}
                     features={features}
                     showFeaturesDetails={type === 'click'}

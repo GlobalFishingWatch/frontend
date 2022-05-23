@@ -5,6 +5,7 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { SKYLIGHT_ENCOUNTERS_DATASET_ID } from 'features/datasets/datasets.mock'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
 import Title from '../common/Title'
@@ -23,6 +24,8 @@ function RealTimeLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     return <DatasetNotFound dataview={dataview} />
   }
 
+  const disabled = !dataset.id.includes(SKYLIGHT_ENCOUNTERS_DATASET_ID)
+
   const title = getDatasetLabel(dataset)
   const TitleComponent = (
     <Title
@@ -40,7 +43,12 @@ function RealTimeLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       })}
     >
       <div className={styles.header}>
-        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
+        <LayerSwitch
+          disabled={disabled}
+          active={layerActive}
+          className={styles.switch}
+          dataview={dataview}
+        />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
         ) : (

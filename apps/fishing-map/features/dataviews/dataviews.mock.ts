@@ -1,14 +1,20 @@
 import { Dataview, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { SKYLIGHT_ENCOUNTERS_DATASET_ID } from 'features/datasets/datasets.mock'
+import {
+  SKYLIGHT_ENCOUNTERS_DATASET_ID,
+  SKYLIGHT_FISHING_DATASET_ID,
+  SKYLIGHT_LOITERING_DATASET_ID,
+} from 'features/datasets/datasets.mock'
 
 export const SKYLIGHT_ENCOUNTERS_DATAVIEW_ID = 7777777
+export const SKYLIGHT_LOITERING_DATAVIEW_ID = 888888
+export const SKYLIGHT_FISHING_DATAVIEW_ID = 999999
 
 export const dataviews: Dataview[] = [
   {
     id: SKYLIGHT_ENCOUNTERS_DATAVIEW_ID,
-    name: 'Encounters',
-    description: 'Skylight integration for Rendezvous events',
+    name: 'Standard Rendezvous',
+    description: 'Skylight integration for Double Rendezvous events',
     app: 'fishing-map',
     config: {
       type: GeneratorType.Points,
@@ -23,8 +29,44 @@ export const dataviews: Dataview[] = [
         datasetId: SKYLIGHT_ENCOUNTERS_DATASET_ID,
       },
     ],
-    createdAt: '2021-03-22T15:36:44.423Z',
-    updatedAt: '2021-10-21T10:28:20.207Z',
+  },
+  {
+    id: SKYLIGHT_LOITERING_DATAVIEW_ID,
+    name: 'Dark Rendezvous',
+    description: 'Skylight integration for Dark Rendezvous events',
+    app: 'fishing-map',
+    config: {
+      type: GeneratorType.Points,
+      color: '#FAE9A0',
+    },
+    infoConfig: null,
+    category: DataviewCategory.RealTime,
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: EndpointId.ContextGeojson,
+        datasetId: SKYLIGHT_LOITERING_DATASET_ID,
+      },
+    ],
+  },
+  {
+    id: SKYLIGHT_FISHING_DATAVIEW_ID,
+    name: 'Fishing events',
+    description: 'Skylight integration for fishing events',
+    app: 'fishing-map',
+    config: {
+      type: GeneratorType.Points,
+      color: '#FAE9A0',
+    },
+    infoConfig: null,
+    category: DataviewCategory.RealTime,
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: EndpointId.ContextGeojson,
+        datasetId: SKYLIGHT_FISHING_DATASET_ID,
+      },
+    ],
   },
 ]
 
