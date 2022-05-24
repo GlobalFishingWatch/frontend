@@ -14,7 +14,11 @@ export const LocaleLabels = [
   { id: Locale.pt, label: 'Portuguese' },
 ]
 
+const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
 export const SHARED_LABELS_PATH =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8000'
+    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
     : 'https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@' +
