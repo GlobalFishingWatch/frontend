@@ -119,6 +119,17 @@ export const fetchResourceThunk = createAsyncThunk(
   }
 )
 
+const getChunkSetChunks = (state: ResourcesState, chunkSetId: string) => {
+  const chunks = Object.keys(state)
+    .map((k) => state[k])
+    .filter(
+      (resource) =>
+        resource.datasetConfig.metadata?.chunkSetId === chunkSetId &&
+        !resource.datasetConfig.metadata?.chunkSetMerged
+    )
+  return chunks
+}
+
 export const resourcesSlice = createSlice({
   name: 'resources',
   initialState,
@@ -148,23 +159,19 @@ export const resourcesSlice = createSlice({
       const key = action.meta.arg.resourceKey || url
       state[key] = { status: ResourceStatus.Finished, ...action.payload }
 
+      const chunkSetId = action.payload.datasetConfig.metadata?.chunkSetId
       // If resource is part of a chunk set (ie tracks by year), rebuild the whole set into a single resource
-      if (action.payload.datasetConfig.metadata?.chunkSetId) {
-        const thisChunkSetId = action.payload.datasetConfig.metadata?.chunkSetId
-        const chunks = Object.keys(state)
-          .map((k) => state[k])
-          .filter(
-            (resource) =>
-              resource.datasetConfig.metadata?.chunkSetId === thisChunkSetId &&
-              !resource.datasetConfig.metadata?.chunkSetMerged
-          )
+      if (chunkSetId) {
+        const chunkSetChunks = getChunkSetChunks(state, chunkSetId)
         if (
-          chunks.map((chunk) => chunk.status).some((status) => status === ResourceStatus.Finished)
+          chunkSetChunks
+            .map((chunk) => chunk.status)
+            .some((status) => status === ResourceStatus.Finished)
         ) {
-          const mergedData = mergeTrackChunks(chunks.map((chunk) => chunk.data) as any)
+          const mergedData = mergeTrackChunks(chunkSetChunks.map((chunk) => chunk.data) as any)
 
-          state[thisChunkSetId] = {
-            ...state[thisChunkSetId],
+          state[chunkSetId] = {
+            ...state[chunkSetId],
             data: mergedData,
             status: ResourceStatus.Finished,
           }
@@ -177,6 +184,13 @@ export const resourcesSlice = createSlice({
       const resource = state[key]
       if (action.meta.arg.resource.url === resource.url) {
         resource.status = ResourceStatus.Error
+      }
+      const chunkSetId = resource.datasetConfig.metadata?.chunkSetId
+      if (chunkSetId) {
+        state[chunkSetId] = {
+          ...state[chunkSetId],
+          status: ResourceStatus.Error,
+        }
       }
     })
   },
