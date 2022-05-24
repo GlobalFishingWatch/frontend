@@ -256,12 +256,14 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
             }
           })
         : null
-
       const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
       const state = chunks
         ? ({
             loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
-            error: chunksFeatures.filter(({ state }) => state.error).join(','),
+            error: chunksFeatures
+              .filter(({ state }) => state.error)
+              .map(({ state }) => state.error)
+              .join(','),
           } as TilesAtomSourceState)
         : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
