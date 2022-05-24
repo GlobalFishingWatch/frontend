@@ -8,11 +8,11 @@ import { WORKSPACE_ENV } from 'data/config'
 
 export const LocaleLabels = [{ id: Locale.en, label: 'English' }]
 
+const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
 export const SHARED_LABELS_PATH =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
-    : 'https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@' +
-      (WORKSPACE_ENV === 'production' ? 'stable' : 'latest')
+    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
