@@ -61,6 +61,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
   return (
     <Fragment>
       {tracksWithCoords.map((track, i) => {
+        if (track.status === ResourceStatus.Error) return null
         return (
           <div key={i}>
             {track.status === ResourceStatus.Finished ? (

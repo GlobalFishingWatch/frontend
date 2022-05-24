@@ -33,7 +33,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
     if (selectedEnvDataview) return [selectedEnvDataview]
     else if (environmentDataviews[0]) return [environmentDataviews[0]]
   }, [activityDataviews, environmentDataviews, timebarSelectedEnvId, visualisation])
-  const { loading, stackedActivity } = useStackedActivity(activeDataviews)
+  const { loading, stackedActivity, error } = useStackedActivity(activeDataviews)
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
 
@@ -58,6 +58,16 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
     [mapLegends, visualisation]
   )
 
+  if (error) {
+    return (
+      <div className={styles.error}>
+        {t(
+          'analysis.error',
+          'There was a problem loading the data, please try refreshing the page'
+        )}
+      </div>
+    )
+  }
   if (!stackedActivity || !stackedActivity.length) return null
 
   return (
