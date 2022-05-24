@@ -28,7 +28,7 @@ export function Radio(props: RadioProps) {
     labelClassname,
   } = props
   return (
-    <Tooltip content={tooltip} placement={tooltipPlacement}>
+    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       <div
         className={cx(styles.container, { [styles.inline]: !label, [styles.disabled]: disabled })}
       >

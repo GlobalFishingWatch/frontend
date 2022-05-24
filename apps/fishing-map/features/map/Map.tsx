@@ -1,11 +1,10 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { scaleLinear } from 'd3-scale'
 import { event as uaEvent } from 'react-ga'
-import { InteractiveMap } from 'react-map-gl'
-import type { MapRequest } from 'react-map-gl'
+import { Map, MapboxStyle } from 'react-map-gl'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -17,8 +16,11 @@ import {
   InteractionEventCallback,
   useLayerComposer,
   defaultStyleTransformations,
+  useDebounce,
+  useMemoCompare,
 } from '@globalfishingwatch/react-hooks'
-import { LayerComposer, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
+import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
@@ -31,7 +33,6 @@ import {
 import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
-import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
@@ -42,6 +43,7 @@ import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -51,17 +53,17 @@ import {
   useMapClusterTilesLoaded,
   useMapSourceTilesLoadedAtom,
 } from './map-sources.hooks'
-import { selectDrawMode, SliceInteractionEvent } from './map.slice'
-import { selectIsMapDrawing } from './map.selectors'
+import { SliceInteractionEvent } from './map.slice'
 import MapLegends from './MapLegends'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 
-const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
-
 // TODO: Abstract this away
-const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
-  const response: MapRequest = { url }
+const transformRequest: (...args: any[]) => RequestParameters = (
+  url: string,
+  resourceType: string
+) => {
+  const response: RequestParameters = { url }
   if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
     response.headers = {
       Authorization: 'Bearer ' + GFWAPI.getToken(),
@@ -70,12 +72,16 @@ const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceT
   return response
 }
 
-const handleError = ({ error }: any) => {
+const handleError = async ({ error }: any) => {
   if (
     (error?.status === 401 || error?.status === 403) &&
     error?.url.includes('globalfishingwatch')
   ) {
-    GFWAPI.refreshAPIToken()
+    try {
+      await GFWAPI.refreshAPIToken()
+    } catch (e) {
+      console.warn(e)
+    }
   }
 }
 
@@ -84,6 +90,11 @@ const layerComposer = new LayerComposer({
     'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-map',
 })
 
+const mapStyles = {
+  width: '100%',
+  height: '100%',
+}
+
 const MapWrapper = () => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -91,10 +102,9 @@ const MapWrapper = () => {
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-  const drawMode = useSelector(selectDrawMode)
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
-  const isMapDrawing = useSelector(selectIsMapDrawing)
+  const { isMapDrawing } = useMapDrawConnect()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActivityDataviews)
 
@@ -108,10 +118,11 @@ const MapWrapper = () => {
   )
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
-  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
+    useClickedEventConnect()
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
   const { cleanFeatureState } = useFeatureState(map)
-  const { onMapHoverWithRuler, onMapClickWithRuler, getRulersCursor, rulersEditing } = useRulers()
+  const { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing } = useRulers()
 
   const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
 
@@ -156,7 +167,8 @@ const MapWrapper = () => {
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
     dispatchClickedEvent(null)
-  }, [cleanFeatureState, dispatchClickedEvent])
+    cancelPendingInteractionRequests()
+  }, [cancelPendingInteractionRequests, cleanFeatureState, dispatchClickedEvent])
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 
@@ -202,43 +214,40 @@ const MapWrapper = () => {
   const mapLoaded = useMapLoaded()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
-  const getCursor = useCallback(
-    (state) => {
-      // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
-      if (drawMode === 'draw') {
-        return 'crosshair'
-      } else if (state.isHovering && hoveredTooltipEvent) {
-        // Workaround to fix cluster events duplicated, only working for encounters and needs
-        // TODO if wanted to scale it to other layers
-        const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
-        const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
+  const getCursor = useCallback(() => {
+    if (isMapDrawing) {
+      // updating cursor using css at style.css as the library sets classes depending on the state
+      return undefined
+    } else if (hoveredTooltipEvent) {
+      // Workaround to fix cluster events duplicated, only working for encounters and needs
+      // TODO if wanted to scale it to other layers
+      const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
+      const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
-        const clusterFeature = hoveredTooltipEvent.features.find(
-          (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
-        )
+      const clusterFeature = hoveredTooltipEvent.features.find(
+        (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
+      )
 
-        if (clusterFeature) {
-          if (!tilesClusterLoaded) {
-            return 'progress'
-          }
-          const { expansionZoom, lat, lng, lon } = clusterFeature.properties
-          const longitude = lng || lon
-          return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
+      if (clusterFeature) {
+        if (!tilesClusterLoaded) {
+          return 'progress'
         }
-        const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
-          (f) => f.category === DataviewCategory.Vessels
-        )
-        if (vesselFeatureEvents.length > 0) {
-          return 'grab'
-        }
-        return 'pointer'
-      } else if (state.isDragging) {
-        return 'grabbing'
+        const { expansionZoom, lat, lng, lon } = clusterFeature.properties
+        const longitude = lng || lon
+        return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
       }
-      return 'grab'
-    },
-    [drawMode, hoveredTooltipEvent, dataviews, tilesClusterLoaded]
-  )
+      const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
+        (f) => f.category === DataviewCategory.Vessels
+      )
+      if (vesselFeatureEvents.length > 1) {
+        return 'grab'
+      }
+      return 'pointer'
+    } else if (map?.isMoving()) {
+      return 'grabbing'
+    }
+    return 'grab'
+  }, [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded])
 
   useEffect(() => {
     if (map) {
@@ -253,34 +262,47 @@ const MapWrapper = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
+
+  const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
+  const debouncedMapLoading = useDebounce(mapLoading, 300)
+
+  const onMouseMove: any = useMemo(() => {
+    return isMapDrawing ? onSimpleMapHover : currentMapHoverCallback
+  }, [currentMapHoverCallback, isMapDrawing, onSimpleMapHover])
+
+  const styleInteractiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
+  const interactiveLayerIds = useMemo(() => {
+    if (rulersEditing || isMapDrawing) {
+      return undefined
+    }
+    return styleInteractiveLayerIds
+  }, [isMapDrawing, rulersEditing, styleInteractiveLayerIds])
 
   return (
     <div className={styles.container}>
       {style && (
-        <InteractiveMap
-          disableTokenWarning={true}
-          width="100%"
-          height="100%"
+        <Map
+          id="map"
+          style={mapStyles}
           keyboard={!isMapDrawing}
           zoom={viewport.zoom}
+          mapLib={maplibregl}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          onViewportChange={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
-          mapStyle={style}
+          onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+          mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
           onResize={setMapBounds}
-          getCursor={rulersEditing ? getRulersCursor : getCursor}
-          interactiveLayerIds={
-            rulersEditing || isMapDrawing ? undefined : style?.metadata?.interactiveLayerIds
-          }
-          clickRadius={clickRadiusScale(viewport.zoom)}
+          cursor={rulersEditing ? rulesCursor : getCursor()}
+          interactiveLayerIds={interactiveLayerIds}
           onClick={isMapDrawing ? undefined : currentClickCallback}
-          onHover={isMapDrawing ? onSimpleMapHover : currentMapHoverCallback}
+          onMouseEnter={onMouseMove}
+          onMouseMove={onMouseMove}
+          onMouseLeave={resetHoverState}
           onLoad={onLoadCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
-          transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (
             <PopupWrapper
@@ -298,14 +320,11 @@ const MapWrapper = () => {
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
-          {drawMode !== 'disabled' && <MapDraw />}
+          {isMapDrawing && <MapDraw />}
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
-        </InteractiveMap>
+        </Map>
       )}
-      <MapControls
-        onMouseEnter={resetHoverState}
-        mapLoading={!mapLoaded || layerComposerLoading || !allSourcesLoaded}
-      />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
       {isWorkspace && !isAnalyzing && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}

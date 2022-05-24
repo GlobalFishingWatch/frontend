@@ -46,6 +46,7 @@ export const useSelectedTracksConnect = () => {
 
   const assignLabeledValues = (points: PortPosition[]) => {
     return points.map(point => {
+      // in this variables first we check in the value was updated in the laber, else we keep the original value
       const communityIso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
       const communityLabel = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : (point.community_label ?? point.community_iso3)
       const portIso3 = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.port_iso3
@@ -62,7 +63,8 @@ export const useSelectedTracksConnect = () => {
       }
     })
   }
-  // Prepare the selected track to be downloaded
+
+  // Prepare the data to be downloaded
   const dispatchDownload = () => {
     const data = assignLabeledValues(allRecords)
     const element = document.createElement('a')
@@ -83,6 +85,7 @@ export const useSelectedTracksConnect = () => {
     dispatch(setData(records.map(record => ({
       ...record,
       port_label: record.port_label ?? record.label,
+      // in some cases the coords are uploaded in string, we need to parse them
       lat: typeof record.lat === 'string' ? parseFloat(record.lat) : record.lat,
       lon: typeof record.lon === 'string' ? parseFloat(record.lon) : record.lon
     }))))
@@ -100,6 +103,7 @@ export const useSelectedTracksConnect = () => {
     }
   }
 
+  // Update the labeler slice to use only the data related to a selected port
   const onCountryChange = (country: string) => {
     dispatch(setCountry(country))
 
@@ -120,7 +124,7 @@ export const useSelectedTracksConnect = () => {
     const uniqueTempPortsNames = [...new Set(tempPortsNames)];
     const uniqueTempPortsIds = [...new Set(tempPortsIds)];
 
-    //here we know that community_iso3 exists
+    // here we know that community_iso3 exists
     if (!subareas[country]) {
       const uniqueTempSubareas = [...new Set(tempSubareas)];
       dispatch(setSubareas(uniqueTempSubareas.map((e, index) => {

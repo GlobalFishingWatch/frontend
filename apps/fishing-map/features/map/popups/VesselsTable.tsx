@@ -32,10 +32,8 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-  SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
   TooltipEventFeature,
 } from '../map.hooks'
-import { useMapContext } from '../map-context.hooks'
 import styles from './VesselsTable.module.css'
 
 export const getVesselTableTitle = (feature: TooltipEventFeature) => {
@@ -88,7 +86,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
           })
         }}
       >
-        <TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />
+        (<TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />)
       </button>
     </Tooltip>
   ) : (
@@ -102,7 +100,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
           })
         }}
       >
-        <I18nDate date={start} />
+        (<I18nDate date={start} />)
       </button>
     </Tooltip>
   )
@@ -121,7 +119,6 @@ function VesselsTable({
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
-  const { eventManager } = useMapContext()
 
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -129,10 +126,9 @@ function VesselsTable({
     setModalOpen(false)
   }, [setModalOpen])
 
-  const interactionAllowed = [
-    ...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-    ...SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
-  ].includes(feature.temporalgrid?.sublayerInteractionType || '')
+  const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
+    feature.temporalgrid?.sublayerInteractionType || ''
+  )
 
   const title = getVesselTableTitle(feature)
   const vessels = showFullList
@@ -151,8 +147,6 @@ function VesselsTable({
     ev: React.MouseEvent<Element, MouseEvent>,
     vessel: ExtendedFeatureVessel
   ) => {
-    eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
     const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
     if (vesselInWorkspace) {
       deleteDataviewInstance(vesselInWorkspace.id)

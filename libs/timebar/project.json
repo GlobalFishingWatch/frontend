@@ -1,5 +1,4 @@
 {
-  "root": "libs/timebar",
   "sourceRoot": "libs/timebar/src",
   "projectType": "library",
   "tags": [],
@@ -44,7 +43,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/timebar"],
       "options": {
-        "jestConfig": "libs/timebar/jest.config.js",
+        "jestConfig": "libs/timebar/jest.config.ts",
         "passWithNoTests": true
       }
     },

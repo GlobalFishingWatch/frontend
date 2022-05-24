@@ -129,7 +129,21 @@ function NewDataset(): React.ReactElement {
             const shpjs = await import('shpjs').then((module) => module.default)
             const fileData = await readBlobAs(file, 'arrayBuffer')
             // TODO support multiple files in shapefile
-            geojson = (await shpjs(fileData)) as FeatureCollectionWithFilename
+            const expandedShp = (await shpjs(fileData)) as FeatureCollectionWithFilename
+            if (Array.isArray(expandedShp)) {
+              // geojson = expandedShp[0]
+              setFileData(undefined)
+              setLoading(false)
+              setError(
+                t(
+                  'errors.datasetShapefileMultiple',
+                  'Shapefiles containing multiple components (multiple file names) are not supported yet'
+                )
+              )
+              return
+            } else {
+              geojson = expandedShp
+            }
           } catch (e: any) {
             console.warn('Error reading file:', e)
           }
@@ -255,20 +269,7 @@ function NewDataset(): React.ReactElement {
     if (file) {
       let validityError
       let onTheFlyGeoJSONFile
-      if (
-        metadata?.category === DatasetCategory.Environment &&
-        datasetGeometryType === 'polygons'
-      ) {
-        if (!metadata?.configuration?.propertyToInclude) {
-          validityError = t('dataset.requiredFields', {
-            fields: 'value',
-            defaultValue: 'Required field value',
-          }) as string
-        }
-      } else if (
-        metadata?.category === DatasetCategory.Environment &&
-        datasetGeometryType === 'tracks'
-      ) {
+      if (metadata?.category === DatasetCategory.Environment && datasetGeometryType === 'tracks') {
         if (
           !metadata.configuration?.latitude ||
           !metadata.configuration?.longitude ||

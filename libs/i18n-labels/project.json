@@ -1,11 +1,10 @@
 {
-  "root": "libs/i18n-labels",
   "sourceRoot": "libs/i18n-labels",
   "projectType": "library",
   "tags": [],
   "targets": {
     "serve": {
-      "executor": "@nrwl/workspace:run-script",
+      "executor": "nx:run-script",
       "options": {
         "script": "start"
       }
@@ -70,7 +69,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/i18n-labels"],
       "options": {
-        "jestConfig": "libs/i18n-labels/jest.config.js",
+        "jestConfig": "libs/i18n-labels/jest.config.ts",
         "passWithNoTests": true
       }
     },

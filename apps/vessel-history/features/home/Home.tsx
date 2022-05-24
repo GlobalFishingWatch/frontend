@@ -5,7 +5,8 @@ import { event as uaEvent } from 'react-ga'
 import { redirect } from 'redux-first-router'
 import { DateTime, Interval } from 'luxon'
 import { VesselSearch } from '@globalfishingwatch/api-types'
-import { Spinner, IconButton, Button, SubBrands } from '@globalfishingwatch/ui-components'
+import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
+import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
@@ -24,7 +25,7 @@ import {
 } from 'features/search/search.selectors'
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
-import { PROFILE, SETTINGS } from 'routes/routes'
+import { HOME, PROFILE, SETTINGS } from 'routes/routes'
 import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -47,7 +48,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { openFeedback } = useApp()
 
   const dispatch = useDispatch()
-  const { logout } = useUser()
+  const { logout, logged, authorized } = useUser()
+
   const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchResultsConnect()
   const { fetchResults } = useSearchConnect({ onNewSearch: () => setSelectedVessels([]) })
   const { dispatchLocation } = useLocationConnect()
@@ -58,10 +60,22 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const totalResults = useSelector(selectSearchTotalResults)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
+  const { online } = useNavigatorOnline()
 
   useEffect(() => {
     dispatchFetchOfflineVessels()
   }, [dispatchFetchOfflineVessels])
+
+  const onLoginClick = useCallback(() => {
+    dispatch(
+      redirect({
+        type: HOME,
+        query: {
+          offline: 'false'
+        }
+      })
+    )
+  }, [dispatch])
 
   const openVesselProfile = useCallback(
     (vessel, aka: string[] = []) => {
@@ -181,7 +195,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       })}`,
     [advancedSearch, email, query, searchContext, vesselIds]
   )
-
+  const hasAccess = logged && authorized
   const onContactUsClick = useCallback(() => {
     uaEvent({
       category: 'Search Vessel VV',
@@ -201,23 +215,28 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         <h1 className={styles.logo} >
           Vessel Viewer
         </h1>
-        <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
-        <IconButton
-          onClick={onSettingsClick}
-          type="default"
-          size="default"
-          icon="settings"
-        ></IconButton>
-        <IconButton
-          icon="feedback"
-          onClick={openFeedback}
-          tooltip={t('common.feedback', 'Feedback')}
-          tooltipPlacement="bottom"
-        />
+        {online && hasAccess && <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>}
+        {(online && !hasAccess) && <IconButton type="default" size="default" icon="user" onClick={onLoginClick}></IconButton>}
+        {online &&
+          <IconButton
+            onClick={onSettingsClick}
+            type="default"
+            size="default"
+            icon="settings"
+          ></IconButton>
+        }
+        {online &&
+          <IconButton
+            icon="feedback"
+            onClick={openFeedback}
+            tooltip={t('common.feedback', 'Feedback')}
+            tooltipPlacement="bottom"
+          />
+        }
         <LanguageToggle />
       </header>
       <div className={styles.search}>
-        <AdvancedSearch />
+        {hasAccess && <AdvancedSearch />}
         {!hasSearch && (
           <div className={styles.content}>
             <h2 className={styles.offlineTitle}>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>

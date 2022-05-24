@@ -13,8 +13,8 @@ import { parsePropertiesBbox } from 'features/map/map.utils'
 import { fetchAreaThunk, getAreaKey } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
+import useMapInstance from 'features/map/map-context.hooks'
 import { setClickedEvent } from '../map.slice'
-import useMapInstance, { useMapContext } from '../map-context.hooks'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
 
@@ -33,7 +33,6 @@ export const useHighlightArea = () => {
 export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const highlightArea = useHighlightArea()
-  const { eventManager } = useMapContext()
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const { areaId, sourceId } = useSelector(selectAnalysisQuery) || {}
@@ -42,8 +41,6 @@ export const useContextInteractions = () => {
 
   const onDownloadClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
       if (!feature.properties?.gfw_id) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
@@ -61,7 +58,7 @@ export const useContextInteractions = () => {
 
       cleanFeatureState('highlight')
     },
-    [cleanFeatureState, dispatch, eventManager]
+    [cleanFeatureState, dispatch]
   )
 
   const setAnalysisArea = useCallback(
@@ -100,8 +97,6 @@ export const useContextInteractions = () => {
 
   const onAnalysisClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
       if (!feature.properties?.gfw_id) {
         console.warn('No gfw_id available in the feature to report', feature)
         return
@@ -111,7 +106,7 @@ export const useContextInteractions = () => {
         setAnalysisArea(feature)
       }
     },
-    [areaId, sourceId, eventManager, setAnalysisArea]
+    [areaId, sourceId, setAnalysisArea]
   )
 
   return useMemo(() => ({ onDownloadClick, onAnalysisClick }), [onDownloadClick, onAnalysisClick])

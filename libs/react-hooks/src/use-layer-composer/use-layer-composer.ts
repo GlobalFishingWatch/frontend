@@ -44,7 +44,7 @@ export function useLayerComposer(
           globalGeneratorConfig
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === 'development' && window.location.hostname === 'localhost') {
           if (!styleSpecValidate) {
             styleSpecValidate = await import(
               '@globalfishingwatch/maplibre-gl/dist/style-spec'

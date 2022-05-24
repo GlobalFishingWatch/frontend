@@ -1,9 +1,10 @@
 import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -37,13 +38,13 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { useApp } from 'features/app/app.hooks'
+import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { openFeedback } = useApp()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
@@ -64,6 +65,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
+  const { online } = useNavigatorOnline()
 
   useEffect(() => {
     const fetchVessel = async () => {
@@ -285,13 +287,15 @@ const Profile: React.FC = (props): React.ReactElement => {
             )}
           </h1>
         )}
-        <IconButton
-          icon="feedback"
-          className={styles.feedback}
-          onClick={openFeedback}
-          tooltip={t('common.feedback', 'Feedback')}
-          tooltipPlacement="bottom"
-        />
+        {online && (
+          <IconButton
+            icon="feedback"
+            className={styles.feedback}
+            onClick={openFeedback}
+            tooltip={t('common.feedback', 'Feedback')}
+            tooltipPlacement="bottom"
+          />
+        )}
       </header>
       <div className={styles.profileContainer}>
         <Tabs

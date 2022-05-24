@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
-import type { MapEvent } from 'react-map-gl'
 import {
   Interval,
   GeneratorType,
@@ -10,7 +9,7 @@ import {
   ExtendedLayer,
 } from '@globalfishingwatch/layer-composer'
 import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import type { Map, GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 export type MaplibreGeoJSONFeature = GeoJSONFeature & {
@@ -207,18 +206,18 @@ export const useMapClick = (
 ) => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
-    (event) => {
+    (event: MapLayerMouseEvent) => {
       cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
         type: 'click',
-        longitude: event.lngLat[0],
-        latitude: event.lngLat[1],
+        longitude: event.lngLat.lng,
+        latitude: event.lngLat.lat,
         point: event.point,
       }
       if (event.features?.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
-          event.features,
+          event.features as MaplibreGeoJSONFeature[],
           metadata,
           false
         )
@@ -241,12 +240,12 @@ type MapHoverConfig = {
   debounced?: number
 }
 
-const parseHoverEvent = (event: MapEvent): InteractionEvent => {
+const parseHoverEvent = (event: MapLayerMouseEvent): InteractionEvent => {
   return {
     type: 'hover',
     point: event.point,
-    longitude: event.lngLat[0],
-    latitude: event.lngLat[1],
+    longitude: event.lngLat.lng,
+    latitude: event.lngLat.lat,
   }
 }
 
@@ -271,17 +270,15 @@ export const useMapHover = (
   }, [debounced, hoverCallback])
 
   const onMapHover = useCallback(
-    (event) => {
+    (event: MapLayerMouseEvent) => {
       const hoverEvent = parseHoverEvent(event)
-      const isLinkHover = event.target.tagName.toLowerCase() === 'a'
-      if (isLinkHover) {
-        event.preventDefault()
-        event.stopPropagation()
-      }
       // Turn all sources with active feature states off
       cleanFeatureState()
-      if (event.features?.length && !isLinkHover) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
+      if (event.features?.length) {
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
+          event.features as MaplibreGeoJSONFeature[],
+          metadata
+        )
         const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
         if (extendedFeaturesLimit.length) {
@@ -307,7 +304,7 @@ export const useMapHover = (
 
 export const useSimpleMapHover = (hoverCallback: InteractionEventCallback) => {
   const onMapHover = useCallback(
-    (event) => {
+    (event: MapLayerMouseEvent) => {
       const hoverEvent = parseHoverEvent(event)
       if (hoverCallback) {
         hoverCallback(hoverEvent)

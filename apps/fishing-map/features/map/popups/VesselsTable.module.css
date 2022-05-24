@@ -76,4 +76,5 @@
 
 .timestampBtn {
   cursor: pointer;
+  color: var(--color-secondary-blue);
 }

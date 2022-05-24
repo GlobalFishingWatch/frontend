@@ -1,6 +1,7 @@
 // import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
+import { MapProvider as OrigMapProvider } from 'react-map-gl'
 import { RecoilRoot } from 'recoil'
 import store from '../store'
 import './styles.css'
@@ -13,11 +14,15 @@ import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 // }
 
+export const MapProvider: React.FC<{ children: React.ReactNode }> = OrigMapProvider
+
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
       <Provider store={store}>
-        <Component {...pageProps} />
+        <MapProvider>
+          <Component {...pageProps} />
+        </MapProvider>
       </Provider>
     </RecoilRoot>
   )

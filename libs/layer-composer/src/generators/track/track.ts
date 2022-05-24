@@ -76,7 +76,7 @@ const getHighlightedLayer = (
     },
     paint: {
       'line-color': 'white',
-      'line-width': 3,
+      'line-width': 1.5,
       'line-opacity': 1,
       ...paint,
     },

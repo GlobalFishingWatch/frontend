@@ -31,7 +31,7 @@ export function Checkbox(props: CheckboxProps) {
     labelClassname,
   } = props
   return (
-    <Tooltip content={tooltip} placement={tooltipPlacement}>
+    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       <div
         className={cx(
           styles.container,

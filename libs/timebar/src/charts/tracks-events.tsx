@@ -103,6 +103,7 @@ const TracksEvents = ({
             <div
               key={event.id}
               className={cx(styles.event, styles[event.type || 'none'], {
+                [styles.compact]: tracksEventsWithCoords.length >= 5,
                 [styles.highlighted]:
                   highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
               })}

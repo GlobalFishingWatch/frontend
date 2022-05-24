@@ -160,7 +160,6 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
               <Select
                 options={DURATION_TYPES_OPTIONS}
                 onSelect={trackAndChangeDurationType}
-                onRemove={() => {}}
                 className={styles.durationType}
                 selectedOption={durationTypeOption}
               />

@@ -134,7 +134,6 @@ const BigQueryMenu: React.FC = () => {
           onSelect={(selected) => {
             setVisualisationMode(selected.id)
           }}
-          onRemove={() => {}}
         />
         {visualisationMode === '4wings' && (
           <Select
@@ -146,7 +145,6 @@ const BigQueryMenu: React.FC = () => {
             onSelect={(selected) => {
               setAggregationOperation(selected.id)
             }}
-            onRemove={() => {}}
           />
         )}
       </div>

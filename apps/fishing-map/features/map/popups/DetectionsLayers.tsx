@@ -40,10 +40,10 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             })}{' '}
             {showFeaturesDetails && notMatchedDetectionsCount > 0 && (
               <Fragment>
-                (<I18nNumber number={notMatchedDetectionsCount} />{' '}
-                {t('vessel.unmatched', 'unmatched')}
                 {' - '}
-                <VesselDetectionTimestamps vessel={notMatchedDetection} />)
+                <I18nNumber number={notMatchedDetectionsCount} />{' '}
+                {t('vessel.unmatched', 'unmatched')}{' '}
+                <VesselDetectionTimestamps vessel={notMatchedDetection} />
               </Fragment>
             )}
           </span>

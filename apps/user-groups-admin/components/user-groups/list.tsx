@@ -14,12 +14,7 @@ export function UserGroupsList({ groupId, onGroupClick }: UserGroupsListProps) {
     fetchGroups()
   }, [])
 
-  const groupsList = groups?.filter(
-    (g) =>
-      !g.default && g.name.toLowerCase() !== 'anonymous' && g.name.toLowerCase() !== 'admin-group'
-  )
-
-  if (!groupsList || !groupsList.length) {
+  if (!groups || !groups.length) {
     return null
   }
 

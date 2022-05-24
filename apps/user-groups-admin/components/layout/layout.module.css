@@ -3,7 +3,6 @@
   height: 100%;
   background-image: var(--background-gradient);
   width: 100%;
-  padding: var(--space-M);
 }
 
 .login {
