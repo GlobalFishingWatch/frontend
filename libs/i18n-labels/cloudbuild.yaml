@@ -28,7 +28,7 @@ steps:
       - '--no-clobber'
 
   - id: 'i18n-labels publish stable'
-    waitFor: ['deploy-cloud-run']
+    waitFor: ['install-yarn']
     name: node:14
     env:
       - 'NODE_AUTH_TOKEN=$$NPM_TOKEN'
@@ -37,7 +37,7 @@ steps:
     args: ['nx', 'publish:stable', 'i18n-labels']
 
   - id: 'i18n-labels purge stable'
-    waitFor: ['deploy-cloud-run']
+    waitFor: ['i18n-labels publish stable']
     name: node:14
     env:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
