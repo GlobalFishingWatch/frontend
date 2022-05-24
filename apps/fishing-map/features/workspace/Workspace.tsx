@@ -119,19 +119,12 @@ function Workspace() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
-  const resourcesPromiseRef = useRef<any[]>([])
 
   useEffect(() => {
-    resourcesPromiseRef.current.forEach((promise) => {
-      if (promise) {
-        promise.abort()
-      }
-    })
-    resourcesPromiseRef.current = []
     if (dataviewsResources) {
       const { resources } = dataviewsResources
-      resourcesPromiseRef.current = resources.map((resource) => {
-        const promise = dispatch(
+      resources.forEach((resource) => {
+        dispatch(
           fetchResourceThunk({
             resource,
             resourceKey: resource.key,
@@ -139,7 +132,6 @@ function Workspace() {
             parseUserTrackCb: parseUserTrackCallback,
           })
         )
-        return promise
       })
     }
   }, [dispatch, dataviewsResources])
