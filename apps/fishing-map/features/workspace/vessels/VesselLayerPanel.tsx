@@ -93,6 +93,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     }
   }
 
+  const trackLoading = trackResource?.status === ResourceStatus.Loading
+  const infoLoading = infoResource?.status === ResourceStatus.Loading
+  const loading = trackLoading || infoLoading
+
+  const infoError = infoResource?.status === ResourceStatus.Error
+  const trackError = trackResource?.status === ResourceStatus.Error
+
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
@@ -100,23 +107,37 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     )?.value as string) ||
     dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
     ''
-  const vesselTitle = vesselLabel || vesselId
+  const vesselTitle = vesselLabel || t('common.unknownVessel', 'Unknown vessel')
+
+  const TitleComponentContent = () => (
+    <Fragment>
+      <span className={cx({ [styles.faded]: infoLoading || infoError })}>
+        {infoLoading
+          ? t('vessel.loadingInfo', 'Loading vessel info')
+          : infoError
+          ? t('common.unknownVessel', 'Unknown vessel')
+          : vesselLabel}
+      </span>
+      {(infoError || trackError) && (
+        <IconButton
+          size="small"
+          icon="warning"
+          type="warning"
+          disabled
+          className={styles.errorIcon}
+        />
+      )}
+    </Fragment>
+  )
 
   const TitleComponent = (
     <Title
-      title={vesselTitle}
+      title={<TitleComponentContent />}
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
     />
   )
-
-  const trackLoading = trackResource?.status === ResourceStatus.Loading
-  const infoLoading = infoResource?.status === ResourceStatus.Loading
-  const loading = trackLoading || infoLoading
-
-  const infoError = infoResource?.status === ResourceStatus.Error
-  const trackError = trackResource?.status === ResourceStatus.Error
 
   const getFieldValue = (field: any, fieldValue: string | undefined) => {
     if (!fieldValue) return
@@ -221,7 +242,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         disabled={infoError}
         tooltip={
           infoError
-            ? t('errors.vesselLoading', 'There was an error loading the vessel details')
+            ? `${t(
+                'errors.vesselLoading',
+                'There was an error loading the vessel details'
+              )} (${vesselId})`
             : infoOpen
             ? t('layer.infoClose', 'Hide info')
             : t('layer.infoOpen', 'Show info')
