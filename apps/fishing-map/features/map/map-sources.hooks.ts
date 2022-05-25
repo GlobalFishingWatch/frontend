@@ -250,7 +250,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
                 : null
             return {
               active,
-              features: features as GeoJSONFeature<TimeseriesFeatureProps>[],
+              features: features as unknown as GeoJSONFeature<TimeseriesFeatureProps>[],
               quantizeOffset,
               state: chunkState,
             }
