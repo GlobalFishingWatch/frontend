@@ -54,11 +54,19 @@ const MapWrapper = (): React.ReactElement => {
       },
     }
   }, [areaLayer, pointsLayer])
-  const { box, onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp, onHover, onMapclick } =
-    useSelectorConnect()
+  const {
+    box,
+    dragging,
+    onMouseDown,
+    onKeyDown,
+    onKeyUp,
+    onMouseMove,
+    onMouseUp,
+    onHover,
+    onMapclick,
+  } = useSelectorConnect()
 
   const points = useSelector(selectPortPointsByCountry)
-
 
   return (
     <div className={styles.container} onKeyDown={onKeyDown} onKeyUp={onKeyUp}>
@@ -70,9 +78,9 @@ const MapWrapper = (): React.ReactElement => {
         zoom={viewport.zoom}
         mapLib={maplibregl}
         mapStyle={style as unknown as MapboxStyle}
-        onMouseDown={onMouseDown as any}
-        onMouseMove={onMouseMove as any}
-        onMouseUp={onMouseUp as any}
+        onMouseDown={dragging ? (onMouseDown as any) : undefined}
+        onMouseMove={dragging ? (onMouseMove as any) : undefined}
+        onMouseUp={dragging ? (onMouseUp as any) : undefined}
         onClick={onMapclick as any}
         onMove={onViewportChange}
         transformRequest={transformRequest}
