@@ -22,6 +22,7 @@
     "lint": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix",
     "deploy": "nx affected --target=deploy",
     "affected": "nx affected:apps nx --base=origin/develop~1 --exclude=tile-inspector --plain > affected-apps.txt",
+    "affected:libs": "nx affected:libs --base=origin/develop~1 --exclude=api-client,api-types,data-transforms,dataviews-client,fourwings-aggregate,layer-composer,ocean-areas,pbf,timebar,react-hooks,ui-components --plain > affected-libs.txt",
     "graph:affected": "yarn nx affected:dep-graph",
     "clean:deps": "rm -rf node_modules/.yarn-integrity && yarn install",
     "clean:dist": "rm -rf dist",
@@ -94,6 +95,7 @@
   },
   "devDependencies": {
     "@globalfishingwatch/maplibre-gl": "^2.1.7-gfw.19",
+    "@jscutlery/semver": "^2.23.3",
     "@next/bundle-analyzer": "^12.1.6",
     "@next/eslint-plugin-next": "12.1.6",
     "@nrwl/cli": "14.1.4",
