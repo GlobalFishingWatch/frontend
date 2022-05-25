@@ -453,11 +453,10 @@ export function getDataviewsGeneratorConfigs(
         mode: heatmapAnimatedMode,
         // if any of the activity dataviews has a max zoom level defined
         // apply the minimum max zoom level (the most restrictive approach)
-        ...((maxZoomLevels &&
+        ...(maxZoomLevels &&
           maxZoomLevels.length > 0 && {
             maxZoom: Math.min(...maxZoomLevels),
-          }) ||
-          {}),
+          }),
       },
     }
     dataviewsFiltered.push(mergedActivityDataview)
