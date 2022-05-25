@@ -114,7 +114,7 @@ function NewDataset(): React.ReactElement {
           !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
         const isCSV = !isZip && !isGeojson && file.type === 'text/csv'
 
-        if (isGeojson && file.name.includes('.geojson')) {
+        if (isGeojson) {
           formatGeojson = true
           const blob = file.slice(0, file.size, 'application/json')
           const fileAsJson = new File([blob], `${name}.json`, { type: 'application/json' })
@@ -328,9 +328,10 @@ function NewDataset(): React.ReactElement {
         label: onTheFlyGeoJSONFile?.name ?? file.name,
       })
       setLoading(true)
+      const { fields, guessedFields, ...meta } = metadata
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {
-          ...metadata,
+          ...meta,
           unit: 'TBD',
           subcategory: 'info',
         },
