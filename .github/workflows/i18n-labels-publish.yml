@@ -51,7 +51,7 @@ jobs:
 
       - name: Lib Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PA_TOKEN }}
         shell: bash
         run: |
           yarn affected:libs
@@ -63,6 +63,8 @@ jobs:
 
       - name: Bump version
         if: ${{ steps.lib-changes.outputs.i18n-labels-affected == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PA_TOKEN }}
         shell: bash
         run: yarn nx version i18n-labels
 
