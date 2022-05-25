@@ -43,6 +43,8 @@
   text-overflow: ellipsis;
   cursor: pointer;
   line-height: 2.8rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .actions {
@@ -59,6 +61,10 @@
 
 .LayerPanel:hover .actions {
   opacity: 1;
+}
+
+.LayerPanel:hover .errorIcon {
+  display: none;
 }
 
 .shownUntilHovered,
@@ -214,4 +220,8 @@
 
 :global(.printing) .switch > span {
   display: none !important;
+}
+
+.faded {
+  color: var(--color-secondary-blue);
 }

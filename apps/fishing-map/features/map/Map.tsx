@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useState, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { Map, MapboxStyle } from 'react-map-gl'
@@ -36,7 +36,6 @@ import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import Hint from 'features/help/hints/Hint'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
@@ -44,7 +43,6 @@ import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/e
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
@@ -57,6 +55,10 @@ import { SliceInteractionEvent } from './map.slice'
 import MapLegends from './MapLegends'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
+const PopupWrapper = dynamic(
+  () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
+)
+const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/hints/Hint'))
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => RequestParameters = (
@@ -72,12 +74,16 @@ const transformRequest: (...args: any[]) => RequestParameters = (
   return response
 }
 
-const handleError = ({ error }: any) => {
+const handleError = async ({ error }: any) => {
   if (
     (error?.status === 401 || error?.status === 403) &&
     error?.url.includes('globalfishingwatch')
   ) {
-    GFWAPI.refreshAPIToken()
+    try {
+      await GFWAPI.refreshAPIToken()
+    } catch (e) {
+      console.warn(e)
+    }
   }
 }
 
@@ -114,7 +120,8 @@ const MapWrapper = () => {
   )
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
-  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
+    useClickedEventConnect()
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
   const { cleanFeatureState } = useFeatureState(map)
   const { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing } = useRulers()
@@ -162,7 +169,8 @@ const MapWrapper = () => {
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
     dispatchClickedEvent(null)
-  }, [cleanFeatureState, dispatchClickedEvent])
+    cancelPendingInteractionRequests()
+  }, [cancelPendingInteractionRequests, cleanFeatureState, dispatchClickedEvent])
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 

@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useState, useMemo } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
@@ -266,6 +266,50 @@ const TimebarWrapper = () => {
     tracksGraphsData?.some(({ status }) => status === ResourceStatus.Loading) ||
     tracksEvents?.some(({ status }) => status === ResourceStatus.Loading)
 
+  const hasTrackError =
+    tracks?.some(({ status }) => status === ResourceStatus.Error) ||
+    tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
+
+  const getTracksComponents = () => {
+    if (hasTrackError) {
+      return (
+        <div className={styles.error}>
+          {t(
+            'analysis.error',
+            'There was a problem loading the data, please try refreshing the page'
+          )}
+        </div>
+      )
+    } else if (tracks.length > MAX_TIMEBAR_VESSELS) {
+      return (
+        <div className={styles.disclaimer}>
+          <label className={styles.disclaimerLabel}>
+            {upperFirst(
+              t('timebar.maxTracksNumber', 'Track detail not available for more than 10 vessels')
+            )}
+          </label>
+        </div>
+      )
+    }
+    return (
+      <Fragment>
+        <TimebarTracks key="tracks" data={tracks} />
+        {showGraph && tracksGraphsData && (
+          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} />
+        )}
+        {tracksEvents && (
+          <Fragment>
+            <TimebarTracksEvents
+              data={tracksEvents}
+              highlightedEventsIds={highlightedEvents}
+              onEventClick={onEventClick}
+            />
+          </Fragment>
+        )}
+      </Fragment>
+    )
+  }
+
   return (
     <div className={styles.timebarWrapper}>
       <Timebar
@@ -296,35 +340,7 @@ const TimebarWrapper = () => {
               timebarVisualisation === TimebarVisualisations.Environment) && (
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}
-            {timebarVisualisation === TimebarVisualisations.Vessel &&
-              (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
-                <Fragment>
-                  <TimebarTracks key="tracks" data={tracks} />
-                  {showGraph && tracksGraphsData && (
-                    <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} />
-                  )}
-                  {tracksEvents && (
-                    <Fragment>
-                      <TimebarTracksEvents
-                        data={tracksEvents}
-                        highlightedEventsIds={highlightedEvents}
-                        onEventClick={onEventClick}
-                      />
-                    </Fragment>
-                  )}
-                </Fragment>
-              ) : (
-                <div className={styles.disclaimer}>
-                  <label className={styles.disclaimerLabel}>
-                    {upperFirst(
-                      t(
-                        'timebar.maxTracksNumber',
-                        'Track detail not available for more than 10 vessels'
-                      )
-                    )}
-                  </label>
-                </div>
-              ))}
+            {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
             <TimebarHighlighterWrapper dispatchHighlightedEvents={dispatchHighlightedEvents} />
           </Fragment>
         ) : null}

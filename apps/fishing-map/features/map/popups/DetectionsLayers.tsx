@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -40,10 +40,10 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             })}{' '}
             {showFeaturesDetails && notMatchedDetectionsCount > 0 && (
               <Fragment>
-                (<I18nNumber number={notMatchedDetectionsCount} />{' '}
-                {t('vessel.unmatched', 'unmatched')}
                 {' - '}
-                <VesselDetectionTimestamps vessel={notMatchedDetection} />)
+                <I18nNumber number={notMatchedDetectionsCount} />{' '}
+                {t('vessel.unmatched', 'unmatched')}{' '}
+                <VesselDetectionTimestamps vessel={notMatchedDetection} />
               </Fragment>
             )}
           </span>

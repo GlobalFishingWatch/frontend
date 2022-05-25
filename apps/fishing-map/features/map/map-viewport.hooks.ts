@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
@@ -11,6 +11,7 @@ import { updateUrlViewport } from 'routes/routes.actions'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { selectViewport } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
+import { useMapReady } from 'features/map/map-state.hooks'
 import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
@@ -93,7 +94,9 @@ export function mglToMiniGlobeBounds(mglBounds: LngLatBounds) {
 
 export function useMapBounds() {
   const map = useMapInstance()
+  const mapReady = useMapReady()
   const [bounds, setBounds] = useRecoilState(boundsState)
+
   const setMapBounds = useCallback(() => {
     if (map) {
       const rawBounds = map.getBounds()
@@ -102,6 +105,13 @@ export function useMapBounds() {
       }
     }
   }, [map, setBounds])
+
+  useEffect(() => {
+    if (mapReady) {
+      setMapBounds()
+    }
+  }, [mapReady, setMapBounds])
+
   return { bounds, setMapBounds }
 }
 

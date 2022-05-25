@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
 import { PATH_BASENAME } from 'routes/routes'
+import { WORKSPACE_ENV } from 'data/config'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
@@ -11,10 +12,11 @@ export const LocaleLabels = [
   { id: Locale.fr, label: 'Français' },
 ]
 
+const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
 export const SHARED_LABELS_PATH =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
-    : 'https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@latest'
+    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets']
 

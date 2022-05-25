@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -6,12 +6,12 @@ import { TooltipEventFeature } from 'features/map/map.hooks'
 import popupStyles from './Popup.module.css'
 import VesselsTable, { getVesselTableTitle } from './VesselsTable'
 
-type FishingTooltipRowProps = {
+type ActivityTooltipRowProps = {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
 }
 
-function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
+function ActivityTooltipRow({ feature, showFeaturesDetails }: ActivityTooltipRowProps) {
   const { t } = useTranslation()
   const title = getVesselTableTitle(feature)
 
@@ -36,4 +36,4 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
   )
 }
 
-export default FishingTooltipRow
+export default ActivityTooltipRow

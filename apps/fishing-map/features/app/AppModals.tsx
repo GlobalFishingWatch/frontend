@@ -1,25 +1,42 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { replace } from 'redux-first-router'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { WorkspaceCategories } from 'data/workspaces'
 import { isGFWUser } from 'features/user/user.slice'
-import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
+import { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import { selectEditorActive, toggleEditorMenu } from 'features/editor/editor.slice'
-import EditorMenu from 'features/editor/EditorMenu'
-import DownloadActivityModal from 'features/download/DownloadActivityModal'
-import DownloadTrackModal from 'features/download/DownloadTrackModal'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
-import DebugMenu from 'features/debug/DebugMenu'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
-import BigQueryMenu from 'features/bigquery/BigQuery'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
+import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
 import styles from './App.module.css'
+
+const BigQueryMenu = dynamic(
+  () => import(/* webpackChunkName: "BigQueryMenu" */ 'features/bigquery/BigQuery')
+)
+const DebugMenu = dynamic(
+  () => import(/* webpackChunkName: "DebugMenu" */ 'features/debug/DebugMenu')
+)
+const DownloadActivityModal = dynamic(
+  () =>
+    import(
+      /* webpackChunkName: "DownloadActivityModal" */ 'features/download/DownloadActivityModal'
+    )
+)
+const DownloadTrackModal = dynamic(
+  () => import(/* webpackChunkName: "DownloadTrackModal" */ 'features/download/DownloadTrackModal')
+)
+const EditorMenu = dynamic(
+  () => import(/* webpackChunkName: "EditorMenu" */ 'features/editor/EditorMenu')
+)
+const Welcome = dynamic(() => import(/* webpackChunkName: "Welcome" */ 'features/welcome/Welcome'))
 
 const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
 
@@ -58,6 +75,7 @@ const AppModals = () => {
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
   useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
+  const downloadTrackId = useSelector(selectDownloadTrackId)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
 
   const locationIsMarineManager =
@@ -112,7 +130,7 @@ const AppModals = () => {
         </Modal>
       )}
       {downloadActivityAreaKey && <DownloadActivityModal />}
-      <DownloadTrackModal />
+      {downloadTrackId && <DownloadTrackModal />}
       {welcomePopupOpen && !readOnly && (
         <Modal
           header={false}

@@ -35,3 +35,13 @@
   top: 0;
   left: 50%;
 }
+
+.error {
+  transform: translateX(50%);
+  width: 50%;
+  color: var(--color-white);
+  text-align: center;
+  line-height: 1.5rem;
+  margin-top: 14px;
+  opacity: 0.5;
+}

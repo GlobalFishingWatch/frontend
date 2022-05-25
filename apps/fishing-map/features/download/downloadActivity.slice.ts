@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { Geometry } from 'geojson'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
+import i18next from 'i18next'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
@@ -79,6 +80,7 @@ export const downloadActivityThunk = createAsyncThunk<
         responseType: 'blob',
         headers: {
           Authorization: `Bearer ${GFWAPI.getToken()}`,
+          'Content-Language': i18next.language === 'es' ? 'es-ES' : 'en-EN',
         },
       }
     ).then((blob) => {

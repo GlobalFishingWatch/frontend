@@ -32,7 +32,7 @@ const toArray = (elem) => (Array.isArray(elem) ? elem : [elem])
 
 const getSourcesFromMergedGenerator = (style: ExtendedStyle) => {
   const meta = getHeatmapSourceMetadata(style, MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
-  return meta.timeChunks.activeSourceId
+  return meta?.timeChunks.activeSourceId
 }
 
 const getGeneratorSourcesIds = (style: ExtendedStyle, sourcesIds: SourcesHookInput) => {
@@ -128,7 +128,8 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
   const sourceTilesLoaded = useMapSourceTiles()
   const sourceInStyle = useSourceInStyle(sourcesId)
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesId)
-  return sourceInStyle && sourcesIdsList.every((source) => sourceTilesLoaded[source]?.loaded)
+  const allSourcesLoaded = sourcesIdsList.map((source) => sourceTilesLoaded[source]?.loaded)
+  return sourceInStyle && allSourcesLoaded.every((loaded) => loaded)
 }
 
 const CLUSTERS_SOURCES_IDS = [ENCOUNTER_EVENTS_SOURCE_ID, BIG_QUERY_EVENTS_PREFIX]
@@ -249,18 +250,20 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
                 : null
             return {
               active,
-              features,
+              features: features as unknown as GeoJSONFeature<TimeseriesFeatureProps>[],
               quantizeOffset,
               state: chunkState,
             }
           })
         : null
-
       const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
       const state = chunks
         ? ({
             loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
-            error: chunksFeatures.filter(({ state }) => state.error).join(','),
+            error: chunksFeatures
+              .filter(({ state }) => state.error)
+              .map(({ state }) => state.error)
+              .join(','),
           } as TilesAtomSourceState)
         : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 

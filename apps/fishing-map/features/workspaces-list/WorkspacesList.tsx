@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Link, { To } from 'redux-first-router-link'

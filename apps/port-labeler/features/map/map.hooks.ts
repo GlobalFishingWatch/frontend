@@ -3,6 +3,7 @@ import Point from '@mapbox/point-geometry'
 import { useDispatch, useSelector } from 'react-redux'
 import { fitBounds } from '@math.gl/web-mercator'
 import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   selectSelectedPoints,
   setHoverPoint,
@@ -11,10 +12,10 @@ import {
 import { PortPosition } from 'types'
 import useMapInstance from './map-context.hooks'
 import { useViewport } from './map-viewport.hooks'
-import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 
 type UseSelector = {
   box: any
+  dragging: boolean
   onKeyDown: (evt: any) => void
   onKeyUp: (evt: any) => void
   onMouseDown: (evt: MapLayerMouseEvent) => void
@@ -24,6 +25,7 @@ type UseSelector = {
   onMapclick: (evt: MapLayerMouseEvent) => void
 }
 
+// The selector connect is mainly to manage the selection of points on the map
 export function useSelectorConnect(): UseSelector {
   const dispatch = useDispatch()
   const [start, setStart] = useState<Point | null>(null)
@@ -92,10 +94,10 @@ export function useSelectorConnect(): UseSelector {
     [box, dispatch, dragging, map, start]
   )
 
+  // here starts the feature to select points in mass
   const onMapclick = useCallback(
     (e: MapLayerMouseEvent) => {
       if (e) {
-        console.log(e)
         const newSelected = [...selected]
         const pointsOnClick = e.features?.filter((point) => (point as any).source === 'pointsLayer')
         if (pointsOnClick && pointsOnClick.length) {
@@ -119,7 +121,7 @@ export function useSelectorConnect(): UseSelector {
     },
     [selected]
   )
-
+  // control the selection box movement
   const onMouseMove = useCallback(
     (e: MapLayerMouseEvent) => {
       if (dragging && start) {
@@ -147,6 +149,7 @@ export function useSelectorConnect(): UseSelector {
     [box, dragging, mousePos, start]
   )
 
+  // here we use the mapbox feature to hightlight points on hover
   const onHover = useCallback(
     (e: MapLayerMouseEvent) => {
       const feature = e?.features?.[0] as any
@@ -164,7 +167,17 @@ export function useSelectorConnect(): UseSelector {
     [dispatch, hoveredStateId, map]
   )
 
-  return { box, onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onHover, onMapclick }
+  return {
+    box,
+    dragging,
+    onKeyDown,
+    onKeyUp,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
+    onHover,
+    onMapclick,
+  }
 }
 
 type UseMap = {
@@ -175,6 +188,7 @@ export function useMapConnect(): UseMap {
   const map = useMapInstance()
   const { setMapCoordinates } = useViewport()
 
+  // this is to center the positions (points) on the map when the user change the country
   const centerPoints = useCallback(
     (points) => {
       if (points) {

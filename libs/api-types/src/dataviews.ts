@@ -10,6 +10,7 @@ export interface DataviewConfig<Type = any> {
   visible?: boolean
   filters?: Record<string, any>
   dynamicBreaks?: boolean
+  maxZoom?: number
   [key: string]: any
 }
 

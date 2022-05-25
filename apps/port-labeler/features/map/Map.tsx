@@ -2,17 +2,16 @@ import React, { useMemo } from 'react'
 import { Map, MapboxStyle } from 'react-map-gl'
 import { useSelector } from 'react-redux'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import maplibregl, { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import mapStyle from 'features/map/map-style'
 import { selectCountry } from 'features/labeler/labeler.slice'
 import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
 import { useViewport } from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
-import maplibregl from '@globalfishingwatch/maplibre-gl'
 import styles from './Map.module.css'
 import { useMapBounds } from './controls/map-controls.hooks'
 import { selectAreaLayer, selectPortPositionLayer } from './map.selectors'
 import { useSelectorConnect } from './map.hooks'
-import { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 
 const mapStyles = {
   width: '100%',
@@ -55,20 +54,19 @@ const MapWrapper = (): React.ReactElement => {
       },
     }
   }, [areaLayer, pointsLayer])
-  const { box, onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp, onHover, onMapclick } =
-    useSelectorConnect()
+  const {
+    box,
+    dragging,
+    onMouseDown,
+    onKeyDown,
+    onKeyUp,
+    onMouseMove,
+    onMouseUp,
+    onHover,
+    onMapclick,
+  } = useSelectorConnect()
 
   const points = useSelector(selectPortPointsByCountry)
-
-  /*useEffect(() => {
-    if (points.length) {
-      onViewportChange({
-        latitude: parseFloat((points[0].lat.toString())),
-        longitude: parseFloat((points[0].lon.toString())),
-        zoom: 12
-      })
-    }
-  }, [onViewportChange, country])*/
 
   return (
     <div className={styles.container} onKeyDown={onKeyDown} onKeyUp={onKeyUp}>
@@ -80,9 +78,9 @@ const MapWrapper = (): React.ReactElement => {
         zoom={viewport.zoom}
         mapLib={maplibregl}
         mapStyle={style as unknown as MapboxStyle}
-        onMouseDown={onMouseDown as any}
-        onMouseMove={onMouseMove as any}
-        onMouseUp={onMouseUp as any}
+        onMouseDown={dragging ? (onMouseDown as any) : undefined}
+        onMouseMove={dragging ? (onMouseMove as any) : undefined}
+        onMouseUp={dragging ? (onMouseUp as any) : undefined}
         onClick={onMapclick as any}
         onMove={onViewportChange}
         transformRequest={transformRequest}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import type { Placement } from 'tippy.js'

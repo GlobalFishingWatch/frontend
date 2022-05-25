@@ -225,11 +225,12 @@ export const selectTracksEvents = createSelector(
 
         return resources[url].data as TimebarChartChunk<TrackEventChunkProps>[]
       })
-      trackEvents.status = eventsResourcesFiltered.every(
-        ({ url }) => resources[url]?.status === ResourceStatus.Finished
-      )
-        ? ResourceStatus.Finished
-        : ResourceStatus.Loading
+      const statuses = eventsResourcesFiltered.map(({ url }) => resources[url]?.status)
+      if (statuses.some((s) => s === ResourceStatus.Error))
+        trackEvents.status = ResourceStatus.Error
+      else if (statuses.every((s) => s === ResourceStatus.Finished))
+        trackEvents.status = ResourceStatus.Finished
+      else trackEvents.status = ResourceStatus.Loading
 
       return trackEvents
     })

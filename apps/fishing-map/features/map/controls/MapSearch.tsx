@@ -1,10 +1,14 @@
-import React, { memo, useRef, useState } from 'react'
+import { memo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
 import { InputText, IconButton } from '@globalfishingwatch/ui-components'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
-import { OceanArea, searchOceanAreas, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import type {
+  searchOceanAreas as searchOceanAreasType,
+  OceanAreaLocale,
+  OceanArea,
+} from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
 import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
@@ -18,6 +22,7 @@ const MapSearch = () => {
   const [query, setQuery] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
+  const searchOceanAreas = useRef<typeof searchOceanAreasType>()
 
   const fitBounds = useMapFitBounds()
 
@@ -35,13 +40,22 @@ const MapSearch = () => {
       setAreasMatching([])
     } else {
       setQuery(inputValue)
-      const areas = searchOceanAreas(inputValue, { locale: i18n.language as OceanAreaLocale })
-      setAreasMatching(areas)
+      if (searchOceanAreas.current) {
+        const areas = searchOceanAreas.current(inputValue, {
+          locale: i18n.language as OceanAreaLocale,
+        })
+        setAreasMatching(areas)
+      }
     }
   }
 
   const togglePropOptions = {
-    onClick: () => {
+    onClick: async () => {
+      if (!searchOceanAreas.current) {
+        searchOceanAreas.current = await import('@globalfishingwatch/ocean-areas').then(
+          (module) => module.searchOceanAreas
+        )
+      }
       dispatch(setHintDismissed('areaSearch'))
       setTimeout(() => {
         inputRef.current?.focus()

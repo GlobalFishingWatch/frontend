@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Spinner, Button } from '@globalfishingwatch/ui-components'
-import Search from 'features/search/Search'
 import {
   selectWorkspaceStatus,
   selectWorkspaceError,
@@ -28,6 +28,8 @@ import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
+
+const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
 
 function WorkspaceError(): React.ReactElement {
   const [logoutLoading, setLogoutLoading] = useState(false)
@@ -127,6 +129,7 @@ function Workspace() {
         dispatch(
           fetchResourceThunk({
             resource,
+            resourceKey: resource.key,
             parseEventCb: parseTrackEventChunkProps,
             parseUserTrackCb: parseUserTrackCallback,
           })
