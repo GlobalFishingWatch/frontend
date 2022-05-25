@@ -66,7 +66,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps): React.ReactEleme
         ) : (
           TitleComponent
         )}
-        {!isLayerLoadedDebounced && <Spinner size="tiny" />}
+        {auxiliarLayerActive && !isLayerLoadedDebounced && <Spinner size="tiny" />}
       </div>
     </div>
   )
