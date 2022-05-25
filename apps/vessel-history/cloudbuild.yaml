@@ -97,14 +97,13 @@ steps:
     name: gcr.io/cloud-builders/gcloud
     waitFor: ['deploy-cloud-run']
     entrypoint: bash
-    env:
-      - 'WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     args:
       - '-eEuo'
       - 'pipefail'
       - '-c'
       - |-
-        if [ $WORKSPACE_ENV = 'production' ]; then
+        WORKSPACE_ENV=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
+        if [ ${WORKSPACE_ENV} = 'production' ]; then
           gcloud -q beta builds triggers run --branch=develop ui-libs-i18n-labels-stable
         fi
 
