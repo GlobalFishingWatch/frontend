@@ -463,10 +463,10 @@ export function getDataviewsGeneratorConfigs(
 
     // New sublayers as auxiliar activity layers
     const activityWithContextDataviews = activityDataviews.flatMap((dataview) => {
-      const auxiliaryLayerActive = dataview.config?.auxiliaryLayerActive ?? true
+      const auxiliarLayerActive = dataview.config?.auxiliarLayerActive ?? true
       if (
         dataview.datasetsConfig?.some(
-          (d) => d.endpoint === EndpointId.ContextGeojson && auxiliaryLayerActive
+          (d) => d.endpoint === EndpointId.ContextGeojson && auxiliarLayerActive
         )
       ) {
         const datasetsConfig = dataview.datasetsConfig?.flatMap((dc) => {
@@ -494,7 +494,7 @@ export function getDataviewsGeneratorConfigs(
         )
         auxiliarDataview.config = {
           color: dataview.config?.color,
-          visible: auxiliaryLayerActive,
+          visible: auxiliarLayerActive,
           type: GeneratorType.Polygons,
           url,
         }
