@@ -4,7 +4,7 @@ import styles from './TableAnchorage.module.css'
 
 type SidebarProps = {
     order?: 'asc' | 'desc' | '',
-    label: string,
+    label: any,
     onToggle?: (order: string) => void
 }
 

@@ -7,7 +7,15 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition } from 'types'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
-import { selectPointValuesByCountry, selectPortsByCountry, selectPortsOptions, selectPortValuesByCountry, selectSubareaOptions, selectSubareasByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
+import {
+  selectPointValuesByCountry,
+  selectPortsByCountry,
+  selectPortsOptions,
+  selectPortValuesByCountry,
+  selectSubareaOptions,
+  selectSubareasByCountry,
+  selectSubareaValuesByCountry
+} from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
 import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 import { useValueManagerConnect } from './TableAnchorage.hooks'
