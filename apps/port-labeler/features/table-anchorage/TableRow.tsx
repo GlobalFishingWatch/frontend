@@ -14,10 +14,12 @@ import { useValueManagerConnect } from './TableAnchorage.hooks'
 
 type TableRowProps = {
   record: PortPosition
+  extra: boolean
 }
 
 function TableRow({
   record,
+  extra
 }: TableRowProps) {
   const map = useMapInstance()
   const dispatch = useDispatch()
@@ -131,6 +133,9 @@ function TableRow({
       <div className={styles.col}>
         {record.top_destination}
       </div>
+      {extra && <div className={styles.col}>
+        {record.s2id}
+      </div>}
     </div>
   )
 }

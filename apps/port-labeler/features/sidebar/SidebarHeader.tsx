@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Icon, IconButton, Logo, Select, SelectOption, SubBrands } from '@globalfishingwatch/ui-components'
 import { flags } from '@globalfishingwatch/i18n-labels'
-import { selectCountry, sortOptions } from 'features/labeler/labeler.slice'
+import { selectCountry, selectDisplayExtraData, sortOptions, toogleExtraData } from 'features/labeler/labeler.slice'
 import { selectCountries } from 'features/map/map.selectors'
 import styles from './SidebarHeader.module.css'
 import { useSelectedTracksConnect } from './sidebar.hooks'
@@ -15,6 +15,7 @@ function SidebarHeader(props: HeaderProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const countries: SelectOption[] = useSelector(selectCountries)
+  const extraColumn = useSelector(selectDisplayExtraData)
   const country = useSelector(selectCountry)
   const {
     onCountryChange,
@@ -30,6 +31,14 @@ function SidebarHeader(props: HeaderProps) {
         <Logo className={styles.logo} subBrand={SubBrands.PortLabeler} />
       </a>
       <div className={styles.actionButtons}>
+        <IconButton
+          type="default"
+          icon={extraColumn ? 'visibility-off' : 'visibility-on'}
+          tooltip="Toggle extra data"
+          tooltipPlacement="bottom"
+          className={styles.actionButton}
+          onClick={() => dispatch(toogleExtraData())}
+        />
         <IconButton
           type="default"
           icon="split"
