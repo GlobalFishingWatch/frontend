@@ -234,7 +234,7 @@
     "switchAccount": "Switch account",
     "trackLoading": "There was an error loading the vessel track.",
     "uploadError": "There was an error uploading your dataset.",
-    "vesselLoading": "There was an error loading the vessel details track.",
+    "vesselLoading": "There was an error loading the vessel details.",
     "workspaceCreate": "There was an error creating the workspace. Please try again.",
     "workspaceDuplicatedName": "There is already a workspace with this name.",
     "workspaceLoad": "There was an error loading the workspace. Please try again.",
