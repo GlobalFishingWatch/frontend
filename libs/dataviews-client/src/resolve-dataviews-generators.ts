@@ -443,8 +443,8 @@ export function getDataviewsGeneratorConfigs(
     })
 
     const maxZoomLevels = dataviews
-      ?.filter(({ config }) => config && config?.maxZoom)
-      .flatMap(({ config }) => config?.maxZoom)
+      ?.filter(({ config }) => config && config?.maxZoom !== undefined)
+      .flatMap(({ config }) => config?.maxZoom as number)
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
       config: {
