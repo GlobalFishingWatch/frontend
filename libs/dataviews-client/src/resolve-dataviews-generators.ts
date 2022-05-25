@@ -442,12 +442,21 @@ export function getDataviewsGeneratorConfigs(
       return sublayer
     })
 
+    const maxZoomLevels = dataviews
+      ?.filter(({ config }) => config && config?.maxZoom !== undefined)
+      .flatMap(({ config }) => config?.maxZoom as number)
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
       config: {
         type: GeneratorType.HeatmapAnimated,
         sublayers: activitySublayers,
         mode: heatmapAnimatedMode,
+        // if any of the activity dataviews has a max zoom level defined
+        // apply the minimum max zoom level (the most restrictive approach)
+        ...(maxZoomLevels &&
+          maxZoomLevels.length > 0 && {
+            maxZoom: Math.min(...maxZoomLevels),
+          }),
       },
     }
     dataviewsFiltered.push(mergedActivityDataview)
