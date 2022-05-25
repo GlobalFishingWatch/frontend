@@ -1,8 +1,8 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import formatcoords from 'formatcoords'
 import {
   MiniGlobe,
   IconButton,
@@ -12,46 +12,27 @@ import {
   Button,
 } from '@globalfishingwatch/ui-components'
 import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import Rulers from 'features/map/rulers/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
-import { MapCoordinates } from 'types'
-import { toFixed } from 'utils/shared'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import MapScreenshot, { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
-import MapSearch from './MapSearch'
 
-const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
-  const { i18n } = useTranslation()
-  const [showDMS, setShowDMS] = useState(true)
-  return (
-    <div className={styles.miniGlobeInfo} onClick={() => setShowDMS(!showDMS)}>
-      <div className={styles.miniGlobeInfoTitle}>
-        {getOceanAreaName(viewport, {
-          locale: i18n.language as OceanAreaLocale,
-          combineWithEEZ: true,
-        })}
-      </div>
-      <div>
-        {showDMS
-          ? formatcoords(viewport.latitude, viewport.longitude).format('DDMMssX', {
-              latLonSeparator: '',
-              decimalPlaces: 2,
-            })
-          : `${toFixed(viewport.latitude, 4)},${toFixed(viewport.longitude, 4)}`}
-      </div>
-    </div>
-  )
-}
+const MiniGlobeInfo = dynamic(
+  () => import(/* webpackChunkName: "MiniGlobeInfo" */ './MiniGlobeInfo')
+)
+const MapScreenshot = dynamic(
+  () => import(/* webpackChunkName: "MapScreenshot" */ '../MapScreenshot')
+)
+const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
+const Rulers = dynamic(() => import(/* webpackChunkName: "Rulers" */ 'features/map/rulers/Rulers'))
 
 const MapControls = ({
   mapLoading = false,

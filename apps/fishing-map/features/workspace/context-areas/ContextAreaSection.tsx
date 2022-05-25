@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'

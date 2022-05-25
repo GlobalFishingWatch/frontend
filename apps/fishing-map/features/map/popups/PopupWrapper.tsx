@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { Popup } from 'react-map-gl'

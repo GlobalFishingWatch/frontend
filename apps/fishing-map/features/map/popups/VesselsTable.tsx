@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'

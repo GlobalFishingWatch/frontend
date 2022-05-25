@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import cx from 'classnames'
 import Tippy from '@tippyjs/react'
 import { Options } from '@popperjs/core'

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, Fragment } from 'react'
+import { useState, useCallback, Fragment } from 'react'
 import { featureCollection, point } from '@turf/helpers'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { event as uaEvent } from 'react-ga'

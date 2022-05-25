@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
 import { Button, Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'

@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { event as uaEvent } from 'react-ga'
 import { Icon } from '@globalfishingwatch/ui-components'
