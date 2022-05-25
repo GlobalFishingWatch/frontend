@@ -331,6 +331,8 @@ function NewDataset(): React.ReactElement {
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {
           ...metadata,
+          unit: 'TBD',
+          subcategory: 'info',
         },
         file: onTheFlyGeoJSONFile || file,
         createAsPublic: metadata?.public ?? true,
