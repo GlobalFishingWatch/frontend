@@ -30,9 +30,6 @@ const popperOptions: Partial<Options> = {
   ],
 }
 
-const config = { tension: 300, friction: 50, velocity: 40 }
-const initialStyles = { transform: 'translate(0, -20px)' }
-
 function ExpandedContainer({
   visible,
   children,
