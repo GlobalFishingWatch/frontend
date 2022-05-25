@@ -106,6 +106,7 @@ function Search() {
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   )
+  console.log(searchDatasets)
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const promiseRef = useRef<any>()
@@ -514,7 +515,7 @@ function Search() {
           )}
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
             {/* {vesselGroupsOpen && <VesselsGroupList />} */}
-            {vesselsSelected.length && (
+            {/* {vesselsSelected.length && (
               <Button
                 type="secondary"
                 className={styles.footerAction}
@@ -522,7 +523,7 @@ function Search() {
               >
                 {t('vesselGroup.addVesselToGroup', 'Add to vessel group')}
               </Button>
-            )}
+            )} */}
             <Button className={styles.footerAction} onClick={onConfirmSelection}>
               {vesselsSelected.length > 1
                 ? t('search.seeVessels', {

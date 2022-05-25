@@ -1,9 +1,15 @@
 import React, { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { parse as parseCSV } from 'papaparse'
-import { useDispatch, useSelector } from 'react-redux'
-import { Vessel } from '@globalfishingwatch/api-types'
+import { useSelector } from 'react-redux'
+import {
+  Vessel,
+  EndpointId,
+  VesselSearch,
+  APISearch,
+  VesselGroupVessel,
+  VesselGroup,
+} from '@globalfishingwatch/api-types'
 import {
   Modal,
   Button,
@@ -15,14 +21,18 @@ import {
   Tooltip,
   TransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL, FIRST_YEAR_OF_DATA } from 'data/config'
 import FileDropzone from 'features/common/FileDropzone'
 import { readBlobAs } from 'utils/files'
-import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
+import I18nDate from 'features/i18n/i18nDate'
+import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './VesselGroupModal.module.css'
 import { selectVesselGroupModalOpen } from './vessel-groups.selectors'
-import { setModalClosed } from './vessel-groups.slice'
+import { saveVesselGroupThunk, setModalClosed } from './vessel-groups.slice'
 
 export type CSV = Record<string, any>[]
 
@@ -38,7 +48,7 @@ const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -48,7 +58,14 @@ function VesselGroupModal(): React.ReactElement {
   }, [dispatch])
 
   const [groupName, setGroupName] = useState<string>('Long Xing')
-  const [IDs, setIDs] = useState<string[]>([])
+  const [IDs, setIDs] = useState<string[]>([
+    '412422360',
+    '416591000',
+    '412422350',
+    '413691874',
+    '413691862',
+    '800000008',
+  ])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('MMSI')
   const [vessels, setVessels] = useState<Vessel[]>()
 
@@ -119,54 +136,53 @@ function VesselGroupModal(): React.ReactElement {
     [vessels]
   )
 
-  const onConfirmClick = useCallback(() => {
-    setLoading(true)
+  let searchDatasets = useSelector(selectAdvancedSearchDatasets)
+  console.log(searchDatasets)
+  const onConfirmClick = useCallback(async () => {
+    const TEST_DATASET = 'public-global-fishing-vessels:v20201001'
     if (!vessels) {
-      setTimeout(() => {
-        setLoading(false)
+      if (!searchDatasets) return
+      // TODO remove this once we figure out multiple dataset thing
+      searchDatasets = [searchDatasets.find((d) => d.id === TEST_DATASET)]
+      setLoading(true)
+      const dataset = searchDatasets[0]
+      const advancedQuery = IDs.map((id) => `mmsi = '${id}'`).join(' OR ')
+      console.log(advancedQuery)
+      const datasetConfig = {
+        endpoint: EndpointId.VesselAdvancedSearch,
+        datasetId: dataset.id,
+        params: [],
+        query: [
+          { id: 'datasets', value: searchDatasets.map((d) => d.id) },
+          { id: 'limit', value: 25 },
+          { id: 'offset', value: 0 },
+          { id: 'query', value: encodeURIComponent(advancedQuery) },
+        ],
+      }
 
-        const VESSELS: Vessel[] = [
-          {
-            id: '12345',
-            mmsi: '12345',
-            shipname: 'Long Xing 42',
-            flag: 'CHN',
-            firstTransmissionDate: '2016-01-01T00:00:Z',
-            lastTransmissionDate: '2018-01-01T00:00:Z',
-            geartype: 'squid_jigger',
-          },
-          {
-            id: '12346',
-            mmsi: '12346',
-            shipname: 'Long Xing 123',
-            flag: 'CHN',
-            firstTransmissionDate: '2014-01-01T00:00:Z',
-            lastTransmissionDate: '2020-01-01T00:00:Z',
-            geartype: 'trawler',
-          },
-          {
-            id: '12347',
-            mmsi: '12347',
-            shipname: 'Long Xing Piña',
-            flag: 'ESP',
-            firstTransmissionDate: '2018-01-01T00:00:Z',
-            lastTransmissionDate: '2019-01-01T00:00:Z',
-            // geartype: 'squid_jigger',
-          },
-        ]
-        setVessels(VESSELS)
-        // TODO if invalid ids from API
-        // setIDs
-        // setInvalidIDs
-      }, 1000)
+      const url = resolveEndpoint(dataset, datasetConfig)
+      const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url)
+
+      // TODO handle API errors
+
+      setLoading(false)
+      console.log(searchResults)
+      setVessels(searchResults.entries)
       return
     }
-    console.log('call API with created vessel group')
-    setTimeout(() => {
-      setLoading(false)
-      dispatch(setModalClosed())
-    }, 1000)
-  }, [vessels, dispatch])
+    setLoading(true)
+    const vesselGroupVessels: VesselGroupVessel[] = vessels.map((vessel) => ({
+      vesselId: vessel.id,
+      dataset: TEST_DATASET,
+    }))
+    const vesselGroup: VesselGroup = {
+      name: groupName,
+      vessels: vesselGroupVessels,
+    }
+    console.log(vesselGroup)
+    const dispatchedAction = await dispatch(saveVesselGroupThunk(vesselGroup))
+    console.log(dispatchedAction)
+  }, [vessels, dispatch, searchDatasets, IDs, groupName])
 
   return (
     <Modal
