@@ -224,6 +224,7 @@ class HeatmapAnimatedGenerator {
           id: params.id,
           type: 'temporalgrid',
           tiles: [urlString],
+          updateDebounce: true,
           maxzoom: config.maxZoom,
         }
         return source
