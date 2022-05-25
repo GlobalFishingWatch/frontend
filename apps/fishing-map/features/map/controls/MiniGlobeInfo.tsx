@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import formatcoords from 'formatcoords'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type {
   getOceanAreaName as getOceanAreaNameType,
   OceanAreaLocale,
@@ -9,25 +9,29 @@ import { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 import styles from './MapControls.module.css'
 
+let getOceanAreaName: typeof getOceanAreaNameType | undefined
 const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
   const { i18n } = useTranslation()
+  const [oceanAreasReady, setOceanAreasready] = useState(getOceanAreaName !== undefined)
   const [showDMS, setShowDMS] = useState(true)
-  const getOceanAreaName = useRef<typeof getOceanAreaNameType>()
 
   useEffect(() => {
     const importGetOceanAreaName = async () => {
-      getOceanAreaName.current = await import('@globalfishingwatch/ocean-areas').then(
+      getOceanAreaName = await import('@globalfishingwatch/ocean-areas').then(
         (module) => module.getOceanAreaName
       )
+      setOceanAreasready(true)
     }
-    importGetOceanAreaName()
+    if (!getOceanAreaName) {
+      importGetOceanAreaName()
+    }
   }, [])
 
   return (
     <div className={styles.miniGlobeInfo} onClick={() => setShowDMS(!showDMS)}>
       <div className={styles.miniGlobeInfoTitle}>
-        {getOceanAreaName.current &&
-          getOceanAreaName.current(viewport, {
+        {oceanAreasReady &&
+          getOceanAreaName(viewport, {
             locale: i18n.language as OceanAreaLocale,
             combineWithEEZ: true,
           })}
