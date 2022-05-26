@@ -91,10 +91,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -114,10 +114,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
@@ -139,10 +139,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
@@ -151,6 +151,28 @@
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-belize-presence": {
+    "name": "Belize VMS",
+    "description": "Presence (Belize private)",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "longline",
+          "reefer": "reefer"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "private-bra-onyxsat-fishing-effort": {
@@ -355,28 +377,6 @@
       "licensDescription": "licensDescription",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
-    }
-  },
-  "private-belize-presence": {
-    "name": "VMS de Belice",
-    "description": "Presence (Belize private)",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "purse_seine": "purse_seine",
-          "trawler": "trawler",
-          "longline": "Palangre",
-          "reefer": "reefer"
-        }
-      },
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "distance_from_port_m": "distance_from_port_m",
-      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "private-bra-onyxsat-presence": {
@@ -878,10 +878,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "vessel_id": "vessel_id",
@@ -901,10 +901,10 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "trawler": "Trawler",
+          "reefer": "Reefer",
+          "longline": "Longline",
+          "purse_seine": "Purse Seine"
         }
       },
       "callsign": "callsign",
