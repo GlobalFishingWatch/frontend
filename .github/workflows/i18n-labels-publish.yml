@@ -24,6 +24,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+          registry-url: https://registry.npmjs.org/
 
       - name: Setup Git
         run: |
@@ -79,16 +80,10 @@ jobs:
           force: true
           tags: true
 
-      - name: Setup node for publishing to npmjs.org
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          registry-url: https://registry.npmjs.org/
-
       - name: Publish to NPM
         if: steps.lib-changes.outputs.i18n-labels-affected == 'true'
         shell: bash
-        run: yarn nx publish i18n-labels
+        run: npx nx publish i18n-labels
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
