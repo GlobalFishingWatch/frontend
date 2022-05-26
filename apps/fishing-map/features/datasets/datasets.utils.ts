@@ -400,6 +400,7 @@ export const geSchemaFiltersInDataview = (dataview: SchemaFieldDataview): Schema
   const fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
+  console.log(dataview)
   const fieldsOrder =
     dataview.datasets.length === 1 &&
     (dataview.datasets[0].configuration?.fieldsOrder as SupportedDatasetSchema[])

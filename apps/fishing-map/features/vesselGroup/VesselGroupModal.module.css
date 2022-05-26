@@ -29,7 +29,7 @@
   margin-right: 2rem;
 }
 
-.vesselGroup {
+.vesselGroupInput {
   display: flex;
   flex: 1;
 }
@@ -42,11 +42,8 @@
   margin-right: 2rem;
 }
 
-.main {
+.dropzoneContainer {
   flex: 1;
-  max-height: 340px;
-  overflow-y: scroll;
-  overflow-x: hidden;
 }
 
 .dropzone {
@@ -79,6 +76,12 @@
 
 .warning {
   color: var(--color-danger-red);
+}
+
+.vesselsTableContainer {
+  max-height: 340px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .vesselsTable {

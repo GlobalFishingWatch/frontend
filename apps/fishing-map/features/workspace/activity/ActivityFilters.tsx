@@ -44,6 +44,9 @@ const trackEvent = debounce((filterKey: string, label: string) => {
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const gfwUser = useSelector(isGFWUser)
+  const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
+  const allowVesselGroup = gfwUser || advancedSearchAllowed
   const vesselGroupsOptions = useVesselGroupsOptions()
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
@@ -56,6 +59,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
   const schemaFilters = geSchemaFiltersInDataview(dataview)
+  console.log(schemaFilters)
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     let datasets: string[] = []
@@ -214,18 +218,20 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           />
         )
       })}
-      <ActivityVesselGroupFilter
-        schemaFilter={{
-          id: 'vesselGroup',
-          disabled: false,
-          options: vesselGroupsOptions,
-          optionsSelected: [vesselGroupsOptions[0]],
-          type: 'string',
-        }}
-        onSelect={onSelectFilterClick}
-        onRemove={onRemoveFilterClick}
-        onClean={onCleanFilterClick}
-      />
+      {allowVesselGroup && (
+        <ActivityVesselGroupFilter
+          schemaFilter={{
+            id: 'vesselGroup',
+            disabled: false,
+            options: vesselGroupsOptions,
+            optionsSelected: [vesselGroupsOptions[0]],
+            type: 'string',
+          }}
+          onSelect={onSelectFilterClick}
+          onRemove={onRemoveFilterClick}
+          onClean={onCleanFilterClick}
+        />
+      )}
     </Fragment>
   )
 }

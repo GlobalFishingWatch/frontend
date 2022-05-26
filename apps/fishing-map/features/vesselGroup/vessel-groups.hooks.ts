@@ -10,15 +10,13 @@ export const useVesselGroupsOptions = () => {
   const vesselGroups = useSelector(selectVesselGroups)
 
   return useMemo(() => {
-    const vesselGroupsOptions: MultiSelectOption[] = vesselGroups.map(
-      ({ id, name, vesselIDs }) => ({
-        id,
-        label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
-          name,
-          count: vesselIDs.length,
-        }),
-      })
-    )
+    const vesselGroupsOptions: MultiSelectOption[] = vesselGroups.map(({ id, name, vessels }) => ({
+      id,
+      label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
+        name,
+        count: vessels.length,
+      }),
+    }))
     return vesselGroupsOptions
   }, [t, vesselGroups])
 }

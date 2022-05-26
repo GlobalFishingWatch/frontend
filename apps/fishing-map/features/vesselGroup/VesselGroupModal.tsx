@@ -53,19 +53,8 @@ function VesselGroupModal(): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const onClose = useCallback(() => {
-    dispatch(setModalClosed())
-  }, [dispatch])
-
   const [groupName, setGroupName] = useState<string>('Long Xing')
-  const [IDs, setIDs] = useState<string[]>([
-    '412422360',
-    '416591000',
-    '412422350',
-    '413691874',
-    '413691862',
-    '800000008',
-  ])
+  const [IDs, setIDs] = useState<string[]>([])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('MMSI')
   const [vessels, setVessels] = useState<Vessel[]>()
 
@@ -102,7 +91,7 @@ function VesselGroupModal(): React.ReactElement {
         }
         setError('')
         foundIdColumn = foundIdColumn || columns[0]
-        console.log(foundIdColumn)
+
         if (foundIdColumn) {
           setIDs(data.map((row) => row[foundIdColumn]))
         }
@@ -136,26 +125,49 @@ function VesselGroupModal(): React.ReactElement {
     [vessels]
   )
 
-  let searchDatasets = useSelector(selectAdvancedSearchDatasets)
-  console.log(searchDatasets)
+  const onClose = useCallback(() => {
+    const askConfirm = vessels || IDs.length
+    let confirmed
+    if (askConfirm) {
+      confirmed = window.confirm(
+        t(
+          'vesselGroup.confirmAbort',
+          'You will loose any changes made in this vessel group. Are you sure?'
+        )
+      )
+    }
+    if (!askConfirm || confirmed) {
+      dispatch(setModalClosed())
+    }
+  }, [dispatch, IDs.length, t, vessels])
+
+  const onBackClick = useCallback(() => {
+    const confirmed = window.confirm(
+      t(
+        'vesselGroup.confirmAbort',
+        'You will loose any changes made in this vessel group. Are you sure?'
+      )
+    )
+    if (confirmed) {
+      setVessels(undefined)
+    }
+  }, [t])
+
+  const searchDatasets = useSelector(selectAdvancedSearchDatasets)
   const onConfirmClick = useCallback(async () => {
-    const TEST_DATASET = 'public-global-fishing-vessels:v20201001'
     if (!vessels) {
       if (!searchDatasets) return
-      // TODO remove this once we figure out multiple dataset thing
-      searchDatasets = [searchDatasets.find((d) => d.id === TEST_DATASET)]
+      console.log(searchDatasets)
       setLoading(true)
       const dataset = searchDatasets[0]
       const advancedQuery = IDs.map((id) => `mmsi = '${id}'`).join(' OR ')
-      console.log(advancedQuery)
+
       const datasetConfig = {
         endpoint: EndpointId.VesselAdvancedSearch,
         datasetId: dataset.id,
         params: [],
         query: [
           { id: 'datasets', value: searchDatasets.map((d) => d.id) },
-          { id: 'limit', value: 25 },
-          { id: 'offset', value: 0 },
           { id: 'query', value: encodeURIComponent(advancedQuery) },
         ],
       }
@@ -166,20 +178,24 @@ function VesselGroupModal(): React.ReactElement {
       // TODO handle API errors
 
       setLoading(false)
-      console.log(searchResults)
+      if (!searchResults.entries.length) {
+        setError(t('vesselGroup.emptyError', 'No vessels found'))
+        return
+      }
+
       setVessels(searchResults.entries)
       return
     }
     setLoading(true)
     const vesselGroupVessels: VesselGroupVessel[] = vessels.map((vessel) => ({
       vesselId: vessel.id,
-      dataset: TEST_DATASET,
+      dataset: vessel.dataset,
     }))
     const vesselGroup: VesselGroup = {
       name: groupName,
       vessels: vesselGroupVessels,
     }
-    console.log(vesselGroup)
+
     const dispatchedAction = await dispatch(saveVesselGroupThunk(vesselGroup))
     console.log(dispatchedAction)
   }, [vessels, dispatch, searchDatasets, IDs, groupName])
@@ -217,104 +233,106 @@ function VesselGroupModal(): React.ReactElement {
             onSelect={onIdFieldChange}
           />
         </div>
-        <div className={styles.vesselGroup}>
-          <div className={styles.ids}>
-            <TextArea
-              className={styles.idsArea}
-              value={IDs.join(', ')}
-              label={
-                IDs && IDs.length
-                  ? t('vesselGroup.idsWithCount', 'IDs ({{count}})', {
-                      count: IDs.length,
-                    })
-                  : t('vesselGroup.ids', 'IDs')
-              }
-              placeholder={t(
-                'vesselGroup.idsPlaceholder',
-                'Type here or paste a list of IDs separated by commas, spaces or line breaks'
-              )}
-              onChange={onIdsTextareaChange}
-              disabled={!!vessels}
-            />
-          </div>
-          <div className={styles.main}>
-            {vessels ? (
-              <table className={styles.vesselsTable}>
-                <thead>
-                  <tr>
-                    <th>{t('vessel.mmsi', 'MMSI')}</th>
-                    <th>{t('common.name', 'Name')}</th>
-                    <th>{t('vessel.flag_short', 'iso3')}</th>
-                    <th>{t('vessel.gearType_short', 'gear')}</th>
-                    <th>{t('vessel.transmissionDates', 'Transmission dates')}</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {vessels.map((vessel, i) => {
-                    const vesselName = formatInfoField(vessel.shipname, 'name')
+        {vessels ? (
+          <div className={styles.vesselsTableContainer}>
+            <table className={styles.vesselsTable}>
+              <thead>
+                <tr>
+                  <th>{t('vessel.mmsi', 'MMSI')}</th>
+                  <th>{t('common.name', 'Name')}</th>
+                  <th>{t('vessel.flag_short', 'iso3')}</th>
+                  <th>{t('vessel.gearType_short', 'gear')}</th>
+                  <th>{t('vessel.transmissionDates', 'Transmission dates')}</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {vessels.map((vessel, i) => {
+                  const vesselName = formatInfoField(vessel.shipname, 'name')
 
-                    const vesselGearType = `${t(
-                      `vessel.gearTypes.${vessel.geartype}` as any,
-                      vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
-                    )}`
+                  const vesselGearType = `${t(
+                    `vessel.gearTypes.${vessel.geartype}` as any,
+                    vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
+                  )}`
 
-                    const { mmsi, firstTransmissionDate, lastTransmissionDate } = vessel
-                    return (
-                      <tr key={i}>
-                        <td>{mmsi}</td>
-                        <td>{vesselName}</td>
-                        <td>
-                          <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
-                            <span>{vessel.flag || EMPTY_FIELD_PLACEHOLDER}</span>
+                  const { mmsi, firstTransmissionDate, lastTransmissionDate } = vessel
+                  return (
+                    <tr key={i}>
+                      <td>{mmsi}</td>
+                      <td>{vesselName}</td>
+                      <td>
+                        <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
+                          <span>{vessel.flag || EMPTY_FIELD_PLACEHOLDER}</span>
+                        </Tooltip>
+                      </td>
+                      <td>{vesselGearType}</td>
+                      <td>
+                        {firstTransmissionDate && lastTransmissionDate && (
+                          // TODO tooltip not working
+                          <Tooltip
+                            content={
+                              <span>
+                                from <I18nDate date={firstTransmissionDate} /> to{' '}
+                                <I18nDate date={lastTransmissionDate} />
+                              </span>
+                            }
+                          >
+                            <TransmissionsTimeline
+                              firstTransmissionDate={firstTransmissionDate}
+                              lastTransmissionDate={lastTransmissionDate}
+                              firstYearOfData={FIRST_YEAR_OF_DATA}
+                              shortYears
+                            />
                           </Tooltip>
-                        </td>
-                        <td>{vesselGearType}</td>
-                        <td>
-                          {firstTransmissionDate && lastTransmissionDate && (
-                            // TODO tooltip not working
-                            <Tooltip
-                              content={
-                                <span>
-                                  from <I18nDate date={firstTransmissionDate} /> to{' '}
-                                  <I18nDate date={lastTransmissionDate} />
-                                </span>
-                              }
-                            >
-                              <TransmissionsTimeline
-                                firstTransmissionDate={firstTransmissionDate}
-                                lastTransmissionDate={lastTransmissionDate}
-                                firstYearOfData={FIRST_YEAR_OF_DATA}
-                                shortYears
-                              />
-                            </Tooltip>
-                          )}
-                        </td>
-                        <td>
-                          <IconButton
-                            icon={'delete'}
-                            style={{
-                              color: 'rgb(var(--danger-red-rgb))',
-                            }}
-                            tooltip={t('vesselGroup.remove', 'Remove vessel from vessel group')}
-                            onClick={(e) => onVesselRemoveClick(vessel.id)}
-                            size="small"
-                          />
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            ) : (
+                        )}
+                      </td>
+                      <td>
+                        <IconButton
+                          icon={'delete'}
+                          style={{
+                            color: 'rgb(var(--danger-red-rgb))',
+                          }}
+                          tooltip={t('vesselGroup.remove', 'Remove vessel from vessel group')}
+                          onClick={(e) => onVesselRemoveClick(vessel.id)}
+                          size="small"
+                        />
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className={styles.vesselGroupInput}>
+            <div className={styles.ids}>
+              <TextArea
+                className={styles.idsArea}
+                value={IDs.join(', ')}
+                label={
+                  IDs && IDs.length
+                    ? t('vesselGroup.idsWithCount', 'IDs ({{count}})', {
+                        count: IDs.length,
+                      })
+                    : t('vesselGroup.ids', 'IDs')
+                }
+                placeholder={t(
+                  'vesselGroup.idsPlaceholder',
+                  'Type here or paste a list of IDs separated by commas, spaces or line breaks'
+                )}
+                onChange={onIdsTextareaChange}
+                disabled={!!vessels}
+              />
+            </div>
+            <div className={styles.dropzoneContainer}>
               <FileDropzone
                 className={styles.dropzone}
                 onFileLoaded={onCSVLoaded}
                 fileTypes={['csv']}
               />
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
@@ -330,8 +348,13 @@ function VesselGroupModal(): React.ReactElement {
           </span>
         </div>
 
+        {vessels && (
+          <Button type="secondary" onClick={onBackClick}>
+            {t('common.back', 'back')}
+          </Button>
+        )}
         <Button
-          disabled={loading || (vessels && !vessels.length)}
+          disabled={loading || !IDs.length || (vessels && !vessels.length)}
           onClick={onConfirmClick}
           loading={loading}
         >

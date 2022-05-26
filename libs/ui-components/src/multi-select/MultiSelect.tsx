@@ -77,7 +77,7 @@ const getPlaceholderBySelections = (
         .join(', ')
     : selections.length > 1
     ? `${selections.length} selected`
-    : selections[0].label
+    : selections[0]?.label
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
