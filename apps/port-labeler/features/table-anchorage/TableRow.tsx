@@ -7,17 +7,27 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition } from 'types'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
-import { selectPointValuesByCountry, selectPortsByCountry, selectPortsOptions, selectPortValuesByCountry, selectSubareaOptions, selectSubareasByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
+import {
+  selectPointValuesByCountry,
+  selectPortsByCountry,
+  selectPortsOptions,
+  selectPortValuesByCountry,
+  selectSubareaOptions,
+  selectSubareasByCountry,
+  selectSubareaValuesByCountry
+} from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
 import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 import { useValueManagerConnect } from './TableAnchorage.hooks'
 
 type TableRowProps = {
   record: PortPosition
+  extra: boolean
 }
 
 function TableRow({
   record,
+  extra
 }: TableRowProps) {
   const map = useMapInstance()
   const dispatch = useDispatch()
@@ -131,6 +141,9 @@ function TableRow({
       <div className={styles.col}>
         {record.top_destination}
       </div>
+      {extra && <div className={styles.col}>
+        {record.s2id}
+      </div>}
     </div>
   )
 }
