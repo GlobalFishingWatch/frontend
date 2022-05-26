@@ -219,6 +219,7 @@
     "contactUs": "Por favor <1>póngase en contacto con nosotros</1> para informar del problema.",
     "datasetNotFound": "No se pudo encontrar esos datos",
     "datasetNotValid": "Parece que algo falló en tu archivo",
+    "datasetShapefileMultiple": "Shapefiles containing multiple components (mutiple file names) are not supported yet",
     "fields": "Errores con los campos {{fields}}",
     "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
     "genericShort": "Ha habido un error",
@@ -345,6 +346,7 @@
     "source_one": "Fuente",
     "source_other": "Fuentes",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
     "toggleCombinationMode": {
       "combine": "Combinar las capas",
       "split": "Separar las capas"
@@ -488,6 +490,7 @@
     "registeredGearType": "Arte de pesca registrado",
     "shiptype": "Tipos de embarcaciones",
     "source": "Fuente",
+    "ssvid": "Ssvid",
     "source_short": "Fuente",
     "target_species": "Especies objetivo",
     "targetSpecies": "Especies objetivo",
@@ -509,12 +512,18 @@
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
     "noVesselInFilters": "Ningún resultado coincide con sus filtros actuales",
+    "noDetectionInFilters": "No detections match your current filters",
     "privateTitle_other": "Espacios de trabajo privados",
     "remove": "Eliminar el espacio de trabajo",
     "save": "Guardar el mapa actual",
     "saveAsNew": "Guardar nuevo",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
     "saveLogin": "Necesita iniciar sesión para guardar la vista actual (gratis y toma 2 minutos)",
+    "siteDescription": {
+      "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
+    },
     "title_other": "Espacios de trabajo",
     "update": "Actualizar",
     "uploadPublic": "Permitir a otros usuarios ver este espacio de trabajo",
