@@ -110,6 +110,7 @@ export type DatasetSchema = {
 export enum DatasetCategory {
   Context = 'context',
   Environment = 'environment',
+  Activity = 'activity',
 }
 
 export interface Dataset {
