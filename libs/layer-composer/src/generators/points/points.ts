@@ -4,6 +4,7 @@ import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { GeneratorType, MergedGeneratorConfig, PointsGeneratorConfig } from '../types'
 import { isConfigVisible } from '../utils'
+import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 
 const DEFAULT_COLOR = 'rgba(0, 193, 231, 1)'
 
@@ -35,8 +36,10 @@ class PointsGenerator {
   _getStyleLayers = (config: GlobalPointsConfig): CircleLayerSpecification[] => {
     const paint = {
       'circle-color': config.color || DEFAULT_COLOR,
-      'circle-radius': 4,
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 4, 8, 8],
       'circle-opacity': config.opacity || 1,
+      'circle-stroke-width': 1,
+      'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
     }
 
     const visibility = isConfigVisible(config)
