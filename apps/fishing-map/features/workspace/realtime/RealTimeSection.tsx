@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { selectRealTimeDataviews } from 'features/dataviews/dataviews.selectors'
 import LogoSkylight from 'assets/images/partner-logos/skylight@2x.png'
 import styles from 'features/workspace/shared/Sections.module.css'
-import RealTimeLayerPanel from 'features/workspace/realtime/RealtimeLayerPanel'
+import RealTimeLayerPanel from '../realtime/RealTimeLayerPanel'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 
 function RealTimeSection(): React.ReactElement | null {
