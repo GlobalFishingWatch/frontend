@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from '../../store'
 
@@ -7,10 +7,12 @@ export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 export function usePageVisibility() {
-  const getIsDocumentVisible = () => document.visibilityState === 'visible'
-  const [isVisible, setIsVisible] = useState(getIsDocumentVisible())
+  const [isVisible, setIsVisible] = useState(document.visibilityState === 'visible')
   const [firstTimeVisible, setFirstTimeVisible] = useState(false)
-  const onVisibilityChange = () => setIsVisible(getIsDocumentVisible())
+  const onVisibilityChange = useCallback(
+    () => setIsVisible(document.visibilityState === 'visible'),
+    []
+  )
 
   useEffect(() => {
     if (isVisible && !firstTimeVisible) {
