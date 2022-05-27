@@ -1,0 +1,17 @@
+.container {
+  padding: var(--space-M);
+  border-left: 0.5em solid;
+  border-color: transparent;
+}
+
+.high {
+  border-color: var(--color-danger-red);
+}
+
+.med {
+  border-color: var(--color-primary-yellow);
+}
+
+.low {
+  border-color: var(--color-primary-green);
+}
