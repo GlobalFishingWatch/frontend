@@ -63,6 +63,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
       ) {
         const mockedDataviews = await import('./dataviews.mock')
+        console.log('using mocked datasets', mockedDataviews.default)
         dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
       }
       return dataviews
