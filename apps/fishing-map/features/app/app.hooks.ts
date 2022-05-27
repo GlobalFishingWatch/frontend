@@ -7,35 +7,24 @@ export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 export function usePageVisibility() {
-  const [isVisible, setIsVisible] = useState(getIsDocumentHidden())
-  const onVisibilityChange = () => setIsVisible(getIsDocumentHidden())
+  const getIsDocumentVisible = () => document.visibilityState === 'visible'
+  const [isVisible, setIsVisible] = useState(getIsDocumentVisible())
+  const [firstTimeVisible, setFirstTimeVisible] = useState(false)
+  const onVisibilityChange = () => setIsVisible(getIsDocumentVisible())
 
   useEffect(() => {
-    const visibilityChange = getBrowserVisibilityProp()
-
-    document.addEventListener(visibilityChange, onVisibilityChange, false)
-
-    return () => {
-      document.removeEventListener(visibilityChange, onVisibilityChange)
+    if (isVisible && !firstTimeVisible) {
+      setFirstTimeVisible(true)
     }
-  })
+  }, [isVisible, firstTimeVisible])
 
-  return isVisible
-}
+  useEffect(() => {
+    document.addEventListener('visibilitychange', onVisibilityChange, false)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-export function getBrowserVisibilityProp() {
-  if (typeof document.hidden !== 'undefined') {
-    // Opera 12.10 and Firefox 18 and later support
-    return 'visibilitychange'
-  }
-}
-
-export function getBrowserDocumentHiddenProp() {
-  if (typeof document.hidden !== 'undefined') {
-    return 'hidden'
-  }
-}
-
-export function getIsDocumentHidden() {
-  return !document[getBrowserDocumentHiddenProp()]
+  return { isVisible, firstTimeVisible }
 }

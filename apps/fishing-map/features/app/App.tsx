@@ -65,14 +65,7 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const isVisible = usePageVisibility()
-  const [firstTimeVisible, setFirstTimeVisible] = useState(false)
-
-  useEffect(() => {
-    if (isVisible && !firstTimeVisible) {
-      setFirstTimeVisible(true)
-    }
-  }, [isVisible, firstTimeVisible])
+  const { firstTimeVisible } = usePageVisibility()
 
   return (
     <div className={styles.main}>
