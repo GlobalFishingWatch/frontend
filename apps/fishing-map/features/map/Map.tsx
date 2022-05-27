@@ -66,7 +66,10 @@ const transformRequest: (...args: any[]) => RequestParameters = (
   resourceType: string
 ) => {
   const response: RequestParameters = { url }
-  if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
+  if (
+    (resourceType === 'Tile' || resourceType === 'Source') &&
+    url.includes('globalfishingwatch')
+  ) {
     response.headers = {
       Authorization: 'Bearer ' + GFWAPI.getToken(),
     }

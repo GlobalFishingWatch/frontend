@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
 import { stringify } from 'qs'
+import { DateTime } from 'luxon'
 import { Dataset, DatasetCategory, EndpointId, UploadResponse } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -37,6 +38,10 @@ const parsePOCsDatasets = (dataset: Dataset) => {
     return pocDataset
   }
   if (dataset.id.includes(SKYLIGHT_ENCOUNTERS_DATASET_ID)) {
+    const endTime = DateTime.now().toUTC()
+    const startTime = endTime.minus({ days: 3 })
+    const endTimeHour = `${endTime.toString().split(':')[0]}:00`
+    const startTimeHour = `${startTime.toString().split(':')[0]}:00`
     const pocDataset = {
       ...dataset,
       endpoints: [
@@ -45,8 +50,7 @@ const parsePOCsDatasets = (dataset: Dataset) => {
           description: 'Endpoint to retrieve geojson from temporal context layers',
           downloadable: true,
           method: 'GET',
-          pathTemplate:
-            'https://gist.githubusercontent.com/j8seangel/bd4fcf6bdafba1a47f831006f6da893d/raw/e745a17fb834ed18e116e5a633047bd36e09effe/rendervouz.geo.json',
+          pathTemplate: `https://gateway.api.dev.globalfishingwatch.org/proto/skylights/geojsons?start-time=${startTimeHour}&end-time=${endTimeHour}`,
           params: [],
           query: [],
         },
