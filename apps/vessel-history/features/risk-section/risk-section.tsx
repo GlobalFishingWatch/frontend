@@ -6,7 +6,7 @@ import styles from './risk-section.module.css'
 /* eslint-disable-next-line */
 export interface RiskSectionProps {
   children?: ReactNode
-  severity: 'high' | 'med' | 'low' | 'none'
+  severity: 'high' | 'medium' | 'low' | 'none'
   title: string
   titleInfo?: ReactNode
 }
