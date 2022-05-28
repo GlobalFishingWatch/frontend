@@ -187,7 +187,7 @@ const Profile: React.FC = (props): React.ReactElement => {
               id: 'risk',
               title: t('common.riskSummary', 'Risk Summary').toLocaleUpperCase(),
               content: vessel ? (
-                <RiskSummary />
+                <RiskSummary onMoveToMap={() => setActiveTab(tabs?.[3])} />
               ) : (
                 <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
               ),
@@ -202,7 +202,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             vessel={vessel}
             lastPosition={lastPosition}
             lastPortVisit={lastPortVisit}
-            onMoveToMap={() => setActiveTab(tabs?.[2])}
+            onMoveToMap={() => setActiveTab(tabs?.[3])}
           />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
@@ -221,7 +221,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             vessel={vessel}
             lastPosition={lastPosition}
             lastPortVisit={lastPortVisit}
-            onMoveToMap={() => setActiveTab(tabs?.[2])}
+            onMoveToMap={() => setActiveTab(tabs?.[3])}
           />
         ) : (
           <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
