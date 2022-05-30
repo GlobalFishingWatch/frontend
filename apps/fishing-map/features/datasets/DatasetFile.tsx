@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
@@ -22,6 +22,13 @@ interface DatasetFileProps {
 type DatasetGeometryTypesSupported = Extract<DatasetGeometryType, 'polygons' | 'tracks' | 'points'>
 
 type FileConfig = { id: string; files: string[]; icon: JSX.Element }
+
+const MIME_TYPES_BY_EXTENSION = {
+  '.json': 'application/json',
+  '.geojson': 'application/json',
+  '.zip': 'application/zip',
+  '.csv': 'text/csv',
+}
 const CSV_TYPES = { id: 'csv', files: ['.csv'], icon: <FilesCsvIcon key="csv" /> }
 const GEOJSON_TYPES = {
   id: 'geojson',
@@ -41,7 +48,17 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
   const fileConfig = supportedType
     ? FILES_CONFIG_BY_TYPE[supportedType]
     : FILES_CONFIG_BY_TYPE.polygons
-  const filesAcceptedFormats = fileConfig.flatMap(({ files }) => files)
+  const filesAcceptedExtensions = fileConfig.flatMap(({ files }) => files)
+  const fileAcceptedByMime = filesAcceptedExtensions.reduce((acc, extension) => {
+    const mime = MIME_TYPES_BY_EXTENSION[extension]
+    if (!acc[mime]) {
+      acc[mime] = [extension]
+    } else {
+      acc[mime].push(extension)
+    }
+    return acc
+  }, {})
+
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
     (files) => {
@@ -50,7 +67,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
     [onFileLoaded, type]
   )
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: filesAcceptedFormats,
+    accept: fileAcceptedByMime,
     onDropAccepted,
   })
 
@@ -77,7 +94,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
       {fileRejections.length > 0 && (
         <p className={cx(styles.fileText, styles.warning)}>
           {t('dataset.onlyFileFormatAllowed', {
-            formats: joinTranslatedList(filesAcceptedFormats),
+            formats: joinTranslatedList(filesAcceptedExtensions),
             defaultValue: '(Only {{formats}} files are allowed)',
           })}
         </p>

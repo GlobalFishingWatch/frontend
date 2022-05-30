@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectActiveEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import {
   DataviewFeature,
   areDataviewsFeatureLoaded,
@@ -16,7 +16,7 @@ import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
 
 export const useEnvironmentalBreaksUpdate = () => {
-  const dataviews = useSelector(selectActiveEnvironmentalDataviews)
+  const dataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const { bounds } = useMapBounds()
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const sourcesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)

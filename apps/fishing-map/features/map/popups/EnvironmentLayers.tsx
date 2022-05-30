@@ -1,4 +1,6 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
+import { Icon } from '@globalfishingwatch/ui-components'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 
@@ -26,7 +28,11 @@ function EnvironmentTooltipSection({
       {features.map((feature, index) => {
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
-            <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+            <Icon
+              icon={feature.type === GeneratorType.HeatmapAnimated ? 'heatmap' : 'polygons'}
+              className={styles.layerIcon}
+              style={{ color: feature.color }}
+            />
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
               <div className={styles.row}>

@@ -48,5 +48,5 @@ export type InteractionEvent = {
   features?: ExtendedFeature[]
   latitude: number
   longitude: number
-  point: [number, number]
+  point: { x: number; y: number }
 }

@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Spinner, Button } from '@globalfishingwatch/ui-components'
-import Search from 'features/search/Search'
 import {
   selectWorkspaceStatus,
   selectWorkspaceError,
@@ -18,14 +18,18 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { PRIVATE_SUFIX, SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
-import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
+import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
+import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
+
+const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
 
 function WorkspaceError(): React.ReactElement {
   const [logoutLoading, setLogoutLoading] = useState(false)
@@ -116,15 +120,23 @@ function Workspace() {
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
-  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const dataviewsResources = useSelector(selectDataviewsResources)
 
   useEffect(() => {
-    if (resourceQueries) {
-      resourceQueries.forEach((resourceQuery) => {
-        dispatch(fetchResourceThunk(resourceQuery))
+    if (dataviewsResources) {
+      const { resources } = dataviewsResources
+      resources.forEach((resource) => {
+        dispatch(
+          fetchResourceThunk({
+            resource,
+            resourceKey: resource.key,
+            parseEventCb: parseTrackEventChunkProps,
+            parseUserTrackCb: parseUserTrackCallback,
+          })
+        )
       })
     }
-  }, [dispatch, resourceQueries])
+  }, [dispatch, dataviewsResources])
 
   if (
     workspaceStatus === AsyncReducerStatus.Idle ||

@@ -21,7 +21,7 @@ const applyStyleTransformations = (
   return newStyle
 }
 
-const defaultTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds]
+export const defaultStyleTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds]
 
 let styleSpecValidate: any
 
@@ -29,7 +29,7 @@ const defaultLayerComposerInstance = new LayerComposer()
 export function useLayerComposer(
   generatorConfigs: AnyGeneratorConfig[],
   globalGeneratorConfig?: GlobalGeneratorConfig,
-  styleTransformations: StyleTransformation[] = defaultTransformations,
+  styleTransformations: StyleTransformation[] = defaultStyleTransformations,
   layerComposer: LayerComposer = defaultLayerComposerInstance
 ) {
   const [style, setStyle] = useState<ExtendedStyle>()
@@ -44,7 +44,7 @@ export function useLayerComposer(
           globalGeneratorConfig
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === 'development' && window.location.hostname === 'localhost') {
           if (!styleSpecValidate) {
             styleSpecValidate = await import(
               '@globalfishingwatch/maplibre-gl/dist/style-spec'

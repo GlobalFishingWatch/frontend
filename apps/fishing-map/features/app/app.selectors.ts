@@ -28,6 +28,7 @@ import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesMerged,
 } from 'features/dataviews/dataviews.slice'
+import { RootState } from 'store'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -121,6 +122,13 @@ export const selectTimebarVisualisation = createSelector(
   }
 )
 
+export const selectTimebarSelectedEnvId = createSelector(
+  [selectWorkspaceStateProperty('timebarSelectedEnvId')],
+  (timebarSelectedEnvId): string => {
+    return timebarSelectedEnvId
+  }
+)
+
 export const selectVisibleEvents = createSelector(
   [selectWorkspaceStateProperty('visibleEvents')],
   (visibleEvents): VisibleEvents => {
@@ -129,7 +137,10 @@ export const selectVisibleEvents = createSelector(
 )
 
 export const selectTimebarGraph = createSelector(
-  [selectWorkspaceStateProperty('timebarGraph'), selectActiveVesselsDataviews],
+  [
+    selectWorkspaceStateProperty('timebarGraph'),
+    (state: RootState) => selectActiveVesselsDataviews(state),
+  ],
   (timebarGraph, vessels): TimebarGraphs => {
     return vessels && vessels.length ? timebarGraph : TimebarGraphs.None
   }
@@ -170,7 +181,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
     selectTimeRange,
     selectLocationCategory,
     selectWorkspaceAppState,
-    selectDataviewInstancesMerged,
+    (state: RootState) => selectDataviewInstancesMerged(state),
   ],
   (workspace, viewport, timerange, category, state, dataviewInstances): AppWorkspace => {
     return {

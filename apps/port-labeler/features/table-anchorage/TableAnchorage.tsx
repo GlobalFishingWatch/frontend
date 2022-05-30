@@ -2,8 +2,9 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { SelectOption } from '@globalfishingwatch/ui-components'
-import { selectPorts, sortPoints } from 'features/labeler/labeler.slice'
+import { useTranslation } from 'react-i18next'
+import { IconButton } from '@globalfishingwatch/ui-components'
+import { selectDisplayExtraData, sortPoints, toogleExtraData } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
 import { PortPosition } from 'types'
 import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
@@ -13,22 +14,10 @@ import TableRow from './TableRow'
 
 function TableAnchorage() {
 
-  const ports = useSelector(selectPorts)
-
+  const { t } = useTranslation()
   const records = useSelector(selectFilteredPoints)
+  const extraColumn = useSelector(selectDisplayExtraData)
   const dispatch = useDispatch()
-
-
-
-  const portOptions: SelectOption[] = useMemo(() => {
-    return ports.map(e => {
-      return {
-        id: e,
-        label: e,
-      }
-    })
-  }, [ports])
-
   type orderDirectionType = 'asc' | 'desc' | ''
 
   const [orderColumn, setOrderColumn] = useState(null)
@@ -57,18 +46,28 @@ function TableAnchorage() {
     <div className={styles.table}>
       <div className={styles.head}>
         <TableHeader
-          label="Port" order={orderColumn === 'port' ? orderDirection : ''}
+          label={t('common.port', 'Port')} order={orderColumn === 'port' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('port', order)}
         />
         <TableHeader
-          label="Subarea" order={orderColumn === 'subarea' ? orderDirection : ''}
+          label={t('common.subarea', 'Subarea')} order={orderColumn === 'subarea' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('subarea', order)} />
         <TableHeader
-          label="Anchorage" order={orderColumn === 'anchorage' ? orderDirection : ''}
+          label={t('common.anchorage', 'Anchorage')} order={orderColumn === 'anchorage' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('anchorage', order)} />
         <TableHeader
-          label="Destination" order={orderColumn === 'top_destination' ? orderDirection : ''}
+          label={t('common.destination', 'Destination')} order={orderColumn === 'top_destination' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('top_destination', order)} />
+        {extraColumn && <TableHeader
+          label={t('common.anchorageId', 'Anchorage ID')} />}
+        <IconButton
+          type="default"
+          icon='more'
+          tooltip="Toggle extra data"
+          tooltipPlacement="bottom"
+          className={styles.actionButton}
+          onClick={() => dispatch(toogleExtraData())}
+        />
       </div>
 
       {screenFilteredRecords && screenFilteredRecords.length ? (
@@ -88,9 +87,8 @@ function TableAnchorage() {
                     <div style={style}>
                       <TableRow
                         key={record.s2id}
-                        ports={portOptions}
-                        //pointValue={pointValues[record.s2id]}
                         record={record}
+                        extra={extraColumn}
                       ></TableRow>
                     </div>
                   )
@@ -100,7 +98,7 @@ function TableAnchorage() {
           </AutoSizer>
         </div>
       ) : (
-        <p>No points found</p>
+        <p className={styles.alert}>{t('messages.no_anchorages', 'No anchorages found')}</p>
       )}
     </div>
 

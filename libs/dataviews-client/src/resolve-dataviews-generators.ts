@@ -2,7 +2,6 @@ import { scaleLinear } from 'd3-scale'
 import { uniq } from 'lodash'
 import {
   Resource,
-  TrackResourceData,
   DatasetTypes,
   EndpointId,
   DatasetStatus,
@@ -11,6 +10,8 @@ import {
   DataviewCategory,
   Dataset,
   ApiEvent,
+  TrackResourceData,
+  ResourceStatus,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -34,6 +35,7 @@ import {
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
 } from './resolve-dataviews'
+import { pickTrackResource } from './resources'
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
@@ -43,12 +45,16 @@ export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeat
 const getDatasetAvailableIntervals = (dataset?: Dataset) =>
   dataset?.configuration?.intervals as Interval[]
 
-type DataviewsGeneratorConfigsParams = {
+export type DataviewsGeneratorConfigsParams = {
   debug?: boolean
+  timeRange?: { start: string; end: string }
   highlightedTime?: { start: string; end: string }
   highlightedEvent?: ApiEvent
+  highlightedEvents?: string[]
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: HeatmapAnimatedMode
+  customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
+  singleTrack?: boolean
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -84,7 +90,7 @@ export function getGeneratorConfig(
   params?: DataviewsGeneratorConfigsParams,
   resources?: DataviewsGeneratorResource
 ) {
-  const { debug = false, highlightedTime, highlightedEvent } = params || {}
+  const { debug = false, highlightedTime, highlightedEvent, highlightedEvents } = params || {}
 
   let generator: GeneratorDataviewConfig = {
     id: dataview.id,
@@ -105,6 +111,7 @@ export function getGeneratorConfig(
       return {
         ...generator,
         ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+        ...(highlightedEvents && { currentEventId: highlightedEvents[0] }),
       }
     }
     case GeneratorType.Track: {
@@ -112,35 +119,56 @@ export function getGeneratorConfig(
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
       }
-      // Try to retrieve resource if it exists
-      const trackType =
-        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
-          ? DatasetTypes.UserTracks
-          : DatasetTypes.Tracks
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, trackType)
 
-      if (trackUrl && resources?.[trackUrl]) {
-        const resource = resources?.[trackUrl] as Resource<TrackResourceData>
-        generator.data = resource.data
+      const endpointType =
+        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+          ? EndpointId.UserTracks
+          : EndpointId.Tracks
+
+      let trackResource
+      if (endpointType === EndpointId.Tracks) {
+        trackResource = pickTrackResource(dataview, endpointType, resources)
+      } else {
+        const { url } = resolveDataviewDatasetResource(dataview, [DatasetTypes.UserTracks])
+        if (resources) trackResource = resources[url] as Resource<TrackResourceData>
       }
+
+      if (trackResource) generator.data = trackResource.data
+
+      if (params?.singleTrack) {
+        generator.useOwnColor = true
+      }
+
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       if (hasEventData) {
-        // TODO This flatMap will prevent the corresponding generator to memoize correctly
+        const vesselId = dataview.datasetsConfig
+          ?.find((dc) => dc.endpoint === EndpointId.Tracks)
+          ?.params.find((p) => p.id === 'vesselId')?.value
+
+        // This flatMap will prevent the corresponding generator to memoize correctly,
+        // which is handled by the events generator
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
+        const type =
+          params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
+            ? params?.customGeneratorMapping.VESSEL_EVENTS
+            : GeneratorType.VesselEvents
+
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
+          vesselId,
+          type,
+          data,
+          track: generator.data,
+          color: dataview.config?.color,
           event: dataview.config?.event,
           pointsToSegmentsSwitchLevel: dataview.config?.pointsToSegmentsSwitchLevel,
-          type: GeneratorType.VesselEvents,
           showIcons: dataview.config?.showIcons,
           showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
-          data: data,
-          color: dataview.config?.color,
-          track: generator.data,
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+          ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
         }
         return [generator, eventsGenerator]
       }
@@ -291,7 +319,10 @@ export function getGeneratorConfig(
         if (dataset?.source) {
           generator.attribution = dataset.source
         }
-        if (dataset.category === DatasetCategory.Environment) {
+
+        const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
+          ?.propertyToInclude
+        if (dataset.category === DatasetCategory.Environment && propertyToInclude) {
           const { min, max } =
             (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
             {}
@@ -344,7 +375,7 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
-  const { heatmapAnimatedMode = HeatmapAnimatedMode.Compare } = params || {}
+  const { heatmapAnimatedMode = HeatmapAnimatedMode.Compare, timeRange } = params || {}
 
   const activityDataviews: UrlDataviewInstance[] = []
 
@@ -372,28 +403,23 @@ export function getDataviewsGeneratorConfigs(
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
 
       const activeDatasets = dataview.datasets.filter((dataset) =>
-        dataview?.config?.datasets.includes(dataset.id)
+        dataview?.config?.datasets?.includes(dataset.id)
       )
       const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
       if (units.length > 0 && units.length !== 1) {
         throw new Error('Shouldnt have distinct units for the same heatmap layer')
       }
       const interactionTypes = uniq(
-        dataview.datasets?.map((dataset) => dataset.configuration?.type || 'fishing-effort')
+        activeDatasets?.map((dataset) =>
+          dataset.unit === 'detections' ? 'detections' : 'activity'
+        )
       ) as HeatmapAnimatedInteractionType[]
       if (interactionTypes.length > 0 && interactionTypes.length !== 1) {
         throw new Error(
           `Shouldnt have distinct dataset config types for the same heatmap layer: ${interactionTypes.toString()}`
         )
       }
-      const interactionType =
-        // Some VMS presence layers have interaction, this is the way of
-        // allowing it but keeping it disabled in the global one
-        interactionTypes[0] === 'presence'
-          ? dataview?.config?.presenceInteraction
-            ? (`presence-${dataview?.config?.presenceInteraction}` as HeatmapAnimatedInteractionType)
-            : 'presence'
-          : (interactionTypes[0] as HeatmapAnimatedInteractionType)
+      const interactionType = interactionTypes[0]
 
       const availableIntervals = getDatasetAvailableIntervals(dataset) || DEFAULT_HEATMAP_INTERVALS
 
@@ -416,15 +442,70 @@ export function getDataviewsGeneratorConfigs(
       return sublayer
     })
 
+    const maxZoomLevels = dataviews
+      ?.filter(({ config }) => config && config?.maxZoom !== undefined)
+      .flatMap(({ config }) => config?.maxZoom as number)
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
       config: {
         type: GeneratorType.HeatmapAnimated,
         sublayers: activitySublayers,
         mode: heatmapAnimatedMode,
+        // if any of the activity dataviews has a max zoom level defined
+        // apply the minimum max zoom level (the most restrictive approach)
+        ...(maxZoomLevels &&
+          maxZoomLevels.length > 0 && {
+            maxZoom: Math.min(...maxZoomLevels),
+          }),
       },
     }
     dataviewsFiltered.push(mergedActivityDataview)
+
+    // New sublayers as auxiliar activity layers
+    const activityWithContextDataviews = activityDataviews.flatMap((dataview) => {
+      const auxiliarLayerActive = dataview.config?.auxiliarLayerActive ?? true
+      if (
+        dataview.datasetsConfig?.some(
+          (d) => d.endpoint === EndpointId.ContextGeojson && auxiliarLayerActive
+        )
+      ) {
+        const datasetsConfig = dataview.datasetsConfig?.flatMap((dc) => {
+          if (dc.endpoint !== EndpointId.ContextGeojson) {
+            return []
+          }
+          return {
+            ...dc,
+            query: [
+              ...(dc.query || []),
+              { id: 'start-date', value: timeRange?.start || '' },
+              { id: 'end-date', value: timeRange?.end || '' },
+            ],
+          }
+        })
+        // Prepare a new dataview only for the auxiliar activity layer
+        const auxiliarDataview: UrlDataviewInstance = {
+          ...dataview,
+          datasets: dataview.datasets?.filter((d) => d.type === DatasetTypes.TemporalContext),
+          datasetsConfig,
+        }
+        const { url } = resolveDataviewDatasetResource(
+          auxiliarDataview,
+          DatasetTypes.TemporalContext
+        )
+        if (!url) {
+          return []
+        }
+        auxiliarDataview.config = {
+          color: dataview.config?.color,
+          visible: auxiliarLayerActive,
+          type: GeneratorType.Polygons,
+          url,
+        }
+        return auxiliarDataview
+      }
+      return []
+    })
+    dataviewsFiltered.push(...activityWithContextDataviews)
   }
 
   const generatorsConfig = dataviewsFiltered.flatMap((dataview) => {

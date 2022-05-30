@@ -1,0 +1,75 @@
+syntax = "proto3";
+package vessels;
+
+
+message Track {
+  repeated sint32 data = 1;
+}
+
+message TilesetVesselQuery {
+  string query = 1;
+  uint32 total = 2;
+  uint32 limit = 3;
+  uint32 offset = 4;
+  uint32 nextOffset = 5;
+
+  repeated TilesetVesselInfo entries = 6;
+
+}
+
+message TilesetVesselInfo {
+  string id = 1;
+  string name = 2;
+  string end = 3;
+  string start = 4;
+  string ssvid = 5;
+  string callsign = 6;
+  string vesselId = 7;
+  string tilesetId = 8;
+
+}
+
+
+message DatasetVesselV1Query {
+  string dataset = 10;
+  repeated DatasetVesselQuery results = 11;
+}
+
+message DatasetVesselQuery {
+  string query = 1;
+  uint32 total = 2;
+  uint32 limit = 3;
+  uint32 offset = 4;
+  uint32 nextOffset = 5;
+
+  repeated DatasetVesselInfo entries = 6;
+
+}
+
+message DatasetVesselInfo {
+  string id = 1;
+  string name = 2;
+  string imo = 3;
+  string ssvid = 4;
+  string vesselId = 5;
+  string type = 6;
+  string dataset = 7;
+
+  repeated StartEndValue authorizations = 8;
+  repeated Extra extra = 9;
+  repeated StartEndValue mmsi = 10;
+  repeated StartEndValue callsign = 11;
+  repeated StartEndValue flags = 12;
+
+}
+
+message Extra {
+  string id = 1;
+  string label = 2;
+  float value = 3;
+}
+message StartEndValue {
+  string start = 1;
+  string end = 2;
+  string value = 3;
+}

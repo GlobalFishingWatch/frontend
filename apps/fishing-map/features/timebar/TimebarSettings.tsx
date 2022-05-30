@@ -1,62 +1,73 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import { Fragment, useState, ComponentType } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { IconButton, Radio } from '@globalfishingwatch/ui-components'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
-import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import {
+  selectActiveActivityDataviews,
+  selectActiveNonTrackEnvironmentalDataviews,
+} from 'features/dataviews/dataviews.selectors'
+import { selectActivityCategory } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.slice'
-import { useTimebarVisualisationConnect } from './timebar.hooks'
-import { selectTracksGraphsLoading } from './timebar.selectors'
+import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
+import { ReactComponent as TracksIcon } from 'assets/icons/timebar-tracks.svg'
+import { ReactComponent as TrackSpeedIcon } from 'assets/icons/timebar-track-speed.svg'
+import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-depth.svg'
+import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import {
+  useTimebarVisualisationConnect,
+  useTimebarGraphConnect,
+  useTimebarEnvironmentConnect,
+} from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
-const TimebarSettings = () => {
+const Icon = ({
+  SvgIcon,
+  label,
+  color,
+  disabled,
+}: {
+  SvgIcon: ComponentType
+  label: string
+  color: string
+  disabled?: boolean
+}) => {
+  const svgProps = {
+    fill: color,
+    stroke: color,
+  }
+  return (
+    <Fragment>
+      <SvgIcon
+        className={cx(styles.icon, { [styles.iconDisabled]: disabled })}
+        {...(svgProps as any)}
+      />
+      {label}
+    </Fragment>
+  )
+}
+
+const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
+  const activeEnvironmentalDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
-  const timebarGraph = useSelector(selectTimebarGraph)
-  const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
+  const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const activityCategory = useSelector(selectActivityCategory)
-  const graphsLoading = useSelector(selectTracksGraphsLoading)
-  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews.length < 2
-
-  const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = useMemo(
-    () => [
-      {
-        id: 'speed',
-        label: t('timebarSettings.graphOptions.speed', 'Speed'),
-        tooltip: timebarGraphEnabled
-          ? ''
-          : t(
-              'timebarSettings.graphOptions.speedDisabled',
-              'Not available with more than 1 vessel selected'
-            ),
-        disabled: !timebarGraphEnabled,
-      },
-      {
-        id: 'depth',
-        label: t('timebarSettings.graphOptions.depth', 'Depth (Coming soon)'),
-        tooltip: t('common.comingSoon', 'Coming soon'),
-        disabled: true,
-      },
-      {
-        id: 'none',
-        label: t('timebarSettings.graphOptions.none', 'None'),
-      },
-    ],
-    [timebarGraphEnabled, t]
-  )
+  const timebarGraphEnabled =
+    activeVesselsDataviews && activeVesselsDataviews.length && activeVesselsDataviews.length <= 2
 
   const openOptions = () => {
     uaEvent({
@@ -72,17 +83,23 @@ const TimebarSettings = () => {
   const setHeatmapActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Heatmap)
   }
+  const setEnvironmentActive = (environmentalDataviewId: string) => {
+    dispatchTimebarVisualisation(TimebarVisualisations.Environment)
+    dispatchTimebarSelectedEnvId(environmentalDataviewId)
+  }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
+    dispatchTimebarGraph(TimebarGraphs.None)
   }
-  const setGraphOption = (o: SelectOption) => {
-    if (!o.label.includes('Coming soon')) {
-      dispatchQueryParams({ timebarGraph: o.id as TimebarGraphs })
-    }
+  const setVesselGraphSpeed = () => {
+    dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
+    dispatchTimebarGraph(TimebarGraphs.Speed)
   }
-  const removeGraphOption = () => {
-    dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
+  const setVesselGraphDepth = () => {
+    dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
+    dispatchTimebarGraph(TimebarGraphs.Depth)
   }
+
   const expandedContainerRef = useClickedOutside(closeOptions)
 
   const activityLabel = `
@@ -108,29 +125,49 @@ const TimebarSettings = () => {
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
       <IconButton
         icon={optionsPanelOpen ? 'close' : 'settings'}
+        loading={loading}
         type="map-tool"
-        loading={graphsLoading}
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
-          optionsPanelOpen
+          loading
+            ? t('vessel.loadingInfo')
+            : optionsPanelOpen
             ? t('timebarSettings.settings_close', 'Close timebar settings')
             : t('timebarSettings.settings_open', 'Open timebar settings')
         }
       />
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
-          <Radio
-            label={activityLabel}
-            active={timebarVisualisation === TimebarVisualisations.Heatmap}
-            disabled={!activeHeatmapDataviews?.length}
-            tooltip={activityTooltipLabel}
-            onClick={setHeatmapActive}
-          />
-          <Fragment>
+          <h1>{t('timebarSettings.title', 'Timebar settings')}</h1>
+          <div className={styles.radiosContainer}>
             <Radio
-              label={t('timebarSettings.tracks', 'Tracks')}
-              active={timebarVisualisation === TimebarVisualisations.Vessel}
+              label={
+                <Icon
+                  SvgIcon={AreaIcon}
+                  label={activityLabel}
+                  color={activeHeatmapDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  disabled={!activeHeatmapDataviews?.length}
+                />
+              }
+              disabled={!activeHeatmapDataviews?.length}
+              active={timebarVisualisation === TimebarVisualisations.Heatmap}
+              tooltip={activityTooltipLabel}
+              onClick={setHeatmapActive}
+            />
+            <Radio
+              label={
+                <Icon
+                  SvgIcon={TracksIcon}
+                  label={t('timebarSettings.tracks', 'Tracks')}
+                  color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  disabled={!activeTrackDataviews?.length}
+                />
+              }
               disabled={!activeTrackDataviews?.length}
+              active={
+                timebarVisualisation === TimebarVisualisations.Vessel &&
+                (timebarGraph === TimebarGraphs.None || !timebarGraphEnabled)
+              }
               tooltip={
                 !activeTrackDataviews?.length
                   ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
@@ -138,23 +175,86 @@ const TimebarSettings = () => {
               }
               onClick={setVesselActive}
             />
-            {timebarVisualisation === TimebarVisualisations.Vessel &&
-              activeVesselsDataviews &&
-              activeVesselsDataviews.length > 0 && (
-                <div className={styles.vesselTrackOptions}>
-                  {timebarGraphEnabled && (
-                    <Select
-                      label={t('timebarSettings.graph', 'Graph')}
-                      options={TIMEBAR_GRAPH_OPTIONS}
-                      selectedOption={TIMEBAR_GRAPH_OPTIONS.find((o) => o.id === timebarGraph)}
-                      onSelect={setGraphOption}
-                      onRemove={removeGraphOption}
-                      direction="top"
+            <Radio
+              label={
+                <Icon
+                  SvgIcon={TrackSpeedIcon}
+                  label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
+                  color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+                />
+              }
+              disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+              active={
+                timebarVisualisation === TimebarVisualisations.Vessel &&
+                timebarGraph === TimebarGraphs.Speed &&
+                timebarGraphEnabled
+              }
+              tooltip={
+                !activeTrackDataviews?.length
+                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
+                  : !timebarGraphEnabled
+                  ? t(
+                      'timebarSettings.graphDisabled',
+                      'Not available with more than 2 vessels selected'
+                    )
+                  : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
+              }
+              onClick={setVesselGraphSpeed}
+            />
+            <Radio
+              label={
+                <Icon
+                  SvgIcon={TrackDepthIcon}
+                  label={t('timebarSettings.graphDepth', 'Vessel Depth')}
+                  color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+                />
+              }
+              disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+              active={
+                timebarVisualisation === TimebarVisualisations.Vessel &&
+                timebarGraph === TimebarGraphs.Depth &&
+                timebarGraphEnabled
+              }
+              tooltip={
+                !activeTrackDataviews?.length
+                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
+                  : !timebarGraphEnabled
+                  ? t(
+                      'timebarSettings.graphDisabled',
+                      'Not available with more than 2 vessels selected'
+                    )
+                  : t('timebarSettings.showGraphDepth', 'Show track depth graph')
+              }
+              onClick={setVesselGraphDepth}
+            />
+            {activeEnvironmentalDataviews.map((envDataview, i) => {
+              const dataset = envDataview.datasets?.find(
+                (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+              )
+
+              const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+              return (
+                <Radio
+                  key={envDataview.id}
+                  label={
+                    <Icon
+                      SvgIcon={AreaIcon}
+                      label={title}
+                      color={envDataview?.config.color || COLOR_PRIMARY_BLUE}
                     />
-                  )}
-                </div>
-              )}
-          </Fragment>
+                  }
+                  active={
+                    timebarVisualisation === TimebarVisualisations.Environment &&
+                    (timebarSelectedEnvId === envDataview.id || (!timebarSelectedEnvId && i === 0))
+                  }
+                  tooltip={activityTooltipLabel}
+                  onClick={() => setEnvironmentActive(envDataview.id)}
+                />
+              )
+            })}
+          </div>
         </div>
       )}
     </div>

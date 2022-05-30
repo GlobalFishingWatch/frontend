@@ -1,18 +1,19 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import type { MapEvent } from 'react-map-gl'
+import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { editRuler, moveCurrentRuler, selectEditing } from './rulers.slice'
 
 const useRulers = () => {
   const rulersEditing = useSelector(selectEditing)
   const dispatch = useAppDispatch()
+  const rulesCursor = 'crosshair'
   const onMapHoverWithRuler = useCallback(
-    (event: MapEvent) => {
+    (event: MapLayerMouseEvent) => {
       dispatch(
         moveCurrentRuler({
-          longitude: event.lngLat[0],
-          latitude: event.lngLat[1],
+          longitude: event.lngLat.lng,
+          latitude: event.lngLat.lat,
         })
       )
     },
@@ -20,22 +21,18 @@ const useRulers = () => {
   )
 
   const onMapClickWithRuler = useCallback(
-    (event: MapEvent) => {
+    (event: MapLayerMouseEvent) => {
       dispatch(
         editRuler({
-          longitude: event.lngLat[0],
-          latitude: event.lngLat[1],
+          longitude: event.lngLat.lng,
+          latitude: event.lngLat.lat,
         })
       )
     },
     [dispatch]
   )
 
-  const getRulersCursor = useCallback(() => {
-    return 'crosshair'
-  }, [])
-
-  return { onMapHoverWithRuler, onMapClickWithRuler, getRulersCursor, rulersEditing }
+  return { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing }
 }
 
 export default useRulers

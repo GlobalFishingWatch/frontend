@@ -1,14 +1,15 @@
-import { Fragment } from 'react'
-import type { NextPage } from 'next'
+import React, { Fragment, useEffect } from 'react'
+// import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { useUser } from 'features/user/user.hooks'
+import useUser, { GUEST_USER_TYPE } from 'features/user/user'
 import styles from '../styles/layout.module.css'
 import { APPLICATION_NAME, PATH_BASENAME } from './data/config'
 import Header from './header/header'
 
-const Layout: NextPage = ({ children }) => {
-  const { user, loading: userLoading, authorized, logout } = useUser(true)
+const Layout = ({ children }) => {
+  const { data: user, isLoading, authorized, logout, loginLink } = useUser()
 
   const errorInfo = [
     `Not enough permissions to access ` + APPLICATION_NAME,
@@ -24,6 +25,15 @@ const Layout: NextPage = ({ children }) => {
       .join('&'),
   ].join('')
 
+  const redirectToLogin = true
+  const logged = !!user?.id
+  const guestUser = user && user.type === GUEST_USER_TYPE
+  const router = useRouter()
+  useEffect(() => {
+    if (redirectToLogin && !isLoading && ((!user && !logged) || guestUser) && loginLink) {
+      router.push(loginLink)
+    }
+  }, [guestUser, isLoading, logged, loginLink, redirectToLogin, router, user])
   return (
     <Fragment>
       <Head>
@@ -36,16 +46,16 @@ const Layout: NextPage = ({ children }) => {
         <link rel="icon" href={`${PATH_BASENAME}/favicon.ico`} />
       </Head>
       <main className={styles.main}>
-        <Header title="Access Tokens" user={user} logout={logout} />
+        <Header title="Access Tokens" user={user} logout={logout.mutate} />
         <div className={styles.container}>
-          {(userLoading || !user) && <Spinner></Spinner>}
-          {!userLoading && user && !authorized && (
+          {(isLoading || !user) && <Spinner></Spinner>}
+          {!isLoading && user && !authorized && (
             <p>
               You don't have enough permissions to perform this action, please{' '}
               <a href={mailto}>contact us</a>.
             </p>
           )}
-          {!userLoading && user && authorized && <Fragment>{children}</Fragment>}
+          {!isLoading && user && authorized && <Fragment>{children}</Fragment>}
         </div>
       </main>
     </Fragment>

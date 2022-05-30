@@ -124,16 +124,21 @@ export const useFilteredTimeSeries = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeComparison])
 
+  const activeSourceIdHash = activityFeatures
+    .map(({ metadata }) => metadata.timeChunks.activeSourceId)
+    .join(',')
+
+  // Set blur when there new source data is fetched on timebar changes
   useEffect(() => {
     const hasActivityLayers = temporalgridDataviews.some(
       ({ category }) =>
         category === DataviewCategory.Fishing || category === DataviewCategory.Presence
     )
-    if (timeseries && hasActivityLayers) {
+    if (hasActivityLayers) {
       setBlur(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timebarStart, timebarEnd])
+  }, [activeSourceIdHash])
 
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)

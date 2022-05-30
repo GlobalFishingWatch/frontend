@@ -12,6 +12,8 @@ import { isConfigVisible } from '../utils'
 import filterTrackByTimerange from './filterTrackByTimerange'
 import { simplifyTrack } from './simplify-track'
 
+export const TRACK_HIGHLIGHT_SUFFIX = '_highlighted'
+
 const mapZoomToMinPosΔ = (zoomLoadLevel: number) => {
   // first normalize and invert z level
   const normalizedZoom = scaleLinear().clamp(true).range([1, 0]).domain([3, 12])(zoomLoadLevel)
@@ -74,7 +76,7 @@ const getHighlightedLayer = (
     },
     paint: {
       'line-color': 'white',
-      'line-width': 3,
+      'line-width': 1.5,
       'line-opacity': 1,
       ...paint,
     },
@@ -88,8 +90,8 @@ export type GlobalTrackGeneratorConfig = MergedGeneratorConfig<TrackGeneratorCon
 
 class TrackGenerator {
   type = GeneratorType.Track
-  highlightSufix = '_highlighted'
-  highlightEventSufix = `${this.highlightSufix}_event`
+  highlightSufix = TRACK_HIGHLIGHT_SUFFIX
+  highlightEventSufix = `${TRACK_HIGHLIGHT_SUFFIX}_event`
 
   _getStyleSources = (config: GlobalTrackGeneratorConfig) => {
     const defaultGeoJSON: FeatureCollection = {
@@ -171,21 +173,26 @@ class TrackGenerator {
     }
 
     if (uniqIds.length > 1) {
-      const HUE_CHANGE_DELTA = 40
-      const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
-      const hsl = convert.hex.hsl(config.color || '')
-      const baseHue = hsl[0]
-      const exprLineColor = [
-        'match',
-        ['get', 'id'],
-        ...uniqIds.flatMap((id, index) => {
-          const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
-          const hue = (rawHue + 360) % 360
-          const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
-          return [id, color]
-        }),
-        config.color,
-      ]
+      let exprLineColor
+      if (config.useOwnColor) {
+        exprLineColor = ['get', 'color']
+      } else {
+        const HUE_CHANGE_DELTA = 40
+        const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
+        const hsl = convert.hex.hsl(config.color || '')
+        const baseHue = hsl[0]
+        exprLineColor = [
+          'match',
+          ['get', 'id'],
+          ...uniqIds.flatMap((id, index) => {
+            const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
+            const hue = (rawHue + 360) % 360
+            const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
+            return [id, color]
+          }),
+          config.color,
+        ]
+      }
       paint['line-color'] = exprLineColor as any
     }
 

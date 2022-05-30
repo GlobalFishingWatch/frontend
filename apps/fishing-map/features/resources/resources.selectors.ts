@@ -1,6 +1,7 @@
+
 import { createSelector } from '@reduxjs/toolkit'
-import { selectVisibleEvents } from 'features/app/app.selectors'
 import { RootState } from 'store'
+import { selectVisibleEvents } from 'features/app/app.selectors'
 import { selectResources } from './resources.slice'
 
 export const selectVisibleResources = createSelector(

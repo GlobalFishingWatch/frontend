@@ -1,4 +1,4 @@
-import { forwardRef, Ref } from 'react'
+import { forwardRef, ReactNode, Ref } from 'react'
 import cx from 'classnames'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from '../workspace.hook'
@@ -7,7 +7,7 @@ type TitleProps = {
   dataview: UrlDataviewInstance
   className: string
   classNameActive: string
-  title: string
+  title: string | ReactNode
   onToggle?: () => void
 }
 

@@ -1,0 +1,89 @@
+{
+  "sourceRoot": "apps/user-groups-admin",
+  "projectType": "application",
+  "targets": {
+    "changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["./changelog.sh user-groups-admin \"User groups admin\""],
+        "parallel": false
+      }
+    },
+
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build user-groups-admin --parallel",
+          "nx docker-prepare user-groups-admin"
+        ],
+        "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/user-groups-admin",
+          "cp apps/user-groups-admin/nginx.conf dist/apps/user-groups-admin"
+        ]
+      }
+    },
+    "compile": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/user-groups-admin",
+        "outputPath": "dist/apps/user-groups-admin"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "start": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["nx serve user-groups-admin"],
+        "parallel": true
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "user-groups-admin:compile",
+        "dev": true,
+        "port": 3003
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "user-groups-admin:build:production",
+          "dev": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "user-groups-admin:compile:production"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/user-groups-admin/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/user-groups-admin"],
+      "options": {
+        "jestConfig": "apps/user-groups-admin/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

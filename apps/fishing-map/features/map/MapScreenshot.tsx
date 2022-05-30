@@ -1,13 +1,10 @@
-import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 // import { getParser } from 'bowser'
-import { debounce } from 'lodash'
-import { useSelector } from 'react-redux'
 import type { Map } from '@globalfishingwatch/maplibre-gl'
 import { getCSSVarValue } from 'utils/dom'
+import useMapInstance from 'features/map/map-context.hooks'
 import styles from './Map.module.css'
-import { selectEditing } from './rulers/rulers.slice'
-import { useMapIdle } from './map-state.hooks'
 
 type PrintSize = {
   px: number
@@ -33,15 +30,18 @@ export const getMapImage = (map: Map): Promise<string> => {
       const canvas = map.getCanvas()
       resolve(canvas.toDataURL())
     })
-    // trigger render
-    ;(map as any)._render()
+    const renderFn = (map as any)._render
+    if (renderFn) {
+      renderFn()
+    }
   })
 }
 
-function MapScreenshot({ map }: { map?: Map }) {
-  const idle = useMapIdle()
+// Component to render an invisible image with the canvas data so ideally
+// when printing with crtl + p the image is there but it is too heavy
+function MapScreenshot() {
+  const map = useMapInstance()
   const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
-  const rulersEditing = useSelector(selectEditing)
   const printSize = useRef<{ width: PrintSize; height: PrintSize } | undefined>()
 
   useLayoutEffect(() => {
@@ -62,18 +62,12 @@ function MapScreenshot({ map }: { map?: Map }) {
   }, [])
 
   useEffect(() => {
-    const onMapIdle = debounce(() => {
-      if (map) {
-        getMapImage(map).then((image) => {
-          setScreenshotImage(image)
-        })
-      }
-    }, MAP_IMAGE_DEBOUNCE)
-
-    if (map && idle && !rulersEditing) {
-      onMapIdle()
+    if (map) {
+      getMapImage(map).then((image) => {
+        setScreenshotImage(image)
+      })
     }
-  }, [map, idle, rulersEditing])
+  }, [map])
 
   if (!screenshotImage) return null
 

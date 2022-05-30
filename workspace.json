@@ -18,6 +18,7 @@
     "tile-inspector": "apps/tile-inspector",
     "timebar": "libs/timebar",
     "ui-components": "libs/ui-components",
+    "user-groups-admin": "apps/user-groups-admin",
     "vessel-history": "apps/vessel-history"
   }
 }

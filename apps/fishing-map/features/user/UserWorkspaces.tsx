@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'

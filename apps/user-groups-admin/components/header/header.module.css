@@ -1,0 +1,16 @@
+.Header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #eff5f8;
+  padding: 0 var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+.logout {
+  margin-left: var(--space-M);
+}

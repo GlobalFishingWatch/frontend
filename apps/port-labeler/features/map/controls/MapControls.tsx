@@ -1,29 +1,18 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
-import { useDispatch, useSelector } from 'react-redux'
-import MiniGlobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import { BasemapType } from '@globalfishingwatch/layer-composer'
-import { updateQueryParams } from 'routes/routes.actions'
-import { selectSatellite } from 'routes/routes.selectors'
+import { useTranslation } from 'react-i18next'
+import { MiniGlobe, MiniglobeBounds, IconButton } from '@globalfishingwatch/ui-components'
 import { useViewport } from '../map-viewport.hooks'
 import styles from './MapControls.module.css'
 
 const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
-  const { viewport, onViewportChange } = useViewport()
-  const dispatch = useDispatch()
+  const { viewport, setMapCoordinates } = useViewport()
+  const { t } = useTranslation()
 
   const [showCoords, setShowCoords] = useState(false)
   const [pinned, setPinned] = useState(false)
   const [showDMS, setShowDMS] = useState(false)
-  const isSatellite = useSelector(selectSatellite)
-  const currentBasemap = isSatellite
-    ? BasemapType.Satellite
-    : BasemapType.Default
-  const switchBasemap = () => {
-    dispatch(updateQueryParams({ satellite: !isSatellite }))
-  }
 
   return (
     <div className={styles.mapControls}>
@@ -36,30 +25,27 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         <MiniGlobe
           center={{ latitude: viewport.latitude, longitude: viewport.longitude }}
           size={60}
-          bounds={bounds} />
+          bounds={bounds}
+        />
       </div>
       <IconButton
         icon="plus"
         type="map-tool"
         data-tip-pos="left"
-        tooltip="Increase zoom"
+        tooltip={t('common.zoom_more', 'Increase zoom')}
         onClick={() => {
-          onViewportChange({ ...viewport, zoom: viewport.zoom + 1 })
+          setMapCoordinates({ ...viewport, zoom: viewport.zoom + 1 })
         }}
       />
       <IconButton
         icon="minus"
         type="map-tool"
         data-tip-pos="left"
-        tooltip="Decrease zoom"
+        tooltip={t('common.zoom_less', 'Decrease zoom')}
         onClick={() => {
-          onViewportChange({ ...viewport, zoom: viewport.zoom - 1 })
+          setMapCoordinates({ ...viewport, zoom: viewport.zoom - 1 })
         }}
       />
-      <button
-        className={cx(styles.basemapSwitcher, styles[currentBasemap])}
-        onClick={switchBasemap}
-      ></button>
 
       {(pinned || showCoords) && (
         <div
@@ -68,9 +54,9 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         >
           {showDMS
             ? formatcoords(viewport.latitude, viewport.longitude).format('DDMMssX', {
-              latLonSeparator: '',
-              decimalPlaces: 2,
-            })
+                latLonSeparator: '',
+                decimalPlaces: 2,
+              })
             : `${viewport.latitude},${viewport.longitude}`}
         </div>
       )}

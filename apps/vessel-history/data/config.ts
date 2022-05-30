@@ -86,3 +86,6 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
   ? {}
   : { debug: true }
+
+export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
+export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR

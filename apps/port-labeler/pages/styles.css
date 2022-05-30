@@ -91,7 +91,7 @@
 }
 
 .hover.mapboxgl-popup .mapboxgl-popup-content {
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .mapboxgl-popup .mapboxgl-popup-close-button {

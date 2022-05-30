@@ -15,6 +15,7 @@ interface ModalProps {
   title?: string
   size?: IconButtonSize
   type?: IconButtonType
+  children: React.ReactNode
 }
 
 const DataAndTerminology: React.FC<ModalProps> = ({

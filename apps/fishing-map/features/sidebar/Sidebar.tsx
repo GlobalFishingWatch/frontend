@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
@@ -9,6 +9,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
+import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -39,6 +40,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const locationType = useSelector(selectLocationType)
   const userLogged = useSelector(isUserLogged)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
+  const { datasetModal } = useDatasetModalConnect()
 
   const sidebarComponent = useMemo(() => {
     if (!userLogged) {
@@ -72,7 +74,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     <div className={styles.container}>
       {!readOnly && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
-      <NewDataset />
+      {datasetModal === 'new' && <NewDataset />}
       <div className="scrollContainer">
         <SidebarHeader />
         {sidebarComponent}

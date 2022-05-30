@@ -1,6 +1,12 @@
 import { DateObject, DateTime } from 'luxon'
 import ReactGA from 'react-ga'
-export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+
+export type WorkspaceEnv = 'development' | 'production'
+export const WORKSPACE_ENV =
+  (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
+  (process.env.NODE_ENV as WorkspaceEnv) ||
+  'production'
+export const IS_PRODUCTION = WORKSPACE_ENV === 'production'
 
 export const ROOT_DOM_ELEMENT = '__next'
 

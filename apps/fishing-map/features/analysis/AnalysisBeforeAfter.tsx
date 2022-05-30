@@ -1,5 +1,5 @@
+import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
@@ -160,7 +160,6 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
               <Select
                 options={DURATION_TYPES_OPTIONS}
                 onSelect={trackAndChangeDurationType}
-                onRemove={() => {}}
                 className={styles.durationType}
                 selectedOption={durationTypeOption}
               />

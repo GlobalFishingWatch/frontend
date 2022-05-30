@@ -1,27 +1,28 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { Timeseries } from '@globalfishingwatch/timebar'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
-import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  areDataviewsFeatureLoaded,
+  hasDataviewsFeatureError,
+  useMapDataviewFeatures,
+} from 'features/map/map-sources.hooks'
 import { getTimeseriesFromDataviews } from 'features/timebar/TimebarActivityGraph.utils'
 import { filterByViewport } from 'features/map/map.utils'
 
-type StackedActivity = {
-  date: number
-  [key: string]: number
-}
-
-export const useStackedActivity = () => {
-  const [stackedActivity, setStackedActivity] = useState<StackedActivity[]>()
+export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
+  const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
+  const [stackedActivity, setStackedActivity] = useState<Timeseries>()
   const isSmallScreen = useSmallScreen()
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 400)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const dataviewFeatures = useMapDataviewFeatures(temporalgridDataviews)
+  const dataviewFeatures = useMapDataviewFeatures(dataviews)
+  const error = hasDataviewsFeatureError(dataviewFeatures)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
-  const loading = boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures)
+  const loading =
+    boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures) || generatingStackedActivity
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetStackedActivity = useCallback(
@@ -39,17 +40,19 @@ export const useStackedActivity = () => {
       })
       const stackedActivity = getTimeseriesFromDataviews(dataviewFeaturesFiltered)
       setStackedActivity(stackedActivity)
+      setGeneratingStackedActivity(false)
     }, 400),
-    []
+    [setStackedActivity]
   )
 
+  const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   useEffect(() => {
-    const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
-    if (isSmallScreen || !dataviewFeaturesLoaded) {
-      return
+    if (!isSmallScreen && dataviewFeaturesLoaded && !error) {
+      setGeneratingStackedActivity(true)
+      debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
     }
-    debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
-  }, [dataviewFeatures, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataviewFeaturesLoaded, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
 
-  return { loading, stackedActivity }
+  return { loading, error, stackedActivity }
 }

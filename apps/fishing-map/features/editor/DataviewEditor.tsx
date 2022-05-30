@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import {
@@ -7,6 +7,7 @@ import {
   DataviewCategory,
   DataviewConfig,
   EndpointId,
+  DatasetCategory,
 } from '@globalfishingwatch/api-types'
 import {
   Button,
@@ -76,7 +77,9 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       if (dataview.category === UNKNOWN_CATEGORY) {
         return !dataset.category || !Object.keys(dataset.category).length
       }
-      return dataview.category === dataset.category
+      return dataset.category === DatasetCategory.Activity
+        ? dataview.category === dataset.subcategory
+        : dataview.category === dataset.category
     })
     return filteredDatasets.map((dataset) => ({ id: dataset.id, label: dataset.id }))
   }, [dataview.category, datasets])

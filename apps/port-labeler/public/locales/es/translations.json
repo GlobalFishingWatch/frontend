@@ -1,0 +1,22 @@
+{
+    "common": {
+        "port": "Puerto",
+        "subarea": "Comunidad",
+        "anchorage": "Anclaje",
+        "anchorageId": "Anclaje ID",
+        "destination": "Destino",
+        "zoom_more": "Incrementar zoom",
+        "zoom_less": "Decrementar zoom",
+        "select_port": "Seleccionar puerto",
+        "add_port": "Agregar puerto",
+        "select_subarea": "Seleccionar subarea",
+        "add_subarea": "Agregar subarea"
+    },
+    "messages": {
+        "no_anchorages": "No se encontraron anclajes",
+        "country_selection": "Seleccione un pais",
+        "add_port": "Agregar puerto",
+        "add_subarea": "Agregar comunidad",
+        "select_subarea": "Seleccione una comunidad"
+    }
+}

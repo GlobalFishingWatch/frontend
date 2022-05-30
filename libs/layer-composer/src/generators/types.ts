@@ -1,5 +1,9 @@
-import { FeatureCollection } from 'geojson'
-import { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import { FeatureCollection, LineString } from 'geojson'
+import {
+  SourceSpecification,
+  LayerSpecification,
+  GeoJSONSourceSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { Group } from '..'
@@ -9,18 +13,20 @@ export type LayerVisibility = 'visible' | 'none'
 
 export enum GeneratorType {
   Background = 'BACKGROUND',
-  UserContext = 'USER_CONTEXT',
-  UserPoints = 'USER_POINTS',
-  TileCluster = 'TILE_CLUSTER',
-  Context = 'CONTEXT',
   Basemap = 'BASEMAP',
   CartoPolygons = 'CARTO_POLYGONS',
+  Context = 'CONTEXT',
   GL = 'GL',
   Heatmap = 'HEATMAP',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
-  Track = 'TRACK',
-  VesselEvents = 'VESSEL_EVENTS',
+  Polygons = 'POLYGONS',
   Rulers = 'RULERS',
+  TileCluster = 'TILE_CLUSTER',
+  Track = 'TRACK',
+  UserContext = 'USER_CONTEXT',
+  UserPoints = 'USER_POINTS',
+  VesselEvents = 'VESSEL_EVENTS',
+  VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
 }
 
 export interface GeneratorFeature {
@@ -218,7 +224,10 @@ export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
   radius?: number
 }
 
-export type TrackGeneratorConfigData = FeatureCollection | Segment[] | null
+export type TrackGeneratorConfigData =
+  | FeatureCollection<LineString, { coordinateProperties: { times: number[] } }>
+  | Segment[]
+  | null
 
 /**
  * Renders a vessel track that can be filtered by time. Will use `start` and `end` from the global generator config, if set
@@ -237,6 +246,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
   color?: string
+  useOwnColor?: boolean
   /**
    * Sets the opacity for the track line
    */
@@ -257,6 +267,26 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
   }
 }
 
+export interface PolygonsGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.Polygons
+  /**
+   * A GeoJSON feature collection
+   */
+  data?: FeatureCollection
+  /**
+   * The url to grab the geojson
+   */
+  url?: string
+  /**
+   * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
+   */
+  color?: string
+  /**
+   * Sets the opacity for the track line
+   */
+  opacity?: number
+}
+
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.VesselEvents
   data: RawEvent[]
@@ -274,6 +304,17 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   showAuthorizationStatus?: boolean
   currentEventId?: string
   pointsToSegmentsSwitchLevel?: number
+}
+
+export interface VesselEventsShapesGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.VesselEventsShapes
+  data: RawEvent[]
+  color?: string
+  track?: TrackGeneratorConfigData
+  showAuthorizationStatus?: boolean
+  currentEventsIds?: string[]
+  pointsToSegmentsSwitchLevel?: number
+  vesselId?: string
 }
 
 /**
@@ -332,16 +373,17 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
 export type AnyGeneratorConfig =
   | BackgroundGeneratorConfig
   | BasemapGeneratorConfig
-  | GlGeneratorConfig
   | CartoPolygonsGeneratorConfig
-  | UserContextGeneratorConfig
   | ContextGeneratorConfig
+  | GlGeneratorConfig
+  | HeatmapAnimatedGeneratorConfig
+  | HeatmapGeneratorConfig
+  | PolygonsGeneratorConfig
+  | RulersGeneratorConfig
   | TileClusterGeneratorConfig
   | TrackGeneratorConfig
+  | UserContextGeneratorConfig
   | VesselEventsGeneratorConfig
-  | RulersGeneratorConfig
-  | HeatmapGeneratorConfig
-  | HeatmapAnimatedGeneratorConfig
 
 // ---- Generator specific types
 export enum BasemapType {
@@ -403,12 +445,7 @@ export type Ruler = {
   isNew?: boolean
 }
 
-export type HeatmapAnimatedInteractionType =
-  | 'presence'
-  | 'presence-detail'
-  | 'viirs'
-  | 'viirs-match'
-  | 'fishing-effort'
+export type HeatmapAnimatedInteractionType = 'activity' | 'detections'
 
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string
@@ -461,4 +498,8 @@ export enum HeatmapAnimatedMode {
   Extruded = 'extruded',
   // Just show raw value ffor 1 sublayer
   Single = 'single',
+}
+
+export interface VesselsEventsSource extends GeoJSONSourceSpecification {
+  id: string
 }

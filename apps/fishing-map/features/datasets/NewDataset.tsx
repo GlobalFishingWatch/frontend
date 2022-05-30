@@ -1,6 +1,6 @@
-import React, { useState, useCallback, Fragment } from 'react'
+import { useState, useCallback, Fragment } from 'react'
 import { featureCollection, point } from '@turf/helpers'
-import { FeatureCollectionWithFilename } from 'shpjs'
+import type { FeatureCollectionWithFilename } from 'shpjs'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'lodash'
@@ -114,7 +114,7 @@ function NewDataset(): React.ReactElement {
           !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
         const isCSV = !isZip && !isGeojson && file.type === 'text/csv'
 
-        if (isGeojson && file.name.includes('.geojson')) {
+        if (isGeojson) {
           formatGeojson = true
           const blob = file.slice(0, file.size, 'application/json')
           const fileAsJson = new File([blob], `${name}.json`, { type: 'application/json' })
@@ -129,7 +129,21 @@ function NewDataset(): React.ReactElement {
             const shpjs = await import('shpjs').then((module) => module.default)
             const fileData = await readBlobAs(file, 'arrayBuffer')
             // TODO support multiple files in shapefile
-            geojson = (await shpjs(fileData)) as FeatureCollectionWithFilename
+            const expandedShp = (await shpjs(fileData)) as FeatureCollectionWithFilename
+            if (Array.isArray(expandedShp)) {
+              // geojson = expandedShp[0]
+              setFileData(undefined)
+              setLoading(false)
+              setError(
+                t(
+                  'errors.datasetShapefileMultiple',
+                  'Shapefiles containing multiple components (multiple file names) are not supported yet'
+                )
+              )
+              return
+            } else {
+              geojson = expandedShp
+            }
           } catch (e: any) {
             console.warn('Error reading file:', e)
           }
@@ -255,20 +269,7 @@ function NewDataset(): React.ReactElement {
     if (file) {
       let validityError
       let onTheFlyGeoJSONFile
-      if (
-        metadata?.category === DatasetCategory.Environment &&
-        datasetGeometryType === 'polygons'
-      ) {
-        if (!metadata?.configuration?.propertyToInclude) {
-          validityError = t('dataset.requiredFields', {
-            fields: 'value',
-            defaultValue: 'Required field value',
-          }) as string
-        }
-      } else if (
-        metadata?.category === DatasetCategory.Environment &&
-        datasetGeometryType === 'tracks'
-      ) {
+      if (metadata?.category === DatasetCategory.Environment && datasetGeometryType === 'tracks') {
         if (
           !metadata.configuration?.latitude ||
           !metadata.configuration?.longitude ||
@@ -327,9 +328,12 @@ function NewDataset(): React.ReactElement {
         label: onTheFlyGeoJSONFile?.name ?? file.name,
       })
       setLoading(true)
+      const { fields, guessedFields, ...meta } = metadata
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {
-          ...metadata,
+          ...meta,
+          unit: 'TBD',
+          subcategory: 'info',
         },
         file: onTheFlyGeoJSONFile || file,
         createAsPublic: metadata?.public ?? true,

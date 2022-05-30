@@ -38,6 +38,8 @@ steps:
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
       - 'NEXT_PUBLIC_TMT_CONTACT_US_URL=$_NEXT_PUBLIC_TMT_CONTACT_US_URL'
+      - 'NEXT_PUBLIC_FEEDBACK_FORM_EN=$_NEXT_PUBLIC_FEEDBACK_FORM_EN'
+      - 'NEXT_PUBLIC_FEEDBACK_FORM_FR=$_NEXT_PUBLIC_FEEDBACK_FORM_FR'
 
   - id: 'docker-prepare'
     waitFor: ['build-app']
@@ -90,6 +92,20 @@ steps:
         --set-env-vars \
         BASIC_AUTH=$_BASIC_AUTH \
         --allow-unauthenticated
+
+  - id: 'i18n-labels publish stable'
+    name: gcr.io/cloud-builders/gcloud
+    waitFor: ['deploy-cloud-run']
+    entrypoint: bash
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
+        if [ $workspace_env = 'production' ]; then
+          gcloud -q beta builds triggers run --branch=develop ui-libs-i18n-labels-stable
+        fi
 
 timeout: 1800s
 options:

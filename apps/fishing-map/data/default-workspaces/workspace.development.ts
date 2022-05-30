@@ -53,11 +53,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FISHING_DATAVIEW_ID,
     },
     {
-      // This id is used for highlighting the dataview with a popup on the right
-      // update it here if you want to show it again or go to
-      // apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
-      // and update the `dataviewInstanceId`
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'vms',
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
@@ -83,7 +79,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: PRESENCE_DATAVIEW_ID,
     },
     {
-      id: 'viirs',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFEA00',
         colorRamp: 'yellow',

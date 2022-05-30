@@ -12,27 +12,69 @@
 
 .tooltipContainer {
   pointer-events: none;
-  top: -23px;
+  bottom: -2px;
   z-index: var(--timebar-z-highlighter-tooltips);
 }
 
+.highlighterCenter {
+  position: absolute;
+  content: ' ';
+  width: 1px;
+  height: 100%;
+  background: white;
+}
+
 .tooltip {
-  left: 50%;
   transform: translateX(-50%);
-  text-align: center;
   background: var(--timebar-ui-btn-color);
-  white-space: nowrap;
-  color: white;
-  padding: 6px;
+  color: var(--timebar-white);
+  padding: 6px 0;
   border-radius: 6px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
+  min-width: 320px;
+  overflow: auto;
+}
+
+.overflowRight {
+  transform: translateX(calc(-100% + 70px));
+}
+
+.tooltipDate,
+.tooltipItem {
+  display: block;
+  line-height: 1.8rem;
+  padding: 1px 10px 2px;
 }
 
 .tooltipDate {
+  font-weight: bold;
   text-transform: uppercase;
+  margin-right: 1rem;
+  padding-bottom: 4px;
 }
 
-.tooltipValue {
-  opacity: 0.5;
-  margin-left: 5px;
+.tooltipItem {
+  color: var(--timebar-white-faded);
+  width: 100%;
+  flex: 1;
+  align-items: center;
+  line-height: 1.6rem;
+  display: flex;
+}
+
+.tooltipItem.expanded {
+  background-color: var(--timebar-ui-btn-color-hover);
+}
+
+.tooltipItem:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.tooltipLabel:not(:last-child, .isMain)::after {
+  content: ', ';
+}
+
+.tooltipLabel.isMain {
+  color: var(--timebar-white);
+  margin-right: 0.4rem;
 }

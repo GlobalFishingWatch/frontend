@@ -1,6 +1,7 @@
-import React, { Fragment, useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { event as uaEvent } from 'react-ga'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
@@ -38,9 +39,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
         <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
-          <span
-            className={styles.popupSectionColor}
-            style={{ backgroundColor: featureByType[0].color }}
+          <Icon
+            icon="polygons"
+            className={styles.layerIcon}
+            style={{ color: featureByType[0].color }}
           />
           <div className={styles.popupSectionContent}>
             {showFeaturesDetails && (

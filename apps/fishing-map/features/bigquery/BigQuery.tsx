@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -134,7 +134,6 @@ const BigQueryMenu: React.FC = () => {
           onSelect={(selected) => {
             setVisualisationMode(selected.id)
           }}
-          onRemove={() => {}}
         />
         {visualisationMode === '4wings' && (
           <Select
@@ -146,7 +145,6 @@ const BigQueryMenu: React.FC = () => {
             onSelect={(selected) => {
               setAggregationOperation(selected.id)
             }}
-            onRemove={() => {}}
           />
         )}
       </div>

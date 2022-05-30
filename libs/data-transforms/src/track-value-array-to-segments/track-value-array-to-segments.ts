@@ -100,8 +100,13 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]
   })
 
   // close last open point and open segment
-  currentSegment.push(currentPoint)
-  segments.push(currentSegment)
+  if (Object.keys(currentPoint).length) {
+    currentSegment.push(currentPoint)
+  }
+
+  if (currentSegment.length) {
+    segments.push(currentSegment)
+  }
 
   return segments as Segment[]
 }

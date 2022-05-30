@@ -24,6 +24,7 @@ export enum EndpointId {
   FourwingsLegend = '4wings-legend',
   FourwingsInteraction = '4wings-interaction',
   Tracks = 'carriers-tracks',
+  ContextGeojson = 'temporal-context-geojson',
   UserContextTiles = 'user-context-tiles',
   UserTracks = 'user-tracks-data',
   Vessel = 'carriers-vessel',
@@ -51,6 +52,7 @@ export enum DatasetTypes {
   Tracks = 'carriers-tracks:v1',
   Fourwings = '4wings:v1',
   Context = 'user-context-layer:v1',
+  TemporalContext = 'temporal-context-layer:v1',
   Download = 'data-download:v1',
   // TODO
   UserTracks = 'user-tracks:v1',
@@ -102,11 +104,13 @@ export type DatasetSchema = {
   enum: string[]
   minimum: number
   maximum: number
+  stats?: boolean
 }
 
 export enum DatasetCategory {
   Context = 'context',
   Environment = 'environment',
+  Activity = 'activity',
 }
 
 export interface Dataset {
@@ -131,4 +135,15 @@ export interface Dataset {
   configuration: AnyDatasetConfiguration | null
   relatedDatasets: RelatedDataset[] | null
   fieldsAllowed: string[]
+}
+
+export interface ThinningConfig {
+  distanceFishing?: number
+  bearingValFishing?: number
+  changeSpeedFishing?: number
+  minAccuracyFishing?: number
+  distanceTransit?: number
+  bearingValTransit?: number
+  changeSpeedTransit?: number
+  minAccuracyTransit?: number
 }

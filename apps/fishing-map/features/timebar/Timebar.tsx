@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
@@ -6,18 +6,25 @@ import { useTranslation } from 'react-i18next'
 import {
   Timebar,
   TimebarTracks,
-  TimebarActivity,
   TimebarHighlighter,
   TimebarTracksEvents,
+  TimebarTracksGraph,
+  TimebarChartChunk,
+  TrackEventChunkProps,
+  TrackGraphOrientation,
+  HighlightedChunks,
 } from '@globalfishingwatch/timebar'
-import { ApiEvent } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { CONFIG_BY_INTERVAL, getTimeChunksInterval } from '@globalfishingwatch/layer-composer'
+import { ResourceStatus } from '@globalfishingwatch/api-types'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
-  useHighlightEventConnect,
+  useHighlightedEventsConnect,
   useDisableHighlightTimeConnect,
+  useActivityMetadata,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations } from 'types'
@@ -25,34 +32,73 @@ import useViewport from 'features/map/map-viewport.hooks'
 import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
-import { selectIsMapDrawing } from 'features/map/map.selectors'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/help/hints/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
+import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setHighlightedTime,
-  disableHighlightedTime,
-  selectHighlightedTime,
-  Range,
-} from './timebar.slice'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import {
-  selectTracksData,
-  selectTracksGraphs,
-  selectEventsWithRenderingInfo,
-} from './timebar.selectors'
+import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
-const TimebarHighlighterWrapper = ({ activity }: any) => {
+const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
+
+const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
+  // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
+  const onHighlightChunks = useCallback(
+    (chunks: HighlightedChunks) => {
+      if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
+        dispatchHighlightedEvents(chunks.tracksEvents)
+      } else {
+        dispatchHighlightedEvents(undefined)
+      }
+    },
+    [dispatchHighlightedEvents]
+  )
+  const metadata = useActivityMetadata()
+
+  // Return precise chunk frame extent
+  const activityDateCallback = useCallback(
+    (timestamp: number) => {
+      const dt = DateTime.fromMillis(timestamp).toUTC()
+      if (!metadata) {
+        return dt.toLocaleString(DateTime.DATETIME_MED)
+      }
+      const interval = metadata.timeChunks.interval
+      if (interval === 'hour') {
+        return dt.toLocaleString(DateTime.DATETIME_MED)
+      } else if (interval === 'day') {
+        return dt.toLocaleString(DateTime.DATE_MED)
+      } else if (interval === '10days') {
+        const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
+        const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame))
+        const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame))
+        return [
+          DateTime.fromJSDate(start).toLocaleString(DateTime.DATE_MED),
+          DateTime.fromJSDate(end).toLocaleString(DateTime.DATE_MED),
+        ].join('- ')
+      } else if (interval === 'month') {
+        // TODO
+      }
+
+      return dt.toLocaleString(DateTime.DATETIME_MED)
+    },
+    [metadata]
+  )
+  const { timebarVisualisation } = useTimebarVisualisationConnect()
+  const formatDate =
+    timebarVisualisation !== TimebarVisualisations.Heatmap ? undefined : activityDateCallback
+
   return highlightedTime ? (
     <TimebarHighlighter
       hoverStart={highlightedTime.start}
       hoverEnd={highlightedTime.end}
-      activity={activity}
-      unit="knots"
+      onHighlightChunks={onHighlightChunks}
+      dateCallback={formatDate}
     />
   ) : null
 }
@@ -62,16 +108,34 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
+  // const { highlightedEvents } = useHighlightedEventsConnect()
+  const [highlightedEvents, dispatchHighlightedEvents] = useState([])
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
-  const tracksGraphs = useSelector(selectTracksGraphs)
-  const tracksEvents = useSelector(selectEventsWithRenderingInfo)
-  const isMapDrawing = useSelector(selectIsMapDrawing)
+  const tracksGraphsData = useSelector(selectTracksGraphData)
+  const tracksEvents = useSelector(selectTracksEvents)
+  const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const { generatorsConfig } = useGeneratorsConnect()
+
+  const stickToUnit = useCallback(
+    (start, end) => {
+      const heatmapConfig = generatorsConfig.find(
+        (c) => c.id === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+      )
+      if (timebarVisualisation === TimebarVisualisations.Heatmap && heatmapConfig) {
+        const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
+        return interval === '10days' ? 'day' : interval
+      } else if (timebarVisualisation === TimebarVisualisations.Environment) {
+        // TODO decide interval for stick unit depending on available intervals when env layers have interval < month
+        return 'month'
+      }
+    },
+    [generatorsConfig, timebarVisualisation]
+  )
 
   const dispatch = useAppDispatch()
 
@@ -98,34 +162,31 @@ const TimebarWrapper = () => {
   )
 
   const isSmallScreen = useSmallScreen()
-  const hoverInEvent = useRef(false)
 
   const activityCategory = useSelector(selectActivityCategory)
 
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
-      if (hoverInEvent.current === false) {
-        if (clientX === null || clientX === undefined || isNaN(clientX)) {
-          dispatchDisableHighlightedTime()
-        } else {
-          try {
-            const start = scale(clientX - 10).toISOString()
-            const end = scale(clientX + 10).toISOString()
-            const startDateTime = DateTime.fromISO(start)
-            const endDateTime = DateTime.fromISO(end)
-            const diff = endDateTime.diff(startDateTime, 'hours')
-            if (diff.hours < 1) {
-              // To ensure at least 1h range is highlighted
-              const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
-              const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
-              dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
-            } else {
-              dispatch(setHighlightedTime({ start, end }))
-            }
-          } catch (e: any) {
-            console.log(clientX)
-            console.warn(e)
+      if (clientX === null || clientX === undefined || isNaN(clientX)) {
+        dispatchDisableHighlightedTime()
+      } else {
+        try {
+          const start = scale(clientX - 10).toISOString()
+          const end = scale(clientX + 10).toISOString()
+          const startDateTime = DateTime.fromISO(start)
+          const endDateTime = DateTime.fromISO(end)
+          const diff = endDateTime.diff(startDateTime, 'hours')
+          if (diff.hours < 1) {
+            // To ensure at least 1h range is highlighted
+            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
+            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+            dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
+          } else {
+            dispatch(setHighlightedTime({ start, end }))
           }
+        } catch (e: any) {
+          console.log(clientX)
+          console.warn(e)
         }
       }
     },
@@ -170,37 +231,84 @@ const TimebarWrapper = () => {
 
   const { zoom } = viewport
   const onEventClick = useCallback(
-    (event: ApiEvent) => {
+    (event: TimebarChartChunk<TrackEventChunkProps>) => {
       setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
-        zoom: zoom < 8 ? 8 : zoom,
+        latitude: event.props.latitude,
+        longitude: event.props.longitude,
+        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
     },
     [setMapCoordinates, zoom]
   )
 
-  const onEventHover = useCallback(
-    (event: ApiEvent) => {
-      if (event) {
-        dispatch(disableHighlightedTime())
-      }
-      hoverInEvent.current = event !== undefined
-      dispatchHighlightedEvent(event)
-    },
-    [dispatch, dispatchHighlightedEvent]
-  )
   const showGraph = useMemo(() => {
-    return timebarGraph !== 'none' && tracksGraphs && tracksGraphs.length === 1
-  }, [timebarGraph, tracksGraphs])
+    return (
+      timebarGraph !== 'none' &&
+      tracksGraphsData &&
+      (tracksGraphsData.length === 1 || tracksGraphsData.length === 2)
+    )
+  }, [timebarGraph, tracksGraphsData])
 
-  const highlighterActivity = useMemo(() => {
-    return timebarVisualisation === TimebarVisualisations.Vessel && showGraph && tracksGraphs
-      ? tracksGraphs
-      : null
-  }, [timebarVisualisation, showGraph, tracksGraphs])
+  const trackGraphOrientation = useMemo<TrackGraphOrientation>(() => {
+    if (tracksGraphsData && (tracksGraphsData.length === 0 || tracksGraphsData.length > 2))
+      return 'mirrored'
+    return {
+      none: 'mirrored',
+      speed: 'mirrored',
+      elevation: 'down',
+    }[timebarGraph] as TrackGraphOrientation
+  }, [timebarGraph, tracksGraphsData])
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
+
+  const loading =
+    tracks?.some(({ status }) => status === ResourceStatus.Loading) ||
+    tracksGraphsData?.some(({ status }) => status === ResourceStatus.Loading) ||
+    tracksEvents?.some(({ status }) => status === ResourceStatus.Loading)
+
+  const hasTrackError =
+    tracks?.some(({ status }) => status === ResourceStatus.Error) ||
+    tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
+
+  const getTracksComponents = () => {
+    if (hasTrackError) {
+      return (
+        <div className={styles.error}>
+          {t(
+            'analysis.error',
+            'There was a problem loading the data, please try refreshing the page'
+          )}
+        </div>
+      )
+    } else if (tracks.length > MAX_TIMEBAR_VESSELS) {
+      return (
+        <div className={styles.disclaimer}>
+          <label className={styles.disclaimerLabel}>
+            {upperFirst(
+              t('timebar.maxTracksNumber', 'Track detail not available for more than 10 vessels')
+            )}
+          </label>
+        </div>
+      )
+    }
+    return (
+      <Fragment>
+        <TimebarTracks key="tracks" data={tracks} />
+        {showGraph && tracksGraphsData && (
+          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} />
+        )}
+        {tracksEvents && (
+          <Fragment>
+            <TimebarTracksEvents
+              data={tracksEvents}
+              highlightedEventsIds={highlightedEvents}
+              onEventClick={onEventClick}
+            />
+          </Fragment>
+        )}
+      </Fragment>
+    )
+  }
 
   return (
     <div className={styles.timebarWrapper}>
@@ -222,48 +330,22 @@ const TimebarWrapper = () => {
         bookmarkPlacement="bottom"
         minimumRange={1}
         minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
+        stickToUnit={stickToUnit}
+        trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}
       >
         {!isSmallScreen ? (
           <Fragment>
-            {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
-            {timebarVisualisation === TimebarVisualisations.Vessel &&
-              (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
-                <Fragment>
-                  <TimebarTracks key="tracks" tracks={tracks} />
-                  {showGraph && tracksGraphs && (
-                    <TimebarActivity key="trackActivity" graphTracks={tracksGraphs} />
-                  )}
-                  {tracksEvents && (
-                    <Fragment>
-                      <TimebarTracksEvents
-                        key="events"
-                        labels={labels?.trackEvents}
-                        preselectedEventId={highlightedEvent?.id}
-                        tracksEvents={tracksEvents as any}
-                        onEventClick={onEventClick}
-                        onEventHover={onEventHover}
-                      />
-                    </Fragment>
-                  )}
-                </Fragment>
-              ) : (
-                <div className={styles.disclaimer}>
-                  <label className={styles.disclaimerLabel}>
-                    {upperFirst(
-                      t(
-                        'timebar.maxTracksNumber',
-                        'Track detail not available for more than 10 vessels'
-                      )
-                    )}
-                  </label>
-                </div>
-              ))}
-            <TimebarHighlighterWrapper activity={highlighterActivity} />
+            {(timebarVisualisation === TimebarVisualisations.Heatmap ||
+              timebarVisualisation === TimebarVisualisations.Environment) && (
+              <TimebarActivityGraph visualisation={timebarVisualisation} />
+            )}
+            {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
+            <TimebarHighlighterWrapper dispatchHighlightedEvents={dispatchHighlightedEvents} />
           </Fragment>
         ) : null}
       </Timebar>
-      {!isSmallScreen && <TimebarSettings />}
+      {!isSmallScreen && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>
   )

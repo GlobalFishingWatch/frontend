@@ -1,11 +1,14 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'lodash'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromDatasetConfig,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { Tabs, Tab, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { getDatasetLabel, hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './InfoModal.module.css'
@@ -14,10 +17,17 @@ type InfoModalProps = {
   dataview: UrlDataviewInstance
   onClick?: (e: React.MouseEvent) => void
   className?: string
+  showAllDatasets?: boolean
   onModalStateChange?: (open: boolean) => void
 }
 
-const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoModalProps) => {
+const InfoModal = ({
+  dataview,
+  onClick,
+  className,
+  onModalStateChange,
+  showAllDatasets,
+}: InfoModalProps) => {
   const { t } = useTranslation()
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
@@ -30,9 +40,13 @@ const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoMod
           (datasetConfig) => datasetConfig.datasetId === dataset.id
         )
         if (!datasetConfig) return []
-        const hasDatasetVesselId = hasDatasetConfigVesselData(datasetConfig)
+        const hasDatasetVesselId = getVesselIdFromDatasetConfig(datasetConfig)
         if (!hasDatasetVesselId) return []
-      } else if (dataview.config?.datasets && !dataview.config?.datasets?.includes(dataset.id)) {
+      } else if (
+        !showAllDatasets &&
+        dataview.config?.datasets &&
+        !dataview.config?.datasets?.includes(dataset.id)
+      ) {
         return []
       }
       return {

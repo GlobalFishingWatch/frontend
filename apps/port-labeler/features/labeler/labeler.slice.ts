@@ -8,6 +8,9 @@ interface ValuesObject {
 interface CountryMap {
   [key: string]: ValuesObject
 }
+interface CountrySelectMap {
+  [key: string]: PortSubarea[]
+}
 
 export type ProjectSlice = {
   data: PortPosition[]
@@ -17,8 +20,9 @@ export type ProjectSlice = {
   country: string | null
   hover: string | null
   selected: string[]
-  subareas: PortSubarea[]
-  ports: string[]
+  subareas: CountrySelectMap
+  ports: CountrySelectMap
+  extraData: boolean
 }
 
 const initialState: ProjectSlice = {
@@ -29,16 +33,21 @@ const initialState: ProjectSlice = {
   country: null,
   hover: null,
   selected: [],
-  subareas: [],
-  ports: [],
+  subareas: {},
+  ports: {},
+  extraData: false
 }
 
+// This slice in in change of manage the values of the points and sort the table
 const slice = createSlice({
   name: 'labeler',
   initialState,
   reducers: {
     setData: (state, action: PayloadAction<PortPosition[]>) => {
       state.data = action.payload
+    },
+    toogleExtraData: (state, action: PayloadAction<PortPosition[]>) => {
+      state.extraData = !state.extraData
     },
     setSelectedPoints: (state, action: PayloadAction<string[]>) => {
       state.selected = action.payload
@@ -50,10 +59,16 @@ const slice = createSlice({
       state.hover = action.payload
     },
     setSubareas: (state, action: PayloadAction<PortSubarea[]>) => {
-      state.subareas = action.payload
+      state.subareas[state.country] = action.payload
     },
-    setPorts: (state, action: PayloadAction<string[]>) => {
-      state.ports = action.payload
+    setPorts: (state, action: PayloadAction<PortSubarea[]>) => {
+      state.ports[state.country] = action.payload
+    },
+    sortOptions: (state) => {
+      const portOptions = [...state.ports[state.country]]
+      state.ports[state.country] = portOptions.sort((a, b) => a.name > b.name ? 1 : -1)
+      const subareaOptions = [...state.subareas[state.country]]
+      state.subareas[state.country] = subareaOptions.sort((a, b) => a.name > b.name ? 1 : -1)
     },
     setPortValues: (state, action: PayloadAction<ValuesObject>) => {
       if (!state.portValues[state.country])
@@ -153,11 +168,14 @@ export const {
   changePortValue,
   changeSubareaValue,
   changePointValue,
-  sortPoints
+  sortPoints,
+  sortOptions,
+  toogleExtraData
 } = slice.actions
 
 export default slice.reducer
 
+export const selectDisplayExtraData = (state: RootState) => state.labeler.extraData
 export const selectSelectedPoints = (state: RootState) => state.labeler.selected
 export const selectCountry = (state: RootState) => state.labeler.country
 export const selectHoverPoint = (state: RootState) => state.labeler.hover

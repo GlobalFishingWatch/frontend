@@ -2,17 +2,27 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
-import { ApiEvent } from '@globalfishingwatch/api-types'
-import { DEFAULT_CALLBACK_URL_KEY } from '@globalfishingwatch/react-hooks'
-import { TimebarVisualisations } from 'types'
-import { selectTimebarVisualisation } from 'features/app/app.selectors'
+import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { useMapStyle } from 'features/map/map-style.hooks'
+import {
+  selectTimebarGraph,
+  selectTimebarSelectedEnvId,
+  selectTimebarVisualisation,
+} from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveActivityDataviews,
+  selectActiveNonTrackEnvironmentalDataviews,
+} from 'features/dataviews/dataviews.selectors'
 import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import useMapInstance from 'features/map/map-context.hooks'
+import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectAnalysisArea, selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
@@ -20,8 +30,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   Range,
   changeSettings,
-  setHighlightedEvent,
-  selectHighlightedEvent,
+  setHighlightedEvents,
+  selectHighlightedEvents,
   selectHasChangedSettingsOnce,
   selectHighlightedTime,
   disableHighlightedTime,
@@ -123,24 +133,26 @@ export const useDisableHighlightTimeConnect = () => {
   )
 }
 
-export const useHighlightEventConnect = () => {
-  const highlightedEvent = useSelector(selectHighlightedEvent)
+export const useHighlightedEventsConnect = () => {
+  const highlightedEvents = useSelector(selectHighlightedEvents)
   const dispatch = useAppDispatch()
 
-  const dispatchHighlightedEvent = useCallback(
-    (event: ApiEvent | undefined) => {
-      dispatch(setHighlightedEvent(event))
+  const dispatchHighlightedEvents = useCallback(
+    (eventIds: string[]) => {
+      dispatch(setHighlightedEvents(eventIds))
     },
     [dispatch]
   )
 
-  return useMemo(
-    () => ({
-      highlightedEvent,
-      dispatchHighlightedEvent,
-    }),
-    [highlightedEvent, dispatchHighlightedEvent]
-  )
+  const serializedHighlightedEvents = highlightedEvents?.join('')
+
+  return useMemo(() => {
+    return {
+      highlightedEvents,
+      dispatchHighlightedEvents,
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serializedHighlightedEvents, dispatchHighlightedEvents])
 }
 
 export const useTimebarVisualisationConnect = () => {
@@ -161,41 +173,115 @@ export const useTimebarVisualisationConnect = () => {
   return { timebarVisualisation, dispatchTimebarVisualisation }
 }
 
+export const useTimebarEnvironmentConnect = () => {
+  const { dispatchQueryParams } = useLocationConnect()
+  const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
+
+  const dispatchTimebarSelectedEnvId = useCallback(
+    (timebarSelectedEnvId: string) => {
+      dispatchQueryParams({ timebarSelectedEnvId })
+    },
+    [dispatchQueryParams]
+  )
+
+  return { timebarSelectedEnvId, dispatchTimebarSelectedEnvId }
+}
+
+export const useTimebarGraphConnect = () => {
+  const timebarGraph = useSelector(selectTimebarGraph)
+  const { dispatchQueryParams } = useLocationConnect()
+  const dispatchTimebarGraph = useCallback(
+    (timebarGraph: TimebarGraphs) => {
+      dispatchQueryParams({ timebarGraph })
+    },
+    [dispatchQueryParams]
+  )
+
+  return {
+    timebarGraph,
+    dispatchTimebarGraph,
+  }
+}
+
 // Used to automate the behave depending on vessels or activity state
 // should be instanciated only once to avoid doing it more than needed
 export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeEnvDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
-  useEffect(() => {
-    if (timebarVisualisation === TimebarVisualisations.Heatmap) {
-      // fallback to vessels if heatmap = 0 (only if at least 1 vessel is available)
-      if (
-        (!activeHeatmapDataviews || activeHeatmapDataviews.length === 0) &&
-        activeTrackDataviews?.length
-      ) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeHeatmapDataviews, activeTrackDataviews])
+  // const prevTimebarVisualisation = usePrevious(timebarVisualisation)
+  const prevActiveHeatmapDataviewsNum = usePrevious(activeHeatmapDataviews.length)
+  const prevActiveTrackDataviewsNum = usePrevious(activeTrackDataviews.length)
+  const prevactiveEnvDataviewsNum = usePrevious(activeEnvDataviews.length)
 
   useEffect(() => {
-    if (timebarVisualisation !== TimebarVisualisations.Vessel) {
-      // switch to vessel if track shown "for the first time"
-      if (!hasChangedSettingsOnce && activeTrackDataviews?.length) {
+    // Fallback mechanisms to avoid empty timebar
+    if (timebarVisualisation === TimebarVisualisations.Heatmap && !activeHeatmapDataviews?.length) {
+      if (activeTrackDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
+      } else if (activeEnvDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
+      }
+    } else if (
+      timebarVisualisation === TimebarVisualisations.Vessel &&
+      !activeTrackDataviews?.length
+    ) {
+      if (activeHeatmapDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      } else if (activeEnvDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
+      }
+    } else if (
+      timebarVisualisation === TimebarVisualisations.Environment &&
+      !activeEnvDataviews?.length
+    ) {
+      if (activeHeatmapDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       }
-    } else {
-      // fallback to heatmap if vessel = 0
-      if (!activeTrackDataviews || activeTrackDataviews.length === 0) {
+      // Automatically switch to last-activated layer type if settings never have been changed manually
+    } else if (!hasChangedSettingsOnce) {
+      if (activeHeatmapDataviews.length === 1 && prevActiveHeatmapDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      } else if (activeTrackDataviews.length === 1 && prevActiveTrackDataviewsNum === 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
+      } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTrackDataviews, hasChangedSettingsOnce])
+  }, [activeHeatmapDataviews, activeTrackDataviews, activeEnvDataviews, hasChangedSettingsOnce])
 
   return { timebarVisualisation, dispatchTimebarVisualisation }
+}
+
+export const useActivityMetadata = (forceEnvironmental = false) => {
+  const map = useMapInstance()
+  const style = useMapStyle()
+
+  if (!map) return null
+
+  const generatorsMetadata = style?.metadata?.generatorsMetadata
+  if (!generatorsMetadata) return null
+
+  const activityHeatmapMetadata = generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
+  if (activityHeatmapMetadata?.timeChunks && !forceEnvironmental) {
+    return activityHeatmapMetadata
+  }
+
+  const environmentalMetadata = Object.entries(generatorsMetadata).filter(
+    ([id, metadata]) => (metadata as any).temporalgrid === true
+  )
+  const bqEnvironmentalMetadata = environmentalMetadata.filter(([id]) =>
+    id.includes(BIG_QUERY_PREFIX)
+  )
+  if (environmentalMetadata?.length === 1 && bqEnvironmentalMetadata?.length === 1) {
+    return bqEnvironmentalMetadata[0][1]
+  }
+
+  return null
 }

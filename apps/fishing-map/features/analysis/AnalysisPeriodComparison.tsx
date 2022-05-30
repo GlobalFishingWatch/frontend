@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useCallback } from 'react'
+import { Fragment, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -212,7 +212,6 @@ const AnalysisPeriodComparison: React.FC<AnalysisTypeProps> = (props) => {
                 <Select
                   options={DURATION_TYPES_OPTIONS}
                   onSelect={trackAndChangeDurationType}
-                  onRemove={() => {}}
                   className={styles.durationType}
                   selectedOption={durationTypeOption}
                 />

@@ -118,3 +118,6 @@ build
 
 .DS_Store
 .idea
+.local*
+tmp/
+affected-apps

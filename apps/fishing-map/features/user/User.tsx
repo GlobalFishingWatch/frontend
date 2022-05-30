@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { DatasetCategory } from '@globalfishingwatch/api-types'

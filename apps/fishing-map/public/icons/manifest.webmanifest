@@ -1,7 +1,7 @@
 {
   "name": "GFW Fishing map",
   "short_name": "GFW Fishing map",
-  "description": "Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.",
+  "description": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
   "dir": "auto",
   "lang": "en-US",
   "display": "standalone",

@@ -1,10 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewCategory, Dataset } from '@globalfishingwatch/api-types'
-import {
-  UrlDataviewInstance,
-  getGeneratorConfig,
-  resolveResourcesFromDatasetConfigs,
-} from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
 import {
   GeneratorType,
   BasemapGeneratorConfig,
@@ -20,10 +16,10 @@ import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data
 import { RootState } from 'store'
 import {
   selectActiveVesselsDataviews,
+  selectAllDataviewInstancesResolved,
   selectDataviewInstancesResolved,
-  selectDataviewsForResourceQuerying,
+  selectAllDataviews,
 } from 'features/dataviews/dataviews.slice'
-import { selectAllDataviews } from './dataviews.slice'
 
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -52,13 +48,6 @@ export const selectDefaultBasemapGenerator = createSelector(
   }
 )
 
-export const selectDataviewsResourceQueries = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviews) => {
-    return resolveResourcesFromDatasetConfigs(dataviews)
-  }
-)
-
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [selectDataviewInstancesResolved, selectWorkspaceStateProperty('activityCategory')],
   (dataviews = []) => {
@@ -79,7 +68,7 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
 }
 
 export const selectBasemapDataviewInstance = createSelector(
-  [selectDataviewsForResourceQuerying],
+  [selectAllDataviewInstancesResolved],
   (dataviews) => {
     const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
     return basemapDataview || defaultBasemapDataview
@@ -132,6 +121,13 @@ export const selectEnvironmentalDataviews = createSelector(
 export const selectActiveEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
+  [selectActiveEnvironmentalDataviews],
+  (dataviews) => {
+    return dataviews.filter((dv) => dv.datasets.every((ds) => ds.type !== DatasetTypes.UserTracks))
+  }
 )
 
 export const selectActiveTemporalgridDataviews = createSelector(
