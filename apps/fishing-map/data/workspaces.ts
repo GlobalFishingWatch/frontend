@@ -61,7 +61,7 @@ export const TEMPLATE_DATAVIEW_IDS = [
 export const PRESENCE_DATAVIEWS = [
   VIIRS_MATCH_DATAVIEW_ID, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_ID, // In case the workspace doesn't have the dataview added,
-  // SAR_DATAVIEW_ID, // TODO include once ready to release
+  SAR_DATAVIEW_ID, // TODO include once ready to release
 ]
 
 export const DEFAULT_DATAVIEW_IDS = [...PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]
