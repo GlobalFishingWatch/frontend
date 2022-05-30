@@ -38,6 +38,13 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         fitBounds(bboxLongitudes as Bbox)
       } else {
         if (
+          infoResource &&
+          (!infoResource.data?.firstTransmissionDate || !infoResource.data?.firstTransmissionDate)
+        ) {
+          console.warn('transmissionDates not available, cant fit time', infoResource)
+          return
+        }
+        if (
           window.confirm(
             t(
               'layer.vessel_fit_bounds_out_of_timerange',
