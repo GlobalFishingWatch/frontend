@@ -187,7 +187,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       tooltip={t('vessel.loading', 'Loading vessel track')}
     />
   ) : (
-    <FitBounds hasError={trackError} trackResource={trackResource as any} />
+    <FitBounds
+      hasError={trackError}
+      trackResource={trackResource as any}
+      infoResource={infoResource}
+    />
   )
 
   const InfoIconComponent = infoLoading ? (
