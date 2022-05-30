@@ -61,12 +61,9 @@ const PopupWrapper = dynamic(
 const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/hints/Hint'))
 
 // TODO: Abstract this away
-const transformRequest: (...args: any[]) => RequestParameters = (
-  url: string,
-  resourceType: string
-) => {
+const transformRequest: (...args: any[]) => RequestParameters = (url: string) => {
   const response: RequestParameters = { url }
-  if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
+  if (url.includes('globalfishingwatch')) {
     response.headers = {
       Authorization: 'Bearer ' + GFWAPI.getToken(),
     }
