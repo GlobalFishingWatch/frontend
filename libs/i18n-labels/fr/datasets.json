@@ -91,10 +91,9 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "longline",
-          "purse_seine": "purse_seine"
+          "longline": "longline"
         }
       },
       "vessel_id": "vessel_id",
@@ -108,21 +107,20 @@
     "description": "Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
+      "imo": "imo",
       "flag": "flag",
+      "mmsi": "mmsi",
       "source": "source",
-      "dataset": "dataset",
+      "callsign": "callsign",
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
           "longline": "longline",
-          "purse_seine": "purse_seine"
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -133,21 +131,20 @@
     "description": "Non Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
+      "imo": "imo",
       "flag": "flag",
+      "mmsi": "mmsi",
       "source": "source",
-      "dataset": "dataset",
+      "callsign": "callsign",
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
           "longline": "longline",
-          "purse_seine": "purse_seine"
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -878,10 +875,9 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "longline",
-          "purse_seine": "purse_seine"
+          "longline": "longline"
         }
       },
       "vessel_id": "vessel_id",
@@ -897,19 +893,15 @@
       "id": "id",
       "flag": "flag",
       "source": "source",
-      "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
           "longline": "longline",
-          "purse_seine": "purse_seine"
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -1618,6 +1610,11 @@
         }
       }
     }
+  },
+  "public-global-sar-footprints": {
+    "name": "SAR Footprints",
+    "description": "SAR",
+    "schema": {}
   },
   "public-global-sar-presence": {
     "name": "SAR",

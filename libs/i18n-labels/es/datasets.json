@@ -91,10 +91,9 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "longline": "longline"
         }
       },
       "vessel_id": "vessel_id",
@@ -108,21 +107,20 @@
     "description": "Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
+      "imo": "imo",
       "flag": "flag",
+      "mmsi": "mmsi",
       "source": "source",
-      "dataset": "dataset",
+      "callsign": "callsign",
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "longline": "longline",
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -133,24 +131,45 @@
     "description": "Non Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
+      "imo": "imo",
       "flag": "flag",
+      "mmsi": "mmsi",
       "source": "source",
-      "dataset": "dataset",
+      "callsign": "callsign",
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "longline": "longline",
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-belize-presence": {
+    "name": "Belize VMS",
+    "description": "Presence (Belize private)",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "longline",
+          "reefer": "reefer"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "private-bra-onyxsat-fishing-effort": {
@@ -355,28 +374,6 @@
       "licensDescription": "licensDescription",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
-    }
-  },
-  "private-belize-presence": {
-    "name": "VMS de Belice",
-    "description": "Presence (Belize private)",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "purse_seine": "purse_seine",
-          "trawler": "trawler",
-          "longline": "Palangre",
-          "reefer": "reefer"
-        }
-      },
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "distance_from_port_m": "distance_from_port_m",
-      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "private-bra-onyxsat-presence": {
@@ -878,10 +875,9 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "longline": "longline"
         }
       },
       "vessel_id": "vessel_id",
@@ -897,19 +893,15 @@
       "id": "id",
       "flag": "flag",
       "source": "source",
-      "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
         "enum": {
+          "purse_seine": "purse_seine",
           "trawler": "trawler",
-          "reefer": "reefer",
-          "longline": "Palangre",
-          "purse_seine": "purse_seine"
+          "longline": "longline",
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -1618,6 +1610,11 @@
         }
       }
     }
+  },
+  "public-global-sar-footprints": {
+    "name": "SAR Footprints",
+    "description": "SAR",
+    "schema": {}
   },
   "public-global-sar-presence": {
     "name": "SAR",
