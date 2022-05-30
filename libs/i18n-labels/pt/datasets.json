@@ -468,6 +468,52 @@
       "firstTransmissionDate": "primeira data de transmissão"
     }
   },
+  "private-global-sar-presence": {
+    "name": "SAR",
+    "description": "SAR",
+    "schema": {
+      "id": "id",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "cell": "cell",
+      "htime": "htime",
+      "ssvid": "ssvid",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": true,
+          "false": false
+        }
+      },
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "tuna_purse_seines": "tuna_purse_seines",
+          "driftnets": "driftnets",
+          "trollers": "trollers",
+          "set_longlines": "set_longlines",
+          "purse_seines": "purse_seines",
+          "pots_and_traps": "pots_and_traps",
+          "other_fishing": "other_fishing",
+          "dredge_fishing": "dredge_fishing",
+          "set_gillnets": "set_gillnets",
+          "fixed_gear": "fixed_gear",
+          "trawlers": "trawlers",
+          "fishing": "fishing",
+          "seiners": "seiners",
+          "other_purse_seines": "other_purse_seines",
+          "other_seines": "other_seines",
+          "squid_jigger": "squid_jigger",
+          "pole_and_line": "pole_and_line",
+          "drifting_longlines": "drifting_longlines"
+        }
+      },
+      "timestamp": "timestamp",
+      "vessel_id": "vessel_id",
+      "confidence": "confidence"
+    }
+  },
   "private-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
     "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
@@ -887,8 +933,8 @@
     }
   },
   "public-belize-fishing-vessels": {
-    "name": "Belize VMS",
-    "description": "Dataset for VMS Belize (Public)",
+    "name": "VMS Belize (Fishing Vessels)",
+    "description": "Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -902,6 +948,7 @@
           "reefer": "reefer"
         }
       },
+      "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -1609,6 +1656,11 @@
         }
       }
     }
+  },
+  "public-global-sar-footprints": {
+    "name": "SAR Footprints",
+    "description": "SAR",
+    "schema": {}
   },
   "public-global-sar-presence": {
     "name": "SAR",
