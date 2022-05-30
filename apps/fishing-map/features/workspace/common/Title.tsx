@@ -2,7 +2,6 @@ import { forwardRef, ReactNode, Ref } from 'react'
 import cx from 'classnames'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from '../workspace.hook'
-import styles from './Title'
 
 type TitleProps = {
   dataview: UrlDataviewInstance
