@@ -15,6 +15,7 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
+  SAR_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -86,6 +87,16 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: VIIRS_MATCH_DATAVIEW_ID,
+      datasetsConfig: [],
+    },
+    {
+      id: 'sar',
+      config: {
+        color: '#9CA4FF',
+        colorRamp: 'lilac',
+        visible: false,
+      },
+      dataviewId: SAR_DATAVIEW_ID,
       datasetsConfig: [],
     },
     {
