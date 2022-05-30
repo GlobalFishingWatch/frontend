@@ -3,7 +3,6 @@ import { ClickToComponent } from 'click-to-react-component'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
-import { MapProvider } from 'react-map-gl'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'
 import store from '../store'
@@ -33,9 +32,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
       {/* <RecoilizeDebugger root={root} /> */}
       <Provider store={store}>
         <ClickToComponent />
-        <MapProvider>
-          <Component {...pageProps} />
-        </MapProvider>
+        <Component {...pageProps} />
       </Provider>
     </RecoilRoot>
   )
