@@ -82,7 +82,6 @@ export const AUTHORIZED_PERMISSION = {
   action: 'ui.load',
 }
 export const INSURER_PERMISSION = {
-  // @TODO Update this with the permission defined for insurers
   type: 'application',
   value: 'risk-assessment',
   action: 'ui.load',
