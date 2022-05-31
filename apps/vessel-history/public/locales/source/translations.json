@@ -132,12 +132,16 @@
     "toggleLayers": "Toggle layers"
   },
   "risk": {
-    "encounterEventInMPA_one": "encounters in a MPA",
-    "encounterEventInMPA_other": "encounters in a MPA",
-    "fishingEventInMPA_one": "fishing event in a MPA",
-    "fishingEventInMPA_other": "fishing event in a MPA",
-    "loiteringEventInMPA_one": "loitering event in a MPA",
-    "loiteringEventInMPA_other": "loitering event in a MPA"
+    "encounterEventInMPA_one": "encounters in MPAs",
+    "encounterEventInMPA_other": "encounters in MPAs",
+    "fishingEventInMPA_one": "fishing event in MPAs",
+    "fishingEventInMPA_other": "fishing event in MPAs",
+    "loiteringEventInMPA_one": "loitering event in MPAs",
+    "loiteringEventInMPA_other": "loitering event in MPAs",
+    "noEncounterEventInMPA": "No encounters detected in MPAs",
+    "noFishingEventInMPA": "No fishing event detected in MPAs",
+    "noLoiteringEventInMPA": "No loitering event detected in MPAs",
+    "noRiskDetected": "No risk detected"
   },
   "search": {
     "activeAfter": "active After",

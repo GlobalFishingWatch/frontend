@@ -106,6 +106,52 @@ export function RiskSummary(props: RiskSummaryProps) {
       <RiskSection severity="none" title="None">
         None
       </RiskSection> */}
+
+      {(fishingInMPA.length === 0 ||
+        encountersInMPA.length === 0 ||
+        loiteringInMPA.length === 0) && (
+        <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
+          {fishingInMPA.length === 0 && (
+            <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
+              <RiskIndicator
+                title={
+                  t('risk.noFishingEventInMPA', 'No fishing event detected in an MPA') as string
+                }
+                events={fishingInMPA}
+                onEventInfoClick={openModal}
+                onEventMapClick={onEventMapClick}
+              ></RiskIndicator>
+            </RiskSection>
+          )}
+          {encountersInMPA.length === 0 && (
+            <RiskSection
+              className={styles.naSubSection}
+              title={t('event.encounter', 'encounter', { count: 2 })}
+            >
+              <RiskIndicator
+                title={
+                  t('risk.noEncounterEventInMPA', 'No encounters detected in an MPA') as string
+                }
+                events={encountersInMPA}
+                onEventInfoClick={openModal}
+                onEventMapClick={onEventMapClick}
+              ></RiskIndicator>
+            </RiskSection>
+          )}
+          {loiteringInMPA.length === 0 && (
+            <RiskSection className={styles.naSubSection} title={t('event.loitering', 'loitering')}>
+              <RiskIndicator
+                title={
+                  t('risk.noLoiteringEventInMPA', 'No loitering event detected in an MPA') as string
+                }
+                events={loiteringInMPA}
+                onEventInfoClick={openModal}
+                onEventMapClick={onEventMapClick}
+              ></RiskIndicator>
+            </RiskSection>
+          )}
+        </RiskSection>
+      )}
       <Modal
         appSelector="__next"
         title={selectedEvent?.description ?? ''}

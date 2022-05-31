@@ -6,14 +6,21 @@ import styles from './risk-section.module.css'
 /* eslint-disable-next-line */
 export interface RiskSectionProps {
   children?: ReactNode
-  severity: 'high' | 'medium' | 'low' | 'none'
+  className?: string
+  severity?: 'high' | 'medium' | 'low' | 'none'
   title: string
   titleInfo?: ReactNode
 }
 
-export function RiskSection({ children, severity, title, titleInfo }: RiskSectionProps) {
+export function RiskSection({
+  children,
+  className = '',
+  severity,
+  title,
+  titleInfo,
+}: RiskSectionProps) {
   return (
-    <div className={cx(styles['container'], styles[severity])}>
+    <div className={cx(styles['container'], styles[severity], className)}>
       <label className={styles.sectionLabel}>
         {title}
         {titleInfo && (

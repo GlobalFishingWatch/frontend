@@ -23,18 +23,22 @@ export function RiskIndicator({
   const hasEvents = useMemo(() => events.length > 0, [events.length])
   const onToggle = useCallback(() => setExpanded(!expanded), [expanded])
 
-  if (!hasEvents) return <Fragment></Fragment>
   return (
     <div className={styles['container']}>
       <div className={styles.title} onClick={onToggle}>
-        <div>{`${events.length} ${title}`}</div>
-        <IconButton
-          icon={expanded ? 'arrow-top' : 'arrow-down'}
-          size="small"
-          className={styles.toggle}
-        ></IconButton>
+        <div>{events.length > 0 ? `${events.length} ${title}` : title}</div>
+        {events.length > 0 ? (
+          <IconButton
+            icon={expanded ? 'arrow-top' : 'arrow-down'}
+            size="small"
+            className={styles.toggle}
+          ></IconButton>
+        ) : (
+          ''
+        )}
       </div>
-      {expanded &&
+      {hasEvents &&
+        expanded &&
         events.map((event, index) => (
           <Fragment>
             <div>

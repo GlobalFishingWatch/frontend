@@ -14,3 +14,7 @@
 .low {
   border-left: 0.5em solid var(--color-primary-green);
 }
+
+.none {
+  border-left: 0.5em solid var(--color-primary-gray);
+}
