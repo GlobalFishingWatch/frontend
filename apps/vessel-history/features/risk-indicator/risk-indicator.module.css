@@ -11,8 +11,7 @@
 }
 
 .event {
+  padding: var(--space-M) 0 var(--space-S) 0;
   margin-left: 0;
-  padding-left: 0;
-  padding-right: 0;
   border-top: var(--border);
 }

@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Modal } from '@globalfishingwatch/ui-components'
+import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'
 import RiskIndicator from 'features/risk-indicator/risk-indicator'
@@ -21,7 +21,7 @@ export interface RiskSummaryProps {
 export function RiskSummary(props: RiskSummaryProps) {
   const { t } = useTranslation()
   const { authorizedInsurer } = useUser()
-  const { encountersInMPA, fishingInMPA, loiteringInMPA } = useRisk()
+  const { encountersInMPA, eventsLoading, fishingInMPA, loiteringInMPA } = useRisk()
   const { highlightEvent } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
 
@@ -52,6 +52,7 @@ export function RiskSummary(props: RiskSummaryProps) {
     [highlightEvent, props, setMapCoordinates, viewport.zoom]
   )
   if (!authorizedInsurer) return <Fragment />
+  if (eventsLoading) return <Spinner className={styles.spinnerFull} />
   return (
     <div className={styles['container']}>
       {fishingInMPA.length > 0 && (
