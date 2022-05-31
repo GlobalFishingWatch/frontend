@@ -164,6 +164,7 @@
       "shortTitle": "Fishing"
     },
     "greaterThan": "Greater than",
+    "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",
     "hours": "hours",
     "km": "km",
     "loiteringEvents": {
