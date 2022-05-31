@@ -25,7 +25,7 @@ export const useUser = () => {
   const token = GFWAPI.getToken()
   const refreshToken = GFWAPI.getRefreshToken()
 
-  const authorized = useMemo(() => {
+  const authorizedInspector = useMemo(() => {
     return user && checkExistPermissionInList(user.permissions, AUTHORIZED_PERMISSION)
   }, [user])
 
@@ -48,7 +48,8 @@ export const useUser = () => {
   }, [accessToken, dispatch, logged, refreshToken, token])
 
   return {
-    authorized,
+    authorized: authorizedInspector || authorizedInsurer,
+    authorizedInspector,
     authorizedInsurer,
     loading: status !== AsyncReducerStatus.Finished && status !== AsyncReducerStatus.Idle,
     logged,

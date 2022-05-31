@@ -84,7 +84,7 @@ export const AUTHORIZED_PERMISSION = {
 export const INSURER_PERMISSION = {
   // @TODO Update this with the permission defined for insurers
   type: 'application',
-  value: 'vessel-viewer',
+  value: 'risk-assessment',
   action: 'ui.load',
 }
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
@@ -98,5 +98,5 @@ export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
 
 export const RISK_SUMMARY_SETTINGS = {
   // Time range to use when calculating indicators
-  timeRange: { years: 1 },
+  timeRange: { years: 10 },
 }
