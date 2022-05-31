@@ -10,7 +10,7 @@ interface SplitViewProps {
   showToggle?: boolean
   onToggle?: (e: React.MouseEvent) => void
   asideWidth?: string
-  aside: React.ReactNode
+  aside?: React.ReactNode
   main: React.ReactNode
   showAsideLabel?: string
   showMainLabel?: string

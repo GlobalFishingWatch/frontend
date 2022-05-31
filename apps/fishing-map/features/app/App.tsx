@@ -36,11 +36,11 @@ import { initializeHints } from 'features/help/hints/hints.slice'
 import AppModals from 'features/app/AppModals'
 import useMapInstance from 'features/map/map-context.hooks'
 import Map from 'features/map/Map'
+import ErrorBoundary from 'features/app/ErrorBoundary'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
-import ErrorBoundary from 'features/app/ErrorBoundary'
 
 const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
@@ -75,7 +75,7 @@ const Main = () => {
           <Map />
         </ErrorBoundary>
       </div>
-      {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
+      {/* {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />} */}
       <Footer />
     </div>
   )
@@ -212,14 +212,14 @@ function App(): React.ReactElement {
         isOpen={sidebarOpen}
         showToggle={workspaceLocation}
         onToggle={onToggle}
-        aside={<Sidebar onMenuClick={onMenuClick} />}
+        // aside={<Sidebar onMenuClick={onMenuClick} />}
         main={<Main />}
         asideWidth={asideWidth}
         showAsideLabel={getSidebarName()}
         showMainLabel={t('common.map', 'Map')}
         className="split-container"
       />
-      {!readOnly && (
+      {/* {!readOnly && (
         <Menu
           appSelector={ROOT_DOM_ELEMENT}
           bgImage={menuBgImage.src}
@@ -227,7 +227,7 @@ function App(): React.ReactElement {
           onClose={() => setMenuOpen(false)}
           activeLinkId="map-data"
         />
-      )}
+      )} */}
       <AppModals />
     </Fragment>
   )
