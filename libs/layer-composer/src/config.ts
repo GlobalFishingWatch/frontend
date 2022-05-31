@@ -15,4 +15,6 @@ export const DEFAULT_STYLE = {
   glyphs:
     'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-glyphs/master/_output/{fontstack}/{range}.pbf?raw=true',
   sprite: 'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites',
+  layers: [],
+  sources: {},
 }

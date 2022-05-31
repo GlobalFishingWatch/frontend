@@ -62,20 +62,20 @@ function MapDraw() {
   }
 
   // Goes directly to direct mode after crearing a polygon
-  const onModeChange = (e: DrawModeChageEvent) => {
-    const feature = drawControl.getSelected().features[0]
-    if (e.mode === 'simple_select' && feature) {
-      setDrawingMode('direct_select', feature.id as string)
-    }
-  }
+  // const onModeChange = (e: DrawModeChageEvent) => {
+  //   const feature = drawControl.getSelected()?.features[0]
+  //   if (e.mode === 'simple_select' && feature) {
+  //     setDrawingMode('direct_select', feature.id as string)
+  //   }
+  // }
 
   const onSelectionChange = (e: DrawSelectionChangeEvent) => {
     const feature = e.features?.[0] as DrawFeature
     if (feature) {
       setSelectedFeature(feature)
-      if (drawControl.getMode() === 'simple_select') {
-        setDrawingMode('direct_select', feature.id as string)
-      }
+      // if (drawControl.getMode() === 'simple_select') {
+      //   setDrawingMode('direct_select', feature.id as string)
+      // }
       const currentPoint = e.points?.[0]
       if (currentPoint) {
         const pointIndex = feature.geometry.coordinates[0].findIndex(
@@ -95,7 +95,7 @@ function MapDraw() {
     defaultMode: 'draw_polygon',
     onCreate: onCreate,
     onUpdate: onUpdate,
-    onModeChange: onModeChange,
+    // onModeChange: onModeChange,
     onSelectionChange: onSelectionChange,
   })
   const hasFeatureSelected = selectedFeature !== null
