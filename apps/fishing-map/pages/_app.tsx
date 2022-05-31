@@ -1,3 +1,4 @@
+import React from 'react'
 // import { appWithTranslation } from 'next-i18next'
 import { ClickToComponent } from 'click-to-react-component'
 import { AppProps } from 'next/app'
@@ -28,13 +29,15 @@ function CustomApp({ Component, pageProps }: AppProps) {
   // }, [root])
 
   return (
-    <RecoilRoot>
-      {/* <RecoilizeDebugger root={root} /> */}
-      <Provider store={store}>
-        <ClickToComponent />
-        <Component {...pageProps} />
-      </Provider>
-    </RecoilRoot>
+    <React.StrictMode>
+      <RecoilRoot>
+        {/* <RecoilizeDebugger root={root} /> */}
+        <Provider store={store}>
+          <ClickToComponent />
+          <Component {...pageProps} />
+        </Provider>
+      </RecoilRoot>
+    </React.StrictMode>
   )
 }
 
