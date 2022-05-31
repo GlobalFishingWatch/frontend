@@ -16,3 +16,16 @@ const Index = () => {
   )
 }
 export default Index
+
+// import { MapProvider } from 'react-map-gl'
+// import App from '../features/app/App'
+
+// const Index = () => {
+//   return (
+//     <MapProvider>
+//       <App />
+//     </MapProvider>
+//   )
+// }
+
+// export default Index

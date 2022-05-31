@@ -260,13 +260,6 @@ const MapWrapper = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
 
-  useEffect(() => {
-    if (map) {
-      map.showTileBoundaries = debugOptions.debug
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, debugOptions])
-
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 300)
 
