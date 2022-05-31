@@ -1,5 +1,10 @@
 .errorBoundary {
   margin: 2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .errorBoundary > * {
@@ -12,6 +17,10 @@
 
 .error {
   font-family: 'Courier New', Courier, monospace;
+  max-width: 80%;
+  max-height: 300px;
+  overflow: auto;
+  margin: 0 auto;
 }
 
 .mailto a {
