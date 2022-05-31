@@ -101,15 +101,15 @@ const mapStyles = {
 
 const MapWrapper = () => {
   // Used it only once here to attach the listener only once
-  useSetMapIdleAtom()
-  useMapSourceTilesLoadedAtom()
-  useEnvironmentalBreaksUpdate()
+  // useSetMapIdleAtom()
+  // useMapSourceTilesLoadedAtom()
+  // useEnvironmentalBreaksUpdate()
   // const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   // const setMapReady = useSetRecoilState(mapReadyAtom)
-  const hasTimeseries = useRecoilValue(selectMapTimeseries)
-  const { isMapDrawing } = useMapDrawConnect()
-  const dataviews = useSelector(selectDataviewInstancesResolved)
+  // const hasTimeseries = useRecoilValue(selectMapTimeseries)
+  // const { isMapDrawing } = useMapDrawConnect()
+  // const dataviews = useSelector(selectDataviewInstancesResolved)
   // const temporalgridDataviews = useSelector(selectActivityDataviews)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
@@ -174,7 +174,7 @@ const MapWrapper = () => {
   //   cancelPendingInteractionRequests()
   // }, [cancelPendingInteractionRequests, cleanFeatureState, dispatchClickedEvent])
 
-  const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
+  // const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 
   // const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
   //   null
@@ -201,19 +201,19 @@ const MapWrapper = () => {
 
   const { viewport, onViewportChange } = useViewport()
 
-  const { setMapBounds } = useMapBounds()
-  useEffect(() => {
-    setMapBounds()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewport])
+  // const { setMapBounds } = useMapBounds()
+  // useEffect(() => {
+  //   setMapBounds()
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [viewport])
 
-  const showTimeComparison = useSelector(selectShowTimeComparison)
-  const isAnalyzing = useSelector(selectIsAnalyzing)
-  const isWorkspace = useSelector(isWorkspaceLocation)
+  // const showTimeComparison = useSelector(selectShowTimeComparison)
+  // const isAnalyzing = useSelector(selectIsAnalyzing)
+  // const isWorkspace = useSelector(isWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
 
-  const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
-  const portalledLegend = !showTimeComparison
+  // const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
+  // const portalledLegend = !showTimeComparison
 
   // const mapLoaded = useMapLoaded()
   // const tilesClusterLoaded = useMapClusterTilesLoaded()
@@ -282,13 +282,14 @@ const MapWrapper = () => {
       <Map
         id="map"
         style={mapStyles}
-        keyboard={!isMapDrawing}
+        // keyboard={!isMapDrawing}
         zoom={viewport.zoom}
         mapLib={maplibregl}
         latitude={viewport.latitude}
         longitude={viewport.longitude}
         pitch={debugOptions.extruded ? 40 : 0}
-        onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+        // onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+        onMove={onViewportChange}
         mapStyle={(style as MapboxStyle) || DEFAULT_STYLE}
         transformRequest={transformRequest}
         // onResize={setMapBounds}
@@ -317,18 +318,18 @@ const MapWrapper = () => {
           hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
             <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
           )} */}
-        <MapInfo center={hoveredEvent} />
+        {/* <MapInfo center={hoveredEvent} />
         {isMapDrawing && <MapDraw />}
-        {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
+        {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />} */}
       </Map>
 
       {/* <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} /> */}
-      {isWorkspace && !isAnalyzing && (
+      {/* {isWorkspace && !isAnalyzing && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
       {isWorkspace && !isAnalyzing && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
-      )}
+      )} */}
     </div>
   )
 }

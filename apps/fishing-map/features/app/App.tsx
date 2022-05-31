@@ -208,7 +208,7 @@ function App(): React.ReactElement {
 
   return (
     <Fragment>
-      <SplitView
+      {/* <SplitView
         isOpen={sidebarOpen}
         showToggle={workspaceLocation}
         onToggle={onToggle}
@@ -218,7 +218,8 @@ function App(): React.ReactElement {
         showAsideLabel={getSidebarName()}
         showMainLabel={t('common.map', 'Map')}
         className="split-container"
-      />
+      /> */}
+      <Main />
       {/* {!readOnly && (
         <Menu
           appSelector={ROOT_DOM_ELEMENT}
