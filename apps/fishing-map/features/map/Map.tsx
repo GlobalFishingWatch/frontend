@@ -19,12 +19,7 @@ import {
   useDebounce,
   useMemoCompare,
 } from '@globalfishingwatch/react-hooks'
-import {
-  ExtendedStyleMeta,
-  GeneratorType,
-  LayerComposer,
-  DEFAULT_STYLE,
-} from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -102,7 +97,7 @@ const mapStyles = {
 const MapWrapper = () => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
-  // useMapSourceTilesLoadedAtom()
+  useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -260,6 +255,13 @@ const MapWrapper = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
 
+  useEffect(() => {
+    if (map) {
+      map.showTileBoundaries = debugOptions.debug
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, debugOptions])
+
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 300)
 
@@ -277,50 +279,50 @@ const MapWrapper = () => {
 
   return (
     <div className={styles.container}>
-      <Map
-        id="map"
-        style={mapStyles}
-        // keyboard={!isMapDrawing}
-        zoom={viewport.zoom}
-        mapLib={maplibregl}
-        latitude={viewport.latitude}
-        longitude={viewport.longitude}
-        pitch={debugOptions.extruded ? 40 : 0}
-        // onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
-        onMove={onViewportChange}
-        mapStyle={(style as MapboxStyle) || DEFAULT_STYLE}
-        transformRequest={transformRequest}
-        onResize={setMapBounds}
-        cursor={rulersEditing ? rulesCursor : getCursor()}
-        interactiveLayerIds={interactiveLayerIds}
-        onClick={isMapDrawing ? undefined : currentClickCallback}
-        onMouseEnter={onMouseMove}
-        onMouseMove={onMouseMove}
-        onMouseLeave={resetHoverState}
-        onLoad={onLoadCallback}
-        onError={handleError}
-        onMouseOut={resetHoverState}
-      >
-        {clickedEvent && (
-          <PopupWrapper
-            type="click"
-            event={clickedTooltipEvent}
-            onClose={closePopup}
-            closeOnClick={false}
-            closeButton
-          />
-        )}
-        {hoveredTooltipEvent &&
-          !clickedEvent &&
-          hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
-          hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
-            <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
+      {style && (
+        <Map
+          id="map"
+          style={mapStyles}
+          keyboard={!isMapDrawing}
+          zoom={viewport.zoom}
+          mapLib={maplibregl}
+          latitude={viewport.latitude}
+          longitude={viewport.longitude}
+          pitch={debugOptions.extruded ? 40 : 0}
+          onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+          mapStyle={style as MapboxStyle}
+          transformRequest={transformRequest}
+          onResize={setMapBounds}
+          cursor={rulersEditing ? rulesCursor : getCursor()}
+          interactiveLayerIds={interactiveLayerIds}
+          onClick={isMapDrawing ? undefined : currentClickCallback}
+          onMouseEnter={onMouseMove}
+          onMouseMove={onMouseMove}
+          onMouseLeave={resetHoverState}
+          onLoad={onLoadCallback}
+          onError={handleError}
+          onMouseOut={resetHoverState}
+        >
+          {clickedEvent && (
+            <PopupWrapper
+              type="click"
+              event={clickedTooltipEvent}
+              onClose={closePopup}
+              closeOnClick={false}
+              closeButton
+            />
           )}
-        <MapInfo center={hoveredEvent} />
-        {isMapDrawing && <MapDraw />}
-        {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
-      </Map>
-
+          {hoveredTooltipEvent &&
+            !clickedEvent &&
+            hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
+            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
+              <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
+            )}
+          <MapInfo center={hoveredEvent} />
+          {isMapDrawing && <MapDraw />}
+          {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
+        </Map>
+      )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
       {isWorkspace && !isAnalyzing && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
