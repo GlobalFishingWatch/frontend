@@ -119,7 +119,10 @@ export const useSelectedTracksConnect = () => {
       } else if (e.port_label) {
         tempPortsNames.push(e.port_label)
       }
-      tempSubareas.push(e.community_iso3)
+      // can be null when the user change a port to another country
+      if (e.community_iso3) {
+        tempSubareas.push(e.community_iso3)
+      }
     })
     const uniqueTempPortsNames = [...new Set(tempPortsNames)];
     const uniqueTempPortsIds = [...new Set(tempPortsIds)];
@@ -165,7 +168,7 @@ export const useSelectedTracksConnect = () => {
       })
       dispatch(setPorts(countryPorts.sort((a, b) => a.name > b.name ? 1 : -1)))
       const portMap = countryRecords.reduce((ac, value, i, v) => {
-        ac[value.s2id] = value.port_iso3 ?? countryPorts.find(port => port.name === value.port_label).id
+        ac[value.s2id] = value.port_iso3 ?? (value.port_label ? countryPorts.find(port => port.name === value.port_label).id : null)
         return ac
       }, {})
 

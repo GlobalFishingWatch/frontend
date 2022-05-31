@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
-import { InputText, SelectOption } from '@globalfishingwatch/ui-components'
+import { IconButton, InputText, Modal, SelectOption } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition } from 'types'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
@@ -24,11 +24,13 @@ import { useValueManagerConnect } from './TableAnchorage.hooks'
 type TableRowProps = {
   record: PortPosition
   extra: boolean
+  onCountryChange: (point: PortPosition) => void
 }
 
 function TableRow({
   record,
-  extra
+  extra,
+  onCountryChange
 }: TableRowProps) {
   const map = useMapInstance()
   const dispatch = useDispatch()
@@ -143,7 +145,17 @@ function TableRow({
       </div>
       {extra && <div className={styles.col}>
         {record.s2id}
+        <IconButton
+          type="default"
+          icon='pin-filled'
+          size='tiny'
+          tooltip="Change country"
+          tooltipPlacement="left"
+          className={styles.actionButton}
+          onClick={() => onCountryChange(record)}
+        />
       </div>}
+
     </div>
   )
 }

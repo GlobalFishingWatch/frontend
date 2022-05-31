@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { point } from '@turf/helpers'
 import { RootState } from 'store'
 import { PortPosition, PortSubarea } from 'types'
 
@@ -105,6 +106,21 @@ const slice = createSlice({
         state.subareaValues[state.country][action.payload.id] = action.payload.value
       }
     },
+    changeAnchoragePort: (state, action: PayloadAction<{ id: string, iso3: string }>) => {
+      state.data = state.data.map(point => {
+        if (point.s2id === action.payload.id) {
+          return {
+            ...point,
+            port_iso3: null,
+            port_label: null,
+            community_label: null,
+            iso3: action.payload.iso3,
+            community_iso3: null
+          }
+        }
+        return point
+      })
+    },
     changePointValue: (state, action: PayloadAction<{ id: string, value: string }>) => {
       if (state.selected && state.selected.length) {
         const newPointValues = state.pointValues
@@ -170,7 +186,8 @@ export const {
   changePointValue,
   sortPoints,
   sortOptions,
-  toogleExtraData
+  toogleExtraData,
+  changeAnchoragePort
 } = slice.actions
 
 export default slice.reducer
