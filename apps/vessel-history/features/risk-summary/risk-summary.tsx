@@ -11,6 +11,9 @@ import useMapEvents from 'features/map/map-events.hooks'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import useViewport from 'features/map/map-viewport.hooks'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import TerminologyEncounterEvents from 'features/terminology/terminology-encounter-events'
+import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
+import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
 import styles from './risk-summary.module.css'
 
 /* eslint-disable-next-line */
@@ -56,7 +59,11 @@ export function RiskSummary(props: RiskSummaryProps) {
   return (
     <div className={styles['container']}>
       {fishingInMPA.length > 0 && (
-        <RiskSection severity="medium" title={t('event.fishing', 'fishing')}>
+        <RiskSection
+          severity="medium"
+          title={t('event.fishing', 'fishing')}
+          titleInfo={<TerminologyFishingEvents />}
+        >
           <RiskIndicator
             title={
               t('risk.fishingEventInMPA', 'fishing event in a MPA', {
@@ -70,7 +77,11 @@ export function RiskSummary(props: RiskSummaryProps) {
         </RiskSection>
       )}
       {encountersInMPA.length > 0 && (
-        <RiskSection severity="medium" title={t('event.encounter', 'encounter', { count: 2 })}>
+        <RiskSection
+          severity="medium"
+          title={t('event.encounter', 'encounter', { count: 2 })}
+          titleInfo={<TerminologyEncounterEvents />}
+        >
           <RiskIndicator
             title={
               t('risk.encounterEventInMPA', 'encounters in a MPA', {
@@ -84,7 +95,11 @@ export function RiskSummary(props: RiskSummaryProps) {
         </RiskSection>
       )}
       {loiteringInMPA.length > 0 && (
-        <RiskSection severity="medium" title={t('event.loitering', 'loitering')}>
+        <RiskSection
+          severity="medium"
+          title={t('event.loitering', 'loitering')}
+          titleInfo={<TerminologyLoiteringEvents />}
+        >
           <RiskIndicator
             title={
               t('risk.loiteringEventInMPA', 'loitering event in a MPA', {
