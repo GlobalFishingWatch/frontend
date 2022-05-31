@@ -19,7 +19,12 @@ import {
   useDebounce,
   useMemoCompare,
 } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
+import {
+  ExtendedStyleMeta,
+  GeneratorType,
+  LayerComposer,
+  DEFAULT_STYLE,
+} from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -277,52 +282,53 @@ const MapWrapper = () => {
     return styleInteractiveLayerIds
   }, [isMapDrawing, rulersEditing, styleInteractiveLayerIds])
 
+  console.log(style)
+
   return (
     <div className={styles.container}>
-      {style && (
-        <Map
-          id="map"
-          style={mapStyles}
-          keyboard={!isMapDrawing}
-          zoom={viewport.zoom}
-          mapLib={maplibregl}
-          latitude={viewport.latitude}
-          longitude={viewport.longitude}
-          pitch={debugOptions.extruded ? 40 : 0}
-          onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
-          mapStyle={style as MapboxStyle}
-          transformRequest={transformRequest}
-          onResize={setMapBounds}
-          cursor={rulersEditing ? rulesCursor : getCursor()}
-          interactiveLayerIds={interactiveLayerIds}
-          onClick={isMapDrawing ? undefined : currentClickCallback}
-          onMouseEnter={onMouseMove}
-          onMouseMove={onMouseMove}
-          onMouseLeave={resetHoverState}
-          onLoad={onLoadCallback}
-          onError={handleError}
-          onMouseOut={resetHoverState}
-        >
-          {clickedEvent && (
-            <PopupWrapper
-              type="click"
-              event={clickedTooltipEvent}
-              onClose={closePopup}
-              closeOnClick={false}
-              closeButton
-            />
+      <Map
+        id="map"
+        style={mapStyles}
+        keyboard={!isMapDrawing}
+        zoom={viewport.zoom}
+        mapLib={maplibregl}
+        latitude={viewport.latitude}
+        longitude={viewport.longitude}
+        pitch={debugOptions.extruded ? 40 : 0}
+        onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+        mapStyle={(style as MapboxStyle) || DEFAULT_STYLE}
+        transformRequest={transformRequest}
+        onResize={setMapBounds}
+        cursor={rulersEditing ? rulesCursor : getCursor()}
+        interactiveLayerIds={interactiveLayerIds}
+        onClick={isMapDrawing ? undefined : currentClickCallback}
+        onMouseEnter={onMouseMove}
+        onMouseMove={onMouseMove}
+        onMouseLeave={resetHoverState}
+        onLoad={onLoadCallback}
+        onError={handleError}
+        onMouseOut={resetHoverState}
+      >
+        {clickedEvent && (
+          <PopupWrapper
+            type="click"
+            event={clickedTooltipEvent}
+            onClose={closePopup}
+            closeOnClick={false}
+            closeButton
+          />
+        )}
+        {hoveredTooltipEvent &&
+          !clickedEvent &&
+          hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
+          hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
+            <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
           )}
-          {hoveredTooltipEvent &&
-            !clickedEvent &&
-            hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
-            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
-              <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
-            )}
-          <MapInfo center={hoveredEvent} />
-          {isMapDrawing && <MapDraw />}
-          {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
-        </Map>
-      )}
+        <MapInfo center={hoveredEvent} />
+        {isMapDrawing && <MapDraw />}
+        {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
+      </Map>
+
       <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
       {isWorkspace && !isAnalyzing && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
