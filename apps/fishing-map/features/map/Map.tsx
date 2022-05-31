@@ -104,13 +104,13 @@ const MapWrapper = () => {
   useSetMapIdleAtom()
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
-  const map = useMapInstance()
+  // const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-  const setMapReady = useSetRecoilState(mapReadyAtom)
+  // const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const { isMapDrawing } = useMapDrawConnect()
   const dataviews = useSelector(selectDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActivityDataviews)
+  // const temporalgridDataviews = useSelector(selectActivityDataviews)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
@@ -120,84 +120,84 @@ const MapWrapper = () => {
     defaultStyleTransformations,
     layerComposer
   )
-  const allSourcesLoaded = useAllMapSourceTilesLoaded()
+  // const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
-  const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
-    useClickedEventConnect()
-  const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
-  const { cleanFeatureState } = useFeatureState(map)
-  const { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing } = useRulers()
+  // const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
+  //   useClickedEventConnect()
+  // const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
+  // const { cleanFeatureState } = useFeatureState(map)
+  // const { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing } = useRulers()
 
-  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
+  // const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
 
-  const clickedCellLayers = useMemo(() => {
-    if (!clickedEvent || !clickedTooltipEvent) return
+  // const clickedCellLayers = useMemo(() => {
+  //   if (!clickedEvent || !clickedTooltipEvent) return
 
-    const layersByCategory = (clickedTooltipEvent?.features ?? [])
-      .sort(
-        (a, b) =>
-          POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
-      )
-      .reduce(
-        (prev: Record<string, TooltipEventFeature[]>, current) => ({
-          ...prev,
-          [current.category]: [...(prev[current.category] ?? []), current],
-        }),
-        {}
-      )
+  //   const layersByCategory = (clickedTooltipEvent?.features ?? [])
+  //     .sort(
+  //       (a, b) =>
+  //         POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
+  //     )
+  //     .reduce(
+  //       (prev: Record<string, TooltipEventFeature[]>, current) => ({
+  //         ...prev,
+  //         [current.category]: [...(prev[current.category] ?? []), current],
+  //       }),
+  //       {}
+  //     )
 
-    return Object.entries(layersByCategory).map(
-      ([featureCategory, features]) =>
-        `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
-    )
-  }, [clickedEvent, clickedTooltipEvent])
+  //   return Object.entries(layersByCategory).map(
+  //     ([featureCategory, features]) =>
+  //       `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
+  //   )
+  // }, [clickedEvent, clickedTooltipEvent])
 
-  const currentClickCallback = useMemo(() => {
-    const clickEvent = (event: any) => {
-      uaEvent({
-        category: 'Environmental data',
-        action: `Click in grid cell`,
-        label: getEventLabel(clickedCellLayers ?? []),
-      })
-      return rulersEditing ? onMapClickWithRuler(event) : onMapClick(event)
-    }
-    return clickEvent
-  }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onMapClick])
+  // const currentClickCallback = useMemo(() => {
+  //   const clickEvent = (event: any) => {
+  //     uaEvent({
+  //       category: 'Environmental data',
+  //       action: `Click in grid cell`,
+  //       label: getEventLabel(clickedCellLayers ?? []),
+  //     })
+  //     return rulersEditing ? onMapClickWithRuler(event) : onMapClick(event)
+  //   }
+  //   return clickEvent
+  // }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onMapClick])
 
-  const onLoadCallback = useCallback(() => {
-    setMapReady(true)
-  }, [setMapReady])
+  // const onLoadCallback = useCallback(() => {
+  //   setMapReady(true)
+  // }, [setMapReady])
 
-  const closePopup = useCallback(() => {
-    cleanFeatureState('click')
-    dispatchClickedEvent(null)
-    cancelPendingInteractionRequests()
-  }, [cancelPendingInteractionRequests, cleanFeatureState, dispatchClickedEvent])
+  // const closePopup = useCallback(() => {
+  //   cleanFeatureState('click')
+  //   dispatchClickedEvent(null)
+  //   cancelPendingInteractionRequests()
+  // }, [cancelPendingInteractionRequests, cleanFeatureState, dispatchClickedEvent])
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-    null
-  )
-  const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
-  const onMapHover = useMapHover(
-    setHoveredEvent as InteractionEventCallback,
-    setHoveredDebouncedEvent as InteractionEventCallback,
-    map,
-    style?.metadata
-  )
-  const currentMapHoverCallback = useMemo(() => {
-    return rulersEditing ? onMapHoverWithRuler : onMapHover
-  }, [rulersEditing, onMapHoverWithRuler, onMapHover])
+  // const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
+  //   null
+  // )
+  // const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
+  // const onMapHover = useMapHover(
+  //   setHoveredEvent as InteractionEventCallback,
+  //   setHoveredDebouncedEvent as InteractionEventCallback,
+  //   map,
+  //   style?.metadata
+  // )
+  // const currentMapHoverCallback = useMemo(() => {
+  //   return rulersEditing ? onMapHoverWithRuler : onMapHover
+  // }, [rulersEditing, onMapHoverWithRuler, onMapHover])
 
-  const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
-  useMapHighlightedEvent(hoveredTooltipEvent?.features)
+  // const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
+  // useMapHighlightedEvent(hoveredTooltipEvent?.features)
 
-  const resetHoverState = useCallback(() => {
-    setHoveredEvent(null)
-    setHoveredDebouncedEvent(null)
-    cleanFeatureState('hover')
-  }, [cleanFeatureState])
+  // const resetHoverState = useCallback(() => {
+  //   setHoveredEvent(null)
+  //   setHoveredDebouncedEvent(null)
+  //   cleanFeatureState('hover')
+  // }, [cleanFeatureState])
 
   const { viewport, onViewportChange } = useViewport()
 
@@ -215,65 +215,65 @@ const MapWrapper = () => {
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
   const portalledLegend = !showTimeComparison
 
-  const mapLoaded = useMapLoaded()
-  const tilesClusterLoaded = useMapClusterTilesLoaded()
+  // const mapLoaded = useMapLoaded()
+  // const tilesClusterLoaded = useMapClusterTilesLoaded()
 
-  const getCursor = useCallback(() => {
-    if (isMapDrawing) {
-      // updating cursor using css at style.css as the library sets classes depending on the state
-      return undefined
-    } else if (hoveredTooltipEvent) {
-      // Workaround to fix cluster events duplicated, only working for encounters and needs
-      // TODO if wanted to scale it to other layers
-      const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
-      const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
+  // const getCursor = useCallback(() => {
+  //   if (isMapDrawing) {
+  //     // updating cursor using css at style.css as the library sets classes depending on the state
+  //     return undefined
+  //   } else if (hoveredTooltipEvent) {
+  //     // Workaround to fix cluster events duplicated, only working for encounters and needs
+  //     // TODO if wanted to scale it to other layers
+  //     const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
+  //     const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
-      const clusterFeature = hoveredTooltipEvent.features.find(
-        (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
-      )
+  //     const clusterFeature = hoveredTooltipEvent.features.find(
+  //       (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
+  //     )
 
-      if (clusterFeature) {
-        if (!tilesClusterLoaded) {
-          return 'progress'
-        }
-        const { expansionZoom, lat, lng, lon } = clusterFeature.properties
-        const longitude = lng || lon
-        return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
-      }
-      const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
-        (f) => f.category === DataviewCategory.Vessels
-      )
-      if (vesselFeatureEvents.length > 1) {
-        return 'grab'
-      }
-      return 'pointer'
-    } else if (map?.isMoving()) {
-      return 'grabbing'
-    }
-    return 'grab'
-  }, [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded])
+  //     if (clusterFeature) {
+  //       if (!tilesClusterLoaded) {
+  //         return 'progress'
+  //       }
+  //       const { expansionZoom, lat, lng, lon } = clusterFeature.properties
+  //       const longitude = lng || lon
+  //       return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
+  //     }
+  //     const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
+  //       (f) => f.category === DataviewCategory.Vessels
+  //     )
+  //     if (vesselFeatureEvents.length > 1) {
+  //       return 'grab'
+  //     }
+  //     return 'pointer'
+  //   } else if (map?.isMoving()) {
+  //     return 'grabbing'
+  //   }
+  //   return 'grab'
+  // }, [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded])
 
-  useEffect(() => {
-    if (map) {
-      map.showTileBoundaries = debugOptions.debug
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, debugOptions])
+  // useEffect(() => {
+  //   if (map) {
+  //     map.showTileBoundaries = debugOptions.debug
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [map, debugOptions])
 
-  const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
-  const debouncedMapLoading = useDebounce(mapLoading, 300)
+  // const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
+  // const debouncedMapLoading = useDebounce(mapLoading, 300)
 
-  const onMouseMove: any = useMemo(() => {
-    return isMapDrawing ? onSimpleMapHover : currentMapHoverCallback
-  }, [currentMapHoverCallback, isMapDrawing, onSimpleMapHover])
+  // const onMouseMove: any = useMemo(() => {
+  //   return isMapDrawing ? onSimpleMapHover : currentMapHoverCallback
+  // }, [currentMapHoverCallback, isMapDrawing, onSimpleMapHover])
 
-  const styleInteractiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
-  const interactiveLayerIds = useMemo(() => {
-    if (rulersEditing || isMapDrawing) {
-      return undefined
-    }
-    return styleInteractiveLayerIds
-  }, [isMapDrawing, rulersEditing, styleInteractiveLayerIds])
+  // const styleInteractiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
+  // const interactiveLayerIds = useMemo(() => {
+  //   if (rulersEditing || isMapDrawing) {
+  //     return undefined
+  //   }
+  //   return styleInteractiveLayerIds
+  // }, [isMapDrawing, rulersEditing, styleInteractiveLayerIds])
 
   console.log(style)
 
@@ -291,18 +291,18 @@ const MapWrapper = () => {
         onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
         mapStyle={(style as MapboxStyle) || DEFAULT_STYLE}
         transformRequest={transformRequest}
-        onResize={setMapBounds}
-        cursor={rulersEditing ? rulesCursor : getCursor()}
-        interactiveLayerIds={interactiveLayerIds}
-        onClick={isMapDrawing ? undefined : currentClickCallback}
-        onMouseEnter={onMouseMove}
-        onMouseMove={onMouseMove}
-        onMouseLeave={resetHoverState}
-        onLoad={onLoadCallback}
-        onError={handleError}
-        onMouseOut={resetHoverState}
+        // onResize={setMapBounds}
+        // cursor={rulersEditing ? rulesCursor : getCursor()}
+        // interactiveLayerIds={interactiveLayerIds}
+        // onClick={isMapDrawing ? undefined : currentClickCallback}
+        // onMouseEnter={onMouseMove}
+        // onMouseMove={onMouseMove}
+        // onMouseLeave={resetHoverState}
+        // onLoad={onLoadCallback}
+        // onError={handleError}
+        // onMouseOut={resetHoverState}
       >
-        {clickedEvent && (
+        {/* {clickedEvent && (
           <PopupWrapper
             type="click"
             event={clickedTooltipEvent}
@@ -316,13 +316,13 @@ const MapWrapper = () => {
           hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
           hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
             <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
-          )}
+          )} */}
         <MapInfo center={hoveredEvent} />
         {isMapDrawing && <MapDraw />}
         {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
       </Map>
 
-      <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
+      {/* <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} /> */}
       {isWorkspace && !isAnalyzing && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
