@@ -112,16 +112,6 @@ export function RiskSummary(props: RiskSummaryProps) {
           ></RiskIndicator>
         </RiskSection>
       )}
-      {/* <RiskSection severity="med" title="Med">
-        Med
-      </RiskSection>
-      <RiskSection severity="low" title="Low" titleInfo={<Fragment>some info</Fragment>}>
-        Low
-      </RiskSection>
-      <RiskSection severity="none" title="None">
-        None
-      </RiskSection> */}
-
       {(fishingInMPA.length === 0 ||
         encountersInMPA.length === 0 ||
         loiteringInMPA.length === 0) && (
