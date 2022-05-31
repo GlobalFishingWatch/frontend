@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'
@@ -18,6 +19,7 @@ export interface RiskSummaryProps {
 }
 
 export function RiskSummary(props: RiskSummaryProps) {
+  const { t } = useTranslation()
   const { authorizedInsurer } = useUser()
   const { encountersInMPA, fishingInMPA, loiteringInMPA } = useRisk()
   const { highlightEvent } = useMapEvents()
@@ -53,9 +55,13 @@ export function RiskSummary(props: RiskSummaryProps) {
   return (
     <div className={styles['container']}>
       {fishingInMPA.length > 0 && (
-        <RiskSection severity="medium" title="Fishing">
+        <RiskSection severity="medium" title={t('event.fishing', 'fishing')}>
           <RiskIndicator
-            title="fishing in an MPA"
+            title={
+              t('risk.fishingEventInMPA', 'fishing event in a MPA', {
+                count: fishingInMPA.length,
+              }) as string
+            }
             events={fishingInMPA}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}
@@ -63,9 +69,13 @@ export function RiskSummary(props: RiskSummaryProps) {
         </RiskSection>
       )}
       {encountersInMPA.length > 0 && (
-        <RiskSection severity="medium" title="Encounters">
+        <RiskSection severity="medium" title={t('event.encounter', 'encounter', { count: 2 })}>
           <RiskIndicator
-            title="encounters in an MPA"
+            title={
+              t('risk.encounterEventInMPA', 'encounters in a MPA', {
+                count: fishingInMPA.length,
+              }) as string
+            }
             events={encountersInMPA}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}
@@ -73,9 +83,13 @@ export function RiskSummary(props: RiskSummaryProps) {
         </RiskSection>
       )}
       {loiteringInMPA.length > 0 && (
-        <RiskSection severity="medium" title="Loitering">
+        <RiskSection severity="medium" title={t('event.loitering', 'loitering')}>
           <RiskIndicator
-            title="loitering in an MPA"
+            title={
+              t('risk.loiteringEventInMPA', 'loitering event in a MPA', {
+                count: loiteringInMPA.length,
+              }) as string
+            }
             events={loiteringInMPA}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}

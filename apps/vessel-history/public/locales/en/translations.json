@@ -53,6 +53,8 @@
     "distanceShore": "Distance from shore",
     "duration": "Duration",
     "encounter": "encounter",
+    "encounter_one": "encounter",
+    "encounter_other": "encounters",
     "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
     "encounterActionWithNoRegion": "Encounter with {{vessel}}",
     "end": "End",
@@ -118,6 +120,14 @@
     "filters": "Filter events",
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"
+  },
+  "risk": {
+    "encounterEventInMPA_one": "encounter in a MPA",
+    "encounterEventInMPA_other": "encounters in a MPA",
+    "fishingEventInMPA_one": "fishing event in a MPA",
+    "fishingEventInMPA_other": "fishing events in a MPA",
+    "loiteringEventInMPA_one": "loitering event in a MPA",
+    "loiteringEventInMPA_other": "loitering events in a MPA"
   },
   "search": {
     "activeAfter": "active After",
