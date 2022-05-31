@@ -75,7 +75,7 @@ const Main = () => {
           <Map />
         </ErrorBoundary>
       </div>
-      {/* {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />} */}
+      {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
       <Footer />
     </div>
   )
@@ -208,19 +208,18 @@ function App(): React.ReactElement {
 
   return (
     <Fragment>
-      {/* <SplitView
+      <SplitView
         isOpen={sidebarOpen}
         showToggle={workspaceLocation}
         onToggle={onToggle}
-        // aside={<Sidebar onMenuClick={onMenuClick} />}
+        aside={<Sidebar onMenuClick={onMenuClick} />}
         main={<Main />}
         asideWidth={asideWidth}
         showAsideLabel={getSidebarName()}
         showMainLabel={t('common.map', 'Map')}
         className="split-container"
-      /> */}
-      <Main />
-      {/* {!readOnly && (
+      />
+      {!readOnly && (
         <Menu
           appSelector={ROOT_DOM_ELEMENT}
           bgImage={menuBgImage.src}
@@ -228,7 +227,7 @@ function App(): React.ReactElement {
           onClose={() => setMenuOpen(false)}
           activeLinkId="map-data"
         />
-      )} */}
+      )}
       <AppModals />
     </Fragment>
   )
