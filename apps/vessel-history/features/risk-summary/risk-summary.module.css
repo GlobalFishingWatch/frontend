@@ -1,0 +1,11 @@
+.naSubSection {
+  padding-left: 0;
+}
+
+.naSubSection:last-child {
+  border-bottom: 0;
+}
+
+.spinnerFull {
+  height: calc(100vh - 110px);
+}
