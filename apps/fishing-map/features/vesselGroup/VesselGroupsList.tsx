@@ -21,20 +21,21 @@ function VesselsGroupList({}: //   schemaFilter,
 VesselsGroupListProps): React.ReactElement {
   const vesselGroupsOptions = useVesselGroupsOptions()
   const { t } = useTranslation()
-  const { optionsWithModal, onSelectCallback } = useVesselGroupSelectWithModal(
-    vesselGroupsOptions,
-    (selection) => {
-      console.log('actually do some shit', selection)
-    },
-    styles.openModalLink
-  )
+  const { vesselGroupsOptionsWithModal, onSelectVesselGroupFilterClick } =
+    useVesselGroupSelectWithModal(
+      vesselGroupsOptions,
+      (selection) => {
+        console.log('actually do some shit', selection)
+      },
+      styles.openModalLink
+    )
 
   return (
     <div className={styles.container}>
-      {optionsWithModal.map((option) => (
+      {vesselGroupsOptionsWithModal.map((option) => (
         <div
           className={cx(styles.optionItem, option.className)}
-          onClick={() => onSelectCallback(option)}
+          onClick={() => onSelectVesselGroupFilterClick('vessel-groups', option)}
         >
           {option.label}
         </div>

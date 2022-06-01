@@ -36,7 +36,7 @@ export type SupportedDatasetSchema =
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
-  | 'vesselGroup'
+  | 'vessel-groups'
 
 type IncompatibleFilter = {
   id: SupportedDatasetSchema
@@ -247,7 +247,7 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  if (schema === 'flag') {
+  if (schema === 'flag' || schema === 'vessel-groups') {
     // returning true as the schema fields enum comes from the static list in getFlags()
     return true
   }
@@ -319,6 +319,9 @@ export const getCommonSchemaFieldsInDataview = (
 ): SchemaFieldSelection[] => {
   if (schema === 'flag') {
     return getFlags()
+  } else if (schema === 'vessel-groups') {
+    // Must be injected in dataview beforehand
+    return dataview.config['vessel-groups']
   }
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
@@ -396,11 +399,10 @@ export const getFiltersBySchema = (
   return { id: schema, disabled, options, optionsSelected, type }
 }
 
-export const geSchemaFiltersInDataview = (dataview: SchemaFieldDataview): SchemaFilter[] => {
+export const getSchemaFiltersInDataview = (dataview: SchemaFieldDataview): SchemaFilter[] => {
   const fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
-  console.log(dataview)
   const fieldsOrder =
     dataview.datasets.length === 1 &&
     (dataview.datasets[0].configuration?.fieldsOrder as SupportedDatasetSchema[])

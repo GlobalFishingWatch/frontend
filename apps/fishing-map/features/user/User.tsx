@@ -11,6 +11,7 @@ import {
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { fetchVesselGroups } from 'features/vesselGroup/vessel-groups.slice'
 import styles from './User.module.css'
 import { GUEST_USER_TYPE, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'
@@ -34,6 +35,7 @@ function User() {
   useEffect(() => {
     dispatch(fetchDefaultWorkspaceThunk())
     dispatch(fetchAllDatasetsThunk())
+    dispatch(fetchVesselGroups())
   }, [dispatch])
 
   useEffect(() => {

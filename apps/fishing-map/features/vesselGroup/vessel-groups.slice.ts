@@ -15,21 +15,52 @@ interface VesselGroupsSliceState {
   isModalOpen: boolean
 }
 
-// const VESSEL_GROUP_MOCK = [
-//   { id: 'vesselGroup1', vesselIDs: ['1', '2', '3', '4', '5', '6'], name: 'Long Xing' },
-//   {
-//     id: 'vesselGroup2',
-//     vesselIDs: ['1', '2', '3', '4', '5', '6', '11', '12', '13', '14', '15', '16'],
-//     name: 'My Custom vessel group 1',
-//   },
-// ]
+const VESSEL_GROUP_MOCK = [
+  {
+    id: '9',
+    name: 'Long Xing',
+    vessels: [
+      {
+        dataset: 'private-global-other-vessels:v20201001',
+        vesselId: 'd037727b4-4b5a-2da9-e54c-1d355c368282',
+      },
+      {
+        dataset: 'private-global-other-vessels:v20201001',
+        vesselId: '754095371-1750-71bc-1e58-a9ad5d46d55d',
+      },
+      {
+        dataset: 'private-global-other-vessels:v20201001',
+        vesselId: 'decfb0d2b-b14b-3306-f3fa-6e79a73a4883',
+      },
+    ],
+  },
+  {
+    id: 'test',
+    name: 'dummy',
+    vessels: [],
+  },
+]
 
 const initialState: VesselGroupsSliceState = {
   status: AsyncReducerStatus.Idle,
   error: {},
   data: [],
-  isModalOpen: true,
+  // data: VESSEL_GROUP_MOCK,
+  isModalOpen: false,
+  // isModalOpen: true,
 }
+
+export const fetchVesselGroupsThunk = createAsyncThunk<VesselGroup[], undefined>(
+  'vessel-groups/fetch',
+  async (_, { getState }) => {
+    const state = getState() as RootState
+    if (state.vesselGroups.data.length) return state.vesselGroups.data
+    const version = 'v2'
+    const url = `/${version}/vessel-groups/`
+    const vesselGroups = (await GFWAPI.fetch(url)) as any
+    return vesselGroups.entries as VesselGroup[]
+  }
+)
 
 export const saveVesselGroupThunk = createAsyncThunk(
   'vessel-groups/save',
@@ -71,6 +102,17 @@ const vesselGroupsSlice = createSlice({
       console.log(payload)
     })
     builder.addCase(saveVesselGroupThunk.rejected, (state, action) => {
+      state.status = AsyncReducerStatus.Error
+      console.log('rejected')
+    })
+    builder.addCase(fetchVesselGroupsThunk.pending, (state) => {
+      state.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchVesselGroupsThunk.fulfilled, (state, action) => {
+      state.status = AsyncReducerStatus.Finished
+      state.data = action.payload as VesselGroup[]
+    })
+    builder.addCase(fetchVesselGroupsThunk.rejected, (state, action) => {
       state.status = AsyncReducerStatus.Error
       console.log('rejected')
     })

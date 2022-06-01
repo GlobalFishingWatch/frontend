@@ -1,7 +1,8 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { debounce } from 'lodash'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   MultiSelect,
   MultiSelectOnChange,
@@ -12,7 +13,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   getCommonSchemaFieldsInDataview,
-  geSchemaFiltersInDataview,
+  getSchemaFiltersInDataview,
   getIncompatibleFilterSelection,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
@@ -20,14 +21,19 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import ActivitySchemaFilter, {
   showSchemaFilter,
 } from 'features/workspace/activity/ActivitySchemaFilter'
-import { useVesselGroupsOptions } from 'features/vesselGroup/vessel-groups.hooks'
+import {
+  useVesselGroupsOptions,
+  useVesselGroupSelectWithModal,
+} from 'features/vesselGroup/vessel-groups.hooks'
+import { isGFWUser } from 'features/user/user.slice'
+import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
+import { fetchVesselGroupsThunk } from 'features/vesselGroup/vessel-groups.slice'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
   getSourcesOptionsInDataview,
   getSourcesSelectedInDataview,
 } from './activity.utils'
-import ActivityVesselGroupFilter from './ActivityVesselGroupFilter'
 
 type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
@@ -43,6 +49,7 @@ const trackEvent = debounce((filterKey: string, label: string) => {
 
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const gfwUser = useSelector(isGFWUser)
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
@@ -58,8 +65,18 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
-  const schemaFilters = geSchemaFiltersInDataview(dataview)
-  console.log(schemaFilters)
+  const schemaFilters = getSchemaFiltersInDataview({
+    ...dataview,
+    config: {
+      ...dataview.config,
+      // allow dataset.utils/getCommonSchemaFieldsInDataview to grab vessel groups
+      ...(allowVesselGroup && { 'vessel-groups': vesselGroupsOptions }),
+    },
+  })
+
+  useEffect(() => {
+    dispatch(fetchVesselGroupsThunk() as any)
+  }, [dispatch])
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     let datasets: string[] = []
@@ -186,6 +203,9 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     })
   }
 
+  const { vesselGroupsOptionsWithModal, onSelectVesselGroupFilterClick } =
+    useVesselGroupSelectWithModal(vesselGroupsOptions, onSelectFilterClick, styles.openModalLink)
+
   const showSchemaFilters = showSourceFilter || schemaFilters.some(showSchemaFilter)
 
   if (!showSchemaFilters) {
@@ -211,27 +231,21 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         return (
           <ActivitySchemaFilter
             key={schemaFilter.id}
-            schemaFilter={schemaFilter}
-            onSelect={onSelectFilterClick}
+            schemaFilter={
+              schemaFilter.id === 'vessel-groups'
+                ? { ...schemaFilter, options: vesselGroupsOptionsWithModal }
+                : schemaFilter
+            }
+            onSelect={
+              schemaFilter.id === 'vessel-groups'
+                ? onSelectVesselGroupFilterClick
+                : onSelectFilterClick
+            }
             onRemove={onRemoveFilterClick}
             onClean={onCleanFilterClick}
           />
         )
       })}
-      {allowVesselGroup && (
-        <ActivityVesselGroupFilter
-          schemaFilter={{
-            id: 'vesselGroup',
-            disabled: false,
-            options: vesselGroupsOptions,
-            optionsSelected: [vesselGroupsOptions[0]],
-            type: 'string',
-          }}
-          onSelect={onSelectFilterClick}
-          onRemove={onRemoveFilterClick}
-          onClean={onCleanFilterClick}
-        />
-      )}
     </Fragment>
   )
 }
