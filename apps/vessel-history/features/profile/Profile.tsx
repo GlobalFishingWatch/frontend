@@ -179,67 +179,76 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const visibleHighlights = useSelector(countFilteredEventsHighlighted)
 
+  const mapTab = useMemo(
+    () => ({
+      id: 'map',
+      title: t('common.map', 'MAP').toLocaleUpperCase(),
+      content: vessel ? (
+        <div className={styles.mapContainer}>
+          <Map />
+        </div>
+      ) : loading ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : null,
+    }),
+    [loading, t, vessel]
+  )
+  const riskSummaryTab = useMemo(
+    () => ({
+      id: 'risk',
+      title: t('common.riskSummary', 'Risk Summary').toLocaleUpperCase(),
+      content: vessel ? (
+        <RiskSummary onMoveToMap={() => setActiveTab(mapTab)} />
+      ) : loading ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : null,
+    }),
+    [loading, mapTab, t, vessel]
+  )
+
+  const infoTab = useMemo(
+    () => ({
+      id: 'info',
+      title: t('common.info', 'INFO').toLocaleUpperCase(),
+      content: vessel ? (
+        <Info
+          vessel={vessel}
+          lastPosition={lastPosition}
+          lastPortVisit={lastPortVisit}
+          onMoveToMap={() => setActiveTab(mapTab)}
+        />
+      ) : loading ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : null,
+    }),
+    [lastPortVisit, lastPosition, loading, mapTab, t, vessel]
+  )
+  const activityTab = useMemo(
+    () => ({
+      id: 'activity',
+      title: (
+        <div className={styles.tagContainer}>
+          {t('common.activity', 'ACTIVITY').toLocaleUpperCase()}
+          {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
+        </div>
+      ),
+      content: vessel ? (
+        <Activity
+          vessel={vessel}
+          lastPosition={lastPosition}
+          lastPortVisit={lastPortVisit}
+          onMoveToMap={() => setActiveTab(mapTab)}
+        />
+      ) : loading ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : null,
+    }),
+    [lastPortVisit, lastPosition, loading, mapTab, t, vessel, visibleHighlights]
+  )
+
   const tabs: Tab[] = useMemo(
-    () => [
-      ...(authorizedInsurer
-        ? [
-            {
-              id: 'risk',
-              title: t('common.riskSummary', 'Risk Summary').toLocaleUpperCase(),
-              content: vessel ? (
-                <RiskSummary onMoveToMap={() => setActiveTab(tabs?.[3])} />
-              ) : (
-                <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
-              ),
-            },
-          ]
-        : []),
-      {
-        id: 'info',
-        title: t('common.info', 'INFO').toLocaleUpperCase(),
-        content: vessel ? (
-          <Info
-            vessel={vessel}
-            lastPosition={lastPosition}
-            lastPortVisit={lastPortVisit}
-            onMoveToMap={() => setActiveTab(tabs?.[3])}
-          />
-        ) : (
-          <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
-        ),
-      },
-      {
-        id: 'activity',
-        title: (
-          <div className={styles.tagContainer}>
-            {t('common.activity', 'ACTIVITY').toLocaleUpperCase()}
-            {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
-          </div>
-        ),
-        content: vessel ? (
-          <Activity
-            vessel={vessel}
-            lastPosition={lastPosition}
-            lastPortVisit={lastPortVisit}
-            onMoveToMap={() => setActiveTab(tabs?.[3])}
-          />
-        ) : (
-          <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
-        ),
-      },
-      {
-        id: 'map',
-        title: t('common.map', 'MAP').toLocaleUpperCase(),
-        content: vessel ? (
-          <div className={styles.mapContainer}>
-            <Map />
-          </div>
-        ) : (
-          <Fragment>{loading && <Spinner className={styles.spinnerFull}></Spinner>}</Fragment>
-        ),
-      },
-    ],
-    [authorizedInsurer, t, vessel, loading, lastPosition, lastPortVisit, visibleHighlights]
+    () => [...(authorizedInsurer ? [riskSummaryTab] : []), infoTab, activityTab, mapTab],
+    [authorizedInsurer, riskSummaryTab, infoTab, activityTab, mapTab]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
