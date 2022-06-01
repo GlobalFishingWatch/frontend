@@ -16,7 +16,6 @@ import TerminologyFishingEvents from 'features/terminology/terminology-fishing-e
 import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
 import styles from './risk-summary.module.css'
 
-/* eslint-disable-next-line */
 export interface RiskSummaryProps {
   onMoveToMap?: () => void
 }

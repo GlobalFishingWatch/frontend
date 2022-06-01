@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
+import { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'

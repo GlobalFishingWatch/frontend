@@ -5,7 +5,6 @@ import { RenderedEvent } from 'features/vessels/activity/vessels-activity.select
 import { Voyage } from 'types/voyage'
 import styles from './risk-indicator.module.css'
 
-/* eslint-disable-next-line */
 export interface RiskIndicatorProps {
   events: RenderedEvent[]
   onEventInfoClick: (event: RenderedEvent) => void
@@ -40,17 +39,13 @@ export function RiskIndicator({
       {hasEvents &&
         expanded &&
         events.map((event, index) => (
-          <Fragment>
-            <div>
-              <ActivityEvent
-                classname={styles.event}
-                key={index}
-                event={event}
-                onMapClick={onEventMapClick}
-                onInfoClick={onEventInfoClick}
-              />
-            </div>
-          </Fragment>
+          <ActivityEvent
+            classname={styles.event}
+            key={index}
+            event={event}
+            onMapClick={onEventMapClick}
+            onInfoClick={onEventInfoClick}
+          />
         ))}
     </div>
   )

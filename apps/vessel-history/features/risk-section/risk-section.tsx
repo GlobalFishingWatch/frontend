@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import styles from './risk-section.module.css'
 
-/* eslint-disable-next-line */
 export interface RiskSectionProps {
   children?: ReactNode
   className?: string
