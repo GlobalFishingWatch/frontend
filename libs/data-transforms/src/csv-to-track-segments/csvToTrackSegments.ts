@@ -19,6 +19,8 @@ const getUTCDate = (timestamp: string) => {
   )
 }
 
+export const NO_RECORD_ID = 'no_id'
+
 export const csvToTrackSegments = ({
   records,
   latitude,
@@ -29,7 +31,7 @@ export const csvToTrackSegments = ({
   const grouped = id ? groupBy(records, id) : { no_id: records }
   const segments = Object.values(grouped).map((groupedRecords) => {
     return groupedRecords.map((record) => {
-      const recordId = id && record[id] ? record[id] : 'no_id'
+      const recordId = id && record[id] ? record[id] : NO_RECORD_ID
       return {
         latitude: parseFloat(record[latitude]),
         longitude: parseFloat(record[longitude]),
