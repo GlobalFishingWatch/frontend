@@ -36,7 +36,7 @@ const DataAndTerminology: React.FC<ModalProps> = ({
         icon="info"
         size={size}
         type={type}
-        className={className}
+        className={cx(styles.infoButton, className)}
         onClick={() => setShowModal(true)}
       />
       <Modal

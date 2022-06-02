@@ -7,6 +7,7 @@ import ActivityDate from './ActivityDate'
 import styles from './Activity.module.css'
 
 interface EventProps {
+  classname?: string
   event: RenderedEvent
   highlighted?: boolean
   onInfoClick?: (event: RenderedEvent) => void
@@ -14,6 +15,7 @@ interface EventProps {
 }
 
 const ActivityEvent: React.FC<EventProps> = ({
+  classname = '',
   event,
   highlighted = false,
   onInfoClick = () => {},
@@ -21,9 +23,14 @@ const ActivityEvent: React.FC<EventProps> = ({
 }): React.ReactElement => {
   return (
     <Fragment>
-      <div className={styles.event}>
+      <div className={cx(styles.event, classname)}>
         <div
-          className={cx(styles.eventIcon, styles[event.type], styles[getEncounterStatus(event)], highlighted ? styles.highlighted : '')}
+          className={cx(
+            styles.eventIcon,
+            styles[event.type],
+            styles[getEncounterStatus(event)],
+            highlighted ? styles.highlighted : ''
+          )}
         >
           {event.type === 'encounter' && <Icon icon="event-encounter" type="default" />}
           {event.type === 'loitering' && <Icon icon="event-loitering" type="default" />}

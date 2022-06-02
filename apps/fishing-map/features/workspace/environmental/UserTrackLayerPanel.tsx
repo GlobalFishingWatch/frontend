@@ -23,6 +23,7 @@ import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import FitBounds from '../common/FitBounds'
+import { NO_RECORD_ID } from '@globalfishingwatch/data-transforms'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -73,6 +74,9 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
     selectResourceByUrl<FeatureCollection>(trackUrl)
   )
   const trackError = trackResource?.status === ResourceStatus.Error
+  const hasRecordIds =
+    dataset.configuration.id &&
+    trackResource?.data?.features?.some((f) => f.properties.id !== NO_RECORD_ID)
 
   const loading = trackResource?.status === ResourceStatus.Loading
 
@@ -142,7 +146,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
         </div>
       </div>
 
-      {layerActive && singleTrack && trackResource && trackResource.data && (
+      {layerActive && singleTrack && trackResource?.data && hasRecordIds && (
         <div className={styles.properties}>
           {trackResource.data.features
             .slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH)
