@@ -151,7 +151,10 @@ export const selectTracksGraphData = createSelector(
       ) {
         return { ...trackGraphData, status: ResourceStatus.Error }
       }
-      const graphChunks: TimebarChartChunk[] = graphResource.data.map((segment) => {
+      const graphChunks: TimebarChartChunk[] = graphResource.data.flatMap((segment) => {
+        if (!segment) {
+          return []
+        }
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
           // TODO This assumes that segments ends at last value's timestamp, which is probably incorrect
