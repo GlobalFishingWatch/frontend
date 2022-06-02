@@ -73,9 +73,13 @@ const StackedActivity = ({
     highlighterIconCallback
   )
   useUpdateChartsData('activity', dataAsTimebarChartData)
+  const dataviewsLength = dataviews?.length
   const pathContainers = useMemo(() => {
-    return getPathContainers(timeseries, graphHeight, overallScale, dataviews.length)
-  }, [timeseries, graphHeight, overallScale, dataviews.length])
+    if (!dataviewsLength) {
+      return []
+    }
+    return getPathContainers(timeseries, graphHeight, overallScale, dataviewsLength)
+  }, [timeseries, graphHeight, overallScale, dataviewsLength])
 
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2
 
