@@ -8,28 +8,8 @@ import { useControl } from 'react-map-gl'
 import type { MapRef, ControlPosition } from 'react-map-gl'
 import { useEffect } from 'react'
 
-type ControlTypes =
-  | 'point'
-  | 'line_string'
-  | 'polygon'
-  | 'trash'
-  | 'combine_features'
-  | 'uncombine_features'
-
-type DrawControlProps = {
-  keybindings?: boolean
-  touchEnable?: boolean
-  boxSelect?: boolean
-  clickBuffer?: number
-  touchBuffer?: number
-  controls?: Partial<{ [name in ControlTypes]: boolean }>
-  displayControlsDefault?: boolean
-  modes?: any
-  defaultMode?: string
-  userProperties?: boolean
-
+type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
   position?: ControlPosition
-
   onCreate?: (e: DrawCreateEvent) => void
   onUpdate?: (e: DrawUpdateEvent) => void
   onModeChange?: (e: DrawModeChageEvent) => void
@@ -148,7 +128,8 @@ export default function useDrawControl(props: DrawControlProps) {
     onModeChange = defaultFn,
     onSelectionChange = defaultFn,
   } = props
-  const drawControl = useControl(
+
+  const drawControl = useControl<MapboxDraw>(
     ({ map }: { map: MapRef }) => {
       map.on('draw.create', onCreate)
       map.on('draw.update', onUpdate)

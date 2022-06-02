@@ -35,7 +35,7 @@ import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints/hints.slice'
 import AppModals from 'features/app/AppModals'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useAppDispatch, usePageVisibility } from './app.hooks'
+import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
@@ -65,11 +65,10 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const { firstTimeVisible } = usePageVisibility()
 
   return (
     <div className={styles.main}>
-      <div className={styles.mapContainer}>{firstTimeVisible && <Map />}</div>
+      <div className={styles.mapContainer}>{<Map />}</div>
       {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
       <Footer />
     </div>
