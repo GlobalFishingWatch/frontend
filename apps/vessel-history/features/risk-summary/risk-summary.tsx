@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
@@ -23,7 +23,8 @@ export interface RiskSummaryProps {
 export function RiskSummary(props: RiskSummaryProps) {
   const { t } = useTranslation()
   const { authorizedInsurer } = useUser()
-  const { encountersInMPA, eventsLoading, fishingInMPA, loiteringInMPA } = useRisk()
+  const { encountersInForeignEEZ, encountersInMPA, eventsLoading, fishingInMPA, loiteringInMPA } =
+    useRisk()
   const { highlightEvent } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
 
@@ -53,11 +54,19 @@ export function RiskSummary(props: RiskSummaryProps) {
     },
     [highlightEvent, props, setMapCoordinates, viewport.zoom]
   )
+  const hasEncountersInMPAs = useMemo(() => encountersInMPA.length > 0, [encountersInMPA.length])
+  const hasEncountersInForeignEEZs = useMemo(
+    () => encountersInForeignEEZ.length > 0,
+    [encountersInForeignEEZ.length]
+  )
+  const hasFishingInMPAs = useMemo(() => fishingInMPA.length > 0, [fishingInMPA.length])
+  const hasLoiteringInMPAs = useMemo(() => loiteringInMPA.length > 0, [loiteringInMPA.length])
+
   if (!authorizedInsurer) return <Fragment />
   if (eventsLoading) return <Spinner className={styles.spinnerFull} />
   return (
     <div className={styles['container']}>
-      {fishingInMPA.length > 0 && (
+      {hasFishingInMPAs && (
         <RiskSection
           severity="medium"
           title={t('event.fishing', 'fishing')}
@@ -75,25 +84,39 @@ export function RiskSummary(props: RiskSummaryProps) {
           ></RiskIndicator>
         </RiskSection>
       )}
-      {encountersInMPA.length > 0 && (
+      {(hasEncountersInMPAs || hasEncountersInForeignEEZs) && (
         <RiskSection
           severity="medium"
           title={t('event.encounter', 'encounter', { count: 2 })}
           titleInfo={<TerminologyEncounterEvents />}
         >
-          <RiskIndicator
-            title={
-              t('risk.encounterEventInMPA', 'encounters in a MPA', {
-                count: fishingInMPA.length,
-              }) as string
-            }
-            events={encountersInMPA}
-            onEventInfoClick={openModal}
-            onEventMapClick={onEventMapClick}
-          ></RiskIndicator>
+          {hasEncountersInMPAs && (
+            <RiskIndicator
+              title={
+                t('risk.encounterEventInMPA', 'encounters in a MPA', {
+                  count: encountersInMPA.length,
+                }) as string
+              }
+              events={encountersInMPA}
+              onEventInfoClick={openModal}
+              onEventMapClick={onEventMapClick}
+            ></RiskIndicator>
+          )}
+          {hasEncountersInForeignEEZs && (
+            <RiskIndicator
+              title={
+                t('risk.encounterEventInForeignEEZ', 'encounters in a foreign EEZ', {
+                  count: encountersInForeignEEZ.length,
+                }) as string
+              }
+              events={encountersInForeignEEZ}
+              onEventInfoClick={openModal}
+              onEventMapClick={onEventMapClick}
+            ></RiskIndicator>
+          )}
         </RiskSection>
       )}
-      {loiteringInMPA.length > 0 && (
+      {hasLoiteringInMPAs && (
         <RiskSection
           severity="medium"
           title={t('event.loitering', 'loitering')}
@@ -111,11 +134,9 @@ export function RiskSummary(props: RiskSummaryProps) {
           ></RiskIndicator>
         </RiskSection>
       )}
-      {(fishingInMPA.length === 0 ||
-        encountersInMPA.length === 0 ||
-        loiteringInMPA.length === 0) && (
+      {(!hasFishingInMPAs || !hasEncountersInMPAs || !hasLoiteringInMPAs) && (
         <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
-          {fishingInMPA.length === 0 && (
+          {!hasFishingInMPAs && (
             <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
               <RiskIndicator
                 title={
@@ -127,7 +148,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               ></RiskIndicator>
             </RiskSection>
           )}
-          {encountersInMPA.length === 0 && (
+          {!hasEncountersInMPAs && (
             <RiskSection
               className={styles.naSubSection}
               title={t('event.encounter', 'encounter', { count: 2 })}
@@ -142,7 +163,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               ></RiskIndicator>
             </RiskSection>
           )}
-          {loiteringInMPA.length === 0 && (
+          {!hasLoiteringInMPAs && (
             <RiskSection className={styles.naSubSection} title={t('event.loitering', 'loitering')}>
               <RiskIndicator
                 title={
