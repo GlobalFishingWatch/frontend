@@ -25,6 +25,7 @@ import {
   useHighlightedEventsConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
+  useTimebarEnvironmentConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations } from 'types'
@@ -119,6 +120,7 @@ const TimebarWrapper = () => {
   const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const { timebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { generatorsConfig } = useGeneratorsConnect()
 
   const stickToUnit = useCallback(
@@ -131,6 +133,11 @@ const TimebarWrapper = () => {
         return interval === '10days' ? 'day' : interval
       } else if (timebarVisualisation === TimebarVisualisations.Environment) {
         // TODO decide interval for stick unit depending on available intervals when env layers have interval < month
+        const heatmapConfig = generatorsConfig.find((c) => c.id === timebarSelectedEnvId)
+        if (heatmapConfig) {
+          const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
+          return interval === '10days' ? 'day' : interval
+        }
         return 'month'
       }
     },
