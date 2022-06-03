@@ -148,19 +148,34 @@ export function RiskSummary(props: RiskSummaryProps) {
               ></RiskIndicator>
             </RiskSection>
           )}
-          {!hasEncountersInMPAs && (
+          {(!hasEncountersInMPAs || !hasEncountersInForeignEEZs) && (
             <RiskSection
               className={styles.naSubSection}
               title={t('event.encounter', 'encounter', { count: 2 })}
             >
-              <RiskIndicator
-                title={
-                  t('risk.noEncounterEventInMPA', 'No encounters detected in an MPA') as string
-                }
-                events={encountersInMPA}
-                onEventInfoClick={openModal}
-                onEventMapClick={onEventMapClick}
-              ></RiskIndicator>
+              {!hasEncountersInMPAs && (
+                <RiskIndicator
+                  title={
+                    t('risk.noEncounterEventInMPA', 'No encounters detected in an MPA') as string
+                  }
+                  events={encountersInMPA}
+                  onEventInfoClick={openModal}
+                  onEventMapClick={onEventMapClick}
+                ></RiskIndicator>
+              )}
+              {!hasEncountersInForeignEEZs && (
+                <RiskIndicator
+                  title={
+                    t(
+                      'risk.noEncounterEventInForeignEEZ',
+                      'No encounters detected in foreign EEZ'
+                    ) as string
+                  }
+                  events={encountersInForeignEEZ}
+                  onEventInfoClick={openModal}
+                  onEventMapClick={onEventMapClick}
+                ></RiskIndicator>
+              )}
             </RiskSection>
           )}
           {!hasLoiteringInMPAs && (

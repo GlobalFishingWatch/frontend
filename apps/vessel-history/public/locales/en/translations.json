@@ -140,6 +140,7 @@
     "fishingEventInMPA_other": "fishing events in MPAs",
     "loiteringEventInMPA_one": "loitering event in MPAs",
     "loiteringEventInMPA_other": "loitering events in MPAs",
+    "noEncounterEventInForeignEEZ": "No encounters detected in foreign EEZ",
     "noEncounterEventInMPA": "No encounters detected in MPAs",
     "noFishingEventInMPA": "No fishing event detected in MPAs",
     "noLoiteringEventInMPA": "No loitering event detected in MPAs",
