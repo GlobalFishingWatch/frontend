@@ -54,6 +54,7 @@ function VesselGroupModal(): React.ReactElement {
   const [error, setError] = useState('')
 
   const [groupName, setGroupName] = useState<string>('Long Xing')
+  // TODO use empty array
   const [IDs, setIDs] = useState<string[]>(['412422360'])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('MMSI')
   const [vessels, setVessels] = useState<Vessel[]>()
