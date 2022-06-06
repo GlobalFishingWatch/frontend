@@ -100,7 +100,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
               {group?.users.map((user) => {
                 return (
                   <li key={user.id}>
-                    {user.firstName} ({user.email})
+                    {user.firstName} {user.lastName} ({user.email})
                     <IconButton
                       disabled={userLoading}
                       icon="delete"

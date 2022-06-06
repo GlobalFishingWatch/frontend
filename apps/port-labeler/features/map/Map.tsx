@@ -56,20 +56,17 @@ const MapWrapper = (): React.ReactElement => {
   }, [areaLayer, pointsLayer])
   const {
     box,
-    dragging,
+    boxTransform, boxHeight, boxWidth,
     onMouseDown,
-    onKeyDown,
-    onKeyUp,
     onMouseMove,
     onMouseUp,
     onHover,
     onMapclick,
   } = useSelectorConnect()
-
   const points = useSelector(selectPortPointsByCountry)
 
   return (
-    <div className={styles.container} onKeyDown={onKeyDown} onKeyUp={onKeyUp}>
+    <div className={styles.container}>
       <Map
         id="map"
         style={mapStyles}
@@ -78,9 +75,11 @@ const MapWrapper = (): React.ReactElement => {
         zoom={viewport.zoom}
         mapLib={maplibregl}
         mapStyle={style as unknown as MapboxStyle}
-        onMouseDown={dragging ? (onMouseDown as any) : undefined}
-        onMouseMove={dragging ? (onMouseMove as any) : undefined}
-        onMouseUp={dragging ? (onMouseUp as any) : undefined}
+        onMouseDown={(onMouseDown as any)}
+        onMouseMove={(onMouseMove as any)}
+        onMouseUp={(onMouseUp as any)}
+        boxZoom={false}
+        onMouseEnter={onHover as any}
         onClick={onMapclick as any}
         onMove={onViewportChange}
         transformRequest={transformRequest}
@@ -88,16 +87,16 @@ const MapWrapper = (): React.ReactElement => {
         customAttribution={'© Copyright Global Fishing Watch 2020'}
       ></Map>
       <MapControls bounds={mapBounds}></MapControls>
-      {box && (
-        <div
-          style={{
-            width: box.width,
-            height: box.height,
-            transform: box.transform,
-          }}
-          className={styles.mapSelection}
-        ></div>
-      )}
+
+      <div
+        style={{
+          width: boxWidth,
+          height: boxHeight,
+          transform: boxTransform,
+        }}
+        className={styles.mapSelection}
+      ></div>
+
     </div>
   )
 }

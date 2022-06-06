@@ -492,6 +492,9 @@ export function getDataviewsGeneratorConfigs(
           auxiliarDataview,
           DatasetTypes.TemporalContext
         )
+        if (!url) {
+          return []
+        }
         auxiliarDataview.config = {
           color: dataview.config?.color,
           visible: auxiliarLayerActive,

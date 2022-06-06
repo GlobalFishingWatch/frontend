@@ -3,6 +3,7 @@
         "port": "Port",
         "subarea": "Subarea",
         "anchorage": "Anchorage",
+        "anchorageId": "Anchorage ID",
         "destination": "Destination",
         "zoom_more": "Increase zoom",
         "zoom_less": "Decrease zoom",

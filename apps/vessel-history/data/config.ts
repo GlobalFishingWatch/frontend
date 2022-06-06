@@ -81,6 +81,11 @@ export const AUTHORIZED_PERMISSION = {
   value: 'vessel-viewer',
   action: 'ui.load',
 }
+export const INSURER_PERMISSION = {
+  type: 'application',
+  value: 'risk-assessment',
+  action: 'ui.load',
+}
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
@@ -89,3 +94,8 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
+
+export const RISK_SUMMARY_SETTINGS = {
+  // Time range to use when calculating indicators
+  timeRange: { years: 1 },
+}

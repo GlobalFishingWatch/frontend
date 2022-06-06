@@ -65,11 +65,10 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+
   return (
     <div className={styles.main}>
-      <div className={styles.mapContainer}>
-        <Map />
-      </div>
+      <div className={styles.mapContainer}>{<Map />}</div>
       {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
       <Footer />
     </div>

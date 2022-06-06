@@ -51,6 +51,7 @@ const INCOMPATIBLE_FILTERS_DICT: IncompatibleFiltersDict = {
   'public-ais-presence-viirs-match-prototype:v20220112': [
     { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
   ],
+  'public-global-sar-presence:v20210924': [{ id: 'matched', value: false, disabled: ['geartype'] }],
 }
 
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>

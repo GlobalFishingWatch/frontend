@@ -56,9 +56,10 @@ export const useSourceInStyle = (sourcesIds: SourcesHookInput) => {
   return sourcesLoaded
 }
 
+export const MAPBOX_GL_DRAW_PREFIX = 'mapbox-gl-draw'
 // Don't consider loading states for our interaction layers
 export const isInteractionSource = (sourceId: string) => {
-  return sourceId.includes(TRACK_HIGHLIGHT_SUFFIX)
+  return sourceId.includes(TRACK_HIGHLIGHT_SUFFIX) || sourceId.includes(MAPBOX_GL_DRAW_PREFIX)
 }
 
 export const useMapSourceTilesLoadedAtom = () => {

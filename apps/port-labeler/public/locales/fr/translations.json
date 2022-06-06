@@ -3,6 +3,7 @@
         "port": "port",
         "subarea": "Sous-zone",
         "anchorage": "Ancrage",
+        "anchorageId": "Ancrage ID",
         "destination": "Destination",
         "zoom_more": "Augmenter le zoom",
         "zoom_less": "Réduire le zoom",

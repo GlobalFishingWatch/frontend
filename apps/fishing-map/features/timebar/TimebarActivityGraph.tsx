@@ -39,6 +39,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
+      if (loading) return t('map.loading', 'Loading')
       if (!value || !value.value) return ''
       const dataviewId = item.props?.dataviewId
       const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
@@ -55,7 +56,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
       return labels.join(' ')
     },
-    [mapLegends, visualisation]
+    [visualisation, loading]
   )
 
   if (error) {
@@ -68,7 +69,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
       </div>
     )
   }
-  if (!stackedActivity || !stackedActivity.length) return null
+  if (!stackedActivity || !stackedActivity.length || !activeDataviews?.length) return null
 
   return (
     <div className={cx({ [styles.loading]: loading })}>
