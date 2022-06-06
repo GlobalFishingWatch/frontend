@@ -229,10 +229,14 @@ export function getGeneratorConfig(
         ]
 
         const { url: tilesAPI } = resolveDataviewDatasetResource(dataview, DatasetTypes.Fourwings)
-        const availableIntervals =
-          (dataview.config?.interval
-            ? [dataview.config?.interval]
-            : getDatasetAvailableIntervals(dataset)) || DEFAULT_ENVIRONMENT_INTERVALS
+        const dataviewInterval = dataview.config?.interval
+        const datasetIntervals = getDatasetAvailableIntervals(dataset)
+        let availableIntervals = DEFAULT_ENVIRONMENT_INTERVALS
+        if (dataviewInterval) {
+          availableIntervals = dataviewInterval
+        } else if (datasetIntervals && datasetIntervals.length > 0) {
+          availableIntervals = datasetIntervals
+        }
 
         environmentalConfig = {
           sublayers,
@@ -421,7 +425,11 @@ export function getDataviewsGeneratorConfigs(
       }
       const interactionType = interactionTypes[0]
 
-      const availableIntervals = getDatasetAvailableIntervals(dataset) || DEFAULT_HEATMAP_INTERVALS
+      const datasetIntervals = getDatasetAvailableIntervals(dataset)
+      const availableIntervals =
+        datasetIntervals && datasetIntervals.length > 0
+          ? datasetIntervals
+          : DEFAULT_HEATMAP_INTERVALS
 
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
