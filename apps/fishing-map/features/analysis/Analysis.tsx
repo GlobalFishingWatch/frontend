@@ -85,6 +85,7 @@ function Analysis() {
     dataviews,
     userData?.permissions || []
   )
+
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
