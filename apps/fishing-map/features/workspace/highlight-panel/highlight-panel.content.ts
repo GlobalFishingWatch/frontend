@@ -53,13 +53,4 @@ const DEFAULT_HIGHLIGHT_CONFIG: HighlightPanelConfig = {
   },
 }
 
-export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID = `${HIGHLIGHT_POPUP_KEY}_ActivitySwitch`
-export const HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH: HighlightPanelConfig = {
-  ...DEFAULT_HIGHLIGHT_CONFIG,
-  dataviewInstanceId: HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
-  localStorageKey: HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
-  workspaceUrl:
-    'https://globalfishingwatch.org/map/fishing-activity/night_light_viirs_matching-public',
-}
-
 export default DEFAULT_HIGHLIGHT_CONFIG

@@ -37,17 +37,16 @@ const HighlightPanel = ({
       if (ref.current?.scrollIntoView) {
         ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
       }
-      if (!config.delayed) setVisible(true)
+      if (config.delayed) {
+        setTimeout(() => {
+          const container = document.querySelector('.scrollContainer')
+          container.scrollTop = 1
+          setVisible(true)
+        }, 5000)
+      } else {
+        setVisible(true)
+      }
     }
-  }, [showHighlightPanel, config.delayed])
-
-  useEffect(() => {
-    if (!showHighlightPanel || !config.delayed) return
-    setTimeout(() => {
-      const container = document.querySelector('.scrollContainer')
-      container.scrollTop = 1
-      setVisible(true)
-    }, 5000)
   }, [showHighlightPanel, config.delayed])
 
   const onDismiss = () => {
