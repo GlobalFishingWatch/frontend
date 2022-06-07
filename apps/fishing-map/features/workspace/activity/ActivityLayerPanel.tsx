@@ -264,7 +264,8 @@ function ActivityLayerPanel({
                                 }).toLocaleLowerCase()}
                               </span>
                             </Fragment>
-                          )}
+                          )}{' '}
+                        {t('common.globally', 'globally')}
                       </div>
                     </Tooltip>
                   ) : stats.type === 'vessels' ? (
