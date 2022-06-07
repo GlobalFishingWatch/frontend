@@ -107,6 +107,14 @@ export const selectActiveDetectionsDataviews = createSelector(
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
+export const selectActiveHeatmapDataviews = createSelector(
+  [selectActiveActivityDataviews, selectActiveDetectionsDataviews],
+  (activityDataviews = [], detectionsDataviews = []) => [
+    ...activityDataviews,
+    ...detectionsDataviews,
+  ]
+)
+
 export const selectEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews
@@ -125,7 +133,11 @@ export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
 )
 
 export const selectActiveTemporalgridDataviews = createSelector(
-  [selectActiveActivityDataviews, selectDetectionsDataviews, selectActiveEnvironmentalDataviews],
+  [
+    selectActiveActivityDataviews,
+    selectActiveDetectionsDataviews,
+    selectActiveEnvironmentalDataviews,
+  ],
   (activityDataviews = [], detectionsDataviews = [], environmentalDataviews = []) => {
     return [...activityDataviews, ...detectionsDataviews, ...environmentalDataviews]
   }
@@ -141,14 +153,16 @@ export const selectActiveEventsDataviews = createSelector(
 )
 
 export const selectHasAnalysisLayersVisible = createSelector(
-  [selectActivityDataviews, selectEnvironmentalDataviews],
-  (activityDataviews = [], environmentalDataviews = []) => {
+  [selectActivityDataviews, selectDetectionsDataviews, selectEnvironmentalDataviews],
+  (activityDataviews = [], detectionsDataviews = [], environmentalDataviews = []) => {
     const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
       ({ config }) => config?.type === GeneratorType.HeatmapAnimated
     )
-    const visibleDataviews = [...activityDataviews, ...heatmapEnvironmentalDataviews]?.filter(
-      ({ config }) => config?.visible === true
-    )
+    const visibleDataviews = [
+      ...activityDataviews,
+      ...detectionsDataviews,
+      ...heatmapEnvironmentalDataviews,
+    ]?.filter(({ config }) => config?.visible === true)
     return visibleDataviews && visibleDataviews.length > 0
   }
 )

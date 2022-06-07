@@ -13,6 +13,8 @@ import {
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
   DataviewsGeneratorConfigsParams,
+  MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
+  isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import {
@@ -101,11 +103,13 @@ const getGeneratorsConfig = ({
       generatorsConfig = generatorsConfig.filter((config) => {
         if (
           config.type === GeneratorType.HeatmapAnimated &&
-          config.id !== MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-        )
+          (!isMergedAnimatedGenerator(config.id) || !config.sublayers?.length)
+        ) {
           return false
+        }
         return true
       })
+      console.log(generatorsConfig)
     }
 
     // Avoid entering rulers sources and layers when no active rules
