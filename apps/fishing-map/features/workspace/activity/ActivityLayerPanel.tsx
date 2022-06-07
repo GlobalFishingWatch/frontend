@@ -214,13 +214,16 @@ function ActivityLayerPanel({
             <div className={styles.properties}>
               {stats && (
                 <div
-                  className={cx(activityStyles.stats, {
-                    [activityStyles.statsLoading]: isFetching,
-                  })}
+                  className={cx(
+                    activityStyles.stats,
+                    {
+                      [activityStyles.statsLoading]: isFetching,
+                    },
+                    'print-hidden'
+                  )}
                 >
                   {showStats ? (
                     <Tooltip
-                      // placement="bottom"
                       content={
                         stats.type === 'vessels'
                           ? t(
