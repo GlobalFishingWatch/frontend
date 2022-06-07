@@ -22,6 +22,7 @@ import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
+import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -169,6 +170,7 @@ function Workspace() {
           </h2>
         )}
       <ActivitySection />
+      <DetectionsSection />
       <VesselsSection />
       <EventsSection />
       <EnvironmentalSection />

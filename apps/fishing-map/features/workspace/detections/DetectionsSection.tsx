@@ -7,8 +7,8 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
-  selectActivityDataviews,
-  selectAvailableActivityDataviews,
+  selectDetectionsDataviews,
+  selectAvailableDetectionsDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -18,25 +18,23 @@ import {
   getActivityDataviewInstanceFromDataview,
 } from 'features/dataviews/dataviews.utils'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import LayerPanel from './ActivityLayerPanel'
-import activityStyles from './ActivitySection.module.css'
+import LayerPanel from '../activity/ActivityLayerPanel'
+import activityStyles from '../activity/ActivitySection.module.css'
 
-function ActivitySection(): React.ReactElement {
+function DetectionsSection(): React.ReactElement {
   const { t } = useTranslation()
   const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
   const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
   const readOnly = useSelector(selectReadOnly)
-  const dataviews = useSelector(selectActivityDataviews)
-  const activityDataviews = useSelector(selectAvailableActivityDataviews)
+  const dataviews = useSelector(selectDetectionsDataviews)
+  const detectionDataviews = useSelector(selectAvailableDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const { start, end } = useTimerangeConnect()
 
   const addDataviewInstance = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
@@ -47,17 +45,15 @@ function ActivitySection(): React.ReactElement {
     [dispatchQueryParams, upsertDataviewInstance]
   )
 
-  const onAddFishingClick = useCallback(
-    (dataviewId?: number) => {
-      const dataview = activityDataviews.find((d) => d.id === dataviewId)
-      const dataviewInstance = dataview
-        ? getActivityDataviewInstanceFromDataview(dataview)
-        : getFishingDataviewInstance()
+  const onAddDetectionClick = useCallback(
+    (dataviewId: number) => {
+      const dataview = detectionDataviews.find((d) => d.id === dataviewId)
+      const dataviewInstance = getActivityDataviewInstanceFromDataview(dataview)
       if (dataviewInstance) {
         addDataviewInstance(dataviewInstance)
       }
     },
-    [addDataviewInstance, activityDataviews]
+    [addDataviewInstance, detectionDataviews]
   )
 
   const onBivariateDataviewsClick = useCallback(
@@ -114,22 +110,22 @@ function ActivitySection(): React.ReactElement {
     []
   )
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
-  const activityOptions = useMemo(() => {
-    const options = activityDataviews.map((dataview) => {
+  const detectionsOptions = useMemo(() => {
+    const options = detectionDataviews.map((dataview) => {
       const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
       return option
     })
     return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [activityDataviews])
+  }, [detectionDataviews])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
+        <h2 className={styles.sectionTitle}>{t('common.detections', 'Detections')}</h2>
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
-            {activityOptions &&
-              (activityOptions.length > 1 ? (
+            {detectionsOptions &&
+              (detectionsOptions.length > 1 ? (
                 <TooltipContainer
                   visible={newLayerOpen}
                   onClickOutside={() => {
@@ -137,9 +133,9 @@ function ActivitySection(): React.ReactElement {
                   }}
                   component={
                     <TooltipListContainer>
-                      {activityOptions.map(({ id, label }) => (
+                      {detectionsOptions.map(({ id, label }) => (
                         <li key={id}>
-                          <button onClick={() => onAddFishingClick(id)}>{label}</button>
+                          <button onClick={() => onAddDetectionClick(id)}>{label}</button>
                         </li>
                       ))}
                     </TooltipListContainer>
@@ -163,7 +159,7 @@ function ActivitySection(): React.ReactElement {
                   size="medium"
                   tooltip={t('layer.add', 'Add layer')}
                   tooltipPlacement="top"
-                  onClick={() => onAddFishingClick()}
+                  onClick={() => onAddDetectionClick(detectionsOptions[0]?.id)}
                 />
               ))}
           </div>
@@ -205,4 +201,4 @@ function ActivitySection(): React.ReactElement {
   )
 }
 
-export default ActivitySection
+export default DetectionsSection
