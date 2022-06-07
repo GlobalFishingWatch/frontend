@@ -101,15 +101,11 @@ const getGeneratorsConfig = ({
     // In time comparison mode, exclude any heatmap layer that is not activity
     if (showTimeComparison) {
       generatorsConfig = generatorsConfig.filter((config) => {
-        if (
-          config.type === GeneratorType.HeatmapAnimated &&
-          (!isMergedAnimatedGenerator(config.id) || !config.sublayers?.length)
-        ) {
-          return false
+        if (config.type === GeneratorType.HeatmapAnimated) {
+          return isMergedAnimatedGenerator(config.id) && config.sublayers?.length
         }
         return true
       })
-      console.log(generatorsConfig)
     }
 
     // Avoid entering rulers sources and layers when no active rules

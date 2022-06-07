@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { isDetectionsDataview, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { isActivityDataview } from 'features/workspace/activity/activity.utils'
@@ -44,16 +44,14 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
       titleChunks.push({ label: t('analysis.changeIn', 'Change in') })
     }
 
-    if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
+    if (dataviews?.every((dataview) => dataview.category === dataviews[0].category)) {
       commonProperties.push('dataset')
       const activityDataview = isActivityDataview(dataviews[0])
-      // const presenceDataview = isPresenceDataview(dataviews[0])
-      if (activityDataview) {
-        const mainLabel = 'Activity'
-        // TODO: decide a common label for activity
-        // const mainLabel = presenceDataview
-        //   ? t(`common.presence`, 'Vessel presence')
-        //   : t(`common.apparentFishing`, 'Apparent Fishing Effort')
+      const detectionsDataview = isDetectionsDataview(dataviews[0])
+      if (activityDataview || detectionsDataview) {
+        const mainLabel = activityDataview
+          ? t('common.activity', 'Activity')
+          : t('common.detections', 'Detections')
         titleChunks.push({ label: mainLabel, strong: true })
       } else {
         titleChunks.push({ label: dataviews[0].name || '', strong: true })

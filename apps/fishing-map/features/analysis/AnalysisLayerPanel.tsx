@@ -34,11 +34,10 @@ function AnalysisLayerPanel({
 
   let datasetName = dataset ? getDatasetLabel(dataset) : dataview.name || ''
   if (activityDataview) {
-    datasetName = 'Activity'
-    // TODO: decide a common label for activity
-    // datasetName = presenceDataview
-    //   ? t(`common.presence`, 'Vessel presence')
-    //   : t(`common.apparentFishing`, 'Apparent Fishing Effort')
+    datasetName =
+      dataset.subcategory === 'presence'
+        ? t(`common.presence`, 'Vessel presence')
+        : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
   const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
   const showDot =
