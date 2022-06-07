@@ -447,6 +447,7 @@ export function getMergedHeatmapAnimatedDataview(
   const maxZoomLevels = heatmapAnimatedDataviews
     ?.filter(({ config }) => config && config?.maxZoom !== undefined)
     .flatMap(({ config }) => config?.maxZoom as number)
+
   const mergedActivityDataview = {
     id: mergedHeatmapGeneratorId,
     config: {
@@ -540,26 +541,20 @@ export function getDataviewsGeneratorConfigs(
       otherDataviews: [] as UrlDataviewInstance[],
     }
   )
-  // const activityDataviews: UrlDataviewInstance[] = []
-
-  // // Collect heatmap animated generators and filter them out from main dataview list
-  // const dataviewsFiltered = dataviews.filter((d) => {
-  //   const activityDataview = isHeatmapAnimatedDataview(d)
-  //   if (activityDataview) {
-  //     activityDataviews.push(d)
-  //   }
-  //   return !activityDataview
-  // })
 
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
-  const mergedActivityDataview = getMergedHeatmapAnimatedDataview(activityDataviews, {
-    ...params,
-    mergedHeatmapGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-  })
-  const mergedDetectionsDataview = getMergedHeatmapAnimatedDataview(detectionDataviews, {
-    ...params,
-    mergedHeatmapGeneratorId: MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
-  })
+  const mergedActivityDataview = activityDataviews?.length
+    ? getMergedHeatmapAnimatedDataview(activityDataviews, {
+        ...params,
+        mergedHeatmapGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+      })
+    : []
+  const mergedDetectionsDataview = detectionDataviews.length
+    ? getMergedHeatmapAnimatedDataview(detectionDataviews, {
+        ...params,
+        mergedHeatmapGeneratorId: MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
+      })
+    : []
 
   const generatorsConfig = [
     ...mergedActivityDataview,

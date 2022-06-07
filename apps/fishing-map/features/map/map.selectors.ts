@@ -10,10 +10,8 @@ import {
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
   getDataviewsGeneratorConfigs,
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
   DataviewsGeneratorConfigsParams,
-  MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
   isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
