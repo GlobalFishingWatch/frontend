@@ -81,7 +81,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: PRESENCE_DATAVIEW_ID,
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'viirs-match',
       config: {
         color: '#FFEA00',
         colorRamp: 'yellow',
@@ -91,7 +91,7 @@ const workspace: Workspace<WorkspaceState> = {
       datasetsConfig: [],
     },
     {
-      id: 'mocked-sar',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       dataviewId: SAR_DATAVIEW_ID,
       config: {
         visible: false,
