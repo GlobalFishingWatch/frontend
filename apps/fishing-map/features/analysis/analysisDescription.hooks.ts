@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { isFishingDataview, isPresenceDataview } from 'features/workspace/activity/activity.utils'
+import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { t } from 'features/i18n/i18n'
 import { getFlagsByIds } from 'utils/flags'
 import {
@@ -46,12 +46,14 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
 
     if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
       commonProperties.push('dataset')
-      const fishingDataview = isFishingDataview(dataviews[0])
-      const presenceDataview = isPresenceDataview(dataviews[0])
-      if (fishingDataview || presenceDataview) {
-        const mainLabel = presenceDataview
-          ? t(`common.presence`, 'Vessel presence')
-          : t(`common.apparentFishing`, 'Apparent Fishing Effort')
+      const activityDataview = isActivityDataview(dataviews[0])
+      // const presenceDataview = isPresenceDataview(dataviews[0])
+      if (activityDataview) {
+        const mainLabel = 'Activity'
+        // TODO: decide a common label for activity
+        // const mainLabel = presenceDataview
+        //   ? t(`common.presence`, 'Vessel presence')
+        //   : t(`common.apparentFishing`, 'Apparent Fishing Effort')
         titleChunks.push({ label: mainLabel, strong: true })
       } else {
         titleChunks.push({ label: dataviews[0].name || '', strong: true })

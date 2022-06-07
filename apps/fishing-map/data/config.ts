@@ -60,7 +60,7 @@ export const DEFAULT_WORKSPACE = {
   availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
   availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
   dataviewInstances: undefined,
-  timebarVisualisation: TimebarVisualisations.Heatmap,
+  timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
