@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hooks'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
+import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 
@@ -13,9 +13,7 @@ export const useLegendsTranslated = (legends: AnyLegend[], portalled = true) => 
   return useMemo(() => {
     return legends
       ?.filter(
-        (legend) =>
-          portalled ||
-          (!portalled && legend.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
+        (legend) => portalled || (!portalled && isMergedAnimatedGenerator(legend.generatorId))
       )
       .map((legend) => {
         const isSquareKm = (legend.gridArea as number) > 50000

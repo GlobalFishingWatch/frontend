@@ -88,7 +88,6 @@ const getGeneratorsConfig = ({
     highlightedEvents,
     highlightedTime,
     debug: debugOptions.debug,
-    mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
     customGeneratorMapping: {
       [GeneratorType.VesselEvents]: GeneratorType.VesselEventsShapes,
     },
