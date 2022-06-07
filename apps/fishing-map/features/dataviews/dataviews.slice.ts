@@ -198,14 +198,11 @@ export const selectDataviewsResources = createSelector(
   }
 )
 
+const defaultDataviewResolved = []
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsResources, selectWorkspaceStateProperty('activityCategory')],
-  (dataviewsResources, activityCategory) => {
-    const dataviews = dataviewsResources.dataviews || []
-    return dataviews.filter((dataview) => {
-      const activityDataview = isActivityDataview(dataview)
-      return activityDataview ? dataview.category === activityCategory : true
-    })
+  [selectDataviewsResources],
+  (dataviewsResources) => {
+    return dataviewsResources.dataviews || defaultDataviewResolved
   }
 )
 export const selectDataviewInstancesByType = (type: GeneratorType) => {

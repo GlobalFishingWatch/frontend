@@ -18,7 +18,6 @@ import {
   TimebarGraphs,
   TimebarVisualisations,
   VisibleEvents,
-  WorkspaceActivityCategory,
   WorkspaceAnalysis,
   WorkspaceAnalysisTimeComparison,
   WorkspaceAnalysisType,
@@ -77,13 +76,6 @@ export const selectSearchQuery = createSelector(
   [selectWorkspaceStateProperty('query')],
   (query): string => {
     return query
-  }
-)
-
-export const selectActivityCategory = createSelector(
-  [selectWorkspaceStateProperty('activityCategory')],
-  (activityCategory): WorkspaceActivityCategory => {
-    return activityCategory
   }
 )
 
@@ -153,23 +145,14 @@ export const selectWorkspaceAppState = createSelector(
     selectTimebarVisualisation,
     selectVisibleEvents,
     selectTimebarGraph,
-    selectActivityCategory,
   ],
-  (
-    bivariateDataviews,
-    sidebarOpen,
-    timebarVisualisation,
-    visibleEvents,
-    timebarGraph,
-    activityCategory
-  ) => {
+  (bivariateDataviews, sidebarOpen, timebarVisualisation, visibleEvents, timebarGraph) => {
     return {
       bivariateDataviews,
       sidebarOpen,
       timebarVisualisation,
       visibleEvents,
       timebarGraph,
-      activityCategory,
     }
   }
 )

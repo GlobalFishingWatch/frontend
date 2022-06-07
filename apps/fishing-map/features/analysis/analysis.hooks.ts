@@ -132,7 +132,7 @@ export const useFilteredTimeSeries = () => {
   useEffect(() => {
     const hasActivityLayers = temporalgridDataviews.some(
       ({ category }) =>
-        category === DataviewCategory.Fishing || category === DataviewCategory.Presence
+        category === DataviewCategory.Activity || category === DataviewCategory.Detections
     )
     if (hasActivityLayers) {
       setBlur(true)

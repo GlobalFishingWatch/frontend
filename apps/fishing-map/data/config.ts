@@ -65,7 +65,6 @@ export const DEFAULT_WORKSPACE = {
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,
-  activityCategory: DEFAULT_ACTIVITY_CATEGORY,
   version: DEFAULT_VERSION,
 }
 
@@ -156,8 +155,8 @@ export const THINNING_LEVEL_ZOOMS = Object.keys(THINNING_LEVEL_BY_ZOOM) as unkno
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
 
 export const POPUP_CATEGORY_ORDER = [
-  DataviewCategory.Fishing,
-  DataviewCategory.Presence,
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
   DataviewCategory.Events,
   DataviewCategory.Environment,
   DataviewCategory.Context,
