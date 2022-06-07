@@ -18,6 +18,7 @@ import {
   TimebarGraphs,
   TimebarVisualisations,
   VisibleEvents,
+  WorkspaceActivityCategory,
   WorkspaceAnalysis,
   WorkspaceAnalysisTimeComparison,
   WorkspaceAnalysisType,
@@ -76,6 +77,13 @@ export const selectSearchQuery = createSelector(
   [selectWorkspaceStateProperty('query')],
   (query): string => {
     return query
+  }
+)
+
+export const selectActivityCategory = createSelector(
+  [selectWorkspaceStateProperty('activityCategory')],
+  (activityCategory): WorkspaceActivityCategory => {
+    return activityCategory
   }
 )
 

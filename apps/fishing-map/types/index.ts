@@ -26,6 +26,7 @@ export type WorkspaceStateProperty =
   | 'timebarSelectedEnvId'
   | 'bivariateDataviews'
   | 'version'
+  | 'activityCategory'
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
@@ -50,6 +51,7 @@ export type WorkspaceAnalysisTimeComparison = {
 
 export type BivariateDataviews = [string, string]
 
+export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export interface WorkspaceState extends BaseUrlWorkspace {
   query?: string
   version?: string

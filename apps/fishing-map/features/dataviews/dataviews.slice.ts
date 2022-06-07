@@ -31,7 +31,6 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
-import { selectTimeRange } from 'features/app/app.selectors'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(

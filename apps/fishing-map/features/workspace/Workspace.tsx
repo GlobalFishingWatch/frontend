@@ -23,6 +23,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
+import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -115,6 +116,7 @@ function WorkspaceError(): React.ReactElement {
 }
 
 function Workspace() {
+  useHideLegacyActivityCategoryDataviews()
   const dispatch = useAppDispatch()
   const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
