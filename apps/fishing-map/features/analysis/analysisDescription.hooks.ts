@@ -43,10 +43,8 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
     if (showTimeComparison) {
       titleChunks.push({ label: t('analysis.changeIn', 'Change in') })
     }
-    console.log(dataviews)
 
     if (dataviews?.every((dataview) => dataview.category === dataviews[0].category)) {
-      console.log('every')
       const activityDataview = isActivityDataview(dataviews[0])
       const detectionsDataview = isDetectionsDataview(dataviews[0])
       if (activityDataview || detectionsDataview) {
