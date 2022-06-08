@@ -131,7 +131,7 @@ function ActivityLayerPanel({
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
-      onToggle={onToggle}
+      onToggle={onLayerSwitchToggle}
     />
   )
 
