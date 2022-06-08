@@ -214,13 +214,16 @@ function ActivityLayerPanel({
             <div className={styles.properties}>
               {stats && (
                 <div
-                  className={cx(activityStyles.stats, {
-                    [activityStyles.statsLoading]: isFetching,
-                  })}
+                  className={cx(
+                    activityStyles.stats,
+                    {
+                      [activityStyles.statsLoading]: isFetching,
+                    },
+                    'print-hidden'
+                  )}
                 >
                   {showStats ? (
                     <Tooltip
-                      // placement="bottom"
                       content={
                         stats.type === 'vessels'
                           ? t(
@@ -261,7 +264,8 @@ function ActivityLayerPanel({
                                 }).toLocaleLowerCase()}
                               </span>
                             </Fragment>
-                          )}
+                          )}{' '}
+                        {t('common.globally', 'globally')}
                       </div>
                     </Tooltip>
                   ) : stats.type === 'vessels' ? (
