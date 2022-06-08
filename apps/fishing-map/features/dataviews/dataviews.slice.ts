@@ -12,7 +12,6 @@ import {
   DataviewCategory,
   DataviewInstance,
   Dataview,
-  EndpointId,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -25,39 +24,19 @@ import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import {
   selectTrackThinningConfig,
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
-import {
-  FISHING_DATAVIEW_ID,
-  PRESENCE_DATAVIEW_ID,
-  SAR_DATAVIEW_ID,
-  VIIRS_MATCH_DATAVIEW_ID,
-} from 'data/workspaces'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
-
-const parseMockedDataview = (dataview: Dataview | Dataview[]) => {
-  const dataviews = Array.isArray(dataview) ? dataview : [dataview]
-  return dataviews.map((d) => {
-    if (d.id === FISHING_DATAVIEW_ID || d.id === PRESENCE_DATAVIEW_ID) {
-      return { ...d, category: DataviewCategory.Activity }
-    }
-    if (d.id === VIIRS_MATCH_DATAVIEW_ID || d.id === SAR_DATAVIEW_ID) {
-      return { ...d, category: DataviewCategory.Detections }
-    }
-    return d
-  })
-}
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
       const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${id}`)
-      return parseMockedDataview(dataview)[0]
+      return dataview
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
     }
@@ -83,7 +62,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         const mockedDataviews = await import('./dataviews.mock')
         dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
       }
-      return parseMockedDataview(dataviews)
+      return dataviews
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
