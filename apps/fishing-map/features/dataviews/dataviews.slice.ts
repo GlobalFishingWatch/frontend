@@ -31,14 +31,33 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
+import {
+  FISHING_DATAVIEW_ID,
+  PRESENCE_DATAVIEW_ID,
+  SAR_DATAVIEW_ID,
+  VIIRS_MATCH_DATAVIEW_ID,
+} from 'data/workspaces'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
+
+const parseMockedDataview = (dataview: Dataview | Dataview[]) => {
+  const dataviews = Array.isArray(dataview) ? dataview : [dataview]
+  return dataviews.map((d) => {
+    if (d.id === FISHING_DATAVIEW_ID || d.id === PRESENCE_DATAVIEW_ID) {
+      return { ...d, category: DataviewCategory.Activity }
+    }
+    if (d.id === VIIRS_MATCH_DATAVIEW_ID || d.id === SAR_DATAVIEW_ID) {
+      return { ...d, category: DataviewCategory.Detections }
+    }
+    return d
+  })
+}
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
       const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${id}`)
-      return dataview
+      return parseMockedDataview(dataview)[0]
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
     }
@@ -64,7 +83,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         const mockedDataviews = await import('./dataviews.mock')
         dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
       }
-      return dataviews
+      return parseMockedDataview(dataviews)
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
