@@ -14,7 +14,7 @@ import {
 } from './types'
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
-  return data.map((item) => {
+  return data?.map((item) => {
     const filteredChunks = item.chunks.filter((chunk) => {
       const chunkStart = chunk.start
       const chunkEnd = chunk.end || chunk.start
