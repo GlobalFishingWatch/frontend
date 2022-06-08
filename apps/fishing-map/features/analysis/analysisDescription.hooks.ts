@@ -45,13 +45,20 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
     }
 
     if (dataviews?.every((dataview) => dataview.category === dataviews[0].category)) {
-      commonProperties.push('dataset')
       const activityDataview = isActivityDataview(dataviews[0])
       const detectionsDataview = isDetectionsDataview(dataviews[0])
       if (activityDataview || detectionsDataview) {
-        const mainLabel = activityDataview
-          ? t('common.activity', 'Activity')
-          : t('common.detections', 'Detections')
+        let mainLabel = ''
+        if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
+          commonProperties.push('dataset')
+          mainLabel = dataviews[0].name
+        } else {
+          if (activityDataview) {
+            mainLabel = t('common.activity', 'Activity')
+          } else {
+            mainLabel = t('common.detections', 'Detections')
+          }
+        }
         titleChunks.push({ label: mainLabel, strong: true })
       } else {
         titleChunks.push({ label: dataviews[0].name || '', strong: true })
@@ -232,6 +239,8 @@ const useAnalysisDescription = (analysisAreaName: string, graphData?: AnalysisGr
   const { titleChunks, commonProperties } = useMemo(() => {
     return getCommonProperties(dataviews, showTimeComparison)
   }, [dataviews, showTimeComparison])
+  console.log(titleChunks, commonProperties)
+
   const description = useDescription(titleChunks, analysisAreaName, graphData)
   return { description, commonProperties }
 }
