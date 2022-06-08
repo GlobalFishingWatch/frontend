@@ -241,7 +241,7 @@ export function getGeneratorConfig(
         const datasetIntervals = getDatasetAvailableIntervals(dataset)
         let availableIntervals = DEFAULT_ENVIRONMENT_INTERVALS
         if (dataviewInterval) {
-          availableIntervals = dataviewInterval
+          availableIntervals = [dataviewInterval]
         } else if (datasetIntervals && datasetIntervals.length > 0) {
           availableIntervals = datasetIntervals
         }
