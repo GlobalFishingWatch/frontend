@@ -96,48 +96,50 @@ const WorkspaceEditor = ({ onEditClick }: WorkspaceEditorProps) => {
   return (
     <div className={styles.content}>
       <ul className={styles.dataviewsList}>
-        {Object.entries(groupedDataviews).map(([category, dataviews]) => {
-          const sortDataviews = (dataviews || []).sort((a, b) => a.name.localeCompare(b.name))
-          return (
-            <li key={category}>
-              <label>{category}</label>
-              <ul>
-                {sortDataviews.length > 0 &&
-                  sortDataviews.map((dataview) => {
-                    const alreadyInWorkspace = isDataviewAdded(dataview.id)
-                    return (
-                      <li
-                        key={dataview.id}
-                        className={cx(styles.row, { [styles.rowHighlight]: alreadyInWorkspace })}
-                      >
-                        {dataview.name} (id: {dataview.id})
-                        {dataview.category === DataviewCategory.Environment && (
+        {Object.entries(groupedDataviews)
+          .sort(([categoryA], [categoryB]) => categoryA.localeCompare(categoryB))
+          .map(([category, dataviews]) => {
+            const sortDataviews = (dataviews || []).sort((a, b) => a.name.localeCompare(b.name))
+            return (
+              <li key={category}>
+                <label>{category}</label>
+                <ul>
+                  {sortDataviews.length > 0 &&
+                    sortDataviews.map((dataview) => {
+                      const alreadyInWorkspace = isDataviewAdded(dataview.id)
+                      return (
+                        <li
+                          key={dataview.id}
+                          className={cx(styles.row, { [styles.rowHighlight]: alreadyInWorkspace })}
+                        >
+                          {dataview.name} (id: {dataview.id})
+                          {dataview.category === DataviewCategory.Environment && (
+                            <IconButton
+                              icon="edit"
+                              size="small"
+                              type="border"
+                              className={styles.addButton}
+                              onClick={() => onEditClick(dataview)}
+                            />
+                          )}
                           <IconButton
-                            icon="edit"
+                            loading={dataview.id === loadingId}
+                            icon={alreadyInWorkspace ? 'delete' : 'plus'}
+                            tooltip={
+                              alreadyInWorkspace ? 'Remove from workspace' : 'Add to workspace'
+                            }
                             size="small"
                             type="border"
                             className={styles.addButton}
-                            onClick={() => onEditClick(dataview)}
+                            onClick={() => onDataviewClick(dataview)}
                           />
-                        )}
-                        <IconButton
-                          loading={dataview.id === loadingId}
-                          icon={alreadyInWorkspace ? 'delete' : 'plus'}
-                          tooltip={
-                            alreadyInWorkspace ? 'Remove from workspace' : 'Add to workspace'
-                          }
-                          size="small"
-                          type="border"
-                          className={styles.addButton}
-                          onClick={() => onDataviewClick(dataview)}
-                        />
-                      </li>
-                    )
-                  })}
-              </ul>
-            </li>
-          )
-        })}
+                        </li>
+                      )
+                    })}
+                </ul>
+              </li>
+            )
+          })}
       </ul>
     </div>
   )
