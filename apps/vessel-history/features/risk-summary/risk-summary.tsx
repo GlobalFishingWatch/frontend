@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
@@ -54,13 +54,10 @@ export function RiskSummary(props: RiskSummaryProps) {
     },
     [highlightEvent, props, setMapCoordinates, viewport.zoom]
   )
-  const hasEncountersInMPAs = useMemo(() => encountersInMPA.length > 0, [encountersInMPA.length])
-  const hasEncountersInForeignEEZs = useMemo(
-    () => encountersInForeignEEZ.length > 0,
-    [encountersInForeignEEZ.length]
-  )
-  const hasFishingInMPAs = useMemo(() => fishingInMPA.length > 0, [fishingInMPA.length])
-  const hasLoiteringInMPAs = useMemo(() => loiteringInMPA.length > 0, [loiteringInMPA.length])
+  const hasEncountersInMPAs = encountersInMPA.length > 0
+  const hasEncountersInForeignEEZs = encountersInForeignEEZ.length > 0
+  const hasFishingInMPAs = fishingInMPA.length > 0
+  const hasLoiteringInMPAs = loiteringInMPA.length > 0
 
   if (!authorizedInsurer) return <Fragment />
   if (eventsLoading) return <Spinner className={styles.spinnerFull} />
