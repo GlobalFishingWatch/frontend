@@ -95,7 +95,7 @@
     "webpack-sources": "3.2.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/maplibre-gl": "^2.1.9-gfw.22",
+    "@globalfishingwatch/maplibre-gl": "^2.1.9-gfw.23",
     "@jscutlery/semver": "^2.23.3",
     "@next/bundle-analyzer": "^12.1.6",
     "@next/eslint-plugin-next": "12.1.6",
@@ -136,7 +136,7 @@
     "circular-dependency-plugin": "^5.2.2",
     "click-to-react-component": "^1.0.8",
     "cypress": "^9.6.1",
-    "eslint": "8.15.0",
+    "eslint": "8.17.0",
     "eslint-config-next": "^12.1.6",
     "eslint-config-prettier": "8.5.0",
     "eslint-config-react-app": "7.0.1",
@@ -144,7 +144,7 @@
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jsx-a11y": "6.5.1",
-    "eslint-plugin-react": "7.29.4",
+    "eslint-plugin-react": "7.30.0",
     "eslint-plugin-react-hooks": "4.5.0",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",

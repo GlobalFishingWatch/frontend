@@ -175,7 +175,7 @@ export const useTimeseriesToChartData = (
   highlighterCallback?: HighlighterCallback,
   highlighterIconCallback?: HighlighterCallback
 ): TimebarChartData => {
-  if (!data || !data.length) return []
+  if (!data || !data.length || !dataviews?.length) return []
   return dataviews.map((dataview, i) => {
     const values: TimebarChartValue[] = data.map((frame) => {
       return {
