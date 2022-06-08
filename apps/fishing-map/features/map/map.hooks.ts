@@ -404,7 +404,7 @@ export const parseMapTooltipEvent = (
       return []
     }
 
-    const title = getDatasetTitleByDataview(dataview, true)
+    const title = getDatasetTitleByDataview(dataview)
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,

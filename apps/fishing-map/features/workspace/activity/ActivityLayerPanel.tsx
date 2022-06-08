@@ -120,7 +120,7 @@ function ActivityLayerPanel({
     setFiltersOpen(false)
   }
 
-  const datasetTitle = getDatasetTitleByDataview(dataview)
+  const datasetTitle = getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
   const hasDatasetAvailable =
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
 

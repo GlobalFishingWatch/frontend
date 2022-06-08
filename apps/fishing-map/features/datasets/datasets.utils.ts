@@ -65,7 +65,7 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
 
 export const getDatasetTitleByDataview = (
   dataview: Dataview | UrlDataviewInstance,
-  showPrivateIcon = false
+  { showPrivateIcon = true } = {}
 ): string => {
   const dataviewInstance = {
     ...dataview,
@@ -75,6 +75,7 @@ export const getDatasetTitleByDataview = (
   const activeDatasets = hasDatasetsConfig
     ? dataview.datasets?.filter((d) => dataview.config?.datasets?.includes(d.id))
     : dataview.datasets
+
   let datasetTitle = dataview.name || ''
   if (dataviewInstance.dataviewId === FISHING_DATAVIEW_ID) {
     datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')

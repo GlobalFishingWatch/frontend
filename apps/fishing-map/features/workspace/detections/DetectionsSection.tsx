@@ -112,7 +112,10 @@ function DetectionsSection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const detectionsOptions = useMemo(() => {
     const options = detectionDataviews.map((dataview) => {
-      const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
+      const option = {
+        id: dataview.id,
+        label: getDatasetTitleByDataview(dataview),
+      }
       return option
     })
     return options.sort((a, b) => a.label.localeCompare(b.label))

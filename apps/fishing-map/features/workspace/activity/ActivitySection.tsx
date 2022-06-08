@@ -116,7 +116,10 @@ function ActivitySection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const activityOptions = useMemo(() => {
     const options = activityDataviews.map((dataview) => {
-      const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
+      const option = {
+        id: dataview.id,
+        label: getDatasetTitleByDataview(dataview),
+      }
       return option
     })
     return options.sort((a, b) => a.label.localeCompare(b.label))
