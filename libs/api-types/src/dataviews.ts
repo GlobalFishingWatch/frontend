@@ -50,14 +50,15 @@ export enum DataviewCategory {
   Context = 'context',
   Events = 'events',
   Environment = 'environment',
-  Fishing = 'fishing',
-  Presence = 'presence',
+  Activity = 'activity',
+  Detections = 'detections',
   Vessels = 'vessels',
   Comparison = 'comparison',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {
   id: number
+  slug: string
   name: string
   app: ApiAppName
   description: string

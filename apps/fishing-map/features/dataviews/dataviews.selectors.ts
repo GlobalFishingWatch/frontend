@@ -49,7 +49,7 @@ export const selectDefaultBasemapGenerator = createSelector(
 )
 
 export const selectDataviewInstancesResolvedVisible = createSelector(
-  [selectDataviewInstancesResolved, selectWorkspaceStateProperty('activityCategory')],
+  [selectDataviewInstancesResolved],
   (dataviews = []) => {
     return dataviews.filter((dataview) => dataview.config?.visible)
   }
@@ -87,30 +87,32 @@ export const selectActiveContextAreasDataviews = createSelector(
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectFishingDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Fishing)],
-  (dataviews) => dataviews
-)
-
-export const selectPresenceDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Presence)],
-  (dataviews) => dataviews
-)
-
 export const selectActivityDataviews = createSelector(
-  [
-    selectFishingDataviews,
-    selectPresenceDataviews,
-    selectWorkspaceStateProperty('activityCategory'),
-  ],
-  (fishingDataviews = [], presenceDataviews = [], activityCategory) => {
-    return activityCategory === 'presence' ? presenceDataviews : fishingDataviews
-  }
+  [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
+  (dataviews) => dataviews
+)
+
+export const selectDetectionsDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Detections)],
+  (dataviews) => dataviews
 )
 
 export const selectActiveActivityDataviews = createSelector(
   [selectActivityDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectActiveDetectionsDataviews = createSelector(
+  [selectDetectionsDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectActiveHeatmapDataviews = createSelector(
+  [selectActiveActivityDataviews, selectActiveDetectionsDataviews],
+  (activityDataviews = [], detectionsDataviews = []) => [
+    ...activityDataviews,
+    ...detectionsDataviews,
+  ]
 )
 
 export const selectEnvironmentalDataviews = createSelector(
@@ -131,9 +133,13 @@ export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
 )
 
 export const selectActiveTemporalgridDataviews = createSelector(
-  [selectActiveActivityDataviews, selectActiveEnvironmentalDataviews],
-  (activityDataviews = [], environmentalDataviews = []) => {
-    return [...activityDataviews, ...environmentalDataviews]
+  [
+    selectActiveActivityDataviews,
+    selectActiveDetectionsDataviews,
+    selectActiveEnvironmentalDataviews,
+  ],
+  (activityDataviews = [], detectionsDataviews = [], environmentalDataviews = []) => {
+    return [...activityDataviews, ...detectionsDataviews, ...environmentalDataviews]
   }
 )
 
@@ -147,14 +153,16 @@ export const selectActiveEventsDataviews = createSelector(
 )
 
 export const selectHasAnalysisLayersVisible = createSelector(
-  [selectActivityDataviews, selectEnvironmentalDataviews],
-  (activityDataviews = [], environmentalDataviews = []) => {
+  [selectActivityDataviews, selectDetectionsDataviews, selectEnvironmentalDataviews],
+  (activityDataviews = [], detectionsDataviews = [], environmentalDataviews = []) => {
     const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
       ({ config }) => config?.type === GeneratorType.HeatmapAnimated
     )
-    const visibleDataviews = [...activityDataviews, ...heatmapEnvironmentalDataviews]?.filter(
-      ({ config }) => config?.visible === true
-    )
+    const visibleDataviews = [
+      ...activityDataviews,
+      ...detectionsDataviews,
+      ...heatmapEnvironmentalDataviews,
+    ]?.filter(({ config }) => config?.visible === true)
     return visibleDataviews && visibleDataviews.length > 0
   }
 )
@@ -214,20 +222,20 @@ export const selectAllDataviewsInWorkspace = createSelector(
   }
 )
 
-export const selectAvailableFishingDataviews = createSelector(
+export const selectAvailableActivityDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
     return dataviews?.filter(
-      (d) => d.category === DataviewCategory.Fishing && d.datasetsConfig?.length > 0
+      (d) => d.category === DataviewCategory.Activity && d.datasetsConfig?.length > 0
     )
   }
 )
 
-export const selectAvailablePresenceDataviews = createSelector(
+export const selectAvailableDetectionsDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
     return dataviews?.filter(
-      (d) => d.category === DataviewCategory.Presence && d.datasetsConfig?.length > 0
+      (d) => d.category === DataviewCategory.Detections && d.datasetsConfig?.length > 0
     )
   }
 )

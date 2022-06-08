@@ -36,8 +36,8 @@ const UNKNOWN_CATEGORY = 'unknown' as DataviewCategory
 
 const categoryOptions = [
   { id: DataviewCategory.Environment, label: 'Environment' },
-  { id: DataviewCategory.Fishing, label: 'Fishing' },
-  { id: DataviewCategory.Presence, label: 'Presence' },
+  { id: DataviewCategory.Activity, label: 'Activity' },
+  { id: DataviewCategory.Detections, label: 'Detections' },
   { id: UNKNOWN_CATEGORY, label: 'Unknown' },
 ]
 

@@ -7,6 +7,7 @@ import { UrlDataviewInstance } from '.'
  * A generic workspace to be extended by apps
  */
 export type BaseUrlWorkspace = {
+  activityCategory?: string // legacy
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   latitude?: number
   longitude?: number

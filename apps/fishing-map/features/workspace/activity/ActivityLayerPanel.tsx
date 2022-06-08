@@ -34,7 +34,7 @@ import Remove from '../common/Remove'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
 import Filters from './ActivityFilters'
-import { isFishingDataview, isPresenceDataview } from './activity.utils'
+import { isActivityDataview, isDetectionsDataview } from './activity.utils'
 import activityStyles from './ActivitySection.module.css'
 
 type LayerPanelProps = {
@@ -120,19 +120,18 @@ function ActivityLayerPanel({
     setFiltersOpen(false)
   }
 
-  const datasetTitle = getDatasetTitleByDataview(dataview)
+  const datasetTitle = getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
   const hasDatasetAvailable =
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
 
-  const fishingDataview = isFishingDataview(dataview)
-  const presenceDataview = isPresenceDataview(dataview)
+  const showFilters = isActivityDataview(dataview) || isDetectionsDataview(dataview)
   const TitleComponent = (
     <Title
       title={datasetTitle}
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
-      onToggle={onToggle}
+      onToggle={onLayerSwitchToggle}
     />
   )
 
@@ -178,7 +177,7 @@ function ActivityLayerPanel({
               TitleComponent
             )}
             <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-              {layerActive && (fishingDataview || presenceDataview) && (
+              {layerActive && showFilters && (
                 <ExpandedContainer
                   visible={filterOpen}
                   onClickOutside={closeExpandedContainer}
