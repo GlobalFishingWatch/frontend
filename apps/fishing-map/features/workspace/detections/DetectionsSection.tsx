@@ -9,6 +9,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   selectDetectionsDataviews,
   selectAvailableDetectionsDataviews,
+  selectActivityDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -31,6 +32,7 @@ function DetectionsSection(): React.ReactElement {
   const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectDetectionsDataviews)
+  const activityDataviews = useSelector(selectActivityDataviews)
   const detectionDataviews = useSelector(selectAvailableDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
@@ -60,13 +62,14 @@ function DetectionsSection(): React.ReactElement {
     (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {
       dispatchQueryParams({ bivariateDataviews: [dataview1.id, dataview2.id] })
       // automatically set other animated heatmaps to invisible
-      const dataviewsToDisable = dataviews?.filter(
+      const detectionsDataviewsToDisable = (dataviews || [])?.filter(
         (dataview) =>
           dataview.id !== dataview1.id &&
           dataview.id !== dataview2.id &&
           dataview.config?.type === GeneratorType.HeatmapAnimated
       )
-      if (dataviewsToDisable) {
+      const dataviewsToDisable = [...detectionsDataviewsToDisable, ...activityDataviews]
+      if (dataviewsToDisable.length) {
         upsertDataviewInstance(
           dataviewsToDisable?.map((dataview) => ({
             id: dataview.id,
