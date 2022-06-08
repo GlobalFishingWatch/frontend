@@ -453,6 +453,7 @@ export function getMergedHeatmapAnimatedDataview(
     config: {
       type: GeneratorType.HeatmapAnimated,
       sublayers: activitySublayers,
+      updateDebounce: true,
       mode: heatmapAnimatedMode,
       // if any of the activity dataviews has a max zoom level defined
       // apply the minimum max zoom level (the most restrictive approach)

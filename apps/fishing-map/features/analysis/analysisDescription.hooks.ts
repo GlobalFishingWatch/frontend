@@ -239,7 +239,6 @@ const useAnalysisDescription = (analysisAreaName: string, graphData?: AnalysisGr
   const { titleChunks, commonProperties } = useMemo(() => {
     return getCommonProperties(dataviews, showTimeComparison)
   }, [dataviews, showTimeComparison])
-  console.log(titleChunks, commonProperties)
 
   const description = useDescription(titleChunks, analysisAreaName, graphData)
   return { description, commonProperties }
