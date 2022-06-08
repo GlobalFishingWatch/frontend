@@ -68,6 +68,7 @@
     "context_area_other": "Áreas de contexto",
     "copiedToClipboard": "O link para compartilhar este modo de exibição foi copiado para a área de transferência.",
     "country_other": "países",
+    "detections": "Detections",
     "date": "Date",
     "date_one": "Date",
     "date_other": "Dates",
@@ -400,7 +401,8 @@
     "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de 10 navios"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Selecione pelo menos uma camada de esforço de pesca aparente",
+    "activityDisabled": "Select at least one activity layer",
+    "detectionsDisabled": "Select at least one detection layer.",
     "graph": "Gráfico",
     "graphDepth": "Vessel depth",
     "graphDisabled": "Not available with more than 2 vessels selected",
@@ -408,7 +410,8 @@
     "presenceDisabled": "Selecione pelo menos uma camada de presença",
     "settings_close": "Fechar configurações da barra de tempo",
     "settings_open": "Abrir configurações da barra de tempo",
-    "showFishingEffort": "Mostrar gráfico de horas de pesca",
+    "showActivity": "Show activity graph",
+    "showDetections": "Show detections graph",
     "showGraphDepth": "Show track depth graph",
     "showGraphSpeed": "Show track speed graph",
     "showPresence": "Mostrar gráfico de presença",
