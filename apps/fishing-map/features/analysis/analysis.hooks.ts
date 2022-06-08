@@ -125,7 +125,7 @@ export const useFilteredTimeSeries = () => {
   }, [timeComparison])
 
   const activeSourceIdHash = activityFeatures
-    .map(({ metadata }) => metadata.timeChunks.activeSourceId)
+    .map(({ metadata }) => metadata?.timeChunks?.activeSourceId)
     .join(',')
 
   // Set blur when there new source data is fetched on timebar changes
