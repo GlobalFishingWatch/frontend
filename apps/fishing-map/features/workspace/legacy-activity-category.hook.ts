@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
@@ -7,6 +7,7 @@ import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } fr
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 export const useHideLegacyActivityCategoryDataviews = () => {
+  const actionDone = useRef(false)
   const activityCategory = useSelector(selectActivityCategory)
   const dataviewInstancesResolved = useSelector(selectAllDataviewInstancesResolved)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -15,7 +16,7 @@ export const useHideLegacyActivityCategoryDataviews = () => {
   useEffect(() => {
     // When legacy activityCategory is present this hides
     // the dataviewInstances from the category not selected
-    if (activityCategory && dataviewInstancesResolved?.length) {
+    if (actionDone.current === false && activityCategory && dataviewInstancesResolved?.length) {
       let dataviewInstancesToUpdate = []
       if (activityCategory) {
         if (activityCategory === 'fishing') {
@@ -38,6 +39,7 @@ export const useHideLegacyActivityCategoryDataviews = () => {
           }))
         )
         dispatchQueryParams({ activityCategory: undefined })
+        actionDone.current = true
       }
     }
   }, [activityCategory, dataviewInstancesResolved])
