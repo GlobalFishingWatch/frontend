@@ -37,7 +37,14 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
     if (selectedEnvDataview) return [selectedEnvDataview]
     else if (environmentDataviews[0]) return [environmentDataviews[0]]
-  }, [activityDataviews, environmentDataviews, timebarSelectedEnvId, visualisation])
+  }, [
+    activityDataviews,
+    detectionsDataviews,
+    environmentDataviews,
+    timebarSelectedEnvId,
+    visualisation,
+  ])
+
   const { loading, stackedActivity, error } = useStackedActivity(activeDataviews)
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
@@ -61,7 +68,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
       return labels.join(' ')
     },
-    [visualisation, loading]
+    [loading, mapLegends, visualisation]
   )
 
   if (error) {
