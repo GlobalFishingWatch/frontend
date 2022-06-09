@@ -17,19 +17,19 @@ import {
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { CONFIG_BY_INTERVAL, getTimeChunksInterval } from '@globalfishingwatch/layer-composer'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
+import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
-  useHighlightedEventsConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
+  useTimebarEnvironmentConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTimebarGraph } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
@@ -91,7 +91,10 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
   )
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const formatDate =
-    timebarVisualisation !== TimebarVisualisations.Heatmap ? undefined : activityDateCallback
+    timebarVisualisation !== TimebarVisualisations.HeatmapActivity &&
+    timebarVisualisation !== TimebarVisualisations.HeatmapDetections
+      ? undefined
+      : activityDateCallback
 
   return highlightedTime ? (
     <TimebarHighlighter
@@ -119,22 +122,30 @@ const TimebarWrapper = () => {
   const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const { timebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { generatorsConfig } = useGeneratorsConnect()
 
   const stickToUnit = useCallback(
     (start, end) => {
-      const heatmapConfig = generatorsConfig.find(
-        (c) => c.id === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-      )
-      if (timebarVisualisation === TimebarVisualisations.Heatmap && heatmapConfig) {
+      const heatmapConfig = generatorsConfig.find((c) => isMergedAnimatedGenerator(c.id))
+      if (
+        heatmapConfig &&
+        (timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+          timebarVisualisation === TimebarVisualisations.HeatmapDetections)
+      ) {
         const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
         return interval === '10days' ? 'day' : interval
       } else if (timebarVisualisation === TimebarVisualisations.Environment) {
         // TODO decide interval for stick unit depending on available intervals when env layers have interval < month
+        const heatmapConfig = generatorsConfig.find((c) => c.id === timebarSelectedEnvId)
+        if (heatmapConfig) {
+          const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
+          return interval === '10days' ? 'day' : interval
+        }
         return 'month'
       }
     },
-    [generatorsConfig, timebarVisualisation]
+    [generatorsConfig, timebarSelectedEnvId, timebarVisualisation]
   )
 
   const dispatch = useAppDispatch()
@@ -162,8 +173,6 @@ const TimebarWrapper = () => {
   )
 
   const isSmallScreen = useSmallScreen()
-
-  const activityCategory = useSelector(selectActivityCategory)
 
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
@@ -280,7 +289,7 @@ const TimebarWrapper = () => {
           )}
         </div>
       )
-    } else if (tracks.length > MAX_TIMEBAR_VESSELS) {
+    } else if (!tracks || tracks?.length > MAX_TIMEBAR_VESSELS) {
       return (
         <div className={styles.disclaimer}>
           <label className={styles.disclaimerLabel}>
@@ -329,14 +338,16 @@ const TimebarWrapper = () => {
         bookmarkEnd={bookmark?.end}
         bookmarkPlacement="bottom"
         minimumRange={1}
-        minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
+        // TODO: set this by current active activity dataviews
+        // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
         stickToUnit={stickToUnit}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}
       >
         {!isSmallScreen ? (
           <Fragment>
-            {(timebarVisualisation === TimebarVisualisations.Heatmap ||
+            {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+              timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
               timebarVisualisation === TimebarVisualisations.Environment) && (
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}

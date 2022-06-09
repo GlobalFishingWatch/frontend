@@ -22,7 +22,7 @@ import {
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
@@ -53,7 +53,7 @@ function DownloadActivityModal() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
-  const dataviews = useSelector(selectActiveActivityDataviews) || fallbackDataviews
+  const dataviews = useSelector(selectActiveHeatmapDataviews) || fallbackDataviews
   const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
     dataviews,
     userData?.permissions || []

@@ -60,12 +60,11 @@ export const DEFAULT_WORKSPACE = {
   availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
   availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
   dataviewInstances: undefined,
-  timebarVisualisation: TimebarVisualisations.Heatmap,
+  timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,
-  activityCategory: DEFAULT_ACTIVITY_CATEGORY,
   version: DEFAULT_VERSION,
 }
 
@@ -156,8 +155,8 @@ export const THINNING_LEVEL_ZOOMS = Object.keys(THINNING_LEVEL_BY_ZOOM) as unkno
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
 
 export const POPUP_CATEGORY_ORDER = [
-  DataviewCategory.Fishing,
-  DataviewCategory.Presence,
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
   DataviewCategory.Events,
   DataviewCategory.Environment,
   DataviewCategory.Context,

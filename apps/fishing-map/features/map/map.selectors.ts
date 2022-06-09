@@ -10,9 +10,9 @@ import {
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
   getDataviewsGeneratorConfigs,
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
   DataviewsGeneratorConfigsParams,
+  isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import {
@@ -88,7 +88,6 @@ const getGeneratorsConfig = ({
     highlightedEvents,
     highlightedTime,
     debug: debugOptions.debug,
-    mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
     customGeneratorMapping: {
       [GeneratorType.VesselEvents]: GeneratorType.VesselEventsShapes,
     },
@@ -100,11 +99,9 @@ const getGeneratorsConfig = ({
     // In time comparison mode, exclude any heatmap layer that is not activity
     if (showTimeComparison) {
       generatorsConfig = generatorsConfig.filter((config) => {
-        if (
-          config.type === GeneratorType.HeatmapAnimated &&
-          config.id !== MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-        )
-          return false
+        if (config.type === GeneratorType.HeatmapAnimated) {
+          return isMergedAnimatedGenerator(config.id) && config.sublayers?.length
+        }
         return true
       })
     }

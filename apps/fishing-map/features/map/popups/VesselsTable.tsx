@@ -154,7 +154,6 @@ function VesselsTable({
     }
 
     let vesselDataviewInstance: DataviewInstance | undefined
-    debugger
     if (
       gfwUser &&
       vessel.dataset?.id.includes(PRESENCE_DATASET_ID) &&

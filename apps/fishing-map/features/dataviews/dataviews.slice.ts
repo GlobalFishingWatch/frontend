@@ -12,7 +12,6 @@ import {
   DataviewCategory,
   DataviewInstance,
   Dataview,
-  EndpointId,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -25,13 +24,11 @@ import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import {
   selectTrackThinningConfig,
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
-import { selectTimeRange } from 'features/app/app.selectors'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -198,14 +195,11 @@ export const selectDataviewsResources = createSelector(
   }
 )
 
+const defaultDataviewResolved = []
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsResources, selectWorkspaceStateProperty('activityCategory')],
-  (dataviewsResources, activityCategory) => {
-    const dataviews = dataviewsResources.dataviews || []
-    return dataviews.filter((dataview) => {
-      const activityDataview = isActivityDataview(dataview)
-      return activityDataview ? dataview.category === activityCategory : true
-    })
+  [selectDataviewsResources],
+  (dataviewsResources) => {
+    return dataviewsResources.dataviews || defaultDataviewResolved
   }
 )
 export const selectDataviewInstancesByType = (type: GeneratorType) => {
