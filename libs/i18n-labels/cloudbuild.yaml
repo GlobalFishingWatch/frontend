@@ -30,8 +30,9 @@ steps:
   - id: 'i18n-labels publish stable'
     waitFor: ['install-yarn']
     name: node:14
+    secretEnv:
+      - NODE_AUTH_TOKEN
     env:
-      - 'NODE_AUTH_TOKEN=$$NPM_TOKEN'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
     entrypoint: yarn
     args: ['nx', 'publish:stable', 'i18n-labels']
@@ -46,7 +47,7 @@ steps:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/world-fishing-827/secrets/NPM_TOKEN/versions/latest
-      env: 'NPM_TOKEN'
+    - versionName: projects/$PROJECT_ID/secrets/NPM_TOKEN/versions/latest
+      env: NODE_AUTH_TOKEN
 
 timeout: 300s

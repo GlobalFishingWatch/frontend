@@ -15,8 +15,13 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
+  SAR_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+// This id is used for highlighting the dataview with a popup on the right
+// update it here if you want to show it again or go to
+// apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
+// and update the `dataviewInstanceId`
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
 
@@ -68,15 +73,12 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         color: '#FF64CE',
         colorRamp: 'magenta',
+        visible: false,
       },
       dataviewId: PRESENCE_DATAVIEW_ID,
     },
     {
-      // This id is used for highlighting the dataview with a popup on the right
-      // update it here if you want to show it again or go to
-      // apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
-      // and update the `dataviewInstanceId`
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'viirs',
       config: {
         color: '#FFEA00',
         colorRamp: 'yellow',
@@ -84,6 +86,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: VIIRS_MATCH_DATAVIEW_ID,
       datasetsConfig: [],
+    },
+    {
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      dataviewId: SAR_DATAVIEW_ID,
+      config: {
+        visible: false,
+      },
     },
     {
       id: ENCOUNTER_EVENTS_SOURCE_ID,

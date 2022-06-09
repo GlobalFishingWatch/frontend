@@ -48,9 +48,10 @@ export type WorkspaceAnalysisTimeComparison = {
   duration: number
   durationType: string
 }
-export type WorkspaceActivityCategory = 'fishing' | 'presence'
+
 export type BivariateDataviews = [string, string]
 
+export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export interface WorkspaceState extends BaseUrlWorkspace {
   query?: string
   version?: string
@@ -65,7 +66,6 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
   bivariateDataviews?: BivariateDataviews
-  activityCategory?: WorkspaceActivityCategory
 }
 
 export type RedirectParam = {
@@ -85,7 +85,8 @@ export type MapCoordinates = {
 }
 
 export enum TimebarVisualisations {
-  Heatmap = 'heatmap',
+  HeatmapActivity = 'heatmap',
+  HeatmapDetections = 'heatmapDetections',
   Vessel = 'vessel',
   Environment = 'environment',
 }

@@ -21,7 +21,6 @@ function WorkspacesList() {
   const { t, i18n } = useTranslation()
   const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
-  const userFriendlyCategory = locationCategory.replace('-', ' ')
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
   const validCategory = useSelector(isValidLocationCategory)
@@ -49,7 +48,6 @@ function WorkspacesList() {
 
   return (
     <div className={styles.container}>
-      <label>{userFriendlyCategory}</label>
       {highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
         <Spinner size="small" />
       ) : (

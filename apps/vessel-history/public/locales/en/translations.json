@@ -58,7 +58,7 @@
     "duration": "Duration",
     "encounter": "encounter",
     "encounter_one": "encounter",
-    "encounter_other": "encounters",
+    "encounter_other": "encounter",
     "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
     "encounterActionWithNoRegion": "Encounter with {{vessel}}",
     "encounterAnotherVessel": "another vessel",

@@ -16,9 +16,11 @@ export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
     name,
     type: DatasetTypes.Context,
     category: DatasetCategory.Context,
+    subcategory: 'user',
+    unit: 'NA',
     configuration: {
       format: 'geojson',
-      geometryType: 'draw',
+      geometryType: 'polygons',
     } as DatasetConfiguration,
   }
 }
