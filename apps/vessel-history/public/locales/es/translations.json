@@ -132,12 +132,15 @@
     "toggleLayers": "Toggle layers"
   },
   "risk": {
+    "encounterEventInForeignEEZ_one": "encounters in a foreign EEZ",
+    "encounterEventInForeignEEZ_other": "encounters in a foreign EEZ",
     "encounterEventInMPA_one": "encounters in MPAs",
     "encounterEventInMPA_other": "encounters in MPAs",
     "fishingEventInMPA_one": "fishing event in MPAs",
     "fishingEventInMPA_other": "fishing event in MPAs",
     "loiteringEventInMPA_one": "loitering event in MPAs",
     "loiteringEventInMPA_other": "loitering event in MPAs",
+    "noEncounterEventInForeignEEZ": "No encounters detected in foreign EEZ",
     "noEncounterEventInMPA": "No encounters detected in MPAs",
     "noFishingEventInMPA": "No fishing event detected in MPAs",
     "noLoiteringEventInMPA": "No loitering event detected in MPAs",
