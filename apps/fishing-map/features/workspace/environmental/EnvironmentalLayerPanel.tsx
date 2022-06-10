@@ -3,13 +3,15 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
+import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGuestUser } from 'features/user/user.slice'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import ActivityFilters from 'features/workspace/activity/ActivityFilters'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -23,6 +25,7 @@ type LayerPanelProps = {
 }
 
 function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+  const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
@@ -47,6 +50,11 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
 
   const closeExpandedContainer = () => {
     setColorOpen(false)
+    setFiltersOpen(false)
+  }
+
+  const onToggleFilterOpen = () => {
+    setFiltersOpen(!filterOpen)
   }
 
   const dataset = dataview.datasets?.find(
@@ -60,6 +68,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+  const showFilters = dataset.fieldsAllowed?.length > 0
 
   const TitleComponent = (
     <Title
@@ -74,7 +83,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   return (
     <div
       className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: colorOpen,
+        [styles.expandedContainerOpen]: colorOpen || filterOpen,
         'print-hidden': !layerActive,
       })}
     >
@@ -92,6 +101,27 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+          {layerActive && showFilters && (
+            <ExpandedContainer
+              visible={filterOpen}
+              onClickOutside={closeExpandedContainer}
+              component={<ActivityFilters dataview={dataview} />}
+            >
+              <div className={styles.filterButtonWrapper}>
+                <IconButton
+                  icon={filterOpen ? 'filter-on' : 'filter-off'}
+                  size="small"
+                  onClick={onToggleFilterOpen}
+                  tooltip={
+                    filterOpen
+                      ? t('layer.filterClose', 'Close filters')
+                      : t('layer.filterOpen', 'Open filters')
+                  }
+                  tooltipPlacement="top"
+                />
+              </div>
+            </ExpandedContainer>
+          )}
           {layerActive && isCustomUserLayer && (
             <Color
               dataview={dataview}

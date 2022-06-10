@@ -223,7 +223,7 @@ export const isDataviewSchemaSupported = (
 ) => {
   const activeDatasets = dataview.config?.datasets
   const schemaSupported = dataview?.datasets
-    ?.filter((dataset) => activeDatasets.includes(dataset.id))
+    ?.filter((dataset) => activeDatasets?.includes(dataset.id))
     .every((dataset) => {
       return dataset.fieldsAllowed.includes(schema)
     })
