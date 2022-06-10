@@ -20,7 +20,9 @@ import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } from 'data/workspaces'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 
-export type SupportedDatasetSchema =
+export type SupportedDatasetSchema = SupportedActivityDatasetSchema | SupportedEnvDatasetSchema
+
+export type SupportedActivityDatasetSchema =
   | 'flag'
   | 'geartype'
   | 'fleet'
@@ -34,6 +36,8 @@ export type SupportedDatasetSchema =
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
+
+export type SupportedEnvDatasetSchema = 'type'
 
 type IncompatibleFilter = {
   id: SupportedDatasetSchema
