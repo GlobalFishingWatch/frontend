@@ -33,4 +33,5 @@ export enum VesselFieldLabel {
   authorizations = 'authorizations',
   registeredGearType = 'registeredGearType',
   iuuStatus = 'iuuStatus',
+  forcedLabourModel = 'forcedLabourModel',
 }

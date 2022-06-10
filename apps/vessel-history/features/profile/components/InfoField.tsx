@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import I18nDate from 'features/i18n/i18nDate'
@@ -13,6 +14,7 @@ import Faq from './Faq'
 interface ListItemProps {
   label: VesselFieldLabel
   value?: string
+  className?: string
   valuesHistory?: ValueItem[]
   vesselName: string
   hideTMTDate?: boolean
@@ -23,6 +25,7 @@ interface ListItemProps {
 const InfoField: React.FC<ListItemProps> = ({
   value = DEFAULT_EMPTY_VALUE,
   label,
+  className = '',
   valuesHistory = [],
   vesselName,
   hideTMTDate = false,
@@ -46,7 +49,7 @@ const InfoField: React.FC<ListItemProps> = ({
 
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
   return (
-    <div className={styles.identifierField}>
+    <div className={cx(styles.identifierField, styles[className])}>
       <label className={styles.infoLabel} >
         {t(`vessel.${label}` as any, label)}
         {helpText && (

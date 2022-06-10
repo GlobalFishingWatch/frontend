@@ -86,6 +86,13 @@ export const INSURER_PERMISSION = {
   value: 'risk-assessment',
   action: 'ui.load',
 }
+
+// forced laboud risk model permission
+export const FLRM_PERMISSION = {
+  type: 'vessel-info',
+  value: 'forced-labour',
+  action: 'read',
+}
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
