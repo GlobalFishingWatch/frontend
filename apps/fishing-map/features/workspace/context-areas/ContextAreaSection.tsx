@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
+import { range, inRange } from 'lodash'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -17,7 +18,10 @@ import { useLocationConnect } from 'routes/routes.hook'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Draggable from '../shared/Draggable'
 import LayerPanel from './ContextAreaLayerPanel'
+
+const LAYER_HEIGHT = 40
 
 function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -26,6 +30,8 @@ function ContextAreaSection(): React.ReactElement {
 
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectContextAreasDataviews)
+
+  const items = range(dataviews.length)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onDrawClick = useCallback(() => {
@@ -62,6 +68,34 @@ function ContextAreaSection(): React.ReactElement {
     },
     []
   )
+
+  const [order, setOrder] = useState(items)
+  const [dragOrder, setDragOrder] = useState(items)
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+
+  const handleDrag = useCallback(
+    ({ translation, id }) => {
+      const delta = Math.round(translation.y / LAYER_HEIGHT)
+      const index = order.indexOf(id)
+      const dragOrder = order.filter((index) => index !== id)
+
+      if (!inRange(index + delta, 0, items.length)) {
+        return
+      }
+
+      dragOrder.splice(index + delta, 0, id)
+
+      setDraggedIndex(id)
+      setDragOrder(dragOrder)
+    },
+    [items.length, order]
+  )
+
+  const handleDragEnd = useCallback(() => {
+    setOrder(dragOrder)
+    setDraggedIndex(null)
+  }, [dragOrder])
+
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
@@ -109,11 +143,30 @@ function ContextAreaSection(): React.ReactElement {
           </Fragment>
         )}
       </div>
-      {dataviews?.map((dataview) => (
-        <LayerPanelContainer key={dataview.id} dataview={dataview}>
-          <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-        </LayerPanelContainer>
-      ))}
+      <div>
+        {dataviews?.map((dataview, index) => {
+          const isDragging = draggedIndex === index
+          const top = dragOrder.indexOf(index) * LAYER_HEIGHT
+          const draggedTop = order.indexOf(index) * LAYER_HEIGHT
+
+          return (
+            <Draggable key={index} id={index} onDrag={handleDrag} onDragEnd={handleDragEnd}>
+              <LayerPanelContainer
+                key={dataview.id}
+                dataview={dataview}
+                draggable
+                style={{
+                  top: isDragging ? draggedTop : `${top}px`,
+                  transition: isDragging ? 'none' : 'all 500ms',
+                  position: 'absolute',
+                }}
+              >
+                <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+              </LayerPanelContainer>
+            </Draggable>
+          )
+        })}
+      </div>
     </div>
   )
 }
