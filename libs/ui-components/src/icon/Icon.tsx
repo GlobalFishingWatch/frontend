@@ -22,6 +22,7 @@ import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
 import { ReactComponent as Compare } from '../assets/icons/compare.svg'
 import { ReactComponent as Copy } from '../assets/icons/copy.svg'
+import { ReactComponent as Drag } from '../assets/icons/drag.svg'
 import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Dots } from '../assets/icons/dots.svg'
@@ -113,6 +114,7 @@ export const IconComponents = {
   dots: Dots,
   download: Download,
   encounters: Encounters,
+  drag: Drag,
   draw: Draw,
   edit: Edit,
   email: Email,
