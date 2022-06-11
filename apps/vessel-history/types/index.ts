@@ -91,7 +91,7 @@ export interface ForcedLaborRisk {
 }
 
 export enum RiskLevel {
-  hight = 'hight',
+  high = 'high',
   low = 'low',
   unknown = 'unlnown'
 }
@@ -185,7 +185,7 @@ export type GFWDetail = {
   callsign: string
   firstTransmissionDate: string
   flag: string
-  forcedLabour: ForcedLaborRisk[]
+  forcedLabour?: ForcedLaborRisk[]
   id: string
   imo?: any
   lastTransmissionDate: string

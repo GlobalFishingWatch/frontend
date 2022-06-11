@@ -144,22 +144,22 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     })
   }, [vesselId, vesselTmtId])
 
-  const { hightRisk, riskModel } = useMemo(() => {
+  const { highRisk, riskModel } = useMemo(() => {
     if (!vessel.forcedLabour || !authorizedFLRM) {
       return {
         riskModel: null,
-        hightRisk: false
+        highisk: false
       }
     }
     const riskModel: RiskOutput[] = [
-      { level: RiskLevel.hight, years: vessel.forcedLabour.filter(risk => risk.confidence && risk.score).map(risk => risk.year) },
+      { level: RiskLevel.high, years: vessel.forcedLabour.filter(risk => risk.confidence && risk.score).map(risk => risk.year) },
       { level: RiskLevel.low, years: vessel.forcedLabour.filter(risk => risk.confidence && !risk.score).map(risk => risk.year) },
       { level: RiskLevel.unknown, years: vessel.forcedLabour.filter(risk => !risk.confidence).map(risk => risk.year) },
     ].filter(risk => risk.years && risk.years.length)
 
     return {
       riskModel: riskModel.map(risk => `${t(`risk.${risk.level}` as any, risk.level)} - ${risk.years.join(', ')}`).join('. '),
-      hightRisk: riskModel.some(risk => risk.level === RiskLevel.hight && risk.years.length)
+      highRisk: riskModel.some(risk => risk.level === RiskLevel.high && risk.years.length)
     }
   }, [vessel.forcedLabour, authorizedFLRM])
 
@@ -350,7 +350,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   label={VesselFieldLabel.forcedLabourModel}
                   value={riskModel ?? t('risk.noRiskDetected', 'Vessel doesn’t have force labour info')}
                   valuesHistory={[]}
-                  className={hightRisk ? 'dangerBackground' : ''}
+                  className={highRisk ? 'dangerBackground' : ''}
                   helpText={
                     <Trans i18nKey="vessel.forcedLaborModelDescription">
                       High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.
