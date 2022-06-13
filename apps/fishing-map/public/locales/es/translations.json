@@ -348,6 +348,7 @@
     "source_other": "Fuentes",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
+    "type": "Type",
     "toggleCombinationMode": {
       "combine": "Combinar las capas",
       "split": "Separar las capas"
