@@ -4,11 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button } from '@globalfishingwatch/ui-components'
 import {
   selectWorkspaceStatus,
   selectWorkspaceError,
   selectWorkspace,
+  selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -26,6 +28,7 @@ import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
+import { setWorkspaceDataviews } from 'features/workspace/workspace.slice'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -124,6 +127,7 @@ function Workspace() {
   const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const workspace = useSelector(selectWorkspace)
+  const dataviews = useSelector(selectWorkspaceDataviewInstances)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
@@ -167,20 +171,14 @@ function Workspace() {
   }
 
   function handleDragEnd(event) {
-    console.log(event)
-
-    // const { active, over } = event
-
-    // if (active.id !== over.id) {
-    //   setItems((items) => {
-    //     const oldIndex = items.indexOf(active.id)
-    //     const newIndex = items.indexOf(over.id)
-
-    //     return arrayMove(items, oldIndex, newIndex)
-    //   })
-    // }
-
-    // setActiveId(null)
+    const { active, over } = event
+    console.log(dataviews)
+    if (active.id !== over.id) {
+      const oldIndex = dataviews.findIndex((d) => d.id === active.id)
+      const newIndex = dataviews.findIndex((d) => d.id === over.id)
+      const newDataviews = arrayMove(dataviews, oldIndex, newIndex)
+      dispatch(setWorkspaceDataviews(newDataviews))
+    }
   }
 
   return (
