@@ -52,8 +52,7 @@ function Draggable({ children, id, onDrag, onDragEnd }): React.ReactElement {
     () => ({
       transform: `translate(${translation.x}px, ${translation.y}px)`,
       transition: isDragging ? 'none' : 'transform 500ms',
-      zIndex: isDragging ? 2 : 1,
-      INITIAL_position: isDragging ? 'absolute' : 'relative',
+      zIndex: isDragging ? 1 : 0,
     }),
     [isDragging, translation.x, translation.y]
   )
