@@ -2,6 +2,8 @@ import { Fragment, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { DndContext } from '@dnd-kit/core'
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { Spinner, Button } from '@globalfishingwatch/ui-components'
 import {
   selectWorkspaceStatus,
@@ -164,8 +166,25 @@ function Workspace() {
     return <Search />
   }
 
+  function handleDragEnd(event) {
+    console.log(event)
+
+    // const { active, over } = event
+
+    // if (active.id !== over.id) {
+    //   setItems((items) => {
+    //     const oldIndex = items.indexOf(active.id)
+    //     const newIndex = items.indexOf(over.id)
+
+    //     return arrayMove(items, oldIndex, newIndex)
+    //   })
+    // }
+
+    // setActiveId(null)
+  }
+
   return (
-    <Fragment>
+    <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
       {(locationCategory === WorkspaceCategories.MarineManager ||
         locationCategory === WorkspaceCategories.FishingActivity) &&
         workspace?.name &&
@@ -186,7 +205,7 @@ function Workspace() {
       <EventsSection />
       <EnvironmentalSection />
       <ContextAreaSection />
-    </Fragment>
+    </DndContext>
   )
 }
 

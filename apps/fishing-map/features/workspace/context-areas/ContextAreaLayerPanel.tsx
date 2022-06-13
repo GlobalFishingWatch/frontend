@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react'
 import cx from 'classnames'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReactHtmlParser from 'react-html-parser'
@@ -36,6 +38,18 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }, [setModalDataWarningOpen])
   const guestUser = useSelector(isGuestUser)
   const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isSorting,
+  } = useSortable({
+    id: dataview.id,
+  })
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -85,14 +99,27 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     />
   )
 
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    height: isSorting ? '40px' : 'auto',
+    overflow: 'hidden',
+  }
+
   return (
     <div
       className={cx(styles.LayerPanel, {
         [styles.expandedContainerOpen]: colorOpen,
         'print-hidden': !layerActive,
       })}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
     >
       <div className={styles.header}>
+        <button ref={setActivatorNodeRef} {...listeners}>
+          D
+        </button>
         <LayerSwitch
           disabled={dataset?.status === DatasetStatus.Error}
           active={layerActive}
