@@ -72,6 +72,14 @@ const getSubLayersFilters = (
   return [sublayersFilters[0]]
 }
 
+const getSubLayersVesselGroups = (
+  sublayers: HeatmapAnimatedGeneratorSublayer[],
+  merge = false
+): string[] => {
+  const sublayersVesselGroups = sublayers.map((sublayer) => sublayer.vesselGroups || '')
+  return sublayersVesselGroups
+}
+
 const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
   sublayer.visible === false ? false : true
 const getSubLayersVisible = (config: HeatmapAnimatedGeneratorConfig) =>
@@ -94,6 +102,9 @@ const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
     sublayerVisibility: JSON.stringify(params.sublayerVisibility),
     sublayerCount: params.sublayerCount.toString(),
     interactive: params.interactive ? 'true' : 'false',
+  }
+  if (params['vessel-groups']) {
+    serialized['vessel-groups'] = toURLArray('vessel-groups', params['vessel-groups'])
   }
   if (params['date-range']) {
     serialized['date-range'] = params['date-range'].join(',')
@@ -149,10 +160,14 @@ class HeatmapAnimatedGenerator {
       config.sublayers,
       config.mode === HeatmapAnimatedMode.TimeCompare
     )
+
     const filters = getSubLayersFilters(
       config.sublayers,
       config.mode === HeatmapAnimatedMode.TimeCompare
     )
+
+    // TODO should be an array per sublayer?
+    const vesselGroups = getSubLayersVesselGroups(config.sublayers)
 
     const visible = getSubLayersVisible(config)
 
@@ -181,6 +196,7 @@ class HeatmapAnimatedGenerator {
         quantizeOffset: timeChunk.quantizeOffset,
         interval: timeChunks.interval,
         filters,
+        'vessel-groups': vesselGroups,
         datasets,
         aggregationOperation: config.aggregationOperation,
         sublayerCombinationMode,
@@ -214,6 +230,7 @@ class HeatmapAnimatedGenerator {
       }
 
       const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
+      console.log(serializedBaseSourceParams)
 
       const sourceParams = [serializedBaseSourceParams]
 

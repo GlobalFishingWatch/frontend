@@ -44,7 +44,7 @@ export const useVesselGroupSelectWithModal = (options, onSelect, className) => {
         dispatch(setModalOpen())
         return
       }
-      if (onSelect) onSelect('vessel-groups', selection)
+      if (onSelect) onSelect('vesselGroups', selection)
     },
     [onSelect, dispatch]
   )

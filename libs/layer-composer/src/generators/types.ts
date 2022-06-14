@@ -452,6 +452,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   id: string
   datasets: string[]
   filter?: string
+  vesselGroups: string
   colorRamp: ColorRampsIds
   colorRampWhiteEnd?: boolean
   visible?: boolean

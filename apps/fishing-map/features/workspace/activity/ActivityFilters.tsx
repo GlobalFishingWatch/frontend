@@ -70,7 +70,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     config: {
       ...dataview.config,
       // allow dataset.utils/getCommonSchemaFieldsInDataview to grab vessel groups
-      ...(allowVesselGroup && { 'vessel-groups': vesselGroupsOptions }),
+      ...(allowVesselGroup && { vesselGroups: vesselGroupsOptions }),
     },
   })
 
@@ -232,12 +232,12 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           <ActivitySchemaFilter
             key={schemaFilter.id}
             schemaFilter={
-              schemaFilter.id === 'vessel-groups'
+              schemaFilter.id === 'vesselGroups'
                 ? { ...schemaFilter, options: vesselGroupsOptionsWithModal }
                 : schemaFilter
             }
             onSelect={
-              schemaFilter.id === 'vessel-groups'
+              schemaFilter.id === 'vesselGroups'
                 ? onSelectVesselGroupFilterClick
                 : onSelectFilterClick
             }

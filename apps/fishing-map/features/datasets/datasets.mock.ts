@@ -92,11 +92,11 @@ export const datasets: Dataset[] = [
         type: 'string',
         minLength: 3,
       },
-      'vessel-groups': {
+      vesselGroups: {
         type: 'string',
       },
     },
-    fieldsAllowed: ['flag', 'vessel_id', 'geartype', 'vessel-groups'],
+    fieldsAllowed: ['flag', 'vessel_id', 'geartype', 'vesselGroups'],
   } as any,
 ]
 

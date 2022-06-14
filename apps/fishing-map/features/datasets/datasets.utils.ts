@@ -38,7 +38,7 @@ export type SupportedActivityDatasetSchema =
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
-  | 'vessel-groups'
+  | 'vesselGroups'
 
 export type SupportedEnvDatasetSchema = 'type'
 
@@ -255,7 +255,7 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  if (schema === 'flag' || schema === 'vessel-groups') {
+  if (schema === 'flag' || schema === 'vesselGroups') {
     // returning true as the schema fields enum comes from the static list in getFlags()
     return true
   }
@@ -327,9 +327,9 @@ export const getCommonSchemaFieldsInDataview = (
 ): SchemaFieldSelection[] => {
   if (schema === 'flag') {
     return getFlags()
-  } else if (schema === 'vessel-groups') {
+  } else if (schema === 'vesselGroups') {
     // Must be injected in dataview beforehand
-    return dataview.config['vessel-groups']
+    return dataview.config.vesselGroups
   }
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)

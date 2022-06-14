@@ -66,16 +66,15 @@ export interface TileAggregationSourceParams extends BaseTileAggregationParams {
   id: string
   interval: string
   filters: string[]
+  ['vessel-groups']: string[]
   datasets: string[]
   ['date-range']?: TileAggregationDateRange
   ['comparison-range']?: TileAggregationComparisonDateRange
 }
 
-export type TileAggregationSourceParamsSerialized = Partial<
-  {
-    [key in keyof TileAggregationSourceParams]: string
-  }
->
+export type TileAggregationSourceParamsSerialized = Partial<{
+  [key in keyof TileAggregationSourceParams]: string
+}>
 
 export type CellAggregationParams = {
   rawValues: string

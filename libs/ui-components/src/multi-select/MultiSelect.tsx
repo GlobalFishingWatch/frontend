@@ -295,7 +295,7 @@ export function MultiSelect(props: MultiSelectProps) {
                   <li
                     className={cx(styles.optionItem, {
                       [styles.highlight]: highlight,
-                      [item.className]: item.className,
+                      [item.className || '']: item.className,
                     })}
                     {...getItemProps({ item, index })}
                   >
