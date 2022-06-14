@@ -253,7 +253,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   }
                   active={
                     timebarVisualisation === TimebarVisualisations.Environment &&
-                    (timebarSelectedEnvId === envDataview.id || (!timebarSelectedEnvId && i === 0))
+                    timebarSelectedEnvId === envDataview.id
                   }
                   tooltip={activityTooltipLabel}
                   onClick={() => setEnvironmentActive(envDataview.id)}

@@ -29,6 +29,7 @@ import {
   selectDataviewInstancesMerged,
 } from 'features/dataviews/dataviews.slice'
 import { RootState } from 'store'
+import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -123,8 +124,15 @@ export const selectTimebarVisualisation = createSelector(
 )
 
 export const selectTimebarSelectedEnvId = createSelector(
-  [selectWorkspaceStateProperty('timebarSelectedEnvId')],
-  (timebarSelectedEnvId): string => {
+  [
+    selectWorkspaceStateProperty('timebarSelectedEnvId'),
+    selectTimebarVisualisation,
+    selectEnvironmentalDataviews,
+  ],
+  (timebarSelectedEnvId, timebarVisualisation, envDataviews): string => {
+    if (timebarVisualisation === TimebarVisualisations.Environment) {
+      return timebarSelectedEnvId || envDataviews[0]?.id
+    }
     return timebarSelectedEnvId
   }
 )
