@@ -39,25 +39,9 @@ export type SupportedActivityDatasetSchema =
 
 export type SupportedEnvDatasetSchema = 'type'
 
-type IncompatibleFilter = {
-  id: SupportedDatasetSchema
-  value: any
-  disabled: SupportedDatasetSchema[]
-}
-type IncompatibleFiltersDict = Record<string, IncompatibleFilter[]>
-const INCOMPATIBLE_FILTERS_DICT: IncompatibleFiltersDict = {
-  'public-presence-viirs-match-prototype:v20220112': [
-    { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
-  ],
-  'public-ais-presence-viirs-match-prototype:v20220112': [
-    { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
-  ],
-  'public-global-sar-presence:v20210924': [
-    { id: 'matched', value: false, disabled: ['flag', 'geartype'] },
-  ],
-}
-
-export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
+export type SchemaFieldDataview =
+  | UrlDataviewInstance
+  | Pick<Dataview, 'config' | 'datasets' | 'filtersConfig'>
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   (dataset?.id || '').includes(PRIVATE_SUFIX)
@@ -279,9 +263,11 @@ export const getIncompatibleFilterSelection = (
   schema: SupportedDatasetSchema
 ) => {
   return dataview?.datasets?.flatMap((dataset) => {
-    const hasIncompatibility = INCOMPATIBLE_FILTERS_DICT[dataset.id] !== undefined
-    if (!hasIncompatibility) return []
-    return INCOMPATIBLE_FILTERS_DICT[dataset.id].filter(({ id, value, disabled }) => {
+    const incompatibilityDict = dataview.filtersConfig?.incompatibility?.[dataset.id]
+    if (!incompatibilityDict?.length) {
+      return []
+    }
+    return incompatibilityDict.filter(({ id, value, disabled }) => {
       const selectedFilterValue = dataview.config?.filters?.[id]
       return (
         disabled.includes(schema) &&
@@ -395,17 +381,16 @@ export const geSchemaFiltersInDataview = (dataview: SchemaFieldDataview): Schema
   const fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
-  const fieldsOrder =
-    dataview.datasets.length === 1 &&
-    (dataview.datasets[0].configuration?.fieldsOrder as SupportedDatasetSchema[])
+  const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
-  const fielsAllowedOrdered = fieldsOrder
-    ? fieldsAllowed.sort((a, b) => {
-        const aIndex = fieldsOrder.findIndex((f) => f === a)
-        const bIndex = fieldsOrder.findIndex((f) => f === b)
-        return aIndex - bIndex
-      })
-    : fieldsAllowed
+  const fielsAllowedOrdered =
+    fieldsOrder && fieldsOrder.length > 0
+      ? fieldsAllowed.sort((a, b) => {
+          const aIndex = fieldsOrder.findIndex((f) => f === a)
+          const bIndex = fieldsOrder.findIndex((f) => f === b)
+          return aIndex - bIndex
+        })
+      : fieldsAllowed
   const schemaFilters = fielsAllowedOrdered.map((id) => getFiltersBySchema(dataview, id))
   return schemaFilters
 }
