@@ -225,6 +225,7 @@ export function getGeneratorConfig(
             id: generator.id,
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
             colorRampWhiteEnd: false,
+            filter: dataview.config?.filter,
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
             datasets: datasetsIds,
