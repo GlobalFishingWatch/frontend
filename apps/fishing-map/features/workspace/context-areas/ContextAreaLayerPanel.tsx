@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReactHtmlParser from 'react-html-parser'
 import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, Modal } from '@globalfishingwatch/ui-components'
+import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -47,6 +47,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     transform,
     transition,
     isSorting,
+    activeIndex,
+    index,
   } = useSortable({
     id: dataview.id,
   })
@@ -104,6 +106,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     transition,
     height: isSorting ? '40px' : 'auto',
     overflow: 'hidden',
+    zIndex: index === activeIndex ? 1 : 0,
+    backgroundColor:
+      index === activeIndex ? 'rgba(var(--white-rgb), var(--opacity-secondary))' : 'transparent',
   }
 
   return (
@@ -117,9 +122,13 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       {...attributes}
     >
       <div className={styles.header}>
-        <button ref={setActivatorNodeRef} {...listeners}>
-          D
-        </button>
+        <IconButton
+          size="small"
+          ref={setActivatorNodeRef}
+          {...listeners}
+          icon="drag"
+          className={styles.dragger}
+        />
         <LayerSwitch
           disabled={dataset?.status === DatasetStatus.Error}
           active={layerActive}

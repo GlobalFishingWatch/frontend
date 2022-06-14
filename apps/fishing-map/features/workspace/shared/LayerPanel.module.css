@@ -30,6 +30,21 @@
   align-items: center;
 }
 
+.dragger {
+  width: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.dragger:focus {
+  box-shadow: none;
+}
+
+.LayerPanel:hover .dragger {
+  width: var(--size-S);
+  margin-right: var(--space-XS);
+}
+
 .expandedContainerOpen .header {
   background-color: var(--color-off-white);
 }
