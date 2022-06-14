@@ -84,10 +84,28 @@ export interface VesselFieldsHistory {
   operator: VesselFieldHistory<string>
 }
 
+export interface ForcedLaborRisk {
+  confidence: boolean
+  score: boolean
+  year: number
+}
+
+export enum RiskLevel {
+  high = 'high',
+  low = 'low',
+  unknown = 'unlnown'
+}
+
+export interface RiskOutput {
+  level: RiskLevel
+  years: number[]
+}
+
 export interface VesselWithHistory extends Vessel {
   history: VesselFieldsHistory
   iuuStatus?: number
   vesselType?: string
+  forcedLabour?: ForcedLaborRisk[]
 }
 
 export enum VesselAPISource {
@@ -167,6 +185,7 @@ export type GFWDetail = {
   callsign: string
   firstTransmissionDate: string
   flag: string
+  forcedLabour?: ForcedLaborRisk[]
   id: string
   imo?: any
   lastTransmissionDate: string

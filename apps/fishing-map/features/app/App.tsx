@@ -75,6 +75,11 @@ const Main = () => {
   )
 }
 
+const setMobileSafeVH = () => {
+  const vh = window.innerHeight * 0.01
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+}
+
 function App(): React.ReactElement {
   useAnalytics()
   useReplaceLoginUrl()
@@ -104,6 +109,12 @@ function App(): React.ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnalysing, sidebarOpen])
+
+  useEffect(() => {
+    setMobileSafeVH()
+    window.addEventListener('resize', setMobileSafeVH, false)
+    return () => window.removeEventListener('resize', setMobileSafeVH)
+  }, [])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()

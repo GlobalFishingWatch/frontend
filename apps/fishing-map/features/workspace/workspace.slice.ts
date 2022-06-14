@@ -176,7 +176,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
-      if (tries < 5) {
+      if (tries < 2) {
         try {
           const version = selectVersion(state)
           const name = tries > 0 ? defaultName + `_${tries}` : defaultName

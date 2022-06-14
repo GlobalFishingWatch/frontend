@@ -17,7 +17,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
 import {
   selectEventsDataviews,
-  selectActivityDataviews,
+  selectActiveTemporalgridDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectUserLogged } from 'features/user/user.slice'
@@ -94,7 +94,7 @@ const getInteractionEndpointDatasetConfig = (
         ) || []
       : []
   })
-  const fourWingsDataset = featuresDataviews[0].datasets?.find(
+  const fourWingsDataset = featuresDataviews[0]?.datasets?.find(
     (d) => d.type === DatasetTypes.Fourwings
   ) as Dataset
 
@@ -190,7 +190,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
-    const temporalgridDataviews = selectActivityDataviews(state) || []
+    const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
     if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
       return

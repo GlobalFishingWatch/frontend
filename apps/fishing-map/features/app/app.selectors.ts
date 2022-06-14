@@ -153,23 +153,14 @@ export const selectWorkspaceAppState = createSelector(
     selectTimebarVisualisation,
     selectVisibleEvents,
     selectTimebarGraph,
-    selectActivityCategory,
   ],
-  (
-    bivariateDataviews,
-    sidebarOpen,
-    timebarVisualisation,
-    visibleEvents,
-    timebarGraph,
-    activityCategory
-  ) => {
+  (bivariateDataviews, sidebarOpen, timebarVisualisation, visibleEvents, timebarGraph) => {
     return {
       bivariateDataviews,
       sidebarOpen,
       timebarVisualisation,
       visibleEvents,
       timebarGraph,
-      activityCategory,
     }
   }
 )

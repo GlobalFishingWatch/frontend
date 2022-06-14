@@ -22,7 +22,9 @@ import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } fr
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 
-export type SupportedDatasetSchema =
+export type SupportedDatasetSchema = SupportedActivityDatasetSchema | SupportedEnvDatasetSchema
+
+export type SupportedActivityDatasetSchema =
   | 'flag'
   | 'geartype'
   | 'fleet'
@@ -38,6 +40,8 @@ export type SupportedDatasetSchema =
   | 'license_category'
   | 'vessel-groups'
 
+export type SupportedEnvDatasetSchema = 'type'
+
 type IncompatibleFilter = {
   id: SupportedDatasetSchema
   value: any
@@ -51,7 +55,9 @@ const INCOMPATIBLE_FILTERS_DICT: IncompatibleFiltersDict = {
   'public-ais-presence-viirs-match-prototype:v20220112': [
     { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
   ],
-  'public-global-sar-presence:v20210924': [{ id: 'matched', value: false, disabled: ['geartype'] }],
+  'public-global-sar-presence:v20210924': [
+    { id: 'matched', value: false, disabled: ['flag', 'geartype'] },
+  ],
 }
 
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
@@ -78,7 +84,7 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
 
 export const getDatasetTitleByDataview = (
   dataview: Dataview | UrlDataviewInstance,
-  showPrivateIcon = false
+  { showPrivateIcon = true } = {}
 ): string => {
   const dataviewInstance = {
     ...dataview,
@@ -88,6 +94,7 @@ export const getDatasetTitleByDataview = (
   const activeDatasets = hasDatasetsConfig
     ? dataview.datasets?.filter((d) => dataview.config?.datasets?.includes(d.id))
     : dataview.datasets
+
   let datasetTitle = dataview.name || ''
   if (dataviewInstance.dataviewId === FISHING_DATAVIEW_ID) {
     datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
@@ -233,7 +240,7 @@ export const isDataviewSchemaSupported = (
 ) => {
   const activeDatasets = dataview.config?.datasets
   const schemaSupported = dataview?.datasets
-    ?.filter((dataset) => activeDatasets.includes(dataset.id))
+    ?.filter((dataset) => activeDatasets?.includes(dataset.id))
     .every((dataset) => {
       return dataset.fieldsAllowed.includes(schema)
     })

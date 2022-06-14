@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { isDetectionsDataview, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { isFishingDataview, isPresenceDataview } from 'features/workspace/activity/activity.utils'
+import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { t } from 'features/i18n/i18n'
 import { getFlagsByIds } from 'utils/flags'
 import {
@@ -44,16 +44,24 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
       titleChunks.push({ label: t('analysis.changeIn', 'Change in') })
     }
 
-    if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
-      commonProperties.push('dataset')
-      const fishingDataview = isFishingDataview(dataviews[0])
-      const presenceDataview = isPresenceDataview(dataviews[0])
-      if (fishingDataview || presenceDataview) {
-        const mainLabel = presenceDataview
-          ? t(`common.presence`, 'Vessel presence')
-          : t(`common.apparentFishing`, 'Apparent Fishing Effort')
+    if (dataviews?.every((dataview) => dataview.category === dataviews[0].category)) {
+      const activityDataview = isActivityDataview(dataviews[0])
+      const detectionsDataview = isDetectionsDataview(dataviews[0])
+      if (activityDataview || detectionsDataview) {
+        let mainLabel = ''
+        if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
+          commonProperties.push('dataset')
+          mainLabel = dataviews[0].name
+        } else {
+          if (activityDataview) {
+            mainLabel = t('common.activity', 'Activity')
+          } else {
+            mainLabel = t('common.detections', 'Detections')
+          }
+        }
         titleChunks.push({ label: mainLabel, strong: true })
       } else {
+        commonProperties.push('dataset')
         titleChunks.push({ label: dataviews[0].name || '', strong: true })
       }
     }
@@ -232,6 +240,7 @@ const useAnalysisDescription = (analysisAreaName: string, graphData?: AnalysisGr
   const { titleChunks, commonProperties } = useMemo(() => {
     return getCommonProperties(dataviews, showTimeComparison)
   }, [dataviews, showTimeComparison])
+
   const description = useDescription(titleChunks, analysisAreaName, graphData)
   return { description, commonProperties }
 }

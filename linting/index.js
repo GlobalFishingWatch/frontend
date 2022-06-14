@@ -1,14 +1,16 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   extends: [
-    'plugin:@typescript-eslint/recommended',
+    // TODO fix
+    // 'plugin:@typescript-eslint/recommended',
     'react-app',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
     'prettier',
   ],
-  plugins: ['@typescript-eslint', 'react', 'import'],
+  // plugins: ['@typescript-eslint', 'react', 'import'],
+  plugins: ['react', 'import'],
   settings: {
     react: {
       version: 'detect',

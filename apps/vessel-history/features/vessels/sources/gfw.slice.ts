@@ -22,7 +22,6 @@ const getHistoryField = (data: GFWDetail, field: string, byCount: any[] = []) =>
 })
 
 export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
-
   return {
     id: data.id,
     flag: data.flag,
@@ -35,6 +34,7 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
     geartype: data.geartype,
     type: data.vesselType,
     vesselType: data.vesselType,
+    forcedLabour: data.forcedLabour,
     authorizations: [],
     history: {
       callsign: getHistoryField(data, 'callsign', data.otherCallsigns),
