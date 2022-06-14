@@ -36,7 +36,7 @@ export function useRisk(): UseRisk {
         encountersInMPA.length +
         fishingInMPA.length +
         loiteringInMPA.length,
-      high: 10,
+      high: 0,
     },
   }
 }
