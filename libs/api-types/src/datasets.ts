@@ -46,10 +46,10 @@ export interface Endpoint {
 }
 
 export enum DatasetTypes {
-  Vessels = 'carriers-vessels:v1',
-  Events = 'carriers-events:v1',
-  Ports = 'carriers-ports:v1',
-  Tracks = 'carriers-tracks:v1',
+  Vessels = 'vessels:v1',
+  Events = 'events:v1',
+  Ports = 'ports:v1',
+  Tracks = 'tracks:v1',
   Fourwings = '4wings:v1',
   Context = 'user-context-layer:v1',
   TemporalContext = 'temporal-context-layer:v1',

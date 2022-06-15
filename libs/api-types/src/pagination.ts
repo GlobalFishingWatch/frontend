@@ -1,4 +1,4 @@
-export interface SearchResult<T = any> {
+export interface PaginatedResult<T = any> {
   entries: T[]
   metadata: {
     suggestion: string
@@ -10,4 +10,4 @@ export interface SearchResult<T = any> {
   total: number
 }
 
-export type APISearch<T> = SearchResult<T>
+export type APIPagination<T> = PaginatedResult<T>

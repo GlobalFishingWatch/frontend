@@ -11,7 +11,7 @@ import {
   Dataset,
   DatasetTypes,
   Vessel,
-  APISearch,
+  APIPagination,
   VesselSearch,
   EndpointId,
 } from '@globalfishingwatch/api-types'
@@ -147,7 +147,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
-        const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
+        const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, {
           signal,
         })
         const uniqSearchResults = uniqBy(searchResults.entries, 'id')
