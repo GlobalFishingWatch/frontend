@@ -5,6 +5,7 @@ import { ContextAreaGeometry, ContextAreaGeometryGeom } from '@globalfishingwatc
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { RootState } from 'store'
+import { selectVersion } from 'routes/routes.selectors'
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -29,10 +30,12 @@ export const fetchAreaThunk = createAsyncThunk(
   'areas/fetch',
   async (
     { datasetId, areaId, areaName }: FetchAreaThunkParam = {} as FetchAreaThunkParam,
-    { signal }
+    { getState, signal }
   ) => {
+    const state = getState() as RootState
+    const version = selectVersion(state)
     const area = await GFWAPI.fetch<ContextAreaGeometry>(
-      `/v1/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
+      `/${version}/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
       {
         signal,
       }

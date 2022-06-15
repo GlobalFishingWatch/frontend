@@ -11,6 +11,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
+import { selectVersion } from 'routes/routes.selectors'
 import { LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
 
 export const PRESENCE_DATASET_ID = 'public-global-presence'
@@ -44,9 +45,13 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('datasets/fetchById', async (id: string, { rejectWithValue }) => {
+>('datasets/fetchById', async (id: string, { getState, rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
+    const state = getState() as RootState
+    const version = selectVersion(state)
+    const dataset = await GFWAPI.fetch<Dataset>(
+      `/${version}/datasets/${id}?include=endpoints&cache=false`
+    )
     return parsePOCsDatasets(dataset)
   } catch (e: any) {
     return rejectWithValue({
@@ -59,7 +64,9 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
-    const existingIds = selectIds(getState() as RootState) as string[]
+    const state = getState() as RootState
+    const version = selectVersion(state)
+    const existingIds = selectIds(state) as string[]
     const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
 
     try {
@@ -69,7 +76,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         cache: false,
       }
       const initialDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+        `/${version}/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       const relatedDatasetsIds = uniq(
@@ -80,7 +87,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...existingIds).join(',')
       const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
       const relatedDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
+        `/${version}/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
@@ -109,9 +116,11 @@ export const createDatasetThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('datasets/create', async ({ dataset, file, createAsPublic }, { rejectWithValue }) => {
+>('datasets/create', async ({ dataset, file, createAsPublic }, { getState, rejectWithValue }) => {
   try {
-    const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
+    const state = getState() as RootState
+    const version = selectVersion(state)
+    const { url, path } = await GFWAPI.fetch<UploadResponse>(`/${version}/upload`, {
       method: 'POST',
       body: {
         contentType: dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
@@ -136,7 +145,7 @@ export const createDatasetThunk = createAsyncThunk<
 
     delete (datasetWithFilePath as any).public
 
-    const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+    const createdDataset = await GFWAPI.fetch<Dataset>(`/${version}/datasets`, {
       method: 'POST',
       body: datasetWithFilePath as any,
     })
@@ -155,12 +164,17 @@ export const updateDatasetThunk = createAsyncThunk<
   }
 >(
   'datasets/update',
-  async (partialDataset, { rejectWithValue }) => {
+  async (partialDataset, { getState, rejectWithValue }) => {
+    const state = getState() as RootState
+    const version = selectVersion(state)
     try {
-      const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${partialDataset.id}`, {
-        method: 'PATCH',
-        body: partialDataset as any,
-      })
+      const updatedDataset = await GFWAPI.fetch<Dataset>(
+        `/${version}/datasets/${partialDataset.id}`,
+        {
+          method: 'PATCH',
+          body: partialDataset as any,
+        }
+      )
       return updatedDataset
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
@@ -182,9 +196,11 @@ export const deleteDatasetThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('datasets/delete', async (id: string, { rejectWithValue }) => {
+>('datasets/delete', async (id: string, { getState, rejectWithValue }) => {
+  const state = getState() as RootState
+  const version = selectVersion(state)
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
+    const dataset = await GFWAPI.fetch<Dataset>(`/${version}/datasets/${id}`, {
       method: 'DELETE',
     })
     return { ...dataset, id }

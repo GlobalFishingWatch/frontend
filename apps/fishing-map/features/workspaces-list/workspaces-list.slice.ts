@@ -15,6 +15,7 @@ import { APP_NAME } from 'data/config'
 import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
+import { selectVersion } from 'routes/routes.selectors'
 
 export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
 
@@ -121,7 +122,9 @@ export const createWorkspaceThunk = createAsyncThunk<
   }
 >(
   'workspaces/create',
-  async (workspace, { rejectWithValue }) => {
+  async (workspace, { getState, rejectWithValue }) => {
+    const state = getState() as RootState
+    const version = selectVersion(state)
     const parsedWorkspace = {
       ...workspace,
       id: kebabCase(workspace.name),
@@ -131,7 +134,7 @@ export const createWorkspaceThunk = createAsyncThunk<
         : workspace.dataviews,
     }
     try {
-      const newWorkspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
+      const newWorkspace = await GFWAPI.fetch<Workspace>(`/${version}/workspaces`, {
         method: 'POST',
         body: parsedWorkspace as any,
       })

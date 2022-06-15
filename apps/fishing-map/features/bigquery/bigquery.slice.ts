@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { kebabCase } from 'lodash'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { selectVersion } from 'routes/routes.selectors'
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -24,11 +25,13 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
   'bigQuery/fetchRunCost',
   async (
     { query, visualisationMode }: Omit<CreateBigQueryDataset, 'name'>,
-    { rejectWithValue }
+    { getState, rejectWithValue }
   ) => {
+    const state = getState() as RootState
+    const version = selectVersion(state)
     try {
       const response = await GFWAPI.fetch<RunCostResponse>(
-        `/v1/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
+        `/${version}/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
         {
           method: 'POST',
           body: {
@@ -61,11 +64,13 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
   'bigQuery/createDataset',
   async (
     { query, name, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
-    { dispatch, rejectWithValue }
+    { dispatch, getState, rejectWithValue }
   ) => {
+    const state = getState() as RootState
+    const version = selectVersion(state)
     try {
       const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
-        `/v1/${visualisationMode}/bq/create-temporal-dataset`,
+        `/${version}/${visualisationMode}/bq/create-temporal-dataset`,
         {
           method: 'POST',
           body: { query, name: kebabCase(name), public: createAsPublic } as any,
