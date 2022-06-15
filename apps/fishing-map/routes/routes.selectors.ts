@@ -57,6 +57,9 @@ export const selectUrlEndQuery = selectQueryParam<string>('end')
 export const selectUrlDataviewInstances =
   selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 
+export const selectUrlDataviewInstancesOrder =
+  selectQueryParam<UrlDataviewInstance['id'][]>('dataviewInstancesOrder')
+
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
   (zoom, latitude, longitude) => {

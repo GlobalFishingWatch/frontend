@@ -9,6 +9,7 @@ import { UrlDataviewInstance } from '.'
 export type BaseUrlWorkspace = {
   activityCategory?: string // legacy
   dataviewInstances?: Partial<UrlDataviewInstance[]>
+  dataviewInstancesOrder?: UrlDataviewInstance['id'][]
   latitude?: number
   longitude?: number
   zoom?: number

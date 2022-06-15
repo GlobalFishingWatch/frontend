@@ -257,9 +257,6 @@ const workspaceSlice = createSlice({
     cleanCurrentWorkspaceData: (state) => {
       state.data = null
     },
-    setWorkspaceDataviews: (state, action: PayloadAction<DataviewInstance<any>[]>) => {
-      state.data.dataviewInstances = action.payload
-    },
     setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
       state.lastVisited = action.payload
     },
@@ -317,7 +314,6 @@ const workspaceSlice = createSlice({
   },
 })
 
-export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData, setWorkspaceDataviews } =
-  workspaceSlice.actions
+export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData } = workspaceSlice.actions
 
 export default workspaceSlice.reducer
