@@ -19,6 +19,7 @@ export type BaseUrlWorkspace = {
 
 const PARAMS_TO_ABBREVIATED = {
   dataviewInstances: 'dvIn',
+  dataviewInstancesOrder: 'dvInOr',
   datasetsConfig: 'dsC',
   datasets: 'dss',
   endpoint: 'ept',
