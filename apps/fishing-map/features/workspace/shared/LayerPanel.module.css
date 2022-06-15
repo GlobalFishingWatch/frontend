@@ -42,7 +42,6 @@
 
 .LayerPanel:hover .dragger {
   width: var(--size-S);
-  margin-right: var(--space-XS);
 }
 
 .expandedContainerOpen .header {
@@ -115,6 +114,15 @@
 .dataWarningLinks button {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.drag {
+  opacity: 1;
+  transition: opacity 100ms linear;
+}
+
+.dragging {
+  opacity: 0;
 }
 
 .filters {

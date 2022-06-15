@@ -16,6 +16,7 @@ import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -35,6 +36,16 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
+  const {
+    items,
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    style,
+    isSorting,
+    activeIndex,
+  } = useLayerPanelDataviewSort(dataview.id)
 
   const datasetFields: { field: SupportedEnvDatasetSchema; label: string }[] = useMemo(
     () => [{ field: 'type', label: t('layer.type', 'Type') }],
@@ -95,6 +106,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
         [styles.expandedContainerOpen]: colorOpen || filterOpen,
         'print-hidden': !layerActive,
       })}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
     >
       <div className={styles.header}>
         <LayerSwitch
@@ -143,6 +157,15 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           )}
           <InfoModal dataview={dataview} />
           {isCustomUserLayer && <Remove dataview={dataview} />}
+          {items.length > 1 && (
+            <IconButton
+              size="small"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              icon="drag"
+              className={styles.dragger}
+            />
+          )}
         </div>
       </div>
       <div className={styles.properties}>
@@ -157,7 +180,11 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
         </div>
       </div>
       {layerActive && (
-        <div className={styles.properties}>
+        <div
+          className={cx(styles.properties, styles.drag, {
+            [styles.dragging]: isSorting && activeIndex > -1,
+          })}
+        >
           <div id={`legend_${dataview.id}`}></div>
         </div>
       )}

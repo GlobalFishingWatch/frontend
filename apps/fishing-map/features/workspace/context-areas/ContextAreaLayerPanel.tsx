@@ -1,7 +1,5 @@
 import { useState, useCallback } from 'react'
 import cx from 'classnames'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReactHtmlParser from 'react-html-parser'
@@ -13,6 +11,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
@@ -40,18 +39,15 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
 
   const {
+    items,
     attributes,
     listeners,
     setNodeRef,
     setActivatorNodeRef,
-    transform,
-    transition,
+    style,
     isSorting,
     activeIndex,
-    index,
-  } = useSortable({
-    id: dataview.id,
-  })
+  } = useLayerPanelDataviewSort(dataview.id)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -101,16 +97,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     />
   )
 
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-    height: isSorting ? '40px' : 'auto',
-    overflow: 'hidden',
-    zIndex: index === activeIndex ? 1 : 0,
-    backgroundColor:
-      index === activeIndex ? 'rgba(var(--white-rgb), var(--opacity-secondary))' : 'transparent',
-  }
-
   return (
     <div
       className={cx(styles.LayerPanel, {
@@ -122,13 +108,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       {...attributes}
     >
       <div className={styles.header}>
-        <IconButton
-          size="small"
-          ref={setActivatorNodeRef}
-          {...listeners}
-          icon="drag"
-          className={styles.dragger}
-        />
         <LayerSwitch
           disabled={dataset?.status === DatasetStatus.Error}
           active={layerActive}
@@ -153,10 +132,23 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
           <InfoModal dataview={dataview} />
           {isUserLayer && <Remove dataview={dataview} />}
+          {items.length > 1 && (
+            <IconButton
+              size="small"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              icon="drag"
+              className={styles.dragger}
+            />
+          )}
         </div>
       </div>
       {layerActive && DATAVIEWS_WARNING.includes(dataview?.id) && (
-        <div className={cx(styles.properties, styles.dataWarning)}>
+        <div
+          className={cx(styles.properties, styles.dataWarning, styles.drag, {
+            [styles.dragging]: isSorting && activeIndex > -1,
+          })}
+        >
           <div>
             {t(
               `dataview.${dataview?.id}.dataWarning` as any,

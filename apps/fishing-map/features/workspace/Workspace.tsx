@@ -6,11 +6,11 @@ import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button } from '@globalfishingwatch/ui-components'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   selectWorkspaceStatus,
   selectWorkspaceError,
   selectWorkspace,
-  selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -22,7 +22,10 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { PRIVATE_SUFIX, PUBLIC_SUFIX, SUPPORT_EMAIL, USER_SUFIX } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
-import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
+import {
+  selectDataviewInstancesMerged,
+  selectDataviewsResources,
+} from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
@@ -127,7 +130,7 @@ function Workspace() {
   const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const workspace = useSelector(selectWorkspace)
-  const dataviews = useSelector(selectWorkspaceDataviewInstances)
+  const dataviews = useSelector(selectDataviewInstancesMerged)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
@@ -172,12 +175,11 @@ function Workspace() {
 
   function handleDragEnd(event) {
     const { active, over } = event
-    console.log(dataviews)
-    if (active.id !== over.id) {
+    if (active && over && active.id !== over.id) {
       const oldIndex = dataviews.findIndex((d) => d.id === active.id)
       const newIndex = dataviews.findIndex((d) => d.id === over.id)
       const newDataviews = arrayMove(dataviews, oldIndex, newIndex)
-      dispatch(setWorkspaceDataviews(newDataviews))
+      dispatch(setWorkspaceDataviews(newDataviews as DataviewInstance[]))
     }
   }
 
