@@ -138,12 +138,12 @@ export interface Dataset {
 }
 
 export interface ThinningConfig {
-  distanceFishing?: number
-  bearingValFishing?: number
-  changeSpeedFishing?: number
-  minAccuracyFishing?: number
-  distanceTransit?: number
-  bearingValTransit?: number
-  changeSpeedTransit?: number
-  minAccuracyTransit?: number
+  'distance-fishing'?: number
+  'bearing-val-fishing'?: number
+  'change-speed-fishing'?: number
+  'min-accuracy-fishing'?: number
+  'distance-transit'?: number
+  'bearing-val-transit'?: number
+  'change-speed-transit'?: number
+  'min-accuracy-transit'?: number
 }

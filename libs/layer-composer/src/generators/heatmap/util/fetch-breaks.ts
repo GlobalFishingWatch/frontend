@@ -113,7 +113,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
 
   const breaksUrl = new URL(getBreaksUrl(config))
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
-  breaksUrl.searchParams.set('numBins', getNumBins(config).toString())
+  breaksUrl.searchParams.set('num-bins', getNumBins(config).toString())
   breaksUrl.searchParams.set('interval', '10days')
 
   const url = breaksUrl.toString()
@@ -135,7 +135,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
       if (r.ok) return r.json()
       throw r
     })
-    .then((breaks: Breaks) => {
+    .then(({ entries: breaks }: { entries: Breaks }) => {
       const breaksByDataset = Object.fromEntries(
         allDatasets.map((dataset, index) => [dataset, breaks[index]])
       )

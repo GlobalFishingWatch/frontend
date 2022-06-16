@@ -1,5 +1,254 @@
 import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
+import { TEMPLATE_VESSEL_DATAVIEW_ID } from 'data/workspaces'
 
-export const dataviews: Dataview[] = []
+export const dataviews: Dataview[] = [
+  {
+    id: TEMPLATE_VESSEL_DATAVIEW_ID,
+    name: 'Vessel',
+    slug: null,
+    description: 'Vessel with track, info and events',
+    app: 'fishing-map',
+    config: {
+      type: 'TRACK',
+      color: '#F95E5E',
+      showIcons: false,
+      showAuthorizationStatus: false,
+      pointsToSegmentsSwitchLevel: 9,
+    },
+    infoConfig: {
+      fields: [
+        {
+          id: 'flag',
+          type: 'flag',
+          guest: true,
+          mandatory: true,
+        },
+        {
+          id: 'imo',
+          type: 'number',
+          guest: true,
+          mandatory: true,
+        },
+        {
+          id: 'mmsi',
+          type: 'number',
+          guest: true,
+          mandatory: true,
+        },
+        {
+          id: 'callsign',
+          type: 'number',
+          guest: true,
+          mandatory: true,
+        },
+        {
+          id: 'registeredGearType',
+          type: 'string',
+          guest: true,
+        },
+        {
+          id: 'widthRange',
+          type: 'string',
+        },
+        {
+          id: 'lengthRange',
+          type: 'string',
+        },
+        {
+          id: 'grossTonnageRange',
+          type: 'string',
+        },
+        {
+          id: 'firstTransmissionDate',
+          type: 'date',
+          guest: true,
+        },
+        {
+          id: 'lastTransmissionDate',
+          type: 'date',
+          guest: true,
+        },
+        {
+          id: 'nationalId',
+          type: 'string',
+        },
+        {
+          id: 'geartype',
+          type: 'fleet',
+          mandatory: true,
+        },
+        {
+          id: 'casco',
+          type: 'string',
+        },
+        {
+          id: 'fleet',
+          type: 'fleet',
+        },
+        {
+          id: 'length',
+          type: 'string',
+        },
+        {
+          id: 'beam',
+          type: 'string',
+        },
+        {
+          id: 'capacity',
+          type: 'string',
+        },
+        {
+          id: 'targetSpecies',
+          type: 'string',
+        },
+        {
+          id: 'mainGear',
+          type: 'string',
+        },
+        {
+          id: 'licenseCode',
+          type: 'string',
+        },
+        {
+          id: 'licensDescription',
+          type: 'string',
+        },
+        {
+          id: 'fishingZone',
+          type: 'string',
+        },
+        {
+          id: 'codMarinha',
+          type: 'string',
+        },
+        {
+          id: 'dataset',
+          type: 'string',
+          guest: true,
+          mandatory: true,
+        },
+      ],
+    },
+    eventsConfig: null,
+    filtersConfig: null,
+    category: DataviewCategory.Vessels,
+    datasetsConfig: [
+      {
+        query: [
+          {
+            id: 'binary',
+            value: true,
+          },
+          {
+            id: 'wrap-longitudes',
+            value: false,
+          },
+          {
+            id: 'fields',
+            value: 'lonlat,timestamp',
+          },
+          {
+            id: 'format',
+            value: 'valueArray',
+          },
+        ],
+        params: [
+          {
+            id: 'vesselId',
+            value: '',
+          },
+        ],
+        endpoint: 'carriers-tracks',
+        datasetId: 'public-global-fishing-tracks:v20201001',
+      },
+      {
+        params: [
+          {
+            id: 'vesselId',
+            value: '',
+          },
+        ],
+        endpoint: 'carriers-vessel',
+        datasetId: 'public-global-fishing-vessels:v20201001',
+      },
+      {
+        params: [
+          {
+            id: 'vesselId',
+            value: '',
+          },
+        ],
+        endpoint: 'carriers-vessel',
+        datasetId: 'public-global-carrier-vessels:v20201001',
+      },
+      {
+        query: [
+          {
+            id: 'vessels',
+            value: '',
+          },
+          {
+            id: 'summary',
+            value: true,
+          },
+        ],
+        params: [],
+        endpoint: 'carriers-events',
+        datasetId: 'public-global-fishing-events:v20201001',
+      },
+      {
+        query: [
+          {
+            id: 'vessels',
+            value: '',
+          },
+          {
+            id: 'summary',
+            value: true,
+          },
+        ],
+        params: [],
+        endpoint: 'carriers-events',
+        datasetId: 'public-global-loitering-events-carriers:v20201001',
+      },
+      {
+        query: [
+          {
+            id: 'vessels',
+            value: '',
+          },
+          {
+            id: 'summary',
+            value: true,
+          },
+        ],
+        params: [],
+        endpoint: 'carriers-events',
+        datasetId: 'public-global-encounters-events:v20201001',
+      },
+      {
+        query: [
+          {
+            id: 'vessels',
+            value: '',
+          },
+          {
+            id: 'summary',
+            value: true,
+          },
+          {
+            id: 'confidences',
+            value: 4,
+          },
+        ],
+        params: [],
+        endpoint: 'carriers-events',
+        datasetId: 'public-global-port-visits-c2-events:v20201001',
+      },
+    ],
+    createdAt: '2020-10-26T09:54:50.313Z',
+    updatedAt: '2021-10-21T09:07:59.114Z',
+  },
+]
 
 export default dataviews

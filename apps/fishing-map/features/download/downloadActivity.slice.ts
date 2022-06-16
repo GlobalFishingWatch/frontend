@@ -68,9 +68,9 @@ export const downloadActivityThunk = createAsyncThunk<
         filters: dataviews.map(({ filter }) => filter),
         'date-range': [fromDate, toDate].join(','),
         format,
-        spatialResolution,
-        temporalResolution,
-        groupBy,
+        'spatial-resolution': spatialResolution,
+        'temporal-resolution': temporalResolution,
+        'group-by': groupBy,
       }
 
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`

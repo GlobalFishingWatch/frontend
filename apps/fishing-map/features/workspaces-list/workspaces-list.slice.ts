@@ -34,12 +34,11 @@ export const fetchWorkspacesThunk = createAsyncThunk<
   async ({ app = APP_NAME, ids, userId } = {}, { getState, rejectWithValue }) => {
     const state = getState() as RootState
     const defaultWorkspaceLoaded = selectWorkspaceById(DEFAULT_WORKSPACE_ID)(state) !== undefined
-    const workspacesParams = { app, ids, ownerId: userId }
+    const workspacesParams = { app, ids, 'owner-id': userId }
     try {
       const workspaces = await GFWAPI.fetch<APIPagination<AppWorkspace>>(
         `/${API_VERSION}/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
       )
-      console.log(workspaces)
 
       if (ids?.includes(DEFAULT_WORKSPACE_ID) && !defaultWorkspaceLoaded) {
         const defaultWorkspace = await getDefaultWorkspace()

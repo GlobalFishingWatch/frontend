@@ -54,11 +54,11 @@ export const trackDatasetConfigsCallback = (
           trackChunk.query = [
             ...trackQuery,
             {
-              id: 'startDate',
+              id: 'start-date',
               value: chunk.start,
             },
             {
-              id: 'endDate',
+              id: 'end-date',
               value: chunk.end,
             },
           ]

@@ -51,15 +51,15 @@ export const downloadTrackThunk = createAsyncThunk<
     const toDate = DateTime.fromISO(dateRange.end).toUTC().toString()
 
     const downloadTrackParams = {
-      startDate: fromDate,
-      endDate: toDate,
+      'start-date': fromDate,
+      'end-date': toDate,
       datasets,
       format: format === Format.GeoJson ? 'lines' : format,
       fields: 'lonlat,timestamp,speed,course',
     }
 
-    const fileName = `${vesselName || vesselId} - ${downloadTrackParams.startDate},${
-      downloadTrackParams.endDate
+    const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
+      downloadTrackParams['end-date']
     }.${format}`
 
     const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(

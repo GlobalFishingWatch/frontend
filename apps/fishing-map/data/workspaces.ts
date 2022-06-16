@@ -41,7 +41,7 @@ export const SAR_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 269 : 299
 export const PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
 export const VESSEL_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 195 : 270
 export const TEMPLATE_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 154 : 251
-export const TEMPLATE_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
+export const TEMPLATE_VESSEL_DATAVIEW_ID = 111111111 // WORKSPACE_ENV === 'development' ? 92 : 171
 export const TEMPLATE_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
 export const TEMPLATE_POINTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 207 : 274
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223

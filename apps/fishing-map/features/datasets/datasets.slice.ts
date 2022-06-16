@@ -82,7 +82,6 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         `/${API_VERSION}/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
-      console.log(initialDatasets)
       const relatedDatasetsIds = uniq(
         initialDatasets.entries.flatMap(
           (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
