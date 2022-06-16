@@ -12,6 +12,7 @@ import {
   DataviewCategory,
   DataviewInstance,
   Dataview,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -40,6 +41,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
       const dataview = await GFWAPI.fetch<Dataview>(`/${version}/dataviews/${id}`)
       return dataview
     } catch (e: any) {
+      console.warn(e)
       return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
     }
   }
@@ -56,21 +58,20 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
       return [] as Dataview[]
     }
     try {
-      let dataviews = await GFWAPI.fetch<Dataview[]>(
+      let dataviews = await GFWAPI.fetch<APIPagination<Dataview[]>>(
         `/${version}/dataviews?ids=${uniqIds.join(',')}`,
-        {
-          signal,
-        }
+        { signal }
       )
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
       ) {
         const mockedDataviews = await import('./dataviews.mock')
-        dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
+        dataviews = uniqBy([...mockedDataviews.default, ...dataviews.entries], 'id')
       }
       return dataviews
     } catch (e: any) {
+      console.warn(e)
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
@@ -93,6 +94,7 @@ export const createDataviewThunk = createAsyncThunk<
 
     return createdDataview
   } catch (e: any) {
+    console.warn(e)
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
@@ -115,6 +117,7 @@ export const updateDataviewThunk = createAsyncThunk<
       })
       return dataview
     } catch (e: any) {
+      console.warn(e)
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   },

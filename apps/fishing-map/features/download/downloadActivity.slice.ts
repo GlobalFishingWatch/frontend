@@ -95,6 +95,7 @@ export const downloadActivityThunk = createAsyncThunk<
       })
       return createdDownload
     } catch (e: any) {
+      console.warn(e)
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }

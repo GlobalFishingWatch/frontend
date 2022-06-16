@@ -58,7 +58,7 @@ export const getDefaultWorkspace = () => {
   const workspace = import(`../../data/default-workspaces/workspace.${workspaceEnv}`).then(
     (m) => m.default
   )
-  return workspace as Promise<Workspace<WorkspaceState>>
+  return workspace as Promise<AppWorkspace>
 }
 
 export const fetchWorkspaceThunk = createAsyncThunk(
@@ -130,12 +130,14 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
         if (error) {
+          console.warn(error)
           return rejectWithValue({ workspace, error: payload })
         }
       }
 
       return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e: any) {
+      console.warn(e)
       return rejectWithValue({ error: e as AsyncError })
     }
   },

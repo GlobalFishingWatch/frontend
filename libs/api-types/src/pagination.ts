@@ -1,4 +1,4 @@
-export interface PaginatedResult<T = any> {
+export interface APIPagination<T = any> {
   entries: T[]
   metadata: {
     suggestion: string
@@ -9,5 +9,3 @@ export interface PaginatedResult<T = any> {
   query: string
   total: number
 }
-
-export type APIPagination<T> = PaginatedResult<T>

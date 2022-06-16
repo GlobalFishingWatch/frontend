@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, kebabCase } from 'lodash'
 import { stringify } from 'qs'
-import { Workspace } from '@globalfishingwatch/api-types'
+import { APIPagination, Workspace } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   AsyncReducerStatus,
@@ -34,19 +34,22 @@ export const fetchWorkspacesThunk = createAsyncThunk<
   'workspaces/fetch',
   async ({ app = APP_NAME, ids, userId } = {}, { getState, rejectWithValue }) => {
     const state = getState() as RootState
+    const version = selectVersion(state)
     const defaultWorkspaceLoaded = selectWorkspaceById(DEFAULT_WORKSPACE_ID)(state) !== undefined
     const workspacesParams = { app, ids, ownerId: userId }
     try {
-      const workspaces = await GFWAPI.fetch<AppWorkspace[]>(
-        `/v1/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
+      const workspaces = await GFWAPI.fetch<APIPagination<AppWorkspace>>(
+        `/${version}/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
       )
+      console.log(workspaces)
 
       if (ids?.includes(DEFAULT_WORKSPACE_ID) && !defaultWorkspaceLoaded) {
         const defaultWorkspace = await getDefaultWorkspace()
-        return [...workspaces, defaultWorkspace]
+        return [...workspaces.entries, defaultWorkspace]
       }
-      return workspaces
+      return workspaces.entries
     } catch (e: any) {
+      console.warn(e)
       return rejectWithValue({
         status: e.status || e.code,
         message: `${ids || userId} - ${e.message}`,
@@ -101,16 +104,16 @@ const WORKSPACES_APP = 'fishing-map'
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
   async (_, { dispatch }) => {
-    const workspaces = await GFWAPI.fetch<HighlightedWorkspaces[]>(
-      `/v1/highlighted-workspaces/${WORKSPACES_APP}`
+    const workspaces = await GFWAPI.fetch<APIPagination<HighlightedWorkspaces>>(
+      `/v2/highlighted-workspaces/${WORKSPACES_APP}`
     )
 
-    const workspacesIds = workspaces.flatMap(({ workspaces }) =>
+    const workspacesIds = workspaces.entries.flatMap(({ workspaces }) =>
       workspaces.flatMap(({ id, visible }) => (visible === 'visible' && id) || [])
     )
 
     dispatch(fetchWorkspacesThunk({ ids: workspacesIds }))
-    return workspaces
+    return workspaces.entries
   }
 )
 
@@ -161,12 +164,17 @@ export const updateWorkspaceThunk = createAsyncThunk<
   }
 >(
   'workspaces/update',
-  async (workspace, { rejectWithValue }) => {
+  async (workspace, { getState, rejectWithValue }) => {
+    const state = getState() as RootState
+    const version = selectVersion(state)
     try {
-      const updatedWorkspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${workspace.id}`, {
-        method: 'PATCH',
-        body: { ...workspace } as any,
-      })
+      const updatedWorkspace = await GFWAPI.fetch<Workspace>(
+        `/${version}/workspaces/${workspace.id}`,
+        {
+          method: 'PATCH',
+          body: { ...workspace } as any,
+        }
+      )
       return updatedWorkspace
     } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
@@ -188,9 +196,11 @@ export const deleteWorkspaceThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('workspaces/delete', async (id: string, { rejectWithValue }) => {
+>('workspaces/delete', async (id: string, { getState, rejectWithValue }) => {
+  const state = getState() as RootState
+  const version = selectVersion(state)
   try {
-    const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}`, {
+    const workspace = await GFWAPI.fetch<Workspace>(`/${version}/workspaces/${id}`, {
       method: 'DELETE',
     })
     return { ...workspace, id }

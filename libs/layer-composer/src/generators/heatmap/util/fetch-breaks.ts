@@ -149,7 +149,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
       const defaultDatasetKeys = Object.keys(BREAKS_FALLBACK) as DefaultDatasets[]
       const breaks = allDatasets.map((dataset) => {
         const defaultDataset = defaultDatasetKeys.find((defaultDataset) =>
-          dataset.includes(defaultDataset)
+          dataset?.includes(defaultDataset)
         )
         return defaultDataset
           ? BREAKS_FALLBACK[defaultDataset]

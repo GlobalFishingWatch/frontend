@@ -40,6 +40,7 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
     )
     return filteredDataviews
   } catch (e: any) {
+    console.warn(e)
     return rejectWithValue({
       status: e.status || e.code,
       message: e.message,

@@ -12,6 +12,7 @@ import {
   EndpointId,
   EventVessel,
   EventVesselTypeEnum,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
@@ -163,7 +164,7 @@ export const fetchVesselInfo = async (
     return
   }
   try {
-    const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
+    const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl, {
       signal,
     })
     // TODO remove entries once the API is stable
@@ -200,12 +201,12 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
     const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
     if (interactionUrl) {
-      const sublayersVesselsIdsResponse = await GFWAPI.fetch<ExtendedFeatureVessel[]>(
+      const sublayersVesselsIdsResponse = await GFWAPI.fetch<APIPagination<ExtendedFeatureVessel>>(
         interactionUrl,
         { signal }
       )
       // TODO remove once normalized in api between id and vessel_id
-      const sublayersVesselsIds = sublayersVesselsIdsResponse.map((sublayer) =>
+      const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
         sublayer.map((vessel) => {
           const { id, vessel_id, ...rest } = vessel
           return { ...rest, id: id || vessel_id }
