@@ -15,7 +15,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.8.1",
+    "@reduxjs/toolkit": "^1.8.2",
     "classnames": "2.3.1",
     "i18next": "21.6.0",
     "i18next-browser-languagedetector": "6.1.2",
@@ -23,18 +23,18 @@
     "lodash": "4.17.21",
     "luxon": "2.0.2",
     "qs": "6.10.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-ga": "3.3.0",
     "react-i18next": "11.16.9",
     "react-map-gl": "^7.0.13",
     "react-redux": "^7.2.6",
-    "react-redux": "^8.0.1",
+    "react-redux": "^8.0.2",
     "recoil": "0.7.2",
     "redux": "4.1.2",
     "redux-first-router": "2.1.5",
     "redux-first-router-link": "2.1.1",
-    "typescript": "4.6.2"
+    "typescript": "4.7.3"
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",

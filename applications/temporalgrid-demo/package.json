@@ -13,8 +13,8 @@
     "dayjs": "1.8.36",
     "luxon": "^1.24.1",
     "qs": "6.10.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-map-gl": "^7.0.13",
     "react-scripts": "5.0.0"
   },
