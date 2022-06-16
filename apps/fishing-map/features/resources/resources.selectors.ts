@@ -1,4 +1,3 @@
-
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { selectVisibleEvents } from 'features/app/app.selectors'

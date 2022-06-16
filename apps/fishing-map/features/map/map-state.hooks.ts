@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import useMapInstance from 'features/map/map-context.hooks'
 import { mapIdleAtom, mapReadyAtom } from 'features/map/map-state.atom'
-import { isInteractionSource } from 'features/map/map-sources.hooks'
+import { isInteractionSource } from 'features/map/map-sources.utils'
 
 export const useSetMapIdleAtom = () => {
   // Used it once in Map.tsx the listeners only once

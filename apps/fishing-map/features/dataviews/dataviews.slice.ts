@@ -35,8 +35,7 @@ import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: number, { getState, rejectWithValue }) => {
-    const state = getState() as RootState
-    const version = selectVersion(state)
+    const version = selectVersion(getState())
     try {
       const dataview = await GFWAPI.fetch<Dataview>(`/${version}/dataviews/${id}`)
       return dataview
@@ -58,7 +57,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
       return [] as Dataview[]
     }
     try {
-      let dataviews = await GFWAPI.fetch<APIPagination<Dataview[]>>(
+      let dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
         `/${version}/dataviews?ids=${uniqIds.join(',')}`,
         { signal }
       )
