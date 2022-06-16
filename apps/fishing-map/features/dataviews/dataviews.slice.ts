@@ -21,7 +21,7 @@ import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { selectUrlDataviewInstances, selectVersion } from 'routes/routes.selectors'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -30,14 +30,14 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
+import { API_VERSION } from 'data/config'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
-  async (id: number, { getState, rejectWithValue }) => {
-    const version = selectVersion(getState())
+  async (id: number, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(`/${version}/dataviews/${id}`)
+      const dataview = await GFWAPI.fetch<Dataview>(`/${API_VERSION}/dataviews/${id}`)
       return dataview
     } catch (e: any) {
       console.warn(e)
@@ -52,13 +52,13 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
     const state = getState() as RootState
     const existingIds = selectIds(state) as number[]
     const uniqIds = ids.filter((id) => !existingIds.includes(id))
-    const version = selectVersion(state)
+
     if (!uniqIds?.length) {
       return [] as Dataview[]
     }
     try {
-      let dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
-        `/${version}/dataviews?ids=${uniqIds.join(',')}`,
+      const dataviewsResponse = await GFWAPI.fetch<APIPagination<Dataview>>(
+        `/${API_VERSION}/dataviews?ids=${uniqIds.join(',')}`,
         { signal }
       )
       if (
@@ -66,9 +66,9 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
       ) {
         const mockedDataviews = await import('./dataviews.mock')
-        dataviews = uniqBy([...mockedDataviews.default, ...dataviews.entries], 'id')
+        return uniqBy([...mockedDataviews.default, ...dataviewsResponse.entries], 'id')
       }
-      return dataviews
+      return dataviewsResponse.entries
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue({ status: e.status || e.code, message: e.message })
@@ -82,11 +82,9 @@ export const createDataviewThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('dataviews/create', async (dataview, { getState, rejectWithValue }) => {
-  const state = getState() as RootState
-  const version = selectVersion(state)
+>('dataviews/create', async (dataview, { rejectWithValue }) => {
   try {
-    const createdDataview = await GFWAPI.fetch<Dataview>(`/${version}/dataviews`, {
+    const createdDataview = await GFWAPI.fetch<Dataview>(`/${API_VERSION}/dataviews`, {
       method: 'POST',
       body: dataview as any,
     })
@@ -106,14 +104,15 @@ export const updateDataviewThunk = createAsyncThunk<
   }
 >(
   'dataviews/update',
-  async (partialDataview, { getState, rejectWithValue }) => {
-    const state = getState() as RootState
-    const version = selectVersion(state)
+  async (partialDataview, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(`/${version}/dataviews/${partialDataview.id}`, {
-        method: 'PATCH',
-        body: partialDataview as any,
-      })
+      const dataview = await GFWAPI.fetch<Dataview>(
+        `/${API_VERSION}/dataviews/${partialDataview.id}`,
+        {
+          method: 'PATCH',
+          body: partialDataview as any,
+        }
+      )
       return dataview
     } catch (e: any) {
       console.warn(e)

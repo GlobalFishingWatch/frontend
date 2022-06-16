@@ -22,7 +22,7 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   : { debug: true }
 
 // TODO use it to retrieve it and store in workspace.default in deploy
-export const DEFAULT_VERSION = 'v2'
+export const API_VERSION = 'v2'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
@@ -65,7 +65,6 @@ export const DEFAULT_WORKSPACE = {
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,
-  version: DEFAULT_VERSION,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {

@@ -3,7 +3,7 @@ import { uniq } from 'lodash'
 import { DateTime } from 'luxon'
 import { Workspace, Dataview, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions } from '@globalfishingwatch/api-client'
-import { DEFAULT_TIME_RANGE } from 'data/config'
+import { API_VERSION, DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -12,7 +12,6 @@ import {
   selectLocationCategory,
   selectLocationType,
   selectUrlDataviewInstances,
-  selectVersion,
 } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
@@ -65,7 +64,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }) => {
     const state = getState() as RootState
-    const version = selectVersion(state)
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = isGuestUser(state)
@@ -73,9 +71,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
     try {
       let workspace = workspaceId
-        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`, {
-            signal,
-          })
+        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(
+            `/${API_VERSION}/workspaces/${workspaceId}`,
+            {
+              signal,
+            }
+          )
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
@@ -180,10 +181,9 @@ export const saveWorkspaceThunk = createAsyncThunk(
       let workspaceUpdated
       if (tries < 2) {
         try {
-          const version = selectVersion(state)
           const name = tries > 0 ? defaultName + `_${tries}` : defaultName
           workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-            `/${version}/workspaces`,
+            `/${API_VERSION}/workspaces`,
             {
               method: 'POST',
               body: {
@@ -225,13 +225,11 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
 export const updatedCurrentWorkspaceThunk = createAsyncThunk(
   'workspace/updatedCurrent',
-  async (workspace: AppWorkspace, { dispatch, getState }) => {
-    const state = getState() as RootState
-    const version = selectVersion(state)
+  async (workspace: AppWorkspace, { dispatch }) => {
     const workspaceUpsert = parseUpsertWorkspace(workspace)
 
     const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-      `/${version}/workspaces/${workspace.id}`,
+      `/${API_VERSION}/workspaces/${workspace.id}`,
       {
         method: 'PATCH',
         body: workspaceUpsert,

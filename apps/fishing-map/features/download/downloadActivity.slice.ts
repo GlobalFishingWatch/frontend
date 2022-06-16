@@ -7,8 +7,8 @@ import i18next from 'i18next'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
-import { selectVersion } from 'routes/routes.selectors'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import { API_VERSION } from 'data/config'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
 export type DateRange = {
@@ -49,8 +49,6 @@ export const downloadActivityThunk = createAsyncThunk<
 >(
   'downloadActivity/create',
   async (params: DownloadActivityParams, { getState, rejectWithValue }) => {
-    const state = getState() as RootState
-    const version = selectVersion(state)
     try {
       const {
         dateRange,
@@ -78,7 +76,7 @@ export const downloadActivityThunk = createAsyncThunk<
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`
 
       const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
-        `/${version}/4wings/report?${stringify(downloadActivityParams, {
+        `/${API_VERSION}/4wings/report?${stringify(downloadActivityParams, {
           arrayFormat: 'indices',
         })}`,
         {

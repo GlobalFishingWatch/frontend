@@ -4,7 +4,6 @@ import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
-import { DEFAULT_VERSION } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 
@@ -34,10 +33,6 @@ export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
   })
 
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
-export const selectVersion = createSelector(
-  [selectQueryParam('version')],
-  (version: string) => version || DEFAULT_VERSION
-)
 
 export const selectWorkspaceId = createSelector(
   [selectLocationPayload],

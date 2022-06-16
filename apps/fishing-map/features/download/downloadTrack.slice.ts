@@ -5,9 +5,9 @@ import { saveAs } from 'file-saver'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
-import { selectVersion } from 'routes/routes.selectors'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
+import { API_VERSION } from 'data/config'
 import { Format } from './downloadTrack.config'
 
 type VesselParams = {
@@ -44,9 +44,7 @@ export const downloadTrackThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('downloadTrack/create', async (params: DownloadTrackParams, { getState, rejectWithValue }) => {
-  const state = getState() as RootState
-  const version = selectVersion(state)
+>('downloadTrack/create', async (params: DownloadTrackParams, { rejectWithValue }) => {
   try {
     const { dateRange, datasets, format, vesselId, vesselName } = params
     const fromDate = DateTime.fromISO(dateRange.start).toUTC().toString()
@@ -65,7 +63,7 @@ export const downloadTrackThunk = createAsyncThunk<
     }.${format}`
 
     const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
-      `/${version}/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
+      `/${API_VERSION}/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
       {
         method: 'GET',
         responseType: 'blob',
