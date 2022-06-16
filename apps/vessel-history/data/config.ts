@@ -105,4 +105,6 @@ export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
 export const RISK_SUMMARY_SETTINGS = {
   // Time range to use when calculating indicators
   timeRange: { years: 1 },
+  showIndicatorIconEventCount:
+    !!process.env.NEXT_PUBLIC_RISK_SUMMARY_SHOW_ICON_EVENTS_COUNT || false,
 }
