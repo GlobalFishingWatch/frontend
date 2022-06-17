@@ -159,7 +159,7 @@ export const fetchVesselInfo = async (
 ) => {
   const vesselsInfoUrl = getVesselInfoEndpoint(datasets, vesselIds)
   if (!vesselsInfoUrl) {
-    console.warn('No vessel info found for dataset', datasets)
+    console.warn('No vessel info url found for dataset', datasets)
     console.warn('and vesselIds', vesselIds)
     return
   }

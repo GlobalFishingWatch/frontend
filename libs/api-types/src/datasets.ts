@@ -17,21 +17,21 @@ export interface EndpointParam {
 }
 
 export enum EndpointId {
-  Events = 'carriers-events',
-  EventsDetail = 'carriers-events-detail',
-  FourwingsTiles = '4wings-tiles',
-  FourwingsBreaks = '4wings-bins',
-  FourwingsLegend = '4wings-legend',
-  FourwingsInteraction = '4wings-interaction',
-  Tracks = 'carriers-tracks',
+  ClusterTiles = 'events-cluster-tiles',
   ContextGeojson = 'temporal-context-geojson',
+  Events = 'events',
+  EventsDetail = 'events-detail',
+  FourwingsBreaks = '4wings-bins',
+  FourwingsInteraction = '4wings-interaction',
+  FourwingsLegend = '4wings-legend',
+  FourwingsTiles = '4wings-tiles',
+  Tracks = 'tracks',
   UserContextTiles = 'user-context-tiles',
   UserTracks = 'user-tracks-data',
-  Vessel = 'carriers-vessel',
-  VesselList = 'carriers-list-vessels',
-  VesselSearch = 'carriers-search-vessels',
-  VesselAdvancedSearch = 'carriers-advanced-search-vessels',
-  ClusterTiles = 'carriers-events-cluster-tiles',
+  Vessel = 'vessel',
+  VesselAdvancedSearch = 'advanced-search-vessels',
+  VesselList = 'list-vessels',
+  VesselSearch = 'search-vessels',
 }
 
 export interface Endpoint {
