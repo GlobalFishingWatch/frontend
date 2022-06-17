@@ -52,6 +52,7 @@ function NewWorkspaceModal({
   suggestName = true,
 }: NewWorkspaceModalProps) {
   const [name, setName] = useState('')
+  const [error, setError] = useState('')
   const [createLoading, setCreateLoading] = useState(false)
   const [updateLoading, setUpdateLoading] = useState(false)
   const { t, i18n } = useTranslation()
@@ -122,7 +123,8 @@ function NewWorkspaceModal({
           onFinish(dispatchedAction.payload)
         }
       } else {
-        console.warn('Error updating workspace', dispatchedAction.payload)
+        setUpdateLoading(false)
+        setError('Error updating workspace')
       }
     }
   }
@@ -145,7 +147,8 @@ function NewWorkspaceModal({
           onFinish(workspace)
         }
       } else {
-        console.warn('Error saving workspace', dispatchedAction.payload)
+        setCreateLoading(false)
+        setError('Error saving workspace')
       }
     }
   }
@@ -207,6 +210,7 @@ function NewWorkspaceModal({
             {t('workspace.update', 'Update workspace') as string}
           </Button>
         )}
+        {error && <p className={styles.error}>{error}</p>}
         <Button loading={createLoading} disabled={!name} onClick={createWorkspace}>
           {t('workspace.create', 'Create as new workspace') as string}
         </Button>
