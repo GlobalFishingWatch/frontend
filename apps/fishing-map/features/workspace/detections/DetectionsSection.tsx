@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -14,10 +14,7 @@ import {
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  getFishingDataviewInstance,
-  getActivityDataviewInstanceFromDataview,
-} from 'features/dataviews/dataviews.utils'
+import { getActivityDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
@@ -93,7 +90,7 @@ function DetectionsSection(): React.ReactElement {
         ]),
       })
     },
-    [dataviews, dispatchQueryParams, upsertDataviewInstance]
+    [activityDataviews, dataviews, dispatchQueryParams, upsertDataviewInstance]
   )
 
   const onToggleLayer = useCallback(
