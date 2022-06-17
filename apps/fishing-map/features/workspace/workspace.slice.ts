@@ -149,7 +149,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 )
 
 const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
-  const { id, ownerId, ...restWorkspace } = workspace
+  const { id, ownerId, createdAt, ownerType, ...restWorkspace } = workspace
   return {
     ...restWorkspace,
     ...(workspace.dataviews && { dataviews: workspace.dataviews.map(({ id }) => id) }),
@@ -196,6 +196,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
           if (e.status === 400) {
             return await saveWorkspace(tries + 1)
           }
+          console.warn('Error creating workspace', e)
           throw e
         }
         return workspaceUpdated
