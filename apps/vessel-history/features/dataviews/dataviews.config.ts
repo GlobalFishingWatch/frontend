@@ -51,7 +51,8 @@ export const OFFLINE_LAYERS: GeneratorConfig[] = [
 
 // Using the same dataviews ids than fishing-map for consistency
 export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
-export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 176 : 268
+// TODO BEFORE MERGING REPLACE THE 294 WITH THE ORIGINAL DATAVIEW ID => 176
+export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 294 : 268
 
 export const DEFAULT_EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
 export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
@@ -99,24 +100,24 @@ export enum ThinningLevels {
 
 export const THINNING_LEVELS = {
   [ThinningLevels.Aggressive]: {
-    distanceFishing: 1000,
-    bearingValFishing: 5,
-    changeSpeedFishing: 200,
-    minAccuracyFishing: 50,
-    distanceTransit: 2000,
-    bearingValTransit: 5,
-    changeSpeedTransit: 200,
-    minAccuracyTransit: 100,
+    'distance-fishing': 1000,
+    'bearing-val-fishing': 5,
+    'change-speed-fishing': 200,
+    'min-accuracy-fishing': 50,
+    'distance-transit': 2000,
+    'bearing-val-transit': 5,
+    'change-speed-transit': 200,
+    'min-accuracy-transit': 100,
   },
   [ThinningLevels.Default]: {
-    distanceFishing: 500,
-    bearingValFishing: 1,
-    changeSpeedFishing: 200,
-    minAccuracyFishing: 30,
-    distanceTransit: 500,
-    bearingValTransit: 1,
-    changeSpeedTransit: 200,
-    minAccuracyTransit: 30,
+    'distance-fishing': 500,
+    'bearing-val-fishing': 1,
+    'change-speed-fishing': 200,
+    'min-accuracy-fishing': 30,
+    'distance-transit': 500,
+    'bearing-val-transit': 1,
+    'change-speed-transit': 200,
+    'min-accuracy-transit': 30,
   },
 }
 

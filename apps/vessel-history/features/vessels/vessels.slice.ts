@@ -2,6 +2,7 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { memoize } from 'lodash'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { parseAPIErrorMessage, parseAPIErrorStatus } from '@globalfishingwatch/api-client'
 import { VesselAPISource, VesselWithHistory } from 'types'
 import {
   asyncInitialState,
@@ -106,7 +107,6 @@ export const fetchVesselByIdThunk = createAsyncThunk(
             }
           }
           return undefined
-
         })
       )
       return {
@@ -114,7 +114,10 @@ export const fetchVesselByIdThunk = createAsyncThunk(
         id: [id, ...(idData.akas ?? [])].join('|'),
       }
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
     }
   }
 )
