@@ -1,5 +1,5 @@
 import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
-import { TEMPLATE_VESSEL_DATAVIEW_ID } from 'data/workspaces'
+import { CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID, TEMPLATE_VESSEL_DATAVIEW_ID } from 'data/workspaces'
 
 export const dataviews: Dataview[] = [
   {
@@ -248,6 +248,36 @@ export const dataviews: Dataview[] = [
     ],
     createdAt: '2020-10-26T09:54:50.313Z',
     updatedAt: '2021-10-21T09:07:59.114Z',
+  },
+  {
+    id: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
+    name: 'Encounter cluster events',
+    slug: null,
+    description: '',
+    app: 'fishing-map',
+    config: {
+      type: 'TILE_CLUSTER',
+      color: '#FAE9A0',
+    },
+    infoConfig: null,
+    eventsConfig: null,
+    filtersConfig: null,
+    category: DataviewCategory.Events,
+    datasetsConfig: [
+      {
+        query: [
+          // {
+          //   id: 'encounterTypes',
+          //   value: ['carrier-fishing', 'fishing-carrier', 'fishing-support', 'support-fishing'],
+          // },
+        ],
+        params: [],
+        endpoint: 'events-cluster-tiles',
+        datasetId: 'public-global-encounters-events:v20201001',
+      },
+    ],
+    createdAt: '2021-03-22T15:36:44.423Z',
+    updatedAt: '2021-10-21T10:28:20.207Z',
   },
 ]
 

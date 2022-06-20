@@ -359,7 +359,9 @@ export const fetchEncounterEventThunk = createAsyncThunk<
         }
         const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
         if (vesselsUrl) {
-          vesselsInfo = await GFWAPI.fetch<ExtendedEventVessel[]>(vesselsUrl, { signal })
+          vesselsInfo = await GFWAPI.fetch<APIPagination<ExtendedEventVessel>>(vesselsUrl, {
+            signal,
+          }).then((r) => r.entries)
         }
       }
 

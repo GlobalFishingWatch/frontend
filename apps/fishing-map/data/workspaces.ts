@@ -35,7 +35,7 @@ export const FAO_AREAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 245 : 285
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
-export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 : 254
+export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID = 222222222 // WORKSPACE_ENV === 'development' ? 140 : 254
 export const VIIRS_MATCH_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 197 : 289
 export const SAR_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 269 : 299
 export const PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241

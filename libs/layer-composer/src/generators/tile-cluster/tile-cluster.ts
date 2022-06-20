@@ -34,7 +34,7 @@ class TileClusterGenerator {
       )
     }
     url.searchParams.set(
-      'maxClusterZoom',
+      'max-cluster-zoom',
       (config.maxZoomCluster || MAX_ZOOM_TO_CLUSTER_POINTS).toString()
     )
 
