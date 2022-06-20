@@ -2,6 +2,7 @@ import { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { event as uaEvent } from 'react-ga'
 import { Icon } from '@globalfishingwatch/ui-components'
+import { ContextLayerType } from '@globalfishingwatch/layer-composer'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
@@ -52,36 +53,43 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
               if (!feature.value) return null
 
               const { generatorContextLayer } = feature
+
               const { gfw_id } = feature.properties
+              const MPALayers = [
+                ContextLayerType.MPA,
+                ContextLayerType.MPANoTake,
+                ContextLayerType.MPARestricted,
+              ]
               const isGFWLayer =
-                ['mpa', 'mpa-restricted', 'mpa-no-take'].includes(
-                  generatorContextLayer as string
-                ) ||
-                generatorContextLayer === 'tuna-rfmo' ||
-                generatorContextLayer === 'eez-areas' ||
-                generatorContextLayer === 'wpp-nri' ||
-                generatorContextLayer === 'high-seas' ||
-                generatorContextLayer === 'fao'
+                MPALayers.includes(generatorContextLayer) ||
+                generatorContextLayer === ContextLayerType.TunaRfmo ||
+                generatorContextLayer === ContextLayerType.EEZ ||
+                generatorContextLayer === ContextLayerType.WPPNRI ||
+                generatorContextLayer === ContextLayerType.HighSeas ||
+                generatorContextLayer === ContextLayerType.FAO ||
+                generatorContextLayer === ContextLayerType.ProtectedSeas
 
               if (isGFWLayer) {
                 let id = gfw_id
                 let label = feature.value ?? feature.title
                 let linkHref = undefined
                 // ContextLayerType.MPA but enums doesn't work in CRA for now
-                if (
-                  ['mpa', 'mpa-restricted', 'mpa-no-take'].includes(generatorContextLayer as string)
-                ) {
+                if (MPALayers.includes(generatorContextLayer)) {
                   const { wdpa_pid } = feature.properties
                   label = `${feature.value} - ${feature.properties.desig}`
                   id = `${label}-${gfw_id}`
                   linkHref = wdpa_pid ? `https://www.protectedplanet.net/${wdpa_pid}` : undefined
-                } else if (generatorContextLayer === 'tuna-rfmo') {
+                } else if (generatorContextLayer === ContextLayerType.TunaRfmo) {
                   id = `${feature.value}-${gfw_id}`
                   linkHref = TunaRfmoLinksById[feature.value]
-                } else if (generatorContextLayer === 'eez-areas') {
+                } else if (generatorContextLayer === ContextLayerType.EEZ) {
                   const { mrgid } = feature.properties
                   id = `${mrgid}-${gfw_id}`
                   linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`
+                } else if (generatorContextLayer === ContextLayerType.ProtectedSeas) {
+                  const { site_id } = feature.properties
+                  id = `${site_id}-${gfw_id}`
+                  linkHref = `https://mpa.protectedseas.net/index.php?q=${site_id}`
                 } else if (
                   generatorContextLayer === 'wpp-nri' ||
                   generatorContextLayer === 'high-seas'

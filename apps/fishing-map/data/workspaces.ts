@@ -30,6 +30,7 @@ export const EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
 export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 export const HIGH_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 97 : 174
+export const PROTECTED_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 292 : undefined
 export const GRATICULES_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 246 : 286
 export const FAO_AREAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 245 : 285
 
