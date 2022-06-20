@@ -2,7 +2,12 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, kebabCase } from 'lodash'
 import { stringify } from 'qs'
 import { APIPagination, Workspace } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import {
+  GFWAPI,
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
 import {
   AsyncReducerStatus,
   asyncInitialState,
@@ -48,8 +53,8 @@ export const fetchWorkspacesThunk = createAsyncThunk<
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue({
-        status: e.status || e.code,
-        message: `${ids || userId} - ${e.message}`,
+        status: parseAPIErrorStatus(e),
+        message: `${ids || userId} - ${parseAPIErrorMessage(e)}`,
       })
     }
   }
@@ -138,7 +143,7 @@ export const createWorkspaceThunk = createAsyncThunk<
       })
       return newWorkspace
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {
@@ -170,7 +175,7 @@ export const updateWorkspaceThunk = createAsyncThunk<
       )
       return updatedWorkspace
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {
@@ -196,7 +201,7 @@ export const deleteWorkspaceThunk = createAsyncThunk<
     })
     return { ...workspace, id }
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -233,7 +238,8 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
       state.highlighted.status = AsyncReducerStatus.Finished
       state.highlighted.data = action.payload
     })
-    builder.addCase(fetchHighlightWorkspacesThunk.rejected, (state) => {
+    builder.addCase(fetchHighlightWorkspacesThunk.rejected, (state, action) => {
+      console.log(action)
       state.highlighted.status = AsyncReducerStatus.Error
     })
   },

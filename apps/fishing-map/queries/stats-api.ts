@@ -56,7 +56,7 @@ export const dataviewStatsApi = createApi({
         }
       },
       transformResponse: (response: StatFields[], meta, args) => {
-        const units = uniq(args?.dataview?.datasets?.map((d) => d.unit))
+        const units = uniq(args?.dataview?.datasets?.flatMap((d) => d.unit || []))
         if (units.length > 1) {
           console.warn('Incompatible datasets stats unit, using the first type', units[0])
         }

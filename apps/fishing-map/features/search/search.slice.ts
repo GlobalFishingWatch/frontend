@@ -5,6 +5,7 @@ import {
   getAdvancedSearchQuery,
   AdvancedSearchQueryField,
   AdvancedSearchQueryFieldKey,
+  parseAPIError,
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import {
@@ -179,7 +180,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         }
       }
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message } as AsyncError)
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )

@@ -15,7 +15,7 @@ import {
   APIPagination,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError, parseAPIErrorMessage } from '@globalfishingwatch/api-client'
 import {
   selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
@@ -41,7 +41,10 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
       return dataview
     } catch (e: any) {
       console.warn(e)
-      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
+      return rejectWithValue({
+        status: e.status || e.code,
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
     }
   }
 )
@@ -71,7 +74,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
       return dataviewsResponse.entries
     } catch (e: any) {
       console.warn(e)
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -92,7 +95,7 @@ export const createDataviewThunk = createAsyncThunk<
     return createdDataview
   } catch (e: any) {
     console.warn(e)
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -116,7 +119,7 @@ export const updateDataviewThunk = createAsyncThunk<
       return dataview
     } catch (e: any) {
       console.warn(e)
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {

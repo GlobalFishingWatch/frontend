@@ -8,7 +8,12 @@ import {
   EndpointId,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import {
+  GFWAPI,
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
   AsyncReducer,
@@ -59,8 +64,8 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   } catch (e: any) {
     console.warn(e)
     return rejectWithValue({
-      status: e.status || e.code,
-      message: `${id} - ${e.message}`,
+      status: parseAPIErrorStatus(e),
+      message: `${id} - ${parseAPIErrorMessage(e)}`,
     })
   }
 })
@@ -104,7 +109,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       return datasets.map(parsePOCsDatasets)
     } catch (e: any) {
       console.warn(e)
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -155,7 +160,7 @@ export const createDatasetThunk = createAsyncThunk<
     return createdDataset
   } catch (e: any) {
     console.warn(e)
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -179,7 +184,7 @@ export const updateDatasetThunk = createAsyncThunk<
       return updatedDataset
     } catch (e: any) {
       console.warn(e)
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {
@@ -206,7 +211,7 @@ export const deleteDatasetThunk = createAsyncThunk<
     return { ...dataset, id }
   } catch (e: any) {
     console.warn(e)
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -223,8 +228,8 @@ export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
   } catch (e: any) {
     console.warn(e)
     return rejectWithValue({
-      status: e.status || e.code,
-      message: `${LATEST_CARRIER_DATASET_ID} - ${e.message}`,
+      status: parseAPIErrorStatus(e),
+      message: `${LATEST_CARRIER_DATASET_ID} - ${parseAPIErrorMessage(e)}`,
     })
   }
 })

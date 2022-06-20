@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
@@ -38,10 +38,7 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
     return filteredDataviews
   } catch (e: any) {
     console.warn(e)
-    return rejectWithValue({
-      status: e.status || e.code,
-      message: e.message,
-    })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 

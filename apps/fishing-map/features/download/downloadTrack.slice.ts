@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
@@ -73,7 +73,7 @@ export const downloadTrackThunk = createAsyncThunk<
     })
     return createdDownload
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 

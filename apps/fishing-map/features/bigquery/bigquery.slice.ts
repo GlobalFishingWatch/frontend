@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { kebabCase } from 'lodash'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -42,11 +42,7 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
       )
       return response
     } catch (e: any) {
-      return rejectWithValue({
-        status: e.status || e.code,
-        message: e.message,
-        messages: e.messages,
-      })
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -75,11 +71,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
       const dataset = await dispatch(fetchDatasetByIdThunk(id))
       return dataset
     } catch (e: any) {
-      return rejectWithValue({
-        status: e.status || e.code,
-        message: e.message,
-        messages: e.messages,
-      })
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )

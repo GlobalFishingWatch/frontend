@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
 import { DateTime } from 'luxon'
 import { Workspace, Dataview, WorkspaceUpsert } from '@globalfishingwatch/api-types'
-import { GFWAPI, FetchOptions } from '@globalfishingwatch/api-client'
+import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import { API_VERSION, DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
@@ -139,7 +139,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e: any) {
       console.warn(e)
-      return rejectWithValue({ error: e as AsyncError })
+      return rejectWithValue({ error: parseAPIError(e) })
     }
   },
   {
