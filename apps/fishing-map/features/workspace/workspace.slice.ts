@@ -26,6 +26,7 @@ import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { parseLegacyWorkspaceEndpoints } from 'features/workspace/workspace.utils'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -82,7 +83,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         workspace = await getDefaultWorkspace()
       }
 
-      if (!workspace) {
+      if (workspace) {
+        workspace = parseLegacyWorkspaceEndpoints(workspace)
+      } else {
         return
       }
 
