@@ -108,6 +108,7 @@ export type DatasetSchema = {
 }
 
 export enum DatasetCategory {
+  Event = 'event',
   Context = 'context',
   Environment = 'environment',
   Activity = 'activity',
@@ -121,7 +122,7 @@ export interface Dataset {
   description: string
   schema?: Record<string, DatasetSchema>
   category?: DatasetCategory
-  subcategory?: string
+  subcategory?: EventTypes | string
   source?: string
   status: DatasetStatus
   importLogs?: string

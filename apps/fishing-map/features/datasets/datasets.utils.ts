@@ -2,6 +2,7 @@ import { intersection, lowerCase, uniq } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import {
   Dataset,
+  DatasetCategory,
   DatasetSchemaType,
   DatasetTypes,
   Dataview,
@@ -182,9 +183,10 @@ export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
     )
     .map((d) => d.datasetId)
   return (dataview?.datasets || []).filter((dataset) => {
-    const isEventType = dataset?.configuration?.type
-      ? Object.values(EventTypes).includes(dataset.configuration.type)
-      : false
+    const isEventType =
+      dataset?.category === DatasetCategory.Event
+        ? Object.values(EventTypes).includes(dataset.subcategory as EventTypes)
+        : false
     const hasVesselId = datasetsConfigured?.includes(dataset.id)
     return isEventType && hasVesselId
   })
