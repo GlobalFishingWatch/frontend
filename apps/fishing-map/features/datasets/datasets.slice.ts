@@ -127,7 +127,7 @@ export const createDatasetThunk = createAsyncThunk<
   }
 >('datasets/create', async ({ dataset, file, createAsPublic }, { rejectWithValue }) => {
   try {
-    const { url, path } = await GFWAPI.fetch<UploadResponse>(`/${API_VERSION}/upload`, {
+    const { url, path } = await GFWAPI.fetch<UploadResponse>(`/${API_VERSION}/uploads`, {
       method: 'POST',
       body: {
         contentType: dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
