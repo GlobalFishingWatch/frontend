@@ -34,7 +34,7 @@
     "redux": "4.1.2",
     "redux-first-router": "2.1.5",
     "redux-first-router-link": "2.1.1",
-    "typescript": "4.7.3"
+    "typescript": "4.7.4"
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",
