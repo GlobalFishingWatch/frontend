@@ -158,7 +158,7 @@ export const dataviews: Dataview[] = [
             value: '',
           },
         ],
-        endpoint: 'carriers-tracks',
+        endpoint: 'tracks',
         datasetId: 'public-global-fishing-tracks:v20201001',
       },
       {
@@ -168,7 +168,7 @@ export const dataviews: Dataview[] = [
             value: '',
           },
         ],
-        endpoint: 'carriers-vessel',
+        endpoint: 'vessel',
         datasetId: 'public-global-fishing-vessels:v20201001',
       },
       {
@@ -178,7 +178,7 @@ export const dataviews: Dataview[] = [
             value: '',
           },
         ],
-        endpoint: 'carriers-vessel',
+        endpoint: 'vessel',
         datasetId: 'public-global-carrier-vessels:v20201001',
       },
       {
@@ -193,7 +193,7 @@ export const dataviews: Dataview[] = [
           },
         ],
         params: [],
-        endpoint: 'carriers-events',
+        endpoint: 'events',
         datasetId: 'public-global-fishing-events:v20201001',
       },
       {
@@ -208,7 +208,7 @@ export const dataviews: Dataview[] = [
           },
         ],
         params: [],
-        endpoint: 'carriers-events',
+        endpoint: 'events',
         datasetId: 'public-global-loitering-events-carriers:v20201001',
       },
       {
@@ -223,7 +223,7 @@ export const dataviews: Dataview[] = [
           },
         ],
         params: [],
-        endpoint: 'carriers-events',
+        endpoint: 'events',
         datasetId: 'public-global-encounters-events:v20201001',
       },
       {
@@ -242,7 +242,7 @@ export const dataviews: Dataview[] = [
           },
         ],
         params: [],
-        endpoint: 'carriers-events',
+        endpoint: 'events',
         datasetId: 'public-global-port-visits-c2-events:v20201001',
       },
     ],
