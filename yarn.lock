@@ -14754,10 +14754,10 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-map-gl@^7.0.13:
-  version "7.0.15"
-  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-7.0.15.tgz#ded08ccff49012099a9945b6c2ef7f266dfbde49"
-  integrity sha512-l7x8lBhIEcHTreSgrc7hsKv5HsMY1wQg2PVXuKAPmQtgRZc9C3NGwurVJFe24gOlAwzta5UavAHWDiZdU1ZNCw==
+react-map-gl@^7.0.16:
+  version "7.0.16"
+  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-7.0.16.tgz#9f558fc11790e0ea44db8f5a582171fad2355ff8"
+  integrity sha512-H8dTm4a09D+eI6PSl/hXMTA+vfoPXnfOKjQRxqzY4q1tSt/r3jqTRrb0CwVTi2sAvUJOrDsNCMQCKiEFYQ89eg==
   dependencies:
     "@types/mapbox-gl" "^2.6.0"
 

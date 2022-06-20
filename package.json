@@ -78,7 +78,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "18.1.0",
-    "react-map-gl": "^7.0.13",
+    "react-map-gl": "^7.0.16",
     "react-modal": "^3.11.2",
     "react-range": "^1.8.12",
     "react-spring": "^9.4.5",
