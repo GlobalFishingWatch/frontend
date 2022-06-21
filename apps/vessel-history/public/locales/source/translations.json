@@ -282,6 +282,7 @@
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
     "previousNames": "previous names",
     "readyForOfflineView": "READY FOR OFFLINE VIEW",
+    "relatedNotification": "This vessel is the combination of {{amount}} results",
     "remove": "Remove",
     "rmfoRegistry": "RFMO Registry",
     "savedOn": "saved on",

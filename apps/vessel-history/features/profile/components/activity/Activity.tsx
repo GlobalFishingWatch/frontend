@@ -28,7 +28,7 @@ interface ActivityProps {
 
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const { eventsLoading, events, toggleVoyage } = useVoyagesConnect()
-
+  console.log(events)
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
