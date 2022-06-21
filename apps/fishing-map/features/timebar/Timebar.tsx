@@ -22,7 +22,6 @@ import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
-  useHighlightedEventsConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
   useTimebarEnvironmentConnect,
@@ -146,7 +145,7 @@ const TimebarWrapper = () => {
         return 'month'
       }
     },
-    [generatorsConfig, timebarVisualisation]
+    [generatorsConfig, timebarSelectedEnvId, timebarVisualisation]
   )
 
   const dispatch = useAppDispatch()

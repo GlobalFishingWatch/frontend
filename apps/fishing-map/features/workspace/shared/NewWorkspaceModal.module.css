@@ -22,3 +22,7 @@ div.modal {
   margin-top: var(--space-M);
   color: var(--color-secondary-blue);
 }
+
+.error {
+  color: var(--color-danger-red);
+}

@@ -34,7 +34,7 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
           body: {
             name: 'Calculating cost using dryRun',
             public: true,
-            ttl: 1, // days
+            // ttl: 1, // days
             query,
           } as any,
         }
@@ -60,7 +60,7 @@ export type CreateBigQueryDatasetResponse = {
 export const createBigQueryDatasetThunk = createAsyncThunk(
   'bigQuery/createDataset',
   async (
-    { query, name, ttl = 30, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
+    { query, name, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -68,7 +68,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
         `/v1/${visualisationMode}/bq/create-temporal-dataset`,
         {
           method: 'POST',
-          body: { query, name: kebabCase(name), ttl, public: createAsPublic } as any,
+          body: { query, name: kebabCase(name), public: createAsPublic } as any,
         }
       )
       const dataset = await dispatch(fetchDatasetByIdThunk(id))

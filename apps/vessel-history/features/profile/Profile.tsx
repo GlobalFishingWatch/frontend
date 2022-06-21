@@ -41,6 +41,7 @@ import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessel
 import { useUser } from 'features/user/user.hooks'
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
+import RiskTitle from 'features/risk-title/risk-title'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -196,14 +197,14 @@ const Profile: React.FC = (props): React.ReactElement => {
   const riskSummaryTab = useMemo(
     () => ({
       id: 'risk',
-      title: t('common.riskSummary', 'Risk Summary').toLocaleUpperCase(),
+      title: <RiskTitle />,
       content: vessel ? (
         <RiskSummary onMoveToMap={() => setActiveTab(mapTab)} />
       ) : loading ? (
         <Spinner className={styles.spinnerFull} />
       ) : null,
     }),
-    [loading, mapTab, t, vessel]
+    [loading, mapTab, vessel]
   )
 
   const infoTab = useMemo(

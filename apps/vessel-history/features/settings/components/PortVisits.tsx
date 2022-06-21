@@ -42,8 +42,8 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
       !flags.selected?.length
         ? (t('selects.none', 'None') as string)
         : flags.selected.length > 1
-        ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
-        : flags.selected[0].label,
+          ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
+          : flags.selected[0].label,
     [flags.selected, t]
   )
   const eventType = useMemo(() => t(`settings.${section}.title`), [section, t])
@@ -117,6 +117,10 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
             ></InputText>
             <span>{t('settings.hours', 'hours')}</span>
           </div>
+          <div className={styles.helpRange}>{t('settings.helpRange', 'Should be a value between', {
+            min: PORTVISIT_EVENTS_MIN_DURATION,
+            max: PORTVISIT_EVENTS_MAX_DURATION
+          })}</div>
         </div>
         <div className={cx(styles.settingsField, styles.inlineRow)}>
           <label className={styles.settingsLabel}>
@@ -147,6 +151,10 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
             ></InputText>
             <span>{t('settings.km', 'km')}</span>
           </div>
+          <div className={styles.helpRange}>{t('settings.helpRange', 'Should be a value between', {
+            min: PORTVISIT_EVENTS_MIN_DISTANCE,
+            max: PORTVISIT_EVENTS_MAX_DISTANCE
+          })}</div>
         </div>
       </div>
     </div>

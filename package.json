@@ -73,7 +73,7 @@
     "pbjs": "^0.0.14",
     "pbts-cli": "^1.0.3",
     "prop-types": "^15.6.2",
-    "protobufjs": "^6.11.2",
+    "protobufjs": "^6.11.3",
     "qs": "^6.10.3",
     "react": "18.1.0",
     "react-dom": "18.1.0",
@@ -95,7 +95,7 @@
     "webpack-sources": "3.2.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/maplibre-gl": "^2.1.9-gfw.23",
+    "@globalfishingwatch/maplibre-gl": "^2.2.0-gfw.24",
     "@jscutlery/semver": "^2.23.3",
     "@next/bundle-analyzer": "^12.1.6",
     "@next/eslint-plugin-next": "12.1.6",

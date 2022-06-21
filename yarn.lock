@@ -1280,10 +1280,10 @@
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/maplibre-gl@^2.1.9-gfw.23":
-  version "2.1.9-gfw.23"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.1.9-gfw.23.tgz#4f4605e380fa32ba5a9d571eed7f9e9100a32931"
-  integrity sha512-Rnjemui1AMigCoRL5rr4MIhWaXZHc8RUDPnaBpkuqA1J4tmxKWrabQpMNskOc8QZJzX5qUqt5Tlv7Uk9GazH8g==
+"@globalfishingwatch/maplibre-gl@^2.2.0-gfw.24":
+  version "2.2.0-gfw.24"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.2.0-gfw.24.tgz#e7a557bcc929fca6e11e1904c12f23b6aa506759"
+  integrity sha512-n5zt5zNs2k3Mh4tK9S0j0GsQVhEHRJqDC3Jy5Va5gKJJ9LgwxHPv3muLteUTUalG03NhbQjT+Ds0wRP6Ij1GQw==
   dependencies:
     "@globalfishingwatch/fourwings-aggregate" "4.2.0"
     "@mapbox/geojson-rewind" "^0.5.1"
@@ -14433,7 +14433,7 @@ prop-types@^15.5.10, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
     object-assign "^4.1.1"
     react-is "^16.13.1"
 
-protobufjs@^6.11.2, protobufjs@^6.8.8:
+protobufjs@^6.11.3, protobufjs@^6.8.8:
   version "6.11.3"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.11.3.tgz#637a527205a35caa4f3e2a9a4a13ddffe0e7af74"
   integrity sha512-xL96WDdCZYdU7Slin569tFX712BxsxslWwAfAhCYjQKGTq7dAU91Lomy6nLLhh/dyGhk/YH4TwTSRxTzhuHyZg==
