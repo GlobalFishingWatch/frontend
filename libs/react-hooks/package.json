@@ -17,7 +17,7 @@
     "@globalfishingwatch/dataviews-client": "14.x",
     "@globalfishingwatch/fourwings-aggregate": "4.x",
     "@globalfishingwatch/layer-composer": "10.x",
-    "@globalfishingwatch/maplibre-gl": "^2.1.9-gfw.23",
+    "@globalfishingwatch/maplibre-gl": "^2.2.0-gfw.24",
     "lodash": "4.x"
   },
   "publishConfig": {
