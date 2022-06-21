@@ -132,9 +132,9 @@
     "toggleLayers": "Toggle layers"
   },
   "risk": {
-    "encounterEventInForeignEEZ_one": "encounter in a foreign EEZ",
+    "encounterEventInForeignEEZ_one": "encounters in a foreign EEZ",
     "encounterEventInForeignEEZ_other": "encounters in a foreign EEZ",
-    "encounterEventInMPA_one": "encounter in MPAs",
+    "encounterEventInMPA_one": "encounters in MPAs",
     "encounterEventInMPA_other": "encounters in MPAs",
     "fishingEventInMPA_one": "fishing event in MPAs",
     "fishingEventInMPA_other": "fishing events in MPAs",

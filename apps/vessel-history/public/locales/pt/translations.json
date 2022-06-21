@@ -132,16 +132,22 @@
     "toggleLayers": "Alternar camadas"
   },
   "risk": {
+    "encounterEventInForeignEEZ_one": "encounters in a foreign EEZ",
+    "encounterEventInForeignEEZ_other": "encounters in a foreign EEZ",
     "encounterEventInMPA_one": "encounters in MPAs",
     "encounterEventInMPA_other": "encounters in MPAs",
     "fishingEventInMPA_one": "fishing event in MPAs",
-    "fishingEventInMPA_other": "fishing event in MPAs",
+    "fishingEventInMPA_other": "fishing events in MPAs",
+    "high": "High Risk",
     "loiteringEventInMPA_one": "loitering event in MPAs",
-    "loiteringEventInMPA_other": "loitering event in MPAs",
+    "loiteringEventInMPA_other": "loitering events in MPAs",
+    "low": "Low Risk",
+    "noEncounterEventInForeignEEZ": "No encounters detected in foreign EEZ",
     "noEncounterEventInMPA": "No encounters detected in MPAs",
     "noFishingEventInMPA": "No fishing event detected in MPAs",
     "noLoiteringEventInMPA": "No loitering event detected in MPAs",
-    "noRiskDetected": "No risk detected"
+    "noRiskDetected": "No risk detected",
+    "unknown": "Unknown Risk"
   },
   "search": {
     "activeAfter": "ativo depois de",
@@ -189,6 +195,7 @@
       "title": "Eventos de Pesca"
     },
     "greaterThan": "Maior que",
+    "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",
     "hours": "horas",
     "km": "km",
     "kms": "kms",
@@ -239,6 +246,8 @@
     "flag": "flag",
     "flag_plural": "bandeiras",
     "formatValues": "{{quantity}} values",
+    "forcedLabourModel": "forced labor risk model",
+    "forcedLaborModelDescription": "High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.<1></1>\nLow Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.<1></1>\nUnknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.",
     "gearType": "gear type",
     "gearType_plural": "petrechos de pesca",
     "geartypeDescription": "Likely gear type of vessel as defined by Global Fishing Watch. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class, see more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> . The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",

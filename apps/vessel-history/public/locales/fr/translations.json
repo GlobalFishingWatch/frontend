@@ -132,16 +132,22 @@
     "toggleLayers": "Activer/désactiver les calques"
   },
   "risk": {
+    "encounterEventInForeignEEZ_one": "encounters in a foreign EEZ",
+    "encounterEventInForeignEEZ_other": "encounters in a foreign EEZ",
     "encounterEventInMPA_one": "encounters in MPAs",
     "encounterEventInMPA_other": "encounters in MPAs",
     "fishingEventInMPA_one": "fishing event in MPAs",
-    "fishingEventInMPA_other": "fishing event in MPAs",
+    "fishingEventInMPA_other": "fishing events in MPAs",
+    "high": "High Risk",
     "loiteringEventInMPA_one": "loitering event in MPAs",
-    "loiteringEventInMPA_other": "loitering event in MPAs",
+    "loiteringEventInMPA_other": "loitering events in MPAs",
+    "low": "Low Risk",
+    "noEncounterEventInForeignEEZ": "No encounters detected in foreign EEZ",
     "noEncounterEventInMPA": "No encounters detected in MPAs",
     "noFishingEventInMPA": "No fishing event detected in MPAs",
     "noLoiteringEventInMPA": "No loitering event detected in MPAs",
-    "noRiskDetected": "No risk detected"
+    "noRiskDetected": "No risk detected",
+    "unknown": "Unknown Risk"
   },
   "search": {
     "activeAfter": "Actif après",
@@ -189,6 +195,7 @@
       "title": "Événements de pêche"
     },
     "greaterThan": "Supérieure à",
+    "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",
     "hours": "heures",
     "km": "km",
     "kms": "kms",
@@ -239,6 +246,8 @@
     "flag": "pavillon",
     "flag_plural": "drapeaux",
     "formatValues": "{{quantity}} valeurs",
+    "forcedLabourModel": "forced labor risk model",
+    "forcedLaborModelDescription": "High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.<1></1>\nLow Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.<1></1>\nUnknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.",
     "gearType": "type d'engin de pêche",
     "gearType_plural": "types d'engin de pêche",
     "geartypeDescription": "Le type d'engin de pêche probable tel que défini par Global Fishing Watch. La classification des navires de pêche est estimée à l'aide d'informations de registre connues en combinaison avec un réseau neuronal convolutionnel utilisé pour estimer la classe des navires, voir plus d’informations ici:<1>https://globalfishingwatch. rg/datasets-and-code-bateau-identity/</1> . La classification des navires pour les navires de transport est estimée à l'aide d'un cumul d'informations de registre connues. Tous les navires de soutien de la visionneuse de bateaux de soutien sont considérés comme des navires de soutien à senne coulissante en fonction de l'examen interne.",
