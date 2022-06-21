@@ -1,4 +1,3 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -94,6 +93,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   handleDownloadClick,
   handleAnalysisClick,
 }: ContextLayersRowProps) => {
+  const { t } = useTranslation()
   return (
     <div className={styles.row} key={id}>
       <span className={styles.rowText}>{label}</span>
@@ -103,7 +103,11 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
           {handleAnalysisClick && <ReportPopupButton onClick={handleAnalysisClick} />}
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
-              <IconButton icon="info" tooltip="See more" size="small" />
+              <IconButton
+                icon="external-link"
+                tooltip={t('common.learnMore', 'Learn more')}
+                size="small"
+              />
             </a>
           )}
         </div>
