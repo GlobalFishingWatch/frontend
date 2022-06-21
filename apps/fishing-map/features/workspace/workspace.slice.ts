@@ -1,8 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
 import { DateTime } from 'luxon'
-import { Workspace, Dataview, WorkspaceUpsert } from '@globalfishingwatch/api-types'
+import {
+  Workspace,
+  Dataview,
+  WorkspaceUpsert,
+  DataviewInstance,
+} from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
+import { parseLegacyDataviewInstanceEndpoint } from '@globalfishingwatch/dataviews-client'
 import { API_VERSION, DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
@@ -26,7 +32,6 @@ import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { parseLegacyWorkspaceEndpoints } from 'features/workspace/workspace.utils'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -84,7 +89,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
 
       if (workspace) {
-        workspace = parseLegacyWorkspaceEndpoints(workspace)
+        workspace = {
+          ...workspace,
+          dataviewInstances: (workspace.dataviewInstances || []).map(
+            (dv) => parseLegacyDataviewInstanceEndpoint(dv) as DataviewInstance
+          ),
+        }
       } else {
         return
       }
