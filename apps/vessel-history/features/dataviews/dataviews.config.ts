@@ -1,3 +1,4 @@
+import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   GeneratorType,
@@ -91,34 +92,6 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
 export const vesselDataviewIds = [DEFAULT_VESSEL_DATAVIEW_ID]
 
 export const DEFAULT_TRACK_COLOR = '#8DE9F6'
-
-export enum ThinningLevels {
-  Aggressive = 'aggressive',
-  Default = 'default',
-}
-
-export const THINNING_LEVELS = {
-  [ThinningLevels.Aggressive]: {
-    'distance-fishing': 1000,
-    'bearing-val-fishing': 5,
-    'change-speed-fishing': 200,
-    'min-accuracy-fishing': 50,
-    'distance-transit': 2000,
-    'bearing-val-transit': 5,
-    'change-speed-transit': 200,
-    'min-accuracy-transit': 100,
-  },
-  [ThinningLevels.Default]: {
-    'distance-fishing': 500,
-    'bearing-val-fishing': 1,
-    'change-speed-fishing': 200,
-    'min-accuracy-fishing': 30,
-    'distance-transit': 500,
-    'bearing-val-transit': 1,
-    'change-speed-transit': 200,
-    'min-accuracy-transit': 30,
-  },
-}
 
 export const APP_THINNING =
   (process.env.APP_THINNING as ThinningLevels) || ThinningLevels.Aggressive

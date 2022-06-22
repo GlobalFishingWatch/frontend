@@ -14,6 +14,7 @@ import {
   BasemapType,
   GeneratorType,
 } from '@globalfishingwatch/layer-composer'
+import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { selectVesselDataview } from 'features/vessels/vessels.slice'
@@ -21,7 +22,7 @@ import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
-import { BACKGROUND_LAYER, OFFLINE_LAYERS, APP_THINNING, THINNING_LEVELS } from './dataviews.config'
+import { BACKGROUND_LAYER, OFFLINE_LAYERS, APP_THINNING } from './dataviews.config'
 
 const defaultBasemapDataview = {
   id: 'basemap',
