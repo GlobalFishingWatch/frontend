@@ -51,8 +51,7 @@ export const OFFLINE_LAYERS: GeneratorConfig[] = [
 
 // Using the same dataviews ids than fishing-map for consistency
 export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
-// TODO BEFORE MERGING REPLACE THE 294 WITH THE ORIGINAL DATAVIEW ID => 176
-export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 294 : 268
+export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 176 : 268
 
 export const DEFAULT_EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
 export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
