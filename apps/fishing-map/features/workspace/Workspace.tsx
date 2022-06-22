@@ -16,7 +16,7 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { PRIVATE_SUFIX, SUPPORT_EMAIL, USER_SUFIX } from 'data/config'
+import { PRIVATE_SUFIX, PUBLIC_SUFIX, SUPPORT_EMAIL, USER_SUFIX } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -125,7 +125,9 @@ function Workspace() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
-  const isUserWorkspace = workspace?.id?.includes(`-${USER_SUFIX}`)
+  const isUserWorkspace =
+    workspace?.id?.endsWith(`-${USER_SUFIX}`) ||
+    workspace?.id?.endsWith(`-${USER_SUFIX}-${PUBLIC_SUFIX}`)
 
   useEffect(() => {
     if (dataviewsResources) {
