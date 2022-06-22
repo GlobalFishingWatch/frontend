@@ -27,7 +27,7 @@ export const selectEventsForRiskSummary = createSelector([selectEvents], (events
 })
 
 export const selectEventsInsideMPA = createSelector([selectEventsForRiskSummary], (events) =>
-  events.filter((event) => event.regions.mpa.length > 0)
+  events.filter((event) => event.regions?.mpa?.length > 0)
 )
 
 export const selectEventsInsideMPAByType = (type: EventTypes) =>
