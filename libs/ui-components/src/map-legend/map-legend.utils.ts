@@ -1,4 +1,5 @@
 const DECIMALS = 2
+// JavaScript converts any floating-point value with at least six trailing zeros into an annotation by default.
 const MIN_DECIMALS_SCIENTIFIC_NOTATION = 7
 export const SCIENTIFIC_NOTATION_E = 'e'
 
