@@ -40,7 +40,7 @@ const rootReducer = combineReducers({
   downloadTrack: downloadTrackReducer,
   editor: editorReducer,
   hints: hintsReducer,
-  location: location,
+  location,
   map: mapReducer,
   resources: resourcesReducer,
   rulers: rulersReducer,

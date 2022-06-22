@@ -509,6 +509,7 @@
   },
   "vesselGroup": {
     "vesselGroup": "Vessel group",
+    "vesselGroups": "Vessel groups",
     "label": "{{name}} ({{count}} IDs)",
     "createNewGroup": "Create new group",
     "groupName": "Group name",

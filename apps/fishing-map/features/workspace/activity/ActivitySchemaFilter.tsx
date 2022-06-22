@@ -102,7 +102,11 @@ function ActivitySchemaFilter({
     <MultiSelect
       key={id}
       disabled={disabled}
-      label={t(`vessel.${id}` as any, id)}
+      label={
+        id === 'vesselGroups'
+          ? t('vesselGroup.vesselGroups', 'Vessel Groups')
+          : t(`vessel.${id}` as any, id)
+      }
       placeholder={getPlaceholderBySelections(optionsSelected)}
       options={options}
       selectedOptions={optionsSelected}

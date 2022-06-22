@@ -6,6 +6,7 @@ import {
   getSchemaFieldsSelectedInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
+import { useVesselGroupsOptions } from 'features/vesselGroup/vessel-groups.hooks'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -14,10 +15,10 @@ type LayerPanelProps = {
 }
 
 function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement {
-  let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field).sort(
+  const vesselGroupsOptions = useVesselGroupsOptions()
+  let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
     (a, b) => a.label - b.label
   )
-
   const valuesAreRangeOfNumbers =
     valuesSelected.length > 1 && valuesSelected.every((value) => Number(value.label))
 

@@ -4,7 +4,7 @@ export interface VesselGroupVessel {
 }
 
 export interface VesselGroup {
-  id?: string
+  id?: number
   name: string
   vessels: VesselGroupVessel[]
 }

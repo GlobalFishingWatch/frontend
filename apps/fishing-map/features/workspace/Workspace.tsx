@@ -31,6 +31,7 @@ import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
+import { fetchVesselGroupsThunk } from 'features/vesselGroup/vessel-groups.slice'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -153,6 +154,10 @@ function Workspace() {
       })
     }
   }, [dispatch, dataviewsResources])
+
+  useEffect(() => {
+    dispatch(fetchVesselGroupsThunk() as any)
+  }, [dispatch])
 
   if (
     workspaceStatus === AsyncReducerStatus.Idle ||

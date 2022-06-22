@@ -147,6 +147,7 @@ function ActivityLayerPanel({
       { field: 'target_species', label: t('vessel.target_species', 'Target species') },
       { field: 'license_category', label: t('vessel.license_category', 'License category') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
+      { field: 'vesselGroups', label: t('vesselGroup.vesselGroups', 'Vessel Groups') },
     ],
     [t]
   )

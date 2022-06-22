@@ -7,6 +7,7 @@ import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { selectVersion } from 'routes/routes.selectors'
+import { API_VERSION } from 'data/config'
 
 interface VesselGroupsSliceState {
   status: AsyncReducerStatus
@@ -14,32 +15,6 @@ interface VesselGroupsSliceState {
   data: VesselGroup[]
   isModalOpen: boolean
 }
-
-const VESSEL_GROUP_MOCK = [
-  {
-    id: '9',
-    name: 'Long Xing',
-    vessels: [
-      {
-        dataset: 'private-global-other-vessels:v20201001',
-        vesselId: 'd037727b4-4b5a-2da9-e54c-1d355c368282',
-      },
-      {
-        dataset: 'private-global-other-vessels:v20201001',
-        vesselId: '754095371-1750-71bc-1e58-a9ad5d46d55d',
-      },
-      {
-        dataset: 'private-global-other-vessels:v20201001',
-        vesselId: 'decfb0d2b-b14b-3306-f3fa-6e79a73a4883',
-      },
-    ],
-  },
-  {
-    id: 'test',
-    name: 'dummy',
-    vessels: [],
-  },
-]
 
 const initialState: VesselGroupsSliceState = {
   status: AsyncReducerStatus.Idle,
@@ -55,8 +30,7 @@ export const fetchVesselGroupsThunk = createAsyncThunk<VesselGroup[], undefined>
   async (_, { getState }) => {
     const state = getState() as RootState
     if (state.vesselGroups.data.length) return state.vesselGroups.data
-    const version = 'v2'
-    const url = `/${version}/vessel-groups/`
+    const url = `/${API_VERSION}/vessel-groups/`
     const vesselGroups = (await GFWAPI.fetch(url)) as any
     return vesselGroups.entries as VesselGroup[]
   }
@@ -66,10 +40,9 @@ export const saveVesselGroupThunk = createAsyncThunk(
   'vessel-groups/save',
   async (vesselGroup: VesselGroup, { dispatch, getState }) => {
     const state = getState() as RootState
-    const version = 'v2'
     // const version = selectVersion(state)
 
-    const url = [`/${version}/vessel-groups/`, vesselGroup.id ? vesselGroup.id : ''].join('')
+    const url = [`/${API_VERSION}/vessel-groups/`, vesselGroup.id ? vesselGroup.id : ''].join('')
     const method = vesselGroup.id ? 'PATCH' : 'POST'
 
     // TODO type anys
@@ -99,7 +72,6 @@ const vesselGroupsSlice = createSlice({
     builder.addCase(saveVesselGroupThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       const payload = action.payload as any
-      console.log(payload)
     })
     builder.addCase(saveVesselGroupThunk.rejected, (state, action) => {
       state.status = AsyncReducerStatus.Error

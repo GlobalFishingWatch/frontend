@@ -15,6 +15,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
@@ -311,13 +312,13 @@ export type SchemaFieldSelection = {
 
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
-  schema: SupportedDatasetSchema
+  schema: SupportedDatasetSchema,
+  vesselGroups?: MultiSelectOption[]
 ): SchemaFieldSelection[] => {
   if (schema === 'flag') {
     return getFlags()
   } else if (schema === 'vesselGroups') {
-    // Must be injected in dataview beforehand
-    return dataview.config.vesselGroups
+    return vesselGroups
   }
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
@@ -366,9 +367,10 @@ export const getSchemaOptionsSelectedInDataview = (
 
 export const getSchemaFieldsSelectedInDataview = (
   dataview: SchemaFieldDataview,
-  schema: SupportedDatasetSchema
+  schema: SupportedDatasetSchema,
+  vesselGroups?: MultiSelectOption[]
 ) => {
-  const options = getCommonSchemaFieldsInDataview(dataview, schema)
+  const options = getCommonSchemaFieldsInDataview(dataview, schema, vesselGroups)
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   return optionsSelected
 }
@@ -382,9 +384,10 @@ export type SchemaFilter = {
 }
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
-  schema: SupportedDatasetSchema
+  schema: SupportedDatasetSchema,
+  vesselGroups?: MultiSelectOption[]
 ): SchemaFilter => {
-  const options = getCommonSchemaFieldsInDataview(dataview, schema)
+  const options = getCommonSchemaFieldsInDataview(dataview, schema, vesselGroups)
   const type = getCommonSchemaTypeInDataview(dataview, schema)
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
 
@@ -395,7 +398,10 @@ export const getFiltersBySchema = (
   return { id: schema, disabled, options, optionsSelected, type }
 }
 
-export const getSchemaFiltersInDataview = (dataview: SchemaFieldDataview): SchemaFilter[] => {
+export const getSchemaFiltersInDataview = (
+  dataview: SchemaFieldDataview,
+  vesselGroups?: MultiSelectOption[]
+): SchemaFilter[] => {
   const fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
@@ -409,6 +415,8 @@ export const getSchemaFiltersInDataview = (dataview: SchemaFieldDataview): Schem
           return aIndex - bIndex
         })
       : fieldsAllowed
-  const schemaFilters = fielsAllowedOrdered.map((id) => getFiltersBySchema(dataview, id))
+  const schemaFilters = fielsAllowedOrdered.map((id) =>
+    getFiltersBySchema(dataview, id, vesselGroups)
+  )
   return schemaFilters
 }

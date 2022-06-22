@@ -38,7 +38,6 @@ function ActivitySection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const { start, end } = useTimerangeConnect()
 
   const addDataviewInstance = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {

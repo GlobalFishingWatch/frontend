@@ -1,8 +1,8 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { debounce } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import {
   MultiSelect,
   MultiSelectOnChange,
@@ -25,9 +25,7 @@ import {
   useVesselGroupsOptions,
   useVesselGroupSelectWithModal,
 } from 'features/vesselGroup/vessel-groups.hooks'
-import { isGFWUser } from 'features/user/user.slice'
-import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
-import { fetchVesselGroupsThunk } from 'features/vesselGroup/vessel-groups.slice'
+import { selectVessselGroupsAllowed } from 'features/vesselGroup/vessel-groups.selectors'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -49,11 +47,9 @@ const trackEvent = debounce((filterKey: string, label: string) => {
 
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const gfwUser = useSelector(isGFWUser)
-  const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
-  const allowVesselGroup = gfwUser || advancedSearchAllowed
+
+  const allowVesselGroup = useSelector(selectVessselGroupsAllowed)
   const vesselGroupsOptions = useVesselGroupsOptions()
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
@@ -65,18 +61,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
-  const schemaFilters = getSchemaFiltersInDataview({
-    ...dataview,
-    config: {
-      ...dataview.config,
-      // allow dataset.utils/getCommonSchemaFieldsInDataview to grab vessel groups
-      ...(allowVesselGroup && { vesselGroups: vesselGroupsOptions }),
-    },
-  })
-
-  useEffect(() => {
-    dispatch(fetchVesselGroupsThunk() as any)
-  }, [dispatch])
+  const schemaFilters = getSchemaFiltersInDataview(dataview, vesselGroupsOptions)
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     let datasets: string[] = []
@@ -225,7 +210,10 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         />
       )}
       {schemaFilters.map((schemaFilter) => {
-        if (!showSchemaFilter(schemaFilter)) {
+        if (
+          !showSchemaFilter(schemaFilter) ||
+          (schemaFilter.id === 'vesselGroups' && !allowVesselGroup)
+        ) {
           return null
         }
         return (
