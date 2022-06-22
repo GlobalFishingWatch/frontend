@@ -8,8 +8,11 @@
   text-align: center;
 }
 
-.title {
+.header {
   padding: var(--space-S) var(--space-S) 0 var(--space-S);
+}
+
+.title {
   font: var(--font-L);
 }
 

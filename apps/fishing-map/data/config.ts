@@ -26,6 +26,7 @@ export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
+export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 
 // used when no url data and no workspace data
