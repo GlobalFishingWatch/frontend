@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { point } from '@turf/helpers'
+import { SelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
 import { PortPosition, PortSubarea } from 'types'
 
@@ -19,6 +20,8 @@ export type ProjectSlice = {
   subareaValues: CountryMap
   pointValues: CountryMap
   country: string | null
+  countryOptions: SelectOption[]
+  countryColors: CountryMap
   hover: string | null
   selected: string[]
   subareas: CountrySelectMap
@@ -31,6 +34,8 @@ const initialState: ProjectSlice = {
   portValues: {},
   subareaValues: {},
   pointValues: {},
+  countryOptions: [],
+  countryColors: {},
   country: null,
   hover: null,
   selected: [],
@@ -44,6 +49,10 @@ const slice = createSlice({
   name: 'labeler',
   initialState,
   reducers: {
+    setCountriesMetadata: (state, action: PayloadAction<{ options: SelectOption[], colors: CountryMap }>) => {
+      state.countryOptions = action.payload.options
+      state.countryColors = action.payload.colors
+    },
     setData: (state, action: PayloadAction<PortPosition[]>) => {
       state.data = action.payload
     },
@@ -187,7 +196,8 @@ export const {
   sortPoints,
   sortOptions,
   toogleExtraData,
-  changeAnchoragePort
+  changeAnchoragePort,
+  setCountriesMetadata
 } = slice.actions
 
 export default slice.reducer
@@ -202,3 +212,5 @@ export const selectMapData = (state: RootState) => state.labeler.data
 export const selectPortValues = (state: RootState) => state.labeler.portValues
 export const selectSubareaValues = (state: RootState) => state.labeler.subareaValues
 export const selectPointValues = (state: RootState) => state.labeler.pointValues
+export const selectCountries = (state: RootState) => state.labeler.countryOptions
+export const selectCountryColors = (state: RootState) => state.labeler.countryColors

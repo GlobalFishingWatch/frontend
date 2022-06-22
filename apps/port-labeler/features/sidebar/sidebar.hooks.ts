@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
+import { flags } from '@globalfishingwatch/i18n-labels'
 import {
   selectMapData,
   selectPointValues,
@@ -12,7 +13,8 @@ import {
   setPorts,
   setPortValues,
   setSubareas,
-  setSubareaValues
+  setSubareaValues,
+  setCountriesMetadata
 } from 'features/labeler/labeler.slice'
 import { PortPosition } from 'types'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
@@ -75,6 +77,38 @@ export const useSelectedTracksConnect = () => {
     element.click()
   }
 
+  const parseCountriesMetadata = ((data: any) => {
+    if (!data) {
+      dispatch(setCountriesMetadata({
+        options: [],
+        colors: {}
+      }))
+    }
+    const countriesDuplicated: string[] = data.map(e => {
+      return e.iso3
+    })
+    const countries = [...new Set(countriesDuplicated)];
+    const countryColors = {}
+    countries.forEach((country, index) => {
+      countryColors[country] = getFixedColorForUnknownLabel(index)
+    })
+
+    const countryOptions = [{
+      id: null,
+      label: 'All countries'
+    }, ...countries.map(e => {
+      return {
+        id: e,
+        label: flags[e] ?? e,
+      }
+    }).sort((a, b) => a.label > b.label ? 1 : -1)]
+
+    dispatch(setCountriesMetadata({
+      options: countryOptions,
+      colors: countryColors
+    }))
+  })
+
   /**
    * handle the file after this was uploaded
    */
@@ -89,6 +123,7 @@ export const useSelectedTracksConnect = () => {
       lat: typeof record.lat === 'string' ? parseFloat(record.lat) : record.lat,
       lon: typeof record.lon === 'string' ? parseFloat(record.lon) : record.lon
     }))))
+    parseCountriesMetadata(records)
   }
 
   /**

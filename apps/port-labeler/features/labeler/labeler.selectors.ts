@@ -11,13 +11,11 @@ import {
 } from "features/labeler/labeler.slice"
 import { PortPosition } from "types"
 
-
-
 /**
  * filter the poins by country
  */
 export const selectPortPointsByCountry = createSelector([selectMapData, selectCountry],
-  (data, selectedCountry): PortPosition[] => data?.filter((point) => point.iso3 === selectedCountry) || []
+  (data, selectedCountry): PortPosition[] => data?.filter((point) => !selectedCountry || point.iso3 === selectedCountry) || []
 )
 
 /**
@@ -40,7 +38,7 @@ export const selectSubareaValuesByCountry = createSelector([selectSubareaValues,
  * return the map of values assigned to the points, this means the name that every point has
  */
 export const selectPointValuesByCountry = createSelector([selectPointValues, selectCountry],
-  (data, selectedCountry) => data[selectedCountry]
+  (data, selectedCountry) => selectedCountry ? data[selectedCountry] : data
 )
 
 /**
@@ -80,19 +78,24 @@ export const selectSubareasByCountry = createSelector([selectSubareas, selectCou
 // this generate the port options for the selects in the table
 export const selectPortsOptions = createSelector([selectPorts, selectCountry],
   (ports, country) => {
-    const options = ports[country].map(port => { return { label: port.name, id: port.id } })
-    return options
+    if (!ports || !country) {
+      return []
+    }
+
+    return ports[country].map(port => { return { label: port.name, id: port.id } })
   })
 
 // this generate the subarea options for the selects in the table
 export const selectSubareaOptions = createSelector([selectSubareas, selectCountry],
   (subareas, country) => {
-    const options = subareas[country].map(subarea => {
+    if (!subareas || !country) {
+      return []
+    }
+    return subareas[country].map(subarea => {
       return {
         label: subarea.name,
         id: subarea.id,
         color: subarea.color
       }
     })
-    return options
   })

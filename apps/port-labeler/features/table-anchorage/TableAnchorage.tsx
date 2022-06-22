@@ -5,14 +5,14 @@ import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { flags } from '@globalfishingwatch/i18n-labels'
 import { IconButton, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
-import { changeAnchoragePort, selectDisplayExtraData, sortPoints, toogleExtraData } from 'features/labeler/labeler.slice'
+import { changeAnchoragePort, selectCountries, selectDisplayExtraData, sortPoints, toogleExtraData } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
 import { PortPosition } from 'types'
 import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
-import { selectCountries } from 'features/map/map.selectors'
+
 
 function TableAnchorage() {
 
@@ -50,7 +50,6 @@ function TableAnchorage() {
       id: anchorageChangeCountryOpen.s2id,
       iso3: newCountry
     }))
-    console.log(newCountry)
     setAnchorageChangeCountryOpen({
       ...anchorageChangeCountryOpen,
       iso3: newCountry

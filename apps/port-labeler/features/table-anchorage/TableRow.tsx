@@ -50,12 +50,12 @@ function TableRow({
 
   const country = useSelector(selectCountry)
   const pointValues = useSelector(selectPointValuesByCountry)
-  const pointValue = pointValues[record.s2id] ?? ''
+  const pointValue = country && pointValues ? pointValues[record.s2id] : ''
   const portValues = useSelector(selectPortValuesByCountry)
-  const selectedPort = portValues[record.s2id]
+  const selectedPort = country && portValues ? portValues[record.s2id] : ''
 
   const subareaValues = useSelector(selectSubareaValuesByCountry)
-  const selectedSubarea = subareaValues[record.s2id]
+  const selectedSubarea = country && subareaValues ? subareaValues[record.s2id] : ''
   const hoverPoint = useSelector(selectHoverPoint)
 
   const ports = useSelector(selectPortsByCountry)
@@ -101,12 +101,13 @@ function TableRow({
     <div
       className={cx(styles.row, {
         [styles.rowHover]: hoverPoint === record.s2id,
+        [styles.rowBorder]: !country,
       })}
       onMouseEnter={() => onRowHover(record.s2id, true)}
       onMouseLeave={() => onRowHover(record.s2id, false)}
     >
       <div className={styles.col}>
-        <SubareaSelector
+        {country ? <SubareaSelector
           className={styles.portSelector}
           onRemove={() => { }}
           onSelect={(selected: SelectOption) => {
@@ -119,9 +120,11 @@ function TableRow({
           placeholder={t('common.select_port', 'Select a port')}
           addButtonLabel={t('common.add_port', 'Add new port')}
         ></SubareaSelector>
+          : <span>{record.port_label}</span>
+        }
       </div>
       <div className={styles.col}>
-        <SubareaSelector
+        {country ? <SubareaSelector
           onRemove={() => { }}
           onSelect={(selected: SelectOption) => {
             onSubareaChange(record.s2id, selected.id)
@@ -133,11 +136,13 @@ function TableRow({
           placeholder={t('common.select_subarea', 'Select a community')}
           addButtonLabel={t('common.select_subarea', 'Add new community')}
         ></SubareaSelector>
+          : <span>{record.community_label}</span>}
       </div>
       <div className={styles.col}>
-        <InputText value={pointValue} onChange={(value) => {
+        {country ? <InputText value={pointValue} onChange={(value) => {
           onPointValueChange(record.s2id, value.target.value)
         }}></InputText>
+          : <span>{record.point_label}</span>}
 
       </div>
       <div className={styles.col}>
