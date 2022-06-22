@@ -529,6 +529,7 @@
       "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
     },
     "title_other": "Espaces de travail",
+    "user": "User workspace",
     "update": "Mise à jour",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir cet espace de travail",
     "uploadPublicDisabled": "Cet espace de travail ne peut pas être partagé publiquement car il contient des jeux de données privés"
