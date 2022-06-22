@@ -21,7 +21,10 @@ import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import {
+  selectUrlDataviewInstances,
+  selectUrlDataviewInstancesOrder,
+} from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -181,9 +184,21 @@ export const selectDataviewInstancesMerged = createSelector(
     return mergedDataviewInstances
   }
 )
+export const selectDataviewInstancesMergedOrdered = createSelector(
+  [selectDataviewInstancesMerged, selectUrlDataviewInstancesOrder],
+  (dataviewInstances = [], dataviewInstancesOrder): UrlDataviewInstance[] => {
+    if (!dataviewInstancesOrder || !dataviewInstancesOrder.length) {
+      return dataviewInstances
+    }
+    const dataviewInstancesOrdered = dataviewInstances.sort(
+      (a, b) => dataviewInstancesOrder.indexOf(a.id) - dataviewInstancesOrder.indexOf(b.id)
+    )
+    return [...dataviewInstancesOrdered]
+  }
+)
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMerged, selectAllDataviews, selectAllDatasets],
+  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)

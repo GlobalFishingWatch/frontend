@@ -9,6 +9,7 @@ import { UrlDataviewInstance } from '.'
 export type BaseUrlWorkspace = {
   activityCategory?: string // legacy
   dataviewInstances?: Partial<UrlDataviewInstance[]>
+  dataviewInstancesOrder?: UrlDataviewInstance['id'][]
   latitude?: number
   longitude?: number
   zoom?: number
@@ -18,6 +19,7 @@ export type BaseUrlWorkspace = {
 
 const PARAMS_TO_ABBREVIATED = {
   dataviewInstances: 'dvIn',
+  dataviewInstancesOrder: 'dvInOr',
   datasetsConfig: 'dsC',
   datasets: 'dss',
   endpoint: 'ept',

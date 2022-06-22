@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
+import { SortableContext } from '@dnd-kit/sortable'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -109,11 +110,13 @@ function ContextAreaSection(): React.ReactElement {
           </Fragment>
         )}
       </div>
-      {dataviews?.map((dataview) => (
-        <LayerPanelContainer key={dataview.id} dataview={dataview}>
-          <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-        </LayerPanelContainer>
-      ))}
+      <SortableContext items={dataviews}>
+        {dataviews?.map((dataview) => (
+          <LayerPanelContainer key={dataview.id} dataview={dataview}>
+            <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+          </LayerPanelContainer>
+        ))}
+      </SortableContext>
     </div>
   )
 }

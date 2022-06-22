@@ -6,7 +6,7 @@ import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import {
-  selectDataviewInstancesMerged,
+  selectDataviewInstancesMergedOrdered,
   addDataviewEntity,
 } from 'features/dataviews/dataviews.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -32,7 +32,7 @@ const WorkspaceEditor = ({ onEditClick }: WorkspaceEditorProps) => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const editorDataviewsStatus = useSelector(selectEditorDataviewsStatus)
   const editorDataviews = useSelector(selectEditorDataviews)
-  const workspaceDataviewInstances = useSelector(selectDataviewInstancesMerged) || []
+  const workspaceDataviewInstances = useSelector(selectDataviewInstancesMergedOrdered) || []
   const { addNewDataviewInstances, deleteDataviewInstance } = useDataviewInstancesConnect()
 
   useEffect(() => {

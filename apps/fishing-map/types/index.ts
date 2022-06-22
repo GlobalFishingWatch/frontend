@@ -20,6 +20,7 @@ export type WorkspaceStateProperty =
   | 'daysFromLatest'
   | 'sidebarOpen'
   | 'dataviewInstances'
+  | 'dataviewInstancesOrder'
   | 'timebarVisualisation'
   | 'visibleEvents'
   | 'timebarGraph'

@@ -17,7 +17,7 @@ import { selectViewport } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { PRIVATE_SUFIX, PUBLIC_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
-import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.slice'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
 import { selectUserData } from 'features/user/user.slice'
 import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
 import { selectWorkspaceId } from 'routes/routes.selectors'
@@ -61,7 +61,7 @@ function NewWorkspaceModal({
   const timerange = useTimerangeConnect()
   const userData = useSelector(selectUserData)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const dataviewsInWorkspace = useSelector(selectDataviewInstancesMerged)
+  const dataviewsInWorkspace = useSelector(selectDataviewInstancesMergedOrdered)
   const hasEditPermission = useSelector(selectUserWorkspaceEditPermissions)
   const workspaceDatasets = getDatasetsInDataviews(dataviewsInWorkspace || [])
   const privateDatasets = workspaceDatasets.filter((d) => d.includes(PRIVATE_SUFIX))

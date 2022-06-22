@@ -4,13 +4,14 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReactHtmlParser from 'react-html-parser'
 import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, Modal } from '@globalfishingwatch/ui-components'
+import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
@@ -36,6 +37,17 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }, [setModalDataWarningOpen])
   const guestUser = useSelector(isGuestUser)
   const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
+
+  const {
+    items,
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    style,
+    isSorting,
+    activeIndex,
+  } = useLayerPanelDataviewSort(dataview.id)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -91,6 +103,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         [styles.expandedContainerOpen]: colorOpen,
         'print-hidden': !layerActive,
       })}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
     >
       <div className={styles.header}>
         <LayerSwitch
@@ -117,10 +132,23 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
           <InfoModal dataview={dataview} />
           {isUserLayer && <Remove dataview={dataview} />}
+          {items.length > 1 && (
+            <IconButton
+              size="small"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              icon="drag"
+              className={styles.dragger}
+            />
+          )}
         </div>
       </div>
       {layerActive && DATAVIEWS_WARNING.includes(dataview?.id) && (
-        <div className={cx(styles.properties, styles.dataWarning)}>
+        <div
+          className={cx(styles.properties, styles.dataWarning, styles.drag, {
+            [styles.dragging]: isSorting && activeIndex > -1,
+          })}
+        >
           <div>
             {t(
               `dataview.${dataview?.id}.dataWarning` as any,
