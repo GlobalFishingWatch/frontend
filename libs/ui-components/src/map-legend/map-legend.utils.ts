@@ -31,8 +31,6 @@ export const formatLegendValue = ({
     console.warn('Value not valid be fixed parsed, returning original value', number)
     return number
   }
-  console.log('formatLegendValue', number)
-
   let formattedValue = roundValues ? number.toFixed(0) : number.toFixed(DECIMALS)
   if (number === 0) formattedValue = '0'
   else if (Math.abs(number) >= 1000000000)
