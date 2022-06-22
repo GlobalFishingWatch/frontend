@@ -56,8 +56,11 @@ const eventIsInForeingEEZ = (flag: string, eezIds: string[]) => {
 export const selectEncountersInForeignEEZ = createSelector(
   [selectEventsForRiskSummary, selectCurrentVessel, selectEEZs],
   (events, vessel, eezs = []) =>
-    events.filter(
-      (event) =>
-        event.type === EventTypes.Encounter && eventIsInForeingEEZ(vessel.flag, event.regions.eez)
-    )
+    vessel && vessel.flag
+      ? events.filter(
+          (event) =>
+            event.type === EventTypes.Encounter &&
+            eventIsInForeingEEZ(vessel.flag, event.regions.eez)
+        )
+      : []
 )

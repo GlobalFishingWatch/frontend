@@ -34,6 +34,7 @@ import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectPrivateUserGroups } from 'features/user/user.selectors'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -53,6 +54,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const resources = useSelector(selectResources)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
+  const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
+    useLayerPanelDataviewSort(dataview.id)
 
   const guestUser = useSelector(isGuestUser)
   const userData = useSelector(selectUserData)
@@ -273,6 +276,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   return (
     <div
       className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
     >
       <div className={styles.header}>
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
@@ -323,6 +329,15 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
+        {items.length > 1 && (
+          <IconButton
+            size="small"
+            ref={setActivatorNodeRef}
+            {...listeners}
+            icon="drag"
+            className={styles.dragger}
+          />
+        )}
       </div>
     </div>
   )

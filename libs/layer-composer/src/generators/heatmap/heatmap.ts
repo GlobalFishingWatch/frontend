@@ -44,8 +44,8 @@ class HeatmapGenerator {
     const url = new URL(
       tilesUrl.replace('{{type}}', 'heatmap').replace(/{{/g, '{').replace(/}}/g, '}')
     )
-    url.searchParams.set('geomType', 'rectangle')
-    url.searchParams.set('singleFrame', 'true')
+    url.searchParams.set('geom-type', 'rectangle')
+    url.searchParams.set('single-frame', 'true')
     url.searchParams.set('datasets', toURLArray('datasets', config.datasets))
     if (!staticHeatmap && config.start && config.end) {
       url.searchParams.set('date-range', [config.start, config.end].join(','))

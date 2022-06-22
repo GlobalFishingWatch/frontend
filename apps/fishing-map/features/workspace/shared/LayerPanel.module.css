@@ -30,6 +30,20 @@
   align-items: center;
 }
 
+.dragger {
+  width: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.dragger:focus {
+  box-shadow: none;
+}
+
+.LayerPanel:hover .dragger {
+  width: var(--size-S);
+}
+
 .expandedContainerOpen .header {
   background-color: var(--color-off-white);
 }
@@ -100,6 +114,15 @@
 .dataWarningLinks button {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.drag {
+  opacity: 1;
+  transition: opacity 100ms linear;
+}
+
+.dragging {
+  opacity: 0;
 }
 
 .filters {

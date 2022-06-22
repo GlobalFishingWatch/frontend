@@ -6,7 +6,6 @@ import {
   HeatmapLayerMeta,
   DEFAULT_CONTEXT_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
-  TRACK_HIGHLIGHT_SUFFIX,
 } from '@globalfishingwatch/layer-composer'
 import {
   isDetectionsDataview,
@@ -21,7 +20,7 @@ import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom, TilesAtomSourceState } from 'features/map/map-sources.atom'
-import { getHeatmapSourceMetadata } from 'features/map/map-sources.utils'
+import { getHeatmapSourceMetadata, isInteractionSource } from 'features/map/map-sources.utils'
 import {
   BIG_QUERY_EVENTS_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -57,12 +56,6 @@ export const useSourceInStyle = (sourcesIds: SourcesHookInput) => {
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesIds)
   const sourcesLoaded = sourcesIdsList.every((source) => style?.sources?.[source] !== undefined)
   return sourcesLoaded
-}
-
-export const MAPBOX_GL_DRAW_PREFIX = 'mapbox-gl-draw'
-// Don't consider loading states for our interaction layers
-export const isInteractionSource = (sourceId: string) => {
-  return sourceId.includes(TRACK_HIGHLIGHT_SUFFIX) || sourceId.includes(MAPBOX_GL_DRAW_PREFIX)
 }
 
 export const useMapSourceTilesLoadedAtom = () => {

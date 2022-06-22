@@ -11,6 +11,10 @@ export interface UseRisk {
   eventsLoading: boolean
   fishingInMPA: RenderedEvent[]
   loiteringInMPA: RenderedEvent[]
+  countByRiskLevel: {
+    medium: number
+    high: number
+  }
 }
 
 export function useRisk(): UseRisk {
@@ -20,7 +24,21 @@ export function useRisk(): UseRisk {
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))
   const eventsLoading = useSelector(selectResourcesLoading)
 
-  return { encountersInForeignEEZ, encountersInMPA, eventsLoading, fishingInMPA, loiteringInMPA }
+  return {
+    encountersInForeignEEZ,
+    encountersInMPA,
+    eventsLoading,
+    fishingInMPA,
+    loiteringInMPA,
+    countByRiskLevel: {
+      medium:
+        encountersInForeignEEZ.length +
+        encountersInMPA.length +
+        fishingInMPA.length +
+        loiteringInMPA.length,
+      high: 0,
+    },
+  }
 }
 
 export default useRisk

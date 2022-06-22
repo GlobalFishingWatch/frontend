@@ -3,6 +3,8 @@ import { DateTime } from 'luxon'
 import { AppState } from 'types/redux.types'
 
 export type WorkspaceEnv = 'development' | 'production'
+export const API_VERSION = 'v2'
+
 export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
@@ -105,4 +107,6 @@ export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
 export const RISK_SUMMARY_SETTINGS = {
   // Time range to use when calculating indicators
   timeRange: { years: 1 },
+  showIndicatorIconEventCount:
+    !!process.env.NEXT_PUBLIC_RISK_SUMMARY_SHOW_ICON_EVENTS_COUNT || false,
 }

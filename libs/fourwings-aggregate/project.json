@@ -40,6 +40,11 @@
             "output": "."
           }
         ]
+      },
+      "configurations": {
+        "local": {
+          "outputPath": "libs/fourwings-aggregate/dist"
+        }
       }
     },
     "lint": {

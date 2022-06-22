@@ -17,21 +17,21 @@ export interface EndpointParam {
 }
 
 export enum EndpointId {
-  Events = 'carriers-events',
-  EventsDetail = 'carriers-events-detail',
-  FourwingsTiles = '4wings-tiles',
-  FourwingsBreaks = '4wings-bins',
-  FourwingsLegend = '4wings-legend',
-  FourwingsInteraction = '4wings-interaction',
-  Tracks = 'carriers-tracks',
+  ClusterTiles = 'events-cluster-tiles',
   ContextGeojson = 'temporal-context-geojson',
+  Events = 'events',
+  EventsDetail = 'events-detail',
+  FourwingsBreaks = '4wings-bins',
+  FourwingsInteraction = '4wings-interaction',
+  FourwingsLegend = '4wings-legend',
+  FourwingsTiles = '4wings-tiles',
+  Tracks = 'tracks',
   UserContextTiles = 'user-context-tiles',
   UserTracks = 'user-tracks-data',
-  Vessel = 'carriers-vessel',
-  VesselList = 'carriers-list-vessels',
-  VesselSearch = 'carriers-search-vessels',
-  VesselAdvancedSearch = 'carriers-advanced-search-vessels',
-  ClusterTiles = 'carriers-events-cluster-tiles',
+  Vessel = 'vessel',
+  VesselAdvancedSearch = 'advanced-search-vessels',
+  VesselList = 'list-vessels',
+  VesselSearch = 'search-vessels',
 }
 
 export interface Endpoint {
@@ -46,10 +46,10 @@ export interface Endpoint {
 }
 
 export enum DatasetTypes {
-  Vessels = 'carriers-vessels:v1',
-  Events = 'carriers-events:v1',
-  Ports = 'carriers-ports:v1',
-  Tracks = 'carriers-tracks:v1',
+  Vessels = 'vessels:v1',
+  Events = 'events:v1',
+  Ports = 'ports:v1',
+  Tracks = 'tracks:v1',
   Fourwings = '4wings:v1',
   Context = 'user-context-layer:v1',
   TemporalContext = 'temporal-context-layer:v1',
@@ -108,6 +108,7 @@ export type DatasetSchema = {
 }
 
 export enum DatasetCategory {
+  Event = 'event',
   Context = 'context',
   Environment = 'environment',
   Activity = 'activity',
@@ -121,7 +122,7 @@ export interface Dataset {
   description: string
   schema?: Record<string, DatasetSchema>
   category?: DatasetCategory
-  subcategory?: string
+  subcategory?: EventTypes | string
   source?: string
   status: DatasetStatus
   importLogs?: string
@@ -138,12 +139,12 @@ export interface Dataset {
 }
 
 export interface ThinningConfig {
-  distanceFishing?: number
-  bearingValFishing?: number
-  changeSpeedFishing?: number
-  minAccuracyFishing?: number
-  distanceTransit?: number
-  bearingValTransit?: number
-  changeSpeedTransit?: number
-  minAccuracyTransit?: number
+  'distance-fishing'?: number
+  'bearing-val-fishing'?: number
+  'change-speed-fishing'?: number
+  'min-accuracy-fishing'?: number
+  'distance-transit'?: number
+  'bearing-val-transit'?: number
+  'change-speed-transit'?: number
+  'min-accuracy-transit'?: number
 }

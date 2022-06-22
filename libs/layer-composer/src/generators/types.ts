@@ -405,6 +405,7 @@ export enum ContextLayerType {
   WPPNRI = 'wpp-nri',
   Graticules = 'graticules',
   FAO = 'fao',
+  ProtectedSeas = 'protected-seas',
 }
 
 export type RawEvent = {

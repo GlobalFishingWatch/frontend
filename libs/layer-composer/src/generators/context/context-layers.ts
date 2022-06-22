@@ -124,6 +124,10 @@ const CONTEXT_LAYERS: Record<ContextLayerType, LayerSpecification[]> = {
   ),
   [ContextLayerType.WPPNRI]: getDefaultContextLayersById(ContextLayerType.WPPNRI, '#AD1457'),
   [ContextLayerType.HighSeas]: getDefaultContextLayersById(ContextLayerType.HighSeas, '#4184F4'),
+  [ContextLayerType.ProtectedSeas]: getDefaultContextLayersById(
+    ContextLayerType.ProtectedSeas,
+    '#ABFF34'
+  ),
   [ContextLayerType.TunaRfmo]: getDefaultContextLayersById(ContextLayerType.TunaRfmo, '#B39DDB'),
   [ContextLayerType.FAO]: getDefaultContextLayersById(ContextLayerType.FAO, '#8E24A9'),
   [ContextLayerType.EEZ]: [

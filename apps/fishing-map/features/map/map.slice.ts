@@ -12,6 +12,7 @@ import {
   EndpointId,
   EventVessel,
   EventVesselTypeEnum,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
@@ -159,12 +160,12 @@ export const fetchVesselInfo = async (
 ) => {
   const vesselsInfoUrl = getVesselInfoEndpoint(datasets, vesselIds)
   if (!vesselsInfoUrl) {
-    console.warn('No vessel info found for dataset', datasets)
+    console.warn('No vessel info url found for dataset', datasets)
     console.warn('and vesselIds', vesselIds)
     return
   }
   try {
-    const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
+    const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl, {
       signal,
     })
     // TODO remove entries once the API is stable
@@ -201,12 +202,12 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
     const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
     if (interactionUrl) {
-      const sublayersVesselsIdsResponse = await GFWAPI.fetch<ExtendedFeatureVessel[]>(
+      const sublayersVesselsIdsResponse = await GFWAPI.fetch<APIPagination<ExtendedFeatureVessel>>(
         interactionUrl,
         { signal }
       )
       // TODO remove once normalized in api between id and vessel_id
-      const sublayersVesselsIds = sublayersVesselsIdsResponse.map((sublayer) =>
+      const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
         sublayer.map((vessel) => {
           const { id, vessel_id, ...rest } = vessel
           return { ...rest, id: id || vessel_id }
@@ -359,7 +360,9 @@ export const fetchEncounterEventThunk = createAsyncThunk<
         }
         const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
         if (vesselsUrl) {
-          vesselsInfo = await GFWAPI.fetch<ExtendedEventVessel[]>(vesselsUrl, { signal })
+          vesselsInfo = await GFWAPI.fetch<APIPagination<ExtendedEventVessel>>(vesselsUrl, {
+            signal,
+          }).then((r) => r.entries)
         }
       }
 

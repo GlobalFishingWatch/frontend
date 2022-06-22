@@ -21,7 +21,7 @@
     }
   },
   "full-indonesia-fishing-vessels": {
-    "name": "VMS Indonesia (Fishing Vessels)",
+    "name": "Indonesia VMS (Fishing Vessels)",
     "description": "Dataset for VMS Indonesia (Public)",
     "schema": {
       "id": "id",
@@ -425,6 +425,27 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-costa-rica-presence": {
+    "name": "Vessel Presence Costa Rica VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
+          "costarica_vms_atuneros": "costarica_vms_atuneros",
+          "costarica_vms_sardineros": "costarica_vms_sardineros"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "private-ecuador-fishing-effort": {
     "name": "VMS de Ecuador",
     "description": "Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Armada de Ecuador a través de la Dirección Nacional de Espacios Acuáticos. Los datos se recopilan utilizando el sistema de seguimiento de embarcaciones de Ecuador a través de satélites y se publican con un retraso de siete días. Los datos contienen información sobre la identidad, ubicación, velocidad, rumbo y movimiento de las embarcaciones. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para el sistema de identificación automática (AIS) para identificar la actividad y los comportamientos pesqueros. El algoritmo clasifica cada punto de datos transmitido por las embarcaciones como pesca aparentemente o no pesca, y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. El sistema VMS transmite datos de manera diferente a AIS y puede proporcionar diferentes medidas de integridad, precisión y calidad. Global Fishing Watch mejora continuamente sus algoritmos en todos los formatos de transmisión de datos para identificar algorítmicamente la \"actividad de pesca aparente\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor muestre una actividad pesquera aparente cuando la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero” como aparentes en lugar de ciertos. Toda la información de Global Fishing Watch sobre la \"aparente actividad pesquera\" debe considerarse una estimación y debe confiarse en ella únicamente a discreción del usuario. Los algoritmos de detección de pesca de Global Fishing Watch se desarrollan y prueban utilizando datos de eventos de pesca reales recopilados por observadores y se combinan con análisis de expertos de datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de la actividad pesquera y mejorar las técnicas de clasificación automatizadas.",
@@ -437,6 +458,30 @@
         "keyword": "shiptype",
         "enum": {
           "fishing": "fishing"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-ecuador-presence": {
+    "name": "Vessel Presence Ecuador VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing",
+          "international traffic": "international traffic",
+          "national traffic": "national traffic",
+          "tug": "tug",
+          "boat": "boat",
+          "auxiliary": "auxiliary"
         }
       },
       "vessel_id": "vessel_id",
@@ -902,7 +947,6 @@
           "reefer": "reefer"
         }
       },
-      "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -1224,6 +1268,30 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "public-ecuador-presence": {
+    "name": "Ecuador VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing",
+          "international traffic": "international traffic",
+          "national traffic": "national traffic",
+          "tug": "tug",
+          "boat": "boat",
+          "auxiliary": "auxiliary"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "public-eez-areas": {
     "name": "Areas geometries for eez",
     "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200MN), versión 11. Fuente: marineregions.org",
@@ -1518,7 +1586,7 @@
     }
   },
   "public-global-fishing-effort": {
-    "name": "AIS",
+    "name": "AIS fishing bq",
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
       "flag": "marca",
@@ -1545,7 +1613,8 @@
           "drifting_longlines": "palangres a la deriva"
         }
       },
-      "vessel_id": "i_id"
+      "vessel_id": "i_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-global-fishing-vessels": {
@@ -1821,7 +1890,7 @@
     }
   },
   "public-mexico-fishing-vessels": {
-    "name": "Mexico VMS",
+    "name": "Mexico VMS (Fishing vessels)",
     "description": "Dataset for VMS Mexico (Public)",
     "schema": {
       "id": "id",
@@ -1829,7 +1898,7 @@
       "source": "source",
       "shipname": "shipname",
       "nationalId": "nationalId",
-      "normalized_shipname": "normalized_shipname",
+      "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
