@@ -3,7 +3,8 @@ import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
-import { IconButton, InputText, Modal, SelectOption } from '@globalfishingwatch/ui-components'
+import { IconButton, InputText, Modal, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
+import { flags } from '@globalfishingwatch/i18n-labels'
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition } from 'types'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
@@ -120,7 +121,7 @@ function TableRow({
           placeholder={t('common.select_port', 'Select a port')}
           addButtonLabel={t('common.add_port', 'Add new port')}
         ></SubareaSelector>
-          : <span>{record.port_label}</span>
+          : <Tooltip content={record.port_label}><span>{record.port_label}</span></Tooltip>
         }
       </div>
       <div className={styles.col}>
@@ -136,29 +137,26 @@ function TableRow({
           placeholder={t('common.select_subarea', 'Select a community')}
           addButtonLabel={t('common.select_subarea', 'Add new community')}
         ></SubareaSelector>
-          : <span>{record.community_label}</span>}
+          : <Tooltip content={record.community_label}><span>{record.community_label}</span></Tooltip>}
       </div>
       <div className={styles.col}>
         {country ? <InputText value={pointValue} onChange={(value) => {
           onPointValueChange(record.s2id, value.target.value)
         }}></InputText>
-          : <span>{record.point_label}</span>}
+          : <Tooltip content={record.point_label}><span>{record.point_label}</span></Tooltip>}
 
       </div>
       <div className={styles.col}>
-        {record.top_destination}
+        <Tooltip content={record.top_destination}><span>{record.top_destination}</span></Tooltip>
       </div>
       {extra && <div className={styles.col}>
-        {record.s2id}
-        <IconButton
-          type="default"
-          icon='pin-filled'
-          size='tiny'
-          tooltip="Change country"
-          tooltipPlacement="left"
-          className={styles.actionButton}
+        <span>{record.s2id}</span>
+      </div>}
+      {extra && <div className={styles.col}>
+        <span
           onClick={() => onCountryChange(record)}
-        />
+          className={styles.actionButton}
+        >{flags[record.iso3] ?? record.iso3}</span>
       </div>}
 
     </div>

@@ -63,6 +63,7 @@ function SidebarHeader(props: HeaderProps) {
       <Select
         options={countries}
         onRemove={() => { }}
+        className={styles.countrySelector}
         placeholder={t('messages.country_selection', 'Select a country')}
         selectedOption={country ? { id: country, label: flags[country] ?? country } : undefined}
         onSelect={(selected: SelectOption) => {

@@ -79,6 +79,8 @@ function TableAnchorage() {
           onToggle={(order) => onToggleHeader('top_destination', order)} />
         {extraColumn && <TableHeader
           label={t('common.anchorageId', 'Anchorage ID')} />}
+        {extraColumn && <TableHeader
+          label={t('common.country', 'Country')} />}
         <IconButton
           type="default"
           icon='more'
