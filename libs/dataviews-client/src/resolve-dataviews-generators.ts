@@ -53,6 +53,9 @@ export function isMergedAnimatedGenerator(generatorId: string) {
 const getDatasetAvailableIntervals = (dataset?: Dataset) =>
   dataset?.configuration?.intervals as Interval[]
 
+const getDatasetAttribution = (dataset?: Dataset) =>
+  dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
+
 type TimeRange = { start: string; end: string }
 export type DataviewsGeneratorConfigsParams = {
   debug?: boolean
@@ -303,7 +306,7 @@ export function getGeneratorConfig(
           return {
             id,
             tilesUrl: url,
-            attribution: resolvedDataset?.source,
+            attribution: getDatasetAttribution(resolvedDataset),
             datasetId: resolvedDataset.id,
           }
         })
@@ -330,7 +333,7 @@ export function getGeneratorConfig(
           generator.tilesUrl = url
         }
         if (dataset?.source) {
-          generator.attribution = dataset.source
+          generator.attribution = getDatasetAttribution(dataset)
         }
 
         const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
