@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { DEFAULT_VERSION, DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { RootState } from 'store'
@@ -84,7 +84,10 @@ export const selectUrlViewport = createSelector(
     return { zoom, latitude, longitude }
   }
 )
-
+export const selectVersion = createSelector(
+  [selectQueryParam('version')],
+  (version: string) => version || DEFAULT_VERSION
+)
 /**
  * get the start and end dates in string format
  */
@@ -178,12 +181,9 @@ export const selectUrlAkaVesselQuery = createSelector(
   (aka: string[]) => aka
 )
 
-export const isOfflineForced = createSelector(
-  [selectQueryParam('offline')],
-  (offline: string) => {
-    return offline === 'true'
-  }
-)
+export const isOfflineForced = createSelector([selectQueryParam('offline')], (offline: string) => {
+  return offline === 'true'
+})
 
 export const selectMergedVesselId = createSelector(
   [selectVesselProfileId, selectUrlAkaVesselQuery],
@@ -193,9 +193,9 @@ export const selectMergedVesselId = createSelector(
 export const selectSearchableQueryParams = createSelector(
   [selectAdvancedSearchFields, selectUrlQuery],
   (filters, query) =>
-  ({
-    q: query,
-    ...filters,
-    flags: filters?.flags.join(','),
-  } as any)
+    ({
+      q: query,
+      ...filters,
+      flags: filters?.flags.join(','),
+    } as any)
 )

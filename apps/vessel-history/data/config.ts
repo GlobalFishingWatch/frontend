@@ -26,6 +26,7 @@ WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 6)
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = new Date().getFullYear()
 
+export const DEFAULT_VERSION = 'v1'
 export const DEFAULT_WORKSPACE: AppState = {
   zoom: 3,
   colorMode: 'all',
