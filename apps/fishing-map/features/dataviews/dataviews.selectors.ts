@@ -7,11 +7,7 @@ import {
   BasemapType,
 } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import {
-  selectWorkspaceStateProperty,
-  selectWorkspaceDataviewInstances,
-  selectWorkspaceDataviews,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { RootState } from 'store'
 import {
@@ -193,16 +189,12 @@ export const selectActiveDataviews = createSelector(
 export const selectAllDataviewsInWorkspace = createSelector(
   [
     (state: RootState) => selectAllDataviews(state),
-    selectWorkspaceDataviews,
     selectWorkspaceDataviewInstances,
     (state: RootState) => selectAllDatasets(state),
   ],
-  (dataviews = [], workspaceDataviews, workspaceDataviewInstances, datasets) => {
+  (dataviews = [], workspaceDataviewInstances, datasets) => {
     const allWorkspaceDataviews = dataviews?.filter((dataview) => {
       if (DEFAULT_DATAVIEW_IDS.includes(dataview.id)) {
-        return true
-      }
-      if (workspaceDataviews?.some((d) => d.id === dataview.id)) {
         return true
       }
       if (workspaceDataviewInstances?.some((d) => d.dataviewId === dataview.id)) {

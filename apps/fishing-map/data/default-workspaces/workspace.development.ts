@@ -40,7 +40,6 @@ const workspace: Workspace<WorkspaceState> = {
     // timebarGraph: '',
   },
   ownerId: 0,
-  dataviews: [],
   dataviewInstances: [
     {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,

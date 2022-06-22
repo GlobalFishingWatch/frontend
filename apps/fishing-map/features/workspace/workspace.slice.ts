@@ -116,7 +116,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
       const dataviewIds = [
         ...defaultWorkspaceDataviews,
-        ...(workspace.dataviews || []).map(({ id }) => id as number),
         ...(workspace.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId as number),
       ].filter(Boolean)
@@ -166,11 +165,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
 const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
   const { id, ownerId, createdAt, ownerType, ...restWorkspace } = workspace
-  return {
-    ...restWorkspace,
-    ...(workspace.dataviews && { dataviews: workspace.dataviews.map(({ id }) => id) }),
-    ...(workspace.aoi && { aoi: workspace.aoi.id }),
-  }
+  return restWorkspace
 }
 
 export const saveWorkspaceThunk = createAsyncThunk(

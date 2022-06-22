@@ -1,4 +1,3 @@
-export * from './areas-of-interest'
 export * from './datasets'
 export * from './dataviews'
 export * from './downloadActivity'

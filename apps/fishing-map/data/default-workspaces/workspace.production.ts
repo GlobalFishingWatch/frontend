@@ -37,7 +37,6 @@ const workspace: Workspace<WorkspaceState> = {
   public: true,
   state: {},
   ownerId: 0,
-  dataviews: [],
   dataviewInstances: [
     {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,

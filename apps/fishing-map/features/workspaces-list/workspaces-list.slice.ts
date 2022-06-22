@@ -132,9 +132,6 @@ export const createWorkspaceThunk = createAsyncThunk<
       ...workspace,
       id: kebabCase(workspace.name),
       public: true,
-      dataviews: Array.isArray(workspace.dataviews)
-        ? workspace.dataviews.map(({ id }) => id)
-        : workspace.dataviews,
     }
     try {
       const newWorkspace = await GFWAPI.fetch<Workspace>(`/${API_VERSION}/workspaces`, {
@@ -239,7 +236,6 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
       state.highlighted.data = action.payload
     })
     builder.addCase(fetchHighlightWorkspacesThunk.rejected, (state, action) => {
-      console.log(action)
       state.highlighted.status = AsyncReducerStatus.Error
     })
   },
