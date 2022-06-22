@@ -1,4 +1,4 @@
-import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks'
+import { useGFWLogin, useGFWLoginRedirect } from '../use-login/use-login'
 
 export function Login({ children }: any) {
   const login = useGFWLogin()

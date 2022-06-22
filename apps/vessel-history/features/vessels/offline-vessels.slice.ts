@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import db from 'offline/offline-store'
+import {
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { OfflineVessel } from 'types/vessel'
 import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
@@ -25,7 +30,7 @@ export const createOfflineVesselThunk = createAsyncThunk<
     db.vessels.add(vessel, vessel.profileId)
     return vessel
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -45,8 +50,8 @@ export const deleteOfflineVesselThunk = createAsyncThunk<
     return { ...result }
   } catch (e: any) {
     return rejectWithValue({
-      status: e.status || e.code,
-      message: `${profileId} - ${e.message}`,
+      status: parseAPIErrorStatus(e),
+      message: `${profileId} - ${parseAPIErrorMessage(e)}`,
     })
   }
 })
@@ -67,7 +72,7 @@ export const fetchOfflineVesselsThunk = createAsyncThunk<
       return await db.vessels.toArray()
     }
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -86,8 +91,8 @@ export const fetchOfflineVesselByIdThunk = createAsyncThunk<
     return result
   } catch (e: any) {
     return rejectWithValue({
-      status: e.status || e.code,
-      message: `${profileId} - ${e.message}`,
+      status: parseAPIErrorStatus(e),
+      message: `${profileId} - ${parseAPIErrorMessage(e)}`,
     })
   }
 })
@@ -104,8 +109,8 @@ export const updateOfflineVesselThunk = createAsyncThunk<
     return vessel
   } catch (e: any) {
     return rejectWithValue({
-      status: e.status || e.code,
-      message: `${vessel.profileId} - ${e.message}`,
+      status: parseAPIErrorStatus(e),
+      message: `${vessel.profileId} - ${parseAPIErrorMessage(e)}`,
     })
   }
 })

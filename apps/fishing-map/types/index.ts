@@ -25,7 +25,6 @@ export type WorkspaceStateProperty =
   | 'timebarGraph'
   | 'timebarSelectedEnvId'
   | 'bivariateDataviews'
-  | 'version'
   | 'activityCategory'
 
 export type WorkspaceParam =
@@ -54,7 +53,6 @@ export type BivariateDataviews = [string, string]
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export interface WorkspaceState extends BaseUrlWorkspace {
   query?: string
-  version?: string
   readOnly?: boolean
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   sidebarOpen?: boolean

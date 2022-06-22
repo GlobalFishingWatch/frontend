@@ -4,13 +4,7 @@ import { event as uaEvent } from 'react-ga'
 import kinks from '@turf/kinks'
 import { useTranslation } from 'react-i18next'
 import { Feature, Polygon } from 'geojson'
-import {
-  DrawCreateEvent,
-  DrawModeChageEvent,
-  DrawModes,
-  DrawSelectionChangeEvent,
-  DrawUpdateEvent,
-} from '@mapbox/mapbox-gl-draw'
+import { DrawModes, DrawSelectionChangeEvent } from '@mapbox/mapbox-gl-draw'
 import { Popup } from 'react-map-gl'
 import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -34,14 +28,26 @@ export type DrawPointPosition = [number, number]
 export type DrawMode = DrawModes['DIRECT_SELECT'] | DrawModes['DRAW_POLYGON']
 export const MIN_DATASET_NAME_LENGTH = 3
 
+const getSelectedFeature = (drawControl: MapboxDraw) => {
+  try {
+    return drawControl.getSelected()?.features?.[0] as DrawFeature
+  } catch (e) {
+    return undefined
+  }
+}
+const getAllFeatures = (drawControl: MapboxDraw) => {
+  try {
+    return drawControl.getAll()?.features as DrawFeature[]
+  } catch (e) {
+    return []
+  }
+}
+
 function MapDraw() {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
-  const [initialized, setInitialized] = useState<boolean>(false)
-  const [selectedFeature, setSelectedFeature] = useState<DrawFeature | null>(null)
-  const selectedFeatureId = selectedFeature?.id as string
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
@@ -50,32 +56,9 @@ function MapDraw() {
   const { dispatchCreateDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
-  const onCreate = (e: DrawCreateEvent) => {
-    const currentFeature = e.features?.[0] as DrawFeature
-    setSelectedFeature(currentFeature)
-    setInitialized(true)
-  }
-
-  const onUpdate = (e: DrawUpdateEvent) => {
-    const currentFeature = e.features?.[0] as DrawFeature
-    setSelectedFeature(currentFeature)
-  }
-
-  // Goes directly to direct mode after crearing a polygon
-  // const onModeChange = (e: DrawModeChageEvent) => {
-  //   const feature = drawControl.getSelected()?.features[0]
-  //   if (e.mode === 'simple_select' && feature) {
-  //     setDrawingMode('direct_select', feature.id as string)
-  //   }
-  // }
-
   const onSelectionChange = (e: DrawSelectionChangeEvent) => {
     const feature = e.features?.[0] as DrawFeature
     if (feature) {
-      setSelectedFeature(feature)
-      // if (drawControl.getMode() === 'simple_select') {
-      //   setDrawingMode('direct_select', feature.id as string)
-      // }
       const currentPoint = e.points?.[0]
       if (currentPoint) {
         const pointIndex = feature.geometry.coordinates[0].findIndex(
@@ -85,20 +68,20 @@ function MapDraw() {
         )
         setSelectedPointIndex(pointIndex > -1 ? pointIndex : null)
       }
-    } else {
-      setSelectedFeature(null)
     }
   }
 
   const drawControl = useDrawControl({
     displayControlsDefault: false,
     defaultMode: 'draw_polygon',
-    onCreate: onCreate,
-    onUpdate: onUpdate,
-    // onModeChange: onModeChange,
     onSelectionChange: onSelectionChange,
   })
-  const hasFeatureSelected = selectedFeature !== null
+
+  const features = getAllFeatures(drawControl)
+  const selectedFeature = getSelectedFeature(drawControl)
+  const selectedFeatureId = selectedFeature?.id as string
+
+  const hasFeatureSelected = selectedFeature !== undefined
   const currentPointCoordinates =
     selectedFeature && selectedPointIndex !== null
       ? getCoordinatePrecisionRounded(
@@ -165,15 +148,6 @@ function MapDraw() {
     }
   }, [drawControl, selectedFeature, selectedPointIndex])
 
-  const onHintClick = useCallback(() => {
-    const features = drawControl.getAll()?.features as DrawFeature[]
-    if (features.length) {
-      const selectedFeature = features[0]
-      setSelectedFeature(selectedFeature)
-      setSelectedPointIndex(1)
-    }
-  }, [drawControl])
-
   const onInputChange = useCallback(
     (e) => {
       setLayerName(e.target.value)
@@ -189,6 +163,14 @@ function MapDraw() {
     [drawControl]
   )
 
+  const onHintClick = useCallback(() => {
+    if (features.length) {
+      const selectedFeature = features[0]
+      setDrawingMode('direct_select', selectedFeature.id as string)
+      setSelectedPointIndex(1)
+    }
+  }, [features, setDrawingMode])
+
   const onAddPolygonClick = useCallback(() => {
     setDrawingMode('draw_polygon')
     uaEvent({
@@ -199,7 +181,6 @@ function MapDraw() {
 
   const onRemoveClick = useCallback(() => {
     drawControl.delete(selectedFeatureId as string)
-    setSelectedFeature(null)
   }, [drawControl, selectedFeatureId])
 
   const resetEditHandler = useCallback(() => {
@@ -210,7 +191,6 @@ function MapDraw() {
 
   const resetState = useCallback(() => {
     setLayerName('')
-    setSelectedFeature(null)
     resetEditHandler()
   }, [resetEditHandler])
 
@@ -261,8 +241,6 @@ function MapDraw() {
     },
     [createDataset, layerName]
   )
-
-  const features = initialized ? (drawControl.getAll()?.features as DrawFeature[]) : null
 
   const overLapInFeatures = useMemo(() => {
     if (features?.length) {

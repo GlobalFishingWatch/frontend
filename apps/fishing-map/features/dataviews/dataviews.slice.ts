@@ -12,9 +12,10 @@ import {
   DataviewCategory,
   DataviewInstance,
   Dataview,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError, parseAPIErrorMessage } from '@globalfishingwatch/api-client'
 import {
   selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
@@ -29,16 +30,21 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
+import { API_VERSION } from 'data/config'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${id}`)
+      const dataview = await GFWAPI.fetch<Dataview>(`/${API_VERSION}/dataviews/${id}`)
       return dataview
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
+      console.warn(e)
+      return rejectWithValue({
+        status: e.status || e.code,
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
     }
   }
 )
@@ -46,25 +52,29 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: number[], { signal, rejectWithValue, getState }) => {
-    const existingIds = selectIds(getState() as RootState) as number[]
+    const state = getState() as RootState
+    const existingIds = selectIds(state) as number[]
     const uniqIds = ids.filter((id) => !existingIds.includes(id))
+
     if (!uniqIds?.length) {
       return [] as Dataview[]
     }
     try {
-      let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${uniqIds.join(',')}`, {
-        signal,
-      })
+      const dataviewsResponse = await GFWAPI.fetch<APIPagination<Dataview>>(
+        `/${API_VERSION}/dataviews?ids=${uniqIds.join(',')}`,
+        { signal }
+      )
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
       ) {
         const mockedDataviews = await import('./dataviews.mock')
-        dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
+        return uniqBy([...mockedDataviews.default, ...dataviewsResponse.entries], 'id')
       }
-      return dataviews
+      return dataviewsResponse.entries
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -77,14 +87,15 @@ export const createDataviewThunk = createAsyncThunk<
   }
 >('dataviews/create', async (dataview, { rejectWithValue }) => {
   try {
-    const createdDataview = await GFWAPI.fetch<Dataview>('/v1/dataviews', {
+    const createdDataview = await GFWAPI.fetch<Dataview>(`/${API_VERSION}/dataviews`, {
       method: 'POST',
       body: dataview as any,
     })
 
     return createdDataview
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    console.warn(e)
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -98,13 +109,17 @@ export const updateDataviewThunk = createAsyncThunk<
   'dataviews/update',
   async (partialDataview, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${partialDataview.id}`, {
-        method: 'PATCH',
-        body: partialDataview as any,
-      })
+      const dataview = await GFWAPI.fetch<Dataview>(
+        `/${API_VERSION}/dataviews/${partialDataview.id}`,
+        {
+          method: 'PATCH',
+          body: partialDataview as any,
+        }
+      )
       return dataview
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {

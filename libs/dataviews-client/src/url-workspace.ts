@@ -134,11 +134,29 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
   return detokenized
 }
 
+export const removeLegacyEndpointPrefix = (endpointId: string) => {
+  return endpointId.replace('carriers-', '')
+}
+
+export const parseLegacyDataviewInstanceEndpoint = (
+  dataviewInstance: UrlDataviewInstance
+): UrlDataviewInstance => {
+  return {
+    ...dataviewInstance,
+    ...(dataviewInstance.datasetsConfig && {
+      datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
+        ...dc,
+        endpoint: removeLegacyEndpointPrefix(dc.endpoint),
+      })),
+    }),
+  }
+}
+
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
   const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
   return {
-    ...dataview,
+    ...parseLegacyDataviewInstanceEndpoint(dataview),
     ...(dataviewId && { dataviewId }),
     ...(dataview.config && breaks && { config: { ...dataview.config, breaks } }),
   }

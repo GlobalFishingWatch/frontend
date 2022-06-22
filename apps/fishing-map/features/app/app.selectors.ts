@@ -187,7 +187,6 @@ export const selectWorkspaceWithCurrentState = createSelector(
       ...workspace,
       app: APP_NAME,
       category,
-      aoi: undefined,
       viewport,
       startAt: timerange.start,
       endAt: timerange.end,

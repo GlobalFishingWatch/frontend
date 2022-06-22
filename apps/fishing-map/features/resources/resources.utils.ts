@@ -5,8 +5,9 @@ import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 
+type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 export const trackDatasetConfigsCallback = (
-  thinningConfig: { zoom: number; config: ThinningConfig },
+  thinningConfig = {} as ThinningConfigParam,
   chunks: { start: string; end: string }[],
   timebarGraph
 ) => {
@@ -29,7 +30,7 @@ export const trackDatasetConfigsCallback = (
         }
       }
 
-      const thinningQuery = Object.entries(thinningConfig.config).map(([id, value]) => ({
+      const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,
         value,
       }))
@@ -37,7 +38,7 @@ export const trackDatasetConfigsCallback = (
         ...track,
         query: [...(track.query || []), ...thinningQuery],
         metadata: {
-          zoom: thinningConfig.zoom,
+          zoom: thinningConfig?.zoom || 12,
         },
       }
 
@@ -53,11 +54,11 @@ export const trackDatasetConfigsCallback = (
           trackChunk.query = [
             ...trackQuery,
             {
-              id: 'startDate',
+              id: 'start-date',
               value: chunk.start,
             },
             {
-              id: 'endDate',
+              id: 'end-date',
               value: chunk.end,
             },
           ]
