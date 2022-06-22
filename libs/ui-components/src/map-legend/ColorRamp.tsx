@@ -2,7 +2,12 @@ import React, { Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 import styles from './MapLegend.module.css'
-import { formatLegendValue, parseLegendNumber, roundLegendNumber } from './map-legend.utils'
+import {
+  formatLegendValue,
+  parseLegendNumber,
+  roundLegendNumber,
+  SCIENTIFIC_NOTATION_E,
+} from './map-legend.utils'
 import { LegendLayer } from './MapLegend'
 
 type ColorRampLegendProps = {
@@ -114,6 +119,18 @@ export function ColorRampLegend({
 
   if (!ramp || !cleanRamp) return null
 
+  const getValueLabel = (valueLabel: string) => {
+    if (!valueLabel.includes(SCIENTIFIC_NOTATION_E)) return valueLabel
+    const numParts = valueLabel.split(SCIENTIFIC_NOTATION_E)
+    return (
+      <span>
+        {numParts[0]}
+        {SCIENTIFIC_NOTATION_E}
+        <sup className={styles.sup}>{numParts[1]}</sup>
+      </span>
+    )
+  }
+
   return (
     <div className={cx(styles.row, className)}>
       {Label}
@@ -179,7 +196,7 @@ export function ColorRampLegend({
                   style={{ left: `${(i * 100) / cleanRamp.length}%` }}
                   key={i}
                 >
-                  {valueLabel}
+                  {getValueLabel(valueLabel)}
                 </span>
               )
             })}
