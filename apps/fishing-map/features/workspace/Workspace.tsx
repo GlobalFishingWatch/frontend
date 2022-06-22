@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -16,7 +16,7 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { PRIVATE_SUFIX, SUPPORT_EMAIL } from 'data/config'
+import { PRIVATE_SUFIX, SUPPORT_EMAIL, USER_SUFIX } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -117,6 +117,7 @@ function WorkspaceError(): React.ReactElement {
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
@@ -124,6 +125,7 @@ function Workspace() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
+  const isUserWorkspace = workspace?.id?.includes(`-${USER_SUFIX}`)
 
   useEffect(() => {
     if (dataviewsResources) {
@@ -166,10 +168,15 @@ function Workspace() {
         locationCategory === WorkspaceCategories.FishingActivity) &&
         workspace?.name &&
         !readOnly && (
-          <h2 className={styles.title}>
-            {workspace.id.startsWith(PRIVATE_SUFIX) && '🔒 '}
-            {workspace.name}
-          </h2>
+          <div className={styles.header}>
+            {isUserWorkspace && (
+              <label className={styles.subTitle}>{t('workspace.user', 'User workspace')}</label>
+            )}
+            <h2 className={styles.title}>
+              {workspace.id.startsWith(PRIVATE_SUFIX) && '🔒 '}
+              {workspace.name}
+            </h2>
+          </div>
         )}
       <ActivitySection />
       <DetectionsSection />
