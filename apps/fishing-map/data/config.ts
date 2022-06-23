@@ -13,7 +13,7 @@ export const IS_PRODUCTION =
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
-  process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
+  process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.globalfishingwatch.org'
 export const LATEST_CARRIER_DATASET_ID =
   process.env.NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID || 'carriers:latest'
 
