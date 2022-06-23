@@ -20,5 +20,6 @@
     "ui-components": "libs/ui-components",
     "user-groups-admin": "apps/user-groups-admin",
     "vessel-history": "apps/vessel-history"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

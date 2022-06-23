@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'tile-inspector',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
@@ -6,5 +6,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/applicaitons/tile-inspector',
-  preset: '../../jest.preset.ts',
+  preset: '../../jest.preset.js',
 }
