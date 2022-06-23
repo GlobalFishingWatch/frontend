@@ -26,6 +26,22 @@
   text-transform: uppercase;
 }
 
+.logos {
+  position: absolute;
+  right: var(--space-S);
+  bottom: 1.6rem;
+}
+
+.logo {
+  padding: var(--space-S) var(--space-M);
+}
+
+.footerLabel {
+  font: var(--font-S);
+  padding-bottom: var(--space-S);
+  color: rgb(147, 147, 147);
+}
+
 @media print {
   .info {
     padding: 0 var(--space-XS);
