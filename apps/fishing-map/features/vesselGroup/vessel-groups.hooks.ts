@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { setModalOpen } from 'features/vesselGroup/vessel-groups.slice'
-import { selectVesselGroups } from './vessel-groups.selectors'
+import { selectAllVesselGroups } from './vessel-groups.slice'
 
 export const useVesselGroupsOptions = () => {
   const { t } = useTranslation()
-  const vesselGroups = useSelector(selectVesselGroups)
+  const vesselGroups = useSelector(selectAllVesselGroups)
 
   return useMemo(() => {
     const vesselGroupsOptions: MultiSelectOption[] = vesselGroups.map(({ id, name, vessels }) => ({
@@ -41,7 +41,7 @@ export const useVesselGroupSelectWithModal = (options, onSelect, className) => {
   const onSelectVesselGroupFilterClick = useCallback(
     (id, selection: MultiSelectOption) => {
       if (selection.id === OPEN_MODAL_ID) {
-        dispatch(setModalOpen())
+        dispatch(setModalOpen)
         return
       }
       if (onSelect) onSelect('vesselGroups', selection)

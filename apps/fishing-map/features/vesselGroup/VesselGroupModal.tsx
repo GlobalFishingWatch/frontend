@@ -6,9 +6,9 @@ import {
   Vessel,
   EndpointId,
   VesselSearch,
-  APISearch,
   VesselGroupVessel,
-  VesselGroup,
+  VesselGroupUpsert,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import {
   Modal,
@@ -31,8 +31,11 @@ import I18nDate from 'features/i18n/i18nDate'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './VesselGroupModal.module.css'
-import { selectVesselGroupModalOpen } from './vessel-groups.selectors'
-import { saveVesselGroupThunk, setModalClosed } from './vessel-groups.slice'
+import {
+  createVesselGroupThunk,
+  selectVesselGroupModalOpen,
+  setModalClosed,
+} from './vessel-groups.slice'
 
 export type CSV = Record<string, any>[]
 
@@ -138,7 +141,7 @@ function VesselGroupModal(): React.ReactElement {
       )
     }
     if (!askConfirm || confirmed) {
-      dispatch(setModalClosed())
+      dispatch(setModalClosed)
     }
   }, [dispatch, IDs.length, t, vessels])
 
@@ -174,7 +177,7 @@ function VesselGroupModal(): React.ReactElement {
       }
 
       const url = resolveEndpoint(dataset, datasetConfig)
-      const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url)
+      const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url)
 
       // TODO handle API errors
 
@@ -192,12 +195,12 @@ function VesselGroupModal(): React.ReactElement {
       vesselId: vessel.id,
       dataset: vessel.dataset,
     }))
-    const vesselGroup: VesselGroup = {
+    const vesselGroup: VesselGroupUpsert = {
       name: groupName,
       vessels: vesselGroupVessels,
     }
 
-    const dispatchedAction = await dispatch(saveVesselGroupThunk(vesselGroup))
+    const dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
     console.log(dispatchedAction)
   }, [vessels, dispatch, searchDatasets, IDs, groupName])
 
@@ -293,7 +296,7 @@ function VesselGroupModal(): React.ReactElement {
                           style={{
                             color: 'rgb(var(--danger-red-rgb))',
                           }}
-                          tooltip={t('vesselGroup.remove', 'Remove vessel from vessel group')}
+                          tooltip={t('vesselGroup.removeVessel', 'Remove vessel from vessel group')}
                           onClick={(e) => onVesselRemoveClick(vessel.id)}
                           size="small"
                         />

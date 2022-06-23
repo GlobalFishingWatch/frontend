@@ -11,7 +11,7 @@ import {
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchVesselGroupsThunk } from 'features/vesselGroup/vessel-groups.slice'
+import { fetchAllVesselGroupsThunk } from 'features/vesselGroup/vessel-groups.slice'
 import styles from './User.module.css'
 import { GUEST_USER_TYPE, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'
@@ -19,6 +19,7 @@ import UserWorkspaces from './UserWorkspaces'
 import UserWorkspacesPrivate from './UserWorkspacesPrivate'
 import UserDatasets from './UserDatasets'
 import UserInfo from './UserInfo'
+import UserVesselGroups from './UserVesselGroups'
 
 function User() {
   const dispatch = useAppDispatch()
@@ -35,7 +36,7 @@ function User() {
   useEffect(() => {
     dispatch(fetchDefaultWorkspaceThunk())
     dispatch(fetchAllDatasetsThunk())
-    dispatch(fetchVesselGroupsThunk())
+    dispatch(fetchAllVesselGroupsThunk())
   }, [dispatch])
 
   useEffect(() => {
@@ -61,6 +62,7 @@ function User() {
       <UserWorkspaces />
       <UserDatasets datasetCategory={DatasetCategory.Environment} />
       <UserDatasets datasetCategory={DatasetCategory.Context} />
+      <UserVesselGroups />
       {datasetModal === 'edit' && editingDatasetId !== undefined && <EditDataset />}
     </div>
   )

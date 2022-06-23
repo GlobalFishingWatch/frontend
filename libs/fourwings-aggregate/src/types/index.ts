@@ -66,7 +66,6 @@ export interface TileAggregationSourceParams extends BaseTileAggregationParams {
   id: string
   interval: string
   filters: string[]
-  ['vessel-groups']: string[]
   datasets: string[]
   proxy?: boolean
   'date-range'?: TileAggregationDateRange

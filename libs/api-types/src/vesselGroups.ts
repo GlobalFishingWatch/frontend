@@ -4,7 +4,11 @@ export interface VesselGroupVessel {
 }
 
 export interface VesselGroup {
-  id?: number
+  id: number
   name: string
   vessels: VesselGroupVessel[]
+  ownerId: number
+  ownerType: string
 }
+
+export type VesselGroupUpsert = Omit<VesselGroup, 'id' | 'ownerId' | 'ownerType'>
