@@ -34,7 +34,7 @@ steps:
       - NODE_AUTH_TOKEN
     env:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
-    entrypoint: yarn
+    entrypoint: npx
     args: ['nx', 'publish:stable', 'i18n-labels']
 
   - id: 'i18n-labels purge stable'
@@ -42,7 +42,7 @@ steps:
     name: node:14
     env:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
-    entrypoint: yarn
+    entrypoint: npx
     args: ['nx', 'purge:stable', 'i18n-labels']
 
 availableSecrets:
