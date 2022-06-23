@@ -9,7 +9,7 @@ import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import { selectRealTimeActive } from 'features/workspace/realtime/RealTime.selectors'
+import { selectRealTimeActive } from 'features/workspace/realtime/realtime.selectors'
 import styles from './MapInfo.module.css'
 
 export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
