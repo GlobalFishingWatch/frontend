@@ -25,8 +25,6 @@ export const DEFAULT_VIEWPORT = {
   longitude: 26,
 }
 
-export const NSLABELS_ENDOPOINT = IS_PRODUCTION ?
-  'https://gateway.api.globalfishingwatch.org/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}' :
-  'https://gateway.api.dev.globalfishingwatch.org/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}'
+export const NSLABELS_ENDOPOINT = process.env.NEXT_PUBLIC_API_GATEWAY + '/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}'
 
 
