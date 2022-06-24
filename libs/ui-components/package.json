@@ -27,7 +27,7 @@
   "devDependencies": {
     "@types/react-modal": "^3.10.5",
     "@types/topojson-client": "^3.0.0",
-    "ts-node": "^8.10.1"
+    "ts-node": "^10.8.1"
   },
   "peerDependencies": {
     "@globalfishingwatch/layer-composer": "10.x",

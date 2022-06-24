@@ -70,14 +70,12 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
   const { online } = useNavigatorOnline()
   const { authorizedInsurer } = useUser()
-
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
       let [dataset] = (Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? '').split(
         '_'
       )
-
       if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
         const gfwAka = akaVesselProfileIds.find((aka) => {
           const [akaDataset] = aka.split('_')

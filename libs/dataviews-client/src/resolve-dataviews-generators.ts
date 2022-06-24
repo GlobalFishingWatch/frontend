@@ -53,6 +53,9 @@ export function isMergedAnimatedGenerator(generatorId: string) {
 const getDatasetAvailableIntervals = (dataset?: Dataset) =>
   dataset?.configuration?.intervals as Interval[]
 
+const getDatasetAttribution = (dataset?: Dataset) =>
+  dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
+
 type TimeRange = { start: string; end: string }
 export type DataviewsGeneratorConfigsParams = {
   debug?: boolean
@@ -303,7 +306,7 @@ export function getGeneratorConfig(
           return {
             id,
             tilesUrl: url,
-            attribution: resolvedDataset?.source,
+            attribution: getDatasetAttribution(resolvedDataset),
             datasetId: resolvedDataset.id,
           }
         })
@@ -330,7 +333,7 @@ export function getGeneratorConfig(
           generator.tilesUrl = url
         }
         if (dataset?.source) {
-          generator.attribution = dataset.source
+          generator.attribution = getDatasetAttribution(dataset)
         }
 
         const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
@@ -342,8 +345,8 @@ export function getGeneratorConfig(
           const rampScale = scaleLinear().range([min, max]).domain([0, 1])
           const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
           const steps = [...Array(numSteps)]
-            .map((_, i) => parseFloat((i / (numSteps - 1))?.toFixed(2)))
-            .map((value) => parseFloat((rampScale(value) as number)?.toFixed(3)))
+            .map((_, i) => i / (numSteps - 1))
+            .map((value) => rampScale(value) as number)
           generator.steps = steps
         } else if (
           dataset.category === DatasetCategory.Context &&

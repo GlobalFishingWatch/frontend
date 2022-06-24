@@ -3,6 +3,8 @@ import { DateTime } from 'luxon'
 import { AppState } from 'types/redux.types'
 
 export type WorkspaceEnv = 'development' | 'production'
+export const API_VERSION = 'v2'
+
 export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||

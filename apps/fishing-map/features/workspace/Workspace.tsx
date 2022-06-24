@@ -1,8 +1,12 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { DndContext } from '@dnd-kit/core'
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button } from '@globalfishingwatch/ui-components'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectWorkspaceStatus,
   selectWorkspaceError,
@@ -16,9 +20,12 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { PRIVATE_SUFIX, SUPPORT_EMAIL } from 'data/config'
+import { PRIVATE_SUFIX, PUBLIC_SUFIX, SUPPORT_EMAIL, USER_SUFIX } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
-import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
+import {
+  selectDataviewInstancesMergedOrdered,
+  selectDataviewsResources,
+} from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
@@ -117,13 +124,19 @@ function WorkspaceError(): React.ReactElement {
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const workspace = useSelector(selectWorkspace)
+  const dataviews = useSelector(selectDataviewInstancesMergedOrdered)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
+  const isUserWorkspace =
+    workspace?.id?.endsWith(`-${USER_SUFIX}`) ||
+    workspace?.id?.endsWith(`-${USER_SUFIX}-${PUBLIC_SUFIX}`)
+  const { dispatchQueryParams } = useLocationConnect()
 
   useEffect(() => {
     if (dataviewsResources) {
@@ -160,16 +173,31 @@ function Workspace() {
     return <Search />
   }
 
+  function handleDragEnd(event) {
+    const { active, over } = event
+    if (active && over && active.id !== over.id) {
+      const oldIndex = dataviews.findIndex((d) => d.id === active.id)
+      const newIndex = dataviews.findIndex((d) => d.id === over.id)
+      const dataviewInstancesId = arrayMove(dataviews, oldIndex, newIndex).map((d) => d.id)
+      dispatchQueryParams({ dataviewInstancesOrder: dataviewInstancesId })
+    }
+  }
+
   return (
-    <Fragment>
+    <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
       {(locationCategory === WorkspaceCategories.MarineManager ||
         locationCategory === WorkspaceCategories.FishingActivity) &&
         workspace?.name &&
         !readOnly && (
-          <h2 className={styles.title}>
-            {workspace.id.startsWith(PRIVATE_SUFIX) && '🔒 '}
-            {workspace.name}
-          </h2>
+          <div className={styles.header}>
+            {isUserWorkspace && (
+              <label className={styles.subTitle}>{t('workspace.user', 'User workspace')}</label>
+            )}
+            <h2 className={styles.title}>
+              {workspace.id.startsWith(PRIVATE_SUFIX) && '🔒 '}
+              {workspace.name}
+            </h2>
+          </div>
         )}
       <ActivitySection />
       <DetectionsSection />
@@ -177,7 +205,7 @@ function Workspace() {
       <EventsSection />
       <EnvironmentalSection />
       <ContextAreaSection />
-    </Fragment>
+    </DndContext>
   )
 }
 

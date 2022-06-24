@@ -30,7 +30,7 @@ const viewportState = atom<MapCoordinates>({
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects: [
     ({ trigger, setSelf, onSet }) => {
-      const viewport = selectViewport(store.getState() as RootState)
+      const viewport = (selectViewport as any)(store.getState() as RootState)
 
       if (trigger === 'get') {
         setSelf(viewport)

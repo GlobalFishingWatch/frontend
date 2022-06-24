@@ -1,4 +1,3 @@
-// import { bindActionCreators } from 'redux'
 import { useSelector, batch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import { event as uaEvent } from 'react-ga'

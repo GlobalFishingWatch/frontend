@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { kebabCase } from 'lodash'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { API_VERSION } from 'data/config'
 
 export type BigQueryVisualisation = '4wings' | 'events'
 
@@ -28,7 +29,7 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
   ) => {
     try {
       const response = await GFWAPI.fetch<RunCostResponse>(
-        `/v1/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
+        `/${API_VERSION}/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
         {
           method: 'POST',
           body: {
@@ -41,11 +42,7 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
       )
       return response
     } catch (e: any) {
-      return rejectWithValue({
-        status: e.status || e.code,
-        message: e.message,
-        messages: e.messages,
-      })
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -65,7 +62,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
   ) => {
     try {
       const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
-        `/v1/${visualisationMode}/bq/create-temporal-dataset`,
+        `/${API_VERSION}/${visualisationMode}/bq/create-temporal-dataset`,
         {
           method: 'POST',
           body: { query, name: kebabCase(name), public: createAsPublic } as any,
@@ -74,11 +71,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
       const dataset = await dispatch(fetchDatasetByIdThunk(id))
       return dataset
     } catch (e: any) {
-      return rejectWithValue({
-        status: e.status || e.code,
-        message: e.message,
-        messages: e.messages,
-      })
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
