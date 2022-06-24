@@ -35,7 +35,7 @@ import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints/hints.slice'
 import AppModals from 'features/app/AppModals'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useAppDispatch, usePageVisibility } from './app.hooks'
+import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
@@ -65,15 +65,19 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const { firstTimeVisible } = usePageVisibility()
 
   return (
     <div className={styles.main}>
-      <div className={styles.mapContainer}>{firstTimeVisible && <Map />}</div>
+      <div className={styles.mapContainer}>{<Map />}</div>
       {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
       <Footer />
     </div>
   )
+}
+
+const setMobileSafeVH = () => {
+  const vh = window.innerHeight * 0.01
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
 }
 
 function App(): React.ReactElement {
@@ -105,6 +109,12 @@ function App(): React.ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnalysing, sidebarOpen])
+
+  useEffect(() => {
+    setMobileSafeVH()
+    window.addEventListener('resize', setMobileSafeVH, false)
+    return () => window.removeEventListener('resize', setMobileSafeVH)
+  }, [])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()

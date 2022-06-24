@@ -27,13 +27,23 @@ steps:
       - '--path=./node_modules'
       - '--no-clobber'
 
-  - id: 'i18n-labels publish stable'
+  - id: 'setup auth to npmjs'
     waitFor: ['install-yarn']
     name: node:14
+    args:
+      - '-c'
+      - |
+        echo "//registry.npmjs.org/:_authToken=$$NODE_AUTH_TOKEN" > .npmrc
+    entrypoint: bash
+    secretEnv:
+      - NODE_AUTH_TOKEN
+
+  - id: 'i18n-labels publish stable'
+    waitFor: ['setup auth to npmjs']
+    name: node:14
     env:
-      - 'NODE_AUTH_TOKEN=$$NPM_TOKEN'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
-    entrypoint: yarn
+    entrypoint: npx
     args: ['nx', 'publish:stable', 'i18n-labels']
 
   - id: 'i18n-labels purge stable'
@@ -41,12 +51,12 @@ steps:
     name: node:14
     env:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
-    entrypoint: yarn
+    entrypoint: npx
     args: ['nx', 'purge:stable', 'i18n-labels']
 
 availableSecrets:
   secretManager:
-    - versionName: projects/world-fishing-827/secrets/NPM_TOKEN/versions/latest
-      env: 'NPM_TOKEN'
+    - versionName: projects/$PROJECT_ID/secrets/NPM_TOKEN/versions/latest
+      env: NODE_AUTH_TOKEN
 
 timeout: 300s

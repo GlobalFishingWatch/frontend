@@ -30,7 +30,7 @@ import {
   useGeneratorsConnect,
   TooltipEventFeature,
 } from 'features/map/map.hooks'
-import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -61,15 +61,9 @@ const PopupWrapper = dynamic(
 const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/hints/Hint'))
 
 // TODO: Abstract this away
-const transformRequest: (...args: any[]) => RequestParameters = (
-  url: string,
-  resourceType: string
-) => {
+const transformRequest: (...args: any[]) => RequestParameters = (url: string) => {
   const response: RequestParameters = { url }
-  if (
-    (resourceType === 'Tile' || resourceType === 'Source') &&
-    url.includes('globalfishingwatch')
-  ) {
+  if (url.includes('globalfishingwatch')) {
     response.headers = {
       Authorization: 'Bearer ' + GFWAPI.getToken(),
     }
@@ -111,7 +105,7 @@ const MapWrapper = () => {
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const { isMapDrawing } = useMapDrawConnect()
   const dataviews = useSelector(selectDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActivityDataviews)
+  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration

@@ -1,6 +1,14 @@
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Authorization } from '@globalfishingwatch/api-types'
-import { AnyValueList, TMTDetail, ValueItem, VesselAPISource, VesselFieldHistory, VesselWithHistory } from 'types'
+import { API_VERSION } from 'data/config'
+import {
+  AnyValueList,
+  TMTDetail,
+  ValueItem,
+  VesselAPISource,
+  VesselFieldHistory,
+  VesselWithHistory,
+} from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
 
@@ -17,7 +25,7 @@ const sortAuthorization = (a: Authorization, b: Authorization) =>
 
 const getHistoryField = (historyField: AnyValueList[]): VesselFieldHistory<any> => ({
   byCount: [],
-  byDate: historyField.reverse().map((field) => ({ ...field, source: VesselAPISource.TMT }))
+  byDate: historyField.reverse().map((field) => ({ ...field, source: VesselAPISource.TMT })),
 })
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
@@ -80,12 +88,14 @@ const vesselThunk: VesselAPIThunk = {
         reject('Missing vessel id to fetch data')
       })
     }
-    const url = `/v1/vessel-history/${id}`
+    const url = `/${API_VERSION}/vessel-history/${id}`
 
-    return await GFWAPI.fetch<TMTDetail>(url).then(toVessel).catch((error) => {
-      console.error(error)
-      return undefined
-    })
+    return await GFWAPI.fetch<TMTDetail>(url)
+      .then(toVessel)
+      .catch((error) => {
+        console.error(error)
+        return undefined
+      })
   },
 }
 

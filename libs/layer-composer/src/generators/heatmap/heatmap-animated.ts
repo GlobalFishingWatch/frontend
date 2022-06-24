@@ -87,8 +87,13 @@ const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
     geomType: params.geomType,
     interval: params.interval,
     singleFrame: params.singleFrame ? 'true' : 'false',
-    filters: toURLArray('filters', params.filters),
     datasets: toURLArray('datasets', params.datasets),
+    ...(params.filters?.length && {
+      filters: toURLArray('filters', params.filters),
+    }),
+    ...(params['vessel-groups']?.length && {
+      'vessel-groups': toURLArray('datasets', params['vessel-groups']),
+    }),
     delta: params.delta.toString(),
     quantizeOffset: params.quantizeOffset.toString(),
     sublayerVisibility: JSON.stringify(params.sublayerVisibility),
@@ -106,6 +111,39 @@ const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
   }
 
   return serialized
+}
+
+const getFinalurl = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  params: TileAggregationSourceParamsSerialized
+) => {
+  const { datasets, filters, 'vessel-groups': vesselGroups, ...rest } = params
+  const finalUrlParams = {
+    ...rest,
+    format: 'intArray',
+    'temporal-aggregation': params.singleFrame === 'true',
+    // We want proxy active as default when api tiles auth is required
+    proxy: params.proxy !== 'false',
+  }
+  const finalUrlParamsArr = Object.entries(finalUrlParams)
+    .filter(([_, value]) => {
+      return value !== undefined && value !== null && value !== 'undefined' && value !== 'null'
+    })
+    .map(([key, value]) => {
+      return `${key}=${value}`
+    })
+  if (datasets) {
+    finalUrlParamsArr.push(datasets)
+  }
+  if (filters) {
+    finalUrlParamsArr.push(filters)
+  }
+  if (vesselGroups) {
+    finalUrlParamsArr.push(vesselGroups)
+  }
+  const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
+  const finalUrlStr = `${tilesUrl}?${finalUrlParamsArr.join('&')}`
+  return decodeURI(finalUrlStr)
 }
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
@@ -155,9 +193,6 @@ class HeatmapAnimatedGenerator {
     )
 
     const visible = getSubLayersVisible(config)
-
-    const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
-
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource = config.interactive && INTERACTION_MODES.includes(config.mode)
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
@@ -218,13 +253,12 @@ class HeatmapAnimatedGenerator {
       const sourceParams = [serializedBaseSourceParams]
 
       return sourceParams.map((params: Record<string, string>) => {
-        const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
-        const urlString = decodeURI(url.toString())
+        const url = getFinalurl(config, params)
         const source = {
           id: params.id,
           type: 'temporalgrid',
-          tiles: [urlString],
-          updateDebounce: true,
+          tiles: [url],
+          updateDebounce: config.updateDebounce && timeChunk.active,
           maxzoom: config.maxZoom,
         }
         return source

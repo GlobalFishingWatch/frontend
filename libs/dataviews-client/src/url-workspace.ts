@@ -7,7 +7,9 @@ import { UrlDataviewInstance } from '.'
  * A generic workspace to be extended by apps
  */
 export type BaseUrlWorkspace = {
+  activityCategory?: string // legacy
   dataviewInstances?: Partial<UrlDataviewInstance[]>
+  dataviewInstancesOrder?: UrlDataviewInstance['id'][]
   latitude?: number
   longitude?: number
   zoom?: number
@@ -17,6 +19,7 @@ export type BaseUrlWorkspace = {
 
 const PARAMS_TO_ABBREVIATED = {
   dataviewInstances: 'dvIn',
+  dataviewInstancesOrder: 'dvInOr',
   datasetsConfig: 'dsC',
   datasets: 'dss',
   endpoint: 'ept',
@@ -133,11 +136,29 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
   return detokenized
 }
 
+export const removeLegacyEndpointPrefix = (endpointId: string) => {
+  return endpointId.replace('carriers-', '')
+}
+
+export const parseLegacyDataviewInstanceEndpoint = (
+  dataviewInstance: UrlDataviewInstance
+): UrlDataviewInstance => {
+  return {
+    ...dataviewInstance,
+    ...(dataviewInstance.datasetsConfig && {
+      datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
+        ...dc,
+        endpoint: removeLegacyEndpointPrefix(dc.endpoint),
+      })),
+    }),
+  }
+}
+
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
   const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
   return {
-    ...dataview,
+    ...parseLegacyDataviewInstanceEndpoint(dataview),
     ...(dataviewId && { dataviewId }),
     ...(dataview.config && breaks && { config: { ...dataview.config, breaks } }),
   }

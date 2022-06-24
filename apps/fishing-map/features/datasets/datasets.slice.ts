@@ -2,8 +2,19 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
 import { stringify } from 'qs'
 import { DateTime } from 'luxon'
-import { Dataset, DatasetCategory, EndpointId, UploadResponse } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import {
+  APIPagination,
+  Dataset,
+  DatasetCategory,
+  EndpointId,
+  UploadResponse,
+} from '@globalfishingwatch/api-types'
+import {
+  GFWAPI,
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
   AsyncReducer,
@@ -12,7 +23,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
+import { API_VERSION, LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
 import { SKYLIGHT_ENCOUNTERS_DATASET_ID } from 'features/datasets/datasets.mock'
 
 export const PRESENCE_DATASET_ID = 'public-global-presence'
@@ -69,12 +80,15 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >('datasets/fetchById', async (id: string, { rejectWithValue }: any) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
+    const dataset = await GFWAPI.fetch<Dataset>(
+      `/${API_VERSION}/datasets/${id}?include=endpoints&cache=false`
+    )
     return parsePOCsDatasets(dataset)
   } catch (e: any) {
+    console.warn(e)
     return rejectWithValue({
-      status: e.status || e.code,
-      message: `${id} - ${e.message}`,
+      status: parseAPIErrorStatus(e),
+      message: `${id} - ${parseAPIErrorMessage(e)}`,
     })
   }
 })
@@ -82,7 +96,8 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
-    const existingIds = selectIds(getState() as RootState) as string[]
+    const state = getState() as RootState
+    const existingIds = selectIds(state) as string[]
     const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
 
     try {
@@ -91,22 +106,22 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         include: 'endpoints',
         cache: false,
       }
-      const initialDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+      const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
+        `/${API_VERSION}/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       const relatedDatasetsIds = uniq(
-        initialDatasets.flatMap(
+        initialDatasets.entries.flatMap(
           (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
         )
       )
       const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...existingIds).join(',')
       const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
-      const relatedDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
+      const relatedDatasets = await GFWAPI.fetch<APIPagination<Dataset[]>>(
+        `/${API_VERSION}/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
-      let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
+      let datasets = uniqBy([...initialDatasets.entries, ...relatedDatasets.entries], 'id')
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
@@ -119,7 +134,8 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       }
       return datasets.map(parsePOCsDatasets)
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -137,7 +153,7 @@ export const createDatasetThunk = createAsyncThunk<
   }
 >('datasets/create', async ({ dataset, file, createAsPublic }, { rejectWithValue }) => {
   try {
-    const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
+    const { url, path } = await GFWAPI.fetch<UploadResponse>(`/${API_VERSION}/uploads`, {
       method: 'POST',
       body: {
         contentType: dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
@@ -162,14 +178,15 @@ export const createDatasetThunk = createAsyncThunk<
 
     delete (datasetWithFilePath as any).public
 
-    const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+    const createdDataset = await GFWAPI.fetch<Dataset>(`/${API_VERSION}/datasets`, {
       method: 'POST',
       body: datasetWithFilePath as any,
     })
 
     return createdDataset
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    console.warn(e)
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -183,13 +200,17 @@ export const updateDatasetThunk = createAsyncThunk<
   'datasets/update',
   async (partialDataset, { rejectWithValue }) => {
     try {
-      const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${partialDataset.id}`, {
-        method: 'PATCH',
-        body: partialDataset as any,
-      })
+      const updatedDataset = await GFWAPI.fetch<Dataset>(
+        `/${API_VERSION}/datasets/${partialDataset.id}`,
+        {
+          method: 'PATCH',
+          body: partialDataset as any,
+        }
+      )
       return updatedDataset
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {
@@ -210,12 +231,13 @@ export const deleteDatasetThunk = createAsyncThunk<
   }
 >('datasets/delete', async (id: string, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
+    const dataset = await GFWAPI.fetch<Dataset>(`/${API_VERSION}/datasets/${id}`, {
       method: 'DELETE',
     })
     return { ...dataset, id }
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    console.warn(e)
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -230,9 +252,10 @@ export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
     const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${LATEST_CARRIER_DATASET_ID}`)
     return dataset
   } catch (e: any) {
+    console.warn(e)
     return rejectWithValue({
-      status: e.status || e.code,
-      message: `${LATEST_CARRIER_DATASET_ID} - ${e.message}`,
+      status: parseAPIErrorStatus(e),
+      message: `${LATEST_CARRIER_DATASET_ID} - ${parseAPIErrorMessage(e)}`,
     })
   }
 })

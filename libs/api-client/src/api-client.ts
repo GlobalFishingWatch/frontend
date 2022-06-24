@@ -5,6 +5,7 @@ import type {
   ResourceRequestType,
 } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
+import { parseAPIError } from './utils/errors'
 
 const API_GATEWAY =
   process.env.API_GATEWAY ||
@@ -360,7 +361,7 @@ export class GFW_API_CLASS {
               localStorage.removeItem(this.storageKeys.token)
               localStorage.removeItem(this.storageKeys.refreshToken)
               e.refreshError = true
-              throw e
+              throw parseAPIError(e)
             }
           }
           if (isAuthError || e.status >= 500) {
@@ -374,14 +375,14 @@ export class GFW_API_CLASS {
             }
             console.warn(`GFWAPI: Error fetching ${url}`, e)
           }
-          throw e
+          throw parseAPIError(e)
         }
       }
     } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Error fetching ${url}`, e)
       }
-      throw e
+      throw parseAPIError(e)
     }
   }
 

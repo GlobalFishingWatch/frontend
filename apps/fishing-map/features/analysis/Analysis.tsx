@@ -18,7 +18,7 @@ import { selectUserData } from 'features/user/user.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
-  selectActiveActivityDataviews,
+  selectActiveHeatmapDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
 import { getActivityDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
@@ -68,7 +68,7 @@ function Analysis() {
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const dataviews = useSelector(selectActiveActivityDataviews)
+  const dataviews = useSelector(selectActiveHeatmapDataviews)
   const userData = useSelector(selectUserData)
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const { bounds } = useSelector(selectAnalysisQuery)
@@ -85,6 +85,7 @@ function Analysis() {
     dataviews,
     userData?.permissions || []
   )
+
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)

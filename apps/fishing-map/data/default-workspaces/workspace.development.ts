@@ -15,6 +15,8 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
+  SAR_DATAVIEW_ID,
+  PROTECTED_SEAS_DATAVIEW_ID,
 } from 'data/workspaces'
 import {
   SKYLIGHT_ENCOUNTERS_DATAVIEW_ID,
@@ -44,7 +46,6 @@ const workspace: Workspace<WorkspaceState> = {
     // timebarGraph: '',
   },
   ownerId: 0,
-  dataviews: [],
   dataviewInstances: [
     {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -80,11 +81,12 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         color: '#FF64CE',
         colorRamp: 'magenta',
+        visible: false,
       },
       dataviewId: PRESENCE_DATAVIEW_ID,
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'viirs-match',
       config: {
         color: '#FFEA00',
         colorRamp: 'yellow',
@@ -92,6 +94,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: VIIRS_MATCH_DATAVIEW_ID,
       datasetsConfig: [],
+    },
+    {
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      dataviewId: SAR_DATAVIEW_ID,
+      config: {
+        visible: false,
+      },
     },
     {
       id: ENCOUNTER_EVENTS_SOURCE_ID,
@@ -165,6 +174,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: HIGH_SEAS_DATAVIEW_ID,
+    },
+    {
+      id: 'context-layer-protected-seas',
+      config: {
+        visible: false,
+      },
+      dataviewId: PROTECTED_SEAS_DATAVIEW_ID,
     },
   ],
 }

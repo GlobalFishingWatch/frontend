@@ -97,6 +97,8 @@ steps:
     name: gcr.io/cloud-builders/gcloud
     waitFor: ['deploy-cloud-run']
     entrypoint: bash
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     args:
       - '-eEuo'
       - 'pipefail'

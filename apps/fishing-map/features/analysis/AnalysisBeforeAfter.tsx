@@ -5,26 +5,21 @@ import { event as uaEvent } from 'react-ga'
 import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
-import AnalysisLayerPanel from 'features/analysis/AnalysisLayerPanel'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import AnalysisRow from 'features/analysis/AnalysisRow'
 import { AnalysisTypeProps } from './Analysis'
 import styles from './AnalysisBeforeAfter.module.css'
-import useAnalysisDescription, { FIELDS } from './analysisDescription.hooks'
-import AnalysisDescription from './AnalysisDescription'
 import {
   DURATION_TYPES_OPTIONS,
   MAX_DAYS_TO_COMPARE,
   MAX_MONTHS_TO_COMPARE,
   useAnalysisTimeCompareConnect,
 } from './analysis-timecomparison.hooks'
-import AnalysisBeforeAfterGraph from './AnalysisBeforeAfterGraph'
-import { selectTimeComparisonValues } from './analysis.selectors'
 
 const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
   const { layersTimeseriesFiltered, analysisAreaName, loading, blur } = props
   const { t } = useTranslation()
   const timeComparison = useSelector(selectAnalysisTimeComparison)
-  const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const {
     onCompareStartChange,
     onDurationChange,
@@ -88,48 +83,31 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
     onDurationTypeSelect(duration)
   }
 
-  const { description, commonProperties } = useAnalysisDescription(
-    analysisAreaName,
-    layersTimeseriesFiltered?.[0]
-  )
-
   if (!timeComparison) return null
 
   const showSpinner = loading && (!blur || !layersTimeseriesFiltered)
-  const hasData = layersTimeseriesFiltered?.[0].timeseries.length > 0
 
   return (
     <Fragment>
-      <AnalysisDescription description={description} />
-      <div className={styles.layerPanel}>
-        {dataviews &&
-          dataviews.map((dataview, index) => (
-            <AnalysisLayerPanel
-              key={dataview.id}
-              dataview={dataview}
-              index={index}
-              hiddenProperties={commonProperties}
-              availableFields={FIELDS}
-              hideColors={true}
-            />
-          ))}
-      </div>
       {showSpinner ? (
         <div className={styles.graphContainer}>
           <Spinner />
         </div>
-      ) : hasData ? (
-        <div className={blur ? styles.blur : ''}>
-          <AnalysisBeforeAfterGraph
-            graphData={layersTimeseriesFiltered?.[0]}
-            start={timeComparison.start}
-            end={timeComparisonValues.end}
-          />
-        </div>
       ) : (
-        <div className={styles.graphContainer}>
-          <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
-        </div>
+        <Fragment>
+          {layersTimeseriesFiltered?.map((layerTimeseriesFiltered, index) => {
+            return (
+              <AnalysisRow
+                type="before-after"
+                key={index}
+                blur={blur}
+                loading={loading}
+                analysisAreaName={analysisAreaName}
+                graphData={layerTimeseriesFiltered}
+              />
+            )
+          })}
+        </Fragment>
       )}
       <div className={styles.container}>
         <div className={styles.timeSelection}>

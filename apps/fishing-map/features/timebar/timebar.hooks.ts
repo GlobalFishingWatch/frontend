@@ -3,7 +3,10 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
+import {
+  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+  MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
+} from '@globalfishingwatch/dataviews-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import {
@@ -14,6 +17,7 @@ import {
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import store, { RootState } from 'store'
@@ -207,20 +211,27 @@ export const useTimebarGraphConnect = () => {
 // should be instanciated only once to avoid doing it more than needed
 export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
-  const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
+  const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
   // const prevTimebarVisualisation = usePrevious(timebarVisualisation)
-  const prevActiveHeatmapDataviewsNum = usePrevious(activeHeatmapDataviews.length)
+  const prevActiveHeatmapDataviewsNum = usePrevious(activeActivityDataviews.length)
+  const prevActiveDetectionsDataviewsNum = usePrevious(activeDetectionsDataviews.length)
   const prevActiveTrackDataviewsNum = usePrevious(activeTrackDataviews.length)
   const prevactiveEnvDataviewsNum = usePrevious(activeEnvDataviews.length)
 
   useEffect(() => {
     // Fallback mechanisms to avoid empty timebar
-    if (timebarVisualisation === TimebarVisualisations.Heatmap && !activeHeatmapDataviews?.length) {
-      if (activeTrackDataviews?.length) {
+    if (
+      timebarVisualisation === TimebarVisualisations.HeatmapActivity &&
+      !activeActivityDataviews?.length
+    ) {
+      if (activeDetectionsDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
+      } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
@@ -229,8 +240,10 @@ export const useTimebarVisualisation = () => {
       timebarVisualisation === TimebarVisualisations.Vessel &&
       !activeTrackDataviews?.length
     ) {
-      if (activeHeatmapDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      if (activeActivityDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
+      } else if (activeDetectionsDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
       } else if (activeEnvDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
@@ -238,15 +251,19 @@ export const useTimebarVisualisation = () => {
       timebarVisualisation === TimebarVisualisations.Environment &&
       !activeEnvDataviews?.length
     ) {
-      if (activeHeatmapDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      if (activeActivityDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
+      } else if (activeDetectionsDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
       } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       }
       // Automatically switch to last-activated layer type if settings never have been changed manually
     } else if (!hasChangedSettingsOnce) {
-      if (activeHeatmapDataviews.length === 1 && prevActiveHeatmapDataviewsNum === 0) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      if (activeActivityDataviews.length === 1 && prevActiveHeatmapDataviewsNum === 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
+      } else if (activeDetectionsDataviews.length === 1 && prevActiveDetectionsDataviewsNum === 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeTrackDataviews.length === 1 && prevActiveTrackDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
@@ -254,25 +271,35 @@ export const useTimebarVisualisation = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeHeatmapDataviews, activeTrackDataviews, activeEnvDataviews, hasChangedSettingsOnce])
-
+  }, [
+    activeActivityDataviews,
+    activeDetectionsDataviews,
+    activeTrackDataviews,
+    activeEnvDataviews,
+    hasChangedSettingsOnce,
+  ])
   return { timebarVisualisation, dispatchTimebarVisualisation }
 }
 
-export const useActivityMetadata = (forceEnvironmental = false) => {
+export const useActivityMetadata = () => {
   const map = useMapInstance()
   const style = useMapStyle()
+  const { timebarVisualisation } = useTimebarVisualisationConnect()
 
   if (!map) return null
+
+  const animatedMergedId =
+    timebarVisualisation === TimebarVisualisations.HeatmapDetections
+      ? MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID
+      : MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
 
   const generatorsMetadata = style?.metadata?.generatorsMetadata
   if (!generatorsMetadata) return null
 
-  const activityHeatmapMetadata = generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
-  if (activityHeatmapMetadata?.timeChunks && !forceEnvironmental) {
-    return activityHeatmapMetadata
+  const mergedHeatmapMetadata = generatorsMetadata[animatedMergedId]
+  if (mergedHeatmapMetadata?.timeChunks) {
+    return mergedHeatmapMetadata
   }
-
   const environmentalMetadata = Object.entries(generatorsMetadata).filter(
     ([id, metadata]) => (metadata as any).temporalgrid === true
   )

@@ -9,9 +9,9 @@ import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import { selectActivityCategory } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
   selectActiveTrackDataviews,
@@ -58,14 +58,14 @@ const Icon = ({
 const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
-  const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
+  const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEnvironmentalDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
-  const activityCategory = useSelector(selectActivityCategory)
   const timebarGraphEnabled =
     activeVesselsDataviews && activeVesselsDataviews.length && activeVesselsDataviews.length <= 2
 
@@ -80,8 +80,11 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const closeOptions = () => {
     setOptionsPanelOpen(false)
   }
-  const setHeatmapActive = () => {
-    dispatchTimebarVisualisation(TimebarVisualisations.Heatmap)
+  const setHeatmapActivityActive = () => {
+    dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity)
+  }
+  const setHeatmapDetectionsActive = () => {
+    dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections)
   }
   const setEnvironmentActive = (environmentalDataviewId: string) => {
     dispatchTimebarVisualisation(TimebarVisualisations.Environment)
@@ -102,24 +105,13 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
 
   const expandedContainerRef = useClickedOutside(closeOptions)
 
-  const activityLabel = `
-    ${t('common.activity', 'Activity')} - ${
-    activityCategory === 'fishing'
-      ? t('common.fishing', 'Fishing')
-      : t('common.presence', 'Presence')
-  }
-  `
+  const activityTooltipLabel = !activeActivityDataviews?.length
+    ? t('timebarSettings.activityDisabled', 'Select at least one activity layer')
+    : t('timebarSettings.showActivity', 'Show activity graph')
 
-  const activityTooltipLabel = !activeHeatmapDataviews?.length
-    ? activityCategory === 'fishing'
-      ? t(
-          'timebarSettings.fishingEffortDisabled',
-          'Select at least one apparent fishing effort layer'
-        )
-      : t('timebarSettings.presenceDisabled', 'Select at least one presence layer')
-    : activityCategory === 'fishing'
-    ? t('timebarSettings.showFishingEffort', 'Show fishing hours graph')
-    : t('timebarSettings.showPresence', 'Show presence graph')
+  const detectionsTooltipLabel = !activeDetectionsDataviews?.length
+    ? t('timebarSettings.detectionsDisabled', 'Select at least one detections layer')
+    : t('timebarSettings.showDetections', 'Show detections graph')
 
   return (
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
@@ -144,15 +136,29 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={AreaIcon}
-                  label={activityLabel}
-                  color={activeHeatmapDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
-                  disabled={!activeHeatmapDataviews?.length}
+                  label={t('common.activity', 'Activity')}
+                  color={activeActivityDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  disabled={!activeActivityDataviews?.length}
                 />
               }
-              disabled={!activeHeatmapDataviews?.length}
-              active={timebarVisualisation === TimebarVisualisations.Heatmap}
+              disabled={!activeActivityDataviews?.length}
+              active={timebarVisualisation === TimebarVisualisations.HeatmapActivity}
               tooltip={activityTooltipLabel}
-              onClick={setHeatmapActive}
+              onClick={setHeatmapActivityActive}
+            />
+            <Radio
+              label={
+                <Icon
+                  SvgIcon={AreaIcon}
+                  label={t('common.detections', 'Detections')}
+                  color={activeDetectionsDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  disabled={!activeDetectionsDataviews?.length}
+                />
+              }
+              disabled={!activeDetectionsDataviews?.length}
+              active={timebarVisualisation === TimebarVisualisations.HeatmapDetections}
+              tooltip={detectionsTooltipLabel}
+              onClick={setHeatmapDetectionsActive}
             />
             <Radio
               label={
@@ -247,7 +253,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   }
                   active={
                     timebarVisualisation === TimebarVisualisations.Environment &&
-                    (timebarSelectedEnvId === envDataview.id || (!timebarSelectedEnvId && i === 0))
+                    timebarSelectedEnvId === envDataview.id
                   }
                   tooltip={activityTooltipLabel}
                   onClick={() => setEnvironmentActive(envDataview.id)}

@@ -194,9 +194,9 @@ function NewDataset(): React.ReactElement {
           // Set disableInteraction flag when not all features are polygons
           if (datasetCategory === 'context' && datasetGeometryType === 'polygons') {
             if (
-              (geojson.type === 'Feature' && geojson.geometry.type === 'Polygon') ||
+              (geojson.type === 'Feature' && geojson.geometry?.type === 'Polygon') ||
               !(geojson as FeatureCollectionWithFilename).features?.every((feature) =>
-                ['Polygon', 'MultiPolygon'].includes(feature.geometry.type)
+                ['Polygon', 'MultiPolygon'].includes(feature.geometry?.type)
               )
             ) {
               configuration.disableInteraction = true

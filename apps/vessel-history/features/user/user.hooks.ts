@@ -3,7 +3,7 @@ import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
-import { AUTHORIZED_PERMISSION } from 'data/config'
+import { AUTHORIZED_PERMISSION, FLRM_PERMISSION, INSURER_PERMISSION } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -25,8 +25,16 @@ export const useUser = () => {
   const token = GFWAPI.getToken()
   const refreshToken = GFWAPI.getRefreshToken()
 
-  const authorized = useMemo(() => {
+  const authorizedInspector = useMemo(() => {
     return user && checkExistPermissionInList(user.permissions, AUTHORIZED_PERMISSION)
+  }, [user])
+
+  const authorizedInsurer = useMemo(() => {
+    return user && checkExistPermissionInList(user.permissions, INSURER_PERMISSION)
+  }, [user])
+
+  const authorizedFLRM = useMemo(() => {
+    return user && checkExistPermissionInList(user.permissions, FLRM_PERMISSION)
   }, [user])
 
   const logout = useCallback(() => {
@@ -44,10 +52,13 @@ export const useUser = () => {
   }, [accessToken, dispatch, logged, refreshToken, token])
 
   return {
+    authorized: authorizedInspector || authorizedInsurer,
+    authorizedInspector,
+    authorizedInsurer,
+    authorizedFLRM,
     loading: status !== AsyncReducerStatus.Finished && status !== AsyncReducerStatus.Idle,
     logged,
-    user,
-    authorized,
     logout,
+    user,
   }
 }

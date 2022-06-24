@@ -15,7 +15,7 @@ const getTracksWithCoords = (
   graphHeight: number,
   orientation: TrackGraphOrientation
 ) => {
-  if (tracks === null || !outerScale) return null
+  if (!tracks || tracks.length === 0 || !outerScale) return null
   const trackWithCoords: TimebarChartData<TrackChunkProps> = []
   tracks.forEach((track, trackIndex) => {
     if (!track) {

@@ -68,6 +68,7 @@
     "context_area_other": "Calques de référence",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
     "country_other": "pays",
+    "detections": "Detections",
     "date": "Date",
     "date_one": "Date",
     "date_other": "Dates",
@@ -85,6 +86,7 @@
     "feedback": "Vos commentaires",
     "fishing": "Pêche",
     "from": "de",
+    "globally": "globalement",
     "help": "Aide",
     "hideAllHelpHints": "Tout ignorer",
     "hideHelpHint": "Ignorer",
@@ -346,6 +348,7 @@
     "source_other": "Sources",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
+    "type": "Type",
     "toggleCombinationMode": {
       "combine": "Combiner les calques",
       "split": "Séparer les calques"
@@ -399,7 +402,8 @@
     "maxTracksNumber": "Détail des trajectoires non disponible pour plus de 10 navires"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Sélectionnez au moins un calque d'effort de pêche apparent",
+    "activityDisabled": "Select at least one activity layer",
+    "detectionsDisabled": "Select at least one detection layer.",
     "graph": "Graphique",
     "graphDepth": "Profondeur du navire",
     "graphDisabled": "Non disponible avec plus d'un navire sélectionné",
@@ -407,7 +411,8 @@
     "presenceDisabled": "Sélectionnez au moins un calque de présence",
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Ouvrir les paramètres de la barre de temps",
-    "showFishingEffort": "Afficher le graphique des heures de pêche",
+    "showActivity": "Show activity graph",
+    "showDetections": "Show detections graph",
     "showGraphDepth": "Afficher le graphique de profondeur",
     "showGraphSpeed": "Afficher le graphique de vitesse",
     "showPresence": "Montrer le graphique de présence",
@@ -524,6 +529,7 @@
       "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
     },
     "title_other": "Espaces de travail",
+    "user": "User workspace",
     "update": "Mise à jour",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir cet espace de travail",
     "uploadPublicDisabled": "Cet espace de travail ne peut pas être partagé publiquement car il contient des jeux de données privés"

@@ -13,6 +13,7 @@ export const SKYLIGHT_FISHING_DATAVIEW_ID = 999999
 export const dataviews: Dataview[] = [
   {
     id: SKYLIGHT_ENCOUNTERS_DATAVIEW_ID,
+    slug: 'skylight-standard-rendezvous',
     name: 'Standard Rendezvous',
     description: 'Skylight integration for Double Rendezvous events',
     app: 'fishing-map',
@@ -32,6 +33,7 @@ export const dataviews: Dataview[] = [
   },
   {
     id: SKYLIGHT_LOITERING_DATAVIEW_ID,
+    slug: 'skylight-dark-rendezvous',
     name: 'Dark Rendezvous',
     description: 'Skylight integration for Dark Rendezvous events',
     app: 'fishing-map',
@@ -51,6 +53,7 @@ export const dataviews: Dataview[] = [
   },
   {
     id: SKYLIGHT_FISHING_DATAVIEW_ID,
+    slug: 'skylight-fishing-events',
     name: 'Fishing events',
     description: 'Skylight integration for fishing events',
     app: 'fishing-map',

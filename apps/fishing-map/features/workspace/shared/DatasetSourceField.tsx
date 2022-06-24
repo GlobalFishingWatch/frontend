@@ -4,7 +4,10 @@ import cx from 'classnames'
 import { TagList, TagItem } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import {
+  getSourcesOptionsInDataview,
+  getSourcesSelectedInDataview,
+} from 'features/workspace/activity/activity.utils'
 import { dataviewWithPrivateDatasets } from 'features/dataviews/dataviews.utils'
 
 type DatasetFilterSourceProps = {
@@ -14,9 +17,10 @@ type DatasetFilterSourceProps = {
 
 function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) {
   const { t } = useTranslation()
-  const sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
-  const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
-  const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
+  const sourcesOptions: TagItem[] = getSourcesOptionsInDataview(dataview)
+  const sourcesSelected: TagItem[] = getSourcesSelectedInDataview(dataview)
+  const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
+  const vmsSources = sourcesSelected.filter((source) => source.label.includes('VMS'))
   const hasPrivateDatasets = dataviewWithPrivateDatasets(dataview as UrlDataviewInstance)
   let mergedSourceOptions: TagItem[] = []
   if (!hasPrivateDatasets && vmsSources?.length > 1) {
@@ -30,7 +34,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
     ]
   }
 
-  if (!sourcesOptions?.length) {
+  if (!sourcesSelected?.length || sourcesOptions?.length <= 1) {
     return null
   }
 
@@ -38,7 +42,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
     <div className={styles.filter}>
       <label>{t('layer.source', 'Sources')}</label>
       <TagList
-        tags={sourcesOptions}
+        tags={sourcesSelected}
         color={hideColor ? null : dataview.config?.color}
         className={cx(styles.tagList, {
           [styles.hidden]: mergedSourceOptions?.length > 0,

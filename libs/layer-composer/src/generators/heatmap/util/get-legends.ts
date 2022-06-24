@@ -183,6 +183,11 @@ const getLegendsBivariate = (config: GlobalHeatmapAnimatedGeneratorConfig, break
   const colorRampsIds = visibleSublayers.map((subLayer) => subLayer.colorRamp as ColorRampId)
   const subLayer = visibleSublayers?.[0]
 
+  if (!subLayer) {
+    console.warn('No visible sublayers for bivariate config', config)
+    return []
+  }
+
   return [
     {
       id: subLayer.id,

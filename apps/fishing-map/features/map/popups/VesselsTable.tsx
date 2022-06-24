@@ -164,7 +164,10 @@ function VesselsTable({
         infoDatasetId: vessel.infoDataset?.id,
       })
     } else {
-      const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
+      const vesselEventsDatasets = getRelatedDatasetsByType(
+        vessel.infoDataset || vessel.dataset,
+        DatasetTypes.Events
+      )
       const eventsDatasetsId =
         vesselEventsDatasets && vesselEventsDatasets?.length
           ? vesselEventsDatasets.map((d) => d.id)

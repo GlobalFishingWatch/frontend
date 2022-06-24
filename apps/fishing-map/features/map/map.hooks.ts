@@ -14,7 +14,7 @@ import {
 import {
   UrlDataviewInstance,
   MULTILAYER_SEPARATOR,
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+  isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -373,7 +373,8 @@ export const parseMapTooltipEvent = (
     }
 
     let dataview
-    if (generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
+
+    if (isMergedAnimatedGenerator(generatorId as string)) {
       if (!temporalgrid || temporalgrid.sublayerId === undefined || !temporalgrid.visible) {
         return []
       }
@@ -403,7 +404,7 @@ export const parseMapTooltipEvent = (
       return []
     }
 
-    const title = getDatasetTitleByDataview(dataview, true)
+    const title = getDatasetTitleByDataview(dataview)
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,

@@ -2,15 +2,14 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
-import { IconButton, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   selectActivityDataviews,
-  selectAvailableFishingDataviews,
-  selectAvailablePresenceDataviews,
+  selectAvailableActivityDataviews,
+  selectDetectionsDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -19,22 +18,12 @@ import {
   getFishingDataviewInstance,
   getActivityDataviewInstanceFromDataview,
 } from 'features/dataviews/dataviews.utils'
-import { WorkspaceActivityCategory } from 'types'
-import {
-  selectBivariateDataviews,
-  selectActivityCategory,
-  selectReadOnly,
-} from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import HighlightPanel from '../highlight-panel/HighlightPanel'
-import {
-  HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH,
-  HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID,
-} from '../highlight-panel/highlight-panel.content'
 import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
 
@@ -44,49 +33,12 @@ function ActivitySection(): React.ReactElement {
   const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
-  const activityCategory = useSelector(selectActivityCategory)
-  const fishingDataviews = useSelector(selectAvailableFishingDataviews)
-  const presenceDataviews = useSelector(selectAvailablePresenceDataviews)
+  const detectionsDataviews = useSelector(selectDetectionsDataviews)
+  const activityDataviews = useSelector(selectAvailableActivityDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const { start, end } = useTimerangeConnect()
-
-  const ACTIVITY_OPTIONS: ChoiceOption[] = useMemo(
-    () => [
-      {
-        id: 'fishing',
-        title: t('common.fishing', 'Fishing'),
-      },
-      {
-        id: 'presence',
-        title: t('common.presence', 'Presence'),
-      },
-    ],
-    [t]
-  )
-
-  useEffect(() => {
-    setAddedDataviewId(undefined)
-  }, [activityCategory])
-
-  const onActivityOptionClick = useCallback(
-    (activityOption: ChoiceOption) => {
-      const queryParams: Record<string, any> = {
-        activityCategory: activityOption.id as WorkspaceActivityCategory,
-      }
-      if (activityOption.id === 'presence' && start && end) {
-        const intervalInDays = DateTime.fromISO(end).diff(DateTime.fromISO(start)).as('days')
-        if (intervalInDays < 1) {
-          // Force a minimum of 1 day range when in presence mode
-          queryParams.start = start
-          queryParams.end = DateTime.fromISO(start).toUTC().plus({ days: 1 }).toISO()
-        }
-      }
-      dispatchQueryParams(queryParams)
-    },
-    [dispatchQueryParams, start, end]
-  )
 
   const addDataviewInstance = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
@@ -99,7 +51,7 @@ function ActivitySection(): React.ReactElement {
 
   const onAddFishingClick = useCallback(
     (dataviewId?: number) => {
-      const dataview = fishingDataviews.find((d) => d.id === dataviewId)
+      const dataview = activityDataviews.find((d) => d.id === dataviewId)
       const dataviewInstance = dataview
         ? getActivityDataviewInstanceFromDataview(dataview)
         : getFishingDataviewInstance()
@@ -107,31 +59,21 @@ function ActivitySection(): React.ReactElement {
         addDataviewInstance(dataviewInstance)
       }
     },
-    [addDataviewInstance, fishingDataviews]
-  )
-
-  const onAddPresenceClick = useCallback(
-    (dataviewId: number) => {
-      const dataview = presenceDataviews.find((d) => d.id === dataviewId)
-      const dataviewInstance = getActivityDataviewInstanceFromDataview(dataview)
-      if (dataviewInstance) {
-        addDataviewInstance(dataviewInstance)
-      }
-    },
-    [addDataviewInstance, presenceDataviews]
+    [addDataviewInstance, activityDataviews]
   )
 
   const onBivariateDataviewsClick = useCallback(
     (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {
       dispatchQueryParams({ bivariateDataviews: [dataview1.id, dataview2.id] })
       // automatically set other animated heatmaps to invisible
-      const dataviewsToDisable = dataviews?.filter(
+      const activityDataviewsToDisable = (dataviews || []).filter(
         (dataview) =>
           dataview.id !== dataview1.id &&
           dataview.id !== dataview2.id &&
           dataview.config?.type === GeneratorType.HeatmapAnimated
       )
-      if (dataviewsToDisable) {
+      const dataviewsToDisable = [...activityDataviewsToDisable, ...detectionsDataviews]
+      if (dataviewsToDisable.length) {
         upsertDataviewInstance(
           dataviewsToDisable?.map((dataview) => ({
             id: dataview.id,
@@ -175,72 +117,25 @@ function ActivitySection(): React.ReactElement {
     []
   )
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
-  const fishingOptions = useMemo(() => {
-    const options = fishingDataviews.map((dataview) => {
-      const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
+  const activityOptions = useMemo(() => {
+    const options = activityDataviews.map((dataview) => {
+      const option = {
+        id: dataview.id,
+        label: getDatasetTitleByDataview(dataview),
+      }
       return option
     })
     return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [fishingDataviews])
-
-  const presenceOptions = useMemo(() => {
-    const options = presenceDataviews.map((dataview) => {
-      const option = { id: dataview.id, label: getDatasetTitleByDataview(dataview) }
-      return option
-    })
-    return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [presenceDataviews])
+  }, [activityDataviews])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
-        <Choice
-          size="small"
-          className={cx('print-hidden')}
-          options={ACTIVITY_OPTIONS}
-          activeOption={activityCategory}
-          onOptionClick={onActivityOptionClick}
-        />
-        {activityCategory === 'fishing' && (
-          <HighlightPanel
-            dataviewInstanceId={HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH_ID}
-            highlightConfig={HIGHLIGHT_PANEL_CONFIG_ACTIVITY_SWITCH}
-            placement="right"
-          />
-        )}
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
-            {activityCategory === 'presence' && (
-              <TooltipContainer
-                visible={newLayerOpen}
-                onClickOutside={() => {
-                  setNewLayerOpen(false)
-                }}
-                component={
-                  <TooltipListContainer>
-                    {presenceOptions.map(({ id, label }) => (
-                      <li key={id}>
-                        <button onClick={() => onAddPresenceClick(id)}>{label}</button>
-                      </li>
-                    ))}
-                  </TooltipListContainer>
-                }
-              >
-                <div className={styles.lastBtn}>
-                  <IconButton
-                    icon="plus"
-                    type="border"
-                    size="medium"
-                    tooltip={t('layer.add', 'Add layer')}
-                    tooltipPlacement="top"
-                    onClick={() => setNewLayerOpen(true)}
-                  />
-                </div>
-              </TooltipContainer>
-            )}
-            {activityCategory === 'fishing' &&
-              (fishingDataviews.length > 1 ? (
+            {activityOptions &&
+              (activityOptions.length > 1 ? (
                 <TooltipContainer
                   visible={newLayerOpen}
                   onClickOutside={() => {
@@ -248,7 +143,7 @@ function ActivitySection(): React.ReactElement {
                   }}
                   component={
                     <TooltipListContainer>
-                      {fishingOptions.map(({ id, label }) => (
+                      {activityOptions.map(({ id, label }) => (
                         <li key={id}>
                           <button onClick={() => onAddFishingClick(id)}>{label}</button>
                         </li>

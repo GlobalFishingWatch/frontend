@@ -9,6 +9,7 @@ import {
 } from '@globalfishingwatch/timebar'
 import {
   selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
@@ -21,24 +22,36 @@ import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
   const activityDataviews = useSelector(selectActiveActivityDataviews)
+  const detectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const environmentDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const { timebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const activeDataviews = useMemo(() => {
-    if (visualisation === TimebarVisualisations.Heatmap) {
+    if (visualisation === TimebarVisualisations.HeatmapActivity) {
       return activityDataviews
+    }
+    if (visualisation === TimebarVisualisations.HeatmapDetections) {
+      return detectionsDataviews
     }
     const selectedEnvDataview =
       timebarSelectedEnvId && environmentDataviews.find((d) => d.id === timebarSelectedEnvId)
 
     if (selectedEnvDataview) return [selectedEnvDataview]
     else if (environmentDataviews[0]) return [environmentDataviews[0]]
-  }, [activityDataviews, environmentDataviews, timebarSelectedEnvId, visualisation])
+  }, [
+    activityDataviews,
+    detectionsDataviews,
+    environmentDataviews,
+    timebarSelectedEnvId,
+    visualisation,
+  ])
+
   const { loading, stackedActivity, error } = useStackedActivity(activeDataviews)
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
+      if (loading) return t('map.loading', 'Loading')
       if (!value || !value.value) return ''
       const dataviewId = item.props?.dataviewId
       const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
@@ -55,7 +68,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
       return labels.join(' ')
     },
-    [mapLegends, visualisation]
+    [loading, mapLegends, visualisation]
   )
 
   if (error) {
@@ -68,7 +81,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
       </div>
     )
   }
-  if (!stackedActivity || !stackedActivity.length) return null
+  if (!stackedActivity || !stackedActivity.length || !activeDataviews?.length) return null
 
   return (
     <div className={cx({ [styles.loading]: loading })}>

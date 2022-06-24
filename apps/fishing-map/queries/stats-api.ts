@@ -6,6 +6,7 @@ import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'lodash'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { Range } from 'features/timebar/timebar.slice'
+import { API_VERSION } from 'data/config'
 
 export type StatType = 'vessels' | 'detections'
 export type StatField = 'id' | 'flag' | 'vessel_id' | 'geartype'
@@ -38,7 +39,7 @@ export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
   serializeQueryArgs: serializeStatsDataviewKey,
   baseQuery: gfwBaseQuery({
-    baseUrl: '/proto/4wings/stats',
+    baseUrl: `/${API_VERSION}/4wings/stats`,
   }),
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
@@ -55,7 +56,7 @@ export const dataviewStatsApi = createApi({
         }
       },
       transformResponse: (response: StatFields[], meta, args) => {
-        const units = uniq(args?.dataview?.datasets?.map((d) => d.unit))
+        const units = uniq(args?.dataview?.datasets?.flatMap((d) => d.unit || []))
         if (units.length > 1) {
           console.warn('Incompatible datasets stats unit, using the first type', units[0])
         }

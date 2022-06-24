@@ -77,6 +77,27 @@
         "buildTarget": "fishing-map:compile:production"
       }
     },
+    "rename-export": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "rm -rf dist/apps/fishing-map/map",
+          "mv dist/apps/fishing-map/exported dist/apps/fishing-map/map"
+        ],
+        "parallel": false
+      }
+    },
+    "serve:export": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build fishing-map --parallel",
+          "nx rename-export fishing-map",
+          "serve dist/apps/fishing-map"
+        ],
+        "parallel": false
+      }
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/fishing-map"],

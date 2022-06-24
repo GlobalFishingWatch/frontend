@@ -1,9 +1,9 @@
+import React from 'react'
 // import { appWithTranslation } from 'next-i18next'
 import { ClickToComponent } from 'click-to-react-component'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
-import { MapProvider } from 'react-map-gl'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'
 import store from '../store'
@@ -29,15 +29,15 @@ function CustomApp({ Component, pageProps }: AppProps) {
   // }, [root])
 
   return (
-    <RecoilRoot>
-      {/* <RecoilizeDebugger root={root} /> */}
-      <Provider store={store}>
-        <ClickToComponent />
-        <MapProvider>
+    <React.StrictMode>
+      <RecoilRoot>
+        {/* <RecoilizeDebugger root={root} /> */}
+        <Provider store={store}>
+          <ClickToComponent />
           <Component {...pageProps} />
-        </MapProvider>
-      </Provider>
-    </RecoilRoot>
+        </Provider>
+      </RecoilRoot>
+    </React.StrictMode>
   )
 }
 

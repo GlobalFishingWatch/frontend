@@ -130,7 +130,6 @@ export const getInterval = (
   availableIntervals: Interval[][],
   omitIntervals: Interval[] = []
 ): Interval => {
-
   const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
 
   // Get intervals that are common to all dataset (initial array provided to ensure order from smallest to largest)
@@ -143,12 +142,20 @@ export const getInterval = (
 
   const duration = Duration.fromMillis(deltaMs)
 
-  const validIntervals = intervals.filter(interval => CONFIG_BY_INTERVAL[interval] && (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration)))
-  
+  const validIntervals = intervals.filter(
+    (interval) =>
+      CONFIG_BY_INTERVAL[interval] &&
+      (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration))
+  )
+
   let selectedInterval: Interval
 
   // if only available intervals are 10days and month, favor month
-  if (validIntervals.includes('10days') && validIntervals.includes('month') && validIntervals.length === 2) {
+  if (
+    validIntervals.includes('10days') &&
+    validIntervals.includes('month') &&
+    validIntervals.length === 2
+  ) {
     selectedInterval = 'month'
   } else {
     // else, use smallest interval
@@ -178,7 +185,7 @@ const getChunkStarts = (
   const chunkStarts: DateTime[] = [firstChunkStart]
   while (true) {
     const nextChunkStart = config.getChunkViewEnd(chunkStarts[chunkStarts.length - 1])
-    if (+nextChunkStart > bufferedActiveEnd) {
+    if (+nextChunkStart > Date.now() || +nextChunkStart > bufferedActiveEnd) {
       break
     }
     chunkStarts.push(nextChunkStart)
@@ -354,11 +361,7 @@ const toQuantizedFrame = (
   return frame - quantizeOffset
 }
 
-export const frameToDate = (
-  frame: number,
-  quantizeOffset: number,
-  interval: Interval,
-) => {
+export const frameToDate = (frame: number, quantizeOffset: number, interval: Interval) => {
   const offsetedFrame = frame + quantizeOffset
   const config = CONFIG_BY_INTERVAL[interval]
   return config.getDate(offsetedFrame) as Date

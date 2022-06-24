@@ -364,6 +364,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   tilesAPI?: string
   breaksAPI?: string
   dynamicBreaks?: boolean
+  updateDebounce?: boolean
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
@@ -413,6 +414,7 @@ export enum ContextLayerType {
   WPPNRI = 'wpp-nri',
   Graticules = 'graticules',
   FAO = 'fao',
+  ProtectedSeas = 'protected-seas',
 }
 
 export type RawEvent = {

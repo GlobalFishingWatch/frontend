@@ -93,7 +93,7 @@ function PopupWrapper({
                     showFeaturesDetails={type === 'click'}
                   />
                 )
-              case DataviewCategory.Fishing:
+              case DataviewCategory.Activity:
                 return features.map((feature, i) => (
                   <ActivityTooltipRow
                     key={i + (feature.title as string)}
@@ -101,7 +101,7 @@ function PopupWrapper({
                     showFeaturesDetails={type === 'click'}
                   />
                 ))
-              case DataviewCategory.Presence:
+              case DataviewCategory.Detections:
                 return features.map((feature, i) => {
                   return feature.temporalgrid?.sublayerInteractionType === 'detections' ? (
                     <DetectionsTooltipRow

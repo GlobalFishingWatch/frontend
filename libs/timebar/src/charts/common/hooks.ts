@@ -14,7 +14,7 @@ import {
 } from './types'
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
-  return data.map((item) => {
+  return data?.map((item) => {
     const filteredChunks = item.chunks.filter((chunk) => {
       const chunkStart = chunk.start
       const chunkEnd = chunk.end || chunk.start
@@ -175,7 +175,7 @@ export const useTimeseriesToChartData = (
   highlighterCallback?: HighlighterCallback,
   highlighterIconCallback?: HighlighterCallback
 ): TimebarChartData => {
-  if (!data || !data.length) return []
+  if (!data || !data.length || !dataviews?.length) return []
   return dataviews.map((dataview, i) => {
     const values: TimebarChartValue[] = data.map((frame) => {
       return {

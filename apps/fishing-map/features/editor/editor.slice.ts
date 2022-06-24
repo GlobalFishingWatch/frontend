@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { Dataview } from '@globalfishingwatch/api-types'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { APP_NAME } from 'data/config'
+import { API_VERSION, APP_NAME } from 'data/config'
 import { BASEMAP_DATAVIEW_ID, TEMPLATE_DATAVIEW_IDS } from 'data/workspaces'
 
 interface EditorState {
@@ -30,17 +30,17 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
   }
 >('editor/fetchAllDataviews', async (_, { rejectWithValue }) => {
   try {
-    const dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?app=${APP_NAME}`)
-    const filteredDataviews = dataviews.filter(
+    const dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
+      `/${API_VERSION}/dataviews?app=${APP_NAME}`
+    )
+    const filteredDataviews = dataviews.entries.filter(
       ({ id, category }) =>
         !TEMPLATE_DATAVIEW_IDS.includes(id) && id !== BASEMAP_DATAVIEW_ID && category !== 'vessels'
     )
     return filteredDataviews
   } catch (e: any) {
-    return rejectWithValue({
-      status: e.status || e.code,
-      message: e.message,
-    })
+    console.warn(e)
+    return rejectWithValue(parseAPIError(e))
   }
 })
 

@@ -68,6 +68,7 @@
     "context_area_other": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
     "country_other": "paises",
+    "detections": "Detections",
     "date": "Fecha",
     "date_one": "Fecha",
     "date_other": "Fechas",
@@ -85,6 +86,7 @@
     "feedback": "Comentarios",
     "fishing": "Pesca",
     "from": "desde",
+    "globally": "globalmente",
     "help": "Ayuda",
     "hideAllHelpHints": "Ocultar todos",
     "hideHelpHint": "Ocultar",
@@ -129,8 +131,7 @@
     "view_layer": "Ver la capa",
     "viirs": "Detección de luz nocturna (VIIRS)",
     "welcomePopupDisable": "No volver a mostrar",
-    "whatsNew": "Novedades",
-    "view_layer": "Ver la capa"
+    "whatsNew": "Novedades"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
@@ -347,6 +348,7 @@
     "source_other": "Fuentes",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
+    "type": "Type",
     "toggleCombinationMode": {
       "combine": "Combinar las capas",
       "split": "Separar las capas"
@@ -400,7 +402,8 @@
     "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
+    "activityDisabled": "Select at least one activity layer",
+    "detectionsDisabled": "Select at least one detection layer.",
     "graph": "Gráfico",
     "graphDepth": "Profundidad de la embarcacion",
     "graphDisabled": "No disponible con más de 2 embarcaciones seleccionadas",
@@ -408,7 +411,8 @@
     "presenceDisabled": "Selecciona al menos una capa de presencia",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
-    "showFishingEffort": "Mostrar gráfico de horas de pesca",
+    "showActivity": "Show activity graph",
+    "showDetections": "Show detections graph",
     "showGraphDepth": "Mostrar gráfico de profundidad",
     "showGraphSpeed": "Mostrar gráfico de velocidad",
     "showPresence": "Mostrar gráfico de presencia",
@@ -525,6 +529,7 @@
       "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
     },
     "title_other": "Espacios de trabajo",
+    "user": "User workspace",
     "update": "Actualizar",
     "uploadPublic": "Permitir a otros usuarios ver este espacio de trabajo",
     "uploadPublicDisabled": "Este espacio de trabajo no puede ser compartido públicamente porque contiene datos privados"

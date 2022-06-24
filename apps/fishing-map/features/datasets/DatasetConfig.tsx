@@ -232,7 +232,12 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
                 'Optional'
               )})`}
               placeholder={t('selects.placeholder', 'Select an option')}
-              options={fieldsOptions}
+              options={fieldsOptions.filter(
+                (option) =>
+                  option.id !== metadata.configuration?.longitude &&
+                  option.id !== metadata.configuration?.latitude &&
+                  option.id !== metadata.configuration?.timestamp
+              )}
               selectedOption={fieldsOptions.find(({ id }) => id === metadata.configuration?.id)}
               onSelect={(selected) => {
                 onDatasetFieldChange({ id: selected.id })

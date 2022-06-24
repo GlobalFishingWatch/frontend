@@ -45,14 +45,14 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
     [setStackedActivity]
   )
 
-  const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   useEffect(() => {
+    const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
     if (!isSmallScreen && dataviewFeaturesLoaded && !error) {
       setGeneratingStackedActivity(true)
       debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataviewFeaturesLoaded, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
+  }, [dataviewFeatures, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
 
   return { loading, error, stackedActivity }
 }

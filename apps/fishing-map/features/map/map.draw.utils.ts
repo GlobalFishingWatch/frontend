@@ -5,7 +5,7 @@ import {
   DatasetConfiguration,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import { DrawFeature, DrawPointPosition } from './MapDraw'
+import type { DrawFeature, DrawPointPosition } from './MapDraw'
 
 export const getCoordinatePrecisionRounded = (coordinate: Position): Position => {
   return coordinate.map((points) => Math.round(points * 100000) / 100000)
@@ -16,9 +16,11 @@ export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
     name,
     type: DatasetTypes.Context,
     category: DatasetCategory.Context,
+    subcategory: 'user',
+    unit: 'NA',
     configuration: {
       format: 'geojson',
-      geometryType: 'draw',
+      geometryType: 'polygons',
     } as DatasetConfiguration,
   }
 }

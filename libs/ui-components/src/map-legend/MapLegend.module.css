@@ -102,7 +102,9 @@
   font: var(--font-XS);
   opacity: var(--opacity-secondary);
   position: absolute;
+  top: 0;
   transform: translateX(-50%);
+  line-height: 1.8rem;
 }
 
 .firstStep {
@@ -153,6 +155,10 @@
 .loading > span:nth-child(3),
 .loading > tspan:nth-child(3) {
   animation-delay: 1s;
+}
+
+.sup {
+  font-size: 0.8rem;
 }
 
 @keyframes pulse {
