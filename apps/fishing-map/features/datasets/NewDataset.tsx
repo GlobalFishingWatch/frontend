@@ -145,7 +145,10 @@ function NewDataset(): React.ReactElement {
               geojson = expandedShp
             }
           } catch (e: any) {
-            console.warn('Error reading file:', e)
+            setFileData(undefined)
+            setError(
+              t('errors.uploadShapefile', 'Error reading shapefile: {{error}}', { error: e })
+            )
           }
         } else if (isCSV) {
           const fileData = await readBlobAs(file, 'text')
@@ -166,9 +169,11 @@ function NewDataset(): React.ReactElement {
                 })
               )
             } catch (e) {
-              console.warn(e)
+              setFileData(undefined)
+              setError(t('errors.uploadCsv', 'Error reading CSV: {{error}}', { error: e }))
             }
           } else {
+            setFileData(undefined)
             setError(t('errors.missingLatLng', 'No latitude or longitude fields found'))
           }
           // geojson = JSON.parse(fileData)
@@ -177,9 +182,11 @@ function NewDataset(): React.ReactElement {
           try {
             geojson = JSON.parse(fileData)
           } catch (e: any) {
-            console.warn('Error reading file:', e)
+            setFileData(undefined)
+            setError(t('errors.uploadGeojson', 'Error reading GeoJSON: {{error}}', { error: e }))
           }
         }
+
         if (geojson !== undefined) {
           setFileData(geojson)
           const fields = extractPropertiesFromGeojson(geojson as FeatureCollectionWithFilename)
@@ -210,14 +217,14 @@ function NewDataset(): React.ReactElement {
             category: datasetCategory,
             configuration,
           }))
-        } else {
+        } else if (error === '') {
           setFileData(undefined)
           setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
         }
       }
       setLoading(false)
     },
-    [datasetCategory, t, metadata, datasetGeometryType]
+    [datasetCategory, t, metadata, datasetGeometryType, error]
   )
 
   const onDatasetFieldChange = (field: DatasetMetadata | AnyDatasetConfiguration) => {
