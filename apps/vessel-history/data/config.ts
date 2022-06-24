@@ -111,3 +111,12 @@ export const RISK_SUMMARY_SETTINGS = {
   showIndicatorIconEventCount:
     !!process.env.NEXT_PUBLIC_RISK_SUMMARY_SHOW_ICON_EVENTS_COUNT || false,
 }
+
+export const APP_PROFILE_VIEWS = [
+  { id: 'port-inspector', name: 'Port Inspector', required_permission: AUTHORIZED_PERMISSION },
+  {
+    id: 'insurance-underwriter',
+    name: 'Insurance Underwriter',
+    required_permission: INSURER_PERMISSION,
+  },
+]

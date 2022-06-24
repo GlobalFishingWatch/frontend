@@ -114,6 +114,18 @@
   bottom: 0;
 }
 
+.toolbar {
+  display: flex;
+}
+
+.header {
+  display: flex;
+}
+
+.header h1 {
+  flex-grow: 1;
+}
+
 @media only screen and (min-width: 1000px) {
   .search {
     flex-direction: row;

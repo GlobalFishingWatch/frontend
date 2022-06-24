@@ -32,6 +32,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserData } from 'features/user/user.slice'
 import { useApp } from 'features/app/app.hooks'
 import Partners from 'features/partners/Partners'
+import ViewSelector from 'features/view-selector/view-selector'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -71,8 +72,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       redirect({
         type: HOME,
         query: {
-          offline: 'false'
-        }
+          offline: 'false',
+        },
       })
     )
   }, [dispatch])
@@ -211,29 +212,42 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   return (
     <div className={styles.homeContainer} data-testid="home">
-      <header>
-        <h1 className={styles.logo} >
-          Vessel Viewer
-        </h1>
-        {online && hasAccess && <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>}
-        {(online && !hasAccess) && <IconButton type="default" size="default" icon="user" onClick={onLoginClick}></IconButton>}
-        {online &&
-          <IconButton
-            onClick={onSettingsClick}
-            type="default"
-            size="default"
-            icon="settings"
-          ></IconButton>
-        }
-        {online &&
-          <IconButton
-            icon="feedback"
-            onClick={openFeedback}
-            tooltip={t('common.feedback', 'Feedback')}
-            tooltipPlacement="bottom"
-          />
-        }
-        <LanguageToggle />
+      <header className={styles.header}>
+        <h1 className={styles.logo}>Vessel Viewer</h1>
+
+        <div className={styles.toolbar}>
+          <div>
+            <ViewSelector />
+          </div>
+          <LanguageToggle />
+          {online && (
+            <IconButton
+              icon="feedback"
+              onClick={openFeedback}
+              tooltip={t('common.feedback', 'Feedback')}
+              tooltipPlacement="bottom"
+            />
+          )}
+          {online && (
+            <IconButton
+              onClick={onSettingsClick}
+              type="default"
+              size="default"
+              icon="settings"
+            ></IconButton>
+          )}
+          {online && !hasAccess && (
+            <IconButton
+              type="default"
+              size="default"
+              icon="user"
+              onClick={onLoginClick}
+            ></IconButton>
+          )}
+          {online && hasAccess && (
+            <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
+          )}
+        </div>
       </header>
       <div className={styles.search}>
         {hasAccess && <AdvancedSearch />}
@@ -252,7 +266,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                     onDeleteClick={() => trackRemoveOffline(vessel)}
                   />
                 ))}
-
               </div>
             ) : (
               <div className={styles.content}>
@@ -266,7 +279,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             )}
             <Partners />
           </div>
-
         )}
         {hasSearch && (
           <Fragment>

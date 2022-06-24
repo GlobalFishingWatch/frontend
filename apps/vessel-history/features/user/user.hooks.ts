@@ -3,7 +3,12 @@ import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
-import { AUTHORIZED_PERMISSION, FLRM_PERMISSION, INSURER_PERMISSION } from 'data/config'
+import {
+  AUTHORIZED_PERMISSION,
+  FLRM_PERMISSION,
+  INSURER_PERMISSION,
+  APP_PROFILE_VIEWS,
+} from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -37,6 +42,12 @@ export const useUser = () => {
     return user && checkExistPermissionInList(user.permissions, FLRM_PERMISSION)
   }, [user])
 
+  const availableViews = useMemo(() => {
+    return APP_PROFILE_VIEWS.filter(
+      (view) => user && checkExistPermissionInList(user?.permissions, view.required_permission)
+    )
+  }, [user])
+
   const logout = useCallback(() => {
     uaEvent({
       category: 'General VV features',
@@ -56,6 +67,7 @@ export const useUser = () => {
     authorizedInspector,
     authorizedInsurer,
     authorizedFLRM,
+    availableViews,
     loading: status !== AsyncReducerStatus.Finished && status !== AsyncReducerStatus.Idle,
     logged,
     logout,
