@@ -136,7 +136,6 @@ function NewDataset(): React.ReactElement {
             const fileData = await readBlobAs(file, 'arrayBuffer')
             // TODO support multiple files in shapefile
             const expandedShp = (await shpjs(fileData)) as FeatureCollectionWithMetadata
-            console.log(expandedShp)
             if (Array.isArray(expandedShp)) {
               // geojson = expandedShp[0]
               setFileData(undefined)
