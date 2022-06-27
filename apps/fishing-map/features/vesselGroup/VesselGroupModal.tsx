@@ -9,6 +9,7 @@ import {
   VesselGroupVessel,
   VesselGroupUpsert,
   APIPagination,
+  DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import {
   Modal,
@@ -30,6 +31,7 @@ import { readBlobAs } from 'utils/files'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import styles from './VesselGroupModal.module.css'
 import {
   createVesselGroupThunk,
@@ -39,14 +41,14 @@ import {
 
 export type CSV = Record<string, any>[]
 
-type IdColumn = 'ID' | 'MMSI' | 'SSVID'
+type IdColumn = 'id' | 'mmsi' | 'ssvid'
 
 // Look for these ID columns by order of preference
-const ID_COLUMN_LOOKUP: IdColumn[] = ['ID', 'MMSI', 'SSVID']
+const ID_COLUMN_LOOKUP: IdColumn[] = ['id', 'mmsi', 'ssvid']
 
 const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
   id: key,
-  label: key,
+  label: key.toUpperCase(),
 }))
 
 function VesselGroupModal(): React.ReactElement {
@@ -59,7 +61,7 @@ function VesselGroupModal(): React.ReactElement {
   const [groupName, setGroupName] = useState<string>('Long Xing')
   // TODO use empty array
   const [IDs, setIDs] = useState<string[]>(['412422360'])
-  const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('MMSI')
+  const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('mmsi')
   const [vessels, setVessels] = useState<Vessel[]>()
 
   const onCSVLoaded = useCallback(
@@ -72,13 +74,12 @@ function VesselGroupModal(): React.ReactElement {
       if (data.length) {
         const firstRow = data[0]
         const columns = Object.keys(firstRow)
-
         let foundIdColumn
         // Try to find a CSV column matching preset ids
         for (let i = 0; i < ID_COLUMN_LOOKUP.length; i++) {
           const presetColumn = ID_COLUMN_LOOKUP[i]
-          if (columns.includes(presetColumn)) {
-            foundIdColumn = presetColumn
+          foundIdColumn = columns.find((c) => c.toLowerCase() === presetColumn)
+          if (foundIdColumn) {
             setSelectedIDColumn(presetColumn)
             break
           }
@@ -118,7 +119,9 @@ function VesselGroupModal(): React.ReactElement {
   }, [])
 
   const onIdsTextareaChange = useCallback((e) => {
-    setIDs(e.target.value.split(/[\s|,]+/))
+    const value = e.target.value
+    if (value === '') setIDs([])
+    else setIDs(value.split(/[\s|,]+/))
   }, [])
 
   const onVesselRemoveClick = useCallback(
@@ -128,6 +131,15 @@ function VesselGroupModal(): React.ReactElement {
     },
     [vessels]
   )
+
+  const close = useCallback(() => {
+    setVessels(undefined)
+    setIDs([])
+    setGroupName('')
+    setError('')
+    setLoading(false)
+    dispatch(setModalClosed({}))
+  }, [dispatch])
 
   const onClose = useCallback(() => {
     const askConfirm = vessels || IDs.length
@@ -141,9 +153,9 @@ function VesselGroupModal(): React.ReactElement {
       )
     }
     if (!askConfirm || confirmed) {
-      dispatch(setModalClosed)
+      close()
     }
-  }, [dispatch, IDs.length, t, vessels])
+  }, [close, IDs.length, t, vessels])
 
   const onBackClick = useCallback(() => {
     const confirmed = window.confirm(
@@ -161,10 +173,9 @@ function VesselGroupModal(): React.ReactElement {
   const onConfirmClick = useCallback(async () => {
     if (!vessels) {
       if (!searchDatasets) return
-      console.log(searchDatasets)
       setLoading(true)
       const dataset = searchDatasets[0]
-      const advancedQuery = IDs.map((id) => `mmsi = '${id}'`).join(' OR ')
+      const advancedQuery = IDs.map((id) => `${selectedIDColumn} = '${id}'`).join(' OR ')
 
       const datasetConfig = {
         endpoint: EndpointId.VesselAdvancedSearch,
@@ -173,6 +184,8 @@ function VesselGroupModal(): React.ReactElement {
         query: [
           { id: 'datasets', value: searchDatasets.map((d) => d.id) },
           { id: 'query', value: encodeURIComponent(advancedQuery) },
+          { id: 'limit', value: 20 },
+          { id: 'offset', value: 0 },
         ],
       }
 
@@ -191,18 +204,30 @@ function VesselGroupModal(): React.ReactElement {
       return
     }
     setLoading(true)
-    const vesselGroupVessels: VesselGroupVessel[] = vessels.map((vessel) => ({
-      vesselId: vessel.id,
-      dataset: vessel.dataset,
-    }))
+    const vesselGroupVessels: VesselGroupVessel[] = vessels.map((vessel) => {
+      const dataset = searchDatasets.find((d) => d.id === vessel.dataset)
+      const fourwings = getRelatedDatasetByType(dataset, DatasetTypes.Fourwings)
+      // TODO not sure we shoud get 4w dataset from search dataset
+      return {
+        vesselId: vessel.id,
+        // dataset: fourwings?.id,
+        dataset: 'public-global-fishing-effort:v20201001',
+      }
+    })
     const vesselGroup: VesselGroupUpsert = {
       name: groupName,
       vessels: vesselGroupVessels,
     }
 
     const dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
-    console.log(dispatchedAction)
-  }, [vessels, dispatch, searchDatasets, IDs, groupName])
+    if (dispatchedAction.meta.requestStatus === 'fulfilled') {
+      close()
+    } else {
+      setError(t('errors.genericShort', 'Something went wrong'))
+    }
+  }, [vessels, dispatch, searchDatasets, IDs, groupName, t, selectedIDColumn, close])
+
+  const disableIDField = !!vessels
 
   return (
     <Modal
@@ -222,19 +247,20 @@ function VesselGroupModal(): React.ReactElement {
             value={groupName}
             onChange={onGroupNameChange}
           />
-          <Select
+          {/* <Select
             key="source"
             label={t('vesselGroup.source', 'Source')}
             options={[{ id: 'ais', label: 'ais' }]}
             selectedOption={{ id: 'ais', label: 'ais' }}
             onSelect={(e) => console.log(e)}
-          />
+          /> */}
           <Select
             key="IDfield"
             label={t('vesselGroup.idField', 'ID field')}
             options={ID_COLUMNS_OPTIONS}
             selectedOption={selectedIDColumnOption}
             onSelect={onIdFieldChange}
+            disabled={disableIDField}
           />
         </div>
         {vessels ? (
@@ -353,12 +379,14 @@ function VesselGroupModal(): React.ReactElement {
         </div>
 
         {vessels && (
-          <Button type="secondary" onClick={onBackClick}>
+          <Button type="secondary" className={styles.backButton} onClick={onBackClick}>
             {t('common.back', 'back')}
           </Button>
         )}
         <Button
-          disabled={loading || !IDs.length || (vessels && !vessels.length)}
+          disabled={
+            loading || !IDs.length || (vessels && !vessels.length) || (vessels && groupName === '')
+          }
           onClick={onConfirmClick}
           loading={loading}
         >

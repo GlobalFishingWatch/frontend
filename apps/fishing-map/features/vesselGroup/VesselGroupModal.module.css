@@ -122,3 +122,7 @@
   width: 3rem;
   overflow: visible;
 }
+
+.backButton {
+  margin-right: 1rem;
+}

@@ -1,30 +1,17 @@
-import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 import { VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
-import {
-  AsyncReducerStatus,
-  AsyncError,
-  asyncInitialState,
-  AsyncReducer,
-  createAsyncSlice,
-} from 'utils/async-slice'
+import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { API_VERSION } from 'data/config'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
-  // status: AsyncReducerStatus
-  // error: AsyncError
-  // data: VesselGroup[]
   isModalOpen: boolean
 }
 
 const initialState: VesselGroupsSliceState = {
   ...asyncInitialState,
-  // status: AsyncReducerStatus.Idle,
-  // error: {},
-  // data: [],
   isModalOpen: false,
-  // isModalOpen: true,
 }
 
 const fetchVesselGroupsByIdsThunk = createAsyncThunk(
@@ -51,8 +38,7 @@ export const createVesselGroupThunk = createAsyncThunk(
     const url = `/${API_VERSION}/vessel-groups/`
     const method = 'POST'
 
-    // TODO type anys
-    const vesselGroupUpdated = await GFWAPI.fetch<any>(url, {
+    const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(url, {
       method,
       body: vesselGroup,
     } as FetchOptions<any>)
@@ -68,7 +54,6 @@ export const deleteVesselGroupThunk = createAsyncThunk<
   }
 >('vessel-groups/delete', async (id: any, { rejectWithValue }) => {
   try {
-    debugger
     const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/${API_VERSION}/vessel-groups/${id}`, {
       method: 'DELETE',
     })
@@ -92,30 +77,6 @@ const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setModalClosed: (state) => {
       state.isModalOpen = false
     },
-  },
-  extraReducers: (builder) => {
-    // builder.addCase(saveVesselGroupThunk.pending, (state) => {
-    //   state.status = AsyncReducerStatus.Loading
-    // })
-    // builder.addCase(saveVesselGroupThunk.fulfilled, (state, action) => {
-    //   state.status = AsyncReducerStatus.Finished
-    //   const payload = action.payload as any
-    // })
-    // builder.addCase(saveVesselGroupThunk.rejected, (state, action) => {
-    //   state.status = AsyncReducerStatus.Error
-    //   console.log('rejected')
-    // })
-    // builder.addCase(fetchVesselGroupsThunk.pending, (state) => {
-    //   state.status = AsyncReducerStatus.Loading
-    // })
-    // builder.addCase(fetchVesselGroupsThunk.fulfilled, (state, action) => {
-    //   state.status = AsyncReducerStatus.Finished
-    //   state.data = action.payload as VesselGroup[]
-    // })
-    // builder.addCase(fetchVesselGroupsThunk.rejected, (state, action) => {
-    //   state.status = AsyncReducerStatus.Error
-    //   console.log('rejected')
-    // })
   },
   thunks: {
     fetchThunk: fetchVesselGroupsByIdsThunk,

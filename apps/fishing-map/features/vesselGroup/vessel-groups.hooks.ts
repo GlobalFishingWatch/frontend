@@ -41,7 +41,7 @@ export const useVesselGroupSelectWithModal = (options, onSelect, className) => {
   const onSelectVesselGroupFilterClick = useCallback(
     (id, selection: MultiSelectOption) => {
       if (selection.id === OPEN_MODAL_ID) {
-        dispatch(setModalOpen)
+        dispatch(setModalOpen({}))
         return
       }
       if (onSelect) onSelect('vesselGroups', selection)
