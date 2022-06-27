@@ -13,6 +13,20 @@ class MyDocument extends Document {
         <Head>
           <head>
             <meta charSet="utf-8" />
+            <title>GFW | Map</title>
+
+            <meta
+              property="og:description"
+              content="The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea."
+            />
+            <meta
+              name="twitter:description"
+              content="The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea."
+            />
+            <meta
+              name="description"
+              content="The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea."
+            />
             <meta
               name="viewport"
               content="width=device-width, initial-scale=1, viewport-fit=cover"
@@ -173,21 +187,6 @@ class MyDocument extends Document {
             <meta name="msapplication-TileImage" content="icons/mstile-144x144.png" />
             <meta name="msapplication-config" content="icons/browserconfig.xml" />
             <link rel="canonical" href="https://globalfishingwatch.org/map" />
-
-            <title>GFW | Map</title>
-
-            <meta
-              property="og:description"
-              content="Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability."
-            />
-            <meta
-              name="twitter:description"
-              content="Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability."
-            />
-            <meta
-              name="description"
-              content="Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability."
-            />
           </head>
         </Head>
         <body>

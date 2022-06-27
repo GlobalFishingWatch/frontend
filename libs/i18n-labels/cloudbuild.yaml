@@ -1,0 +1,62 @@
+steps:
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache
+    waitFor: ['-']
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+
+  - id: 'install-yarn'
+    waitFor: ['restore_cache']
+    name: gcr.io/cloud-builders/yarn
+    entrypoint: bash
+    args:
+      - '-c'
+      # if dependencies cache is not found then install all deps
+      - |
+        if [ ! -d "node_modules" ]; then
+          yarn install --frozen-lockfile
+        fi
+
+  - id: 'save_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/save_cache'
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+      - '--path=./node_modules'
+      - '--no-clobber'
+
+  - id: 'setup auth to npmjs'
+    waitFor: ['install-yarn']
+    name: node:14
+    args:
+      - '-c'
+      - |
+        echo "//registry.npmjs.org/:_authToken=$$NODE_AUTH_TOKEN" > .npmrc
+    entrypoint: bash
+    secretEnv:
+      - NODE_AUTH_TOKEN
+
+  - id: 'i18n-labels publish stable'
+    waitFor: ['setup auth to npmjs']
+    name: node:14
+    env:
+      - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
+    entrypoint: npx
+    args: ['nx', 'publish:stable', 'i18n-labels']
+
+  - id: 'i18n-labels purge stable'
+    waitFor: ['i18n-labels publish stable']
+    name: node:14
+    env:
+      - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
+    entrypoint: npx
+    args: ['nx', 'purge:stable', 'i18n-labels']
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/NPM_TOKEN/versions/latest
+      env: NODE_AUTH_TOKEN
+
+timeout: 300s

@@ -53,6 +53,24 @@
   border-image-slice: 50% 6 fill;
 }
 
+.fishing.compact {
+  height: 3px;
+  min-width: 3px;
+}
+
+.port_visit.compact {
+  height: 6px;
+  min-width: 6px;
+}
+
+.encounter.compact {
+  border-width: 3px;
+}
+
+.loitering.compact {
+  border-width: 3px;
+}
+
 .encounter:hover,
 .encounter.highlighted,
 .loitering:hover,

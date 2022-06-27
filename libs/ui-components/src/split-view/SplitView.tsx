@@ -46,7 +46,7 @@ export function SplitView(props: SplitViewProps) {
   const isSmallScreen = useSmallScreen()
 
   const handleClick = useCallback(
-    (e) => {
+    (e: any) => {
       setInternalOpen(!internalOpen)
       if (onToggle) {
         onToggle(e)

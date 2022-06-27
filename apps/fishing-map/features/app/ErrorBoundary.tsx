@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import { Component, useState } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 import { Button } from '@globalfishingwatch/ui-components'
 import styles from './ErrorBoundary.module.css'

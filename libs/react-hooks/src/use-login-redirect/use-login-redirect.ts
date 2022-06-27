@@ -10,10 +10,13 @@ export const setRedirectUrl = (callbackUrlKey: string = DEFAULT_CALLBACK_URL_KEY
 }
 
 export const getLoginUrl = (callbackUrlParam: string = DEFAULT_CALLBACK_URL_PARAM) => {
-  const { origin, pathname } = window.location
-  return GFWAPI.getLoginUrl(
-    `${origin}${pathname}${callbackUrlParam ? `?${callbackUrlParam}=true` : ''}`
-  )
+  if (typeof window !== 'undefined') {
+    const { origin, pathname } = window.location
+    return GFWAPI.getLoginUrl(
+      `${origin}${pathname}${callbackUrlParam ? `?${callbackUrlParam}=true` : ''}`
+    )
+  }
+  return ''
 }
 
 export const redirectToLogin = (

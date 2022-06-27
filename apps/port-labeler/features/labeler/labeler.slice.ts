@@ -22,6 +22,7 @@ export type ProjectSlice = {
   selected: string[]
   subareas: CountrySelectMap
   ports: CountrySelectMap
+  extraData: boolean
 }
 
 const initialState: ProjectSlice = {
@@ -34,14 +35,19 @@ const initialState: ProjectSlice = {
   selected: [],
   subareas: {},
   ports: {},
+  extraData: false
 }
 
+// This slice in in change of manage the values of the points and sort the table
 const slice = createSlice({
   name: 'labeler',
   initialState,
   reducers: {
     setData: (state, action: PayloadAction<PortPosition[]>) => {
       state.data = action.payload
+    },
+    toogleExtraData: (state, action: PayloadAction<PortPosition[]>) => {
+      state.extraData = !state.extraData
     },
     setSelectedPoints: (state, action: PayloadAction<string[]>) => {
       state.selected = action.payload
@@ -163,11 +169,13 @@ export const {
   changeSubareaValue,
   changePointValue,
   sortPoints,
-  sortOptions
+  sortOptions,
+  toogleExtraData
 } = slice.actions
 
 export default slice.reducer
 
+export const selectDisplayExtraData = (state: RootState) => state.labeler.extraData
 export const selectSelectedPoints = (state: RootState) => state.labeler.selected
 export const selectCountry = (state: RootState) => state.labeler.country
 export const selectHoverPoint = (state: RootState) => state.labeler.hover

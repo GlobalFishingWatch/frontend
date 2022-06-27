@@ -15,9 +15,13 @@ const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceT
   return response
 }
 
-const handleError = ({ error }: any) => {
+const handleError = async ({ error }: any) => {
   if (error?.status === 401 && error?.url.includes('globalfishingwatch')) {
-    GFWAPI.refreshAPIToken()
+    try {
+      await GFWAPI.refreshAPIToken()
+    } catch (e) {
+      console.warn(e)
+    }
   }
 }
 

@@ -48,6 +48,7 @@ const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
 
 export type FetchResourceThunkParams = {
   resource: Resource
+  resourceKey?: string
   parseEventCb?: ParseEventCallback
   parseUserTrackCb?: ParseTrackCallback
 }
@@ -56,7 +57,7 @@ export type ParseTrackCallback = (data: FeatureCollection) => FeatureCollection
 
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
-  async ({ resource, parseEventCb, parseUserTrackCb }: FetchResourceThunkParams) => {
+  async ({ resource, parseEventCb, parseUserTrackCb }: FetchResourceThunkParams, { signal }) => {
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
     const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
@@ -66,7 +67,7 @@ export const fetchResourceThunk = createAsyncThunk(
         ? 'vessel'
         : 'json'
 
-    const data = await GFWAPI.fetch(resource.url, { responseType }).then((data: any) => {
+    const data = await GFWAPI.fetch(resource.url, { responseType, signal }).then((data: any) => {
       // TODO Replace with enum?
       if (isTrackResource) {
         const fields = (
@@ -109,13 +110,25 @@ export const fetchResourceThunk = createAsyncThunk(
     }
   },
   {
-    condition: ({ resource }: FetchResourceThunkParams, { getState }) => {
+    condition: ({ resource, resourceKey }: FetchResourceThunkParams, { getState }) => {
       const { resources } = getState() as PartialStoreResources
-      const { status } = resources[resource.url] || {}
+      const key = resourceKey || resource.url
+      const { status } = resources[key] || {}
       return !status || (status !== ResourceStatus.Loading && status !== ResourceStatus.Finished)
     },
   }
 )
+
+const getChunkSetChunks = (state: ResourcesState, chunkSetId: string) => {
+  const chunks = Object.keys(state)
+    .map((k) => state[k])
+    .filter(
+      (resource) =>
+        resource.datasetConfig.metadata?.chunkSetId === chunkSetId &&
+        !resource.datasetConfig.metadata?.chunkSetMerged
+    )
+  return chunks
+}
 
 export const resourcesSlice = createSlice({
   name: 'resources',
@@ -124,43 +137,61 @@ export const resourcesSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
       const { resource } = action.meta.arg
-      state[resource.url] = { status: ResourceStatus.Loading, ...resource }
+      const key = action.meta.arg.resourceKey || resource.url
+      state[key] = { status: ResourceStatus.Loading, ...resource }
+      const thisChunkSetId = resource.datasetConfig?.metadata?.chunkSetId
+      if (thisChunkSetId) {
+        state[thisChunkSetId] = {
+          ...resource,
+          status: ResourceStatus.Loading,
+          datasetConfig: {
+            ...resource.datasetConfig,
+            metadata: {
+              ...resource.datasetConfig.metadata,
+              chunkSetMerged: true,
+            },
+          },
+        }
+      }
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
       const { url } = action.payload
-      const resource = { status: ResourceStatus.Finished, ...action.payload }
-      state[url] = resource
+      const key = action.meta.arg.resourceKey || url
+      state[key] = { status: ResourceStatus.Finished, ...action.payload }
 
+      const chunkSetId = action.payload.datasetConfig.metadata?.chunkSetId
       // If resource is part of a chunk set (ie tracks by year), rebuild the whole set into a single resource
-      if (action.payload.datasetConfig.metadata?.chunkSetId) {
-        const thisChunkSetId = action.payload.datasetConfig.metadata?.chunkSetId
-        const chunks = Object.keys(state)
-          .map((k) => state[k])
-          .filter((resource) => resource.datasetConfig.metadata?.chunkSetId === thisChunkSetId)
-
+      if (chunkSetId) {
+        const chunkSetChunks = getChunkSetChunks(state, chunkSetId)
         if (
-          chunks.map((chunk) => chunk.status).some((status) => status === ResourceStatus.Finished)
+          chunkSetChunks
+            .map((chunk) => chunk.status)
+            .some((status) => status === ResourceStatus.Finished)
         ) {
-          const mergedData = mergeTrackChunks(chunks.map((chunk) => chunk.data) as any)
+          const mergedData = mergeTrackChunks(chunkSetChunks.map((chunk) => chunk.data) as any)
 
-          // TODO should we always use URL as key or is this ok?
-          state[thisChunkSetId] = {
-            ...resource,
+          state[chunkSetId] = {
+            ...state[chunkSetId],
             data: mergedData,
-            datasetConfig: {
-              ...resource.datasetConfig,
-              metadata: {
-                ...resource.datasetConfig.metadata,
-                chunkSetMerged: true,
-              },
-            },
+            status: ResourceStatus.Finished,
           }
         }
       }
     })
     builder.addCase(fetchResourceThunk.rejected, (state, action) => {
       const { url } = action.meta.arg.resource
-      state[url].status = ResourceStatus.Error
+      const key = action.meta.arg.resourceKey || url
+      const resource = state[key]
+      if (action.meta.arg.resource.url === resource.url) {
+        resource.status = ResourceStatus.Error
+      }
+      const chunkSetId = resource.datasetConfig.metadata?.chunkSetId
+      if (chunkSetId) {
+        state[chunkSetId] = {
+          ...state[chunkSetId],
+          status: ResourceStatus.Error,
+        }
+      }
     })
   },
 })

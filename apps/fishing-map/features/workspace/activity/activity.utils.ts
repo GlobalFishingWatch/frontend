@@ -3,14 +3,11 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 
-export const isFishingDataview = (dataview: UrlDataviewInstance) =>
-  dataview.dataviewId === FISHING_DATAVIEW_ID || dataview.category === DataviewCategory.Fishing
-
-export const isPresenceDataview = (dataview: UrlDataviewInstance) =>
-  dataview.dataviewId === PRESENCE_DATAVIEW_ID || dataview.category === DataviewCategory.Presence
-
 export const isActivityDataview = (dataview: UrlDataviewInstance) =>
-  isFishingDataview(dataview) || isPresenceDataview(dataview)
+  dataview.dataviewId === FISHING_DATAVIEW_ID || dataview.category === DataviewCategory.Activity
+
+export const isDetectionsDataview = (dataview: UrlDataviewInstance) =>
+  dataview.dataviewId === PRESENCE_DATAVIEW_ID || dataview.category === DataviewCategory.Detections
 
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,

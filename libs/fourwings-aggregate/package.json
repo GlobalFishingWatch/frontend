@@ -2,9 +2,9 @@
   "name": "@globalfishingwatch/fourwings-aggregate",
   "version": "4.2.0",
   "description": "Logic to turn fourwings tiles or cells into meaningful values for the frontend",
-  "main": "../../dist/libs/fourwings-aggregate/index.umd.js",
-  "module": "../../dist/libs/fourwings-aggregate/index.esm.js",
-  "typings": "../../dist/libs/fourwings-aggregate/index.d.ts",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.esm.js",
+  "typings": "./dist/index.d.ts",
   "license": "MIT",
   "author": "satellitestudio <contact@satellitestud.io>",
   "repository": {

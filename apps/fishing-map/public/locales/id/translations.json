@@ -68,6 +68,7 @@
     "context_area_other": "Context areas",
     "copiedToClipboard": "Tautan untuk membagikan tampilan ini telah disalin ke papan klip Anda.",
     "country_other": "countries",
+    "detections": "Detections",
     "date": "Date",
     "date_one": "Date",
     "date_other": "Dates",
@@ -85,6 +86,7 @@
     "feedback": "Umpan balik",
     "fishing": "Memancing",
     "from": "from",
+    "globally": "globally",
     "help": "Tolong",
     "hideAllHelpHints": "Dismiss all",
     "hideHelpHint": "Dismiss",
@@ -218,6 +220,7 @@
     "contactUs": "Harap <1> hubungi kami </1> untuk melaporkan masalah tersebut.",
     "datasetNotFound": "Dataset tidak ditemukan",
     "datasetNotValid": "Tampaknya ada yang salah dengan file Anda",
+    "datasetShapefileMultiple": "Shapefiles containing multiple components (mutiple file names) are not supported yet",
     "fields": "Kesalahan dengan bidang {{fields}}",
     "generic": "Ada yang tidak beres, Silahkan coba lagi atau hubungi:",
     "genericShort": "Ada yang tidak beres",
@@ -238,7 +241,11 @@
     "workspaceDuplicatedName": "Sudah ada ruang kerja dengan nama ini",
     "workspaceLoad": "Terjadi kesalahan saat memuat ruang kerja. Silahkan coba lagi.",
     "workspaceMissingName": "Nama ruang kerja diperlukan",
-    "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
+    "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -344,6 +351,8 @@
     "source_one": "Source",
     "source_other": "Sources",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
+    "type": "Type",
     "toggleCombinationMode": {
       "combine": "Gabungkan layer",
       "split": "Pisahkan layer"
@@ -397,7 +406,8 @@
     "maxTracksNumber": "Track detail not available for more than 10 vessels"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
+    "activityDisabled": "Select at least one activity layer",
+    "detectionsDisabled": "Select at least one detection layer.",
     "graph": "Grafik",
     "graphDepth": "Vessel depth",
     "graphDisabled": "Not available with more than 2 vessels selected",
@@ -405,7 +415,8 @@
     "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Tutup pengaturan timebar",
     "settings_open": "Buka pengaturan timebar",
-    "showFishingEffort": "Tampilkan grafik jam memancing",
+    "showActivity": "Show activity graph",
+    "showDetections": "Show detections graph",
     "showGraphDepth": "Show track depth graph",
     "showGraphSpeed": "Show track speed graph",
     "showPresence": "Show presence graph",
@@ -487,6 +498,7 @@
     "registeredGearType": "Jenis peralatan terdaftar",
     "shiptype": "Vessel type",
     "source": "Sumber",
+    "ssvid": "Ssvid",
     "source_short": "Source",
     "target_species": "Target species",
     "targetSpecies": "Target species",
@@ -508,13 +520,20 @@
     "nameInput": "Nama ruang kerja",
     "new": "Ruang kerja baru",
     "noVesselInFilters": "No vessels match your current filters",
+    "noDetectionInFilters": "No detections match your current filters",
     "privateTitle_other": "Private workspaces",
     "remove": "Hapus ruang kerja",
     "save": "Simpan tampilan saat ini",
     "saveAsNew": "Save as new workspace",
     "saved": "Tampilan saat ini telah disimpan dan tersedia di profil Anda",
     "saveLogin": "Anda harus masuk untuk menyimpan tampilan (gratis, 2 menit)",
+    "siteDescription": {
+      "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
+    },
     "title_other": "Workspaces",
+    "user": "User workspace",
     "update": "Update",
     "uploadPublic": "Allow other users to see this workspace",
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets"

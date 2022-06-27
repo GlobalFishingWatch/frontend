@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { TooltipEventFeature } from 'features/map/map.hooks'
@@ -11,10 +11,10 @@ type ContextTooltipRowProps = {
 
 function parseEnvironmentalValue(value: any) {
   if (typeof value === 'number') {
-    return value.toFixed(2)
+    return value
   }
   if (typeof value === 'string') {
-    return parseFloat(value).toFixed(2)
+    return parseFloat(value)
   }
   return value as number
 }

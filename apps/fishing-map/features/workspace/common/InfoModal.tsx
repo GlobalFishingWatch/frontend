@@ -17,10 +17,17 @@ type InfoModalProps = {
   dataview: UrlDataviewInstance
   onClick?: (e: React.MouseEvent) => void
   className?: string
+  showAllDatasets?: boolean
   onModalStateChange?: (open: boolean) => void
 }
 
-const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoModalProps) => {
+const InfoModal = ({
+  dataview,
+  onClick,
+  className,
+  onModalStateChange,
+  showAllDatasets,
+}: InfoModalProps) => {
   const { t } = useTranslation()
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
@@ -35,7 +42,11 @@ const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoMod
         if (!datasetConfig) return []
         const hasDatasetVesselId = getVesselIdFromDatasetConfig(datasetConfig)
         if (!hasDatasetVesselId) return []
-      } else if (dataview.config?.datasets && !dataview.config?.datasets?.includes(dataset.id)) {
+      } else if (
+        !showAllDatasets &&
+        dataview.config?.datasets &&
+        !dataview.config?.datasets?.includes(dataset.id)
+      ) {
         return []
       }
       return {

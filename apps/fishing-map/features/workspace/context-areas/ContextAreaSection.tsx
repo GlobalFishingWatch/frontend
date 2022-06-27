@@ -1,5 +1,6 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
+import { SortableContext } from '@dnd-kit/sortable'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -21,7 +22,7 @@ import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
-  const { dispatchSetDrawMode } = useMapDrawConnect()
+  const { dispatchSetMapDrawing } = useMapDrawConnect()
   const { dispatchQueryParams } = useLocationConnect()
 
   const readOnly = useSelector(selectReadOnly)
@@ -29,13 +30,13 @@ function ContextAreaSection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onDrawClick = useCallback(() => {
-    dispatchSetDrawMode('draw')
+    dispatchSetMapDrawing(true)
     dispatchQueryParams({ sidebarOpen: false })
     uaEvent({
       category: 'Reference layer',
       action: `Draw a custom reference layer - Start`,
     })
-  }, [dispatchQueryParams, dispatchSetDrawMode])
+  }, [dispatchQueryParams, dispatchSetMapDrawing])
 
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
@@ -109,11 +110,13 @@ function ContextAreaSection(): React.ReactElement {
           </Fragment>
         )}
       </div>
-      {dataviews?.map((dataview) => (
-        <LayerPanelContainer key={dataview.id} dataview={dataview}>
-          <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-        </LayerPanelContainer>
-      ))}
+      <SortableContext items={dataviews}>
+        {dataviews?.map((dataview) => (
+          <LayerPanelContainer key={dataview.id} dataview={dataview}>
+            <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+          </LayerPanelContainer>
+        ))}
+      </SortableContext>
     </div>
   )
 }

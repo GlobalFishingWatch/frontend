@@ -1,4 +1,5 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
@@ -14,10 +15,16 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { isWorkspaceLocation, selectLocationCategory } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
-import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
+
+const NewWorkspaceModal = dynamic(
+  () =>
+    import(
+      /* webpackChunkName: "NewWorkspaceModal" */ 'features/workspace/shared/NewWorkspaceModal'
+    )
+)
 
 function SaveWorkspaceButton() {
   const [showWorkspaceCreateModal, setShowWorkspaceCreateModal] = useState(false)

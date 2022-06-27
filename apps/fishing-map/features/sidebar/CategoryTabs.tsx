@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useState } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
@@ -14,11 +15,14 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
-import FeedbackModal from 'features/feedback/FeedbackModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import HintsHub from 'features/help/hints/HintsHub'
 import styles from './CategoryTabs.module.css'
+
+const FeedbackModal = dynamic(
+  () => import(/* webpackChunkName: "FeedbackModal" */ 'features/feedback/FeedbackModal')
+)
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
   latitude: 10,
@@ -149,7 +153,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
       </ul>
       {/* <HelpModal isOpen={modalHelpOpen} onClose={() => setModalHelpOpen(false)} /> */}
-      <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} />
+      {modalFeedbackOpen && (
+        <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} />
+      )}
     </Fragment>
   )
 }

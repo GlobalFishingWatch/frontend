@@ -15,11 +15,11 @@
 
 .optionsContainer {
   position: absolute;
-  width: 24rem;
   padding: var(--space-M);
   background-color: var(--color-white);
   bottom: 5rem;
   right: 0;
+  white-space: nowrap;
 }
 
 .optionsContainer::after {

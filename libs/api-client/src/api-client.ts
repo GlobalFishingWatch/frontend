@@ -5,6 +5,7 @@ import type {
   ResourceRequestType,
 } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
+import { parseAPIError } from './utils/errors'
 
 const API_GATEWAY =
   process.env.API_GATEWAY ||
@@ -343,7 +344,8 @@ export class GFW_API_CLASS {
         // 403 = not authorized => trying to refresh the token
         // 401 + refreshError = true => refresh token failed
         if (refreshRetries <= this.maxRefreshRetries) {
-          if (e.status === 401 || e.status === 403) {
+          const isAuthError = e.status === 401 || e.status === 403
+          if (isAuthError) {
             if (this.debug) {
               console.log(`GFWAPI: Trying to refresh the token attempt: ${refreshRetries}`)
             }
@@ -359,10 +361,10 @@ export class GFW_API_CLASS {
               localStorage.removeItem(this.storageKeys.token)
               localStorage.removeItem(this.storageKeys.refreshToken)
               e.refreshError = true
-              throw e
+              throw parseAPIError(e)
             }
           }
-          if (e.status !== 400) {
+          if (isAuthError || e.status >= 500) {
             return this._internalFetch(url, options, ++refreshRetries, waitLogin)
           }
           throw e
@@ -373,14 +375,14 @@ export class GFW_API_CLASS {
             }
             console.warn(`GFWAPI: Error fetching ${url}`, e)
           }
-          throw e
+          throw parseAPIError(e)
         }
       }
     } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Error fetching ${url}`, e)
       }
-      throw e
+      throw parseAPIError(e)
     }
   }
 

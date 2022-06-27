@@ -68,6 +68,7 @@
     "context_area_other": "Calques de référence",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
     "country_other": "pays",
+    "detections": "Detections",
     "date": "Date",
     "date_one": "Date",
     "date_other": "Dates",
@@ -85,6 +86,7 @@
     "feedback": "Vos commentaires",
     "fishing": "Pêche",
     "from": "de",
+    "globally": "globalement",
     "help": "Aide",
     "hideAllHelpHints": "Tout ignorer",
     "hideHelpHint": "Ignorer",
@@ -218,6 +220,7 @@
     "contactUs": "Veuillez <1>nous contacter</1> pour signaler le problème.",
     "datasetNotFound": "Jeu de données introuvable",
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
+    "datasetShapefileMultiple": "Shapefiles containing multiple components (mutiple file names) are not supported yet",
     "fields": "Erreurs avec les champs {{fields}}",
     "generic": "Quelque chose s'est mal passé, veuillez réessayer ou contacter:",
     "genericShort": "Quelque chose s'est mal passé",
@@ -238,7 +241,11 @@
     "workspaceDuplicatedName": "Il existe déjà un espace de travail portant ce nom",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer.",
     "workspaceMissingName": "Le nom de l'espace de travail est requis",
-    "workspaceNotFound": "La vue demandée n'a pas été trouvée"
+    "workspaceNotFound": "La vue demandée n'a pas été trouvée",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}j",
@@ -344,6 +351,8 @@
     "source_one": "Source",
     "source_other": "Sources",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
+    "type": "Type",
     "toggleCombinationMode": {
       "combine": "Combiner les calques",
       "split": "Séparer les calques"
@@ -397,7 +406,8 @@
     "maxTracksNumber": "Détail des trajectoires non disponible pour plus de 10 navires"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Sélectionnez au moins un calque d'effort de pêche apparent",
+    "activityDisabled": "Select at least one activity layer",
+    "detectionsDisabled": "Select at least one detection layer.",
     "graph": "Graphique",
     "graphDepth": "Profondeur du navire",
     "graphDisabled": "Non disponible avec plus d'un navire sélectionné",
@@ -405,7 +415,8 @@
     "presenceDisabled": "Sélectionnez au moins un calque de présence",
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Ouvrir les paramètres de la barre de temps",
-    "showFishingEffort": "Afficher le graphique des heures de pêche",
+    "showActivity": "Show activity graph",
+    "showDetections": "Show detections graph",
     "showGraphDepth": "Afficher le graphique de profondeur",
     "showGraphSpeed": "Afficher le graphique de vitesse",
     "showPresence": "Montrer le graphique de présence",
@@ -487,6 +498,7 @@
     "registeredGearType": "Type d'équipement enregistré",
     "shiptype": "Types de navires",
     "source": "Source",
+    "ssvid": "Ssvid",
     "source_short": "Source",
     "target_species": "Espèces pêchées",
     "targetSpecies": "Espèces pêchées",
@@ -508,13 +520,20 @@
     "nameInput": "Nom de la vue",
     "new": "Nouvelle vue",
     "noVesselInFilters": "No vessels match your current filters",
+    "noDetectionInFilters": "No detections match your current filters",
     "privateTitle_other": "Espace de travail privé",
     "remove": "Supprimer la vue",
     "save": "Enregistrer la vue actuelle",
     "saveAsNew": "Enregistrer comme nouvel espace de travail",
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil",
     "saveLogin": "Vous devez vous connecter pour enregistrer les vues (gratuit, 2 minutes)",
+    "siteDescription": {
+      "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
+      "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
+    },
     "title_other": "Espaces de travail",
+    "user": "User workspace",
     "update": "Mise à jour",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir cet espace de travail",
     "uploadPublicDisabled": "Cet espace de travail ne peut pas être partagé publiquement car il contient des jeux de données privés"

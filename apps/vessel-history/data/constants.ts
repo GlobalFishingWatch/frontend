@@ -10,9 +10,8 @@ export const BASE_DATASET =
 export const SHOW_VESSEL_API_SOURCE = true
 
 export const API_GATEWAY = process.env.NEXT_PUBLIC_API_GATEWAY
-export const LANDMASS_OFFLINE_GEOJSON = `${
-  process.env.NEXT_PUBLIC_URL ?? ''
-}/data/ne_10m_admin_0_countries_gj.geojson`
+export const LANDMASS_OFFLINE_GEOJSON = `${process.env.NEXT_PUBLIC_URL ?? ''
+  }/data/ne_10m_admin_0_countries_gj.geojson`
 
 export const TMT_CONTACT_US_URL = process.env.NEXT_PUBLIC_TMT_CONTACT_US_URL
 

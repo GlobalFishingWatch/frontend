@@ -1,8 +1,14 @@
 {
-  "root": "apps/api-portal",
   "sourceRoot": "apps/api-portal",
   "projectType": "application",
   "targets": {
+    "changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["./changelog.sh api-portal \"API Portal\""],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
@@ -70,7 +76,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/api-portal"],
       "options": {
-        "jestConfig": "apps/api-portal/jest.config.js",
+        "jestConfig": "apps/api-portal/jest.config.ts",
         "passWithNoTests": true
       }
     }

@@ -52,7 +52,7 @@ export const selectTracksData = createSelector(
 
       let trackResource
       if (endpointType === EndpointId.Tracks) {
-        trackResource = pickTrackResource(dataview, endpointType, resources)
+        trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
       } else {
         const { url } = resolveDataviewDatasetResource(dataview, [DatasetTypes.UserTracks])
         trackResource = resources[url] as Resource<TrackResourceData>
@@ -75,6 +75,7 @@ export const selectTracksData = createSelector(
         const useOwnColor = trackDataviews.length === 1 && endpointType === EndpointId.UserTracks
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
+          // TODO This assumes that segments ends at last value's timestamp, which is probably incorrect
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
           values: segment as TimebarChartValue[],
           props: {
@@ -117,70 +118,60 @@ const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnA
   value ? `${value.value} m` : ''
 
 export const selectTracksGraphData = createSelector(
-  [selectTracksData, selectActiveVesselsDataviews, selectResources, selectTimebarGraph],
-  (tracksData, vesselDataviews, resources, timebarGraphType) => {
-    if (!tracksData || !resources) return
-    const tracksGraphsData: TimebarChartData = vesselDataviews.flatMap(
-      (dataview, dataviewIndex) => {
-        const trackGraphData: TimebarChartItem = {
-          color: dataview.config?.color,
-          chunks: [],
-          status: ResourceStatus.Idle,
-          getHighlighterLabel:
-            timebarGraphType === 'speed'
-              ? getTrackGraphSpeedHighlighterLabel
-              : getTrackGraphElevationighlighterLabel,
-        }
-
-        const { url: graphUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks, {
-          id: 'fields',
-          value: timebarGraphType,
-        })
-        if (!graphUrl) return trackGraphData
-        const graphResource = resources[graphUrl] as Resource<TrackResourceData>
-
-        // TODO better by id?
-        const track = tracksData[dataviewIndex]
-
-        if (
-          track.status === ResourceStatus.Loading ||
-          !graphResource ||
-          graphResource.status === ResourceStatus.Loading
-        ) {
-          return { ...trackGraphData, status: ResourceStatus.Loading }
-        } else if (
-          track.status === ResourceStatus.Error ||
-          graphResource.status === ResourceStatus.Error ||
-          (graphResource.status === ResourceStatus.Finished && !graphResource?.data)
-        ) {
-          return { ...trackGraphData, status: ResourceStatus.Error }
-        }
-
-        const graphChunksWithCurrentFeature: TimebarChartChunk[] = track.chunks.map(
-          (trackChunk, trackChunkIndex) => {
-            const graphSegment = graphResource?.data?.[trackChunkIndex]
-            const graphChunkValues: TimebarChartValue[] = trackChunk.values?.flatMap(
-              (trackSegmentPoint, trackSegmentPointIndex) => {
-                const graphSegmentPoint = graphSegment?.[trackSegmentPointIndex]
-                const value = (graphSegmentPoint as any)?.[timebarGraphType]
-                if (!value) return []
-                return {
-                  timestamp: trackSegmentPoint.timestamp,
-                  value,
-                }
-              }
-            )
-            const graphChunk: TimebarChartChunk = {
-              ...trackChunk,
-              values: graphChunkValues,
-            }
-            return graphChunk
-          }
-        )
-        trackGraphData.chunks = graphChunksWithCurrentFeature
-        return trackGraphData
+  [selectActiveVesselsDataviews, selectResources, selectTimebarGraph],
+  (vesselDataviews, resources, timebarGraphType) => {
+    if (!resources) return
+    const tracksGraphsData: TimebarChartData = vesselDataviews.flatMap((dataview) => {
+      const trackGraphData: TimebarChartItem = {
+        color: dataview.config?.color,
+        chunks: [],
+        status: ResourceStatus.Idle,
+        getHighlighterLabel:
+          timebarGraphType === 'speed'
+            ? getTrackGraphSpeedHighlighterLabel
+            : getTrackGraphElevationighlighterLabel,
+        getHighlighterIcon: 'vessel',
       }
-    )
+
+      const resourcesQueries = resolveDataviewDatasetResources(dataview, DatasetTypes.Tracks)
+      const resourceQuery = resourcesQueries.find((r) =>
+        r.datasetConfig.query?.find(
+          (q) => q.id === 'fields' && q.value.toString().includes(timebarGraphType)
+        )
+      )
+      const graphUrl = resourceQuery?.url
+      if (!graphUrl) return trackGraphData
+      const graphResource = resources[graphUrl] as Resource<TrackResourceData>
+
+      if (!graphResource || graphResource.status === ResourceStatus.Loading) {
+        return { ...trackGraphData, status: ResourceStatus.Loading }
+      } else if (
+        graphResource.status === ResourceStatus.Error ||
+        (graphResource.status === ResourceStatus.Finished && !graphResource?.data)
+      ) {
+        return { ...trackGraphData, status: ResourceStatus.Error }
+      }
+      const graphChunks: TimebarChartChunk[] = graphResource.data.flatMap((segment) => {
+        if (!segment) {
+          return []
+        }
+        return {
+          start: segment[0].timestamp || Number.POSITIVE_INFINITY,
+          // TODO This assumes that segments ends at last value's timestamp, which is probably incorrect
+          end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
+          values: segment.map((segmentPoint) => {
+            const value = (segmentPoint as any)?.[timebarGraphType]
+            return {
+              timestamp: segmentPoint.timestamp,
+              value,
+            }
+          }),
+        }
+      })
+
+      trackGraphData.chunks = graphChunks
+      return trackGraphData
+    })
     return tracksGraphsData
   }
 )
@@ -237,11 +228,12 @@ export const selectTracksEvents = createSelector(
 
         return resources[url].data as TimebarChartChunk<TrackEventChunkProps>[]
       })
-      trackEvents.status = eventsResourcesFiltered.every(
-        ({ url }) => resources[url]?.status === ResourceStatus.Finished
-      )
-        ? ResourceStatus.Finished
-        : ResourceStatus.Loading
+      const statuses = eventsResourcesFiltered.map(({ url }) => resources[url]?.status)
+      if (statuses.some((s) => s === ResourceStatus.Error))
+        trackEvents.status = ResourceStatus.Error
+      else if (statuses.every((s) => s === ResourceStatus.Finished))
+        trackEvents.status = ResourceStatus.Finished
+      else trackEvents.status = ResourceStatus.Loading
 
       return trackEvents
     })

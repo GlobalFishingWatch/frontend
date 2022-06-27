@@ -54,6 +54,15 @@
   width: 300px;
 }
 
+.offlineLink {
+  color: var(--color-secondary-blue);
+  text-decoration: none;
+  font: var(--font-XS);
+  margin-top: 10px;
+  display: inline-block;
+  cursor: pointer;
+}
+
 .buttons {
   margin-top: 2rem;
 }

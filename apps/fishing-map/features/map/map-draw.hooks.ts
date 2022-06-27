@@ -1,18 +1,18 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDrawMode, setDrawMode, DrawMode } from './map.slice'
+import { selectIsMapDrawing, setMapDrawing } from './map.slice'
 
 export const useMapDrawConnect = () => {
   const dispatch = useAppDispatch()
-  const drawMode = useSelector(selectDrawMode)
+  const isMapDrawing = useSelector(selectIsMapDrawing)
 
-  const dispatchSetDrawMode = useCallback(
-    (mode: DrawMode) => {
-      dispatch(setDrawMode(mode))
+  const dispatchSetMapDrawing = useCallback(
+    (mode: boolean) => {
+      dispatch(setMapDrawing(mode))
     },
     [dispatch]
   )
 
-  return { drawMode, dispatchSetDrawMode }
+  return { isMapDrawing, dispatchSetMapDrawing }
 }

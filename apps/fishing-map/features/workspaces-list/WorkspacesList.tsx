@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Link, { To } from 'redux-first-router-link'
@@ -21,7 +21,6 @@ function WorkspacesList() {
   const { t, i18n } = useTranslation()
   const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
-  const userFriendlyCategory = locationCategory.replace('-', ' ')
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
   const validCategory = useSelector(isValidLocationCategory)
@@ -49,7 +48,6 @@ function WorkspacesList() {
 
   return (
     <div className={styles.container}>
-      <label>{userFriendlyCategory}</label>
       {highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
         <Spinner size="small" />
       ) : (
@@ -59,9 +57,7 @@ function WorkspacesList() {
             const i18nName = (name?.[i18n.language as Locale] as string) || name.en
             const i18nDescription =
               (description?.[i18n.language as Locale] as string) || description.en
-            const i18nCta =
-              (highlightedWorkspace.cta?.[i18n.language as Locale] as string) ||
-              highlightedWorkspace.cta.en
+            const i18nCta = (cta?.[i18n.language as Locale] as string) || cta.en
             const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
             const isExternalLink = highlightedWorkspace.id.includes('http')
             let linkTo: To
@@ -108,7 +104,7 @@ function WorkspacesList() {
                     {active ? (
                       isExternalLink ? (
                         <a target="_blank" href={linkTo as string} rel="noreferrer">
-                          <h3 className={styles.title}>{i18nName || name}</h3>
+                          <h3 className={styles.title}>{i18nName}</h3>
                         </a>
                       ) : (
                         <Link
@@ -116,11 +112,11 @@ function WorkspacesList() {
                           target="_self"
                           onClick={() => onWorkspaceClick(highlightedWorkspace)}
                         >
-                          <h3 className={styles.title}>{i18nName || name}</h3>
+                          <h3 className={styles.title}>{i18nName}</h3>
                         </Link>
                       )
                     ) : (
-                      <h3 className={styles.title}>{i18nName || name}</h3>
+                      <h3 className={styles.title}>{i18nName}</h3>
                     )}
                     {i18nDescription && (
                       <p
@@ -138,7 +134,7 @@ function WorkspacesList() {
                           className={styles.link}
                           rel="noreferrer"
                         >
-                          {i18nCta || cta}
+                          {i18nCta}
                         </a>
                       ) : (
                         <Link
@@ -147,7 +143,7 @@ function WorkspacesList() {
                           className={styles.link}
                           onClick={() => onWorkspaceClick(highlightedWorkspace)}
                         >
-                          {i18nCta || cta}
+                          {i18nCta}
                         </Link>
                       ))}
                   </div>

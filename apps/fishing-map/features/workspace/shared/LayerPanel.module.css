@@ -30,6 +30,20 @@
   align-items: center;
 }
 
+.dragger {
+  width: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.dragger:focus {
+  box-shadow: none;
+}
+
+.LayerPanel:hover .dragger {
+  width: var(--size-S);
+}
+
 .expandedContainerOpen .header {
   background-color: var(--color-off-white);
 }
@@ -43,6 +57,8 @@
   text-overflow: ellipsis;
   cursor: pointer;
   line-height: 2.8rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .actions {
@@ -59,6 +75,10 @@
 
 .LayerPanel:hover .actions {
   opacity: 1;
+}
+
+.LayerPanel:hover .errorIcon {
+  display: none;
 }
 
 .shownUntilHovered,
@@ -94,6 +114,15 @@
 .dataWarningLinks button {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.drag {
+  opacity: 1;
+  transition: opacity 100ms linear;
+}
+
+.dragging {
+  opacity: 0;
 }
 
 .filters {
@@ -214,4 +243,8 @@
 
 :global(.printing) .switch > span {
   display: none !important;
+}
+
+.faded {
+  color: var(--color-secondary-blue);
 }

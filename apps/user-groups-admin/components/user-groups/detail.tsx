@@ -1,4 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import sortBy from 'lodash/sortBy'
 import { Button, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FutureUserData, UserData, UserGroup } from '@globalfishingwatch/api-types'
@@ -13,12 +14,20 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
 
   const fetchGroup = useCallback(async (groupId: number) => {
     setLoading(true)
-    const group = await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}`)
-    const futureUsers = await GFWAPI.fetch<FutureUserData[]>(
-      `/auth/future-user?user-group=${groupId}`
-    )
-    setGroup(group)
-    setFutureUsers(futureUsers)
+    try {
+      const group = await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}`)
+      setGroup({ ...group, users: sortBy(group.users, 'email') })
+    } catch (e) {
+      console.warn(e)
+    }
+    try {
+      const futureUsers = await GFWAPI.fetch<FutureUserData[]>(
+        `/auth/future-user?user-group=${groupId}`
+      )
+      setFutureUsers(sortBy(futureUsers, 'email'))
+    } catch (e) {
+      console.warn(e)
+    }
     setLoading(false)
   }, [])
 
@@ -48,11 +57,12 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     return () => {
       setEmail('')
       setGroup(undefined)
+      setFutureUsers(undefined)
     }
   }, [fetchGroup, groupId])
 
   const onRemoveUserClick = async (id: number) => {
-    const confirmation = window.confirm('Are you sure you want to permanently delete this user?')
+    const confirmation = window.confirm('Are you sure you want to remove the user from this group?')
     if (confirmation) {
       setUserLoading(true)
       await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}/user/${id}`, {
@@ -90,7 +100,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
               {group?.users.map((user) => {
                 return (
                   <li key={user.id}>
-                    {user.firstName} ({user.email})
+                    {user.firstName} {user.lastName} ({user.email})
                     <IconButton
                       disabled={userLoading}
                       icon="delete"

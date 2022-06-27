@@ -1,5 +1,6 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
+import { DateTime, Duration } from 'luxon'
 import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
@@ -18,7 +19,6 @@ import {
   getVesselEventsSegmentsGeojson,
   filterGeojsonByTimerange,
   filterFeaturesByTimerange,
-  getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
   groupFeaturesByType,
 } from './vessel-events.utils'
 
@@ -45,10 +45,12 @@ class VesselsEventsShapesGenerator {
       return []
     }
 
+    const cachedData = memoizeCache[config.id].getCachedData(data)
+
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(
-      data,
+      cachedData,
       showAuthorizationStatus,
-      null,
+      undefined,
       config.color,
       config.vesselId
     ) as FeatureCollection
@@ -80,7 +82,7 @@ class VesselsEventsShapesGenerator {
 
     const segments = memoizeCache[config.id].getVesselEventsSegmentsGeojson(
       track,
-      data,
+      cachedData,
       showAuthorizationStatus,
       config.vesselId
     ) as FeatureCollection
@@ -127,17 +129,12 @@ class VesselsEventsShapesGenerator {
       type: 'circle',
       id: `${config.id}_fishingEvents`,
       source: `${config.id}_fishingEvents`,
+      layout: {
+        'circle-sort-key': getExpression(1, 0),
+      },
       paint: {
         'circle-color': ['get', 'color'],
-        'circle-radius': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          4,
-          getExpression(5, 3),
-          9,
-          getExpression(8, 6),
-        ],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 1.5, 9, 4],
         'circle-stroke-color': getExpression('#ffffff', 'transparent'),
         'circle-stroke-width': 2,
       },
@@ -164,7 +161,10 @@ class VesselsEventsShapesGenerator {
           getExpression(1.5, 1),
         ],
         'icon-image': getExpression(['get', 'shapeHighlight'], ['get', 'shape']),
-        'symbol-sort-key': ['get', 'shapePriority'],
+        'symbol-sort-key': getExpression(
+          ['*', 10, ['get', 'shapePriority']],
+          ['get', 'shapePriority']
+        ),
       },
       metadata: {
         group: Group.Point,
@@ -204,12 +204,15 @@ class VesselsEventsShapesGenerator {
 
   getStyle = (config: GlobalVesselEventsShapesGeneratorConfig) => {
     memoizeByLayerId(config.id, {
-      getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
-      getVesselEventsSegmentsGeojson: memoizeOne(
-        getVesselEventsSegmentsGeojson,
-        // This is a hack needed because the events array mutates constantly in resolve-dataviews-generators
-        getVesselEventsSegmentsGeojsonMemoizeEqualityCheck
+      getCachedData: memoizeOne(
+        (data) => data,
+        // Do not use shallow equality as data structures is generated on the fly in getGeneratorConfig
+        (newArgs: any, lastArgs: any) => {
+          return newArgs.length !== lastArgs.length
+        }
       ),
+      getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
+      getVesselEventsSegmentsGeojson: memoizeOne(getVesselEventsSegmentsGeojson),
       filterGeojsonByTimerange: memoizeOne(filterGeojsonByTimerange),
       filterFeaturesByTimerange: memoizeOne(filterFeaturesByTimerange),
       groupFeaturesByType: memoizeOne(groupFeaturesByType),

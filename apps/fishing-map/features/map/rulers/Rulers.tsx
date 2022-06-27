@@ -1,12 +1,12 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector, batch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import useMapInstance from '../map-context.hooks'
-import { selectIsMapDrawing } from '../map.selectors'
 import {
   toggleRulersEditing,
   resetRulers,
@@ -19,7 +19,7 @@ import styles from './Rulers.module.css'
 const Rulers = () => {
   const { t } = useTranslation()
   const editing = useSelector(selectEditing)
-  const isMapDrawing = useSelector(selectIsMapDrawing)
+  const { isMapDrawing } = useMapDrawConnect()
   const numRulers = useSelector(selectNumRulers)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 

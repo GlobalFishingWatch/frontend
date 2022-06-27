@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import debounce from 'lodash/debounce'
-import { ViewportProps } from 'react-map-gl'
+import { ViewStateChangeEvent } from 'react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { Bbox, MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
@@ -12,14 +11,12 @@ import { selectViewport } from 'features/app/app.selectors'
 import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
-type SetMapCoordinatesArgs = Pick<
-  ViewportProps,
-  'latitude' | 'longitude' | 'zoom' | 'pitch' | 'bearing'
->
+type ViewportKeys = 'latitude' | 'longitude' | 'zoom' | 'pitch' | 'bearing'
+type ViewportProps = Record<ViewportKeys, number>
 type UseViewport = {
   viewport: MapCoordinates
-  onViewportChange: (viewport: ViewportProps) => void
-  setMapCoordinates: (viewport: SetMapCoordinatesArgs) => void
+  onViewportChange: (e: ViewStateChangeEvent) => void
+  setMapCoordinates: (viewport: ViewportProps) => void
 }
 
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
@@ -29,7 +26,6 @@ const viewportState = atom<MapCoordinates>({
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects: [
     ({ trigger, setSelf, onSet }) => {
-      const dispatch = useDispatch()
       const viewport = selectViewport(store.getState() as RootState)
 
       if (trigger === 'get') {
@@ -37,7 +33,7 @@ const viewportState = atom<MapCoordinates>({
       }
 
       const updateUrlViewportDebounced = debounce(
-        dispatch(updateUrlViewport),
+        store.dispatch(updateUrlViewport),
         URL_VIEWPORT_DEBOUNCED_TIME
       )
 
@@ -52,13 +48,13 @@ const viewportState = atom<MapCoordinates>({
 export default function useViewport(): UseViewport {
   const [viewport, setViewport] = useRecoilState(viewportState)
 
-  const setMapCoordinates = useCallback((coordinates: SetMapCoordinatesArgs) => {
+  const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
     setViewport((viewport) => ({ ...viewport, ...coordinates }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onViewportChange = useCallback((viewport: ViewportProps) => {
-    const { latitude, longitude, zoom } = viewport
+  const onViewportChange = useCallback((ev: ViewStateChangeEvent) => {
+    const { latitude, longitude, zoom } = ev.viewState
     if (latitude && longitude && zoom) {
       setViewport({ latitude, longitude, zoom })
     }

@@ -216,6 +216,7 @@
 }
 
 .hover:global(.mapboxgl-popup .mapboxgl-popup-content) {
+  background: none;
   pointer-events: none;
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import type { Placement } from 'tippy.js'
@@ -7,25 +7,24 @@ import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
 import { useMapReady } from 'features/map/map-state.hooks'
 import TooltipContainer from '../shared/TooltipContainer'
-import DEFAULT_HIGHLIGHT_CONFIG, { HighlightPanelConfig } from './highlight-panel.content'
+import HIGHLIGHT_CONFIG, { HighlightPanelConfig } from './highlight-panel.content'
 import styles from './HighlightPanel.module.css'
 
 type HighlightPanelProps = {
   dataviewInstanceId: string
   placement?: Placement
-  highlightConfig?: HighlightPanelConfig
+  config?: HighlightPanelConfig
 }
 
 const HighlightPanel = ({
   dataviewInstanceId,
   placement,
-  highlightConfig,
+  config = HIGHLIGHT_CONFIG,
 }: HighlightPanelProps) => {
   const { t, i18n } = useTranslation()
   const mapReady = useMapReady()
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
-  const config = highlightConfig || DEFAULT_HIGHLIGHT_CONFIG
   const [dataviewIdDismissed, setDataviewIdDismissed] = useLocalStorage(config.localStorageKey, '')
   const matchDataviewInstance = config.dataviewInstanceId === dataviewInstanceId
 
@@ -37,17 +36,16 @@ const HighlightPanel = ({
       if (ref.current?.scrollIntoView) {
         ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
       }
-      if (!config.delayed) setVisible(true)
+      if (config.delayed) {
+        setTimeout(() => {
+          const container = document.querySelector('.scrollContainer')
+          container.scrollTop = 1
+          setVisible(true)
+        }, config.delayed)
+      } else {
+        setVisible(true)
+      }
     }
-  }, [showHighlightPanel, config.delayed])
-
-  useEffect(() => {
-    if (!showHighlightPanel || !config.delayed) return
-    setTimeout(() => {
-      const container = document.querySelector('.scrollContainer')
-      container.scrollTop = 1
-      setVisible(true)
-    }, 5000)
   }, [showHighlightPanel, config.delayed])
 
   const onDismiss = () => {

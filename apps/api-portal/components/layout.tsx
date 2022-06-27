@@ -1,5 +1,5 @@
-import { Fragment, useEffect } from 'react'
-import type { NextPage } from 'next'
+import React, { Fragment, useEffect } from 'react'
+// import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Spinner } from '@globalfishingwatch/ui-components'
@@ -8,7 +8,7 @@ import styles from '../styles/layout.module.css'
 import { APPLICATION_NAME, PATH_BASENAME } from './data/config'
 import Header from './header/header'
 
-const Layout: NextPage = ({ children }) => {
+const Layout = ({ children }) => {
   const { data: user, isLoading, authorized, logout, loginLink } = useUser()
 
   const errorInfo = [

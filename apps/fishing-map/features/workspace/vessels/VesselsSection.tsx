@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
@@ -45,16 +46,19 @@ function VesselsSection(): React.ReactElement {
           onClick={onSearchClick}
         />
       </div>
-      {dataviews.length > 0 ? (
-        dataviews?.map((dataview) => <VesselLayerPanel key={dataview.id} dataview={dataview} />)
-      ) : (
-        <div className={styles.emptyState}>
-          {t(
-            'workspace.emptyStateVessels',
-            'The vessels selected in the search or by clicking on activity grid cells will appear here.'
-          )}
-        </div>
-      )}
+
+      <SortableContext items={dataviews}>
+        {dataviews.length > 0 ? (
+          dataviews?.map((dataview) => <VesselLayerPanel key={dataview.id} dataview={dataview} />)
+        ) : (
+          <div className={styles.emptyState}>
+            {t(
+              'workspace.emptyStateVessels',
+              'The vessels selected in the search or by clicking on activity grid cells will appear here.'
+            )}
+          </div>
+        )}
+      </SortableContext>
       <VesselEventsLegend dataviews={dataviews} />
     </div>
   )

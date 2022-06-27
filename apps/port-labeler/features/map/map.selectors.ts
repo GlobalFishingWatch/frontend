@@ -8,14 +8,7 @@ import { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGe
 import { groupBy } from "utils/group-by"
 import { selectPortPointsByCountry, selectPortValuesByCountry, selectSubareaColors, selectSubareaValuesByCountry } from "features/labeler/labeler.selectors"
 
-
-/**
- * filter the poins by country
- */
-export const selectMapStyle = createSelector([selectCountry],
-  (selectedCountry): PortPosition[] => []
-)
-
+// Return the list of countries that are present in the json input
 export const selectCountries = createSelector([selectMapData],
   (data) => {
     if (!data) {
@@ -66,6 +59,7 @@ export const selectPortPointsFeatures = createSelector([
   }
 )
 
+// Return the points grouped by ports (this is to generate the port layers)
 export const selectPointsByPort = createSelector([selectPortPointsByCountry, selectPortValuesByCountry],
   (countryPoints, portValues): PortPosition[][] => {
     const areas = groupBy(countryPoints, portValues, 'label')
@@ -75,6 +69,8 @@ export const selectPointsByPort = createSelector([selectPortPointsByCountry, sel
     }).filter(area => area)
   }
 )
+
+// Return the points grouped by subareas (this is to generate the subarea layers)
 export const selectPointsByPortAndSubarea = createSelector([selectPointsByPort, selectSubareaValuesByCountry],
   (portPoints, subareasValues): PortPosition[][] => {
     const subareas = portPoints.flatMap((poins) => groupBy(poins, subareasValues, 'community_iso3'))
@@ -87,8 +83,9 @@ export const selectPointsByPortAndSubarea = createSelector([selectPointsByPort, 
     }).filter(area => area)
   }
 )
+
 /**
- * Creates a custom features for the port points
+ * Creates a custom features for the port layers
  */
 export const selectPortAreaFeatures = createSelector([selectPointsByPort],
   (areas): any[] => {
@@ -111,7 +108,7 @@ export const selectPortAreaFeatures = createSelector([selectPointsByPort],
   }
 )
 /**
- * Creates a custom features for the port points
+ * Creates a custom features for the subarea layers
  */
 export const selectSubareaFeatures = createSelector([selectPointsByPortAndSubarea, selectSubareaColors, selectSubareaValuesByCountry],
   (areas, colors, subareaValues): any[] => {
@@ -135,7 +132,7 @@ export const selectSubareaFeatures = createSelector([selectPointsByPortAndSubare
 )
 
 /**
- * Using the custom Mapbox GL features, it return the layer needed to render port points
+ * Using the custom Mapbox GL features, it return the layer needed to render the polygons
  */
 export const selectAreaLayer = createSelector(
   [selectPortAreaFeatures, selectSubareaFeatures],

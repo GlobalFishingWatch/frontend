@@ -30,14 +30,15 @@ export const EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
 export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 export const HIGH_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 97 : 174
+export const PROTECTED_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 292 : undefined
 export const GRATICULES_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 246 : 286
 export const FAO_AREAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 245 : 285
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
 export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 : 254
-// TODO replace this with match once ready to production
-export const VIIRS_MATCH_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 197 : 0
+export const VIIRS_MATCH_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 197 : 289
+export const SAR_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 269 : 299
 export const PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
 export const VESSEL_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 195 : 270
 export const TEMPLATE_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 154 : 251
@@ -61,6 +62,7 @@ export const TEMPLATE_DATAVIEW_IDS = [
 export const PRESENCE_DATAVIEWS = [
   VIIRS_MATCH_DATAVIEW_ID, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_ID, // In case the workspace doesn't have the dataview added,
+  SAR_DATAVIEW_ID, // TODO include once ready to release
 ]
 
 export const DEFAULT_DATAVIEW_IDS = [...PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]

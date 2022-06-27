@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +17,7 @@ import { selectViewport } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { PRIVATE_SUFIX, PUBLIC_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
-import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.slice'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
 import { selectUserData } from 'features/user/user.slice'
 import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
 import { selectWorkspaceId } from 'routes/routes.selectors'
@@ -52,6 +52,7 @@ function NewWorkspaceModal({
   suggestName = true,
 }: NewWorkspaceModalProps) {
   const [name, setName] = useState('')
+  const [error, setError] = useState('')
   const [createLoading, setCreateLoading] = useState(false)
   const [updateLoading, setUpdateLoading] = useState(false)
   const { t, i18n } = useTranslation()
@@ -60,7 +61,7 @@ function NewWorkspaceModal({
   const timerange = useTimerangeConnect()
   const userData = useSelector(selectUserData)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const dataviewsInWorkspace = useSelector(selectDataviewInstancesMerged)
+  const dataviewsInWorkspace = useSelector(selectDataviewInstancesMergedOrdered)
   const hasEditPermission = useSelector(selectUserWorkspaceEditPermissions)
   const workspaceDatasets = getDatasetsInDataviews(dataviewsInWorkspace || [])
   const privateDatasets = workspaceDatasets.filter((d) => d.includes(PRIVATE_SUFIX))
@@ -122,7 +123,8 @@ function NewWorkspaceModal({
           onFinish(dispatchedAction.payload)
         }
       } else {
-        console.warn('Error updating workspace', dispatchedAction.payload)
+        setUpdateLoading(false)
+        setError('Error updating workspace')
       }
     }
   }
@@ -145,7 +147,8 @@ function NewWorkspaceModal({
           onFinish(workspace)
         }
       } else {
-        console.warn('Error saving workspace', dispatchedAction.payload)
+        setCreateLoading(false)
+        setError('Error saving workspace')
       }
     }
   }
@@ -207,6 +210,7 @@ function NewWorkspaceModal({
             {t('workspace.update', 'Update workspace') as string}
           </Button>
         )}
+        {error && <p className={styles.error}>{error}</p>}
         <Button loading={createLoading} disabled={!name} onClick={createWorkspace}>
           {t('workspace.create', 'Create as new workspace') as string}
         </Button>

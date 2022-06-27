@@ -1,8 +1,13 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy, memoize, without } from 'lodash'
 import { stringify } from 'qs'
-import { Dataset } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { APIPagination, Dataset } from '@globalfishingwatch/api-types'
+import {
+  GFWAPI,
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
   AsyncReducer,
@@ -11,6 +16,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
+import { API_VERSION } from 'data/config'
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
@@ -20,12 +26,14 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
+    const dataset = await GFWAPI.fetch<Dataset>(
+      `/${API_VERSION}/datasets/${id}?include=endpoints&cache=false`
+    )
     return dataset
   } catch (e: any) {
     return rejectWithValue({
-      status: e.status || e.code,
-      message: `${id} - ${e.message}`,
+      status: parseAPIErrorStatus(e),
+      message: `${id} - ${parseAPIErrorMessage(e)}`,
     })
   }
 })
@@ -41,10 +49,10 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         include: 'endpoints',
         cache: process.env.NODE_ENV !== 'development',
       }
-      const initialDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+      const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
+        `/${API_VERSION}/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
         { signal }
-      )
+      ).then((d) => d.entries)
       const relatedDatasetsIds = initialDatasets.flatMap(
         (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
       )
@@ -52,10 +60,12 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
       // if no ids are specified, then do not get all the datasets
       const relatedDatasets = relatedWorkspaceParams.ids
-        ? await GFWAPI.fetch<Dataset[]>(
-            `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
+        ? await GFWAPI.fetch<APIPagination<Dataset>>(
+            `/${API_VERSION}/datasets?${stringify(relatedWorkspaceParams, {
+              arrayFormat: 'comma',
+            })}`,
             { signal }
-          )
+          ).then((d) => d.entries)
         : []
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
 
@@ -68,7 +78,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       }
       return datasets
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {

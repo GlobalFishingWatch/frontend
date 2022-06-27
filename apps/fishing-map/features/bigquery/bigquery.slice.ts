@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { kebabCase } from 'lodash'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { API_VERSION } from 'data/config'
 
 export type BigQueryVisualisation = '4wings' | 'events'
 
@@ -28,24 +29,20 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
   ) => {
     try {
       const response = await GFWAPI.fetch<RunCostResponse>(
-        `/v1/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
+        `/${API_VERSION}/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
         {
           method: 'POST',
           body: {
             name: 'Calculating cost using dryRun',
             public: true,
-            ttl: 1, // days
+            // ttl: 1, // days
             query,
           } as any,
         }
       )
       return response
     } catch (e: any) {
-      return rejectWithValue({
-        status: e.status || e.code,
-        message: e.message,
-        messages: e.messages,
-      })
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -60,25 +57,21 @@ export type CreateBigQueryDatasetResponse = {
 export const createBigQueryDatasetThunk = createAsyncThunk(
   'bigQuery/createDataset',
   async (
-    { query, name, ttl = 30, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
+    { query, name, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
     { dispatch, rejectWithValue }
   ) => {
     try {
       const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
-        `/v1/${visualisationMode}/bq/create-temporal-dataset`,
+        `/${API_VERSION}/${visualisationMode}/bq/create-temporal-dataset`,
         {
           method: 'POST',
-          body: { query, name: kebabCase(name), ttl, public: createAsPublic } as any,
+          body: { query, name: kebabCase(name), public: createAsPublic } as any,
         }
       )
       const dataset = await dispatch(fetchDatasetByIdThunk(id))
       return dataset
     } catch (e: any) {
-      return rejectWithValue({
-        status: e.status || e.code,
-        message: e.message,
-        messages: e.messages,
-      })
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )

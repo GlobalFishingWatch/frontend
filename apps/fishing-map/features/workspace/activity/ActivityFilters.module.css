@@ -69,7 +69,7 @@
 }
 
 .experimental label::after {
-  content: '(experimental)';
+  content: 'experimental';
   color: red;
   margin-left: 0.4rem;
   font: var(--font-XS);

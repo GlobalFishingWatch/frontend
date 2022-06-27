@@ -4,7 +4,6 @@ import {
   DatasetTypes,
   Dataview,
   DataviewDatasetConfig,
-  DataviewDatasetConfigParam,
   DataviewInstance,
   EndpointId,
   Resource,
@@ -171,13 +170,23 @@ export const resolveResourcesFromDatasetConfigs = (
     })
 }
 
+export const generateDataviewDatasetResourceKey = (
+  dataset: Dataset,
+  datasetConfig: DataviewDatasetConfig
+) => {
+  return [
+    dataset.id,
+    ...(datasetConfig.params || []).map((p) => p.value),
+    ...(datasetConfig.query || []).map((q) => q.value),
+  ].join(',')
+}
+
 /**
  * Get resources for a dataview
  */
 export const resolveDataviewDatasetResources = (
   dataview: UrlDataviewInstance,
-  datasetTypeOrId: DatasetTypes | DatasetTypes[] | string,
-  queryParamFilter?: DataviewDatasetConfigParam
+  datasetTypeOrId: DatasetTypes | DatasetTypes[] | string
 ) => {
   const isArray = Array.isArray(datasetTypeOrId)
   const isType = isArray || Object.values(DatasetTypes).includes(datasetTypeOrId as DatasetTypes)
@@ -192,13 +201,7 @@ export const resolveDataviewDatasetResources = (
     ? dataviewDatasets.filter((dataset) => types.includes(dataset.type))
     : dataviewDatasets.filter((dataset) => dataset.id === datasetTypeOrId)
 
-  const dataviewDatasetConfigs = (dataview.datasetsConfig || []).filter((datasetConfig) =>
-    queryParamFilter
-      ? datasetConfig.query?.find(
-          (q) => q.id === queryParamFilter.id && q.value === queryParamFilter.value
-        )
-      : true
-  )
+  const dataviewDatasetConfigs = dataview.datasetsConfig || []
 
   const resources = datasets.flatMap((dataset) => {
     const datasetDatasetConfigs = dataviewDatasetConfigs.filter(
@@ -213,6 +216,7 @@ export const resolveDataviewDatasetResources = (
           dataset,
           datasetConfig,
           dataviewId: dataview.dataviewId as number,
+          key: generateDataviewDatasetResourceKey(dataset, datasetConfig),
         } as Resource,
       ]
     })
@@ -223,13 +227,9 @@ export const resolveDataviewDatasetResources = (
 
 export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
-  datasetTypeOrId: DatasetTypes | DatasetTypes[] | string,
-  queryParamFilter?: DataviewDatasetConfigParam
+  datasetTypeOrId: DatasetTypes | DatasetTypes[] | string
 ) => {
-  return (
-    resolveDataviewDatasetResources(dataview, datasetTypeOrId, queryParamFilter)[0] ||
-    ({} as Resource)
-  )
+  return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
 /**

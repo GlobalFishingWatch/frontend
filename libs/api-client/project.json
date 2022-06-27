@@ -1,5 +1,4 @@
 {
-  "root": "libs/api-client",
   "sourceRoot": "libs/api-client/src",
   "projectType": "library",
   "targets": {
@@ -33,7 +32,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/api-client"],
       "options": {
-        "jestConfig": "libs/api-client/jest.config.js",
+        "jestConfig": "libs/api-client/jest.config.ts",
         "passWithNoTests": true
       }
     },

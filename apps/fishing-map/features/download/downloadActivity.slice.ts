@@ -3,10 +3,12 @@ import { DateTime } from 'luxon'
 import { Geometry } from 'geojson'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
+import i18next from 'i18next'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import { API_VERSION } from 'data/config'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
 export type DateRange = {
@@ -44,51 +46,58 @@ export const downloadActivityThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('downloadActivity/create', async (params: DownloadActivityParams, { rejectWithValue }) => {
-  try {
-    const {
-      dateRange,
-      dataviews,
-      geometry,
-      areaName,
-      format,
-      spatialResolution,
-      temporalResolution,
-      groupBy,
-    } = params
-    const fromDate = DateTime.fromISO(dateRange.start).toUTC()
-    const toDate = DateTime.fromISO(dateRange.end).toUTC()
+>(
+  'downloadActivity/create',
+  async (params: DownloadActivityParams, { getState, rejectWithValue }) => {
+    try {
+      const {
+        dateRange,
+        dataviews,
+        geometry,
+        areaName,
+        format,
+        spatialResolution,
+        temporalResolution,
+        groupBy,
+      } = params
+      const fromDate = DateTime.fromISO(dateRange.start).toUTC()
+      const toDate = DateTime.fromISO(dateRange.end).toUTC()
 
-    const downloadActivityParams = {
-      datasets: dataviews.map(({ datasets }) => datasets.join(',')),
-      filters: dataviews.map(({ filter }) => filter),
-      'date-range': [fromDate, toDate].join(','),
-      format,
-      spatialResolution,
-      temporalResolution,
-      groupBy,
-    }
-
-    const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`
-
-    const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
-      `/v1/4wings/report?${stringify(downloadActivityParams, { arrayFormat: 'indices' })}`,
-      {
-        method: 'POST',
-        body: { geojson: geometry } as any,
-        responseType: 'blob',
-        headers: {
-          Authorization: `Bearer ${GFWAPI.getToken()}`,
-        },
+      const downloadActivityParams = {
+        datasets: dataviews.map(({ datasets }) => datasets.join(',')),
+        filters: dataviews.map(({ filter }) => filter),
+        'date-range': [fromDate, toDate].join(','),
+        format,
+        'spatial-resolution': spatialResolution,
+        'temporal-resolution': temporalResolution,
+        'group-by': groupBy,
       }
-    ).then((blob) => {
-      saveAs(blob as any, fileName)
-    })
-    return createdDownload
-  } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+
+      const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`
+
+      const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
+        `/${API_VERSION}/4wings/report?${stringify(downloadActivityParams, {
+          arrayFormat: 'indices',
+        })}`,
+        {
+          method: 'POST',
+          body: { geojson: geometry } as any,
+          responseType: 'blob',
+          headers: {
+            Authorization: `Bearer ${GFWAPI.getToken()}`,
+            'Content-Language': i18next.language === 'es' ? 'es-ES' : 'en-EN',
+          },
+        }
+      ).then((blob) => {
+        saveAs(blob as any, fileName)
+      })
+      return createdDownload
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
   }
-})
+)
 
 const downloadActivitySlice = createSlice({
   name: 'downloadActivity',

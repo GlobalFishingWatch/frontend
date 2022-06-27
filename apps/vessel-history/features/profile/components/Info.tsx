@@ -7,7 +7,7 @@ import ImageGallery from 'react-image-gallery'
 import { DateTime, Interval } from 'luxon'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { VesselWithHistory } from 'types'
+import { RiskLevel, RiskOutput, VesselWithHistory } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
@@ -29,6 +29,7 @@ import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
+import { useUser } from 'features/user/user.hooks'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -48,6 +49,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
   const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
+  const { authorizedFLRM } = useUser()
   const offlineVessel = useSelector(selectCurrentOfflineVessel)
   const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
     useOfflineVesselsAPI()
@@ -141,6 +143,25 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       }),
     })
   }, [vesselId, vesselTmtId])
+
+  const { highRisk, riskModel } = useMemo(() => {
+    if (!vessel.forcedLabour || !authorizedFLRM) {
+      return {
+        riskModel: null,
+        highisk: false
+      }
+    }
+    const riskModel: RiskOutput[] = [
+      { level: RiskLevel.high, years: vessel.forcedLabour.filter(risk => risk.confidence && risk.score).map(risk => risk.year) },
+      { level: RiskLevel.low, years: vessel.forcedLabour.filter(risk => risk.confidence && !risk.score).map(risk => risk.year) },
+      { level: RiskLevel.unknown, years: vessel.forcedLabour.filter(risk => !risk.confidence).map(risk => risk.year) },
+    ].filter(risk => risk.years && risk.years.length)
+
+    return {
+      riskModel: riskModel.map(risk => `${t(`risk.${risk.level}` as any, risk.level)} - ${risk.years.join(', ')}`).join('. '),
+      highRisk: riskModel.some(risk => risk.level === RiskLevel.high && risk.years.length)
+    }
+  }, [vessel.forcedLabour, authorizedFLRM])
 
   return (
     <Fragment>
@@ -323,6 +344,24 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   </Trans>
                 }
               ></InfoField>
+              {authorizedFLRM &&
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.forcedLabourModel}
+                  value={riskModel ?? t('risk.noRiskDetected', 'Vessel doesn’t have force labour info')}
+                  valuesHistory={[]}
+                  className={highRisk ? 'dangerBackground' : ''}
+                  helpText={
+                    <Trans i18nKey="vessel.forcedLaborModelDescription">
+                      High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.
+                      <br />
+                      Low Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.
+                      <br />
+                      Unknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.
+                    </Trans>
+                  }
+                ></InfoField>
+              }
             </div>
           </div>
         )}

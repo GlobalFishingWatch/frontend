@@ -1,0 +1,12 @@
+.header {
+  padding: var(--space-XS) var(--space-S);
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  margin-left: var(--space-XS);
+  margin-right: var(--space-S);
+  font: var(--font-S);
+  cursor: pointer;
+}

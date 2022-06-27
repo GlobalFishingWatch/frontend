@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 // import { getParser } from 'bowser'
 import type { Map } from '@globalfishingwatch/maplibre-gl'
@@ -30,8 +30,10 @@ export const getMapImage = (map: Map): Promise<string> => {
       const canvas = map.getCanvas()
       resolve(canvas.toDataURL())
     })
-    // trigger render
-    ;(map as any)._render()
+    const renderFn = (map as any)._render
+    if (renderFn) {
+      renderFn()
+    }
   })
 }
 

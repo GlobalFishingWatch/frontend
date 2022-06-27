@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, uniqBy } from 'lodash'
-import { Dataview } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
+import { API_VERSION } from 'data/config'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
@@ -11,19 +12,22 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
     const existingIds = selectIds(getState() as RootState) as string[]
     const uniqIds = Array.from(new Set([...ids, ...existingIds]))
     try {
-      let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${uniqIds.join(',')}`, {
-        signal,
-      })
+      const dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
+        `/${API_VERSION}/dataviews?ids=${uniqIds.join(',')}`,
+        {
+          signal,
+        }
+      ).then((d) => d.entries)
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
       ) {
         const mockedDataviews = await import('./dataviews.mock')
-        dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
+        return uniqBy([...mockedDataviews.default, ...dataviews], 'id')
       }
       return dataviews
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {

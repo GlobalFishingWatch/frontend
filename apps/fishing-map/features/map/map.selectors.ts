@@ -10,9 +10,9 @@ import {
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
   getDataviewsGeneratorConfigs,
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
   DataviewsGeneratorConfigsParams,
+  isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import {
@@ -29,19 +29,19 @@ import {
   selectHighlightedEvents,
   Range,
 } from 'features/timebar/timebar.slice'
-import { selectBivariateDataviews } from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import { selectDrawMode } from './map.slice'
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
   resources: ResourcesState
   rulers: Ruler[]
   debugOptions: DebugOptions
+  timeRange?: Range
   highlightedTime?: Range
   highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
@@ -52,6 +52,7 @@ const getGeneratorsConfig = ({
   resources,
   rulers,
   debugOptions,
+  timeRange,
   highlightedTime,
   highlightedEvents,
   bivariateDataviews,
@@ -78,14 +79,15 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 
-  const singleTrack = dataviews.filter((d) => d.config.type === GeneratorType.Track).length === 1
+  const trackDataviews = dataviews.filter((d) => d.config.type === GeneratorType.Track)
+  const singleTrack = trackDataviews.length === 1
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
+    timeRange,
     heatmapAnimatedMode,
     highlightedEvents,
     highlightedTime,
     debug: debugOptions.debug,
-    mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
     customGeneratorMapping: {
       [GeneratorType.VesselEvents]: GeneratorType.VesselEventsShapes,
     },
@@ -97,11 +99,9 @@ const getGeneratorsConfig = ({
     // In time comparison mode, exclude any heatmap layer that is not activity
     if (showTimeComparison) {
       generatorsConfig = generatorsConfig.filter((config) => {
-        if (
-          config.type === GeneratorType.HeatmapAnimated &&
-          config.id !== MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-        )
-          return false
+        if (config.type === GeneratorType.HeatmapAnimated) {
+          return isMergedAnimatedGenerator(config.id) && config.sublayers?.length
+        }
         return true
       })
     }
@@ -133,6 +133,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectHighlightedEvents,
     selectBivariateDataviews,
     selectShowTimeComparison,
+    selectTimeRange,
   ],
   (
     dataviews = [],
@@ -142,7 +143,8 @@ const selectMapGeneratorsConfig = createSelector(
     highlightedTime,
     highlightedEvents,
     bivariateDataviews,
-    showTimeComparison
+    showTimeComparison,
+    timeRange
   ) => {
     const generators = getGeneratorsConfig({
       dataviews,
@@ -153,6 +155,7 @@ const selectMapGeneratorsConfig = createSelector(
       highlightedEvents,
       bivariateDataviews,
       showTimeComparison,
+      timeRange,
     })
     return generators
   }
@@ -315,7 +318,3 @@ export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
     return generators?.filter((generator) => generator.visible)
   }
 )
-
-export const selectIsMapDrawing = createSelector([selectDrawMode], (drawMode): boolean => {
-  return drawMode !== 'disabled'
-})

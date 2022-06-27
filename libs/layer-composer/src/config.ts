@@ -2,7 +2,7 @@ export const API_GATEWAY_VERSION =
   process.env.API_GATEWAY_VERSION ||
   process.env.REACT_APP_API_GATEWAY_VERSION ||
   process.env.NEXT_PUBLIC_API_GATEWAY_VERSION ||
-  'v1'
+  'v2'
 
 export const API_GATEWAY =
   process.env.API_GATEWAY ||
@@ -15,4 +15,6 @@ export const DEFAULT_STYLE = {
   glyphs:
     'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-glyphs/master/_output/{fontstack}/{range}.pbf?raw=true',
   sprite: 'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites',
+  layers: [],
+  sources: {},
 }

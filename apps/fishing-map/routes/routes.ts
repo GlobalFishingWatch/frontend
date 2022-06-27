@@ -1,10 +1,16 @@
-import { Dispatch } from 'redux'
-import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-first-router'
+import {
+  NOT_FOUND,
+  RoutesMap,
+  redirect,
+  connectRoutes,
+  Options,
+  StateGetter,
+  Bag,
+} from 'redux-first-router'
+import { Dispatch } from '@reduxjs/toolkit'
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { IS_PRODUCTION } from 'data/config'
-
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
-
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
@@ -47,6 +53,20 @@ const routesOptions: Options = {
   querySerializer: {
     stringify: stringifyWorkspace,
     parse: parseAppWorkspace,
+  },
+  onAfterChange: (dispatch: Dispatch<any>, getState: StateGetter, bag: Bag) => {
+    // prevent error before the the document is initialized
+    if (typeof window !== 'undefined') {
+      document
+        .querySelector('meta[name="description"]')
+        .setAttribute('content', getState().description)
+      document
+        .querySelector('meta[property="og:description"]')
+        .setAttribute('content', getState().description)
+      document
+        .querySelector('meta[name="twitter:description"]')
+        .setAttribute('content', getState().description)
+    }
   },
 }
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'

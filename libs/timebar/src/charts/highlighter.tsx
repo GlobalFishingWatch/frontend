@@ -111,7 +111,7 @@ const getHighlighterData = (
     const chartData = chart[1]
     if (!chartData.active) return
     highlightedChunks[chartType] = []
-    chartData.data.forEach((item, itemIndex) => {
+    chartData.data?.forEach((item, itemIndex) => {
       const foundChunks = findChunks(centerMs, item, minHighlightChunkDuration)
 
       // Case where several track events overlap (reverse order as this is paint order)
@@ -165,7 +165,9 @@ const getHighlighterData = (
         highlighterData[itemIndex].icon = icon
 
         if (foundChunk.cluster?.ids) {
-          highlightedChunks[chartType] = foundChunk.cluster?.ids || []
+          highlightedChunks[chartType] = highlightedChunks[chartType]?.concat(
+            foundChunk.cluster?.ids || []
+          )
         } else if (foundChunk.id) {
           highlightedChunks[chartType] = highlightedChunks[chartType]?.concat([
             foundChunk.id as string,

@@ -2,6 +2,7 @@ import { intersection, lowerCase, uniq } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import {
   Dataset,
+  DatasetCategory,
   DatasetSchemaType,
   DatasetTypes,
   Dataview,
@@ -20,7 +21,9 @@ import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } from 'data/workspaces'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 
-export type SupportedDatasetSchema =
+export type SupportedDatasetSchema = SupportedActivityDatasetSchema | SupportedEnvDatasetSchema
+
+export type SupportedActivityDatasetSchema =
   | 'flag'
   | 'geartype'
   | 'fleet'
@@ -35,19 +38,11 @@ export type SupportedDatasetSchema =
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
 
-type IncompatibleFilter = {
-  id: SupportedDatasetSchema
-  value: any
-  disabled: SupportedDatasetSchema[]
-}
-type IncompatibleFiltersDict = Record<string, IncompatibleFilter[]>
-const INCOMPATIBLE_FILTERS_DICT: IncompatibleFiltersDict = {
-  'public-presence-viirs-match-prototype:v20220112': [
-    { id: 'matched', value: false, disabled: ['source', 'flag', 'shiptype', 'geartype'] },
-  ],
-}
+export type SupportedEnvDatasetSchema = 'type'
 
-export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
+export type SchemaFieldDataview =
+  | UrlDataviewInstance
+  | Pick<Dataview, 'config' | 'datasets' | 'filtersConfig'>
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   (dataset?.id || '').includes(PRIVATE_SUFIX)
@@ -61,7 +56,7 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
 
 export const getDatasetTitleByDataview = (
   dataview: Dataview | UrlDataviewInstance,
-  showPrivateIcon = false
+  { showPrivateIcon = true } = {}
 ): string => {
   const dataviewInstance = {
     ...dataview,
@@ -71,6 +66,7 @@ export const getDatasetTitleByDataview = (
   const activeDatasets = hasDatasetsConfig
     ? dataview.datasets?.filter((d) => dataview.config?.datasets?.includes(d.id))
     : dataview.datasets
+
   let datasetTitle = dataview.name || ''
   if (dataviewInstance.dataviewId === FISHING_DATAVIEW_ID) {
     datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
@@ -135,6 +131,13 @@ export const checkDatasetReportPermission = (datasetId: string, permissions: Use
   const permission = { type: 'dataset', value: datasetId, action: 'report' }
   return checkExistPermissionInList(permissions, permission)
 }
+export const checkDatasetDownloadTrackPermission = (
+  datasetId: string,
+  permissions: UserPermission[]
+) => {
+  const permission = { type: 'dataset', value: datasetId, action: 'download-track' }
+  return checkExistPermissionInList(permissions, permission)
+}
 
 export const getActivityDatasetsDownloadSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
@@ -148,7 +151,7 @@ export const getActivityDatasetsDownloadSupported = (
   })
 }
 
-export const getVesselDatasetsDownloadSupported = (
+export const getVesselDatasetsDownloadTrackSupported = (
   dataview: UrlDataviewInstance<GeneratorType>,
   permissions: UserPermission[] = []
 ) => {
@@ -159,7 +162,7 @@ export const getVesselDatasetsDownloadSupported = (
     )
     .filter((dataset) => {
       if (!dataset) return false
-      return checkDatasetReportPermission(dataset.datasetId, permissions)
+      return checkDatasetDownloadTrackPermission(dataset.datasetId, permissions)
     })
   return datasets
 }
@@ -180,9 +183,10 @@ export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
     )
     .map((d) => d.datasetId)
   return (dataview?.datasets || []).filter((dataset) => {
-    const isEventType = dataset?.configuration?.type
-      ? Object.values(EventTypes).includes(dataset.configuration.type)
-      : false
+    const isEventType =
+      dataset?.category === DatasetCategory.Event
+        ? Object.values(EventTypes).includes(dataset.subcategory as EventTypes)
+        : false
     const hasVesselId = datasetsConfigured?.includes(dataset.id)
     return isEventType && hasVesselId
   })
@@ -209,7 +213,7 @@ export const isDataviewSchemaSupported = (
 ) => {
   const activeDatasets = dataview.config?.datasets
   const schemaSupported = dataview?.datasets
-    ?.filter((dataset) => activeDatasets.includes(dataset.id))
+    ?.filter((dataset) => activeDatasets?.includes(dataset.id))
     .every((dataset) => {
       return dataset.fieldsAllowed.includes(schema)
     })
@@ -261,9 +265,11 @@ export const getIncompatibleFilterSelection = (
   schema: SupportedDatasetSchema
 ) => {
   return dataview?.datasets?.flatMap((dataset) => {
-    const hasIncompatibility = INCOMPATIBLE_FILTERS_DICT[dataset.id] !== undefined
-    if (!hasIncompatibility) return []
-    return INCOMPATIBLE_FILTERS_DICT[dataset.id].filter(({ id, value, disabled }) => {
+    const incompatibilityDict = dataview.filtersConfig?.incompatibility?.[dataset.id]
+    if (!incompatibilityDict?.length) {
+      return []
+    }
+    return incompatibilityDict.filter(({ id, value, disabled }) => {
       const selectedFilterValue = dataview.config?.filters?.[id]
       return (
         disabled.includes(schema) &&
@@ -377,17 +383,16 @@ export const geSchemaFiltersInDataview = (dataview: SchemaFieldDataview): Schema
   const fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
-  const fieldsOrder =
-    dataview.datasets.length === 1 &&
-    (dataview.datasets[0].configuration?.fieldsOrder as SupportedDatasetSchema[])
+  const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
-  const fielsAllowedOrdered = fieldsOrder
-    ? fieldsAllowed.sort((a, b) => {
-        const aIndex = fieldsOrder.findIndex((f) => f === a)
-        const bIndex = fieldsOrder.findIndex((f) => f === b)
-        return aIndex - bIndex
-      })
-    : fieldsAllowed
+  const fielsAllowedOrdered =
+    fieldsOrder && fieldsOrder.length > 0
+      ? fieldsAllowed.sort((a, b) => {
+          const aIndex = fieldsOrder.findIndex((f) => f === a)
+          const bIndex = fieldsOrder.findIndex((f) => f === b)
+          return aIndex - bIndex
+        })
+      : fieldsAllowed
   const schemaFilters = fielsAllowedOrdered.map((id) => getFiltersBySchema(dataview, id))
   return schemaFilters
 }

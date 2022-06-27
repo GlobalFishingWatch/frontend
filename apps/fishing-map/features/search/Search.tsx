@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { batch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'

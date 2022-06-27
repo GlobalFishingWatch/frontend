@@ -24,6 +24,18 @@ const initialState: UserState = {
 export const GUEST_USER_TYPE = 'guest'
 export const GFW_GROUP_ID = 'GFW Staff'
 export const GFW_DEV_GROUP_ID = 'development-group'
+export const ADMIN_GROUP_ID = 'admin-group'
+export const DEFAULT_GROUP_ID = 'Default'
+export const PRIVATE_SUPPORTED_GROUPS = [
+  'Indonesia',
+  'Peru',
+  'Panama',
+  'Brazil',
+  'Mexico',
+  'Ecuador',
+  'Costa_Rica',
+  'Belize',
+]
 
 export const fetchGuestUser = async () => {
   const permissions = await fetch(`${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`).then(
@@ -93,6 +105,7 @@ export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
+export const isGFWAdminUser = (state: RootState) => state.user.data?.groups.includes(ADMIN_GROUP_ID)
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE

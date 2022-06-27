@@ -22,20 +22,6 @@
   opacity: var(--opacity-secondary);
 }
 
-.scale {
-  min-height: 1.5rem;
-}
-
-.scale :global(.mapboxgl-ctrl-scale) {
-  font: var(--font-XS);
-  background: none;
-  color: rgba(var(--white-rgb), 0.65);
-  border-left: none;
-  border-right: none;
-  border-color: rgba(var(--white-rgb), 0.65);
-  border-width: 1px;
-}
-
 .dateRange {
   text-transform: uppercase;
 }

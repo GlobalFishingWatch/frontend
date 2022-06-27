@@ -2,7 +2,7 @@ import { Segment } from '../track-value-array-to-segments'
 import { BBox } from './types'
 
 export function segmentsToBbox(segments: Segment[]): BBox {
-  const result: BBox = [Infinity, Infinity, -Infinity, -Infinity]
+  const result: BBox = [90, 180, -90, -180]
   segments.forEach((segment) => {
     if (segment.length > 1) {
       segment.forEach((point) => {

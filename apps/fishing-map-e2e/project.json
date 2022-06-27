@@ -1,5 +1,4 @@
 {
-  "root": "apps/fishing-map-e2e",
   "sourceRoot": "apps/fishing-map-e2e/src",
   "projectType": "application",
   "targets": {

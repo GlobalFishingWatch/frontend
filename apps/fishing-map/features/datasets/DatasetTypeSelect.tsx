@@ -1,5 +1,5 @@
+import { Fragment, ReactComponentElement } from 'react'
 import cx from 'classnames'
-import React, { Fragment, ReactComponentElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DatasetCategory, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons.svg'
