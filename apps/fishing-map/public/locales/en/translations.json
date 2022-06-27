@@ -241,7 +241,11 @@
     "workspaceDuplicatedName": "There is already a workspace with this name.",
     "workspaceLoad": "There was an error loading the workspace. Please try again.",
     "workspaceMissingName": "Add a name for this workspace.",
-    "workspaceNotFound": "The workspace you requested was not found."
+    "workspaceNotFound": "The workspace you requested was not found.",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",

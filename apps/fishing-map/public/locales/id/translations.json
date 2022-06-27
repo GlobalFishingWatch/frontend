@@ -241,7 +241,11 @@
     "workspaceDuplicatedName": "Sudah ada ruang kerja dengan nama ini",
     "workspaceLoad": "Terjadi kesalahan saat memuat ruang kerja. Silahkan coba lagi.",
     "workspaceMissingName": "Nama ruang kerja diperlukan",
-    "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
+    "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
