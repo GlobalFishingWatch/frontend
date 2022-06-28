@@ -29,6 +29,8 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import {
   getDatasetLabel,
   getVesselDatasetsDownloadTrackSupported,
+  isGFWOnlyDataset,
+  isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
@@ -112,15 +114,19 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     ''
   const vesselTitle = vesselLabel || t('common.unknownVessel', 'Unknown vessel')
 
+  const getVesselTitle = (): string => {
+    if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
+    if (infoError) return t('common.unknownVessel', 'Unknown vessel')
+    if (dataview?.datasetsConfig.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
+      return `🐠 ${vesselLabel}`
+    if (dataview?.datasetsConfig.some((d) => isPrivateDataset({ id: d.datasetId })))
+      return `🔒 ${vesselLabel}`
+    return vesselLabel
+  }
+
   const TitleComponentContent = () => (
     <Fragment>
-      <span className={cx({ [styles.faded]: infoLoading || infoError })}>
-        {infoLoading
-          ? t('vessel.loadingInfo', 'Loading vessel info')
-          : infoError
-          ? t('common.unknownVessel', 'Unknown vessel')
-          : vesselLabel}
-      </span>
+      <span className={cx({ [styles.faded]: infoLoading || infoError })}>{getVesselTitle()}</span>
       {(infoError || trackError) && (
         <IconButton
           size="small"
