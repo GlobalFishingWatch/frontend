@@ -320,11 +320,11 @@ export function resolveDataviews(
     if (dataviewInstance.config?.type === GeneratorType.HeatmapAnimated) {
       const { filters } = dataviewInstance.config
       if (filters) {
-        if (filters.vesselGroups) {
-          dataviewInstance.config.vesselGroups = filters.vesselGroups.join(',')
+        if (filters['vessel-groups']) {
+          dataviewInstance.config['vessel-groups'] = filters['vessel-groups'].join(',')
         }
         const sqlFilters = Object.keys(filters)
-          .filter((key) => key !== 'vesselGroups')
+          .filter((key) => key !== 'vessel-groups')
           .flatMap((filterKey) => {
             if (!filters[filterKey]) return []
             const filterValues = Array.isArray(filters[filterKey])

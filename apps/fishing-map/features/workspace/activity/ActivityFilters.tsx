@@ -212,7 +212,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
       {schemaFilters.map((schemaFilter) => {
         if (
           !showSchemaFilter(schemaFilter) ||
-          (schemaFilter.id === 'vesselGroups' && !allowVesselGroup)
+          (schemaFilter.id === 'vessel-groups' && !allowVesselGroup)
         ) {
           return null
         }
@@ -220,12 +220,12 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
           <ActivitySchemaFilter
             key={schemaFilter.id}
             schemaFilter={
-              schemaFilter.id === 'vesselGroups'
+              schemaFilter.id === 'vessel-groups'
                 ? { ...schemaFilter, options: vesselGroupsOptionsWithModal }
                 : schemaFilter
             }
             onSelect={
-              schemaFilter.id === 'vesselGroups'
+              schemaFilter.id === 'vessel-groups'
                 ? onSelectVesselGroupFilterClick
                 : onSelectFilterClick
             }

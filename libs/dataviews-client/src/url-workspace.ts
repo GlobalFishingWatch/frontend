@@ -31,7 +31,7 @@ const PARAMS_TO_ABBREVIATED = {
   query: 'qry',
   value: 'val',
   color: 'clr',
-  vesselGroups: 'vGs',
+  'vessel-groups': 'vGs',
 }
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 
@@ -44,10 +44,6 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Dictionary<(value: any) => any> = {
   zoom: (zoom) => parseFloat(zoom),
   dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
     return dataviewInstances.map(parseDataviewInstance)
-  },
-  vesselGroups: (vesselGroups) => {
-    console.log(vesselGroups)
-    return vesselGroups
   },
 }
 
@@ -162,14 +158,14 @@ export const parseLegacyDataviewInstanceEndpoint = (
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
   const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
-  const vesselGroups = dataview.config?.vesselGroups?.map((vg: any) => parseInt(vg as any))
+  const vesselGroups = dataview.config?.['vessel-groups']?.map((vg: any) => parseInt(vg as any))
 
   const config = { ...dataview.config }
   if (breaks) {
     config.breaks = breaks
   }
   if (vesselGroups) {
-    config.vesselGroups = vesselGroups
+    config['vessel-groups'] = vesselGroups
   }
   return {
     ...parseLegacyDataviewInstanceEndpoint(dataview),

@@ -103,7 +103,7 @@ function ActivitySchemaFilter({
       key={id}
       disabled={disabled}
       label={
-        id === 'vesselGroups'
+        id === 'vessel-groups'
           ? t('vesselGroup.vesselGroups', 'Vessel Groups')
           : t(`vessel.${id}` as any, id)
       }
