@@ -1,6 +1,8 @@
 export interface VesselGroupVessel {
   dataset: string
   vesselId: string
+  flag: string
+  vesselType: string
 }
 
 export interface VesselGroup {
