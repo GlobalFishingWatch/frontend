@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { DatasetCategory } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
@@ -19,40 +20,44 @@ import UserWorkspacesPrivate from './UserWorkspacesPrivate'
 import UserDatasets from './UserDatasets'
 import UserInfo from './UserInfo'
 
-const USER_TABS = [
-  {
-    id: 'info',
-    title: 'Info',
-    content: <UserInfo />,
-  },
-  {
-    id: 'workspaces',
-    title: 'Workspaces',
-    content: (
-      <Fragment>
-        <UserWorkspacesPrivate />
-        <UserWorkspaces />
-      </Fragment>
-    ),
-  },
-  {
-    id: 'datasets',
-    title: 'Datasets',
-    content: (
-      <Fragment>
-        <UserDatasets datasetCategory={DatasetCategory.Environment} />
-        <UserDatasets datasetCategory={DatasetCategory.Context} />
-      </Fragment>
-    ),
-  },
-]
-
 function User() {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
   const { datasetModal, editingDatasetId } = useDatasetModalConnect()
-  const [activeTab, setActiveTab] = useState<Tab | undefined>(USER_TABS?.[0])
+
+  const userTabs = useMemo(
+    () => [
+      {
+        id: 'info',
+        title: t('user.info', 'User Info'),
+        content: <UserInfo />,
+      },
+      {
+        id: 'workspaces',
+        title: t('workspace.title_other', 'Workspaces'),
+        content: (
+          <Fragment>
+            <UserWorkspacesPrivate />
+            <UserWorkspaces />
+          </Fragment>
+        ),
+      },
+      {
+        id: 'datasets',
+        title: t('dataset.title_other', 'Datasets'),
+        content: (
+          <Fragment>
+            <UserDatasets datasetCategory={DatasetCategory.Environment} />
+            <UserDatasets datasetCategory={DatasetCategory.Context} />
+          </Fragment>
+        ),
+      },
+    ],
+    [t]
+  )
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(userTabs?.[0])
 
   useEffect(() => {
     if (userLogged && userData?.id) {
@@ -84,7 +89,7 @@ function User() {
   return (
     <div className={styles.container}>
       <Tabs
-        tabs={USER_TABS}
+        tabs={userTabs}
         activeTab={activeTab?.id}
         onTabClick={(tab: Tab) => setActiveTab(tab)}
       />

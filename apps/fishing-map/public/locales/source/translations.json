@@ -429,7 +429,8 @@
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "User Groups",
     "profile": "User profile",
-    "title": "User"
+    "title": "User",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Add vessel to view",
