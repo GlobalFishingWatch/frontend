@@ -113,6 +113,8 @@
     "months_other": "months",
     "more": "tambah",
     "name": "Nama",
+    "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "on screen",
     "optional": "Opsional",
     "or": "or",
@@ -241,7 +243,11 @@
     "workspaceDuplicatedName": "Sudah ada ruang kerja dengan nama ini",
     "workspaceLoad": "Terjadi kesalahan saat memuat ruang kerja. Silahkan coba lagi.",
     "workspaceMissingName": "Nama ruang kerja diperlukan",
-    "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
+    "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -425,7 +431,8 @@
     "groupMissing": "Apakah Anda termasuk dalam grup pengguna yang tidak muncul di sini? <2>Meminta akses</2>",
     "groups": "Grup Pengguna",
     "profile": "Profil pengguna",
-    "title": "Pengguna"
+    "title": "Pengguna",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Add vessel to view",

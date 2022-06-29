@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { useTranslation } from 'react-i18next'
+import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { DatasetCategory } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import EditDataset from 'features/datasets/EditDataset'
@@ -22,10 +23,48 @@ import UserInfo from './UserInfo'
 import UserVesselGroups from './UserVesselGroups'
 
 function User() {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
   const { datasetModal, editingDatasetId } = useDatasetModalConnect()
+
+  const userTabs = useMemo(
+    () => [
+      {
+        id: 'info',
+        title: t('user.info', 'User Info'),
+        content: <UserInfo />,
+      },
+      {
+        id: 'workspaces',
+        title: t('workspace.title_other', 'Workspaces'),
+        content: (
+          <Fragment>
+            <UserWorkspacesPrivate />
+            <UserWorkspaces />
+          </Fragment>
+        ),
+      },
+      {
+        id: 'datasets',
+        title: t('dataset.title_other', 'Datasets'),
+        content: (
+          <Fragment>
+            <UserDatasets datasetCategory={DatasetCategory.Environment} />
+            <UserDatasets datasetCategory={DatasetCategory.Context} />
+          </Fragment>
+        ),
+      },
+      {
+        id: 'vesselGroups',
+        title: t('vesselGroup.vesselGroups', 'Vessel Groups'),
+        content: <UserVesselGroups />,
+      },
+    ],
+    [t]
+  )
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(userTabs?.[0])
 
   useEffect(() => {
     if (userLogged && userData?.id) {
@@ -57,12 +96,11 @@ function User() {
 
   return (
     <div className={styles.container}>
-      <UserInfo />
-      <UserWorkspacesPrivate />
-      <UserWorkspaces />
-      <UserDatasets datasetCategory={DatasetCategory.Environment} />
-      <UserDatasets datasetCategory={DatasetCategory.Context} />
-      <UserVesselGroups />
+      <Tabs
+        tabs={userTabs}
+        activeTab={activeTab?.id}
+        onTabClick={(tab: Tab) => setActiveTab(tab)}
+      />
       {datasetModal === 'edit' && editingDatasetId !== undefined && <EditDataset />}
     </div>
   )

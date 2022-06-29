@@ -68,7 +68,7 @@
     "context_area_other": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
     "country_other": "paises",
-    "detections": "Detections",
+    "detections": "Detecciones",
     "date": "Fecha",
     "date_one": "Fecha",
     "date_other": "Fechas",
@@ -113,6 +113,8 @@
     "months_other": "meses",
     "more": "más",
     "name": "Nombre",
+    "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "en pantalla",
     "optional": "Opcional",
     "or": "o",
@@ -241,7 +243,11 @@
     "workspaceDuplicatedName": "Ya existe un espacio de trabajo con este nombre",
     "workspaceLoad": "Hubo un error cargando tu espacio de trabajo, inténtalo de nuevo.",
     "workspaceMissingName": "Se necesita cargar el nombre del espacio de trabajo",
-    "workspaceNotFound": "La vista que solicitó no se encontró"
+    "workspaceNotFound": "La vista que solicitó no se encontró",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -425,7 +431,8 @@
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
     "profile": "Perfil de usuario",
-    "title": "Usuario"
+    "title": "Usuario",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Añadir embarcación a la vista",

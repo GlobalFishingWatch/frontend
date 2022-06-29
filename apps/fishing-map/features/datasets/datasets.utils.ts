@@ -61,11 +61,19 @@ export const getFileTypes = (datasetGeometryType) =>
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   (dataset?.id || '').includes(PRIVATE_SUFIX)
 
+const GFW_ONLY_DATASETS = ['private-global-other-vessels:v20201001']
+
+export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
+  GFW_ONLY_DATASETS.includes(dataset?.id)
+
 export const getDatasetLabel = (dataset: { id: string; name?: string }): string => {
   const { id, name = '' } = dataset || {}
   if (!id) return name || ''
   const label = getDatasetNameTranslated(dataset)
-  return isPrivateDataset(dataset) ? `🔒 ${label}` : label
+  if (isGFWOnlyDataset(dataset))
+    return `🐟 ${label} - ${t('common.onlyVisibleForGFWShort', 'GFW Only')}`
+  if (isPrivateDataset(dataset)) return `🔒 ${label}`
+  return label
 }
 
 export const getDatasetTitleByDataview = (

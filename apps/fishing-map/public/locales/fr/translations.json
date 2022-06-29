@@ -113,6 +113,8 @@
     "months_other": "mois",
     "more": "plus",
     "name": "Nom",
+    "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "à l'écran",
     "optional": "Optionnel",
     "or": "ou",
@@ -241,7 +243,11 @@
     "workspaceDuplicatedName": "Il existe déjà un espace de travail portant ce nom",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer.",
     "workspaceMissingName": "Le nom de l'espace de travail est requis",
-    "workspaceNotFound": "La vue demandée n'a pas été trouvée"
+    "workspaceNotFound": "La vue demandée n'a pas été trouvée",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}j",
@@ -425,7 +431,8 @@
     "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
     "groups": "Groupes",
     "profile": "Profil",
-    "title": "Utilisateur"
+    "title": "Utilisateur",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Ajouter un navire à la vue",

@@ -346,8 +346,8 @@ export function getGeneratorConfig(
           const rampScale = scaleLinear().range([min, max]).domain([0, 1])
           const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
           const steps = [...Array(numSteps)]
-            .map((_, i) => parseFloat((i / (numSteps - 1))?.toFixed(2)))
-            .map((value) => parseFloat((rampScale(value) as number)?.toFixed(3)))
+            .map((_, i) => i / (numSteps - 1))
+            .map((value) => rampScale(value) as number)
           generator.steps = steps
         } else if (
           dataset.category === DatasetCategory.Context &&

@@ -19,6 +19,7 @@
           "echo $NEXT_PUBLIC_URL",
           "echo $NEXT_PUBLIC_API_GATEWAY",
           "echo $NEXT_PUBLIC_WORKSPACE_ENV",
+          "echo $NEXT_PUBLIC_CARRIER_PORTAL_URL",
           "echo $NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID",
           "echo $NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL",
           "echo $NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"

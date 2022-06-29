@@ -113,6 +113,8 @@
     "months_other": "months",
     "more": "more",
     "name": "Name",
+    "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "on screen",
     "optional": "Optional",
     "or": "or",
@@ -241,7 +243,11 @@
     "workspaceDuplicatedName": "There is already a workspace with this name.",
     "workspaceLoad": "There was an error loading the workspace. Please try again.",
     "workspaceMissingName": "Add a name for this workspace.",
-    "workspaceNotFound": "The workspace you requested was not found."
+    "workspaceNotFound": "The workspace you requested was not found.",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -425,7 +431,8 @@
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
     "profile": "Profile",
-    "title": "User"
+    "title": "User",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Add vessel to workspace",

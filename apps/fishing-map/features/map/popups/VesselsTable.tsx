@@ -30,6 +30,7 @@ import { t } from 'features/i18n/i18n'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
+import GFWOnly from 'features/user/GFWOnly'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -252,7 +253,11 @@ function VesselsTable({
                   <td className={styles.columnSpace}>{vesselGearType}</td>
                   {vesselProperty !== 'detections' && (
                     <td className={styles.columnSpace}>
-                      {getDatasetLabel(vessel.infoDataset) || EMPTY_FIELD_PLACEHOLDER}
+                      <Tooltip content={getDatasetLabel(vessel.infoDataset)}>
+                        <span>
+                          {getDatasetLabel(vessel.infoDataset) || EMPTY_FIELD_PLACEHOLDER}
+                        </span>
+                      </Tooltip>
                     </td>
                   )}
                   <td
@@ -288,7 +293,12 @@ function VesselsTable({
       {gfwUser && !showFullList && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title={title}
+          title={
+            <Fragment>
+              {title}
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={modalOpen}
           onClose={onModalClose}
         >
