@@ -5,10 +5,19 @@ export interface UploadResponse {
   url: string
 }
 
+export type EndpointParamType =
+  | 'enum'
+  | 'boolean'
+  | 'number'
+  | 'string'
+  | 'date-iso'
+  | 'sql'
+  | '4wings-datasets'
+
 export interface EndpointParam {
   id: string
   label: string
-  type: 'enum' | 'boolean' | 'number' | 'string' | 'date-iso' | 'sql' | '4wings-datasets'
+  type: EndpointParamType
   enum?: string[]
   array?: boolean
   required?: boolean
