@@ -10,4 +10,4 @@ function DownloadTrackModalTitle() {
   )
 }
 
-export default DownloadTrackModalTitle
+export default GFWOnly
