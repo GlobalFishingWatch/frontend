@@ -93,7 +93,8 @@ export const selectUserWorkspacesPrivate = createSelector(
 
 export const selectUserDatasets = createSelector(
   [(state: RootState) => selectAllDatasets(state), selectUserId],
-  (datasets, userId) => datasets?.filter((d) => d.ownerId === userId)
+  (datasets, userId) =>
+    datasets?.filter((d) => d.ownerId === userId && d.status !== DatasetStatus.Deleted)
 )
 
 export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
