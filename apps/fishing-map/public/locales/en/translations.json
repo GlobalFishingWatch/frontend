@@ -113,6 +113,8 @@
     "months_other": "months",
     "more": "more",
     "name": "Name",
+    "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "on screen",
     "optional": "Optional",
     "or": "or",
@@ -429,7 +431,8 @@
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
     "profile": "Profile",
-    "title": "User"
+    "title": "User",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Add vessel to workspace",
