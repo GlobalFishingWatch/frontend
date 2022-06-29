@@ -21,7 +21,7 @@ import titleReducer from './routes/title.reducer'
 import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 import workspacesReducer from './features/workspaces-list/workspaces-list.slice'
-import vesselGroupsReducer from './features/vesselGroup/vessel-groups.slice'
+import vesselGroupsReducer from './features/vessel-groups/vessel-groups.slice'
 
 const {
   reducer: location,

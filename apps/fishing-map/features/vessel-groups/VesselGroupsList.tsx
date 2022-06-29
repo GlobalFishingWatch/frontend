@@ -4,7 +4,7 @@ import cx from 'classnames'
 import {
   useVesselGroupSelectWithModal,
   useVesselGroupsOptions,
-} from 'features/vesselGroup/vessel-groups.hooks'
+} from 'features/vessel-groups/vessel-groups.hooks'
 import styles from './VesselGroupsList.module.css'
 
 type VesselsGroupListProps = {

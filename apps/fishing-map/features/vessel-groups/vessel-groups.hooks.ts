@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { setModalOpen } from 'features/vesselGroup/vessel-groups.slice'
+import { setModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import { selectAllVesselGroups } from './vessel-groups.slice'
 
 export const useVesselGroupsOptions = () => {

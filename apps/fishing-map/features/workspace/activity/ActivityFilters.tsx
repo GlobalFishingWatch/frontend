@@ -24,8 +24,8 @@ import ActivitySchemaFilter, {
 import {
   useVesselGroupsOptions,
   useVesselGroupSelectWithModal,
-} from 'features/vesselGroup/vessel-groups.hooks'
-import { selectVessselGroupsAllowed } from 'features/vesselGroup/vessel-groups.selectors'
+} from 'features/vessel-groups/vessel-groups.hooks'
+import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,

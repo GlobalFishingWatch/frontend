@@ -9,7 +9,7 @@ import {
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
   deleteVesselGroupThunk,
-} from 'features/vesselGroup/vessel-groups.slice'
+} from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectUserVesselGroups } from './user.selectors'
 import styles from './User.module.css'

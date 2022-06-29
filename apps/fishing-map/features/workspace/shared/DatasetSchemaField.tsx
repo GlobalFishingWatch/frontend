@@ -6,7 +6,7 @@ import {
   getSchemaFieldsSelectedInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { useVesselGroupsOptions } from 'features/vesselGroup/vessel-groups.hooks'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance

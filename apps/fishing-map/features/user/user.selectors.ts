@@ -11,7 +11,7 @@ import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX } from 'data/config'
 import { RootState } from 'store'
-import { selectAllVesselGroups } from 'features/vesselGroup/vessel-groups.slice'
+import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
 import {
   selectUserStatus,
   selectUserLogged,

@@ -29,7 +29,7 @@ const NewDataset = dynamic(
   () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/NewDataset')
 )
 const VesselGroupModal = dynamic(
-  () => import(/* webpackChunkName: "VesselGroup" */ 'features/vesselGroup/VesselGroupModal')
+  () => import(/* webpackChunkName: "VesselGroup" */ 'features/vessel-groups/VesselGroupModal')
 )
 
 type SidebarProps = {

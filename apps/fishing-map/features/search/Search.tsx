@@ -32,8 +32,8 @@ import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-// import { useVesselGroupsOptions } from 'features/vesselGroup/vessel-groups.hooks'
-// import VesselsGroupList from 'features/vesselGroup/VesselGroupsList'
+// import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+// import VesselsGroupList from 'features/vessel-groups/VesselGroupsList'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
