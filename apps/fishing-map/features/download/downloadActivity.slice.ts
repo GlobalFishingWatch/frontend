@@ -64,31 +64,30 @@ export const downloadActivityThunk = createAsyncThunk<
       const toDate = DateTime.fromISO(dateRange.end).toUTC()
 
       const downloadActivityParams = {
+        format,
         datasets: dataviews.map(({ datasets }) => datasets.join(',')),
         filters: dataviews.map(({ filter }) => filter),
+        'vessel-groups': dataviews.map((dv) => dv['vessel-groups']),
         'date-range': [fromDate, toDate].join(','),
-        format,
         'spatial-resolution': spatialResolution,
         'temporal-resolution': temporalResolution,
         'group-by': groupBy,
       }
 
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`
+      const downloadUrl = `/${API_VERSION}/4wings/report?${stringify(downloadActivityParams, {
+        arrayFormat: 'indices',
+      })}`
 
-      const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
-        `/${API_VERSION}/4wings/report?${stringify(downloadActivityParams, {
-          arrayFormat: 'indices',
-        })}`,
-        {
-          method: 'POST',
-          body: { geojson: geometry } as any,
-          responseType: 'blob',
-          headers: {
-            Authorization: `Bearer ${GFWAPI.getToken()}`,
-            'Content-Language': i18next.language === 'es' ? 'es-ES' : 'en-EN',
-          },
-        }
-      ).then((blob) => {
+      const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(downloadUrl, {
+        method: 'POST',
+        body: { geojson: geometry } as any,
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${GFWAPI.getToken()}`,
+          'Content-Language': i18next.language === 'es' ? 'es-ES' : 'en-EN',
+        },
+      }).then((blob) => {
         saveAs(blob as any, fileName)
       })
       return createdDownload

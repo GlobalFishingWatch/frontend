@@ -182,6 +182,7 @@ function DownloadActivityModal() {
         return {
           filter: dataview.config?.filter || [],
           filters: dataview.config?.filters || {},
+          'vessel-groups': dataview.config?.['vessel-groups'] || '',
           datasets: activityDatasets,
         }
       })
