@@ -41,7 +41,6 @@ function UserInfo() {
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
           <div>
-            <label>{t('user.title', 'User')}</label>
             <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
             <p className={styles.secondary}>{userData.email}</p>
           </div>
