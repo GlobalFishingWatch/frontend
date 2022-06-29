@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { DatasetCategory } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import EditDataset from 'features/datasets/EditDataset'
@@ -19,11 +19,40 @@ import UserWorkspacesPrivate from './UserWorkspacesPrivate'
 import UserDatasets from './UserDatasets'
 import UserInfo from './UserInfo'
 
+const USER_TABS = [
+  {
+    id: 'info',
+    title: 'Info',
+    content: <UserInfo />,
+  },
+  {
+    id: 'workspaces',
+    title: 'Workspaces',
+    content: (
+      <Fragment>
+        <UserWorkspacesPrivate />
+        <UserWorkspaces />
+      </Fragment>
+    ),
+  },
+  {
+    id: 'datasets',
+    title: 'Datasets',
+    content: (
+      <Fragment>
+        <UserDatasets datasetCategory={DatasetCategory.Environment} />
+        <UserDatasets datasetCategory={DatasetCategory.Context} />
+      </Fragment>
+    ),
+  },
+]
+
 function User() {
   const dispatch = useAppDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
   const { datasetModal, editingDatasetId } = useDatasetModalConnect()
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(USER_TABS?.[0])
 
   useEffect(() => {
     if (userLogged && userData?.id) {
@@ -54,11 +83,11 @@ function User() {
 
   return (
     <div className={styles.container}>
-      <UserInfo />
-      <UserWorkspacesPrivate />
-      <UserWorkspaces />
-      <UserDatasets datasetCategory={DatasetCategory.Environment} />
-      <UserDatasets datasetCategory={DatasetCategory.Context} />
+      <Tabs
+        tabs={USER_TABS}
+        activeTab={activeTab?.id}
+        onTabClick={(tab: Tab) => setActiveTab(tab)}
+      />
       {datasetModal === 'edit' && editingDatasetId !== undefined && <EditDataset />}
     </div>
   )
