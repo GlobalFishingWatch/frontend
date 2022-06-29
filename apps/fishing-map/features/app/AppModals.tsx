@@ -16,6 +16,7 @@ import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
+import GFWOnly from 'features/user/GFWOnly'
 import styles from './App.module.css'
 
 const BigQueryMenu = dynamic(
@@ -99,7 +100,12 @@ const AppModals = () => {
       {gfwUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title="Secret debug menu 🤖"
+          title={
+            <Fragment>
+              Secret debug menu 🤖
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={debugActive}
           shouldCloseOnEsc
           onClose={dispatchToggleDebugMenu}
@@ -110,7 +116,12 @@ const AppModals = () => {
       {gfwUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title="Workspace editor 📝"
+          title={
+            <Fragment>
+              Workspace editor 📝
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={editorActive}
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
@@ -121,7 +132,12 @@ const AppModals = () => {
       {gfwUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title="Big query datasets creation 🧠"
+          title={
+            <Fragment>
+              Big query datasets creation 🧠
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={bigqueryActive}
           onClose={dispatchBigQueryMenu}
           contentClassName={styles.bqModal}

@@ -11,7 +11,7 @@ import styles from './Hint.module.css'
 
 const HELP_COLOR =
   (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-help')) ||
+    getComputedStyle(document.documentElement).getPropertyValue('--color-help-yellow')) ||
   '#fff8cd'
 
 function HintsHub() {
