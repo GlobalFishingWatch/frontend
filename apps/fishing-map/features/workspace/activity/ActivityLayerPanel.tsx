@@ -88,7 +88,7 @@ function ActivityLayerPanel({
       fields,
     },
     {
-      skip: guestUser || !urlTimeRange || !layerActive || duration.years > MAX_STATS_YEARS,
+      skip: guestUser || !urlTimeRange || !layerActive || duration?.years > MAX_STATS_YEARS,
     }
   )
 
@@ -167,7 +167,7 @@ function ActivityLayerPanel({
   )
 
   const statsValue = stats && (stats.vessel_id || stats.id)
-  const showStats = duration.years <= 1
+  const showStats = duration?.years <= 1
 
   return (
     <div
