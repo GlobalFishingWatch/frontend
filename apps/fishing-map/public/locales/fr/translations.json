@@ -113,6 +113,8 @@
     "months_other": "mois",
     "more": "plus",
     "name": "Nom",
+    "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "à l'écran",
     "optional": "Optionnel",
     "or": "ou",
@@ -429,7 +431,8 @@
     "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
     "groups": "Groupes",
     "profile": "Profil",
-    "title": "Utilisateur"
+    "title": "Utilisateur",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Ajouter un navire à la vue",
