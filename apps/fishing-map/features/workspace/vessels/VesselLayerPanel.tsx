@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
@@ -114,11 +114,18 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     ''
   const vesselTitle = vesselLabel || t('common.unknownVessel', 'Unknown vessel')
 
-  const getVesselTitle = (): string => {
+  const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
     if (infoError) return t('common.unknownVessel', 'Unknown vessel')
     if (dataview?.datasetsConfig.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
-      return `🐠 ${vesselLabel}`
+      return (
+        <Fragment>
+          <Tooltip content={t('common.onlyVisibleForGFW', 'Only visible for GFW users')}>
+            <span>🐠</span>
+          </Tooltip>{' '}
+          vesselLabel
+        </Fragment>
+      )
     if (dataview?.datasetsConfig.some((d) => isPrivateDataset({ id: d.datasetId })))
       return `🔒 ${vesselLabel}`
     return vesselLabel
