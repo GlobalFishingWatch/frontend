@@ -3,7 +3,12 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
-import { DEFAULT_STATS_FIELDS, useGetStatsByDataviewQuery } from 'queries/stats-api'
+import { DateTime } from 'luxon'
+import {
+  DEFAULT_STATS_FIELDS,
+  MAX_STATS_YEARS,
+  useGetStatsByDataviewQuery,
+} from 'queries/stats-api'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import {
   getDatasetConfigByDatasetType,
@@ -66,6 +71,15 @@ function ActivityLayerPanel({
   )
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
+
+  const duration = useMemo(() => {
+    if (urlTimeRange.start && urlTimeRange.end) {
+      const startDateTime = DateTime.fromISO(urlTimeRange.start)
+      const endDateTime = DateTime.fromISO(urlTimeRange.end)
+      return endDateTime.diff(startDateTime, 'years')
+    }
+  }, [urlTimeRange.start, urlTimeRange.end])
+
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
       dataview,
@@ -73,7 +87,7 @@ function ActivityLayerPanel({
       fields,
     },
     {
-      skip: guestUser || !urlTimeRange || !layerActive,
+      skip: guestUser || !urlTimeRange || !layerActive || duration.years > MAX_STATS_YEARS,
     }
   )
 
@@ -152,7 +166,7 @@ function ActivityLayerPanel({
   )
 
   const statsValue = stats && (stats.vessel_id || stats.id)
-  const showStats = statsValue > 0
+  const showStats = duration.years <= 1
 
   return (
     <div
@@ -221,7 +235,7 @@ function ActivityLayerPanel({
                     'print-hidden'
                   )}
                 >
-                  {showStats ? (
+                  {showStats && (
                     <Tooltip
                       content={
                         stats.type === 'vessels'
@@ -236,7 +250,7 @@ function ActivityLayerPanel({
                       }
                     >
                       <div className={activityStyles.help}>
-                        {statsValue > 0 && (
+                        {statsValue > 0 ? (
                           <span>
                             <I18nNumber number={statsValue} />{' '}
                             {stats.type === 'vessels'
@@ -249,10 +263,14 @@ function ActivityLayerPanel({
                                   defaultValue: 'detections',
                                 }).toLocaleLowerCase()}
                           </span>
+                        ) : stats.type === 'vessels' ? (
+                          t('workspace.noVesselInFilters', 'No vessels match your filters')
+                        ) : (
+                          t('workspace.noDetectionInFilters', 'No detections match your filters')
                         )}
                         {stats.type === 'vessels' &&
                           stats.flag > 0 &&
-                          !dataview.config?.filters?.flag && (
+                          dataview.config?.filters?.flag?.length > 1 && (
                             <Fragment>
                               <span> {t('common.from', 'from')} </span>
                               <span>
@@ -267,10 +285,6 @@ function ActivityLayerPanel({
                         {t('common.globally', 'globally')}
                       </div>
                     </Tooltip>
-                  ) : stats.type === 'vessels' ? (
-                    t('workspace.noVesselInFilters', 'No vessels match your filters')
-                  ) : (
-                    t('workspace.noDetectionInFilters', 'No detections match your filters')
                   )}
                 </div>
               )}
