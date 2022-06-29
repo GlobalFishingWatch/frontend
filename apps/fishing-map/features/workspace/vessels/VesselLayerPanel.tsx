@@ -121,7 +121,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       return (
         <Fragment>
           <Tooltip content={t('common.onlyVisibleForGFW', 'Only visible for GFW users')}>
-            <span>🐠</span>
+            <span>🐟</span>
           </Tooltip>{' '}
           vesselLabel
         </Fragment>

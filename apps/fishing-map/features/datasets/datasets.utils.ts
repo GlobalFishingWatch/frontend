@@ -57,7 +57,7 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
   if (!id) return name || ''
   const label = getDatasetNameTranslated(dataset)
   if (isGFWOnlyDataset(dataset))
-    return `🐠 ${label} - ${t('common.onlyVisibleForGFWShort', 'GFW Only')}`
+    return `🐟 ${label} - ${t('common.onlyVisibleForGFWShort', 'GFW Only')}`
   if (isPrivateDataset(dataset)) return `🔒 ${label}`
   return label
 }
