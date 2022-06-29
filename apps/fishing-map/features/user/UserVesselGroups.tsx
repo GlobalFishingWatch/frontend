@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { Button, Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
+import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
+  setModalOpen,
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
   deleteVesselGroupThunk,
@@ -20,7 +21,10 @@ function UserVesselGroups() {
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupStatusId = useSelector(selectVesselGroupsStatusId)
   const loading = vesselGroupsStatus === AsyncReducerStatus.Loading
-  console.log(vesselGroupsStatus, vesselGroupStatusId)
+
+  const onNewGroupClick = useCallback(() => {
+    dispatch(setModalOpen({}))
+  }, [dispatch])
 
   const onDeleteClick = useCallback(
     (vesselGroup: VesselGroup) => {
@@ -41,6 +45,9 @@ function UserVesselGroups() {
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
         <label>{t('vesselGroup.vesselGroups', 'Vessel Groups')}</label>
+        <Button disabled={loading} type="secondary" onClick={onNewGroupClick}>
+          {t('vesselGroup.new', 'New vessel group') as string}
+        </Button>
       </div>
       {loading ? (
         <div className={styles.placeholder}>
@@ -54,19 +61,6 @@ function UserVesselGroups() {
                 <li className={styles.dataset} key={vesselGroup.id}>
                   {vesselGroup.name}
                   <div>
-                    {/* <InfoError
-                      error={datasetError}
-                      loading={datasetImporting}
-                      tooltip={infoTooltip}
-                      onClick={() => onInfoClick(dataset)}
-                    />
-                    {!datasetImporting && !datasetError && (
-                      <IconButton
-                        icon="edit"
-                        tooltip={t('dataset.edit', 'Edit dataset')}
-                        onClick={() => onEditClick(dataset)}
-                      />
-                    )} */}
                     <IconButton
                       icon="delete"
                       type="warning"
