@@ -241,11 +241,11 @@ function ActivityLayerPanel({
                         stats.type === 'vessels'
                           ? t(
                               'layer.statsHelp',
-                              'The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.'
+                              'The number of vessels and flag states is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
                             )
                           : t(
                               'layer.statsHelpDetection',
-                              'The number of detections is calculated for your current filters and time range globally. Some double counting may occur.'
+                              'The number of detections is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
                             )
                       }
                     >
