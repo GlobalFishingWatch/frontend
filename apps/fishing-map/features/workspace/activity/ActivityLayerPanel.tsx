@@ -72,13 +72,14 @@ function ActivityLayerPanel({
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
 
+  const { start, end } = urlTimeRange || {}
   const duration = useMemo(() => {
-    if (urlTimeRange.start && urlTimeRange.end) {
-      const startDateTime = DateTime.fromISO(urlTimeRange.start)
-      const endDateTime = DateTime.fromISO(urlTimeRange.end)
+    if (start && end) {
+      const startDateTime = DateTime.fromISO(start)
+      const endDateTime = DateTime.fromISO(end)
       return endDateTime.diff(startDateTime, 'years')
     }
-  }, [urlTimeRange.start, urlTimeRange.end])
+  }, [start, end])
 
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
