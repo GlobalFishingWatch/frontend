@@ -32,8 +32,6 @@ import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-// import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-// import VesselsGroupList from 'features/vessel-groups/VesselGroupsList'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -81,11 +79,7 @@ function Search() {
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
-  // const vesselGroupsOptions = useVesselGroupsOptions()
-  // const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
-  // const onToggleVesselGroups = useCallback(() => {
-  //   setVesselGroupsOpen(!vesselGroupsOpen)
-  // }, [vesselGroupsOpen])
+
   const searchOptions = useMemo(() => {
     return [
       {
@@ -106,7 +100,6 @@ function Search() {
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   )
-  console.log(searchDatasets)
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const promiseRef = useRef<any>()
@@ -209,6 +202,10 @@ function Search() {
     dispatchQueryParams({ query: debouncedQuery })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
+
+  const onAddToVesselGroup = useCallback(() => {
+    console.log('TODO: add this vessels to a new group', vesselsSelected)
+  }, [vesselsSelected])
 
   const onCloseClick = () => {
     batch(() => {
@@ -514,16 +511,11 @@ function Search() {
             </div>
           )}
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            {/* {vesselGroupsOpen && <VesselsGroupList />} */}
-            {/* {vesselsSelected.length && (
-              <Button
-                type="secondary"
-                className={styles.footerAction}
-                onClick={onToggleVesselGroups}
-              >
-                {t('vesselGroup.addVesselToGroup', 'Add to vessel group')}
+            {vesselsSelected.length > 0 && (
+              <Button type="secondary" className={styles.footerAction} onClick={onAddToVesselGroup}>
+                {t('vesselGroup.new', 'New vessel group')}({vesselsSelected.length})
               </Button>
-            )} */}
+            )}
             <Button className={styles.footerAction} onClick={onConfirmSelection}>
               {vesselsSelected.length > 1
                 ? t('search.seeVessels', {

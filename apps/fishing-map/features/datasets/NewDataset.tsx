@@ -79,7 +79,6 @@ function NewDataset(): React.ReactElement {
   const onFileLoaded = useCallback(
     async (file: File) => {
       const type = datasetGeometryType
-      console.log(type)
       setLoading(true)
       setError('')
       const name =

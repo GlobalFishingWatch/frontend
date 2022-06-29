@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
@@ -71,11 +71,8 @@ const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   name: 'vesselGroups',
   initialState,
   reducers: {
-    setModalOpen: (state) => {
-      state.isModalOpen = true
-    },
-    setModalClosed: (state) => {
-      state.isModalOpen = false
+    setVesselGroupsModalOpen: (state, action: PayloadAction<boolean>) => {
+      state.isModalOpen = action.payload
     },
   },
   thunks: {
@@ -86,7 +83,7 @@ const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   },
 })
 
-export const { setModalOpen, setModalClosed } = vesselGroupsSlice.actions
+export const { setVesselGroupsModalOpen } = vesselGroupsSlice.actions
 
 const { selectAll } = entityAdapter.getSelectors<RootState>((state) => state.vesselGroups)
 

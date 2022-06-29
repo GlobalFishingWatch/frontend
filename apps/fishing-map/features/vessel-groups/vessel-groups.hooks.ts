@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { setModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import { selectAllVesselGroups } from './vessel-groups.slice'
+import styles from './VesselGroupsList.module.css'
 
 export const useVesselGroupsOptions = () => {
   const { t } = useTranslation()
@@ -21,33 +21,22 @@ export const useVesselGroupsOptions = () => {
   }, [t, vesselGroups])
 }
 
-export const useVesselGroupSelectWithModal = (options, onSelect, className) => {
-  const OPEN_MODAL_ID = 'openModal'
+export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
+export const useVesselGroupSelectWithModal = () => {
+  const options = useVesselGroupsOptions()
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const vesselGroupsOptionsWithModal: MultiSelectOption[] = useMemo(
     () =>
       [
         {
-          id: OPEN_MODAL_ID,
+          id: VESSEL_GROUPS_MODAL_ID,
           label: t('vesselGroup.createNewGroup', 'Create new group'),
           disableSelection: true,
-          className,
+          className: styles.openModalLink,
         } as MultiSelectOption,
       ].concat(options),
-    [options, t, className]
+    [options, t]
   )
 
-  const onSelectVesselGroupFilterClick = useCallback(
-    (id, selection: MultiSelectOption) => {
-      if (selection.id === OPEN_MODAL_ID) {
-        dispatch(setModalOpen({}))
-        return
-      }
-      if (onSelect) onSelect('vessel-groups', selection)
-    },
-    [onSelect, dispatch]
-  )
-
-  return { vesselGroupsOptionsWithModal, onSelectVesselGroupFilterClick }
+  return vesselGroupsOptionsWithModal
 }

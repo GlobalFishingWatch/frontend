@@ -25,7 +25,7 @@ import {
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL, FIRST_YEAR_OF_DATA } from 'data/config'
+import { ROOT_DOM_ELEMENT, FIRST_YEAR_OF_DATA } from 'data/config'
 import FileDropzone from 'features/common/FileDropzone'
 import { readBlobAs } from 'utils/files'
 import I18nDate from 'features/i18n/i18nDate'
@@ -36,7 +36,7 @@ import styles from './VesselGroupModal.module.css'
 import {
   createVesselGroupThunk,
   selectVesselGroupModalOpen,
-  setModalClosed,
+  setVesselGroupsModalOpen,
 } from './vessel-groups.slice'
 
 export type CSV = Record<string, any>[]
@@ -138,7 +138,7 @@ function VesselGroupModal(): React.ReactElement {
     setGroupName('')
     setError('')
     setLoading(false)
-    dispatch(setModalClosed({}))
+    dispatch(setVesselGroupsModalOpen(false))
   }, [dispatch])
 
   const onClose = useCallback(() => {

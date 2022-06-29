@@ -134,8 +134,6 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         advancedQuery = getAdvancedSearchQuery(fields)
       }
 
-      console.log(advancedQuery)
-
       const datasetConfig = {
         endpoint: advancedQuery ? EndpointId.VesselAdvancedSearch : EndpointId.VesselSearch,
         datasetId: dataset.id,
