@@ -297,7 +297,6 @@ export class GFW_API_CLASS {
           ? url
           : this.baseUrl + (dataset ? `/datasets/${this.dataset}` : '') + url
         const data = await fetch(fetchUrl, {
-          redirect: 'follow',
           method,
           signal,
           ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
