@@ -48,6 +48,7 @@ export const dataviewStatsApi = createApi({
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
           filters: [dataview.config?.filter] || [],
+          'vessel-groups': [dataview.config?.['vessel-groups']] || [],
           'date-range': [timerange.start, timerange.end].join(','),
         }
         return {
