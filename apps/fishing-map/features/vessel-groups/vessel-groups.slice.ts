@@ -1,5 +1,5 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
+import { Vessel, VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
@@ -7,11 +7,13 @@ import { API_VERSION } from 'data/config'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
+  vessels: Vessel[]
 }
 
 const initialState: VesselGroupsSliceState = {
   ...asyncInitialState,
   isModalOpen: false,
+  vessels: undefined,
 }
 
 const fetchVesselGroupsByIdsThunk = createAsyncThunk(
@@ -74,6 +76,9 @@ const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupsModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isModalOpen = action.payload
     },
+    setVesselGroupVessels: (state, action: PayloadAction<Vessel[]>) => {
+      state.vessels = action.payload
+    },
   },
   thunks: {
     fetchThunk: fetchVesselGroupsByIdsThunk,
@@ -83,7 +88,7 @@ const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   },
 })
 
-export const { setVesselGroupsModalOpen } = vesselGroupsSlice.actions
+export const { setVesselGroupsModalOpen, setVesselGroupVessels } = vesselGroupsSlice.actions
 
 const { selectAll } = entityAdapter.getSelectors<RootState>((state) => state.vesselGroups)
 
@@ -93,6 +98,7 @@ export function selectAllVesselGroups(state: RootState) {
 
 export const selectVesselGroupModalOpen = (state: RootState) => state.vesselGroups.isModalOpen
 export const selectVesselGroupsStatus = (state: RootState) => state.vesselGroups.status
+export const selectVesselGroupVessels = (state: RootState) => state.vesselGroups.vessels
 export const selectVesselGroupsStatusId = (state: RootState) => state.vesselGroups.statusId
 
 export default vesselGroupsSlice.reducer

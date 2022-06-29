@@ -5,7 +5,7 @@ import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
-  setModalOpen,
+  setVesselGroupsModalOpen,
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
   deleteVesselGroupThunk,
@@ -23,7 +23,7 @@ function UserVesselGroups() {
   const loading = vesselGroupsStatus === AsyncReducerStatus.Loading
 
   const onNewGroupClick = useCallback(() => {
-    dispatch(setModalOpen({}))
+    dispatch(setVesselGroupsModalOpen(true))
   }, [dispatch])
 
   const onDeleteClick = useCallback(

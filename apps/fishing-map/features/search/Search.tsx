@@ -33,6 +33,10 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
+  setVesselGroupsModalOpen,
+  setVesselGroupVessels,
+} from 'features/vessel-groups/vessel-groups.slice'
+import {
   fetchVesselSearchThunk,
   selectSearchResults,
   cleanVesselSearchResults,
@@ -204,8 +208,9 @@ function Search() {
   }, [debouncedQuery])
 
   const onAddToVesselGroup = useCallback(() => {
-    console.log('TODO: add this vessels to a new group', vesselsSelected)
-  }, [vesselsSelected])
+    dispatch(setVesselGroupVessels(vesselsSelected))
+    dispatch(setVesselGroupsModalOpen(true))
+  }, [dispatch, vesselsSelected])
 
   const onCloseClick = () => {
     batch(() => {

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { parse as parseCSV } from 'papaparse'
 import { useSelector } from 'react-redux'
 import {
-  Vessel,
   EndpointId,
   VesselSearch,
   VesselGroupVessel,
@@ -34,8 +33,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import styles from './VesselGroupModal.module.css'
 import {
+  setVesselGroupVessels,
   createVesselGroupThunk,
   selectVesselGroupModalOpen,
+  selectVesselGroupVessels,
   setVesselGroupsModalOpen,
 } from './vessel-groups.slice'
 
@@ -58,11 +59,11 @@ function VesselGroupModal(): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const [groupName, setGroupName] = useState<string>('Long Xing')
+  const [groupName, setGroupName] = useState<string>()
   // TODO use empty array
-  const [IDs, setIDs] = useState<string[]>(['412422360'])
+  const [IDs, setIDs] = useState<string[]>([])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('mmsi')
-  const [vessels, setVessels] = useState<Vessel[]>()
+  const vessels = useSelector(selectVesselGroupVessels)
 
   const onCSVLoaded = useCallback(
     async (file: File) => {
@@ -127,13 +128,13 @@ function VesselGroupModal(): React.ReactElement {
   const onVesselRemoveClick = useCallback(
     (vesselId: string) => {
       const index = vessels.findIndex((vessel) => vessel.id === vesselId)
-      setVessels([...vessels.slice(0, index), ...vessels.slice(index + 1)])
+      dispatch(setVesselGroupVessels([...vessels.slice(0, index), ...vessels.slice(index + 1)]))
     },
-    [vessels]
+    [dispatch, vessels]
   )
 
   const close = useCallback(() => {
-    setVessels(undefined)
+    dispatch(setVesselGroupVessels(undefined))
     setIDs([])
     setGroupName('')
     setError('')
@@ -142,7 +143,7 @@ function VesselGroupModal(): React.ReactElement {
   }, [dispatch])
 
   const onClose = useCallback(() => {
-    const askConfirm = vessels || IDs.length
+    const askConfirm = vessels || IDs?.length
     let confirmed
     if (askConfirm) {
       confirmed = window.confirm(
@@ -155,7 +156,7 @@ function VesselGroupModal(): React.ReactElement {
     if (!askConfirm || confirmed) {
       close()
     }
-  }, [close, IDs.length, t, vessels])
+  }, [close, IDs?.length, t, vessels])
 
   const onBackClick = useCallback(() => {
     const confirmed = window.confirm(
@@ -165,7 +166,7 @@ function VesselGroupModal(): React.ReactElement {
       )
     )
     if (confirmed) {
-      setVessels(undefined)
+      dispatch(setVesselGroupVessels(undefined))
     }
   }, [t])
 
@@ -200,7 +201,7 @@ function VesselGroupModal(): React.ReactElement {
         return
       }
 
-      setVessels(searchResults.entries)
+      dispatch(setVesselGroupVessels(searchResults.entries))
       return
     }
     setLoading(true)
@@ -263,7 +264,7 @@ function VesselGroupModal(): React.ReactElement {
             disabled={disableIDField}
           />
         </div>
-        {vessels ? (
+        {vessels?.length > 0 ? (
           <div className={styles.vesselsTableContainer}>
             <table className={styles.vesselsTable}>
               <thead>
@@ -338,9 +339,9 @@ function VesselGroupModal(): React.ReactElement {
             <div className={styles.ids}>
               <TextArea
                 className={styles.idsArea}
-                value={IDs.join(', ')}
+                value={IDs?.join(', ')}
                 label={
-                  IDs && IDs.length
+                  IDs?.length
                     ? t('vesselGroup.idsWithCount', 'IDs ({{count}})', {
                         count: IDs.length,
                       })
@@ -384,9 +385,7 @@ function VesselGroupModal(): React.ReactElement {
           </Button>
         )}
         <Button
-          disabled={
-            loading || !IDs.length || (vessels && !vessels.length) || (vessels && groupName === '')
-          }
+          disabled={loading || (vessels && !vessels.length) || (vessels && groupName === '')}
           onClick={onConfirmClick}
           loading={loading}
         >

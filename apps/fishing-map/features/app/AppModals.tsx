@@ -39,6 +39,10 @@ const EditorMenu = dynamic(
 )
 const Welcome = dynamic(() => import(/* webpackChunkName: "Welcome" */ 'features/welcome/Welcome'))
 
+const VesselGroupModal = dynamic(
+  () => import(/* webpackChunkName: "VesselGroup" */ 'features/vessel-groups/VesselGroupModal')
+)
+
 const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
 
 const DebugMenuConfig = {
@@ -161,6 +165,7 @@ const AppModals = () => {
           />
         </Modal>
       )}
+      <VesselGroupModal />
     </Fragment>
   )
 }
