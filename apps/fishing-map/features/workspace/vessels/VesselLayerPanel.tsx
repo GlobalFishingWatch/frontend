@@ -123,7 +123,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           <Tooltip content={t('common.onlyVisibleForGFW', 'Only visible for GFW users')}>
             <span>🐟</span>
           </Tooltip>{' '}
-          vesselLabel
+          {vesselLabel}
         </Fragment>
       )
     if (dataview?.datasetsConfig.some((d) => isPrivateDataset({ id: d.datasetId })))
