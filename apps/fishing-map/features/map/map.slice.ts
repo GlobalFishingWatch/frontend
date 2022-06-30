@@ -284,16 +284,12 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           vessels: sublayerVessels
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
-                const vesselInfo =
-                  vesselsInfo?.find((entry) => {
-                    return (
-                      entry.years &&
-                      startYear &&
-                      endYear &&
-                      entry.years.includes(startYear) &&
-                      entry.years.includes(endYear)
-                    )
-                  }) || vesselsInfo[0]
+                const vesselInfo = vesselsInfo?.find((entry) => {
+                  if (entry.years?.length && startYear && endYear) {
+                    return entry.years.includes(startYear) && entry.years.includes(endYear)
+                  }
+                  return entry.id === vessel.id
+                })
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
