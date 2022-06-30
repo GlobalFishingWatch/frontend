@@ -68,9 +68,10 @@ export enum DatasetTypes {
 }
 
 export enum DatasetStatus {
-  Done = 'done',
-  Importing = 'importing',
   Error = 'error',
+  Done = 'done',
+  Deleted = 'deleted',
+  Importing = 'importing',
 }
 
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
