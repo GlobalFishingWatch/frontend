@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { selectAllVesselGroups } from './vessel-groups.slice'
+import { selectUserVesselGroups } from 'features/user/user.selectors'
 import styles from './VesselGroupsList.module.css'
 
 export const useVesselGroupsOptions = () => {
   const { t } = useTranslation()
-  const vesselGroups = useSelector(selectAllVesselGroups)
+  const vesselGroups = useSelector(selectUserVesselGroups)
 
   return useMemo(() => {
     const vesselGroupsOptions: MultiSelectOption[] = vesselGroups.map(({ id, name, vessels }) => ({
