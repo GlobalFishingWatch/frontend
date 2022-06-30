@@ -294,7 +294,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                       entry.years.includes(endYear)
                     )
                   }) || vesselsInfo[0]
-                console.log('vesselInfo', vesselInfo)
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
