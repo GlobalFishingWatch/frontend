@@ -40,13 +40,13 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { useUser } from 'features/user/user.hooks'
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
+import { selectRiskSummaryTabVisible } from './profile.selectors'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useAppDispatch()
@@ -72,7 +72,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     [akaVesselProfileIds]
   )
   const { online } = useNavigatorOnline()
-  const { authorizedInsurer } = useUser()
+  const riskSummaryTabVisible = useSelector(selectRiskSummaryTabVisible)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
@@ -256,8 +256,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
 
   const tabs: Tab[] = useMemo(
-    () => [...(authorizedInsurer ? [riskSummaryTab] : []), infoTab, activityTab, mapTab],
-    [authorizedInsurer, riskSummaryTab, infoTab, activityTab, mapTab]
+    () => [...(riskSummaryTabVisible ? [riskSummaryTab] : []), infoTab, activityTab, mapTab],
+    [riskSummaryTabVisible, riskSummaryTab, infoTab, activityTab, mapTab]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])

@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_VERSION, DEFAULT_WORKSPACE } from 'data/config'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { RootState } from 'store'
@@ -83,10 +83,6 @@ export const selectUrlViewport = createSelector(
     if (!zoom && !latitude && !longitude) return
     return { zoom, latitude, longitude }
   }
-)
-export const selectVersion = createSelector(
-  [selectQueryParam('version')],
-  (version: string) => version || DEFAULT_VERSION
 )
 /**
  * get the start and end dates in string format
