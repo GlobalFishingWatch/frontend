@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo, Fragment } from 'react'
 import { matchSorter } from 'match-sorter'
 import {
   useMultipleSelection,
@@ -110,14 +110,14 @@ export function MultiSelect(props: MultiSelectProps) {
 
   const handleRemove = useCallback(
     (option: MultiSelectOption) => {
-      if (onRemove) {
+      if (onRemove && !disabled) {
         const newOptions = selectedOptions.filter(
           (selectedOption) => selectedOption.id !== option.id
         )
         onRemove(option, newOptions)
       }
     },
-    [onRemove, selectedOptions]
+    [disabled, onRemove, selectedOptions]
   )
 
   const handleSelect = useCallback(
@@ -220,7 +220,7 @@ export function MultiSelect(props: MultiSelectProps) {
     <div className={className}>
       <div className={styles.labelContainer}>
         {label !== undefined && (
-          <label {...getLabelProps()} className={cx({ [styles.disabled]: disabled })}>
+          <label {...getLabelProps()} className={cx(styles.label, { [styles.disabled]: disabled })}>
             {label}
           </label>
         )}
@@ -263,16 +263,18 @@ export function MultiSelect(props: MultiSelectProps) {
           />
         </div>
         <div className={styles.buttonsContainer}>
-          {onCleanClick !== undefined && hasSelectedOptions && (
-            <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
-          )}
           {!disabled && (
-            <IconButton
-              icon={isOpen ? 'arrow-top' : 'arrow-down'}
-              size="small"
-              aria-label={'toggle menu'}
-              {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
-            ></IconButton>
+            <Fragment>
+              {onCleanClick !== undefined && hasSelectedOptions && (
+                <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
+              )}
+              <IconButton
+                icon={isOpen ? 'arrow-top' : 'arrow-down'}
+                size="small"
+                aria-label={'toggle menu'}
+                {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
+              ></IconButton>
+            </Fragment>
           )}
         </div>
         <ul {...getMenuProps()} className={styles.optionsContainer}>

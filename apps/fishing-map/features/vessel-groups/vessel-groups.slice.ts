@@ -1,18 +1,27 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { Vessel, VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
-import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
+import {
+  GFWAPI,
+  FetchOptions,
+  parseAPIError,
+  MultiSelectOption,
+} from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { API_VERSION } from 'data/config'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
+  sources: MultiSelectOption[]
+  sourcesDisabled: boolean
   vessels: Vessel[]
 }
 
 const initialState: VesselGroupsSliceState = {
   ...asyncInitialState,
   isModalOpen: false,
+  sources: [],
+  sourcesDisabled: false,
   vessels: undefined,
 }
 
@@ -76,6 +85,12 @@ const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupsModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isModalOpen = action.payload
     },
+    setVesselGroupSources: (state, action: PayloadAction<MultiSelectOption[]>) => {
+      state.sources = action.payload
+    },
+    setVesselGroupSourcesDisabled: (state, action: PayloadAction<boolean>) => {
+      state.sourcesDisabled = action.payload
+    },
     setVesselGroupVessels: (state, action: PayloadAction<Vessel[]>) => {
       state.vessels = action.payload
     },
@@ -88,7 +103,12 @@ const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   },
 })
 
-export const { setVesselGroupsModalOpen, setVesselGroupVessels } = vesselGroupsSlice.actions
+export const {
+  setVesselGroupsModalOpen,
+  setVesselGroupVessels,
+  setVesselGroupSources,
+  setVesselGroupSourcesDisabled,
+} = vesselGroupsSlice.actions
 
 const { selectAll } = entityAdapter.getSelectors<RootState>((state) => state.vesselGroups)
 
@@ -99,6 +119,9 @@ export function selectAllVesselGroups(state: RootState) {
 export const selectVesselGroupModalOpen = (state: RootState) => state.vesselGroups.isModalOpen
 export const selectVesselGroupsStatus = (state: RootState) => state.vesselGroups.status
 export const selectVesselGroupVessels = (state: RootState) => state.vesselGroups.vessels
+export const selectVesselGroupSources = (state: RootState) => state.vesselGroups.sources
+export const selectVesselGroupSourcesDisabled = (state: RootState) =>
+  state.vesselGroups.sourcesDisabled
 export const selectVesselGroupsStatusId = (state: RootState) => state.vesselGroups.statusId
 
 export default vesselGroupsSlice.reducer

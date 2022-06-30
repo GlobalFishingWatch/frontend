@@ -28,7 +28,11 @@ import {
 } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  setVesselGroupsModalOpen,
+  setVesselGroupSources,
+  setVesselGroupSourcesDisabled,
+} from 'features/vessel-groups/vessel-groups.slice'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -130,6 +134,8 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
+      dispatch(setVesselGroupSources([]))
+      dispatch(setVesselGroupSourcesDisabled(true))
       return
     }
     const filterValues = Array.isArray(selection)

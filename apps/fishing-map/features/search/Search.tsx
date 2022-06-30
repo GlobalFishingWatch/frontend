@@ -5,7 +5,7 @@ import { useIntersectionObserver } from '@researchgate/react-intersection-observ
 import cx from 'classnames'
 import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
-import { debounce } from 'lodash'
+import { debounce, uniqBy } from 'lodash'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   IconButton,
@@ -34,6 +34,8 @@ import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setVesselGroupsModalOpen,
+  setVesselGroupSources,
+  setVesselGroupSourcesDisabled,
   setVesselGroupVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
 import {
@@ -208,7 +210,13 @@ function Search() {
   }, [debouncedQuery])
 
   const onAddToVesselGroup = useCallback(() => {
-    dispatch(setVesselGroupVessels(vesselsSelected))
+    const sources = uniqBy(
+      vesselsSelected.map((v) => v.dataset),
+      'id'
+    ).map((d) => ({ id: d.id, label: getDatasetLabel(d) }))
+    dispatch(setVesselGroupSources(sources))
+    dispatch(setVesselGroupSourcesDisabled(true))
+    dispatch(setVesselGroupVessels(vesselsSelected.map((v) => ({ ...v, dataset: v.dataset.id }))))
     dispatch(setVesselGroupsModalOpen(true))
   }, [dispatch, vesselsSelected])
 
