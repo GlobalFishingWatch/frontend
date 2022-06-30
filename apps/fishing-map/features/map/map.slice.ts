@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
+import { DateTime } from 'luxon'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -273,6 +274,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
 
+      const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
+      const startYear = DateTime.fromISO(mainTemporalgridFeature?.visibleStartDate).toUTC().year
+      const endYear = DateTime.fromISO(mainTemporalgridFeature?.visibleEndDate).toUTC().year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {
@@ -280,7 +284,17 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           vessels: sublayerVessels
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
-                const vesselInfo = vesselsInfo?.find((entry) => entry.id === vessel.id)
+                const vesselInfo =
+                  vesselsInfo?.find((entry) => {
+                    return (
+                      entry.years &&
+                      startYear &&
+                      endYear &&
+                      entry.years.includes(startYear) &&
+                      entry.years.includes(endYear)
+                    )
+                  }) || vesselsInfo[0]
+                console.log('vesselInfo', vesselInfo)
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
