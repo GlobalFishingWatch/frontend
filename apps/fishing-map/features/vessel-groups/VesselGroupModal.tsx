@@ -191,7 +191,7 @@ function VesselGroupModal(): React.ReactElement {
   }, [dispatch, t])
 
   const onSearchVesselsClick = useCallback(async () => {
-    if (!searchDatasets) return
+    if (!searchDatasets || !sourcesOptions.length) return
     setLoading(true)
     const dataset = searchDatasets[0]
     const advancedQuery = IDs.map((id) => `${selectedIDColumn} = '${id}'`).join(' OR ')
@@ -203,7 +203,7 @@ function VesselGroupModal(): React.ReactElement {
       query: [
         {
           id: 'datasets',
-          value: searchDatasets.map((d) => d.id),
+          value: sourcesOptions.map((d) => d.id),
         },
         { id: 'query', value: encodeURIComponent(advancedQuery) },
         { id: 'limit', value: 20 },
