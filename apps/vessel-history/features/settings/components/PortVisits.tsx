@@ -102,6 +102,11 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
                 Example if you configure 5 hours, you will see all {{ eventType }} with duration
                 more or equal to 5 hours
               </TransComponent>
+              <br />
+              {t('settings.helpRange', 'Should be a value between', {
+                min: PORTVISIT_EVENTS_MIN_DURATION,
+                max: PORTVISIT_EVENTS_MAX_DURATION
+              })}
             </DataAndTerminology>
           </label>
           <div>
@@ -117,10 +122,6 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
             ></InputText>
             <span>{t('settings.hours', 'hours')}</span>
           </div>
-          <div className={styles.helpRange}>{t('settings.helpRange', 'Should be a value between', {
-            min: PORTVISIT_EVENTS_MIN_DURATION,
-            max: PORTVISIT_EVENTS_MAX_DURATION
-          })}</div>
         </div>
         <div className={cx(styles.settingsField, styles.inlineRow)}>
           <label className={styles.settingsLabel}>
@@ -136,6 +137,11 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
                 or equal to 8 km from the shore. Distance from shore will be highlighted if either
                 the start or end position is more or equal to the specified distance.
               </TransComponent>
+              <br />
+              {t('settings.helpRange', 'Should be a value between', {
+                min: PORTVISIT_EVENTS_MIN_DISTANCE,
+                max: PORTVISIT_EVENTS_MAX_DISTANCE
+              })}
             </DataAndTerminology>
           </label>
           <div>
@@ -151,10 +157,6 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
             ></InputText>
             <span>{t('settings.km', 'km')}</span>
           </div>
-          <div className={styles.helpRange}>{t('settings.helpRange', 'Should be a value between', {
-            min: PORTVISIT_EVENTS_MIN_DISTANCE,
-            max: PORTVISIT_EVENTS_MAX_DISTANCE
-          })}</div>
         </div>
       </div>
     </div>
