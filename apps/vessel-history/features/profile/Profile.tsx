@@ -27,8 +27,10 @@ import {
   getRelatedDatasetByType,
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
+import {
+  selectDataviewsResourceQueries,
+  selectGetVesselDataviewInstance,
+} from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -64,6 +66,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   const datasets = useSelector(selectDatasets)
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
+  const getVesselDataviewInstance = useSelector(selectGetVesselDataviewInstance)
   const isMergedVesselsView = useMemo(
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
@@ -157,7 +160,14 @@ const Profile: React.FC = (props): React.ReactElement => {
     if (!vesselDataview || 'vessel-' + gfwId !== vesselDataview.id) {
       updateDataview(dataset, gfwId, tmtId)
     }
-  }, [akaVesselProfileIds, datasets, dispatch, vesselDataview, vesselProfileId])
+  }, [
+    akaVesselProfileIds,
+    datasets,
+    dispatch,
+    getVesselDataviewInstance,
+    vesselDataview,
+    vesselProfileId,
+  ])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}

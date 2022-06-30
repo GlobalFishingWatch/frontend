@@ -11,6 +11,8 @@ import {
 } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useWorkspace } from 'features/workspace/workspace.hook'
+import { WorkspaceProfileViewParam } from 'types'
 import {
   fetchUserThunk,
   logoutUserThunk,
@@ -25,6 +27,11 @@ export const useUser = () => {
   const logged = useSelector(selectUserLogged)
   const user = useSelector(selectUserData)
   const status = useSelector(selectUserStatus)
+
+  const {
+    updateProfileView,
+    workspace: { profileView: currentProfileView },
+  } = useWorkspace()
 
   const accessToken = getAccessTokenFromUrl()
   const token = GFWAPI.getToken()
@@ -47,6 +54,14 @@ export const useUser = () => {
       (view) => user && checkExistPermissionInList(user?.permissions, view.required_permission)
     )
   }, [user])
+
+  // Setup default app profile view based on permissions
+  useEffect(() => {
+    const firstProfileView = availableViews.slice().shift()?.id as WorkspaceProfileViewParam
+    if (logged && !currentProfileView && firstProfileView) {
+      updateProfileView(firstProfileView)
+    }
+  }, [currentProfileView, dispatch, logged, updateProfileView])
 
   const logout = useCallback(() => {
     uaEvent({

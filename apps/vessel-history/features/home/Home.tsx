@@ -216,9 +216,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         <h1 className={styles.logo}>Vessel Viewer</h1>
 
         <div className={styles.toolbar}>
-          <div>
-            <ViewSelector />
-          </div>
+          <ViewSelector />
           <LanguageToggle />
           {online && (
             <IconButton

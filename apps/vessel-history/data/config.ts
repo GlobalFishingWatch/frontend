@@ -52,6 +52,7 @@ export const DEFAULT_WORKSPACE: AppState = {
   satellite: '',
   availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
   availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
+  profileView: undefined,
 }
 
 export const DEFAULT_VIEWPORT = {
