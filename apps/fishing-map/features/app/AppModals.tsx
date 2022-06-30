@@ -16,6 +16,7 @@ import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
+import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import styles from './App.module.css'
 
@@ -80,6 +81,7 @@ const AppModals = () => {
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
   useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
+  const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
   const downloadTrackId = useSelector(selectDownloadTrackId)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
 
@@ -165,7 +167,7 @@ const AppModals = () => {
           />
         </Modal>
       )}
-      <VesselGroupModal />
+      {isVesselGroupModalOpen && <VesselGroupModal />}
     </Fragment>
   )
 }

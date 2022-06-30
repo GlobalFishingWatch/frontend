@@ -8,6 +8,7 @@ import {
   VesselGroupVessel,
   VesselGroupUpsert,
   APIPagination,
+  DatasetStatus,
 } from '@globalfishingwatch/api-types'
 import {
   Modal,
@@ -30,7 +31,7 @@ import { readBlobAs } from 'utils/files'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   selectAdvancedSearchDatasets,
-  selectSearchDatasetsInWorkspace,
+  selectAllSearchDatasetsByType,
 } from 'features/search/search.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -67,11 +68,12 @@ function VesselGroupModal(): React.ReactElement {
   const [error, setError] = useState('')
 
   const [groupName, setGroupName] = useState<string>()
+  const [showBackButton, setShowBackButton] = useState(false)
   const [IDs, setIDs] = useState<string[]>([])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('mmsi')
   const vessels = useSelector(selectVesselGroupVessels)
-  const searchDatasetsInWorkspace = useSelector(selectSearchDatasetsInWorkspace)
-  const allSearchDatasets = useSelector(selectAdvancedSearchDatasets)
+  const searchDatasetsInWorkspace = useSelector(selectAdvancedSearchDatasets)
+  const allSearchDatasets = useSelector(selectAllSearchDatasetsByType('advanced'))
   const searchDatasets = searchDatasetsInWorkspace?.length
     ? searchDatasetsInWorkspace
     : allSearchDatasets
@@ -152,11 +154,11 @@ function VesselGroupModal(): React.ReactElement {
   )
 
   const close = useCallback(() => {
-    dispatch(setVesselGroupVessels(undefined))
     setIDs([])
-    setGroupName('')
     setError('')
+    setGroupName('')
     setLoading(false)
+    dispatch(setVesselGroupVessels(undefined))
     dispatch(setVesselGroupsModalOpen(false))
   }, [dispatch])
 
@@ -199,7 +201,10 @@ function VesselGroupModal(): React.ReactElement {
       datasetId: dataset.id,
       params: [],
       query: [
-        { id: 'datasets', value: searchDatasets.map((d) => d.id) },
+        {
+          id: 'datasets',
+          value: searchDatasets.map((d) => d.id),
+        },
         { id: 'query', value: encodeURIComponent(advancedQuery) },
         { id: 'limit', value: 20 },
         { id: 'offset', value: 0 },
@@ -207,17 +212,18 @@ function VesselGroupModal(): React.ReactElement {
     }
 
     const url = resolveEndpoint(dataset, datasetConfig)
-    const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url)
-
-    // TODO handle API errors
-
-    setLoading(false)
-    if (!searchResults.entries.length) {
-      setError(t('vesselGroup.emptyError', 'No vessels found'))
-      return
+    try {
+      const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url)
+      if (searchResults.entries.length) {
+        setShowBackButton(true)
+        dispatch(setVesselGroupVessels(searchResults.entries))
+      } else {
+        setError(t('vesselGroup.emptyError', 'No vessels found'))
+      }
+    } catch (e) {
+      setError(t('errors.genericShort', 'Something went wrong'))
     }
-
-    dispatch(setVesselGroupVessels(searchResults.entries))
+    setLoading(false)
   }, [dispatch, searchDatasets, IDs, t, selectedIDColumn])
 
   const onCreateGroupClick = useCallback(async () => {
@@ -405,7 +411,7 @@ function VesselGroupModal(): React.ReactElement {
           </span>
         </div>
 
-        {vessels && (
+        {vessels && showBackButton && (
           <Button type="secondary" className={styles.backButton} onClick={onBackClick}>
             {t('common.back', 'back')}
           </Button>
@@ -415,7 +421,7 @@ function VesselGroupModal(): React.ReactElement {
           onClick={vessels?.length ? onCreateGroupClick : onSearchVesselsClick}
           loading={loading}
         >
-          {t('common.save', 'Save')}
+          {vessels?.length > 0 ? t('common.confirm', 'Confirm') : t('common.continue', 'Continue')}
         </Button>
       </div>
     </Modal>

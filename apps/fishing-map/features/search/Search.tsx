@@ -524,7 +524,7 @@ function Search() {
             </div>
           )}
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            {vesselsSelected.length > 0 && (
+            {vesselsSelected.length > 1 && (
               <Button type="secondary" className={styles.footerAction} onClick={onAddToVesselGroup}>
                 {t('vesselGroup.new', 'New vessel group')}({vesselsSelected.length})
               </Button>
