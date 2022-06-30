@@ -53,6 +53,7 @@
     "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
   },
   "common": {
+    "back": "back",
     "active_after": "Aktif setelah",
     "active_before": "Aktif sebelum",
     "activity": "Aktivitas",
@@ -510,7 +511,28 @@
     "unmatched": "unmatched",
     "vessel_type": "Vessel type",
     "vesselType_other": "Vessel types",
-    "widthRange": "Rentang lebar"
+    "widthRange": "Rentang lebar",
+    "transmissionDates": "Transmission dates"
+  },
+  "vesselGroup": {
+    "confirmAbort": "You will loose any changes made in this vessel group. Are you sure?",
+    "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
+    "createNewGroup": "Create new group",
+    "csvError": "Uploaded CSV file has multiple columns and there is no obvious ID column",
+    "emptyError": "No vessels found",
+    "emptyState": "Your vessel groups will appear here",
+    "groupName": "Group name",
+    "idField": "ID field",
+    "ids": "IDs",
+    "idsPlaceholder": "Type here or paste a list of IDs separated by commas, spaces or line breaks",
+    "idsWithCount": "IDs ({{count}})",
+    "label": "{{name}} ({{count}} IDs)",
+    "new": "New vessel group",
+    "remove": "Remove vessel group",
+    "removeVessel": "Remove vessel from vessel group",
+    "source": "Source",
+    "vesselGroup": "Vessel group",
+    "vesselGroups": "Vessel groups"
   },
   "workspace": {
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
