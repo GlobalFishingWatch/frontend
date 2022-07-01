@@ -42,8 +42,8 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
       !flags.selected?.length
         ? (t('selects.none', 'None') as string)
         : flags.selected.length > 1
-          ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
-          : flags.selected[0].label,
+        ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
+        : flags.selected[0].label.toString(),
     [flags.selected, t]
   )
   const eventType = useMemo(() => t(`settings.${section}.title`), [section, t])
@@ -105,7 +105,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
               <br />
               {t('settings.helpRange', 'Should be a value between', {
                 min: PORTVISIT_EVENTS_MIN_DURATION,
-                max: PORTVISIT_EVENTS_MAX_DURATION
+                max: PORTVISIT_EVENTS_MAX_DURATION,
               })}
             </DataAndTerminology>
           </label>
@@ -140,7 +140,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
               <br />
               {t('settings.helpRange', 'Should be a value between', {
                 min: PORTVISIT_EVENTS_MIN_DISTANCE,
-                max: PORTVISIT_EVENTS_MAX_DISTANCE
+                max: PORTVISIT_EVENTS_MAX_DISTANCE,
               })}
             </DataAndTerminology>
           </label>

@@ -1,7 +1,14 @@
-import React, { useCallback , useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
-import { Button, IconButton, InputText, SelectOnChange, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  IconButton,
+  InputText,
+  SelectOnChange,
+  SelectOption,
+  Tooltip,
+} from '@globalfishingwatch/ui-components'
 import styles from './SubareaSelector.module.css'
 
 export interface SubareaSelectOption<T = any> extends SelectOption {
@@ -47,22 +54,16 @@ export function SubareaSelector(props: SelectProps) {
     direction = 'bottom',
     disabled = false,
   } = props
-  const {
-    isOpen,
-    selectItem,
-    getToggleButtonProps,
-    getLabelProps,
-    getMenuProps,
-    getItemProps,
-  } = useSelect<SubareaSelectOption | null>({
-    items: options,
-    onSelectedItemChange: ({ selectedItem }) => {
-      if (!disabled && selectedItem && !selectedItem.disabled) {
-        handleChange(selectedItem)
-        selectItem(null)
-      }
-    },
-  })
+  const { isOpen, selectItem, getToggleButtonProps, getLabelProps, getMenuProps, getItemProps } =
+    useSelect<SubareaSelectOption | null>({
+      items: options,
+      onSelectedItemChange: ({ selectedItem }) => {
+        if (!disabled && selectedItem && !selectedItem.disabled) {
+          handleChange(selectedItem)
+          selectItem(null)
+        }
+      },
+    })
 
   const [filterQuery, setFilterQuery] = useState('')
   const handleChange = useCallback(
@@ -90,12 +91,15 @@ export function SubareaSelector(props: SelectProps) {
         )}
       >
         <div className={styles.placeholderContainer}>
-          <InputText value={selectedOption?.label ?? placeholder}
-            className={styles.noBorder} onChange={(e) => {
+          <InputText
+            value={selectedOption?.label.toString() ?? placeholder}
+            className={styles.noBorder}
+            onChange={(e) => {
               if (selectedOption) {
                 onSelectedNameChange(selectedOption.id, e.target.value)
               }
-            }} />
+            }}
+          />
         </div>
         <div className={styles.buttonsContainer}>
           {onCleanClick !== undefined && hasSelectedOptions && (
@@ -108,41 +112,58 @@ export function SubareaSelector(props: SelectProps) {
           ></IconButton>
         </div>
         <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
-          {isOpen && <li className={cx(
-            styles.optionItem, styles.filterItem)}>
-            <InputText value={filterQuery} placeholder="Filter by"
-              className={styles.noBorder} onChange={(e) => {
-                setFilterQuery(e.target.value)
-              }} />
-          </li>}
+          {isOpen && (
+            <li className={cx(styles.optionItem, styles.filterItem)}>
+              <InputText
+                value={filterQuery}
+                placeholder="Filter by"
+                className={styles.noBorder}
+                onChange={(e) => {
+                  setFilterQuery(e.target.value)
+                }}
+              />
+            </li>
+          )}
           {isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
               return (
-                <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start"
-                >
+                <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
                   <li
-                    style={{ display: !filterQuery || item.label.toLowerCase().includes(filterQuery.toLowerCase()) ? "block" : "none" }}
+                    style={{
+                      display:
+                        !filterQuery ||
+                        item.label.toString().toLowerCase().includes(filterQuery.toLowerCase())
+                          ? 'block'
+                          : 'none',
+                    }}
                     className={cx(styles.optionItem)}
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {item.color && <div className={styles.dot} style={{ background: `${item.color}` }}></div>}
+                    {item.color && (
+                      <div className={styles.dot} style={{ background: `${item.color}` }}></div>
+                    )}
                   </li>
                 </Tooltip>
               )
             })}
-          {isOpen && <li className={cx(
-            styles.optionItem, styles.actionItem, className)}>
-            <Button size="small" className={styles.addButton} type="secondary" onClick={onAddNew}>{addButtonLabel}</Button>
-          </li>}
+          {isOpen && (
+            <li className={cx(styles.optionItem, styles.actionItem, className)}>
+              <Button size="small" className={styles.addButton} type="secondary" onClick={onAddNew}>
+                {addButtonLabel}
+              </Button>
+            </li>
+          )}
         </ul>
-        {selectedOption && selectedOption.color && <div className={styles.selectedDot}
-          style={{
-            background: `${selectedOption.color}`,
-          }}
-        ></div>
-        }
+        {selectedOption && selectedOption.color && (
+          <div
+            className={styles.selectedDot}
+            style={{
+              background: `${selectedOption.color}`,
+            }}
+          ></div>
+        )}
       </div>
     </div>
   )

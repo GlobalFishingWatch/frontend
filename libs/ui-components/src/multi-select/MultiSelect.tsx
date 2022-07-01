@@ -15,9 +15,9 @@ import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
 
 export type SelectOptionId = number | string
-export type MultiSelectOption<T = any> = {
-  id: T
-  label: string | JSX.Element
+export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
+  id: ID
+  label: Label
   alias?: string[]
   tooltip?: string
   disableSelection?: boolean
