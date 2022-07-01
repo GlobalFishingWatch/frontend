@@ -7,7 +7,13 @@ import {
   MultiSelectOption,
 } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
-import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import {
+  AsyncError,
+  asyncInitialState,
+  AsyncReducer,
+  AsyncReducerStatus,
+  createAsyncSlice,
+} from 'utils/async-slice'
 import { API_VERSION } from 'data/config'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
@@ -25,19 +31,19 @@ const initialState: VesselGroupsSliceState = {
   vessels: undefined,
 }
 
-const fetchVesselGroupsByIdsThunk = createAsyncThunk(
-  'vessel-groups/fetch',
-  async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
-    const url = `/${API_VERSION}/vessel-groups/`
-    const vesselGroups = (await GFWAPI.fetch(url)) as any
-    return vesselGroups.entries as VesselGroup[]
-  }
-)
-
 export const fetchAllVesselGroupsThunk = createAsyncThunk(
   'vessel-groups/all',
-  (_, { dispatch }) => {
-    return dispatch(fetchVesselGroupsByIdsThunk([]))
+  async () => {
+    const url = `/${API_VERSION}/vessel-groups`
+    const vesselGroups = (await GFWAPI.fetch(url)) as any
+    return vesselGroups.entries as VesselGroup[]
+  },
+  {
+    condition: (_, { getState }) => {
+      const vesselGroupsStatus = selectVesselGroupsStatus(getState() as RootState)
+      // Fetched already in progress, don't need to re-fetch
+      return vesselGroupsStatus !== AsyncReducerStatus.Loading
+    },
   }
 )
 
@@ -96,7 +102,7 @@ const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     },
   },
   thunks: {
-    fetchThunk: fetchVesselGroupsByIdsThunk,
+    fetchThunk: fetchAllVesselGroupsThunk,
     // updateThunk: updateDatasetThunk,
     createThunk: createVesselGroupThunk,
     deleteThunk: deleteVesselGroupThunk,

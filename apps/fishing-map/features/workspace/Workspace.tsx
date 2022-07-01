@@ -156,7 +156,7 @@ function Workspace() {
   }, [dispatch, dataviewsResources])
 
   useEffect(() => {
-    dispatch(fetchAllVesselGroupsThunk() as any)
+    dispatch(fetchAllVesselGroupsThunk())
   }, [dispatch])
 
   if (
