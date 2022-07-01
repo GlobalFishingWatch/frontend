@@ -1,4 +1,6 @@
 import { Fragment } from 'react'
+import cx from 'classnames'
+import { useSelector } from 'react-redux'
 import { formatNumber, TagList } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -7,6 +9,8 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import { selectTimeRange } from 'features/app/app.selectors'
+import { getTimeRangeDuration } from 'utils/dates'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -16,6 +20,8 @@ type LayerPanelProps = {
 
 function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement {
   const vesselGroupsOptions = useVesselGroupsOptions()
+  const timeRange = useSelector(selectTimeRange)
+  const duration = getTimeRangeDuration(timeRange, 'days')
   let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
     (a, b) => a.label - b.label
   )
@@ -38,7 +44,16 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
     <Fragment>
       {valuesSelected.length > 0 && (
         <div className={styles.filter}>
-          <label>{label}</label>
+          <label>
+            {label}
+            {field === 'vessel-groups' && duration?.days >= 90 && (
+              <span className={cx(styles.dataWarning, styles.error)}>
+                {' '}
+                (Supported only by timeranges shorter than 90 days)
+              </span>
+            )}
+          </label>
+
           <TagList
             tags={valuesSelected}
             color={dataview.config?.color}

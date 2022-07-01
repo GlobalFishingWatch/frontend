@@ -31,6 +31,7 @@ import { selectUrlTimeRange } from 'routes/routes.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
 import { SAR_DATAVIEW_ID } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
+import { getTimeRangeDuration } from 'utils/dates'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -71,15 +72,7 @@ function ActivityLayerPanel({
   )
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
-
-  const { start, end } = urlTimeRange || {}
-  const duration = useMemo(() => {
-    if (start && end) {
-      const startDateTime = DateTime.fromISO(start)
-      const endDateTime = DateTime.fromISO(end)
-      return endDateTime.diff(startDateTime, 'years')
-    }
-  }, [start, end])
+  const duration = getTimeRangeDuration(urlTimeRange)
 
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
