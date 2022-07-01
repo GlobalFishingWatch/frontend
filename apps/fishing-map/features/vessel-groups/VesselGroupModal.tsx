@@ -222,7 +222,7 @@ function VesselGroupModal(): React.ReactElement {
           value: searchDatasets.map((d) => d.id),
         },
         { id: 'query', value: encodeURIComponent(advancedQuery) },
-        { id: 'limit', value: 20 },
+        { id: 'limit', value: 10000 },
         { id: 'offset', value: 0 },
       ],
     }
