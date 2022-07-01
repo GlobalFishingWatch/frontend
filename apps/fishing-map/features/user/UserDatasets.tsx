@@ -11,10 +11,10 @@ import {
 } from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import InfoError from 'features/workspace/common/InfoError'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import styles from './User.module.css'
 import { selectUserDatasetsByCategory } from './user.selectors'
 
@@ -140,7 +140,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
       )}
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
-        title={getDatasetLabel(infoDataset)}
+        title={<DatasetLabel dataset={infoDataset} />}
         isOpen={infoDataset !== undefined}
         onClose={() => setInfoDataset(undefined)}
       >

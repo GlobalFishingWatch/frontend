@@ -38,6 +38,7 @@ import {
   setVesselGroupSourcesDisabled,
   setVesselGroupVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -475,7 +476,7 @@ function Search() {
                           {dataset && (
                             <div className={styles.property}>
                               <label>{t('vessel.source', 'Source')}</label>
-                              <span>{getDatasetLabel(dataset)}</span>
+                              <DatasetLabel dataset={dataset} />
                             </div>
                           )}
                         </div>

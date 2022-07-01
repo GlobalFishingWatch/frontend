@@ -31,6 +31,7 @@ import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import GFWOnly from 'features/user/GFWOnly'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -254,9 +255,7 @@ function VesselsTable({
                   {vesselProperty !== 'detections' && (
                     <td className={styles.columnSpace}>
                       <Tooltip content={getDatasetLabel(vessel.infoDataset)}>
-                        <span>
-                          {getDatasetLabel(vessel.infoDataset) || EMPTY_FIELD_PLACEHOLDER}
-                        </span>
+                        <DatasetLabel dataset={vessel.infoDataset} />
                       </Tooltip>
                     </td>
                   )}

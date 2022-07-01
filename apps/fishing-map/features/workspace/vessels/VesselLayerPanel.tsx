@@ -27,7 +27,6 @@ import { isGuestUser, isGFWUser, selectUserData } from 'features/user/user.slice
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import {
-  getDatasetLabel,
   getVesselDatasetsDownloadTrackSupported,
   isGFWOnlyDataset,
   isPrivateDataset,
@@ -37,6 +36,8 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import GFWOnly from 'features/user/GFWOnly'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -120,9 +121,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     if (dataview?.datasetsConfig.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
       return (
         <Fragment>
-          <Tooltip content={t('common.onlyVisibleForGFW', 'Only visible for GFW users')}>
-            <span>🐟</span>
-          </Tooltip>{' '}
+          <GFWOnly type="only-icon" />
           {vesselLabel}
         </Fragment>
       )
@@ -186,7 +185,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       )
     }
     if (field.id === 'dataset') {
-      return getDatasetLabel({ id: fieldValue })
+      return <DatasetLabel dataset={{ id: fieldValue }} />
     }
     return formatInfoField(fieldValue, field.type)
   }

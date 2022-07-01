@@ -128,7 +128,9 @@ const getInteractionEndpointDatasetConfig = (
     datasetConfig.query?.push({ id: 'filters', value: filters })
   }
 
-  const vesselGroups = featuresDataviews.map((dv) => dv.config?.['vessel-groups'] || [])
+  const vesselGroups = featuresDataviews
+    .map((dv) => dv.config?.['vessel-groups'] || [])
+    .filter((vg) => vg.length)
 
   if (vesselGroups.length) {
     datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })

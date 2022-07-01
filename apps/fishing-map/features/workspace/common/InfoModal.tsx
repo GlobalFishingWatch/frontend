@@ -8,9 +8,9 @@ import {
 import { Tabs, Tab, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -51,7 +51,7 @@ const InfoModal = ({
       }
       return {
         id: dataset.id,
-        title: getDatasetLabel(dataset),
+        title: <DatasetLabel dataset={dataset} />,
         content: <InfoModalContent dataset={dataset} />,
       }
     })
