@@ -6,7 +6,6 @@ import {
   parseAPIError,
   MultiSelectOption,
 } from '@globalfishingwatch/api-client'
-import { RootState } from 'store'
 import {
   AsyncError,
   asyncInitialState,
@@ -15,6 +14,7 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { API_VERSION } from 'data/config'
+import { RootState } from 'store'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
@@ -40,7 +40,7 @@ export const fetchAllVesselGroupsThunk = createAsyncThunk(
   },
   {
     condition: (_, { getState }) => {
-      const vesselGroupsStatus = selectVesselGroupsStatus(getState() as RootState)
+      const vesselGroupsStatus = (getState() as any).vesselGroups.status
       // Fetched already in progress, don't need to re-fetch
       return vesselGroupsStatus !== AsyncReducerStatus.Loading
     },
@@ -81,7 +81,7 @@ export const deleteVesselGroupThunk = createAsyncThunk<
   }
 })
 
-const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
+export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   VesselGroupsSliceState,
   VesselGroup
 >({
@@ -116,11 +116,9 @@ export const {
   setVesselGroupSourcesDisabled,
 } = vesselGroupsSlice.actions
 
-const { selectAll } = entityAdapter.getSelectors<RootState>((state) => state.vesselGroups)
-
-export function selectAllVesselGroups(state: RootState) {
-  return selectAll(state)
-}
+export const { selectAll: selectAllVesselGroups } = entityAdapter.getSelectors<RootState>(
+  (state) => state.vesselGroups
+)
 
 export const selectVesselGroupModalOpen = (state: RootState) => state.vesselGroups.isModalOpen
 export const selectVesselGroupsStatus = (state: RootState) => state.vesselGroups.status

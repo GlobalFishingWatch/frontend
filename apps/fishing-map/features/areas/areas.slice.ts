@@ -77,7 +77,7 @@ const areasSlice = createSlice({
   },
 })
 
-export const selectAreas = (state) => state.areas
+export const selectAreas = (state: RootState) => state.areas
 export const selectAreaById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => state.areas[id])
 )
