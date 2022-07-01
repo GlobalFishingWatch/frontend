@@ -160,7 +160,7 @@ export const IconComponents = {
 
 export type IconType = keyof typeof IconComponents
 
-interface IconProps {
+export interface IconProps {
   className?: string
   icon: IconType
   style?: React.CSSProperties

@@ -320,7 +320,7 @@ function DownloadActivityModal() {
                 "You don't have permissions to download the following datasets:"
               )}{' '}
               {datasetsDownloadNotSupported.map((dataset) => (
-                <DatasetLabel dataset={{ id: dataset }} />
+                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
               ))}
             </p>
           )}
