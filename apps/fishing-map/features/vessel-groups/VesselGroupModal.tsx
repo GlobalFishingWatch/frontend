@@ -67,7 +67,7 @@ function VesselGroupModal(): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const [groupName, setGroupName] = useState<string>()
+  const [groupName, setGroupName] = useState<string>('')
   const [showBackButton, setShowBackButton] = useState(false)
   const [IDs, setIDs] = useState<string[]>([])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('mmsi')
@@ -375,7 +375,7 @@ function VesselGroupModal(): React.ReactElement {
                 value={IDs?.join(', ')}
                 label={
                   IDs?.length
-                    ? `${selectedIDColumnOption.label} (${selectedIDColumnOption.label})`
+                    ? `${selectedIDColumnOption.label} (${IDs?.length})`
                     : selectedIDColumnOption.label
                 }
                 placeholder={t('vesselGroup.idsPlaceholder', {
