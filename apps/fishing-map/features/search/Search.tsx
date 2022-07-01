@@ -39,6 +39,7 @@ import {
   setVesselGroupVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { isGFWUser } from 'features/user/user.slice'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -83,6 +84,7 @@ function Search() {
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
+  const gfwUser = useSelector(isGFWUser)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
@@ -535,7 +537,7 @@ function Search() {
             </div>
           )}
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            {vesselsSelected.length > 1 && (
+            {gfwUser && vesselsSelected.length > 1 && (
               <Button type="secondary" className={styles.footerAction} onClick={onAddToVesselGroup}>
                 {t('vesselGroup.new', 'New vessel group')}({vesselsSelected.length})
               </Button>
