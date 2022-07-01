@@ -26,7 +26,7 @@ import Hint from 'features/help/hints/Hint'
 import { setHintDismissed } from 'features/help/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
 import { SAR_DATAVIEW_ID } from 'data/workspaces'
@@ -64,6 +64,7 @@ function ActivityLayerPanel({
   const urlTimeRange = useSelector(selectUrlTimeRange)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const guestUser = useSelector(isGuestUser)
+  const gfwUser = useSelector(isGFWUser)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const datasetStatsFields = dataview.datasets.flatMap((d) =>
@@ -150,8 +151,8 @@ function ActivityLayerPanel({
     />
   )
 
-  const datasetFields: { field: SupportedDatasetSchema; label: string }[] = useMemo(
-    () => [
+  const datasetFields = useMemo(() => {
+    const fields: { field: SupportedDatasetSchema; label: string }[] = [
       { field: 'radiance', label: t('layer.radiance', 'Radiance') },
       { field: 'geartype', label: t('layer.gearType_other', 'Gear types') },
       { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
@@ -162,10 +163,15 @@ function ActivityLayerPanel({
       { field: 'target_species', label: t('vessel.target_species', 'Target species') },
       { field: 'license_category', label: t('vessel.license_category', 'License category') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
-      { field: 'vessel-groups', label: t('vesselGroup.vesselGroups', 'Vessel Groups') },
-    ],
-    [t]
-  )
+    ]
+    if (gfwUser) {
+      fields.push({
+        field: 'vessel-groups',
+        label: t('vesselGroup.vesselGroups', 'Vessel Groups'),
+      })
+    }
+    return fields
+  }, [gfwUser, t])
 
   const statsValue = stats && (stats.vessel_id || stats.id)
   const showStats = duration?.years <= 1
