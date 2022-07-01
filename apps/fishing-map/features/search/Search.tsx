@@ -211,14 +211,24 @@ function Search() {
   }, [debouncedQuery])
 
   const onAddToVesselGroup = useCallback(() => {
-    const sources = uniqBy(
+    const vesselDatasets = uniqBy(
       vesselsSelected.map((v) => v.dataset),
       'id'
-    ).map((d) => ({ id: d.id, label: getDatasetLabel(d) }))
-    dispatch(setVesselGroupSources(sources))
-    dispatch(setVesselGroupSourcesDisabled(true))
-    dispatch(setVesselGroupVessels(vesselsSelected))
-    dispatch(setVesselGroupsModalOpen(true))
+    )
+    const activityVesselsSource = vesselDatasets.flatMap(
+      (d) => getRelatedDatasetsByType(d, DatasetTypes.Fourwings) || []
+    )
+    const sources = activityVesselsSource.map((d) => ({ id: d.id, label: getDatasetLabel(d) }))
+    if (sources?.length) {
+      batch(() => {
+        dispatch(setVesselGroupSources(sources))
+        dispatch(setVesselGroupSourcesDisabled(true))
+        dispatch(setVesselGroupVessels(vesselsSelected))
+        dispatch(setVesselGroupsModalOpen(true))
+      })
+    } else {
+      console.warn('No related activity datasets founds for', vesselDatasets)
+    }
   }, [dispatch, vesselsSelected])
 
   const onCloseClick = () => {
