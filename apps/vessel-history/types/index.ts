@@ -104,7 +104,7 @@ export interface ForcedLaborRisk {
 export enum RiskLevel {
   high = 'high',
   low = 'low',
-  unknown = 'unlnown',
+  unknown = 'unknown',
 }
 
 export interface RiskOutput {
