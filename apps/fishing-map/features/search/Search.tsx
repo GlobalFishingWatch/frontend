@@ -217,7 +217,7 @@ function Search() {
     ).map((d) => ({ id: d.id, label: getDatasetLabel(d) }))
     dispatch(setVesselGroupSources(sources))
     dispatch(setVesselGroupSourcesDisabled(true))
-    dispatch(setVesselGroupVessels(vesselsSelected.map((v) => ({ ...v, dataset: v.dataset.id }))))
+    dispatch(setVesselGroupVessels(vesselsSelected))
     dispatch(setVesselGroupsModalOpen(true))
   }, [dispatch, vesselsSelected])
 
