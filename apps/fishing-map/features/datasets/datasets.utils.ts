@@ -66,12 +66,13 @@ const GFW_ONLY_DATASETS = ['private-global-other-vessels:v20201001']
 export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
   GFW_ONLY_DATASETS.includes(dataset?.id)
 
+export const GFW_ONLY_SUFFIX = ' - GFW Only'
+
 export const getDatasetLabel = (dataset: { id: string; name?: string }): string => {
   const { id, name = '' } = dataset || {}
   if (!id) return name || ''
   const label = getDatasetNameTranslated(dataset)
-  if (isGFWOnlyDataset(dataset))
-    return `🐟 ${label} - ${t('common.onlyVisibleForGFWShort', 'GFW Only')}`
+  if (isGFWOnlyDataset(dataset)) return `${label}${GFW_ONLY_SUFFIX}`
   if (isPrivateDataset(dataset)) return `🔒 ${label}`
   return label
 }

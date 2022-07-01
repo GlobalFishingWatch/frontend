@@ -34,8 +34,8 @@ import {
   selectAllSearchDatasetsByType,
 } from 'features/search/search.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import styles from './VesselGroupModal.module.css'
 import {
   setVesselGroupVessels,
@@ -80,7 +80,7 @@ function VesselGroupModal(): React.ReactElement {
 
   const sourceOptions = (searchDatasets || []).map((d) => ({
     id: d.id,
-    label: getDatasetLabel(d),
+    label: <DatasetLabel dataset={d} />,
   }))
   const sourcesOptions = useSelector(selectVesselGroupSources)
   const sourcesOptionsDisabled = useSelector(selectVesselGroupSourcesDisabled)
