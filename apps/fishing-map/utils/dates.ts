@@ -1,12 +1,12 @@
 import { DateTime, DurationUnits } from 'luxon'
 
 export const getTimeRangeDuration = (
-  { start, end }: { start: string; end: string },
+  timeRange: { start: string; end: string },
   unit: DurationUnits = 'years'
 ) => {
-  if (start && end) {
-    const startDateTime = DateTime.fromISO(start)
-    const endDateTime = DateTime.fromISO(end)
+  if (timeRange && timeRange.start && timeRange.start) {
+    const startDateTime = DateTime.fromISO(timeRange.start)
+    const endDateTime = DateTime.fromISO(timeRange.end)
     return endDateTime.diff(startDateTime, unit)
   }
 }
