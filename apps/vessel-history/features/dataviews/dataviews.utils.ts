@@ -11,7 +11,6 @@ import { AppDispatch } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from './dataviews.slice'
 import {
-  DEFAULT_VESSEL_DATAVIEW_ID,
   dataviewInstances,
   vesselDataviewIds,
   DEFAULT_TRACK_COLOR,
@@ -28,62 +27,64 @@ type VesselInstanceDatasets = {
 }
 export const getVesselDataviewInstanceId = (vesselId: string) => `${VESSEL_LAYER_PREFIX}${vesselId}`
 
-export const getVesselDataviewInstance = (
-  vessel: { id: string },
-  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets,
-  akaVessels: { id: string }[] = []
-): DataviewInstance<GeneratorType> => {
-  // Build list of unique vessel ids to merge
-  // sorted alphabetically so that regardless of the order
-  // in which the user selected the vessels
-  // the request url is the same
-  const akaVesselsIds = Array.from(
-    new Set([vessel.id].concat(akaVessels.map((v) => v.id)).sort((a, b) => (a > b ? 1 : -1)))
-  ).join(',')
-  const datasetsConfig: DataviewDatasetConfig[] = [
-    {
-      datasetId: trackDatasetId,
-      params: [{ id: 'vesselId', value: akaVesselsIds }],
-      endpoint: EndpointId.Tracks,
-    },
-  ]
-  if (infoDatasetId) {
-    datasetsConfig.push({
-      datasetId: infoDatasetId,
-      params: [{ id: 'vesselId', value: vessel.id }],
-      endpoint: EndpointId.Vessel,
-    })
-  }
-  if (eventsDatasetsId) {
-    eventsDatasetsId.forEach((eventDatasetId) => {
-      datasetsConfig.push({
-        datasetId: eventDatasetId,
-        query: [{ id: 'vessels', value: akaVesselsIds }],
-        params: [],
-        endpoint: EndpointId.Events,
-      })
-    })
-  }
-  const vesselDataviewInstance = {
-    id: getVesselDataviewInstanceId(vessel.id),
-    dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
-    config: {
-      type: GeneratorType.Track,
-      color: DEFAULT_TRACK_COLOR,
-      pointsToSegmentsSwitchLevel: null,
-      event: {
-        activeIconsSize: 3,
-        activeStrokeColor: MAP_BACKGROUND_COLOR,
-        strokeColor: MAP_BACKGROUND_COLOR,
-        iconsPrefix: '',
-        inactiveIconsSize: 2,
+export const getVesselDataviewInstanceFactory =
+  (defaultVesselDataviewId: number) =>
+  (
+    vessel: { id: string },
+    { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets,
+    akaVessels: { id: string }[] = []
+  ): DataviewInstance<GeneratorType> => {
+    // Build list of unique vessel ids to merge
+    // sorted alphabetically so that regardless of the order
+    // in which the user selected the vessels
+    // the request url is the same
+    const akaVesselsIds = Array.from(
+      new Set([vessel.id].concat(akaVessels.map((v) => v.id)).sort((a, b) => (a > b ? 1 : -1)))
+    ).join(',')
+    const datasetsConfig: DataviewDatasetConfig[] = [
+      {
+        datasetId: trackDatasetId,
+        params: [{ id: 'vesselId', value: akaVesselsIds }],
+        endpoint: EndpointId.Tracks,
       },
-      showIcons: true,
-    },
-    datasetsConfig,
+    ]
+    if (infoDatasetId) {
+      datasetsConfig.push({
+        datasetId: infoDatasetId,
+        params: [{ id: 'vesselId', value: vessel.id }],
+        endpoint: EndpointId.Vessel,
+      })
+    }
+    if (eventsDatasetsId) {
+      eventsDatasetsId.forEach((eventDatasetId) => {
+        datasetsConfig.push({
+          datasetId: eventDatasetId,
+          query: [{ id: 'vessels', value: akaVesselsIds }],
+          params: [],
+          endpoint: EndpointId.Events,
+        })
+      })
+    }
+    const vesselDataviewInstance = {
+      id: getVesselDataviewInstanceId(vessel.id),
+      dataviewId: defaultVesselDataviewId,
+      config: {
+        type: GeneratorType.Track,
+        color: DEFAULT_TRACK_COLOR,
+        pointsToSegmentsSwitchLevel: null,
+        event: {
+          activeIconsSize: 3,
+          activeStrokeColor: MAP_BACKGROUND_COLOR,
+          strokeColor: MAP_BACKGROUND_COLOR,
+          iconsPrefix: '',
+          inactiveIconsSize: 2,
+        },
+        showIcons: true,
+      },
+      datasetsConfig,
+    }
+    return vesselDataviewInstance
   }
-  return vesselDataviewInstance
-}
 
 export const getDatasetByDataview = (
   dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]

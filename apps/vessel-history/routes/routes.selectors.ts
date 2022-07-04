@@ -84,7 +84,6 @@ export const selectUrlViewport = createSelector(
     return { zoom, latitude, longitude }
   }
 )
-
 /**
  * get the start and end dates in string format
  */
@@ -178,12 +177,9 @@ export const selectUrlAkaVesselQuery = createSelector(
   (aka: string[]) => aka
 )
 
-export const isOfflineForced = createSelector(
-  [selectQueryParam('offline')],
-  (offline: string) => {
-    return offline === 'true'
-  }
-)
+export const isOfflineForced = createSelector([selectQueryParam('offline')], (offline: string) => {
+  return offline === 'true'
+})
 
 export const selectMergedVesselId = createSelector(
   [selectVesselProfileId, selectUrlAkaVesselQuery],
@@ -193,9 +189,9 @@ export const selectMergedVesselId = createSelector(
 export const selectSearchableQueryParams = createSelector(
   [selectAdvancedSearchFields, selectUrlQuery],
   (filters, query) =>
-  ({
-    q: query,
-    ...filters,
-    flags: filters?.flags.join(','),
-  } as any)
+    ({
+      q: query,
+      ...filters,
+      flags: filters?.flags.join(','),
+    } as any)
 )

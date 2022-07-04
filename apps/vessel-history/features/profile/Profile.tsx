@@ -27,8 +27,10 @@ import {
   getRelatedDatasetByType,
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
+import {
+  selectDataviewsResourceQueries,
+  selectGetVesselDataviewInstance,
+} from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -38,13 +40,13 @@ import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { useUser } from 'features/user/user.hooks'
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
+import { selectRiskSummaryTabVisible } from './profile.selectors'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useAppDispatch()
@@ -64,12 +66,13 @@ const Profile: React.FC = (props): React.ReactElement => {
   const datasets = useSelector(selectDatasets)
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
+  const getVesselDataviewInstance = useSelector(selectGetVesselDataviewInstance)
   const isMergedVesselsView = useMemo(
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
   const { online } = useNavigatorOnline()
-  const { authorizedInsurer } = useUser()
+  const riskSummaryTabVisible = useSelector(selectRiskSummaryTabVisible)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
@@ -157,7 +160,14 @@ const Profile: React.FC = (props): React.ReactElement => {
     if (!vesselDataview || 'vessel-' + gfwId !== vesselDataview.id) {
       updateDataview(dataset, gfwId, tmtId)
     }
-  }, [akaVesselProfileIds, datasets, dispatch, vesselDataview, vesselProfileId])
+  }, [
+    akaVesselProfileIds,
+    datasets,
+    dispatch,
+    getVesselDataviewInstance,
+    vesselDataview,
+    vesselProfileId,
+  ])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
@@ -246,8 +256,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
 
   const tabs: Tab[] = useMemo(
-    () => [...(authorizedInsurer ? [riskSummaryTab] : []), infoTab, activityTab, mapTab],
-    [authorizedInsurer, riskSummaryTab, infoTab, activityTab, mapTab]
+    () => [...(riskSummaryTabVisible ? [riskSummaryTab] : []), infoTab, activityTab, mapTab],
+    [riskSummaryTabVisible, riskSummaryTab, infoTab, activityTab, mapTab]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])

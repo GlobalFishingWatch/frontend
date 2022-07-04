@@ -19,10 +19,19 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { selectVesselDataview } from 'features/vessels/vessels.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import {
+  selectWorkspaceDataviewInstances,
+  selectWorkspaceProfileView,
+} from 'features/workspace/workspace.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
-import { BACKGROUND_LAYER, OFFLINE_LAYERS, APP_THINNING } from './dataviews.config'
+import {
+  BACKGROUND_LAYER,
+  OFFLINE_LAYERS,
+  APP_THINNING,
+  DEFAULT_VESSEL_DATAVIEWS,
+} from './dataviews.config'
+import { getVesselDataviewInstanceFactory } from './dataviews.utils'
 
 const defaultBasemapDataview = {
   id: 'basemap',
@@ -158,3 +167,10 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
 export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter((d) => d.config?.visible)
 })
+
+export const selectGetVesselDataviewInstance = createSelector(
+  [selectWorkspaceProfileView],
+  (profileView) => {
+    return getVesselDataviewInstanceFactory(DEFAULT_VESSEL_DATAVIEWS[profileView])
+  }
+)
