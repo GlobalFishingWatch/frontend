@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { parse as parseCSV } from 'papaparse'
 import { useSelector } from 'react-redux'
@@ -9,7 +9,6 @@ import {
   VesselGroupUpsert,
   APIPagination,
   DatasetStatus,
-  DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import {
   Modal,
@@ -21,7 +20,6 @@ import {
   IconButton,
   Tooltip,
   TransmissionsTimeline,
-  MultiSelect,
 } from '@globalfishingwatch/ui-components'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -32,20 +30,12 @@ import { readBlobAs } from 'utils/files'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getPlaceholderBySelections } from 'features/i18n/utils'
-import DatasetLabel from 'features/datasets/DatasetLabel'
-import { selectActivityDatasetsInWorkspace } from 'features/vessel-groups/vessel-groups.selectors'
-import { selectAllActivityDatasets } from 'features/datasets/datasets.selectors'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import {
   setVesselGroupVessels,
   createVesselGroupThunk,
   selectVesselGroupModalOpen,
   selectVesselGroupVessels,
   setVesselGroupsModalOpen,
-  selectVesselGroupSources,
-  setVesselGroupSources,
-  selectVesselGroupSourcesDisabled,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
@@ -73,23 +63,7 @@ function VesselGroupModal(): React.ReactElement {
   const [IDs, setIDs] = useState<string[]>([])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('mmsi')
   const vessels = useSelector(selectVesselGroupVessels)
-  const activityDatasetsInWorkspace = useSelector(selectActivityDatasetsInWorkspace)
-  const allActivityDatasets = useSelector(selectAllActivityDatasets)
   const advancedSearchDatasets = useSelector(selectAllSearchDatasetsByType('advanced'))
-
-  const activityDatasets = useMemo(() => {
-    const datasets = activityDatasetsInWorkspace?.length
-      ? activityDatasetsInWorkspace
-      : allActivityDatasets
-    return datasets.filter((d) => d.status !== DatasetStatus.Deleted)
-  }, [activityDatasetsInWorkspace, allActivityDatasets])
-
-  const sourceOptions = (activityDatasets || []).map((d) => ({
-    id: d.id,
-    label: <DatasetLabel dataset={d} />,
-  }))
-  const sourcesOptions = useSelector(selectVesselGroupSources)
-  const sourcesOptionsDisabled = useSelector(selectVesselGroupSourcesDisabled)
 
   const onCSVLoaded = useCallback(
     async (file: File) => {
@@ -197,20 +171,11 @@ function VesselGroupModal(): React.ReactElement {
   }, [dispatch, t])
 
   const onSearchVesselsClick = useCallback(async () => {
-    const sourcesOptionsSelected = (sourcesOptions || []).map((s) => s.id)
-    const selectedActivityDatasets = (activityDatasets || []).filter((d) =>
-      sourcesOptionsSelected.includes(d.id)
-    )
-    const searchDatasetIds = selectedActivityDatasets.flatMap(
-      (dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id || []
-    )
-    if (!searchDatasetIds.length) {
-      console.warn('No search related datasets found for the selection', selectedActivityDatasets)
-      return
-    }
-    const searchDatasets = advancedSearchDatasets.filter((d) => searchDatasetIds.includes(d.id))
-    const dataset = searchDatasets[0]
+    const dataset = advancedSearchDatasets[0]
     const advancedQuery = IDs.map((id) => `${selectedIDColumn} = '${id}'`).join(' OR ')
+    const datasets = advancedSearchDatasets
+      .filter((d) => d.status !== DatasetStatus.Deleted)
+      .map((d) => d.id)
 
     const datasetConfig = {
       endpoint: EndpointId.VesselAdvancedSearch,
@@ -219,11 +184,11 @@ function VesselGroupModal(): React.ReactElement {
       query: [
         {
           id: 'datasets',
-          value: searchDatasets.map((d) => d.id),
+          value: datasets,
         },
         { id: 'query', value: encodeURIComponent(advancedQuery) },
-        { id: 'limit', value: 10000 },
-        { id: 'offset', value: 0 },
+        // { id: 'limit', value: 25 },
+        // { id: 'offset', value: 0 },
       ],
     }
     console.log(datasetConfig)
@@ -246,7 +211,7 @@ function VesselGroupModal(): React.ReactElement {
       setError(t('errors.genericShort', 'Something went wrong'))
     }
     setLoading(false)
-  }, [sourcesOptions, activityDatasets, advancedSearchDatasets, IDs, selectedIDColumn, dispatch, t])
+  }, [advancedSearchDatasets, IDs, selectedIDColumn, dispatch, t])
 
   const onCreateGroupClick = useCallback(async () => {
     setLoading(true)
@@ -290,23 +255,6 @@ function VesselGroupModal(): React.ReactElement {
             type={'text'}
             value={groupName}
             onChange={onGroupNameChange}
-          />
-          <MultiSelect
-            label={t('layer.source_other', 'Sources')}
-            placeholder={getPlaceholderBySelections(sourcesOptions)}
-            options={sourceOptions}
-            disabled={sourcesOptionsDisabled}
-            selectedOptions={sourcesOptions}
-            className={styles.row}
-            onSelect={(selection) =>
-              dispatch(setVesselGroupSources([...sourcesOptions, selection]))
-            }
-            onRemove={(filter, rest) => {
-              dispatch(setVesselGroupSources(rest))
-            }}
-            onCleanClick={() => {
-              dispatch(setVesselGroupSources([]))
-            }}
           />
           {!vessels?.length && (
             <Select
