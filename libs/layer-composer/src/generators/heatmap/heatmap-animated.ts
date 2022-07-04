@@ -26,7 +26,7 @@ import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
 import { getSourceId, toURLArray } from './util'
-import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
+import fetchBreaks, { getBreaksCacheKey, Breaks, FetchBreaksParams } from './util/fetch-breaks'
 import griddedTimeCompare from './modes/gridded-time-compare'
 import { getTimeChunksInterval } from './util/get-time-chunks-interval'
 
@@ -310,8 +310,8 @@ class HeatmapAnimatedGenerator {
   getCacheKey = (config: FetchBreaksParams) => {
     const visibleSublayers = config.sublayers?.filter((sublayer) => sublayer.visible)
     const datasetKey = getSubLayersDatasets(visibleSublayers)?.join(',')
-    const filtersKey = visibleSublayers?.flatMap((subLayer) => subLayer.filter || []).join(',')
-    return [datasetKey, filtersKey, config.mode].join(',')
+    const breaksCacheKey = getBreaksCacheKey(config)
+    return [datasetKey, breaksCacheKey].join(',')
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
@@ -367,13 +367,13 @@ class HeatmapAnimatedGenerator {
     const breaks =
       useSublayerBreaks && config.mode !== HeatmapAnimatedMode.TimeCompare
         ? config.sublayers.map(({ breaks }) => breaks || [])
-        : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
+        : getSublayersBreaks(breaksConfig, this.breaksCache[cacheKey]?.breaks)
 
     const legends = getLegends(finalConfig, breaks || [])
     const style = {
       id: finalConfig.id,
-      sources: this._getStyleSources(finalConfig, timeChunks, breaks),
-      layers: this._getStyleLayers(finalConfig, timeChunks, breaks),
+      sources: this._getStyleSources(breaksConfig, timeChunks, breaks),
+      layers: this._getStyleLayers(breaksConfig, timeChunks, breaks),
       metadata: {
         breaks,
         legends,
