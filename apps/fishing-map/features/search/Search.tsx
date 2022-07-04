@@ -22,7 +22,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
-import { getDatasetLabel, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import LocalStorageLoginLink from 'routes/LoginLink'
@@ -34,8 +34,6 @@ import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setVesselGroupsModalOpen,
-  setVesselGroupSources,
-  setVesselGroupSourcesDisabled,
   setVesselGroupVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
@@ -217,15 +215,10 @@ function Search() {
       vesselsSelected.map((v) => v.dataset),
       'id'
     )
-    const activityVesselsSource = vesselDatasets.flatMap(
-      (d) => getRelatedDatasetsByType(d, DatasetTypes.Fourwings) || []
-    )
-    const sources = activityVesselsSource.map((d) => ({ id: d.id, label: getDatasetLabel(d) }))
-    if (sources?.length) {
+    const vessels = vesselsSelected.map((vessel) => ({ ...vessel, dataset: vessel.dataset.id }))
+    if (vessels?.length) {
       batch(() => {
-        dispatch(setVesselGroupSources(sources))
-        dispatch(setVesselGroupSourcesDisabled(true))
-        dispatch(setVesselGroupVessels(vesselsSelected))
+        dispatch(setVesselGroupVessels(vessels))
         dispatch(setVesselGroupsModalOpen(true))
       })
     } else {
@@ -250,6 +243,7 @@ function Search() {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
+    setVesselsSelected([])
     if (e.target.value !== searchQuery && searchSuggestionClicked) {
       dispatch(setSuggestionClicked(false))
     }

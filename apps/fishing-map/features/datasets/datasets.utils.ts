@@ -23,6 +23,7 @@ import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } from 'data/workspaces'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
+import styles from '../vessel-groups/VesselGroupsList.module.css'
 
 export type SupportedDatasetSchema = SupportedActivityDatasetSchema | SupportedEnvDatasetSchema
 
@@ -319,6 +320,8 @@ export type SchemaFieldSelection = {
   label: any
 }
 
+export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
+
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema,
@@ -327,7 +330,13 @@ export const getCommonSchemaFieldsInDataview = (
   if (schema === 'flag') {
     return getFlags()
   } else if (schema === 'vessel-groups') {
-    return vesselGroups
+    const addNewGroup = {
+      id: VESSEL_GROUPS_MODAL_ID,
+      label: t('vesselGroup.createNewGroup', 'Create new group'),
+      disableSelection: true,
+      className: styles.openModalLink,
+    } as MultiSelectOption
+    return [addNewGroup, ...vesselGroups]
   }
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
