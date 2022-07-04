@@ -30,12 +30,16 @@ import { readBlobAs } from 'utils/files'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import {
   setVesselGroupVessels,
   createVesselGroupThunk,
   selectVesselGroupModalOpen,
   selectVesselGroupVessels,
   setVesselGroupsModalOpen,
+  selectCurrentDataviewId,
+  setCurrentDataviewId,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
@@ -55,6 +59,7 @@ function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
+  const currentDataviewId = useSelector(selectCurrentDataviewId)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -64,6 +69,8 @@ function VesselGroupModal(): React.ReactElement {
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('mmsi')
   const vessels = useSelector(selectVesselGroupVessels)
   const advancedSearchDatasets = useSelector(selectAllSearchDatasetsByType('advanced'))
+  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const onCSVLoaded = useCallback(
     async (file: File) => {
@@ -138,6 +145,7 @@ function VesselGroupModal(): React.ReactElement {
     setError('')
     setGroupName('')
     setLoading(false)
+    dispatch(setCurrentDataviewId(undefined))
     dispatch(setVesselGroupVessels(undefined))
     dispatch(setVesselGroupsModalOpen(false))
   }, [dispatch])
@@ -191,7 +199,6 @@ function VesselGroupModal(): React.ReactElement {
         // { id: 'offset', value: 0 },
       ],
     }
-    console.log(datasetConfig)
     const url = resolveEndpoint(dataset, datasetConfig)
     if (!url) {
       console.warn('Missing search url')
@@ -229,12 +236,43 @@ function VesselGroupModal(): React.ReactElement {
     const dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
 
     if (createVesselGroupThunk.fulfilled.match(dispatchedAction)) {
+      if (currentDataviewId) {
+        let config = {
+          filters: {
+            'vessel-groups': [dispatchedAction.payload.id],
+          },
+        }
+        const currentDataviewInstance = urlDataviewInstances.find(
+          (dvi) => dvi.id === currentDataviewId
+        )
+        if (currentDataviewInstance) {
+          config = {
+            filters: {
+              ...(currentDataviewInstance.config?.filters || {}),
+              'vessel-groups': [
+                ...(currentDataviewInstance.config?.filters?.['vessel-groups'] || []),
+                dispatchedAction.payload.id,
+              ],
+            },
+          }
+        }
+        upsertDataviewInstance({ id: currentDataviewId, config })
+      }
       close()
     } else {
       setError(t('errors.genericShort', 'Something went wrong'))
     }
     setLoading(false)
-  }, [vessels, dispatch, groupName, t, close])
+  }, [
+    vessels,
+    groupName,
+    dispatch,
+    currentDataviewId,
+    close,
+    urlDataviewInstances,
+    upsertDataviewInstance,
+    t,
+  ])
 
   const disableIDField = !!vessels
 

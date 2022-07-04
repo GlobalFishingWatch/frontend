@@ -9,7 +9,7 @@ import { isGFWUser } from 'features/user/user.slice'
 export const selectVessselGroupsAllowed = createSelector(
   [isAdvancedSearchAllowed, isGFWUser],
   (advancedSearchAllowed, gfwUser) => {
-    return gfwUser || advancedSearchAllowed
+    return gfwUser && advancedSearchAllowed
   }
 )
 

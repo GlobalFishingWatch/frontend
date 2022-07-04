@@ -13,7 +13,7 @@ type ActivitySchemaFilterProps = {
   onClean: (filterKey: string) => void
 }
 export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
-  return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 1
+  return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): [number, number] => {

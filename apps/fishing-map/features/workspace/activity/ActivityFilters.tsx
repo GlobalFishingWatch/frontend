@@ -16,19 +16,19 @@ import {
   getSchemaFiltersInDataview,
   getIncompatibleFilterSelection,
   SupportedDatasetSchema,
+  VESSEL_GROUPS_MODAL_ID,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import ActivitySchemaFilter, {
   showSchemaFilter,
 } from 'features/workspace/activity/ActivitySchemaFilter'
-import {
-  useVesselGroupsOptions,
-  useVesselGroupSelectWithModal,
-  VESSEL_GROUPS_MODAL_ID,
-} from 'features/vessel-groups/vessel-groups.hooks'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  setCurrentDataviewId,
+  setVesselGroupsModalOpen,
+} from 'features/vessel-groups/vessel-groups.slice'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -130,6 +130,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
+      dispatch(setCurrentDataviewId(dataview.id))
       return
     }
     const filterValues = Array.isArray(selection)
@@ -196,8 +197,6 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     })
   }
 
-  const vesselGroupsOptionsWithModal = useVesselGroupSelectWithModal()
-
   const showSchemaFilters = showSourceFilter || schemaFilters.some(showSchemaFilter)
 
   if (!showSchemaFilters) {
@@ -226,11 +225,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         return (
           <ActivitySchemaFilter
             key={schemaFilter.id}
-            schemaFilter={
-              schemaFilter.id === 'vessel-groups'
-                ? { ...schemaFilter, options: vesselGroupsOptionsWithModal }
-                : schemaFilter
-            }
+            schemaFilter={schemaFilter}
             onSelect={onSelectFilterClick}
             onRemove={onRemoveFilterClick}
             onClean={onCleanFilterClick}

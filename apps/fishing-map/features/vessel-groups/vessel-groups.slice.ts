@@ -14,11 +14,13 @@ import { RootState } from 'store'
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
   vessels: Vessel[]
+  currentDataviewId: string
 }
 
 const initialState: VesselGroupsSliceState = {
   ...asyncInitialState,
   isModalOpen: false,
+  currentDataviewId: undefined,
   vessels: undefined,
 }
 
@@ -85,6 +87,9 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupVessels: (state, action: PayloadAction<Vessel[]>) => {
       state.vessels = action.payload
     },
+    setCurrentDataviewId: (state, action: PayloadAction<string>) => {
+      state.currentDataviewId = action.payload
+    },
   },
   thunks: {
     fetchThunk: fetchAllVesselGroupsThunk,
@@ -94,7 +99,8 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   },
 })
 
-export const { setVesselGroupsModalOpen, setVesselGroupVessels } = vesselGroupsSlice.actions
+export const { setVesselGroupsModalOpen, setVesselGroupVessels, setCurrentDataviewId } =
+  vesselGroupsSlice.actions
 
 export const { selectAll: selectAllVesselGroups } = entityAdapter.getSelectors<RootState>(
   (state) => state.vesselGroups
@@ -104,5 +110,6 @@ export const selectVesselGroupModalOpen = (state: RootState) => state.vesselGrou
 export const selectVesselGroupsStatus = (state: RootState) => state.vesselGroups.status
 export const selectVesselGroupVessels = (state: RootState) => state.vesselGroups.vessels
 export const selectVesselGroupsStatusId = (state: RootState) => state.vesselGroups.statusId
+export const selectCurrentDataviewId = (state: RootState) => state.vesselGroups.currentDataviewId
 
 export default vesselGroupsSlice.reducer

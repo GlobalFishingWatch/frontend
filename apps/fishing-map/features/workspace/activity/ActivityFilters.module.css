@@ -75,7 +75,3 @@
   font: var(--font-XS);
   vertical-align: super;
 }
-
-.openModalLink {
-  text-decoration: underline;
-}
