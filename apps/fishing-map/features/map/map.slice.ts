@@ -295,7 +295,11 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
               return vessels.map((vessel) => {
                 const vesselInfo = vesselsInfo?.find((entry) => {
                   if (entry.years?.length && startYear && endYear) {
-                    return entry.years.includes(startYear) && entry.years.includes(endYear)
+                    return (
+                      entry.id === vessel.id &&
+                      entry.years.includes(startYear) &&
+                      entry.years.includes(endYear)
+                    )
                   }
                   return entry.id === vessel.id
                 })
