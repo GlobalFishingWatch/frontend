@@ -57,7 +57,6 @@ export const getSublayersBreaks = (config: FetchBreaksParams, breaks: Breaks | u
   if (directApiBreaks && (config.interval === 'day' || config.interval === 'hour')) {
     deltaInterval =
       config.interval === 'day' ? end.diff(start, 'day').days : end.diff(start, 'hour').hours
-    baseMultiplier = 1
   }
   const sublayersBreaks = breaks?.map((bre) => {
     return getCleanBreaks(
