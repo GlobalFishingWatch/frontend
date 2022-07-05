@@ -246,14 +246,7 @@ const MapWrapper = () => {
       return 'grabbing'
     }
     return 'grab'
-  }, [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded])
-
-  useEffect(() => {
-    if (map) {
-      map.showTileBoundaries = debugOptions.debug
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, debugOptions])
+  }, [isMapDrawing, hoveredTooltipEvent, map, dataviews, tilesClusterLoaded])
 
   useEffect(() => {
     if (map) {
