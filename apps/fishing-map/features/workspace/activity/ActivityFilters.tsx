@@ -48,6 +48,31 @@ const trackEvent = debounce((filterKey: string, label: string) => {
   })
 }, 200)
 
+const cleanDataviewFiltersNotAllowed = (
+  dataview: UrlDataviewInstance,
+  vesselGroupOptions: MultiSelectOption[]
+) => {
+  const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
+  Object.keys(filters).forEach((key: SupportedDatasetSchema) => {
+    if (filters[key]) {
+      const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, vesselGroupOptions)
+      const newFilterSelection = newFilterOptions?.filter((option) =>
+        dataview.config?.filters?.[key]?.includes(option.id)
+      )
+
+      // We have to remove the key if it is not supported by the datasets selecion
+      if (newFilterOptions.length === 0) {
+        delete filters[key]
+        // or keep only the options that every dataset have in common
+      } else if (!newFilterSelection?.length !== dataview.config?.filters?.[key]?.length) {
+        filters[key] = newFilterSelection.map(({ id }) => id)
+      }
+    }
+  })
+
+  return filters
+}
+
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -74,38 +99,9 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     } else {
       datasets = allSelected ? [source.id] : [...(dataview.config?.datasets || []), source.id]
     }
-    const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
-    if (filters['geartype']) {
-      const newGeartypeOptions = getCommonSchemaFieldsInDataview(newDataview, 'geartype')
-      const newGeartypeSelection = newGeartypeOptions?.filter((geartype) =>
-        dataview.config?.filters?.geartype?.includes(geartype.id)
-      )
-
-      // We have to remove the geartype if it is not supported by the datasets selecion
-      if (newGeartypeOptions.length === 0) {
-        delete filters['geartype']
-        // or keep only the options that every dataset have in common
-      } else if (!newGeartypeSelection?.length !== dataview.config?.filters?.geartype?.length) {
-        filters.geartype = newGeartypeSelection.map(({ id }) => id)
-      }
-    }
-
-    if (filters['fleet']) {
-      const newFleetOptions = getCommonSchemaFieldsInDataview(newDataview, 'fleet')
-      const newFleetSelection = newFleetOptions?.filter((geartype) =>
-        dataview.config?.filters?.geartype?.includes(geartype.id)
-      )
-
-      // We have to remove the geartype if it is not supported by the datasets selecion
-      if (newFleetOptions.length === 0) {
-        delete filters['fleet']
-        // or keep only the options that every dataset have in common
-      } else if (!newFleetSelection?.length !== dataview.config?.filters?.geartype?.length) {
-        filters.fleet = newFleetSelection.map(({ id }) => id)
-      }
-    }
+    const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions)
     upsertDataviewInstance({
       id: dataview.id,
       config: {
