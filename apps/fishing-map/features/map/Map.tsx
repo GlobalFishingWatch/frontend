@@ -43,8 +43,6 @@ import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/e
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
@@ -208,9 +206,6 @@ const MapWrapper = () => {
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const isWorkspace = useSelector(isWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
-  const workspaceLocation = useSelector(isWorkspaceLocation)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
   const portalledLegend = !showTimeComparison
@@ -259,13 +254,6 @@ const MapWrapper = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
-
-  useEffect(() => {
-    if (map) {
-      map.resize()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showTimebar])
 
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 300)
