@@ -20,6 +20,7 @@ import {
   IconButton,
   Tooltip,
   TransmissionsTimeline,
+  SwitchRow,
 } from '@globalfishingwatch/ui-components'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -65,6 +66,7 @@ function VesselGroupModal(): React.ReactElement {
 
   const [groupName, setGroupName] = useState<string>('')
   const [showBackButton, setShowBackButton] = useState(false)
+  const [createAsPublic, setCreateAsPublic] = useState(true)
   const [IDs, setIDs] = useState<string[]>([])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('mmsi')
   const vessels = useSelector(selectVesselGroupVessels)
@@ -231,6 +233,7 @@ function VesselGroupModal(): React.ReactElement {
     const vesselGroup: VesselGroupUpsert = {
       name: groupName,
       vessels: vesselGroupVessels,
+      public: createAsPublic,
     }
 
     const dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
@@ -406,6 +409,17 @@ function VesselGroupModal(): React.ReactElement {
         )}
       </div>
       <div className={styles.modalFooter}>
+        <SwitchRow
+          className={styles.row}
+          label={t(
+            'vesselGroup.uploadPublic' as any,
+            'Allow other users to see this vessel group when you share a workspace'
+          )}
+          active={createAsPublic}
+          onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
+        />
+      </div>
+      <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
           <span className={styles.hint}>
@@ -418,7 +432,6 @@ function VesselGroupModal(): React.ReactElement {
             </a>
           </span>
         </div>
-
         {vessels && showBackButton && (
           <Button type="secondary" className={styles.backButton} onClick={onBackClick}>
             {t('common.back', 'back')}

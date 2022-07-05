@@ -9,6 +9,7 @@ export interface VesselGroup {
   id: number
   name: string
   vessels: VesselGroupVessel[]
+  public?: boolean
   ownerId: number
   ownerType: string
 }
