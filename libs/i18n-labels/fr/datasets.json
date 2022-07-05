@@ -1779,7 +1779,8 @@
           "other_non_fishing": "other_non_fishing",
           "unknown": "unknown"
         }
-      }
+      },
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-global-sar-footprints": {
