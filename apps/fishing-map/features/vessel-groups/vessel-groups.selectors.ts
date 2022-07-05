@@ -5,11 +5,26 @@ import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.sele
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGFWUser } from 'features/user/user.slice'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 
 export const selectVessselGroupsAllowed = createSelector(
   [isAdvancedSearchAllowed, isGFWUser],
   (advancedSearchAllowed, gfwUser) => {
     return gfwUser && advancedSearchAllowed
+  }
+)
+
+export const selectWorkspaceVessselGroupsIds = createSelector(
+  [selectUrlDataviewInstances],
+  (urlDataviewInstances = []) => {
+    return urlDataviewInstances.flatMap((dvi) => dvi.config?.filters?.['vessel-groups'] || [])
+  }
+)
+
+export const selectIsVessselGroupsFiltering = createSelector(
+  [selectWorkspaceVessselGroupsIds],
+  (workspaceVesselGroupIds = []) => {
+    return workspaceVesselGroupIds.length > 0
   }
 )
 

@@ -325,22 +325,25 @@ export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema,
-  vesselGroups?: MultiSelectOption[]
+  vesselGroups: MultiSelectOption[] = []
 ): SchemaFieldSelection[] => {
-  if (schema === 'flag') {
-    return getFlags()
-  } else if (schema === 'vessel-groups') {
-    const addNewGroup = {
-      id: VESSEL_GROUPS_MODAL_ID,
-      label: t('vesselGroup.createNewGroup', 'Create new group'),
-      disableSelection: true,
-      className: styles.openModalLink,
-    } as MultiSelectOption
-    return [addNewGroup, ...vesselGroups]
-  }
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
   )
+  if (schema === 'flag') {
+    return getFlags()
+  } else if (schema === 'vessel-groups') {
+    if (activeDatasets.every((d) => d.fieldsAllowed?.includes(schema))) {
+      const addNewGroup = {
+        id: VESSEL_GROUPS_MODAL_ID,
+        label: t('vesselGroup.createNewGroup', 'Create new group'),
+        disableSelection: true,
+        className: styles.openModalLink,
+      } as MultiSelectOption
+      return [addNewGroup, ...vesselGroups]
+    }
+    return []
+  }
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
   const datasetId = activeDatasets?.[0]?.id?.split(':')[0]

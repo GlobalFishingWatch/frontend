@@ -38,6 +38,7 @@ import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -122,6 +123,7 @@ const TimebarWrapper = () => {
   const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const { timebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { generatorsConfig } = useGeneratorsConnect()
 
@@ -322,7 +324,7 @@ const TimebarWrapper = () => {
   return (
     <div className={styles.timebarWrapper}>
       <Timebar
-        enablePlayback={true}
+        enablePlayback={!vesselGroupsFiltering}
         labels={labels}
         start={internalRange ? internalRange.start : start}
         end={internalRange ? internalRange.end : end}

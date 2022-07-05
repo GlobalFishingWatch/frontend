@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { orderBy } from 'lodash'
+import { orderBy, uniqBy } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -11,7 +11,10 @@ import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX } from 'data/config'
 import { RootState } from 'store'
-import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  selectAllVesselGroups,
+  selectWorkspaceVesselGroups,
+} from 'features/vessel-groups/vessel-groups.slice'
 import {
   selectUserStatus,
   selectUserLogged,
@@ -123,5 +126,14 @@ export const selectUserDatasetsNotUsed = (datasetCategory: DatasetCategory) => {
 
 export const selectUserVesselGroups = createSelector(
   [selectAllVesselGroups, selectUserId],
-  (vesselGroups, userId) => vesselGroups?.filter((d) => d.ownerId === userId)
+  (vesselGroups, userId) => {
+    return vesselGroups?.filter((d) => d.ownerId === userId)
+  }
+)
+
+export const selectAllVisibleVesselGroups = createSelector(
+  [selectUserVesselGroups, selectWorkspaceVesselGroups],
+  (vesselGroups = [], workspaceVesselGroups = []) => {
+    return uniqBy([...vesselGroups, ...workspaceVesselGroups], 'id')
+  }
 )
