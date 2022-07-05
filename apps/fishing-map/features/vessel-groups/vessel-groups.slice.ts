@@ -1,6 +1,12 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { Vessel, VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
-import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
+import { stringify } from 'qs'
+import {
+  APIPagination,
+  Vessel,
+  VesselGroup,
+  VesselGroupUpsert,
+} from '@globalfishingwatch/api-types'
+import { GFWAPI, FetchOptions, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
 import {
   AsyncError,
   asyncInitialState,
@@ -15,6 +21,11 @@ interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
   vessels: Vessel[]
   currentDataviewId: string
+  workspace: {
+    status: AsyncReducerStatus
+    error: ParsedAPIError
+    vesselGroups: VesselGroup[]
+  }
 }
 
 const initialState: VesselGroupsSliceState = {
@@ -22,14 +33,46 @@ const initialState: VesselGroupsSliceState = {
   isModalOpen: false,
   currentDataviewId: undefined,
   vessels: undefined,
+  workspace: {
+    status: AsyncReducerStatus.Idle,
+    error: undefined,
+    vesselGroups: undefined,
+  },
 }
 
-export const fetchAllVesselGroupsThunk = createAsyncThunk(
-  'vessel-groups/all',
+export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
+  'workspace-vessel-groups/fetch',
+  async (ids: string[] = [], { signal, rejectWithValue }) => {
+    try {
+      const vesselGroupsParams = {
+        ...(ids?.length && { ids }),
+        cache: false,
+      }
+      const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(
+        `/${API_VERSION}/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'comma' })}`,
+        { signal }
+      )
+      return vesselGroups.entries as VesselGroup[]
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const workspaceVesselGroupsStatus = (getState() as RootState).vesselGroups.workspace.status
+      // Fetched already in progress, don't need to re-fetch
+      return workspaceVesselGroupsStatus !== AsyncReducerStatus.Loading
+    },
+  }
+)
+
+export const fetchUserVesselGroupsThunk = createAsyncThunk(
+  'vessel-groups/fetch',
   async () => {
     const url = `/${API_VERSION}/vessel-groups`
-    const vesselGroups = (await GFWAPI.fetch(url)) as any
-    return vesselGroups.entries as VesselGroup[]
+    const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url)
+    return vesselGroups.entries
   },
   {
     condition: (_, { getState }) => {
@@ -91,8 +134,29 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
       state.currentDataviewId = action.payload
     },
   },
+  extraReducers(builder) {
+    builder.addCase(fetchWorkspaceVesselGroupsThunk.pending, (state) => {
+      state.workspace.status = AsyncReducerStatus.Loading
+      state.workspace.vesselGroups = undefined
+    })
+    builder.addCase(
+      fetchWorkspaceVesselGroupsThunk.fulfilled,
+      (state, action: PayloadAction<VesselGroup[]>) => {
+        state.workspace.status = AsyncReducerStatus.Finished
+        state.workspace.vesselGroups = action.payload
+      }
+    )
+    builder.addCase(fetchWorkspaceVesselGroupsThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.workspace.status = AsyncReducerStatus.Idle
+      } else {
+        state.workspace.status = AsyncReducerStatus.Error
+        state.workspace.error = action.payload as ParsedAPIError
+      }
+    })
+  },
   thunks: {
-    fetchThunk: fetchAllVesselGroupsThunk,
+    fetchThunk: fetchUserVesselGroupsThunk,
     // updateThunk: updateDatasetThunk,
     createThunk: createVesselGroupThunk,
     deleteThunk: deleteVesselGroupThunk,
@@ -108,6 +172,12 @@ export const { selectAll: selectAllVesselGroups } = entityAdapter.getSelectors<R
 
 export const selectVesselGroupModalOpen = (state: RootState) => state.vesselGroups.isModalOpen
 export const selectVesselGroupsStatus = (state: RootState) => state.vesselGroups.status
+export const selectWorkspaceVesselGroupsStatus = (state: RootState) =>
+  state.vesselGroups.workspace.status
+export const selectWorkspaceVesselGroupsError = (state: RootState) =>
+  state.vesselGroups.workspace.error
+export const selectWorkspaceVesselGroups = (state: RootState) =>
+  state.vesselGroups.workspace.vesselGroups
 export const selectVesselGroupVessels = (state: RootState) => state.vesselGroups.vessels
 export const selectVesselGroupsStatusId = (state: RootState) => state.vesselGroups.statusId
 export const selectCurrentDataviewId = (state: RootState) => state.vesselGroups.currentDataviewId

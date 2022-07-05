@@ -217,9 +217,13 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
       )}
       {schemaFilters.map((schemaFilter) => {
         if (
-          !showSchemaFilter(schemaFilter) ||
-          (schemaFilter.id === 'vessel-groups' && !allowVesselGroup)
+          schemaFilter.id === 'vessel-groups' &&
+          !schemaFilter.optionsSelected.length &&
+          !allowVesselGroup
         ) {
+          return null
+        }
+        if (!showSchemaFilter(schemaFilter)) {
           return null
         }
         return (

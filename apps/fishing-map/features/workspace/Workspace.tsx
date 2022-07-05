@@ -14,7 +14,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { isGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectLocationCategory, selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
@@ -30,8 +30,14 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
+import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
-import { fetchAllVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  fetchUserVesselGroupsThunk,
+  fetchWorkspaceVesselGroupsThunk,
+  selectWorkspaceVesselGroupsError,
+  selectWorkspaceVesselGroupsStatus,
+} from 'features/vessel-groups/vessel-groups.slice'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -44,6 +50,7 @@ const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/s
 function WorkspaceError(): React.ReactElement {
   const [logoutLoading, setLogoutLoading] = useState(false)
   const error = useSelector(selectWorkspaceError)
+  const vesselGroupsError = useSelector(selectWorkspaceVesselGroupsError)
   const workspaceId = useSelector(selectWorkspaceId)
   const guestUser = useSelector(isGuestUser)
   const userData = useSelector(selectUserData)
@@ -58,7 +65,12 @@ function WorkspaceError(): React.ReactElement {
       </div>
     </div>
   )
-  if (error.status === 401 || error.status === 403) {
+  if (
+    error.status === 401 ||
+    error.status === 403 ||
+    vesselGroupsError?.code === 401 ||
+    vesselGroupsError?.code === 403
+  ) {
     return (
       <ErrorPlaceHolder title={t('errors.privateView', 'This is a private view')}>
         {guestUser ? (
@@ -130,10 +142,13 @@ function Workspace() {
   const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const workspace = useSelector(selectWorkspace)
+  const gfwUser = useSelector(isGFWUser)
   const dataviews = useSelector(selectDataviewInstancesMergedOrdered)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
+  const workspaceVesselGroupsIds = useSelector(selectWorkspaceVessselGroupsIds)
   const isUserWorkspace =
     workspace?.id?.endsWith(`-${USER_SUFIX}`) ||
     workspace?.id?.endsWith(`-${USER_SUFIX}-${PUBLIC_SUFIX}`)
@@ -156,8 +171,16 @@ function Workspace() {
   }, [dispatch, dataviewsResources])
 
   useEffect(() => {
-    dispatch(fetchAllVesselGroupsThunk())
-  }, [dispatch])
+    if (gfwUser) {
+      dispatch(fetchUserVesselGroupsThunk())
+    }
+  }, [dispatch, gfwUser])
+
+  useEffect(() => {
+    if (workspaceVesselGroupsIds.length) {
+      dispatch(fetchWorkspaceVesselGroupsThunk(workspaceVesselGroupsIds))
+    }
+  }, [workspaceVesselGroupsIds, dispatch])
 
   if (
     workspaceStatus === AsyncReducerStatus.Idle ||
@@ -170,7 +193,10 @@ function Workspace() {
     )
   }
 
-  if (workspaceStatus === AsyncReducerStatus.Error) {
+  if (
+    workspaceStatus === AsyncReducerStatus.Error ||
+    workspaceVesselGroupsStatus === AsyncReducerStatus.Error
+  ) {
     return <WorkspaceError />
   }
 

@@ -176,6 +176,7 @@ function VesselGroupModal(): React.ReactElement {
       )
     )
     if (confirmed) {
+      setError('')
       dispatch(setVesselGroupVessels(undefined))
     }
   }, [dispatch, t])
@@ -269,6 +270,7 @@ function VesselGroupModal(): React.ReactElement {
   }, [
     vessels,
     groupName,
+    createAsPublic,
     dispatch,
     currentDataviewId,
     close,
