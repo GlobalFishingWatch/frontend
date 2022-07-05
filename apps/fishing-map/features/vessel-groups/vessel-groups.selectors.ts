@@ -21,6 +21,13 @@ export const selectWorkspaceVessselGroupsIds = createSelector(
   }
 )
 
+export const selectIsVessselGroupsFiltering = createSelector(
+  [selectWorkspaceVessselGroupsIds],
+  (workspaceVesselGroupIds = []) => {
+    return workspaceVesselGroupIds.length > 0
+  }
+)
+
 export const selectActivityDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectActivityDatasets, selectAllDatasets],
   (dataviews, vesselsDatasets, allDatasets) => {
