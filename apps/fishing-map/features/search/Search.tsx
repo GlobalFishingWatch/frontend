@@ -34,7 +34,7 @@ import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setVesselGroupsModalOpen,
-  setVesselGroupVessels,
+  setVesselGroupSearchVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { isGFWUser } from 'features/user/user.slice'
@@ -218,7 +218,7 @@ function Search() {
     const vessels = vesselsSelected.map((vessel) => ({ ...vessel, dataset: vessel.dataset.id }))
     if (vessels?.length) {
       batch(() => {
-        dispatch(setVesselGroupVessels(vessels))
+        dispatch(setVesselGroupSearchVessels(vessels))
         dispatch(setVesselGroupsModalOpen(true))
       })
     } else {

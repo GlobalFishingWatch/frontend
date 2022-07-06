@@ -1,15 +1,8 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { parse as parseCSV } from 'papaparse'
-import { useSelector } from 'react-redux'
-import {
-  EndpointId,
-  VesselSearch,
-  VesselGroupVessel,
-  VesselGroupUpsert,
-  APIPagination,
-  DatasetStatus,
-} from '@globalfishingwatch/api-types'
+import { batch, useSelector } from 'react-redux'
+import { VesselGroupVessel } from '@globalfishingwatch/api-types'
 import {
   Modal,
   Button,
@@ -22,31 +15,35 @@ import {
   TransmissionsTimeline,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { GFWAPI } from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { ROOT_DOM_ELEMENT, FIRST_YEAR_OF_DATA } from 'data/config'
 import FileDropzone from 'features/common/FileDropzone'
 import { readBlobAs } from 'utils/files'
 import I18nDate from 'features/i18n/i18nDate'
-import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import {
-  setVesselGroupVessels,
+  IdColumn,
+  setCurrentDataviewId,
+  setVesselGroupSearchVessels,
   createVesselGroupThunk,
   selectVesselGroupModalOpen,
-  selectVesselGroupVessels,
+  selectVesselGroupSearchVessels,
   setVesselGroupsModalOpen,
   selectCurrentDataviewId,
-  setCurrentDataviewId,
+  searchVesselGroupsThunk,
+  selectVesselGroupSearchStatus,
+  selectVesselGroupsStatus,
+  setVesselGroupEditId,
+  selectVesselGroupEditId,
+  selectVesselGroupById,
+  updateVesselGroupThunk,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
 export type CSV = Record<string, any>[]
-
-type IdColumn = 'id' | 'mmsi' | 'ssvid'
 
 // Look for these ID columns by order of preference
 const ID_COLUMN_LOOKUP: IdColumn[] = ['id', 'mmsi', 'ssvid']
@@ -61,18 +58,25 @@ function VesselGroupModal(): React.ReactElement {
   const dispatch = useAppDispatch()
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const currentDataviewId = useSelector(selectCurrentDataviewId)
-  const [loading, setLoading] = useState(false)
+  const editingVesselGroupId = useSelector(selectVesselGroupEditId)
+  const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId))
+  const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
+  const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
+  const loading =
+    searchVesselStatus === AsyncReducerStatus.Loading ||
+    vesselGroupsStatus === AsyncReducerStatus.Loading ||
+    vesselGroupsStatus === AsyncReducerStatus.LoadingUpdate
   const [error, setError] = useState('')
 
-  const [groupName, setGroupName] = useState<string>('')
+  const [groupName, setGroupName] = useState<string>(editingVesselGroup?.name || '')
   const [showBackButton, setShowBackButton] = useState(false)
   const [createAsPublic, setCreateAsPublic] = useState(true)
-  const [IDs, setIDs] = useState<string[]>([])
+  const vessels = useSelector(selectVesselGroupSearchVessels)
+  const [vesselIds, setVesselIds] = useState<string[]>([])
   const [selectedIDColumn, setSelectedIDColumn] = useState<IdColumn>('mmsi')
-  const vessels = useSelector(selectVesselGroupVessels)
-  const advancedSearchDatasets = useSelector(selectAllSearchDatasetsByType('advanced'))
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const hasVesselIds = vesselIds && vesselIds.length > 0
 
   const onCSVLoaded = useCallback(
     async (file: File) => {
@@ -108,7 +112,8 @@ function VesselGroupModal(): React.ReactElement {
         foundIdColumn = foundIdColumn || columns[0]
 
         if (foundIdColumn) {
-          setIDs(data.map((row) => row[foundIdColumn]))
+          const vesselsIds = data.map((row) => row[foundIdColumn])
+          setVesselIds(vesselsIds)
         }
       }
     },
@@ -130,30 +135,37 @@ function VesselGroupModal(): React.ReactElement {
 
   const onIdsTextareaChange = useCallback((e) => {
     const value = e.target.value
-    if (value === '') setIDs([])
-    else setIDs(value.split(/[\s|,]+/))
+    if (value === '') {
+      setVesselIds([])
+    } else {
+      setVesselIds(value.split(/[\s|,]+/))
+    }
   }, [])
 
   const onVesselRemoveClick = useCallback(
     (vesselId: string) => {
       const index = vessels.findIndex((vessel) => vessel.id === vesselId)
-      dispatch(setVesselGroupVessels([...vessels.slice(0, index), ...vessels.slice(index + 1)]))
+      dispatch(
+        setVesselGroupSearchVessels([...vessels.slice(0, index), ...vessels.slice(index + 1)])
+      )
     },
     [dispatch, vessels]
   )
 
   const close = useCallback(() => {
-    setIDs([])
     setError('')
     setGroupName('')
-    setLoading(false)
-    dispatch(setCurrentDataviewId(undefined))
-    dispatch(setVesselGroupVessels(undefined))
-    dispatch(setVesselGroupsModalOpen(false))
+    setVesselIds([])
+    batch(() => {
+      dispatch(setVesselGroupEditId(undefined))
+      dispatch(setCurrentDataviewId(undefined))
+      dispatch(setVesselGroupSearchVessels(undefined))
+      dispatch(setVesselGroupsModalOpen(false))
+    })
   }, [dispatch])
 
   const onClose = useCallback(() => {
-    const askConfirm = vessels || IDs?.length
+    const askConfirm = vessels || hasVesselIds
     let confirmed
     if (askConfirm) {
       confirmed = window.confirm(
@@ -166,7 +178,7 @@ function VesselGroupModal(): React.ReactElement {
     if (!askConfirm || confirmed) {
       close()
     }
-  }, [close, IDs?.length, t, vessels])
+  }, [close, hasVesselIds, t, vessels])
 
   const onBackClick = useCallback(() => {
     const confirmed = window.confirm(
@@ -177,73 +189,30 @@ function VesselGroupModal(): React.ReactElement {
     )
     if (confirmed) {
       setError('')
-      dispatch(setVesselGroupVessels(undefined))
+      dispatch(setVesselGroupSearchVessels(undefined))
     }
   }, [dispatch, t])
 
   const onSearchVesselsClick = useCallback(async () => {
-    const dataset = advancedSearchDatasets[0]
-    const advancedQuery = IDs.map((id) => `${selectedIDColumn} = '${id}'`).join(' OR ')
-    const datasets = advancedSearchDatasets
-      .filter((d) => d.status !== DatasetStatus.Deleted)
-      .map((d) => d.id)
+    setShowBackButton(true)
+    const dispatchedAction = await dispatch(
+      searchVesselGroupsThunk({
+        vessels: vesselIds.map((id) => ({ vesselId: id, dataset: '' })),
+        columnId: selectedIDColumn,
+      })
+    )
 
-    const datasetConfig = {
-      endpoint: EndpointId.VesselAdvancedSearch,
-      datasetId: dataset.id,
-      params: [],
-      query: [
-        {
-          id: 'datasets',
-          value: datasets,
-        },
-        { id: 'query', value: encodeURIComponent(advancedQuery) },
-        // { id: 'limit', value: 25 },
-        // { id: 'offset', value: 0 },
-      ],
-    }
-    const url = resolveEndpoint(dataset, datasetConfig)
-    if (!url) {
-      console.warn('Missing search url')
-      return
-    }
-    setLoading(true)
-    try {
-      const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url)
-      if (searchResults.entries.length) {
-        setShowBackButton(true)
-        dispatch(setVesselGroupVessels(searchResults.entries))
-      } else {
-        setError(t('vesselGroup.emptyError', 'No vessels found'))
-      }
-    } catch (e) {
-      console.warn(e)
+    if (!searchVesselGroupsThunk.fulfilled.match(dispatchedAction)) {
       setError(t('errors.genericShort', 'Something went wrong'))
     }
-    setLoading(false)
-  }, [advancedSearchDatasets, IDs, selectedIDColumn, dispatch, t])
+  }, [dispatch, vesselIds, selectedIDColumn, t])
 
-  const onCreateGroupClick = useCallback(async () => {
-    setLoading(true)
-    const vesselGroupVessels: VesselGroupVessel[] = vessels.map((vessel) => {
-      return {
-        vesselId: vessel.id,
-        dataset: vessel.dataset,
-      }
-    })
-    const vesselGroup: VesselGroupUpsert = {
-      name: groupName,
-      vessels: vesselGroupVessels,
-      public: createAsPublic,
-    }
-
-    const dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
-
-    if (createVesselGroupThunk.fulfilled.match(dispatchedAction)) {
+  const addVesselGroupToDataviewInstance = useCallback(
+    (vesselGroupId: string) => {
       if (currentDataviewId) {
         let config = {
           filters: {
-            'vessel-groups': [dispatchedAction.payload.id],
+            'vessel-groups': [vesselGroupId],
           },
         }
         const currentDataviewInstance = urlDataviewInstances.find(
@@ -255,27 +224,58 @@ function VesselGroupModal(): React.ReactElement {
               ...(currentDataviewInstance.config?.filters || {}),
               'vessel-groups': [
                 ...(currentDataviewInstance.config?.filters?.['vessel-groups'] || []),
-                dispatchedAction.payload.id,
+                vesselGroupId,
               ],
             },
           }
         }
         upsertDataviewInstance({ id: currentDataviewId, config })
       }
+    },
+    [currentDataviewId, upsertDataviewInstance, urlDataviewInstances]
+  )
+
+  const onCreateGroupClick = useCallback(async () => {
+    const vesselGroupVessels: VesselGroupVessel[] = vessels.map((vessel) => {
+      return {
+        vesselId: vessel.id,
+        dataset: vessel.dataset,
+      }
+    })
+    let dispatchedAction
+    if (editingVesselGroupId) {
+      const vesselGroup = {
+        id: editingVesselGroupId,
+        name: groupName,
+        vessels: vesselGroupVessels,
+      }
+      dispatchedAction = await dispatch(updateVesselGroupThunk(vesselGroup))
+    } else {
+      const vesselGroup = {
+        name: groupName,
+        vessels: vesselGroupVessels,
+        public: createAsPublic,
+      }
+      dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
+    }
+
+    if (
+      updateVesselGroupThunk.fulfilled.match(dispatchedAction) ||
+      createVesselGroupThunk.fulfilled.match(dispatchedAction)
+    ) {
+      addVesselGroupToDataviewInstance(dispatchedAction.payload.id)
       close()
     } else {
       setError(t('errors.genericShort', 'Something went wrong'))
     }
-    setLoading(false)
   }, [
     vessels,
+    editingVesselGroupId,
     groupName,
     createAsPublic,
     dispatch,
-    currentDataviewId,
+    addVesselGroupToDataviewInstance,
     close,
-    urlDataviewInstances,
-    upsertDataviewInstance,
     t,
   ])
 
@@ -385,10 +385,10 @@ function VesselGroupModal(): React.ReactElement {
             <div className={styles.ids}>
               <TextArea
                 className={styles.idsArea}
-                value={IDs?.join(', ')}
+                value={vesselIds?.join(', ')}
                 label={
-                  IDs?.length
-                    ? `${selectedIDColumnOption.label} (${IDs?.length})`
+                  hasVesselIds
+                    ? `${selectedIDColumnOption.label} (${vesselIds?.length})`
                     : selectedIDColumnOption.label
                 }
                 placeholder={t('vesselGroup.idsPlaceholder', {
@@ -410,17 +410,19 @@ function VesselGroupModal(): React.ReactElement {
           </div>
         )}
       </div>
-      <div className={styles.modalFooter}>
-        <SwitchRow
-          className={styles.row}
-          label={t(
-            'vesselGroup.uploadPublic' as any,
-            'Allow other users to see this vessel group when you share a workspace'
-          )}
-          active={createAsPublic}
-          onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
-        />
-      </div>
+      {!editingVesselGroup && (
+        <div className={styles.modalFooter}>
+          <SwitchRow
+            className={styles.row}
+            label={t(
+              'vesselGroup.uploadPublic' as any,
+              'Allow other users to see this vessel group when you share a workspace'
+            )}
+            active={createAsPublic}
+            onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
+          />
+        </div>
+      )}
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}

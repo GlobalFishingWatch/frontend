@@ -9,6 +9,9 @@ import {
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
   deleteVesselGroupThunk,
+  searchVesselGroupsThunk,
+  setVesselGroupEditId,
+  selectVesselGroupEditId,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectUserVesselGroups } from './user.selectors'
@@ -18,13 +21,27 @@ function UserVesselGroups() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroups = useSelector(selectUserVesselGroups)
-  const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
+  const vesselGroupStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupStatusId = useSelector(selectVesselGroupsStatusId)
-  const loading = vesselGroupsStatus === AsyncReducerStatus.Loading
+  const loading = vesselGroupStatus === AsyncReducerStatus.Loading
+  const editingGroupId = useSelector(selectVesselGroupEditId)
 
   const onNewGroupClick = useCallback(() => {
     dispatch(setVesselGroupsModalOpen(true))
   }, [dispatch])
+
+  const onEditClick = useCallback(
+    async (vesselGroup: VesselGroup) => {
+      dispatch(setVesselGroupEditId(vesselGroup.id))
+      const dispatchedAction = await dispatch(
+        searchVesselGroupsThunk({ vessels: vesselGroup.vessels, columnId: 'id' })
+      )
+      if (searchVesselGroupsThunk.fulfilled.match(dispatchedAction)) {
+        dispatch(setVesselGroupsModalOpen(true))
+      }
+    },
+    [dispatch]
+  )
 
   const onDeleteClick = useCallback(
     (vesselGroup: VesselGroup) => {
@@ -61,6 +78,12 @@ function UserVesselGroups() {
                 <li className={styles.dataset} key={vesselGroup.id}>
                   {vesselGroup.name}
                   <div>
+                    <IconButton
+                      icon="edit"
+                      loading={vesselGroup.id === editingGroupId}
+                      tooltip={t('workspace.editName', 'Edit workspace name')}
+                      onClick={() => onEditClick(vesselGroup)}
+                    />
                     <IconButton
                       icon="delete"
                       type="warning"

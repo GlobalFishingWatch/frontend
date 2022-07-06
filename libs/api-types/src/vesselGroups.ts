@@ -6,12 +6,12 @@ export interface VesselGroupVessel {
 }
 
 export interface VesselGroup {
-  id: number
+  id: string
   name: string
   vessels: VesselGroupVessel[]
   public?: boolean
-  ownerId: number
-  ownerType: string
+  ownerId?: number
+  ownerType?: string
 }
 
-export type VesselGroupUpsert = Omit<VesselGroup, 'id' | 'ownerId' | 'ownerType'>
+export type VesselGroupUpsert = Omit<VesselGroup, 'id' | 'public' | 'ownerId' | 'ownerType'>
