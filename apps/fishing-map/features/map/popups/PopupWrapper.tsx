@@ -148,7 +148,7 @@ function PopupWrapper({
                   (feature) => feature.type === GeneratorType.Context
                 )
                 const workspacePointsFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.GL
+                  (feature) => feature.source === WORKSPACE_GENERATOR_ID
                 )
                 return (
                   <Fragment key={featureCategory}>
