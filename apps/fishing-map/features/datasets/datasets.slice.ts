@@ -174,13 +174,12 @@ export const updateDatasetThunk = createAsyncThunk<
   'datasets/update',
   async (partialDataset, { rejectWithValue }) => {
     try {
-      const updatedDataset = await GFWAPI.fetch<Dataset>(
-        `/${API_VERSION}/datasets/${partialDataset.id}`,
-        {
-          method: 'PATCH',
-          body: partialDataset as any,
-        }
-      )
+      const { id, configuration, ...rest } = partialDataset
+      const { tableName, ...restConfiguration } = configuration
+      const updatedDataset = await GFWAPI.fetch<Dataset>(`/${API_VERSION}/datasets/${id}`, {
+        method: 'PATCH',
+        body: { ...rest, configuration: restConfiguration } as any,
+      })
       return updatedDataset
     } catch (e: any) {
       console.warn(e)
