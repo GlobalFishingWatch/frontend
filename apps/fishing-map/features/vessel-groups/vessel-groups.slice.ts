@@ -1,6 +1,6 @@
 import { createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
-import { memoize, uniq } from 'lodash'
+import { memoize, uniq, uniqBy } from 'lodash'
 import {
   APIPagination,
   DatasetStatus,
@@ -26,14 +26,15 @@ import { API_VERSION } from 'data/config'
 import { RootState } from 'store'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 
-export type IdColumn = 'id' | 'mmsi' | 'ssvid'
+export type IdField = 'vesselId' | 'mmsi' | 'ssvid'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
-  vesselsIds: VesselGroupVessel[]
+  groupVessels: VesselGroupVessel[]
   vesselGroupEditId: string
   currentDataviewId: string
   search: {
+    id: IdField
     status: AsyncReducerStatus
     error: ParsedAPIError
     vessels: Vessel[]
@@ -50,8 +51,9 @@ const initialState: VesselGroupsSliceState = {
   isModalOpen: false,
   vesselGroupEditId: undefined,
   currentDataviewId: undefined,
-  vesselsIds: undefined,
+  groupVessels: undefined,
   search: {
+    id: 'mmsi',
     status: AsyncReducerStatus.Idle,
     vessels: undefined,
     error: undefined,
@@ -63,10 +65,10 @@ const initialState: VesselGroupsSliceState = {
   },
 }
 
-export const searchVesselGroupsThunk = createAsyncThunk(
-  'vessel-groups/search',
+export const searchVesselGroupsVesselsThunk = createAsyncThunk(
+  'vessel-groups/searchVessels',
   async (
-    { vessels, columnId }: { vessels: VesselGroupVessel[]; columnId: IdColumn },
+    { vessels, idField }: { vessels: VesselGroupVessel[]; idField: IdField },
     { signal, rejectWithValue, getState }
   ) => {
     const state = getState() as RootState
@@ -75,15 +77,16 @@ export const searchVesselGroupsThunk = createAsyncThunk(
     const advancedSearchDatasets = (selectAllSearchDatasetsByType('advanced')(state) || []).filter(
       (d) => d.status !== DatasetStatus.Deleted
     )
-    const vesselDatasetsByType = columnId === 'id' ? allVesselDatasets : advancedSearchDatasets
+    const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
     const searchDatasets = vesselGroupDatasets?.length
       ? vesselDatasetsByType.filter((dataset) => vesselGroupDatasets.includes(dataset.id))
       : vesselDatasetsByType
+
     if (searchDatasets?.length) {
       const dataset = searchDatasets[0]
       const datasets = searchDatasets.map((d) => d.id)
       const datasetConfig: DataviewDatasetConfig = {
-        endpoint: columnId === 'id' ? EndpointId.VesselList : EndpointId.VesselAdvancedSearch,
+        endpoint: idField === 'vesselId' ? EndpointId.VesselList : EndpointId.VesselAdvancedSearch,
         datasetId: searchDatasets[0].id,
         params: [],
         query: [
@@ -91,12 +94,12 @@ export const searchVesselGroupsThunk = createAsyncThunk(
             id: 'datasets',
             value: datasets,
           },
-          columnId === 'id'
+          idField === 'vesselId'
             ? { id: 'ids', value: vessels.map(({ vesselId }) => vesselId) }
             : {
                 id: 'query',
                 value: encodeURIComponent(
-                  vessels.map(({ vesselId }) => `${columnId} = '${vesselId}'`).join(' OR ')
+                  vessels.map(({ vesselId }) => `${idField} = '${vesselId}'`).join(' OR ')
                 ),
               },
         ],
@@ -232,8 +235,14 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupsModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isModalOpen = action.payload
     },
+    setVesselGroupSearchId: (state, action: PayloadAction<IdField>) => {
+      state.search.id = action.payload
+    },
     setVesselGroupSearchVessels: (state, action: PayloadAction<Vessel[]>) => {
       state.search.vessels = action.payload
+    },
+    setVesselGroupVessels: (state, action: PayloadAction<VesselGroupVessel[]>) => {
+      state.groupVessels = action.payload
     },
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {
       state.vesselGroupEditId = action.payload
@@ -241,17 +250,35 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setCurrentDataviewId: (state, action: PayloadAction<string>) => {
       state.currentDataviewId = action.payload
     },
+    resetVesselGroup: (state) => {
+      // Using initialState doesn't work so needs manual reset
+      state.isModalOpen = false
+      state.vesselGroupEditId = undefined
+      state.currentDataviewId = undefined
+      state.groupVessels = undefined
+      state.search = {
+        id: 'mmsi',
+        status: AsyncReducerStatus.Idle,
+        vessels: undefined,
+        error: undefined,
+      }
+      state.workspace = {
+        status: AsyncReducerStatus.Idle,
+        error: undefined,
+        vesselGroups: undefined,
+      }
+    },
   },
   extraReducers(builder) {
-    builder.addCase(searchVesselGroupsThunk.pending, (state) => {
+    builder.addCase(searchVesselGroupsVesselsThunk.pending, (state) => {
       state.search.status = AsyncReducerStatus.Loading
       state.search.vessels = undefined
     })
-    builder.addCase(searchVesselGroupsThunk.fulfilled, (state, action) => {
+    builder.addCase(searchVesselGroupsVesselsThunk.fulfilled, (state, action) => {
       state.search.status = AsyncReducerStatus.Finished
       state.search.vessels = action.payload
     })
-    builder.addCase(searchVesselGroupsThunk.rejected, (state, action) => {
+    builder.addCase(searchVesselGroupsVesselsThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.search.status = AsyncReducerStatus.Idle
       } else {
@@ -288,8 +315,11 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
 })
 
 export const {
+  resetVesselGroup,
   setVesselGroupEditId,
   setCurrentDataviewId,
+  setVesselGroupVessels,
+  setVesselGroupSearchId,
   setVesselGroupsModalOpen,
   setVesselGroupSearchVessels,
 } = vesselGroupsSlice.actions
@@ -307,9 +337,10 @@ export const selectWorkspaceVesselGroupsStatus = (state: RootState) =>
   state.vesselGroups.workspace.status
 export const selectWorkspaceVesselGroupsError = (state: RootState) =>
   state.vesselGroups.workspace.error
+export const selectVesselGroupsVessels = (state: RootState) => state.vesselGroups.groupVessels
 export const selectWorkspaceVesselGroups = (state: RootState) =>
   state.vesselGroups.workspace.vesselGroups
-export const selectVesselGroupVesselIds = (state: RootState) => state.vesselGroups.vesselsIds
+export const selectVesselGroupSearchId = (state: RootState) => state.vesselGroups.search.id
 export const selectVesselGroupSearchStatus = (state: RootState) => state.vesselGroups.search.status
 export const selectVesselGroupSearchVessels = (state: RootState) =>
   state.vesselGroups.search.vessels

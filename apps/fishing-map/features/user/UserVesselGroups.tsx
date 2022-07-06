@@ -9,7 +9,6 @@ import {
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
   deleteVesselGroupThunk,
-  searchVesselGroupsThunk,
   setVesselGroupEditId,
   selectVesselGroupEditId,
 } from 'features/vessel-groups/vessel-groups.slice'
@@ -33,12 +32,7 @@ function UserVesselGroups() {
   const onEditClick = useCallback(
     async (vesselGroup: VesselGroup) => {
       dispatch(setVesselGroupEditId(vesselGroup.id))
-      const dispatchedAction = await dispatch(
-        searchVesselGroupsThunk({ vessels: vesselGroup.vessels, columnId: 'id' })
-      )
-      if (searchVesselGroupsThunk.fulfilled.match(dispatchedAction)) {
-        dispatch(setVesselGroupsModalOpen(true))
-      }
+      dispatch(setVesselGroupsModalOpen(true))
     },
     [dispatch]
   )
@@ -81,7 +75,7 @@ function UserVesselGroups() {
                     <IconButton
                       icon="edit"
                       loading={vesselGroup.id === editingGroupId}
-                      tooltip={t('workspace.editName', 'Edit workspace name')}
+                      tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
                       onClick={() => onEditClick(vesselGroup)}
                     />
                     <IconButton
