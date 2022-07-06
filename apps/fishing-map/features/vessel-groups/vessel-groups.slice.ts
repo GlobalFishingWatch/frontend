@@ -114,7 +114,18 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
           })
         }
         const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, { signal })
-        return searchResults.entries
+        // API returns multiple instances of the same vessel with the same id and dataset
+        const uniqSearchResults = uniqBy(searchResults.entries, (vessel) =>
+          [vessel.id, vessel.dataset].join(',')
+        )
+        // Searching could return same vessel id from different datasets so we need to choose the original one
+        const searchResultsFiltered = uniqSearchResults.filter((vessel) => {
+          return (
+            vessels.find((v) => v.vesselId === vessel.id && v.dataset === vessel.dataset) !==
+            undefined
+          )
+        })
+        return searchResultsFiltered
       } catch (e: any) {
         console.warn(e)
         return rejectWithValue(parseAPIError(e))
