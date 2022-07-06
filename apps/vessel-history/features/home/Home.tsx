@@ -113,14 +113,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const onSeeVesselClick = useCallback(() => {
     const parsedSelectedVessels = getListOfSelectedVessels()
-    console.log(parsedSelectedVessels)
     const selectedVessel = parsedSelectedVessels[0]
     if (selectedVessel) openVesselProfile(selectedVessel)
   }, [openVesselProfile, selectedVessels, vessels])
 
   const onMergeVesselClick = useCallback(() => {
     const parsedSelectedVessels = getListOfSelectedVessels()
-    console.log(parsedSelectedVessels)
     const selectedVessel = parsedSelectedVessels[0]
     uaEvent({
       category: 'Search Vessel VV',

@@ -20,7 +20,6 @@ export const mergeSearchVessels = (vessels: VesselSearch[], mergedField = 'vesse
     // If the vessel already exist:
     if (vessel[mergedField]) {
       const existingIndex = mergedVessels.findIndex(vesselToFind => vesselToFind[mergedField] === vessel[mergedField])
-      console.log(existingIndex)
       if (mergedVessels[existingIndex]) {
         mergedVessels[existingIndex] = getMergedVessel(vessel, mergedVessels[existingIndex],)
         // add data to main result
@@ -34,6 +33,5 @@ export const mergeSearchVessels = (vessels: VesselSearch[], mergedField = 'vesse
     }
 
   });
-  console.log(mergedVessels)
   return mergedVessels
 }

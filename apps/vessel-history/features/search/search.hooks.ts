@@ -18,7 +18,6 @@ export const useSearchResultsConnect = () => {
 
   const onVesselClick = useCallback(
     (index) => () => {
-      console.log(index)
       if (selectedVessels.includes(index)) {
         setSelectedVessels(selectedVessels.filter((i) => index !== i))
       } else if (isVesselsMergeEnabled) {
