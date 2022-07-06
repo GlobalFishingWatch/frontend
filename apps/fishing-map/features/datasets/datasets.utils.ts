@@ -15,7 +15,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
@@ -76,6 +76,13 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
   if (isGFWOnlyDataset(dataset)) return `${label}${GFW_ONLY_SUFFIX}`
   if (isPrivateDataset(dataset)) return `🔒 ${label}`
   return label
+}
+
+export const getDatasetIcon = (dataset: Dataset): IconType => {
+  if (dataset.type === DatasetTypes.UserTracks) return 'track'
+  if (dataset.configuration.geometryType === 'points') return 'dots'
+  if (dataset.type === DatasetTypes.Context) return 'polygons'
+  return null
 }
 
 export const getDatasetTitleByDataview = (

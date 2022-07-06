@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
-import { Button, Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
+import { Button, Spinner, IconButton, Modal, Icon } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
+import { getDatasetIcon } from 'features/datasets/datasets.utils'
 import {
   deleteDatasetThunk,
   selectDatasetsStatus,
@@ -103,9 +104,15 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                   'There was an error uploading your dataset'
                 )} - ${dataset.importLogs}`
               }
+              const datasetIcon = getDatasetIcon(dataset)
               return (
                 <li className={styles.dataset} key={dataset.id}>
-                  {dataset.name}
+                  <span>
+                    {datasetIcon && (
+                      <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
+                    )}
+                    {dataset.name}
+                  </span>
                   <div>
                     <InfoError
                       error={datasetError}
