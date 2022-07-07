@@ -157,6 +157,7 @@
     "callsign": "Callsign",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
     "flagState": "Flag States",
+    "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
     "loadMore": "Load More",
     "mergeSelectedVessels": "Merge Selected Vessels",
@@ -167,7 +168,8 @@
     "placeholder": "Search vessels by name, MMSI, IMO",
     "seeVessel": "See Vessel",
     "shipname": "Name",
-    "title": "Search"
+    "title": "Search",
+    "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
     "allSelected": "All",
@@ -245,9 +247,9 @@
     "encounteredVessel": "Encountered Vessel",
     "flag": "flag",
     "flag_plural": "flags",
-    "formatValues": "{{quantity}} values",
-    "forcedLabourModel": "forced labor risk model",
     "forcedLaborModelDescription": "High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.<1></1>\nLow Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.<1></1>\nUnknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.",
+    "forcedLabourModel": "forced labor risk model",
+    "formatValues": "{{quantity}} values",
     "gearType": "gear type",
     "gearType_plural": "gear types",
     "geartypeDescription": "Likely gear type of vessel as defined by Global Fishing Watch. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class, see more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> . The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",

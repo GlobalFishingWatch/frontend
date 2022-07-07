@@ -17,19 +17,14 @@ const getMergedVessel = (vessel: VesselSearch, otherVessel?: RelatedVesselSearch
 export const mergeSearchVessels = (vessels: VesselSearch[], mergedField = 'vesselMatchId'): RelatedVesselSearchMerged[] => {
   const mergedVessels: RelatedVesselSearchMerged[] = []
   vessels.forEach((vessel: VesselSearch) => {
-    // If the vessel already exist:
-    if (vessel[mergedField]) {
-      const existingIndex = mergedVessels.findIndex(vesselToFind => vesselToFind[mergedField] === vessel[mergedField])
-      if (mergedVessels[existingIndex]) {
-        mergedVessels[existingIndex] = getMergedVessel(vessel, mergedVessels[existingIndex],)
-        // add data to main result
-      } else {
-        const newVessel = getMergedVessel(vessel)
-        mergedVessels.push(newVessel)
-      }
+    const existingIndex = vessel[mergedField] ? mergedVessels.findIndex(vesselToFind => vesselToFind[mergedField] === vessel[mergedField]) : -1
+    // If there is already a merged vessel with the same value in the mergedField
+    if (existingIndex && existingIndex !== -1) {
+      // merge it with the current 
+      mergedVessels[existingIndex] = getMergedVessel(vessel, mergedVessels[existingIndex])
     } else {
-      const newVessel = getMergedVessel(vessel)
-      mergedVessels.push(newVessel)
+      // otherwise add it as a new vessel
+      mergedVessels.push(getMergedVessel(vessel))
     }
 
   });

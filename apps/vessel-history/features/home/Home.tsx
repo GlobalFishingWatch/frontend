@@ -223,7 +223,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const vesselsLength = useMemo(() => {
     return vessels.reduce((acc, vessel) => {
-      return acc + vessel.relatedVessels.length
+      return acc + (vessel.relatedVessels?.length ?? 0)
     }, 0)
   }, [vessels])
   return (

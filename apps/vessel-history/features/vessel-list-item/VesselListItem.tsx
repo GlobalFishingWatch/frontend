@@ -125,7 +125,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
                 size="default"
                 onClick={() => setRelatedOpen(true)}
               >
-                VIEW INDIVIDUAL RESULTS
+                {t('search.viewIndividual', 'VIEW INDIVIDUAL RESULTS')}
               </Button>}
               {relatedOpen && vessel.relatedVessels.map((relatedVessel, index) =>
                 <RelatedVesselListItem
@@ -142,13 +142,12 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
                 size="default"
                 onClick={() => setRelatedOpen(false)}
               >
-                HIDE INDIVIDUAL RESULTS
+                {t('search.hideIndividual', 'HIDE INDIVIDUAL RESULTS')}
               </Button>}
             </Fragment>
           }
           {props.saved && (
             <div>
-
               <label>{t('vessel.savedOn', 'saved on')}</label>
               {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
             </div>
