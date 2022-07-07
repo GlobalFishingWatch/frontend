@@ -522,7 +522,6 @@
     "createNewGroup": "Crear nuevo grupo",
     "csvError": "El archivo CSV subido tiene múltiples columnas y no hay una columna ID obvia",
     "edit": "Editar lista de embarcaciones",
-    "emptyError": "No se han encontrado resultados",
     "emptyState": "Los grupos de embarcaciones aparecerán aquí",
     "groupName": "Nombre del grupo",
     "idField": "Campo identificador",
@@ -532,8 +531,7 @@
     "new": "Nuevo grupo de embarcaciones",
     "uploadPublic": "Permitir a otros usuarios ver este grupo de embarcaciones cuando comparta un espacio de trabajo",
     "remove": "Eliminar este grupo",
-    "removeVessel": "Eliminar embarcaciones del grupo",
-    "source": "Source",
+    "removeVessel": "Remove vessel from group",
     "vesselGroup": "Grupo de embarcaciones",
     "vesselGroups": "Grupos de embarcaciones"
   },
