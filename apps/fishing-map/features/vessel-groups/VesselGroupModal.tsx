@@ -67,6 +67,9 @@ function VesselGroupModal(): React.ReactElement {
     vesselGroupsStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.LoadingUpdate
   const fullModalLoading = editingVesselGroupId && searchVesselStatus === AsyncReducerStatus.Loading
+  const vesselGroupAPIError =
+    vesselGroupsStatus === AsyncReducerStatus.Error ||
+    searchVesselStatus === AsyncReducerStatus.Error
   const [error, setError] = useState('')
 
   const [groupName, setGroupName] = useState<string>(editingVesselGroup?.name || '')
@@ -190,8 +193,6 @@ function VesselGroupModal(): React.ReactElement {
     ) {
       addVesselGroupToDataviewInstance(dispatchedAction.payload.id)
       close()
-    } else {
-      setError(t('errors.genericShort', 'Something went wrong'))
     }
   }, [
     vesselGroupSearchVessels,
@@ -201,7 +202,6 @@ function VesselGroupModal(): React.ReactElement {
     createAsPublic,
     addVesselGroupToDataviewInstance,
     close,
-    t,
   ])
 
   return (
@@ -267,6 +267,11 @@ function VesselGroupModal(): React.ReactElement {
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
+          {vesselGroupAPIError && (
+            <span className={styles.errorMsg}>
+              {t('errors.genericShort', 'Something went wrong')}
+            </span>
+          )}
           <span className={styles.hint}>
             <a
               href="https://globalfishingwatch.org/article-categories/reference-layers/"
