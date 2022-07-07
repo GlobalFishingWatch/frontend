@@ -88,7 +88,9 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
       const dataset = searchDatasets[0]
       const datasets = searchDatasets.map((d) => d.id)
       const uniqVesselIds = uniq(vessels.map(({ vesselId }) => vesselId))
-      const advancedSearchQuery = encodeURIComponent(`${idField} IN (${uniqVesselIds.join(',')})`)
+      const advancedSearchQuery = encodeURIComponent(
+        `${idField} IN ('${uniqVesselIds.join("','")}')`
+      )
       const datasetConfig: DataviewDatasetConfig = {
         endpoint: idField === 'vesselId' ? EndpointId.VesselList : EndpointId.VesselAdvancedSearch,
         datasetId: searchDatasets[0].id,
