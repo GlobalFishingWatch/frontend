@@ -10,6 +10,7 @@ import {
   selectNewVesselGroupSearchVessels,
   selectVesselGroupSearchVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
+import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
@@ -33,9 +34,11 @@ export const selectVessselGroupsAllowed = createSelector(
 )
 
 export const selectWorkspaceVessselGroupsIds = createSelector(
-  [selectUrlDataviewInstances],
-  (urlDataviewInstances = []) => {
-    return urlDataviewInstances.flatMap((dvi) => dvi.config?.filters?.['vessel-groups'] || [])
+  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
+  (workspaceDataviewInstances = [], urlDataviewInstances = []) => {
+    return [...workspaceDataviewInstances, ...urlDataviewInstances].flatMap(
+      (dvi) => dvi.config?.filters?.['vessel-groups'] || []
+    )
   }
 )
 
