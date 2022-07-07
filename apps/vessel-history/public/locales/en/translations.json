@@ -157,6 +157,7 @@
     "callsign": "Callsign",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
     "flagState": "Flag States",
+    "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
     "loadMore": "Load More",
     "mergeSelectedVessels": "Merge Selected Vessels",
@@ -167,7 +168,8 @@
     "placeholder": "Search vessels by name, MMSI, IMO or Call Sign",
     "seeVessel": "See Vessel",
     "shipname": "Name",
-    "title": "Search"
+    "title": "Search",
+    "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
     "allSelected": "All",
@@ -245,9 +247,9 @@
     "encounteredVessel": "Encountered Vessel",
     "flag": "flag",
     "flag_plural": "flags",
-    "formatValues": "{{quantity}} values",
-    "forcedLabourModel": "forced labor risk model",
     "forcedLaborModelDescription": "High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.<1></1>\nLow Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.<1></1>\nUnknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.",
+    "forcedLabourModel": "forced labor risk model",
+    "formatValues": "{{quantity}} values",
     "gearType": "gear type",
     "gearType_plural": "gear types",
     "geartypeDescription": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
@@ -282,6 +284,7 @@
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
     "previousNames": "previous names",
     "readyForOfflineView": "READY FOR OFFLINE VIEW",
+    "relatedNotification": "This vessel is the combination of {{amount}} results",
     "remove": "Remove",
     "rmfoRegistry": "RFMO Registry",
     "savedOn": "saved on",
