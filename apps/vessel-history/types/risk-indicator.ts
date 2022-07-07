@@ -7,9 +7,9 @@ export type MOU = {
   paris: FlagColor
 }
 
-export type EncounterFishingIndicators = {
+export type LocationRelatedEventIndicators = {
   mou: MOU
-  eventsInEEZ: string[]
+  eventsInForeignEEZ: string[]
   eventsInMPA: string[]
   eventsInRFMO: string[]
 }
@@ -20,7 +20,8 @@ export type PortVisitsIndicators = {
 
 export type Indicator = {
   id: string
-  encounters: EncounterFishingIndicators
-  fishing: EncounterFishingIndicators
+  encounters: LocationRelatedEventIndicators
+  fishing: LocationRelatedEventIndicators
   portVisits: PortVisitsIndicators
+  loitering: LocationRelatedEventIndicators
 }

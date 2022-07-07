@@ -3,23 +3,18 @@ import { useSelector } from 'react-redux'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
-import {
-  selectEncountersInForeignEEZ,
-  selectEventsInsideMPAByType,
-} from 'features/risk/risk.selectors'
+import { selectEventsInsideMPAByType } from 'features/risk/risk.selectors'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { selectUrlAkaVesselQuery, selectVesselProfileId } from 'routes/routes.selectors'
-import { Indicator } from 'types/risk-indicator'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectEncountersInMPA, selectFishingInMPA } from './risk-indicator.selectors'
 import {
-  fetchIndicatorsByIdThunk,
-  getMergedVesselsUniqueId,
-  selectIndicatorById,
-  selectIndicatorsStatus,
-} from './risk-indicator.slice'
+  selectEncountersInMPA,
+  selectFishingInMPA,
+  selectEncountersInForeignEEZ,
+  selectCurrentMergedVesselsId,
+} from './risk-indicator.selectors'
+import { fetchIndicatorsByIdThunk, selectIndicatorsStatus } from './risk-indicator.slice'
 
-export interface UseRiskIndicator extends Indicator {
+export interface UseRiskIndicator {
   encountersInForeignEEZ: RenderedEvent[]
   encountersInMPA: RenderedEvent[]
   eventsLoading: boolean
@@ -34,14 +29,7 @@ export interface UseRiskIndicator extends Indicator {
 
 export function useRiskIndicator(): UseRiskIndicator {
   const dispatch = useAppDispatch()
-  const vesselProfileId = useSelector(selectVesselProfileId)
-  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
-  const idData = [vesselProfileId, ...akaVesselProfileIds].map((vesselProfileId) => {
-    const [datasetId, vesselId, tmtId] = vesselProfileId.split('_')
-    return { datasetId, vesselId, tmtId }
-  })
-  const mergedVesselsId = getMergedVesselsUniqueId(idData)
-  const vesselIndicators = useSelector(selectIndicatorById(mergedVesselsId))
+  const idData = useSelector(selectCurrentMergedVesselsId)
   const indicatorsStatus = useSelector(selectIndicatorsStatus)
   const eventsLoading = useSelector(selectResourcesLoading)
 
@@ -51,14 +39,13 @@ export function useRiskIndicator(): UseRiskIndicator {
 
   const encountersInMPA = useSelector(selectEncountersInMPA)
   const fishingInMPA = useSelector(selectFishingInMPA)
+  const encountersInForeignEEZ = useSelector(selectEncountersInForeignEEZ)
 
   /** Migration to API pengding */
-  const encountersInForeignEEZ = useSelector(selectEncountersInForeignEEZ)
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))
   /******************************/
 
   return {
-    ...vesselIndicators,
     encountersInForeignEEZ,
     encountersInMPA,
     eventsLoading,
