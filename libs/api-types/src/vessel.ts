@@ -41,3 +41,7 @@ export interface VesselSearch extends Vessel {
   vesselMatchId: string
   posCount?: number
 }
+
+export interface RelatedVesselSearchMerged extends VesselSearch {
+  relatedVessels: VesselSearch[],
+}

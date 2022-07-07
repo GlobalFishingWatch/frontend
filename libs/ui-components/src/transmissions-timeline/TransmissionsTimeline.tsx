@@ -8,6 +8,7 @@ type TransmissionsTimelineProps = {
   lastTransmissionDate: string
   firstYearOfData: number
   shortYears?: boolean
+  parsedYears?: number[]
 }
 
 export function TransmissionsTimeline({
@@ -15,6 +16,7 @@ export function TransmissionsTimeline({
   lastTransmissionDate,
   firstYearOfData,
   shortYears,
+  parsedYears
 }: TransmissionsTimelineProps) {
   const availableYears = range(firstYearOfData, new Date().getFullYear() + 1)
   const firstYear = parseInt(firstTransmissionDate.slice(0, 4))
@@ -22,14 +24,16 @@ export function TransmissionsTimeline({
   return (
     <div className={styles.timelineContainer}>
       {availableYears.map((year) => {
-        const yearWithTransmissions = year >= firstYear && year <= lastYear
+        const yearWithTransmissions = parsedYears?.length ? parsedYears.includes(year) :
+          year >= firstYear && year <= lastYear
         const yearLabel = shortYears ? year.toString().slice(-2) : year.toString()
+
         return (
           <div
             key={year}
             className={cx(styles.year, { [styles.highlighted]: yearWithTransmissions })}
           >
-            {year === firstYear || year === lastYear ? yearLabel : '‎'}
+            {year === firstYear || year === lastYear ? yearLabel : parsedYears?.length ? yearLabel : '‎'}
           </div>
         )
       })}
