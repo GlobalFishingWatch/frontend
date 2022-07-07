@@ -13,6 +13,7 @@ import {
   selectVesselGroupEditId,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { selectUserVesselGroups } from './user.selectors'
 import styles from './User.module.css'
 
@@ -22,7 +23,10 @@ function UserVesselGroups() {
   const vesselGroups = useSelector(selectUserVesselGroups)
   const vesselGroupStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupStatusId = useSelector(selectVesselGroupsStatusId)
-  const loading = vesselGroupStatus === AsyncReducerStatus.Loading
+  const datasetsStatus = useSelector(selectDatasetsStatus)
+  const loading =
+    datasetsStatus === AsyncReducerStatus.Loading ||
+    vesselGroupStatus === AsyncReducerStatus.Loading
   const editingGroupId = useSelector(selectVesselGroupEditId)
 
   const onNewGroupClick = useCallback(() => {

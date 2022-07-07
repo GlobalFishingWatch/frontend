@@ -15,6 +15,10 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import VesselGroupSearch from 'features/vessel-groups/VesselGroupModalSearch'
 import VesselGroupVessels from 'features/vessel-groups/VesselGroupModalVessels'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectAllVesselGroupSearchVessels,
+  selectHasVesselGroupSearchVessels,
+} from 'features/vessel-groups/vessel-groups.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -28,7 +32,6 @@ import {
   selectVesselGroupModalOpen,
   selectVesselGroupSearchId,
   selectVesselGroupSearchStatus,
-  selectVesselGroupSearchVessels,
   selectVesselGroupsStatus,
   selectVesselGroupsVessels,
   setVesselGroupSearchId,
@@ -69,27 +72,23 @@ function VesselGroupModal(): React.ReactElement {
   const [groupName, setGroupName] = useState<string>(editingVesselGroup?.name || '')
   const [showBackButton, setShowBackButton] = useState(false)
   const [createAsPublic, setCreateAsPublic] = useState(true)
-  const vesselGroupSearchVessels = useSelector(selectVesselGroupSearchVessels)
+  const vesselGroupSearchVessels = useSelector(selectAllVesselGroupSearchVessels)
+  const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const dispatchSearchVesselsGroupsThunk = useCallback(
     async (vessels: VesselGroupVessel[], idField: IdField = 'vesselId') => {
-      const dispatchedAction = await dispatch(searchVesselGroupsVesselsThunk({ vessels, idField }))
-
-      if (!searchVesselGroupsVesselsThunk.fulfilled.match(dispatchedAction)) {
-        setError(t('errors.genericShort', 'Something went wrong'))
-      }
-      return dispatchedAction
+      return dispatch(searchVesselGroupsVesselsThunk({ vessels, idField }))
     },
-    [dispatch, t]
+    [dispatch]
   )
-
+  const editingVesselGroupVessels = editingVesselGroup?.vessels
   useEffect(() => {
-    if (editingVesselGroup?.vessels?.length > 0) {
-      dispatchSearchVesselsGroupsThunk(editingVesselGroup.vessels)
+    if (editingVesselGroupVessels?.length > 0) {
+      dispatchSearchVesselsGroupsThunk(editingVesselGroupVessels)
     }
-  }, [editingVesselGroup?.vessels, dispatchSearchVesselsGroupsThunk])
+  }, [editingVesselGroupVessels, dispatchSearchVesselsGroupsThunk])
 
   const onGroupNameChange = useCallback((e) => {
     setGroupName(e.target.value)
@@ -198,14 +197,12 @@ function VesselGroupModal(): React.ReactElement {
     vesselGroupSearchVessels,
     editingVesselGroupId,
     groupName,
-    createAsPublic,
     dispatch,
+    createAsPublic,
     addVesselGroupToDataviewInstance,
     close,
     t,
   ])
-
-  const disableIDField = vesselGroupSearchVessels?.length > 0
 
   return (
     <Modal
@@ -227,14 +224,14 @@ function VesselGroupModal(): React.ReactElement {
           />
           {!fullModalLoading &&
             searchVesselStatus !== AsyncReducerStatus.Error &&
-            !vesselGroupSearchVessels?.length && (
+            !hasVesselGroupsVessels && (
               <Select
                 key="IDfield"
                 label={t('vesselGroup.idField', 'ID field')}
                 options={ID_COLUMNS_OPTIONS}
                 selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
                 onSelect={onIdFieldChange}
-                disabled={disableIDField}
+                disabled={hasVesselGroupsVessels}
               />
             )}
         </div>
@@ -242,7 +239,7 @@ function VesselGroupModal(): React.ReactElement {
           <Spinner />
         ) : (
           <Fragment>
-            {vesselGroupSearchVessels?.length > 0 ? (
+            {hasVesselGroupsVessels ? (
               <div className={styles.vesselsTableContainer}>
                 <VesselGroupVessels />
               </div>
@@ -280,7 +277,7 @@ function VesselGroupModal(): React.ReactElement {
             </a>
           </span>
         </div>
-        {vesselGroupSearchVessels && showBackButton && (
+        {hasVesselGroupsVessels && showBackButton && (
           <Button
             type="secondary"
             className={styles.backButton}
@@ -292,15 +289,12 @@ function VesselGroupModal(): React.ReactElement {
         {!fullModalLoading && (
           <Button
             disabled={
-              loading ||
-              searchVesselStatus === AsyncReducerStatus.Error ||
-              (!editingVesselGroupId && !vesselGroupVessels?.length) ||
-              groupName === ''
+              loading || searchVesselStatus === AsyncReducerStatus.Error || groupName === ''
             }
-            onClick={vesselGroupSearchVessels?.length ? onCreateGroupClick : onSearchVesselsClick}
+            onClick={hasVesselGroupsVessels ? onCreateGroupClick : onSearchVesselsClick}
             loading={loading}
           >
-            {vesselGroupSearchVessels?.length > 0
+            {hasVesselGroupsVessels
               ? t('common.confirm', 'Confirm')
               : t('common.continue', 'Continue')}
           </Button>
