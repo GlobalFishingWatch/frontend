@@ -87,6 +87,8 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     if (searchDatasets?.length) {
       const dataset = searchDatasets[0]
       const datasets = searchDatasets.map((d) => d.id)
+      const uniqVesselIds = uniq(vessels.map(({ vesselId }) => vesselId))
+      const advancedSearchQuery = encodeURIComponent(`${idField} IN (${uniqVesselIds.join(',')})`)
       const datasetConfig: DataviewDatasetConfig = {
         endpoint: idField === 'vesselId' ? EndpointId.VesselList : EndpointId.VesselAdvancedSearch,
         datasetId: searchDatasets[0].id,
@@ -97,12 +99,10 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
             value: datasets,
           },
           idField === 'vesselId'
-            ? { id: 'ids', value: vessels.map(({ vesselId }) => vesselId) }
+            ? { id: 'ids', value: uniqVesselIds }
             : {
                 id: 'query',
-                value: encodeURIComponent(
-                  vessels.map(({ vesselId }) => `${idField} = '${vesselId}'`).join(' OR ')
-                ),
+                value: advancedSearchQuery,
               },
         ],
       }
