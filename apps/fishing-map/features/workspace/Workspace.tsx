@@ -14,7 +14,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { isGFWUser, isGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
+import { isGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectLocationCategory, selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
@@ -33,7 +33,6 @@ import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
 import {
-  fetchUserVesselGroupsThunk,
   fetchWorkspaceVesselGroupsThunk,
   selectWorkspaceVesselGroupsError,
   selectWorkspaceVesselGroupsStatus,
@@ -142,7 +141,6 @@ function Workspace() {
   const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const workspace = useSelector(selectWorkspace)
-  const gfwUser = useSelector(isGFWUser)
   const dataviews = useSelector(selectDataviewInstancesMergedOrdered)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
@@ -169,12 +167,6 @@ function Workspace() {
       })
     }
   }, [dispatch, dataviewsResources])
-
-  useEffect(() => {
-    if (gfwUser) {
-      dispatch(fetchUserVesselGroupsThunk())
-    }
-  }, [dispatch, gfwUser])
 
   useEffect(() => {
     if (workspaceVesselGroupsIds.length) {

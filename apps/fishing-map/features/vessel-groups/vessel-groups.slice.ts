@@ -1,12 +1,20 @@
-import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
+import { memoize, uniq, uniqBy } from 'lodash'
 import {
   APIPagination,
+  DatasetStatus,
+  DataviewDatasetConfig,
+  EndpointId,
   Vessel,
   VesselGroup,
   VesselGroupUpsert,
+  VesselGroupVessel,
+  VesselSearch,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import {
   AsyncError,
   asyncInitialState,
@@ -16,11 +24,22 @@ import {
 } from 'utils/async-slice'
 import { API_VERSION } from 'data/config'
 import { RootState } from 'store'
+import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
+
+export type IdField = 'vesselId' | 'mmsi' | 'ssvid'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
-  vessels: Vessel[]
+  vesselGroupEditId: string
   currentDataviewId: string
+  groupVessels: VesselGroupVessel[]
+  search: {
+    id: IdField
+    status: AsyncReducerStatus
+    error: ParsedAPIError
+    vessels: Vessel[]
+  }
+  newSearchVessels: Vessel[]
   workspace: {
     status: AsyncReducerStatus
     error: ParsedAPIError
@@ -31,14 +50,107 @@ interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
 const initialState: VesselGroupsSliceState = {
   ...asyncInitialState,
   isModalOpen: false,
+  vesselGroupEditId: undefined,
   currentDataviewId: undefined,
-  vessels: undefined,
+  groupVessels: undefined,
+  search: {
+    id: 'mmsi',
+    status: AsyncReducerStatus.Idle,
+    vessels: undefined,
+    error: undefined,
+  },
+  newSearchVessels: undefined,
   workspace: {
     status: AsyncReducerStatus.Idle,
     error: undefined,
     vesselGroups: undefined,
   },
 }
+
+export const searchVesselGroupsVesselsThunk = createAsyncThunk(
+  'vessel-groups/searchVessels',
+  async (
+    { vessels, idField }: { vessels: VesselGroupVessel[]; idField: IdField },
+    { signal, rejectWithValue, getState }
+  ) => {
+    const state = getState() as RootState
+    const vesselGroupDatasets = uniq(vessels?.flatMap((v) => v.dataset || []))
+    const allVesselDatasets = selectVesselsDatasets(state)
+    const advancedSearchDatasets = (selectAllSearchDatasetsByType('advanced')(state) || []).filter(
+      (d) => d.status !== DatasetStatus.Deleted
+    )
+    const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
+    const searchDatasets = vesselGroupDatasets?.length
+      ? vesselDatasetsByType.filter((dataset) => vesselGroupDatasets.includes(dataset.id))
+      : vesselDatasetsByType
+
+    if (searchDatasets?.length) {
+      const dataset = searchDatasets[0]
+      const datasets = searchDatasets.map((d) => d.id)
+      const datasetConfig: DataviewDatasetConfig = {
+        endpoint: idField === 'vesselId' ? EndpointId.VesselList : EndpointId.VesselAdvancedSearch,
+        datasetId: searchDatasets[0].id,
+        params: [],
+        query: [
+          {
+            id: 'datasets',
+            value: datasets,
+          },
+          idField === 'vesselId'
+            ? { id: 'ids', value: vessels.map(({ vesselId }) => vesselId) }
+            : {
+                id: 'query',
+                value: encodeURIComponent(
+                  vessels.map(({ vesselId }) => `${idField} = '${vesselId}'`).join(' OR ')
+                ),
+              },
+        ],
+      }
+      try {
+        const url = resolveEndpoint(dataset, datasetConfig)
+        if (!url) {
+          console.warn('Missing search url')
+          return rejectWithValue({
+            code: 0,
+            message: 'Missing search url',
+          })
+        }
+        const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, { signal })
+        // API returns multiple instances of the same vessel with the same id and dataset
+        const uniqSearchResults = uniqBy(searchResults.entries, (vessel) =>
+          [vessel.id, vessel.dataset].join(',')
+        )
+        // Searching could return same vessel id from different datasets so we need to choose the original one
+        const searchResultsFiltered =
+          idField === 'vesselId'
+            ? uniqSearchResults.filter((vessel) => {
+                return (
+                  vessels.find((v) => v.vesselId === vessel.id && v.dataset === vessel.dataset) !==
+                  undefined
+                )
+              })
+            : uniqSearchResults
+        return searchResultsFiltered
+      } catch (e: any) {
+        console.warn(e)
+        return rejectWithValue(parseAPIError(e))
+      }
+    } else {
+      console.warn('No search datasets found')
+      return rejectWithValue({
+        code: 0,
+        message: 'No search datasets found',
+      })
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const workspaceVesselGroupsStatus = (getState() as RootState).vesselGroups.search.status
+      // Fetched already in progress, don't need to re-fetch
+      return workspaceVesselGroupsStatus !== AsyncReducerStatus.Loading
+    },
+  }
+)
 
 export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
   'workspace-vessel-groups/fetch',
@@ -82,17 +194,36 @@ export const fetchUserVesselGroupsThunk = createAsyncThunk(
     },
   }
 )
-
+const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVessel[]) => {
+  return uniqBy(vessels, (vessel) => [vessel.vesselId, vessel.dataset].join(','))
+}
 export const createVesselGroupThunk = createAsyncThunk(
   'vessel-groups/create',
-  async (vesselGroup: VesselGroupUpsert, { dispatch, getState }) => {
-    // const url = [`/${API_VERSION}/vessel-groups/`, vesselGroup.id ? vesselGroup.id : ''].join('')
-    // const method = vesselGroup.id ? 'PATCH' : 'POST'
+  async (vesselGroupCreate: VesselGroupUpsert, { dispatch, getState }) => {
     const url = `/${API_VERSION}/vessel-groups/`
-    const method = 'POST'
-
+    const vesselGroup: VesselGroupUpsert = {
+      ...vesselGroupCreate,
+      vessels: removeDuplicatedVesselGroupvessels(vesselGroupCreate.vessels),
+    }
     const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(url, {
-      method,
+      method: 'POST',
+      body: vesselGroup,
+    } as FetchOptions<any>)
+    return vesselGroupUpdated
+  }
+)
+
+export const updateVesselGroupThunk = createAsyncThunk(
+  'vessel-groups/update',
+  async (vesselGroupUpsert: VesselGroupUpsert & { id: string }) => {
+    const { id, ...rest } = vesselGroupUpsert
+    const url = `/${API_VERSION}/vessel-groups/${id}`
+    const vesselGroup: VesselGroupUpsert = {
+      ...rest,
+      vessels: removeDuplicatedVesselGroupvessels(rest.vessels),
+    }
+    const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(url, {
+      method: 'PATCH',
       body: vesselGroup,
     } as FetchOptions<any>)
     return vesselGroupUpdated
@@ -127,14 +258,61 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupsModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isModalOpen = action.payload
     },
-    setVesselGroupVessels: (state, action: PayloadAction<Vessel[]>) => {
-      state.vessels = action.payload
+    setVesselGroupSearchId: (state, action: PayloadAction<IdField>) => {
+      state.search.id = action.payload
+    },
+    setVesselGroupSearchVessels: (state, action: PayloadAction<Vessel[]>) => {
+      state.search.vessels = action.payload
+    },
+    setNewVesselGroupSearchVessels: (state, action: PayloadAction<Vessel[]>) => {
+      state.newSearchVessels = action.payload
+    },
+    setVesselGroupVessels: (state, action: PayloadAction<VesselGroupVessel[]>) => {
+      state.groupVessels = action.payload
+    },
+    setVesselGroupEditId: (state, action: PayloadAction<string>) => {
+      state.vesselGroupEditId = action.payload
     },
     setCurrentDataviewId: (state, action: PayloadAction<string>) => {
       state.currentDataviewId = action.payload
     },
+    resetVesselGroup: (state) => {
+      // Using initialState doesn't work so needs manual reset
+      state.isModalOpen = false
+      state.vesselGroupEditId = undefined
+      state.currentDataviewId = undefined
+      state.groupVessels = undefined
+      state.search = {
+        id: 'mmsi',
+        status: AsyncReducerStatus.Idle,
+        vessels: undefined,
+        error: undefined,
+      }
+      state.newSearchVessels = undefined
+      state.workspace = {
+        status: AsyncReducerStatus.Idle,
+        error: undefined,
+        vesselGroups: undefined,
+      }
+    },
   },
   extraReducers(builder) {
+    builder.addCase(searchVesselGroupsVesselsThunk.pending, (state) => {
+      state.search.status = AsyncReducerStatus.Loading
+      state.search.vessels = undefined
+    })
+    builder.addCase(searchVesselGroupsVesselsThunk.fulfilled, (state, action) => {
+      state.search.status = AsyncReducerStatus.Finished
+      state.search.vessels = action.payload
+    })
+    builder.addCase(searchVesselGroupsVesselsThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.search.status = AsyncReducerStatus.Idle
+      } else {
+        state.search.status = AsyncReducerStatus.Error
+        state.search.error = action.payload as ParsedAPIError
+      }
+    })
     builder.addCase(fetchWorkspaceVesselGroupsThunk.pending, (state) => {
       state.workspace.status = AsyncReducerStatus.Loading
       state.workspace.vesselGroups = undefined
@@ -157,17 +335,28 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   },
   thunks: {
     fetchThunk: fetchUserVesselGroupsThunk,
-    // updateThunk: updateDatasetThunk,
+    updateThunk: updateVesselGroupThunk,
     createThunk: createVesselGroupThunk,
     deleteThunk: deleteVesselGroupThunk,
   },
 })
 
-export const { setVesselGroupsModalOpen, setVesselGroupVessels, setCurrentDataviewId } =
-  vesselGroupsSlice.actions
+export const {
+  resetVesselGroup,
+  setVesselGroupEditId,
+  setCurrentDataviewId,
+  setVesselGroupVessels,
+  setVesselGroupSearchId,
+  setVesselGroupsModalOpen,
+  setVesselGroupSearchVessels,
+  setNewVesselGroupSearchVessels,
+} = vesselGroupsSlice.actions
 
-export const { selectAll: selectAllVesselGroups } = entityAdapter.getSelectors<RootState>(
-  (state) => state.vesselGroups
+export const { selectAll: selectAllVesselGroups, selectById } =
+  entityAdapter.getSelectors<RootState>((state) => state.vesselGroups)
+
+export const selectVesselGroupById = memoize((id: string) =>
+  createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
 
 export const selectVesselGroupModalOpen = (state: RootState) => state.vesselGroups.isModalOpen
@@ -176,10 +365,17 @@ export const selectWorkspaceVesselGroupsStatus = (state: RootState) =>
   state.vesselGroups.workspace.status
 export const selectWorkspaceVesselGroupsError = (state: RootState) =>
   state.vesselGroups.workspace.error
+export const selectVesselGroupsVessels = (state: RootState) => state.vesselGroups.groupVessels
 export const selectWorkspaceVesselGroups = (state: RootState) =>
   state.vesselGroups.workspace.vesselGroups
-export const selectVesselGroupVessels = (state: RootState) => state.vesselGroups.vessels
+export const selectVesselGroupSearchId = (state: RootState) => state.vesselGroups.search.id
+export const selectVesselGroupSearchStatus = (state: RootState) => state.vesselGroups.search.status
+export const selectVesselGroupSearchVessels = (state: RootState) =>
+  state.vesselGroups.search.vessels
+export const selectNewVesselGroupSearchVessels = (state: RootState) =>
+  state.vesselGroups.newSearchVessels
 export const selectVesselGroupsStatusId = (state: RootState) => state.vesselGroups.statusId
 export const selectCurrentDataviewId = (state: RootState) => state.vesselGroups.currentDataviewId
+export const selectVesselGroupEditId = (state: RootState) => state.vesselGroups.vesselGroupEditId
 
 export default vesselGroupsSlice.reducer

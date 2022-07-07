@@ -34,8 +34,11 @@ import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setVesselGroupsModalOpen,
-  setVesselGroupVessels,
+  setNewVesselGroupSearchVessels,
+  setVesselGroupEditId,
 } from 'features/vessel-groups/vessel-groups.slice'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { isGFWUser } from 'features/user/user.slice'
 import {
@@ -78,6 +81,7 @@ function Search() {
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
+  const vesselGroupOptions = useVesselGroupsOptions()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
@@ -86,6 +90,11 @@ function Search() {
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
+  const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
+
+  const toggleVesselGroupsOpen = useCallback(() => {
+    setVesselGroupsOpen(!vesselGroupsOpen)
+  }, [vesselGroupsOpen])
 
   const searchOptions = useMemo(() => {
     return [
@@ -210,21 +219,27 @@ function Search() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
-  const onAddToVesselGroup = useCallback(() => {
-    const vesselDatasets = uniqBy(
-      vesselsSelected.map((v) => v.dataset),
-      'id'
-    )
-    const vessels = vesselsSelected.map((vessel) => ({ ...vessel, dataset: vessel.dataset.id }))
-    if (vessels?.length) {
-      batch(() => {
-        dispatch(setVesselGroupVessels(vessels))
-        dispatch(setVesselGroupsModalOpen(true))
-      })
-    } else {
-      console.warn('No related activity datasets founds for', vesselDatasets)
-    }
-  }, [dispatch, vesselsSelected])
+  const onAddToVesselGroup = useCallback(
+    (vesselGroupId?: string) => {
+      const vesselDatasets = uniqBy(
+        vesselsSelected.map((v) => v.dataset),
+        'id'
+      )
+      const vessels = vesselsSelected.map((vessel) => ({ ...vessel, dataset: vessel.dataset.id }))
+      if (vessels?.length) {
+        batch(() => {
+          if (vesselGroupId) {
+            dispatch(setVesselGroupEditId(vesselGroupId))
+          }
+          dispatch(setNewVesselGroupSearchVessels(vessels))
+          dispatch(setVesselGroupsModalOpen(true))
+        })
+      } else {
+        console.warn('No related activity datasets founds for', vesselDatasets)
+      }
+    },
+    [dispatch, vesselsSelected]
+  )
 
   const onCloseClick = () => {
     batch(() => {
@@ -531,11 +546,41 @@ function Search() {
             </div>
           )}
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            {gfwUser && vesselsSelected.length > 1 && (
-              <Button type="secondary" className={styles.footerAction} onClick={onAddToVesselGroup}>
-                {t('vesselGroup.new', 'New vessel group')}({vesselsSelected.length})
-              </Button>
-            )}
+            <TooltipContainer
+              visible={vesselGroupsOpen}
+              onClickOutside={toggleVesselGroupsOpen}
+              component={
+                <ul className={styles.groupOptions}>
+                  <li
+                    className={cx(styles.groupOption, styles.groupOptionNew)}
+                    onClick={() => onAddToVesselGroup()}
+                  >
+                    {t('vesselGroup.createNewGroup', 'Create new group')}
+                  </li>
+                  {vesselGroupOptions.map((group) => (
+                    <li
+                      className={styles.groupOption}
+                      key={group.id}
+                      onClick={() => onAddToVesselGroup(group.id)}
+                    >
+                      {group.label}
+                    </li>
+                  ))}
+                </ul>
+              }
+            >
+              <div>
+                {gfwUser && vesselsSelected.length > 0 && (
+                  <Button
+                    type="secondary"
+                    className={styles.footerAction}
+                    onClick={toggleVesselGroupsOpen}
+                  >
+                    {t('vesselGroup.add', 'Add to vessel group')}({vesselsSelected.length})
+                  </Button>
+                )}
+              </div>
+            </TooltipContainer>
             <Button className={styles.footerAction} onClick={onConfirmSelection}>
               {vesselsSelected.length > 1
                 ? t('search.seeVessels', {

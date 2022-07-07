@@ -6,6 +6,24 @@ import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import {
+  selectNewVesselGroupSearchVessels,
+  selectVesselGroupSearchVessels,
+} from 'features/vessel-groups/vessel-groups.slice'
+
+export const selectAllVesselGroupSearchVessels = createSelector(
+  [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
+  (vessels = [], newVessels = []) => {
+    return [...newVessels, ...vessels]
+  }
+)
+
+export const selectHasVesselGroupSearchVessels = createSelector(
+  [selectAllVesselGroupSearchVessels],
+  (vessels = []) => {
+    return vessels.length > 0
+  }
+)
 
 export const selectVessselGroupsAllowed = createSelector(
   [isAdvancedSearchAllowed, isGFWUser],

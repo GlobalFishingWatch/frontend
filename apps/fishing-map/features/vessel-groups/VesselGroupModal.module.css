@@ -126,3 +126,7 @@
 .backButton {
   margin-right: 1rem;
 }
+
+.new {
+  background-color: var(--color-help-yellow);
+}
