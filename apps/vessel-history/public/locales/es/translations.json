@@ -157,6 +157,7 @@
     "callsign": "Callsign",
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
     "flagState": "Flag States",
+    "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
     "loadMore": "Cargar más",
     "mergeSelectedVessels": "Merge Selected Vessels",
@@ -167,7 +168,8 @@
     "placeholder": "Search vessels by name, MMSI, IMO",
     "seeVessel": "See Vessel",
     "shipname": "Name",
-    "title": "Search"
+    "title": "Search",
+    "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
     "allSelected": "todos",
@@ -245,9 +247,9 @@
     "encounteredVessel": "Encountered Vessel",
     "flag": "bandera",
     "flag_plural": "banderas",
-    "formatValues": "{{quantity}} values",
-    "forcedLabourModel": "forced labor risk model",
     "forcedLaborModelDescription": "High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.<1></1>\nLow Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.<1></1>\nUnknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.",
+    "forcedLabourModel": "forced labor risk model",
+    "formatValues": "{{quantity}} values",
     "gearType": "tipo de equipo",
     "gearType_plural": "tipos de equipo",
     "geartypeDescription": "Likely gear type of vessel as defined by Global Fishing Watch. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class, see more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> . The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
@@ -282,6 +284,7 @@
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} anteriores",
     "previousNames": "nombres anteriores",
     "readyForOfflineView": "RESPONSABLE PARA LA VISTA DE OFLINA",
+    "relatedNotification": "This vessel is the combination of {{amount}} results",
     "remove": "Eliminar",
     "rmfoRegistry": "RFMO Registry",
     "savedOn": "guardado en",
