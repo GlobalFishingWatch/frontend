@@ -9,7 +9,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { PRIVATE_SUFIX } from 'data/config'
+import { PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
 import { RootState } from 'store'
 import {
   selectAllVesselGroups,
@@ -89,6 +89,7 @@ export const selectUserWorkspacesPrivate = createSelector(
     const privateWorkspaces = workspaces?.filter(
       (workspace) =>
         workspace.id.includes(PRIVATE_SUFIX) &&
+        !workspace.id.includes(USER_SUFIX) &&
         groupsWithAccess.some((g) => workspace.id.includes(g))
     )
     return orderBy(privateWorkspaces, 'createdAt', 'desc')
