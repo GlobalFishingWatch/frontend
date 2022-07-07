@@ -1,7 +1,4 @@
-// encountersInMPA
-
 import { createSelector } from '@reduxjs/toolkit'
-// import { getResourceItemById, selectResources } from 'features/resources/resources.slice'
 import { DateTime, Interval } from 'luxon'
 import { selectUrlAkaVesselQuery, selectVesselProfileId } from 'routes/routes.selectors'
 import { RISK_SUMMARY_SETTINGS } from 'data/config'
