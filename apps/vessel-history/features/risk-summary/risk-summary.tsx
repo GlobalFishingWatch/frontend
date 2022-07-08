@@ -4,7 +4,6 @@ import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'
 import RiskIndicator from 'features/risk-indicator/risk-indicator'
-import useRisk from 'features/risk/risk.hook'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import useMapEvents from 'features/map/map-events.hooks'
@@ -14,6 +13,7 @@ import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import TerminologyEncounterEvents from 'features/terminology/terminology-encounter-events'
 import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
 import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
+import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -23,8 +23,14 @@ export interface RiskSummaryProps {
 export function RiskSummary(props: RiskSummaryProps) {
   const { t } = useTranslation()
   const { authorizedInsurer } = useUser()
-  const { encountersInForeignEEZ, encountersInMPA, eventsLoading, fishingInMPA, loiteringInMPA } =
-    useRisk()
+  const {
+    encountersInForeignEEZ,
+    encountersInMPA,
+    eventsLoading,
+    fishingInMPA,
+    indicatorsLoading,
+    loiteringInMPA,
+  } = useRiskIndicator()
   const { highlightEvent } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
 
@@ -60,7 +66,7 @@ export function RiskSummary(props: RiskSummaryProps) {
   const hasLoiteringInMPAs = loiteringInMPA.length > 0
 
   if (!authorizedInsurer) return <Fragment />
-  if (eventsLoading) return <Spinner className={styles.spinnerFull} />
+  if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
   return (
     <div className={styles['container']}>
       {hasFishingInMPAs && (
