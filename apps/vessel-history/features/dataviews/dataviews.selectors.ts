@@ -180,22 +180,22 @@ export const selectGetVesselDataviewInstance = createSelector(
  * Returns the event datasets query params based on the current profile view
  * and its list of query params set for propagation into other endpoints
  */
-export const selectEventDatasetsConfigQueryParams = createSelector(
-  [selectWorkspaceProfileView, selectActiveVesselsDataviews],
-  (profileView, dataviews) => {
-    const { propagate_events_query_params } = APP_PROFILE_VIEWS.filter(
-      (v) => v.id === profileView
-    ).shift()
-    return dataviews
-      ?.filter((dataview) => dataview.dataviewId === DEFAULT_VESSEL_DATAVIEWS[profileView])
-      .flatMap((dataview) => dataview.datasetsConfig ?? [])
-      .filter((config) => config.endpoint === 'events')
-      .flatMap((config) => config.query ?? {})
-      .filter(
-        (query) =>
-          query.id &&
-          query.value !== undefined &&
-          ((propagate_events_query_params as string[]) ?? []).includes(query.id ?? null)
-      )
-  }
-)
+export const selectEventDatasetsConfigQueryParams = (state) => {
+  const profileView = state.workspace?.profileView
+  const { propagate_events_query_params } = APP_PROFILE_VIEWS.filter(
+    (v) => v.id === profileView
+  ).shift()
+  const vesselDataview =
+    state.dataviews &&
+    state.dataviews.entities &&
+    state.dataviews.entities[DEFAULT_VESSEL_DATAVIEWS[profileView]]
+  return (vesselDataview.datasetsConfig ?? [])
+    .filter((config) => config.endpoint === 'events')
+    .flatMap((config) => config.query ?? {})
+    .filter(
+      (query) =>
+        query.id &&
+        query.value !== undefined &&
+        ((propagate_events_query_params as string[]) ?? []).includes(query.id ?? null)
+    )
+}

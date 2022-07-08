@@ -37,7 +37,8 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
   'indicators/fetchById',
   async (idData: FetchIds[], { getState, rejectWithValue }) => {
     try {
-      const queryParams = selectEventDatasetsConfigQueryParams(getState() as RootState)
+      const state = getState() as RootState
+      const queryParams = selectEventDatasetsConfigQueryParams(state)
       const query = queryParams
         .map((query) => `${query.id}=${encodeURIComponent(query.value)}`)
         .join('&')
