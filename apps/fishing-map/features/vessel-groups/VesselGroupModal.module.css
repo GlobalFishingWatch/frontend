@@ -115,7 +115,11 @@
 }
 
 .vesselsTable tr:not(:last-child) td {
-  border-bottom: 1px solid var(--color-terthiary-blue);
+  border-bottom: var(--border);
+}
+
+.vesselsTable tr.border:not(:last-child) td {
+  border-bottom: 1px solid var(--color-secondary-blue);
 }
 
 .vesselsTable td.icon {
@@ -129,4 +133,8 @@
 
 .new {
   background-color: var(--color-help-yellow);
+}
+
+.openModalLink {
+  text-decoration: underline;
 }

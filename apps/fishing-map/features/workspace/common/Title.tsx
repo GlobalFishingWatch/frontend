@@ -15,7 +15,6 @@ type TitleProps = {
 }
 
 const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
-  console.log(props)
   const { dataview, className, classNameActive, title, onToggle } = props
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true

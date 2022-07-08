@@ -23,7 +23,7 @@ import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } from 'data/workspaces'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
-import styles from '../vessel-groups/VesselGroupsList.module.css'
+import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema = SupportedActivityDatasetSchema | SupportedEnvDatasetSchema
 

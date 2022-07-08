@@ -1,6 +1,7 @@
-import { useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { groupBy } from 'lodash'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -85,6 +86,11 @@ function VesselGroupVessels(): React.ReactElement {
   const { t } = useTranslation()
   const vesselGroupSearchVessels = useSelector(selectVesselGroupSearchVessels)
   const newVesselGroupSearchVessels = useSelector(selectNewVesselGroupSearchVessels)
+
+  const searchVesselsByMMSI = groupBy(vesselGroupSearchVessels, 'mmsi')
+  console.log(searchVesselsByMMSI)
+  const newSearchVesselsByMMSI = groupBy(newVesselGroupSearchVessels, 'mmsi')
+  console.log(newSearchVesselsByMMSI)
   const dispatch = useAppDispatch()
 
   const onVesselRemoveClick = useCallback(
@@ -100,7 +106,7 @@ function VesselGroupVessels(): React.ReactElement {
     [dispatch, newVesselGroupSearchVessels, vesselGroupSearchVessels]
   )
 
-  if (!vesselGroupSearchVessels && !newVesselGroupSearchVessels) {
+  if (!vesselGroupSearchVessels?.length && !newVesselGroupSearchVessels?.length) {
     return null
   }
   return (
@@ -116,23 +122,34 @@ function VesselGroupVessels(): React.ReactElement {
         </tr>
       </thead>
       <tbody>
-        {newVesselGroupSearchVessels?.length > 0 &&
-          newVesselGroupSearchVessels.map((vessel, i) => (
-            <VesselGroupVesselRow
-              key={`${vessel.id}-${i}`}
-              className={styles.new}
-              vessel={vessel}
-              onRemoveClick={(vessel) => onVesselRemoveClick(vessel, 'new')}
-            />
-          ))}
-        {vesselGroupSearchVessels?.length > 0 &&
-          vesselGroupSearchVessels.map((vessel, i) => (
-            <VesselGroupVesselRow
-              key={`${vessel.id}-${i}`}
-              vessel={vessel}
-              onRemoveClick={onVesselRemoveClick}
-            />
-          ))}
+        {Object.keys(newSearchVesselsByMMSI)?.length > 0 &&
+          Object.keys(newSearchVesselsByMMSI).map((mmsi) => {
+            const vessels = newSearchVesselsByMMSI[mmsi]
+            return vessels.map((vessel, i) => (
+              <VesselGroupVesselRow
+                key={`${vessel.id}-${i}`}
+                className={styles.new}
+                vessel={vessel}
+                onRemoveClick={(vessel) => onVesselRemoveClick(vessel, 'new')}
+              />
+            ))
+          })}
+        {Object.keys(searchVesselsByMMSI)?.length > 0 &&
+          Object.keys(searchVesselsByMMSI).map((mmsi) => {
+            const vessels = searchVesselsByMMSI[mmsi]
+            return (
+              <Fragment>
+                {vessels.map((vessel, i) => (
+                  <VesselGroupVesselRow
+                    key={`${vessel.id}-${i}`}
+                    vessel={vessel}
+                    onRemoveClick={onVesselRemoveClick}
+                    className={i === vessels.length - 1 ? styles.border : ''}
+                  />
+                ))}
+              </Fragment>
+            )
+          })}
       </tbody>
     </table>
   )
