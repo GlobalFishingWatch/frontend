@@ -25,7 +25,7 @@ export function RiskIndicator({
   return (
     <div className={styles['container']}>
       <div className={styles.title} onClick={onToggle}>
-        <div>{events.length > 0 ? `${events.length} ${title}` : title}</div>
+        <div>{title}</div>
         {events.length > 0 ? (
           <IconButton
             icon={expanded ? 'arrow-top' : 'arrow-down'}
