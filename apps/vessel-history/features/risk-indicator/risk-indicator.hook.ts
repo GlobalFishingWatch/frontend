@@ -11,6 +11,7 @@ import {
   selectFishingInMPA,
   selectEncountersInForeignEEZ,
   selectCurrentMergedVesselsId,
+  selectPortVisitsToNonPSMAPortState,
 } from './risk-indicator.selectors'
 import { fetchIndicatorsByIdThunk, selectIndicatorsStatus } from './risk-indicator.slice'
 
@@ -20,6 +21,7 @@ export interface UseRiskIndicator {
   eventsLoading: boolean
   fishingInMPA: RenderedEvent[]
   loiteringInMPA: RenderedEvent[]
+  portVisitsToNonPSMAPortState: RenderedEvent[]
   countByRiskLevel: {
     medium: number
     high: number
@@ -40,7 +42,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   const encountersInMPA = useSelector(selectEncountersInMPA)
   const fishingInMPA = useSelector(selectFishingInMPA)
   const encountersInForeignEEZ = useSelector(selectEncountersInForeignEEZ)
-
+  const portVisitsToNonPSMAPortState = useSelector(selectPortVisitsToNonPSMAPortState)
   /** Migration to API pengding */
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))
   /******************************/
@@ -51,12 +53,14 @@ export function useRiskIndicator(): UseRiskIndicator {
     eventsLoading,
     fishingInMPA,
     loiteringInMPA,
+    portVisitsToNonPSMAPortState,
     countByRiskLevel: {
       medium:
         encountersInForeignEEZ.length +
         encountersInMPA.length +
         fishingInMPA.length +
-        loiteringInMPA.length,
+        loiteringInMPA.length +
+        portVisitsToNonPSMAPortState.length,
       high: 0,
     },
     indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,

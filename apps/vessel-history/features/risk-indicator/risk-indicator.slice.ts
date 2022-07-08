@@ -9,6 +9,7 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { Indicator } from 'types/risk-indicator'
+import { selectEventDatasetsConfigQueryParams } from 'features/dataviews/dataviews.selectors'
 
 export type IndicatorState = AsyncReducer<Indicator>
 
@@ -34,9 +35,14 @@ export const parseMergedVesselsUniqueId = (id: string): FetchIds[] =>
   })
 export const fetchIndicatorsByIdThunk = createAsyncThunk(
   'indicators/fetchById',
-  async (idData: FetchIds[], { rejectWithValue }) => {
+  async (idData: FetchIds[], { getState, rejectWithValue }) => {
     try {
-      const indicator = await GFWAPI.fetch<Indicator>(`/prototype/vessels/indicators`, {
+      const state = getState() as RootState
+      const queryParams = selectEventDatasetsConfigQueryParams(state)
+      const query = queryParams
+        .map((query) => `${query.id}=${encodeURIComponent(query.value)}`)
+        .join('&')
+      const indicator = await GFWAPI.fetch<Indicator>(`/prototype/vessels/indicators?${query}`, {
         method: 'POST',
         body: idData.map(({ datasetId, vesselId }) => ({ datasetId, vesselId })) as any,
       })

@@ -78,3 +78,12 @@ export const selectEncountersInForeignEEZ = createSelector(
     )
   }
 )
+
+export const selectPortVisitsToNonPSMAPortState = createSelector(
+  [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
+  (indicators, events) => {
+    return events.filter((event) =>
+      (indicators?.portVisits?.nonPSMAPortState || []).includes(event.id)
+    )
+  }
+)
