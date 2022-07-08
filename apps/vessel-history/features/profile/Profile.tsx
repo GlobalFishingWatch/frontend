@@ -89,6 +89,7 @@ const Profile: React.FC = (props): React.ReactElement => {
           dataset = akaDataset
         }
       }
+
       await dispatch(
         fetchVesselByIdThunk({
           id: vesselProfileId,
@@ -116,12 +117,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
         if (trackDatasetId) {
           const eventsRelatedDatasets = getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)
-
           const eventsDatasetsId =
             eventsRelatedDatasets && eventsRelatedDatasets?.length
               ? eventsRelatedDatasets.map((d) => d.id)
               : []
-
           // Only merge with vessels of the same dataset that the main vessel
           const akaVesselsIds = [
             {
@@ -152,9 +151,20 @@ const Profile: React.FC = (props): React.ReactElement => {
         }
       }
     }
-    const [dataset, gfwId, tmtId] = (
-      Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
-    ).split('_')
+    let [dataset, gfwId, tmtId] = (Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? '').split(
+      '_'
+    )
+    if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
+      const gfwAka = akaVesselProfileIds.find((aka) => {
+        const [akaDataset] = aka.split('_')
+        return akaDataset.toLocaleLowerCase() !== 'na'
+      })
+      if (gfwAka) {
+        const [akaDataset, akaGfwId] = gfwAka.split('_')
+        dataset = akaDataset
+        gfwId = akaGfwId
+      }
+    }
 
     // this is for update the vessel dataview in case that keep cached with the dataview of another vessel
     if (!vesselDataview || 'vessel-' + gfwId !== vesselDataview.id) {
