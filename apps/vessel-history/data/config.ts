@@ -113,10 +113,16 @@ export const RISK_SUMMARY_SETTINGS = {
 }
 
 export const APP_PROFILE_VIEWS = [
-  { id: 'port-inspector', name: 'Port Inspector', required_permission: AUTHORIZED_PERMISSION },
+  {
+    id: 'port-inspector',
+    name: 'Port Inspector',
+    required_permission: AUTHORIZED_PERMISSION,
+    propagate_events_query_params: ['confidences'],
+  },
   {
     id: 'insurance-underwriter',
     name: 'Insurance Underwriter',
     required_permission: INSURER_PERMISSION,
+    propagate_events_query_params: ['confidences'],
   },
 ]
