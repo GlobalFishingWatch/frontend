@@ -21,7 +21,7 @@ type LayerPanelProps = {
 function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement {
   const vesselGroupsOptions = useVesselGroupsOptions()
   const timeRange = useSelector(selectTimeRange)
-  const duration = getTimeRangeDuration(timeRange, 'months')
+  const duration = getTimeRangeDuration(timeRange, 'days')
   let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
     (a, b) => a.label - b.label
   )
@@ -46,10 +46,10 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
         <div className={styles.filter}>
           <label>
             {label}
-            {field === 'vessel-groups' && duration?.months > 1 && (
+            {field === 'vessel-groups' && duration?.days > 31 && (
               <span className={cx(styles.dataWarning, styles.error)}>
                 {' '}
-                (Supported only by timeranges shorter than 1 month)
+                (Supported only by timeranges shorter than 30 days)
               </span>
             )}
           </label>
