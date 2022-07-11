@@ -83,7 +83,9 @@ export function Select(props: SelectProps) {
 
   return (
     <div className={containerClassName}>
-      <label {...getLabelProps()}>{label}</label>
+      <label className={styles.label} {...getLabelProps()}>
+        {label}
+      </label>
       <div
         className={cx(
           styles.container,

@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
 
-export const selectWorkspace = (state: RootState) => state.workspace.data
+export const selectWorkspace = (state: RootState) => state.workspace
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
@@ -29,3 +29,7 @@ export const selectWorkspaceState = createSelector(
     return workspace?.state || ({} as WorkspaceState)
   }
 )
+
+export const selectWorkspaceProfileView = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.profileView
+})

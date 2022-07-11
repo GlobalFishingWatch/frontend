@@ -28,13 +28,13 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import {
   checkDatasetReportPermission,
-  getDatasetLabel,
   getDatasetsDownloadNotSupported,
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDownloadActivityArea } from 'features/download/download.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -182,6 +182,9 @@ function DownloadActivityModal() {
         return {
           filter: dataview.config?.filter || [],
           filters: dataview.config?.filters || {},
+          ...(dataview.config?.['vessel-groups']?.length && {
+            'vessel-groups': dataview.config?.['vessel-groups'],
+          }),
           datasets: activityDatasets,
         }
       })
@@ -316,9 +319,9 @@ function DownloadActivityModal() {
                 'download.datasetsNotAllowed',
                 "You don't have permissions to download the following datasets:"
               )}{' '}
-              {datasetsDownloadNotSupported
-                .map((dataset) => getDatasetLabel({ id: dataset }))
-                .join(', ')}
+              {datasetsDownloadNotSupported.map((dataset) => (
+                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+              ))}
             </p>
           )}
 

@@ -16,6 +16,8 @@ import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
+import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
+import GFWOnly from 'features/user/GFWOnly'
 import styles from './App.module.css'
 
 const BigQueryMenu = dynamic(
@@ -37,6 +39,10 @@ const EditorMenu = dynamic(
   () => import(/* webpackChunkName: "EditorMenu" */ 'features/editor/EditorMenu')
 )
 const Welcome = dynamic(() => import(/* webpackChunkName: "Welcome" */ 'features/welcome/Welcome'))
+
+const VesselGroupModal = dynamic(
+  () => import(/* webpackChunkName: "VesselGroup" */ 'features/vessel-groups/VesselGroupModal')
+)
 
 const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
 
@@ -75,6 +81,7 @@ const AppModals = () => {
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
   useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
+  const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
   const downloadTrackId = useSelector(selectDownloadTrackId)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
 
@@ -99,7 +106,12 @@ const AppModals = () => {
       {gfwUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title="Secret debug menu 🤖"
+          title={
+            <Fragment>
+              Secret debug menu 🤖
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={debugActive}
           shouldCloseOnEsc
           onClose={dispatchToggleDebugMenu}
@@ -110,7 +122,12 @@ const AppModals = () => {
       {gfwUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title="Workspace editor 📝"
+          title={
+            <Fragment>
+              Workspace editor 📝
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={editorActive}
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
@@ -121,7 +138,12 @@ const AppModals = () => {
       {gfwUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title="Big query datasets creation 🧠"
+          title={
+            <Fragment>
+              Big query datasets creation 🧠
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={bigqueryActive}
           onClose={dispatchBigQueryMenu}
           contentClassName={styles.bqModal}
@@ -145,6 +167,7 @@ const AppModals = () => {
           />
         </Modal>
       )}
+      {isVesselGroupModalOpen && <VesselGroupModal />}
     </Fragment>
   )
 }

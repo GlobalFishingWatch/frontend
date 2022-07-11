@@ -13,7 +13,7 @@ type ActivitySchemaFilterProps = {
   onClean: (filterKey: string) => void
 }
 export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
-  return !schemaFilter.disabled && schemaFilter.options.length > 1
+  return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): [number, number] => {
@@ -102,7 +102,11 @@ function ActivitySchemaFilter({
     <MultiSelect
       key={id}
       disabled={disabled}
-      label={t(`vessel.${id}` as any, id)}
+      label={
+        id === 'vessel-groups'
+          ? t('vesselGroup.vesselGroups', 'Vessel Groups')
+          : t(`vessel.${id}` as any, id)
+      }
       placeholder={getPlaceholderBySelections(optionsSelected)}
       options={options}
       selectedOptions={optionsSelected}

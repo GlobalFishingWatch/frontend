@@ -4,7 +4,7 @@ import { HEATMAP_DEFAULT_MAX_ZOOM, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID, TIME_COMPARE_COLOR_RAMP } from '../colors'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToString } from './colors'
-import { Breaks } from './fetch-breaks'
+import { Breaks, FetchBreaksParams, isDirectAPIBreaks } from './fetch-breaks'
 import { getCleanBreaks } from './get-breaks'
 import { toDT } from './time-chunks'
 
@@ -46,16 +46,18 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
-export const getSublayersBreaks = (
-  config: GlobalHeatmapAnimatedGeneratorConfig,
-  breaks: Breaks | undefined
-) => {
+export const getSublayersBreaks = (config: FetchBreaksParams, breaks: Breaks | undefined) => {
   // const delta = +toDT(config.end) - +toDT(config.start)
   const start = toDT(config.start)
   const end = toDT(config.end)
   // uses 'years' as breaks request a year with temporal-aggregation true
-  const deltaInterval = end.diff(start, 'days').days / 10
-  const baseMultiplier = config.mode === HeatmapAnimatedMode.TimeCompare ? 1 / 10 : 1 / 4
+  const directApiBreaks = isDirectAPIBreaks(config)
+  let deltaInterval = end.diff(start, 'days').days / 10
+  let baseMultiplier = config.mode === HeatmapAnimatedMode.TimeCompare ? 1 / 10 : 1 / 4
+  if (directApiBreaks && (config.interval === 'day' || config.interval === 'hour')) {
+    deltaInterval =
+      config.interval === 'day' ? end.diff(start, 'day').days : end.diff(start, 'hour').hours
+  }
   const sublayersBreaks = breaks?.map((bre) => {
     return getCleanBreaks(
       bre.map((b) => deltaInterval * b * Math.pow(baseMultiplier, config.zoomLoadLevel))

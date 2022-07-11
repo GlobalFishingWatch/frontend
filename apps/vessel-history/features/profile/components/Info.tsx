@@ -97,6 +97,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         source: '',
         activities: activities,
         savedOn: DateTime.utc().toISO(),
+        relatedVessels: []
       },
     })
     setLoading(false)

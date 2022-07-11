@@ -42,13 +42,12 @@ const eventIsInForeingEEZ = (flag: string, eezIds: string[]) => {
   const eezRegions = eezIds.map((id) => eezInfo[`${id}`])
   return (
     eezRegions.filter(
-      ({ eez_type, territory1_iso3, territory2_iso3, territory3_iso3 }) =>
+      ({ eez_type, iso_ter1, iso_ter2, iso_ter3 }) =>
         // The eez is of 200NM or joint Regine type and the vessel flag does not match the eez flag
         (([EEZTypes._200NM, EEZTypes.JointRegime] as EEZType[]).includes(eez_type) &&
-          ![territory1_iso3, territory2_iso3, territory3_iso3].includes(flag)) ||
+          ![iso_ter1, iso_ter2, iso_ter3].includes(flag)) ||
         // or the eez is disputed and the vessel flag is not of any country
-        (eez_type === EEZTypes.Disputed &&
-          ![territory1_iso3, territory2_iso3, territory3_iso3].includes(flag))
+        (eez_type === EEZTypes.Disputed && ![iso_ter1, iso_ter2, iso_ter3].includes(flag))
     ).length > 0
   )
 }

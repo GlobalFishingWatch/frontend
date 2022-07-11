@@ -15,14 +15,14 @@
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 50%;
-  background: var(--color-help);
+  background: var(--color-help-yellow);
   border: 1px solid var(--color-primary-blue);
   animation: pulseLight 2s infinite;
 }
 
 div.HintPanel {
-  border: 1px solid var(--color-help);
-  background: var(--color-help);
+  border: 1px solid var(--color-help-yellow);
+  background: var(--color-help-yellow);
   border-radius: 0.4rem;
 }
 
@@ -112,15 +112,15 @@ div.HintPanel {
 
 @keyframes pulseLight {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 248, 205, 0.7);
+    box-shadow: 0 0 0 0 rgba(var(--help-yellow-rgb), 0.7);
   }
 
   70% {
-    box-shadow: 0 0 0 1rem rgba(255, 248, 205, 0);
+    box-shadow: 0 0 0 1rem rgba(var(--help-yellow-rgb), 0);
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 248, 205, 0);
+    box-shadow: 0 0 0 0 rgba(var(--help-yellow-rgb), 0);
   }
 }
 

@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
@@ -27,14 +27,17 @@ import { isGuestUser, isGFWUser, selectUserData } from 'features/user/user.slice
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import {
-  getDatasetLabel,
   getVesselDatasetsDownloadTrackSupported,
+  isGFWOnlyDataset,
+  isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import GFWOnly from 'features/user/GFWOnly'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -112,15 +115,24 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     ''
   const vesselTitle = vesselLabel || t('common.unknownVessel', 'Unknown vessel')
 
+  const getVesselTitle = (): ReactNode => {
+    if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
+    if (infoError) return t('common.unknownVessel', 'Unknown vessel')
+    if (dataview?.datasetsConfig.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
+      return (
+        <Fragment>
+          <GFWOnly type="only-icon" />
+          {vesselLabel}
+        </Fragment>
+      )
+    if (dataview?.datasetsConfig.some((d) => isPrivateDataset({ id: d.datasetId })))
+      return `🔒 ${vesselLabel}`
+    return vesselLabel
+  }
+
   const TitleComponentContent = () => (
     <Fragment>
-      <span className={cx({ [styles.faded]: infoLoading || infoError })}>
-        {infoLoading
-          ? t('vessel.loadingInfo', 'Loading vessel info')
-          : infoError
-          ? t('common.unknownVessel', 'Unknown vessel')
-          : vesselLabel}
-      </span>
+      <span className={cx({ [styles.faded]: infoLoading || infoError })}>{getVesselTitle()}</span>
       {(infoError || trackError) && (
         <IconButton
           size="small"
@@ -173,7 +185,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       )
     }
     if (field.id === 'dataset') {
-      return getDatasetLabel({ id: fieldValue })
+      return <DatasetLabel dataset={{ id: fieldValue }} />
     }
     return formatInfoField(fieldValue, field.type)
   }

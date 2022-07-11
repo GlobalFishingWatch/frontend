@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { debounce } from 'lodash'
+import { useSelector } from 'react-redux'
 import {
   MultiSelect,
   MultiSelectOnChange,
@@ -12,14 +13,22 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   getCommonSchemaFieldsInDataview,
-  geSchemaFiltersInDataview,
+  getSchemaFiltersInDataview,
   getIncompatibleFilterSelection,
   SupportedDatasetSchema,
+  VESSEL_GROUPS_MODAL_ID,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import ActivitySchemaFilter, {
   showSchemaFilter,
 } from 'features/workspace/activity/ActivitySchemaFilter'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  setCurrentDataviewId,
+  setVesselGroupsModalOpen,
+} from 'features/vessel-groups/vessel-groups.slice'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -39,9 +48,38 @@ const trackEvent = debounce((filterKey: string, label: string) => {
   })
 }, 200)
 
+const cleanDataviewFiltersNotAllowed = (
+  dataview: UrlDataviewInstance,
+  vesselGroupOptions: MultiSelectOption[]
+) => {
+  const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
+  Object.keys(filters).forEach((key: SupportedDatasetSchema) => {
+    if (filters[key]) {
+      const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, vesselGroupOptions)
+      const newFilterSelection = newFilterOptions?.filter((option) =>
+        dataview.config?.filters?.[key]?.includes(option.id)
+      )
+
+      // We have to remove the key if it is not supported by the datasets selecion
+      if (newFilterOptions.length === 0) {
+        delete filters[key]
+        // or keep only the options that every dataset have in common
+      } else if (!newFilterSelection?.length !== dataview.config?.filters?.[key]?.length) {
+        filters[key] = newFilterSelection.map(({ id }) => id)
+      }
+    }
+  })
+
+  return filters
+}
+
 function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+
+  const allowVesselGroup = useSelector(selectVessselGroupsAllowed)
+  const vesselGroupsOptions = useVesselGroupsOptions()
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
   // insert the "All" option only when more than one option available
@@ -52,7 +90,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
-  const schemaFilters = geSchemaFiltersInDataview(dataview)
+  const schemaFilters = getSchemaFiltersInDataview(dataview, vesselGroupsOptions)
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     let datasets: string[] = []
@@ -61,38 +99,9 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     } else {
       datasets = allSelected ? [source.id] : [...(dataview.config?.datasets || []), source.id]
     }
-    const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
-    if (filters['geartype']) {
-      const newGeartypeOptions = getCommonSchemaFieldsInDataview(newDataview, 'geartype')
-      const newGeartypeSelection = newGeartypeOptions?.filter((geartype) =>
-        dataview.config?.filters?.geartype?.includes(geartype.id)
-      )
-
-      // We have to remove the geartype if it is not supported by the datasets selecion
-      if (newGeartypeOptions.length === 0) {
-        delete filters['geartype']
-        // or keep only the options that every dataset have in common
-      } else if (!newGeartypeSelection?.length !== dataview.config?.filters?.geartype?.length) {
-        filters.geartype = newGeartypeSelection.map(({ id }) => id)
-      }
-    }
-
-    if (filters['fleet']) {
-      const newFleetOptions = getCommonSchemaFieldsInDataview(newDataview, 'fleet')
-      const newFleetSelection = newFleetOptions?.filter((geartype) =>
-        dataview.config?.filters?.geartype?.includes(geartype.id)
-      )
-
-      // We have to remove the geartype if it is not supported by the datasets selecion
-      if (newFleetOptions.length === 0) {
-        delete filters['fleet']
-        // or keep only the options that every dataset have in common
-      } else if (!newFleetSelection?.length !== dataview.config?.filters?.geartype?.length) {
-        filters.fleet = newFleetSelection.map(({ id }) => id)
-      }
-    }
+    const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions)
     upsertDataviewInstance({
       id: dataview.id,
       config: {
@@ -115,6 +124,11 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     filterKey: SupportedDatasetSchema,
     selection: MultiSelectOption | MultiSelectOption[]
   ) => {
+    if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
+      dispatch(setVesselGroupsModalOpen(true))
+      dispatch(setCurrentDataviewId(dataview.id))
+      return
+    }
     const filterValues = Array.isArray(selection)
       ? selection.map(({ id }) => id).sort((a, b) => a - b)
       : [...(dataview.config?.filters?.[filterKey] || []), selection.id]
@@ -198,6 +212,13 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         />
       )}
       {schemaFilters.map((schemaFilter) => {
+        if (
+          schemaFilter.id === 'vessel-groups' &&
+          !schemaFilter.optionsSelected.length &&
+          !allowVesselGroup
+        ) {
+          return null
+        }
         if (!showSchemaFilter(schemaFilter)) {
           return null
         }

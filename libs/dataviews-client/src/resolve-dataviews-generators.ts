@@ -11,7 +11,6 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
-  ResourceStatus,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -229,6 +228,7 @@ export function getGeneratorConfig(
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
             colorRampWhiteEnd: false,
             filter: dataview.config?.filter,
+            vesselGroups: dataview.config?.['vessel-groups'],
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
             datasets: datasetsIds,
@@ -435,6 +435,7 @@ export function getMergedHeatmapAnimatedDataview(
       colorRamp: config.colorRamp as ColorRampsIds,
       colorRampWhiteEnd: true,
       filter: config.filter,
+      vesselGroups: config['vessel-groups'],
       visible: config.visible,
       legend: {
         label: dataview.name,

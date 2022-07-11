@@ -21,7 +21,7 @@ type DefaultDatasets = keyof typeof BREAKS_FALLBACK
 
 export type FetchBreaksParams = Pick<
   GlobalHeatmapAnimatedGeneratorConfig,
-  'breaksAPI' | 'sublayers' | 'datasetsEnd' | 'token' | 'end' | 'mode' | 'zoomLoadLevel'
+  'breaksAPI' | 'sublayers' | 'datasetsEnd' | 'token' | 'start' | 'end' | 'mode' | 'zoomLoadLevel'
 > & { interval: Interval }
 
 // Stores datasets breaks by filters, so when we already have we avoid requesting again
@@ -51,14 +51,28 @@ const getFiltersQuery = (config: FetchBreaksParams): string => {
   return filters?.length ? toURLArray('filters', filters) : ''
 }
 
-const getCacheKey = (config: FetchBreaksParams): string => {
+const getVesselGroupsQuery = (config: FetchBreaksParams): string => {
+  const filters = config.sublayers.map((sublayer) => sublayer.vesselGroups || '')
+  return filters?.length ? toURLArray('vessel-groups', filters) : ''
+}
+
+export const isDirectAPIBreaks = (config: FetchBreaksParams): boolean => {
+  return getVesselGroupsQuery(config) !== ''
+}
+
+export const getBreaksCacheKey = (config: FetchBreaksParams): string => {
   const filters = getFiltersQuery(config)
-  return [filters, config.mode].join(',')
+  const groups = getVesselGroupsQuery(config)
+  const baseParamsCache = [config.mode, filters]
+  if (groups) {
+    return [...baseParamsCache, groups, config.start, config.end].join(',')
+  }
+  return baseParamsCache.join(',')
 }
 
 const getDatasetsWithoutCache = (config: FetchBreaksParams): string[] => {
   const datasets = getDatasets(config)
-  const cacheKey = getCacheKey(config)
+  const cacheKey = getBreaksCacheKey(config)
   return datasets.filter((dataset) => datasetsCache[cacheKey]?.[dataset] === undefined)
 }
 
@@ -71,8 +85,10 @@ const getBreaksUrl = (config: FetchBreaksParams): string => {
   const datasets = getDatasets(config)
   const datasetsQuery = datasets?.length ? toURLArray('datasets', datasets) : ''
   const filtersQuery = getFiltersQuery(config)
+  const vesselGroupsQuery = getVesselGroupsQuery(config)
+  const queries = [filtersQuery, vesselGroupsQuery].filter(Boolean)
 
-  return `${url}?${datasetsQuery}&${filtersQuery}`
+  return `${url}?${datasetsQuery}&${queries.join('&')}`
 }
 
 const getNumBins = (config: FetchBreaksParams) => {
@@ -100,7 +116,7 @@ const parseBreaksResponse = (config: FetchBreaksParams, breaks: Breaks) => {
 let controllerCache: AbortController | undefined
 
 export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> {
-  const cacheKey = getCacheKey(config)
+  const cacheKey = getBreaksCacheKey(config)
   const allDatasets = getDatasets(config)
   const datasetsWithoutCache = getDatasetsWithoutCache(config)
 
@@ -114,7 +130,12 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
   const breaksUrl = new URL(getBreaksUrl(config))
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
   breaksUrl.searchParams.set('num-bins', getNumBins(config).toString())
-  breaksUrl.searchParams.set('interval', '10days')
+  const groups = getVesselGroupsQuery(config)
+  breaksUrl.searchParams.set('interval', groups ? config.interval : '10days')
+  if (groups && config.start && config.end) {
+    // TODO debounce the request when this changes
+    breaksUrl.searchParams.set('date-range', [config.start, config.end].join(','))
+  }
 
   const url = breaksUrl.toString()
   const { token } = config

@@ -7,19 +7,19 @@ import { ReactComponent as FilesCsvIcon } from 'assets/icons/file-csv.svg'
 import { ReactComponent as FilesJsonIcon } from 'assets/icons/file-json.svg'
 import { ReactComponent as FileZipIcon } from 'assets/icons/file-zip.svg'
 import { joinTranslatedList } from 'features/i18n/utils'
-import styles from './NewDataset.module.css'
+import styles from './FileDropzone.module.css'
 
 // t('dataset.formats.csv', 'csv')
 // t('dataset.formats.geojson', 'geojson')
 // t('dataset.formats.shapefile', 'compressed shapefile')
 
-interface DatasetFileProps {
-  type?: DatasetGeometryType
+export type FileType = 'geojson' | 'shapefile' | 'csv'
+
+interface FileDropzoneProps {
+  fileTypes: FileType[]
   className?: string
   onFileLoaded: (fileInfo: File, type?: DatasetGeometryType) => void
 }
-
-type DatasetGeometryTypesSupported = Extract<DatasetGeometryType, 'polygons' | 'tracks' | 'points'>
 
 type FileConfig = { id: string; files: string[]; icon: JSX.Element }
 
@@ -29,26 +29,20 @@ const MIME_TYPES_BY_EXTENSION = {
   '.zip': 'application/zip',
   '.csv': 'text/csv',
 }
-const CSV_TYPES = { id: 'csv', files: ['.csv'], icon: <FilesCsvIcon key="csv" /> }
-const GEOJSON_TYPES = {
-  id: 'geojson',
-  files: ['.json', '.geojson'],
-  icon: <FilesJsonIcon key="geojson" />,
-}
-const SHAPEFILE_TYPE = { id: 'shapefile', files: ['.zip'], icon: <FileZipIcon key="zip" /> }
 
-const FILES_CONFIG_BY_TYPE: Record<DatasetGeometryTypesSupported, FileConfig[]> = {
-  polygons: [SHAPEFILE_TYPE, GEOJSON_TYPES],
-  tracks: [CSV_TYPES],
-  points: [SHAPEFILE_TYPE, GEOJSON_TYPES, CSV_TYPES],
+const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
+  geojson: {
+    id: 'geojson',
+    files: ['.json', '.geojson'],
+    icon: <FilesJsonIcon key="geojson" />,
+  },
+  shapefile: { id: 'shapefile', files: ['.zip'], icon: <FileZipIcon key="zip" /> },
+  csv: { id: 'csv', files: ['.csv'], icon: <FilesCsvIcon key="csv" /> },
 }
 
-const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className = '' }) => {
-  const supportedType = type as DatasetGeometryTypesSupported
-  const fileConfig = supportedType
-    ? FILES_CONFIG_BY_TYPE[supportedType]
-    : FILES_CONFIG_BY_TYPE.polygons
-  const filesAcceptedExtensions = fileConfig.flatMap(({ files }) => files)
+const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, className = '' }) => {
+  const fileTypesConfigs = fileTypes.map((fileType) => FILE_TYPES_CONFIG[fileType])
+  const filesAcceptedExtensions = fileTypesConfigs.flatMap(({ files }) => files)
   const fileAcceptedByMime = filesAcceptedExtensions.reduce((acc, extension) => {
     const mime = MIME_TYPES_BY_EXTENSION[extension]
     if (!acc[mime]) {
@@ -62,9 +56,9 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
     (files) => {
-      onFileLoaded(files[0], type)
+      onFileLoaded(files[0])
     },
-    [onFileLoaded, type]
+    [onFileLoaded]
   )
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
     accept: fileAcceptedByMime,
@@ -73,7 +67,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
 
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
-      <div className={styles.icons}>{fileConfig.map(({ icon }) => icon)}</div>
+      <div className={styles.icons}>{fileTypesConfigs.map(({ icon }) => icon)}</div>
       <input {...getInputProps()} />
       {acceptedFiles.length ? (
         <p className={styles.fileText}>
@@ -86,7 +80,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
           {t('dataset.dragFileFormatsPlaceholder', {
             defaultValue: 'Drag and drop a {{formats}} here or click to select it',
             formats: joinTranslatedList(
-              fileConfig.map(({ id }) => t(`dataset.formats.${id}` as any, id))
+              fileTypesConfigs.map(({ id }) => t(`dataset.formats.${id}` as any, id))
             ),
           })}
         </p>
@@ -103,4 +97,4 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
   )
 }
 
-export default DatasetFile
+export default FileDropzone

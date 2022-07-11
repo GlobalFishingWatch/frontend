@@ -135,6 +135,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   encounter?: EncounterEvent<Vessel>
   port?: PortEvent
   port_visit?: PortVisitEvent
+  key?: string
 }
 
 export interface ApiEvents<T = ApiEvent> {

@@ -1,4 +1,10 @@
-import { Vessel, Authorization, VesselSearch, EventType } from '@globalfishingwatch/api-types'
+import {
+  Vessel,
+  Authorization,
+  VesselSearch,
+  EventType,
+  Workspace as BaseWorkspace,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -29,6 +35,11 @@ export type WorkspaceMergeVessels = {
 }
 
 export type BivariateDataviews = [string, string]
+
+export type WorkspaceProfileViewParam = 'port-inspector' | 'insurance-underwriter'
+export interface Workspace<T> extends BaseWorkspace<T> {
+  profileView?: WorkspaceProfileViewParam
+}
 
 export type WorkspaceState = {
   q?: string
@@ -93,7 +104,7 @@ export interface ForcedLaborRisk {
 export enum RiskLevel {
   high = 'high',
   low = 'low',
-  unknown = 'unlnown'
+  unknown = 'unknown',
 }
 
 export interface RiskOutput {

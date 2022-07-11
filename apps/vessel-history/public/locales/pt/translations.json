@@ -157,6 +157,7 @@
     "callsign": "Código de chamada",
     "description": "Pesquisa por nome ou código de identificação (IMO, MMSI, VMS ID, etc…). Você pode restringir sua pesquisa pressionando o ícone de filtro na barra superior",
     "flagState": "Estado de Bandeira",
+    "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
     "loadMore": "Carregar mais",
     "mergeSelectedVessels": "Mesclar embarcações selecionadas",
@@ -167,7 +168,8 @@
     "placeholder": "Procurar embarcações por nome, MMSI, IMO",
     "seeVessel": "Ver embarcação",
     "shipname": "Nome",
-    "title": "Pesquisar"
+    "title": "Pesquisar",
+    "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
     "allSelected": "Todos",
@@ -245,9 +247,9 @@
     "encounteredVessel": "Encountered Vessel",
     "flag": "flag",
     "flag_plural": "bandeiras",
-    "formatValues": "{{quantity}} values",
-    "forcedLabourModel": "forced labor risk model",
     "forcedLaborModelDescription": "High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.<1></1>\nLow Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.<1></1>\nUnknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.",
+    "forcedLabourModel": "forced labor risk model",
+    "formatValues": "{{quantity}} values",
     "gearType": "gear type",
     "gearType_plural": "petrechos de pesca",
     "geartypeDescription": "Likely gear type of vessel as defined by Global Fishing Watch. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class, see more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> . The vessel classifcation for carrier vessels is estimated using a cumulation of known registry information. All support vessels in the Vessel Viewer are considered Purse Seine Support Vessels based on internal review.",
@@ -282,6 +284,7 @@
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
     "previousNames": "previous names",
     "readyForOfflineView": "READY FOR OFFLINE VIEW",
+    "relatedNotification": "This vessel is the combination of {{amount}} results",
     "remove": "Remove",
     "rmfoRegistry": "RFMO Registry",
     "savedOn": "saved on",

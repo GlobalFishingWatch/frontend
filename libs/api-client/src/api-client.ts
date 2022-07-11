@@ -55,7 +55,7 @@ const processStatus = (response: Response): Promise<Response> => {
   return new Promise(async (resolve, reject) => {
     const { status, statusText } = response
     try {
-      if (response.status >= 200 && response.status < 300) {
+      if (response.status >= 200 && response.status < 400) {
         return resolve(response)
       }
       // Compatibility with v1 and v2 errors format
@@ -280,6 +280,19 @@ export class GFW_API_CLASS {
         if (this.debug) {
           console.log(`GFWAPI: Fetching URL: ${url}`)
         }
+        const finalHeaders = {
+          ...headers,
+          ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
+          ...(local && {
+            'x-gateway-url': API_GATEWAY,
+            user: JSON.stringify({
+              id: process.env.REACT_APP_LOCAL_API_USER_ID,
+              type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
+              email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
+            }),
+          }),
+          Authorization: `Bearer ${this.getToken()}`,
+        }
         const fetchUrl = isUrlAbsolute(url)
           ? url
           : this.baseUrl + (dataset ? `/datasets/${this.dataset}` : '') + url
@@ -287,19 +300,7 @@ export class GFW_API_CLASS {
           method,
           signal,
           ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
-          headers: {
-            ...headers,
-            ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
-            ...(local && {
-              'x-gateway-url': API_GATEWAY,
-              user: JSON.stringify({
-                id: process.env.REACT_APP_LOCAL_API_USER_ID,
-                type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
-                email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
-              }),
-            }),
-            Authorization: `Bearer ${this.getToken()}`,
-          },
+          headers: finalHeaders,
         })
           .then(processStatus)
           .then((res) => {

@@ -70,7 +70,6 @@ export const fetchData = async (
   })
     .then((json: any) => {
       const resultVessels: Array<VesselSearch> = json.entries
-
       return {
         vessels: resultVessels,
         query,

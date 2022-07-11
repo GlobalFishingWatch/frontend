@@ -163,13 +163,11 @@ export const updateWorkspaceThunk = createAsyncThunk<
   'workspaces/update',
   async (workspace, { rejectWithValue }) => {
     try {
-      const updatedWorkspace = await GFWAPI.fetch<Workspace>(
-        `/${API_VERSION}/workspaces/${workspace.id}`,
-        {
-          method: 'PATCH',
-          body: { ...workspace } as any,
-        }
-      )
+      const { id, ...rest } = workspace
+      const updatedWorkspace = await GFWAPI.fetch<Workspace>(`/${API_VERSION}/workspaces/${id}`, {
+        method: 'PATCH',
+        body: rest as any,
+      })
       return updatedWorkspace
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))

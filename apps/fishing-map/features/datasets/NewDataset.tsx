@@ -27,15 +27,16 @@ import { capitalize } from 'utils/shared'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
+import FileDropzone from 'features/common/FileDropzone'
 import {
   useDatasetsAPI,
   useDatasetModalConnect,
   useAddDataviewFromDatasetToWorkspace,
 } from './datasets.hook'
 import styles from './NewDataset.module.css'
-import DatasetFile from './DatasetFile'
 import DatasetConfig, { extractPropertiesFromGeojson } from './DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
+import { getFileTypes } from './datasets.utils'
 
 export type DatasetMetadata = {
   name: string
@@ -76,7 +77,8 @@ function NewDataset(): React.ReactElement {
   const { dispatchCreateDataset } = useDatasetsAPI()
 
   const onFileLoaded = useCallback(
-    async (file: File, type: DatasetGeometryType | undefined) => {
+    async (file: File) => {
+      const type = datasetGeometryType
       setLoading(true)
       setError('')
       const name =
@@ -429,7 +431,10 @@ function NewDataset(): React.ReactElement {
         ) : (
           <Fragment>
             {/* eslint-disable-next-line  */}
-            <DatasetFile onFileLoaded={onFileLoaded} type={datasetGeometryType} />
+            <FileDropzone
+              onFileLoaded={onFileLoaded}
+              fileTypes={getFileTypes(datasetGeometryType)}
+            />
             {fileData && metadata && (
               <DatasetConfig
                 fileData={fileData as FeatureCollectionWithMetadata}

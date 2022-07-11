@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
+import { DateTime } from 'luxon'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -35,6 +36,7 @@ export type ExtendedFeatureVesselDatasets = Vessel & {
   trackDataset?: Dataset
 }
 
+// TODO extract this type in app types
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
   hours: number
   [key: string]: any
@@ -123,8 +125,16 @@ const getInteractionEndpointDatasetConfig = (
   }
 
   const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
-  if (filters?.length) {
+  if (filters.length) {
     datasetConfig.query?.push({ id: 'filters', value: filters })
+  }
+
+  const vesselGroups = featuresDataviews
+    .map((dv) => dv.config?.['vessel-groups'] || [])
+    .filter((vg) => vg.length)
+
+  if (vesselGroups.length) {
+    datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
   }
 
   return { featuresDataviews, fourWingsDataset, datasetConfig }
@@ -273,6 +283,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
 
+      const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
+      const startYear = DateTime.fromISO(mainTemporalgridFeature?.visibleStartDate).toUTC().year
+      const endYear = DateTime.fromISO(mainTemporalgridFeature?.visibleEndDate).toUTC().year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {
@@ -280,7 +293,16 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           vessels: sublayerVessels
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
-                const vesselInfo = vesselsInfo?.find((entry) => entry.id === vessel.id)
+                const vesselInfo = vesselsInfo?.find((entry) => {
+                  if (entry.years?.length && startYear && endYear) {
+                    return (
+                      entry.id === vessel.id &&
+                      entry.years.includes(startYear) &&
+                      entry.years.includes(endYear)
+                    )
+                  }
+                  return entry.id === vessel.id
+                })
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(

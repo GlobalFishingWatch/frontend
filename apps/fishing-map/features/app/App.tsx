@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useLayoutEffect, Fragment } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
@@ -65,11 +66,14 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
   return (
     <div className={styles.main}>
-      <div className={styles.mapContainer}>{<Map />}</div>
-      {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
+      <div className={cx(styles.mapContainer, { [styles.withTimebar]: showTimebar })}>
+        <Map />
+      </div>
+      {showTimebar && <Timebar />}
       <Footer />
     </div>
   )
@@ -94,6 +98,8 @@ function App(): React.ReactElement {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -108,7 +114,7 @@ function App(): React.ReactElement {
       map.resize()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAnalysing, sidebarOpen])
+  }, [isAnalysing, sidebarOpen, showTimebar])
 
   useEffect(() => {
     setMobileSafeVH()

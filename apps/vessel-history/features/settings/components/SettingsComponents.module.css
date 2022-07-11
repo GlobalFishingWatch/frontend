@@ -30,8 +30,3 @@
 .settingsLabel {
   display: inline-block;
 }
-
-.helpRange {
-  font: var(--font-XS);
-  color: var(--color-secondary-blue);
-}

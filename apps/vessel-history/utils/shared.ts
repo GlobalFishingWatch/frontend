@@ -10,3 +10,7 @@ export const toFixed = (value: number, decimals = 2) => {
   }
   return (Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)).toFixed(decimals)
 }
+
+export const sortByDate = (a: string, b: string) => {
+  return new Date(a).getTime() - new Date(b).getTime()
+}

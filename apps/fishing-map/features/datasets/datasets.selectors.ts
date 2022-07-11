@@ -1,8 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { selectAllDatasets } from './datasets.slice'
 
@@ -40,6 +39,14 @@ export const selectFourwingsDatasets = createSelector(
   }
 )
 
+export const selectActivityDatasets = createSelector([selectFourwingsDatasets], (datasets) => {
+  return datasets.filter((d) => d.category === DatasetCategory.Activity)
+})
+
+export const selectAllActivityDatasets = createSelector([selectAllDatasets], (datasets) => {
+  return datasets.filter((d) => d.category === DatasetCategory.Activity)
+})
+
 export const selectVesselsDatasets = createSelector(
   [selectDatasetsByType(DatasetTypes.Vessels)],
   (datasets) => {
@@ -53,9 +60,3 @@ export const selectTracksDatasets = createSelector(
     return datasets
   }
 )
-
-export const selectActivityDatasets = createSelector([selectActivityDataviews], (dataviews) => {
-  if (!dataviews) return
-
-  return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
-})

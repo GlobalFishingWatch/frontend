@@ -4,7 +4,6 @@ import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'
 import RiskIndicator from 'features/risk-indicator/risk-indicator'
-import useRisk from 'features/risk/risk.hook'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
 import useMapEvents from 'features/map/map-events.hooks'
@@ -14,6 +13,8 @@ import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import TerminologyEncounterEvents from 'features/terminology/terminology-encounter-events'
 import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
 import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
+import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
+import TerminologyPortVisitEvents from 'features/terminology/terminology-port-visit-events'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -23,8 +24,15 @@ export interface RiskSummaryProps {
 export function RiskSummary(props: RiskSummaryProps) {
   const { t } = useTranslation()
   const { authorizedInsurer } = useUser()
-  const { encountersInForeignEEZ, encountersInMPA, eventsLoading, fishingInMPA, loiteringInMPA } =
-    useRisk()
+  const {
+    encountersInForeignEEZ,
+    encountersInMPA,
+    eventsLoading,
+    fishingInMPA,
+    indicatorsLoading,
+    loiteringInMPA,
+    portVisitsToNonPSMAPortState,
+  } = useRiskIndicator()
   const { highlightEvent } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
 
@@ -58,9 +66,10 @@ export function RiskSummary(props: RiskSummaryProps) {
   const hasEncountersInForeignEEZs = encountersInForeignEEZ.length > 0
   const hasFishingInMPAs = fishingInMPA.length > 0
   const hasLoiteringInMPAs = loiteringInMPA.length > 0
+  const hasPortVisitsToNonPSMAPortState = portVisitsToNonPSMAPortState.length > 0
 
   if (!authorizedInsurer) return <Fragment />
-  if (eventsLoading) return <Spinner className={styles.spinnerFull} />
+  if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
   return (
     <div className={styles['container']}>
       {hasFishingInMPAs && (
@@ -131,7 +140,32 @@ export function RiskSummary(props: RiskSummaryProps) {
           ></RiskIndicator>
         </RiskSection>
       )}
-      {(!hasFishingInMPAs || !hasEncountersInMPAs || !hasLoiteringInMPAs) && (
+      {hasPortVisitsToNonPSMAPortState && (
+        <RiskSection
+          severity="medium"
+          title={t('event.portVisitEvents', 'Port Visits')}
+          titleInfo={<TerminologyPortVisitEvents />}
+        >
+          <RiskIndicator
+            title={
+              t(
+                'risk.portVisitsToNonPSMAPortState',
+                '{{count}} visits to a port in a country that has not ratified the PSMA state',
+                {
+                  count: portVisitsToNonPSMAPortState.length,
+                }
+              ) as string
+            }
+            events={portVisitsToNonPSMAPortState}
+            onEventInfoClick={openModal}
+            onEventMapClick={onEventMapClick}
+          ></RiskIndicator>
+        </RiskSection>
+      )}
+      {(!hasFishingInMPAs ||
+        !hasEncountersInMPAs ||
+        !hasLoiteringInMPAs ||
+        !hasPortVisitsToNonPSMAPortState) && (
         <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
           {!hasFishingInMPAs && (
             <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
@@ -182,6 +216,24 @@ export function RiskSummary(props: RiskSummaryProps) {
                   t('risk.noLoiteringEventInMPA', 'No loitering event detected in an MPA') as string
                 }
                 events={loiteringInMPA}
+                onEventInfoClick={openModal}
+                onEventMapClick={onEventMapClick}
+              ></RiskIndicator>
+            </RiskSection>
+          )}
+          {!hasPortVisitsToNonPSMAPortState && (
+            <RiskSection
+              className={styles.naSubSection}
+              title={t('event.portVisitEvents', 'Port Visits')}
+            >
+              <RiskIndicator
+                title={
+                  t(
+                    'risk.noPortVisitsToNonPSMAPortState',
+                    'No visit to a port in a country that has not ratified the PSMA state detected'
+                  ) as string
+                }
+                events={portVisitsToNonPSMAPortState}
                 onEventInfoClick={openModal}
                 onEventMapClick={onEventMapClick}
               ></RiskIndicator>

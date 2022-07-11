@@ -5,7 +5,7 @@ export const getPlaceholderBySelections = (selections?: MultiSelectOption[]): st
   if (!selections?.length) return t('selects.allSelected', 'All')
   return selections.length > 1
     ? `${selections.length} ${t('selects.selected', 'selected')}`
-    : selections[0].label
+    : selections[0].label.toString()
 }
 
 export const getDateFormatString = ({ locale = i18n.language, upper = false } = {}) => {

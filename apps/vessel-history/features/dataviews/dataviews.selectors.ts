@@ -19,10 +19,20 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { selectVesselDataview } from 'features/vessels/vessels.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import {
+  selectWorkspaceDataviewInstances,
+  selectWorkspaceProfileView,
+} from 'features/workspace/workspace.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
+import { APP_PROFILE_VIEWS } from 'data/config'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
-import { BACKGROUND_LAYER, OFFLINE_LAYERS, APP_THINNING } from './dataviews.config'
+import {
+  BACKGROUND_LAYER,
+  OFFLINE_LAYERS,
+  APP_THINNING,
+  DEFAULT_VESSEL_DATAVIEWS,
+} from './dataviews.config'
+import { getVesselDataviewInstanceFactory } from './dataviews.utils'
 
 const defaultBasemapDataview = {
   id: 'basemap',
@@ -158,3 +168,34 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
 export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter((d) => d.config?.visible)
 })
+
+export const selectGetVesselDataviewInstance = createSelector(
+  [selectWorkspaceProfileView],
+  (profileView) => {
+    return getVesselDataviewInstanceFactory(DEFAULT_VESSEL_DATAVIEWS[profileView])
+  }
+)
+
+/**
+ * Returns the event datasets query params based on the current profile view
+ * and its list of query params set for propagation into other endpoints
+ */
+export const selectEventDatasetsConfigQueryParams = (state) => {
+  const profileView = state.workspace?.profileView
+  const { propagate_events_query_params } = APP_PROFILE_VIEWS.filter(
+    (v) => v.id === profileView
+  ).shift()
+  const vesselDataview =
+    state.dataviews &&
+    state.dataviews.entities &&
+    state.dataviews.entities[DEFAULT_VESSEL_DATAVIEWS[profileView]]
+  return (vesselDataview.datasetsConfig ?? [])
+    .filter((config) => config.endpoint === 'events')
+    .flatMap((config) => config.query ?? {})
+    .filter(
+      (query) =>
+        query.id &&
+        query.value !== undefined &&
+        ((propagate_events_query_params as string[]) ?? []).includes(query.id ?? null)
+    )
+}

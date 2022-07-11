@@ -17,6 +17,7 @@
   /* BASE COLORS */
   --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
   --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
+  --help-yellow-rgb: 255, 248, 205; /* rgb(255, 248, 205) */
   --gradient-rgb: 229, 240, 242; /* rgb(229, 240, 242) */
   --off-white-rgb: 242, 247, 248; /* rgb(242, 247, 248) */
   --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
@@ -29,6 +30,7 @@
   --color-danger-red: rgb(var(--danger-red-rgb));
   --color-danger-red-background: #f6bdbd;
   --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
+  --color-help-yellow: rgb(var(--help-yellow-rgb));
   --color-gradient: rgb(var(--gradient-rgb));
   --color-off-white: rgb(var(--off-white-rgb));
   --color-white: rgb(var(--white-rgb));
