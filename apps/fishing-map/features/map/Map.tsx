@@ -1,11 +1,10 @@
-import { useCallback, useState, useEffect, useMemo, useRef, Fragment } from 'react'
+import { useCallback, useState, useEffect, useMemo, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { Map, MapboxStyle, useControl } from 'react-map-gl'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-// import { DeckGL } from '@deck.gl/react'
-import { MapboxLayer, MapboxOverlay, MapboxOverlayProps } from '@deck.gl/mapbox/typed'
+import { MapboxOverlay, MapboxOverlayProps } from '@deck.gl/mapbox/typed'
 import { GeoJsonLayer, IconLayer } from '@deck.gl/layers'
 import { MVTLayer } from '@deck.gl/geo-layers'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
@@ -22,6 +21,7 @@ import {
   defaultStyleTransformations,
   useDebounce,
   useMemoCompare,
+  MapInteractionType,
 } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
@@ -42,7 +42,7 @@ import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import { useMapLoaded, useMapReady, useSetMapIdleAtom } from 'features/map/map-state.hooks'
+import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
@@ -98,11 +98,91 @@ const style = {
   height: '100%',
 }
 
-const DeckGLOverlay = (props: MapboxOverlayProps) => {
+const DeckGLOverlay = (
+  props: MapboxOverlayProps & {
+    interleaved?: boolean
+  }
+) => {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props))
   overlay.setProps(props)
   return null
 }
+
+const deckLayers = [
+  new GeoJsonLayer({
+    id: 'geojson-layer',
+    pointType: 'circle',
+    getPointRadius: 100000,
+    getFillColor: [160, 160, 180, 200],
+    filled: true,
+    pickable: true,
+    beforeId: 'countries',
+    data: {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Point',
+            coordinates: [-2.131497859954834, 47.6925334728506],
+          },
+        },
+      ],
+    },
+  }),
+  new MVTLayer({
+    id: 'mtv-layer',
+    // data: 'https://raw.githubusercontent.com/GlobalFishingWatch/live-positions-poc/main/tiles/{z}/{x}/{y}.pbf?raw=true',
+    // data: 'http://localhost:9090/{z}/{x}/{y}.pbf',
+    data: 'https://storage.googleapis.com/live-positions-poc/tiles/{z}/{x}/{y}.pbf',
+    binary: false,
+    // minZoom: 0,
+    // maxZoom: 5,
+    pointType: 'circle',
+    getPointRadius: 10000,
+    getFillColor: [255, 0, 255, 255],
+    // beforeId: 'countries',
+    // filled: true,
+    // pickable: true,
+    renderSubLayers: (props) => {
+      console.log(props)
+      // return new GeoJsonLayer(props)
+      const ICON_MAPPING = {
+        marker: { x: 0, y: 0, width: 128, height: 128, mask: true },
+      }
+
+      return new IconLayer({
+        ...props,
+        // data: [
+        //   {
+        //     name: 'Colma (COLM)',
+        //     address: '365 D Street, Colma CA 94014',
+        //     exits: 4214,
+        //     coordinates: [-122.466233, 37.684638],
+        //   },
+        // ],
+        // pickable: true,
+        // iconAtlas and iconMapping are required
+        // getIcon: return a string
+        iconAtlas:
+          'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+        iconMapping: ICON_MAPPING,
+        getIcon: (d) => 'marker',
+
+        sizeScale: 5,
+        getPosition: (d) => {
+          // console.log(d)
+          return d.geometry.coordinates
+          // return d.coordinates
+        },
+        getSize: (d) => 5,
+        getColor: (d) => [255, 140, 0],
+        getAngle: (d) => d.properties.c,
+      })
+    },
+  }),
+]
 
 const MapWrapper = () => {
   // Used it only once here to attach the listener only once
@@ -112,7 +192,6 @@ const MapWrapper = () => {
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const setMapReady = useSetRecoilState(mapReadyAtom)
-  const mapReady = useMapReady()
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const { isMapDrawing } = useMapDrawConnect()
   const dataviews = useSelector(selectDataviewInstancesResolved)
@@ -121,6 +200,7 @@ const MapWrapper = () => {
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const isWorkspace = useSelector(isWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
+  const [deckLayers, setDeckLayers] = useState<any>([])
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
@@ -130,6 +210,7 @@ const MapWrapper = () => {
     defaultStyleTransformations,
     layerComposer
   )
+
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -163,98 +244,24 @@ const MapWrapper = () => {
   }, [clickedEvent, clickedTooltipEvent])
 
   const currentClickCallback = useMemo(() => {
-    const clickEvent = (event: any) => {
+    const clickEvent = (event: any, type?: MapInteractionType) => {
       uaEvent({
         category: 'Environmental data',
         action: `Click in grid cell`,
         label: getEventLabel(clickedCellLayers ?? []),
       })
-      return rulersEditing ? onMapClickWithRuler(event) : onMapClick(event)
+      return rulersEditing ? onMapClickWithRuler(event) : onMapClick(event, type)
     }
     return clickEvent
   }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onMapClick])
 
-  const deckLayers = useMemo(() => {
-    return [
-      new GeoJsonLayer({
-        id: 'geojson-layer',
-        pointType: 'circle',
-        getPointRadius: 100000,
-        getFillColor: [160, 160, 180, 200],
-        filled: true,
-        // pickable: true,
-        beforeId: 'countries',
-        data: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              properties: {},
-              geometry: {
-                type: 'Point',
-                coordinates: [-2.131497859954834, 47.6925334728506],
-              },
-            },
-          ],
-        },
-      }),
-      new MVTLayer({
-        id: 'mtv-layer',
-        // data: 'https://raw.githubusercontent.com/GlobalFishingWatch/live-positions-poc/main/tiles/{z}/{x}/{y}.pbf?raw=true',
-        // data: 'http://localhost:9090/{z}/{x}/{y}.pbf',
-        data: 'https://storage.googleapis.com/live-positions-poc/tiles/{z}/{x}/{y}.pbf',
-        binary: false,
-        // minZoom: 0,
-        // maxZoom: 5,
-        pointType: 'circle',
-        getPointRadius: 10000,
-        getFillColor: [255, 0, 255, 255],
-        // beforeId: 'countries',
-        // filled: true,
-        // pickable: true,
-        renderSubLayers: (props) => {
-          console.log(props)
-          // return new GeoJsonLayer(props)
-          const ICON_MAPPING = {
-            marker: { x: 0, y: 0, width: 128, height: 128, mask: true },
-          }
-
-          return new IconLayer({
-            ...props,
-            // data: [
-            //   {
-            //     name: 'Colma (COLM)',
-            //     address: '365 D Street, Colma CA 94014',
-            //     exits: 4214,
-            //     coordinates: [-122.466233, 37.684638],
-            //   },
-            // ],
-            // pickable: true,
-            // iconAtlas and iconMapping are required
-            // getIcon: return a string
-            iconAtlas:
-              'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
-            iconMapping: ICON_MAPPING,
-            getIcon: (d) => 'marker',
-
-            sizeScale: 5,
-            getPosition: (d) => {
-              // console.log(d)
-              return d.geometry.coordinates
-              // return d.coordinates
-            },
-            getSize: (d) => 5,
-            getColor: (d) => [255, 140, 0],
-            getAngle: (d) => d.properties.c,
-          })
-        },
-      }),
-    ]
-  }, [])
-
   const onLoadCallback = useCallback(() => {
     setMapReady(true)
   }, [setMapReady])
+
+  const onDeckLoaded = useCallback(() => {
+    setDeckLayers(deckLayers)
+  }, [])
 
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
@@ -394,14 +401,14 @@ const MapWrapper = () => {
             onError={handleError}
             onMouseOut={resetHoverState}
           >
-            {mapReady && (
-              <DeckGLOverlay
-                layers={deckLayers}
-                interleaved={true}
-                onClick={(e) => console.log(e)}
-                // getTooltip={(e) => console.log(e)}
-              />
-            )}
+            <DeckGLOverlay
+              layers={deckLayers}
+              interleaved={true}
+              onClick={(e) => currentClickCallback(e, 'deck')}
+              onHover={(e) => console.log(e)}
+              onWebGLInitialized={onDeckLoaded}
+              // getTooltip={(e) => console.log(e)}
+            />
             {clickedEvent && (
               <PopupWrapper
                 type="click"
