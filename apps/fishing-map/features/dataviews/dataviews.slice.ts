@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy, memoize } from 'lodash'
+import { stringify } from 'qs'
 import {
   mergeWorkspaceUrlDataviewInstances,
   resolveDataviews,
@@ -33,7 +34,7 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
-import { API_VERSION } from 'data/config'
+import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -63,8 +64,13 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
       return [] as Dataview[]
     }
     try {
+      const dataviewsParams = {
+        ids: uniqIds,
+        cache: false,
+        ...DEFAULT_PAGINATION_PARAMS,
+      }
       const dataviewsResponse = await GFWAPI.fetch<APIPagination<Dataview>>(
-        `/${API_VERSION}/dataviews?ids=${uniqIds.join(',')}`,
+        `/${API_VERSION}/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       if (

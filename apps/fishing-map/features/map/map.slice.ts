@@ -24,6 +24,7 @@ import {
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -156,6 +157,14 @@ const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) =
       {
         id: 'ids',
         value: vesselIds,
+      },
+      {
+        id: 'limit',
+        value: DEFAULT_PAGINATION_PARAMS.limit,
+      },
+      {
+        id: 'offset',
+        value: DEFAULT_PAGINATION_PARAMS.offset,
       },
     ],
   }

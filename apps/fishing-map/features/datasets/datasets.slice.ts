@@ -22,7 +22,12 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { API_VERSION, LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
+import {
+  API_VERSION,
+  DEFAULT_PAGINATION_PARAMS,
+  LATEST_CARRIER_DATASET_ID,
+  PUBLIC_SUFIX,
+} from 'data/config'
 
 export const PRESENCE_DATASET_ID = 'public-global-presence'
 export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
@@ -82,6 +87,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         ...(uniqIds?.length && { ids: uniqIds }),
         include: 'endpoints',
         cache: false,
+        ...DEFAULT_PAGINATION_PARAMS,
       }
       const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
         `/${API_VERSION}/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,

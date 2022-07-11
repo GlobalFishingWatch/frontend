@@ -22,7 +22,7 @@ import {
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { API_VERSION } from 'data/config'
+import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { RootState } from 'store'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 
@@ -184,7 +184,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
 export const fetchUserVesselGroupsThunk = createAsyncThunk(
   'vessel-groups/fetch',
   async () => {
-    const url = `/${API_VERSION}/vessel-groups`
+    const url = `/${API_VERSION}/vessel-groups?${stringify(DEFAULT_PAGINATION_PARAMS)}`
     const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url)
     return vesselGroups.entries
   },
