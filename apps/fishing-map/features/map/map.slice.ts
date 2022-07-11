@@ -158,14 +158,6 @@ const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) =
         id: 'ids',
         value: vesselIds,
       },
-      {
-        id: 'limit',
-        value: DEFAULT_PAGINATION_PARAMS.limit,
-      },
-      {
-        id: 'offset',
-        value: DEFAULT_PAGINATION_PARAMS.offset,
-      },
     ],
   }
   return resolveEndpoint(vesselDatasets[0], datasetConfig)
