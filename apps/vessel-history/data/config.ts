@@ -1,6 +1,9 @@
 import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
+import { ThinningConfig } from '@globalfishingwatch/api-types'
+import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { AppState } from 'types/redux.types'
+import { TimebarGraphs } from 'types'
 
 export type WorkspaceEnv = 'development' | 'production'
 export const API_VERSION = 'v2'
@@ -52,6 +55,7 @@ export const DEFAULT_WORKSPACE: AppState = {
   availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
   availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
   profileView: undefined,
+  timebarGraph: TimebarGraphs.None,
 }
 
 export const DEFAULT_VIEWPORT = {
@@ -126,3 +130,28 @@ export const APP_PROFILE_VIEWS = [
     propagate_events_query_params: ['confidences'],
   },
 ]
+
+export const DEFAULT_PAGINATION_PARAMS = {
+  limit: 99999,
+  offset: 0,
+}
+
+export const THINNING_LEVEL_BY_ZOOM: Record<
+  number,
+  { user: ThinningConfig; guest: ThinningConfig }
+> = {
+  0: {
+    user: THINNING_LEVELS[ThinningLevels.Insane],
+    guest: THINNING_LEVELS[ThinningLevels.Insane],
+  },
+  3: {
+    user: THINNING_LEVELS[ThinningLevels.VeryAggressive],
+    guest: THINNING_LEVELS[ThinningLevels.VeryAggressive],
+  },
+  6: {
+    user: THINNING_LEVELS[ThinningLevels.Default],
+    guest: THINNING_LEVELS[ThinningLevels.Aggressive],
+  },
+}
+
+export const THINNING_LEVEL_ZOOMS = Object.keys(THINNING_LEVEL_BY_ZOOM) as unknown as number[]

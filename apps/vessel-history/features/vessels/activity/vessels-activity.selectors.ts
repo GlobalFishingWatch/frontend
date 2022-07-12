@@ -3,6 +3,8 @@ import { DateTime, Interval } from 'luxon'
 import { upperFirst } from 'lodash'
 import bearing from '@turf/bearing'
 import {
+  getDatasetConfigByDatasetType,
+  getDatasetConfigsByDatasetType,
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
@@ -11,7 +13,10 @@ import { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveTrackDataviews,
+  selectTrackDatasetConfigsCallback,
+} from 'features/dataviews/dataviews.selectors'
 import { ActivityEvent, Regions } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
@@ -79,48 +84,72 @@ export const selectEventsLoading = createSelector([selectEventsResources], (reso
 )
 
 export const selectEventsForTracks = createSelector(
-  [selectActiveTrackDataviews, selectResources],
+  [selectActiveTrackDataviews, selectResources, selectTrackDatasetConfigsCallback],
 
-  (trackDataviews, resources) => {
-    // const visibleEvents: (EventType[] | 'all') = 'all'
-    const vesselsEvents = trackDataviews.map((dataview) => {
-      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-      // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
-      const hasEventData =
-        eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
-      const tracksResourceResolved =
-        tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
+  (trackDataviews, resources, trackDatasetConfigsCallback) => {
+    if (Object.keys(resources).length === 0) return []
 
-      // Waiting for the tracks resource to be resolved to show the events
-      if (
-        !hasEventData ||
-        !tracksResourceResolved //||
-        // (Array.isArray(visibleEvents) && visibleEvents?.length === 0)
-      ) {
-        return { dataview, data: [] }
-      }
+    const getDatasetsConfig = (dataview) => {
+      const info = getDatasetConfigByDatasetType(dataview, DatasetTypes.Vessels)
 
-      const eventsResourcesFiltered = eventsResources
-      // .filter(({ dataset }) => {
-      //   if (visibleEvents === 'all') {
-      //     return true
-      //   }
-      //   return (
-      //     dataset.configuration?.type &&
-      //     visibleEvents?.includes(dataset.configuration?.type))
-      //   )
-      // })
+      const trackDatasetType =
+        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+          ? DatasetTypes.UserTracks
+          : DatasetTypes.Tracks
+      const track = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
 
-      const data = eventsResourcesFiltered.flatMap(({ url }) => {
-        if (!url || !resources[url].data) {
-          return []
+      const events = getDatasetConfigsByDatasetType(dataview, DatasetTypes.Events).filter(
+        (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
+      ) // Loitering
+      return trackDatasetConfigsCallback([info, track, ...events])
+    }
+
+    const vesselsEvents = trackDataviews
+      .map((dataview) => ({
+        ...dataview,
+        // Use the same datasets config used to get resources in
+        // selectDataviewsResources of features/dataviews/dataviews.selectors
+        // resources urls are properly built and resources found
+        // in the state
+        datasetsConfig: getDatasetsConfig(dataview),
+      }))
+      .map((dataview) => {
+        const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+        const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
+        const hasEventData =
+          eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
+        const tracksResourceResolved =
+          tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
+
+        // Waiting for the tracks resource to be resolved to show the events
+        if (
+          !hasEventData ||
+          !tracksResourceResolved //||
+          // (Array.isArray(visibleEvents) && visibleEvents?.length === 0)
+        ) {
+          return { dataview, data: [] }
         }
 
-        return resources[url].data as ActivityEvent[]
+        const eventsResourcesFiltered = eventsResources
+        // .filter(({ dataset }) => {
+        //   if (visibleEvents === 'all') {
+        //     return true
+        //   }
+        //   return (
+        //     dataset.configuration?.type &&
+        //     visibleEvents?.includes(dataset.configuration?.type))
+        //   )
+        // })
+
+        const data = eventsResourcesFiltered.flatMap(({ url }) => {
+          if (!url || !resources[url].data) {
+            return []
+          }
+
+          return resources[url].data as ActivityEvent[]
+        })
+        return { dataview, data: data as ActivityEvent[] }
       })
-      return { dataview, data: data as ActivityEvent[] }
-    })
     return vesselsEvents
   }
 )
@@ -138,20 +167,20 @@ export const selectEventsWithRenderingInfo = createSelector(
             if (event.encounter) {
               description = regionDescription
                 ? t(
-                  'event.encounterActionWith',
-                  'had an encounter with {{vessel}} in {{regionName}}',
-                  {
+                    'event.encounterActionWith',
+                    'had an encounter with {{vessel}} in {{regionName}}',
+                    {
+                      vessel:
+                        event.encounter.vessel.name ??
+                        t('event.encounterAnotherVessel', 'another vessel'),
+                      regionName: regionDescription,
+                    }
+                  )
+                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
                     vessel:
                       event.encounter.vessel.name ??
                       t('event.encounterAnotherVessel', 'another vessel'),
-                    regionName: regionDescription,
-                  }
-                )
-                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
-                  vessel:
-                    event.encounter.vessel.name ??
-                    t('event.encounterAnotherVessel', 'another vessel'),
-                })
+                  })
             }
             descriptionGeneric = t('event.encounter')
             break
@@ -203,8 +232,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-              count: Math.round(duration.minutes as number),
-            })
+                count: Math.round(duration.minutes as number),
+              })
             : '',
         ].join(' ')
 
@@ -353,9 +382,9 @@ export const selectVesselLastPositionGEOJson = createSelector(
     if (!lastPosition) return
     const course = prevPosition
       ? bearing(
-        [prevPosition.longitude, prevPosition.latitude],
-        [lastPosition.longitude, lastPosition.latitude]
-      )
+          [prevPosition.longitude, prevPosition.latitude],
+          [lastPosition.longitude, lastPosition.latitude]
+        )
       : 0
 
     return {

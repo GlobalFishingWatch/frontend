@@ -8,6 +8,8 @@ import {
   DatasetConfigsTransforms,
   getDataviewsForResourceQuerying,
   resolveResourcesFromDatasetConfigs,
+  GetDatasetConfigsCallbacks,
+  getResources,
 } from '@globalfishingwatch/dataviews-client'
 import {
   BasemapGeneratorConfig,
@@ -22,9 +24,15 @@ import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceProfileView,
+  selectWorkspaceStateProperty,
 } from 'features/workspace/workspace.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { APP_PROFILE_VIEWS } from 'data/config'
+import { APP_PROFILE_VIEWS, DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import {
+  selectTrackChunksConfig,
+  selectTrackThinningConfig,
+} from 'features/resources/resources.slice'
+import { trackDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
 import {
   BACKGROUND_LAYER,
@@ -129,6 +137,30 @@ export const selectDataviewsResourceQueries = createDeepEqualSelector(
   [selectDataviewsForResourceQuerying],
   (dataviews) => {
     return resolveResourcesFromDatasetConfigs(dataviews)
+  }
+)
+
+export const selectTrackDatasetConfigsCallback = createSelector(
+  [
+    selectTrackThinningConfig,
+    selectTrackChunksConfig,
+    selectWorkspaceStateProperty('timebarGraph'),
+  ],
+  (thinningConfig, chunks, timebarGraph) =>
+    trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph)
+)
+
+/**
+ * Calls getResources to prepare track dataviews' datasetConfigs.
+ * Injects app-specific logic by using getResources's callback
+ */
+export const selectDataviewsResources = createSelector(
+  [selectDataviewInstancesResolved, selectTrackDatasetConfigsCallback],
+  (dataviewInstances, trackDatasetConfigsCallback) => {
+    const callbacks: GetDatasetConfigsCallbacks = {
+      tracks: trackDatasetConfigsCallback,
+    }
+    return getResources(dataviewInstances || [], callbacks)
   }
 )
 
