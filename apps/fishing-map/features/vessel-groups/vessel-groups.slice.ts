@@ -106,6 +106,14 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
                 id: 'query',
                 value: advancedSearchQuery,
               },
+          {
+            id: 'limit',
+            value: DEFAULT_PAGINATION_PARAMS.limit,
+          },
+          {
+            id: 'offset',
+            value: DEFAULT_PAGINATION_PARAMS.offset,
+          },
         ],
       }
       try {
