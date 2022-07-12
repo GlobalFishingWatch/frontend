@@ -264,7 +264,8 @@ function ActivityLayerPanel({
                         )}
                         {stats.type === 'vessels' &&
                           stats.flag > 0 &&
-                          dataview.config?.filters?.flag?.length > 1 && (
+                          (!dataview.config?.filters?.flag ||
+                            dataview.config?.filters?.flag.length > 1) && (
                             <Fragment>
                               <span> {t('common.from', 'from')} </span>
                               <span>
