@@ -96,6 +96,7 @@
     "port": "Port",
     "portAction": "Port visit",
     "portAt": "Port visit at {{port}}",
+    "portVisitEvents": "Port Visits",
     "position": "Position",
     "psma": "PSMA",
     "psmaIncluded": "Included Since {{value}}",
@@ -146,7 +147,10 @@
     "noEncounterEventInMPA": "No encounters detected in MPAs",
     "noFishingEventInMPA": "No fishing event detected in MPAs",
     "noLoiteringEventInMPA": "No loitering event detected in MPAs",
+    "noPortVisitsToNonPSMAPortState": "No visit to a port in a country that has not ratified the PSMA state detected",
     "noRiskDetected": "No risk detected",
+    "portVisitsToNonPSMAPortState_one": "{{count}} visit to a port in a country that has not ratified the PSMA state",
+    "portVisitsToNonPSMAPortState_other": "{{count}} visits to a port in a country that has not ratified the PSMA state",
     "unknown": "Unknown Risk"
   },
   "search": {
