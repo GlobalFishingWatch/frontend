@@ -122,26 +122,11 @@ export const selectEventsForTracks = createSelector(
           tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
 
         // Waiting for the tracks resource to be resolved to show the events
-        if (
-          !hasEventData ||
-          !tracksResourceResolved //||
-          // (Array.isArray(visibleEvents) && visibleEvents?.length === 0)
-        ) {
+        if (!hasEventData || !tracksResourceResolved) {
           return { dataview, data: [] }
         }
 
-        const eventsResourcesFiltered = eventsResources
-        // .filter(({ dataset }) => {
-        //   if (visibleEvents === 'all') {
-        //     return true
-        //   }
-        //   return (
-        //     dataset.configuration?.type &&
-        //     visibleEvents?.includes(dataset.configuration?.type))
-        //   )
-        // })
-
-        const data = eventsResourcesFiltered.flatMap(({ url }) => {
+        const data = eventsResources.flatMap(({ url }) => {
           if (!url || !resources[url].data) {
             return []
           }
