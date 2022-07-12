@@ -363,6 +363,7 @@
     },
     "toggleVisibility": "Toggle layer visibility",
     "vessel_fit_bounds": "Center map on vessel track",
+    "activity_fit_bounds": "Center view on activity",
     "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected time range. Change the time range to fit this track?"
   },
   "map": {
