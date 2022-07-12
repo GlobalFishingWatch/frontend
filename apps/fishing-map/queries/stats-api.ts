@@ -9,7 +9,15 @@ import type { Range } from 'features/timebar/timebar.slice'
 import { API_VERSION } from 'data/config'
 
 export type StatType = 'vessels' | 'detections'
-export type StatField = 'id' | 'flag' | 'vessel_id' | 'geartype'
+export type StatField =
+  | 'id'
+  | 'flag'
+  | 'vessel_id'
+  | 'geartype'
+  | 'minLat'
+  | 'minLon'
+  | 'maxLat'
+  | 'maxLon'
 export type StatFields = {
   [key in StatField]: number
 } & { type: StatType }

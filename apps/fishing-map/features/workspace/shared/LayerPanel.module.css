@@ -69,6 +69,10 @@
   align-items: center;
 }
 
+.actions > * {
+  margin-right: calc(0px - var(--space-XS));
+}
+
 .active {
   opacity: 1;
 }
