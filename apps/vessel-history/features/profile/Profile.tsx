@@ -28,7 +28,7 @@ import {
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
 import {
-  selectDataviewsResourceQueries,
+  selectDataviewsResources,
   selectGetVesselDataviewInstance,
 } from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
@@ -64,7 +64,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   const mergedVesselId = useSelector(selectMergedVesselId)
   const vessel = useSelector(selectVesselById(mergedVesselId))
   const datasets = useSelector(selectDatasets)
-  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const resourceQueries = useSelector(selectDataviewsResources)?.resources
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
   const getVesselDataviewInstance = useSelector(selectGetVesselDataviewInstance)
   const isMergedVesselsView = useMemo(
@@ -151,9 +151,9 @@ const Profile: React.FC = (props): React.ReactElement => {
         }
       }
     }
-    let [dataset, gfwId, tmtId] = (Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? '').split(
-      '_'
-    )
+    let [dataset, gfwId, tmtId] = (
+      Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
+    ).split('_')
     if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
       const gfwAka = akaVesselProfileIds.find((aka) => {
         const [akaDataset] = aka.split('_')

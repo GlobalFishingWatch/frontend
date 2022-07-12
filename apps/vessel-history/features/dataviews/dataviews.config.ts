@@ -92,11 +92,6 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
   },
 ]
 
-export const vesselDataviewIds = Object.keys(DEFAULT_VESSEL_DATAVIEWS).map(
-  (key) => DEFAULT_VESSEL_DATAVIEWS[key]
-)
+export const vesselDataviewIds = Object.values(DEFAULT_VESSEL_DATAVIEWS)
 
 export const DEFAULT_TRACK_COLOR = '#8DE9F6'
-
-export const APP_THINNING =
-  (process.env.APP_THINNING as ThinningLevels) || ThinningLevels.Aggressive

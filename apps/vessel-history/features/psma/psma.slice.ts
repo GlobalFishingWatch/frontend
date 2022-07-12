@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
+import { stringify } from 'qs'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { APIPagination } from '@globalfishingwatch/api-types'
 import {
@@ -10,7 +11,7 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { Psma } from 'types/psma'
-import { API_VERSION } from 'data/config'
+import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export type PsmaState = AsyncReducer<Psma>
 
@@ -22,7 +23,12 @@ export const fetchPsmaThunk = createAsyncThunk(
   'psma/fetch',
   async (_, { rejectWithValue }) => {
     try {
-      const psmaResult = await GFWAPI.fetch<APIPagination<Psma>>(`/${API_VERSION}/psma-countries`)
+      const queryParams = {
+        ...DEFAULT_PAGINATION_PARAMS,
+      }
+      const psmaResult = await GFWAPI.fetch<APIPagination<Psma>>(
+        `/${API_VERSION}/psma-countries?${stringify(queryParams, { arrayFormat: 'comma' })}`
+      )
       const psma = uniqBy(psmaResult.entries, 'iso3')
       return psma.map((item) => ({ ...item, id: item.iso3 })) as Psma[]
     } catch (e: any) {
