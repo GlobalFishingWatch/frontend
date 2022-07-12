@@ -363,6 +363,7 @@
     },
     "toggleVisibility": "Afficher/cacher calque",
     "vessel_fit_bounds": "Centrer la carte sur la trajectoire du navire",
+    "activity_fit_bounds": "Center view on activity",
     "vessel_fit_bounds_out_of_timerange": "La piste n'a aucune activité dans la plage temporelle sélectionnée. Changer la plage temporelle pour l'ajuster à cette trajectoire ?"
   },
   "map": {
