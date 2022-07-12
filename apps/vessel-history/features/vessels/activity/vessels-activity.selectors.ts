@@ -84,57 +84,33 @@ export const selectEventsLoading = createSelector([selectEventsResources], (reso
 )
 
 export const selectEventsForTracks = createSelector(
-  [selectActiveTrackDataviews, selectResources, selectTrackDatasetConfigsCallback],
+  [selectActiveTrackDataviews, selectResources],
 
-  (trackDataviews, resources, trackDatasetConfigsCallback) => {
+  (trackDataviews, resources) => {
     if (Object.keys(resources).length === 0) return []
 
-    const getDatasetsConfig = (dataview) => {
-      const info = getDatasetConfigByDatasetType(dataview, DatasetTypes.Vessels)
+    const vesselsEvents = trackDataviews.map((dataview) => {
+      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
+      const hasEventData =
+        eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
+      const tracksResourceResolved =
+        tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
 
-      const trackDatasetType =
-        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
-          ? DatasetTypes.UserTracks
-          : DatasetTypes.Tracks
-      const track = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
+      // Waiting for the tracks resource to be resolved to show the events
+      if (!hasEventData || !tracksResourceResolved) {
+        return { dataview, data: [] }
+      }
 
-      const events = getDatasetConfigsByDatasetType(dataview, DatasetTypes.Events).filter(
-        (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
-      ) // Loitering
-      return trackDatasetConfigsCallback([info, track, ...events])
-    }
-
-    const vesselsEvents = trackDataviews
-      .map((dataview) => ({
-        ...dataview,
-        // Use the same datasets config used to get resources in
-        // selectDataviewsResources of features/dataviews/dataviews.selectors
-        // resources urls are properly built and resources found
-        // in the state
-        datasetsConfig: getDatasetsConfig(dataview),
-      }))
-      .map((dataview) => {
-        const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-        const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
-        const hasEventData =
-          eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
-        const tracksResourceResolved =
-          tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
-
-        // Waiting for the tracks resource to be resolved to show the events
-        if (!hasEventData || !tracksResourceResolved) {
-          return { dataview, data: [] }
+      const data = eventsResources.flatMap(({ url }) => {
+        if (!url || !resources[url].data) {
+          return []
         }
 
-        const data = eventsResources.flatMap(({ url }) => {
-          if (!url || !resources[url].data) {
-            return []
-          }
-
-          return resources[url].data as ActivityEvent[]
-        })
-        return { dataview, data: data as ActivityEvent[] }
+        return resources[url].data as ActivityEvent[]
       })
+      return { dataview, data: data as ActivityEvent[] }
+    })
     return vesselsEvents
   }
 )
