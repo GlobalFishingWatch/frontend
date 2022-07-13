@@ -15,7 +15,7 @@ const API_GATEWAY =
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
 const AUTH_PATH = 'auth'
-const LAST_API_VERSION = 'v2'
+
 export interface V2MessageError {
   detail: string
   title: string
@@ -229,8 +229,8 @@ export class GFW_API_CLASS {
     return
   }
 
-  fetch<T>(url: string, options: FetchOptions = {}, version: string | null = null) {
-    return this._internalFetch<T>(`${version === null ? '/' + LAST_API_VERSION : (version ? '/' + version : '')}${url}`, options)
+  fetch<T>(url: string, options: FetchOptions = {}) {
+    return this._internalFetch<T>(url, options)
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
