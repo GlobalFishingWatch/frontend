@@ -141,12 +141,10 @@ export function AccessTokenList(props: AccessTokenListProps) {
                   </td>
                 </tr>
               ))}
-            {!isLoading && data && data?.length === 0 && (
+            {!isLoading && data && data?.entries?.length === 0 && (
               <tr key={`row-token-info`}>
                 <td className={cx([styles.cellNoData])} colSpan={5}>
-                  <div className={styles.content}>
-                    There are still no application tokens created.
-                  </div>
+                  <div className={styles.content}>There are no application tokens created yet.</div>
                 </td>
               </tr>
             )}
