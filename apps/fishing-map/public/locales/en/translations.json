@@ -528,7 +528,7 @@
     "idField": "ID field",
     "ids": "IDs",
     "idsPlaceholder": "Type here or paste a list of {{field}} separated by commas, spaces or line breaks",
-    "label": "{{name}} ({{count}} IDs",
+    "label": "{{name}} ({{count}} IDs)",
     "new": "New vessel group",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "remove": "Remove vessel group",
