@@ -1,6 +1,6 @@
 import { FetchOptions, GFW_API_CLASS } from './api-client'
 
-const LAST_API_VERSION = 'v2'
+export const LAST_API_VERSION = process.env.NEXT_PUBLIC_LAST_API_VERSION || 'v2'
 
 export class GFW_API_CLASS_V2 extends GFW_API_CLASS {
 
