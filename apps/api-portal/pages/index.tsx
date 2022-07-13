@@ -16,7 +16,7 @@ const Home: NextPage = (context) => {
       <p className={styles.description}>
         You need an acccess token to call Global Fishing Watch API endpoints like Vessel search or
         4wings activity tiles. Read more about API access tokens in{' '}
-        <a href="https://globalfishingwatch.org/ocean-engine/api-doc">our documentation</a>
+        <a href="https://globalfishingwatch.org/our-apis/api-doc">our documentation</a>
       </p>
       <RequireAdditionalInfo>
         <AccessTokenList></AccessTokenList>
