@@ -1,8 +1,16 @@
 import { FetchOptions, GFW_API_CLASS } from './api-client'
 
 export const LAST_API_VERSION = process.env.NEXT_PUBLIC_LAST_API_VERSION || 'v2'
+const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
 
 export class GFW_API_CLASS_V2 extends GFW_API_CLASS {
+
+  constructor({
+    debug = DEBUG_API_REQUESTS,
+  } = {}) {
+    super({ debug })
+
+  }
 
   generateUrl(url: string, version: string | null = null): string {
     return `${version === null ? '/' + LAST_API_VERSION : (version ? '/' + version : '')}${url}`
