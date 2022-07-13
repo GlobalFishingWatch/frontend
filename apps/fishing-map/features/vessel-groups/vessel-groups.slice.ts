@@ -77,7 +77,8 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     const vesselGroupDatasets = uniq(vessels?.flatMap((v) => v.dataset || []))
     const allVesselDatasets = selectVesselsDatasets(state)
     const advancedSearchDatasets = (selectAllSearchDatasetsByType('advanced')(state) || []).filter(
-      (d) => d.status !== DatasetStatus.Deleted
+      (d) =>
+        d.status !== DatasetStatus.Deleted && d.alias?.some((alias) => alias.includes(':latest'))
     )
     const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
     const searchDatasets = vesselGroupDatasets?.length
