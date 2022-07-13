@@ -230,7 +230,7 @@ export class GFW_API_CLASS {
   }
 
   fetch<T>(url: string, options: FetchOptions = {}, version: string | null = null) {
-    return this._internalFetch<T>(`/${version === null ? LAST_API_VERSION : version}${url}`, options)
+    return this._internalFetch<T>(`${version === null ? '/' + LAST_API_VERSION : (version ? '/' + version : '')}${url}`, options)
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
