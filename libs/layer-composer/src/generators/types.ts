@@ -6,6 +6,7 @@ import {
 } from '@globalfishingwatch/maplibre-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { Locale } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
@@ -87,7 +88,8 @@ export interface BasemapGeneratorConfig extends GeneratorConfig {
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
   basemap: BasemapType
-  labels: boolean
+  locale?: Locale
+  labels?: boolean
 }
 
 /**

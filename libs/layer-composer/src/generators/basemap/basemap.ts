@@ -1,6 +1,6 @@
 import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, BasemapGeneratorConfig, BasemapType } from '../types'
-import { layers, sources } from './basemap-layers'
+import { getLabelsTilesUrlByLocale, layers, sources } from './basemap-layers'
 
 const DEFAULT_CONFIG: Partial<BasemapGeneratorConfig> = {
   basemap: BasemapType.Default,
@@ -11,9 +11,19 @@ class BasemapGenerator {
   type = GeneratorType.Basemap
 
   _getStyleSources = (config: BasemapGeneratorConfig) => {
-    const sourcesForBasemap = {
+    let sourcesForBasemap = {
       ...sources[config.basemap],
-      ...(config.labels ? sources[BasemapType.Labels] : {}),
+    }
+    if (config.labels) {
+      const labelSources = sources[BasemapType.Labels]
+      if (config.locale) {
+        labelSources.labels.tiles = [getLabelsTilesUrlByLocale(config.locale)]
+      }
+
+      sourcesForBasemap = {
+        ...sourcesForBasemap,
+        ...labelSources,
+      }
     }
     const styleSources = Object.keys(sourcesForBasemap).map((sourceId) => {
       const source = sourcesForBasemap[sourceId]

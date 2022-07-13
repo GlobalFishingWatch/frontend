@@ -1,4 +1,5 @@
 import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import { Locale } from '@globalfishingwatch/api-types'
 import { BasemapType } from '../types'
 import { Group, Dictionary } from '../../types'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
@@ -51,6 +52,10 @@ export const layers: Dictionary<LayerSpecification[]> = {
   ],
 }
 
+export const getLabelsTilesUrlByLocale = (locale: Locale = Locale.en) => {
+  return `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels_${locale}/tile?x={x}&y={y}&z={z}`
+}
+
 export const sources: Dictionary<Record<string, Partial<any>>> = {
   [BasemapType.Satellite]: {
     satellite: {
@@ -62,7 +67,7 @@ export const sources: Dictionary<Record<string, Partial<any>>> = {
   },
   [BasemapType.Labels]: {
     labels: {
-      tiles: [`${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels/tile?x={x}&y={y}&z={z}`],
+      tiles: [getLabelsTilesUrlByLocale()],
       type: 'raster',
       tileSize: 256,
       attribution: 'Google',
