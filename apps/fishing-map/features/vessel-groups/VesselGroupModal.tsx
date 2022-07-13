@@ -304,12 +304,12 @@ function VesselGroupModal(): React.ReactElement {
             loading={loading}
             tooltip={
               hasVesselsOverflow
-                ? t('veselGroup.tooManyVessels', {
+                ? t('vesselGroup.tooManyVessels', {
                     count: MAX_VESSEL_GROUP_VESSELS,
                     defaultValue: 'Maximum number of vessels is {{count}}',
                   })
                 : hasVesselGroupsVessels && groupName === ''
-                ? t('veselGroup.missingName', 'Vessel group name is mandatory')
+                ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
                 : ''
             }
           >
