@@ -47,7 +47,7 @@ import styles from './VesselGroupModal.module.css'
 export type CSV = Record<string, any>[]
 
 // Look for these ID columns by order of preference
-export const ID_COLUMN_LOOKUP: IdField[] = ['vesselId', 'mmsi', 'ssvid']
+export const ID_COLUMN_LOOKUP: IdField[] = ['vesselId', 'mmsi']
 
 const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
   id: key,
