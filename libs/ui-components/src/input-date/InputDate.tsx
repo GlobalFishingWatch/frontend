@@ -7,6 +7,7 @@ import styles from './InputDate.module.css'
 
 export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
+  invalid?: boolean
   label?: string
   htmlLabel?: JSX.Element
   max?: string
@@ -38,6 +39,8 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
 
   const labelContent = htmlLabel || label
 
+  const invalid = props.invalid === true || inputRef.current?.validity.valid === false
+
   return (
     <div className={cx(baseStyles.container, styles.container, styles[inputSize], className)}>
       {labelContent && <label htmlFor={label}>{labelContent}</label>}
@@ -45,7 +48,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
         type="date"
         value={yymmddDate}
         key={label || defaultKey}
-        className={styles.input}
+        className={cx(styles.input, { [styles.invalid]: invalid })}
         ref={inputRef}
         id={label}
         name={label}
@@ -58,10 +61,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
         {onRemove && value && (
           <IconButton icon="delete" className={styles.action} onClick={onRemove} />
         )}
-        <IconButton
-          icon="calendar"
-          type={!inputRef.current || inputRef.current.validity.valid ? 'default' : 'warning'}
-        />
+        <IconButton icon="calendar" type={invalid ? 'warning' : 'default'} />
       </div>
     </div>
   )
