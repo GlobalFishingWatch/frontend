@@ -12,6 +12,12 @@ export class GFW_API_CLASS_V2 extends GFW_API_CLASS {
 
   }
 
+  /**
+   * 
+   * @param url path to the endpoint
+   * @param version null to user the last version, '' to don't user version, 'vx' where x is a static version
+   * @returns path to the endpoint prefixed with the version
+   */
   generateUrl(url: string, version: string | null = null): string {
     return `${version === null ? '/' + LAST_API_VERSION : (version ? '/' + version : '')}${url}`
   }
