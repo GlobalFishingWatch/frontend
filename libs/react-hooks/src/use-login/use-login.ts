@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import {
-  GFWAPIV2,
+  GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
@@ -15,11 +15,11 @@ export interface GFWLoginHook {
 
 export const useGFWLoginRedirect = ({ logged, loading }: GFWLoginHook) => {
   if (logged === false && loading === false && typeof window !== 'undefined') {
-    window.location.href = GFWAPIV2.getLoginUrl(window.location.toString())
+    window.location.href = GFWAPI.getLoginUrl(window.location.toString())
   }
 }
 
-export const useGFWLogin = (APIClient: typeof GFWAPIV2 = GFWAPIV2): GFWLoginHook => {
+export const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => {
   const [state, setState] = useState<GFWLoginHook>({
     logged: false,
     loading: true,
