@@ -26,6 +26,8 @@ import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { RootState } from 'store'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 
+export const MAX_VESSEL_GROUP_VESSELS = 1000
+
 export type IdField = 'vesselId' | 'mmsi' | 'ssvid'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {

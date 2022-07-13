@@ -88,9 +88,7 @@ function VesselGroupVessels(): React.ReactElement {
   const newVesselGroupSearchVessels = useSelector(selectNewVesselGroupSearchVessels)
 
   const searchVesselsByMMSI = groupBy(vesselGroupSearchVessels, 'mmsi')
-  console.log(searchVesselsByMMSI)
   const newSearchVesselsByMMSI = groupBy(newVesselGroupSearchVessels, 'mmsi')
-  console.log(newSearchVesselsByMMSI)
   const dispatch = useAppDispatch()
 
   const onVesselRemoveClick = useCallback(
@@ -125,9 +123,9 @@ function VesselGroupVessels(): React.ReactElement {
         {Object.keys(newSearchVesselsByMMSI)?.length > 0 &&
           Object.keys(newSearchVesselsByMMSI).map((mmsi) => {
             const vessels = newSearchVesselsByMMSI[mmsi]
-            return vessels.map((vessel, i) => (
+            return vessels.map((vessel) => (
               <VesselGroupVesselRow
-                key={`${vessel.id}-${i}`}
+                key={`${vessel.id}-${vessel.dataset}`}
                 className={styles.new}
                 vessel={vessel}
                 onRemoveClick={(vessel) => onVesselRemoveClick(vessel, 'new')}
@@ -141,7 +139,7 @@ function VesselGroupVessels(): React.ReactElement {
               <Fragment>
                 {vessels.map((vessel, i) => (
                   <VesselGroupVesselRow
-                    key={`${vessel.id}-${i}`}
+                    key={`${vessel.id}-${vessel.dataset}`}
                     vessel={vessel}
                     onRemoveClick={onVesselRemoveClick}
                     className={i === vessels.length - 1 ? styles.border : ''}
