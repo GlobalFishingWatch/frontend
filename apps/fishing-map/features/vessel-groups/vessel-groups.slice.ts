@@ -28,7 +28,7 @@ import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
-export type IdField = 'vesselId' | 'mmsi' | 'ssvid'
+export type IdField = 'vesselId' | 'mmsi'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
@@ -172,6 +172,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
       const vesselGroupsParams = {
         ...(ids?.length && { ids }),
         cache: false,
+        ...DEFAULT_PAGINATION_PARAMS,
       }
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(
         `/${API_VERSION}/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'comma' })}`,
