@@ -274,6 +274,10 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupSearchId: (state, action: PayloadAction<IdField>) => {
       state.search.id = action.payload
     },
+    resetVesselGroupStatus: (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.search.status = AsyncReducerStatus.Idle
+    },
     setVesselGroupSearchVessels: (state, action: PayloadAction<Vessel[]>) => {
       state.search.vessels = action.payload
     },
@@ -291,6 +295,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     },
     resetVesselGroup: (state) => {
       // Using initialState doesn't work so needs manual reset
+      state.status = AsyncReducerStatus.Idle
       state.isModalOpen = false
       state.vesselGroupEditId = undefined
       state.currentDataviewId = undefined
@@ -356,6 +361,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
 
 export const {
   resetVesselGroup,
+  resetVesselGroupStatus,
   setVesselGroupEditId,
   setCurrentDataviewId,
   setVesselGroupVessels,

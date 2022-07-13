@@ -36,6 +36,7 @@ import {
   selectVesselGroupsStatus,
   selectVesselGroupsVessels,
   setVesselGroupSearchId,
+  resetVesselGroupStatus,
   setVesselGroupSearchVessels,
   updateVesselGroupThunk,
   searchVesselGroupsVesselsThunk,
@@ -114,7 +115,7 @@ function VesselGroupModal(): React.ReactElement {
   }, [dispatch])
 
   const onBackClick = useCallback(
-    (action: 'back' | 'close') => {
+    (action: 'back' | 'close' = 'back') => {
       const confirmed = window.confirm(
         t(
           'vesselGroup.confirmAbort',
@@ -125,6 +126,7 @@ function VesselGroupModal(): React.ReactElement {
         if (action === 'back') {
           setError('')
           dispatch(setVesselGroupSearchVessels(undefined))
+          dispatch(resetVesselGroupStatus(''))
         } else {
           close()
         }
