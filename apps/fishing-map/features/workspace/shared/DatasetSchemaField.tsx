@@ -53,7 +53,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
                 {' '}
                 {t(
                   'vesselGroup.timeRangeLimit',
-                  'Supported only by timeranges shorter than 30 days'
+                  'Supported only for time ranges shorter than 30 days'
                 )}
               </span>
             )}
