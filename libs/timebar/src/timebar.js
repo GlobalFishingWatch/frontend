@@ -451,7 +451,6 @@ Timebar.defaultProps = {
     zoomIn: 'Zoom in',
     zoomTo: 'Zoom to',
     zoomOut: 'Zoom out',
-    selectTimeRange: 'Select a time range',
   },
   bookmarkStart: null,
   bookmarkEnd: null,
