@@ -37,6 +37,5 @@
   "hour": "hora",
   "zoomIn": "Acercarse",
   "zoomTo": "Acercar a",
-  "zoomOut": "Alejarse",
-  "selectTimeRange": "Seleccione un intervalo de tiempo"
+  "zoomOut": "Alejarse"
 }
