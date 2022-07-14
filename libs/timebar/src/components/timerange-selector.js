@@ -68,20 +68,20 @@ class TimeRangeSelector extends Component {
   }
 
   onStartChange = (e, end) => {
-    if (!e.target.value || e.target.value === '') return
+    if (!e.target?.value || e.target?.value === '') return
     const start = dayjs([e.target.value, 'T00:00:00.000Z'].join('')).utc().toISOString()
     const valid = e.target.validity.valid
-    const beforeEnd = start < end
-    this.setState({ startValid: valid && beforeEnd })
+    const startBeforeEnd = start < end
+    this.setState({ startValid: valid && startBeforeEnd, endValid: startBeforeEnd })
     this.setState({ start })
   }
 
   onEndChange = (e, start) => {
-    if (!e.target.value || e.target.value === '') return
+    if (!e.target?.value || e.target?.value === '') return
     const end = dayjs([e.target.value, 'T00:00:00.000Z'].join('')).utc().toISOString()
     const valid = e.target.validity.valid
-    const afterStart = end > start
-    this.setState({ endValid: valid && afterStart })
+    const startBeforeEnd = start < end
+    this.setState({ endValid: valid && startBeforeEnd, startValid: startBeforeEnd })
     this.setState({ end })
   }
 
