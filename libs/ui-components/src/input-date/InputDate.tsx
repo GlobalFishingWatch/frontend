@@ -30,6 +30,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
     step,
     onRemove,
     inputSize = 'default',
+    invalid,
     ...rest
   } = props
   const inputRef = useRef<HTMLInputElement>(null)
@@ -39,7 +40,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
 
   const labelContent = htmlLabel || label
 
-  const invalid = props.invalid === true || inputRef.current?.validity.valid === false
+  const isInvalid = props.invalid === true || inputRef.current?.validity.valid === false
 
   return (
     <div className={cx(baseStyles.container, styles.container, styles[inputSize], className)}>
@@ -48,7 +49,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
         type="date"
         value={yymmddDate}
         key={label || defaultKey}
-        className={cx(styles.input, { [styles.invalid]: invalid })}
+        className={cx(styles.input, { [styles.invalid]: isInvalid })}
         ref={inputRef}
         id={label}
         name={label}
