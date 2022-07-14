@@ -16,5 +16,10 @@ export const sortFields = (a: Field, b: Field) => {
   if (typeof a.label === 'number' || typeof b.label === 'number') {
     return (a.label as number) - (b.label as number)
   }
+
+  if (typeof a.label === 'boolean' || typeof b.label === 'boolean') {
+    return 0
+  }
+
   return a.label.localeCompare(b.label)
 }

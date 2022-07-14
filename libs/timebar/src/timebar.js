@@ -413,7 +413,8 @@ Timebar.propTypes = {
   maximumRangeUnit: PropTypes.string,
   stickToUnit: PropTypes.func,
   showLastUpdate: PropTypes.bool,
-  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt']),
+  // val is used to live edit translations in crowdin
+  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt', 'val']),
 }
 
 Timebar.defaultProps = {
