@@ -17,7 +17,7 @@ import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import LocalStorageLoginLink from 'routes/LoginLink'
-import HintsHub from 'features/help/hints/HintsHub'
+import HintsHub from 'features/hints/HintsHub'
 import styles from './CategoryTabs.module.css'
 
 const FeedbackModal = dynamic(

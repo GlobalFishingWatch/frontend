@@ -7,7 +7,7 @@ import { InputDate, InputText, Select, Spinner } from '@globalfishingwatch/ui-co
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import Hint from 'features/help/hints/Hint'
+import Hint from 'features/hints/Hint'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import AnalysisRow from 'features/analysis/AnalysisRow'
 import { selectTimeComparisonValues } from 'features/analysis/analysis.selectors'
