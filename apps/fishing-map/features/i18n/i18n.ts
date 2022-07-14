@@ -6,6 +6,8 @@ import { Locale } from 'types'
 import { PATH_BASENAME } from 'routes/routes'
 import { WORKSPACE_ENV } from 'data/workspaces'
 
+export const CROWDIN_IN_CONTEXT_LANG = 'val'
+
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
   { id: Locale.es, label: 'Español' },
@@ -45,7 +47,7 @@ i18n
     ns: ['translations', 'flags', 'datasets', 'timebar'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
-    supportedLngs: Object.values(Locale),
+    supportedLngs: [...Object.values(Locale), CROWDIN_IN_CONTEXT_LANG],
     debug: process.env.i18n_DEBUG === 'true',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,

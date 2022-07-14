@@ -21,6 +21,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DateRange } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import GFWOnly from 'features/user/GFWOnly'
+import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
@@ -33,6 +34,7 @@ function DownloadTrackModal() {
   const { timerange } = useTimerangeConnect()
 
   const downloadTrackId = useSelector(selectDownloadTrackId)
+  const downloadModalOpen = useSelector(selectDownloadTrackModalOpen)
   const downloadTrackName = useSelector(selectDownloadTrackName)
   const downloadTrackDataset = useSelector(selectDownloadTrackDataset)
 
@@ -76,7 +78,7 @@ function DownloadTrackModal() {
           <GFWOnly />
         </Fragment>
       }
-      isOpen={downloadTrackId !== ''}
+      isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
     >
