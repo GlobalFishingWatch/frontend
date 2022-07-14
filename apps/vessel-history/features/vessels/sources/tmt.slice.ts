@@ -88,7 +88,7 @@ const vesselThunk: VesselAPIThunk = {
         reject('Missing vessel id to fetch data')
       })
     }
-    const url = `/${API_VERSION}/vessel-histories/${id}`
+    const url = `/vessel-histories/${id}`
 
     return await GFWAPI.fetch<TMTDetail>(url)
       .then(toVessel)

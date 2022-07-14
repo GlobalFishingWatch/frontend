@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { Fragment, useState } from 'react'
-import { GFWAPIV2 } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { getLoginUrl, redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { Button } from '@globalfishingwatch/ui-components'
 import Header from '../header/header'
@@ -9,11 +9,11 @@ import styles from './layout.module.css'
 
 export function Layout({ children }) {
   const [loading, setLoading] = useState(false)
-  const login = useGFWLogin(GFWAPIV2)
+  const login = useGFWLogin(GFWAPI)
 
   const onLogoutClick = () => {
     setLoading(true)
-    GFWAPIV2.logout().then(() => {
+    GFWAPI.logout().then(() => {
       setLoading(false)
       redirectToLogin()
     })

@@ -27,7 +27,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
     const dataset = await GFWAPI.fetch<Dataset>(
-      `/${API_VERSION}/datasets/${id}?include=endpoints&cache=false`
+      `/datasets/${id}?include=endpoints&cache=false`
     )
     return dataset
   } catch (e: any) {
@@ -51,7 +51,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
-        `/${API_VERSION}/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+        `/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
         { signal }
       ).then((d) => d.entries)
       const relatedDatasetsIds = initialDatasets.flatMap(
@@ -62,11 +62,11 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       // if no ids are specified, then do not get all the datasets
       const relatedDatasets = relatedWorkspaceParams.ids
         ? await GFWAPI.fetch<APIPagination<Dataset>>(
-            `/${API_VERSION}/datasets?${stringify(relatedWorkspaceParams, {
-              arrayFormat: 'comma',
-            })}`,
-            { signal }
-          ).then((d) => d.entries)
+          `/datasets?${stringify(relatedWorkspaceParams, {
+            arrayFormat: 'comma',
+          })}`,
+          { signal }
+        ).then((d) => d.entries)
         : []
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
 

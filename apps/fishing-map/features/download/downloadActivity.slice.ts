@@ -8,7 +8,6 @@ import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { API_VERSION } from 'data/config'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
 export type DateRange = {
@@ -75,7 +74,7 @@ export const downloadActivityThunk = createAsyncThunk<
       }
 
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`
-      const downloadUrl = `/${API_VERSION}/4wings/report?${stringify(downloadActivityParams, {
+      const downloadUrl = `/4wings/report?${stringify(downloadActivityParams, {
         arrayFormat: 'indices',
       })}`
 

@@ -76,7 +76,7 @@ const updateUserAdditionalFields = async (
 ) => {
   const data = { ...userAdditionalInformation }
   Object.keys(data).forEach((key) => data[key] === null && delete data[key])
-  const result = await GFWAPI.fetch(`/v2/auth/me`, {
+  const result = await GFWAPI.fetch(`/auth/me`, {
     method: 'PATCH',
     body: data as any,
   })

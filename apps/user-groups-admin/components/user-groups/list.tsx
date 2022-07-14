@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { GFWAPIV2 } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { UserGroup } from '@globalfishingwatch/api-types'
 import styles from './user-groups.module.css'
 
@@ -7,7 +7,7 @@ type UserGroupsListProps = { groupId: number; onGroupClick: (group: number) => v
 export function UserGroupsList({ groupId, onGroupClick }: UserGroupsListProps) {
   const [groups, setGroups] = useState<UserGroup[]>()
   const fetchGroups = async () => {
-    const userGroups = await GFWAPIV2.fetch<UserGroup[]>('/auth/user-groups',)
+    const userGroups = await GFWAPI.fetch<UserGroup[]>('/auth/user-groups',)
     setGroups(userGroups.sort((a, b) => a.name.localeCompare(b.name)))
   }
   useEffect(() => {

@@ -14,6 +14,9 @@ const API_GATEWAY =
   'https://gateway.api.dev.globalfishingwatch.org'
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
+export const LAST_API_VERSION = process.env.NEXT_PUBLIC_LAST_API_VERSION || 'v2'
+const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
+
 const AUTH_PATH = 'auth'
 
 export interface V2MessageError {
@@ -31,24 +34,26 @@ interface UserTokens {
   refreshToken: string
 }
 
-interface LibConfig {
-  debug?: boolean
-  baseUrl?: string
-  dataset?: string
-}
-
 interface LoginParams {
   accessToken?: string | null
   refreshToken?: string | null
 }
-
+export type ApiVersion = '' | 'v1' | 'v2'
 export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
+  version?: ApiVersion
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   responseType?: ResourceResponseType
   requestType?: ResourceRequestType
   dataset?: boolean
   body?: T
   local?: boolean
+}
+
+interface LibConfig {
+  version?: ApiVersion
+  debug?: boolean
+  baseUrl?: string
+  dataset?: string
 }
 
 const processStatus = (response: Response): Promise<Response> => {
@@ -95,6 +100,7 @@ export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloadin
 export class GFW_API_CLASS {
   debug: boolean
   token = ''
+  apiVersion: ApiVersion
   refreshToken = ''
   dataset = ''
   baseUrl: string
@@ -107,13 +113,15 @@ export class GFW_API_CLASS {
   status: RequestStatus = 'idle'
 
   constructor({
-    debug = false,
+    debug = DEBUG_API_REQUESTS,
     baseUrl = API_GATEWAY,
+    version = LAST_API_VERSION as ApiVersion,
     tokenStorageKey = USER_TOKEN_STORAGE_KEY,
     refreshTokenStorageKey = USER_REFRESH_TOKEN_STORAGE_KEY,
   } = {}) {
     this.debug = debug
     this.baseUrl = baseUrl
+    this.apiVersion = version
     this.storageKeys = { token: tokenStorageKey, refreshToken: refreshTokenStorageKey }
     if (isClientSide) {
       this.setToken(localStorage.getItem(tokenStorageKey) || '')
@@ -153,10 +161,15 @@ export class GFW_API_CLASS {
     }
   }
 
+  setDefaultApiVersion(version: ApiVersion) {
+    this.apiVersion = version
+  }
+
   setConfig(config: LibConfig) {
-    const { debug = this.debug, baseUrl = this.baseUrl, dataset = this.dataset } = config
+    const { debug = this.debug, baseUrl = this.baseUrl, dataset = this.dataset, version = this.apiVersion } = config
     this.debug = debug
     this.baseUrl = baseUrl
+    this.apiVersion = version
     this.dataset = dataset
   }
 
@@ -229,8 +242,16 @@ export class GFW_API_CLASS {
     return
   }
 
+  generateUrl(url: string, version?: ApiVersion): string {
+    if (isUrlAbsolute(url)) {
+      return url
+    }
+
+    return `${version === undefined ? '/' + this.apiVersion : (version ? '/' + version : '')}${url}`
+  }
+
   fetch<T>(url: string, options: FetchOptions = {}) {
-    return this._internalFetch<T>(url, options)
+    return this._internalFetch<T>(this.generateUrl(url, options.version), options)
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {

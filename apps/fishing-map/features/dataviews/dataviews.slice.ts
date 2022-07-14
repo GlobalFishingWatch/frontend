@@ -34,14 +34,14 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
-import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(`/${API_VERSION}/dataviews/${id}`)
+      const dataview = await GFWAPI.fetch<Dataview>(`/dataviews/${id}`)
       return dataview
     } catch (e: any) {
       console.warn(e)
@@ -70,7 +70,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const dataviewsResponse = await GFWAPI.fetch<APIPagination<Dataview>>(
-        `/${API_VERSION}/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
+        `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       if (
@@ -96,7 +96,7 @@ export const createDataviewThunk = createAsyncThunk<
   }
 >('dataviews/create', async (dataview, { rejectWithValue }) => {
   try {
-    const createdDataview = await GFWAPI.fetch<Dataview>(`/${API_VERSION}/dataviews`, {
+    const createdDataview = await GFWAPI.fetch<Dataview>(`/dataviews`, {
       method: 'POST',
       body: dataview as any,
     })
@@ -119,7 +119,7 @@ export const updateDataviewThunk = createAsyncThunk<
   async (partialDataview, { rejectWithValue }) => {
     try {
       const dataview = await GFWAPI.fetch<Dataview>(
-        `/${API_VERSION}/dataviews/${partialDataview.id}`,
+        `/dataviews/${partialDataview.id}`,
         {
           method: 'PATCH',
           body: partialDataview as any,

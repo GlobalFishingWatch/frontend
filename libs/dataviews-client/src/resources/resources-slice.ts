@@ -63,11 +63,12 @@ export const fetchResourceThunk = createAsyncThunk(
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
-      resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
+        resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
         ? 'vessel'
         : 'json'
 
-    const data = await GFWAPI.fetch(resource.url, { responseType, signal }).then((data: any) => {
+    // The urls has the version included so I need to remove them
+    const data = await GFWAPI.fetch(resource.url, { responseType, signal, version: '' }).then((data: any) => {
       // TODO Replace with enum?
       if (isTrackResource) {
         const fields = (

@@ -7,7 +7,6 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
-import { API_VERSION } from 'data/config'
 import { Format } from './downloadTrack.config'
 
 type VesselParams = {
@@ -58,12 +57,11 @@ export const downloadTrackThunk = createAsyncThunk<
       fields: 'lonlat,timestamp,speed,course',
     }
 
-    const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
-      downloadTrackParams['end-date']
-    }.${format}`
+    const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${downloadTrackParams['end-date']
+      }.${format}`
 
     const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
-      `/${API_VERSION}/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
+      `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
       {
         method: 'GET',
         responseType: 'blob',

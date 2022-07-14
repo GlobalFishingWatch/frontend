@@ -13,13 +13,13 @@ const getHistoryField = (data: GFWDetail, field: string, byCount: any[] = []) =>
   byCount: byCount,
   byDate: data[field]
     ? [
-        {
-          value: data[field],
-          endDate: data.lastTransmissionDate,
-          firstSeen: data.firstTransmissionDate,
-          source: VesselAPISource.GFW,
-        },
-      ]
+      {
+        value: data[field],
+        endDate: data.lastTransmissionDate,
+        firstSeen: data.firstTransmissionDate,
+        source: VesselAPISource.GFW,
+      },
+    ]
     : [],
 })
 
@@ -61,7 +61,7 @@ const vesselThunk: VesselAPIThunk = {
         reject('Missing vessel id or dataset to fetch data')
       })
     }
-    const url = `/${API_VERSION}/vessels/${id}?datasets=${dataset}`
+    const url = `/vessels/${id}?datasets=${dataset}`
     return await GFWAPI.fetch<GFWDetail>(url).then(toVessel)
   },
 }
