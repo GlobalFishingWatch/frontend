@@ -36,7 +36,7 @@ export interface Generator {
 }
 
 /**
- * Defines groups for layer order. See actual layer order in packages/layer-composer/src/transforms/sort/sort.ts
+ * Defines groups for layer order. See actual layer order in libs/layer-composer/src/transforms/sort/sort.ts
  */
 export enum Group {
   Background = 'background', // Solid bg color
