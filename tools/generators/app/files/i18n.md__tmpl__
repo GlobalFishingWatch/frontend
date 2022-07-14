@@ -18,7 +18,7 @@ To handle translations we use [Crowdin](https://crowdin.com/project/gfw-frontend
 
 Developers don't need to update the translations for each language directly, only the source/[namespace].json files.
 
-For shared translations there is a [i18n-labels](../../packages/i18n-labels) package which includes all of the:
+For shared translations there is a [i18n-labels](../../libs/i18n-labels) package which includes all of the:
 
 - datasets
 - flags
