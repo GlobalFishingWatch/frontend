@@ -18,7 +18,8 @@ import { selectDownloadActivityAreaKey } from 'features/download/downloadActivit
 import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import GFWOnly from 'features/user/GFWOnly'
-import styles from './App.module.css'
+import { selectAnyAppModalOpen } from 'features/modals/modals.selectors'
+import styles from './Modals.module.css'
 
 const BigQueryMenu = dynamic(
   () => import(/* webpackChunkName: "BigQueryMenu" */ 'features/bigquery/BigQuery')
@@ -83,6 +84,7 @@ const AppModals = () => {
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
   const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
   const downloadTrackId = useSelector(selectDownloadTrackId)
+  const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
 
   const locationIsMarineManager =
@@ -112,7 +114,7 @@ const AppModals = () => {
               <GFWOnly />
             </Fragment>
           }
-          isOpen={debugActive}
+          isOpen={debugActive && !anyAppModalOpen}
           shouldCloseOnEsc
           onClose={dispatchToggleDebugMenu}
         >
@@ -128,7 +130,7 @@ const AppModals = () => {
               <GFWOnly />
             </Fragment>
           }
-          isOpen={editorActive}
+          isOpen={editorActive && !anyAppModalOpen}
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
         >
@@ -144,7 +146,7 @@ const AppModals = () => {
               <GFWOnly />
             </Fragment>
           }
-          isOpen={bigqueryActive}
+          isOpen={bigqueryActive && !anyAppModalOpen}
           onClose={dispatchBigQueryMenu}
           contentClassName={styles.bqModal}
         >

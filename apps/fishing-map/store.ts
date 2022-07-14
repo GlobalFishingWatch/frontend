@@ -11,8 +11,9 @@ import debugReducer from './features/debug/debug.slice'
 import downloadActivityReducer from './features/download/downloadActivity.slice'
 import downloadTrackReducer from './features/download/downloadTrack.slice'
 import editorReducer from './features/editor/editor.slice'
-import hintsReducer from './features/help/hints/hints.slice'
+import hintsReducer from './features/hints/hints.slice'
 import mapReducer from './features/map/map.slice'
+import modalsReducer from './features/modals/modals.slice'
 import resourcesReducer from './features/resources/resources.slice'
 import rulersReducer from './features/map/rulers/rulers.slice'
 import searchReducer from './features/search/search.slice'
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
   hints: hintsReducer,
   location,
   map: mapReducer,
+  modals: modalsReducer,
   resources: resourcesReducer,
   rulers: rulersReducer,
   search: searchReducer,
