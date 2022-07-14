@@ -20,6 +20,8 @@ import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
@@ -42,7 +44,8 @@ const MapControls = ({
   onMouseEnter: () => void
 }): React.ReactElement => {
   const { t } = useTranslation()
-  const [modalOpen, setModalOpen] = useState(false)
+  const dispatch = useAppDispatch()
+  const modalOpen = useSelector(selectScreenshotModalOpen)
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const timeoutRef = useRef<NodeJS.Timeout>()
@@ -87,7 +90,7 @@ const MapControls = ({
 
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })
-    setModalOpen(true)
+    dispatch(setModalOpen({ id: 'screenshot', open: true }))
     resetPreviewImage()
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -104,14 +107,14 @@ const MapControls = ({
         }, MAP_IMAGE_DEBOUNCE + 400)
       }
     }, 100)
-  }, [dispatchQueryParams, resetPreviewImage, generatePreviewImage])
+  }, [dispatchQueryParams, dispatch, resetPreviewImage, generatePreviewImage])
 
   const handleModalClose = useCallback(() => {
     if (domElement.current) {
       domElement.current.classList.remove('printing')
     }
-    setModalOpen(false)
-  }, [])
+    dispatch(setModalOpen({ id: 'feedback', open: false }))
+  }, [dispatch])
 
   const onPDFDownloadClick = useCallback(() => {
     handleModalClose()

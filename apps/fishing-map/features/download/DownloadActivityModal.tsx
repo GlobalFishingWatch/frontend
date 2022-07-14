@@ -32,7 +32,10 @@ import {
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDownloadActivityArea } from 'features/download/download.selectors'
+import {
+  selectDownloadActivityArea,
+  selectDownloadActivityModalOpen,
+} from 'features/download/download.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import styles from './DownloadModal.module.css'
@@ -147,6 +150,7 @@ function DownloadActivityModal() {
   )
 
   const areaKey = useSelector(selectDownloadActivityAreaKey)
+  const downloadModalOpen = useSelector(selectDownloadActivityModalOpen)
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaName = downloadArea?.name
   const downloadAreaGeometry = downloadArea?.geometry
@@ -255,7 +259,7 @@ function DownloadActivityModal() {
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={`${t('download.title', 'Download')} - ${t('download.activity', 'Activity')}`}
-      isOpen={areaKey !== ''}
+      isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
     >
