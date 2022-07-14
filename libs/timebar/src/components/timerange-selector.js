@@ -125,7 +125,7 @@ class TimeRangeSelector extends Component {
               <InputDate
                 value={mEnd.toISOString().slice(0, 10)}
                 invalid={!endValid}
-                onChange={(e) => this.onEndChange(start)}
+                onChange={(e) => this.onEndChange(e, start)}
                 min={bounds.min}
                 max={bounds.max}
                 className={styles.input}
