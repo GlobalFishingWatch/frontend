@@ -1882,7 +1882,7 @@
     "schema": {}
   },
   "public-high-seas": {
-    "name": "High seas pockets",
+    "name": "Alta mar",
     "description": "El alta mar es cualquier área de la columna de agua del océano más allá de las aguas jurisdiccionales. Estos puntos pueden ser difíciles de distinguir de las múltiples jurisdicciones de la ZEE que los rodean, por lo que tenemos una capa que los resalta.",
     "schema": {}
   },
@@ -2031,7 +2031,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs (Source: WDPA)",
+    "name": "AMPs (Fuente: WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: March 2022.",
     "schema": {}
   },
@@ -2351,7 +2351,7 @@
     "schema": {}
   },
   "public-tuna-rfmo": {
-    "name": "RFMOs (Source: FAO)",
+    "name": "OROPs (Fuente: FAO)",
     "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations.",
     "schema": {}
   },
