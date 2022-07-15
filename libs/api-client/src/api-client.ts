@@ -246,7 +246,7 @@ export class GFW_API_CLASS {
     if (isUrlAbsolute(url)) {
       return url
     }
-    if (url.startsWith('/v2/' || url.startsWith('/v1/'))) {
+    if (url.startsWith('/v2/') || url.startsWith('/v1/')) {
       return absolute ? `${this.baseUrl}${url}` : url
     }
     const apiVersion = version ?? this.apiVersion
