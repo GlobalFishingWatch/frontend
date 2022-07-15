@@ -26,7 +26,7 @@
     "deleteBookmark": "Hapus penanda rentang waktu"
   },
   "trackEvents": {
-    "events": "events"
+    "events": "peristiwa"
   },
   "dragLabel": "Seret untuk mengubah rentang waktu",
   "lastUpdate": "Pembaharuan terakhir",
@@ -36,6 +36,6 @@
   "month": "bulan",
   "hour": "jam",
   "zoomIn": "Perbesar",
-  "zoomTo": "Memperbesar",
+  "zoomTo": "Perbesar ke",
   "zoomOut": "Perkecil"
 }
