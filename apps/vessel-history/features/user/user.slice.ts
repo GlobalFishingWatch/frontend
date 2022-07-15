@@ -4,6 +4,7 @@ import {
   GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
+  GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { RootState } from 'store'
@@ -19,8 +20,6 @@ const initialState: UserState = {
   status: AsyncReducerStatus.Idle,
   data: null,
 }
-
-export const GUEST_USER_TYPE = 'guest'
 
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',

@@ -3,6 +3,7 @@ import {
   GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
+  GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
@@ -21,7 +22,6 @@ const initialState: UserState = {
   data: null,
 }
 
-export const GUEST_USER_TYPE = 'guest'
 export const GFW_GROUP_ID = 'GFW Staff'
 export const GFW_DEV_GROUP_ID = 'development-group'
 export const ADMIN_GROUP_ID = 'admin-group'
@@ -37,19 +37,11 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'Belize',
 ]
 
-export const fetchGuestUser = async () => {
-  const permissions = await fetch(`${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`).then(
-    (r) => r.json()
-  )
-  const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
-  return user
-}
-
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
   async ({ guest }: { guest: boolean } = { guest: false }) => {
     if (guest) {
-      return await fetchGuestUser()
+      return await GFWAPI.fetchGuestUser()
     }
     const accessToken = getAccessTokenFromUrl()
     if (accessToken) {
@@ -59,7 +51,7 @@ export const fetchUserThunk = createAsyncThunk(
     try {
       return await GFWAPI.login({ accessToken })
     } catch (e: any) {
-      return await fetchGuestUser()
+      return await GFWAPI.fetchGuestUser()
     }
   }
 )

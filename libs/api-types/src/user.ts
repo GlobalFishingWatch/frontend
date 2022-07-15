@@ -62,3 +62,15 @@ export interface UserData {
   pullingDataOtherAPIS?: string
   apiTerms?: string
 }
+
+export interface UserFetchResponse {
+  offset: number
+  metadata: any
+  total: number
+  limit: number | null
+  nextOffset: number
+}
+
+export interface UserPermissionsFetchResponse extends UserFetchResponse {
+  entries: UserPermission[]
+}

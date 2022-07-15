@@ -1,3 +1,5 @@
+import { UserFetchResponse, UserPermission } from "./user"
+
 type Narrowable = string | number | boolean | symbol | void | null | undefined
 const tuple = <T extends Narrowable[]>(...args: T) => args
 
@@ -18,4 +20,8 @@ export interface UserApplication {
   createdAt: string
   token: string
   userId: number
+}
+
+export interface UserApplicationFetchResponse extends UserFetchResponse {
+  entries: UserApplication[]
 }

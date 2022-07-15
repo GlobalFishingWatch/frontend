@@ -9,8 +9,6 @@ import {
 } from '@globalfishingwatch/api-client'
 import { UserApiAdditionalInformation, UserPermission } from '@globalfishingwatch/api-types'
 
-export const GUEST_USER_TYPE = 'guest'
-
 const fetchUser = async (accessToken) => {
   if (accessToken) {
     removeAccessTokenFromUrl()
