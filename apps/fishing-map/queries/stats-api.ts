@@ -47,7 +47,6 @@ export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
   serializeQueryArgs: serializeStatsDataviewKey,
   baseQuery: gfwBaseQuery({
-    // TODO 1?
     baseUrl: `/4wings/stats`,
   }),
   endpoints: (builder) => ({

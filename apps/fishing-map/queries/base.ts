@@ -1,7 +1,6 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 
-// TODO 2?
 export const gfwBaseQuery =
   (
     { baseUrl }: { baseUrl: string } = { baseUrl: '' }
