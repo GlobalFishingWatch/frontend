@@ -14,15 +14,15 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { Bbox } from '@globalfishingwatch/data-transforms'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-import Hint from 'features/help/hints/Hint'
-import { setHintDismissed } from 'features/help/hints/hints.slice'
+import Hint from 'features/hints/Hint'
+import { setHintDismissed } from 'features/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
@@ -31,6 +31,9 @@ import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAux
 import { SAR_DATAVIEW_ID } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import { getTimeRangeDuration } from 'utils/dates'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -162,6 +165,11 @@ function ActivityLayerPanel({
   const statsValue = stats && (stats.vessel_id || stats.id)
   const showStats = duration?.years <= 1
 
+  const fitMapBounds = useMapFitBounds()
+  const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
+  const onFitBoundsHandle = () => {
+    fitMapBounds(statsBbox, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+  }
   return (
     <div
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
@@ -208,6 +216,16 @@ function ActivityLayerPanel({
                     )}
                   </div>
                 </ExpandedContainer>
+              )}
+              {layerActive && statsBbox && (
+                <IconButton
+                  icon="target"
+                  tooltip={t('layer.activity_fit_bounds', 'Center view on activity')}
+                  loading={isFetching}
+                  tooltipPlacement="top"
+                  size="small"
+                  onClick={onFitBoundsHandle}
+                />
               )}
               <InfoModal
                 dataview={dataview}
@@ -264,7 +282,8 @@ function ActivityLayerPanel({
                         )}
                         {stats.type === 'vessels' &&
                           stats.flag > 0 &&
-                          dataview.config?.filters?.flag?.length > 1 && (
+                          (!dataview.config?.filters?.flag ||
+                            dataview.config?.filters?.flag.length > 1) && (
                             <Fragment>
                               <span> {t('common.from', 'from')} </span>
                               <span>

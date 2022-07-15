@@ -114,7 +114,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const onSeeVesselClick = useCallback(() => {
     const parsedSelectedVessels = getListOfSelectedVessels()
     const selectedVessel = parsedSelectedVessels[0]
-    if (selectedVessel) openVesselProfile(selectedVessel)
+    const akaVessels = parsedSelectedVessels
+      .slice(1)
+      .map((akaVessel) =>
+        formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
+      )
+    if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
   }, [openVesselProfile, selectedVessels, vessels])
 
   const onMergeVesselClick = useCallback(() => {

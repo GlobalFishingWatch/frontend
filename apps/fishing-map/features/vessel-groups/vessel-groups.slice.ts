@@ -22,11 +22,13 @@ import {
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { API_VERSION } from 'data/config'
+import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { RootState } from 'store'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 
-export type IdField = 'vesselId' | 'mmsi' | 'ssvid'
+export const MAX_VESSEL_GROUP_VESSELS = 1000
+
+export type IdField = 'vesselId' | 'mmsi'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
@@ -77,7 +79,8 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     const vesselGroupDatasets = uniq(vessels?.flatMap((v) => v.dataset || []))
     const allVesselDatasets = selectVesselsDatasets(state)
     const advancedSearchDatasets = (selectAllSearchDatasetsByType('advanced')(state) || []).filter(
-      (d) => d.status !== DatasetStatus.Deleted
+      (d) =>
+        d.status !== DatasetStatus.Deleted && d.alias?.some((alias) => alias.includes(':latest'))
     )
     const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
     const searchDatasets = vesselGroupDatasets?.length
@@ -106,6 +109,14 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
                 id: 'query',
                 value: advancedSearchQuery,
               },
+          {
+            id: 'limit',
+            value: DEFAULT_PAGINATION_PARAMS.limit,
+          },
+          {
+            id: 'offset',
+            value: DEFAULT_PAGINATION_PARAMS.offset,
+          },
         ],
       }
       try {
@@ -161,6 +172,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
       const vesselGroupsParams = {
         ...(ids?.length && { ids }),
         cache: false,
+        ...DEFAULT_PAGINATION_PARAMS,
       }
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(
         `/${API_VERSION}/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'comma' })}`,
@@ -184,7 +196,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
 export const fetchUserVesselGroupsThunk = createAsyncThunk(
   'vessel-groups/fetch',
   async () => {
-    const url = `/${API_VERSION}/vessel-groups`
+    const url = `/${API_VERSION}/vessel-groups?${stringify(DEFAULT_PAGINATION_PARAMS)}`
     const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url)
     return vesselGroups.entries
   },
@@ -263,6 +275,10 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupSearchId: (state, action: PayloadAction<IdField>) => {
       state.search.id = action.payload
     },
+    resetVesselGroupStatus: (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.search.status = AsyncReducerStatus.Idle
+    },
     setVesselGroupSearchVessels: (state, action: PayloadAction<Vessel[]>) => {
       state.search.vessels = action.payload
     },
@@ -280,6 +296,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     },
     resetVesselGroup: (state) => {
       // Using initialState doesn't work so needs manual reset
+      state.status = AsyncReducerStatus.Idle
       state.isModalOpen = false
       state.vesselGroupEditId = undefined
       state.currentDataviewId = undefined
@@ -345,6 +362,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
 
 export const {
   resetVesselGroup,
+  resetVesselGroupStatus,
   setVesselGroupEditId,
   setCurrentDataviewId,
   setVesselGroupVessels,

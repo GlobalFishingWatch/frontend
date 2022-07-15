@@ -48,6 +48,11 @@ export const DEFAULT_TIME_RANGE = {
   end: LAST_DATA_UPDATE,
 }
 
+export const DEFAULT_PAGINATION_PARAMS = {
+  limit: 99999,
+  offset: 0,
+}
+
 export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
 
 export const FIRST_YEAR_OF_DATA = 2012

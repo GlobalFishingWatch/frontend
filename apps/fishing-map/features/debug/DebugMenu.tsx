@@ -5,6 +5,7 @@ import { selectLocationQuery } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBasemapDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { useMapStyle } from 'features/map/map-style.hooks'
+import i18n from 'features/i18n/i18n'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
@@ -69,6 +70,7 @@ const DebugMenu: React.FC = () => {
                   id: basemapDataviewInstance.id as string,
                   config: {
                     labels: !basemapDataviewInstance?.config?.labels,
+                    locale: i18n.language,
                   },
                 })
               }

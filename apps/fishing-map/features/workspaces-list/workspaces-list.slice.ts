@@ -16,7 +16,7 @@ import {
   AsyncError,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { API_VERSION, APP_NAME } from 'data/config'
+import { API_VERSION, APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
@@ -39,7 +39,7 @@ export const fetchWorkspacesThunk = createAsyncThunk<
   async ({ app = APP_NAME, ids, userId } = {}, { getState, rejectWithValue }) => {
     const state = getState() as RootState
     const defaultWorkspaceLoaded = selectWorkspaceById(DEFAULT_WORKSPACE_ID)(state) !== undefined
-    const workspacesParams = { app, ids, 'owner-id': userId }
+    const workspacesParams = { app, ids, 'owner-id': userId, ...DEFAULT_PAGINATION_PARAMS }
     try {
       const workspaces = await GFWAPI.fetch<APIPagination<AppWorkspace>>(
         `/${API_VERSION}/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`

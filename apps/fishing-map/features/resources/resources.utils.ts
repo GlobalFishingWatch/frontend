@@ -1,9 +1,14 @@
 import { FeatureCollection } from 'geojson'
-import { EndpointId, ThinningConfig } from '@globalfishingwatch/api-types'
+import {
+  DataviewDatasetConfigParam,
+  EndpointId,
+  ThinningConfig,
+} from '@globalfishingwatch/api-types'
 import { getTracksChunkSetId } from '@globalfishingwatch/dataviews-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 export const trackDatasetConfigsCallback = (
@@ -73,12 +78,22 @@ export const trackDatasetConfigsCallback = (
           return trackChunk
         })
       }
+      const allEvents = events.map((event) => ({
+        ...event,
+        query: [
+          ...(Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
+            id,
+            value,
+          })) as DataviewDatasetConfigParam[]),
+          ...event?.query,
+        ],
+      }))
       // Clean resources when mandatory vesselId is missing
       // needed for vessels with no info datasets (zebraX)
       const vesselData = hasDatasetConfigVesselData(info)
       return [
         ...allTracks,
-        ...events,
+        ...allEvents,
         ...(vesselData ? [info] : []),
         ...(trackGraph ? [trackGraph] : []),
       ]

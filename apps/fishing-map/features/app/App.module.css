@@ -11,11 +11,3 @@
 .withTimebar {
   height: calc(100vh - var(--footer-height) - var(--timebar-height));
 }
-
-.editorModal {
-  height: 60rem;
-}
-
-.bqModal {
-  height: 56rem;
-}

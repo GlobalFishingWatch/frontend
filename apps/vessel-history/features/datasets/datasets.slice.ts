@@ -16,7 +16,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { API_VERSION } from 'data/config'
+import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
@@ -48,6 +48,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         ...(uniqIds?.length && { ids: uniqIds }),
         include: 'endpoints',
         cache: process.env.NODE_ENV !== 'development',
+        ...DEFAULT_PAGINATION_PARAMS,
       }
       const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
         `/${API_VERSION}/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,

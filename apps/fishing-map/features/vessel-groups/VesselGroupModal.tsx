@@ -18,6 +18,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectAllVesselGroupSearchVessels,
   selectHasVesselGroupSearchVessels,
+  selectHasVesselGroupVesselsOverflow,
 } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
@@ -35,16 +36,18 @@ import {
   selectVesselGroupsStatus,
   selectVesselGroupsVessels,
   setVesselGroupSearchId,
+  resetVesselGroupStatus,
   setVesselGroupSearchVessels,
   updateVesselGroupThunk,
   searchVesselGroupsVesselsThunk,
+  MAX_VESSEL_GROUP_VESSELS,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
 export type CSV = Record<string, any>[]
 
 // Look for these ID columns by order of preference
-export const ID_COLUMN_LOOKUP: IdField[] = ['vesselId', 'mmsi', 'ssvid']
+export const ID_COLUMN_LOOKUP: IdField[] = ['vesselId', 'mmsi']
 
 const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
   id: key,
@@ -76,6 +79,7 @@ function VesselGroupModal(): React.ReactElement {
   const [showBackButton, setShowBackButton] = useState(false)
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const vesselGroupSearchVessels = useSelector(selectAllVesselGroupSearchVessels)
+  const hasVesselsOverflow = useSelector(selectHasVesselGroupVesselsOverflow)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -111,7 +115,7 @@ function VesselGroupModal(): React.ReactElement {
   }, [dispatch])
 
   const onBackClick = useCallback(
-    (action: 'back' | 'close') => {
+    (action: 'back' | 'close' = 'back') => {
       const confirmed = window.confirm(
         t(
           'vesselGroup.confirmAbort',
@@ -122,6 +126,7 @@ function VesselGroupModal(): React.ReactElement {
         if (action === 'back') {
           setError('')
           dispatch(setVesselGroupSearchVessels(undefined))
+          dispatch(resetVesselGroupStatus(''))
         } else {
           close()
         }
@@ -253,6 +258,11 @@ function VesselGroupModal(): React.ReactElement {
       </div>
       {!editingVesselGroup && (
         <div className={styles.modalFooter}>
+          {vesselGroupSearchVessels?.length > 0 && (
+            <label>
+              {t('common.vessel_other', 'Vessels')}: {vesselGroupSearchVessels.length}
+            </label>
+          )}
           <SwitchRow
             className={styles.row}
             label={t(
@@ -272,15 +282,6 @@ function VesselGroupModal(): React.ReactElement {
               {t('errors.genericShort', 'Something went wrong')}
             </span>
           )}
-          <span className={styles.hint}>
-            <a
-              href="https://globalfishingwatch.org/article-categories/reference-layers/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('dataset.hint', 'Find out more about the supported formats')}
-            </a>
-          </span>
         </div>
         {hasVesselGroupsVessels && showBackButton && (
           <Button
@@ -294,10 +295,23 @@ function VesselGroupModal(): React.ReactElement {
         {!fullModalLoading && (
           <Button
             disabled={
-              loading || searchVesselStatus === AsyncReducerStatus.Error || groupName === ''
+              loading ||
+              hasVesselsOverflow ||
+              searchVesselStatus === AsyncReducerStatus.Error ||
+              (hasVesselGroupsVessels && groupName === '')
             }
             onClick={hasVesselGroupsVessels ? onCreateGroupClick : onSearchVesselsClick}
             loading={loading}
+            tooltip={
+              hasVesselsOverflow
+                ? t('vesselGroup.tooManyVessels', {
+                    count: MAX_VESSEL_GROUP_VESSELS,
+                    defaultValue: 'Maximum number of vessels is {{count}}',
+                  })
+                : hasVesselGroupsVessels && groupName === ''
+                ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
+                : ''
+            }
           >
             {hasVesselGroupsVessels
               ? t('common.confirm', 'Confirm')

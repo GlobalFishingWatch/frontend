@@ -9,7 +9,12 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
-export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel'
+export type WorkspaceStateProperty =
+  | 'q'
+  | 'dataviewInstances'
+  | 'version'
+  | 'vessel'
+  | 'timebarGraph'
 export type WorkspaceOfflineOptions = 'offline'
 export type WorkspaceAdvancedSearchParam =
   | 'imo'
@@ -46,6 +51,7 @@ export type WorkspaceState = {
   version?: string
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string
+  timebarGraph?: TimebarGraphs
 }
 
 export type RedirectParam = {
@@ -245,3 +251,9 @@ export interface SearchResults {
 }
 
 export type VisibleEvents = EventType[] | 'all' | 'none'
+
+export enum TimebarGraphs {
+  Speed = 'speed',
+  Depth = 'elevation',
+  None = 'none',
+}

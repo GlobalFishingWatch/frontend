@@ -27,7 +27,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
-import { setHintDismissed } from 'features/help/hints/hints.slice'
+import { setHintDismissed } from 'features/hints/hints.slice'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,

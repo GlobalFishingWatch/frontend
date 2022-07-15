@@ -7,6 +7,7 @@ import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import {
+  MAX_VESSEL_GROUP_VESSELS,
   selectNewVesselGroupSearchVessels,
   selectVesselGroupSearchVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
@@ -16,6 +17,13 @@ export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
   (vessels = [], newVessels = []) => {
     return [...newVessels, ...vessels]
+  }
+)
+
+export const selectHasVesselGroupVesselsOverflow = createSelector(
+  [selectAllVesselGroupSearchVessels],
+  (vessels = []) => {
+    return vessels.length > MAX_VESSEL_GROUP_VESSELS
   }
 )
 

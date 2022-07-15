@@ -26,6 +26,8 @@ export const useSecretKeyboardCombo = ({ key, onToggle, repeatNumber = 7 }: Secr
         debugKeyDownInterval.current = window.setTimeout(() => {
           numTimesDebugKeyDown.current = 0
         }, 2000)
+      } else {
+        numTimesDebugKeyDown.current = 0
       }
       if (numTimesDebugKeyDown.current === repeatNumber) {
         onToggle()

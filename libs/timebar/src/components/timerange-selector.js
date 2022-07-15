@@ -7,8 +7,6 @@ import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
 import styles from './timerange-selector.module.css'
 
-const ONE_DAY_MS = 1000 * 60 * 60 * 24 - 1
-
 class TimeRangeSelector extends Component {
   constructor(props) {
     super(props)
@@ -50,10 +48,7 @@ class TimeRangeSelector extends Component {
 
   componentDidMount() {
     const { start, end } = this.props
-    this.setState({
-      start,
-      end,
-    })
+    this.setState({ start, end })
   }
 
   submit(start, end) {
@@ -69,27 +64,25 @@ class TimeRangeSelector extends Component {
     const { latestAvailableDataDate } = this.props
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
     this.setState({ currentLastXSelectedOption: option })
-    this.setState({
-      start,
-      end,
-    })
+    this.setState({ start, end })
   }
 
-  onStartChange = (e) => {
-    this.setState({ startValid: e.target.validity.valid })
-    if (!e.target.value || e.target.value === '') return
+  onStartChange = (e, end) => {
+    if (!e.target?.value || e.target?.value === '') return
     const start = dayjs([e.target.value, 'T00:00:00.000Z'].join('')).utc().toISOString()
-    this.setState({
-      start,
-    })
+    const valid = e.target.validity.valid
+    const startBeforeEnd = start < end
+    this.setState({ startValid: valid && startBeforeEnd, endValid: startBeforeEnd })
+    this.setState({ start })
   }
-  onEndChange = (e) => {
-    this.setState({ endValid: e.target.validity.valid })
-    if (!e.target.value || e.target.value === '') return
+
+  onEndChange = (e, start) => {
+    if (!e.target?.value || e.target?.value === '') return
     const end = dayjs([e.target.value, 'T00:00:00.000Z'].join('')).utc().toISOString()
-    this.setState({
-      end,
-    })
+    const valid = e.target.validity.valid
+    const startBeforeEnd = start < end
+    this.setState({ endValid: valid && startBeforeEnd, startValid: startBeforeEnd })
+    this.setState({ end })
   }
 
   render() {
@@ -101,21 +94,13 @@ class TimeRangeSelector extends Component {
     }
 
     const bounds = {
-      start: {
-        min: dayjs(getTime(absoluteStart)).toISOString().slice(0, 10),
-        max: dayjs(getTime(end) - ONE_DAY_MS)
-          .toISOString()
-          .slice(0, 10),
-      },
-      end: {
-        min: dayjs(getTime(start) + ONE_DAY_MS)
-          .toISOString()
-          .slice(0, 10),
-        max: dayjs(getTime(absoluteEnd)).toISOString().slice(0, 10),
-      },
+      min: dayjs(getTime(absoluteStart)).toISOString().slice(0, 10),
+      max: dayjs(getTime(absoluteEnd)).toISOString().slice(0, 10),
     }
+
     const mStart = dayjs(start).utc()
     const mEnd = dayjs(end).utc()
+    const disabled = !startValid || !endValid
 
     return (
       <div className={styles.TimeRangeSelector}>
@@ -127,9 +112,10 @@ class TimeRangeSelector extends Component {
               <span className={styles.selectorLabel}>{labels.start}</span>
               <InputDate
                 value={mStart.toISOString().slice(0, 10)}
-                onChange={this.onStartChange}
-                min={bounds.start.min}
-                max={bounds.start.max}
+                invalid={!startValid}
+                onChange={(e) => this.onStartChange(e, end)}
+                min={bounds.min}
+                max={bounds.max}
                 className={styles.input}
                 required
               />
@@ -138,9 +124,10 @@ class TimeRangeSelector extends Component {
               <span className={styles.selectorLabel}>{labels.end}</span>
               <InputDate
                 value={mEnd.toISOString().slice(0, 10)}
-                onChange={this.onEndChange}
-                min={bounds.end.min}
-                max={bounds.end.max}
+                invalid={!endValid}
+                onChange={(e) => this.onEndChange(e, start)}
+                min={bounds.min}
+                max={bounds.max}
                 className={styles.input}
                 required
               />
@@ -159,7 +146,8 @@ class TimeRangeSelector extends Component {
 
             <button
               type="button"
-              className={classNames(styles.cta, { [styles.disabled]: !startValid || !endValid })}
+              disabled={disabled}
+              className={classNames(styles.cta, { [styles.disabled]: disabled })}
               onClick={() => {
                 this.submit(start, end)
               }}
