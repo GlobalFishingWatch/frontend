@@ -199,6 +199,7 @@ export const useFeatureState = (map?: Map) => {
   return featureState
 }
 
+export type MapInteractionType = 'deck' | 'maplibre'
 export const useMapClick = (
   clickCallback: InteractionEventCallback,
   metadata: ExtendedStyleMeta,
@@ -206,7 +207,8 @@ export const useMapClick = (
 ) => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
-    (event: MapLayerMouseEvent) => {
+    (event: MapLayerMouseEvent, type: MapInteractionType = 'maplibre') => {
+      console.log('TODO: handle intereaction by different type:', type)
       cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
