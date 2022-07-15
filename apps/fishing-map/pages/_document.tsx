@@ -12,8 +12,6 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <meta charSet="utf-8" />
-          <title>GFW | Map</title>
-
           <meta
             property="og:description"
             content="The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea."
@@ -26,7 +24,6 @@ class MyDocument extends Document {
             name="description"
             content="The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea."
           />
-          <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
           <link rel="shortcut icon" href={`${PATH_BASENAME}/icons/favicon.ico`} />
           <link
             rel="icon"
