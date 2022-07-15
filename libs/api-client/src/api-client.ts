@@ -44,7 +44,6 @@ export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   responseType?: ResourceResponseType
   requestType?: ResourceRequestType
-  dataset?: boolean
   body?: T
   local?: boolean
 }
@@ -53,7 +52,6 @@ interface LibConfig {
   version?: ApiVersion
   debug?: boolean
   baseUrl?: string
-  dataset?: string
 }
 
 const processStatus = (response: Response): Promise<Response> => {
@@ -102,7 +100,6 @@ export class GFW_API_CLASS {
   token = ''
   apiVersion: ApiVersion
   refreshToken = ''
-  dataset = ''
   baseUrl: string
   storageKeys: {
     token: string
@@ -166,11 +163,10 @@ export class GFW_API_CLASS {
   }
 
   setConfig(config: LibConfig) {
-    const { debug = this.debug, baseUrl = this.baseUrl, dataset = this.dataset, version = this.apiVersion } = config
+    const { debug = this.debug, baseUrl = this.baseUrl, version = this.apiVersion } = config
     this.debug = debug
     this.baseUrl = baseUrl
     this.apiVersion = version
-    this.dataset = dataset
   }
 
   getToken() {
@@ -246,6 +242,9 @@ export class GFW_API_CLASS {
     if (isUrlAbsolute(url)) {
       return url
     }
+    if (url.startsWith('/v1') || url.startsWith('/v2')) {
+      return url
+    }
 
     return `${version === undefined ? '/' + this.apiVersion : (version ? '/' + version : '')}${url}`
   }
@@ -295,7 +294,6 @@ export class GFW_API_CLASS {
           responseType = 'json',
           requestType = 'json',
           signal,
-          dataset = this.dataset,
           local = false,
         } = options
         if (this.debug) {
@@ -316,7 +314,7 @@ export class GFW_API_CLASS {
         }
         const fetchUrl = isUrlAbsolute(url)
           ? url
-          : this.baseUrl + (dataset ? `/datasets/${this.dataset}` : '') + url
+          : this.baseUrl + url
         const data = await fetch(fetchUrl, {
           method,
           signal,
@@ -412,7 +410,7 @@ export class GFW_API_CLASS {
     try {
       const user = await this._internalFetch<UserData>(
         `/${AUTH_PATH}/me`,
-        { dataset: false },
+        {},
         0,
         false
       )

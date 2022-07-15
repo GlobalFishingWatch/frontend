@@ -176,8 +176,7 @@ export const fetchVesselInfo = async (
   }
   try {
     const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl, {
-      signal,
-      version: ''
+      signal
     })
     // TODO remove entries once the API is stable
     const vesselsInfoList: Vessel[] =
@@ -215,7 +214,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
     if (interactionUrl) {
       const sublayersVesselsIdsResponse = await GFWAPI.fetch<APIPagination<ExtendedFeatureVessel>>(
         interactionUrl,
-        { signal, version: '' }
+        { signal }
       )
       // TODO remove once normalized in api between id and vessel_id
       const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
@@ -354,7 +353,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
-      const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal, version: '' })
+      const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
 
       // Workaround to grab information about each vessel dataset
       // will need discuss with API team to scale this for other types
@@ -384,8 +383,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
         const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
         if (vesselsUrl) {
           vesselsInfo = await GFWAPI.fetch<APIPagination<ExtendedEventVessel>>(vesselsUrl, {
-            signal,
-            version: ''
+            signal
           }).then((r) => r.entries)
         }
       }
@@ -443,7 +441,7 @@ export const fetchBQEventThunk = createAsyncThunk<
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
-      const clusterEvent = await GFWAPI.fetch<BQClusterEvent>(url, { signal, version: '' })
+      const clusterEvent = await GFWAPI.fetch<BQClusterEvent>(url, { signal })
       return clusterEvent
     } else {
       console.warn('Missing url for endpoints', dataset, datasetConfig)

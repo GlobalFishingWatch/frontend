@@ -128,7 +128,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
             message: 'Missing search url',
           })
         }
-        const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, { signal, version: '' })
+        const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, { signal })
         // API returns multiple instances of the same vessel with the same id and dataset
         const uniqSearchResults = uniqBy(searchResults.entries, (vessel) =>
           [vessel.id, vessel.dataset].join(',')
