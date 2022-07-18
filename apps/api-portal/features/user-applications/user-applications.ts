@@ -1,9 +1,9 @@
 import { stringify } from 'qs'
-import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useMemo, useState, useEffect } from 'react'
 import { FieldValidationError } from 'lib/types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { UserApplication } from '@globalfishingwatch/api-types'
+import { APIPagination, UserApplication } from '@globalfishingwatch/api-types'
 import useUser, { checkUserApplicationPermission } from 'features/user/user'
 
 export type UserApplicationCreateArguments = Omit<
@@ -26,7 +26,7 @@ async function fetchUserApplications(userId: number, limit = 0, offset = 0) {
     ...((offset && { offset }) || {}),
   })
   const url = `/auth/user-applications?${query}`
-  const data = await GFWAPI.fetch<UserApplicationFetchResponse>(url).catch((error) => {
+  const data = await GFWAPI.fetch<APIPagination<UserApplication>>(url).catch((error) => {
     return null
   })
   return data

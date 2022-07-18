@@ -4,8 +4,7 @@ import type {
   ResourceResponseType,
   ResourceRequestType,
   UserPermission,
-  UserApplicationFetchResponse,
-  UserPermissionsFetchResponse,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
 import { parseAPIError } from './utils/errors'
@@ -429,9 +428,9 @@ export class GFW_API_CLASS {
 
   async fetchGuestUser(): Promise<UserData> {
     try {
-      const permissions: UserPermission[] = await this._internalFetch<UserPermissionsFetchResponse>(
+      const permissions: UserPermission[] = await this._internalFetch<APIPagination<UserPermission>>(
         this.generateUrl(`/auth/acl/permissions/anonymous`, this.apiVersion),
-      ).then((response: UserPermissionsFetchResponse) => {
+      ).then((response: APIPagination<UserPermission>) => {
         return response.entries
       })
       const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
