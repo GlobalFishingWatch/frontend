@@ -142,11 +142,21 @@ export const getInterval = (
 
   const duration = Duration.fromMillis(deltaMs)
 
-  const validIntervals = intervals.filter(
-    (interval) =>
+  const validIntervals = intervals.filter((interval) => {
+    const valid =
       CONFIG_BY_INTERVAL[interval] &&
       (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration))
-  )
+    return valid
+  })
+
+  if (!validIntervals?.length) {
+    if (!omitIntervals?.length) {
+      // Warn only needed when no omitedIntervals becuase anaylis mode needs to fallback
+      // to day when out of range for hours
+      console.warn('no valid intervals found, fallback to day', validIntervals)
+    }
+    return 'day'
+  }
 
   let selectedInterval: Interval
 
@@ -162,10 +172,6 @@ export const getInterval = (
     selectedInterval = validIntervals[0]
   }
 
-  if (!selectedInterval) {
-    console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
-    return 'day'
-  }
   return selectedInterval
 }
 
