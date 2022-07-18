@@ -1,4 +1,5 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/user-groups-admin",
   "projectType": "application",
   "targets": {
@@ -9,7 +10,6 @@
         "parallel": false
       }
     },
-
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
