@@ -16,7 +16,7 @@ const API_GATEWAY =
   'https://gateway.api.dev.globalfishingwatch.org'
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
-export const LAST_API_VERSION = process.env.NEXT_PUBLIC_LAST_API_VERSION || 'v2'
+export const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v2'
 const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
 
 const AUTH_PATH = 'auth'
@@ -115,7 +115,7 @@ export class GFW_API_CLASS {
   constructor({
     debug = DEBUG_API_REQUESTS,
     baseUrl = API_GATEWAY,
-    version = LAST_API_VERSION as ApiVersion,
+    version = API_VERSION as ApiVersion,
     tokenStorageKey = USER_TOKEN_STORAGE_KEY,
     refreshTokenStorageKey = USER_REFRESH_TOKEN_STORAGE_KEY,
   } = {}) {
