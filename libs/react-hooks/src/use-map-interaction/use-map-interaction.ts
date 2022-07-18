@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { PickingInfo, Viewport } from '@deck.gl/core/typed'
 import { debounce } from 'lodash'
 import {
   Interval,
@@ -44,8 +45,8 @@ const getExtendedFeatures = (
   debug = false
 ): ExtendedFeature[] => {
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature) => {
-    const generatorType = feature.layer.metadata?.generatorType ?? null
-    const generatorId = feature.layer.metadata?.generatorId ?? null
+    const generatorType = feature.layer?.metadata?.generatorType ?? null
+    const generatorId = feature.layer?.metadata?.generatorId ?? null
 
     // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
     let generatorMetadata: any
@@ -199,6 +200,42 @@ export const useFeatureState = (map?: Map) => {
   return featureState
 }
 
+const parseDeckClickEvent = (event: PickingInfo, metadata: ExtendedStyleMeta) => {
+  const [longitude, latitude] = event.coordinate || []
+  const interactionEvent: InteractionEvent = {
+    type: 'click',
+    longitude,
+    latitude,
+    point: event.viewport as Viewport,
+  }
+  if (event.object) {
+    interactionEvent.features = [event.object]
+  }
+  return interactionEvent
+}
+
+const parseMapLibreClickEvent = (event: MapLayerMouseEvent, metadata: ExtendedStyleMeta) => {
+  const interactionEvent: InteractionEvent = {
+    type: 'click',
+    longitude: event.lngLat.lng,
+    latitude: event.lngLat.lat,
+    point: event.point,
+  }
+  if (event.features?.length) {
+    const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
+      event.features as MaplibreGeoJSONFeature[],
+      metadata,
+      false
+    )
+    const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
+
+    if (extendedFeaturesLimit.length) {
+      interactionEvent.features = extendedFeaturesLimit
+    }
+  }
+  return interactionEvent
+}
+
 export type MapInteractionType = 'deck' | 'maplibre'
 export const useMapClick = (
   clickCallback: InteractionEventCallback,
@@ -207,29 +244,19 @@ export const useMapClick = (
 ) => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
-    (event: MapLayerMouseEvent, type: MapInteractionType = 'maplibre') => {
-      console.log('TODO: handle intereaction by different type:', type)
+    (event: MapLayerMouseEvent | PickingInfo, type: MapInteractionType = 'maplibre') => {
       cleanFeatureState('click')
       if (!clickCallback) return
-      const interactionEvent: InteractionEvent = {
-        type: 'click',
-        longitude: event.lngLat.lng,
-        latitude: event.lngLat.lat,
-        point: event.point,
-      }
-      if (event.features?.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
-          event.features as MaplibreGeoJSONFeature[],
-          metadata,
-          false
-        )
-        const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
-        if (extendedFeaturesLimit.length) {
-          interactionEvent.features = extendedFeaturesLimit
-          updateFeatureState(extendedFeaturesLimit, 'click')
-        }
+      const interactionEvent =
+        type === 'deck'
+          ? parseDeckClickEvent(event as PickingInfo, metadata)
+          : parseMapLibreClickEvent(event as MapLayerMouseEvent, metadata)
+
+      if (interactionEvent.features && interactionEvent.features.length) {
+        updateFeatureState(interactionEvent.features, 'click')
       }
+
       clickCallback(interactionEvent)
     },
     [cleanFeatureState, clickCallback, metadata, updateFeatureState]

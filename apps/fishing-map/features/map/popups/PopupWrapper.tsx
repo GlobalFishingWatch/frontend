@@ -55,6 +55,7 @@ function PopupWrapper({
 
   if (!event) return null
 
+  console.log(event.features)
   const visibleFeatures = event.features.filter(
     (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
   )

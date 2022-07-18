@@ -108,29 +108,7 @@ const DeckGLOverlay = (
   return null
 }
 
-const deckLayers = [
-  new GeoJsonLayer({
-    id: 'geojson-layer',
-    pointType: 'circle',
-    getPointRadius: 100000,
-    getFillColor: [160, 160, 180, 200],
-    filled: true,
-    pickable: true,
-    beforeId: 'countries',
-    data: {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'Point',
-            coordinates: [-2.131497859954834, 47.6925334728506],
-          },
-        },
-      ],
-    },
-  }),
+const defaultDeckLayers = [
   new MVTLayer({
     id: 'mtv-layer',
     // data: 'https://raw.githubusercontent.com/GlobalFishingWatch/live-positions-poc/main/tiles/{z}/{x}/{y}.pbf?raw=true',
@@ -162,7 +140,7 @@ const deckLayers = [
         //     coordinates: [-122.466233, 37.684638],
         //   },
         // ],
-        // pickable: true,
+        pickable: true,
         // iconAtlas and iconMapping are required
         // getIcon: return a string
         iconAtlas:
@@ -180,6 +158,28 @@ const deckLayers = [
         getColor: (d) => [255, 140, 0],
         getAngle: (d) => d.properties.c,
       })
+    },
+  }),
+  new GeoJsonLayer({
+    id: 'geojson-layer',
+    pointType: 'circle',
+    getPointRadius: 100000,
+    getFillColor: [160, 160, 180, 200],
+    filled: true,
+    pickable: true,
+    beforeId: 'countries',
+    data: {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Point',
+            coordinates: [-91, 25],
+          },
+        },
+      ],
     },
   }),
 ]
@@ -215,6 +215,7 @@ const MapWrapper = () => {
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
     useClickedEventConnect()
+
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
   const { cleanFeatureState } = useFeatureState(map)
   const { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing } = useRulers()
@@ -260,7 +261,7 @@ const MapWrapper = () => {
   }, [setMapReady])
 
   const onDeckLoaded = useCallback(() => {
-    setDeckLayers(deckLayers)
+    setDeckLayers(defaultDeckLayers)
   }, [])
 
   const closePopup = useCallback(() => {
@@ -405,7 +406,7 @@ const MapWrapper = () => {
               layers={deckLayers}
               interleaved={true}
               onClick={(e) => currentClickCallback(e, 'deck')}
-              onHover={(e) => console.log(e)}
+              // onHover={(e) => console.log(e)}
               onWebGLInitialized={onDeckLoaded}
               // getTooltip={(e) => console.log(e)}
             />
