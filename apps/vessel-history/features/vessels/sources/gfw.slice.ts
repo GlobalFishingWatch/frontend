@@ -1,5 +1,4 @@
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { API_VERSION } from 'data/config'
 import { GFWDetail, VesselAPISource, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
@@ -11,14 +10,14 @@ interface GFWVesselSourceId extends VesselSourceId {
 
 const getHistoryField = (data: GFWDetail, field: string, byCount: any[] = []) => ({
   byCount: byCount,
-  byDate: data[field]
-    ? [
+  byDate: data[field] ?
+    [
       {
         value: data[field],
         endDate: data.lastTransmissionDate,
         firstSeen: data.firstTransmissionDate,
         source: VesselAPISource.GFW,
-      },
+      }
     ]
     : [],
 })
