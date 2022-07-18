@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
-  "version": "1.2.44",
+  "version": "1.2.46",
   "license": "MIT",
   "scripts": {
     "start": "yarn kill && serve -p 8000 --cors=true",
@@ -12,7 +12,8 @@
     "fr",
     "id",
     "pt",
-    "source"
+    "source",
+    "val"
   ],
   "devDependencies": {
     "kill-port": "^1.6.1",

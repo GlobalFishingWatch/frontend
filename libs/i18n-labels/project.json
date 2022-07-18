@@ -51,6 +51,11 @@
             "output": "."
           },
           {
+            "glob": "libs/i18n-labels/val",
+            "input": ".",
+            "output": "."
+          },
+          {
             "glob": "libs/i18n-labels/source",
             "input": ".",
             "output": "."
