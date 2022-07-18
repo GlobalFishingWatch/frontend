@@ -19,7 +19,9 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "styles": "libs/ui-components/src/base.css",
+        "webpackConfig": "libs/ui-components/webpack.config.js"
       }
     },
     "lint": {
