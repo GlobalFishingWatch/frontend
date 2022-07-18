@@ -10,6 +10,7 @@
         "outputPath": "dist/libs/ui-components",
         "tsConfig": "libs/ui-components/tsconfig.lib.json",
         "project": "libs/ui-components/package.json",
+        "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "libs/ui-components/rollup.config.js",
@@ -20,8 +21,7 @@
             "output": "."
           }
         ],
-        "styles": "libs/ui-components/src/base.css",
-        "webpackConfig": "libs/ui-components/webpack.config.js"
+        "styles": "libs/ui-components/src/base.css"
       }
     },
     "lint": {
