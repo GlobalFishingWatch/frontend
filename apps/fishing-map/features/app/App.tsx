@@ -25,7 +25,7 @@ import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
@@ -66,7 +66,12 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
+  const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
+
+  const showTimebar =
+    workspaceLocation &&
+    workspaceStatus === AsyncReducerStatus.Finished &&
+    !isTimeComparisonAnalysis
 
   return (
     <div className={styles.main}>
@@ -97,6 +102,7 @@ function App(): React.ReactElement {
   const analysisQuery = useSelector(selectAnalysisQuery)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
+  const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
   const narrowSidebar = workspaceLocation && !analysisQuery
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
@@ -114,7 +120,7 @@ function App(): React.ReactElement {
       map.resize()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAnalysing, sidebarOpen, showTimebar])
+  }, [isAnalysing, sidebarOpen, showTimebar, isTimeComparisonAnalysis])
 
   useEffect(() => {
     setMobileSafeVH()
