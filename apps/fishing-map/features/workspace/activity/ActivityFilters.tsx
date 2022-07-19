@@ -8,6 +8,7 @@ import {
   MultiSelectOnChange,
   MultiSelectOption,
 } from '@globalfishingwatch/ui-components'
+import { EXCLUDE_FILTER_ID, FilterOperator } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -161,6 +162,34 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
     trackEvent(filterKey, eventLabel)
   }
 
+  const onSelectFilterOperationClick = (
+    filterKey: SupportedDatasetSchema,
+    filterOperator: FilterOperator
+  ) => {
+    const newDataviewConfig = {
+      filterOperators: {
+        ...(dataview.config?.filterOperators || {}),
+      },
+    }
+
+    if (filterOperator === EXCLUDE_FILTER_ID) {
+      newDataviewConfig.filterOperators[filterKey] = filterOperator
+    } else if (newDataviewConfig.filterOperators[filterKey]) {
+      delete newDataviewConfig.filterOperators[filterKey]
+    }
+
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: newDataviewConfig,
+    })
+    const eventLabel = getEventLabel([
+      'select',
+      getActivitySources(dataview),
+      ...getActivityFilters({ [filterKey]: [filterOperator] }),
+    ])
+    trackEvent(filterKey, eventLabel)
+  }
+
   const onRemoveFilterClick = (filterKey: string, selection: MultiSelectOption[]) => {
     const filterValue = selection?.length ? selection.map((f) => f.id) : null
     const filters = dataview.config?.filters || {}
@@ -181,10 +210,14 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
   const onCleanFilterClick = (filterKey: string) => {
     const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
+    const filterOperators = dataview.config?.filterOperators
+      ? { ...dataview.config.filterOperators }
+      : {}
     delete filters[filterKey]
+    delete filterOperators[filterKey]
     upsertDataviewInstance({
       id: dataview.id,
-      config: { filters },
+      config: { filters, filterOperators },
     })
     uaEvent({
       category: 'Activity data',
@@ -227,6 +260,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
             key={schemaFilter.id}
             schemaFilter={schemaFilter}
             onSelect={onSelectFilterClick}
+            onSelectOperation={onSelectFilterOperationClick}
             onRemove={onRemoveFilterClick}
             onClean={onCleanFilterClick}
           />

@@ -12,6 +12,8 @@ import {
   EventTypes,
   UserPermission,
   DatasetGeometryType,
+  FilterOperator,
+  INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -393,6 +395,16 @@ export const getSchemaOptionsSelectedInDataview = (
   )
 }
 
+export const getSchemaFilterOperationInDataview = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema
+) => {
+  if (schema === 'vessel-groups') {
+    return
+  }
+  return dataview.config?.filterOperators?.[schema] || INCLUDE_FILTER_ID
+}
+
 export const getSchemaFieldsSelectedInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema,
@@ -404,11 +416,12 @@ export const getSchemaFieldsSelectedInDataview = (
 }
 
 export type SchemaFilter = {
+  type: DatasetSchemaType
   id: SupportedDatasetSchema
   disabled: boolean
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
-  type: DatasetSchemaType
+  filterOperator: FilterOperator
 }
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
@@ -417,13 +430,14 @@ export const getFiltersBySchema = (
 ): SchemaFilter => {
   const options = getCommonSchemaFieldsInDataview(dataview, schema, vesselGroups)
   const type = getCommonSchemaTypeInDataview(dataview, schema)
+  const filterOperator = getSchemaFilterOperationInDataview(dataview, schema)
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
 
   const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)?.length > 0
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)?.length > 0
   const disabled = datasetsWithoutSchema || incompatibleFilterSelection
 
-  return { id: schema, disabled, options, optionsSelected, type }
+  return { id: schema, disabled, options, optionsSelected, type, filterOperator }
 }
 
 export const getSchemaFiltersInDataview = (

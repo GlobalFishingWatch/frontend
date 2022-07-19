@@ -1,19 +1,42 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { MultiSelect, MultiSelectOption, Select, Slider } from '@globalfishingwatch/ui-components'
+import {
+  Choice,
+  ChoiceOption,
+  MultiSelect,
+  MultiSelectOption,
+  Select,
+  Slider,
+} from '@globalfishingwatch/ui-components'
+import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
+import { t } from 'features/i18n/i18n'
 import styles from './ActivityFilters.module.css'
 
 type ActivitySchemaFilterProps = {
   schemaFilter: SchemaFilter
   onSelect: (filterKey: string, selection: MultiSelectOption | MultiSelectOption[]) => void
+  onSelectOperation: (filterKey: string, filterOperator: FilterOperator) => void
   onRemove: (filterKey: string, selection: MultiSelectOption[]) => void
   onClean: (filterKey: string) => void
 }
 export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
+}
+
+export const getFilterOperatorOptions = () => {
+  return [
+    {
+      id: INCLUDE_FILTER_ID,
+      title: t('common.include', 'Include'),
+    },
+    {
+      id: EXCLUDE_FILTER_ID,
+      title: t('common.exclude', 'Exclude'),
+    },
+  ] as ChoiceOption[]
 }
 
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): [number, number] => {
@@ -39,8 +62,9 @@ function ActivitySchemaFilter({
   onSelect,
   onRemove,
   onClean,
+  onSelectOperation,
 }: ActivitySchemaFilterProps): React.ReactElement {
-  const { id, disabled, options, optionsSelected, type } = schemaFilter
+  const { id, type, disabled, options, optionsSelected, filterOperator } = schemaFilter
   const { t } = useTranslation()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,22 +123,33 @@ function ActivitySchemaFilter({
   }
 
   return (
-    <MultiSelect
-      key={id}
-      disabled={disabled}
-      label={
-        id === 'vessel-groups'
-          ? t('vesselGroup.vesselGroups', 'Vessel Groups')
-          : t(`vessel.${id}` as any, id)
-      }
-      placeholder={getPlaceholderBySelections(optionsSelected)}
-      options={options}
-      selectedOptions={optionsSelected}
-      className={styles.multiSelect}
-      onSelect={(selection) => onSelect(id, selection)}
-      onRemove={(selection, rest) => onRemove(id, rest)}
-      onCleanClick={() => onClean(id)}
-    />
+    <div className={styles.relative}>
+      {filterOperator && (
+        <Choice
+          size="tiny"
+          className={styles.filterOperator}
+          options={getFilterOperatorOptions()}
+          activeOption={filterOperator}
+          onOptionClick={(option) => onSelectOperation(id, option.id as FilterOperator)}
+        />
+      )}
+      <MultiSelect
+        key={id}
+        disabled={disabled}
+        label={
+          id === 'vessel-groups'
+            ? t('vesselGroup.vesselGroups', 'Vessel Groups')
+            : t(`vessel.${id}` as any, id)
+        }
+        placeholder={getPlaceholderBySelections(optionsSelected)}
+        options={options}
+        selectedOptions={optionsSelected}
+        className={styles.multiSelect}
+        onSelect={(selection) => onSelect(id, selection)}
+        onRemove={(selection, rest) => onRemove(id, rest)}
+        onCleanClick={() => onClean(id)}
+      />
+    </div>
   )
 }
 
