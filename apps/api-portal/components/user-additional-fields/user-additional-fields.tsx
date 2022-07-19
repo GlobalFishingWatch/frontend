@@ -1,6 +1,7 @@
 import { useCallback, useMemo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
 import { FieldValidationError } from 'lib/types'
+import Link from 'next/link'
 import {
   Button,
   Checkbox,
@@ -15,7 +16,6 @@ import {
 } from '@globalfishingwatch/api-types'
 import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
 import styles from './user-additional-fields.module.css'
-import Link from 'next/link'
 
 /* eslint-disable-next-line */
 export interface UserAdditionalFieldsProps {}
@@ -167,10 +167,11 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           label={
             <Fragment>
               I agree to the Global Fishing Watch API{' '}
-              <a href="https://globalfishingwatch.org/terms-of-use/">Terms of Use</a> and{' '}
-              <a href="https://globalfishingwatch.org/terms-of-use/">Attribution</a>. If I am
-              registering for use by an organization, I represent that I have the authority to bind
-              that organization to these terms.
+              <a href="https://globalfishingwatch.org/our-apis/documentation#terms-of-use">
+                Terms of Use and Attribution
+              </a>
+              . If I am registering for use by an organization, I represent that I have the
+              authority to bind that organization to these terms.
             </Fragment>
           }
           labelClassname={styles.label}
