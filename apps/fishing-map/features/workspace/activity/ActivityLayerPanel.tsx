@@ -53,7 +53,7 @@ type LayerPanelProps = {
 }
 
 function ActivityLayerPanel({
-  dataview,
+  dataview: baseDataview,
   showBorder,
   isOpen,
   onToggle,
@@ -61,13 +61,31 @@ function ActivityLayerPanel({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
-
-  const { deleteDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const urlTimeRange = useSelector(selectUrlTimeRange)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
+
+  const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
+    UrlDataviewInstance | undefined
+  >()
+
+  const dataview = useMemo(() => {
+    if (!newDataviewInstanceConfig) {
+      return baseDataview
+    }
+    return {
+      ...baseDataview,
+      ...newDataviewInstanceConfig,
+      config: {
+        ...baseDataview.config,
+        ...newDataviewInstanceConfig.config,
+      },
+    }
+  }, [baseDataview, newDataviewInstanceConfig])
+
   const layerActive = dataview?.config?.visible ?? true
   const datasetStatsFields = dataview.datasets.flatMap((d) =>
     Object.entries(d.schema).flatMap(([id, schema]) => (schema.stats ? id : []))
@@ -78,7 +96,7 @@ function ActivityLayerPanel({
 
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
-      dataview,
+      dataview: baseDataview,
       timerange: urlTimeRange,
       fields,
     },
@@ -126,7 +144,26 @@ function ActivityLayerPanel({
     dispatch(setHintDismissed('filterActivityLayers'))
   }
 
+  const onDataviewFilterChange = (dataviewInstance: UrlDataviewInstance) => {
+    if (!newDataviewInstanceConfig) {
+      setNewDataviewInstanceConfig(dataviewInstance)
+    } else {
+      setNewDataviewInstanceConfig({
+        ...newDataviewInstanceConfig,
+        ...dataviewInstance,
+        config: {
+          ...newDataviewInstanceConfig.config,
+          ...dataviewInstance.config,
+        },
+      })
+    }
+  }
+
   const closeExpandedContainer = () => {
+    if (newDataviewInstanceConfig) {
+      upsertDataviewInstance(newDataviewInstanceConfig)
+      setNewDataviewInstanceConfig(undefined)
+    }
     setFiltersOpen(false)
   }
 
@@ -197,7 +234,9 @@ function ActivityLayerPanel({
                 <ExpandedContainer
                   visible={filterOpen}
                   onClickOutside={closeExpandedContainer}
-                  component={<Filters dataview={dataview} />}
+                  component={
+                    <Filters dataview={dataview} onFilterChange={onDataviewFilterChange} />
+                  }
                 >
                   <div className={styles.filterButtonWrapper}>
                     <IconButton

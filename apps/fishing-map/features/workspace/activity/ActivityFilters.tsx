@@ -10,7 +10,6 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { EXCLUDE_FILTER_ID, FilterOperator } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   getCommonSchemaFieldsInDataview,
@@ -39,6 +38,7 @@ import {
 
 type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
+  onFilterChange: (dataview: UrlDataviewInstance) => void
 }
 
 const trackEvent = debounce((filterKey: string, label: string) => {
@@ -74,10 +74,9 @@ const cleanDataviewFiltersNotAllowed = (
   return filters
 }
 
-function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
+function ActivityFilters({ dataview, onFilterChange }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const allowVesselGroup = useSelector(selectVessselGroupsAllowed)
   const vesselGroupsOptions = useVesselGroupsOptions()
@@ -103,7 +102,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
     const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions)
-    upsertDataviewInstance({
+    onFilterChange({
       id: dataview.id,
       config: {
         datasets,
@@ -115,7 +114,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const onRemoveSourceClick: MultiSelectOnChange = (source) => {
     const datasets =
       dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || null
-    upsertDataviewInstance({
+    onFilterChange({
       id: dataview.id,
       config: { datasets },
     })
@@ -150,7 +149,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         delete newDataviewConfig.filters[f]
       })
     }
-    upsertDataviewInstance({
+    onFilterChange({
       id: dataview.id,
       config: newDataviewConfig,
     })
@@ -178,7 +177,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
       delete newDataviewConfig.filterOperators[filterKey]
     }
 
-    upsertDataviewInstance({
+    onFilterChange({
       id: dataview.id,
       config: newDataviewConfig,
     })
@@ -193,7 +192,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const onRemoveFilterClick = (filterKey: string, selection: MultiSelectOption[]) => {
     const filterValue = selection?.length ? selection.map((f) => f.id) : null
     const filters = dataview.config?.filters || {}
-    upsertDataviewInstance({
+    onFilterChange({
       id: dataview.id,
       config: { filters: { ...filters, [filterKey]: filterValue } },
     })
@@ -215,7 +214,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
       : {}
     delete filters[filterKey]
     delete filterOperators[filterKey]
-    upsertDataviewInstance({
+    onFilterChange({
       id: dataview.id,
       config: { filters, filterOperators },
     })
