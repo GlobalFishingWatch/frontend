@@ -22,9 +22,41 @@ div.identifierField {
   color: var(--color-primary-blue);
 }
 
-div.dangerBackground {
+.forcedLabourContainer {
+  display: flex;
+  text-align: center;
+}
+
+.labourHeaders {
+  text-align: left;
+  margin-right: 1.7rem;
+}
+
+.labourHeaders div,
+.riskYear {
+  margin-bottom: 0.6rem;
+  color: var(--color-secondary-blue);
+  opacity: var(--opacity-secondary);
+}
+
+.labourHeaders div:first-child {
+  text-transform: uppercase;
+}
+
+.riskLabel {
+  color: var(--color-secondary-blue);
+  background-color: var(--color-terthiary-blue);
+  margin: 0.7rem 0.5rem;
+  padding: 0 1rem;
+}
+
+.highRisk .riskLabel {
   background-color: var(--color-danger-red-background);
-  border: 1px solid var(--color-danger-secondary-red);
+  color: var(--color-primary-blue);
+}
+
+.highRisk .riskYear {
+  color: var(--color-primary-blue);
 }
 
 label.identifierField,

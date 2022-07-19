@@ -31,6 +31,8 @@ import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
 import { useUser } from 'features/user/user.hooks'
 import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -152,38 +154,41 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     })
   }, [vesselId, vesselTmtId])
 
-  const { highRisk, riskModel } = useMemo(() => {
+  const riskModel: RiskOutput[] = useMemo(() => {
     if (!vessel.forcedLabour || !authorizedFLRM) {
-      return {
-        riskModel: null,
-        highisk: false,
-      }
+      return []
     }
-    const riskModel: RiskOutput[] = [
-      {
-        level: RiskLevel.high,
-        years: vessel.forcedLabour
-          .filter((risk) => risk.confidence && risk.score)
-          .map((risk) => risk.year),
-      },
-      {
-        level: RiskLevel.low,
-        years: vessel.forcedLabour
-          .filter((risk) => risk.confidence && !risk.score)
-          .map((risk) => risk.year),
-      },
-      {
-        level: RiskLevel.unknown,
-        years: vessel.forcedLabour.filter((risk) => !risk.confidence).map((risk) => risk.year),
-      },
-    ].filter((risk) => risk.years && risk.years.length)
+    const yearsFound = vessel.forcedLabour.map(risk => risk.year)
+    const riskModel: RiskOutput[] = vessel.forcedLabour.reduce((parsedRisks: RiskOutput[], risk) => {
+      const indexYearFound = parsedRisks.findIndex(parsedRisk => parsedRisk.year === risk.year)
+      const riskLevel = risk.confidence && risk.score ?
+        RiskLevel.high : (risk.confidence && !risk.score ? RiskLevel.low : RiskLevel.unknown)
+      if (indexYearFound !== -1) {
+        const yearRiskLevels = [...parsedRisks[indexYearFound].levels, riskLevel]
+        parsedRisks[indexYearFound] = {
+          ...parsedRisks[indexYearFound],
+          levels: yearRiskLevels,
+          //level: riskLevel === RiskLevel.high ?
+          //  RiskLevel.high : (riskLevel === RiskLevel.low ? RiskLevel.low : RiskLevel.unknown),
+          highisk: yearRiskLevels.includes(RiskLevel.high)
 
-    return {
-      riskModel: riskModel
-        .map((risk) => `${t(`risk.${risk.level}` as any, risk.level)} - ${risk.years.join(', ')}`)
-        .join('. '),
-      highRisk: riskModel.some((risk) => risk.level === RiskLevel.high && risk.years.length),
-    }
+        }
+      } else {
+        parsedRisks.push({
+          year: risk.year,
+          levels: [riskLevel],
+          highisk: riskLevel === RiskLevel.high
+        })
+      }
+      return parsedRisks
+    }, []).sort((a, b) => a.year - b.year)
+    /*const riskModel: RiskOutput[] = [
+      { level: RiskLevel.high, years: vessel.forcedLabour.filter(risk => risk.confidence && risk.score).map(risk => risk.year) },
+      { level: RiskLevel.low, years: vessel.forcedLabour.filter(risk => risk.confidence && !risk.score).map(risk => risk.year) },
+      { level: RiskLevel.unknown, years: vessel.forcedLabour.filter(risk => !risk.confidence).map(risk => risk.year) },
+    ].filter(risk => risk.years && risk.years.length)
+*/
+    return riskModel
   }, [vessel.forcedLabour, authorizedFLRM])
 
   return (
@@ -356,9 +361,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   value={
                     vessel.iuuStatus !== undefined
                       ? t(
-                          `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
-                          vessel.iuuStatus.toString()
-                        )
+                        `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                        vessel.iuuStatus.toString()
+                      )
                       : DEFAULT_EMPTY_VALUE
                   }
                   valuesHistory={[]}
@@ -373,11 +378,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 <InfoField
                   vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                   label={VesselFieldLabel.forcedLabourModel}
-                  value={
-                    riskModel ?? t('risk.noRiskDetected', 'Vessel doesn’t have force labour info')
-                  }
+                  value={t('risk.noRiskDetected', 'Vessel doesn’t have force labour info')}
                   valuesHistory={[]}
-                  className={highRisk ? 'dangerBackground' : ''}
+                  className={'dangerBackground'}
                   helpText={
                     <Trans i18nKey="vessel.forcedLaborModelDescription">
                       High Risk: In multiple iterations, the model always predicted the vessel as an
@@ -393,8 +396,41 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 ></InfoField>
               )}
             </div>
+
           </div>
         )}
+        {authorizedFLRM &&
+          <div
+            className={styles.forcedLabourContainer}
+          >
+            <div className={styles.labourHeaders}>
+              <div>{t(`vessel.${VesselFieldLabel.forcedLabourModel}` as any, VesselFieldLabel.forcedLabourModel)}</div>
+              <div>
+                Risk Model
+                <DataAndTerminology size="tiny" type="default"
+                  title={t(`vessel.${VesselFieldLabel.forcedLabourModel}` as any, VesselFieldLabel.forcedLabourModel)}>
+                  <Trans i18nKey="vessel.forcedLaborModelDescription">
+                    High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.
+                    <br />
+                    Low Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.
+                    <br />
+                    Unknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.
+                  </Trans>
+                </DataAndTerminology>
+              </div>
+              <div>Reported Cases</div>
+            </div>
+
+            {riskModel.map(risk =>
+              <div className={cx({ [styles.highRisk]: risk.highisk })}>
+                <div className={styles.riskYear}>{risk.year}</div>
+                <div className={styles.riskLabel}>{risk.highisk ? t('risk.high') : t('risk.low')}</div>
+                <div className={styles.riskLabel}>{risk.levels.length}</div>
+              </div>
+            )}
+
+          </div>
+        }
         <div className={styles.actions}>
           {vessel && offlineVessel && (
             <Fragment>

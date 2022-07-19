@@ -114,8 +114,10 @@ export enum RiskLevel {
 }
 
 export interface RiskOutput {
-  level: RiskLevel
-  years: number[]
+  //level: RiskLevel
+  levels: RiskLevel[]
+  year: number
+  highisk: boolean
 }
 
 export interface VesselWithHistory extends Vessel {
