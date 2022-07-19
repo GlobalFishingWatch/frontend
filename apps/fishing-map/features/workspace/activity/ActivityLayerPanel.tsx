@@ -41,7 +41,7 @@ import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
-import Filters from './ActivityFilters'
+import ActivityFilters from './ActivityFilters'
 import { isActivityDataview, isDetectionsDataview } from './activity.utils'
 import activityStyles from './ActivitySection.module.css'
 
@@ -235,7 +235,7 @@ function ActivityLayerPanel({
                   visible={filterOpen}
                   onClickOutside={closeExpandedContainer}
                   component={
-                    <Filters dataview={dataview} onFilterChange={onDataviewFilterChange} />
+                    <ActivityFilters dataview={dataview} onFilterChange={onDataviewFilterChange} />
                   }
                 >
                   <div className={styles.filterButtonWrapper}>

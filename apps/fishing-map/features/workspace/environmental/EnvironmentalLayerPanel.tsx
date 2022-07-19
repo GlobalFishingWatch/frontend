@@ -29,13 +29,34 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+function EnvironmentalLayerPanel({
+  dataview: baseDataview,
+  onToggle,
+}: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
+  const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
+    UrlDataviewInstance | undefined
+  >()
+
+  const dataview = useMemo(() => {
+    if (!newDataviewInstanceConfig) {
+      return baseDataview
+    }
+    return {
+      ...baseDataview,
+      ...newDataviewInstanceConfig,
+      config: {
+        ...baseDataview.config,
+        ...newDataviewInstanceConfig.config,
+      },
+    }
+  }, [baseDataview, newDataviewInstanceConfig])
+
   const {
     items,
     attributes,
@@ -68,13 +89,35 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     setColorOpen(!colorOpen)
   }
 
-  const closeExpandedContainer = () => {
-    setColorOpen(false)
+  const closeFiltersExpandedContainer = () => {
     setFiltersOpen(false)
+    if (newDataviewInstanceConfig) {
+      upsertDataviewInstance(newDataviewInstanceConfig)
+      setNewDataviewInstanceConfig(undefined)
+    }
+  }
+
+  const closeColorExpandedContainer = () => {
+    setColorOpen(false)
   }
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
+  }
+
+  const onDataviewFilterChange = (dataviewInstance: UrlDataviewInstance) => {
+    if (!newDataviewInstanceConfig) {
+      setNewDataviewInstanceConfig(dataviewInstance)
+    } else {
+      setNewDataviewInstanceConfig({
+        ...newDataviewInstanceConfig,
+        ...dataviewInstance,
+        config: {
+          ...newDataviewInstanceConfig.config,
+          ...dataviewInstance.config,
+        },
+      })
+    }
   }
 
   const dataset = dataview.datasets?.find(
@@ -127,8 +170,10 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           {layerActive && showFilters && (
             <ExpandedContainer
               visible={filterOpen}
-              onClickOutside={closeExpandedContainer}
-              component={<ActivityFilters dataview={dataview} />}
+              onClickOutside={closeFiltersExpandedContainer}
+              component={
+                <ActivityFilters dataview={dataview} onFilterChange={onDataviewFilterChange} />
+              }
             >
               <div className={styles.filterButtonWrapper}>
                 <IconButton
@@ -152,7 +197,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               colorType="fill"
               onColorClick={changeColor}
               onToggleClick={onToggleColorOpen}
-              onClickOutside={closeExpandedContainer}
+              onClickOutside={closeColorExpandedContainer}
             />
           )}
           <InfoModal dataview={dataview} />
