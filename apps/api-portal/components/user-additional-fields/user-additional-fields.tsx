@@ -167,7 +167,11 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           label={
             <Fragment>
               I agree to the Global Fishing Watch API{' '}
-              <a href="https://globalfishingwatch.org/our-apis/documentation#terms-of-use">
+              <a
+                href="https://globalfishingwatch.org/our-apis/documentation#terms-of-use"
+                target={'_blank'}
+                rel="noreferrer"
+              >
                 Terms of Use and Attribution
               </a>
               . If I am registering for use by an organization, I represent that I have the
