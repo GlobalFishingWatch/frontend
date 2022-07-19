@@ -38,6 +38,10 @@ export function AccessTokenList(props: AccessTokenListProps) {
   )
   const { copyToClipboard, showClipboardNotification } = useClipboardNotification()
 
+  const clearActionMessage = useCallback(() => {
+    return setActionMessage(undefined)
+  }, [])
+
   const onDeleteClick = useCallback(
     async ({ id }: UserApplication) => {
       if (
@@ -52,8 +56,9 @@ export function AccessTokenList(props: AccessTokenListProps) {
         return
 
       try {
-        const response = await deleteUserApplication.mutate(id)
+        await deleteUserApplication.mutate(id)
         setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
+        setTimeout(clearActionMessage, 5000)
       } catch (e) {
         setActionMessage({
           type: 'error',
@@ -61,11 +66,8 @@ export function AccessTokenList(props: AccessTokenListProps) {
         })
       }
     },
-    [deleteUserApplication]
+    [clearActionMessage, deleteUserApplication]
   )
-  const clearActionMessage = useCallback(() => {
-    return setActionMessage(undefined)
-  }, [])
 
   const onCopyClipboardClick = useCallback(
     (tokenText) => {
