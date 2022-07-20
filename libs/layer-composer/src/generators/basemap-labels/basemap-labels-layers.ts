@@ -11,7 +11,7 @@ export const layers: Dictionary<LayerSpecification[]> = {
       id: BasemapType.Labels,
       source: BasemapType.Labels,
       metadata: {
-        group: Group.BasemapForeground,
+        group: Group.Label,
       },
     },
   ],
