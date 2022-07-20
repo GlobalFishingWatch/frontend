@@ -405,6 +405,7 @@
   },
   "selects": {
     "allSelected": "Semua",
+    "noneSelected": "None",
     "placeholder": "Pilih salah satu opsi",
     "selected": "terpilih"
   },
