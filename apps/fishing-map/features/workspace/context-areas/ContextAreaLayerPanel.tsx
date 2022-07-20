@@ -27,7 +27,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa']
+const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-labels']
 
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
