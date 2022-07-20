@@ -13,7 +13,7 @@ import {
   getDatasetConfigByDatasetType,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { Bbox } from '@globalfishingwatch/data-transforms'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
@@ -283,6 +283,7 @@ function ActivityLayerPanel({
                         {stats.type === 'vessels' &&
                           stats.flag > 0 &&
                           (!dataview.config?.filters?.flag ||
+                            dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
                             dataview.config?.filters?.flag.length > 1) && (
                             <Fragment>
                               <span> {t('common.from', 'from')} </span>
