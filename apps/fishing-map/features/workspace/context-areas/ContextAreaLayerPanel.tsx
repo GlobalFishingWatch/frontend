@@ -6,6 +6,7 @@ import ReactHtmlParser from 'react-html-parser'
 import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -91,7 +92,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
 
   const title = dataset
     ? t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
-    : dataview.name
+    : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
   const TitleComponent = (
     <Title
@@ -102,6 +103,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       onToggle={onToggle}
     />
   )
+
+  const isBasemapLabelsDataview = dataview.config?.type === GeneratorType.BasemapLabels
 
   return (
     <div
@@ -127,7 +130,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (
+          {layerActive && !isBasemapLabelsDataview && (
             <Color
               dataview={dataview}
               open={colorOpen}
@@ -136,7 +139,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               onClickOutside={closeExpandedContainer}
             />
           )}
-          <InfoModal dataview={dataview} />
+          {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
           {isUserLayer && <Remove dataview={dataview} />}
           {items.length > 1 && (
             <IconButton
