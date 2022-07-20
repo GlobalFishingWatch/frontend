@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { debounce } from 'lodash'
@@ -74,13 +74,32 @@ const cleanDataviewFiltersNotAllowed = (
   return filters
 }
 
-function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
+function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
+
+  const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
+    UrlDataviewInstance | undefined
+  >()
+
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const allowVesselGroup = useSelector(selectVessselGroupsAllowed)
   const vesselGroupsOptions = useVesselGroupsOptions()
+
+  const dataview = useMemo(() => {
+    if (!newDataviewInstanceConfig) {
+      return baseDataview
+    }
+    return {
+      ...baseDataview,
+      ...newDataviewInstanceConfig,
+      config: {
+        ...baseDataview.config,
+        ...newDataviewInstanceConfig.config,
+      },
+    }
+  }, [baseDataview, newDataviewInstanceConfig])
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
   // insert the "All" option only when more than one option available
@@ -93,6 +112,37 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
   const schemaFilters = getSchemaFiltersInDataview(dataview, vesselGroupsOptions)
 
+  const onDataviewFilterChange = useCallback(
+    (dataviewInstance: UrlDataviewInstance) => {
+      if (!newDataviewInstanceConfig) {
+        setNewDataviewInstanceConfig(dataviewInstance)
+      } else {
+        setNewDataviewInstanceConfig({
+          ...newDataviewInstanceConfig,
+          ...dataviewInstance,
+          config: {
+            ...newDataviewInstanceConfig.config,
+            ...dataviewInstance.config,
+          },
+        })
+      }
+    },
+    [newDataviewInstanceConfig]
+  )
+
+  const handleIsOpenChange = useCallback(
+    (isOpen: boolean) => {
+      if (!isOpen) {
+        if (newDataviewInstanceConfig) {
+          upsertDataviewInstance(newDataviewInstanceConfig)
+          setNewDataviewInstanceConfig(undefined)
+          console.log('updating dataview')
+        }
+      }
+    },
+    [newDataviewInstanceConfig, upsertDataviewInstance]
+  )
+
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     let datasets: string[] = []
     if (source.id === allOption.id) {
@@ -103,7 +153,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
     const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions)
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: {
         datasets,
@@ -115,7 +165,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const onRemoveSourceClick: MultiSelectOnChange = (source) => {
     const datasets =
       dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || null
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: { datasets },
     })
@@ -150,7 +200,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         delete newDataviewConfig.filters[f]
       })
     }
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: newDataviewConfig,
     })
@@ -193,7 +243,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const onRemoveFilterClick = (filterKey: string, selection: MultiSelectOption[]) => {
     const filterValue = selection?.length ? selection.map((f) => f.id) : null
     const filters = dataview.config?.filters || {}
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: { filters: { ...filters, [filterKey]: filterValue } },
     })
@@ -261,6 +311,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
             schemaFilter={schemaFilter}
             onSelect={onSelectFilterClick}
             onSelectOperation={onSelectFilterOperationClick}
+            onIsOpenChange={handleIsOpenChange}
             onRemove={onRemoveFilterClick}
             onClean={onCleanFilterClick}
           />

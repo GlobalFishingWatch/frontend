@@ -19,6 +19,7 @@ type ActivitySchemaFilterProps = {
   schemaFilter: SchemaFilter
   onSelect: (filterKey: string, selection: MultiSelectOption | MultiSelectOption[]) => void
   onSelectOperation: (filterKey: string, filterOperator: FilterOperator) => void
+  onIsOpenChange?: (open: boolean) => void
   onRemove: (filterKey: string, selection: MultiSelectOption[]) => void
   onClean: (filterKey: string) => void
 }
@@ -62,6 +63,7 @@ function ActivitySchemaFilter({
   onSelect,
   onRemove,
   onClean,
+  onIsOpenChange,
   onSelectOperation,
 }: ActivitySchemaFilterProps): React.ReactElement {
   const { id, type, disabled, options, optionsSelected, filterOperator } = schemaFilter
@@ -147,6 +149,7 @@ function ActivitySchemaFilter({
         className={styles.multiSelect}
         onSelect={(selection) => onSelect(id, selection)}
         onRemove={(selection, rest) => onRemove(id, rest)}
+        onIsOpenChange={onIsOpenChange}
         onCleanClick={() => onClean(id)}
       />
     </div>
