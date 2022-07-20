@@ -84,6 +84,8 @@
     "detection_other": "Détections",
     "dismiss": "Ignorer",
     "environment": "Environnement",
+    "exclude": "Exclude",
+    "excluded": "Excluded",
     "events": "Évènements",
     "feedback": "Vos commentaires",
     "fishing": "Pêche",
@@ -97,6 +99,7 @@
     "hour_one": "Heure",
     "hour_other": "heures",
     "in": "dans",
+    "include": "Inlude",
     "latitude": "Latitude",
     "layerList": "Liste des calques",
     "learnMore": "En savoir plus",
@@ -402,6 +405,7 @@
   },
   "selects": {
     "allSelected": "Tous",
+    "noneSelected": "None",
     "placeholder": "Sélectionnez une option",
     "selected": "sélectionné"
   },

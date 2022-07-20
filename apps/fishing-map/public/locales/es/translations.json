@@ -84,6 +84,8 @@
     "detection_other": "Detecciones",
     "dismiss": "Cancelar",
     "environment": "Datos ambientales",
+    "exclude": "Exclude",
+    "excluded": "Excluded",
     "events": "Eventos",
     "feedback": "Comentarios",
     "fishing": "Pesca",
@@ -97,6 +99,7 @@
     "hour_one": "Hora",
     "hour_other": "Horas",
     "in": "en",
+    "include": "Inlude",
     "latitude": "Latitud",
     "layerList": "Lista de capas",
     "learnMore": "Ver más",
@@ -402,6 +405,7 @@
   },
   "selects": {
     "allSelected": "Todos",
+    "noneSelected": "None",
     "placeholder": "Seleccione una opción",
     "selected": "seleccionado"
   },

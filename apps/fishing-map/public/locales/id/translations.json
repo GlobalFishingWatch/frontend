@@ -84,6 +84,8 @@
     "detection_other": "Detections",
     "dismiss": "Dismiss",
     "environment": "Lingkungan",
+    "exclude": "Exclude",
+    "excluded": "Excluded",
     "events": "Acara",
     "feedback": "Umpan balik",
     "fishing": "Memancing",
@@ -97,6 +99,7 @@
     "hour_one": "Hour",
     "hour_other": "hours",
     "in": "di",
+    "include": "Inlude",
     "latitude": "Latitude",
     "layerList": "Layer tabel",
     "learnMore": "Learn more",
@@ -402,6 +405,7 @@
   },
   "selects": {
     "allSelected": "Semua",
+    "noneSelected": "None",
     "placeholder": "Pilih salah satu opsi",
     "selected": "terpilih"
   },

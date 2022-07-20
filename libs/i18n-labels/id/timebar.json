@@ -12,9 +12,9 @@
     "start": "mulai",
     "end": "akhir",
     "last30days": "30 hari terakhir",
-    "last3months": "Last 3 months",
-    "last6months": "Last 6 months",
-    "lastYear": "Last year",
+    "last3months": "3 bulan terakhir",
+    "last6months": "6 bulan terakhir",
+    "lastYear": "Setahun terakhir",
     "done": "Selesai",
     "errorEarlyStart": "Tanggal mulai Anda adalah tanggal paling awal dengan data yang tersedia",
     "errorLatestEnd": "Tanggal akhir Anda adalah tanggal terbaru dengan data yang tersedia",
@@ -26,7 +26,7 @@
     "deleteBookmark": "Hapus penanda rentang waktu"
   },
   "trackEvents": {
-    "events": "events"
+    "events": "peristiwa"
   },
   "dragLabel": "Seret untuk mengubah rentang waktu",
   "lastUpdate": "Pembaharuan terakhir",
@@ -36,6 +36,6 @@
   "month": "bulan",
   "hour": "jam",
   "zoomIn": "Perbesar",
-  "zoomTo": "Memperbesar",
+  "zoomTo": "Perbesar ke",
   "zoomOut": "Perkecil"
 }
