@@ -143,7 +143,7 @@ export function MultiSelect(props: MultiSelectProps) {
   )
 
   const handleIsOpenChange = useCallback(
-    (changes: UseComboboxStateChange<MultiSelectOption[]>) => {
+    (changes: UseComboboxStateChange<MultiSelectOption | null>) => {
       if (onIsOpenChange) {
         onIsOpenChange(changes.isOpen as boolean)
       }
