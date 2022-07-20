@@ -405,6 +405,7 @@
   },
   "selects": {
     "allSelected": "Tous",
+    "noneSelected": "None",
     "placeholder": "Sélectionnez une option",
     "selected": "sélectionné"
   },
