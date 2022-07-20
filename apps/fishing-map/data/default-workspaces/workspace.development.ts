@@ -8,6 +8,7 @@ import {
   RFMO_DATAVIEW_ID,
   HIGH_SEAS_DATAVIEW_ID,
   BASEMAP_DATAVIEW_ID,
+  BASEMAP_LABELS_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
   PRESENCE_DATAVIEW_ID,
   VIIRS_MATCH_DATAVIEW_ID,
@@ -155,6 +156,14 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: PROTECTED_SEAS_DATAVIEW_ID,
+    },
+    {
+      id: 'basemap-labels',
+      config: {
+        locale: 'en',
+        visible: false,
+      },
+      dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
     },
   ],
 }

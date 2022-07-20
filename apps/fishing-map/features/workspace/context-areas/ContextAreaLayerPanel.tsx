@@ -14,6 +14,7 @@ import { isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
+import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -76,7 +77,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
 
   useAutoRefreshImportingDataset(dataset, 5000)
 
-  if (!dataset) {
+  const basemapLabelsDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
+  if (!dataset && dataview.id !== basemapLabelsDataviewInstance.id) {
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       d.datasetId.includes(PRIVATE_SUFIX)
     )
@@ -87,7 +89,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     )
   }
 
-  const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+  const title = dataset
+    ? t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+    : dataview.name
 
   const TitleComponent = (
     <Title

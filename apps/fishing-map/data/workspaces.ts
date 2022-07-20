@@ -26,6 +26,7 @@ export enum WorkspaceCategories {
 
 // Contextual layers dataviews by environment
 export const BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
+export const BASEMAP_LABELS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 295 : undefined
 export const EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
 export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
