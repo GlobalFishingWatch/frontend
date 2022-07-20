@@ -1,6 +1,6 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../config'
-import { API_ENDPOINTS } from '../config'
+import { API_ENDPOINTS, COLOR_RAMP_DEFAULT_NUM_STEPS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { HeatmapAnimatedMode } from '../../types'
 import { isUrlAbsolute } from '../../../utils'
@@ -98,7 +98,7 @@ const getNumBins = (config: FetchBreaksParams) => {
   ) {
     return 4
   }
-  return 9
+  return COLOR_RAMP_DEFAULT_NUM_STEPS - 1
 }
 
 const parseBreaksResponse = (config: FetchBreaksParams, breaks: Breaks) => {

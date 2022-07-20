@@ -31,7 +31,7 @@ export const useEnvironmentalBreaksUpdate = () => {
             const filteredFeatures = filterByViewport(features, bounds)
             const data = aggregateFeatures(filteredFeatures, metadata)
             if (data && data.length) {
-              const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
+              const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
               const dataSampled =
                 data.length > 1000 ? sample(data, Math.round(data.length / 100), Math.random) : data
 
