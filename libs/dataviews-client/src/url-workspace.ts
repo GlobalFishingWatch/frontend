@@ -170,7 +170,7 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   return {
     ...parseLegacyDataviewInstanceEndpoint(dataview),
     ...(dataviewId && { dataviewId }),
-    ...config,
+    config,
   }
 }
 
