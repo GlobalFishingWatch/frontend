@@ -226,7 +226,6 @@ export function getGeneratorConfig(
           {
             id: generator.id,
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
-            colorRampWhiteEnd: false,
             filter: dataview.config?.filter,
             vesselGroups: dataview.config?.['vessel-groups'],
             visible: dataview.config?.visible ?? true,
@@ -433,7 +432,6 @@ export function getMergedHeatmapAnimatedDataview(
       id: dataview.id,
       datasets,
       colorRamp: config.colorRamp as ColorRampsIds,
-      colorRampWhiteEnd: true,
       filter: config.filter,
       vesselGroups: config['vessel-groups'],
       visible: config.visible,

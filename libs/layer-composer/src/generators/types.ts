@@ -48,6 +48,7 @@ export interface GlobalGeneratorConfig {
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
   zoomLoadLevel: number
+  totalHeatmapAnimatedGenerators?: number
 }
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
