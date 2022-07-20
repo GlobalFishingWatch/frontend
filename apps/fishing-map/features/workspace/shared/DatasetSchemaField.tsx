@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { formatNumber, TagList } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import {
   getSchemaFieldsSelectedInDataview,
+  getSchemaFilterOperationInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
@@ -24,6 +26,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
   const vesselGroupsOptions = useVesselGroupsOptions()
   const timeRange = useSelector(selectTimeRange)
   const duration = getTimeRangeDuration(timeRange, 'days')
+  const filterOperation = getSchemaFilterOperationInDataview(dataview, field)
   let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
     (a, b) => a.label - b.label
   )
@@ -48,6 +51,9 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
         <div className={styles.filter}>
           <label>
             {label}
+            {filterOperation === EXCLUDE_FILTER_ID && (
+              <span> ({t('common.excluded', 'Excluded')})</span>
+            )}
             {field === 'vessel-groups' && duration?.days > 31 && (
               <span className={cx(styles.dataWarning, styles.error)}>
                 {' '}

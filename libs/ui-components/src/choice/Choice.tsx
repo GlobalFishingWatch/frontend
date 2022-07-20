@@ -23,7 +23,7 @@ interface ChoiceProps {
   activeOption: string
   disabled?: boolean
   onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
-  size?: 'default' | 'small'
+  size?: 'default' | 'small' | 'tiny'
   className?: string
 }
 

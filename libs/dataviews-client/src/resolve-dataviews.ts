@@ -6,6 +6,9 @@ import {
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
+  EXCLUDE_FILTER_ID,
+  FilterOperator,
+  INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -14,6 +17,11 @@ import { resolveEndpoint } from './resolve-endpoint'
 export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
   dataviewId?: number // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
+}
+
+export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
+  [INCLUDE_FILTER_ID]: 'IN',
+  [EXCLUDE_FILTER_ID]: 'NOT IN',
 }
 
 /**
@@ -318,7 +326,7 @@ export function resolveDataviews(
   // resolved array filters to url filters
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
     if (dataviewInstance.config?.type === GeneratorType.HeatmapAnimated) {
-      const { filters } = dataviewInstance.config
+      const { filters, filterOperators } = dataviewInstance.config
       if (filters) {
         if (filters['vessel-groups']) {
           dataviewInstance.config['vessel-groups'] = filters['vessel-groups'].join(',')
@@ -350,7 +358,10 @@ export function resolveDataviews(
                 return `${filterKey} <= ${maxSelected}`
               }
             }
-            return `${filterKey} IN (${filterValues.map((f: string) => `'${f}'`).join(', ')})`
+            const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
+            return `${filterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
+              .map((f: string) => `'${f}'`)
+              .join(', ')})`
           })
         if (sqlFilters.length) {
           dataviewInstance.config.filter = sqlFilters.join(' AND ')
