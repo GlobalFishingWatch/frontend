@@ -141,7 +141,7 @@ function ActivitySchemaFilter({
             ? t('vesselGroup.vesselGroups', 'Vessel Groups')
             : t(`vessel.${id}` as any, id)
         }
-        placeholder={getPlaceholderBySelections(optionsSelected)}
+        placeholder={getPlaceholderBySelections(optionsSelected, filterOperator)}
         options={options}
         selectedOptions={optionsSelected}
         className={styles.multiSelect}
