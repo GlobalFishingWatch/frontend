@@ -5,6 +5,7 @@ import {
   useCombobox,
   UseComboboxState,
   UseComboboxStateChangeTypes,
+  UseComboboxStateChange,
 } from 'downshift'
 import cx from 'classnames'
 import { Icon, IconType } from '../icon'
@@ -58,6 +59,7 @@ interface MultiSelectProps {
   disabled?: boolean
   disabledMsg?: string
   onFilterOptions?: MultiSelectOnFilter
+  onIsOpenChange?: (open: boolean) => void
   onSelect: MultiSelectOnChange
   onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
@@ -103,6 +105,7 @@ export function MultiSelect(props: MultiSelectProps) {
     onSelect,
     onRemove,
     onCleanClick,
+    onIsOpenChange,
     disabled = false,
     disabledMsg = '',
     onFilterOptions,
@@ -137,6 +140,15 @@ export function MultiSelect(props: MultiSelectProps) {
       }
     },
     [handleRemove, handleSelect, selectedOptions]
+  )
+
+  const handleIsOpenChange = useCallback(
+    (changes: UseComboboxStateChange<MultiSelectOption[]>) => {
+      if (onIsOpenChange) {
+        onIsOpenChange(changes.isOpen as boolean)
+      }
+    },
+    [onIsOpenChange]
   )
 
   const [inputValue, setInputValue] = useState('')
@@ -212,6 +224,7 @@ export function MultiSelect(props: MultiSelectProps) {
           break
       }
     },
+    onIsOpenChange: handleIsOpenChange,
   })
 
   const hasSelectedOptions = selectedOptions && selectedOptions.length > 0
