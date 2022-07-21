@@ -1,6 +1,6 @@
 import { stringify } from 'qs'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import { FieldValidationError } from 'lib/types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, UserApplication } from '@globalfishingwatch/api-types'
@@ -10,14 +10,6 @@ export type UserApplicationCreateArguments = Omit<
   UserApplication,
   'id' | 'token' | 'createdAt' | 'userId'
 >
-export interface UserApplicationFetchResponse {
-  offset: number
-  metadata: any
-  total: number
-  limit: number | null
-  nextOffset: number
-  entries: UserApplication[]
-}
 
 async function fetchUserApplications(userId: number, limit = 0, offset = 0) {
   const query = stringify({
