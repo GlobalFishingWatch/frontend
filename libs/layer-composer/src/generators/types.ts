@@ -45,6 +45,7 @@ export interface GlobalGeneratorConfig {
   token?: string
   compareStart?: string
   compareEnd?: string
+  locale: Locale
 }
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
@@ -94,7 +95,6 @@ export interface BasemapGeneratorConfig extends GeneratorConfig {
  */
 export interface BasemapLabelsGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.BasemapLabels
-  locale?: Locale
 }
 /**
  * A solid color background layer

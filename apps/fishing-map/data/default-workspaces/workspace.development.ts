@@ -160,7 +160,6 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'basemap-labels',
       config: {
-        locale: 'en',
         visible: false,
       },
       dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
