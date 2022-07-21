@@ -18,7 +18,7 @@ export const layers: Dictionary<LayerSpecification[]> = {
 }
 
 export const getLabelsTilesUrlByLocale = (locale: Locale = Locale.en) => {
-  return `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels_${locale}/tile?x={x}&y={y}&z={z}`
+  return `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels/tile?locale=${locale}&x={x}&y={y}&z={z}`
 }
 
 export const sources: Dictionary<Record<string, any>> = {
