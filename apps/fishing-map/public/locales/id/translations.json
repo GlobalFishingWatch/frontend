@@ -1,11 +1,11 @@
 {
   "analysis": {
-    "activityChange": "Activity change",
-    "beforeAfter": "before/after",
-    "beforeAfterDate": "date",
-    "beforeAfterDuration": "duration",
-    "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}",
-    "change": "Change",
+    "activityChange": "Perubahan aktivitas",
+    "beforeAfter": "sebelum/sesudah",
+    "beforeAfterDate": "tanggal",
+    "beforeAfterDuration": "durasi",
+    "beforeAfterRange": "antara {{duration}} sebelum dan susudah {{compareStart}}",
+    "change": "Ubah",
     "changeIn": "Change in",
     "close": "Tutup analisis",
     "completed": "Laporan akan segera ada di email anda",
