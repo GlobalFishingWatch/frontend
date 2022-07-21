@@ -148,7 +148,7 @@ export class GFW_API_CLASS {
       (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
-    return this.generateUrl(`/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`, '', true)
+    return this.generateUrl(`/v2/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`, '', true)
   }
 
   getConfig() {
