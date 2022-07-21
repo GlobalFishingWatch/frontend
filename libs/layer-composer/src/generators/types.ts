@@ -95,6 +95,7 @@ export interface BasemapGeneratorConfig extends GeneratorConfig {
  */
 export interface BasemapLabelsGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.BasemapLabels
+  locale?: Locale
 }
 /**
  * A solid color background layer
