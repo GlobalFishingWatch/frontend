@@ -72,7 +72,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           </li>
         )}
       </ul>
-      {i18n.language === 'val' && (
+      {i18n.language === CROWDIN_IN_CONTEXT_LANG && (
         <Fragment>
           <Script
             id="pre-crowding"
