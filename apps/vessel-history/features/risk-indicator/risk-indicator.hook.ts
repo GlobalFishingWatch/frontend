@@ -47,7 +47,9 @@ export function useRiskIndicator(): UseRiskIndicator {
   const vessel = useSelector(selectVesselById(mergedVesselId))
 
   useEffect(() => {
-    dispatch(fetchIndicatorsByIdThunk(idData))
+    dispatch(
+      fetchIndicatorsByIdThunk(idData.map((item) => ({ ...item, vesselHistoryId: item.tmtId })))
+    )
   }, [dispatch, idData])
 
   const encountersInMPA = useSelector(selectEncountersInMPA)
