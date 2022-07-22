@@ -21,7 +21,7 @@ const initialState: IndicatorState = {
 type FetchIds = {
   vesselId: string
   datasetId: string
-  vesselHistoryId: string
+  tmtId: string
 }
 
 export const getMergedVesselsUniqueId = (idData: FetchIds[]) => {
@@ -32,8 +32,8 @@ export const getMergedVesselsUniqueId = (idData: FetchIds[]) => {
 }
 export const parseMergedVesselsUniqueId = (id: string): FetchIds[] =>
   id.split(',').map((x) => {
-    const [datasetId, vesselId, vesselHistoryId] = x.split('|')
-    return { datasetId, vesselId, vesselHistoryId }
+    const [datasetId, vesselId, tmtId] = x.split('|')
+    return { datasetId, vesselId, tmtId }
   })
 export const fetchIndicatorsByIdThunk = createAsyncThunk(
   'indicators/fetchById',
@@ -47,11 +47,8 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
       const indicator = await GFWAPI.fetch<Indicator>(`/prototype/vessels/indicators?${query}`, {
         method: 'POST',
         body: idData
-          .filter(
-            ({ datasetId, vesselId, vesselHistoryId }) =>
-              ![datasetId, vesselId].includes(NOT_AVAILABLE)
-          )
-          .map(({ datasetId, vesselId, vesselHistoryId }) => ({
+          .filter(({ datasetId, vesselId }) => ![datasetId, vesselId].includes(NOT_AVAILABLE))
+          .map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
             datasetId,
             vesselId,
             vesselHistoryId,
