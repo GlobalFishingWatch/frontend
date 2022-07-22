@@ -32,8 +32,15 @@
   margin-top: 0.2rem;
 }
 
+.fieldCheckbox {
+  width: 67%;
+  margin-bottom: var(--space-M);
+  display: flex;
+}
+
 .checkboxContainer {
   align-items: flex-start;
+  margin: 0 var(--space-S) var(--space-S) 0;
 }
 
 .label {
