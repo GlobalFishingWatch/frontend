@@ -27,7 +27,7 @@ import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
 import { HOME, PROFILE, SETTINGS } from 'routes/routes'
 import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
-import { formatVesselProfileId } from 'features/vessels/vessels.utils'
+import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserData } from 'features/user/user.slice'
 import { useApp } from 'features/app/app.hooks'
@@ -84,9 +84,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         redirect({
           type: PROFILE,
           payload: {
-            dataset: vessel.dataset ?? 'NA',
-            vesselID: vessel.id ?? 'NA',
-            tmtID: vessel.vesselMatchId ?? 'NA',
+            dataset: vessel.dataset ?? NOT_AVAILABLE,
+            vesselID: vessel.id ?? NOT_AVAILABLE,
+            tmtID: vessel.vesselMatchId ?? NOT_AVAILABLE,
           },
           query: {
             aka: aka as any,
@@ -100,11 +100,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const getListOfSelectedVessels = useCallback(() => {
     return selectedVessels
       .map((index) => vessels[index])
-      .map((allVessels) =>
-        allVessels.relatedVessels
-      ).flatMap(relatedVessel => relatedVessel)
+      .map((allVessels) => allVessels.relatedVessels)
+      .flatMap((relatedVessel) => relatedVessel)
   }, [vessels, selectedVessels])
-
 
   const onOpenVesselProfile = useCallback(
     (vessel) => () => openVesselProfile(vessel),

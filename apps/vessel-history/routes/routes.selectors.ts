@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { formatVesselProfileId } from 'features/vessels/vessels.utils'
+import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
@@ -30,11 +30,11 @@ export const getLocationType = createSelector([selectLocation], (location) => {
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
 
 export const selectVesselId = createSelector([selectLocationPayload], (payload) => {
-  return payload.vesselID !== 'NA' ? payload.vesselID : null
+  return payload.vesselID !== NOT_AVAILABLE ? payload.vesselID : null
 })
 
 export const selectTmtId = createSelector([selectLocationPayload], (payload) => {
-  return payload.tmtID !== 'NA' ? payload.tmtID : null
+  return payload.tmtID !== NOT_AVAILABLE ? payload.tmtID : null
 })
 
 export const selectDataset = createSelector([selectLocationPayload], (payload) => {

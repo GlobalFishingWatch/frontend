@@ -36,7 +36,7 @@ import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
-import { parseVesselProfileId } from 'features/vessels/vessels.utils'
+import { NOT_AVAILABLE, parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
@@ -79,10 +79,13 @@ const Profile: React.FC = (props): React.ReactElement => {
       let [dataset] = (Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? '').split(
         '_'
       )
-      if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
+      if (
+        akaVesselProfileIds &&
+        dataset.toLocaleLowerCase() === NOT_AVAILABLE.toLocaleLowerCase()
+      ) {
         const gfwAka = akaVesselProfileIds.find((aka) => {
           const [akaDataset] = aka.split('_')
-          return akaDataset.toLocaleLowerCase() !== 'na'
+          return akaDataset.toLocaleLowerCase() !== NOT_AVAILABLE.toLocaleLowerCase()
         })
         if (gfwAka) {
           const [akaDataset] = gfwAka.split('_')
@@ -154,10 +157,10 @@ const Profile: React.FC = (props): React.ReactElement => {
     let [dataset, gfwId, tmtId] = (
       Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
     ).split('_')
-    if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
+    if (akaVesselProfileIds && dataset.toLocaleLowerCase() === NOT_AVAILABLE.toLocaleLowerCase()) {
       const gfwAka = akaVesselProfileIds.find((aka) => {
         const [akaDataset] = aka.split('_')
-        return akaDataset.toLocaleLowerCase() !== 'na'
+        return akaDataset.toLocaleLowerCase() !== NOT_AVAILABLE.toLocaleLowerCase()
       })
       if (gfwAka) {
         const [akaDataset, akaGfwId] = gfwAka.split('_')
