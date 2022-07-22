@@ -1,0 +1,25 @@
+.container {
+  padding: var(--space-M) 0 var(--space-S) 0;
+  margin-left: 0;
+}
+
+.container:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.title {
+  display: flex;
+  cursor: pointer;
+}
+
+.title > div {
+  flex-grow: 1;
+}
+
+.info {
+  align-self: flex-end;
+}
+
+.subtitle {
+  color: var(--color-secondary-blue);
+}

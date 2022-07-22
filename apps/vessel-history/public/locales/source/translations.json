@@ -140,6 +140,7 @@
     "fishingEventInMPA_one": "{{count}} fishing event in MPAs",
     "fishingEventInMPA_other": "{{count}} fishing events in MPAs",
     "high": "High Risk",
+    "identity": "Identity",
     "loiteringEventInMPA_one": "{{count}} loitering event in MPAs",
     "loiteringEventInMPA_other": "{{count}} loitering events in MPAs",
     "low": "Low Risk",
@@ -149,9 +150,11 @@
     "noLoiteringEventInMPA": "No loitering event detected in MPAs",
     "noPortVisitsToNonPSMAPortState": "No visit to a port in a country that has not ratified the PSMA state detected",
     "noRiskDetected": "No risk detected",
+    "noVesselFlagsOnMOU": "The vessel's flag(s) are not listed on either the Paris or Tokyo MOU black or grey list",
     "portVisitsToNonPSMAPortState_one": "{{count}} visit to a port in a country that has not ratified the PSMA state",
     "portVisitsToNonPSMAPortState_other": "{{count}} visits to a port in a country that has not ratified the PSMA state",
-    "unknown": "Unknown Risk"
+    "unknown": "Unknown Risk",
+    "vesselWithFlagOnMOU": "Vessel flying under a flag on the {{mou_name}} MOU black or grey list"
   },
   "search": {
     "activeAfter": "active After",

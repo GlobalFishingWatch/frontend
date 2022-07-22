@@ -6,14 +6,20 @@ import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectEventsInsideMPAByType } from 'features/risk/risk.selectors'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { FlagOnMOU } from 'types/risk-indicator'
+import { selectMergedVesselId } from 'routes/routes.selectors'
+import { selectVesselById } from 'features/vessels/vessels.slice'
+import { ValueItem, VesselWithHistory } from 'types'
+import { fetchIndicatorsByIdThunk, selectIndicatorsStatus } from './risk-indicator.slice'
 import {
   selectEncountersInMPA,
   selectFishingInMPA,
   selectEncountersInForeignEEZ,
   selectCurrentMergedVesselsId,
   selectPortVisitsToNonPSMAPortState,
+  selectVesselIdentityMouIndicators,
+  selectRiskVesselIndentityFlagsHistory,
 } from './risk-indicator.selectors'
-import { fetchIndicatorsByIdThunk, selectIndicatorsStatus } from './risk-indicator.slice'
 
 export interface UseRiskIndicator {
   encountersInForeignEEZ: RenderedEvent[]
@@ -27,6 +33,9 @@ export interface UseRiskIndicator {
     high: number
   }
   indicatorsLoading: boolean
+  vesselFlagsOnMOU: FlagOnMOU[]
+  vessel: VesselWithHistory
+  flagsHistory: ValueItem[]
 }
 
 export function useRiskIndicator(): UseRiskIndicator {
@@ -34,6 +43,8 @@ export function useRiskIndicator(): UseRiskIndicator {
   const idData = useSelector(selectCurrentMergedVesselsId)
   const indicatorsStatus = useSelector(selectIndicatorsStatus)
   const eventsLoading = useSelector(selectResourcesLoading)
+  const mergedVesselId = useSelector(selectMergedVesselId)
+  const vessel = useSelector(selectVesselById(mergedVesselId))
 
   useEffect(() => {
     dispatch(fetchIndicatorsByIdThunk(idData))
@@ -43,6 +54,8 @@ export function useRiskIndicator(): UseRiskIndicator {
   const fishingInMPA = useSelector(selectFishingInMPA)
   const encountersInForeignEEZ = useSelector(selectEncountersInForeignEEZ)
   const portVisitsToNonPSMAPortState = useSelector(selectPortVisitsToNonPSMAPortState)
+  const vesselFlagsOnMOU = useSelector(selectVesselIdentityMouIndicators)
+  const flagsHistory = useSelector(selectRiskVesselIndentityFlagsHistory)
   /** Migration to API pengding */
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))
   /******************************/
@@ -60,9 +73,13 @@ export function useRiskIndicator(): UseRiskIndicator {
         encountersInMPA.length +
         fishingInMPA.length +
         loiteringInMPA.length +
-        portVisitsToNonPSMAPortState.length,
+        portVisitsToNonPSMAPortState.length +
+        vesselFlagsOnMOU.length,
       high: 0,
     },
+    vesselFlagsOnMOU,
+    flagsHistory,
+    vessel,
     indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
   }
 }
