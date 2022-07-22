@@ -4,7 +4,7 @@
     "beforeAfter": "sebelum/sesudah",
     "beforeAfterDate": "tanggal",
     "beforeAfterDuration": "durasi",
-    "beforeAfterRange": "antara {{duration}} sebelum dan susudah {{compareStart}}",
+    "beforeAfterRange": "antara {{duration}} sebelum dan sesudah {{compareStart}}",
     "change": "Ubah",
     "changeIn": "Change in",
     "close": "Tutup analisis",
