@@ -53,6 +53,7 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
             vesselId,
             vesselHistoryId,
           })) as any,
+        version: '',
       })
       indicator.id = getMergedVesselsUniqueId(idData)
       return indicator
