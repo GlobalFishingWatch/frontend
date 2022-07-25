@@ -10,6 +10,7 @@ import {
 import { RootState } from 'store'
 import { Indicator } from 'types/risk-indicator'
 import { selectEventDatasetsConfigQueryParams } from 'features/dataviews/dataviews.selectors'
+import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 
 export type IndicatorState = AsyncReducer<Indicator>
 
@@ -20,6 +21,7 @@ const initialState: IndicatorState = {
 type FetchIds = {
   vesselId: string
   datasetId: string
+  tmtId: string
 }
 
 export const getMergedVesselsUniqueId = (idData: FetchIds[]) => {
@@ -30,8 +32,8 @@ export const getMergedVesselsUniqueId = (idData: FetchIds[]) => {
 }
 export const parseMergedVesselsUniqueId = (id: string): FetchIds[] =>
   id.split(',').map((x) => {
-    const [datasetId, vesselId] = x.split('|')
-    return { datasetId, vesselId }
+    const [datasetId, vesselId, tmtId] = x.split('|')
+    return { datasetId, vesselId, tmtId }
   })
 export const fetchIndicatorsByIdThunk = createAsyncThunk(
   'indicators/fetchById',
@@ -44,7 +46,13 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
         .join('&')
       const indicator = await GFWAPI.fetch<Indicator>(`/prototype/vessels/indicators?${query}`, {
         method: 'POST',
-        body: idData.map(({ datasetId, vesselId }) => ({ datasetId, vesselId })) as any,
+        body: idData
+          .filter(({ datasetId, vesselId }) => ![datasetId, vesselId].includes(NOT_AVAILABLE))
+          .map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
+            datasetId,
+            vesselId,
+            vesselHistoryId,
+          })) as any,
       })
       indicator.id = getMergedVesselsUniqueId(idData)
       return indicator

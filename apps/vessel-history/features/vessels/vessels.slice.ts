@@ -15,7 +15,7 @@ import gfwThunk from 'features/vessels/sources/gfw.slice'
 import tmtThunk from 'features/vessels/sources/tmt.slice'
 import { RootState } from 'store'
 import { RenderedVoyage } from 'types/voyage'
-import { mergeVesselFromSources } from './vessels.utils'
+import { mergeVesselFromSources, NOT_AVAILABLE } from './vessels.utils'
 
 export type VoyagesState = {
   expanded: Record<number, RenderedVoyage | undefined>
@@ -95,7 +95,9 @@ export const fetchVesselByIdThunk = createAsyncThunk(
       }
       const vesselsToFetchFiltered = Array.from(
         new Map(vesselsToFetch.map((item) => [item.sourceId.id, item])).values()
-      ).filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
+      ).filter(
+        ({ sourceId: { id } }) => id && id.toLowerCase() !== NOT_AVAILABLE.toLocaleLowerCase()
+      )
 
       const vessels = await Promise.all(
         vesselsToFetchFiltered.map(async ({ source, sourceId }) => {

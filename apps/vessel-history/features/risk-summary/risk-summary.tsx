@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
@@ -15,6 +15,8 @@ import TerminologyFishingEvents from 'features/terminology/terminology-fishing-e
 import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
 import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import TerminologyPortVisitEvents from 'features/terminology/terminology-port-visit-events'
+import TerminologyRiskIdentity from 'features/terminology/terminology-risk-identity'
+import RiskIdentityFlagsOnMouIndicator from 'features/risk-identity-flags-on-mou-indicator/risk-identity-flags-on-mou-indicator'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -32,6 +34,9 @@ export function RiskSummary(props: RiskSummaryProps) {
     indicatorsLoading,
     loiteringInMPA,
     portVisitsToNonPSMAPortState,
+    vesselFlagsOnMOU,
+    flagsHistory,
+    vessel,
   } = useRiskIndicator()
   const { highlightEvent } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
@@ -67,6 +72,12 @@ export function RiskSummary(props: RiskSummaryProps) {
   const hasFishingInMPAs = fishingInMPA.length > 0
   const hasLoiteringInMPAs = loiteringInMPA.length > 0
   const hasPortVisitsToNonPSMAPortState = portVisitsToNonPSMAPortState.length > 0
+  const hasVesselFlagsOnMOU = vesselFlagsOnMOU.length > 0
+
+  const vesselFlagsPerMOU = useMemo(
+    () => Array.from(new Set(vesselFlagsOnMOU.map((item) => item.name))),
+    [vesselFlagsOnMOU]
+  )
 
   if (!authorizedInsurer) return <Fragment />
   if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
@@ -162,10 +173,31 @@ export function RiskSummary(props: RiskSummaryProps) {
           ></RiskIndicator>
         </RiskSection>
       )}
+      {hasVesselFlagsOnMOU && (
+        <RiskSection
+          severity="medium"
+          title={t('risk.identity', 'Identity')}
+          titleInfo={<TerminologyRiskIdentity />}
+        >
+          {vesselFlagsPerMOU.map((mou, index) => (
+            <RiskIdentityFlagsOnMouIndicator
+              key={`${mou}-${index}`}
+              name={mou}
+              flags={vesselFlagsOnMOU
+                .filter((item) => item.name === mou)
+                .map((item) => item.flags)
+                .flat()}
+              vesselName={vessel.shipname}
+              flagsHistory={flagsHistory}
+            ></RiskIdentityFlagsOnMouIndicator>
+          ))}
+        </RiskSection>
+      )}
       {(!hasFishingInMPAs ||
         !hasEncountersInMPAs ||
         !hasLoiteringInMPAs ||
-        !hasPortVisitsToNonPSMAPortState) && (
+        !hasPortVisitsToNonPSMAPortState ||
+        !hasVesselFlagsOnMOU) && (
         <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
           {!hasFishingInMPAs && (
             <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
@@ -234,6 +266,21 @@ export function RiskSummary(props: RiskSummaryProps) {
                   ) as string
                 }
                 events={portVisitsToNonPSMAPortState}
+                onEventInfoClick={openModal}
+                onEventMapClick={onEventMapClick}
+              ></RiskIndicator>
+            </RiskSection>
+          )}
+          {!hasVesselFlagsOnMOU && (
+            <RiskSection className={styles.naSubSection} title={t('risk.identity', 'Identity')}>
+              <RiskIndicator
+                title={
+                  t(
+                    'risk.noVesselFlagsOnMOU',
+                    "The vessel's flag(s) are not listed on either the Paris or Tokyo MOU black or grey list"
+                  ) as string
+                }
+                events={[]}
                 onEventInfoClick={openModal}
                 onEventMapClick={onEventMapClick}
               ></RiskIndicator>
