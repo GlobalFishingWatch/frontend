@@ -27,7 +27,7 @@ export const fetchPsmaThunk = createAsyncThunk(
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const psmaResult = await GFWAPI.fetch<APIPagination<Psma>>(
-        `/${API_VERSION}/psma-countries?${stringify(queryParams, { arrayFormat: 'comma' })}`
+        `/psma-countries?${stringify(queryParams, { arrayFormat: 'comma' })}`
       )
       const psma = uniqBy(psmaResult.entries, 'iso3')
       return psma.map((item) => ({ ...item, id: item.iso3 })) as Psma[]

@@ -93,8 +93,8 @@ const getInteractionEndpointDatasetConfig = (
   const featuresDataviews = features.flatMap((feature) => {
     return feature.temporalgrid
       ? temporalgridDataviews.find(
-          (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
-        ) || []
+        (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
+      ) || []
       : []
   })
   const fourWingsDataset = featuresDataviews[0]?.datasets?.find(
@@ -176,7 +176,7 @@ export const fetchVesselInfo = async (
   }
   try {
     const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl, {
-      signal,
+      signal
     })
     // TODO remove entries once the API is stable
     const vesselsInfoList: Vessel[] =
@@ -383,7 +383,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
         const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
         if (vesselsUrl) {
           vesselsInfo = await GFWAPI.fetch<APIPagination<ExtendedEventVessel>>(vesselsUrl, {
-            signal,
+            signal
           }).then((r) => r.entries)
         }
       }

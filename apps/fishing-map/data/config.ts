@@ -23,7 +23,6 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   : { debug: true }
 
 // TODO use it to retrieve it and store in workspace.default in deploy
-export const API_VERSION = 'v2'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'

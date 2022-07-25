@@ -19,7 +19,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
-        `/${API_VERSION}/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
+        `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         {
           signal,
         }

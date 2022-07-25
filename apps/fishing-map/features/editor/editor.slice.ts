@@ -4,7 +4,7 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { API_VERSION, APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { BASEMAP_DATAVIEW_ID, TEMPLATE_DATAVIEW_IDS } from 'data/workspaces'
 
 interface EditorState {
@@ -36,7 +36,7 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
       ...DEFAULT_PAGINATION_PARAMS,
     }
     const dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
-      `/${API_VERSION}/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`
+      `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`
     )
     const filteredDataviews = dataviews.entries.filter(
       ({ id, category }) =>

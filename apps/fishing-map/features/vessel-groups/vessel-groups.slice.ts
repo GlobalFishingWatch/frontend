@@ -22,7 +22,7 @@ import {
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { RootState } from 'store'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 
@@ -106,9 +106,9 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
           idField === 'vesselId'
             ? { id: 'ids', value: uniqVesselIds }
             : {
-                id: 'query',
-                value: advancedSearchQuery,
-              },
+              id: 'query',
+              value: advancedSearchQuery,
+            },
           {
             id: 'limit',
             value: DEFAULT_PAGINATION_PARAMS.limit,
@@ -137,11 +137,11 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         const searchResultsFiltered =
           idField === 'vesselId'
             ? uniqSearchResults.filter((vessel) => {
-                return (
-                  vessels.find((v) => v.vesselId === vessel.id && v.dataset === vessel.dataset) !==
-                  undefined
-                )
-              })
+              return (
+                vessels.find((v) => v.vesselId === vessel.id && v.dataset === vessel.dataset) !==
+                undefined
+              )
+            })
             : uniqSearchResults
         return searchResultsFiltered
       } catch (e: any) {
@@ -175,7 +175,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(
-        `/${API_VERSION}/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'comma' })}`,
+        `/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       return vesselGroups.entries as VesselGroup[]
@@ -196,7 +196,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
 export const fetchUserVesselGroupsThunk = createAsyncThunk(
   'vessel-groups/fetch',
   async () => {
-    const url = `/${API_VERSION}/vessel-groups?${stringify(DEFAULT_PAGINATION_PARAMS)}`
+    const url = `/vessel-groups?${stringify(DEFAULT_PAGINATION_PARAMS)}`
     const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url)
     return vesselGroups.entries
   },
@@ -214,7 +214,7 @@ const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVessel[]) => {
 export const createVesselGroupThunk = createAsyncThunk(
   'vessel-groups/create',
   async (vesselGroupCreate: VesselGroupUpsert, { dispatch, getState }) => {
-    const url = `/${API_VERSION}/vessel-groups/`
+    const url = `/vessel-groups/`
     const vesselGroup: VesselGroupUpsert = {
       ...vesselGroupCreate,
       vessels: removeDuplicatedVesselGroupvessels(vesselGroupCreate.vessels),
@@ -231,7 +231,7 @@ export const updateVesselGroupThunk = createAsyncThunk(
   'vessel-groups/update',
   async (vesselGroupUpsert: VesselGroupUpsert & { id: string }) => {
     const { id, ...rest } = vesselGroupUpsert
-    const url = `/${API_VERSION}/vessel-groups/${id}`
+    const url = `/vessel-groups/${id}`
     const vesselGroup: VesselGroupUpsert = {
       ...rest,
       vessels: removeDuplicatedVesselGroupvessels(rest.vessels),
@@ -252,7 +252,7 @@ export const deleteVesselGroupThunk = createAsyncThunk<
   }
 >('vessel-groups/delete', async (id: any, { rejectWithValue }) => {
   try {
-    const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/${API_VERSION}/vessel-groups/${id}`, {
+    const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`, {
       method: 'DELETE',
     })
     return { ...vesselGroup, id }

@@ -149,7 +149,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
         const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, {
-          signal,
+          signal
         })
         const uniqSearchResults = uniqBy(searchResults.entries, 'id')
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {

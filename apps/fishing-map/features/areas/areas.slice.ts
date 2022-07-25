@@ -7,7 +7,6 @@ import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { RootState } from 'store'
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { API_VERSION } from 'data/config'
 
 export interface Area {
   key: string
@@ -33,7 +32,7 @@ export const fetchAreaThunk = createAsyncThunk(
     { signal }
   ) => {
     const area = await GFWAPI.fetch<ContextAreaGeometry>(
-      `/${API_VERSION}/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
+      `/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
       {
         signal,
       }

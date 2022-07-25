@@ -9,7 +9,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import { parseLegacyDataviewInstanceEndpoint } from '@globalfishingwatch/dataviews-client'
-import { API_VERSION, DEFAULT_TIME_RANGE } from 'data/config'
+import { DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -78,11 +78,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     try {
       let workspace = workspaceId
         ? await GFWAPI.fetch<Workspace<WorkspaceState>>(
-            `/${API_VERSION}/workspaces/${workspaceId}`,
-            {
-              signal,
-            }
-          )
+          `/workspaces/${workspaceId}`,
+          {
+            signal,
+          }
+        )
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
@@ -191,7 +191,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
         try {
           const name = tries > 0 ? defaultName + `_${tries}` : defaultName
           workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-            `/${API_VERSION}/workspaces`,
+            `/workspaces`,
             {
               method: 'POST',
               body: {
@@ -237,7 +237,7 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk(
     const workspaceUpsert = parseUpsertWorkspace(workspace)
 
     const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-      `/${API_VERSION}/workspaces/${workspace.id}`,
+      `/workspaces/${workspace.id}`,
       {
         method: 'PATCH',
         body: workspaceUpsert,

@@ -16,7 +16,7 @@ import {
   AsyncError,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { API_VERSION, APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
@@ -42,7 +42,7 @@ export const fetchWorkspacesThunk = createAsyncThunk<
     const workspacesParams = { app, ids, 'owner-id': userId, ...DEFAULT_PAGINATION_PARAMS }
     try {
       const workspaces = await GFWAPI.fetch<APIPagination<AppWorkspace>>(
-        `/${API_VERSION}/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
+        `/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
       )
 
       if (ids?.includes(DEFAULT_WORKSPACE_ID) && !defaultWorkspaceLoaded) {
@@ -107,7 +107,7 @@ export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
   async (_, { dispatch }) => {
     const workspaces = await GFWAPI.fetch<APIPagination<HighlightedWorkspaces>>(
-      `/v2/highlighted-workspaces/${WORKSPACES_APP}`
+      `/highlighted-workspaces/${WORKSPACES_APP}`
     )
 
     const workspacesIds = workspaces.entries.flatMap(({ workspaces }) =>
@@ -134,7 +134,7 @@ export const createWorkspaceThunk = createAsyncThunk<
       public: true,
     }
     try {
-      const newWorkspace = await GFWAPI.fetch<Workspace>(`/${API_VERSION}/workspaces`, {
+      const newWorkspace = await GFWAPI.fetch<Workspace>(`/workspaces`, {
         method: 'POST',
         body: parsedWorkspace as any,
       })
@@ -164,7 +164,7 @@ export const updateWorkspaceThunk = createAsyncThunk<
   async (workspace, { rejectWithValue }) => {
     try {
       const { id, ...rest } = workspace
-      const updatedWorkspace = await GFWAPI.fetch<Workspace>(`/${API_VERSION}/workspaces/${id}`, {
+      const updatedWorkspace = await GFWAPI.fetch<Workspace>(`/workspaces/${id}`, {
         method: 'PATCH',
         body: rest as any,
       })
@@ -191,7 +191,7 @@ export const deleteWorkspaceThunk = createAsyncThunk<
   }
 >('workspaces/delete', async (id: string, { rejectWithValue }) => {
   try {
-    const workspace = await GFWAPI.fetch<Workspace>(`/${API_VERSION}/workspaces/${id}`, {
+    const workspace = await GFWAPI.fetch<Workspace>(`/workspaces/${id}`, {
       method: 'DELETE',
     })
     return { ...workspace, id }
