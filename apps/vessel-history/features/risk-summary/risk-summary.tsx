@@ -15,6 +15,7 @@ import TerminologyFishingEvents from 'features/terminology/terminology-fishing-e
 import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
 import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import TerminologyPortVisitEvents from 'features/terminology/terminology-port-visit-events'
+import TerminologyRiskIdentity from 'features/terminology/terminology-risk-identity'
 import RiskIdentityFlagsOnMouIndicator from 'features/risk-identity-flags-on-mou-indicator/risk-identity-flags-on-mou-indicator'
 import styles from './risk-summary.module.css'
 
@@ -176,7 +177,7 @@ export function RiskSummary(props: RiskSummaryProps) {
         <RiskSection
           severity="medium"
           title={t('risk.identity', 'Identity')}
-          titleInfo={<div>Some identity info here (TBD)</div>}
+          titleInfo={<TerminologyRiskIdentity />}
         >
           {vesselFlagsPerMOU.map((mou, index) => (
             <RiskIdentityFlagsOnMouIndicator
