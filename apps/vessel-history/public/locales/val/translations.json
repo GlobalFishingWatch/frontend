@@ -140,6 +140,8 @@
     "fishingEventInMPA_one": "crwdns26572:0{{count}}crwdne26572:0",
     "fishingEventInMPA_other": "crwdns26574:0{{count}}crwdne26574:0",
     "high": "crwdns26236:0crwdne26236:0",
+    "identity": "crwdns26604:0crwdne26604:0",
+    "identitySectionDescription": "crwdns26606:0crwdne26606:0",
     "loiteringEventInMPA_one": "crwdns26576:0{{count}}crwdne26576:0",
     "loiteringEventInMPA_other": "crwdns26578:0{{count}}crwdne26578:0",
     "low": "crwdns26240:0crwdne26240:0",
@@ -149,9 +151,11 @@
     "noLoiteringEventInMPA": "crwdns26202:0crwdne26202:0",
     "noPortVisitsToNonPSMAPortState": "crwdns26580:0crwdne26580:0",
     "noRiskDetected": "crwdns26204:0crwdne26204:0",
+    "noVesselFlagsOnMOU": "crwdns26608:0crwdne26608:0",
     "portVisitsToNonPSMAPortState_one": "crwdns26582:0{{count}}crwdne26582:0",
     "portVisitsToNonPSMAPortState_other": "crwdns26584:0{{count}}crwdne26584:0",
-    "unknown": "crwdns26242:0crwdne26242:0"
+    "unknown": "crwdns26242:0crwdne26242:0",
+    "vesselWithFlagOnMOU": "crwdns26610:0{{mou_name}}crwdne26610:0"
   },
   "search": {
     "activeAfter": "crwdns8551:0crwdne8551:0",
