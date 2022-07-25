@@ -585,8 +585,8 @@
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "IPNLF",
-    "description": "IPNLF Presence",
+    "name": "AP2HI-IPNLF",
+    "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -605,8 +605,8 @@
     }
   },
   "private-indonesia-ipnlf-vessels": {
-    "name": "Indonesia IPNLF (Vessels)",
-    "description": "Vessels (Indonesia IPNLF)",
+    "name": "Indonesia AP2HI-IPNLF (Vessels)\n",
+    "description": "Vessels (Indonesia AP2HI-IPNLF)\n",
     "schema": {
       "id": "id",
       "flag": "flag",
