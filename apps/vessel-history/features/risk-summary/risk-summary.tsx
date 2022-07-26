@@ -30,9 +30,11 @@ export function RiskSummary(props: RiskSummaryProps) {
     encountersInForeignEEZ,
     encountersInMPA,
     encountersInRFMOWithoutAuthorization,
+    encountersRFMOsAreasWithoutAuthorization,
     eventsLoading,
     fishingInMPA,
     fishingInRFMOWithoutAuthorization,
+    fishingRFMOsAreasWithoutAuthorization,
     indicatorsLoading,
     loiteringInMPA,
     portVisitsToNonPSMAPortState,
@@ -72,8 +74,17 @@ export function RiskSummary(props: RiskSummaryProps) {
   const hasEncountersInForeignEEZs = encountersInForeignEEZ.length > 0
   const hasEncountersInMPAs = encountersInMPA.length > 0
   const hasEncountersInRFMOWithoutAuthorization = encountersInRFMOWithoutAuthorization.length > 0
+  const encountersRFMOsWithoutAuth = useMemo(
+    () => encountersRFMOsAreasWithoutAuthorization.join(', '),
+    [encountersRFMOsAreasWithoutAuthorization]
+  )
+
   const hasFishingInMPAs = fishingInMPA.length > 0
   const hasFishingInRFMOWithoutAuthorization = fishingInRFMOWithoutAuthorization.length > 0
+  const fishingRFMOsWithoutAuth = useMemo(
+    () => fishingRFMOsAreasWithoutAuthorization.join(', '),
+    [fishingRFMOsAreasWithoutAuthorization]
+  )
   const hasLoiteringInMPAs = loiteringInMPA.length > 0
   const hasPortVisitsToNonPSMAPortState = portVisitsToNonPSMAPortState.length > 0
   const hasVesselFlagsOnMOU = vesselFlagsOnMOU.length > 0
@@ -107,6 +118,9 @@ export function RiskSummary(props: RiskSummaryProps) {
                   }
                 ) as string
               }
+              // The list of regions will be visible once the dataset (proto)
+              // that includes events authorizations is used to get the resources
+              subtitle={!!fishingRFMOsWithoutAuth && `(${fishingRFMOsWithoutAuth})`}
               events={fishingInRFMOWithoutAuthorization}
               onEventInfoClick={openModal}
               onEventMapClick={onEventMapClick}
@@ -143,6 +157,9 @@ export function RiskSummary(props: RiskSummaryProps) {
                   }
                 ) as string
               }
+              // The list of regions will be visible once the dataset (proto)
+              // that includes events authorizations is used to get the resources
+              subtitle={!!encountersRFMOsWithoutAuth && `(${encountersRFMOsWithoutAuth})`}
               events={encountersInRFMOWithoutAuthorization}
               onEventInfoClick={openModal}
               onEventMapClick={onEventMapClick}

@@ -138,3 +138,35 @@ export const selectFishingInRFMOWithoutAuthorization = createSelector(
     )
   }
 )
+
+export const selectEncountersRFMOsAreasWithoutAuthorization = createSelector(
+  [selectEncountersInRFMOWithoutAuthorization],
+  (events) => {
+    return Array.from(
+      new Set(
+        events
+          .filter((event) => event.vessel?.authorizations)
+          .map((event) => event.vessel?.authorizations)
+          .flat()
+          .filter((eventAuth) => eventAuth.is_authorized === 'false')
+          .map((eventAuth) => eventAuth.rfmo)
+      )
+    )
+  }
+)
+
+export const selectFishingRFMOsAreasWithoutAuthorization = createSelector(
+  [selectFishingInRFMOWithoutAuthorization],
+  (events) => {
+    return Array.from(
+      new Set(
+        events
+          .filter((event) => event.vessel?.authorizations)
+          .map((event) => event.vessel?.authorizations)
+          .flat()
+          .filter((eventAuth) => eventAuth.is_authorized === 'false')
+          .map((eventAuth) => eventAuth.rfmo)
+      )
+    )
+  }
+)
