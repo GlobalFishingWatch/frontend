@@ -19,13 +19,17 @@ import {
   selectPortVisitsToNonPSMAPortState,
   selectVesselIdentityMouIndicators,
   selectRiskVesselIndentityFlagsHistory,
+  selectEncountersInRFMOWithoutAuthorization,
+  selectFishingInRFMOWithoutAuthorization,
 } from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
   encountersInForeignEEZ: RenderedEvent[]
   encountersInMPA: RenderedEvent[]
+  encountersInRFMOWithoutAuthorization: RenderedEvent[]
   eventsLoading: boolean
   fishingInMPA: RenderedEvent[]
+  fishingInRFMOWithoutAuthorization: RenderedEvent[]
   loiteringInMPA: RenderedEvent[]
   portVisitsToNonPSMAPortState: RenderedEvent[]
   countByRiskLevel: {
@@ -56,6 +60,11 @@ export function useRiskIndicator(): UseRiskIndicator {
   const portVisitsToNonPSMAPortState = useSelector(selectPortVisitsToNonPSMAPortState)
   const vesselFlagsOnMOU = useSelector(selectVesselIdentityMouIndicators)
   const flagsHistory = useSelector(selectRiskVesselIndentityFlagsHistory)
+  const encountersInRFMOWithoutAuthorization = useSelector(
+    selectEncountersInRFMOWithoutAuthorization
+  )
+  const fishingInRFMOWithoutAuthorization = useSelector(selectFishingInRFMOWithoutAuthorization)
+
   /** Migration to API pengding */
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))
   /******************************/
@@ -63,8 +72,10 @@ export function useRiskIndicator(): UseRiskIndicator {
   return {
     encountersInForeignEEZ,
     encountersInMPA,
+    encountersInRFMOWithoutAuthorization,
     eventsLoading,
     fishingInMPA,
+    fishingInRFMOWithoutAuthorization,
     loiteringInMPA,
     portVisitsToNonPSMAPortState,
     countByRiskLevel: {

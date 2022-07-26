@@ -120,3 +120,21 @@ export const selectRiskVesselIndentityFlagsHistory = createSelector(
     }))
   }
 )
+
+export const selectEncountersInRFMOWithoutAuthorization = createSelector(
+  [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
+  (indicators, events) => {
+    return events.filter((event) =>
+      (indicators?.encounters?.eventsInRFMOWithoutAuthorization || []).includes(event.id)
+    )
+  }
+)
+
+export const selectFishingInRFMOWithoutAuthorization = createSelector(
+  [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
+  (indicators, events) => {
+    return events.filter((event) =>
+      (indicators?.fishing?.eventsInRFMOWithoutAuthorization || []).includes(event.id)
+    )
+  }
+)
