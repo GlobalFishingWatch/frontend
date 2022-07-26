@@ -113,7 +113,7 @@ const MapControls = ({
     if (domElement.current) {
       domElement.current.classList.remove('printing')
     }
-    dispatch(setModalOpen({ id: 'feedback', open: false }))
+    dispatch(setModalOpen({ id: 'screenshot', open: false }))
   }, [dispatch])
 
   const onPDFDownloadClick = useCallback(() => {
