@@ -38,7 +38,7 @@
     "eslint-config-next": "12.x",
     "eslint-config-prettier": "8.x",
     "eslint-config-react-app": "7.x",
-    "eslint-import-resolver-typescript": "3.x",
+    "eslint-import-resolver-typescript": "2.x",
     "eslint-plugin-cypress": "2.x",
     "eslint-plugin-flowtype": "8.x",
     "eslint-plugin-import": "2.x",
