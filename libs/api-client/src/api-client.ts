@@ -148,7 +148,11 @@ export class GFW_API_CLASS {
       (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
-    return this.generateUrl(`/v2/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`, '', true)
+    return this.generateUrl(
+      `/v2/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
+      '',
+      true
+    )
   }
 
   getConfig() {
@@ -205,7 +209,9 @@ export class GFW_API_CLASS {
   }
 
   async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
-    return fetch(this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, this.apiVersion, true))
+    return fetch(
+      this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, this.apiVersion, true)
+    )
       .then(processStatus)
       .then(parseJSON)
   }
@@ -317,9 +323,7 @@ export class GFW_API_CLASS {
           }),
           Authorization: `Bearer ${this.getToken()}`,
         }
-        const fetchUrl = isUrlAbsolute(url)
-          ? url
-          : this.baseUrl + url
+        const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
         const data = await fetch(fetchUrl, {
           method,
           signal,
@@ -428,11 +432,13 @@ export class GFW_API_CLASS {
 
   async fetchGuestUser(): Promise<UserData> {
     try {
-      const permissions: UserPermission[] = await this._internalFetch<APIPagination<UserPermission>>(
-        this.generateUrl(`/auth/acl/permissions/anonymous`, this.apiVersion),
-      ).then((response: APIPagination<UserPermission>) => {
-        return response.entries
-      })
+      const permissions: UserPermission[] = await this._internalFetch<
+        APIPagination<UserPermission>
+      >(this.generateUrl(`/auth/acl/permissions/anonymous`, this.apiVersion)).then(
+        (response: APIPagination<UserPermission>) => {
+          return response.entries
+        }
+      )
       const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
 
       return user
@@ -533,11 +539,11 @@ export class GFW_API_CLASS {
       if (this.debug) {
         console.log(`GFWAPI: Logout - tokens cleaned`)
       }
-      await fetch(this.generateUrl(`/${AUTH_PATH}/logout`, this.apiVersion, true), {
+      await this._internalFetch(`/${AUTH_PATH}/logout`, {
         headers: {
-          'refresh-token': this.refreshToken,
+          'refresh-token': this.getRefreshToken(),
         },
-      }).then(processStatus)
+      })
       this.setToken('')
       this.setRefreshToken('')
       if (this.debug) {
