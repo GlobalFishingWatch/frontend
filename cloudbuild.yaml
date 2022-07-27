@@ -11,7 +11,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:node-14.10.0
     entrypoint: bash
     args:
       - '-c'
