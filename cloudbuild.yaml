@@ -2,15 +2,15 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: ['fetch', '--unshallow', '--no-tags']
 
-  - name: 'gcr.io/$PROJECT_ID/restore_cache'
-    id: restore_cache
-    waitFor: ['-']
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
+  # - name: 'gcr.io/$PROJECT_ID/restore_cache'
+  #   id: restore_cache
+  #   waitFor: ['-']
+  #   args:
+  #     - '--bucket=gs://frontend-cache-dependencies'
+  #     - '--key=yarn-$( checksum yarn.lock )'
 
   - id: 'install-yarn'
-    waitFor: ['restore_cache']
+    # waitFor: ['restore_cache']
     name: gcr.io/cloud-builders/yarn:latest
     entrypoint: bash
     args:
