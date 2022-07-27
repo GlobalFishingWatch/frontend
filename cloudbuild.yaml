@@ -11,7 +11,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn:node-14.10.0
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: bash
     args:
       - '-c'
@@ -31,7 +31,7 @@ steps:
       - '--no-clobber'
 
   - id: get-affected
-    name: 'gcr.io/cloud-builders/yarn'
+    name: 'gcr.io/cloud-builders/yarn:latest'
     entrypoint: yarn
     args: ['affected']
 
