@@ -1,4 +1,4 @@
-import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
+import { ApiEvent, EventAuthorization, EventTypes } from '@globalfishingwatch/api-types'
 import { GroupRegions } from 'features/regions/regions.slice'
 
 export interface EventVessel {
@@ -6,6 +6,7 @@ export interface EventVessel {
   name: string
   ssvid: string
   nextPort?: any
+  authorizations?: EventAuthorization[]
 }
 export interface Position {
   lat: number

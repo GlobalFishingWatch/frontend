@@ -120,3 +120,53 @@ export const selectRiskVesselIndentityFlagsHistory = createSelector(
     }))
   }
 )
+
+export const selectEncountersInRFMOWithoutAuthorization = createSelector(
+  [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
+  (indicators, events) => {
+    return events.filter((event) =>
+      (indicators?.encounters?.eventsInRFMOWithoutAuthorization || []).includes(event.id)
+    )
+  }
+)
+
+export const selectFishingInRFMOWithoutAuthorization = createSelector(
+  [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
+  (indicators, events) => {
+    return events.filter((event) =>
+      (indicators?.fishing?.eventsInRFMOWithoutAuthorization || []).includes(event.id)
+    )
+  }
+)
+
+export const selectEncountersRFMOsAreasWithoutAuthorization = createSelector(
+  [selectEncountersInRFMOWithoutAuthorization],
+  (events) => {
+    return Array.from(
+      new Set(
+        events
+          .filter((event) => event.vessel?.authorizations)
+          .map((event) => event.vessel?.authorizations)
+          .flat()
+          .filter((eventAuth) => eventAuth.is_authorized === 'false')
+          .map((eventAuth) => eventAuth.rfmo)
+      )
+    )
+  }
+)
+
+export const selectFishingRFMOsAreasWithoutAuthorization = createSelector(
+  [selectFishingInRFMOWithoutAuthorization],
+  (events) => {
+    return Array.from(
+      new Set(
+        events
+          .filter((event) => event.vessel?.authorizations)
+          .map((event) => event.vessel?.authorizations)
+          .flat()
+          .filter((eventAuth) => eventAuth.is_authorized === 'false')
+          .map((eventAuth) => eventAuth.rfmo)
+      )
+    )
+  }
+)

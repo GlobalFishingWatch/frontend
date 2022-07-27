@@ -14,6 +14,7 @@ export type LocationRelatedEventIndicators = {
   eventsInForeignEEZ: string[]
   eventsInMPA: string[]
   eventsInRFMO: string[]
+  eventsInRFMOWithoutAuthorization: string[]
 }
 
 export type PortVisitsIndicators = {

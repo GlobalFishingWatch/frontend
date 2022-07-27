@@ -29,8 +29,12 @@ export function RiskSummary(props: RiskSummaryProps) {
   const {
     encountersInForeignEEZ,
     encountersInMPA,
+    encountersInRFMOWithoutAuthorization,
+    encountersRFMOsAreasWithoutAuthorization,
     eventsLoading,
     fishingInMPA,
+    fishingInRFMOWithoutAuthorization,
+    fishingRFMOsAreasWithoutAuthorization,
     indicatorsLoading,
     loiteringInMPA,
     portVisitsToNonPSMAPortState,
@@ -67,9 +71,20 @@ export function RiskSummary(props: RiskSummaryProps) {
     },
     [highlightEvent, props, setMapCoordinates, viewport.zoom]
   )
-  const hasEncountersInMPAs = encountersInMPA.length > 0
   const hasEncountersInForeignEEZs = encountersInForeignEEZ.length > 0
+  const hasEncountersInMPAs = encountersInMPA.length > 0
+  const hasEncountersInRFMOWithoutAuthorization = encountersInRFMOWithoutAuthorization.length > 0
+  const encountersRFMOsWithoutAuth = useMemo(
+    () => encountersRFMOsAreasWithoutAuthorization.join(', '),
+    [encountersRFMOsAreasWithoutAuthorization]
+  )
+
   const hasFishingInMPAs = fishingInMPA.length > 0
+  const hasFishingInRFMOWithoutAuthorization = fishingInRFMOWithoutAuthorization.length > 0
+  const fishingRFMOsWithoutAuth = useMemo(
+    () => fishingRFMOsAreasWithoutAuthorization.join(', '),
+    [fishingRFMOsAreasWithoutAuthorization]
+  )
   const hasLoiteringInMPAs = loiteringInMPA.length > 0
   const hasPortVisitsToNonPSMAPortState = portVisitsToNonPSMAPortState.length > 0
   const hasVesselFlagsOnMOU = vesselFlagsOnMOU.length > 0
@@ -81,32 +96,75 @@ export function RiskSummary(props: RiskSummaryProps) {
 
   if (!authorizedInsurer) return <Fragment />
   if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
+  const hasEncountersIndicators =
+    hasEncountersInMPAs || hasEncountersInForeignEEZs || hasEncountersInRFMOWithoutAuthorization
+  const hasFishingIndicators = hasFishingInMPAs || hasFishingInRFMOWithoutAuthorization
   return (
     <div className={styles['container']}>
-      {hasFishingInMPAs && (
+      {hasFishingIndicators && (
         <RiskSection
           severity="medium"
           title={t('event.fishing', 'fishing')}
           titleInfo={<TerminologyFishingEvents />}
         >
-          <RiskIndicator
-            title={
-              t('risk.fishingEventInMPA', 'fishing event in a MPA', {
-                count: fishingInMPA.length,
-              }) as string
-            }
-            events={fishingInMPA}
-            onEventInfoClick={openModal}
-            onEventMapClick={onEventMapClick}
-          ></RiskIndicator>
+          {hasFishingInRFMOWithoutAuthorization && (
+            <RiskIndicator
+              title={
+                t(
+                  'risk.fishingEventInRFMOWithoutAuthorization',
+                  '{{count}} fishing event outside known authorised area',
+                  {
+                    count: fishingInRFMOWithoutAuthorization.length,
+                  }
+                ) as string
+              }
+              // The list of regions will be visible once the dataset (proto)
+              // that includes events authorizations is used to get the resources
+              subtitle={!!fishingRFMOsWithoutAuth && `(${fishingRFMOsWithoutAuth})`}
+              events={fishingInRFMOWithoutAuthorization}
+              onEventInfoClick={openModal}
+              onEventMapClick={onEventMapClick}
+            ></RiskIndicator>
+          )}
+          {hasFishingInMPAs && (
+            <RiskIndicator
+              title={
+                t('risk.fishingEventInMPA', 'fishing event in a MPA', {
+                  count: fishingInMPA.length,
+                }) as string
+              }
+              events={fishingInMPA}
+              onEventInfoClick={openModal}
+              onEventMapClick={onEventMapClick}
+            ></RiskIndicator>
+          )}
         </RiskSection>
       )}
-      {(hasEncountersInMPAs || hasEncountersInForeignEEZs) && (
+      {hasEncountersIndicators && (
         <RiskSection
           severity="medium"
           title={t('event.encounter', 'encounter', { count: 2 })}
           titleInfo={<TerminologyEncounterEvents />}
         >
+          {hasEncountersInRFMOWithoutAuthorization && (
+            <RiskIndicator
+              title={
+                t(
+                  'risk.encounterEventInRFMOWithoutAuthorization',
+                  '{{count}} encounter outside known authorised area',
+                  {
+                    count: encountersInRFMOWithoutAuthorization.length,
+                  }
+                ) as string
+              }
+              // The list of regions will be visible once the dataset (proto)
+              // that includes events authorizations is used to get the resources
+              subtitle={!!encountersRFMOsWithoutAuth && `(${encountersRFMOsWithoutAuth})`}
+              events={encountersInRFMOWithoutAuthorization}
+              onEventInfoClick={openModal}
+              onEventMapClick={onEventMapClick}
+            ></RiskIndicator>
+          )}
           {hasEncountersInMPAs && (
             <RiskIndicator
               title={
@@ -193,29 +251,59 @@ export function RiskSummary(props: RiskSummaryProps) {
           ))}
         </RiskSection>
       )}
-      {(!hasFishingInMPAs ||
-        !hasEncountersInMPAs ||
+      {(!hasFishingIndicators ||
+        !hasEncountersIndicators ||
         !hasLoiteringInMPAs ||
         !hasPortVisitsToNonPSMAPortState ||
         !hasVesselFlagsOnMOU) && (
         <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
-          {!hasFishingInMPAs && (
+          {(!hasFishingInMPAs || !hasFishingInRFMOWithoutAuthorization) && (
             <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
-              <RiskIndicator
-                title={
-                  t('risk.noFishingEventInMPA', 'No fishing event detected in an MPA') as string
-                }
-                events={fishingInMPA}
-                onEventInfoClick={openModal}
-                onEventMapClick={onEventMapClick}
-              ></RiskIndicator>
+              {!hasFishingInRFMOWithoutAuthorization && (
+                <RiskIndicator
+                  title={
+                    t(
+                      'risk.noFishingEventInRFMOWithoutAuthorization',
+                      'No fishing event detected outside known authorised areas'
+                    ) as string
+                  }
+                  events={fishingInRFMOWithoutAuthorization}
+                  onEventInfoClick={openModal}
+                  onEventMapClick={onEventMapClick}
+                ></RiskIndicator>
+              )}
+              {!hasFishingInMPAs && (
+                <RiskIndicator
+                  title={
+                    t('risk.noFishingEventInMPA', 'No fishing event detected in an MPA') as string
+                  }
+                  events={fishingInMPA}
+                  onEventInfoClick={openModal}
+                  onEventMapClick={onEventMapClick}
+                ></RiskIndicator>
+              )}
             </RiskSection>
           )}
-          {(!hasEncountersInMPAs || !hasEncountersInForeignEEZs) && (
+          {(!hasEncountersInMPAs ||
+            !hasEncountersInForeignEEZs ||
+            !hasEncountersInRFMOWithoutAuthorization) && (
             <RiskSection
               className={styles.naSubSection}
               title={t('event.encounter', 'encounter', { count: 2 })}
             >
+              {!hasEncountersInRFMOWithoutAuthorization && (
+                <RiskIndicator
+                  title={
+                    t(
+                      'risk.noEncounterEventInRFMOWithoutAuthorization',
+                      'No encounters detected outside known authorised areas'
+                    ) as string
+                  }
+                  events={encountersInRFMOWithoutAuthorization}
+                  onEventInfoClick={openModal}
+                  onEventMapClick={onEventMapClick}
+                ></RiskIndicator>
+              )}
               {!hasEncountersInMPAs && (
                 <RiskIndicator
                   title={
