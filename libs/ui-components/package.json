@@ -16,13 +16,13 @@
     "@tippyjs/react": "4.2.5",
     "countryflag": "^4.1.2",
     "d3-format": "^3.1.0",
-    "d3-geo": "1.12.0",
+    "d3-geo": "^1.12.0",
     "d3-scale": "^3.3.0",
     "downshift": "6.1.7",
     "match-sorter": "^6.3.0",
     "react-modal": "^3.11.2",
-    "react-range": "^1.8.11",
-    "topojson-client": "3.1.0",
+    "react-range": "^1.8.14",
+    "topojson-client": "^3.1.0",
     "ts-node": "^10.8.1"
   },
   "devDependencies": {

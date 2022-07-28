@@ -81,7 +81,7 @@
     "react-map-gl": "^7.0.16",
     "react-modal": "^3.11.2",
     "react-redux": "^8.0.2",
-    "react-range": "^1.8.12",
+    "react-range": "^1.8.14",
     "react-spring": "^9.4.5",
     "redux-first-router": "^2.1.5",
     "redux-first-router-link": "^2.1.1",
