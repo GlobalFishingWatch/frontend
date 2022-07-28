@@ -31,6 +31,7 @@ export type VesselIdentityHistoryValue = {
 export type VesselIdentityIndicators = {
   mou: MOU
   flags: VesselIdentityHistoryValue[]
+  owners: VesselIdentityHistoryValue[]
 }
 
 export type FlagOnMOU = {

@@ -13,7 +13,7 @@
 }
 
 .title > div {
-  flex-grow: 1;
+  white-space: nowrap;
 }
 
 .info {
@@ -22,4 +22,9 @@
 
 .subtitle {
   color: var(--color-secondary-blue);
+  flex-grow: 1;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  white-space: nowrap;
+  margin-left: var(--space-XS);
 }

@@ -1,9 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
+import { memoize } from 'lodash'
 import { selectUrlAkaVesselQuery, selectVesselProfileId } from 'routes/routes.selectors'
 import { RISK_SUMMARY_SETTINGS } from 'data/config'
 import { RenderedEvent, selectEvents } from 'features/vessels/activity/vessels-activity.selectors'
-import { MOU } from 'types/risk-indicator'
+import { MOU, VesselIdentityIndicators } from 'types/risk-indicator'
 import { ValueItem, VesselAPISource } from 'types'
 import { getMergedVesselsUniqueId, selectIndicators } from './risk-indicator.slice'
 
@@ -108,18 +109,22 @@ export const selectVesselIdentityMouIndicators = createSelector(
   }
 )
 
-export const selectRiskVesselIndentityFlagsHistory = createSelector(
-  [selectCurrentMergedVesselsIndicators],
-  (indicators): ValueItem[] => {
-    const flagValues = indicators?.vesselIdentity?.flags ?? []
-    return flagValues.map((f) => ({
-      value: f.value,
-      firstSeen: f.from,
-      endDate: f.to,
-      source: (f.source as any) === 'AIS' ? VesselAPISource.GFW : f.source,
-    }))
-  }
+const selectRiskVesselIndentityFieldHistory = memoize(
+  (field: keyof Omit<VesselIdentityIndicators, 'mou'>) =>
+    createSelector([selectCurrentMergedVesselsIndicators], (indicators): ValueItem[] => {
+      const flagValues = indicators?.vesselIdentity[field] ?? []
+      return flagValues.map((f) => ({
+        value: f.value,
+        firstSeen: f.from,
+        endDate: f.to,
+        source: (f.source as any) === 'AIS' ? VesselAPISource.GFW : f.source,
+      }))
+    })
 )
+
+export const selectRiskVesselIndentityFlagsHistory = selectRiskVesselIndentityFieldHistory('flags')
+export const selectRiskVesselIndentityOwnersHistory =
+  selectRiskVesselIndentityFieldHistory('owners')
 
 export const selectEncountersInRFMOWithoutAuthorization = createSelector(
   [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
