@@ -17,6 +17,8 @@ import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import TerminologyPortVisitEvents from 'features/terminology/terminology-port-visit-events'
 import TerminologyRiskIdentity from 'features/terminology/terminology-risk-identity'
 import RiskIdentityFlagsOnMouIndicator from 'features/risk-identity-flags-on-mou-indicator/risk-identity-flags-on-mou-indicator'
+import RiskIdentityIndicator from 'features/risk-identity-indicator/risk-identity-indicator'
+import { VesselFieldLabel } from 'types/vessel'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -40,6 +42,7 @@ export function RiskSummary(props: RiskSummaryProps) {
     portVisitsToNonPSMAPortState,
     vesselFlagsOnMOU,
     flagsHistory,
+    ownersHistory,
     vessel,
   } = useRiskIndicator()
   const { highlightEvent } = useMapEvents()
@@ -87,7 +90,9 @@ export function RiskSummary(props: RiskSummaryProps) {
   )
   const hasLoiteringInMPAs = loiteringInMPA.length > 0
   const hasPortVisitsToNonPSMAPortState = portVisitsToNonPSMAPortState.length > 0
+
   const hasVesselFlagsOnMOU = vesselFlagsOnMOU.length > 0
+  const hasChangedOwners = ownersHistory.length > 1
 
   const vesselFlagsPerMOU = useMemo(
     () => Array.from(new Set(vesselFlagsOnMOU.map((item) => item.name))),
@@ -231,7 +236,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           ></RiskIndicator>
         </RiskSection>
       )}
-      {hasVesselFlagsOnMOU && (
+      {(hasVesselFlagsOnMOU || hasChangedOwners) && (
         <RiskSection
           severity="medium"
           title={t('risk.identity', 'Identity')}
@@ -249,6 +254,18 @@ export function RiskSummary(props: RiskSummaryProps) {
               flagsHistory={flagsHistory}
             ></RiskIdentityFlagsOnMouIndicator>
           ))}
+          {hasChangedOwners && (
+            <RiskIdentityIndicator
+              field={VesselFieldLabel.owner}
+              history={ownersHistory}
+              title={
+                t('risk.identityChangedOwners', '{{count}} owner change', {
+                  count: ownersHistory.length - 1,
+                }) as string
+              }
+              vesselName={vessel.shipname}
+            />
+          )}
         </RiskSection>
       )}
       {(!hasFishingIndicators ||
@@ -359,19 +376,29 @@ export function RiskSummary(props: RiskSummaryProps) {
               ></RiskIndicator>
             </RiskSection>
           )}
-          {!hasVesselFlagsOnMOU && (
+          {(!hasVesselFlagsOnMOU || !hasChangedOwners) && (
             <RiskSection className={styles.naSubSection} title={t('risk.identity', 'Identity')}>
-              <RiskIndicator
-                title={
-                  t(
-                    'risk.noVesselFlagsOnMOU',
-                    "The vessel's flag(s) are not listed on either the Paris or Tokyo MOU black or grey list"
-                  ) as string
-                }
-                events={[]}
-                onEventInfoClick={openModal}
-                onEventMapClick={onEventMapClick}
-              ></RiskIndicator>
+              {!hasVesselFlagsOnMOU && (
+                <RiskIndicator
+                  title={
+                    t(
+                      'risk.noVesselFlagsOnMOU',
+                      "The vessel's flag(s) are not listed on either the Paris or Tokyo MOU black or grey list"
+                    ) as string
+                  }
+                  events={[]}
+                  onEventInfoClick={openModal}
+                  onEventMapClick={onEventMapClick}
+                ></RiskIndicator>
+              )}
+              {!hasChangedOwners && (
+                <RiskIndicator
+                  title={t('risk.noOwnerChanges', 'The vessel did not changed owners') as string}
+                  events={[]}
+                  onEventInfoClick={openModal}
+                  onEventMapClick={onEventMapClick}
+                ></RiskIndicator>
+              )}
             </RiskSection>
           )}
         </RiskSection>

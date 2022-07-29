@@ -23,6 +23,7 @@ import {
   selectEncountersRFMOsAreasWithoutAuthorization,
   selectFishingInRFMOWithoutAuthorization,
   selectFishingRFMOsAreasWithoutAuthorization,
+  selectRiskVesselIndentityOwnersHistory,
 } from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
@@ -44,6 +45,7 @@ export interface UseRiskIndicator {
   vesselFlagsOnMOU: FlagOnMOU[]
   vessel: VesselWithHistory
   flagsHistory: ValueItem[]
+  ownersHistory: ValueItem[]
 }
 
 export function useRiskIndicator(): UseRiskIndicator {
@@ -64,6 +66,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   const portVisitsToNonPSMAPortState = useSelector(selectPortVisitsToNonPSMAPortState)
   const vesselFlagsOnMOU = useSelector(selectVesselIdentityMouIndicators)
   const flagsHistory = useSelector(selectRiskVesselIndentityFlagsHistory)
+  const ownersHistory = useSelector(selectRiskVesselIndentityOwnersHistory)
   const encountersInRFMOWithoutAuthorization = useSelector(
     selectEncountersInRFMOWithoutAuthorization
   )
@@ -102,6 +105,7 @@ export function useRiskIndicator(): UseRiskIndicator {
     },
     vesselFlagsOnMOU,
     flagsHistory,
+    ownersHistory,
     vessel,
     indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
   }
