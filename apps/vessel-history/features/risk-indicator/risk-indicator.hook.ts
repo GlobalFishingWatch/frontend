@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -10,6 +10,7 @@ import { FlagOnMOU } from 'types/risk-indicator'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { ValueItem, VesselWithHistory } from 'types'
+import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
 import { fetchIndicatorsByIdThunk, selectIndicatorsStatus } from './risk-indicator.slice'
 import {
   selectEncountersInMPA,
@@ -46,6 +47,8 @@ export interface UseRiskIndicator {
   vessel: VesselWithHistory
   flagsHistory: ValueItem[]
   ownersHistory: ValueItem[]
+  uniqueFlags: string[]
+  uniqueOwners: string[]
 }
 
 export function useRiskIndicator(): UseRiskIndicator {
@@ -78,6 +81,9 @@ export function useRiskIndicator(): UseRiskIndicator {
     selectFishingRFMOsAreasWithoutAuthorization
   )
 
+  const uniqueFlags = useMemo(() => getUniqueHistoryValues(flagsHistory), [flagsHistory])
+  const uniqueOwners = useMemo(() => getUniqueHistoryValues(ownersHistory), [ownersHistory])
+
   /** Migration to API pengding */
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))
   /******************************/
@@ -106,6 +112,8 @@ export function useRiskIndicator(): UseRiskIndicator {
     vesselFlagsOnMOU,
     flagsHistory,
     ownersHistory,
+    uniqueFlags,
+    uniqueOwners,
     vessel,
     indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
   }
