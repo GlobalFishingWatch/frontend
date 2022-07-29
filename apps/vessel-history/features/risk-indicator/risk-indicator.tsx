@@ -7,9 +7,9 @@ import { Voyage } from 'types/voyage'
 import styles from './risk-indicator.module.css'
 
 export interface RiskIndicatorProps {
-  events: RenderedEvent[]
-  onEventInfoClick: (event: RenderedEvent) => void
-  onEventMapClick: (event: RenderedEvent | Voyage) => void
+  events?: RenderedEvent[]
+  onEventInfoClick?: (event: RenderedEvent) => void
+  onEventMapClick?: (event: RenderedEvent | Voyage) => void
   title: string
   subtitle?: string
 }
@@ -22,12 +22,15 @@ export function RiskIndicator({
   subtitle,
 }: RiskIndicatorProps) {
   const [expanded, setExpanded] = useState(false)
-  const hasEvents = events.length > 0
+  const hasEvents = events && events.length > 0
   const onToggle = useCallback(() => setExpanded(!expanded), [expanded])
 
   return (
     <div className={styles['container']}>
-      <div className={cx(styles.title, { [styles.expandable]: hasEvents })} onClick={onToggle}>
+      <div
+        className={cx(styles.title, { [styles.expandable]: hasEvents })}
+        {...(hasEvents ? { onClick: onToggle } : {})}
+      >
         <div>
           {title}
           {!!subtitle && <span className={styles.subtitle}> {subtitle}</span>}

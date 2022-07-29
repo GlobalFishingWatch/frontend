@@ -3,6 +3,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import InfoFieldHistory from 'features/profile/components/InfoFieldHistory'
 import { ValueItem } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
+import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
 import styles from './risk-identity-indicator.module.css'
 
 export interface RiskIdentityIndicatorProps {
@@ -23,18 +24,20 @@ export function RiskIdentityIndicator({
   vesselName,
 }: RiskIdentityIndicatorProps) {
   const [modalOpen, setModalOpen] = useState(false)
-  const openModal = useCallback(() => {
-    if (history.length > 0) {
-      setModalOpen(true)
-    }
-  }, [history.length])
-  const closeModal = useCallback(() => setModalOpen(false), [])
 
+  const uniqueValues = useMemo(() => getUniqueHistoryValues(history), [history])
   const autoSubtitle = useMemo(() => {
     if (subtitle) return
-    const values = Array.from(new Set(history.map((item) => item.value)))
-    return `(${values.join(', ')})`
-  }, [history, subtitle])
+    return `(${uniqueValues.join(', ')})`
+  }, [uniqueValues, subtitle])
+  const hasHistory = history.length > 0
+
+  const openModal = useCallback(() => {
+    if (hasHistory) {
+      setModalOpen(true)
+    }
+  }, [hasHistory])
+  const closeModal = useCallback(() => setModalOpen(false), [])
 
   return (
     <div className={styles['container']}>
@@ -50,7 +53,7 @@ export function RiskIdentityIndicator({
           onClick={openModal}
         ></IconButton>
       </div>
-      {history.length > 1 && (
+      {hasHistory && (
         <InfoFieldHistory
           label={field}
           history={history}
