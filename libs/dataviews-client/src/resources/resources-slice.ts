@@ -61,9 +61,11 @@ export const fetchResourceThunk = createAsyncThunk(
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
     const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
-    const responseType = isTrackResource &&
+    const responseType =
+      isTrackResource &&
       resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
-      ? 'vessel' : 'json'
+        ? 'vessel'
+        : 'json'
 
     // The urls has the version included so I need to remove them
     const data = await GFWAPI.fetch(resource.url, { responseType, signal }).then((data: any) => {
@@ -72,6 +74,7 @@ export const fetchResourceThunk = createAsyncThunk(
         const fields = (
           resource.datasetConfig.query?.find((q) => q.id === 'fields')?.value as string
         ).split(',') as Field[]
+
         const segments = trackValueArrayToSegments(data as any, fields)
         return segments
       }

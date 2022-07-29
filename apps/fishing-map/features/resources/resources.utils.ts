@@ -1,4 +1,5 @@
 import { FeatureCollection } from 'geojson'
+import { maxBy, minBy } from 'lodash'
 import {
   DataviewDatasetConfigParam,
   EndpointId,
@@ -18,8 +19,11 @@ export const trackDatasetConfigsCallback = (
 ) => {
   return ([info, track, ...events]) => {
     if (track.endpoint === EndpointId.Tracks) {
-      const query = [...(track.query || [])]
-      const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
+      const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
+        id,
+        value,
+      }))
+
       let trackGraph
       if (timebarGraph !== TimebarGraphs.None) {
         trackGraph = { ...track }
@@ -27,18 +31,31 @@ export const trackDatasetConfigsCallback = (
           id: 'fields',
           value: ['timestamp', timebarGraph].join(','),
         }
+        const graphQuery = [...(track.query || []), ...thinningQuery]
+        const fieldsQueryIndex = graphQuery.findIndex((q) => q.id === 'fields')
         if (fieldsQueryIndex > -1) {
-          query[fieldsQueryIndex] = fieldsQuery
-          trackGraph.query = query
+          graphQuery[fieldsQueryIndex] = fieldsQuery
+          trackGraph.query = graphQuery
         } else {
-          trackGraph.query = [...query, fieldsQuery]
+          trackGraph.query = [...graphQuery, fieldsQuery]
+        }
+        const chunksMinRange = chunks ? minBy(chunks, 'start')?.start : null
+        const chunksMaxRange = chunks ? maxBy(chunks, 'end')?.end : null
+        if (chunksMinRange && chunksMaxRange) {
+          trackGraph.query = [
+            ...trackGraph.query,
+            {
+              id: 'start-date',
+              value: chunksMinRange,
+            },
+            {
+              id: 'end-date',
+              value: chunksMaxRange,
+            },
+          ]
         }
       }
 
-      const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
-        id,
-        value,
-      }))
       const trackWithThinning = {
         ...track,
         query: [...(track.query || []), ...thinningQuery],
@@ -54,25 +71,24 @@ export const trackDatasetConfigsCallback = (
       if (chunks) {
         const chunkSetId = getTracksChunkSetId(trackWithThinning)
         allTracks = chunks.map((chunk) => {
-          const trackChunk = { ...trackWithThinning }
-          const trackQuery = [...(trackWithThinning.query || [])]
-          trackChunk.query = [
-            ...trackQuery,
-            {
-              id: 'start-date',
-              value: chunk.start,
+          const trackChunk = {
+            ...trackWithThinning,
+            query: [
+              ...(trackWithThinning.query || []),
+              {
+                id: 'start-date',
+                value: chunk.start,
+              },
+              {
+                id: 'end-date',
+                value: chunk.end,
+              },
+            ],
+            metadata: {
+              ...(trackWithThinning.metadata || {}),
+              chunkSetId,
+              chunkSetNum: chunks.length,
             },
-            {
-              id: 'end-date',
-              value: chunk.end,
-            },
-          ]
-          const trackMetadata = { ...trackWithThinning.metadata } || {}
-
-          trackChunk.metadata = {
-            ...trackMetadata,
-            chunkSetId,
-            chunkSetNum: chunks.length,
           }
 
           return trackChunk
@@ -91,6 +107,7 @@ export const trackDatasetConfigsCallback = (
       // Clean resources when mandatory vesselId is missing
       // needed for vessels with no info datasets (zebraX)
       const vesselData = hasDatasetConfigVesselData(info)
+
       return [
         ...allTracks,
         ...allEvents,
