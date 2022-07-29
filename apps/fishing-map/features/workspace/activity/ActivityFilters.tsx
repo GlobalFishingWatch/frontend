@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { debounce } from 'lodash'
@@ -80,6 +80,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined
   >()
+  const newDataviewInstanceConfigRef = useRef<UrlDataviewInstance>(newDataviewInstanceConfig)
 
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -132,16 +133,27 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const handleIsOpenChange = useCallback(
     (isOpen: boolean) => {
-      if (!isOpen) {
-        if (newDataviewInstanceConfig) {
-          upsertDataviewInstance(newDataviewInstanceConfig)
-          setNewDataviewInstanceConfig(undefined)
-          console.log('updating dataview')
-        }
+      if (!isOpen && newDataviewInstanceConfig) {
+        upsertDataviewInstance(newDataviewInstanceConfig)
+        setNewDataviewInstanceConfig(undefined)
       }
     },
     [newDataviewInstanceConfig, upsertDataviewInstance]
   )
+
+  useEffect(() => {
+    newDataviewInstanceConfigRef.current = newDataviewInstanceConfig
+  }, [newDataviewInstanceConfig])
+
+  useEffect(() => {
+    return () => {
+      if (newDataviewInstanceConfigRef.current) {
+        upsertDataviewInstance(newDataviewInstanceConfigRef.current)
+      }
+    }
+    // Running on effect to ensure the dataview update is running when we close the filter from outside
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     let datasets: string[] = []
@@ -153,7 +165,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
     const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions)
-    onDataviewFilterChange({
+    setNewDataviewInstanceConfig({
       id: dataview.id,
       config: {
         datasets,
@@ -291,6 +303,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
           options={allSourceOptions}
           selectedOptions={sourcesSelected}
           onSelect={onSelectSourceClick}
+          onIsOpenChange={handleIsOpenChange}
           onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
         />
       )}
