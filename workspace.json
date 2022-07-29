@@ -9,6 +9,7 @@
     "fishing-map": "apps/fishing-map",
     "fishing-map-e2e": "apps/fishing-map-e2e",
     "fourwings-aggregate": "libs/fourwings-aggregate",
+    "fourwings-explorer": "apps/fourwings-explorer",
     "i18n-labels": "libs/i18n-labels",
     "layer-composer": "libs/layer-composer",
     "ocean-areas": "libs/ocean-areas",
