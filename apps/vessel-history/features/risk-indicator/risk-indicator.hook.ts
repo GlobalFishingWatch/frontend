@@ -102,11 +102,16 @@ export function useRiskIndicator(): UseRiskIndicator {
     countByRiskLevel: {
       medium:
         encountersInForeignEEZ.length +
+        encountersInRFMOWithoutAuthorization.length +
         encountersInMPA.length +
         fishingInMPA.length +
         loiteringInMPA.length +
         portVisitsToNonPSMAPortState.length +
-        vesselFlagsOnMOU.length,
+        vesselFlagsOnMOU.length +
+        fishingInRFMOWithoutAuthorization.length +
+        Math.max(0, uniqueOwners.length - 1) +
+        Math.max(0, uniqueFlags.length - 1) +
+        0,
       high: 0,
     },
     vesselFlagsOnMOU,
