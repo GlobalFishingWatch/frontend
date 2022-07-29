@@ -22,7 +22,10 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
 
   return config.sublayers.map(({ colorRamp, colorRampWhiteEnd = true, visible }) => {
     const useToWhiteRamp =
-      config.totalHeatmapAnimatedGenerators === 1 && visible && colorRampWhiteEnd
+      config.totalHeatmapAnimatedGenerators === 1 &&
+      visibleSublayers?.length === 1 &&
+      visible &&
+      colorRampWhiteEnd
     const finalColorRamp = useToWhiteRamp ? (`${colorRamp}_toWhite` as ColorRampsIds) : colorRamp
     return HEATMAP_COLOR_RAMPS[finalColorRamp]
   })
