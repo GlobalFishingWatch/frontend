@@ -24,6 +24,7 @@ import {
   selectEncountersRFMOsAreasWithoutAuthorization,
   selectFishingInRFMOWithoutAuthorization,
   selectFishingRFMOsAreasWithoutAuthorization,
+  selectRiskVesselIndentityNamesHistory,
   selectRiskVesselIndentityOwnersHistory,
 } from './risk-indicator.selectors'
 
@@ -46,8 +47,10 @@ export interface UseRiskIndicator {
   vesselFlagsOnMOU: FlagOnMOU[]
   vessel: VesselWithHistory
   flagsHistory: ValueItem[]
+  namesHistory: ValueItem[]
   ownersHistory: ValueItem[]
   uniqueFlags: string[]
+  uniqueNames: string[]
   uniqueOwners: string[]
 }
 
@@ -69,6 +72,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   const portVisitsToNonPSMAPortState = useSelector(selectPortVisitsToNonPSMAPortState)
   const vesselFlagsOnMOU = useSelector(selectVesselIdentityMouIndicators)
   const flagsHistory = useSelector(selectRiskVesselIndentityFlagsHistory)
+  const namesHistory = useSelector(selectRiskVesselIndentityNamesHistory)
   const ownersHistory = useSelector(selectRiskVesselIndentityOwnersHistory)
   const encountersInRFMOWithoutAuthorization = useSelector(
     selectEncountersInRFMOWithoutAuthorization
@@ -82,6 +86,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   )
 
   const uniqueFlags = useMemo(() => getUniqueHistoryValues(flagsHistory), [flagsHistory])
+  const uniqueNames = useMemo(() => getUniqueHistoryValues(namesHistory), [namesHistory])
   const uniqueOwners = useMemo(() => getUniqueHistoryValues(ownersHistory), [ownersHistory])
 
   /** Migration to API pengding */
@@ -111,8 +116,10 @@ export function useRiskIndicator(): UseRiskIndicator {
     },
     vesselFlagsOnMOU,
     flagsHistory,
+    namesHistory,
     ownersHistory,
     uniqueFlags,
+    uniqueNames,
     uniqueOwners,
     vessel,
     indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
