@@ -1,0 +1,93 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/fourwings-explorer",
+  "projectType": "application",
+  "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build fourwings-explorer --parallel",
+          "nx docker-prepare fourwings-explorer"
+        ],
+        "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/fourwings-explorer",
+          "cp apps/fourwings-explorer/nginx.conf dist/apps/fourwings-explorer"
+        ]
+      }
+    },
+    "compile": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/fourwings-explorer",
+        "outputPath": "dist/apps/fourwings-explorer"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "start": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx clean-locales fourwings-explorer",
+          "nx serve i18n-labels",
+          "nx serve fourwings-explorer"
+        ],
+        "parallel": true
+      }
+    },
+    "clean-locales": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["rm -rf dist/apps/fourwings-explorer/public/locales"]
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "fourwings-explorer:compile",
+        "dev": true,
+        "port": 3003
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "fourwings-explorer:build:production",
+          "dev": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "fourwings-explorer:build:production"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/fourwings-explorer/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/fourwings-explorer"],
+      "options": {
+        "jestConfig": "apps/fourwings-explorer/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

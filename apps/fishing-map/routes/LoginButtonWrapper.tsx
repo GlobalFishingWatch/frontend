@@ -1,4 +1,3 @@
-import React from 'react'
 import { Placement } from 'tippy.js'
 import { useSelector } from 'react-redux'
 import { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'

@@ -1,4 +1,3 @@
-import React from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'

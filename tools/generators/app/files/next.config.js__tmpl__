@@ -32,6 +32,7 @@ const nextConfig = {
     }
     return config
   },
+  config.externals = [...config.externals, 'mapbox-gl']
   // productionBrowserSourceMaps: true,
   basePath: process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : ''),
   productionBrowserSourceMaps:
