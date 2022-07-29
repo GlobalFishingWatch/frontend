@@ -38,6 +38,7 @@ import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { formatI18nDate, UTC_SUFFIX } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
@@ -65,28 +66,26 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
   // Return precise chunk frame extent
   const activityDateCallback = useCallback(
     (timestamp: number) => {
-      const dt = DateTime.fromMillis(timestamp).toUTC()
-      if (!metadata) {
-        return dt.toLocaleString(DateTime.DATETIME_MED)
+      let dateLabel = formatI18nDate(timestamp, {
+        format: DateTime.DATETIME_MED,
+        showUTCLabel: true,
+      })
+      if (metadata) {
+        const interval = metadata.timeChunks.interval
+        if (interval === 'hour') {
+          return dateLabel
+        } else if (interval === 'day') {
+          return formatI18nDate(timestamp, { showUTCLabel: true })
+        } else if (interval === '10days') {
+          const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
+          const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame)).getTime()
+          const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame)).getTime()
+          return [formatI18nDate(start), formatI18nDate(end)].join(' - ') + ` ${UTC_SUFFIX}`
+        } else if (interval === 'month') {
+          // TODO
+        }
       }
-      const interval = metadata.timeChunks.interval
-      if (interval === 'hour') {
-        return dt.toLocaleString(DateTime.DATETIME_MED)
-      } else if (interval === 'day') {
-        return dt.toLocaleString(DateTime.DATE_MED)
-      } else if (interval === '10days') {
-        const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
-        const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame))
-        const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame))
-        return [
-          DateTime.fromJSDate(start).toLocaleString(DateTime.DATE_MED),
-          DateTime.fromJSDate(end).toLocaleString(DateTime.DATE_MED),
-        ].join('- ')
-      } else if (interval === 'month') {
-        // TODO
-      }
-
-      return dt.toLocaleString(DateTime.DATETIME_MED)
+      return dateLabel
     },
     [metadata]
   )
