@@ -1,12 +1,10 @@
 import { useCallback } from 'react'
 import { atom, useRecoilState } from 'recoil'
-import { debounce } from 'lodash'
+import { urlSyncEffect } from 'recoil-sync'
+import { object, number } from '@recoiljs/refine'
 import { ViewStateChangeEvent } from 'react-map-gl'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import { updateUrlViewport } from 'routes/routes.actions'
-import { selectUrlViewport } from 'routes/routes.selectors'
-import store, { RootState } from '../../store'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
 type ViewportProps = Record<ViewportKeys, number>
@@ -16,30 +14,16 @@ type UseViewport = {
   setMapCoordinates: (viewport: ViewportProps) => void
 }
 
-const URL_VIEWPORT_DEBOUNCED_TIME = 1000
+const viewportChecker = object({
+  latitude: number(),
+  longitude: number(),
+  zoom: number(),
+})
 
 const viewportState = atom<MapCoordinates>({
   key: 'mapViewport',
   default: DEFAULT_VIEWPORT as MapCoordinates,
-  effects: [
-    ({ trigger, setSelf, onSet }) => {
-      const viewport = selectUrlViewport(store.getState() as RootState)
-
-      if (trigger === 'get' && viewport) {
-        setSelf(viewport)
-      }
-
-      const updateUrlViewportDebounced = debounce(
-        store.dispatch(updateUrlViewport),
-        URL_VIEWPORT_DEBOUNCED_TIME
-      )
-
-      onSet((viewport) => {
-        const { latitude, longitude, zoom } = viewport as MapCoordinates
-        updateUrlViewportDebounced({ latitude, longitude, zoom })
-      })
-    },
-  ],
+  effects: [urlSyncEffect({ refine: viewportChecker, history: 'replace' })],
 })
 
 export function useViewport(): UseViewport {

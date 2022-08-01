@@ -2,10 +2,11 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Timebar } from '@globalfishingwatch/timebar'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useTimerangeConnect, useURLTimerange } from 'features/timebar/timebar.hooks'
 import styles from './Timebar.module.css'
 
 const TimebarWrapper = () => {
+  useURLTimerange()
   const { ready, i18n } = useTranslation()
   const { timerange, onTimebarChange } = useTimerangeConnect()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined

@@ -1,6 +1,7 @@
 // import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
+import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import { MapProvider } from 'react-map-gl'
 import store from '../store'
@@ -16,11 +17,13 @@ import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <Provider store={store}>
-        <MapProvider>
-          <Component {...pageProps} />
-        </MapProvider>
-      </Provider>
+      <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}>
+        <Provider store={store}>
+          <MapProvider>
+            <Component {...pageProps} />
+          </MapProvider>
+        </Provider>
+      </RecoilURLSyncJSONNext>
     </RecoilRoot>
   )
 }
