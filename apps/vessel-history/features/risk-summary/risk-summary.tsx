@@ -12,6 +12,7 @@ import useViewport from 'features/map/map-viewport.hooks'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import TerminologyEncounterEvents from 'features/terminology/terminology-encounter-events'
 import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
+import TerminologyIuu from 'features/terminology/terminology-iuu'
 import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
 import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import TerminologyPortVisitEvents from 'features/terminology/terminology-port-visit-events'
@@ -38,6 +39,7 @@ export function RiskSummary(props: RiskSummaryProps) {
     fishingInRFMOWithoutAuthorization,
     fishingRFMOsAreasWithoutAuthorization,
     indicatorsLoading,
+    iuuBlacklisted,
     loiteringInMPA,
     portVisitsToNonPSMAPortState,
     vesselFlagsOnMOU,
@@ -102,6 +104,8 @@ export function RiskSummary(props: RiskSummaryProps) {
     [vesselFlagsOnMOU]
   )
 
+  const hasIUUIndicators = iuuBlacklisted
+
   if (!authorizedInsurer) return <Fragment />
   if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
   const hasEncountersIndicators =
@@ -109,6 +113,22 @@ export function RiskSummary(props: RiskSummaryProps) {
   const hasFishingIndicators = hasFishingInMPAs || hasFishingInRFMOWithoutAuthorization
   return (
     <div className={styles['container']}>
+      {hasIUUIndicators && (
+        <RiskSection severity="high" title={t('event.iuu', 'iuu')} titleInfo={<TerminologyIuu />}>
+          <RiskIndicator
+            title={
+              t(
+                'risk.pastAppearanceInARfmoIUUList',
+                '{{count}} past appearance in a RFMO IUU list',
+                {
+                  count: iuuBlacklisted ? 1 : 0,
+                }
+              ) as string
+            }
+            subtitle={' '}
+          ></RiskIndicator>
+        </RiskSection>
+      )}
       {hasFishingIndicators && (
         <RiskSection
           severity="medium"
@@ -289,8 +309,28 @@ export function RiskSummary(props: RiskSummaryProps) {
         !hasEncountersIndicators ||
         !hasLoiteringInMPAs ||
         !hasPortVisitsToNonPSMAPortState ||
-        !hasVesselFlagsOnMOU) && (
+        !hasVesselFlagsOnMOU ||
+        !hasIUUIndicators) && (
         <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
+          {!hasIUUIndicators && (
+            <RiskSection className={styles.naSubSection} title={t('event.iuu', 'iuu')}>
+              {!hasIUUIndicators && (
+                <RiskIndicator
+                  title={
+                    iuuBlacklisted === false
+                      ? (t(
+                          'risk.noPastAppearancesInARFMOIUUList',
+                          'The vessel has no past appearances in a RFMO IUU list'
+                        ) as string)
+                      : (t(
+                          'risk.undeterminedPastAppearancesInARFMOIUUList',
+                          'Unable to determine past appearances in a RFMO IUU list'
+                        ) as string)
+                  }
+                ></RiskIndicator>
+              )}
+            </RiskSection>
+          )}
           {(!hasFishingInMPAs || !hasFishingInRFMOWithoutAuthorization) && (
             <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
               {!hasFishingInRFMOWithoutAuthorization && (

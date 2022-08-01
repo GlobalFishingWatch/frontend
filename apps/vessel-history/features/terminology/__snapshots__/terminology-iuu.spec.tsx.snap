@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TerminologyIuu should render successfully 1`] = `
+<body>
+  <div>
+    <p>
+      Illegal, unreported and unregulated (IUU) listing status according to official RFMO IUU vessel lists - vessel is currently listed, was previously listed or has never been listed
+    </p>
+  </div>
+</body>
+`;
