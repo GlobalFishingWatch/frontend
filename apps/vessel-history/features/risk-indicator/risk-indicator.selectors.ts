@@ -126,6 +126,9 @@ const selectRiskVesselIndentityFieldHistory = memoize(
 )
 
 export const selectRiskVesselIndentityFlagsHistory = selectRiskVesselIndentityFieldHistory('flags')
+
+export const selectRiskVesselIndentityNamesHistory = selectRiskVesselIndentityFieldHistory('names')
+
 export const selectRiskVesselIndentityOwnersHistory =
   selectRiskVesselIndentityFieldHistory('owners')
 
