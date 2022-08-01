@@ -2538,6 +2538,11 @@
     "@react-spring/shared" "~9.5.2"
     "@react-spring/types" "~9.5.2"
 
+"@recoiljs/refine@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@recoiljs/refine/-/refine-0.1.0.tgz#915a60801334b11bf4245231b734e31bab39bcda"
+  integrity sha512-5f5ohe6Fc24tW4esoEgCBl+E4qUe/C1nJUAhkt+2xQ3//OCkvpsQ/YrPY6B+DHjoKsrfO0RLekxSQcUlWz2UUA==
+
 "@reduxjs/toolkit@1.8.2":
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.8.2.tgz#352fd17bc858af51d21ce8d28183a930cab9e638"
@@ -15325,6 +15330,19 @@ recharts@^2.0.9:
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
+recoil-sync-next@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/recoil-sync-next/-/recoil-sync-next-0.0.1.tgz#40876bf3535f2c0da55c28ca6e29015eb2429c65"
+  integrity sha512-lvI068NNGsTEo3fep6MqSUnooD0VXtsnBJifUhwLhsIGAre2+apBsjf1Vv4oYIOEwv8IyGqaZIFYtgNZkfK79g==
+
+recoil-sync@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/recoil-sync/-/recoil-sync-0.1.0.tgz#4bdbadff3e205036151e766d27118d2baec82ecf"
+  integrity sha512-0D1cb1EJbWk1gDyZ3jA7nrRNpnLe9tw5lo8sKlheKXL17iOih5m96WPGLLy4j/Kl444xA2X8EERXw6Q6ml34PQ==
+  dependencies:
+    "@recoiljs/refine" "^0.1.0"
+    transit-js "^0.8.874"
+
 recoil@0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/recoil/-/recoil-0.7.2.tgz#37aafc9e0674abae639263354a11c910e71bf78a"
@@ -17295,6 +17313,11 @@ tr46@~0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
+
+transit-js@^0.8.874:
+  version "0.8.874"
+  resolved "https://registry.yarnpkg.com/transit-js/-/transit-js-0.8.874.tgz#37b27d6632bd796567c359220297c862e3988bbb"
+  integrity sha512-IDJJGKRzUbJHmN0P15HBBa05nbKor3r2MmG6aSt0UxXIlJZZKcddTk67/U7WyAeW9Hv/VYI02IqLzolsC4sbPA==
 
 traverse@~0.6.6:
   version "0.6.6"
