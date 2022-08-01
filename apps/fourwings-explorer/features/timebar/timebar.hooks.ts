@@ -3,7 +3,7 @@ import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { urlSyncEffect } from 'recoil-sync'
 import { object, string } from '@recoiljs/refine'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { DEFAULT_URL_DEBOUNCE, DEFAULT_WORKSPACE } from 'data/config'
 
 const DEFAULT_TIMERANGE = { start: DEFAULT_WORKSPACE.start, end: DEFAULT_WORKSPACE.end }
 
@@ -42,7 +42,7 @@ export const useTimerangeConnect = () => {
 export const useURLTimerange = () => {
   const timerange = useRecoilValue(TimeRangeAtom)
   const setURLTimerange = useSetRecoilState(URLTimeRangeAtom)
-  const debouncedTimerange = useDebounce(timerange, 600)
+  const debouncedTimerange = useDebounce(timerange, DEFAULT_URL_DEBOUNCE)
 
   useEffect(() => {
     setURLTimerange(debouncedTimerange)

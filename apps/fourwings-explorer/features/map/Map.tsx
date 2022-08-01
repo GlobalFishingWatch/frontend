@@ -1,8 +1,9 @@
 import { Map, MapboxStyle } from 'react-map-gl'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import maplibregl from '@globalfishingwatch/maplibre-gl'
 import mapStyle from 'features/map/map-style'
-import { useViewport } from './map-viewport.hooks'
+import { useURLViewport, useViewport } from './map-viewport.hooks'
 import styles from './Map.module.css'
 
 const transformRequest: (...args: any[]) => RequestParameters = (
@@ -35,11 +36,13 @@ const mapStyles = {
 
 const MapWrapper = (): React.ReactElement => {
   const { viewport, onViewportChange } = useViewport()
-
+  useURLViewport()
   return (
     <div className={styles.container}>
       <Map
+        id="map"
         style={mapStyles}
+        mapLib={maplibregl}
         latitude={viewport.latitude}
         longitude={viewport.longitude}
         zoom={viewport.zoom}

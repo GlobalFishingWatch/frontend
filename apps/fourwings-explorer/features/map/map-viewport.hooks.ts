@@ -1,10 +1,11 @@
-import { useCallback } from 'react'
-import { atom, useRecoilState } from 'recoil'
+import { useCallback, useEffect } from 'react'
+import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { urlSyncEffect } from 'recoil-sync'
 import { object, number } from '@recoiljs/refine'
 import { ViewStateChangeEvent } from 'react-map-gl'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { MapCoordinates } from 'types'
-import { DEFAULT_VIEWPORT } from 'data/config'
+import { DEFAULT_URL_DEBOUNCE, DEFAULT_VIEWPORT } from 'data/config'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
 type ViewportProps = Record<ViewportKeys, number>
@@ -20,14 +21,20 @@ const viewportChecker = object({
   zoom: number(),
 })
 
-const viewportState = atom<MapCoordinates>({
-  key: 'mapViewport',
+const URLViewportAtom = atom<MapCoordinates>({
+  key: 'viewport',
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects: [urlSyncEffect({ refine: viewportChecker, history: 'replace' })],
 })
 
+const viewportAtom = atom<MapCoordinates>({
+  key: 'localViewport',
+  default: URLViewportAtom,
+  effects: [],
+})
+
 export function useViewport(): UseViewport {
-  const [viewport, setViewport] = useRecoilState(viewportState)
+  const [viewport, setViewport] = useRecoilState(viewportAtom)
 
   const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
     setViewport((viewport) => ({ ...viewport, ...coordinates }))
@@ -43,4 +50,14 @@ export function useViewport(): UseViewport {
   }, [])
 
   return { viewport, onViewportChange, setMapCoordinates }
+}
+
+export const useURLViewport = () => {
+  const viewport = useRecoilValue(viewportAtom)
+  const setURLViewport = useSetRecoilState(URLViewportAtom)
+  const debouncedViewport = useDebounce(viewport, DEFAULT_URL_DEBOUNCE)
+
+  useEffect(() => {
+    setURLViewport(debouncedViewport)
+  }, [debouncedViewport, setURLViewport])
 }

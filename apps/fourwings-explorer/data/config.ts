@@ -20,3 +20,5 @@ export const DEFAULT_VIEWPORT = {
   latitude: 19,
   longitude: 26,
 }
+
+export const DEFAULT_URL_DEBOUNCE = 600
