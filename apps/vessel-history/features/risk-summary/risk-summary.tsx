@@ -121,11 +121,8 @@ export function RiskSummary(props: RiskSummaryProps) {
           <RiskIndicator
             title={
               t(
-                'risk.pastAppearanceInARfmoIUUList',
-                '{{count}} past appearance in a RFMO IUU list',
-                {
-                  count: iuuBlacklisted ? 1 : 0,
-                }
+                'risk.currentlyPresentOnARfmoIUUList',
+                'Vessel is currently present on an RFMO IUU blacklist'
               ) as string
             }
             subtitle={' '}
@@ -335,12 +332,12 @@ export function RiskSummary(props: RiskSummaryProps) {
                   title={
                     iuuBlacklisted === false
                       ? (t(
-                          'risk.noPastAppearancesInARFMOIUUList',
-                          'The vessel has no past appearances in a RFMO IUU list'
+                          'risk.notPresentOnARFMOIUUList',
+                          'The vessel is not present on an RFMO IUU blacklist'
                         ) as string)
                       : (t(
-                          'risk.undeterminedPastAppearancesInARFMOIUUList',
-                          'Unable to determine past appearances in a RFMO IUU list'
+                          'risk.undeterminedPresenceOnARFMOIUUList',
+                          'Unable to determine if the vessel is present on a RFMO IUU list or not'
                         ) as string)
                   }
                 ></RiskIndicator>

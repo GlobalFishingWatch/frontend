@@ -134,6 +134,7 @@
     "toggleLayers": "Toggle layers"
   },
   "risk": {
+    "currentlyPresentOnARfmoIUUList": "Vessel is currently present on an RFMO IUU blacklist",
     "encounterEventInForeignEEZ_one": "{{count}} encounter in a foreign EEZ",
     "encounterEventInForeignEEZ_other": "{{count}} encounters in a foreign EEZ",
     "encounterEventInMPA_one": "{{count}} encounter in MPAs",
@@ -165,15 +166,13 @@
     "noLoiteringEventInMPA": "No loitering event detected in MPAs",
     "noNameChanges": "The vessel did not changed names",
     "noOwnerChanges": "The vessel did not changed owners",
-    "noPastAppearancesInARFMOIUUList": "The vessel has no past appearances in a RFMO IUU list",
     "noPortVisitsToNonPSMAPortState": "No visit to a port in a country that has not ratified the PSMA state detected",
     "noRiskDetected": "No risk detected",
+    "notPresentOnARFMOIUUList": "The vessel is not present on an RFMO IUU blacklist",
     "noVesselFlagsOnMOU": "The vessel's flag(s) are not listed on either the Paris or Tokyo MOU black or grey list",
-    "pastAppearanceInARfmoIUUList_one": "{{count}} past appearance in a RFMO IUU list",
-    "pastAppearanceInARfmoIUUList_other": "{{count}} past appearance in a RFMO IUU list",
     "portVisitsToNonPSMAPortState_one": "{{count}} visit to a port in a country that has not ratified the PSMA state",
     "portVisitsToNonPSMAPortState_other": "{{count}} visits to a port in a country that has not ratified the PSMA state",
-    "undeterminedPastAppearancesInARFMOIUUList": "Unable to determine past appearances in a RFMO IUU list",
+    "undeterminedPresenceOnARFMOIUUList": "Unable to determine if the vessel is present on a RFMO IUU list or not",
     "unknown": "Unknown Risk",
     "vesselWithFlagOnMOU": "Vessel flying under a flag on the {{mou_name}} MOU black or grey list"
   },
