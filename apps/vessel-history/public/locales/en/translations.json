@@ -41,6 +41,10 @@
     "authStatus": "Authorization status",
     "avgDuration": "Avg Duration",
     "avgSpeed": "Avg Speed",
+    "byTypeEncounterTitle": "{{count}} encounters",
+    "byTypeFishingTitle": "{{count}} fishing hours",
+    "byTypeLoiteringTitle": "{{count}} loitering hours",
+    "byTypePortVisitTitle": "{{count}} port visits",
     "confidence": "Confidence",
     "confidenceHelp": {
       "help2": "Low confidence. Only a port stop OR gap was identified based on AIS transmission.",
