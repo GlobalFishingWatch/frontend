@@ -43,10 +43,11 @@ import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessel
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
+import ActivityByType from 'features/activity-by-type/activity-by-type'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
-import { selectRiskSummaryTabVisible } from './profile.selectors'
+import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useAppDispatch()
@@ -72,7 +73,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     [akaVesselProfileIds]
   )
   const { online } = useNavigatorOnline()
-  const riskSummaryTabVisible = useSelector(selectRiskSummaryTabVisible)
+  const hasInsurerPermission = useSelector(selectCurrentUserProfileHasInsurerPermission)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
@@ -268,9 +269,32 @@ const Profile: React.FC = (props): React.ReactElement => {
     [lastPortVisit, lastPosition, loading, mapTab, t, vessel, visibleHighlights]
   )
 
+  const activityByTypeTab = useMemo(
+    () => ({
+      id: 'activity',
+      title: (
+        <div className={styles.tagContainer}>
+          {t('common.activityByType', 'ACTIVITY BY TYPE').toLocaleUpperCase()}
+          {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
+        </div>
+      ),
+      content: (
+        <ActivityByType
+          lastPosition={lastPosition}
+          lastPortVisit={lastPortVisit}
+          onMoveToMap={() => setActiveTab(mapTab)}
+        />
+      ),
+    }),
+    [lastPortVisit, lastPosition, mapTab, t, visibleHighlights]
+  )
+
   const tabs: Tab[] = useMemo(
-    () => [...(riskSummaryTabVisible ? [riskSummaryTab] : []), infoTab, activityTab, mapTab],
-    [riskSummaryTabVisible, riskSummaryTab, infoTab, activityTab, mapTab]
+    () =>
+      hasInsurerPermission
+        ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
+        : [riskSummaryTab, infoTab, activityTab, mapTab],
+    [hasInsurerPermission, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])

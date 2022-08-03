@@ -38,14 +38,15 @@
 
 .divider::before {
   margin-right: 9px;
-  background: #fff url('../../../../assets/icons/vessel.svg') no-repeat 1.25rem;
+  background: #fff url('../../assets/icons/vessel.svg') no-repeat 1.25rem;
   content: '';
   display: inline-block;
   position: absolute;
   height: 1.25rem;
   width: 1.25rem;
   background-size: 1.25rem 1.25rem;
-  top: -7px;
+
+  /* top: -7px; */
   padding: 0 var(--space-M) 0 var(--space-XS);
 }
 
@@ -72,7 +73,6 @@
   flex: 1;
 }
 
-.voyage,
 .eventGroup {
   margin-left: unset;
   width: 100%;
@@ -81,28 +81,23 @@
   height: 60px;
   border-top: var(--border);
   background: var(--gradient);
+  margin-top: -0.9rem;
 }
 
-.voyage .eventData,
 .eventGroup .eventData {
   height: 100%;
   display: flex;
   align-items: center;
 }
 
-.voyage .eventData .description,
 .eventGroup .eventData .description {
+  text-transform: uppercase;
   width: calc(100vw - var(--size-S) * 3.5);
   margin-top: 2px;
   line-height: 1;
   color: var(--color-secondary-blue);
 }
 
-.voyage .eventData .description {
-  text-transform: uppercase;
-}
-
-.voyage.open .eventData .description,
 .eventGroup.open .eventData .description {
   color: var(--color-promary-blue);
 }

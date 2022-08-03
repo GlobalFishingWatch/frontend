@@ -4,7 +4,7 @@ import { APP_PROFILE_VIEWS, INSURER_PERMISSION } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import { selectWorkspaceProfileView } from 'features/workspace/workspace.selectors'
 
-export const selectRiskSummaryTabVisible = createSelector(
+export const selectCurrentUserProfileHasInsurerPermission = createSelector(
   [selectWorkspaceProfileView, selectUserData],
   (profileView, user) => {
     return (
