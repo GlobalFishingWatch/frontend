@@ -251,3 +251,7 @@ button.settingsLink {
   padding: var(--space-M);
   text-align: center;
 }
+
+.eventLoading {
+  margin: 0 var(--space-S);
+}

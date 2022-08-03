@@ -70,7 +70,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
             {eventType === EventTypes.Fishing && <Icon icon="event-fishing" type="default" />}
             {eventType === EventTypes.Port && <Icon icon="event-port-visit" type="default" />}
           </div>
-          {loading && <Spinner size={'tiny'} />}
+          {loading && <Spinner className={styles.eventLoading} size={'tiny'} />}
           <div className={styles.description}>{label}</div>
         </div>
         {hasEvents && (
