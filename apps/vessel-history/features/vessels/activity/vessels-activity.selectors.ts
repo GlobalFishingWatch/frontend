@@ -90,15 +90,16 @@ export const selectEventsForTracks = createSelector(
     if (Object.keys(resources).length === 0) return []
 
     const vesselsEvents = trackDataviews.map((dataview) => {
-      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      // const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
-      const tracksResourceResolved =
-        tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
+      // const tracksResourceResolved =
+      // tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
 
-      // Waiting for the tracks resource to be resolved to show the events
-      if (!hasEventData || !tracksResourceResolved) {
+      if (!hasEventData) {
+        // stop Waiting for the tracks resource to be resolved to show the events
+        //} || !tracksResourceResolved) {
         return { dataview, data: [] }
       }
 
