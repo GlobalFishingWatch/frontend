@@ -1309,21 +1309,21 @@
     "@floating-ui/dom" "^0.4.5"
     use-isomorphic-layout-effect "^1.1.1"
 
-"@globalfishingwatch/fourwings-aggregate@4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.2.0.tgz#5049cb7202eb7d7ad41be9f73808302b731657e3"
-  integrity sha512-2kez/1g+gbLeh1Hy17qD8st0RwhLnKotZoCdzLx6mllPlpff4WCq9MwL9FLT7+Dlmb5fRv+XT2oKv1U8jWptnw==
+"@globalfishingwatch/fourwings-aggregate@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-4.2.1.tgz#e10526c9187832b2dae93d86c36825fe83509986"
+  integrity sha512-IxpJFQ/V0mVRSmHjvVGn9RROvs3/2pGK0LBPhv19SDlDv4nxlINjLk87pv2NCrY/zKvxnMz/T4oVncB5B3I8Kg==
 
 "@globalfishingwatch/map-convert@github:GlobalFishingWatch/map-convert":
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/maplibre-gl@^2.2.0-gfw.24":
-  version "2.2.0-gfw.24"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.2.0-gfw.24.tgz#e7a557bcc929fca6e11e1904c12f23b6aa506759"
-  integrity sha512-n5zt5zNs2k3Mh4tK9S0j0GsQVhEHRJqDC3Jy5Va5gKJJ9LgwxHPv3muLteUTUalG03NhbQjT+Ds0wRP6Ij1GQw==
+"@globalfishingwatch/maplibre-gl@^2.2.0-gfw.25":
+  version "2.2.0-gfw.25"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/maplibre-gl/-/maplibre-gl-2.2.0-gfw.25.tgz#059ebb29b1d7cb4ff18edb1bd478732c9cf72a09"
+  integrity sha512-qGhj7YcXuHbRUn16FfirhWRYSPmCR3Iqe7JgYvkV8rl1LYcEBUsPCmmXzVXzBpZS8MKCy/7601KTSD5xGWHGoA==
   dependencies:
-    "@globalfishingwatch/fourwings-aggregate" "4.2.0"
+    "@globalfishingwatch/fourwings-aggregate" "4.2.1"
     "@mapbox/geojson-rewind" "^0.5.1"
     "@mapbox/jsonlint-lines-primitives" "^2.0.2"
     "@mapbox/mapbox-gl-supported" "^2.0.1"

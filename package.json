@@ -96,7 +96,7 @@
     "webpack-sources": "3.2.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/maplibre-gl": "^2.2.0-gfw.24",
+    "@globalfishingwatch/maplibre-gl": "^2.2.0-gfw.25",
     "@jscutlery/semver": "^2.23.3",
     "@next/bundle-analyzer": "^12.1.6",
     "@next/eslint-plugin-next": "12.1.6",
