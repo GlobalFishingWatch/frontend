@@ -46,7 +46,7 @@ import RiskTitle from 'features/risk-title/risk-title'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
-import { selectRiskSummaryTabVisible } from './profile.selectors'
+import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useAppDispatch()
@@ -72,7 +72,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     [akaVesselProfileIds]
   )
   const { online } = useNavigatorOnline()
-  const riskSummaryTabVisible = useSelector(selectRiskSummaryTabVisible)
+  const riskSummaryTabVisible = useSelector(selectCurrentUserProfileHasInsurerPermission)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
