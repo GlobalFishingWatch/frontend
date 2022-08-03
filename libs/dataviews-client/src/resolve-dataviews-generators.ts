@@ -241,17 +241,20 @@ export function getGeneratorConfig(
 
         const { url: tilesAPI } = resolveDataviewDatasetResource(dataview, DatasetTypes.Fourwings)
         const dataviewInterval = dataview.config?.interval
+        const dataviewIntervals = dataview.config?.intervals
         const datasetIntervals = getDatasetAvailableIntervals(dataset)
         let availableIntervals = DEFAULT_ENVIRONMENT_INTERVALS
         if (dataviewInterval) {
           availableIntervals = [dataviewInterval]
+        } else if (dataviewIntervals && dataviewIntervals.length > 0) {
+          availableIntervals = dataviewIntervals
         } else if (datasetIntervals && datasetIntervals.length > 0) {
           availableIntervals = datasetIntervals
         }
 
         environmentalConfig = {
           sublayers,
-          maxZoom: 8,
+          maxZoom: dataview.config.maxZoom || 8,
           mode: HeatmapAnimatedMode.Single,
           tilesAPI,
           dynamicBreaks: dataview.config?.dynamicBreaks || true,
