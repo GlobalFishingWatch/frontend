@@ -73,7 +73,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     [akaVesselProfileIds]
   )
   const { online } = useNavigatorOnline()
-  const hasInsurerPermission = useSelector(selectCurrentUserProfileHasInsurerPermission)
+  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
@@ -291,10 +291,10 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const tabs: Tab[] = useMemo(
     () =>
-      hasInsurerPermission
+      currentProfileIsInsurer
         ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
-        : [riskSummaryTab, infoTab, activityTab, mapTab],
-    [hasInsurerPermission, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
+        : [infoTab, activityTab, mapTab],
+    [currentProfileIsInsurer, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])

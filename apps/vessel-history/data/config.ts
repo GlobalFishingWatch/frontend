@@ -122,12 +122,18 @@ export const APP_PROFILE_VIEWS = [
     name: 'Port Inspector',
     required_permission: PORT_INSPECTOR_PERMISSION,
     propagate_events_query_params: ['confidences'],
+    events_query_params: {
+      start_date: undefined,
+    },
   },
   {
     id: 'insurance-underwriter',
     name: 'Insurance Underwriter',
     required_permission: INSURER_PERMISSION,
     propagate_events_query_params: ['confidences'],
+    events_query_params: {
+      start_date: DateTime.now().toUTC().minus({ months: 12 }).toISO(),
+    },
   },
 ]
 

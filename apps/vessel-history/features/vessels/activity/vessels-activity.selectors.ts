@@ -10,7 +10,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
-import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
+import { APP_PROFILE_VIEWS, DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
 import {
@@ -24,6 +24,7 @@ import { Region } from 'features/regions/regions.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectSettings } from 'features/settings/settings.slice'
 import { TrackPosition } from 'types'
+import { selectWorkspaceProfileView } from 'features/workspace/workspace.selectors'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
 export interface RenderedEvent extends ActivityEvent {
@@ -289,14 +290,23 @@ export const selectEvents = createSelector([selectEventsWithRenderingInfo], (eve
 )
 
 export const selectFilteredEvents = createSelector(
-  [selectEvents, selectFilters],
-  (events, filters) => {
+  [selectEvents, selectFilters, selectWorkspaceProfileView],
+  (events, filters, profileView) => {
+    const {
+      events_query_params: { start_date: datasetStartDate },
+    } = APP_PROFILE_VIEWS.filter((v) => v.id === profileView).shift() ?? {
+      events_query_params: { start_date: undefined },
+    }
+
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
-    const startDate = DateTime.fromISO(filters.start ?? DEFAULT_WORKSPACE.availableStart, {
-      zone: 'utc',
-    })
+    const startDate = DateTime.fromISO(
+      datasetStartDate ?? filters.start ?? DEFAULT_WORKSPACE.availableStart,
+      {
+        zone: 'utc',
+      }
+    )
 
     // Setting the time to 23:59:59.99 so the events in that same day
     //  are also displayed

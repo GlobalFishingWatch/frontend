@@ -84,13 +84,16 @@ export function ActivityByType(props: ActivityByTypeProps) {
                   const event = events[index]
                   if (event.group)
                     return (
-                      <ActivityGroup
-                        eventType={event.type}
-                        loading={event.loading}
-                        onToggleClick={toggleEventType}
-                        quantity={event.quantity}
-                        status={event.status}
-                      ></ActivityGroup>
+                      <div style={style}>
+                        <ActivityGroup
+                          key={index}
+                          eventType={event.type}
+                          loading={event.loading}
+                          onToggleClick={toggleEventType}
+                          quantity={event.quantity}
+                          status={event.status}
+                        ></ActivityGroup>
+                      </div>
                     )
                   else
                     return (
