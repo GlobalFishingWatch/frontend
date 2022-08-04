@@ -83,7 +83,7 @@ export const DEFAULT_EMPTY_VALUE = ' --- '
 
 export const LAST_POSITION_LAYERS_PREFIX = 'last-position'
 
-export const AUTHORIZED_PERMISSION = {
+export const PORT_INSPECTOR_PERMISSION = {
   type: 'application',
   value: 'vessel-viewer',
   action: 'ui.load',
@@ -120,7 +120,7 @@ export const APP_PROFILE_VIEWS = [
   {
     id: 'port-inspector',
     name: 'Port Inspector',
-    required_permission: AUTHORIZED_PERMISSION,
+    required_permission: PORT_INSPECTOR_PERMISSION,
     propagate_events_query_params: ['confidences'],
   },
   {

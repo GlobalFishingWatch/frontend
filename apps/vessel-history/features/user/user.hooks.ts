@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import {
-  AUTHORIZED_PERMISSION,
+  PORT_INSPECTOR_PERMISSION,
   FLRM_PERMISSION,
   INSURER_PERMISSION,
   APP_PROFILE_VIEWS,
@@ -38,7 +38,7 @@ export const useUser = () => {
   const refreshToken = GFWAPI.getRefreshToken()
 
   const authorizedInspector = useMemo(() => {
-    return user && checkExistPermissionInList(user.permissions, AUTHORIZED_PERMISSION)
+    return user && checkExistPermissionInList(user.permissions, PORT_INSPECTOR_PERMISSION)
   }, [user])
 
   const authorizedInsurer = useMemo(() => {

@@ -30,7 +30,7 @@ import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
 import { useUser } from 'features/user/user.hooks'
-import { selectCurrentUserProfileHasInsurerPermission } from '../profile.selectors'
+import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -58,7 +58,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
-  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
+  const currentProfileIsPortInspector = useSelector(
+    selectCurrentUserProfileHasPortInspectorPermission
+  )
 
   useEffect(() => {
     if (!isMergedVesselsView) dispatchFetchOfflineVessel(vesselProfileId)
@@ -347,7 +349,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   </div>
                 </div>
               )}
-              {!currentProfileIsInsurer && (
+              {currentProfileIsPortInspector && (
                 <InfoField
                   vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                   label={VesselFieldLabel.iuuStatus}
