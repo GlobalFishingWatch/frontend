@@ -522,7 +522,7 @@
   },
   "vesselGroup": {
     "add": "Añadir a un grupo",
-    "confirmAbort": "Perderá cualquier cambio realizado en este grupo de embarcaciones. ¿Está seguro?",
+    "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "¿Está seguro de que quieres eliminar permanentemente este grupo de embarcaciones?",
     "createNewGroup": "Crear nuevo grupo",
     "csvError": "El archivo CSV subido tiene múltiples columnas y no hay una columna ID obvia",
