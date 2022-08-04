@@ -18,6 +18,10 @@
   min-height: var(--size-M);
 }
 
+.expanded .identifierField {
+  width: 100%;
+}
+
 div.identifierField {
   color: var(--color-primary-blue);
 }

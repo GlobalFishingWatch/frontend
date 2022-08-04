@@ -36,13 +36,22 @@ import ForcedLabor from './ForcedLabor'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
-  lastPosition: any
-  lastPortVisit: any
+  expanded?: boolean
+  filterRange?: {
+    start: Date,
+    end: Date
+  }
+  printView?: boolean
   onMoveToMap: () => void
 }
 
-const Info: React.FC<InfoProps> = (props): React.ReactElement => {
-  const vessel = props.vessel
+const Info: React.FC<InfoProps> = ({
+  vessel,
+  expanded = false,
+  printView = false,
+  filterRange,
+  onMoveToMap
+}): React.ReactElement => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const vesselId = useSelector(selectVesselId)
@@ -154,10 +163,10 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     })
   }, [vesselId, vesselTmtId])
 
+
   return (
     <Fragment>
-      <div className={styles.infoContainer}>
-
+      <div className={cx(styles.infoContainer, { [styles.expanded]: expanded })}>
         {vessel && (
           <Fragment>
             <div className={styles.imageAndFields}>
@@ -178,7 +187,168 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   label={VesselFieldLabel.name}
                   value={vessel.shipname}
                   valuesHistory={vessel.history.shipname.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
                 ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.type}
+                  value={vessel.vesselType}
+                  valuesHistory={vessel.history.vesselType.byDate}
+                  includeFaq={true}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                  helpText={
+                    <Trans i18nKey="vessel.vesselTypeDescription">
+                      For vessel type sourced from Global Fishing Watch additional research and
+                      analysis is conducted in addition to using the original AIS data to identify the
+                      most likely value. Vessel types from GFW include fishing vessels, carrier
+                      vessels, and support vessels. The vessel classification for fishing vessel is
+                      estimated using known registry information in combination with a convolutional
+                      neural network used to estimate vessel class. The vessel classifcation for
+                      carrier vessels is estimated using a cumulation of known registry information,
+                      manual review, and vessel class. All support vessels in the Vessel Viewer are
+                      considered Purse Seine Support Vessels based on internal review.
+                    </Trans>
+                  }
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.flag}
+                  value={vessel.flag}
+                  valuesHistory={vessel.history.flag.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.mmsi}
+                  value={vessel.mmsi}
+                  valuesHistory={vessel.history.mmsi.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.imo}
+                  value={vessel.imo}
+                  hideTMTDate={true}
+                  valuesHistory={vessel.history.imo.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.callsign}
+                  value={vessel.callsign}
+                  valuesHistory={vessel.history.callsign.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.geartype}
+                  value={vessel.geartype}
+                  includeFaq={true}
+                  valuesHistory={vessel.history.geartype.byDate}
+                  helpText={
+                    <Trans i18nKey="vessel.geartypeDescription">
+                      Likely gear type of vessel as defined by Global Fishing Watch. The vessel
+                      classification for fishing vessel is estimated using known registry information
+                      in combination with a convolutional neural network used to estimate vessel
+                      class, see more information here:
+                      <a
+                        href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        https://globalfishingwatch.org/datasets-and-code-vessel-identity/
+                      </a>{' '}
+                      . The vessel classifcation for carrier vessels is estimated using a cumulation
+                      of known registry information. All support vessels in the Vessel Viewer are
+                      considered Purse Seine Support Vessels based on internal review.
+                    </Trans>
+                  }
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.length}
+                  value={vessel.length}
+                  hideTMTDate={true}
+                  valuesHistory={vessel.history.length.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.grossTonnage}
+                  value={vessel.grossTonnage}
+                  hideTMTDate={true}
+                  valuesHistory={vessel.history.grossTonnage.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.depth}
+                  value={vessel.depth}
+                  hideTMTDate={true}
+                  valuesHistory={vessel.history.depth.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <AuthorizationsField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.authorizations}
+                  authorizations={vessel?.authorizations}
+                ></AuthorizationsField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.builtYear}
+                  hideTMTDate={true}
+                  value={vessel.builtYear}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.owner}
+                  value={vessel.owner}
+                  valuesHistory={vessel.history.owner.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.operator}
+                  value={vessel.operator}
+                  valuesHistory={vessel.history.operator.byDate}
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.iuuStatus}
+                  value={
+                    vessel.iuuStatus !== undefined
+                      ? t(
+                        `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                        vessel.iuuStatus.toString()
+                      )
+                      : DEFAULT_EMPTY_VALUE
+                  }
+                  valuesHistory={[]}
+                  helpText={
+                    <Trans i18nKey="vessel.iuuStatusDescription">
+                      [TDB] IUU status description to be defined
+                    </Trans>
+                  }
+                  expanded={expanded}
+                  filterRange={filterRange}
+                ></InfoField>
+
                 <InfoField
                   vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                   label={VesselFieldLabel.type}
@@ -198,6 +368,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                       considered Purse Seine Support Vessels based on internal review.
                     </Trans>
                   }
+                  expanded={expanded}
+                  filterRange={filterRange}
                 ></InfoField>
                 <InfoField
                   vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
@@ -347,7 +519,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         )}
 
         <div className={styles.actions}>
-          {vessel && offlineVessel && (
+          {!printView && vessel && offlineVessel && (
             <Fragment>
               <div className={styles.readyForOffline}>
                 {t('vessel.readyForOfflineView', 'READY FOR OFFLINE VIEW')}
@@ -364,7 +536,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               />
             </Fragment>
           )}
-          {vessel && !isMergedVesselsView && !offlineVessel && (
+          {!printView && vessel && !isMergedVesselsView && !offlineVessel && (
             <Button
               className={styles.saveButton}
               type="secondary"
@@ -374,7 +546,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               {t('vessel.saveForOfflineView', 'SAVE VESSEL FOR OFFLINE VIEW')}
             </Button>
           )}
-          {isMergedVesselsView && (
+          {!printView && isMergedVesselsView && (
             <Button className={styles.saveButton} type="secondary" disabled={true}>
               {t(
                 'vessel.offlineStillNotAllowedOnMergedVessels',
@@ -383,20 +555,24 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             </Button>
           )}
         </div>
-        <div className={styles.contactUs}>
-          <Trans i18nKey="vessel.contactUs">
-            <a
-              href={contactUsLink}
-              rel="noopener noreferrer"
-              target="_blank"
-              onClick={onContactUsClick}
-            >
-              contact us
-            </a>{' '}
-            if you have questions or would like more information about this vessel.
-          </Trans>
-        </div>
-        <Highlights onMoveToMap={props.onMoveToMap}></Highlights>
+        {!printView && (
+          <Fragment>
+            <div className={styles.contactUs}>
+              <Trans i18nKey="vessel.contactUs">
+                <a
+                  href={contactUsLink}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  onClick={onContactUsClick}
+                >
+                  contact us
+                </a>{' '}
+                if you have questions or would like more information about this vessel.
+              </Trans>
+            </div>
+            <Highlights onMoveToMap={onMoveToMap}></Highlights>
+          </Fragment>
+        )}
       </div>
     </Fragment>
   )

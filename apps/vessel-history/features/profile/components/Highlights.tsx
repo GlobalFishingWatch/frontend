@@ -19,9 +19,9 @@ import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
-import ActivityModalContent from './activity/ActivityModalContent'
-import ActivityItem from './activity/ActivityItem'
-import styles from './activity/Activity.module.css'
+import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
+import ActivityItem from 'features/profile/components/activity/ActivityItem'
+import styles from 'features/profile/components/activity/Activity.module.css'
 
 interface HighlightsProps {
   onMoveToMap: () => void
@@ -143,7 +143,7 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
           {t(
             'events.noHighlitingSettingsMessage',
             "You've not defined the highlight settings yet. " +
-              'Please click Settings to configure the activity of interest.'
+            'Please click Settings to configure the activity of interest.'
           )}
           <Button type="secondary" onClick={onSettingsClick} className={styles.settings}>
             <Icon type="default" icon="settings" className={styles.iconInButton}></Icon>

@@ -386,6 +386,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                 )}
               </RiskSection>
             )}
+
             {(!hasFishingInMPAs || !hasFishingInRFMOWithoutAuthorization) && (
               <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
                 {!hasFishingInRFMOWithoutAuthorization && (
@@ -488,6 +489,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                 ></RiskIndicator>
               </RiskSection>
             )}
+
             {(!hasVesselFlagsOnMOU ||
               !hasChangedOwners ||
               !hasChangedFlags ||
@@ -528,6 +530,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   )}
                 </RiskSection>
               )}
+
           </RiskSection>
         )}
       <Modal

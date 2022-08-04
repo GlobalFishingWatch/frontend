@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getLocationType, isOfflineForced } from 'routes/routes.selectors'
-import { PROFILE, SETTINGS } from 'routes/routes'
+import { PROFILE, REPORT, SETTINGS } from 'routes/routes'
 import { SPLASH_TIMEOUT } from 'data/constants'
 import Home from 'features/home/Home'
 import Profile from 'features/profile/Profile'
@@ -34,6 +34,9 @@ function App() {
     }
     if (locationType === PROFILE) {
       return <Profile />
+    }
+    if (locationType === REPORT) {
+      return <Profile print={true} />
     }
     return <Home />
   }, [authorized, loading, locationType, logged, minLoading, forceOffline])

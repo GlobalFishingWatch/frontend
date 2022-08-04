@@ -1,0 +1,32 @@
+.printButton {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+}
+
+.title {
+  margin-bottom: var(--space-M);
+  text-align: center;
+}
+
+h1.title {
+  font: var(--font-L);
+}
+
+h2.title {
+  font: var(--font-M);
+}
+
+.container {
+  margin-left: var(--space-M);
+  padding: 0 var(--space-S);
+  position: relative;
+}
+
+@media print {
+  .printButton {
+    display: none !important;
+    visibility: hidden;
+  }
+}

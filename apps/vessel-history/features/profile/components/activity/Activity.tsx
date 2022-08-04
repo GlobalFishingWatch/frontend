@@ -23,8 +23,6 @@ import styles from './Activity.module.css'
 import AisCoverage from './AisCoverage'
 interface ActivityProps {
   vessel: VesselWithHistory | null
-  lastPosition: any
-  lastPortVisit: any
   onMoveToMap: () => void
 }
 

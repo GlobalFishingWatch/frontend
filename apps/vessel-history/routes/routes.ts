@@ -21,6 +21,7 @@ export const PATH_BASENAME = BASE_URL
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
+export const REPORT = 'REPORT'
 export const WORKSPACE_ROUTES = [HOME, PROFILE]
 export const SETTINGS = 'SETTINGS'
 
@@ -57,6 +58,10 @@ export const routesMap: RoutesMap = {
   },
   [PROFILE]: {
     path: '/profile/:dataset/:vesselID/:tmtID',
+    thunk: thunkRegions,
+  },
+  [REPORT]: {
+    path: '/profile/report/:start/:end/:dataset/:vesselID/:tmtID',
     thunk: thunkRegions,
   },
   [NOT_FOUND]: {

@@ -35,12 +35,12 @@ function useVoyagesConnect() {
     },
     [dispatch, expandedVoyages, mergedVesselId]
   )
-
-  const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
+  console.log(eventsList)
+  const eventsExpanded = useMemo(() => {
     const hasVoyages = !!eventsList.find((event) => event.type === EventTypeVoyage.Voyage)
     if (!hasVoyages) return eventsList as RenderedEvent[]
 
-    const eventsListParsed = eventsList.map((event) => {
+    return eventsList.map((event) => {
       if (event.type === EventTypeVoyage.Voyage) {
         return {
           ...event,
@@ -51,7 +51,10 @@ function useVoyagesConnect() {
       }
     })
 
-    return eventsListParsed.filter((event) => {
+  }, [eventsList, expandedVoyages])
+
+  const events: (RenderedEvent | RenderedVoyage)[] = useMemo(() => {
+    return eventsExpanded.filter((event) => {
       return (
         event.type === EventTypeVoyage.Voyage ||
         Object.values(expandedVoyages).find(
@@ -63,7 +66,7 @@ function useVoyagesConnect() {
         )
       )
     })
-  }, [eventsList, expandedVoyages])
+  }, [eventsExpanded, expandedVoyages])
 
   useEffect(() => {
     if (initialized || events.length === 0) return
@@ -108,7 +111,7 @@ function useVoyagesConnect() {
     [eventsList]
   )
 
-  return { eventsLoading, events, getLastEventInVoyage, getVoyageByEvent, toggleVoyage }
+  return { eventsLoading, events, eventsExpanded, getLastEventInVoyage, getVoyageByEvent, toggleVoyage }
 }
 
 export default useVoyagesConnect

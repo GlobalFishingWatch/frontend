@@ -1,8 +1,9 @@
-import { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
+import { Fragment, useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
+import ReactToPrint, { useReactToPrint } from 'react-to-print'
+import { IconButton, Spinner, Tabs, Tab, Icon } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { VesselAPISource } from 'types'
@@ -46,10 +47,18 @@ import RiskTitle from 'features/risk-title/risk-title'
 import ActivityByType from 'features/activity-by-type/activity-by-type'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
-import styles from './Profile.module.css'
 import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
+import Report from 'features/profile/report/Report'
+import styles from './Profile.module.css'
+import { selectRiskSummaryTabVisible } from './profile.selectors'
+import ReportFilter from './report/ReportFilter'
 
-const Profile: React.FC = (props): React.ReactElement => {
+interface ProfileProps {
+  print?: boolean
+}
+
+const Profile: React.FC<ProfileProps> = (props): React.ReactElement => {
+  const print = props.print
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { openFeedback } = useApp()
@@ -236,8 +245,6 @@ const Profile: React.FC = (props): React.ReactElement => {
       content: vessel ? (
         <Info
           vessel={vessel}
-          lastPosition={lastPosition}
-          lastPortVisit={lastPortVisit}
           onMoveToMap={() => setActiveTab(mapTab)}
         />
       ) : loading ? (
@@ -258,8 +265,6 @@ const Profile: React.FC = (props): React.ReactElement => {
       content: vessel ? (
         <Activity
           vessel={vessel}
-          lastPosition={lastPosition}
-          lastPortVisit={lastPortVisit}
           onMoveToMap={() => setActiveTab(mapTab)}
         />
       ) : loading ? (
@@ -320,6 +325,10 @@ const Profile: React.FC = (props): React.ReactElement => {
     return gfwVesselName ? gfwVesselName.value : vessel?.shipname
   }, [vessel])
 
+  if (print) {
+    return <Report vessel={vessel} />
+  }
+
   return (
     <Fragment>
       <header className={styles.header}>
@@ -352,15 +361,17 @@ const Profile: React.FC = (props): React.ReactElement => {
             )}
           </h1>
         )}
-        {online && (
-          <IconButton
-            icon="feedback"
-            className={styles.feedback}
-            onClick={openFeedback}
-            tooltip={t('common.feedback', 'Feedback')}
-            tooltipPlacement="bottom"
-          />
-        )}
+        <div className={styles.actionButtons}>
+          <ReportFilter vesselProfileId={vesselProfileId} akaVesselProfileIds={akaVesselProfileIds} />
+          {online && (
+            <IconButton
+              icon="feedback"
+              onClick={openFeedback}
+              tooltip={t('common.feedback', 'Feedback')}
+              tooltipPlacement="bottom"
+            />
+          )}
+        </div>
       </header>
       <div className={styles.profileContainer}>
         <Tabs

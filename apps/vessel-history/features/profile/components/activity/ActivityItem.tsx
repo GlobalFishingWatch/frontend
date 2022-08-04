@@ -6,6 +6,7 @@ import ActivityVoyage from './ActivityVoyage'
 interface EventProps {
   event: RenderedEvent | RenderedVoyage
   highlighted?: boolean
+  printView?: boolean
   onInfoClick?: (event: RenderedEvent) => void
   onMapClick?: (event: RenderedEvent | Voyage) => void
   onToggleClick?: (event: RenderedVoyage) => void
@@ -14,9 +15,10 @@ interface EventProps {
 const ActivityItem: React.FC<EventProps> = ({
   event,
   highlighted = false,
-  onInfoClick = () => {},
-  onMapClick = () => {},
-  onToggleClick = () => {},
+  printView = false,
+  onInfoClick = () => { },
+  onMapClick = () => { },
+  onToggleClick = () => { },
 }): React.ReactElement => {
   return (
     <Fragment>
@@ -25,6 +27,7 @@ const ActivityItem: React.FC<EventProps> = ({
           event={event}
           onMapClick={onMapClick}
           onToggleClick={onToggleClick}
+          printView={printView}
         ></ActivityVoyage>
       )}
       {event.type !== EventTypeVoyage.Voyage && (
@@ -33,7 +36,8 @@ const ActivityItem: React.FC<EventProps> = ({
           highlighted={highlighted}
           onMapClick={onMapClick}
           onInfoClick={onInfoClick}
-          ></ActivityEvent>
+          printView={printView}
+        ></ActivityEvent>
       )}
     </Fragment>
   )

@@ -12,14 +12,16 @@ interface EventProps {
   highlighted?: boolean
   onInfoClick?: (event: RenderedEvent) => void
   onMapClick?: (event: RenderedEvent) => void
+  printView?: boolean
 }
 
 const ActivityEvent: React.FC<EventProps> = ({
   classname = '',
   event,
   highlighted = false,
-  onInfoClick = () => {},
-  onMapClick = () => {},
+  onInfoClick = () => { },
+  onMapClick = () => { },
+  printView = false
 }): React.ReactElement => {
   return (
     <Fragment>
@@ -42,12 +44,12 @@ const ActivityEvent: React.FC<EventProps> = ({
           <div className={styles.description}>{event.description}</div>
         </div>
         <div className={styles.actions}>
-          <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>
-          <IconButton
+          {!printView && <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>}
+          {!printView && <IconButton
             icon="view-on-map"
             size="small"
             onClick={() => onMapClick(event)}
-          ></IconButton>
+          ></IconButton>}
         </div>
       </div>
       <div className={styles.divider}></div>

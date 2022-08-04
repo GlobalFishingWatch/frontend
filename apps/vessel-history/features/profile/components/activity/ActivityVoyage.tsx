@@ -9,14 +9,16 @@ import styles from './Activity.module.css'
 
 interface EventProps {
   event: RenderedVoyage
+  printView?: boolean
   onMapClick?: (event: RenderedVoyage) => void
   onToggleClick?: (event: RenderedVoyage) => void
 }
 
 const ActivityVoyage: React.FC<EventProps> = ({
   event,
-  onMapClick = () => {},
-  onToggleClick = () => {},
+  onMapClick = () => { },
+  onToggleClick = () => { },
+  printView = false,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
@@ -70,7 +72,7 @@ const ActivityVoyage: React.FC<EventProps> = ({
         <div className={styles.eventData} onClick={onToggle}>
           <div className={styles.description}>{voyageLabel}</div>
         </div>
-        {hasEvents && (
+        {!printView && hasEvents && (
           <div className={styles.actions}>
             <IconButton
               icon={event.status === 'expanded' ? 'arrow-top' : 'arrow-down'}
@@ -81,7 +83,7 @@ const ActivityVoyage: React.FC<EventProps> = ({
           </div>
         )}
       </div>
-      
+
     </Fragment>
   )
 }

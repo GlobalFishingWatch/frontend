@@ -10,6 +10,7 @@ import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology
 import InfoFieldHistory from './InfoFieldHistory'
 import styles from './Info.module.css'
 import Faq from './Faq'
+import InfoFieldHistoryModal from './InfoFieldHistorModal'
 
 interface ListItemProps {
   label: VesselFieldLabel
@@ -20,6 +21,11 @@ interface ListItemProps {
   hideTMTDate?: boolean
   includeFaq?: boolean
   helpText?: React.ReactNode
+  expanded?: boolean
+  filterRange?: {
+    start: Date,
+    end: Date
+  }
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -30,7 +36,9 @@ const InfoField: React.FC<ListItemProps> = ({
   vesselName,
   hideTMTDate = false,
   includeFaq = false,
+  expanded = false,
   helpText,
+  filterRange
 }): React.ReactElement => {
   const { t } = useTranslation()
 
@@ -61,7 +69,7 @@ const InfoField: React.FC<ListItemProps> = ({
       </label>
       <div>
         <div onClick={openModal}>{value}</div>
-        {valuesHistory.length > 0 && (
+        {!expanded && valuesHistory.length > 0 && (
           <button className={styles.moreValues} onClick={openModal}>
             {t('vessel.formatValues', '{{quantity}} values', {
               quantity: valuesHistory.length,
@@ -73,14 +81,20 @@ const InfoField: React.FC<ListItemProps> = ({
             {t('common.since', 'Since')} <I18nDate date={since} />
           </p>
         )}
-        <InfoFieldHistory
+        {!expanded && <InfoFieldHistoryModal
           label={label}
           history={valuesHistory}
           isOpen={modalOpen}
           hideTMTDate={hideTMTDate}
           onClose={closeModal}
           vesselName={vesselName}
-        ></InfoFieldHistory>
+        ></InfoFieldHistoryModal>}
+        {expanded && <InfoFieldHistory
+          label={label}
+          history={valuesHistory}
+          hideTMTDate={hideTMTDate}
+          filterRange={filterRange}
+        ></InfoFieldHistory>}
       </div>
     </div>
   )

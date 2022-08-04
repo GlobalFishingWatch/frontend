@@ -37,6 +37,13 @@ export const selectTmtId = createSelector([selectLocationPayload], (payload) => 
   return payload.tmtID !== NOT_AVAILABLE ? payload.tmtID : null
 })
 
+export const selectReportRange = createSelector([selectLocationPayload], (payload) => {
+  return {
+    start: new Date(payload.start),
+    end: new Date(payload.end)
+  }
+})
+
 export const selectDataset = createSelector([selectLocationPayload], (payload) => {
   return payload.dataset
 })
@@ -189,9 +196,9 @@ export const selectMergedVesselId = createSelector(
 export const selectSearchableQueryParams = createSelector(
   [selectAdvancedSearchFields, selectUrlQuery],
   (filters, query) =>
-    ({
-      q: query,
-      ...filters,
-      flags: filters?.flags.join(','),
-    } as any)
+  ({
+    q: query,
+    ...filters,
+    flags: filters?.flags.join(','),
+  } as any)
 )
