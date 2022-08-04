@@ -46,12 +46,10 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
         .join('&')
       const indicator = await GFWAPI.fetch<Indicator>(`/prototype/vessels/indicators?${query}`, {
         method: 'POST',
-        body: idData
-          .filter(({ datasetId, vesselId }) => ![datasetId, vesselId].includes(NOT_AVAILABLE))
-          .map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
-            datasetId,
-            vesselId,
-            vesselHistoryId,
+          body: idData.map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
+              ...(datasetId !== NOT_AVAILABLE && { datasetId }),
+              ...(vesselId !== NOT_AVAILABLE && { vesselId }),
+              ...(vesselHistoryId !== NOT_AVAILABLE && { vesselHistoryId }),
           })) as any,
         version: '',
       })

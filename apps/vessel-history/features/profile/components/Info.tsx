@@ -30,6 +30,7 @@ import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
 import { useUser } from 'features/user/user.hooks'
+import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -56,6 +57,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const isMergedVesselsView = useMemo(
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
+  )
+  const currentProfileIsPortInspector = useSelector(
+    selectCurrentUserProfileHasPortInspectorPermission
   )
 
   useEffect(() => {
@@ -97,7 +101,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         source: '',
         activities: activities,
         savedOn: DateTime.utc().toISO(),
-        relatedVessels: []
+        relatedVessels: [],
       },
     })
     setLoading(false)
@@ -114,11 +118,14 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
   const searchContext = useMemo(
-    () => `Vessel Viewer > Detail: ${vessel?.shipname}`
-    , [vessel?.shipname])
+    () => `Vessel Viewer > Detail: ${vessel?.shipname}`,
+    [vessel?.shipname]
+  )
   const contactUsLink = useMemo(
     () =>
-      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(email)}&usercontext=${searchContext}&data=${JSON.stringify({
+      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(
+        email
+      )}&usercontext=${searchContext}&data=${JSON.stringify({
         name: query,
         ...advancedSearch,
         tmtMatchId: vesselTmtId,
@@ -129,7 +136,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         vesselMmsi: vessel?.mmsi,
         vesselImo: vessel?.imo,
         vesselCallsign: vessel?.callsign,
-        vesselGeartype: vessel?.geartype
+        vesselGeartype: vessel?.geartype,
       })}`,
     [advancedSearch, email, query, searchContext, vessel, vesselId, vesselTmtId]
   )
@@ -140,7 +147,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       action: 'Click Contact Us ',
       label: JSON.stringify({
         tmtMatchId: vesselTmtId,
-        gfwId: vesselId
+        gfwId: vesselId,
       }),
     })
   }, [vesselId, vesselTmtId])
@@ -149,18 +156,33 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     if (!vessel.forcedLabour || !authorizedFLRM) {
       return {
         riskModel: null,
-        highisk: false
+        highisk: false,
       }
     }
     const riskModel: RiskOutput[] = [
-      { level: RiskLevel.high, years: vessel.forcedLabour.filter(risk => risk.confidence && risk.score).map(risk => risk.year) },
-      { level: RiskLevel.low, years: vessel.forcedLabour.filter(risk => risk.confidence && !risk.score).map(risk => risk.year) },
-      { level: RiskLevel.unknown, years: vessel.forcedLabour.filter(risk => !risk.confidence).map(risk => risk.year) },
-    ].filter(risk => risk.years && risk.years.length)
+      {
+        level: RiskLevel.high,
+        years: vessel.forcedLabour
+          .filter((risk) => risk.confidence && risk.score)
+          .map((risk) => risk.year),
+      },
+      {
+        level: RiskLevel.low,
+        years: vessel.forcedLabour
+          .filter((risk) => risk.confidence && !risk.score)
+          .map((risk) => risk.year),
+      },
+      {
+        level: RiskLevel.unknown,
+        years: vessel.forcedLabour.filter((risk) => !risk.confidence).map((risk) => risk.year),
+      },
+    ].filter((risk) => risk.years && risk.years.length)
 
     return {
-      riskModel: riskModel.map(risk => `${t(`risk.${risk.level}` as any, risk.level)} - ${risk.years.join(', ')}`).join('. '),
-      highRisk: riskModel.some(risk => risk.level === RiskLevel.high && risk.years.length)
+      riskModel: riskModel
+        .map((risk) => `${t(`risk.${risk.level}` as any, risk.level)} - ${risk.years.join(', ')}`)
+        .join('. '),
+      highRisk: riskModel.some((risk) => risk.level === RiskLevel.high && risk.years.length),
     }
   }, [vessel.forcedLabour, authorizedFLRM])
 
@@ -327,42 +349,49 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   </div>
                 </div>
               )}
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.iuuStatus}
-                value={
-                  vessel.iuuStatus !== undefined
-                    ? t(
-                      `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
-                      vessel.iuuStatus.toString()
-                    )
-                    : DEFAULT_EMPTY_VALUE
-                }
-                valuesHistory={[]}
-                helpText={
-                  <Trans i18nKey="vessel.iuuStatusDescription">
-                    [TDB] IUU status description to be defined
-                  </Trans>
-                }
-              ></InfoField>
-              {authorizedFLRM &&
+              {currentProfileIsPortInspector && (
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.iuuStatus}
+                  value={
+                    vessel.iuuStatus !== undefined
+                      ? t(
+                          `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                          vessel.iuuStatus.toString()
+                        )
+                      : DEFAULT_EMPTY_VALUE
+                  }
+                  valuesHistory={[]}
+                  helpText={
+                    <Trans i18nKey="vessel.iuuStatusDescription">
+                      [TDB] IUU status description to be defined
+                    </Trans>
+                  }
+                ></InfoField>
+              )}
+              {authorizedFLRM && (
                 <InfoField
                   vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                   label={VesselFieldLabel.forcedLabourModel}
-                  value={riskModel ?? t('risk.noRiskDetected', 'Vessel doesn’t have force labour info')}
+                  value={
+                    riskModel ?? t('risk.noRiskDetected', 'Vessel doesn’t have force labour info')
+                  }
                   valuesHistory={[]}
                   className={highRisk ? 'dangerBackground' : ''}
                   helpText={
                     <Trans i18nKey="vessel.forcedLaborModelDescription">
-                      High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.
+                      High Risk: In multiple iterations, the model always predicted the vessel as an
+                      offender for that year.
                       <br />
-                      Low Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.
+                      Low Risk: In multiple iterations, the model always predicted the vessel as a
+                      non-offender for that year.
                       <br />
-                      Unknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.
+                      Unknown risk: In some iterations, the model predicted the vessel as an
+                      offender and in others, it predicted it as a non-offender, for that year.
                     </Trans>
                   }
                 ></InfoField>
-              }
+              )}
             </div>
           </div>
         )}

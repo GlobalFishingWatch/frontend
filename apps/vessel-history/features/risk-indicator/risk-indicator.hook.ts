@@ -26,6 +26,7 @@ import {
   selectFishingRFMOsAreasWithoutAuthorization,
   selectRiskVesselIndentityNamesHistory,
   selectRiskVesselIndentityOwnersHistory,
+  selectCurrentMergedVesselsIndicators,
 } from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
@@ -44,6 +45,7 @@ export interface UseRiskIndicator {
     high: number
   }
   indicatorsLoading: boolean
+  iuuBlacklisted: boolean
   vesselFlagsOnMOU: FlagOnMOU[]
   vessel: VesselWithHistory
   flagsHistory: ValueItem[]
@@ -88,12 +90,30 @@ export function useRiskIndicator(): UseRiskIndicator {
   const uniqueFlags = useMemo(() => getUniqueHistoryValues(flagsHistory), [flagsHistory])
   const uniqueNames = useMemo(() => getUniqueHistoryValues(namesHistory), [namesHistory])
   const uniqueOwners = useMemo(() => getUniqueHistoryValues(ownersHistory), [ownersHistory])
+  const {
+    vesselIdentity: { iuuListed: iuuBlacklisted },
+  } = useSelector(selectCurrentMergedVesselsIndicators) ?? { vesselIdentity: { iuuListed: null } }
 
   /** Migration to API pengding */
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))
   /******************************/
 
   return {
+    countByRiskLevel: {
+      medium:
+        encountersInForeignEEZ.length +
+        encountersInMPA.length +
+        encountersInRFMOWithoutAuthorization.length +
+        fishingInMPA.length +
+        fishingInRFMOWithoutAuthorization.length +
+        loiteringInMPA.length +
+        Math.max(0, uniqueFlags.length - 1) +
+        Math.max(0, uniqueOwners.length - 1) +
+        portVisitsToNonPSMAPortState.length +
+        vesselFlagsOnMOU.length +
+        0,
+      high: (iuuBlacklisted ? 1 : 0) + 0,
+    },
     encountersInForeignEEZ,
     encountersInMPA,
     encountersInRFMOWithoutAuthorization,
@@ -102,27 +122,18 @@ export function useRiskIndicator(): UseRiskIndicator {
     fishingInMPA,
     fishingInRFMOWithoutAuthorization,
     fishingRFMOsAreasWithoutAuthorization,
-    loiteringInMPA,
-    portVisitsToNonPSMAPortState,
-    countByRiskLevel: {
-      medium:
-        encountersInForeignEEZ.length +
-        encountersInMPA.length +
-        fishingInMPA.length +
-        loiteringInMPA.length +
-        portVisitsToNonPSMAPortState.length +
-        vesselFlagsOnMOU.length,
-      high: 0,
-    },
-    vesselFlagsOnMOU,
     flagsHistory,
+    indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
+    iuuBlacklisted,
+    loiteringInMPA,
     namesHistory,
     ownersHistory,
+    portVisitsToNonPSMAPortState,
     uniqueFlags,
     uniqueNames,
     uniqueOwners,
     vessel,
-    indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
+    vesselFlagsOnMOU,
   }
 }
 
