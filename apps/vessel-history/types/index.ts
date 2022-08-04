@@ -105,6 +105,7 @@ export interface ForcedLaborRisk {
   confidence: boolean
   score: boolean
   year: number
+  reportedCases: boolean
 }
 
 export enum RiskLevel {
@@ -114,10 +115,11 @@ export enum RiskLevel {
 }
 
 export interface RiskOutput {
-  //level: RiskLevel
   levels: RiskLevel[]
   year: number
-  highisk: boolean
+  highrisk: boolean
+  reportedCases: boolean
+  highestRisk: RiskLevel
 }
 
 export interface VesselWithHistory extends Vessel {

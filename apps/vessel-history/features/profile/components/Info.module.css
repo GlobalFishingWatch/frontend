@@ -32,6 +32,10 @@ div.identifierField {
   margin-right: 1.7rem;
 }
 
+.riskYearContainer {
+  flex-grow: 1;
+}
+
 .labourHeaders div,
 .riskYear {
   margin-bottom: 0.6rem;

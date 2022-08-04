@@ -23,6 +23,7 @@
     "low": "Low",
     "map": "map",
     "medium": "Medium",
+    "no": "No",
     "offlineAccess": "offline access",
     "offlineAccessEmptyState": "The vessels you save for offline access will appear here.",
     "other": "Other",
@@ -35,7 +36,8 @@
     "unknown": "Unknown",
     "unknownName": "Unknown name",
     "voyage": "Voyage",
-    "voyageFrom": "Voyage From"
+    "voyageFrom": "Voyage From",
+    "yes": "Yes"
   },
   "event": {
     "authStatus": "Authorization status",
@@ -173,6 +175,8 @@
     "noVesselFlagsOnMOU": "The vessel's flag(s) are not listed on either the Paris or Tokyo MOU black or grey list",
     "portVisitsToNonPSMAPortState_one": "{{count}} visit to a port in a country that has not ratified the PSMA state",
     "portVisitsToNonPSMAPortState_other": "{{count}} visits to a port in a country that has not ratified the PSMA state",
+    "reportedCases": "Reported Cases",
+    "riskModel": "Risk Model",
     "undeterminedPresenceOnARFMOIUUList": "Unable to determine if the vessel is present on a RFMO IUU list or not",
     "unknown": "Unknown",
     "vesselWithFlagOnMOU": "Vessel flying under a flag on the {{mou_name}} MOU black or grey list"
