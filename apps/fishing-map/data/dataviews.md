@@ -113,6 +113,14 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 | Vessel with track, info and events          | 92     | 171    |
 | Private Vessel Presence with track and info | 195    | 270    |
 
+## Global environmental layers
+
+| Layer name              | Dev id | Pro id |
+| ----------------------- | ------ | ------ |
+| Sea surface temperature | 297    | ---    |
+| Water salinity          | 298    | ---    |
+| Chlorophyl              | 299    | ---    |
+
 ## Others
 
 | Layer name | Dev id | Pro id |

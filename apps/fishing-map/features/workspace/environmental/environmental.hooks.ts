@@ -30,6 +30,7 @@ export const useEnvironmentalBreaksUpdate = () => {
           if (features && features.length) {
             const filteredFeatures = filterByViewport(features, bounds)
             const data = aggregateFeatures(filteredFeatures, metadata)
+
             if (data && data.length) {
               const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
               const dataSampled =
@@ -37,12 +38,24 @@ export const useEnvironmentalBreaksUpdate = () => {
 
               // using ckmeans as jenks
               const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) =>
-                parseFloat(clusterFirst.toFixed(2))
+                parseFloat(clusterFirst.toFixed(3))
               )
+
+              let cleanBreaks = []
+              ck.forEach((k, i) => {
+                if (i > 1) {
+                  const cleanBreak =
+                    k === 0 || k <= cleanBreaks?.[i - 1] ? cleanBreaks[i - 1] + 0.01 : k
+                  cleanBreaks.push(cleanBreak)
+                } else {
+                  cleanBreaks.push(k)
+                }
+              })
+
               return {
                 id: dataviewsId[0],
                 config: {
-                  breaks: ck,
+                  breaks: cleanBreaks,
                 },
               }
             }

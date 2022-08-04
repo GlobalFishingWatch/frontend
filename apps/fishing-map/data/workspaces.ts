@@ -76,4 +76,10 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   FAO_AREAS_DATAVIEW_ID,
 ]
 
+// Global environmental dataviews
+export const GLOBAL_WATER_TEMPERATURE_DATAVIEW_ID =
+  WORKSPACE_ENV === 'development' ? 297 : undefined
+export const GLOBAL_SALINITY_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 298 : undefined
+export const GLOBAL_CHLOROPHYL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 299 : undefined
+
 export const DEFAULT_DATAVIEW_IDS = [...PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]

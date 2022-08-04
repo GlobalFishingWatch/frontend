@@ -37,7 +37,7 @@ export const getChunksTimeseries = ({
           Object.entries(frameValues).map(([key, value]) => {
             const cleanValue =
               key === 'frame' || visibleSublayers[parseInt(key)] === true ? value : 0
-            const realValue = getRealValue(cleanValue, multiplier)
+            const realValue = getRealValue(cleanValue, { multiplier })
             return [key, realValue]
           })
         ) as TimeSeriesFrame

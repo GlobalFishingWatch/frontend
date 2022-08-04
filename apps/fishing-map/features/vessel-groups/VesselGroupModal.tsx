@@ -119,7 +119,7 @@ function VesselGroupModal(): React.ReactElement {
       const confirmed = window.confirm(
         t(
           'vesselGroup.confirmAbort',
-          'You will loose any changes made in this vessel group. Are you sure?'
+          'You will lose any changes made in this vessel group. Are you sure?'
         )
       )
       if (confirmed) {

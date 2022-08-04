@@ -112,13 +112,16 @@ export const selectVesselIdentityMouIndicators = createSelector(
 const selectRiskVesselIndentityFieldHistory = memoize(
   (field: keyof Omit<VesselIdentityIndicators, 'mou'>) =>
     createSelector([selectCurrentMergedVesselsIndicators], (indicators): ValueItem[] => {
-      const flagValues = indicators?.vesselIdentity[field] ?? []
-      return flagValues.map((f) => ({
-        value: f.value,
-        firstSeen: f.from,
-        endDate: f.to,
-        source: (f.source as any) === 'AIS' ? VesselAPISource.GFW : f.source,
-      }))
+      const values = (indicators?.vesselIdentity && indicators?.vesselIdentity[field]) ?? []
+      return (
+        Array.isArray(values) &&
+        values.map((f) => ({
+          value: f.value,
+          firstSeen: f.from,
+          endDate: f.to,
+          source: (f.source as any) === 'AIS' ? VesselAPISource.GFW : f.source,
+        }))
+      )
     })
 )
 

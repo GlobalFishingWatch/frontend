@@ -359,9 +359,14 @@ export function resolveDataviews(
               }
             }
             const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
-            return `${filterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
+            const query = `${filterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
               .map((f: string) => `'${f}'`)
               .join(', ')})`
+            if (filterOperator === EXCLUDE_FILTER_ID) {
+              // workaround as bigquery exludes null values
+              return `(${filterKey} IS NULL OR ${query})`
+            }
+            return query
           })
         if (sqlFilters.length) {
           dataviewInstance.config.filter = sqlFilters.join(' AND ')
