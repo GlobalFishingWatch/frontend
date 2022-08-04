@@ -17,7 +17,7 @@ interface ActivityGroupProps {
 const labelByType = {
   [EventTypes.Encounter]: '{{count}} encounters',
   [EventTypes.Fishing]: '{{count}} fishing hours',
-  [EventTypes.Loitering]: '{{count}} loitering hours',
+  [EventTypes.Loitering]: '{{count}} loitering events',
   [EventTypes.Port]: '{{count}} port visits',
 }
 const loadingByType = {
@@ -91,7 +91,7 @@ export default ActivityGroup
 
 // t('events.byTypeEncounterTitle', '{{count}} encounters')
 // t('events.byTypeFishingTitle', '{{count}} fishing hours')
-// t('events.byTypeLoiteringTitle', '{{count}} loitering hours')
+// t('events.byTypeLoiteringTitle', '{{count}} loitering events')
 // t('events.byTypePortVisitTitle', '{{count}} port visits')
 // t('events.loadingEncounterEvents', 'loading encounters')
 // t('events.loadingFishingEvents', 'loading fishing events')

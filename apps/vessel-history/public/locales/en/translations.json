@@ -43,7 +43,7 @@
     "avgSpeed": "Avg Speed",
     "byTypeEncounterTitle": "{{count}} encounters",
     "byTypeFishingTitle": "{{count}} fishing hours",
-    "byTypeLoiteringTitle": "{{count}} loitering hours",
+    "byTypeLoiteringTitle": "{{count}} loitering events",
     "byTypePortVisitTitle": "{{count}} port visits",
     "confidence": "Confidence",
     "confidenceHelp": {
