@@ -9,22 +9,19 @@ import {
   selectHighlightEventIds,
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
-import { selectVesselId } from 'routes/routes.selectors'
 import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import ActivityGroup from 'features/profile/components/activity/ActivityGroup'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
-import styles from './activity-by-type.module.css'
 import { useActivityByType } from './activity-by-type.hook'
+import styles from './activity-by-type.module.css'
 
 export interface ActivityByTypeProps {
-  lastPosition: any
-  lastPortVisit: any
-  onMoveToMap: () => void
+  onMoveToMap?: () => void
 }
 
-export function ActivityByType(props: ActivityByTypeProps) {
+export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
   const { events, toggleEventType } = useActivityByType()
 
   const [isModalOpen, setIsOpen] = useState(false)
@@ -54,9 +51,9 @@ export function ActivityByType(props: ActivityByTypeProps) {
         })
       }
 
-      props.onMoveToMap()
+      onMoveToMap()
     },
-    [highlightEvent, highlightVoyage, props, setMapCoordinates, viewport.zoom]
+    [highlightEvent, highlightVoyage, onMoveToMap, setMapCoordinates, viewport.zoom]
   )
 
   return (

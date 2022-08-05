@@ -278,15 +278,9 @@ const Profile: React.FC = (props): React.ReactElement => {
           {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
         </div>
       ),
-      content: (
-        <ActivityByType
-          lastPosition={lastPosition}
-          lastPortVisit={lastPortVisit}
-          onMoveToMap={() => setActiveTab(mapTab)}
-        />
-      ),
+      content: <ActivityByType onMoveToMap={() => setActiveTab(mapTab)} />,
     }),
-    [lastPortVisit, lastPosition, mapTab, t, visibleHighlights]
+    [mapTab, t, visibleHighlights]
   )
 
   const tabs: Tab[] = useMemo(
