@@ -106,18 +106,20 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
           idField === 'vesselId'
             ? { id: 'ids', value: uniqVesselIds }
             : {
-              id: 'query',
-              value: advancedSearchQuery,
-            },
-          {
-            id: 'limit',
-            value: DEFAULT_PAGINATION_PARAMS.limit,
-          },
-          {
-            id: 'offset',
-            value: DEFAULT_PAGINATION_PARAMS.offset,
-          },
+                id: 'query',
+                value: advancedSearchQuery,
+              },
         ],
+      }
+      if (idField === 'mmsi') {
+        datasetConfig.query.push({
+          id: 'limit',
+          value: DEFAULT_PAGINATION_PARAMS.limit,
+        })
+        datasetConfig.query.push({
+          id: 'offset',
+          value: DEFAULT_PAGINATION_PARAMS.offset,
+        })
       }
       try {
         const url = resolveEndpoint(dataset, datasetConfig)
