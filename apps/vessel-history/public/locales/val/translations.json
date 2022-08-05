@@ -77,6 +77,7 @@
     "hourAbbreviated_other": "crwdns26176:0{{count}}crwdne26176:0",
     "hourAbbreviated_plural": "crwdns7709:0{{count}}crwdne7709:0",
     "internationalWaters": "crwdns7711:0crwdne7711:0",
+    "iuu": "crwdns26646:0crwdne26646:0",
     "knots": "crwdns7713:0crwdne7713:0",
     "loitering": "crwdns7715:0crwdne7715:0",
     "loiteringAction": "crwdns7717:0{{regionName}}crwdne7717:0",
@@ -133,6 +134,7 @@
     "toggleLayers": "crwdns6460:0crwdne6460:0"
   },
   "risk": {
+    "currentlyPresentOnARfmoIUUList": "crwdns26648:0crwdne26648:0",
     "encounterEventInForeignEEZ_one": "crwdns26564:0{{count}}crwdne26564:0",
     "encounterEventInForeignEEZ_other": "crwdns26566:0{{count}}crwdne26566:0",
     "encounterEventInMPA_one": "crwdns26568:0{{count}}crwdne26568:0",
@@ -152,6 +154,7 @@
     "identityChangedOwners_one": "crwdns26624:0{{count}}crwdne26624:0",
     "identityChangedOwners_other": "crwdns26626:0{{count}}crwdne26626:0",
     "identitySectionDescription": "crwdns26606:0crwdne26606:0",
+    "iuuStatusDescription": "crwdns26650:0crwdne26650:0",
     "loiteringEventInMPA_one": "crwdns26576:0{{count}}crwdne26576:0",
     "loiteringEventInMPA_other": "crwdns26578:0{{count}}crwdne26578:0",
     "low": "crwdns26240:0crwdne26240:0",
@@ -166,9 +169,11 @@
     "noOwnerChanges": "crwdns26628:0crwdne26628:0",
     "noPortVisitsToNonPSMAPortState": "crwdns26580:0crwdne26580:0",
     "noRiskDetected": "crwdns26204:0crwdne26204:0",
+    "notPresentOnARFMOIUUList": "crwdns26652:0crwdne26652:0",
     "noVesselFlagsOnMOU": "crwdns26608:0crwdne26608:0",
     "portVisitsToNonPSMAPortState_one": "crwdns26582:0{{count}}crwdne26582:0",
     "portVisitsToNonPSMAPortState_other": "crwdns26584:0{{count}}crwdne26584:0",
+    "undeterminedPresenceOnARFMOIUUList": "crwdns26654:0crwdne26654:0",
     "unknown": "crwdns26242:0crwdne26242:0",
     "vesselWithFlagOnMOU": "crwdns26610:0{{mou_name}}crwdne26610:0"
   },
