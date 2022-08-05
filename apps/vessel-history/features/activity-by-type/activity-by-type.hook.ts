@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-// import { DateTime, Duration, Interval } from 'luxon'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 import { selectEventResourcesLoading } from 'features/resources/resources.selectors'
 import {
@@ -21,14 +20,6 @@ export const useActivityByType = () => {
   const eventsLoading = useSelector(selectEventResourcesLoading)
   const eventsList = useSelector(selectFilteredEvents)
   const [expandedGroups, setExpandedGroups] = useState<EventType[]>([])
-
-  // Only display last year events on activity by type
-  // const eventsList = useMemo(() => {
-  //   const lastYear = Interval.before(DateTime.now(), Duration.fromObject({ year: 1 }))
-  //   return filteredEvents.filter(
-  //     (e) => e.timestamp && lastYear.contains(DateTime.fromMillis(e.timestamp))
-  //   )
-  // }, [filteredEvents])
 
   const eventsByType = useMemo(
     (): EventGroup[] =>
