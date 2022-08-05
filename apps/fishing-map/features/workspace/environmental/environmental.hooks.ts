@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { ckmeans, sample } from 'simple-statistics'
+import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
@@ -32,12 +32,16 @@ export const useEnvironmentalBreaksUpdate = () => {
             const data = aggregateFeatures(filteredFeatures, metadata)
 
             if (data && data.length) {
-              const steps = Math.min(data.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
-              const dataSampled =
-                data.length > 1000 ? sample(data, Math.round(data.length / 100), Math.random) : data
-
+              const dataSampled = data.length > 1000 ? sample(data, 1000, Math.random) : data
+              // filter data to 2 standard deviations from mean to remove outliers
+              const meanValue = mean(dataSampled)
+              const standardDeviationValue = standardDeviation(dataSampled)
+              const upperCut = meanValue + standardDeviationValue * 2
+              const lowerCut = meanValue - standardDeviationValue * 2
+              const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
+              const steps = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
               // using ckmeans as jenks
-              const ck = ckmeans(dataSampled, steps).map(([clusterFirst]) =>
+              const ck = ckmeans(dataFiltered, steps).map(([clusterFirst]) =>
                 parseFloat(clusterFirst.toFixed(3))
               )
 
