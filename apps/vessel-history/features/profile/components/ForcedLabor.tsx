@@ -15,12 +15,9 @@ const ForcedLabor: React.FC<InfoProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
 
   const riskModel: RiskOutput[] = useMemo(() => {
-    if (!vessel.forcedLabour) {
-      return []
-    }
     const yearsLength = new Date().getFullYear() - 2011
     const yearsToDisplay = Array.from({ length: yearsLength }, (x, i) => i + 2012)
-    const initialModel = yearsToDisplay.map(year => {
+    const initialModel: RiskOutput[] = yearsToDisplay.map(year => {
       return {
         year,
         highrisk: false,
@@ -29,8 +26,11 @@ const ForcedLabor: React.FC<InfoProps> = (props): React.ReactElement => {
         reportedCases: false
       }
     })
+    if (!vessel.forcedLabour) {
+      return initialModel
+    }
 
-    const riskModel: RiskOutput[] = vessel.forcedLabour.reduce((parsedRisks: RiskOutput[], risk) => {
+    return vessel.forcedLabour.reduce((parsedRisks: RiskOutput[], risk) => {
       const indexYearFound = parsedRisks.findIndex(parsedRisk => parsedRisk.year === risk.year)
       const riskLevel = risk.confidence && risk.score ?
         RiskLevel.high : (risk.confidence && !risk.score ? RiskLevel.low : RiskLevel.unknown)
@@ -49,7 +49,7 @@ const ForcedLabor: React.FC<InfoProps> = (props): React.ReactElement => {
       return parsedRisks
     }, initialModel).sort((a, b) => a.year - b.year)
 
-    return riskModel
+
   }, [vessel.forcedLabour])
 
   return (
