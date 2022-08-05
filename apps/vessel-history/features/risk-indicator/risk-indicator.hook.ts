@@ -27,6 +27,7 @@ import {
   selectRiskVesselIndentityNamesHistory,
   selectRiskVesselIndentityOwnersHistory,
   selectCurrentMergedVesselsIndicators,
+  selectRiskVesselIndentityOperatorsHistory,
 } from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
@@ -50,9 +51,11 @@ export interface UseRiskIndicator {
   vessel: VesselWithHistory
   flagsHistory: ValueItem[]
   namesHistory: ValueItem[]
+  operatorsHistory: ValueItem[]
   ownersHistory: ValueItem[]
   uniqueFlags: string[]
   uniqueNames: string[]
+  uniqueOperators: string[]
   uniqueOwners: string[]
 }
 
@@ -75,6 +78,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   const vesselFlagsOnMOU = useSelector(selectVesselIdentityMouIndicators)
   const flagsHistory = useSelector(selectRiskVesselIndentityFlagsHistory)
   const namesHistory = useSelector(selectRiskVesselIndentityNamesHistory)
+  const operatorsHistory = useSelector(selectRiskVesselIndentityOperatorsHistory)
   const ownersHistory = useSelector(selectRiskVesselIndentityOwnersHistory)
   const encountersInRFMOWithoutAuthorization = useSelector(
     selectEncountersInRFMOWithoutAuthorization
@@ -89,6 +93,10 @@ export function useRiskIndicator(): UseRiskIndicator {
 
   const uniqueFlags = useMemo(() => getUniqueHistoryValues(flagsHistory), [flagsHistory])
   const uniqueNames = useMemo(() => getUniqueHistoryValues(namesHistory), [namesHistory])
+  const uniqueOperators = useMemo(
+    () => getUniqueHistoryValues(operatorsHistory),
+    [operatorsHistory]
+  )
   const uniqueOwners = useMemo(() => getUniqueHistoryValues(ownersHistory), [ownersHistory])
   const {
     vesselIdentity: { iuuListed: iuuBlacklisted },
@@ -108,6 +116,7 @@ export function useRiskIndicator(): UseRiskIndicator {
         fishingInRFMOWithoutAuthorization.length +
         loiteringInMPA.length +
         Math.max(0, uniqueFlags.length - 1) +
+        Math.max(0, uniqueOperators.length - 1) +
         Math.max(0, uniqueOwners.length - 1) +
         portVisitsToNonPSMAPortState.length +
         vesselFlagsOnMOU.length +
@@ -127,10 +136,12 @@ export function useRiskIndicator(): UseRiskIndicator {
     iuuBlacklisted,
     loiteringInMPA,
     namesHistory,
+    operatorsHistory,
     ownersHistory,
     portVisitsToNonPSMAPortState,
     uniqueFlags,
     uniqueNames,
+    uniqueOperators,
     uniqueOwners,
     vessel,
     vesselFlagsOnMOU,
