@@ -25,14 +25,23 @@ div.identifierField {
 .forcedLabourContainer {
   display: flex;
   text-align: center;
+  font: var(--font-S);
+  margin-bottom: var(--space-M);
+  overflow: auto;
 }
 
 .labourHeaders {
   text-align: left;
   margin-right: 1.7rem;
+  flex: 1 0 145px;
+  position: sticky;
+  left: 0;
+  background: #fefefe;
+  z-index: 10;
 }
 
 .riskYearContainer {
+  z-index: 5;
   flex-grow: 1;
 }
 
