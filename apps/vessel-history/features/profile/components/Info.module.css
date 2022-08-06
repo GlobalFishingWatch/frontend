@@ -22,11 +22,6 @@ div.identifierField {
   color: var(--color-primary-blue);
 }
 
-div.dangerBackground {
-  background-color: var(--color-danger-red-background);
-  border: 1px solid var(--color-danger-secondary-red);
-}
-
 label.identifierField,
 div.identifierField label {
   color: var(--color-secondary-blue);
