@@ -106,18 +106,20 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
           idField === 'vesselId'
             ? { id: 'ids', value: uniqVesselIds }
             : {
-              id: 'query',
-              value: advancedSearchQuery,
-            },
-          {
-            id: 'limit',
-            value: DEFAULT_PAGINATION_PARAMS.limit,
-          },
-          {
-            id: 'offset',
-            value: DEFAULT_PAGINATION_PARAMS.offset,
-          },
+                id: 'query',
+                value: advancedSearchQuery,
+              },
         ],
+      }
+      if (idField === 'mmsi') {
+        datasetConfig.query.push({
+          id: 'limit',
+          value: DEFAULT_PAGINATION_PARAMS.limit,
+        })
+        datasetConfig.query.push({
+          id: 'offset',
+          value: DEFAULT_PAGINATION_PARAMS.offset,
+        })
       }
       try {
         const url = resolveEndpoint(dataset, datasetConfig)
@@ -137,11 +139,11 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         const searchResultsFiltered =
           idField === 'vesselId'
             ? uniqSearchResults.filter((vessel) => {
-              return (
-                vessels.find((v) => v.vesselId === vessel.id && v.dataset === vessel.dataset) !==
-                undefined
-              )
-            })
+                return (
+                  vessels.find((v) => v.vesselId === vessel.id && v.dataset === vessel.dataset) !==
+                  undefined
+                )
+              })
             : uniqSearchResults
         return searchResultsFiltered
       } catch (e: any) {
@@ -211,19 +213,35 @@ export const fetchUserVesselGroupsThunk = createAsyncThunk(
 const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVessel[]) => {
   return uniqBy(vessels, (vessel) => [vessel.vesselId, vessel.dataset].join(','))
 }
+
 export const createVesselGroupThunk = createAsyncThunk(
   'vessel-groups/create',
   async (vesselGroupCreate: VesselGroupUpsert, { dispatch, getState }) => {
-    const url = `/vessel-groups/`
-    const vesselGroup: VesselGroupUpsert = {
+    const vesselGroupUpsert: VesselGroupUpsert = {
       ...vesselGroupCreate,
       vessels: removeDuplicatedVesselGroupvessels(vesselGroupCreate.vessels),
     }
-    const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(url, {
-      method: 'POST',
-      body: vesselGroup,
-    } as FetchOptions<any>)
-    return vesselGroupUpdated
+    const saveVesselGroup = async (vesselGroup: VesselGroupUpsert, tries = 0) => {
+      let vesselGroupUpdated
+      if (tries < 2) {
+        try {
+          const name = tries > 0 ? vesselGroupUpsert.name + `_${tries}` : vesselGroupUpsert.name
+          vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>('/vessel-groups', {
+            method: 'POST',
+            body: { ...vesselGroup, name },
+          } as FetchOptions<any>)
+        } catch (e: any) {
+          // Means we already have a workspace with this name
+          if (e.code === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
+            return await saveVesselGroup(vesselGroup, tries + 1)
+          }
+          console.warn('Error creating vessel group', e)
+          throw e
+        }
+        return vesselGroupUpdated
+      }
+    }
+    return await saveVesselGroup(vesselGroupUpsert)
   }
 )
 
