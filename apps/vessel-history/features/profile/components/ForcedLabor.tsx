@@ -4,19 +4,21 @@ import { Trans, useTranslation } from 'react-i18next'
 import { RiskLevel, RiskOutput, VesselWithHistory } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import styles from './Info.module.css'
+import { FIRST_YEAR_OF_DATA } from 'data/config'
+import styles from './ForcedLabor.module.css'
 
-interface InfoProps {
+interface ForcedLaborProps {
   vessel: VesselWithHistory | null
 }
 
-const ForcedLabor: React.FC<InfoProps> = (props): React.ReactElement => {
+const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
   const vessel = props.vessel
   const { t } = useTranslation()
 
   const riskModel: RiskOutput[] = useMemo(() => {
-    const yearsLength = new Date().getFullYear() - 2011
-    const yearsToDisplay = Array.from({ length: yearsLength }, (x, i) => i + 2012).reverse()
+    const yearsLength = new Date().getFullYear() - (FIRST_YEAR_OF_DATA - 1)
+    console.log(yearsLength)
+    const yearsToDisplay = Array.from({ length: yearsLength }, (x, i) => i + FIRST_YEAR_OF_DATA).reverse()
     const initialModel: RiskOutput[] = yearsToDisplay.map(year => {
       return {
         year,
