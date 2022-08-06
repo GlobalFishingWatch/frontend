@@ -280,7 +280,7 @@
     "flag": "flag",
     "flag_plural": "flags",
     "forcedLaborModelDescription": "High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.<1></1>\nLow Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.<1></1>\nUnknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.",
-    "forcedLabourModel": "Forced labor",
+    "forcedLabourModel": "Forced Labor",
     "formatValues": "{{quantity}} values",
     "gearType": "gear type",
     "gearType_plural": "gear types",
