@@ -35,17 +35,6 @@
         "production": {}
       }
     },
-    "start": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": [
-          "nx clean-locales fourwings-explorer",
-          "nx serve i18n-labels",
-          "nx serve fourwings-explorer"
-        ],
-        "parallel": true
-      }
-    },
     "clean-locales": {
       "executor": "@nrwl/workspace:run-commands",
       "outputs": [],
@@ -53,7 +42,7 @@
         "commands": ["rm -rf dist/apps/fourwings-explorer/public/locales"]
       }
     },
-    "serve": {
+    "start": {
       "executor": "@nrwl/next:server",
       "options": {
         "buildTarget": "fourwings-explorer:compile",

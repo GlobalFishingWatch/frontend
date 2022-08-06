@@ -1,4 +1,3 @@
-// import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
