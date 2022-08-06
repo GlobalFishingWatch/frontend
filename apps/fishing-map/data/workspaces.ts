@@ -26,6 +26,7 @@ export enum WorkspaceCategories {
 
 // Contextual layers dataviews by environment
 export const BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
+export const BASEMAP_LABELS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 295 : 305
 export const EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
 export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
@@ -83,3 +84,5 @@ export const GLOBAL_SALINITY_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 298
 export const GLOBAL_CHLOROPHYL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 299 : undefined
 
 export const DEFAULT_DATAVIEW_IDS = [...PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]
+
+export const ONLY_GFW_STAFF_DATAVIEWS = [BASEMAP_LABELS_DATAVIEW_ID]

@@ -15,6 +15,7 @@ export type LayerVisibility = 'visible' | 'none'
 export enum GeneratorType {
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
+  BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
   GL = 'GL',
@@ -44,6 +45,7 @@ export interface GlobalGeneratorConfig {
   token?: string
   compareStart?: string
   compareEnd?: string
+  locale?: Locale
 }
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
@@ -81,18 +83,20 @@ export interface GeneratorConfig {
 export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfigExtended
 
 /**
- * A solid color background layer
+ * A default or satellite basemap
  */
 export interface BasemapGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.Basemap
-  /**
-   * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
-   */
   basemap: BasemapType
-  locale?: Locale
-  labels?: boolean
 }
 
+/**
+ * Place labels
+ */
+export interface BasemapLabelsGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.BasemapLabels
+  locale?: Locale
+}
 /**
  * A solid color background layer
  */
@@ -377,6 +381,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
 export type AnyGeneratorConfig =
   | BackgroundGeneratorConfig
   | BasemapGeneratorConfig
+  | BasemapLabelsGeneratorConfig
   | CartoPolygonsGeneratorConfig
   | ContextGeneratorConfig
   | GlGeneratorConfig
@@ -393,7 +398,7 @@ export type AnyGeneratorConfig =
 export enum BasemapType {
   Satellite = 'satellite',
   Default = 'basemap_default',
-  Labels = 'labels',
+  Labels = 'basemap_labels',
 }
 
 // ---- Generator specific types

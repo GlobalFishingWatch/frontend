@@ -176,7 +176,9 @@ export const getActivityDatasetsDownloadSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
   permissions: UserPermission[] = []
 ) => {
-  return dataviews.flatMap((dataview) => {
+  // TODO: remove the filter once the API supports only datasets download
+  const dataviewsFiltered = dataviews.filter((d) => d.dataviewId === FISHING_DATAVIEW_ID)
+  return dataviewsFiltered.flatMap((dataview) => {
     const datasets: Dataset[] = (dataview?.config?.datasets || []).filter((datasetId: string) => {
       return datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
     })

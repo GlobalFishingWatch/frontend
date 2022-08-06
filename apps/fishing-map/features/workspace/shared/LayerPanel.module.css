@@ -252,3 +252,7 @@
 .faded {
   color: var(--color-secondary-blue);
 }
+
+.gfwIcon {
+  margin-left: var(--space-XS);
+}

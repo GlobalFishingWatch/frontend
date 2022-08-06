@@ -1,11 +1,7 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectBasemapDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { useMapStyle } from 'features/map/map-style.hooks'
-import i18n from 'features/i18n/i18n'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
@@ -14,8 +10,6 @@ const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()
   const debugOptions = useSelector(selectDebugOptions)
   const locationQuery = useSelector(selectLocationQuery)
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const basemapDataviewInstance = useSelector(selectBasemapDataviewInstance)
   // Not sure why, but it seems this hook returns an outdated style
   const style = useMapStyle()
   return (
@@ -60,25 +54,6 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_thinning">Track thinning</label>
         </div>
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
-        <div className={styles.header}>
-          <Switch
-            id="option_labels"
-            active={basemapDataviewInstance?.config?.labels}
-            onClick={() => {
-              if (basemapDataviewInstance?.id) {
-                upsertDataviewInstance({
-                  id: basemapDataviewInstance.id as string,
-                  config: {
-                    labels: !basemapDataviewInstance?.config?.labels,
-                    locale: i18n.language,
-                  },
-                })
-              }
-            }}
-          />
-          <label htmlFor="option_labels">Basemap labels</label>
-        </div>
-        <p>Show or hide basemap labels</p>
       </section>
       <hr className={styles.separation} />
       <section>

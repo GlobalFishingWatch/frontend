@@ -18,7 +18,7 @@ const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
   const { dataview, className, classNameActive, title, onToggle } = props
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true
-  const datasetIcon = getDatasetIcon(dataview?.datasets?.[0])
+  const datasetIcon = dataview?.datasets?.[0] && getDatasetIcon(dataview?.datasets?.[0])
 
   const onToggleLayerActive = () => {
     upsertDataviewInstance({

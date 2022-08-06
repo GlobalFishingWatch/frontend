@@ -14,7 +14,6 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
-import { Bbox } from '@globalfishingwatch/data-transforms'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -31,9 +30,8 @@ import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAux
 import { SAR_DATAVIEW_ID } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import { getTimeRangeDuration } from 'utils/dates'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
+import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -165,11 +163,6 @@ function ActivityLayerPanel({
   const statsValue = stats && (stats.vessel_id || stats.id)
   const showStats = duration?.years <= 1
 
-  const fitMapBounds = useMapFitBounds()
-  const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
-  const onFitBoundsHandle = () => {
-    fitMapBounds(statsBbox, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
-  }
   return (
     <div
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
@@ -217,16 +210,7 @@ function ActivityLayerPanel({
                   </div>
                 </ExpandedContainer>
               )}
-              {layerActive && statsBbox && (
-                <IconButton
-                  icon="target"
-                  tooltip={t('layer.activity_fit_bounds', 'Center view on activity')}
-                  loading={isFetching}
-                  tooltipPlacement="top"
-                  size="small"
-                  onClick={onFitBoundsHandle}
-                />
-              )}
+              {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />}
               <InfoModal
                 dataview={dataview}
                 // Workaround to always show the auxiliar dataset too
