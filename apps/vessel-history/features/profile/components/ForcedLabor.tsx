@@ -17,7 +17,6 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
 
   const riskModel: RiskOutput[] = useMemo(() => {
     const yearsLength = new Date().getFullYear() - (FIRST_YEAR_OF_DATA - 1)
-    console.log(yearsLength)
     const yearsToDisplay = Array.from({ length: yearsLength }, (x, i) => i + FIRST_YEAR_OF_DATA).reverse()
     const initialModel: RiskOutput[] = yearsToDisplay.map(year => {
       return {
@@ -49,7 +48,7 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
         }
       }
       return parsedRisks
-    }, initialModel) //.sort((a, b) => b.year - a.year)
+    }, initialModel)
 
 
   }, [vessel.forcedLabour])
