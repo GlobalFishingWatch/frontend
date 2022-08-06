@@ -3,6 +3,7 @@ import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import mapStyle from 'features/map/map-style'
+import MapControls from 'features/map/MapControls'
 import { useURLViewport, useViewport } from './map-viewport.hooks'
 import styles from './Map.module.css'
 
@@ -39,6 +40,7 @@ const MapWrapper = (): React.ReactElement => {
   useURLViewport()
   return (
     <div className={styles.container}>
+      <MapControls />
       <Map
         id="map"
         style={mapStyles}
