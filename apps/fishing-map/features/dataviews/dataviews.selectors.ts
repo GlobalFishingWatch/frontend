@@ -22,7 +22,6 @@ const defaultBasemapDataview = {
   config: {
     type: GeneratorType.Basemap,
     basemap: BasemapType.Default,
-    labels: false,
   },
 }
 
@@ -63,11 +62,13 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
   })
 }
 
-export const selectBasemapDataviewInstance = createSelector(
+export const selectBasemapLabelsDataviewInstance = createSelector(
   [selectAllDataviewInstancesResolved],
   (dataviews) => {
-    const basemapDataview = dataviews?.find((d) => d.config?.type === GeneratorType.Basemap)
-    return basemapDataview || defaultBasemapDataview
+    const basemapLabelsDataview = dataviews?.find(
+      (d) => d.config?.type === GeneratorType.BasemapLabels
+    )
+    return basemapLabelsDataview || defaultBasemapDataview
   }
 )
 
