@@ -22,18 +22,16 @@ const Main = () => {
 
 function App(): React.ReactElement {
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  // const map = useMapInstance()
+  const map = useMapInstance()
 
   const onToggle = useCallback(() => {
     setSidebarOpen(!sidebarOpen)
-  }, [sidebarOpen])
-
-  // useEffect(() => {
-  //   if (map?.resize) {
-  //     map.resize()
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sidebarOpen])
+    if (map?.resize) {
+      setTimeout(() => {
+        map.resize()
+      }, 1)
+    }
+  }, [sidebarOpen, map])
 
   const asideWidth = '50%'
 

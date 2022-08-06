@@ -5,23 +5,3 @@
   border-bottom: var(--border);
   height: 5.2rem;
 }
-
-.logoLink {
-  line-height: 0;
-  margin-right: auto;
-}
-
-.logo {
-  width: 18rem;
-  height: auto;
-}
-
-:global(.printing) .logo {
-  margin-left: 0;
-}
-
-@media print {
-  .logo {
-    margin-left: 0;
-  }
-}

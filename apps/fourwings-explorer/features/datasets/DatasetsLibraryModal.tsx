@@ -7,9 +7,9 @@ import libraryDatasets, {
   LibraryDataset,
   LibraryDatasetCategory,
 } from 'features/datasets/data/library'
+import { ROOT_DOM_ELEMENT } from 'data/config'
+import { useMapLayersConfig } from 'features/layers/layers.hooks'
 import styles from './DatasetsLibraryModal.module.css'
-
-export const ROOT_DOM_ELEMENT = '__next'
 
 export const datasetLibraryModalAtom = atom<boolean>({
   key: 'datasetLibraryModal',
@@ -31,11 +31,15 @@ const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetC
 }
 
 const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
+  const { addMapLayer } = useMapLayersConfig()
+  const onLayerClick = (dataset) => {
+    addMapLayer({ layerId: dataset.id, config: { visible: true } })
+  }
   return datasets && datasets.length ? (
     <ul>
       {datasets.map((dataset) => {
         return (
-          <li key={dataset.id} className={styles.dataset}>
+          <li key={dataset.id} className={styles.dataset} onClick={() => onLayerClick(dataset)}>
             {dataset.image && <Image src={dataset.image}></Image>}
             {dataset.label}
           </li>
