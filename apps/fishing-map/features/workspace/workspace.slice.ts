@@ -78,12 +78,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
     try {
       let workspace = workspaceId
-        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(
-          `/workspaces/${workspaceId}`,
-          {
+        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
             signal,
-          }
-        )
+          })
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
@@ -201,17 +198,14 @@ export const saveWorkspaceThunk = createAsyncThunk(
       if (tries < 2) {
         try {
           const name = tries > 0 ? defaultName + `_${tries}` : defaultName
-          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-            `/workspaces`,
-            {
-              method: 'POST',
-              body: {
-                ...workspaceUpsert,
-                name,
-                public: createAsPublic,
-              },
-            } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
-          )
+          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces`, {
+            method: 'POST',
+            body: {
+              ...workspaceUpsert,
+              name,
+              public: createAsPublic,
+            },
+          } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
         } catch (e: any) {
           // Means we already have a workspace with this name
           if (e.status === 400) {

@@ -45,7 +45,7 @@ export interface GlobalGeneratorConfig {
   token?: string
   compareStart?: string
   compareEnd?: string
-  locale: Locale
+  locale?: Locale
 }
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
