@@ -1,9 +1,8 @@
-import { useState, useCallback, Fragment, useEffect } from 'react'
+import { useState, useCallback, Fragment } from 'react'
 import dynamic from 'next/dynamic'
-import { useTranslation } from 'react-i18next'
 import { SplitView } from '@globalfishingwatch/ui-components'
 import Sidebar from 'features/sidebar/Sidebar'
-import { t } from 'features/i18n/i18n'
+import DatasetsLibraryModal from 'features/datasets/DatasetsLibraryModal'
 import useMapInstance from 'features/map/map-context.hooks'
 import styles from './App.module.css'
 
@@ -22,26 +21,21 @@ const Main = () => {
 }
 
 function App(): React.ReactElement {
-  const i18n = useTranslation()
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const map = useMapInstance()
+  // const map = useMapInstance()
 
   const onToggle = useCallback(() => {
     setSidebarOpen(!sidebarOpen)
   }, [sidebarOpen])
 
-  useEffect(() => {
-    if (map?.resize) {
-      map.resize()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sidebarOpen])
+  // useEffect(() => {
+  //   if (map?.resize) {
+  //     map.resize()
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [sidebarOpen])
 
   const asideWidth = '50%'
-
-  if (!i18n.ready) {
-    return null
-  }
 
   return (
     <Fragment>
@@ -53,9 +47,10 @@ function App(): React.ReactElement {
         main={<Main />}
         asideWidth={asideWidth}
         showAsideLabel={'TODO'}
-        showMainLabel={t('common.map', 'Map')}
+        showMainLabel="Map"
         className="split-container"
       />
+      <DatasetsLibraryModal />
     </Fragment>
   )
 }

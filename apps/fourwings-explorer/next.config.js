@@ -5,8 +5,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
-// const { i18n } = require('./next-i18next.config')
-
 const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
 
@@ -56,7 +54,6 @@ const nextConfig = {
     return config
   },
   // productionBrowserSourceMaps: true,
-  // i18n,
   ...(BASE_PATH && { basePath: BASE_PATH }),
   productionBrowserSourceMaps: !IS_PRODUCTION,
 }
