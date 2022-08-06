@@ -195,6 +195,11 @@
     "context-layer-mpa": {
       "dataWarning": "crwdns18110:0crwdne18110:0",
       "dataWarningDetail": "crwdns18112:0crwdne18112:0"
+    },
+    "basemap-labels": {
+      "title": "crwdns26656:0crwdne26656:0",
+      "dataWarning": "crwdns26658:0crwdne26658:0",
+      "dataWarningDetail": "crwdns26660:0crwdne26660:0"
     }
   },
   "download": {
