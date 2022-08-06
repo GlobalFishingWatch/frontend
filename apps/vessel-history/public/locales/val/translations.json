@@ -23,6 +23,7 @@
     "low": "crwdns7801:0crwdne7801:0",
     "map": "crwdns4226:0crwdne4226:0",
     "medium": "crwdns7803:0crwdne7803:0",
+    "no": "crwdns26664:0crwdne26664:0",
     "offlineAccess": "crwdns4228:0crwdne4228:0",
     "offlineAccessEmptyState": "crwdns7905:0crwdne7905:0",
     "other": "crwdns8523:0crwdne8523:0",
@@ -35,7 +36,8 @@
     "unknown": "crwdns7745:0crwdne7745:0",
     "unknownName": "crwdns8305:0crwdne8305:0",
     "voyage": "crwdns8733:0crwdne8733:0",
-    "voyageFrom": "crwdns8731:0crwdne8731:0"
+    "voyageFrom": "crwdns8731:0crwdne8731:0",
+    "yes": "crwdns26666:0crwdne26666:0"
   },
   "event": {
     "authStatus": "crwdns7693:0crwdne7693:0",
@@ -145,7 +147,7 @@
     "fishingEventInMPA_other": "crwdns26574:0{{count}}crwdne26574:0",
     "fishingEventInRFMOWithoutAuthorization_one": "crwdns26616:0{{count}}crwdne26616:0",
     "fishingEventInRFMOWithoutAuthorization_other": "crwdns26618:0{{count}}crwdne26618:0",
-    "high": "crwdns26236:0crwdne26236:0",
+    "high": "crwdns26668:0crwdne26668:0",
     "identity": "crwdns26604:0crwdne26604:0",
     "identityChangedFlags_one": "crwdns26630:0{{count}}crwdne26630:0",
     "identityChangedFlags_other": "crwdns26632:0{{count}}crwdne26632:0",
@@ -157,7 +159,7 @@
     "iuuStatusDescription": "crwdns26650:0crwdne26650:0",
     "loiteringEventInMPA_one": "crwdns26576:0{{count}}crwdne26576:0",
     "loiteringEventInMPA_other": "crwdns26578:0{{count}}crwdne26578:0",
-    "low": "crwdns26240:0crwdne26240:0",
+    "low": "crwdns26670:0crwdne26670:0",
     "noEncounterEventInForeignEEZ": "crwdns26230:0crwdne26230:0",
     "noEncounterEventInMPA": "crwdns26198:0crwdne26198:0",
     "noEncounterEventInRFMOWithoutAuthorization": "crwdns26620:0crwdne26620:0",
@@ -173,8 +175,10 @@
     "noVesselFlagsOnMOU": "crwdns26608:0crwdne26608:0",
     "portVisitsToNonPSMAPortState_one": "crwdns26582:0{{count}}crwdne26582:0",
     "portVisitsToNonPSMAPortState_other": "crwdns26584:0{{count}}crwdne26584:0",
+    "reportedCases": "crwdns26672:0crwdne26672:0",
+    "riskModel": "crwdns26674:0crwdne26674:0",
     "undeterminedPresenceOnARFMOIUUList": "crwdns26654:0crwdne26654:0",
-    "unknown": "crwdns26242:0crwdne26242:0",
+    "unknown": "crwdns26676:0crwdne26676:0",
     "vesselWithFlagOnMOU": "crwdns26610:0{{mou_name}}crwdne26610:0"
   },
   "search": {
@@ -276,7 +280,7 @@
     "flag": "crwdns4268:0crwdne4268:0",
     "flag_plural": "crwdns4330:0crwdne4330:0",
     "forcedLaborModelDescription": "crwdns26248:0crwdne26248:0",
-    "forcedLabourModel": "crwdns26246:0crwdne26246:0",
+    "forcedLabourModel": "crwdns26678:0crwdne26678:0",
     "formatValues": "crwdns7759:0{{quantity}}crwdne7759:0",
     "gearType": "crwdns4270:0crwdne4270:0",
     "gearType_plural": "crwdns4332:0crwdne4332:0",
