@@ -23,6 +23,7 @@ import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
+  BASEMAP_LABELS_DATAVIEW_ID,
   DEFAULT_DATAVIEW_IDS,
   getWorkspaceEnv,
   VESSEL_PRESENCE_DATAVIEW_ID,
@@ -86,6 +87,16 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
+        if (gfwUser) {
+          // Labels only available for gfw staff for now
+          workspace.dataviewInstances.push({
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
+          })
+        }
       }
 
       if (workspace) {

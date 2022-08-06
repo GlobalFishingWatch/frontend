@@ -157,13 +157,6 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: PROTECTED_SEAS_DATAVIEW_ID,
     },
-    {
-      id: 'basemap-labels',
-      config: {
-        visible: false,
-      },
-      dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
-    },
   ],
 }
 

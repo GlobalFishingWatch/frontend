@@ -14,7 +14,9 @@ import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets
 import { isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import GFWOnly from 'features/user/GFWOnly'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
+import { ONLY_GFW_STAFF_DATAVIEWS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
@@ -124,6 +126,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           dataview={dataview}
           onToggle={onToggle}
         />
+        {ONLY_GFW_STAFF_DATAVIEWS.includes(dataview.dataviewId) && (
+          <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
+        )}
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
         ) : (
