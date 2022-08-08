@@ -1,12 +1,12 @@
 import { SortableContext } from '@dnd-kit/sortable'
 import { Button } from '@globalfishingwatch/ui-components'
-import { useDatasetsLibraryModal } from 'features/datasets/datasets-library.hoooks'
 import { useMapGeoTemporalLayers } from 'features/layers/layers.hooks'
 import GeoTemporalLayer from 'features/layers/GeoTemporalLayer'
+import { useModal } from 'features/modals/modals.hooks'
 import styles from './Sections.module.css'
 
 function Section() {
-  const [_, setDatasetsLibraryModal] = useDatasetsLibraryModal()
+  const [_, setDatasetsLibraryModal] = useModal('datasetLibrary')
   const geoTemporalLayers = useMapGeoTemporalLayers()
 
   return (

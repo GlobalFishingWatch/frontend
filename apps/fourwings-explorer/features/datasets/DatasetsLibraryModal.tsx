@@ -8,9 +8,9 @@ import libraryDatasets, {
   LibraryDatasetCategory,
 } from 'features/datasets/data/library'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { useDatasetsLibraryModal } from 'features/datasets/datasets-library.hoooks'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import { getNextColor } from 'features/layers/layers.utils'
+import { useModal } from 'features/modals/modals.hooks'
 import styles from './DatasetsLibraryModal.module.css'
 
 const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetCategory[] }) => {
@@ -54,7 +54,7 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
 
 const DatasetsLibraryModal = () => {
   const [datasetSearch, setDatasetSearch] = useState('')
-  const [isOpen, setIsOpen] = useDatasetsLibraryModal()
+  const [isOpen, setIsOpen] = useModal('datasetLibrary')
 
   const filteredDatasets = datasetSearch
     ? libraryDatasets.filter((d) => {
