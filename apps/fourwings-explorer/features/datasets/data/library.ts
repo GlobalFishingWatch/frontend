@@ -1,9 +1,10 @@
 import { StaticImageData } from 'next/image'
 import PrecipitationImage from 'assets/images/datasets/precipitation.jpg'
 
-export enum LibraryDatasetCategory {
+export enum DatasetCategory {
   gee = 'Google Earth Engine',
   gfw = 'Global Fishing Watch',
+  context = 'context',
 }
 
 export type LibraryDataset = {
@@ -11,7 +12,7 @@ export type LibraryDataset = {
   label: string
   image: StaticImageData
   description: string
-  category: LibraryDatasetCategory
+  category: DatasetCategory
   tags?: string[]
 }
 
@@ -21,7 +22,7 @@ const geeDatasets: LibraryDataset[] = [
     label: 'Total precipitation (Daily sums)',
     image: PrecipitationImage,
     description: 'ERA5 provides aggregated values for each day',
-    category: LibraryDatasetCategory.gee,
+    category: DatasetCategory.gee,
     tags: ['climate', 'esa', 'eu'],
   },
   {
@@ -29,7 +30,7 @@ const geeDatasets: LibraryDataset[] = [
     label: 'Dewpoint temperature at 2m height (daily average)',
     image: PrecipitationImage,
     description: 'ERA5 is the fifth generation ECMWF atmospheric reanalysis of the global climate',
-    category: LibraryDatasetCategory.gee,
+    category: DatasetCategory.gee,
     tags: ['climate', 'dlr', 'cloud'],
   },
 ]

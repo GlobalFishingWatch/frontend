@@ -2,8 +2,8 @@ import { useState, useCallback, Fragment } from 'react'
 import dynamic from 'next/dynamic'
 import { SplitView } from '@globalfishingwatch/ui-components'
 import Sidebar from 'features/sidebar/Sidebar'
-import DatasetsLibraryModal from 'features/datasets/DatasetsLibraryModal'
 import useMapInstance from 'features/map/map-context.hooks'
+import Modals from 'features/modals/Modals'
 import styles from './App.module.css'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
@@ -48,7 +48,7 @@ function App(): React.ReactElement {
         showMainLabel="Map"
         className="split-container"
       />
-      <DatasetsLibraryModal />
+      <Modals />
     </Fragment>
   )
 }

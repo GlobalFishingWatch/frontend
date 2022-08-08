@@ -1,6 +1,7 @@
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
+import ContextSection from 'features/layers/ContextSection'
 import GeoTemporalSection from 'features/layers/GeoTemporalSection'
 import { useLayersConfig } from 'features/layers/layers.hooks'
 import styles from './Sidebar.module.css'
@@ -24,6 +25,7 @@ function Sidebar() {
           <SidebarHeader />
           <div className={styles.content}>
             <GeoTemporalSection />
+            <ContextSection />
           </div>
         </div>
       </div>
@@ -32,6 +34,3 @@ function Sidebar() {
 }
 
 export default Sidebar
-function useLayersSort(): { setLayersOrder: any } {
-  throw new Error('Function not implemented.')
-}

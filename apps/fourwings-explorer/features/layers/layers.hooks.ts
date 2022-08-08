@@ -7,10 +7,7 @@ import {
   BasemapType,
   GeneratorType,
 } from '@globalfishingwatch/layer-composer'
-import libraryDatasets, {
-  LibraryDataset,
-  LibraryDatasetCategory,
-} from 'features/datasets/data/library'
+import libraryDatasets, { LibraryDataset, DatasetCategory } from 'features/datasets/data/library'
 
 export type LayerConfig = {
   type?: GeneratorType
@@ -102,9 +99,14 @@ export const useDatasetLayers = () => {
   })
 }
 
-export const useMapGeoTemporalLayers = () => {
+export const useGeoTemporalLayers = () => {
   const layers = useDatasetLayers()
   return layers.filter(
-    (l) => l.category === LibraryDatasetCategory.gee || l.category === LibraryDatasetCategory.gfw
+    (l) => l.category === DatasetCategory.gee || l.category === DatasetCategory.gfw
   )
+}
+
+export const useContexLayers = () => {
+  const layers = useDatasetLayers()
+  return layers.filter((l) => l.category === DatasetCategory.context)
 }

@@ -1,6 +1,6 @@
-import { atomFamily, useRecoilState } from 'recoil'
+import { atomFamily, useRecoilState, useSetRecoilState } from 'recoil'
 
-export type ModalId = 'datasetLibrary' | 'new4wingsDataset' | 'newContextDataset'
+export type ModalId = 'datasetLibrary' | 'newFourwingsDataset' | 'newContextDataset'
 
 const modalsStateFamily = atomFamily({
   key: 'ModalsState',
@@ -9,4 +9,8 @@ const modalsStateFamily = atomFamily({
 
 export const useModal = (modalId: ModalId) => {
   return useRecoilState(modalsStateFamily(modalId))
+}
+
+export const useSetModal = (modalId: ModalId) => {
+  return useSetRecoilState(modalsStateFamily(modalId))
 }

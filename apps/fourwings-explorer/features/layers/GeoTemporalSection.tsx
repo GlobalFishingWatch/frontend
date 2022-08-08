@@ -1,13 +1,14 @@
 import { SortableContext } from '@dnd-kit/sortable'
 import { Button } from '@globalfishingwatch/ui-components'
-import { useMapGeoTemporalLayers } from 'features/layers/layers.hooks'
+import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
 import GeoTemporalLayer from 'features/layers/GeoTemporalLayer'
-import { useModal } from 'features/modals/modals.hooks'
+import { useSetModal } from 'features/modals/modals.hooks'
 import styles from './Sections.module.css'
 
 function Section() {
-  const [_, setDatasetsLibraryModal] = useModal('datasetLibrary')
-  const geoTemporalLayers = useMapGeoTemporalLayers()
+  const setDatasetsLibraryModal = useSetModal('datasetLibrary')
+  const setNewFourwingsDatasetModal = useSetModal('newFourwingsDataset')
+  const geoTemporalLayers = useGeoTemporalLayers()
 
   return (
     <SortableContext items={geoTemporalLayers}>
@@ -22,6 +23,7 @@ function Section() {
         )}
         <p>Add new layer</p>
         <Button onClick={() => setDatasetsLibraryModal(true)}>Public datasets</Button>
+        <Button onClick={() => setNewFourwingsDatasetModal(true)}>Local File</Button>
       </div>
     </SortableContext>
   )
