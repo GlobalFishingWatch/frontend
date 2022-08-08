@@ -2,12 +2,11 @@ import { useState } from 'react'
 import cx from 'classnames'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { useLayerPanelDataviewSort } from 'features/layers/layers-sort.hook'
-import { DatasetLayer } from 'features/layers/layers.hooks'
+import { DatasetLayer, useMapLayersConfig } from 'features/layers/layers.hooks'
 import Remove from 'features/layers/common/Remove'
+import Color from 'features/layers/common/Color'
 import LayerSwitch from './common/LayerSwitch'
 import Title from './common/Title'
-// import Color from './common/Color'
-// import Remove from './common/Remove'
 import styles from './Layers.module.css'
 
 type LayerPanelProps = {
@@ -17,6 +16,7 @@ type LayerPanelProps = {
 
 function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement {
   const [colorOpen, setColorOpen] = useState(false)
+  const { updateMapLayer } = useMapLayersConfig()
 
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(layer.id)
@@ -24,13 +24,13 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
   const layerActive = layer?.config?.visible ?? true
 
   const changeColor = (color: ColorBarOption) => {
-    // upsertDataviewInstance({
-    //   id: dataview.id,
-    //   config: {
-    //     color: color.value,
-    //     colorRamp: color.id,
-    //   },
-    // })
+    updateMapLayer({
+      id: layer.id,
+      config: {
+        color: color.value,
+        colorRamp: color.id,
+      },
+    })
     setColorOpen(false)
   }
   const onToggleColorOpen = () => {
@@ -76,15 +76,15 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {/* {layerActive && (
+          {layerActive && (
             <Color
-              dataview={dataview}
+              layer={layer}
               open={colorOpen}
               onColorClick={changeColor}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
             />
-          )} */}
+          )}
           <Remove layer={layer} />
           {items.length > 1 && (
             <IconButton
