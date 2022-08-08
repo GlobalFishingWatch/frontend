@@ -17,4 +17,10 @@
   margin-right: var(--space-M);
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+}
+
+.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

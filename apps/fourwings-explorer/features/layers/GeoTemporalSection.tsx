@@ -1,6 +1,6 @@
 import { SortableContext } from '@dnd-kit/sortable'
 import { Button } from '@globalfishingwatch/ui-components'
-import { useDatasetsLibraryModal } from 'features/datasets/DatasetsLibraryModal'
+import { useDatasetsLibraryModal } from 'features/datasets/datasets-library.hoooks'
 import { useMapGeoTemporalLayers } from 'features/layers/layers.hooks'
 import GeoTemporalLayer from 'features/layers/GeoTemporalLayer'
 import styles from './Sections.module.css'
