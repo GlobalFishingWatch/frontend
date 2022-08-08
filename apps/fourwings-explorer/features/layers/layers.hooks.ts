@@ -10,6 +10,7 @@ import libraryDatasets, {
 export type LayerConfig = {
   visible?: boolean
   color?: string
+  colorRamp?: string
 }
 export type DatasetLayerConfig = {
   id: string
