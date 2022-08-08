@@ -1,6 +1,8 @@
-import { ApiEvent, EventAuthorization, EventTypes } from '@globalfishingwatch/api-types'
+import { ApiEvent, EventAuthorization, EventType, EventTypes } from '@globalfishingwatch/api-types'
 import { GroupRegions } from 'features/regions/regions.slice'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 
+export type ExpandableStatus = 'expanded' | 'collapsed'
 export interface EventVessel {
   id: string
   name: string
@@ -59,4 +61,13 @@ export interface OfflineVesselActivity {
   activities: ActivityEvent[]
   profileId: string
   savedOn: string
+}
+
+export interface EventGroup {
+  events: RenderedEvent[]
+  group: boolean
+  loading: boolean
+  quantity?: number
+  status: ExpandableStatus
+  type: EventType
 }
