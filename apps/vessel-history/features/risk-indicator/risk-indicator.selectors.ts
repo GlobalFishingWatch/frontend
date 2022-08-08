@@ -132,6 +132,9 @@ export const selectRiskVesselIndentityNamesHistory = selectRiskVesselIndentityFi
 export const selectRiskVesselIndentityOwnersHistory =
   selectRiskVesselIndentityFieldHistory('owners')
 
+export const selectRiskVesselIndentityOperatorsHistory =
+  selectRiskVesselIndentityFieldHistory('operators')
+
 export const selectEncountersInRFMOWithoutAuthorization = createSelector(
   [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
   (indicators, events) => {
