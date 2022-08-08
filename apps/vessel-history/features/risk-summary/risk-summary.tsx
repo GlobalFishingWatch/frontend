@@ -490,7 +490,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               {!hasChangedOperators && (
                 <RiskIndicator
                   title={
-                    t('risk.noOperatorChanges', 'The vessel did not changed operator') as string
+                    t('risk.noOperatorChanges', 'The vessel did not changed operators') as string
                   }
                 ></RiskIndicator>
               )}
