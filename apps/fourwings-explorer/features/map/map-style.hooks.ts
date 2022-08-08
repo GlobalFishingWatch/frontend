@@ -5,6 +5,7 @@ import { useLayersConfig } from 'features/layers/layers.hooks'
 
 export const useMapStyle = () => {
   const { layersConfig } = useLayersConfig()
+  console.log(layersConfig)
   const generators = useMemo(() => {
     return layersConfig.flatMap(({ id, config }) => {
       if (!config.type) {
@@ -13,6 +14,5 @@ export const useMapStyle = () => {
       return { id, ...config } as AnyGeneratorConfig
     })
   }, [layersConfig])
-  console.log(generators)
   return useLayerComposer(generators)
 }

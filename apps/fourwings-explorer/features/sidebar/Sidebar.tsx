@@ -2,19 +2,18 @@ import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import GeoTemporalSection from 'features/layers/GeoTemporalSection'
-import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
+import { useLayersConfig } from 'features/layers/layers.hooks'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
 
 function Sidebar() {
-  const layers = useDatasetLayers()
-  const { setLayers } = useLayersConfig()
+  const { layersConfig, setLayers } = useLayersConfig()
   function handleDragEnd(event) {
     const { active, over } = event
     if (active && over && active.id !== over.id) {
-      const oldIndex = layers.findIndex((d) => d.id === active.id)
-      const newIndex = layers.findIndex((d) => d.id === over.id)
-      const layersOrder = arrayMove(layers, oldIndex, newIndex)
+      const oldIndex = layersConfig.findIndex((d) => d.id === active.id)
+      const newIndex = layersConfig.findIndex((d) => d.id === over.id)
+      const layersOrder = arrayMove(layersConfig, oldIndex, newIndex)
       setLayers(layersOrder)
     }
   }

@@ -129,10 +129,8 @@ export const useMapClusterTilesLoaded = () => {
 
 export const useAllMapSourceTilesLoaded = () => {
   const style = useMapInstanceStyle()
-  console.log(style)
   const sources = Object.keys(style?.sources || {})
   const sourceTilesLoaded = useMapSourceTiles()
-  console.log(sourceTilesLoaded)
   const allSourcesLoaded = sources.every((source) => sourceTilesLoaded[source]?.loaded === true)
   return allSourcesLoaded
 }
