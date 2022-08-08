@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import cx from 'classnames'
-import { Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
-import { useLayerPanelDataviewSort } from 'features/layers/layer-panel-sort.hook'
+import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
+import { useLayerPanelDataviewSort } from 'features/layers/layers-sort.hook'
 import { DatasetLayer } from 'features/layers/layers.hooks'
 import Remove from 'features/layers/common/Remove'
 import LayerSwitch from './common/LayerSwitch'
@@ -86,7 +86,7 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
             />
           )} */}
           <Remove layer={layer} />
-          {/* {items.length > 1 && (
+          {items.length > 1 && (
             <IconButton
               size="small"
               ref={setActivatorNodeRef}
@@ -94,7 +94,7 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
               icon="drag"
               className={styles.dragger}
             />
-          )} */}
+          )}
         </div>
       </div>
     </div>
