@@ -3,17 +3,14 @@ import { uniq } from 'lodash'
 import cx from 'classnames'
 import Image from 'next/image'
 import { InputText, Modal } from '@globalfishingwatch/ui-components'
-import libraryDatasets, {
-  LibraryDataset,
-  LibraryDatasetCategory,
-} from 'features/datasets/data/library'
+import libraryDatasets, { LibraryDataset, DatasetCategory } from 'features/datasets/data/library'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import { getNextColor } from 'features/layers/layers.utils'
 import { useModal } from 'features/modals/modals.hooks'
 import styles from './DatasetsLibraryModal.module.css'
 
-const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetCategory[] }) => {
+const DatasetsLibraryCategories = ({ categories }: { categories: DatasetCategory[] }) => {
   return categories && categories.length ? (
     <ul>
       {categories.map((category) => {
