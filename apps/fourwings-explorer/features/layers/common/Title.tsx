@@ -17,7 +17,7 @@ const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
 
   const onToggleLayerActive = () => {
     updateMapLayer({
-      layerId: layer.id,
+      id: layer.id,
       config: {
         visible: !layerActive,
       },

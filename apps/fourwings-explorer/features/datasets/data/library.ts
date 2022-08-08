@@ -24,6 +24,14 @@ const geeDatasets: LibraryDataset[] = [
     category: LibraryDatasetCategory.gee,
     tags: ['climate', 'esa', 'eu'],
   },
+  {
+    id: '2m-temp',
+    label: 'Dewpoint temperature at 2m height (daily average)',
+    image: PrecipitationImage,
+    description: 'ERA5 is the fifth generation ECMWF atmospheric reanalysis of the global climate',
+    category: LibraryDatasetCategory.gee,
+    tags: ['climate', 'dlr', 'cloud'],
+  },
 ]
 
 const gfwDatasets: LibraryDataset[] = []

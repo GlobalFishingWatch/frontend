@@ -33,7 +33,7 @@ const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetC
 const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
   const { addMapLayer } = useMapLayersConfig()
   const onLayerClick = (dataset) => {
-    addMapLayer({ layerId: dataset.id, config: { visible: true } })
+    addMapLayer({ id: dataset.id, config: { visible: true } })
   }
   return datasets && datasets.length ? (
     <ul>

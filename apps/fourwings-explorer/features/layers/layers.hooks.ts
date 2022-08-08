@@ -12,7 +12,7 @@ export type LayerConfig = {
   color?: string
 }
 export type DatasetLayerConfig = {
-  layerId: string
+  id: string
   config: LayerConfig
 }
 
@@ -22,7 +22,7 @@ export type DatasetLayer = LibraryDataset & {
 
 // const layersChecker = array(
 //   object({
-//     layerId: string(),
+//     id: string(),
 //     config: object({
 //       color: string(),
 //     }),
@@ -49,7 +49,7 @@ export const useMapLayersConfig = () => {
     (layer: Partial<DatasetLayerConfig>) => {
       setMapLayerConfig((layers) =>
         layers.map((l) => {
-          if (l.layerId === layer.layerId) {
+          if (l.id === layer.id) {
             return { ...l, config: { ...l.config, ...layer.config } }
           }
           return l
@@ -60,20 +60,27 @@ export const useMapLayersConfig = () => {
   )
 
   const removeMapLayer = useCallback(
-    (layerId: DatasetLayerConfig['layerId']) => {
-      setMapLayerConfig((layers) => layers.filter((l) => l.layerId !== layerId))
+    (id: DatasetLayerConfig['id']) => {
+      setMapLayerConfig((layers) => layers.filter((l) => l.id !== id))
     },
     [setMapLayerConfig]
   )
 
-  return { layersConfig, addMapLayer, updateMapLayer, removeMapLayer }
+  const setMapLayers = useCallback(
+    (layers: DatasetLayerConfig[]) => {
+      setMapLayerConfig(layers)
+    },
+    [setMapLayerConfig]
+  )
+
+  return { layersConfig, addMapLayer, updateMapLayer, removeMapLayer, setMapLayers }
 }
 
 export const useDatasetLayers = () => {
   const { layersConfig } = useMapLayersConfig()
-  return libraryDatasets.flatMap((dataset) => {
-    const layerConfig = layersConfig.find((layer) => layer.layerId === dataset.id)
-    return layerConfig ? { ...dataset, ...layerConfig } : []
+  return layersConfig.flatMap((layerConfig) => {
+    const dataset = libraryDatasets.find((dataset) => dataset.id === layerConfig.id)
+    return dataset ? { ...dataset, ...layerConfig } : []
   })
 }
 

@@ -15,7 +15,7 @@ const LayerSwitch = ({ active, layer, className, disabled, onToggle, color }: La
   const layerActive = layer?.config?.visible ?? true
   const onToggleLayerActive = () => {
     updateMapLayer({
-      layerId: layer.id,
+      id: layer.id,
       config: {
         visible: !layerActive,
       },

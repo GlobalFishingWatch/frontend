@@ -8,6 +8,7 @@ import styles from './Sections.module.css'
 function Section() {
   const [_, setDatasetsLibraryModal] = useDatasetsLibraryModal()
   const geoTemporalLayers = useMapGeoTemporalLayers()
+
   return (
     <SortableContext items={geoTemporalLayers}>
       <div className={styles.content}>
