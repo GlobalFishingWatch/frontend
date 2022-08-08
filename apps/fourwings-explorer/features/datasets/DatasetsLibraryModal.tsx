@@ -10,6 +10,7 @@ import libraryDatasets, {
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetsLibraryModal } from 'features/datasets/datasets-library.hoooks'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
+import { getNextColor } from 'features/layers/layers.utils'
 import styles from './DatasetsLibraryModal.module.css'
 
 const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetCategory[] }) => {
@@ -26,7 +27,11 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
   const { addLayer } = useLayersConfig()
   const layers = useDatasetLayers()
   const onLayerClick = (dataset) => {
-    addLayer({ id: dataset.id, config: { visible: true } })
+    const colors = layers.flatMap((layer) => layer?.config?.color || [])
+    addLayer({
+      id: dataset.id,
+      config: { visible: true, color: getNextColor('fill', colors)?.value },
+    })
   }
   return datasets && datasets.length ? (
     <ul>

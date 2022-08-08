@@ -86,7 +86,7 @@ export const useLayersConfig = () => {
 
   const setLayers = useCallback(
     (layers: DatasetLayerConfig[]) => {
-      setMapLayerConfig(layers)
+      setMapLayerConfig([...defaultLayers, ...layers])
     },
     [setMapLayerConfig]
   )
