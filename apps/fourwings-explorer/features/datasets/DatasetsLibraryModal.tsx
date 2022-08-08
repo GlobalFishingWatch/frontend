@@ -1,24 +1,16 @@
 import { useState } from 'react'
 import { uniq } from 'lodash'
+import cx from 'classnames'
 import Image from 'next/image'
-import { atom, useRecoilState } from 'recoil'
 import { InputText, Modal } from '@globalfishingwatch/ui-components'
 import libraryDatasets, {
   LibraryDataset,
   LibraryDatasetCategory,
 } from 'features/datasets/data/library'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { useMapLayersConfig } from 'features/layers/layers.hooks'
+import { useDatasetsLibraryModal } from 'features/datasets/datasets-library.hoooks'
+import { useDatasetLayers, useMapLayersConfig } from 'features/layers/layers.hooks'
 import styles from './DatasetsLibraryModal.module.css'
-
-export const datasetLibraryModalAtom = atom<boolean>({
-  key: 'datasetLibraryModal',
-  default: false,
-})
-
-export const useDatasetsLibraryModal = () => {
-  return useRecoilState(datasetLibraryModalAtom)
-}
 
 const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetCategory[] }) => {
   return categories && categories.length ? (
@@ -32,14 +24,20 @@ const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetC
 
 const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
   const { addMapLayer } = useMapLayersConfig()
+  const layers = useDatasetLayers()
   const onLayerClick = (dataset) => {
     addMapLayer({ id: dataset.id, config: { visible: true } })
   }
   return datasets && datasets.length ? (
     <ul>
       {datasets.map((dataset) => {
+        const disabled = layers.some((l) => l.id === dataset.id)
         return (
-          <li key={dataset.id} className={styles.dataset} onClick={() => onLayerClick(dataset)}>
+          <li
+            key={dataset.id}
+            className={cx(styles.dataset, { [styles.disabled]: disabled })}
+            onClick={disabled ? undefined : () => onLayerClick(dataset)}
+          >
             {dataset.image && <Image src={dataset.image}></Image>}
             {dataset.label}
           </li>
