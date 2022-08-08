@@ -2,7 +2,7 @@ import { useState } from 'react'
 import cx from 'classnames'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { useLayerPanelDataviewSort } from 'features/layers/layers-sort.hook'
-import { DatasetLayer, useMapLayersConfig } from 'features/layers/layers.hooks'
+import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
 import Remove from 'features/layers/common/Remove'
 import Color from 'features/layers/common/Color'
 import LayerSwitch from './common/LayerSwitch'
@@ -16,7 +16,7 @@ type LayerPanelProps = {
 
 function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement {
   const [colorOpen, setColorOpen] = useState(false)
-  const { updateMapLayer } = useMapLayersConfig()
+  const { updateLayer } = useLayersConfig()
 
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(layer.id)
@@ -24,7 +24,7 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
   const layerActive = layer?.config?.visible ?? true
 
   const changeColor = (color: ColorBarOption) => {
-    updateMapLayer({
+    updateLayer({
       id: layer.id,
       config: {
         color: color.value,
