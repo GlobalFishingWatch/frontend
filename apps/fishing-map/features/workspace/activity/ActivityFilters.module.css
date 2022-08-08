@@ -1,3 +1,4 @@
+.relative,
 .LayerPanel {
   position: relative;
 }
@@ -69,9 +70,14 @@
 }
 
 .experimental label::after {
-  content: '(experimental)';
+  content: 'experimental';
   color: red;
   margin-left: 0.4rem;
   font: var(--font-XS);
   vertical-align: super;
+}
+
+.filterOperator {
+  position: absolute;
+  right: var(--space-S);
 }

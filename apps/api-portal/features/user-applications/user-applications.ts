@@ -1,20 +1,15 @@
 import { stringify } from 'qs'
-import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query'
-import { useMemo, useState, useEffect } from 'react'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMemo, useState } from 'react'
 import { FieldValidationError } from 'lib/types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { UserApplication } from '@globalfishingwatch/api-types'
+import { APIPagination, UserApplication } from '@globalfishingwatch/api-types'
 import useUser, { checkUserApplicationPermission } from 'features/user/user'
 
-export type UserApplicationCreateArguments = Omit<UserApplication, 'id' | 'token' | 'createdAt'>
-export interface UserApplicationFetchResponse {
-  offset: number
-  metadata: any
-  total: number
-  limit: number | null
-  nextOffset: number
-  entries: UserApplication[]
-}
+export type UserApplicationCreateArguments = Omit<
+  UserApplication,
+  'id' | 'token' | 'createdAt' | 'userId'
+>
 
 async function fetchUserApplications(userId: number, limit = 0, offset = 0) {
   const query = stringify({
@@ -22,8 +17,8 @@ async function fetchUserApplications(userId: number, limit = 0, offset = 0) {
     ...((limit && { limit }) || {}),
     ...((offset && { offset }) || {}),
   })
-  const url = `/v2/auth/user-applications?${query}`
-  const data = await GFWAPI.fetch<UserApplicationFetchResponse>(url).catch((error) => {
+  const url = `/auth/user-applications?${query}`
+  const data = await GFWAPI.fetch<APIPagination<UserApplication>>(url).catch((error) => {
     return null
   })
   return data
@@ -33,7 +28,7 @@ export const useUserApplications = (userId) =>
   useQuery(['user-applications', userId], () => fetchUserApplications(userId), {})
 
 async function deleteUserApplication(id: number) {
-  const url = `/v2/auth/user-applications/${id}`
+  const url = `/auth/user-applications/${id}`
   const userApplication = await GFWAPI.fetch<UserApplication>(url, {
     method: 'DELETE',
     responseType: 'default',
@@ -52,21 +47,23 @@ export const useDeleteUserApplication = (userId) => {
 
 export default useUserApplications
 
+function createUserApplication(userId) {
+  return async function (newUserApplication: UserApplicationCreateArguments) {
+    const url = `/auth/user-applications`
+    return await GFWAPI.fetch<UserApplication>(url, {
+      method: 'POST',
+      body: { ...newUserApplication, userId } as any,
+    })
+  }
+}
+
 const emptyToken: UserApplicationCreateArguments = {
   description: '',
   name: '',
-  userId: null,
-}
-
-async function createUserApplication(newUserApplication: UserApplicationCreateArguments) {
-  const url = `/v2/auth/user-applications`
-  return await GFWAPI.fetch<UserApplication>(url, {
-    method: 'POST',
-    body: newUserApplication as any,
-  })
 }
 export const useCreateUserApplication = () => {
   const { data: user } = useUser()
+  const userId = user?.id ?? null
 
   const isAllowed = checkUserApplicationPermission('create', user.permissions)
 
@@ -88,16 +85,12 @@ export const useCreateUserApplication = () => {
   const valid = useMemo(() => Object.keys(error).length === 0, [error])
 
   const queryClient = useQueryClient()
-  const mutation = useMutation(createUserApplication, {
+  const mutation = useMutation(createUserApplication(userId), {
     onSuccess: () => {
-      queryClient.invalidateQueries(['user-applications', user?.id])
+      queryClient.invalidateQueries(['user-applications', userId])
       setToken(emptyToken)
     },
   })
-  useEffect(() => {
-    setToken({ ...token, userId: user.id })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.id])
 
   return {
     ...mutation,

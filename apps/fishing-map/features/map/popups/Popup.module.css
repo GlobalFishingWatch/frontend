@@ -33,7 +33,9 @@
 
 .popupSection {
   display: flex;
+  position: relative;
   padding: var(--space-XS);
+  padding-left: 2.5rem;
 }
 
 .popupSection:not(:last-child) {
@@ -48,24 +50,22 @@
   padding: var(--space-S);
   border: var(--border);
   cursor: default;
+  padding-left: 3rem;
 }
 
 .hover .popupSection:not(:last-child) {
   border-bottom: none;
 }
 
-.popupSectionColor {
-  display: inline-flex;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0.5rem;
-  margin-top: var(--space-XS);
-  margin-right: var(--space-XS);
-  border: var(--border);
+.layerIcon {
+  position: absolute;
+  left: 2px;
+  top: 2px;
 }
 
-.hover .popupSectionColor {
-  margin-top: 3px;
+.click .layerIcon {
+  left: 6px;
+  top: 8px;
 }
 
 .popupSectionContent {
@@ -75,7 +75,7 @@
 .popupSectionTitle {
   opacity: var(--opacity-secondary);
   line-height: 1.2;
-  margin-bottom: var(--space-XS);
+  margin-bottom: var(--space-S);
 }
 
 .click .largeContent .popupSectionTitle {
@@ -118,13 +118,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-S);
+  margin-bottom: var(--space-XS);
 }
 
-/* .list {
-  max-height: 400px;
+.list {
+  max-height: 60vh;
   overflow: auto;
-} */
+}
 
 .list > li {
   max-width: 50rem;
@@ -216,6 +216,7 @@
 }
 
 .hover:global(.mapboxgl-popup .mapboxgl-popup-content) {
+  background: none;
   pointer-events: none;
 }
 

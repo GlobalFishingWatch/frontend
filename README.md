@@ -6,19 +6,19 @@ This monorepo hosts frontend packages and applications of the <a href="globalfis
 
 All of them availables with the `@globalfishingwatch/` prefix:
 
-|                                                     |                                                                                |
-| --------------------------------------------------- | ------------------------------------------------------------------------------ |
-| [api-client](packages/api-client)                   | JS library to simplify GFW API login and resources fetch                       |
-| [api-types](packages/api-types)                     | API typescript schema definitions                                              |
-| [data-transforms](packages/data-transforms)         | Set ot shared tools for data transformations                                   |
-| [dataviews-client](packages/dataviews-client)       | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
-| [layer-composer](packages/layer-composer)           | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
-| [ocean-areas](packages/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search      |
-| [pbf-decoders](packages/pbf-decoders)               | PBF custom responses parsers                                                   |
-| [react-hooks](packages/react-hooks)                 | Set of hooks to use libraries easily in react                                  |
-| [timebar](packages/timebar)                         | Timebar component, not many more to say                                        |
-| [ui-components](packages/ui-components)             | Reusable atoms components kit                                                  |
-| [fourwings-aggregate](packages/fourwings-aggregate) | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
+|                                                 |                                                                                |
+| ----------------------------------------------- | ------------------------------------------------------------------------------ |
+| [api-client](libs/api-client)                   | JS library to simplify GFW API login and resources fetch                       |
+| [api-types](libs/api-types)                     | API typescript schema definitions                                              |
+| [data-transforms](libs/data-transforms)         | Set ot shared tools for data transformations                                   |
+| [dataviews-client](libs/dataviews-client)       | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
+| [layer-composer](libs/layer-composer)           | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
+| [ocean-areas](libs/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search      |
+| [pbf-decoders](libs/pbf-decoders)               | PBF custom responses parsers                                                   |
+| [react-hooks](libs/react-hooks)                 | Set of hooks to use libraries easily in react                                  |
+| [timebar](libs/timebar)                         | Timebar component, not many more to say                                        |
+| [ui-components](libs/ui-components)             | Reusable atoms components kit                                                  |
+| [fourwings-aggregate](libs/fourwings-aggregate) | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
 
 ## Applications
 
@@ -85,22 +85,10 @@ yarn
 
 ### Developmment
 
-There is, for now, 3 package.json entry points to run the project:
-
-- Packages, to start the build of every package run:
+Nx handles every app or library by its own project.json file, see for example [fishing-map](https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/fishing-map/project.json):
 
 ```bash
-yarn start:packages
-```
-
-- Applications, to start any of them run;
-
-```bash
-yarn start:dataviews
-```
-
-```bash
-yarn start:sandbox
+nx start [app-name]
 ```
 
 To ensure [git flow](https://guides.github.com/introduction/flow/) process, master branch will be protected to force opening PR to every change desired.
@@ -111,7 +99,7 @@ For now, the only one strong recommendation is to tag every PR to prepare the ch
 To test all packages builds process run, useful to test everything works well before publishing.
 
 ```bash
-yarn build
+nx build [app-name] --parallel
 ```
 
 ### Publishing
@@ -166,6 +154,7 @@ nx run fishing-map:docker-prepare
 npx env-cmd -f apps/vessel-history/.build.env nx build vessel-history --parallel
 nx run vessel-history:docker-prepare
 npx env-cmd -f apps/api-portal/.build.env nx build api-portal --parallel
+nx run api-portal:docker-prepare
 ```
 
 4. Spin up docker compose:
@@ -174,7 +163,7 @@ npx env-cmd -f apps/api-portal/.build.env nx build api-portal --parallel
 docker-compose up -d
 ```
 
-5. Navigate to `https://localhost/maps` and/or `https://localhost/vessel-viewer`. Note that if you want to develop/test the progressive web app (offline mode) you'll have to start Chrome with specific flags to omit the SSL self signed certificate error:
+5. Navigate to `https://localhost/map` and/or `https://localhost/vessel-viewer`. Note that if you want to develop/test the progressive web app (offline mode) you'll have to start Chrome with specific flags to omit the SSL self signed certificate error:
 
 Osx
 
@@ -189,3 +178,7 @@ chrome.exe --user-data-dir=/tmp/foo --ignore-certificate-errors --unsafely-treat
 ```
 
 _Pending: Add `https://localhost` (or a more meaningful hostname) to the list of redirectUrls in the GFW application_
+
+## Generating release notes for github releases
+
+To generate the release notes you can run `nx changelog <app_or_lib_name>`. Note that such output is still not filtered by app or lib so you'll have to filter the list before using it in the release notes.

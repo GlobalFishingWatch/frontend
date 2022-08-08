@@ -1,8 +1,13 @@
 import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
+import { ThinningConfig } from '@globalfishingwatch/api-types'
+import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { AppState } from 'types/redux.types'
+import { TimebarGraphs } from 'types'
 
 export type WorkspaceEnv = 'development' | 'production'
+export const API_VERSION = 'v2'
+
 export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
@@ -49,6 +54,8 @@ export const DEFAULT_WORKSPACE: AppState = {
   satellite: '',
   availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
   availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
+  profileView: undefined,
+  timebarGraph: TimebarGraphs.None,
 }
 
 export const DEFAULT_VIEWPORT = {
@@ -76,10 +83,22 @@ export const DEFAULT_EMPTY_VALUE = ' --- '
 
 export const LAST_POSITION_LAYERS_PREFIX = 'last-position'
 
-export const AUTHORIZED_PERMISSION = {
+export const PORT_INSPECTOR_PERMISSION = {
   type: 'application',
   value: 'vessel-viewer',
   action: 'ui.load',
+}
+export const INSURER_PERMISSION = {
+  type: 'application',
+  value: 'risk-assessment',
+  action: 'ui.load',
+}
+
+// forced laboud risk model permission
+export const FLRM_PERMISSION = {
+  type: 'vessel-info',
+  value: 'forced-labour',
+  action: 'read',
 }
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
@@ -89,3 +108,56 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
+
+export const RISK_SUMMARY_SETTINGS = {
+  // Time range to use when calculating indicators
+  timeRange: { years: 1 },
+  showIndicatorIconEventCount:
+    !!process.env.NEXT_PUBLIC_RISK_SUMMARY_SHOW_ICON_EVENTS_COUNT || false,
+}
+
+export const APP_PROFILE_VIEWS = [
+  {
+    id: 'port-inspector',
+    name: 'Port Inspector',
+    required_permission: PORT_INSPECTOR_PERMISSION,
+    propagate_events_query_params: ['confidences'],
+    events_query_params: {
+      start_date: undefined,
+    },
+  },
+  {
+    id: 'insurance-underwriter',
+    name: 'Insurance Underwriter',
+    required_permission: INSURER_PERMISSION,
+    propagate_events_query_params: ['confidences'],
+    events_query_params: {
+      start_date: DateTime.now().toUTC().minus({ months: 12 }).toISO(),
+    },
+  },
+]
+
+export const DEFAULT_PAGINATION_PARAMS = {
+  limit: 99999,
+  offset: 0,
+}
+
+export const THINNING_LEVEL_BY_ZOOM: Record<
+  number,
+  { user: ThinningConfig; guest: ThinningConfig }
+> = {
+  0: {
+    user: THINNING_LEVELS[ThinningLevels.Insane],
+    guest: THINNING_LEVELS[ThinningLevels.Insane],
+  },
+  3: {
+    user: THINNING_LEVELS[ThinningLevels.VeryAggressive],
+    guest: THINNING_LEVELS[ThinningLevels.VeryAggressive],
+  },
+  6: {
+    user: THINNING_LEVELS[ThinningLevels.Default],
+    guest: THINNING_LEVELS[ThinningLevels.Aggressive],
+  },
+}
+
+export const THINNING_LEVEL_ZOOMS = Object.keys(THINNING_LEVEL_BY_ZOOM) as unknown as number[]

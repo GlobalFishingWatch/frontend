@@ -20,9 +20,9 @@
   },
   "dependencies": {
     "pbf": "3.2.1",
-    "pbjs": "^0.0.14",
-    "pbts-cli": "^1.0.3",
-    "protobufjs": "6.9.0"
+    "pbjs": "0.0.14",
+    "pbts-cli": "1.0.3",
+    "protobufjs": "6.11.3"
   },
   "publishConfig": {
     "access": "public"

@@ -13,6 +13,9 @@ import { SettingEventSectionName, SettingsPortVisits } from '../settings.slice'
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
 
+// Remove once https://github.com/i18next/react-i18next/issues/1483 fixed
+const TransComponent = Trans as any
+
 interface SettingsProps {
   settings: SettingsPortVisits
   section: SettingEventSectionName
@@ -39,8 +42,8 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
       !flags.selected?.length
         ? (t('selects.none', 'None') as string)
         : flags.selected.length > 1
-          ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
-          : flags.selected[0].label,
+        ? t('event.nSelected', '{{count}} selected', { count: flags.selected.length })
+        : flags.selected[0].label.toString(),
     [flags.selected, t]
   )
   const eventType = useMemo(() => t(`settings.${section}.title`), [section, t])
@@ -56,7 +59,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
               type="default"
               title={t('settings.portVisits.inThesePortStates', 'Events in these port States')}
             >
-              <Trans
+              <TransComponent
                 i18nKey="settings.portVisits.inThesePortStatesDescription"
                 values={{ eventType }}
               >
@@ -73,7 +76,7 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
                   https://globalfishingwatch.org/datasets-and-code-anchorages/
                 </a>{' '}
                 . Please investigate the highlighted events further on the map.
-              </Trans>
+              </TransComponent>
             </DataAndTerminology>
           </label>
           <MultiSelect
@@ -94,11 +97,16 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
               type="default"
               title={t('settings.duration', 'Duration')}
             >
-              <Trans i18nKey="settings.durationDescription" values={{ eventType }}>
+              <TransComponent i18nKey="settings.durationDescription" values={{ eventType }}>
                 Highlight all {{ eventType }} that had a duration longer than the value configured.
                 Example if you configure 5 hours, you will see all {{ eventType }} with duration
                 more or equal to 5 hours
-              </Trans>
+              </TransComponent>
+              <br />
+              {t('settings.helpRange', 'Should be a value between', {
+                min: PORTVISIT_EVENTS_MIN_DURATION,
+                max: PORTVISIT_EVENTS_MAX_DURATION,
+              })}
             </DataAndTerminology>
           </label>
           <div>
@@ -123,12 +131,17 @@ const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
               type="default"
               title={t('settings.distanceShore', 'Distance from shore')}
             >
-              <Trans i18nKey="settings.distanceShoreDescription" values={{ eventType }}>
+              <TransComponent i18nKey="settings.distanceShoreDescription" values={{ eventType }}>
                 Highlight all {{ eventType }} that had a distance longer than the value configured.
                 Example if you configure 8 km, you will see all {{ eventType }} with distance more
                 or equal to 8 km from the shore. Distance from shore will be highlighted if either
                 the start or end position is more or equal to the specified distance.
-              </Trans>
+              </TransComponent>
+              <br />
+              {t('settings.helpRange', 'Should be a value between', {
+                min: PORTVISIT_EVENTS_MIN_DISTANCE,
+                max: PORTVISIT_EVENTS_MAX_DISTANCE,
+              })}
             </DataAndTerminology>
           </label>
           <div>

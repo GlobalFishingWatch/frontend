@@ -96,7 +96,7 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
   const MPAS_REGIONS = useSelector(selectMPAs)
   const COUNTRIES: Region[] = flags
 
-  const anyOption: MultiSelectOption<string> = useMemo(
+  const anyOption: MultiSelectOption<string, string> = useMemo(
     () => ({
       ...anyRegion,
       label: t(`common.${anyRegion.label}` as any, capitalize(anyRegion.label)) as string,
@@ -106,7 +106,11 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
   )
 
   const onSelectRegion = useCallback(
-    (selected: MultiSelectOption<string>, currentSelected: MultiSelectOption[], field: string) => {
+    (
+      selected: MultiSelectOption<string, string>,
+      currentSelected: MultiSelectOption<string, string>[],
+      field: string
+    ) => {
       selected === anyOption
         ? // when ANY is selected the rest are deselected
           setSettingOptions(section, field, [selected])
@@ -122,7 +126,7 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
 
   const getOptions = useCallback(
     (
-      availableOptions: MultiSelectOption[] | undefined = [],
+      availableOptions: MultiSelectOption<string, string>[] | undefined = [],
       field: string,
       selected?: string | string[]
     ) => {
@@ -139,13 +143,13 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
       return {
         options,
         onClean: () => setSettingOptions(section, field, []),
-        onRemove: (option: MultiSelectOption) =>
+        onRemove: (option: MultiSelectOption<string, string>) =>
           setSettingOptions(
             section,
             field,
             selectedOptions.filter((o) => o.id !== option.id)
           ),
-        onSelect: (option: MultiSelectOption) => {
+        onSelect: (option: MultiSelectOption<string, string>) => {
           onSelectRegion(option, selectedOptions, field)
         },
         selected: selectedOptions,

@@ -48,6 +48,10 @@ a.button:visited,
   background-color: var(--color-border);
 }
 
+.tiny {
+  height: var(--size-XS);
+}
+
 .small {
   height: var(--size-S);
 }

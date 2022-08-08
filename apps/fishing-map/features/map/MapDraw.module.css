@@ -67,15 +67,14 @@
 }
 
 .popup {
-  background: var(--color-white);
   color: var(--color-primary-blue);
   box-shadow: var(--box-shadow);
   max-width: 40vw;
 }
 
-.popupContent {
+.popup .popupContent {
+  background: var(--color-white);
   padding: var(--space-S);
-  padding-bottom: 1px;
 }
 
 .popupButtons {
@@ -88,18 +87,6 @@
 .confirmBtn {
   margin-left: var(--space-M);
   flex: 1;
-}
-
-.editor svg g:hover {
-  cursor: pointer;
-}
-
-.editing svg g:hover {
-  cursor: grab;
-}
-
-.editing svg g:hover rect[data-type='editHandle'] {
-  cursor: pointer;
 }
 
 .buttonsContainer {

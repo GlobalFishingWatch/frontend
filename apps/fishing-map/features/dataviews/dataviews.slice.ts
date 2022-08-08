@@ -1,44 +1,54 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy, memoize } from 'lodash'
+import { stringify } from 'qs'
 import {
   mergeWorkspaceUrlDataviewInstances,
   resolveDataviews,
   UrlDataviewInstance,
   getResources,
+  GetDatasetConfigsCallbacks,
 } from '@globalfishingwatch/dataviews-client'
 import {
   DatasetTypes,
   DataviewCategory,
   DataviewInstance,
   Dataview,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError, parseAPIErrorMessage } from '@globalfishingwatch/api-client'
 import {
   selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import {
+  selectUrlDataviewInstances,
+  selectUrlDataviewInstancesOrder,
+} from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import {
   selectTrackThinningConfig,
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${id}`)
+      const dataview = await GFWAPI.fetch<Dataview>(`/dataviews/${id}`)
       return dataview
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
+      console.warn(e)
+      return rejectWithValue({
+        status: e.status || e.code,
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
     }
   }
 )
@@ -46,25 +56,34 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: number[], { signal, rejectWithValue, getState }) => {
-    const existingIds = selectIds(getState() as RootState) as number[]
+    const state = getState() as RootState
+    const existingIds = selectIds(state) as number[]
     const uniqIds = ids.filter((id) => !existingIds.includes(id))
+
     if (!uniqIds?.length) {
       return [] as Dataview[]
     }
     try {
-      let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${uniqIds.join(',')}`, {
-        signal,
-      })
+      const dataviewsParams = {
+        ids: uniqIds,
+        cache: false,
+        ...DEFAULT_PAGINATION_PARAMS,
+      }
+      const dataviewsResponse = await GFWAPI.fetch<APIPagination<Dataview>>(
+        `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
+        { signal }
+      )
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
       ) {
         const mockedDataviews = await import('./dataviews.mock')
-        dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
+        return uniqBy([...mockedDataviews.default, ...dataviewsResponse.entries], 'id')
       }
-      return dataviews
+      return dataviewsResponse.entries
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -77,14 +96,15 @@ export const createDataviewThunk = createAsyncThunk<
   }
 >('dataviews/create', async (dataview, { rejectWithValue }) => {
   try {
-    const createdDataview = await GFWAPI.fetch<Dataview>('/v1/dataviews', {
+    const createdDataview = await GFWAPI.fetch<Dataview>(`/dataviews`, {
       method: 'POST',
       body: dataview as any,
     })
 
     return createdDataview
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    console.warn(e)
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
@@ -98,13 +118,17 @@ export const updateDataviewThunk = createAsyncThunk<
   'dataviews/update',
   async (partialDataview, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${partialDataview.id}`, {
-        method: 'PATCH',
-        body: partialDataview as any,
-      })
+      const dataview = await GFWAPI.fetch<Dataview>(
+        `/dataviews/${partialDataview.id}`,
+        {
+          method: 'PATCH',
+          body: partialDataview as any,
+        }
+      )
       return dataview
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {
@@ -166,9 +190,21 @@ export const selectDataviewInstancesMerged = createSelector(
     return mergedDataviewInstances
   }
 )
+export const selectDataviewInstancesMergedOrdered = createSelector(
+  [selectDataviewInstancesMerged, selectUrlDataviewInstancesOrder],
+  (dataviewInstances = [], dataviewInstancesOrder): UrlDataviewInstance[] => {
+    if (!dataviewInstancesOrder || !dataviewInstancesOrder.length) {
+      return dataviewInstances
+    }
+    const dataviewInstancesOrdered = dataviewInstances.sort(
+      (a, b) => dataviewInstancesOrder.indexOf(a.id) - dataviewInstancesOrder.indexOf(b.id)
+    )
+    return [...dataviewInstancesOrdered]
+  }
+)
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMerged, selectAllDataviews, selectAllDatasets],
+  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
@@ -188,21 +224,18 @@ export const selectDataviewsResources = createSelector(
     selectWorkspaceStateProperty('timebarGraph'),
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
-    return getResources(
-      dataviewInstances || [],
-      trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph)
-    )
+    const callbacks: GetDatasetConfigsCallbacks = {
+      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+    }
+    return getResources(dataviewInstances || [], callbacks)
   }
 )
 
+const defaultDataviewResolved = []
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsResources, selectWorkspaceStateProperty('activityCategory')],
-  (dataviewsResources, activityCategory) => {
-    const dataviews = dataviewsResources.dataviews || []
-    return dataviews.filter((dataview) => {
-      const activityDataview = isActivityDataview(dataview)
-      return activityDataview ? dataview.category === activityCategory : true
-    })
+  [selectDataviewsResources],
+  (dataviewsResources) => {
+    return dataviewsResources.dataviews || defaultDataviewResolved
   }
 )
 export const selectDataviewInstancesByType = (type: GeneratorType) => {

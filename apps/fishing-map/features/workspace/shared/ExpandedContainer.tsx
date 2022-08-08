@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import cx from 'classnames'
 import Tippy from '@tippyjs/react'
-import { useSpring, animated } from 'react-spring'
 import { Options } from '@popperjs/core'
 import styles from './ExpandedContainer.module.css'
 
@@ -31,9 +30,6 @@ const popperOptions: Partial<Options> = {
   ],
 }
 
-const config = { tension: 300, friction: 50, velocity: 40 }
-const initialStyles = { transform: 'translate(0, -20px)' }
-
 function ExpandedContainer({
   visible,
   children,
@@ -42,35 +38,12 @@ function ExpandedContainer({
   className = '',
   arrowClassName = '',
 }: ExpandedContainerProps) {
-  const [props, setSpring] = useSpring(() => initialStyles)
-
-  const onMount = useCallback(
-    ({ popper }) => {
-      const { y, height } = popper.getBoundingClientRect()
-      if (y + height >= window.innerHeight) {
-        popper.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
-      }
-      setSpring({
-        transform: 'translateY(0, -5px)',
-        onRest: function () {
-          return
-        },
-        config,
-      })
-    },
-    [setSpring]
-  )
-
-  const onHide = useCallback(
-    ({ unmount }) => {
-      setSpring({
-        ...initialStyles,
-        onRest: unmount,
-        config: { ...config, clamp: true },
-      })
-    },
-    [setSpring]
-  )
+  const onMount = useCallback(({ popper }) => {
+    const { y, height } = popper.getBoundingClientRect()
+    if (y + height >= window.innerHeight) {
+      popper.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+    }
+  }, [])
 
   return (
     <div>
@@ -79,15 +52,13 @@ function ExpandedContainer({
         visible={visible}
         animation={true}
         onMount={onMount}
-        onHide={onHide}
         placement="bottom-end"
         popperOptions={popperOptions}
         onClickOutside={onClickOutside}
         render={(attrs) => {
           const topPlacement = attrs['data-placement'] === 'top'
           return (
-            <animated.div
-              style={props}
+            <div
               className={cx(
                 styles.expandedContainer,
                 {
@@ -112,7 +83,7 @@ function ExpandedContainer({
                   data-popper-arrow
                 ></div>
               )}
-            </animated.div>
+            </div>
           )
         }}
       >

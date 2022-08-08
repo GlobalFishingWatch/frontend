@@ -29,6 +29,10 @@ import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
+import { useUser } from 'features/user/user.hooks'
+import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
+import ForcedLabor from './ForcedLabor'
+
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -48,12 +52,16 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
   const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
+  const { authorizedFLRM } = useUser()
   const offlineVessel = useSelector(selectCurrentOfflineVessel)
   const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
     useOfflineVesselsAPI()
   const isMergedVesselsView = useMemo(
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
+  )
+  const currentProfileIsPortInspector = useSelector(
+    selectCurrentUserProfileHasPortInspectorPermission
   )
 
   useEffect(() => {
@@ -95,6 +103,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         source: '',
         activities: activities,
         savedOn: DateTime.utc().toISO(),
+        relatedVessels: [],
       },
     })
     setLoading(false)
@@ -111,11 +120,14 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
   const searchContext = useMemo(
-    () => `Vessel Viewer > Detail: ${vessel?.shipname}`
-    , [vessel?.shipname])
+    () => `Vessel Viewer > Detail: ${vessel?.shipname}`,
+    [vessel?.shipname]
+  )
   const contactUsLink = useMemo(
     () =>
-      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(email)}&usercontext=${searchContext}&data=${JSON.stringify({
+      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(
+        email
+      )}&usercontext=${searchContext}&data=${JSON.stringify({
         name: query,
         ...advancedSearch,
         tmtMatchId: vesselTmtId,
@@ -126,7 +138,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         vesselMmsi: vessel?.mmsi,
         vesselImo: vessel?.imo,
         vesselCallsign: vessel?.callsign,
-        vesselGeartype: vessel?.geartype
+        vesselGeartype: vessel?.geartype,
       })}`,
     [advancedSearch, email, query, searchContext, vessel, vesselId, vesselTmtId]
   )
@@ -137,7 +149,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       action: 'Click Contact Us ',
       label: JSON.stringify({
         tmtMatchId: vesselTmtId,
-        gfwId: vesselId
+        gfwId: vesselId,
       }),
     })
   }, [vesselId, vesselTmtId])
@@ -146,186 +158,193 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     <Fragment>
       <div className={styles.infoContainer}>
         {vessel && (
-          <div className={styles.imageAndFields}>
-            {imageList.length > 0 && (
-              <ImageGallery
-                items={imageList}
-                onImageLoad={() => setImageLoading(false)}
-                showThumbnails={false}
-                showBullets={true}
-                slideDuration={5000}
-                showPlayButton={imageList.length > 1}
-                additionalClass={cx(styles.imageGallery, { [styles.loading]: imageLoading })}
-              />
-            )}
-            <div className={styles.identifiers}>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.name}
-                value={vessel.shipname}
-                valuesHistory={vessel.history.shipname.byDate}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.type}
-                value={vessel.vesselType}
-                valuesHistory={vessel.history.vesselType.byDate}
-                includeFaq={true}
-                helpText={
-                  <Trans i18nKey="vessel.vesselTypeDescription">
-                    For vessel type sourced from Global Fishing Watch additional research and
-                    analysis is conducted in addition to using the original AIS data to identify the
-                    most likely value. Vessel types from GFW include fishing vessels, carrier
-                    vessels, and support vessels. The vessel classification for fishing vessel is
-                    estimated using known registry information in combination with a convolutional
-                    neural network used to estimate vessel class. The vessel classifcation for
-                    carrier vessels is estimated using a cumulation of known registry information,
-                    manual review, and vessel class. All support vessels in the Vessel Viewer are
-                    considered Purse Seine Support Vessels based on internal review.
-                  </Trans>
-                }
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.flag}
-                value={vessel.flag}
-                valuesHistory={vessel.history.flag.byDate}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.mmsi}
-                value={vessel.mmsi}
-                valuesHistory={vessel.history.mmsi.byDate}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.imo}
-                value={vessel.imo}
-                hideTMTDate={true}
-                valuesHistory={vessel.history.imo.byDate}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.callsign}
-                value={vessel.callsign}
-                valuesHistory={vessel.history.callsign.byDate}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.geartype}
-                value={vessel.geartype}
-                includeFaq={true}
-                valuesHistory={vessel.history.geartype.byDate}
-                helpText={
-                  <Trans i18nKey="vessel.geartypeDescription">
-                    Likely gear type of vessel as defined by Global Fishing Watch. The vessel
-                    classification for fishing vessel is estimated using known registry information
-                    in combination with a convolutional neural network used to estimate vessel
-                    class, see more information here:
-                    <a
-                      href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      https://globalfishingwatch.org/datasets-and-code-vessel-identity/
-                    </a>{' '}
-                    . The vessel classifcation for carrier vessels is estimated using a cumulation
-                    of known registry information. All support vessels in the Vessel Viewer are
-                    considered Purse Seine Support Vessels based on internal review.
-                  </Trans>
-                }
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.length}
-                value={vessel.length}
-                hideTMTDate={true}
-                valuesHistory={vessel.history.length.byDate}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.grossTonnage}
-                value={vessel.grossTonnage}
-                hideTMTDate={true}
-                valuesHistory={vessel.history.grossTonnage.byDate}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.depth}
-                value={vessel.depth}
-                hideTMTDate={true}
-                valuesHistory={vessel.history.depth.byDate}
-              ></InfoField>
-              <AuthorizationsField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.authorizations}
-                authorizations={vessel?.authorizations}
-              ></AuthorizationsField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.builtYear}
-                hideTMTDate={true}
-                value={vessel.builtYear}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.owner}
-                value={vessel.owner}
-                valuesHistory={vessel.history.owner.byDate}
-              ></InfoField>
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.operator}
-                value={vessel.operator}
-                valuesHistory={vessel.history.operator.byDate}
-              ></InfoField>
-
-              {!isMergedVesselsView && (
-                <div className={styles.identifierField}>
-                  <label>{t(`vessel.aisTransmission_plural`, 'AIS Transmissions')}</label>
-                  <div>
-                    {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
-                      <Fragment>
-                        {t('common.from', 'from')}{' '}
-                        {vessel.firstTransmissionDate ? (
-                          <I18nDate date={vessel.firstTransmissionDate} />
-                        ) : (
-                          DEFAULT_EMPTY_VALUE
-                        )}{' '}
-                        {t('common.to', 'to')}{' '}
-                        {vessel.lastTransmissionDate ? (
-                          <I18nDate date={vessel.lastTransmissionDate} />
-                        ) : (
-                          DEFAULT_EMPTY_VALUE
-                        )}
-                      </Fragment>
-                    ) : (
-                      DEFAULT_EMPTY_VALUE
-                    )}
-                  </div>
-                </div>
+          <Fragment>
+            <div className={styles.imageAndFields}>
+              {imageList.length > 0 && (
+                <ImageGallery
+                  items={imageList}
+                  onImageLoad={() => setImageLoading(false)}
+                  showThumbnails={false}
+                  showBullets={true}
+                  slideDuration={5000}
+                  showPlayButton={imageList.length > 1}
+                  additionalClass={cx(styles.imageGallery, { [styles.loading]: imageLoading })}
+                />
               )}
-              <InfoField
-                vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
-                label={VesselFieldLabel.iuuStatus}
-                value={
-                  vessel.iuuStatus !== undefined
-                    ? t(
-                      `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
-                      vessel.iuuStatus.toString()
-                    )
-                    : DEFAULT_EMPTY_VALUE
-                }
-                valuesHistory={[]}
-                helpText={
-                  <Trans i18nKey="vessel.iuuStatusDescription">
-                    [TDB] IUU status description to be defined
-                  </Trans>
-                }
-              ></InfoField>
+              <div className={styles.identifiers}>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.name}
+                  value={vessel.shipname}
+                  valuesHistory={vessel.history.shipname.byDate}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.type}
+                  value={vessel.vesselType}
+                  valuesHistory={vessel.history.vesselType.byDate}
+                  includeFaq={true}
+                  helpText={
+                    <Trans i18nKey="vessel.vesselTypeDescription">
+                      For vessel type sourced from Global Fishing Watch additional research and
+                      analysis is conducted in addition to using the original AIS data to identify the
+                      most likely value. Vessel types from GFW include fishing vessels, carrier
+                      vessels, and support vessels. The vessel classification for fishing vessel is
+                      estimated using known registry information in combination with a convolutional
+                      neural network used to estimate vessel class. The vessel classifcation for
+                      carrier vessels is estimated using a cumulation of known registry information,
+                      manual review, and vessel class. All support vessels in the Vessel Viewer are
+                      considered Purse Seine Support Vessels based on internal review.
+                    </Trans>
+                  }
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.flag}
+                  value={vessel.flag}
+                  valuesHistory={vessel.history.flag.byDate}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.mmsi}
+                  value={vessel.mmsi}
+                  valuesHistory={vessel.history.mmsi.byDate}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.imo}
+                  value={vessel.imo}
+                  hideTMTDate={true}
+                  valuesHistory={vessel.history.imo.byDate}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.callsign}
+                  value={vessel.callsign}
+                  valuesHistory={vessel.history.callsign.byDate}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.geartype}
+                  value={vessel.geartype}
+                  includeFaq={true}
+                  valuesHistory={vessel.history.geartype.byDate}
+                  helpText={
+                    <Trans i18nKey="vessel.geartypeDescription">
+                      Likely gear type of vessel as defined by Global Fishing Watch. The vessel
+                      classification for fishing vessel is estimated using known registry information
+                      in combination with a convolutional neural network used to estimate vessel
+                      class, see more information here:
+                      <a
+                        href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        https://globalfishingwatch.org/datasets-and-code-vessel-identity/
+                      </a>{' '}
+                      . The vessel classifcation for carrier vessels is estimated using a cumulation
+                      of known registry information. All support vessels in the Vessel Viewer are
+                      considered Purse Seine Support Vessels based on internal review.
+                    </Trans>
+                  }
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.length}
+                  value={vessel.length}
+                  hideTMTDate={true}
+                  valuesHistory={vessel.history.length.byDate}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.grossTonnage}
+                  value={vessel.grossTonnage}
+                  hideTMTDate={true}
+                  valuesHistory={vessel.history.grossTonnage.byDate}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.depth}
+                  value={vessel.depth}
+                  hideTMTDate={true}
+                  valuesHistory={vessel.history.depth.byDate}
+                ></InfoField>
+                <AuthorizationsField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.authorizations}
+                  authorizations={vessel?.authorizations}
+                ></AuthorizationsField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.builtYear}
+                  hideTMTDate={true}
+                  value={vessel.builtYear}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.owner}
+                  value={vessel.owner}
+                  valuesHistory={vessel.history.owner.byDate}
+                ></InfoField>
+                <InfoField
+                  vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                  label={VesselFieldLabel.operator}
+                  value={vessel.operator}
+                  valuesHistory={vessel.history.operator.byDate}
+                ></InfoField>
+
+                {!isMergedVesselsView && (
+                  <div className={styles.identifierField}>
+                    <label>{t(`vessel.aisTransmission_plural`, 'AIS Transmissions')}</label>
+                    <div>
+                      {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
+                        <Fragment>
+                          {t('common.from', 'from')}{' '}
+                          {vessel.firstTransmissionDate ? (
+                            <I18nDate date={vessel.firstTransmissionDate} />
+                          ) : (
+                            DEFAULT_EMPTY_VALUE
+                          )}{' '}
+                          {t('common.to', 'to')}{' '}
+                          {vessel.lastTransmissionDate ? (
+                            <I18nDate date={vessel.lastTransmissionDate} />
+                          ) : (
+                            DEFAULT_EMPTY_VALUE
+                          )}
+                        </Fragment>
+                      ) : (
+                        DEFAULT_EMPTY_VALUE
+                      )}
+                    </div>
+                  </div>
+                )}
+                {currentProfileIsPortInspector && (
+                  <InfoField
+                    vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
+                    label={VesselFieldLabel.iuuStatus}
+                    value={
+                      vessel.iuuStatus !== undefined
+                        ? t(
+                          `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                          vessel.iuuStatus.toString()
+                        )
+                        : DEFAULT_EMPTY_VALUE
+                    }
+                    valuesHistory={[]}
+                    helpText={
+                      <Trans i18nKey="vessel.iuuStatusDescription">
+                        [TDB] IUU status description to be defined
+                      </Trans>
+                    }
+                  ></InfoField>
+                )}
+              </div>
+
             </div>
-          </div>
+            {authorizedFLRM && <ForcedLabor vessel={vessel} />}
+          </Fragment>
         )}
+
         <div className={styles.actions}>
           {vessel && offlineVessel && (
             <Fragment>

@@ -8,19 +8,26 @@ import {
 import { Tabs, Tab, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
   dataview: UrlDataviewInstance
   onClick?: (e: React.MouseEvent) => void
   className?: string
+  showAllDatasets?: boolean
   onModalStateChange?: (open: boolean) => void
 }
 
-const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoModalProps) => {
+const InfoModal = ({
+  dataview,
+  onClick,
+  className,
+  onModalStateChange,
+  showAllDatasets,
+}: InfoModalProps) => {
   const { t } = useTranslation()
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
@@ -35,12 +42,16 @@ const InfoModal = ({ dataview, onClick, className, onModalStateChange }: InfoMod
         if (!datasetConfig) return []
         const hasDatasetVesselId = getVesselIdFromDatasetConfig(datasetConfig)
         if (!hasDatasetVesselId) return []
-      } else if (dataview.config?.datasets && !dataview.config?.datasets?.includes(dataset.id)) {
+      } else if (
+        !showAllDatasets &&
+        dataview.config?.datasets &&
+        !dataview.config?.datasets?.includes(dataset.id)
+      ) {
         return []
       }
       return {
         id: dataset.id,
-        title: getDatasetLabel(dataset),
+        title: <DatasetLabel dataset={dataset} />,
         content: <InfoModalContent dataset={dataset} />,
       }
     })

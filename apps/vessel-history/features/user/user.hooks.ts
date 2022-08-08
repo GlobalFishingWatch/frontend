@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { event as uaEvent } from 'react-ga'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
-import { AUTHORIZED_PERMISSION } from 'data/config'
+import {
+  PORT_INSPECTOR_PERMISSION,
+  FLRM_PERMISSION,
+  INSURER_PERMISSION,
+  APP_PROFILE_VIEWS,
+} from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useWorkspace } from 'features/workspace/workspace.hook'
+import { WorkspaceProfileViewParam } from 'types'
 import {
   fetchUserThunk,
   logoutUserThunk,
@@ -14,19 +22,46 @@ import {
 } from './user.slice'
 
 export const useUser = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const logged = useSelector(selectUserLogged)
   const user = useSelector(selectUserData)
   const status = useSelector(selectUserStatus)
 
+  const {
+    updateProfileView,
+    workspace: { profileView: currentProfileView },
+  } = useWorkspace()
+
   const accessToken = getAccessTokenFromUrl()
   const token = GFWAPI.getToken()
   const refreshToken = GFWAPI.getRefreshToken()
 
-  const authorized = useMemo(() => {
-    return user && checkExistPermissionInList(user.permissions, AUTHORIZED_PERMISSION)
+  const authorizedInspector = useMemo(() => {
+    return user && checkExistPermissionInList(user.permissions, PORT_INSPECTOR_PERMISSION)
   }, [user])
+
+  const authorizedInsurer = useMemo(() => {
+    return user && checkExistPermissionInList(user.permissions, INSURER_PERMISSION)
+  }, [user])
+
+  const authorizedFLRM = useMemo(() => {
+    return user && checkExistPermissionInList(user.permissions, FLRM_PERMISSION)
+  }, [user])
+
+  const availableViews = useMemo(() => {
+    return APP_PROFILE_VIEWS.filter(
+      (view) => user && checkExistPermissionInList(user?.permissions, view.required_permission)
+    )
+  }, [user])
+
+  // Setup default app profile view based on permissions
+  useEffect(() => {
+    const firstProfileView = availableViews.slice().shift()?.id as WorkspaceProfileViewParam
+    if (logged && !currentProfileView && firstProfileView) {
+      updateProfileView(firstProfileView)
+    }
+  }, [currentProfileView, dispatch, logged, updateProfileView])
 
   const logout = useCallback(() => {
     uaEvent({
@@ -43,10 +78,14 @@ export const useUser = () => {
   }, [accessToken, dispatch, logged, refreshToken, token])
 
   return {
+    authorized: authorizedInspector || authorizedInsurer,
+    authorizedInspector,
+    authorizedInsurer,
+    authorizedFLRM,
+    availableViews,
     loading: status !== AsyncReducerStatus.Finished && status !== AsyncReducerStatus.Idle,
     logged,
-    user,
-    authorized,
     logout,
+    user,
   }
 }

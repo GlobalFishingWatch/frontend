@@ -1,6 +1,7 @@
 import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { BasemapType } from '../types'
 import { Group, Dictionary } from '../../types'
+import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
 
 export const DEFAULT_LANDMASS_COLOR = '#274777'
 
@@ -12,16 +13,6 @@ export const layers: Dictionary<LayerSpecification[]> = {
       source: BasemapType.Satellite,
       metadata: {
         group: Group.Basemap,
-      },
-    },
-  ],
-  [BasemapType.Labels]: [
-    {
-      type: 'raster',
-      id: BasemapType.Labels,
-      source: BasemapType.Labels,
-      metadata: {
-        group: Group.BasemapForeground,
       },
     },
   ],
@@ -53,19 +44,7 @@ export const layers: Dictionary<LayerSpecification[]> = {
 export const sources: Dictionary<Record<string, Partial<any>>> = {
   [BasemapType.Satellite]: {
     satellite: {
-      tiles: [
-        'https://gtiles.api.dev.globalfishingwatch.org/v1/tileset/sat/tile?x={x}&y={y}&z={z}',
-      ],
-      type: 'raster',
-      tileSize: 256,
-      attribution: 'Google',
-    },
-  },
-  [BasemapType.Labels]: {
-    labels: {
-      tiles: [
-        'https://gtiles.api.dev.globalfishingwatch.org/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}',
-      ],
+      tiles: [`${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/sat/tile?x={x}&y={y}&z={z}`],
       type: 'raster',
       tileSize: 256,
       attribution: 'Google',

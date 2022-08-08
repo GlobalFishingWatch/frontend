@@ -1,11 +1,11 @@
 {
-  "root": "libs/i18n-labels",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/i18n-labels",
   "projectType": "library",
   "tags": [],
   "targets": {
     "serve": {
-      "executor": "@nrwl/workspace:run-script",
+      "executor": "nx:run-script",
       "options": {
         "script": "start"
       }
@@ -52,6 +52,11 @@
             "output": "."
           },
           {
+            "glob": "libs/i18n-labels/val",
+            "input": ".",
+            "output": "."
+          },
+          {
             "glob": "libs/i18n-labels/source",
             "input": ".",
             "output": "."
@@ -70,7 +75,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/i18n-labels"],
       "options": {
-        "jestConfig": "libs/i18n-labels/jest.config.js",
+        "jestConfig": "libs/i18n-labels/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -80,11 +85,42 @@
         "access": "public"
       }
     },
+    "publish:stable": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "export LATEST=`npm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed -n 's/latest: //p'`;npm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable"
+        ],
+        "parallel": false
+      }
+    },
+    "purge": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["PACKAGE_TAG=latest ./libs/i18n-labels/purge_jsdelivr.sh"],
+        "parallel": false
+      }
+    },
+    "purge:stable": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": ["nx publish i18n-labels", "./libs/i18n-labels/purge_jsdelivr.sh"],
+        "commands": ["nx i18n-labels:publish", "nx i18n-labels:purge"],
         "parallel": false
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "commitMessageFormat": "release: bump ${projectName} to ${version} [skip ci]",
+        "releaseAs": "patch",
+        "tagPrefix": "${projectName}@"
       }
     }
   }

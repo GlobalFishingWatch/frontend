@@ -9,7 +9,7 @@ import styles from './layout.module.css'
 
 export function Layout({ children }) {
   const [loading, setLoading] = useState(false)
-  const login = useGFWLogin()
+  const login = useGFWLogin(GFWAPI)
 
   const onLogoutClick = () => {
     setLoading(true)
@@ -29,9 +29,11 @@ export function Layout({ children }) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        {login.logged === false && login.loading === false && typeof window !== 'undefined' ? (
+        {login.logged === false ? (
           <div className={styles.login}>
-            <Button href={getLoginUrl('')}>Login</Button>
+            {typeof window !== 'undefined' && login.loading === false ? (
+              <Button href={getLoginUrl('')}>Login</Button>
+            ) : null}
           </div>
         ) : (
           children

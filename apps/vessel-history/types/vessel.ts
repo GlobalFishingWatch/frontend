@@ -1,11 +1,11 @@
-import { VesselSearch } from '@globalfishingwatch/api-types'
+import { RelatedVesselSearchMerged, VesselSearch } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'types/activity'
 
 export type VesselSourceId = {
   [key: string]: any
 }
 
-export interface OfflineVessel extends VesselSearch {
+export interface OfflineVessel extends RelatedVesselSearchMerged {
   profileId: string
   activities?: ActivityEvent[]
   savedOn: string
@@ -33,4 +33,5 @@ export enum VesselFieldLabel {
   authorizations = 'authorizations',
   registeredGearType = 'registeredGearType',
   iuuStatus = 'iuuStatus',
+  forcedLabourModel = 'forcedLabourModel',
 }

@@ -37,7 +37,7 @@ export const aggregateCell = ({
   for (let i = 0; i < rawValuesArrSlice.length; i++) {
     const sublayerIndex = i % sublayerCount
     const rawValue = rawValuesArrSlice[i]
-    if (rawValue !== null && rawValue !== undefined && !isNaN(rawValue)) {
+    if (rawValue !== null && rawValue !== undefined && !isNaN(rawValue) && rawValue !== 0) {
       aggregatedValues[sublayerIndex] += rawValue
       if (sublayerIndex === 0) numValues++
     }
@@ -46,7 +46,7 @@ export const aggregateCell = ({
     aggregatedValues = aggregatedValues.map((sublayerValue) => sublayerValue / numValues)
   }
 
-  const realValues = getRealValues(aggregatedValues, multiplier)
+  const realValues = getRealValues(aggregatedValues, { multiplier })
 
   if (sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
     return [realValues[1] - realValues[0]]

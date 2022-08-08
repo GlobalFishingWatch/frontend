@@ -4,7 +4,11 @@ import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
-import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import {
+  areDataviewsFeatureLoaded,
+  hasDataviewsFeatureError,
+  useMapDataviewFeatures,
+} from 'features/map/map-sources.hooks'
 import { getTimeseriesFromDataviews } from 'features/timebar/TimebarActivityGraph.utils'
 import { filterByViewport } from 'features/map/map.utils'
 
@@ -15,6 +19,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 400)
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
+  const error = hasDataviewsFeatureError(dataviewFeatures)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
   const loading =
     boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures) || generatingStackedActivity
@@ -37,17 +42,17 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
       setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
     }, 400),
-    []
+    [setStackedActivity]
   )
 
-  const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   useEffect(() => {
-    if (!isSmallScreen && dataviewFeaturesLoaded) {
+    const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
+    if (!isSmallScreen && dataviewFeaturesLoaded && !error) {
       setGeneratingStackedActivity(true)
       debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataviewFeaturesLoaded, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
+  }, [dataviewFeatures, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
 
-  return { loading, stackedActivity }
+  return { loading, error, stackedActivity }
 }

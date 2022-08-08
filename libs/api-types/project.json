@@ -1,5 +1,5 @@
 {
-  "root": "libs/api-types",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api-types/src",
   "projectType": "library",
   "tags": [],
@@ -34,7 +34,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/api-types"],
       "options": {
-        "jestConfig": "libs/api-types/jest.config.js",
+        "jestConfig": "libs/api-types/jest.config.ts",
         "passWithNoTests": true
       }
     },

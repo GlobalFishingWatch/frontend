@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: bash
     args:
       - '-c'
@@ -29,14 +29,14 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
-      - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL_'
+      - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL'
       - 'NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID=$_NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID'
       - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY'
@@ -100,6 +100,22 @@ steps:
         --set-env-vars \
         BASIC_AUTH=$_BASIC_AUTH \
         --allow-unauthenticated
+
+  - id: 'i18n-labels publish stable'
+    name: gcr.io/cloud-builders/gcloud
+    waitFor: ['deploy-cloud-run']
+    entrypoint: bash
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
+        if [ $workspace_env = 'production' ]; then
+          gcloud -q beta builds triggers run --branch=develop ui-libs-i18n-labels-stable
+        fi
 
 timeout: 1800s
 options:

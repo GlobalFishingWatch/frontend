@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import {
@@ -7,6 +7,7 @@ import {
   DataviewCategory,
   DataviewConfig,
   EndpointId,
+  DatasetCategory,
 } from '@globalfishingwatch/api-types'
 import {
   Button,
@@ -35,8 +36,8 @@ const UNKNOWN_CATEGORY = 'unknown' as DataviewCategory
 
 const categoryOptions = [
   { id: DataviewCategory.Environment, label: 'Environment' },
-  { id: DataviewCategory.Fishing, label: 'Fishing' },
-  { id: DataviewCategory.Presence, label: 'Presence' },
+  { id: DataviewCategory.Activity, label: 'Activity' },
+  { id: DataviewCategory.Detections, label: 'Detections' },
   { id: UNKNOWN_CATEGORY, label: 'Unknown' },
 ]
 
@@ -62,7 +63,9 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
   const [dataview, setDataview] = useState<Partial<Dataview>>(editDataview || ({} as Dataview))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
-  const [dataviewDatasets, setDataviewDatasets] = useState<{ id: string; label: string }[]>([])
+  const [dataviewDatasets, setDataviewDatasets] = useState<
+    { id: string; label: string | JSX.Element }[]
+  >([])
   const datasets = useSelector(selectFourwingsDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -76,7 +79,9 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       if (dataview.category === UNKNOWN_CATEGORY) {
         return !dataset.category || !Object.keys(dataset.category).length
       }
-      return dataview.category === dataset.category
+      return dataset.category === DatasetCategory.Activity
+        ? dataview.category === dataset.subcategory
+        : dataview.category === dataset.category
     })
     return filteredDatasets.map((dataset) => ({ id: dataset.id, label: dataset.id }))
   }, [dataview.category, datasets])

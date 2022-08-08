@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { MouseEvent, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
 import { Icon } from '../icon'
@@ -71,7 +71,7 @@ export function Select(props: SelectProps) {
   )
 
   const handleToggleButtonClick = useCallback(
-    (e) => {
+    (e: MouseEvent) => {
       if (onToggleButtonClick) onToggleButtonClick(selectedOption)
     },
     [onToggleButtonClick, selectedOption]
@@ -83,7 +83,9 @@ export function Select(props: SelectProps) {
 
   return (
     <div className={containerClassName}>
-      <label {...getLabelProps()}>{label}</label>
+      <label className={styles.label} {...getLabelProps()}>
+        {label}
+      </label>
       <div
         className={cx(
           styles.container,

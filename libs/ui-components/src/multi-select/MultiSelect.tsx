@@ -1,10 +1,11 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo, Fragment } from 'react'
 import { matchSorter } from 'match-sorter'
 import {
   useMultipleSelection,
   useCombobox,
   UseComboboxState,
   UseComboboxStateChangeTypes,
+  UseComboboxStateChange,
 } from 'downshift'
 import cx from 'classnames'
 import { Icon, IconType } from '../icon'
@@ -15,11 +16,13 @@ import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
 
 export type SelectOptionId = number | string
-export type MultiSelectOption<T = any> = {
-  id: T
-  label: string
+export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
+  id: ID
+  label: Label
   alias?: string[]
   tooltip?: string
+  disableSelection?: boolean
+  className?: string
 }
 /**
  * Callback on selecting or removing options
@@ -56,6 +59,7 @@ interface MultiSelectProps {
   disabled?: boolean
   disabledMsg?: string
   onFilterOptions?: MultiSelectOnFilter
+  onIsOpenChange?: (open: boolean) => void
   onSelect: MultiSelectOnChange
   onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
@@ -75,7 +79,7 @@ const getPlaceholderBySelections = (
         .join(', ')
     : selections.length > 1
     ? `${selections.length} selected`
-    : selections[0].label
+    : selections[0]?.label.toString()
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
@@ -101,6 +105,7 @@ export function MultiSelect(props: MultiSelectProps) {
     onSelect,
     onRemove,
     onCleanClick,
+    onIsOpenChange,
     disabled = false,
     disabledMsg = '',
     onFilterOptions,
@@ -108,14 +113,14 @@ export function MultiSelect(props: MultiSelectProps) {
 
   const handleRemove = useCallback(
     (option: MultiSelectOption) => {
-      if (onRemove) {
+      if (onRemove && !disabled) {
         const newOptions = selectedOptions.filter(
           (selectedOption) => selectedOption.id !== option.id
         )
         onRemove(option, newOptions)
       }
     },
-    [onRemove, selectedOptions]
+    [disabled, onRemove, selectedOptions]
   )
 
   const handleSelect = useCallback(
@@ -135,6 +140,15 @@ export function MultiSelect(props: MultiSelectProps) {
       }
     },
     [handleRemove, handleSelect, selectedOptions]
+  )
+
+  const handleIsOpenChange = useCallback(
+    (changes: UseComboboxStateChange<MultiSelectOption | null>) => {
+      if (onIsOpenChange) {
+        onIsOpenChange(changes.isOpen as boolean)
+      }
+    },
+    [onIsOpenChange]
   )
 
   const [inputValue, setInputValue] = useState('')
@@ -210,6 +224,7 @@ export function MultiSelect(props: MultiSelectProps) {
           break
       }
     },
+    onIsOpenChange: handleIsOpenChange,
   })
 
   const hasSelectedOptions = selectedOptions && selectedOptions.length > 0
@@ -218,7 +233,7 @@ export function MultiSelect(props: MultiSelectProps) {
     <div className={className}>
       <div className={styles.labelContainer}>
         {label !== undefined && (
-          <label {...getLabelProps()} className={cx({ [styles.disabled]: disabled })}>
+          <label {...getLabelProps()} className={cx(styles.label, { [styles.disabled]: disabled })}>
             {label}
           </label>
         )}
@@ -261,16 +276,18 @@ export function MultiSelect(props: MultiSelectProps) {
           />
         </div>
         <div className={styles.buttonsContainer}>
-          {onCleanClick !== undefined && hasSelectedOptions && (
-            <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
-          )}
           {!disabled && (
-            <IconButton
-              icon={isOpen ? 'arrow-top' : 'arrow-down'}
-              size="small"
-              aria-label={'toggle menu'}
-              {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
-            ></IconButton>
+            <Fragment>
+              {onCleanClick !== undefined && hasSelectedOptions && (
+                <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
+              )}
+              <IconButton
+                icon={isOpen ? 'arrow-top' : 'arrow-down'}
+                size="small"
+                aria-label={'toggle menu'}
+                {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
+              ></IconButton>
+            </Fragment>
           )}
         </div>
         <ul {...getMenuProps()} className={styles.optionsContainer}>
@@ -279,11 +296,13 @@ export function MultiSelect(props: MultiSelectProps) {
             filteredItems.map((item, index) => {
               const highlight = highlightedIndex === index
               const isSelected =
-                hasSelectedOptions && selectedOptions.some(({ id }) => item.id === id)
+                hasSelectedOptions &&
+                selectedOptions.some(({ id }) => item.id === id) &&
+                !item.disableSelection
               const icon =
                 highlight && isSelected
                   ? 'close'
-                  : highlight || isSelected
+                  : (highlight || isSelected) && !item.disableSelection
                   ? 'tick'
                   : ('' as IconType)
               return (
@@ -291,6 +310,7 @@ export function MultiSelect(props: MultiSelectProps) {
                   <li
                     className={cx(styles.optionItem, {
                       [styles.highlight]: highlight,
+                      [item.className || '']: item.className,
                     })}
                     {...getItemProps({ item, index })}
                   >

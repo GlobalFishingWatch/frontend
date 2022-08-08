@@ -1,17 +1,23 @@
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReactHtmlParser from 'react-html-parser'
 import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, Modal } from '@globalfishingwatch/ui-components'
+import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import GFWOnly from 'features/user/GFWOnly'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
+import { ONLY_GFW_STAFF_DATAVIEWS } from 'data/workspaces'
+import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -24,18 +30,30 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa']
+const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-labels']
 
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const userId = useSelector(selectUserId)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
   }, [setModalDataWarningOpen])
   const guestUser = useSelector(isGuestUser)
   const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
+
+  const {
+    items,
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    style,
+    isSorting,
+    activeIndex,
+  } = useLayerPanelDataviewSort(dataview.id)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -58,11 +76,12 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-  const isUserLayer = !guestUser && dataset?.ownerType === 'user'
+  const isUserLayer = !guestUser && dataset?.ownerId === userId
 
   useAutoRefreshImportingDataset(dataset, 5000)
 
-  if (!dataset) {
+  const basemapLabelsDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
+  if (!dataset && dataview.id !== basemapLabelsDataviewInstance.id) {
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       d.datasetId.includes(PRIVATE_SUFIX)
     )
@@ -73,7 +92,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     )
   }
 
-  const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+  const title = dataset
+    ? t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+    : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
   const TitleComponent = (
     <Title
@@ -85,12 +106,17 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     />
   )
 
+  const isBasemapLabelsDataview = dataview.config?.type === GeneratorType.BasemapLabels
+
   return (
     <div
       className={cx(styles.LayerPanel, {
         [styles.expandedContainerOpen]: colorOpen,
         'print-hidden': !layerActive,
       })}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
     >
       <div className={styles.header}>
         <LayerSwitch
@@ -100,13 +126,16 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           dataview={dataview}
           onToggle={onToggle}
         />
+        {ONLY_GFW_STAFF_DATAVIEWS.includes(dataview.dataviewId) && (
+          <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
+        )}
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (
+          {layerActive && !isBasemapLabelsDataview && (
             <Color
               dataview={dataview}
               open={colorOpen}
@@ -115,12 +144,25 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               onClickOutside={closeExpandedContainer}
             />
           )}
-          <InfoModal dataview={dataview} />
+          {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
           {isUserLayer && <Remove dataview={dataview} />}
+          {items.length > 1 && (
+            <IconButton
+              size="small"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              icon="drag"
+              className={styles.dragger}
+            />
+          )}
         </div>
       </div>
       {layerActive && DATAVIEWS_WARNING.includes(dataview?.id) && (
-        <div className={cx(styles.properties, styles.dataWarning)}>
+        <div
+          className={cx(styles.properties, styles.dataWarning, styles.drag, {
+            [styles.dragging]: isSorting && activeIndex > -1,
+          })}
+        >
           <div>
             {t(
               `dataview.${dataview?.id}.dataWarning` as any,

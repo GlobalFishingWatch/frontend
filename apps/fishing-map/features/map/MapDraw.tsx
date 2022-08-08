@@ -1,77 +1,94 @@
-import React, { Fragment, useCallback, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import kinks from '@turf/kinks'
-import { Editor, EditingMode, DrawPolygonMode } from 'react-map-gl-draw'
 import { useTranslation } from 'react-i18next'
+import { Feature, Polygon } from 'geojson'
+import { DrawModes, DrawSelectionChangeEvent } from '@mapbox/mapbox-gl-draw'
 import { Popup } from 'react-map-gl'
-import { FeatureOf, Polygon } from '@nebula.gl/edit-modes'
 import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   useAddDataviewFromDatasetToWorkspace,
   useDatasetsAPI,
 } from 'features/datasets/datasets.hook'
+import useDrawControl from 'features/map/MapDrawControl'
 import { useMapDrawConnect } from './map-draw.hooks'
-import { useMapControl } from './map-context.hooks'
 import styles from './MapDraw.module.css'
 import {
-  featureStyle,
-  FeatureStyle,
+  getCoordinatePrecisionRounded,
   getDrawDatasetDefinition,
-  getFeaturesPrecisionRounded,
   getFileWithFeatures,
   removeFeaturePointByIndex,
   updateFeaturePointByIndex,
 } from './map.draw.utils'
 
-export type DrawFeature = FeatureOf<Polygon>
+export type DrawFeature = Feature<Polygon, { id: string }>
 export type DrawPointPosition = [number, number]
-
-type EditorUpdate = {
-  data: DrawFeature[]
-  editType: 'addFeature' | 'addPosition' | 'finishMovePosition'
-  editContext: {
-    editHandleIndex: number
-  }[]
-}
-
-type EditorSelect = {
-  mapCoords: [number, number]
-  screenCoords: [number, number]
-  selectedEditHandleIndex: number
-  selectedFeature: DrawFeature
-  selectedFeatureIndex: number
-}
-
+export type DrawMode = DrawModes['DIRECT_SELECT'] | DrawModes['DRAW_POLYGON']
 export const MIN_DATASET_NAME_LENGTH = 3
+
+const getSelectedFeature = (drawControl: MapboxDraw) => {
+  try {
+    return drawControl.getSelected()?.features?.[0] as DrawFeature
+  } catch (e) {
+    return undefined
+  }
+}
+const getAllFeatures = (drawControl: MapboxDraw) => {
+  try {
+    return drawControl.getAll()?.features as DrawFeature[]
+  } catch (e) {
+    return []
+  }
+}
 
 function MapDraw() {
   const { t } = useTranslation()
-  const editorRef = useRef<any>(null)
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
-  const [features, setFeatures] = useState<DrawFeature[] | null>(null)
+  const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
-  const [selectedFeatureIndex, setSelectedFeatureIndex] = useState<number | null>(null)
-  const [selectedEditHandleIndex, setSelectedEditHandleIndex] = useState<number | null>(null)
-  const { drawMode, dispatchSetDrawMode } = useMapDrawConnect()
-
+  const { isMapDrawing, dispatchSetMapDrawing } = useMapDrawConnect()
   const { dispatchQueryParams } = useLocationConnect()
-  const { containerRef } = useMapControl()
   const { dispatchCreateDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
-  const hasFeatureSelected = selectedFeatureIndex !== null
-  const currentFeature: DrawFeature | null =
-    selectedFeatureIndex !== null && features !== null ? features?.[selectedFeatureIndex] : null
-  const currentEditHandle =
-    currentFeature && selectedEditHandleIndex
-      ? currentFeature.geometry.coordinates?.[0]?.[selectedEditHandleIndex]
+  const onSelectionChange = (e: DrawSelectionChangeEvent) => {
+    const feature = e.features?.[0] as DrawFeature
+    if (feature) {
+      const currentPoint = e.points?.[0]
+      if (currentPoint) {
+        const pointIndex = feature.geometry.coordinates[0].findIndex(
+          ([lng, lat]) =>
+            currentPoint.geometry.coordinates[0] === lng &&
+            currentPoint.geometry.coordinates[1] === lat
+        )
+        setSelectedPointIndex(pointIndex > -1 ? pointIndex : null)
+      }
+    }
+  }
+
+  const drawControl = useDrawControl({
+    displayControlsDefault: false,
+    defaultMode: 'draw_polygon',
+    onSelectionChange: onSelectionChange,
+  })
+
+  const features = getAllFeatures(drawControl)
+  const selectedFeature = getSelectedFeature(drawControl)
+  const selectedFeatureId = selectedFeature?.id as string
+
+  const hasFeatureSelected = selectedFeature !== undefined
+  const currentPointCoordinates =
+    selectedFeature && selectedPointIndex !== null
+      ? getCoordinatePrecisionRounded(
+          selectedFeature.geometry.coordinates?.[0]?.[selectedPointIndex]
+        )
       : null
-  const allowDeletePoint = currentFeature?.geometry?.coordinates?.[0]?.length > 4
+  const allowDeletePoint = selectedFeature?.geometry?.coordinates?.[0]?.length > 4
 
   const onHandleLatitudeChange = useCallback((e) => {
     if (e.target.value) {
@@ -95,68 +112,41 @@ function MapDraw() {
     }
   }, [])
 
-  const editingPointLatitude = newPointLatitude !== null ? newPointLatitude : currentEditHandle?.[1]
+  const editingPointLatitude =
+    newPointLatitude !== null ? newPointLatitude : currentPointCoordinates?.[1]
   const editingPointLongitude =
-    newPointLongitude !== null ? newPointLongitude : currentEditHandle?.[0]
+    newPointLongitude !== null ? newPointLongitude : currentPointCoordinates?.[0]
 
   const onConfirmNewPointPosition = useCallback(() => {
-    if (features && selectedFeatureIndex !== null && selectedEditHandleIndex !== null) {
+    if (selectedFeature !== null && selectedPointIndex !== null) {
       const newPointPosition = [editingPointLongitude, editingPointLatitude] as DrawPointPosition
-      const newFeatures = updateFeaturePointByIndex(
-        features,
-        selectedFeatureIndex,
-        selectedEditHandleIndex,
+      const newFeature = updateFeaturePointByIndex(
+        selectedFeature,
+        selectedPointIndex,
         newPointPosition
       )
-      setFeatures(newFeatures)
+      // From DOCS: If you add() a feature with an id that is already in use,
+      // the existing feature will be updated and no new feature will be added.
+      drawControl.add(newFeature)
       setNewPointLatitude(null)
       setNewPointLongitude(null)
-      setSelectedEditHandleIndex(null)
+      setSelectedPointIndex(null)
     }
   }, [
-    features,
-    selectedFeatureIndex,
-    selectedEditHandleIndex,
-    editingPointLatitude,
+    selectedFeature,
+    selectedPointIndex,
     editingPointLongitude,
+    editingPointLatitude,
+    drawControl,
   ])
 
   const onDeletePoint = useCallback(() => {
-    if (features && selectedFeatureIndex !== null && selectedEditHandleIndex !== null) {
-      const newFeatures = removeFeaturePointByIndex(
-        features,
-        selectedFeatureIndex,
-        selectedEditHandleIndex
-      )
-      setFeatures(newFeatures)
-      setSelectedEditHandleIndex(null)
+    if (selectedFeature !== null && selectedPointIndex !== null) {
+      const newFeature = removeFeaturePointByIndex(selectedFeature, selectedPointIndex)
+      drawControl.add(newFeature)
+      setSelectedPointIndex(null)
     }
-  }, [features, selectedFeatureIndex, selectedEditHandleIndex])
-
-  const onEditorSelect = useCallback((e: EditorSelect) => {
-    setSelectedFeatureIndex(e.selectedFeatureIndex)
-    setSelectedEditHandleIndex(e.selectedEditHandleIndex)
-  }, [])
-
-  const onHintClick = useCallback(() => {
-    const featureIndex = features?.length - 1
-    setSelectedFeatureIndex(featureIndex)
-    setSelectedEditHandleIndex(1)
-  }, [features])
-
-  const onEditorUpdate = useCallback(
-    (e: EditorUpdate) => {
-      setFeatures(getFeaturesPrecisionRounded(e.data))
-      if (e.editType === 'addFeature') {
-        dispatchSetDrawMode('edit')
-      }
-      if (e.editType === 'addPosition' && selectedFeatureIndex !== null) {
-        const editHandleIndex = e.editContext[selectedFeatureIndex]?.editHandleIndex
-        setSelectedEditHandleIndex(editHandleIndex)
-      }
-    },
-    [dispatchSetDrawMode, selectedFeatureIndex]
-  )
+  }, [drawControl, selectedFeature, selectedPointIndex])
 
   const onInputChange = useCallback(
     (e) => {
@@ -165,42 +155,54 @@ function MapDraw() {
     [setLayerName]
   )
 
+  const setDrawingMode = useCallback(
+    (mode: DrawMode, featureId?: string) => {
+      const modeOptions = featureId ? { featureId } : ({} as any)
+      drawControl.changeMode(mode as any, modeOptions)
+    },
+    [drawControl]
+  )
+
+  const onHintClick = useCallback(() => {
+    if (features.length) {
+      const selectedFeature = features[0]
+      setDrawingMode('direct_select', selectedFeature.id as string)
+      setSelectedPointIndex(1)
+    }
+  }, [features, setDrawingMode])
+
   const onAddPolygonClick = useCallback(() => {
-    dispatchSetDrawMode('draw')
+    setDrawingMode('draw_polygon')
     uaEvent({
       category: 'Reference layer',
       action: `Draw a custom reference layer - Click + icon`,
     })
-  }, [dispatchSetDrawMode])
+  }, [setDrawingMode])
 
   const onRemoveClick = useCallback(() => {
-    if (features?.length) {
-      setFeatures(features.filter((f, index) => index !== selectedFeatureIndex))
-    }
-  }, [features, selectedFeatureIndex])
+    drawControl.delete(selectedFeatureId as string)
+  }, [drawControl, selectedFeatureId])
 
   const resetEditHandler = useCallback(() => {
-    setSelectedEditHandleIndex(null)
+    setSelectedPointIndex(null)
     setNewPointLatitude(null)
     setNewPointLongitude(null)
   }, [])
 
   const resetState = useCallback(() => {
     setLayerName('')
-    setFeatures(null)
-    setSelectedFeatureIndex(null)
     resetEditHandler()
   }, [resetEditHandler])
 
   const closeDraw = useCallback(() => {
     resetState()
-    dispatchSetDrawMode('disabled')
+    dispatchSetMapDrawing(false)
     dispatchQueryParams({ sidebarOpen: true })
     uaEvent({
       category: 'Reference layer',
       action: `Draw a custom reference layer - Click dismiss`,
     })
-  }, [dispatchQueryParams, dispatchSetDrawMode, resetState])
+  }, [dispatchQueryParams, dispatchSetMapDrawing, resetState])
 
   const toggleCreateAsPublic = useCallback(() => {
     setCreateAsPublic((createAsPublic) => !createAsPublic)
@@ -227,46 +229,27 @@ function MapDraw() {
     [addDataviewFromDatasetToWorkspace, closeDraw, createAsPublic, dispatchCreateDataset]
   )
 
-  const onSaveClick = useCallback(() => {
-    if (features && features.length > 0 && layerName) {
-      createDataset(features, layerName)
-      uaEvent({
-        category: 'Reference layer',
-        action: `Draw a custom reference layer - Click save`,
-      })
-    }
-  }, [createDataset, features, layerName])
-
-  const overLapInFeatures = useMemo(() => {
-    if (!features) {
-      return []
-    }
-    return features.map((feature) => kinks(feature.geometry).features.length > 0)
-  }, [features])
-  const hasOverLapInFeatures = overLapInFeatures.some(Boolean)
-
-  const customFeatureStyle = useCallback(
-    (style: FeatureStyle) => {
-      if (hasOverLapInFeatures && overLapInFeatures[style.index]) {
-        return {
-          stroke: 'rgb(360, 62, 98)',
-          strokeWidth: 2,
-          fill: 'rgb(360, 62, 98)',
-          fillOpacity: 0.3,
-        }
+  const onSaveClick = useCallback(
+    (features) => {
+      if (features && features.length > 0 && layerName) {
+        createDataset(features, layerName)
+        uaEvent({
+          category: 'Reference layer',
+          action: `Draw a custom reference layer - Click save`,
+        })
       }
-      return featureStyle(style)
     },
-    [hasOverLapInFeatures, overLapInFeatures]
+    [createDataset, layerName]
   )
 
-  const editorMode = useMemo(() => {
-    if (drawMode === 'disabled') {
-      return
+  const overLapInFeatures = useMemo(() => {
+    if (features?.length) {
+      return features.map((feature) => kinks(feature.geometry).features.length > 0)
     }
-    return drawMode === 'edit' ? new EditingMode() : new DrawPolygonMode()
-  }, [drawMode])
+    return []
+  }, [features])
 
+  const hasOverLapInFeatures = overLapInFeatures.some(Boolean)
   const hasFeaturesDrawn = features !== null && features.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
@@ -285,34 +268,15 @@ function MapDraw() {
 
   return (
     <Fragment>
-      {editorMode && (
-        <div
-          className={cx({
-            [styles.editor]: drawMode === 'edit',
-            [styles.editing]: selectedFeatureIndex !== null,
-          })}
-        >
-          <Editor
-            ref={editorRef}
-            clickRadius={12}
-            features={features}
-            mode={editorMode}
-            featureStyle={customFeatureStyle}
-            selectedFeatureIndex={selectedFeatureIndex}
-            onUpdate={onEditorUpdate}
-            onSelect={onEditorSelect}
-          />
-        </div>
-      )}
-      {editorMode && currentEditHandle && (
+      {isMapDrawing && currentPointCoordinates && (
         <Popup
-          latitude={currentEditHandle[1]}
-          longitude={currentEditHandle[0]}
+          latitude={currentPointCoordinates[1]}
+          longitude={currentPointCoordinates[0]}
           closeButton={true}
-          closeOnClick={true}
+          closeOnClick={false}
           onClose={resetEditHandler}
+          maxWidth="320px"
           className={cx(styles.popup)}
-          captureClick
         >
           <div className={styles.popupContent}>
             <div className={styles.flex}>
@@ -363,7 +327,7 @@ function MapDraw() {
           </div>
         </Popup>
       )}
-      <div ref={containerRef} className={cx(styles.container, { [styles.hidden]: !editorMode })}>
+      <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
         {(features?.length > 0 || hasOverLapInFeatures) && (
           <div className={cx(styles.hint, { [styles.warning]: hasOverLapInFeatures })}>
             <IconButton
@@ -419,7 +383,7 @@ function MapDraw() {
               }
               tooltip={saveTooltip}
               tooltipPlacement="top"
-              onClick={onSaveClick}
+              onClick={() => onSaveClick(features)}
             >
               {t('common.save', 'Save')}
             </Button>

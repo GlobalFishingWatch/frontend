@@ -14,7 +14,7 @@ import {
 } from './types'
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
-  return data.map((item) => {
+  return data?.map((item) => {
     const filteredChunks = item.chunks.filter((chunk) => {
       const chunkStart = chunk.start
       const chunkEnd = chunk.end || chunk.start
@@ -45,7 +45,7 @@ export const useFilteredChartData = (data: TimebarChartData<any>) => {
   return filteredData
 }
 
-const MIN_DISTANCE_PX_TO_CLUSTER = 4
+const MIN_DISTANCE_PX_TO_CLUSTER = 2
 
 export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineScale) => {
   return data.map((item) => {
@@ -172,9 +172,10 @@ export const useSortedChartData = (data: TimebarChartData<any>, type?: 'byType' 
 export const useTimeseriesToChartData = (
   data: Timeseries,
   dataviews: UrlDataviewInstance[],
-  highlighterCallback?: HighlighterCallback
+  highlighterCallback?: HighlighterCallback,
+  highlighterIconCallback?: HighlighterCallback
 ): TimebarChartData => {
-  if (!data || !data.length) return []
+  if (!data || !data.length || !dataviews?.length) return []
   return dataviews.map((dataview, i) => {
     const values: TimebarChartValue[] = data.map((frame) => {
       return {
@@ -191,6 +192,7 @@ export const useTimeseriesToChartData = (
       chunks: [chunk],
       color: dataview.config?.color,
       getHighlighterLabel: highlighterCallback,
+      getHighlighterIcon: highlighterIconCallback,
       props: {
         unit: '',
         dataviewId: dataview.id,

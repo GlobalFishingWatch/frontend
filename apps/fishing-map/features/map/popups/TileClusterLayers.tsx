@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
-import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -19,7 +19,6 @@ import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
-import { useMapContext } from 'features/map/map-context.hooks'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import useViewport from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
@@ -57,7 +56,6 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()
   const vessels = useSelector(selectActiveTrackDataviews)
-  const { eventManager } = useMapContext()
 
   useEffect(() => {
     if (!carrierLatest) {
@@ -66,7 +64,6 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
   }, [carrierLatest, dispatchFetchLatestCarrier])
 
   const onPinClick = (ev: React.MouseEvent<Element, MouseEvent>, vessel: ExtendedEventVessel) => {
-    eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
     const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
     if (vesselInWorkspace) {
       deleteDataviewInstance(vesselInWorkspace.id)
@@ -130,7 +127,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
 
   return (
     <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
         {showFeaturesDetails && (
@@ -231,7 +228,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
 function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
   return (
     <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+      <Icon icon="clusters" style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
         {showFeaturesDetails && feature.properties && (

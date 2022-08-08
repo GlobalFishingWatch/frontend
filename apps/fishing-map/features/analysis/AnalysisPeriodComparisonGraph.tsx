@@ -1,4 +1,4 @@
-import React, { useMemo, Fragment } from 'react'
+import { useMemo, Fragment } from 'react'
 import {
   ResponsiveContainer,
   CartesianGrid,

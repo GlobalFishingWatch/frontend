@@ -2,6 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { SortableContext } from '@dnd-kit/sortable'
 import { selectEventsDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
@@ -21,11 +22,14 @@ function EventsLayerSection(): React.ReactElement | null {
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.events', 'Events')}</h2>
       </div>
-      {dataviews?.map((dataview) => (
-        <LayerPanelContainer key={dataview.id} dataview={dataview}>
-          <LayerPanel dataview={dataview} />
-        </LayerPanelContainer>
-      ))}
+
+      <SortableContext items={dataviews}>
+        {dataviews?.map((dataview) => (
+          <LayerPanelContainer key={dataview.id} dataview={dataview}>
+            <LayerPanel dataview={dataview} />
+          </LayerPanelContainer>
+        ))}
+      </SortableContext>
     </div>
   )
 }

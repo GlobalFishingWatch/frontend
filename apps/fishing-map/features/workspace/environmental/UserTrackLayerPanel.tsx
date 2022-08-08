@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -9,12 +9,14 @@ import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
+import { NO_RECORD_ID } from '@globalfishingwatch/data-transforms'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { COLOR_SECONDARY_BLUE } from 'features/app/App'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
@@ -38,6 +40,17 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
   const [colorOpen, setColorOpen] = useState(false)
   const [seeMoreOpen, setSeeMoreOpen] = useState(false)
   const allTracksActive = useSelector(selectActiveTrackDataviews)
+  const {
+    items,
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    style,
+    isSorting,
+    activeIndex,
+  } = useLayerPanelDataviewSort(dataview.id)
+
   const singleTrack = allTracksActive.length === 1
 
   const layerActive = dataview?.config?.visible ?? true
@@ -73,6 +86,11 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
     selectResourceByUrl<FeatureCollection>(trackUrl)
   )
   const trackError = trackResource?.status === ResourceStatus.Error
+  const hasRecordIds =
+    dataset.configuration.id &&
+    trackResource?.data?.features?.some((f) => f.properties.id !== NO_RECORD_ID)
+
+  const featuresColoredByField = singleTrack && trackResource?.data && hasRecordIds
 
   const loading = trackResource?.status === ResourceStatus.Loading
 
@@ -98,6 +116,9 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
         [styles.expandedContainerOpen]: colorOpen,
         'print-hidden': !layerActive,
       })}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
     >
       <div className={styles.header}>
         <LayerSwitch
@@ -105,7 +126,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
-          color={singleTrack ? COLOR_SECONDARY_BLUE : undefined}
+          color={featuresColoredByField ? COLOR_SECONDARY_BLUE : undefined}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
@@ -130,20 +151,33 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
                     onColorClick={changeColor}
                     onToggleClick={onToggleColorOpen}
                     onClickOutside={closeExpandedContainer}
-                    disabled={singleTrack}
+                    disabled={featuresColoredByField}
                   />
                   <FitBounds hasError={trackError} trackResource={trackResource} />
                 </Fragment>
               )}
               <InfoModal dataview={dataview} />
               {isCustomUserLayer && <Remove dataview={dataview} />}
+              {items.length > 1 && (
+                <IconButton
+                  size="small"
+                  ref={setActivatorNodeRef}
+                  {...listeners}
+                  icon="drag"
+                  className={styles.dragger}
+                />
+              )}
             </Fragment>
           )}
         </div>
       </div>
 
-      {layerActive && singleTrack && trackResource && trackResource.data && (
-        <div className={styles.properties}>
+      {layerActive && featuresColoredByField && (
+        <div
+          className={cx(styles.properties, styles.drag, {
+            [styles.dragging]: isSorting && activeIndex > -1,
+          })}
+        >
           {trackResource.data.features
             .slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH)
             .map((feature, index) => {

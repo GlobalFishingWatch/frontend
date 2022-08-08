@@ -1,9 +1,10 @@
-import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
+import { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -26,24 +27,30 @@ import {
   getRelatedDatasetByType,
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
+import {
+  selectDataviewsResources,
+  selectGetVesselDataviewInstance,
+} from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
-import { parseVesselProfileId } from 'features/vessels/vessels.utils'
+import { NOT_AVAILABLE, parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { useApp } from 'features/app/app.hooks'
+import { useApp, useAppDispatch } from 'features/app/app.hooks'
+import RiskSummary from 'features/risk-summary/risk-summary'
+import RiskTitle from 'features/risk-title/risk-title'
+import ActivityByType from 'features/activity-by-type/activity-by-type'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
+import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
 
 const Profile: React.FC = (props): React.ReactElement => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { openFeedback } = useApp()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
@@ -58,30 +65,35 @@ const Profile: React.FC = (props): React.ReactElement => {
   const mergedVesselId = useSelector(selectMergedVesselId)
   const vessel = useSelector(selectVesselById(mergedVesselId))
   const datasets = useSelector(selectDatasets)
-  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const resourceQueries = useSelector(selectDataviewsResources)?.resources
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
+  const getVesselDataviewInstance = useSelector(selectGetVesselDataviewInstance)
   const isMergedVesselsView = useMemo(
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
-
+  const { online } = useNavigatorOnline()
+  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
       let [dataset] = (Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? '').split(
         '_'
       )
-
-      if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
+      if (
+        akaVesselProfileIds &&
+        dataset.toLocaleLowerCase() === NOT_AVAILABLE.toLocaleLowerCase()
+      ) {
         const gfwAka = akaVesselProfileIds.find((aka) => {
           const [akaDataset] = aka.split('_')
-          return akaDataset.toLocaleLowerCase() !== 'na'
+          return akaDataset.toLocaleLowerCase() !== NOT_AVAILABLE.toLocaleLowerCase()
         })
         if (gfwAka) {
           const [akaDataset] = gfwAka.split('_')
           dataset = akaDataset
         }
       }
+
       await dispatch(
         fetchVesselByIdThunk({
           id: vesselProfileId,
@@ -109,12 +121,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
         if (trackDatasetId) {
           const eventsRelatedDatasets = getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)
-
           const eventsDatasetsId =
             eventsRelatedDatasets && eventsRelatedDatasets?.length
               ? eventsRelatedDatasets.map((d) => d.id)
               : []
-
           // Only merge with vessels of the same dataset that the main vessel
           const akaVesselsIds = [
             {
@@ -145,15 +155,33 @@ const Profile: React.FC = (props): React.ReactElement => {
         }
       }
     }
-    const [dataset, gfwId, tmtId] = (
+    let [dataset, gfwId, tmtId] = (
       Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
     ).split('_')
+    if (akaVesselProfileIds && dataset.toLocaleLowerCase() === NOT_AVAILABLE.toLocaleLowerCase()) {
+      const gfwAka = akaVesselProfileIds.find((aka) => {
+        const [akaDataset] = aka.split('_')
+        return akaDataset.toLocaleLowerCase() !== NOT_AVAILABLE.toLocaleLowerCase()
+      })
+      if (gfwAka) {
+        const [akaDataset, akaGfwId] = gfwAka.split('_')
+        dataset = akaDataset
+        gfwId = akaGfwId
+      }
+    }
 
     // this is for update the vessel dataview in case that keep cached with the dataview of another vessel
     if (!vesselDataview || 'vessel-' + gfwId !== vesselDataview.id) {
       updateDataview(dataset, gfwId, tmtId)
     }
-  }, [akaVesselProfileIds, datasets, dispatch, vesselDataview, vesselProfileId])
+  }, [
+    akaVesselProfileIds,
+    datasets,
+    dispatch,
+    getVesselDataviewInstance,
+    vesselDataview,
+    vesselProfileId,
+  ])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
@@ -174,54 +202,93 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const visibleHighlights = useSelector(countFilteredEventsHighlighted)
 
+  const mapTab = useMemo(
+    () => ({
+      id: 'map',
+      title: t('common.map', 'MAP').toLocaleUpperCase(),
+      content: vessel ? (
+        <div className={styles.mapContainer}>
+          <Map />
+        </div>
+      ) : loading ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : null,
+    }),
+    [loading, t, vessel]
+  )
+  const riskSummaryTab = useMemo(
+    () => ({
+      id: 'risk',
+      title: <RiskTitle />,
+      content: vessel ? (
+        <RiskSummary onMoveToMap={() => setActiveTab(mapTab)} />
+      ) : loading ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : null,
+    }),
+    [loading, mapTab, vessel]
+  )
+
+  const infoTab = useMemo(
+    () => ({
+      id: 'info',
+      title: t('common.info', 'INFO').toLocaleUpperCase(),
+      content: vessel ? (
+        <Info
+          vessel={vessel}
+          lastPosition={lastPosition}
+          lastPortVisit={lastPortVisit}
+          onMoveToMap={() => setActiveTab(mapTab)}
+        />
+      ) : loading ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : null,
+    }),
+    [lastPortVisit, lastPosition, loading, mapTab, t, vessel]
+  )
+  const activityTab = useMemo(
+    () => ({
+      id: 'activity',
+      title: (
+        <div className={styles.tagContainer}>
+          {t('common.activity', 'ACTIVITY').toLocaleUpperCase()}
+          {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
+        </div>
+      ),
+      content: vessel ? (
+        <Activity
+          vessel={vessel}
+          lastPosition={lastPosition}
+          lastPortVisit={lastPortVisit}
+          onMoveToMap={() => setActiveTab(mapTab)}
+        />
+      ) : loading ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : null,
+    }),
+    [lastPortVisit, lastPosition, loading, mapTab, t, vessel, visibleHighlights]
+  )
+
+  const activityByTypeTab = useMemo(
+    () => ({
+      id: 'activity',
+      title: (
+        <div className={styles.tagContainer}>
+          {t('common.activityByType', 'ACTIVITY BY TYPE').toLocaleUpperCase()}
+          {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
+        </div>
+      ),
+      content: <ActivityByType onMoveToMap={() => setActiveTab(mapTab)} />,
+    }),
+    [mapTab, t, visibleHighlights]
+  )
+
   const tabs: Tab[] = useMemo(
-    () => [
-      {
-        id: 'info',
-        title: t('common.info', 'INFO').toLocaleUpperCase(),
-        content: vessel ? (
-          <Info
-            vessel={vessel}
-            lastPosition={lastPosition}
-            lastPortVisit={lastPortVisit}
-            onMoveToMap={() => setActiveTab(tabs?.[2])}
-          />
-        ) : (
-          <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
-        ),
-      },
-      {
-        id: 'activity',
-        title: (
-          <div className={styles.tagContainer}>
-            {t('common.activity', 'ACTIVITY').toLocaleUpperCase()}
-            {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
-          </div>
-        ),
-        content: vessel ? (
-          <Activity
-            vessel={vessel}
-            lastPosition={lastPosition}
-            lastPortVisit={lastPortVisit}
-            onMoveToMap={() => setActiveTab(tabs?.[2])}
-          />
-        ) : (
-          <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
-        ),
-      },
-      {
-        id: 'map',
-        title: t('common.map', 'MAP').toLocaleUpperCase(),
-        content: vessel ? (
-          <div className={styles.mapContainer}>
-            <Map />
-          </div>
-        ) : (
-          <Fragment>{loading && <Spinner className={styles.spinnerFull}></Spinner>}</Fragment>
-        ),
-      },
-    ],
-    [t, vessel, lastPosition, lastPortVisit, loading, visibleHighlights]
+    () =>
+      currentProfileIsInsurer
+        ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
+        : [infoTab, activityTab, mapTab],
+    [currentProfileIsInsurer, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
@@ -285,13 +352,15 @@ const Profile: React.FC = (props): React.ReactElement => {
             )}
           </h1>
         )}
-        <IconButton
-          icon="feedback"
-          className={styles.feedback}
-          onClick={openFeedback}
-          tooltip={t('common.feedback', 'Feedback')}
-          tooltipPlacement="bottom"
-        />
+        {online && (
+          <IconButton
+            icon="feedback"
+            className={styles.feedback}
+            onClick={openFeedback}
+            tooltip={t('common.feedback', 'Feedback')}
+            tooltipPlacement="bottom"
+          />
+        )}
       </header>
       <div className={styles.profileContainer}>
         <Tabs

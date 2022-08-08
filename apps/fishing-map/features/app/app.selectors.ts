@@ -26,8 +26,10 @@ import {
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
   selectActiveVesselsDataviews,
-  selectDataviewInstancesMerged,
+  selectDataviewInstancesMergedOrdered,
 } from 'features/dataviews/dataviews.slice'
+import { RootState } from 'store'
+import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -122,8 +124,15 @@ export const selectTimebarVisualisation = createSelector(
 )
 
 export const selectTimebarSelectedEnvId = createSelector(
-  [selectWorkspaceStateProperty('timebarSelectedEnvId')],
-  (timebarSelectedEnvId): string => {
+  [
+    selectWorkspaceStateProperty('timebarSelectedEnvId'),
+    selectTimebarVisualisation,
+    selectEnvironmentalDataviews,
+  ],
+  (timebarSelectedEnvId, timebarVisualisation, envDataviews): string => {
+    if (timebarVisualisation === TimebarVisualisations.Environment) {
+      return timebarSelectedEnvId || envDataviews[0]?.id
+    }
     return timebarSelectedEnvId
   }
 )
@@ -136,7 +145,10 @@ export const selectVisibleEvents = createSelector(
 )
 
 export const selectTimebarGraph = createSelector(
-  [selectWorkspaceStateProperty('timebarGraph'), selectActiveVesselsDataviews],
+  [
+    selectWorkspaceStateProperty('timebarGraph'),
+    (state: RootState) => selectActiveVesselsDataviews(state),
+  ],
   (timebarGraph, vessels): TimebarGraphs => {
     return vessels && vessels.length ? timebarGraph : TimebarGraphs.None
   }
@@ -149,23 +161,14 @@ export const selectWorkspaceAppState = createSelector(
     selectTimebarVisualisation,
     selectVisibleEvents,
     selectTimebarGraph,
-    selectActivityCategory,
   ],
-  (
-    bivariateDataviews,
-    sidebarOpen,
-    timebarVisualisation,
-    visibleEvents,
-    timebarGraph,
-    activityCategory
-  ) => {
+  (bivariateDataviews, sidebarOpen, timebarVisualisation, visibleEvents, timebarGraph) => {
     return {
       bivariateDataviews,
       sidebarOpen,
       timebarVisualisation,
       visibleEvents,
       timebarGraph,
-      activityCategory,
     }
   }
 )
@@ -177,14 +180,13 @@ export const selectWorkspaceWithCurrentState = createSelector(
     selectTimeRange,
     selectLocationCategory,
     selectWorkspaceAppState,
-    selectDataviewInstancesMerged,
+    (state: RootState) => selectDataviewInstancesMergedOrdered(state),
   ],
   (workspace, viewport, timerange, category, state, dataviewInstances): AppWorkspace => {
     return {
       ...workspace,
       app: APP_NAME,
       category,
-      aoi: undefined,
       viewport,
       startAt: timerange.start,
       endAt: timerange.end,

@@ -87,7 +87,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
   }, [])
 
   const update = useCallback(
-    ({ newStart, newCompareStart, newDuration, newDurationType, error }) => {
+    ({ newStart, newCompareStart, newDuration, newDurationType, error }: any) => {
       const compareStart = newCompareStart
         ? parseYYYYMMDDDate(newCompareStart).toISO()
         : parseFullISODate(timeComparison.compareStart as string).toISO()

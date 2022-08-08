@@ -7,7 +7,7 @@ import { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary'
-export type ButtonSize = 'default' | 'small' | 'big' | 'verybig'
+export type ButtonSize = 'tiny' | 'small' | 'default' | 'big' | 'verybig'
 
 export interface ButtonProps {
   id?: string
@@ -16,7 +16,7 @@ export interface ButtonProps {
   disabled?: boolean
   loading?: boolean
   className?: string
-  children: React.ReactChild | React.ReactChild[] | TooltipTypes
+  children: React.ReactNode
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   onClick?: (e: React.MouseEvent) => void
@@ -44,7 +44,7 @@ export function Button(props: ButtonProps) {
     target,
   } = props
   return (
-    <Tooltip content={tooltip} placement={tooltipPlacement}>
+    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       {href !== undefined && !disabled ? (
         <a
           href={href}

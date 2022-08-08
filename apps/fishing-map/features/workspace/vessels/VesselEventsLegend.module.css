@@ -24,38 +24,65 @@
   color: var(--color-primary-blue);
 }
 
+.iconWrapper {
+  position: relative;
+  margin-left: 1.2rem;
+}
+
 .icon {
+  position: relative;
   display: block;
   width: 12px;
   height: 12px;
-  margin-left: 0.6rem;
+}
+
+.iconWrapper::before {
+  content: ' ';
+  border: 0.5px solid var(--color-secondary-blue);
+  position: absolute;
+  width: 15px;
+  top: 3px;
+  left: -4px;
+  z-index: 0;
 }
 
 .disabled {
   opacity: 0.5;
 }
 
-.fishing {
+.fishing > .icon {
   border-radius: 99px;
+  background: var(--color);
   border: 1px solid var(--color);
   width: 8px;
   height: 8px;
 }
 
-.encounter,
-.loitering,
-.port_visit {
+.encounter > .icon,
+.loitering > .icon,
+.port_visit > .icon {
   background-repeat: no-repeat;
 }
 
-.encounter {
+.encounter::before,
+.loitering::before {
+  top: 5px;
+  left: -2px;
+}
+
+.encounter > .icon {
   background-image: var(--encounterIcon);
 }
 
-.loitering {
+.loitering > .icon {
   background-image: var(--loiteringIcon);
 }
 
-.port_visit {
+.port_visit::before {
+  top: 4px;
+  left: -3px;
+}
+
+.port_visit > .icon {
   background-image: var(--portIcon);
 }

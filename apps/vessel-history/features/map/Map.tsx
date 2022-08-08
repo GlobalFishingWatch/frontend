@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { InteractiveMap } from 'react-map-gl'
-import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
+import { Map, MapboxStyle } from 'react-map-gl'
+import maplibregl from '@globalfishingwatch/maplibre-gl'
+import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
@@ -23,14 +24,15 @@ import { selectHighlightedEvent } from './map.slice'
 import styles from './Map.module.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
-const mapOptions: any = {
-  customAttribution: '© Copyright Global Fishing Watch 2020',
+const mapStyles = {
+  width: '100%',
+  height: '100%',
 }
 
-const Map: React.FC = (): React.ReactElement => {
+const MapWrapper: React.FC = (): React.ReactElement => {
   const map = useMapInstance()
   const dispatch = useAppDispatch()
-  const mapRef = useRef<any>(null)
+  const flying = useRef(false)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const { selectVesselEventOnClick, highlightEvent, onFiltersChanged } = useMapEvents()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
@@ -41,9 +43,10 @@ const Map: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
+  const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 
-  const onMapClick = useMapClick(
+  const onMapClick: any = useMapClick(
     selectVesselEventOnClick,
     style?.metadata as ExtendedStyleMeta,
     map
@@ -93,56 +96,50 @@ const Map: React.FC = (): React.ReactElement => {
     }
   }, [filters, onFiltersChanged, prevFilters])
 
-  if (ENABLE_FLYTO) {
-    let flying = false
-    let centetingMap: ReturnType<typeof setTimeout>
-    mapRef?.current?.getMap().on('moveend', (e: any) => {
-      if (flying) {
-        if (centetingMap) {
-          clearTimeout(centetingMap)
-        }
-        const currentPitch = mapRef?.current?.getMap().getPitch()
-        const currentBearing = mapRef?.current?.getMap().getBearing()
-        centetingMap = setTimeout(() => {
-          mapRef?.current?.getMap().easeTo({
-            center: [
-              mapRef.current?.getMap().getCenter().lng,
-              mapRef.current?.getMap().getCenter().lat,
-            ],
-            zoom: mapRef.current.getMap().getZoom() + 1,
-            duration:
-              1000 +
-              (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500),
-            pitch: 0,
-            bearing: 0,
-          })
-          setTimeout(() => {
-            setMapCoordinates({
-              latitude: mapRef.current?.getMap().getCenter().lat,
-              longitude: mapRef.current?.getMap().getCenter().lng,
-              zoom: mapRef.current.getMap().getZoom(),
-
+  useEffect(() => {
+    if (ENABLE_FLYTO && map) {
+      let centetingMap: ReturnType<typeof setTimeout>
+      map.on('moveend', (e: any) => {
+        if (flying.current) {
+          flying.current = false
+          if (centetingMap) {
+            clearTimeout(centetingMap)
+          }
+          const currentPitch = map.getPitch()
+          const currentBearing = map.getBearing()
+          centetingMap = setTimeout(() => {
+            map.easeTo({
+              center: [map.getCenter().lng, map.getCenter().lat],
+              zoom: map.getZoom() + 1,
+              duration:
+                1000 +
+                (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500),
               pitch: 0,
               bearing: 0,
             })
-          }, 1002 + (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500))
-        }, 1)
-        mapRef?.current?.getMap().fire('flyend')
-      }
-    })
-    mapRef?.current?.getMap().on('flystart', function () {
-      flying = true
-    })
-    mapRef?.current?.getMap().on('flyend', function () {
-      flying = false
-    })
-  }
+            setTimeout(() => {
+              setMapCoordinates({
+                latitude: map.getCenter().lat,
+                longitude: map.getCenter().lng,
+                zoom: map.getZoom(),
+
+                pitch: 0,
+                bearing: 0,
+              })
+            }, 1002 + (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500))
+          }, 1)
+          map.fire('flyend')
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map])
 
   const onEventChange = useCallback(
     (nextEvent: RenderedEvent, pitch: number, bearing: number, padding: number) => {
-      const currentZoom = mapRef.current.getMap().getZoom() - 1
+      const currentZoom = map.getZoom() - 1
       if (ENABLE_FLYTO) {
-        mapRef.current.getMap().flyTo({
+        map.flyTo({
           center: [nextEvent.position.lon, nextEvent.position.lat],
           pitch: ENABLE_FLYTO === FLY_EFFECTS.fly ? pitch : 0,
           bearing: ENABLE_FLYTO === FLY_EFFECTS.fly ? bearing : 0,
@@ -154,16 +151,12 @@ const Map: React.FC = (): React.ReactElement => {
           curve: ENABLE_FLYTO === FLY_EFFECTS.fly ? 1.5 : 2.5, // change the speed at which it zooms out
           essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         })
-        mapRef?.current?.getMap().fire('flystart')
+        flying.current = true
         //dispatchQueryParams({ latitude: nextEvent.position.lat, longitude: nextEvent.position.lon })
       } else {
         //with this change we will center the event in the available map on the screen
-        const coordinates = mapRef.current
-          .getMap()
-          .project([nextEvent.position.lon, nextEvent.position.lat])
-        const offsetCoordinates = mapRef.current
-          .getMap()
-          .unproject([coordinates.x, coordinates.y + padding / 2])
+        const coordinates = map.project([nextEvent.position.lon, nextEvent.position.lat])
+        const offsetCoordinates = map.unproject([coordinates.x, coordinates.y + padding / 2])
         setMapCoordinates({
           latitude: offsetCoordinates.lat,
           longitude: offsetCoordinates.lng,
@@ -173,25 +166,25 @@ const Map: React.FC = (): React.ReactElement => {
         })
       }
     },
-    [setMapCoordinates]
+    [map, setMapCoordinates]
   )
 
   return (
     <div className={styles.container}>
       {style && (
-        <InteractiveMap
-          disableTokenWarning={true}
-          ref={mapRef}
-          width="100%"
-          height="100%"
+        <Map
+          id="map"
+          mapLib={maplibregl}
+          style={mapStyles}
           zoom={viewport.zoom}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
-          onViewportChange={onViewportChange}
+          onMove={onViewportChange}
           onClick={onMapClick}
-          mapStyle={style}
-          mapOptions={mapOptions}
-        ></InteractiveMap>
+          mapStyle={style as MapboxStyle}
+          interactiveLayerIds={interactiveLayerIds}
+          customAttribution={'© Copyright Global Fishing Watch 2020'}
+        ></Map>
       )}
       <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
       <Info onEventChange={onEventChange}></Info>
@@ -199,4 +192,4 @@ const Map: React.FC = (): React.ReactElement => {
   )
 }
 
-export default Map
+export default MapWrapper

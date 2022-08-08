@@ -1,5 +1,5 @@
 {
-  "root": "libs/pbf-decoders",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/pbf-decoders",
   "projectType": "library",
   "tags": [],
@@ -39,7 +39,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/pbf-decoders"],
       "options": {
-        "jestConfig": "libs/pbf-decoders/jest.config.js",
+        "jestConfig": "libs/pbf-decoders/jest.config.ts",
         "passWithNoTests": true
       }
     },

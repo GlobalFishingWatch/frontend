@@ -32,6 +32,7 @@ export interface Vessel {
   authorizations?: Authorization[]
   registeredGearType?: string
   imageList?: string[]
+  years?: number[]
 }
 
 export interface VesselSearch extends Vessel {
@@ -39,4 +40,8 @@ export interface VesselSearch extends Vessel {
   source: string // Label of the dataset
   vesselMatchId: string
   posCount?: number
+}
+
+export interface RelatedVesselSearchMerged extends VesselSearch {
+  relatedVessels: VesselSearch[],
 }

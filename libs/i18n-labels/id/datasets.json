@@ -21,13 +21,12 @@
     }
   },
   "full-indonesia-fishing-vessels": {
-    "name": "VMS Indonesia (Fishing Vessels)",
+    "name": "Indonesia VMS (Fishing Vessels)",
     "description": "Dataset for VMS Indonesia (Public)",
     "schema": {
       "id": "id",
       "flag": "flag",
       "source": "source",
-      "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -81,129 +80,9 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "public-ais-presence-viirs-match-prototype": {
-    "name": "VIIRS Match",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
-    "schema": {
-      "cel": "cel",
-      "lat": "lat",
-      "lon": "lon",
-      "pos": "pos",
-      "flag": "flag",
-      "htime": "htime",
-      "source": {
-        "keyword": "source",
-        "enum": {
-          "unknown": "unknown",
-          "AIS": "AIS"
-        }
-      },
-      "matched": {
-        "keyword": "matched",
-        "enum": {
-          "true": "AIS Matched",
-          "false": "AIS Unmatched"
-        }
-      },
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "unknown": "unknown",
-          "cargo": "cargo",
-          "container_reefer": "container_reefer",
-          "container_reefer,reefer": "container_reefer,reefer",
-          "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
-          "drifting_longlines,purse_seine_support": "drifting_longlines,purse_seine_support",
-          "drifting_longlines,specialized_reefer": "drifting_longlines,specialized_reefer",
-          "fish_factory": "fish_factory",
-          "fish_factory|reefer": "fish_factory|reefer",
-          "fish_tender": "fish_tender",
-          "fish_tender,well_boat": "fish_tender,well_boat",
-          "fish_tender|pots_and_traps": "fish_tender|pots_and_traps",
-          "fish_tender|reefer": "fish_tender|reefer",
-          "fish_tender|reefer,reefer|fish_tender": "fish_tender|reefer,reefer|fish_tender",
-          "fish_tender|reefer,well_boat|reefer": "fish_tender|reefer,well_boat|reefer",
-          "fishing": "fishing",
-          "fishing|fish_tender,fish_tender": "fishing|fish_tender,fish_tender",
-          "fixed_gear": "fixed_gear",
-          "geartype": "geartype",
-          "other_purse_seines": "other_purse_seines",
-          "other_seines": "other_seines",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
-          "pots_and_traps,fish_tender": "pots_and_traps,fish_tender",
-          "pots_and_traps|fish_tender": "pots_and_traps|fish_tender",
-          "purse_seine_support": "purse_seine_support",
-          "purse_seines": "purse_seines",
-          "purse_seines,purse_seine_support": "purse_seines,purse_seine_support",
-          "reefer": "reefer",
-          "reefer,container_reefer": "reefer,container_reefer",
-          "reefer,specialized_reefer": "reefer,specialized_reefer",
-          "reefer,well_boat|reefer": "reefer,well_boat|reefer",
-          "reefer|drifting_longlines|well_boat": "reefer|drifting_longlines|well_boat",
-          "reefer|fish_tender": "reefer|fish_tender",
-          "reefer|fish_tender,fish_tender": "reefer|fish_tender,fish_tender",
-          "reefer|fish_tender,well_boat|reefer": "reefer|fish_tender,well_boat|reefer",
-          "reefer|well_boat": "reefer|well_boat",
-          "reefer|well_boat,well_boat": "reefer|well_boat,well_boat",
-          "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "specialized_reefer": "specialized_reefer",
-          "specialized_reefer,reefer": "specialized_reefer,reefer",
-          "specialized_reefer,specialized_reefer": "specialized_reefer,specialized_reefer",
-          "specialized_reefer|fish_factory|trawlers": "specialized_reefer|fish_factory|trawlers",
-          "specialized_reefer|well_boat": "specialized_reefer|well_boat",
-          "squid_jigger": "squid_jigger",
-          "trawlers": "trawlers",
-          "trawlers,fish_factory": "trawlers,fish_factory",
-          "trollers": "trollers",
-          "tuna_purse_seines": "tuna_purse_seines",
-          "well_boat": "well_boat",
-          "well_boat,reefer|well_boat": "well_boat,reefer|well_boat",
-          "well_boat,specialized_reefer": "well_boat,specialized_reefer",
-          "well_boat|reefer": "well_boat|reefer",
-          "well_boat|reefer,fish_tender|reefer": "well_boat|reefer,fish_tender|reefer",
-          "well_boat|reefer,well_boat": "well_boat|reefer,well_boat",
-          "well_boat|reefer,well_boat,reefer|well_boat": "well_boat|reefer,well_boat,reefer|well_boat"
-        }
-      },
-      "radiance": {
-        "keyword": "radiance",
-        "enum": {
-          "1": 1,
-          "1000": 1000
-        }
-      },
-      "shiptype": {
-        "keyword": "shiptype",
-        "enum": {
-          "unknown": "unknown",
-          "fishing": "fishing",
-          "carrier": "carrier",
-          "support": "support"
-        }
-      },
-      "detect_id": "detect_id",
-      "qf_detect": {
-        "keyword": "qf_detect",
-        "enum": {
-          "1": 1,
-          "2": 2,
-          "3": 3,
-          "5": 5,
-          "7": 7,
-          "10": 10
-        }
-      },
-      "timestamp": "timestamp",
-      "vessel_id": "vessel_id"
-    }
-  },
   "private-belize-fishing-effort": {
-    "name": "Belize VMS",
-    "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
+    "name": "Apparent Fishing Effort Belize VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing presence algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -212,10 +91,9 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
-          "longline": "Longline",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "longline"
         }
       },
       "vessel_id": "vessel_id",
@@ -229,21 +107,20 @@
     "description": "Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
+      "imo": "imo",
       "flag": "flag",
+      "mmsi": "mmsi",
       "source": "source",
-      "dataset": "dataset",
+      "callsign": "callsign",
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
-          "longline": "Longline",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "longline",
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -254,24 +131,45 @@
     "description": "Non Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
+      "imo": "imo",
       "flag": "flag",
+      "mmsi": "mmsi",
       "source": "source",
-      "dataset": "dataset",
+      "callsign": "callsign",
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
-          "longline": "Longline",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "longline",
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-belize-presence": {
+    "name": "Vessel Presence Belize VMS",
+    "description": "Presence (Belize private)",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "longline",
+          "reefer": "reefer"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "private-bra-onyxsat-fishing-effort": {
@@ -478,28 +376,6 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "private-belize-presence": {
-    "name": "VMS Belize",
-    "description": "Presence (Belize private)",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "purse_seine": "purse_seine",
-          "trawler": "trawler",
-          "longline": "longline",
-          "reefer": "reefer"
-        }
-      },
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "distance_from_port_m": "distance_from_port_m",
-      "distance_from_shore_m": "distance_from_shore_m"
-    }
-  },
   "private-bra-onyxsat-presence": {
     "name": "VMS Brazil",
     "description": "Presence (Brazil private)",
@@ -549,6 +425,27 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-costa-rica-presence": {
+    "name": "Vessel Presence Costa Rica VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
+          "costarica_vms_atuneros": "costarica_vms_atuneros",
+          "costarica_vms_sardineros": "costarica_vms_sardineros"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "private-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
     "description": "Description pending",
@@ -561,6 +458,30 @@
         "keyword": "shiptype",
         "enum": {
           "fishing": "fishing"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-ecuador-presence": {
+    "name": "Vessel Presence Ecuador VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing",
+          "international traffic": "international traffic",
+          "national traffic": "national traffic",
+          "tug": "tug",
+          "boat": "boat",
+          "auxiliary": "auxiliary"
         }
       },
       "vessel_id": "vessel_id",
@@ -582,9 +503,7 @@
       "callsign": "callsign",
       "geartype": {
         "keyword": "geartype",
-        "enum": {
-          "Purse Seine Support Vessel": "Purse Seine Support Vessel"
-        }
+        "enum": {}
       },
       "msgCount": "msgCount",
       "posCount": "posCount",
@@ -594,9 +513,43 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "private-indonesia-aruna-presence": {
+    "name": "Aruna",
+    "description": "Aruna Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-aruna-vessels": {
+    "name": "Indonesia Aruna (Vessels)",
+    "description": "Vessels (Indonesia Aruna)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
-    "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -631,9 +584,9 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
-  "private-indonesia-pelagic-presence": {
-    "name": "\nPerikanan Pesisir - Perangkat Baru",
-    "description": "\nLapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat Pelagic yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
+  "private-indonesia-ipnlf-presence": {
+    "name": "AP2HI-IPNLF",
+    "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -643,16 +596,51 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "trap net": "trap net",
-          "purse seine": "purse seine"
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-ipnlf-vessels": {
+    "name": "Indonesia AP2HI-IPNLF (Vessels)\n",
+    "description": "Vessels (Indonesia AP2HI-IPNLF)\n",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-indonesia-pelagic-presence": {
+    "name": "Pelagic",
+    "description": "Pelagic Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
         }
       },
       "vessel_id": "vessel_id"
     }
   },
   "private-indonesia-pelagic-vessels": {
-    "name": "Perikanan Pesisir - Perangkat Baru",
-    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat Pelagic yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
+    "name": "Indonesia Pelagic (Vessels)",
+    "description": "Vessels (Indonesia Pelagic)",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -692,6 +680,40 @@
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-rare-presence": {
+    "name": "Rare",
+    "description": "Rare Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-rare-vessels": {
+    "name": "Indonesia Rare (Vessels)",
+    "description": "Vessels (Indonesia Rare)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "private-indonesia-zebrax-presence": {
@@ -935,6 +957,55 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-ais-presence-viirs-match-prototype": {
+    "name": "VIIRS Match",
+    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat presence. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
+    "schema": {
+      "cel": "cel",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "flag": "flag",
+      "htime": "htime",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": true,
+          "false": false
+        }
+      },
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "0": 0,
+          "10000": 10000
+        }
+      },
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "unknown": "unknown",
+          "fishing": "fishing",
+          "carrier": "carrier",
+          "support": "support"
+        }
+      },
+      "detect_id": "detect_id",
+      "qf_detect": {
+        "keyword": "qf_detect",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "5": 5,
+          "7": 7,
+          "10": 10
+        }
+      },
+      "timestamp": "timestamp",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-areas-to-be-avoided-1618836788619": {
     "name": "Areas to be Avoided by Cargo Shipping",
     "description": "25 nm buffer around islands recommending shipping diversion",
@@ -942,7 +1013,7 @@
   },
   "public-belize-fishing-effort": {
     "name": "Belize VMS",
-    "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
+    "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing presence algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -951,10 +1022,9 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
-          "longline": "Longline",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "longline"
         }
       },
       "vessel_id": "vessel_id",
@@ -970,20 +1040,15 @@
       "id": "id",
       "flag": "flag",
       "source": "source",
-      "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawler": "Trawler",
-          "reefer": "Reefer",
-          "longline": "Longline",
-          "purse_seine": "Purse Seine"
+          "purse_seine": "purse_seine",
+          "trawler": "trawler",
+          "longline": "longline",
+          "reefer": "reefer"
         }
       },
-      "callsign": "callsign",
-      "mmsi": "mmsi",
-      "imo": "imo",
-      "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -1305,8 +1370,32 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "public-ecuador-presence": {
+    "name": "Ecuador VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing",
+          "international traffic": "international traffic",
+          "national traffic": "national traffic",
+          "tug": "tug",
+          "boat": "boat",
+          "auxiliary": "auxiliary"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "public-eez-areas": {
-    "name": "ZEE (Sumber: Marine Regions)",
+    "name": "Areas geometries for eez",
     "description": "Zona ekonomi eksklusif (ZEE) membentang hingga 200 mil laut dari pantai suatu negara. Flanders Marine Institute (2019). Batas Maritim Geodatabase: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11. Sumber: marineregions.org.",
     "schema": {}
   },
@@ -1322,7 +1411,7 @@
   },
   "public-fao-areas-major-subareas": {
     "name": "Fao areas (major & subareas)",
-    "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas.. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>",
+    "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>",
     "schema": {}
   },
   "public-fd-chlorophyl-ascension-v3": {
@@ -1341,6 +1430,16 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-chlorophyl-fiji-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {}
+  },
+  "public-fd-chlorophyl-fsm-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {}
+  },
   "public-fd-chlorophyl-galapagos-v3": {
     "name": "Chlorophyll-a concentration",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
@@ -1348,6 +1447,11 @@
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
+  },
+  "public-fd-chlorophyl-maldives-v3": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {}
   },
   "public-fd-chlorophyl-mediterranean-v3": {
     "name": "Chlorophyll-a concentration",
@@ -1397,6 +1501,16 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-salinity-fiji-v3": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {}
+  },
+  "public-fd-salinity-fsm-v3": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {}
+  },
   "public-fd-salinity-galapagos-v3": {
     "name": "Salinity",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
@@ -1404,6 +1518,11 @@
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
+  },
+  "public-fd-salinity-maldives-v3": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {}
   },
   "public-fd-salinity-mediterranean-v3": {
     "name": "Salinity",
@@ -1453,6 +1572,16 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-water-temperature-fiji-v3": {
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
+    "schema": {}
+  },
+  "public-fd-water-temperature-fsm-v3": {
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
+    "schema": {}
+  },
   "public-fd-water-temperature-galapagos-v3": {
     "name": "Sea surface temperature",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
@@ -1460,6 +1589,11 @@
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
+  },
+  "public-fd-water-temperature-maldives-v3": {
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
+    "schema": {}
   },
   "public-fd-water-temperature-mediterranean-v3": {
     "name": "Sea surface temperature",
@@ -1503,6 +1637,7 @@
     "description": "Carriers from AIS",
     "schema": {
       "id": "id",
+      "imo": "imo",
       "dataset": "dataset",
       "msgCount": "msgCount",
       "posCount": "posCount",
@@ -1554,7 +1689,7 @@
   },
   "public-global-fishing-effort": {
     "name": "AIS",
-    "description": "Kami menggunakan data tentang identitas kapal, jenis, lokasi, kecepatan, arah, dan lainnya yang disiarkan menggunakan sistem identifikasi otomatis (AIS) dan dikumpulkan melalui satelit dan penerima terestrial. Kami menganalisis data AIS yang dikumpulkan dari kapal yang diidentifikasi oleh penelitian kami sebagai kapal penangkap ikan komersial yang diketahui atau diperkirakan, dan menerapkan algoritma deteksi penangkapan ikan untuk menentukan \"\"aktivitas penangkapan ikan yang terlihat\"\" berdasarkan perubahan dalam kecepatan dan arah kapal. Algoritma tersebut mengklasifikasikan setiap titik data siaran AIS untuk kapal-kapal ini sebagai \"\"terlihat sedang memancing\"\" atau \"\"tidak mamancing\"\" dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan kami. \n\nAnda dapat menemukan lebih detail di halaman teknologi kami.",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
       "flag": "flag",
       "geartype": {
@@ -1580,7 +1715,8 @@
           "drifting_longlines": "drifting_longlines"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-global-fishing-vessels": {
@@ -1636,10 +1772,21 @@
         "enum": {
           "fishing": "fishing",
           "carrier": "carrier",
+          "cargo": "cargo",
+          "bunker_or_tanker": "bunker_or_tanker",
+          "passenger": "passenger",
+          "seismic_vessel": "seismic_vessel",
+          "other_non_fishing": "other_non_fishing",
           "unknown": "unknown"
         }
-      }
+      },
+      "vessel-groups": "vessel-groups"
     }
+  },
+  "public-global-sar-footprints": {
+    "name": "SAR Footprints",
+    "description": "SAR",
+    "schema": {}
   },
   "public-global-sar-presence": {
     "name": "SAR",
@@ -1655,8 +1802,8 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": "AIS Matched",
-          "false": "AIS Unmatched"
+          "true": true,
+          "false": false
         }
       },
       "timestamp": "timestamp",
@@ -1689,67 +1836,8 @@
     }
   },
   "public-global-viirs-presence": {
-    "name": "Night light detections",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night. <br/><br/>\n\nThe satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. <br/><br/>\n\nGlobal Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href='https://ngdc.noaa.gov/eog/viirs/download_boat.html' target='_blank' rel=noopener'>here</a>.<br/><br/>\n\nThose using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. <br/><br/>\n\nThe GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1).",
-    "schema": {
-      "cel": "cel",
-      "lat": "lat",
-      "lon": "lon",
-      "pos": "pos",
-      "htime": "htime",
-      "radiance": {
-        "keyword": "radiance",
-        "enum": {
-          "1": 1,
-          "2": 2,
-          "3": 3,
-          "4": 4,
-          "5": 5,
-          "6": 6,
-          "7": 7,
-          "8": 8,
-          "9": 9,
-          "10": 10,
-          "11": 11,
-          "12": 12,
-          "13": 13,
-          "14": 14,
-          "15": 15,
-          "16": 16,
-          "17": 17,
-          "18": 18,
-          "19": 19,
-          "20": 20,
-          "21": 21,
-          "22": 22,
-          "23": 23,
-          "24": 24,
-          "25": 25,
-          "26": 26,
-          "27": 27,
-          "28": 28,
-          "29": 29,
-          "30": 30
-        }
-      },
-      "detect_id": "detect_id",
-      "qf_detect": {
-        "keyword": "qf_detect",
-        "enum": {
-          "1": 1,
-          "2": 2,
-          "3": 3,
-          "5": 5,
-          "7": 7,
-          "10": 10
-        }
-      },
-      "timestamp": "timestamp"
-    }
-  },
-  "public-global-viirs": {
     "name": "VIIRS",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
+    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat presence. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
     "schema": {
       "cel": "cel",
       "lat": "lat",
@@ -1760,35 +1848,7 @@
         "keyword": "radiance",
         "enum": {
           "1": 1,
-          "2": 2,
-          "3": 3,
-          "4": 4,
-          "5": 5,
-          "6": 6,
-          "7": 7,
-          "8": 8,
-          "9": 9,
-          "10": 10,
-          "11": 11,
-          "12": 12,
-          "13": 13,
-          "14": 14,
-          "15": 15,
-          "16": 16,
-          "17": 17,
-          "18": 18,
-          "19": 19,
-          "20": 20,
-          "21": 21,
-          "22": 22,
-          "23": 23,
-          "24": 24,
-          "25": 25,
-          "26": 26,
-          "27": 27,
-          "28": 28,
-          "29": 29,
-          "30": 30
+          "1000": 1000
         }
       },
       "detect_id": "detect_id",
@@ -1812,23 +1872,23 @@
     "schema": {}
   },
   "public-gs-as-simplified": {
-    "name": "GFCM GSAs (Source: FAO)",
-    "description": "The General Fisheries Commission for the Mediterranean (GFCM) geographical subareas (GSAs). More information available: fao.org/gfcm/data/maps/gsas/en. Source: FAO.",
+    "name": "GSAs simplified",
+    "description": "GSAs simplified",
     "schema": {}
   },
   "public-gulf-of-lion-french-zones": {
-    "name": "Gulf of Lion French zones (Source: Légifrance)",
-    "description": "Gulf of Lion French zones are fisheries restricted areas in which some specific fishing activities are temporarily or permanently banned or restricted in order to protect spawning aggregations and deep-sea sensitive habitats. Source: Légifrance.",
+    "name": "Gulf of Lion French Zones",
+    "description": "Gulf of lion french zones",
     "schema": {}
   },
   "public-high-seas": {
-    "name": "Kantong laut lepas",
+    "name": "High seas pockets",
     "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki layer yang menyorotinya.",
     "schema": {}
   },
   "public-indonesia-fishing-effort": {
     "name": "VMS Indonesia",
-    "description": "Data VMS untuk Indonesia saat ini tidak tersedia untuk periode Juli 2020.\n\nData Vessel Monitoring System (VMS) disediakan oleh Kementerian Kelautan dan Perikanan Pemerintah Indonesia. Data dikumpulkan menggunakan VMS mereka melalui satelit dan penerima terestrial, dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai yang terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi, dan kualitas yang berbeda. Seiring waktu, algoritme kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi \"aktivitas penangkapan ikan yang terlihat.\" Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah \"aktivitas memancing\", \"memancing\", dan \"upaya penangkapan ikan\", sebagai \"terlihat jelas\" dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang \"aktivitas penangkapan ikan yang terlihat\" harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
+    "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -1875,8 +1935,9 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "trap net": "trap net",
-          "purse seine": "purse seine"
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
         }
       },
       "vessel_id": "vessel_id"
@@ -1932,7 +1993,7 @@
     }
   },
   "public-mexico-fishing-vessels": {
-    "name": "Mexico VMS",
+    "name": "Mexico VMS (Fishing vessels)",
     "description": "Dataset for VMS Mexico (Public)",
     "schema": {
       "id": "id",
@@ -1940,7 +2001,7 @@
       "source": "source",
       "shipname": "shipname",
       "nationalId": "nationalId",
-      "normalized_shipname": "normalized_shipname",
+      "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -1970,17 +2031,17 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPA (Sumber: WDPA)",
+    "name": "MPAs (Source: WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: March 2022.",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "MPA - Dilarang mengambil (Sumber: WDPA)",
+    "name": "MPAs - No take (Source: WDPA)",
     "description": "MPA berarti sebagai kawasan perlindungan laut. Kawasan lindung laut larang tangkap adalah kawasan lautan yang dilarang mengekstraksi atau merusak secara signifikan sumber daya alam dan budaya, termasuk ikan.Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021.",
     "schema": {}
   },
   "public-mpa-restricted": {
-    "name": "MPA - Dibatasi (Sumber: WDPA)",
+    "name": "MPAs - Restricted (Source: WDPA)",
     "description": "MPA berarti sebagai kawasan perlindungan laut. Penggunaan yang dibatasi dapat memiliki tingkat perlindungan yang berbeda, dan rentang kegiatan yang diizinkan atau dilarang di dalam batas-batasnya sangat bervariasi. Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021.",
     "schema": {}
   },
@@ -2136,7 +2197,7 @@
   },
   "public-presence-viirs-match-prototype": {
     "name": "VIIRS Match",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
+    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat presence. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
     "schema": {
       "cel": "cel",
       "lat": "lat",
@@ -2290,18 +2351,18 @@
     "schema": {}
   },
   "public-tuna-rfmo": {
-    "name": "RFMO (Sumber: FAO)",
-    "description": "Regional fisheries management organizations (RFMO) adalah badan internasional yang dibentuk oleh negara-negara dengan kepentingan bersama dalam mengelola atau melestarikan stok ikan di wilayah tertentu. Beberapa mengelola semua stok ikan yang ditemukan di wilayah tertentu, sementara yang lain berfokus pada spesies tertentu yang beruaya jauh, terutama tuna. Organisasi pengelolaan perikanan regional di peta Global Fishing Watch saat ini mencakup lima organisasi pengelolaan perikanan regional tuna.",
+    "name": "RFMOs (Source: FAO)",
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations.",
     "schema": {}
   },
   "public-wdpa-may-2021-marine": {
-    "name": "MPA (Sumber: WDPA)",
-    "description": "Kawasan Perlindungan Laut (MPA) adalah kawasan lautan yang dikhususkan untuk konservasi jangka panjang. Ini dapat memiliki tingkat perlindungan yang berbeda, dan rentang aktivitas yang diizinkan atau dilarang dalam batasannya sangat bervariasi. Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021.",
+    "name": "MPAs (Source: WDPA)",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "schema": {}
   },
   "public-wpp-nri": {
     "name": "WPP NRI",
-    "description": "WPP-NRI (Wilayah Pengelolaan Perikanan Negara Republik Indonesia) merupakan wilayah pengelolaan perikanan untuk penangkapan ikan, pembudidayaan ikan, konservasi, penelitian, dan pengembangan perikanan yang meliputi perairan pedalaman, perairan kepulauan, laut teritorial, zona tambahan, dan zona ekonomi eksklusif Indonesia.",
+    "description": "The WPP-NRI (Wilayah Pengelolaan Perikanan Negara Republik Indonesia) are fisheries management areas for fishing, conservation, research and fisheries development which cover inland waters, archipelagic waters, and territorial seas within and outside the exclusive economic zone of Indonesia.",
     "schema": {}
   }
 }

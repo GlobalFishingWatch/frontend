@@ -10,6 +10,7 @@ import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
 import { SearchResults } from 'types'
+import { API_VERSION } from 'data/config'
 import { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
@@ -59,17 +60,16 @@ export const fetchData = async (
     limit: RESULTS_PER_PAGE,
     offset,
     query: serializedQuery,
-    useTMT: true,
+    'use-tmt': true,
   })
 
-  const url = `/v1/vessels/advanced-search-tmt?${urlQuery}`
+  const url = `/vessels/advanced-search-tmt?${urlQuery}`
 
   return await GFWAPI.fetch<any>(url, {
     signal,
   })
     .then((json: any) => {
       const resultVessels: Array<VesselSearch> = json.entries
-
       return {
         vessels: resultVessels,
         query,
@@ -138,10 +138,7 @@ const trackData = (query: any, results: SearchResults | null, actualResults: num
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/vessels',
-  async (
-    { query, offset, advancedSearch }: VesselSearchThunk,
-    { rejectWithValue, getState, signal, dispatch }
-  ) => {
+  async ({ query, offset, advancedSearch }: VesselSearchThunk, { signal }) => {
     const searchData = await fetchData(query, offset, signal, advancedSearch)
     trackData({ query: query, ...advancedSearch }, searchData, 5)
 

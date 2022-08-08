@@ -17,6 +17,7 @@ export enum ResourceStatus {
 }
 
 export interface Resource<T = unknown> {
+  key?: string // used to store the resource in the same reducer key
   dataviewId: number | string
   dataset: Dataset
   datasetConfig: DataviewDatasetConfig

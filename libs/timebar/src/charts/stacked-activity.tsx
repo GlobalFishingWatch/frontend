@@ -16,14 +16,14 @@ const MARGIN_TOP = 5
 const getPathContainers = (
   timeseries: Timeseries,
   graphHeight: number,
-  overallScale: TimelineScale,
-  numSublayers: number
+  overallScale: TimelineScale
 ) => {
   if (!timeseries) return []
+  const subLayers = Object.keys(timeseries?.[0]).filter((k) => k !== 'frame' && k !== 'date')
+  const numSubLayers = subLayers.length
+  if (!numSubLayers) return []
 
-  const stackLayout = stack()
-    .keys(Array.from(Array(numSublayers).keys()) as any)
-    .offset(stackOffsetSilhouette)
+  const stackLayout = stack().keys(subLayers).offset(stackOffsetSilhouette)
 
   const series = stackLayout(timeseries)
   const maxY = max(series, (d) => max(d, (d) => d[1])) as number
@@ -35,11 +35,11 @@ const getPathContainers = (
     .x((d) => overallScale((d as any).data.date))
     .y0((d) => {
       const y0 = y(d[0])
-      return numSublayers === 1 && y0 < 0 ? Math.min(y0, -1) : y0
+      return numSubLayers === 1 && y0 < 0 ? Math.min(y0, -1) : y0
     })
     .y1((d) => {
       const y1 = y(d[1])
-      return numSublayers === 1 && y1 > 0 ? Math.max(y1, 1) : y1
+      return numSubLayers === 1 && y1 > 0 ? Math.max(y1, 1) : y1
     })
     .curve(curveStepAfter)
 
@@ -56,10 +56,12 @@ const StackedActivity = ({
   timeseries,
   dataviews,
   highlighterCallback,
+  highlighterIconCallback,
 }: {
   timeseries: Timeseries
   dataviews: UrlDataviewInstance[]
   highlighterCallback?: HighlighterCallback
+  highlighterIconCallback?: HighlighterCallback
 }) => {
   const { immediate } = useContext(ImmediateContext)
   // todo replace with outerScale hook
@@ -67,12 +69,16 @@ const StackedActivity = ({
   const dataAsTimebarChartData = useTimeseriesToChartData(
     timeseries,
     dataviews,
-    highlighterCallback
+    highlighterCallback,
+    highlighterIconCallback
   )
   useUpdateChartsData('activity', dataAsTimebarChartData)
+  const hasDataviews = dataviews?.length > 0
+
   const pathContainers = useMemo(() => {
-    return getPathContainers(timeseries, graphHeight, overallScale, dataviews.length)
-  }, [timeseries, graphHeight, overallScale, dataviews.length])
+    const pathContainers = getPathContainers(timeseries, graphHeight, overallScale)
+    return pathContainers
+  }, [timeseries, graphHeight, overallScale])
 
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2
 
@@ -84,14 +90,18 @@ const StackedActivity = ({
           transition: immediate ? 'none' : `transform ${DEFAULT_CSS_TRANSITION}`,
         }}
       >
-        {pathContainers.map((pathContainer, sublayerIndex) => (
-          <g key={sublayerIndex} transform={`translate(0, ${middleY})`}>
-            <path
-              d={pathContainer.path || ''}
-              fill={dataviews[sublayerIndex].config?.color || '#ffffff'}
-            />
-          </g>
-        ))}
+        {hasDataviews &&
+          pathContainers &&
+          pathContainers.map((pathContainer, sublayerIndex) => {
+            return dataviews[sublayerIndex] ? (
+              <g key={sublayerIndex} transform={`translate(0, ${middleY})`}>
+                <path
+                  d={pathContainer.path || ''}
+                  fill={dataviews[sublayerIndex].config?.color || '#ffffff'}
+                />
+              </g>
+            ) : null
+          })}
       </g>
     </svg>
   )

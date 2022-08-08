@@ -1,6 +1,7 @@
 import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
+import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -12,7 +13,7 @@ export const IS_PRODUCTION =
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
-  process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
+  process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.globalfishingwatch.org'
 export const LATEST_CARRIER_DATASET_ID =
   process.env.NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID || 'carriers:latest'
 
@@ -22,10 +23,10 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   : { debug: true }
 
 // TODO use it to retrieve it and store in workspace.default in deploy
-export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
+export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 
 // used when no url data and no workspace data
@@ -46,6 +47,11 @@ export const DEFAULT_TIME_RANGE = {
   end: LAST_DATA_UPDATE,
 }
 
+export const DEFAULT_PAGINATION_PARAMS = {
+  limit: 99999,
+  offset: 0,
+}
+
 export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
 
 export const FIRST_YEAR_OF_DATA = 2012
@@ -60,13 +66,11 @@ export const DEFAULT_WORKSPACE = {
   availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
   availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
   dataviewInstances: undefined,
-  timebarVisualisation: TimebarVisualisations.Heatmap,
+  timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,
-  activityCategory: DEFAULT_ACTIVITY_CATEGORY,
-  version: DEFAULT_VERSION,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {
@@ -77,59 +81,9 @@ export const EVENTS_COLORS: Record<string, string> = {
   encounter: '#FAE9A0',
   loitering: '#cfa9f9',
   port_visit: '#99EEFF',
-  // fishing: '#163f89',
-  fishing: '#C6D5E2',
+  fishing: '#6075A7',
+  // fishing: '#C6D5E2',
   fishingLabels: '#163f89',
-}
-
-export enum ThinningLevels {
-  Insane = 'Insane',
-  VeryAggressive = 'VeryAggressive',
-  Aggressive = 'aggressive',
-  Default = 'default',
-}
-
-export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
-  [ThinningLevels.Insane]: {
-    distanceFishing: 10000,
-    bearingValFishing: 20,
-    changeSpeedFishing: 1000,
-    minAccuracyFishing: 400,
-    distanceTransit: 20000,
-    bearingValTransit: 20,
-    changeSpeedTransit: 1000,
-    minAccuracyTransit: 800,
-  },
-  [ThinningLevels.VeryAggressive]: {
-    distanceFishing: 10000,
-    bearingValFishing: 10,
-    changeSpeedFishing: 500,
-    minAccuracyFishing: 100,
-    distanceTransit: 20000,
-    bearingValTransit: 10,
-    changeSpeedTransit: 500,
-    minAccuracyTransit: 200,
-  },
-  [ThinningLevels.Aggressive]: {
-    distanceFishing: 1000,
-    bearingValFishing: 5,
-    changeSpeedFishing: 200,
-    minAccuracyFishing: 50,
-    distanceTransit: 2000,
-    bearingValTransit: 5,
-    changeSpeedTransit: 200,
-    minAccuracyTransit: 100,
-  },
-  [ThinningLevels.Default]: {
-    distanceFishing: 500,
-    bearingValFishing: 1,
-    changeSpeedFishing: 200,
-    minAccuracyFishing: 30,
-    distanceTransit: 500,
-    bearingValTransit: 1,
-    changeSpeedTransit: 200,
-    minAccuracyTransit: 30,
-  },
 }
 
 export const THINNING_LEVEL_BY_ZOOM: Record<
@@ -156,8 +110,8 @@ export const THINNING_LEVEL_ZOOMS = Object.keys(THINNING_LEVEL_BY_ZOOM) as unkno
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
 
 export const POPUP_CATEGORY_ORDER = [
-  DataviewCategory.Fishing,
-  DataviewCategory.Presence,
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
   DataviewCategory.Events,
   DataviewCategory.Environment,
   DataviewCategory.Context,

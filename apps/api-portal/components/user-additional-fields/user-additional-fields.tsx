@@ -1,6 +1,7 @@
-import { useCallback, useMemo, Fragment, useState, useEffect } from 'react'
+import { useCallback, useMemo, Fragment, useState, useEffect, MouseEventHandler } from 'react'
 import _ from 'lodash'
 import { FieldValidationError } from 'lib/types'
+import Link from 'next/link'
 import {
   Button,
   Checkbox,
@@ -15,7 +16,6 @@ import {
 } from '@globalfishingwatch/api-types'
 import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
 import styles from './user-additional-fields.module.css'
-import Link from 'next/link'
 
 /* eslint-disable-next-line */
 export interface UserAdditionalFieldsProps {}
@@ -35,6 +35,10 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
   const [userAdditionalInformation, setUserAdditionalInformation] =
     useState<UserApiAdditionalInformation>(defaultUserAdditionalInformation)
 
+  const [termsOfUseOpened, setTermsOfUseOpened] = useState(false)
+  const onTermsOfUseClick: MouseEventHandler = useCallback((event) => {
+    setTermsOfUseOpened(true)
+  }, [])
   const error = useMemo(() => {
     const errors: FieldValidationError<UserApiAdditionalInformation> = {}
     const { apiTerms, intendedUse, problemToResolve, whoEndUsers } = userAdditionalInformation
@@ -95,6 +99,21 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
   const termsAccepted = useMemo(
     () => !!userAdditionalInformation?.apiTerms,
     [userAdditionalInformation?.apiTerms]
+  )
+
+  const onToggleAcceptTOU: MouseEventHandler = useCallback(
+    (event) => {
+      if (!termsOfUseOpened) {
+        window.alert('Please open the Terms of Use and Attribution first')
+        event.preventDefault()
+      } else {
+        setUserAdditionalInformation({
+          ...userAdditionalInformation,
+          apiTerms: termsAccepted ? null : new Date().toISOString(),
+        })
+      }
+    },
+    [termsAccepted, termsOfUseOpened, userAdditionalInformation]
   )
 
   if (isLoading) return <Spinner></Spinner>
@@ -162,28 +181,27 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           }
         />
       </div>
-      <div className={styles.field}>
+      <div className={styles.fieldCheckbox}>
         <Checkbox
-          label={
-            <Fragment>
-              I agree to the Global Fishing Watch API{' '}
-              <a href="https://globalfishingwatch.org/terms-of-use/">Terms of Use</a> and{' '}
-              <a href="https://globalfishingwatch.org/terms-of-use/">Attribution</a>. If I am
-              registering for use by an organization, I represent that I have the authority to bind
-              that organization to these terms.
-            </Fragment>
-          }
           labelClassname={styles.label}
           className={styles.checkbox}
           containerClassName={styles.checkboxContainer}
           active={termsAccepted}
-          onClick={() =>
-            setUserAdditionalInformation({
-              ...userAdditionalInformation,
-              apiTerms: termsAccepted ? null : new Date().toISOString(),
-            })
-          }
+          onClick={onToggleAcceptTOU}
         />
+        <div className={styles.span}>
+          I agree to the Global Fishing Watch API{' '}
+          <a
+            href="https://globalfishingwatch.org/our-apis/documentation#terms-of-use"
+            onClick={onTermsOfUseClick}
+            target={'_blank'}
+            rel="noreferrer"
+          >
+            Terms of Use and Attribution
+          </a>
+          . If I am registering for use by an organization, I represent that I have the authority to
+          bind that organization to these terms.
+        </div>
       </div>
       <div className={styles.field}>
         <Button

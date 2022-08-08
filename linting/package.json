@@ -35,7 +35,7 @@
     "@typescript-eslint/scope-manager": "^5.x",
     "babel-eslint": "^10.x",
     "eslint": "8.x",
-    "eslint-config-next": "12.1.5",
+    "eslint-config-next": "12.x",
     "eslint-config-prettier": "8.x",
     "eslint-config-react-app": "7.x",
     "eslint-import-resolver-typescript": "2.x",
@@ -45,11 +45,11 @@
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "4.x",
-    "prettier": "2.3.0",
-    "prettier-eslint": "^12.0.0",
+    "prettier": "2.6.2",
+    "prettier-eslint": "^14.0.2",
     "stylelint": "14.x",
-    "stylelint-config-css-modules": "2.x",
+    "stylelint-config-css-modules": "4.1.0",
     "stylelint-config-prettier": "9.x",
-    "stylelint-config-standard": "23.x"
+    "stylelint-config-standard": "25.0.0"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { uniqBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
@@ -105,19 +105,21 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
                 {upperFirst(t(`event.${eventType}` as any, eventType))}
               </label>
-              <div
-                className={cx(layerStyles.icon, layerStyles[eventType], {
-                  [styles.active]: active,
-                })}
-                style={
-                  {
-                    '--color': color,
-                    '--encounterIcon': `url(${EncounterIcon})`,
-                    '--loiteringIcon': `url(${LoiteringIcon})`,
-                    '--portIcon': `url(${PortIcon})`,
-                  } as React.CSSProperties
-                }
-              />
+              <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>
+                <div
+                  className={cx(layerStyles.icon, {
+                    [styles.active]: active,
+                  })}
+                  style={
+                    {
+                      '--color': color,
+                      '--encounterIcon': `url(${EncounterIcon})`,
+                      '--loiteringIcon': `url(${LoiteringIcon})`,
+                      '--portIcon': `url(${PortIcon})`,
+                    } as React.CSSProperties
+                  }
+                />
+              </div>
             </li>
           )
         })}

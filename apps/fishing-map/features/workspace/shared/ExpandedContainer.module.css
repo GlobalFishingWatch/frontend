@@ -2,7 +2,6 @@
   min-width: 31.8rem;
   transform: translate(0, -5px);
   transform-origin: top;
-  transition: transform 150ms ease-out, opacity 150ms linear;
   opacity: 0;
 }
 

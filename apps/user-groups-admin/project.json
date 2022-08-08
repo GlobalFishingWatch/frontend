@@ -1,8 +1,15 @@
 {
-  "root": "apps/user-groups-admin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/user-groups-admin",
   "projectType": "application",
   "targets": {
+    "changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["./changelog.sh user-groups-admin \"User groups admin\""],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
@@ -73,7 +80,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/user-groups-admin"],
       "options": {
-        "jestConfig": "apps/user-groups-admin/jest.config.js",
+        "jestConfig": "apps/user-groups-admin/jest.config.ts",
         "passWithNoTests": true
       }
     }

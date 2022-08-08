@@ -2,6 +2,7 @@
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
+import { MapProvider } from 'react-map-gl'
 import store from '../store'
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
@@ -16,7 +17,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
       <Provider store={store}>
-        <Component {...pageProps} />
+        <MapProvider>
+          <Component {...pageProps} />
+        </MapProvider>
       </Provider>
     </RecoilRoot>
   )

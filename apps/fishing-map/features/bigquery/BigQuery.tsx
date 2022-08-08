@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { ResponseError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   getBigQuery4WingsDataviewInstance,
@@ -82,9 +81,8 @@ const BigQueryMenu: React.FC = () => {
     if (fetchBigQueryRunCostThunk.fulfilled.match(action)) {
       setRunCostChecked(true)
     } else {
-      const error = action.payload as ResponseError
-      const errorMsg = error.messages?.length > 0 ? error.messages[0]?.detail : error.message
-      setError(errorMsg)
+      const error = action.payload
+      setError(error.message)
     }
   }
 
@@ -103,9 +101,8 @@ const BigQueryMenu: React.FC = () => {
       addNewDataviewInstances([dataviewInstance])
       dispatch(toggleBigQueryMenu())
     } else {
-      const error = action.payload as ResponseError
-      const errorMsg = error.messages?.length > 0 ? error.messages[0]?.detail : error.message
-      setError(errorMsg)
+      const error = action.payload
+      setError(error.message)
     }
   }
 
@@ -134,7 +131,6 @@ const BigQueryMenu: React.FC = () => {
           onSelect={(selected) => {
             setVisualisationMode(selected.id)
           }}
-          onRemove={() => {}}
         />
         {visualisationMode === '4wings' && (
           <Select
@@ -146,7 +142,6 @@ const BigQueryMenu: React.FC = () => {
             onSelect={(selected) => {
               setAggregationOperation(selected.id)
             }}
-            onRemove={() => {}}
           />
         )}
       </div>

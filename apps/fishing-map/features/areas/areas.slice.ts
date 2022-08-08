@@ -32,7 +32,7 @@ export const fetchAreaThunk = createAsyncThunk(
     { signal }
   ) => {
     const area = await GFWAPI.fetch<ContextAreaGeometry>(
-      `/v1/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
+      `/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
       {
         signal,
       }
@@ -76,7 +76,7 @@ const areasSlice = createSlice({
   },
 })
 
-export const selectAreas = (state) => state.areas
+export const selectAreas = (state: RootState) => state.areas
 export const selectAreaById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => state.areas[id])
 )

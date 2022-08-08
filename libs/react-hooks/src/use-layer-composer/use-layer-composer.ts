@@ -8,6 +8,7 @@ import {
   AnyGeneratorConfig,
   GlobalGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
+import { useDebounce } from '../use-debounce'
 
 const applyStyleTransformations = (
   style: ExtendedStyle,
@@ -33,6 +34,7 @@ export function useLayerComposer(
   layerComposer: LayerComposer = defaultLayerComposerInstance
 ) {
   const [style, setStyle] = useState<ExtendedStyle>()
+  const debouncedStyle = useDebounce(style, 1)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
 
@@ -44,7 +46,7 @@ export function useLayerComposer(
           globalGeneratorConfig
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === 'development' && window.location.hostname === 'localhost') {
           if (!styleSpecValidate) {
             styleSpecValidate = await import(
               '@globalfishingwatch/maplibre-gl/dist/style-spec'
@@ -55,6 +57,7 @@ export function useLayerComposer(
           if (styleSpecValidate) {
             const styleErrors = styleSpecValidate(afterTransformations)
             if (styleErrors && styleErrors.length) {
+              console.warn(style)
               throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
             }
           }
@@ -80,5 +83,5 @@ export function useLayerComposer(
     getGlStyles()
   }, [generatorConfigs, globalGeneratorConfig, layerComposer, styleTransformations])
 
-  return { style, loading, error }
+  return { style: debouncedStyle, loading, error }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { MultiSelect, InputDate } from '@globalfishingwatch/ui-components'
@@ -7,13 +7,13 @@ import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import {
-  getDatasetLabel,
   getFiltersBySchema,
   SchemaFieldDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
 
@@ -53,7 +53,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
       ?.sort((a, b) => a.name.localeCompare(b.name))
       .map((dataset) => ({
         id: dataset.id,
-        label: getDatasetLabel(dataset),
+        label: <DatasetLabel dataset={dataset} />,
       }))
   }, [datasets])
 

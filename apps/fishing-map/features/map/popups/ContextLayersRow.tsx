@@ -1,9 +1,8 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
-  selectActiveActivityDataviews,
+  selectActiveHeatmapDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
 import { getActivityDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
@@ -20,12 +19,13 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const userData = useSelector(selectUserData)
-  const activityDataviews = useSelector(selectActiveActivityDataviews)
+  const activityDataviews = useSelector(selectActiveHeatmapDataviews)
   const hasAnalysableLayer = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
     activityDataviews,
     userData?.permissions || []
   )
+
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
   return (
     <LoginButtonWrapper
@@ -93,6 +93,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   handleDownloadClick,
   handleAnalysisClick,
 }: ContextLayersRowProps) => {
+  const { t } = useTranslation()
   return (
     <div className={styles.row} key={id}>
       <span className={styles.rowText}>{label}</span>
@@ -102,7 +103,11 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
           {handleAnalysisClick && <ReportPopupButton onClick={handleAnalysisClick} />}
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
-              <IconButton icon="info" tooltip="See more" size="small" />
+              <IconButton
+                icon="external-link"
+                tooltip={t('common.learnMore', 'Learn more')}
+                size="small"
+              />
             </a>
           )}
         </div>

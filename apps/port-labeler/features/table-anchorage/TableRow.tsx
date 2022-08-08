@@ -2,22 +2,33 @@ import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { v4 as uuidv4 } from 'uuid'
 import { InputText, SelectOption } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition } from 'types'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
-import { selectPointValuesByCountry, selectPortsByCountry, selectPortsOptions, selectPortValuesByCountry, selectSubareaOptions, selectSubareasByCountry, selectSubareaValuesByCountry } from 'features/labeler/labeler.selectors'
+import {
+  selectPointValuesByCountry,
+  selectPortsByCountry,
+  selectPortsOptions,
+  selectPortValuesByCountry,
+  selectSubareaOptions,
+  selectSubareasByCountry,
+  selectSubareaValuesByCountry
+} from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
 import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
 import { useValueManagerConnect } from './TableAnchorage.hooks'
 
 type TableRowProps = {
   record: PortPosition
+  extra: boolean
 }
 
 function TableRow({
   record,
+  extra
 }: TableRowProps) {
   const map = useMapInstance()
   const dispatch = useDispatch()
@@ -27,7 +38,6 @@ function TableRow({
     onPointValueChange,
     onPortChange
   } = useValueManagerConnect()
-
   const onRowHover = useCallback((id: string, hover: boolean) => {
     dispatch(setHoverPoint(id))
     map.setFeatureState(
@@ -56,7 +66,7 @@ function TableRow({
     console.log('Adding a new subarea')
     const newId = Math.max.apply(null, subareas.map((subarea) => parseInt(subarea.id.replace(country + '-', ''))).filter(number => !isNaN(number))) + 1
     dispatch(setSubareas([...subareas, {
-      id: country + '-' + newId,
+      id: uuidv4(),
       name: country + '-' + newId,
       color: getFixedColorForUnknownLabel(newId)
     }]))
@@ -65,7 +75,7 @@ function TableRow({
   const onPortAdded = useCallback(() => {
     console.log('Adding a new port')
     const newPorts = [...ports, {
-      id: country + '-' + Math.floor(Math.random() * 10000000),
+      id: uuidv4(),
       name: country + '-' + (ports.length + 1),
     }]
     dispatch(setPorts(newPorts))
@@ -131,6 +141,9 @@ function TableRow({
       <div className={styles.col}>
         {record.top_destination}
       </div>
+      {extra && <div className={styles.col}>
+        {record.s2id}
+      </div>}
     </div>
   )
 }

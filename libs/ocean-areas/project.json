@@ -1,5 +1,5 @@
 {
-  "root": "libs/ocean-areas",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ocean-areas/src",
   "projectType": "library",
   "tags": [],
@@ -34,7 +34,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/ocean-areas"],
       "options": {
-        "jestConfig": "libs/ocean-areas/jest.config.js",
+        "jestConfig": "libs/ocean-areas/jest.config.ts",
         "passWithNoTests": true
       }
     },

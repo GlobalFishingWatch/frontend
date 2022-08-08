@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { orderBy } from 'lodash'
+import { orderBy, uniqBy } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -9,21 +9,20 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { PRIVATE_SUFIX } from 'data/config'
+import { PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
 import { RootState } from 'store'
-import { selectUserStatus, selectUserLogged, selectUserData, isGFWUser } from './user.slice'
-
-const DEFAULT_GROUP_ID = 'Default'
-const PRIVATE_SUPPORTED_GROUPS = [
-  'Indonesia',
-  'Peru',
-  'Panama',
-  'Brazil',
-  'Mexico',
-  'Ecuador',
-  'Costa_Rica',
-  'Belize',
-]
+import {
+  selectAllVesselGroups,
+  selectWorkspaceVesselGroups,
+} from 'features/vessel-groups/vessel-groups.slice'
+import {
+  selectUserStatus,
+  selectUserLogged,
+  selectUserData,
+  DEFAULT_GROUP_ID,
+  PRIVATE_SUPPORTED_GROUPS,
+  isGFWUser,
+} from './user.slice'
 
 export const isUserLogged = createSelector(
   [selectUserStatus, selectUserLogged],
@@ -73,15 +72,24 @@ export const selectUserWorkspaces = createSelector(
   }
 )
 
-export const selectUserWorkspacesPrivate = createSelector(
-  [selectUserGroups, isGFWUser, (state: RootState) => selectWorkspaces(state)],
-  (userGroups = [], gfwUser, workspaces) => {
+export const selectPrivateUserGroups = createSelector(
+  [selectUserGroups, isGFWUser],
+  (userGroups = [], gfwUser) => {
     const groupsWithAccess = gfwUser
       ? PRIVATE_SUPPORTED_GROUPS.map((g) => g.toLowerCase())
       : userGroups.filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g)).map((g) => g.toLowerCase())
+
+    return groupsWithAccess
+  }
+)
+
+export const selectUserWorkspacesPrivate = createSelector(
+  [selectPrivateUserGroups, (state: RootState) => selectWorkspaces(state)],
+  (groupsWithAccess = [], workspaces) => {
     const privateWorkspaces = workspaces?.filter(
       (workspace) =>
         workspace.id.includes(PRIVATE_SUFIX) &&
+        !workspace.id.includes(USER_SUFIX) &&
         groupsWithAccess.some((g) => workspace.id.includes(g))
     )
     return orderBy(privateWorkspaces, 'createdAt', 'desc')
@@ -90,7 +98,8 @@ export const selectUserWorkspacesPrivate = createSelector(
 
 export const selectUserDatasets = createSelector(
   [(state: RootState) => selectAllDatasets(state), selectUserId],
-  (datasets, userId) => datasets?.filter((d) => d.ownerId === userId)
+  (datasets, userId) =>
+    datasets?.filter((d) => d.ownerId === userId && d.status !== DatasetStatus.Deleted)
 )
 
 export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
@@ -115,3 +124,17 @@ export const selectUserDatasetsNotUsed = (datasetCategory: DatasetCategory) => {
     }
   )
 }
+
+export const selectUserVesselGroups = createSelector(
+  [selectAllVesselGroups, selectUserId],
+  (vesselGroups, userId) => {
+    return vesselGroups?.filter((d) => d.ownerId === userId)
+  }
+)
+
+export const selectAllVisibleVesselGroups = createSelector(
+  [selectUserVesselGroups, selectWorkspaceVesselGroups],
+  (vesselGroups = [], workspaceVesselGroups = []) => {
+    return uniqBy([...vesselGroups, ...workspaceVesselGroups], 'id')
+  }
+)

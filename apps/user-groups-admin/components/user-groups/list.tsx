@@ -7,19 +7,14 @@ type UserGroupsListProps = { groupId: number; onGroupClick: (group: number) => v
 export function UserGroupsList({ groupId, onGroupClick }: UserGroupsListProps) {
   const [groups, setGroups] = useState<UserGroup[]>()
   const fetchGroups = async () => {
-    const userGroups = await GFWAPI.fetch<UserGroup[]>('/auth/user-group')
-    setGroups(userGroups)
+    const userGroups = await GFWAPI.fetch<UserGroup[]>('/auth/user-groups',)
+    setGroups(userGroups.sort((a, b) => a.name.localeCompare(b.name)))
   }
   useEffect(() => {
     fetchGroups()
   }, [])
 
-  const groupsList = groups?.filter(
-    (g) =>
-      !g.default && g.name.toLowerCase() !== 'anonymous' && g.name.toLowerCase() !== 'admin-group'
-  )
-
-  if (!groupsList || !groupsList.length) {
+  if (!groups || !groups.length) {
     return null
   }
 

@@ -6,6 +6,7 @@ import { GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/con
 
 const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID
 
+// To configure analytics but is not used for the moment in this project
 export const useAnalytics = () => {
   const userData = useSelector(selectUserData)
 

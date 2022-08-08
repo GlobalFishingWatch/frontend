@@ -82,11 +82,6 @@ class UserContextGenerator {
         color: config.color,
         interactive: false,
         generatorId,
-        legend: {
-          type: 'solid',
-          ...config.metadata?.legend,
-          group: Group.OutlinePolygonsHighlighted,
-        },
       },
     }
 

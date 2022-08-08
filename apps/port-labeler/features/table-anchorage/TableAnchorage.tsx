@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
-import { selectPorts, sortPoints } from 'features/labeler/labeler.slice'
+import { IconButton } from '@globalfishingwatch/ui-components'
+import { selectDisplayExtraData, sortPoints, toogleExtraData } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
 import { PortPosition } from 'types'
 import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
@@ -15,8 +16,8 @@ function TableAnchorage() {
 
   const { t } = useTranslation()
   const records = useSelector(selectFilteredPoints)
+  const extraColumn = useSelector(selectDisplayExtraData)
   const dispatch = useDispatch()
-
   type orderDirectionType = 'asc' | 'desc' | ''
 
   const [orderColumn, setOrderColumn] = useState(null)
@@ -57,6 +58,16 @@ function TableAnchorage() {
         <TableHeader
           label={t('common.destination', 'Destination')} order={orderColumn === 'top_destination' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('top_destination', order)} />
+        {extraColumn && <TableHeader
+          label={t('common.anchorageId', 'Anchorage ID')} />}
+        <IconButton
+          type="default"
+          icon='more'
+          tooltip="Toggle extra data"
+          tooltipPlacement="bottom"
+          className={styles.actionButton}
+          onClick={() => dispatch(toogleExtraData())}
+        />
       </div>
 
       {screenFilteredRecords && screenFilteredRecords.length ? (
@@ -77,6 +88,7 @@ function TableAnchorage() {
                       <TableRow
                         key={record.s2id}
                         record={record}
+                        extra={extraColumn}
                       ></TableRow>
                     </div>
                   )

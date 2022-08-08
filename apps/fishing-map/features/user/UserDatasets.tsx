@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
-import { Button, Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
+import { Button, Spinner, IconButton, Modal, Icon } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
+import { getDatasetIcon } from 'features/datasets/datasets.utils'
 import {
   deleteDatasetThunk,
   selectDatasetsStatus,
@@ -11,10 +12,10 @@ import {
 } from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import InfoError from 'features/workspace/common/InfoError'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import styles from './User.module.css'
 import { selectUserDatasetsByCategory } from './user.selectors'
 
@@ -103,9 +104,15 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                   'There was an error uploading your dataset'
                 )} - ${dataset.importLogs}`
               }
+              const datasetIcon = getDatasetIcon(dataset)
               return (
                 <li className={styles.dataset} key={dataset.id}>
-                  {dataset.name}
+                  <span>
+                    {datasetIcon && (
+                      <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
+                    )}
+                    {dataset.name}
+                  </span>
                   <div>
                     <InfoError
                       error={datasetError}
@@ -140,7 +147,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
       )}
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
-        title={getDatasetLabel(infoDataset)}
+        title={<DatasetLabel dataset={infoDataset} />}
         isOpen={infoDataset !== undefined}
         onClose={() => setInfoDataset(undefined)}
       >

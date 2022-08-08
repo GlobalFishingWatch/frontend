@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
-import { MapContext } from 'features/map/map-context.hooks'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
 import Sidebar from 'features/sidebar/Sidebar'
@@ -16,9 +15,6 @@ import { useAnalytics } from './analytics.hooks'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
 const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
-
-/* Using any to avoid Typescript complaining about the value */
-const MapContextProvider: any = MapContext.Provider
 
 declare global {
   interface Window {
@@ -74,7 +70,7 @@ function App(): React.ReactElement {
   }
 
   return (
-    <MapContextProvider>
+    <Fragment>
       <SplitView
         showToggle
         isOpen={sidebarOpen}
@@ -93,7 +89,7 @@ function App(): React.ReactElement {
         onClose={() => setMenuOpen(false)}
         activeLinkId="map-data"
       />
-    </MapContextProvider>
+    </Fragment>
   )
 }
 

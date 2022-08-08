@@ -8,28 +8,28 @@
     "build": "next build",
     "start": "next start",
     "lint": "yarn lint:js && yarn lint:css",
-    "lint:js": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix --resolve-plugins-relative-to .",
+    "lint:js": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix",
     "lint:css": "stylelint ./**/*.{css,scss,sass} --config .stylelintrc.js --fix",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "luxon": "^1.26.0",
     "d3-geom": "^0.0.0",
-    "d3-quadtree": "^2.0.0",
+    "d3-quadtree": "^3.0.1",
     "d3-scale": "^3.3.0",
+    "luxon": "^2.4.0",
     "pbf": "^3.2.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
     "recharts": "^2.0.9"
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",
-    "@types/react": "17.0.44",
-    "@types/react-dom": "17.0.15",
-    "@types/luxon": "^1.26.4",
     "@types/d3-quadtree": "^3.0.2",
-    "@types/d3-scale": "^3.2.2"
+    "@types/d3-scale": "^4.0.2",
+    "@types/luxon": "^2.3.2",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.3"
   },
   "browserslist": [
     ">0.1%",

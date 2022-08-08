@@ -1,8 +1,15 @@
 {
-  "root": "apps/fishing-map",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fishing-map",
   "projectType": "application",
   "targets": {
+    "changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["./changelog.sh fishing-map \"Map\""],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
@@ -70,11 +77,32 @@
         "buildTarget": "fishing-map:compile:production"
       }
     },
+    "rename-export": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "rm -rf dist/apps/fishing-map/map",
+          "mv dist/apps/fishing-map/exported dist/apps/fishing-map/map"
+        ],
+        "parallel": false
+      }
+    },
+    "serve:export": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build fishing-map --parallel",
+          "nx rename-export fishing-map",
+          "serve dist/apps/fishing-map"
+        ],
+        "parallel": false
+      }
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/fishing-map"],
       "options": {
-        "jestConfig": "apps/fishing-map/jest.config.js",
+        "jestConfig": "apps/fishing-map/jest.config.ts",
         "passWithNoTests": true
       }
     },

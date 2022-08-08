@@ -1,3 +1,4 @@
+import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   GeneratorType,
@@ -51,8 +52,11 @@ export const OFFLINE_LAYERS: GeneratorConfig[] = [
 
 // Using the same dataviews ids than fishing-map for consistency
 export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
-export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 176 : 268
-
+// export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 291 : 268 // Vessel with port visits c3 and c4
+export const DEFAULT_VESSEL_DATAVIEWS = {
+  'port-inspector': WORKSPACE_ENV === 'development' ? 176 : 268, // Vessel with port visits c2
+  'insurance-underwriter': WORKSPACE_ENV === 'development' ? 291 : 304, // Vessel with port visits c3 and c4
+}
 export const DEFAULT_EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
 export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
@@ -88,37 +92,6 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
   },
 ]
 
-export const vesselDataviewIds = [DEFAULT_VESSEL_DATAVIEW_ID]
+export const vesselDataviewIds = Object.values(DEFAULT_VESSEL_DATAVIEWS)
 
 export const DEFAULT_TRACK_COLOR = '#8DE9F6'
-
-export enum ThinningLevels {
-  Aggressive = 'aggressive',
-  Default = 'default',
-}
-
-export const THINNING_LEVELS = {
-  [ThinningLevels.Aggressive]: {
-    distanceFishing: 1000,
-    bearingValFishing: 5,
-    changeSpeedFishing: 200,
-    minAccuracyFishing: 50,
-    distanceTransit: 2000,
-    bearingValTransit: 5,
-    changeSpeedTransit: 200,
-    minAccuracyTransit: 100,
-  },
-  [ThinningLevels.Default]: {
-    distanceFishing: 500,
-    bearingValFishing: 1,
-    changeSpeedFishing: 200,
-    minAccuracyFishing: 30,
-    distanceTransit: 500,
-    bearingValTransit: 1,
-    changeSpeedTransit: 200,
-    minAccuracyTransit: 30,
-  },
-}
-
-export const APP_THINNING =
-  (process.env.APP_THINNING as ThinningLevels) || ThinningLevels.Aggressive

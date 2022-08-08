@@ -1,0 +1,7 @@
+.GFWOnly {
+  margin-left: 1rem;
+  background-color: var(--color-help-yellow);
+  padding: var(--space-XS);
+  border-radius: 0.4rem;
+  border: var(--border);
+}

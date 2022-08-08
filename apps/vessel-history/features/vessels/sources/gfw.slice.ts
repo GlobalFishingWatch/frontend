@@ -9,20 +9,20 @@ interface GFWVesselSourceId extends VesselSourceId {
 }
 
 const getHistoryField = (data: GFWDetail, field: string, byCount: any[] = []) => ({
-
   byCount: byCount,
-  byDate: data[field] ? [
-    {
-      value: data[field],
-      endDate: data.lastTransmissionDate,
-      firstSeen: data.firstTransmissionDate,
-      source: VesselAPISource.GFW,
-    },
-  ] : []
+  byDate: data[field] ?
+    [
+      {
+        value: data[field],
+        endDate: data.lastTransmissionDate,
+        firstSeen: data.firstTransmissionDate,
+        source: VesselAPISource.GFW,
+      }
+    ]
+    : [],
 })
 
 export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
-
   return {
     id: data.id,
     flag: data.flag,
@@ -35,6 +35,7 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
     geartype: data.geartype,
     type: data.vesselType,
     vesselType: data.vesselType,
+    forcedLabour: data.forcedLabour,
     authorizations: [],
     history: {
       callsign: getHistoryField(data, 'callsign', data.otherCallsigns),
@@ -59,7 +60,7 @@ const vesselThunk: VesselAPIThunk = {
         reject('Missing vessel id or dataset to fetch data')
       })
     }
-    const url = `/v1/vessels/${id}?datasets=${dataset}`
+    const url = `/vessels/${id}?datasets=${dataset}`
     return await GFWAPI.fetch<GFWDetail>(url).then(toVessel)
   },
 }

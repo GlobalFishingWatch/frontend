@@ -9,7 +9,7 @@ import {
   geoJSONToSegments,
   wrapBBoxLongitudes,
 } from '@globalfishingwatch/data-transforms'
-import { Resource } from '@globalfishingwatch/api-types'
+import { Resource, Vessel } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { Bbox } from 'types'
@@ -17,10 +17,11 @@ import { Bbox } from 'types'
 type FitBoundsProps = {
   hasError: boolean
   trackResource: Resource<Segment[] | FeatureCollection>
+  infoResource?: Resource<Vessel>
   className?: string
 }
 
-const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
+const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoundsProps) => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()
@@ -36,7 +37,13 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
         const bboxLongitudes = wrapBBoxLongitudes(bbox as Bbox)
         fitBounds(bboxLongitudes as Bbox)
       } else {
-        // TODO use prompt to ask user if wants to update the timerange to fit the track
+        if (
+          infoResource &&
+          (!infoResource.data?.firstTransmissionDate || !infoResource.data?.firstTransmissionDate)
+        ) {
+          console.warn('transmissionDates not available, cant fit time', infoResource)
+          return
+        }
         if (
           window.confirm(
             t(
@@ -45,21 +52,28 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
             )
           )
         ) {
-          let minTimestamp = Number.POSITIVE_INFINITY
-          let maxTimestamp = Number.NEGATIVE_INFINITY
-          segments.forEach((seg) => {
-            seg.forEach((pt) => {
-              if (pt.timestamp && pt.timestamp < minTimestamp) minTimestamp = pt.timestamp
-              if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp
-            })
-          })
-          const fullBBox = segmentsToBbox(segments)
-          if (fullBBox && maxTimestamp > minTimestamp) {
+          if (infoResource) {
             setTimerange({
-              start: new Date(minTimestamp).toISOString(),
-              end: new Date(maxTimestamp).toISOString(),
+              start: new Date(infoResource.data?.firstTransmissionDate).toISOString(),
+              end: new Date(infoResource.data?.lastTransmissionDate).toISOString(),
             })
-            fitBounds(fullBBox as Bbox)
+          } else {
+            let minTimestamp = Number.POSITIVE_INFINITY
+            let maxTimestamp = Number.NEGATIVE_INFINITY
+            segments.forEach((seg) => {
+              seg.forEach((pt) => {
+                if (pt.timestamp && pt.timestamp < minTimestamp) minTimestamp = pt.timestamp
+                if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp
+              })
+            })
+            const fullBBox = segmentsToBbox(segments)
+            if (fullBBox && maxTimestamp > minTimestamp) {
+              setTimerange({
+                start: new Date(minTimestamp).toISOString(),
+                end: new Date(maxTimestamp).toISOString(),
+              })
+              fitBounds(fullBBox as Bbox)
+            }
           }
         }
       }

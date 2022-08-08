@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useRef, useState } from 'react'
+import { Fragment, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -22,19 +22,22 @@ import {
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import {
   checkDatasetReportPermission,
-  getDatasetLabel,
   getDatasetsDownloadNotSupported,
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDownloadActivityArea } from 'features/download/download.selectors'
+import {
+  selectDownloadActivityArea,
+  selectDownloadActivityModalOpen,
+} from 'features/download/download.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -53,7 +56,7 @@ function DownloadActivityModal() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
-  const dataviews = useSelector(selectActiveActivityDataviews) || fallbackDataviews
+  const dataviews = useSelector(selectActiveHeatmapDataviews) || fallbackDataviews
   const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
     dataviews,
     userData?.permissions || []
@@ -147,6 +150,7 @@ function DownloadActivityModal() {
   )
 
   const areaKey = useSelector(selectDownloadActivityAreaKey)
+  const downloadModalOpen = useSelector(selectDownloadActivityModalOpen)
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaName = downloadArea?.name
   const downloadAreaGeometry = downloadArea?.geometry
@@ -182,6 +186,9 @@ function DownloadActivityModal() {
         return {
           filter: dataview.config?.filter || [],
           filters: dataview.config?.filters || {},
+          ...(dataview.config?.['vessel-groups']?.length && {
+            'vessel-groups': dataview.config?.['vessel-groups'],
+          }),
           datasets: activityDatasets,
         }
       })
@@ -252,7 +259,7 @@ function DownloadActivityModal() {
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={`${t('download.title', 'Download')} - ${t('download.activity', 'Activity')}`}
-      isOpen={areaKey !== ''}
+      isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
     >
@@ -316,9 +323,9 @@ function DownloadActivityModal() {
                 'download.datasetsNotAllowed',
                 "You don't have permissions to download the following datasets:"
               )}{' '}
-              {datasetsDownloadNotSupported
-                .map((dataset) => getDatasetLabel({ id: dataset }))
-                .join(', ')}
+              {datasetsDownloadNotSupported.map((dataset) => (
+                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+              ))}
             </p>
           )}
 

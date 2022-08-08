@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Modal, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
@@ -30,12 +30,12 @@ import { t } from 'features/i18n/i18n'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
+import GFWOnly from 'features/user/GFWOnly'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-  SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
   TooltipEventFeature,
 } from '../map.hooks'
-import { useMapContext } from '../map-context.hooks'
 import styles from './VesselsTable.module.css'
 
 export const getVesselTableTitle = (feature: TooltipEventFeature) => {
@@ -51,10 +51,6 @@ export const getVesselTableTitle = (feature: TooltipEventFeature) => {
     ].join(' ')
   }
   return title
-}
-
-const getDetectionsTimestamps = (vessel: ExtendedFeatureVessel) => {
-  return vessel?.timestamp?.split(',').sort()
 }
 
 export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
@@ -88,7 +84,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
           })
         }}
       >
-        <TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />
+        (<TimeRangeDates start={start} end={end} format={DateTime.DATE_MED} />)
       </button>
     </Tooltip>
   ) : (
@@ -102,7 +98,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
           })
         }}
       >
-        <I18nDate date={start} />
+        (<I18nDate date={start} />)
       </button>
     </Tooltip>
   )
@@ -121,7 +117,6 @@ function VesselsTable({
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
-  const { eventManager } = useMapContext()
 
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -129,10 +124,9 @@ function VesselsTable({
     setModalOpen(false)
   }, [setModalOpen])
 
-  const interactionAllowed = [
-    ...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-    ...SUBLAYER_INTERACTION_TYPES_WITH_VIIRS_INTERACTION,
-  ].includes(feature.temporalgrid?.sublayerInteractionType || '')
+  const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
+    feature.temporalgrid?.sublayerInteractionType || ''
+  )
 
   const title = getVesselTableTitle(feature)
   const vessels = showFullList
@@ -151,8 +145,6 @@ function VesselsTable({
     ev: React.MouseEvent<Element, MouseEvent>,
     vessel: ExtendedFeatureVessel
   ) => {
-    eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
-
     const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
     if (vesselInWorkspace) {
       deleteDataviewInstance(vesselInWorkspace.id)
@@ -170,7 +162,10 @@ function VesselsTable({
         infoDatasetId: vessel.infoDataset?.id,
       })
     } else {
-      const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
+      const vesselEventsDatasets = getRelatedDatasetsByType(
+        vessel.infoDataset || vessel.dataset,
+        DatasetTypes.Events
+      )
       const eventsDatasetsId =
         vesselEventsDatasets && vesselEventsDatasets?.length
           ? vesselEventsDatasets.map((d) => d.id)
@@ -259,7 +254,9 @@ function VesselsTable({
                   <td className={styles.columnSpace}>{vesselGearType}</td>
                   {vesselProperty !== 'detections' && (
                     <td className={styles.columnSpace}>
-                      {getDatasetLabel(vessel.infoDataset) || EMPTY_FIELD_PLACEHOLDER}
+                      <Tooltip content={getDatasetLabel(vessel.infoDataset)}>
+                        <DatasetLabel dataset={vessel.infoDataset} />
+                      </Tooltip>
                     </td>
                   )}
                   <td
@@ -295,7 +292,12 @@ function VesselsTable({
       {gfwUser && !showFullList && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title={title}
+          title={
+            <Fragment>
+              {title}
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={modalOpen}
           onClose={onModalClose}
         >

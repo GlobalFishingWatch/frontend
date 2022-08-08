@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
+import { useSetRecoilState } from 'recoil'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
@@ -19,7 +20,7 @@ import {
   useSortedChartData,
 } from './common/hooks'
 import { getTrackY } from './common/utils'
-import { useUpdateChartsData } from './chartsData.atom'
+import { hoveredEventState, useUpdateChartsData } from './chartsData.atom'
 
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData<any>,
@@ -86,6 +87,8 @@ const TracksEvents = ({
     trackGraphOrientation,
   ]) as TimebarChartData<TrackEventChunkProps>
 
+  const updateHoveredEvent = useSetRecoilState(hoveredEventState)
+
   return (
     <div className={styles.Events}>
       {tracksEventsWithCoords.map((trackEvents, index) => (
@@ -100,6 +103,7 @@ const TracksEvents = ({
             <div
               key={event.id}
               className={cx(styles.event, styles[event.type || 'none'], {
+                [styles.compact]: tracksEventsWithCoords.length >= 5,
                 [styles.highlighted]:
                   highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
               })}
@@ -120,6 +124,12 @@ const TracksEvents = ({
               }
               onClick={() => {
                 if (onEventClick) onEventClick(event)
+              }}
+              onMouseEnter={() => {
+                updateHoveredEvent(event.id as string)
+              }}
+              onMouseLeave={() => {
+                updateHoveredEvent(undefined)
               }}
             >
               <div className={styles.eventInner} />

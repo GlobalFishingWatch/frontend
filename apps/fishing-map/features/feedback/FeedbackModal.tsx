@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { GUEST_USER_TYPE, selectUserData, isGuestUser } from 'features/user/user.slice'
+import { selectUserData, isGuestUser } from 'features/user/user.slice'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserGroupsClean } from 'features/user/user.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -83,12 +84,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       ...initialFeedbackState,
       ...(!guestUser &&
         userData && {
-          userId: userData.id,
-          email: userData.email,
-          name: `${userData.firstName} ${userData.lastName}`,
-          groups: (userGroups || []).join(', '),
-          organization: userData.organization || '',
-        }),
+        userId: userData.id,
+        email: userData.email,
+        name: `${userData.firstName} ${userData.lastName}`,
+        groups: (userGroups || []).join(', '),
+        organization: userData.organization || '',
+      }),
     })
   }
 

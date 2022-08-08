@@ -83,13 +83,13 @@ div.identifierField label {
 
 .actions .remove {
   margin-left: var(--space-XS);
-  background-color: rgb(var(--danger-red-rgb) var(--opacity-terthiary));
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
 }
 
 .actions .remove:focus:not(:disabled),
 .actions .remove:active:not(:disabled),
 .actions .remove:hover:not(:disabled) {
-  background-color: rgb(var(--danger-red-rgb) var(--opacity-border));
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
 }
 
 .imageGallery {

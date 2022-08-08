@@ -1,4 +1,4 @@
-import React, { useState, useCallback, Fragment } from 'react'
+import { useState, useCallback, Fragment } from 'react'
 import { featureCollection, point } from '@turf/helpers'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { event as uaEvent } from 'react-ga'
@@ -27,15 +27,16 @@ import { capitalize } from 'utils/shared'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
+import FileDropzone from 'features/common/FileDropzone'
 import {
   useDatasetsAPI,
   useDatasetModalConnect,
   useAddDataviewFromDatasetToWorkspace,
 } from './datasets.hook'
 import styles from './NewDataset.module.css'
-import DatasetFile from './DatasetFile'
 import DatasetConfig, { extractPropertiesFromGeojson } from './DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
+import { getFileTypes } from './datasets.utils'
 
 export type DatasetMetadata = {
   name: string
@@ -50,6 +51,12 @@ export type DatasetMetadata = {
 
 export type CSV = Record<string, any>[]
 
+// TODO Update https://github.com/DefinitelyTyped/DefinitelyTyped/blob/b453d9d1b99c48c8711c31c2a64e9dffb6ce729d/types/shpjs/index.d.ts
+// When this gets merged to upstream https://github.com/calvinmetcalf/shapefile-js/pull/181
+interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
+  extensions?: string[]
+}
+
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
@@ -61,7 +68,7 @@ function NewDataset(): React.ReactElement {
   const [datasetGeometryTypeConfirmed, setDatasetGeometryTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
   const [fileData, setFileData] = useState<
-    Feature | FeatureCollectionWithFilename | CSV | undefined
+    Feature | FeatureCollectionWithMetadata | CSV | undefined
   >()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -70,7 +77,8 @@ function NewDataset(): React.ReactElement {
   const { dispatchCreateDataset } = useDatasetsAPI()
 
   const onFileLoaded = useCallback(
-    async (file: File, type: DatasetGeometryType | undefined) => {
+    async (file: File) => {
+      const type = datasetGeometryType
       setLoading(true)
       setError('')
       const name =
@@ -114,7 +122,7 @@ function NewDataset(): React.ReactElement {
           !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
         const isCSV = !isZip && !isGeojson && file.type === 'text/csv'
 
-        if (isGeojson && file.name.includes('.geojson')) {
+        if (isGeojson) {
           formatGeojson = true
           const blob = file.slice(0, file.size, 'application/json')
           const fileAsJson = new File([blob], `${name}.json`, { type: 'application/json' })
@@ -123,15 +131,48 @@ function NewDataset(): React.ReactElement {
           setFile(file)
         }
 
-        let geojson: Feature | FeatureCollectionWithFilename | undefined = undefined
+        let geojson: Feature | FeatureCollectionWithMetadata | undefined = undefined
         if (isZip) {
           try {
             const shpjs = await import('shpjs').then((module) => module.default)
             const fileData = await readBlobAs(file, 'arrayBuffer')
             // TODO support multiple files in shapefile
-            geojson = (await shpjs(fileData)) as FeatureCollectionWithFilename
+            const expandedShp = (await shpjs(fileData)) as FeatureCollectionWithMetadata
+            if (Array.isArray(expandedShp)) {
+              // geojson = expandedShp[0]
+              setFileData(undefined)
+              setLoading(false)
+              setError(
+                t(
+                  'errors.datasetShapefileMultiple',
+                  'Shapefiles containing multiple components (multiple file names) are not supported yet'
+                )
+              )
+              return
+            } else {
+              if (
+                expandedShp.extensions &&
+                (!expandedShp.extensions.includes('.shp') ||
+                  !expandedShp.extensions.includes('.shx') ||
+                  !expandedShp.extensions.includes('.prj') ||
+                  !expandedShp.extensions.includes('.dbf'))
+              ) {
+                setFileData(undefined)
+                setError(
+                  t(
+                    'errors.uploadShapefileComponents',
+                    'Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.'
+                  )
+                )
+              } else {
+                geojson = expandedShp
+              }
+            }
           } catch (e: any) {
-            console.warn('Error reading file:', e)
+            setFileData(undefined)
+            setError(
+              t('errors.uploadShapefile', 'Error reading shapefile: {{error}}', { error: e })
+            )
           }
         } else if (isCSV) {
           const fileData = await readBlobAs(file, 'text')
@@ -152,9 +193,11 @@ function NewDataset(): React.ReactElement {
                 })
               )
             } catch (e) {
-              console.warn(e)
+              setFileData(undefined)
+              setError(t('errors.uploadCsv', 'Error reading CSV: {{error}}', { error: e }))
             }
           } else {
+            setFileData(undefined)
             setError(t('errors.missingLatLng', 'No latitude or longitude fields found'))
           }
           // geojson = JSON.parse(fileData)
@@ -163,12 +206,14 @@ function NewDataset(): React.ReactElement {
           try {
             geojson = JSON.parse(fileData)
           } catch (e: any) {
-            console.warn('Error reading file:', e)
+            setFileData(undefined)
+            setError(t('errors.uploadGeojson', 'Error reading GeoJSON: {{error}}', { error: e }))
           }
         }
+
         if (geojson !== undefined) {
           setFileData(geojson)
-          const fields = extractPropertiesFromGeojson(geojson as FeatureCollectionWithFilename)
+          const fields = extractPropertiesFromGeojson(geojson as FeatureCollectionWithMetadata)
           const configuration = {
             fields,
             geometryType: datasetGeometryType,
@@ -180,9 +225,9 @@ function NewDataset(): React.ReactElement {
           // Set disableInteraction flag when not all features are polygons
           if (datasetCategory === 'context' && datasetGeometryType === 'polygons') {
             if (
-              (geojson.type === 'Feature' && geojson.geometry.type === 'Polygon') ||
-              !(geojson as FeatureCollectionWithFilename).features?.every((feature) =>
-                ['Polygon', 'MultiPolygon'].includes(feature.geometry.type)
+              (geojson.type === 'Feature' && geojson.geometry?.type === 'Polygon') ||
+              !(geojson as FeatureCollectionWithMetadata).features?.every((feature) =>
+                ['Polygon', 'MultiPolygon'].includes(feature.geometry?.type)
               )
             ) {
               configuration.disableInteraction = true
@@ -196,14 +241,14 @@ function NewDataset(): React.ReactElement {
             category: datasetCategory,
             configuration,
           }))
-        } else {
+        } else if (error === '') {
           setFileData(undefined)
           setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
         }
       }
       setLoading(false)
     },
-    [datasetCategory, t, metadata, datasetGeometryType]
+    [datasetCategory, t, metadata, datasetGeometryType, error]
   )
 
   const onDatasetFieldChange = (field: DatasetMetadata | AnyDatasetConfiguration) => {
@@ -255,20 +300,7 @@ function NewDataset(): React.ReactElement {
     if (file) {
       let validityError
       let onTheFlyGeoJSONFile
-      if (
-        metadata?.category === DatasetCategory.Environment &&
-        datasetGeometryType === 'polygons'
-      ) {
-        if (!metadata?.configuration?.propertyToInclude) {
-          validityError = t('dataset.requiredFields', {
-            fields: 'value',
-            defaultValue: 'Required field value',
-          }) as string
-        }
-      } else if (
-        metadata?.category === DatasetCategory.Environment &&
-        datasetGeometryType === 'tracks'
-      ) {
+      if (metadata?.category === DatasetCategory.Environment && datasetGeometryType === 'tracks') {
         if (
           !metadata.configuration?.latitude ||
           !metadata.configuration?.longitude ||
@@ -327,9 +359,12 @@ function NewDataset(): React.ReactElement {
         label: onTheFlyGeoJSONFile?.name ?? file.name,
       })
       setLoading(true)
+      const { fields, guessedFields, ...meta } = metadata
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {
-          ...metadata,
+          ...meta,
+          unit: 'TBD',
+          subcategory: 'info',
         },
         file: onTheFlyGeoJSONFile || file,
         createAsPublic: metadata?.public ?? true,
@@ -396,10 +431,13 @@ function NewDataset(): React.ReactElement {
         ) : (
           <Fragment>
             {/* eslint-disable-next-line  */}
-            <DatasetFile onFileLoaded={onFileLoaded} type={datasetGeometryType} />
+            <FileDropzone
+              onFileLoaded={onFileLoaded}
+              fileTypes={getFileTypes(datasetGeometryType)}
+            />
             {fileData && metadata && (
               <DatasetConfig
-                fileData={fileData as FeatureCollectionWithFilename}
+                fileData={fileData as FeatureCollectionWithMetadata}
                 metadata={metadata}
                 datasetCategory={datasetCategory}
                 // eslint-disable-next-line

@@ -2,6 +2,10 @@ import { ApiAppName, Dataset } from '.'
 
 export type ColorCyclingType = 'fill' | 'line'
 
+export const INCLUDE_FILTER_ID = 'include'
+export const EXCLUDE_FILTER_ID = 'exclude'
+export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
+
 export interface DataviewConfig<Type = any> {
   // TODO use any property from layer-composer here?
   type?: Type
@@ -9,7 +13,9 @@ export interface DataviewConfig<Type = any> {
   colorCyclingType?: ColorCyclingType
   visible?: boolean
   filters?: Record<string, any>
+  filterOperators?: Record<string, FilterOperator>
   dynamicBreaks?: boolean
+  maxZoom?: number
   [key: string]: any
 }
 
@@ -45,18 +51,37 @@ export interface DataviewInfoConfig {
   fields: DataviewInfoConfigField[]
 }
 
+export interface DataviewEventsConfig {
+  showIcons: boolean
+  showAuthorizationStatus: boolean
+  pointsToSegmentsSwitchLevel: boolean
+}
+
+export interface IncomatibleFilterConfig {
+  id: string // id of the filter
+  value: boolean // value to match
+  disabled: string[] // disabled filter on matches
+}
+
+export interface DataviewFiltersConfig {
+  order: string[]
+  // Dictionary for datasets filters selection not allowed
+  incompatibility: Record<string, IncomatibleFilterConfig[]>
+}
+
 export enum DataviewCategory {
   Context = 'context',
   Events = 'events',
   Environment = 'environment',
-  Fishing = 'fishing',
-  Presence = 'presence',
+  Activity = 'activity',
+  Detections = 'detections',
   Vessels = 'vessels',
   Comparison = 'comparison',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {
   id: number
+  slug: string
   name: string
   app: ApiAppName
   description: string
@@ -66,6 +91,8 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
   config: DataviewConfig<Type>
   datasets?: Dataset[]
   infoConfig?: DataviewInfoConfig
+  eventsConfig?: DataviewEventsConfig
+  filtersConfig?: DataviewFiltersConfig
   datasetsConfig?: DataviewDatasetConfig[]
 }
 

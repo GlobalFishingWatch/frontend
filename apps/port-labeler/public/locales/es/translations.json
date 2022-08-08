@@ -3,6 +3,7 @@
         "port": "Puerto",
         "subarea": "Comunidad",
         "anchorage": "Anclaje",
+        "anchorageId": "Anclaje ID",
         "destination": "Destino",
         "zoom_more": "Incrementar zoom",
         "zoom_less": "Decrementar zoom",

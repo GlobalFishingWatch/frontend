@@ -37,6 +37,5 @@
   "hour": "hora",
   "zoomIn": "Aumentar zoom",
   "zoomTo": "Ampliar para",
-  "zoomOut": "Diminuir zoom",
-  "selectTimeRange": "Selecione um intervalo de tempo"
+  "zoomOut": "Diminuir zoom"
 }

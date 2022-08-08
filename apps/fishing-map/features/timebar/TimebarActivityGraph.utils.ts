@@ -4,11 +4,10 @@ import {
   AggregationOperation,
   getTimeSeries,
   TimeSeriesFrame,
-  getRealValue
+  getRealValue,
 } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, Interval } from '@globalfishingwatch/layer-composer'
 import { DataviewChunkFeature, DataviewFeature } from 'features/map/map-sources.hooks'
-
 
 type TimeseriesParams = {
   chunksFeatures: DataviewChunkFeature[]
@@ -25,7 +24,7 @@ export const getChunksTimeseries = ({
   interval,
   visibleSublayers,
   aggregationOperation,
-  multiplier
+  multiplier,
 }: TimeseriesParams) => {
   const allChunksValues = chunksFeatures.flatMap(({ features, quantizeOffset }) => {
     if (features?.length > 0) {
@@ -38,7 +37,7 @@ export const getChunksTimeseries = ({
           Object.entries(frameValues).map(([key, value]) => {
             const cleanValue =
               key === 'frame' || visibleSublayers[parseInt(key)] === true ? value : 0
-            const realValue = getRealValue(cleanValue, multiplier)
+            const realValue = getRealValue(cleanValue, { multiplier })
             return [key, realValue]
           })
         ) as TimeSeriesFrame
@@ -50,7 +49,8 @@ export const getChunksTimeseries = ({
       if (aggregationOperation === AggregationOperation.Avg) {
         const lastItem = finalValues[finalValues.length - 1]
         const month = DateTime.fromMillis(lastItem.date)
-        const nextMonth = DateTime.fromMillis(lastItem.date).plus({ month: 1 })
+        const plus = interval === '10days' ? { day: 10 } : { [interval]: 1 }
+        const nextMonth = DateTime.fromMillis(lastItem.date).plus(plus)
         const millisOffset = nextMonth.diff(month).milliseconds
         return finalValues.concat({
           ...lastItem,
@@ -81,7 +81,7 @@ export const getTimeseriesFromDataviews = (dataviewFeatures: DataviewFeature[]) 
       numSublayers: metadata.numSublayers,
       visibleSublayers: metadata.visibleSublayers,
       aggregationOperation: metadata.aggregationOperation,
-      multiplier: metadata.multiplier
+      multiplier: metadata.multiplier,
     })
     return timeseries
   })

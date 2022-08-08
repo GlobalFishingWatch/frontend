@@ -2,6 +2,8 @@
   --print-width: 17in;
   --print-height: 10in;
   --color-help: #fff8cd;
+  --timebar-height: 7.2rem;
+  --footer-height: 2.4rem;
 }
 
 .printing * {
@@ -29,6 +31,7 @@
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
     color-adjust: exact !important;
   }
 
@@ -86,10 +89,10 @@
 }
 
 .mapboxgl-popup .mapboxgl-popup-content {
-  background: none;
   padding: 0;
   box-shadow: none;
   border: none;
+  width: fit-content;
 }
 
 .printing .mapboxgl-popup {
@@ -151,4 +154,62 @@
 .mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
   border-left-color: white;
   transform: translateX(-1px);
+}
+
+.mapboxgl-control-container .mapboxgl-ctrl-bottom-left {
+  bottom: var(--space-M);
+  left: 0;
+}
+
+.mapboxgl-control-container .mapboxgl-ctrl-scale {
+  min-height: 1.5rem;
+  font: var(--font-XS);
+  background: none;
+  color: rgba(var(--white-rgb), 0.65);
+  border-left: none;
+  border-right: none;
+  border-color: rgba(var(--white-rgb), 0.65);
+  border-width: 1px;
+}
+
+.mapboxgl-map.mouse-pointer .mapboxgl-canvas-container.mapboxgl-interactive .mapboxgl-canvas {
+  cursor: pointer !important;
+}
+
+.mapboxgl-map.mouse-move .mapboxgl-canvas-container.mapboxgl-interactive .mapboxgl-canvas {
+  cursor: move !important;
+}
+
+.mapboxgl-map.mouse-add .mapboxgl-canvas-container.mapboxgl-interactive .mapboxgl-canvas {
+  cursor: crosshair !important;
+}
+
+.mapboxgl-map.mouse-move.mode-direct_select
+  .mapboxgl-canvas-container.mapboxgl-interactive
+  .mapboxgl-canvas {
+  cursor: grab !important;
+}
+
+.mapboxgl-map.mode-static.mouse-pointer
+  .mapboxgl-canvas-container.mapboxgl-interactive
+  .mapboxgl-canvas {
+  cursor: grab !important;
+}
+
+.mapboxgl-map.mode-direct_select.feature-midpoint.mouse-pointer
+  .mapboxgl-canvas-container.mapboxgl-interactive
+  .mapboxgl-canvas {
+  cursor: cell !important;
+}
+
+.mapboxgl-map.mode-direct_select.feature-feature.mouse-move
+  .mapboxgl-canvas-container.mapboxgl-interactive
+  .mapboxgl-canvas {
+  cursor: move !important;
+}
+
+.mapboxgl-map.mode-direct_select.feature-vertex.mouse-move
+  .mapboxgl-canvas-container.mapboxgl-interactive
+  .mapboxgl-canvas {
+  cursor: pointer !important;
 }

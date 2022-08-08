@@ -61,7 +61,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
   if (type === 'invert' || type === 'map-tool') spinnerColor = 'white'
   if (type === 'warning' || type === 'warning-border') spinnerColor = warningVarColor || '#ff3e62'
   return (
-    <Tooltip content={tooltip} placement={tooltipPlacement}>
+    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       <button
         id={id}
         aria-label={icon || ''}

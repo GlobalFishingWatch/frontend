@@ -1,6 +1,6 @@
 .vesselItemWrapper {
   border-bottom: var(--border);
-  padding: 1.5rem 1.5rem 0 1.5rem;
+  padding: 1.5rem 1.5rem 0;
   cursor: pointer;
 }
 
@@ -34,8 +34,9 @@
 }
 
 .vesselItemActions {
-  width: var(--size-S);
+  /* width: var(--size-S); */
 }
+
 .vesselItemFooter {
   width: var(--vessel-item-width);
   margin-bottom: 1.5rem;
@@ -43,6 +44,7 @@
 
 .selected .vesselItemActions {
   align-self: center;
+  margin-left: auto;
 }
 
 .identifiers {
@@ -63,6 +65,7 @@
 .fullWidth {
   width: 100%;
 }
+
 .identifiers > div.fullWidth {
   margin-bottom: 0;
 }
@@ -81,4 +84,19 @@
 .vesselItemWrapper .remove:active:not(:disabled),
 .vesselItemWrapper .remove:hover:not(:disabled) {
   background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
+}
+
+.relatedVesselNotification {
+  text-transform: uppercase;
+  padding: var(--size-XS) 0;
+}
+
+.relatedVesselItem {
+  flex-grow: 100%;
+}
+
+.transmissionField {
+  width: 100%;
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
 }

@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import { Tooltip } from '../tooltip'
 import { TooltipTypes } from '../types/types'
-import { Icon } from '..'
+import { Icon } from '../icon'
 import styles from './Checkbox.module.css'
 
 interface CheckboxProps {
@@ -31,7 +31,7 @@ export function Checkbox(props: CheckboxProps) {
     labelClassname,
   } = props
   return (
-    <Tooltip content={tooltip} placement={tooltipPlacement}>
+    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       <div
         className={cx(
           styles.container,

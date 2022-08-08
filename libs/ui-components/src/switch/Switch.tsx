@@ -10,6 +10,8 @@ export interface SwitchEvent extends MouseEvent {
   active: boolean
 }
 
+type SwitchSize = 'default' | 'small'
+
 export interface SwitchProps {
   id?: string
   active: boolean
@@ -19,6 +21,7 @@ export interface SwitchProps {
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   className?: string
+  size?: SwitchSize
 }
 
 export function Switch(props: SwitchProps) {
@@ -28,6 +31,7 @@ export function Switch(props: SwitchProps) {
     disabled = false,
     color,
     onClick,
+    size = 'default',
     tooltip,
     tooltipPlacement = 'top',
     className,
@@ -43,7 +47,7 @@ export function Switch(props: SwitchProps) {
   }
 
   return (
-    <Tooltip content={tooltip} placement={tooltipPlacement}>
+    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       <button
         id={id}
         type="button"
@@ -53,6 +57,7 @@ export function Switch(props: SwitchProps) {
         onClick={onClickCallback}
         className={cx(
           styles.switch,
+          styles[size],
           { [styles.disabled]: disabled, [styles.customColor]: color },
           className
         )}

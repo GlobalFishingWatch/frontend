@@ -7,6 +7,7 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { RootState } from 'store'
+import { API_VERSION } from 'data/config'
 
 export type RegionId = string | number
 export enum MarineRegionType {
@@ -47,7 +48,7 @@ export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
   async (_, { rejectWithValue }) => {
     try {
-      const apiUrl = '/v1/datasets'
+      const apiUrl = `/datasets`
       const options = {}
       const eezs = await GFWAPI.fetch<Region[]>(
         `${apiUrl}/public-eez-areas/user-context-layer-v1`,

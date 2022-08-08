@@ -1,5 +1,5 @@
 {
-  "root": "libs/data-transforms",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/data-transforms/src",
   "projectType": "library",
   "tags": [],
@@ -34,7 +34,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/data-transforms"],
       "options": {
-        "jestConfig": "libs/data-transforms/jest.config.js",
+        "jestConfig": "libs/data-transforms/jest.config.ts",
         "passWithNoTests": true
       }
     },

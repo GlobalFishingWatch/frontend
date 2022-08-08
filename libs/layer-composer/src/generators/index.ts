@@ -1,17 +1,19 @@
 import { GeneratorType } from './types'
 import BackgroundGenerator from './background/background'
 import BaseMapGenerator from './basemap/basemap'
-import GLStyleGenerator from './gl/gl'
+import BasemapLabelsGenerator from './basemap-labels/basemap-labels'
 import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-polygons'
+import ContextGenerator from './context/context'
+import GLStyleGenerator from './gl/gl'
 import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
-import ContextGenerator from './context/context'
-import UserContextGenerator from './user-context/user-context'
-import UserPointsGenerator from './user-points/user-points'
-import TrackGenerator from './track/track'
-import VesselEventsGenerator from './vessel-events/vessel-events'
+import PolygonsGenerator from './polygons/polygons'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'
+import TrackGenerator from './track/track'
+import UserContextGenerator from './user-context/user-context'
+import UserPointsGenerator from './user-points/user-points'
+import VesselEventsGenerator from './vessel-events/vessel-events'
 import VesselsEventsShapesGenerator from './vessel-events/vessel-events-shapes'
 
 export * from './heatmap/types'
@@ -33,18 +35,20 @@ export {
 const GeneratorConfig = {
   [GeneratorType.Background]: new BackgroundGenerator(),
   [GeneratorType.Basemap]: new BaseMapGenerator(),
-  [GeneratorType.GL]: new GLStyleGenerator(),
+  [GeneratorType.BasemapLabels]: new BasemapLabelsGenerator(),
   [GeneratorType.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
   [GeneratorType.Context]: new ContextGenerator(),
+  [GeneratorType.GL]: new GLStyleGenerator(),
+  [GeneratorType.Heatmap]: new HeatmapGenerator(),
+  [GeneratorType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
+  [GeneratorType.Polygons]: new PolygonsGenerator(),
+  [GeneratorType.Rulers]: new RulersGenerator(),
   [GeneratorType.TileCluster]: new TileClusterGenerator(),
+  [GeneratorType.Track]: new TrackGenerator(),
   [GeneratorType.UserContext]: new UserContextGenerator(),
   [GeneratorType.UserPoints]: new UserPointsGenerator(),
-  [GeneratorType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
-  [GeneratorType.Heatmap]: new HeatmapGenerator(),
-  [GeneratorType.Track]: new TrackGenerator(),
   [GeneratorType.VesselEvents]: new VesselEventsGenerator(),
   [GeneratorType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
-  [GeneratorType.Rulers]: new RulersGenerator(),
 }
 
 export default GeneratorConfig

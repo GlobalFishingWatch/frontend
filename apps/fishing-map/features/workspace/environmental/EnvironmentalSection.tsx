@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { SortableContext } from '@dnd-kit/sortable'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -82,26 +83,28 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
           </TooltipContainer>
         )}
       </div>
-      {dataviews.length > 0 ? (
-        dataviews?.map((dataview) =>
-          dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
-            <LayerPanelContainer key={dataview.id} dataview={dataview}>
-              <UserTrackLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-            </LayerPanelContainer>
-          ) : (
-            <LayerPanelContainer key={dataview.id} dataview={dataview}>
-              <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-            </LayerPanelContainer>
+      <SortableContext items={dataviews}>
+        {dataviews.length > 0 ? (
+          dataviews?.map((dataview) =>
+            dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
+              <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                <UserTrackLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+              </LayerPanelContainer>
+            ) : (
+              <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+              </LayerPanelContainer>
+            )
           )
-        )
-      ) : (
-        <div className={styles.emptyState}>
-          {t(
-            'workspace.emptyStateEnvironment',
-            'Upload custom datasets like animal telemetry clicking on the plus icon.'
-          )}
-        </div>
-      )}
+        ) : (
+          <div className={styles.emptyState}>
+            {t(
+              'workspace.emptyStateEnvironment',
+              'Upload custom datasets like animal telemetry clicking on the plus icon.'
+            )}
+          </div>
+        )}
+      </SortableContext>
     </div>
   )
 }

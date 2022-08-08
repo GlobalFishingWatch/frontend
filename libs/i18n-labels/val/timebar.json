@@ -1,0 +1,41 @@
+{
+  "playback": {
+    "playAnimation": "crwdns10967:0crwdne10967:0",
+    "pauseAnimation": "crwdns10969:0crwdne10969:0",
+    "toogleAnimationLooping": "crwdns10971:0crwdne10971:0",
+    "moveBack": "crwdns10973:0crwdne10973:0",
+    "moveForward": "crwdns10975:0crwdne10975:0",
+    "changeAnimationSpeed": "crwdns10977:0crwdne10977:0"
+  },
+  "timerange": {
+    "title": "crwdns10979:0crwdne10979:0",
+    "start": "crwdns10981:0crwdne10981:0",
+    "end": "crwdns10983:0crwdne10983:0",
+    "last30days": "crwdns10985:0crwdne10985:0",
+    "last3months": "crwdns18470:0crwdne18470:0",
+    "last6months": "crwdns18472:0crwdne18472:0",
+    "lastYear": "crwdns18474:0crwdne18474:0",
+    "done": "crwdns10987:0crwdne10987:0",
+    "errorEarlyStart": "crwdns10989:0crwdne10989:0",
+    "errorLatestEnd": "crwdns10991:0crwdne10991:0",
+    "errorMinRange": "crwdns10993:0crwdne10993:0",
+    "errorMaxRange": "crwdns10995:0crwdne10995:0"
+  },
+  "bookmark": {
+    "goToBookmark": "crwdns10997:0crwdne10997:0",
+    "deleteBookmark": "crwdns10999:0crwdne10999:0"
+  },
+  "trackEvents": {
+    "events": "crwdns11001:0crwdne11001:0"
+  },
+  "dragLabel": "crwdns11003:0crwdne11003:0",
+  "lastUpdate": "crwdns11005:0crwdne11005:0",
+  "setBookmark": "crwdns11007:0crwdne11007:0",
+  "day": "crwdns11009:0crwdne11009:0",
+  "year": "crwdns11011:0crwdne11011:0",
+  "month": "crwdns11013:0crwdne11013:0",
+  "hour": "crwdns11015:0crwdne11015:0",
+  "zoomIn": "crwdns11017:0crwdne11017:0",
+  "zoomTo": "crwdns11019:0crwdne11019:0",
+  "zoomOut": "crwdns11021:0crwdne11021:0"
+}

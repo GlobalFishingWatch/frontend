@@ -5,9 +5,10 @@ import {
   UrlDataviewInstance,
   getGeneratorConfig,
   mergeWorkspaceUrlDataviewInstances,
-  DatasetConfigsTransforms,
-  getDataviewsForResourceQuerying,
-  resolveResourcesFromDatasetConfigs,
+  GetDatasetConfigsCallbacks,
+  getResources,
+  getDatasetConfigByDatasetType,
+  getDatasetConfigsByDatasetType,
 } from '@globalfishingwatch/dataviews-client'
 import {
   BasemapGeneratorConfig,
@@ -18,10 +19,21 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { selectVesselDataview } from 'features/vessels/vessels.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import {
+  selectWorkspaceDataviewInstances,
+  selectWorkspaceProfileView,
+  selectWorkspaceStateProperty,
+} from 'features/workspace/workspace.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
+import { APP_PROFILE_VIEWS } from 'data/config'
+import {
+  selectTrackChunksConfig,
+  selectTrackThinningConfig,
+} from 'features/resources/resources.slice'
+import { trackDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
-import { BACKGROUND_LAYER, OFFLINE_LAYERS, APP_THINNING, THINNING_LEVELS } from './dataviews.config'
+import { BACKGROUND_LAYER, OFFLINE_LAYERS, DEFAULT_VESSEL_DATAVIEWS } from './dataviews.config'
+import { getVesselDataviewInstanceFactory } from './dataviews.utils'
 
 const defaultBasemapDataview = {
   id: 'basemap',
@@ -90,34 +102,60 @@ export const selectDataviewInstancesResolved = createSelector(
   }
 )
 
+export const selectTrackDatasetConfigsCallback = createSelector(
+  [
+    selectTrackThinningConfig,
+    selectTrackChunksConfig,
+    selectWorkspaceStateProperty('timebarGraph'),
+  ],
+  (thinningConfig, chunks, timebarGraph) =>
+    trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph)
+)
+
 /**
- * Calls getDataviewsForResourceQuerying to prepare track dataviews' datasetConfigs.
- * Injects app-specific logic by using getDataviewsForResourceQuerying's callback
+ * Prepare track dataviews' datasetConfigs using the same callback
+ * used to get the resources
  */
 export const selectDataviewsForResourceQuerying = createDeepEqualSelector(
-  [selectDataviewInstancesResolved],
-  (dataviewInstances) => {
-    const thinningConfig = THINNING_LEVELS[APP_THINNING]
-    const datasetConfigsTransforms: DatasetConfigsTransforms = {
-      [GeneratorType.Track]: ([info, track, ...events]) => {
-        const trackWithThinning = track
-        const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-          id,
-          value,
-        }))
-        trackWithThinning.query = [...(track.query || []), ...thinningQuery]
-        trackWithThinning.metadata = { ...(trackWithThinning.metadata || {}), zoom: 12 }
-        return [trackWithThinning, info, ...events]
-      },
+  [selectDataviewInstancesResolved, selectTrackDatasetConfigsCallback],
+  (dataviewInstances, trackDatasetConfigs) => {
+    const getDatasetsConfig = (dataview) => {
+      const info = getDatasetConfigByDatasetType(dataview, DatasetTypes.Vessels)
+
+      const trackDatasetType =
+        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+          ? DatasetTypes.UserTracks
+          : DatasetTypes.Tracks
+      const track = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
+
+      const events = getDatasetConfigsByDatasetType(dataview, DatasetTypes.Events).filter(
+        (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
+      ) // Loitering
+      return trackDatasetConfigs([info, track, ...events])
     }
-    return getDataviewsForResourceQuerying(dataviewInstances || [], datasetConfigsTransforms)
+
+    return dataviewInstances.map((dataview) => ({
+      ...dataview,
+      // Use the same datasets config used to get resources in
+      // selectDataviewsResources of features/dataviews/dataviews.selectors
+      // resources urls are properly built and resources found
+      // in the state
+      datasetsConfig: getDatasetsConfig(dataview),
+    }))
   }
 )
 
-export const selectDataviewsResourceQueries = createDeepEqualSelector(
-  [selectDataviewsForResourceQuerying],
-  (dataviews) => {
-    return resolveResourcesFromDatasetConfigs(dataviews)
+/**
+ * Calls getResources to prepare track dataviews' datasetConfigs.
+ * Injects app-specific logic by using getResources's callback
+ */
+export const selectDataviewsResources = createSelector(
+  [selectDataviewInstancesResolved, selectTrackDatasetConfigsCallback],
+  (dataviewInstances, trackDatasetConfigsCallback) => {
+    const callbacks: GetDatasetConfigsCallbacks = {
+      tracks: trackDatasetConfigsCallback,
+    }
+    return getResources(dataviewInstances || [], callbacks)
   }
 )
 
@@ -157,3 +195,39 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
 export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter((d) => d.config?.visible)
 })
+
+export const selectGetVesselDataviewInstance = createSelector(
+  [selectWorkspaceProfileView],
+  (profileView) => {
+    const {
+      events_query_params: { start_date },
+    } = APP_PROFILE_VIEWS.filter((v) => v.id === profileView).shift() ?? {
+      events_query_params: { start_date: undefined },
+    }
+    return getVesselDataviewInstanceFactory(DEFAULT_VESSEL_DATAVIEWS[profileView], start_date)
+  }
+)
+
+/**
+ * Returns the event datasets query params based on the current profile view
+ * and its list of query params set for propagation into other endpoints
+ */
+export const selectEventDatasetsConfigQueryParams = (state) => {
+  const profileView = state.workspace?.profileView
+  const { propagate_events_query_params } = APP_PROFILE_VIEWS.filter(
+    (v) => v.id === profileView
+  ).shift()
+  const vesselDataview =
+    state.dataviews &&
+    state.dataviews.entities &&
+    state.dataviews.entities[DEFAULT_VESSEL_DATAVIEWS[profileView]]
+  return (vesselDataview.datasetsConfig ?? [])
+    .filter((config) => config.endpoint === 'events')
+    .flatMap((config) => config.query ?? {})
+    .filter(
+      (query) =>
+        query.id &&
+        query.value !== undefined &&
+        ((propagate_events_query_params as string[]) ?? []).includes(query.id ?? null)
+    )
+}

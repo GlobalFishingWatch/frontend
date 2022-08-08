@@ -1,9 +1,10 @@
 import { TimeChunk } from './time-chunks'
 
 export const toURLArray = (paramName: string, arr: string[]) => {
+  if (!arr?.length) return ''
   return arr
-    .map((element, i) => {
-      if (!element) return ''
+    .flatMap((element, i) => {
+      if (!element) return []
       return `${paramName}[${i}]=${element}`
     })
     .join('&')

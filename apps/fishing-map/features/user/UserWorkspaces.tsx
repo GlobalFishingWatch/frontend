@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, Spinner, IconButton } from '@globalfishingwatch/ui-components'
-import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
+import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
+// import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import {
@@ -15,31 +15,31 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport from 'features/map/map-viewport.hooks'
-import {
-  selectDefaultWorkspace,
-  selectWorkspacesByUserGroup,
-} from 'features/workspaces-list/workspaces-list.selectors'
+// import {
+//   selectDefaultWorkspace,
+//   selectWorkspacesByUserGroup,
+// } from 'features/workspaces-list/workspaces-list.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import { cleanCurrentWorkspaceData } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'
-import { selectUserGroups, selectUserWorkspaces } from './user.selectors'
+import { selectUserWorkspaces } from './user.selectors'
 
 function UserWorkspaces() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchLocation } = useLocationConnect()
-  const [workspaceTemplatesOpen, setWorkspaceTemplatesOpen] = useState(false)
+  // const [workspaceTemplatesOpen, setWorkspaceTemplatesOpen] = useState(false)
   const [workspaceTemplateSelected, setWorkspaceTemplateSelected] = useState<
     AppWorkspace | undefined
   >()
-  const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
+  // const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
   const { setMapCoordinates } = useViewport()
-  const defaultWorkspace = useSelector(selectDefaultWorkspace)
+  // const defaultWorkspace = useSelector(selectDefaultWorkspace)
   const workspaces = useSelector(selectUserWorkspaces)
-  const userGroups = useSelector(selectUserGroups)
-  const workspacesByUserGroup = useSelector(selectWorkspacesByUserGroup)
+  // const userGroups = useSelector(selectUserGroups)
+  // const workspacesByUserGroup = useSelector(selectWorkspacesByUserGroup)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const workspacesStatusId = useSelector(selectWorkspaceListStatusId)
 
@@ -59,17 +59,17 @@ function UserWorkspaces() {
     [dispatch, t]
   )
 
-  const createWorkspaceByUserGroup = useCallback(
-    (userGroup: string) => {
-      const workspaceId = workspacesByUserGroup[userGroup]
-      const template = workspaces.find((w) => w?.id === workspaceId) || defaultWorkspace
-      setWorkspaceTemplateSelected({
-        ...template,
-        name: '',
-      })
-    },
-    [defaultWorkspace, workspaces, workspacesByUserGroup]
-  )
+  // const createWorkspaceByUserGroup = useCallback(
+  //   (userGroup: string) => {
+  //     const workspaceId = workspacesByUserGroup[userGroup]
+  //     const template = workspaces.find((w) => w?.id === workspaceId) || defaultWorkspace
+  //     setWorkspaceTemplateSelected({
+  //       ...template,
+  //       name: '',
+  //     })
+  //   },
+  //   [defaultWorkspace, workspaces, workspacesByUserGroup]
+  // )
 
   const closeWorkspaceCreate = useCallback(() => {
     setWorkspaceTemplateSelected(undefined)
@@ -93,29 +93,29 @@ function UserWorkspaces() {
     [closeWorkspaceCreate, dispatch, dispatchLocation]
   )
 
-  const onWorkspaceUserGroupClick = useCallback(
-    (userGroup: string) => {
-      setWorkspaceTemplatesOpen(false)
-      createWorkspaceByUserGroup(userGroup)
-    },
-    [createWorkspaceByUserGroup]
-  )
+  // const onWorkspaceUserGroupClick = useCallback(
+  //   (userGroup: string) => {
+  //     setWorkspaceTemplatesOpen(false)
+  //     createWorkspaceByUserGroup(userGroup)
+  //   },
+  //   [createWorkspaceByUserGroup]
+  // )
 
-  const onNewWorkspaceClick = useCallback(() => {
-    const groupsWithTemplates = userGroups?.filter(
-      (group) => workspacesByUserGroup?.[group] !== undefined
-    )
-    if (!groupsWithTemplates) {
-      console.warn('Missing template for user groups', userGroups)
-      return
-    }
-    if (groupsWithTemplates.length === 1) {
-      createWorkspaceByUserGroup(groupsWithTemplates[0])
-    } else {
-      setWorkspaceTemplates(groupsWithTemplates)
-      setWorkspaceTemplatesOpen(true)
-    }
-  }, [createWorkspaceByUserGroup, userGroups, workspacesByUserGroup])
+  // const onNewWorkspaceClick = useCallback(() => {
+  //   const groupsWithTemplates = userGroups?.filter(
+  //     (group) => workspacesByUserGroup?.[group] !== undefined
+  //   )
+  //   if (!groupsWithTemplates) {
+  //     console.warn('Missing template for user groups', userGroups)
+  //     return
+  //   }
+  //   if (groupsWithTemplates.length === 1) {
+  //     createWorkspaceByUserGroup(groupsWithTemplates[0])
+  //   } else {
+  //     setWorkspaceTemplates(groupsWithTemplates)
+  //     setWorkspaceTemplatesOpen(true)
+  //   }
+  // }, [createWorkspaceByUserGroup, userGroups, workspacesByUserGroup])
 
   const onWorkspaceClick = useCallback(
     (workspace: AppWorkspace) => {
@@ -145,7 +145,8 @@ function UserWorkspaces() {
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
         <label>{t('workspace.title_other', 'Workspaces')}</label>
-        <TooltipContainer
+        {/* COMMENTED OUT UNTIL WE HAVE THE WORKSPACE GENERATOR */}
+        {/* <TooltipContainer
           visible={workspaceTemplatesOpen}
           placement="right"
           onClickOutside={() => {
@@ -161,13 +162,13 @@ function UserWorkspaces() {
             </TooltipListContainer>
           }
         >
-          {/* Div needed because of https://github.com/atomiks/tippyjs-react#component-children */}
+          // Div needed because of https://github.com/atomiks/tippyjs-react#component-children
           <div>
             <Button disabled={loading} type="secondary" onClick={onNewWorkspaceClick}>
               {t('workspace.new', 'New Workspace') as string}
             </Button>
           </div>
-        </TooltipContainer>
+        </TooltipContainer> */}
       </div>
       {workspaceTemplateSelected && (
         <NewWorkspaceModal

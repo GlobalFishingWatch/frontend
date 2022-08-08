@@ -36,6 +36,10 @@
   width: 25%;
 }
 
+.row .col:last-child {
+  padding-right: 40px;
+}
+
 .table .body {
   display: flex;
   flex-direction: column;

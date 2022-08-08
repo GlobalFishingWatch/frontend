@@ -1,8 +1,8 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
-import type { ViewportProps } from 'react-map-gl'
+import { ViewStateChangeEvent } from 'react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { LngLatBounds } from '@globalfishingwatch/maplibre-gl'
 import { Bbox, MapCoordinates } from 'types'
@@ -11,14 +11,16 @@ import { updateUrlViewport } from 'routes/routes.actions'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { selectViewport } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
+import { useMapReady } from 'features/map/map-state.hooks'
 import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
-type SetMapCoordinatesArgs = Partial<Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>>
+type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
+type ViewportProps = Record<ViewportKeys, number>
 type UseViewport = {
   viewport: MapCoordinates
-  onViewportChange: (viewport: ViewportProps) => void
-  setMapCoordinates: (viewport: SetMapCoordinatesArgs) => void
+  onViewportChange: (e: ViewStateChangeEvent) => void
+  setMapCoordinates: (viewport: ViewportProps) => void
 }
 
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
@@ -28,7 +30,7 @@ const viewportState = atom<MapCoordinates>({
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects: [
     ({ trigger, setSelf, onSet }) => {
-      const viewport = selectViewport(store.getState() as RootState)
+      const viewport = (selectViewport as any)(store.getState() as RootState)
 
       if (trigger === 'get') {
         setSelf(viewport)
@@ -50,13 +52,13 @@ const viewportState = atom<MapCoordinates>({
 export default function useViewport(): UseViewport {
   const [viewport, setViewport] = useRecoilState(viewportState)
 
-  const setMapCoordinates = useCallback((coordinates: SetMapCoordinatesArgs) => {
+  const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
     setViewport((viewport) => ({ ...viewport, ...coordinates }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onViewportChange = useCallback((viewport: ViewportProps) => {
-    const { latitude, longitude, zoom } = viewport
+  const onViewportChange = useCallback((ev: ViewStateChangeEvent) => {
+    const { latitude, longitude, zoom } = ev.viewState
     if (latitude && longitude && zoom) {
       setViewport({ latitude, longitude, zoom })
     }
@@ -92,7 +94,9 @@ export function mglToMiniGlobeBounds(mglBounds: LngLatBounds) {
 
 export function useMapBounds() {
   const map = useMapInstance()
+  const mapReady = useMapReady()
   const [bounds, setBounds] = useRecoilState(boundsState)
+
   const setMapBounds = useCallback(() => {
     if (map) {
       const rawBounds = map.getBounds()
@@ -101,6 +105,13 @@ export function useMapBounds() {
       }
     }
   }, [map, setBounds])
+
+  useEffect(() => {
+    if (mapReady) {
+      setMapBounds()
+    }
+  }, [mapReady, setMapBounds])
+
   return { bounds, setMapBounds }
 }
 

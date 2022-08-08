@@ -1,10 +1,14 @@
 :root {
   --primary-green-rgb: 22, 137, 63; /* rgb(22, 63, 137) */
-  --color-primary-green: rgb(var(--primary-green-rgb), '#163f89');
+  --primary-yellow-rgb: 248, 174, 2;
+  --primary-gray-rgb: 128, 128, 128;
+  --color-primary-green: rgba(var(--primary-green-rgb), 1);
   --color-secondary-green: rgba(var(--primary-green-rgb), var(--opacity-secondary));
   --color-terthiary-green: rgba(var(--primary-green-rgb), var(--opacity-terthiary));
   --color-primary-green-hover: rgba(var(--primary-green-rgb), var(--opacity-hover));
   --color-primary-green-border: rgba(var(--primary-green-rgb), var(--opacity-border));
+  --color-primary-yellow: rgba(var(--primary-yellow-rgb), 1);
+  --color-primary-gray: rgba(var(--primary-gray-rgb), 1);
   --header-height: 5rem;
   --tabs-height: 4rem;
   --font-size: 12px;

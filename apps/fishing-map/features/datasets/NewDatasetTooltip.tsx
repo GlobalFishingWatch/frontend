@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
 import { isGuestUser } from 'features/user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getDatasetIcon } from 'features/datasets/datasets.utils'
 import { useAddDataviewFromDatasetToWorkspace, useAddDataset } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
@@ -75,11 +76,27 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
             <Spinner size="small" />
           </li>
         ) : datasets?.length > 0 ? (
-          datasets.map((dataset) => (
-            <li key={dataset.id} className={styles.dataset} onClick={() => onSelectClick(dataset)}>
-              {dataset.name}
-            </li>
-          ))
+          datasets.map((dataset) => {
+            const datasetIcon = getDatasetIcon(dataset)
+            return (
+              <li
+                key={dataset.id}
+                className={styles.dataset}
+                onClick={() => onSelectClick(dataset)}
+              >
+                <span>
+                  {datasetIcon && (
+                    <Icon
+                      icon={datasetIcon}
+                      className={styles.layerIcon}
+                      style={{ transform: 'translateY(25%)' }}
+                    />
+                  )}
+                  {dataset.name}
+                </span>
+              </li>
+            )
+          })
         ) : (
           <li className={cx(styles.dataset, styles.empty)}>
             {datasetCategory === DatasetCategory.Context

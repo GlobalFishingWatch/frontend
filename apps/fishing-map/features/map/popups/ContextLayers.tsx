@@ -1,6 +1,8 @@
-import React, { Fragment, useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { event as uaEvent } from 'react-ga'
+import { Icon } from '@globalfishingwatch/ui-components'
+import { ContextLayerType } from '@globalfishingwatch/layer-composer'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
@@ -38,9 +40,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
         <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
-          <span
-            className={styles.popupSectionColor}
-            style={{ backgroundColor: featureByType[0].color }}
+          <Icon
+            icon="polygons"
+            className={styles.layerIcon}
+            style={{ color: featureByType[0].color }}
           />
           <div className={styles.popupSectionContent}>
             {showFeaturesDetails && (
@@ -48,43 +51,51 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             )}
             {featureByType.map((feature, index) => {
               if (!feature.value) return null
-
               const { generatorContextLayer } = feature
               const { gfw_id } = feature.properties
               const isGFWLayer =
-                ['mpa', 'mpa-restricted', 'mpa-no-take'].includes(
-                  generatorContextLayer as string
-                ) ||
-                generatorContextLayer === 'tuna-rfmo' ||
-                generatorContextLayer === 'eez-areas' ||
-                generatorContextLayer === 'wpp-nri' ||
-                generatorContextLayer === 'high-seas' ||
-                generatorContextLayer === 'fao'
+                generatorContextLayer === ContextLayerType.MPA ||
+                generatorContextLayer === ContextLayerType.MPARestricted ||
+                generatorContextLayer === ContextLayerType.MPANoTake ||
+                generatorContextLayer === ContextLayerType.TunaRfmo ||
+                generatorContextLayer === ContextLayerType.EEZ ||
+                generatorContextLayer === ContextLayerType.WPPNRI ||
+                generatorContextLayer === ContextLayerType.HighSeas ||
+                generatorContextLayer === ContextLayerType.FAO ||
+                generatorContextLayer === ContextLayerType.ProtectedSeas
 
               if (isGFWLayer) {
                 let id = gfw_id
                 let label = feature.value ?? feature.title
                 let linkHref = undefined
                 // ContextLayerType.MPA but enums doesn't work in CRA for now
-                if (
-                  ['mpa', 'mpa-restricted', 'mpa-no-take'].includes(generatorContextLayer as string)
-                ) {
-                  const { wdpa_pid } = feature.properties
-                  label = `${feature.value} - ${feature.properties.desig}`
-                  id = `${label}-${gfw_id}`
-                  linkHref = wdpa_pid ? `https://www.protectedplanet.net/${wdpa_pid}` : undefined
-                } else if (generatorContextLayer === 'tuna-rfmo') {
-                  id = `${feature.value}-${gfw_id}`
-                  linkHref = TunaRfmoLinksById[feature.value]
-                } else if (generatorContextLayer === 'eez-areas') {
-                  const { mrgid } = feature.properties
-                  id = `${mrgid}-${gfw_id}`
-                  linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`
-                } else if (
-                  generatorContextLayer === 'wpp-nri' ||
-                  generatorContextLayer === 'high-seas'
-                ) {
-                  id = `${feature.value}-${gfw_id}`
+                switch (generatorContextLayer) {
+                  case ContextLayerType.MPA:
+                  case ContextLayerType.MPANoTake:
+                  case ContextLayerType.MPARestricted:
+                    const { wdpa_pid } = feature.properties
+                    label = `${feature.value} - ${feature.properties.desig}`
+                    id = `${label}-${gfw_id}`
+                    linkHref = wdpa_pid ? `https://www.protectedplanet.net/${wdpa_pid}` : undefined
+                    break
+                  case ContextLayerType.TunaRfmo:
+                    id = `${feature.value}-${gfw_id}`
+                    linkHref = TunaRfmoLinksById[feature.value]
+                    break
+                  case ContextLayerType.EEZ:
+                    const { mrgid } = feature.properties
+                    id = `${mrgid}-${gfw_id}`
+                    linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`
+                    break
+                  case ContextLayerType.ProtectedSeas:
+                    const { site_id } = feature.properties
+                    id = `${site_id}-${gfw_id}`
+                    linkHref = `https://mpa.protectedseas.net/index.php?q=${site_id}`
+                    break
+                  case ContextLayerType.WPPNRI:
+                  case ContextLayerType.HighSeas:
+                    id = `${feature.value}-${gfw_id}`
+                    break
                 }
 
                 return (

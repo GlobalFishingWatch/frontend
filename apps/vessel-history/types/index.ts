@@ -1,9 +1,21 @@
-import { Vessel, Authorization, VesselSearch, EventType } from '@globalfishingwatch/api-types'
+import {
+  Vessel,
+  Authorization,
+  VesselSearch,
+  EventType,
+  Workspace as BaseWorkspace,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
-export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel'
+export type WorkspaceStateProperty =
+  | 'q'
+  | 'dataviewInstances'
+  | 'version'
+  | 'vessel'
+  | 'timebarGraph'
+export type WorkspaceOfflineOptions = 'offline'
 export type WorkspaceAdvancedSearchParam =
   | 'imo'
   | 'mmsi'
@@ -19,6 +31,7 @@ export type WorkspaceParam =
   | WorkspaceStateProperty
   | WorkspaceAdvancedSearchParam
   | WorkspaceMergeVesselsParam
+  | WorkspaceOfflineOptions
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
@@ -28,11 +41,17 @@ export type WorkspaceMergeVessels = {
 
 export type BivariateDataviews = [string, string]
 
+export type WorkspaceProfileViewParam = 'port-inspector' | 'insurance-underwriter'
+export interface Workspace<T> extends BaseWorkspace<T> {
+  profileView?: WorkspaceProfileViewParam
+}
+
 export type WorkspaceState = {
   q?: string
   version?: string
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string
+  timebarGraph?: TimebarGraphs
 }
 
 export type RedirectParam = {
@@ -82,10 +101,32 @@ export interface VesselFieldsHistory {
   operator: VesselFieldHistory<string>
 }
 
+export interface ForcedLaborRisk {
+  confidence: boolean
+  score: boolean
+  year: number
+  reportedCases: boolean
+}
+
+export enum RiskLevel {
+  high = 'high',
+  low = 'low',
+  unknown = 'unknown',
+}
+
+export interface RiskOutput {
+  levels: RiskLevel[]
+  year: number
+  highrisk: boolean
+  reportedCases: boolean
+  highestRisk: RiskLevel
+}
+
 export interface VesselWithHistory extends Vessel {
   history: VesselFieldsHistory
   iuuStatus?: number
   vesselType?: string
+  forcedLabour?: ForcedLaborRisk[]
 }
 
 export enum VesselAPISource {
@@ -165,6 +206,7 @@ export type GFWDetail = {
   callsign: string
   firstTransmissionDate: string
   flag: string
+  forcedLabour?: ForcedLaborRisk[]
   id: string
   imo?: any
   lastTransmissionDate: string
@@ -213,3 +255,9 @@ export interface SearchResults {
 }
 
 export type VisibleEvents = EventType[] | 'all' | 'none'
+
+export enum TimebarGraphs {
+  Speed = 'speed',
+  Depth = 'elevation',
+  None = 'none',
+}

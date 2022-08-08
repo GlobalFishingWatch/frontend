@@ -130,7 +130,6 @@ export const getInterval = (
   availableIntervals: Interval[][],
   omitIntervals: Interval[] = []
 ): Interval => {
-
   const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
 
   // Get intervals that are common to all dataset (initial array provided to ensure order from smallest to largest)
@@ -143,22 +142,36 @@ export const getInterval = (
 
   const duration = Duration.fromMillis(deltaMs)
 
-  const validIntervals = intervals.filter(interval => CONFIG_BY_INTERVAL[interval] && (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration)))
-  
+  const validIntervals = intervals.filter((interval) => {
+    const valid =
+      CONFIG_BY_INTERVAL[interval] &&
+      (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration))
+    return valid
+  })
+
+  if (!validIntervals?.length) {
+    if (!omitIntervals?.length) {
+      // Warn only needed when no omitedIntervals becuase anaylis mode needs to fallback
+      // to day when out of range for hours
+      console.warn('no valid intervals found, fallback to day', validIntervals)
+    }
+    return 'day'
+  }
+
   let selectedInterval: Interval
 
   // if only available intervals are 10days and month, favor month
-  if (validIntervals.includes('10days') && validIntervals.includes('month') && validIntervals.length === 2) {
+  if (
+    validIntervals.includes('10days') &&
+    validIntervals.includes('month') &&
+    validIntervals.length === 2
+  ) {
     selectedInterval = 'month'
   } else {
     // else, use smallest interval
     selectedInterval = validIntervals[0]
   }
 
-  if (!selectedInterval) {
-    console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
-    return 'day'
-  }
   return selectedInterval
 }
 
@@ -178,7 +191,7 @@ const getChunkStarts = (
   const chunkStarts: DateTime[] = [firstChunkStart]
   while (true) {
     const nextChunkStart = config.getChunkViewEnd(chunkStarts[chunkStarts.length - 1])
-    if (+nextChunkStart > bufferedActiveEnd) {
+    if (+nextChunkStart > Date.now() || +nextChunkStart > bufferedActiveEnd) {
       break
     }
     chunkStarts.push(nextChunkStart)
@@ -354,11 +367,7 @@ const toQuantizedFrame = (
   return frame - quantizeOffset
 }
 
-export const frameToDate = (
-  frame: number,
-  quantizeOffset: number,
-  interval: Interval,
-) => {
+export const frameToDate = (frame: number, quantizeOffset: number, interval: Interval) => {
   const offsetedFrame = frame + quantizeOffset
   const config = CONFIG_BY_INTERVAL[interval]
   return config.getDate(offsetedFrame) as Date

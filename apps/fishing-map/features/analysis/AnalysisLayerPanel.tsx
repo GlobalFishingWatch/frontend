@@ -1,10 +1,8 @@
-import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { isFishingDataview, isPresenceDataview } from 'features/workspace/activity/activity.utils'
+import { isActivityDataview, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
@@ -30,15 +28,15 @@ function AnalysisLayerPanel({
 }: LayerPanelProps) {
   const { t } = useTranslation()
 
-  const fishignDataview = isFishingDataview(dataview)
-  const presenceDataview = isPresenceDataview(dataview)
+  const activityDataview = isActivityDataview(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
 
   let datasetName = dataset ? getDatasetLabel(dataset) : dataview.name || ''
-  if (fishignDataview || presenceDataview) {
-    datasetName = presenceDataview
-      ? t(`common.presence`, 'Vessel presence')
-      : t(`common.apparentFishing`, 'Apparent Fishing Effort')
+  if (activityDataview) {
+    datasetName =
+      dataset.subcategory === 'presence'
+        ? t(`common.presence`, 'Vessel presence')
+        : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
   const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
   const showDot =

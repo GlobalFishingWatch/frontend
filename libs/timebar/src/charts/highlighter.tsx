@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import cx from 'classnames'
 import { useRecoilValue } from 'recoil'
+import { Icon, IconType } from '@globalfishingwatch/ui-components'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
@@ -15,7 +16,7 @@ import {
   ChartType,
   HighlighterDateCallback,
 } from './common/types'
-import chartsDataState from './chartsData.atom'
+import chartsDataState, { hoveredEventState } from './chartsData.atom'
 import { useOuterScale } from './common/hooks'
 
 dayjs.extend(utc)
@@ -85,15 +86,18 @@ const findValue = (centerMs: number, chunk: TimebarChartChunk) => {
 }
 
 type HighlighterData = {
+  expanded?: boolean
   labels: ({ value?: string } | undefined)[]
   color?: string
-  defaultLabel?: string
+  icon?: string
+  defaultLabel?: { value?: string }
 }
 
 const getHighlighterData = (
   centerMs: number,
   minHighlightChunkDuration: number,
-  dataRecord?: TimebarChartsData
+  dataRecord?: TimebarChartsData,
+  hoveredEventId?: string
 ) => {
   if (!dataRecord) return { highlighterData: [] }
   const data = Object.entries(dataRecord)
@@ -107,12 +111,11 @@ const getHighlighterData = (
     const chartData = chart[1]
     if (!chartData.active) return
     highlightedChunks[chartType] = []
-    chartData.data.forEach((item, itemIndex) => {
+    chartData.data?.forEach((item, itemIndex) => {
       const foundChunks = findChunks(centerMs, item, minHighlightChunkDuration)
 
       // Case where several track events overlap (reverse order as this is paint order)
       const foundChunk = foundChunks ? foundChunks[foundChunks.length - 1] : undefined
-      let label = undefined
 
       if (!highlighterData[itemIndex]) {
         highlighterData[itemIndex] = {
@@ -122,15 +125,29 @@ const getHighlighterData = (
       }
 
       if (foundChunk) {
+        const expanded = foundChunk.id === hoveredEventId
+        if (chartType === 'tracksEvents' || chartType === 'tracksGraphs') {
+          highlighterData[itemIndex].expanded = expanded
+        }
         if (item.defaultLabel && !highlighterData[itemIndex].defaultLabel) {
-          highlighterData[itemIndex].defaultLabel = item.defaultLabel
+          highlighterData[itemIndex].defaultLabel = {
+            value: item.defaultLabel,
+          }
         }
         const foundValue = findValue(centerMs, foundChunk)
 
-        label = item.getHighlighterLabel
+        const callbacksArgs = {
+          chunk: foundChunk,
+          value: foundValue,
+          item,
+          itemIndex,
+          expanded,
+        }
+
+        const label = item.getHighlighterLabel
           ? typeof item.getHighlighterLabel === 'string'
             ? item.getHighlighterLabel
-            : item.getHighlighterLabel(foundChunk, foundValue, item, itemIndex)
+            : item.getHighlighterLabel(callbacksArgs)
           : foundValue?.value?.toString()
 
         if (label) {
@@ -139,10 +156,22 @@ const getHighlighterData = (
           }
         }
 
+        const icon = item.getHighlighterIcon
+          ? typeof item.getHighlighterIcon === 'string'
+            ? item.getHighlighterIcon
+            : item.getHighlighterIcon(callbacksArgs)
+          : ''
+
+        highlighterData[itemIndex].icon = icon
+
         if (foundChunk.cluster?.ids) {
-          highlightedChunks[chartType] = foundChunk.cluster?.ids || []
+          highlightedChunks[chartType] = highlightedChunks[chartType]?.concat(
+            foundChunk.cluster?.ids || []
+          )
         } else if (foundChunk.id) {
-          highlightedChunks[chartType] = [foundChunk.id as string]
+          highlightedChunks[chartType] = highlightedChunks[chartType]?.concat([
+            foundChunk.id as string,
+          ])
         }
       }
     })
@@ -176,6 +205,7 @@ const Highlighter = ({
 
   // TODO Filter active with selector
   const chartsData = useRecoilValue(chartsDataState)
+  const hoveredEventId = useRecoilValue(hoveredEventState)
 
   const minHighlightChunkDuration = useMemo(() => {
     return +outerScale.invert(15) - +outerScale.invert(0)
@@ -183,8 +213,8 @@ const Highlighter = ({
   }, [outerStart, outerEnd])
 
   const { highlighterData, highlightedChunks } = useMemo(() => {
-    return getHighlighterData(centerMs, minHighlightChunkDuration, chartsData)
-  }, [centerMs, chartsData, minHighlightChunkDuration])
+    return getHighlighterData(centerMs, minHighlightChunkDuration, chartsData, hoveredEventId)
+  }, [centerMs, chartsData, minHighlightChunkDuration, hoveredEventId])
 
   useEffect(() => {
     if (onHighlightChunks) {
@@ -218,28 +248,43 @@ const Highlighter = ({
               })}
             >
               <span className={styles.tooltipDate}>{dateLabel}</span>
-              {highlighterData.map((item, itemIndex) => {
-                if (!item) return null
-                else
-                  return (
-                    <span key={itemIndex} className={styles.tooltipItem}>
-                      <span
-                        className={styles.tooltipColor}
-                        style={{ backgroundColor: item.color }}
-                      ></span>
-                      {item.defaultLabel && (
-                        <span className={cx(styles.tooltipLabel, styles.isMain)}>
-                          {item.defaultLabel}
-                        </span>
-                      )}
-                      {item.labels?.map((label, labelIndex) => (
-                        <span key={labelIndex} className={styles.tooltipLabel}>
-                          {label?.value}
-                        </span>
-                      ))}
-                    </span>
-                  )
-              })}
+              {highlighterData?.length > 0 && (
+                <ul>
+                  {highlighterData.map((item, itemIndex) => {
+                    if (!item) return null
+                    else
+                      return (
+                        <li
+                          key={itemIndex}
+                          className={cx(styles.tooltipItem, {
+                            [styles.expanded]: item.expanded && highlighterData.length > 1,
+                          })}
+                        >
+                          {item.icon ? (
+                            <Icon icon={item.icon as IconType} style={{ color: item.color }}></Icon>
+                          ) : (
+                            <span
+                              className={styles.tooltipColor}
+                              style={{ backgroundColor: item.color }}
+                            ></span>
+                          )}
+                          <div>
+                            {item.defaultLabel && (
+                              <span className={cx(styles.tooltipLabel, styles.isMain)}>
+                                {item.defaultLabel.value}
+                              </span>
+                            )}
+                            {item.labels?.map((label, labelIndex) => (
+                              <span key={labelIndex} className={cx(styles.tooltipLabel)}>
+                                {label?.value}
+                              </span>
+                            ))}
+                          </div>
+                        </li>
+                      )
+                  })}
+                </ul>
+              )}
             </div>
           </div>,
           tooltipContainer

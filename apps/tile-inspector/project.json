@@ -1,5 +1,5 @@
 {
-  "root": "apps/tile-inspector",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/tile-inspector",
   "projectType": "application",
   "targets": {
@@ -56,7 +56,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/tile-inspector"],
       "options": {
-        "jestConfig": "apps/tile-inspector/jest.config.js",
+        "jestConfig": "apps/tile-inspector/jest.config.ts",
         "passWithNoTests": true
       }
     },

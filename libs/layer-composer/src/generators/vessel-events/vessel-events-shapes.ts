@@ -1,9 +1,10 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
+import { DateTime, Duration } from 'luxon'
 import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
-  CircleLayerSpecification
+  CircleLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
 import {
@@ -18,8 +19,7 @@ import {
   getVesselEventsSegmentsGeojson,
   filterGeojsonByTimerange,
   filterFeaturesByTimerange,
-  getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
-  groupFeaturesByType
+  groupFeaturesByType,
 } from './vessel-events.utils'
 
 export type GlobalVesselEventsShapesGeneratorConfig =
@@ -45,11 +45,14 @@ class VesselsEventsShapesGenerator {
       return []
     }
 
+    const cachedData = memoizeCache[config.id].getCachedData(data)
+
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(
-      data,
+      cachedData,
       showAuthorizationStatus,
-      null,
-      config.color
+      undefined,
+      config.color,
+      config.vesselId
     ) as FeatureCollection
 
     const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
@@ -79,11 +82,21 @@ class VesselsEventsShapesGenerator {
 
     const segments = memoizeCache[config.id].getVesselEventsSegmentsGeojson(
       track,
-      data,
-      showAuthorizationStatus
+      cachedData,
+      showAuthorizationStatus,
+      config.vesselId
     ) as FeatureCollection
 
-    const segmentsFiltered = memoizeCache[config.id].filterGeojsonByTimerange(segments, start, end)
+    const fishingSegments = {
+      ...segments,
+      features: segments.features.filter((feature) => feature.properties?.type === 'fishing'),
+    }
+
+    const segmentsFiltered = memoizeCache[config.id].filterGeojsonByTimerange(
+      fishingSegments,
+      start,
+      end
+    )
 
     const segmentsSource: VesselsEventsSource = {
       id: `${id}_segments`,
@@ -112,96 +125,94 @@ class VesselsEventsShapesGenerator {
       return expr
     }
 
-    const pointsLayers: (CircleLayerSpecification | SymbolLayerSpecification)[] = [
-      {
-        type: 'circle',
-        id: `${config.id}_fishingEvents`,
-        source: `${config.id}_fishingEvents`,
-        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
-        paint: {
-          'circle-color': getExpression('#ffffff', ['get', 'color']),
-          'circle-radius': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            4,
-            getExpression(5, 3),
-            9,
-            getExpression(10, 6),
-          ],
-        },
-        metadata: {
-          group: Group.Point,
-          interactive: true,
-          generatorId: config.id,
-        },
-      } as CircleLayerSpecification,
-      {
-        type: 'symbol',
-        id: `${config.id}_otherEvents`,
-        source: `${config.id}_otherEvents`,
-        ...(showTrackSegments && { maxzoom: config.pointsToSegmentsSwitchLevel }),
-        layout: {
-          'icon-allow-overlap': true,
-          'icon-size': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            4,
-            getExpression(0.75, 0.5),
-            9,
-            getExpression(1.5, 1),
-          ],
-          'icon-image': getExpression(['get', 'shapeHighlight'], ['get', 'shape']),
-          'symbol-sort-key': ['get', 'shapePriority'],
-        },
-        metadata: {
-          group: Group.Point,
-          interactive: true,
-          generatorId: config.id,
-        },
-      } as SymbolLayerSpecification
-    ]
+    const fishingPointsLayer: CircleLayerSpecification = {
+      type: 'circle',
+      id: `${config.id}_fishingEvents`,
+      source: `${config.id}_fishingEvents`,
+      layout: {
+        'circle-sort-key': getExpression(1, 0),
+      },
+      paint: {
+        'circle-color': ['get', 'color'],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 1.5, 9, 4],
+        'circle-stroke-color': getExpression('#ffffff', 'transparent'),
+        'circle-stroke-width': 2,
+      },
+      metadata: {
+        group: Group.Point,
+        interactive: true,
+        generatorId: config.id,
+      },
+    } as CircleLayerSpecification
+
+    const otherPointsLayer: SymbolLayerSpecification = {
+      type: 'symbol',
+      id: `${config.id}_otherEvents`,
+      source: `${config.id}_otherEvents`,
+      layout: {
+        'icon-allow-overlap': true,
+        'icon-size': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          4,
+          getExpression(0.75, 0.5),
+          9,
+          getExpression(1.5, 1),
+        ],
+        'icon-image': getExpression(['get', 'shapeHighlight'], ['get', 'shape']),
+        'symbol-sort-key': getExpression(
+          ['*', 10, ['get', 'shapePriority']],
+          ['get', 'shapePriority']
+        ),
+      },
+      metadata: {
+        group: Group.Point,
+        interactive: true,
+        generatorId: config.id,
+      },
+    } as SymbolLayerSpecification
 
     if (!showTrackSegments) {
-      return pointsLayers
+      return [fishingPointsLayer, otherPointsLayer]
     }
 
-    const segmentsLayers = [
-      {
-        id: `${config.id}_segments`,
-        source: `${config.id}_segments`,
-        type: 'line',
-        minzoom: config.pointsToSegmentsSwitchLevel,
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-          visibility: 'visible',
-        },
-        paint: {
-          'line-color': ['get', 'color'],
-          'line-width': getExpression(6, 1.5),
-          'line-opacity': 1,
-        },
-        metadata: {
-          group: Group.TrackHighlighted,
-          interactive: true,
-          generatorId: config.id,
-          uniqueFeatureInteraction: true,
-        },
-      } as LineLayerSpecification,
-    ]
-    return [...pointsLayers, ...segmentsLayers]
+    const fishingSegmentsLayer = {
+      id: `${config.id}_segments`,
+      source: `${config.id}_segments`,
+      type: 'line',
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round',
+        visibility: 'visible',
+      },
+      paint: {
+        'line-color': getExpression('#ffffff', config.color),
+        'line-width': ['get', 'width'],
+        'line-opacity': 1,
+      },
+      metadata: {
+        group: Group.TrackHighlighted,
+        interactive: true,
+        generatorId: config.id,
+        uniqueFeatureInteraction: true,
+      },
+    } as LineLayerSpecification
+
+    return [otherPointsLayer, fishingSegmentsLayer]
   }
 
   getStyle = (config: GlobalVesselEventsShapesGeneratorConfig) => {
     memoizeByLayerId(config.id, {
-      getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
-      getVesselEventsSegmentsGeojson: memoizeOne(
-        getVesselEventsSegmentsGeojson,
-        // This is a hack needed because the events array mutates constantly in resolve-dataviews-generators
-        getVesselEventsSegmentsGeojsonMemoizeEqualityCheck
+      getCachedData: memoizeOne(
+        (data) => data,
+        // Do not use shallow equality as data structures is generated on the fly in getGeneratorConfig
+        (newArgs: any, lastArgs: any) => {
+          return newArgs.length !== lastArgs.length
+        }
       ),
+      getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
+      getVesselEventsSegmentsGeojson: memoizeOne(getVesselEventsSegmentsGeojson),
       filterGeojsonByTimerange: memoizeOne(filterGeojsonByTimerange),
       filterFeaturesByTimerange: memoizeOne(filterFeaturesByTimerange),
       groupFeaturesByType: memoizeOne(groupFeaturesByType),

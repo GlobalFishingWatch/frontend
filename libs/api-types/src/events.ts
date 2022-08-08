@@ -24,6 +24,11 @@ export enum EventVesselTypeEnum {
   Fishing = 'fishing',
 }
 
+export interface EventAuthorization {
+  is_authorized: string
+  rfmo: string
+}
+
 export interface EventVessel {
   id: string
   ssvid: string
@@ -31,6 +36,7 @@ export interface EventVessel {
   flag: string
   type: EventVesselTypeEnum
   nextPort?: EventNextPort
+  authorizations?: EventAuthorization[]
 }
 
 export type RFMOs =
@@ -135,6 +141,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   encounter?: EncounterEvent<Vessel>
   port?: PortEvent
   port_visit?: PortVisitEvent
+  key?: string
 }
 
 export interface ApiEvents<T = ApiEvent> {

@@ -15,6 +15,7 @@ interface ModalProps {
   title?: string
   size?: IconButtonSize
   type?: IconButtonType
+  children: React.ReactNode
 }
 
 const DataAndTerminology: React.FC<ModalProps> = ({
@@ -35,7 +36,7 @@ const DataAndTerminology: React.FC<ModalProps> = ({
         icon="info"
         size={size}
         type={type}
-        className={className}
+        className={cx(styles.infoButton, className)}
         onClick={() => setShowModal(true)}
       />
       <Modal

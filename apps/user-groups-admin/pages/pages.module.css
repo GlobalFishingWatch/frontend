@@ -7,10 +7,18 @@
 }
 
 .aside {
-  width: 240px;
+  top: 7rem;
+  left: 2rem;
+  width: 24rem;
+  height: calc(100vh - 6rem);
+  overflow: auto;
+  position: fixed;
   border-right: var(--border);
+  padding-bottom: 1rem;
 }
 
 .main {
-  flex: 1;
+  flex: 1 1;
+  padding-left: 26rem;
+  padding-top: 7rem;
 }
