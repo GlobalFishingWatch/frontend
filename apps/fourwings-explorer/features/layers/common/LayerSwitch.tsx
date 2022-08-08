@@ -1,5 +1,5 @@
 import { Switch } from '@globalfishingwatch/ui-components'
-import { DatasetLayer, useMapLayersConfig } from 'features/layers/layers.hooks'
+import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
 
 type LayerSwitchProps = {
   active: boolean
@@ -11,10 +11,10 @@ type LayerSwitchProps = {
 }
 
 const LayerSwitch = ({ active, layer, className, disabled, onToggle, color }: LayerSwitchProps) => {
-  const { updateMapLayer } = useMapLayersConfig()
+  const { updateLayer } = useLayersConfig()
   const layerActive = layer?.config?.visible ?? true
   const onToggleLayerActive = () => {
-    updateMapLayer({
+    updateLayer({
       id: layer.id,
       config: {
         visible: !layerActive,

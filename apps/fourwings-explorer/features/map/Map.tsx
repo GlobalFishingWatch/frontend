@@ -2,10 +2,16 @@ import { Map, MapboxStyle } from 'react-map-gl'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
-import mapStyle from 'features/map/map-style'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import MapControls from 'features/map/MapControls'
-import { useURLViewport, useViewport } from './map-viewport.hooks'
+import { useMapStyle } from 'features/map/map-style.hooks'
+import { useMapLoaded } from 'features/map/map-state.hooks'
+import {
+  useAllMapSourceTilesLoaded,
+  useMapSourceTilesLoadedAtom,
+} from 'features/map/map-sources.hooks'
 import styles from './Map.module.css'
+import { useURLViewport, useViewport } from './map-viewport.hooks'
 
 const transformRequest: (...args: any[]) => RequestParameters = (
   url: string,
@@ -30,20 +36,26 @@ const handleError = async ({ error }: any) => {
   }
 }
 
-const mapStyles = {
+const style = {
   width: '100%',
   height: '100%',
 }
 
 const MapWrapper = (): React.ReactElement => {
-  const { viewport, onViewportChange } = useViewport()
   useURLViewport()
+  useMapSourceTilesLoadedAtom()
+  const { viewport, onViewportChange } = useViewport()
+  const { style: mapStyle, loading: layerComposerLoading } = useMapStyle()
+  const mapLoaded = useMapLoaded()
+  const allSourcesLoaded = useAllMapSourceTilesLoaded()
+  const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
+  const debouncedMapLoading = useDebounce(mapLoading, 300)
   return (
     <div className={styles.container}>
-      <MapControls />
+      <MapControls mapLoading={debouncedMapLoading} />
       <Map
         id="map"
-        style={mapStyles}
+        style={style}
         mapLib={maplibregl}
         latitude={viewport.latitude}
         longitude={viewport.longitude}

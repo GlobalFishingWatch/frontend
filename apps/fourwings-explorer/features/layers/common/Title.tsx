@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode, Ref } from 'react'
 import cx from 'classnames'
-import { DatasetLayer, useMapLayersConfig } from 'features/layers/layers.hooks'
+import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
 
 type TitleProps = {
   layer: DatasetLayer
@@ -12,11 +12,11 @@ type TitleProps = {
 
 const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
   const { layer, className, classNameActive, title, onToggle } = props
-  const { updateMapLayer } = useMapLayersConfig()
+  const { updateLayer } = useLayersConfig()
   const layerActive = layer?.config?.visible ?? true
 
   const onToggleLayerActive = () => {
-    updateMapLayer({
+    updateLayer({
       id: layer.id,
       config: {
         visible: !layerActive,

@@ -9,7 +9,7 @@ import libraryDatasets, {
 } from 'features/datasets/data/library'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetsLibraryModal } from 'features/datasets/datasets-library.hoooks'
-import { useDatasetLayers, useMapLayersConfig } from 'features/layers/layers.hooks'
+import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import styles from './DatasetsLibraryModal.module.css'
 
 const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetCategory[] }) => {
@@ -23,10 +23,10 @@ const DatasetsLibraryCategories = ({ categories }: { categories: LibraryDatasetC
 }
 
 const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
-  const { addMapLayer } = useMapLayersConfig()
+  const { addLayer } = useLayersConfig()
   const layers = useDatasetLayers()
   const onLayerClick = (dataset) => {
-    addMapLayer({ id: dataset.id, config: { visible: true } })
+    addLayer({ id: dataset.id, config: { visible: true } })
   }
   return datasets && datasets.length ? (
     <ul>

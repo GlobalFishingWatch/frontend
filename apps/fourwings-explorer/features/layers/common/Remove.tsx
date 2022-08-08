@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetLayer, useMapLayersConfig } from 'features/layers/layers.hooks'
+import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
 
 type RemoveProps = {
   className?: string
@@ -9,7 +9,7 @@ type RemoveProps = {
 }
 
 const Remove = ({ onClick, className, layer }: RemoveProps) => {
-  const { removeMapLayer } = useMapLayersConfig()
+  const { removeLayer } = useLayersConfig()
 
   const onClickInternal = useCallback(
     (e: any) => {
@@ -18,10 +18,10 @@ const Remove = ({ onClick, className, layer }: RemoveProps) => {
         return
       }
       if (layer) {
-        removeMapLayer(layer.id)
+        removeLayer(layer.id)
       }
     },
-    [onClick, layer, removeMapLayer]
+    [onClick, layer, removeLayer]
   )
 
   return (
