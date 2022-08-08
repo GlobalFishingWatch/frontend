@@ -53,13 +53,13 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "port:compile",
+        "buildTarget": "<%= name %>:compile",
         "dev": true,
         "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "port:compile:production",
+          "buildTarget": "<%= name %>:compile:production",
           "dev": false
         }
       }
@@ -67,7 +67,7 @@
     "build": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "port:compile:production"
+        "buildTarget": "<%= name %>:compile:production"
       }
     },
     "test": {
