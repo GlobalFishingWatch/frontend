@@ -79,6 +79,7 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
           {layerActive && (
             <Color
               layer={layer}
+              colorType="fill"
               open={colorOpen}
               onColorClick={changeColor}
               onToggleClick={onToggleColorOpen}
