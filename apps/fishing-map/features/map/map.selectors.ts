@@ -130,7 +130,6 @@ const getGeneratorsConfig = ({
       }
       return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
     }
-
     return generatorsConfig.reverse()
   } catch (e) {
     console.error(e)

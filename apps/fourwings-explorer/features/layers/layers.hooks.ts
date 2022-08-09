@@ -1,25 +1,33 @@
-import { atom, selector, useRecoilState } from 'recoil'
+import { atom, useRecoilState } from 'recoil'
 import { useCallback, useMemo } from 'react'
 import { urlSyncEffect } from 'recoil-sync'
 import { mixed } from '@recoiljs/refine'
 import {
   BasemapGeneratorConfig,
   BasemapType,
+  ColorRampId,
   GeneratorType,
 } from '@globalfishingwatch/layer-composer'
 import { APIDataset, useAPIDatasets } from 'features/datasets/datasets.hooks'
+import { toArray } from 'features/map/map-sources.hooks'
 
-export type LayerConfig = {
+export type BaseLayerConfig = {
   type?: GeneratorType
-  basemap?: BasemapType
   visible?: boolean
   color?: string
-  colorRamp?: string
+}
+
+export type FourwingsLayerConfig = BaseLayerConfig & {
+  type: GeneratorType.HeatmapAnimated
+  colorRamp?: ColorRampId
+  breaks?: number[]
+  maxZoom?: number
+  dynamicBreaks?: boolean
 }
 
 export type DatasetLayerConfig = {
   id: string
-  config: LayerConfig
+  config: BaseLayerConfig | BasemapGeneratorConfig | FourwingsLayerConfig
 }
 
 export type DatasetLayer = DatasetLayerConfig & {
@@ -54,42 +62,43 @@ export const layersConfigAtom = atom<DatasetLayerConfig[]>({
 })
 
 export const useLayersConfig = () => {
-  const [layersConfig, setMapLayerConfig] = useRecoilState(layersConfigAtom)
-  console.log(layersConfig)
+  const [layersConfig, setMapLayersConfig] = useRecoilState(layersConfigAtom)
 
   const addLayer = useCallback(
     (layer: DatasetLayerConfig) => {
-      setMapLayerConfig((layers) => [...layers, layer])
+      setMapLayersConfig((layers) => [...layers, layer])
     },
-    [setMapLayerConfig]
+    [setMapLayersConfig]
   )
 
   const updateLayer = useCallback(
-    (layer: DatasetLayerConfig) => {
-      setMapLayerConfig((layers) =>
-        layers.map((l) => {
-          if (l.id === layer.id) {
-            return { ...l, config: { ...l.config, ...layer.config } }
+    (layer: DatasetLayerConfig | DatasetLayerConfig[]) => {
+      const layersToUpdate: DatasetLayerConfig[] = toArray(layer)
+      setMapLayersConfig((layers) =>
+        layers.map((layer) => {
+          const layerToUpdate = layersToUpdate.find((l) => l.id === layer.id)
+          if (layerToUpdate) {
+            return { ...layer, config: { ...layer.config, ...layerToUpdate.config } }
           }
-          return l
+          return layer
         })
       )
     },
-    [setMapLayerConfig]
+    [setMapLayersConfig]
   )
 
   const removeLayer = useCallback(
     (id: DatasetLayerConfig['id']) => {
-      setMapLayerConfig((layers) => layers.filter((l) => l.id !== id))
+      setMapLayersConfig((layers) => layers.filter((l) => l.id !== id))
     },
-    [setMapLayerConfig]
+    [setMapLayersConfig]
   )
 
   const setLayers = useCallback(
     (layers: DatasetLayerConfig[]) => {
-      setMapLayerConfig(layers)
+      setMapLayersConfig(layers)
     },
-    [setMapLayerConfig]
+    [setMapLayersConfig]
   )
 
   return { layersConfig, addLayer, updateLayer, removeLayer, setLayers }
@@ -97,8 +106,8 @@ export const useLayersConfig = () => {
 
 export const useDatasetLayers = (): DatasetLayer[] => {
   const { layersConfig } = useLayersConfig()
-
   const { data } = useAPIDatasets()
+
   const datasetLayers = useMemo(() => {
     const l = layersConfig.flatMap((layerConfig) => {
       if (layerConfig.id === BASEMAP_LAYER_ID) {
@@ -109,6 +118,7 @@ export const useDatasetLayers = (): DatasetLayer[] => {
     })
     return l
   }, [data, layersConfig])
+
   return datasetLayers
 }
 

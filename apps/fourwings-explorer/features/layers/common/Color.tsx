@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import {
   IconButton,
   ColorBar,
@@ -31,7 +30,6 @@ const Color = (props: ColorProps) => {
     className,
     disabled,
   } = props
-  const { t } = useTranslation()
   const color = layer.config?.color
   return (
     <ExpandedContainer
@@ -49,7 +47,7 @@ const Color = (props: ColorProps) => {
         icon={open ? 'color-picker' : 'color-picker-filled'}
         size="small"
         style={open || disabled ? {} : { color }}
-        tooltip={t('layer.color_change', 'Change color')}
+        tooltip="Change color"
         tooltipPlacement="top"
         onClick={onToggleClick}
         className={className}

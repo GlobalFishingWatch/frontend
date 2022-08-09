@@ -2,7 +2,7 @@ import { AppProps } from 'next/app'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import { MapProvider } from 'react-map-gl'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import './styles.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
