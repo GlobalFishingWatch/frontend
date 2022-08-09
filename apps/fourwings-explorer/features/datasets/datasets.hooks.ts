@@ -13,6 +13,7 @@ export type DatasetType = '4wings' | 'context'
 
 export type APIDataset = {
   id: string
+  name: string
   description: string
   source: DatasetSource
   type: DatasetType
@@ -31,14 +32,12 @@ export type APIDataset = {
 }
 
 const getDatasets = async () => {
-  debugger
   try {
     const datasets: APIDataset[] = await fetch(`${API_URL}/datasets`).then((r) => r.json())
     const datasetsWithImages = datasets.map((d) => ({ ...d, image: IMAGES_BY_ID[d.id] }))
     return datasetsWithImages
   } catch (e) {
     console.log(e)
-    debugger
   }
 }
 
