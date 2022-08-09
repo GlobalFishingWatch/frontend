@@ -12,7 +12,7 @@ function Section() {
   return (
     <SortableContext items={contextLayers}>
       <div className={styles.content}>
-        <h2>Polygon layers</h2>
+        <h2 className={styles.title}>Polygon layers</h2>
         {contextLayers && contextLayers?.length > 0 && (
           <ul>
             {contextLayers.map((layer) => {
@@ -20,8 +20,16 @@ function Section() {
             })}
           </ul>
         )}
-        <p>Add new layer</p>
-        <Button onClick={() => setNewFourwingsDatasetModal(true)}>Local File</Button>
+        <div className={styles.actions}>
+          <label>Add new dataset</label>
+          <Button
+            className={styles.cta}
+            size="small"
+            onClick={() => setNewFourwingsDatasetModal(true)}
+          >
+            Local File
+          </Button>
+        </div>
       </div>
     </SortableContext>
   )

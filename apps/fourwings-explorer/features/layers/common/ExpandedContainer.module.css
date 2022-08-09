@@ -1,8 +1,10 @@
 .expandedContainer {
+  width: 100%;
   min-width: 31.8rem;
   transform: translate(0, -5px);
   transform-origin: top;
   opacity: 0;
+  box-shadow: 0 1rem 1rem 0 rgba(var(--primary-blue-rgb), 0.25);
 }
 
 .expandedContainerTop {

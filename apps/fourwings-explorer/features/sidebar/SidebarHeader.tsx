@@ -5,7 +5,7 @@ function SidebarHeader() {
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
-        <h1>Geo temporal data explorer</h1>
+        <h1 className={styles.title}>Geo-temporal data explorer</h1>
       </div>
     </Sticky>
   )

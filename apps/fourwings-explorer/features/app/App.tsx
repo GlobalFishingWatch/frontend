@@ -33,7 +33,7 @@ function App(): React.ReactElement {
     }
   }, [sidebarOpen, map])
 
-  const asideWidth = '50%'
+  const asideWidth = '32rem'
 
   return (
     <Fragment>
