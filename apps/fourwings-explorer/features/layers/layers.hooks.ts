@@ -1,7 +1,7 @@
-import { atom, useRecoilState } from 'recoil'
-import { useCallback } from 'react'
+import { atom, selector, useRecoilState } from 'recoil'
+import { useCallback, useMemo } from 'react'
 import { urlSyncEffect } from 'recoil-sync'
-import { array, object, string } from '@recoiljs/refine'
+import { mixed } from '@recoiljs/refine'
 import {
   BasemapGeneratorConfig,
   BasemapType,
@@ -16,28 +16,30 @@ export type LayerConfig = {
   color?: string
   colorRamp?: string
 }
+
 export type DatasetLayerConfig = {
   id: string
   config: LayerConfig
 }
 
-export type DatasetLayer = APIDataset & {
-  config: LayerConfig
+export type DatasetLayer = DatasetLayerConfig & {
+  dataset: APIDataset
 }
 
-const layersChecker = array(
-  object({
-    id: string(),
-    config: object({
-      type: string(),
-      color: string(),
-    }),
-  })
-)
+// const layersChecker = array(
+//   object({
+//     id: string(),
+//     config: object({
+//       type: string(),
+//       color: string(),
+//     }),
+//   })
+// )
 
+const BASEMAP_LAYER_ID = 'basemap'
 const defaultLayers: DatasetLayerConfig[] = [
   {
-    id: 'basemap',
+    id: BASEMAP_LAYER_ID,
     config: {
       type: GeneratorType.Basemap,
       basemap: BasemapType.Default,
@@ -48,11 +50,12 @@ const defaultLayers: DatasetLayerConfig[] = [
 export const layersConfigAtom = atom<DatasetLayerConfig[]>({
   key: 'layersConfig',
   default: defaultLayers,
-  effects: [urlSyncEffect({ refine: layersChecker, history: 'replace' })],
+  effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
 })
 
 export const useLayersConfig = () => {
   const [layersConfig, setMapLayerConfig] = useRecoilState(layersConfigAtom)
+  console.log(layersConfig)
 
   const addLayer = useCallback(
     (layer: DatasetLayerConfig) => {
@@ -62,7 +65,7 @@ export const useLayersConfig = () => {
   )
 
   const updateLayer = useCallback(
-    (layer: Partial<DatasetLayerConfig>) => {
+    (layer: DatasetLayerConfig) => {
       setMapLayerConfig((layers) =>
         layers.map((l) => {
           if (l.id === layer.id) {
@@ -94,19 +97,27 @@ export const useLayersConfig = () => {
 
 export const useDatasetLayers = (): DatasetLayer[] => {
   const { layersConfig } = useLayersConfig()
-  const datasets = useAPIDatasets()
-  return layersConfig.flatMap((layerConfig) => {
-    const dataset = datasets.data?.find((dataset) => dataset.id === layerConfig.id)
-    return dataset ? { ...dataset, ...layerConfig } : []
-  })
+
+  const { data } = useAPIDatasets()
+  const datasetLayers = useMemo(() => {
+    const l = layersConfig.flatMap((layerConfig) => {
+      if (layerConfig.id === BASEMAP_LAYER_ID) {
+        return layerConfig
+      }
+      const dataset = data?.find((dataset) => dataset.id === layerConfig.id)
+      return dataset ? { ...layerConfig, dataset } : []
+    })
+    return l
+  }, [data, layersConfig])
+  return datasetLayers
 }
 
 export const useGeoTemporalLayers = () => {
   const layers = useDatasetLayers()
-  return layers.filter((l) => l.type === '4wings')
+  return layers.filter((l) => l.dataset?.type === '4wings')
 }
 
 export const useContexLayers = () => {
   const layers = useDatasetLayers()
-  return layers.filter((l) => l.type === 'context')
+  return layers.filter((l) => l.dataset?.type === 'context')
 }
