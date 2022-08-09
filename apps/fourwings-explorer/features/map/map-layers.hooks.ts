@@ -145,7 +145,6 @@ const useGlobalGeneratorConfig = () => {
 
 export const useMapLayers = () => {
   const layers = useDatasetLayers()
-  console.log(layers)
   const globalGeneratorConfig = useGlobalGeneratorConfig()
   const generators = useMemo(() => {
     return getLayersGeneratorConfig(layers)
