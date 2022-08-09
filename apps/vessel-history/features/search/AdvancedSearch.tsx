@@ -85,18 +85,18 @@ const AdvancedSearch: React.FC = () => {
     <div className={styles.container}>
       <form
         onSubmit={(e) => {
-          e.preventDefault()
           onSearchClick(e)
+          e.preventDefault()
         }}
       >
         <div className={styles.row}>
           <InputText
-            autoComplete="off"
             inputSize="small"
             onChange={onMainQueryChange}
             value={query ?? ''}
             label={t('search.shipname', 'Name')}
             autoFocus={true}
+            id={'shipname'}
             className={styles.full}
           />
           <InputText
@@ -178,10 +178,10 @@ const AdvancedSearch: React.FC = () => {
           />
         </div>
         <div className={cx(styles.row, styles.flexEnd)}>
-          <Button type="secondary" onClick={onResetClick}>
+          <Button type="secondary" onClick={onResetClick} htmlType={'reset'}>
             {t('clear', 'Clear ')}
           </Button>
-          <Button className={styles.cta} onClick={onSearchClick}>
+          <Button className={styles.cta} onClick={onSearchClick} htmlType={'submit'}>
             {t('search.title', 'Search')}
           </Button>
         </div>
