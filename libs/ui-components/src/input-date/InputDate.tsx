@@ -6,6 +6,8 @@ import { InputSize } from '../input-text/InputText'
 import styles from './InputDate.module.css'
 
 export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  id?: string
+  name?: string
   className?: string
   invalid?: boolean
   label?: string
@@ -21,6 +23,7 @@ const defaultKey = Date.now().toString()
 
 function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputElement>) {
   const {
+    id,
     className,
     value,
     label,
@@ -42,21 +45,24 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
 
   const isInvalid = props.invalid === true || inputRef.current?.validity.valid === false
 
+  const inputProps = {
+    key: label || defaultKey,
+    id: id ?? label,
+    name: id ?? label,
+    ...(max && { max }),
+    ...(min && { min }),
+    ...(step && { step }),
+    ...rest,
+  }
   return (
     <div className={cx(baseStyles.container, styles.container, styles[inputSize], className)}>
-      {labelContent && <label htmlFor={label}>{labelContent}</label>}
+      {labelContent && <label htmlFor={inputProps.id}>{labelContent}</label>}
       <input
         type="date"
         value={yymmddDate}
-        key={label || defaultKey}
         className={cx(styles.input, { [styles.invalid]: isInvalid })}
         ref={inputRef}
-        id={label}
-        name={label}
-        {...(max && { max })}
-        {...(min && { min })}
-        {...(step && { step })}
-        {...rest}
+        {...inputProps}
       />
       <div className={styles.actionsContainer}>
         {onRemove && value && (
