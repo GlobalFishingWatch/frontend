@@ -8,6 +8,7 @@ import {
   InputDate,
   MultiSelect,
   MultiSelectOption,
+  IconButton,
 } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -178,9 +179,15 @@ const AdvancedSearch: React.FC = () => {
           />
         </div>
         <div className={cx(styles.row, styles.flexEnd)}>
-          <Button type="secondary" onClick={onResetClick} htmlType={'reset'}>
-            {t('clear', 'Clear ')}
-          </Button>
+          <IconButton
+            type="border"
+            icon="delete"
+            onClick={onResetClick}
+            htmlType={'reset'}
+            tooltip={t('clear', 'Clear ')}
+            tooltipPlacement="left"
+          />
+
           <Button className={styles.cta} onClick={onSearchClick} htmlType={'submit'}>
             {t('search.title', 'Search')}
           </Button>
