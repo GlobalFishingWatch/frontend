@@ -71,3 +71,16 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.name {
+  font: var(--font-L);
+  font-weight: 700;
+  font-family: var(--secondary-font-family);
+}
+
+.description {
+  display: box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react'
 import { uniq } from 'lodash'
 import cx from 'classnames'
 import Image from 'next/image'
-import { InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { ColorRampId, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
@@ -57,13 +57,18 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: APIDataset[] }) => {
       {datasets.map((dataset) => {
         const disabled = layers.some((l) => l.id === dataset.id)
         return (
-          <li
-            key={dataset.id}
-            className={cx(styles.dataset, { [styles.disabled]: disabled })}
-            onClick={disabled ? undefined : () => onLayerClick(dataset)}
-          >
+          <li key={dataset.id} className={cx(styles.dataset, { [styles.disabled]: disabled })}>
             {dataset.image && <Image src={dataset.image}></Image>}
-            {dataset.description}
+            <h3 className={styles.name}>{dataset.name}</h3>
+            <p className={styles.description}>{dataset.description}</p>
+            <Button
+              size="small"
+              disabled={disabled}
+              onClick={disabled ? undefined : () => onLayerClick(dataset)}
+              type="secondary"
+            >
+              Add to map
+            </Button>
           </li>
         )
       })}
