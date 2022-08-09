@@ -2,6 +2,10 @@ import { ApiAppName, Dataset } from '.'
 
 export type ColorCyclingType = 'fill' | 'line'
 
+export const INCLUDE_FILTER_ID = 'include'
+export const EXCLUDE_FILTER_ID = 'exclude'
+export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
+
 export interface DataviewConfig<Type = any> {
   // TODO use any property from layer-composer here?
   type?: Type
@@ -9,6 +13,7 @@ export interface DataviewConfig<Type = any> {
   colorCyclingType?: ColorCyclingType
   visible?: boolean
   filters?: Record<string, any>
+  filterOperators?: Record<string, FilterOperator>
   dynamicBreaks?: boolean
   maxZoom?: number
   [key: string]: any

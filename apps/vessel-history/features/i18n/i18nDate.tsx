@@ -61,6 +61,11 @@ export const I18nSpecialDate = ({ date, format = DateTime.DATE_MED }: TMTDate) =
   } else if (date.toString().match(/^\d{6}0{2}$/)) {
     parsedDate = date.toString().replace(/(\d{4})(\d{2})(0{2})$/, '$1-$2-01')
     tokensFormat = 'LLL, yyyy'
+  } else if (date.toString().match(/^\d{4}-\d{2}-9{2}$/)) {
+    // Converts 2016-02-99 dates to 2016-02-01 and formats it as Feb, 2016
+    // TODO: Confirm with the source if this interpretation is correct
+    parsedDate = date.toString().replace(/(\d{4})-(\d{2})-(9{2})$/, '$1-$2-01')
+    tokensFormat = 'LLL, yyyy'
   } else if (date.toString().match(/^\d{8}$/)) {
     parsedDate = date.toString().replace(/(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3')
   }

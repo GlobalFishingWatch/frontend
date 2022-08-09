@@ -8,6 +8,7 @@ import {
   RFMO_DATAVIEW_ID,
   HIGH_SEAS_DATAVIEW_ID,
   BASEMAP_DATAVIEW_ID,
+  BASEMAP_LABELS_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
   PRESENCE_DATAVIEW_ID,
   VIIRS_MATCH_DATAVIEW_ID,
@@ -16,6 +17,7 @@ import {
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
   SAR_DATAVIEW_ID,
+  PROTECTED_SEAS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -40,7 +42,6 @@ const workspace: Workspace<WorkspaceState> = {
     // timebarGraph: '',
   },
   ownerId: 0,
-  dataviews: [],
   dataviewInstances: [
     {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -148,6 +149,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: HIGH_SEAS_DATAVIEW_ID,
+    },
+    {
+      id: 'context-layer-protected-seas',
+      config: {
+        visible: false,
+      },
+      dataviewId: PROTECTED_SEAS_DATAVIEW_ID,
     },
   ],
 }

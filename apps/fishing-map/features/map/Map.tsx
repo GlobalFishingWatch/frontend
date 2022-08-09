@@ -58,7 +58,7 @@ const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDra
 const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
 )
-const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/hints/Hint'))
+const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/hints/Hint'))
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => RequestParameters = (url: string) => {
@@ -246,14 +246,7 @@ const MapWrapper = () => {
       return 'grabbing'
     }
     return 'grab'
-  }, [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded])
-
-  useEffect(() => {
-    if (map) {
-      map.showTileBoundaries = debugOptions.debug
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, debugOptions])
+  }, [isMapDrawing, hoveredTooltipEvent, map, dataviews, tilesClusterLoaded])
 
   useEffect(() => {
     if (map) {

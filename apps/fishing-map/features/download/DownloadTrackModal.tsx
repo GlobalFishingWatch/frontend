@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
@@ -20,6 +20,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DateRange } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import GFWOnly from 'features/user/GFWOnly'
+import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
@@ -32,6 +34,7 @@ function DownloadTrackModal() {
   const { timerange } = useTimerangeConnect()
 
   const downloadTrackId = useSelector(selectDownloadTrackId)
+  const downloadModalOpen = useSelector(selectDownloadTrackModalOpen)
   const downloadTrackName = useSelector(selectDownloadTrackName)
   const downloadTrackDataset = useSelector(selectDownloadTrackDataset)
 
@@ -69,8 +72,13 @@ function DownloadTrackModal() {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={`${t('download.title', 'Download')} - ${t('download.track', 'Vessel Track')}`}
-      isOpen={downloadTrackId !== ''}
+      title={
+        <Fragment>
+          {t('download.title', 'Download')} - {t('download.track', 'Vessel Track')}
+          <GFWOnly />
+        </Fragment>
+      }
+      isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
     >

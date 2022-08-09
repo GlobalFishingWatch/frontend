@@ -5,13 +5,14 @@ import {
   getAdvancedSearchQuery,
   AdvancedSearchQueryField,
   AdvancedSearchQueryFieldKey,
+  parseAPIError,
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import {
   Dataset,
   DatasetTypes,
   Vessel,
-  APISearch,
+  APIPagination,
   VesselSearch,
   EndpointId,
 } from '@globalfishingwatch/api-types'
@@ -147,8 +148,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
-        const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
-          signal,
+        const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, {
+          signal
         })
         const uniqSearchResults = uniqBy(searchResults.entries, 'id')
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
@@ -179,7 +180,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         }
       }
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message } as AsyncError)
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )

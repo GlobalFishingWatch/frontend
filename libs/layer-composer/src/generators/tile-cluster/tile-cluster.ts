@@ -25,7 +25,7 @@ class TileClusterGenerator {
       url.searchParams.set('datasets', config.dataset)
     }
     if (config.start && config.end) {
-      url.searchParams.set('dateRange', [config.start, config.end].join(','))
+      url.searchParams.set('date-range', [config.start, config.end].join(','))
     }
     if (config.eventTypes) {
       url.searchParams.set(
@@ -34,7 +34,7 @@ class TileClusterGenerator {
       )
     }
     url.searchParams.set(
-      'maxClusterZoom',
+      'max-cluster-zoom',
       (config.maxZoomCluster || MAX_ZOOM_TO_CLUSTER_POINTS).toString()
     )
 

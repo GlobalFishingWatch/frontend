@@ -2,7 +2,7 @@ export * from './Select'
 
 export type SelectOption<T = any> = {
   id: T
-  label: string
+  label: string | JSX.Element
   tooltip?: string
   disabled?: boolean
 }

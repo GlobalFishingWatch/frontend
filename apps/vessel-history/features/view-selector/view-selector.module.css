@@ -1,0 +1,7 @@
+.container {
+  font: var(--font-S);
+}
+
+.select {
+  width: calc(var(--size-XL) * 3);
+}

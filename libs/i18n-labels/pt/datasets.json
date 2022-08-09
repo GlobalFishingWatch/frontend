@@ -21,7 +21,7 @@
     }
   },
   "full-indonesia-fishing-vessels": {
-    "name": "VMS Indonesia (Fishing Vessels)",
+    "name": "Indonesia VMS (Fishing Vessels)",
     "description": "Dataset for VMS Indonesia (Public)",
     "schema": {
       "id": "id",
@@ -173,7 +173,7 @@
     }
   },
   "private-bra-onyxsat-fishing-effort": {
-    "name": "VMS Brasil",
+    "name": "VMS Brasil (Esforço de Pesca)",
     "description": "Dados de rastreamento por satélite são fornecidos pela Secretaria de Aquicultura e Pesca. Os dados são coletados do sistema de rastreamento de embarcações pesqueira do Brasil e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica para transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada.",
     "schema": {
       "flag": "bandeira",
@@ -377,7 +377,7 @@
     }
   },
   "private-bra-onyxsat-presence": {
-    "name": "VMS Brasil",
+    "name": "VMS Brasil (Presença)",
     "description": "Presença (Brasil Privado)",
     "schema": {
       "lat": "lat",
@@ -425,6 +425,27 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-costa-rica-presence": {
+    "name": "Vessel Presence Costa Rica VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
+          "costarica_vms_atuneros": "costarica_vms_atuneros",
+          "costarica_vms_sardineros": "costarica_vms_sardineros"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "private-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
     "description": "Description pending",
@@ -437,6 +458,30 @@
         "keyword": "shiptype",
         "enum": {
           "fishing": "fishing"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-ecuador-presence": {
+    "name": "Vessel Presence Ecuador VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing",
+          "international traffic": "international traffic",
+          "national traffic": "national traffic",
+          "tug": "tug",
+          "boat": "boat",
+          "auxiliary": "auxiliary"
         }
       },
       "vessel_id": "vessel_id",
@@ -466,6 +511,40 @@
       "normalized_shipname": "Embarcação normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "private-indonesia-aruna-presence": {
+    "name": "Aruna",
+    "description": "Aruna Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-aruna-vessels": {
+    "name": "Indonesia Aruna (Vessels)",
+    "description": "Vessels (Indonesia Aruna)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "private-indonesia-fishing-effort": {
@@ -503,6 +582,40 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-indonesia-ipnlf-presence": {
+    "name": "AP2HI-IPNLF",
+    "description": "AP2HI-IPNLF Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-ipnlf-vessels": {
+    "name": "Indonesia AP2HI-IPNLF (Vessels)\n",
+    "description": "Vessels (Indonesia AP2HI-IPNLF)\n",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "private-indonesia-pelagic-presence": {
@@ -567,6 +680,40 @@
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-rare-presence": {
+    "name": "Rare",
+    "description": "Rare Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-rare-vessels": {
+    "name": "Indonesia Rare (Vessels)",
+    "description": "Vessels (Indonesia Rare)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "private-indonesia-zebrax-presence": {
@@ -902,7 +1049,6 @@
           "reefer": "reefer"
         }
       },
-      "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -1222,6 +1368,30 @@
       "normalized_shipname": "Embarcação normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-ecuador-presence": {
+    "name": "Ecuador VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "fishing": "fishing",
+          "international traffic": "international traffic",
+          "national traffic": "national traffic",
+          "tug": "tug",
+          "boat": "boat",
+          "auxiliary": "auxiliary"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "public-eez-areas": {
@@ -1545,7 +1715,8 @@
           "drifting_longlines": "Espinhel de superfície"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-global-fishing-vessels": {
@@ -1608,7 +1779,8 @@
           "other_non_fishing": "other_non_fishing",
           "unknown": "unknown"
         }
-      }
+      },
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-global-sar-footprints": {
@@ -1821,7 +1993,7 @@
     }
   },
   "public-mexico-fishing-vessels": {
-    "name": "Mexico VMS",
+    "name": "Mexico VMS (Fishing vessels)",
     "description": "Dataset for VMS Mexico (Public)",
     "schema": {
       "id": "id",
@@ -1829,7 +2001,7 @@
       "source": "fonte",
       "shipname": "Embarcação",
       "nationalId": "nationalId",
-      "normalized_shipname": "normalized_shipname",
+      "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }

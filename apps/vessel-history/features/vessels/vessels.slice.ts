@@ -2,6 +2,7 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { memoize } from 'lodash'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { parseAPIErrorMessage, parseAPIErrorStatus } from '@globalfishingwatch/api-client'
 import { VesselAPISource, VesselWithHistory } from 'types'
 import {
   asyncInitialState,
@@ -14,7 +15,7 @@ import gfwThunk from 'features/vessels/sources/gfw.slice'
 import tmtThunk from 'features/vessels/sources/tmt.slice'
 import { RootState } from 'store'
 import { RenderedVoyage } from 'types/voyage'
-import { mergeVesselFromSources } from './vessels.utils'
+import { mergeVesselFromSources, NOT_AVAILABLE } from './vessels.utils'
 
 export type VoyagesState = {
   expanded: Record<number, RenderedVoyage | undefined>
@@ -94,7 +95,9 @@ export const fetchVesselByIdThunk = createAsyncThunk(
       }
       const vesselsToFetchFiltered = Array.from(
         new Map(vesselsToFetch.map((item) => [item.sourceId.id, item])).values()
-      ).filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
+      ).filter(
+        ({ sourceId: { id } }) => id && id.toLowerCase() !== NOT_AVAILABLE.toLocaleLowerCase()
+      )
 
       const vessels = await Promise.all(
         vesselsToFetchFiltered.map(async ({ source, sourceId }) => {
@@ -106,7 +109,6 @@ export const fetchVesselByIdThunk = createAsyncThunk(
             }
           }
           return undefined
-
         })
       )
       return {
@@ -114,7 +116,10 @@ export const fetchVesselByIdThunk = createAsyncThunk(
         id: [id, ...(idData.akas ?? [])].join('|'),
       }
     } catch (e: any) {
-      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
     }
   }
 )

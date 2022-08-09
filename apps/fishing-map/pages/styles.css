@@ -2,6 +2,8 @@
   --print-width: 17in;
   --print-height: 10in;
   --color-help: #fff8cd;
+  --timebar-height: 7.2rem;
+  --footer-height: 2.4rem;
 }
 
 .printing * {
@@ -29,6 +31,7 @@
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
     color-adjust: exact !important;
   }
 

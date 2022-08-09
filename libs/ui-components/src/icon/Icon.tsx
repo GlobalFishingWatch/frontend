@@ -22,21 +22,24 @@ import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
 import { ReactComponent as Compare } from '../assets/icons/compare.svg'
 import { ReactComponent as Copy } from '../assets/icons/copy.svg'
-import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Dots } from '../assets/icons/dots.svg'
 import { ReactComponent as Download } from '../assets/icons/download.svg'
-import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
+import { ReactComponent as Drag } from '../assets/icons/drag.svg'
+import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
+import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
 import { ReactComponent as EventEncounter } from '../assets/icons/event-encounter.svg'
-import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
 import { ReactComponent as EventFishing } from '../assets/icons/event-fishing.svg'
+import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
 import { ReactComponent as EventPort } from '../assets/icons/event-port.svg'
 import { ReactComponent as EventPortVisit } from '../assets/icons/event-port-visit.svg'
+import { ReactComponent as ExternalLink } from '../assets/icons/external-link.svg'
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
+import { ReactComponent as GFWLogo } from '../assets/icons/gfw-logo.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
 import { ReactComponent as Help } from '../assets/icons/help.svg'
@@ -55,8 +58,8 @@ import { ReactComponent as Polygons } from '../assets/icons/polygons.svg'
 import { ReactComponent as Private } from '../assets/icons/private.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
 import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
-import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
 import { ReactComponent as Report } from '../assets/icons/report.svg'
+import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
 import { ReactComponent as Satellite } from '../assets/icons/satellite.svg'
 import { ReactComponent as Save } from '../assets/icons/save.svg'
 import { ReactComponent as Search } from '../assets/icons/search.svg'
@@ -95,8 +98,10 @@ export const IconComponents = {
   'event-loitering': EventLoitering,
   'event-port-visit': EventPortVisit,
   'event-port': EventPort,
+  'external-link': ExternalLink,
   'filter-off': FilterOff,
   'filter-on': FilterOn,
+  'gfw-logo': GFWLogo,
   'pin-filled': PinFilled,
   'remove-from-map': RemoveFromMap,
   'view-on-map': ViewOnMap,
@@ -112,10 +117,11 @@ export const IconComponents = {
   delete: Delete,
   dots: Dots,
   download: Download,
-  encounters: Encounters,
+  drag: Drag,
   draw: Draw,
   edit: Edit,
   email: Email,
+  encounters: Encounters,
   feedback: Feedback,
   graph: Graph,
   heatmap: Heatmap,
@@ -154,11 +160,11 @@ export const IconComponents = {
 
 export type IconType = keyof typeof IconComponents
 
-interface IconProps {
+export interface IconProps {
   className?: string
   icon: IconType
   style?: React.CSSProperties
-  type?: 'default' | 'warning'
+  type?: 'default' | 'warning' | 'original-colors'
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
 }

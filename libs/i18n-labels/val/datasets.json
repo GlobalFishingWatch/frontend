@@ -1,0 +1,2368 @@
+{
+  "full-chile-fishing-vessels": {
+    "name": "crwdns17191:0crwdne17191:0",
+    "description": "crwdns8987:0crwdne8987:0",
+    "schema": {
+      "id": "crwdns8989:0crwdne8989:0",
+      "flag": "crwdns8991:0crwdne8991:0",
+      "fleet": {
+        "keyword": "crwdns8993:0crwdne8993:0",
+        "enum": {
+          "industry": "crwdns8995:0crwdne8995:0",
+          "small_fisheries": "crwdns8997:0crwdne8997:0"
+        }
+      },
+      "source": "crwdns8999:0crwdne8999:0",
+      "shipname": "crwdns9001:0crwdne9001:0",
+      "normalized_shipname": "crwdns17193:0crwdne17193:0",
+      "lastTransmissionDate": "crwdns9003:0crwdne9003:0",
+      "firstTransmissionData": "crwdns9005:0crwdne9005:0",
+      "firstTransmissionDate": "crwdns9007:0crwdne9007:0"
+    }
+  },
+  "full-indonesia-fishing-vessels": {
+    "name": "crwdns26250:0crwdne26250:0",
+    "description": "crwdns9011:0crwdne9011:0",
+    "schema": {
+      "id": "crwdns9013:0crwdne9013:0",
+      "flag": "crwdns9015:0crwdne9015:0",
+      "source": "crwdns9017:0crwdne9017:0",
+      "lastTransmissionDate": "crwdns9021:0crwdne9021:0",
+      "firstTransmissionDate": "crwdns9023:0crwdne9023:0"
+    }
+  },
+  "full-panama-fishing-vessels": {
+    "name": "crwdns18144:0crwdne18144:0",
+    "description": "crwdns9027:0crwdne9027:0",
+    "schema": {
+      "id": "crwdns9029:0crwdne9029:0",
+      "flag": "crwdns9031:0crwdne9031:0",
+      "length": "crwdns18146:0crwdne18146:0",
+      "source": "crwdns9033:0crwdne9033:0",
+      "geartype": "crwdns18148:0crwdne18148:0",
+      "shipname": "crwdns9035:0crwdne9035:0",
+      "vesselType": "crwdns18150:0crwdne18150:0",
+      "gross_tonnage": "crwdns18152:0crwdne18152:0",
+      "lastTransmissionDate": "crwdns9037:0crwdne9037:0",
+      "firstTransmissionDate": "crwdns9039:0crwdne9039:0"
+    }
+  },
+  "full-peru-fishing-vessels": {
+    "name": "crwdns9041:0crwdne9041:0",
+    "description": "crwdns9043:0crwdne9043:0",
+    "schema": {
+      "id": "crwdns9045:0crwdne9045:0",
+      "beam": "crwdns9047:0crwdne9047:0",
+      "flag": "crwdns9049:0crwdne9049:0",
+      "fleet": {
+        "keyword": "crwdns9051:0crwdne9051:0",
+        "enum": {
+          "industrial": "crwdns9053:0crwdne9053:0",
+          "artisanal": "crwdns9055:0crwdne9055:0",
+          "not defined": "crwdns9057:0crwdne9057:0"
+        }
+      },
+      "width": "crwdns9059:0crwdne9059:0",
+      "length": "crwdns9061:0crwdne9061:0",
+      "origin": {
+        "keyword": "crwdns9063:0crwdne9063:0",
+        "enum": {
+          "Peru": "crwdns9065:0crwdne9065:0",
+          "Foreign": "crwdns9067:0crwdne9067:0"
+        }
+      },
+      "source": "crwdns9069:0crwdne9069:0",
+      "capacity": "crwdns9071:0crwdne9071:0",
+      "shipname": "crwdns9073:0crwdne9073:0",
+      "nationalId": "crwdns9075:0crwdne9075:0",
+      "normalized_shipname": "crwdns9077:0crwdne9077:0",
+      "lastTransmissionDate": "crwdns9079:0crwdne9079:0",
+      "firstTransmissionDate": "crwdns9081:0crwdne9081:0"
+    }
+  },
+  "private-belize-fishing-effort": {
+    "name": "crwdns26210:0crwdne26210:0",
+    "description": "crwdns25916:0crwdne25916:0",
+    "schema": {
+      "lat": "crwdns18490:0crwdne18490:0",
+      "lon": "crwdns18492:0crwdne18492:0",
+      "flag": "crwdns18494:0crwdne18494:0",
+      "hours": "crwdns18496:0crwdne18496:0",
+      "geartype": {
+        "keyword": "crwdns18498:0crwdne18498:0",
+        "enum": {
+          "purse_seine": "crwdns26050:0crwdne26050:0",
+          "trawler": "crwdns26052:0crwdne26052:0",
+          "longline": "crwdns26054:0crwdne26054:0"
+        }
+      },
+      "vessel_id": "crwdns18508:0crwdne18508:0",
+      "elevation_m": "crwdns18510:0crwdne18510:0",
+      "distance_from_port_m": "crwdns18512:0crwdne18512:0",
+      "distance_from_shore_m": "crwdns18514:0crwdne18514:0"
+    }
+  },
+  "private-belize-fishing-vessels": {
+    "name": "crwdns25262:0crwdne25262:0",
+    "description": "crwdns25264:0crwdne25264:0",
+    "schema": {
+      "id": "crwdns25266:0crwdne25266:0",
+      "imo": "crwdns25268:0crwdne25268:0",
+      "flag": "crwdns25270:0crwdne25270:0",
+      "mmsi": "crwdns25272:0crwdne25272:0",
+      "source": "crwdns25274:0crwdne25274:0",
+      "callsign": "crwdns25276:0crwdne25276:0",
+      "geartype": {
+        "keyword": "crwdns25278:0crwdne25278:0",
+        "enum": {
+          "purse_seine": "crwdns26056:0crwdne26056:0",
+          "trawler": "crwdns26058:0crwdne26058:0",
+          "longline": "crwdns26060:0crwdne26060:0",
+          "reefer": "crwdns26062:0crwdne26062:0"
+        }
+      },
+      "shipname": "crwdns25288:0crwdne25288:0",
+      "lastTransmissionDate": "crwdns25290:0crwdne25290:0",
+      "firstTransmissionDate": "crwdns25292:0crwdne25292:0"
+    }
+  },
+  "private-belize-non-fishing-vessels": {
+    "name": "crwdns25294:0crwdne25294:0",
+    "description": "crwdns25296:0crwdne25296:0",
+    "schema": {
+      "id": "crwdns25298:0crwdne25298:0",
+      "imo": "crwdns25300:0crwdne25300:0",
+      "flag": "crwdns25302:0crwdne25302:0",
+      "mmsi": "crwdns25304:0crwdne25304:0",
+      "source": "crwdns25306:0crwdne25306:0",
+      "callsign": "crwdns25308:0crwdne25308:0",
+      "geartype": {
+        "keyword": "crwdns25310:0crwdne25310:0",
+        "enum": {
+          "purse_seine": "crwdns26064:0crwdne26064:0",
+          "trawler": "crwdns26066:0crwdne26066:0",
+          "longline": "crwdns26068:0crwdne26068:0",
+          "reefer": "crwdns26070:0crwdne26070:0"
+        }
+      },
+      "shipname": "crwdns25320:0crwdne25320:0",
+      "lastTransmissionDate": "crwdns25322:0crwdne25322:0",
+      "firstTransmissionDate": "crwdns25324:0crwdne25324:0"
+    }
+  },
+  "private-belize-presence": {
+    "name": "crwdns26212:0crwdne26212:0",
+    "description": "crwdns25328:0crwdne25328:0",
+    "schema": {
+      "lat": "crwdns25330:0crwdne25330:0",
+      "lon": "crwdns25332:0crwdne25332:0",
+      "flag": "crwdns25334:0crwdne25334:0",
+      "geartype": {
+        "keyword": "crwdns25336:0crwdne25336:0",
+        "enum": {
+          "purse_seine": "crwdns25338:0crwdne25338:0",
+          "trawler": "crwdns25340:0crwdne25340:0",
+          "longline": "crwdns25342:0crwdne25342:0",
+          "reefer": "crwdns25344:0crwdne25344:0"
+        }
+      },
+      "vessel_id": "crwdns25346:0crwdne25346:0",
+      "elevation_m": "crwdns25348:0crwdne25348:0",
+      "distance_from_port_m": "crwdns25350:0crwdne25350:0",
+      "distance_from_shore_m": "crwdns25352:0crwdne25352:0"
+    }
+  },
+  "private-bra-onyxsat-fishing-effort": {
+    "name": "crwdns13513:0crwdne13513:0",
+    "description": "crwdns13515:0crwdne13515:0",
+    "schema": {
+      "flag": "crwdns13517:0crwdne13517:0",
+      "geartype": {
+        "keyword": "crwdns13519:0crwdne13519:0",
+        "enum": {
+          "trawlers": "crwdns13521:0crwdne13521:0",
+          "drifting_longlines": "crwdns13523:0crwdne13523:0",
+          "pole_and_line": "crwdns13525:0crwdne13525:0",
+          "line": "crwdns13527:0crwdne13527:0",
+          "pots_and_traps": "crwdns13529:0crwdne13529:0",
+          "set_longline": "crwdns13531:0crwdne13531:0",
+          "fishing": "crwdns13533:0crwdne13533:0",
+          "other_purse_seines": "crwdns13535:0crwdne13535:0",
+          "set_gillnets": "crwdns13537:0crwdne13537:0"
+        }
+      },
+      "vessel_id": "crwdns13539:0crwdne13539:0",
+      "target_species": {
+        "keyword": "crwdns13541:0crwdne13541:0",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "crwdns13543:0crwdne13543:0",
+          "Polvo": "crwdns13545:0crwdne13545:0",
+          "Caranguejo-vermelho": "crwdns13547:0crwdne13547:0",
+          "Sardinha-verdadeira e Anchova": "crwdns13549:0crwdne13549:0",
+          "peixes diversos": "crwdns13551:0crwdne13551:0",
+          "Sardinha-laje": "crwdns13553:0crwdne13553:0",
+          "Pescada-gó": "crwdns13555:0crwdne13555:0",
+          "Piramutaba e peixes diversos": "crwdns13557:0crwdne13557:0",
+          "Corvina; Pescadas; Castanha e Abrótea": "crwdns13559:0crwdne13559:0",
+          "Fundo e Superfície": "crwdns13561:0crwdne13561:0",
+          "permissionamento antigo; em processo de conversão": "crwdns13563:0crwdne13563:0",
+          "Tainhas; Anchova e Serras": "crwdns13565:0crwdne13565:0",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns13567:0crwdne13567:0",
+          "Sardinha-verdadeira e Tainha": "crwdns13569:0crwdne13569:0",
+          "Lagostas": "crwdns13571:0crwdne13571:0",
+          "Espadarte - atuns e afins": "crwdns13573:0crwdne13573:0",
+          "Camarão-rosa e peixes diversos": "crwdns13575:0crwdne13575:0",
+          "Pescada Amarela": "crwdns13577:0crwdne13577:0",
+          "Peixe-sapo": "crwdns13579:0crwdne13579:0",
+          "Piramutaba; Dourada e Gurijuba": "crwdns13581:0crwdne13581:0",
+          "Pargo": "crwdns13583:0crwdne13583:0",
+          "Serras": "crwdns13585:0crwdne13585:0",
+          "Cavala e Albacorinha": "crwdns13587:0crwdne13587:0",
+          "Camarão-sete-barbas": "crwdns13589:0crwdne13589:0",
+          "Bonito-listrado": "crwdns13591:0crwdne13591:0",
+          "camarões": "crwdns13593:0crwdne13593:0",
+          "Abrótea; Galo e Merluza": "crwdns13595:0crwdne13595:0",
+          "peixes demersais": "crwdns13597:0crwdne13597:0",
+          " Camarão-rosa": "crwdns13599:0crwdne13599:0",
+          "Dourado - atuns e afins": "crwdns13601:0crwdne13601:0",
+          "Albacoras - atuns e afins": "crwdns13603:0crwdne13603:0"
+        }
+      },
+      "license_category": {
+        "keyword": "crwdns13605:0crwdne13605:0",
+        "enum": {
+          "Cerco": "crwdns13607:0crwdne13607:0",
+          "Armadilhas": "crwdns13609:0crwdne13609:0",
+          "Rede de emalhe": "crwdns13611:0crwdne13611:0",
+          "Linha": "crwdns13613:0crwdne13613:0",
+          "Arrasto": "crwdns13615:0crwdne13615:0"
+        }
+      }
+    }
+  },
+  "private-bra-onyxsat-fishing-vessels": {
+    "name": "crwdns13617:0crwdne13617:0",
+    "description": "crwdns13619:0crwdne13619:0",
+    "schema": {
+      "id": "crwdns13621:0crwdne13621:0",
+      "flag": "crwdns13623:0crwdne13623:0",
+      "source": "crwdns13625:0crwdne13625:0",
+      "dataset": "crwdns13627:0crwdne13627:0",
+      "geartype": {
+        "keyword": "crwdns13629:0crwdne13629:0",
+        "enum": {
+          "trawlers": "crwdns13631:0crwdne13631:0",
+          "drifting_longlines": "crwdns13633:0crwdne13633:0",
+          "pole_and_line": "crwdns13635:0crwdne13635:0",
+          "line": "crwdns13637:0crwdne13637:0",
+          "pots_and_traps": "crwdns13639:0crwdne13639:0",
+          "set_longline": "crwdns13641:0crwdne13641:0",
+          "fishing": "crwdns13643:0crwdne13643:0",
+          "other_purse_seines": "crwdns13645:0crwdne13645:0",
+          "set_gillnets": "crwdns13647:0crwdne13647:0"
+        }
+      },
+      "mainGear": "crwdns13649:0crwdne13649:0",
+      "shipname": "crwdns13651:0crwdne13651:0",
+      "codMarinha": "crwdns13653:0crwdne13653:0",
+      "fishingZone": "crwdns13655:0crwdne13655:0",
+      "licenseCode": "crwdns13657:0crwdne13657:0",
+      "targetSpecies": {
+        "keyword": "crwdns13659:0crwdne13659:0",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "crwdns13661:0crwdne13661:0",
+          "Polvo": "crwdns13663:0crwdne13663:0",
+          "Caranguejo-vermelho": "crwdns13665:0crwdne13665:0",
+          "Sardinha-verdadeira e Anchova": "crwdns13667:0crwdne13667:0",
+          "peixes diversos": "crwdns13669:0crwdne13669:0",
+          "Sardinha-laje": "crwdns13671:0crwdne13671:0",
+          "Pescada-gó": "crwdns13673:0crwdne13673:0",
+          "Piramutaba e peixes diversos": "crwdns13675:0crwdne13675:0",
+          "Corvina; Pescadas; Castanha e Abrótea": "crwdns13677:0crwdne13677:0",
+          "Fundo e Superfície": "crwdns13679:0crwdne13679:0",
+          "permissionamento antigo; em processo de conversão": "crwdns13681:0crwdne13681:0",
+          "Tainhas; Anchova e Serras": "crwdns13683:0crwdne13683:0",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns13685:0crwdne13685:0",
+          "Sardinha-verdadeira e Tainha": "crwdns13687:0crwdne13687:0",
+          "Lagostas": "crwdns13689:0crwdne13689:0",
+          "Espadarte - atuns e afins": "crwdns13691:0crwdne13691:0",
+          "Camarão-rosa e peixes diversos": "crwdns13693:0crwdne13693:0",
+          "Pescada Amarela": "crwdns13695:0crwdne13695:0",
+          "Peixe-sapo": "crwdns13697:0crwdne13697:0",
+          "Piramutaba; Dourada e Gurijuba": "crwdns13699:0crwdne13699:0",
+          "Pargo": "crwdns13701:0crwdne13701:0",
+          "Serras": "crwdns13703:0crwdne13703:0",
+          "Cavala e Albacorinha": "crwdns13705:0crwdne13705:0",
+          "Camarão-sete-barbas": "crwdns13707:0crwdne13707:0",
+          "Bonito-listrado": "crwdns13709:0crwdne13709:0",
+          "camarões": "crwdns13711:0crwdne13711:0",
+          "Abrótea; Galo e Merluza": "crwdns13713:0crwdne13713:0",
+          "peixes demersais": "crwdns13715:0crwdne13715:0",
+          " Camarão-rosa": "crwdns13717:0crwdne13717:0",
+          "Dourado - atuns e afins": "crwdns13719:0crwdne13719:0",
+          "Albacoras - atuns e afins": "crwdns13721:0crwdne13721:0"
+        }
+      },
+      "licensDescription": "crwdns13723:0crwdne13723:0",
+      "lastTransmissionDate": "crwdns13725:0crwdne13725:0",
+      "firstTransmissionDate": "crwdns13727:0crwdne13727:0"
+    }
+  },
+  "private-bra-onyxsat-non-fishing-vessels": {
+    "name": "crwdns13729:0crwdne13729:0",
+    "description": "crwdns13731:0crwdne13731:0",
+    "schema": {
+      "id": "crwdns13733:0crwdne13733:0",
+      "flag": "crwdns13735:0crwdne13735:0",
+      "source": "crwdns13737:0crwdne13737:0",
+      "dataset": "crwdns13739:0crwdne13739:0",
+      "geartype": {
+        "keyword": "crwdns13741:0crwdne13741:0",
+        "enum": {
+          "trawlers": "crwdns13743:0crwdne13743:0",
+          "drifting_longlines": "crwdns13745:0crwdne13745:0",
+          "pole_and_line": "crwdns13747:0crwdne13747:0",
+          "line": "crwdns13749:0crwdne13749:0",
+          "pots_and_traps": "crwdns13751:0crwdne13751:0",
+          "set_longline": "crwdns13753:0crwdne13753:0",
+          "fishing": "crwdns13755:0crwdne13755:0",
+          "other_purse_seines": "crwdns13757:0crwdne13757:0",
+          "set_gillnets": "crwdns13759:0crwdne13759:0"
+        }
+      },
+      "mainGear": "crwdns13761:0crwdne13761:0",
+      "shipname": "crwdns13763:0crwdne13763:0",
+      "codMarinha": "crwdns13765:0crwdne13765:0",
+      "fishingZone": "crwdns13767:0crwdne13767:0",
+      "licenseCode": "crwdns13769:0crwdne13769:0",
+      "targetSpecies": {
+        "keyword": "crwdns13771:0crwdne13771:0",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "crwdns13773:0crwdne13773:0",
+          "Polvo": "crwdns13775:0crwdne13775:0",
+          "Caranguejo-vermelho": "crwdns13777:0crwdne13777:0",
+          "Sardinha-verdadeira e Anchova": "crwdns13779:0crwdne13779:0",
+          "peixes diversos": "crwdns13781:0crwdne13781:0",
+          "Sardinha-laje": "crwdns13783:0crwdne13783:0",
+          "Pescada-gó": "crwdns13785:0crwdne13785:0",
+          "Piramutaba e peixes diversos": "crwdns13787:0crwdne13787:0",
+          "Corvina; Pescadas; Castanha e Abrótea": "crwdns13789:0crwdne13789:0",
+          "Fundo e Superfície": "crwdns13791:0crwdne13791:0",
+          "permissionamento antigo; em processo de conversão": "crwdns13793:0crwdne13793:0",
+          "Tainhas; Anchova e Serras": "crwdns13795:0crwdne13795:0",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns13797:0crwdne13797:0",
+          "Sardinha-verdadeira e Tainha": "crwdns13799:0crwdne13799:0",
+          "Lagostas": "crwdns13801:0crwdne13801:0",
+          "Espadarte - atuns e afins": "crwdns13803:0crwdne13803:0",
+          "Camarão-rosa e peixes diversos": "crwdns13805:0crwdne13805:0",
+          "Pescada Amarela": "crwdns13807:0crwdne13807:0",
+          "Peixe-sapo": "crwdns13809:0crwdne13809:0",
+          "Piramutaba; Dourada e Gurijuba": "crwdns13811:0crwdne13811:0",
+          "Pargo": "crwdns13813:0crwdne13813:0",
+          "Serras": "crwdns13815:0crwdne13815:0",
+          "Cavala e Albacorinha": "crwdns13817:0crwdne13817:0",
+          "Camarão-sete-barbas": "crwdns13819:0crwdne13819:0",
+          "Bonito-listrado": "crwdns13821:0crwdne13821:0",
+          "camarões": "crwdns13823:0crwdne13823:0",
+          "Abrótea; Galo e Merluza": "crwdns13825:0crwdne13825:0",
+          "peixes demersais": "crwdns13827:0crwdne13827:0",
+          " Camarão-rosa": "crwdns13829:0crwdne13829:0",
+          "Dourado - atuns e afins": "crwdns13831:0crwdne13831:0",
+          "Albacoras - atuns e afins": "crwdns13833:0crwdne13833:0"
+        }
+      },
+      "licensDescription": "crwdns13835:0crwdne13835:0",
+      "lastTransmissionDate": "crwdns13837:0crwdne13837:0",
+      "firstTransmissionDate": "crwdns13839:0crwdne13839:0"
+    }
+  },
+  "private-bra-onyxsat-presence": {
+    "name": "crwdns13841:0crwdne13841:0",
+    "description": "crwdns13843:0crwdne13843:0",
+    "schema": {
+      "lat": "crwdns13845:0crwdne13845:0",
+      "lon": "crwdns13847:0crwdne13847:0",
+      "flag": "crwdns13849:0crwdne13849:0",
+      "shiptype": {
+        "keyword": "crwdns13851:0crwdne13851:0",
+        "enum": {
+          "fishing": "crwdns13853:0crwdne13853:0",
+          "non-fishing": "crwdns13855:0crwdne13855:0"
+        }
+      },
+      "vessel_id": "crwdns13857:0crwdne13857:0"
+    }
+  },
+  "private-brazil-opentuna-presence": {
+    "name": "crwdns9083:0crwdne9083:0",
+    "description": "crwdns9085:0crwdne9085:0",
+    "schema": {
+      "lat": "crwdns9087:0crwdne9087:0",
+      "lon": "crwdns9089:0crwdne9089:0",
+      "flag": "crwdns9091:0crwdne9091:0",
+      "vessel_id": "crwdns9093:0crwdne9093:0"
+    }
+  },
+  "private-costa-rica-fishing-effort": {
+    "name": "crwdns17413:0crwdne17413:0",
+    "description": "crwdns17415:0crwdne17415:0",
+    "schema": {
+      "lat": "crwdns17417:0crwdne17417:0",
+      "lon": "crwdns17419:0crwdne17419:0",
+      "flag": "crwdns17421:0crwdne17421:0",
+      "fleet": {
+        "keyword": "crwdns17423:0crwdne17423:0",
+        "enum": {
+          "costarica_vms_industrial_longline": "crwdns17425:0crwdne17425:0",
+          "costarica_vms_atuneros": "crwdns17427:0crwdne17427:0",
+          "costarica_vms_sardineros": "crwdns17429:0crwdne17429:0"
+        }
+      },
+      "hours": "crwdns17431:0crwdne17431:0",
+      "vessel_id": "crwdns17433:0crwdne17433:0",
+      "elevation_m": "crwdns17435:0crwdne17435:0",
+      "distance_from_port_m": "crwdns17437:0crwdne17437:0",
+      "distance_from_shore_m": "crwdns17439:0crwdne17439:0"
+    }
+  },
+  "private-costa-rica-presence": {
+    "name": "crwdns26252:0crwdne26252:0",
+    "description": "crwdns26254:0crwdne26254:0",
+    "schema": {
+      "lat": "crwdns26256:0crwdne26256:0",
+      "lon": "crwdns26258:0crwdne26258:0",
+      "flag": "crwdns26260:0crwdne26260:0",
+      "fleet": {
+        "keyword": "crwdns26262:0crwdne26262:0",
+        "enum": {
+          "costarica_vms_industrial_longline": "crwdns26264:0crwdne26264:0",
+          "costarica_vms_atuneros": "crwdns26266:0crwdne26266:0",
+          "costarica_vms_sardineros": "crwdns26268:0crwdne26268:0"
+        }
+      },
+      "vessel_id": "crwdns26270:0crwdne26270:0",
+      "elevation_m": "crwdns26272:0crwdne26272:0",
+      "distance_from_port_m": "crwdns26274:0crwdne26274:0",
+      "distance_from_shore_m": "crwdns26276:0crwdne26276:0"
+    }
+  },
+  "private-ecuador-fishing-effort": {
+    "name": "crwdns9095:0crwdne9095:0",
+    "description": "crwdns9097:0crwdne9097:0",
+    "schema": {
+      "lat": "crwdns9099:0crwdne9099:0",
+      "lon": "crwdns9101:0crwdne9101:0",
+      "flag": "crwdns9103:0crwdne9103:0",
+      "hours": "crwdns9105:0crwdne9105:0",
+      "shiptype": {
+        "keyword": "crwdns9107:0crwdne9107:0",
+        "enum": {
+          "fishing": "crwdns9109:0crwdne9109:0"
+        }
+      },
+      "vessel_id": "crwdns9111:0crwdne9111:0",
+      "elevation_m": "crwdns9113:0crwdne9113:0",
+      "distance_from_port_m": "crwdns9115:0crwdne9115:0",
+      "distance_from_shore_m": "crwdns9117:0crwdne9117:0"
+    }
+  },
+  "private-ecuador-presence": {
+    "name": "crwdns26278:0crwdne26278:0",
+    "description": "crwdns26280:0crwdne26280:0",
+    "schema": {
+      "lat": "crwdns26282:0crwdne26282:0",
+      "lon": "crwdns26284:0crwdne26284:0",
+      "flag": "crwdns26286:0crwdne26286:0",
+      "shiptype": {
+        "keyword": "crwdns26288:0crwdne26288:0",
+        "enum": {
+          "fishing": "crwdns26290:0crwdne26290:0",
+          "international traffic": "crwdns26292:0crwdne26292:0",
+          "national traffic": "crwdns26294:0crwdne26294:0",
+          "tug": "crwdns26296:0crwdne26296:0",
+          "boat": "crwdns26298:0crwdne26298:0",
+          "auxiliary": "crwdns26300:0crwdne26300:0"
+        }
+      },
+      "vessel_id": "crwdns26302:0crwdne26302:0",
+      "elevation_m": "crwdns26304:0crwdne26304:0",
+      "distance_from_port_m": "crwdns26306:0crwdne26306:0",
+      "distance_from_shore_m": "crwdns26308:0crwdne26308:0"
+    }
+  },
+  "private-global-other-vessels": {
+    "name": "crwdns11157:0crwdne11157:0",
+    "description": "crwdns11159:0crwdne11159:0",
+    "schema": {
+      "id": "crwdns11161:0crwdne11161:0",
+      "imo": "crwdns11163:0crwdne11163:0",
+      "flag": "crwdns11165:0crwdne11165:0",
+      "mmsi": "crwdns11167:0crwdne11167:0",
+      "source": "crwdns11169:0crwdne11169:0",
+      "dataset": "crwdns11171:0crwdne11171:0",
+      "callsign": "crwdns11173:0crwdne11173:0",
+      "geartype": {
+        "keyword": "crwdns11175:0crwdne11175:0",
+        "enum": {}
+      },
+      "msgCount": "crwdns11179:0crwdne11179:0",
+      "posCount": "crwdns11181:0crwdne11181:0",
+      "shipname": "crwdns11183:0crwdne11183:0",
+      "normalized_shipname": "crwdns11185:0crwdne11185:0",
+      "lastTransmissionDate": "crwdns11187:0crwdne11187:0",
+      "firstTransmissionDate": "crwdns11189:0crwdne11189:0"
+    }
+  },
+  "private-indonesia-aruna-presence": {
+    "name": "crwdns26368:0crwdne26368:0",
+    "description": "crwdns26370:0crwdne26370:0",
+    "schema": {
+      "lat": "crwdns26372:0crwdne26372:0",
+      "lon": "crwdns26374:0crwdne26374:0",
+      "flag": "crwdns26376:0crwdne26376:0",
+      "geartype": {
+        "keyword": "crwdns26378:0crwdne26378:0",
+        "enum": {
+          "gillnets": "crwdns26380:0crwdne26380:0",
+          "longline": "crwdns26382:0crwdne26382:0",
+          "traps": "crwdns26384:0crwdne26384:0",
+          "purse seine": "crwdns26386:0crwdne26386:0",
+          "Handline": "crwdns26388:0crwdne26388:0"
+        }
+      },
+      "vessel_id": "crwdns26390:0crwdne26390:0"
+    }
+  },
+  "private-indonesia-aruna-vessels": {
+    "name": "crwdns26392:0crwdne26392:0",
+    "description": "crwdns26394:0crwdne26394:0",
+    "schema": {
+      "id": "crwdns26396:0crwdne26396:0",
+      "flag": "crwdns26398:0crwdne26398:0",
+      "source": "crwdns26400:0crwdne26400:0",
+      "dataset": "crwdns26402:0crwdne26402:0",
+      "geartype": "crwdns26404:0crwdne26404:0",
+      "shipname": "crwdns26406:0crwdne26406:0",
+      "lastTransmissionDate": "crwdns26408:0crwdne26408:0",
+      "firstTransmissionDate": "crwdns26410:0crwdne26410:0"
+    }
+  },
+  "private-indonesia-fishing-effort": {
+    "name": "crwdns9119:0crwdne9119:0",
+    "description": "crwdns25940:0crwdne25940:0",
+    "schema": {
+      "lat": "crwdns9123:0crwdne9123:0",
+      "lon": "crwdns9125:0crwdne9125:0",
+      "flag": "crwdns9127:0crwdne9127:0",
+      "hours": "crwdns9129:0crwdne9129:0",
+      "geartype": {
+        "keyword": "crwdns9131:0crwdne9131:0",
+        "enum": {
+          "Purse Seine Group (2 boat) Small Pelagics": "crwdns9133:0crwdne9133:0",
+          "Purse Seine Group (2 boat) Big Pelagics": "crwdns9135:0crwdne9135:0",
+          "Cast Nets": "crwdns9137:0crwdne9137:0",
+          "Pots": "crwdns9139:0crwdne9139:0",
+          "Anchored gillnets": "crwdns9141:0crwdne9141:0",
+          "Lampara Seine Nets": "crwdns9143:0crwdne9143:0",
+          "Shrimp net": "crwdns9145:0crwdne9145:0",
+          "Purse Seine Big Pelagics with one boat": "crwdns9147:0crwdne9147:0",
+          "Basic longline": "crwdns9149:0crwdne9149:0",
+          "Pole-and-line": "crwdns9151:0crwdne9151:0",
+          "Hand Line Tuna": "crwdns9153:0crwdne9153:0",
+          "Handline": "crwdns9155:0crwdne9155:0",
+          "Purse Seine Small Pelagics": "crwdns9157:0crwdne9157:0",
+          "Stick-Held lift net": "crwdns9159:0crwdne9159:0",
+          "Oceanic gillnet": "crwdns9161:0crwdne9161:0",
+          "Longline Tuna": "crwdns9163:0crwdne9163:0",
+          "Fish net/dragnet": "crwdns9165:0crwdne9165:0",
+          "Squid hooking": "crwdns9167:0crwdne9167:0"
+        }
+      },
+      "vessel_id": "crwdns9169:0crwdne9169:0",
+      "elevation_m": "crwdns9171:0crwdne9171:0",
+      "distance_from_port_m": "crwdns9173:0crwdne9173:0",
+      "distance_from_shore_m": "crwdns9175:0crwdne9175:0"
+    }
+  },
+  "private-indonesia-ipnlf-presence": {
+    "name": "crwdns26412:0crwdne26412:0",
+    "description": "crwdns26414:0crwdne26414:0",
+    "schema": {
+      "lat": "crwdns26416:0crwdne26416:0",
+      "lon": "crwdns26418:0crwdne26418:0",
+      "flag": "crwdns26420:0crwdne26420:0",
+      "geartype": {
+        "keyword": "crwdns26422:0crwdne26422:0",
+        "enum": {
+          "gillnets": "crwdns26424:0crwdne26424:0",
+          "longline": "crwdns26426:0crwdne26426:0",
+          "traps": "crwdns26428:0crwdne26428:0",
+          "purse seine": "crwdns26430:0crwdne26430:0",
+          "Handline": "crwdns26432:0crwdne26432:0"
+        }
+      },
+      "vessel_id": "crwdns26434:0crwdne26434:0"
+    }
+  },
+  "private-indonesia-ipnlf-vessels": {
+    "name": "crwdns26436:0crwdne26436:0",
+    "description": "crwdns26438:0crwdne26438:0",
+    "schema": {
+      "id": "crwdns26440:0crwdne26440:0",
+      "flag": "crwdns26442:0crwdne26442:0",
+      "source": "crwdns26444:0crwdne26444:0",
+      "dataset": "crwdns26446:0crwdne26446:0",
+      "geartype": "crwdns26448:0crwdne26448:0",
+      "shipname": "crwdns26450:0crwdne26450:0",
+      "lastTransmissionDate": "crwdns26452:0crwdne26452:0",
+      "firstTransmissionDate": "crwdns26454:0crwdne26454:0"
+    }
+  },
+  "private-indonesia-pelagic-presence": {
+    "name": "crwdns24890:0crwdne24890:0",
+    "description": "crwdns24892:0crwdne24892:0",
+    "schema": {
+      "lat": "crwdns18026:0crwdne18026:0",
+      "lon": "crwdns18028:0crwdne18028:0",
+      "flag": "crwdns18030:0crwdne18030:0",
+      "geartype": {
+        "keyword": "crwdns18032:0crwdne18032:0",
+        "enum": {
+          "gillnets": "crwdns18034:0crwdne18034:0",
+          "longline": "crwdns18036:0crwdne18036:0",
+          "traps": "crwdns25942:0crwdne25942:0",
+          "purse seine": "crwdns18040:0crwdne18040:0",
+          "Handline": "crwdns25944:0crwdne25944:0"
+        }
+      },
+      "vessel_id": "crwdns18042:0crwdne18042:0"
+    }
+  },
+  "private-indonesia-pelagic-vessels": {
+    "name": "crwdns24894:0crwdne24894:0",
+    "description": "crwdns24896:0crwdne24896:0",
+    "schema": {
+      "id": "crwdns18048:0crwdne18048:0",
+      "flag": "crwdns18050:0crwdne18050:0",
+      "source": "crwdns18052:0crwdne18052:0",
+      "dataset": "crwdns18054:0crwdne18054:0",
+      "geartype": "crwdns18056:0crwdne18056:0",
+      "shipname": "crwdns18058:0crwdne18058:0",
+      "lastTransmissionDate": "crwdns18060:0crwdne18060:0",
+      "firstTransmissionDate": "crwdns18062:0crwdne18062:0"
+    }
+  },
+  "private-indonesia-presence": {
+    "name": "crwdns9177:0crwdne9177:0",
+    "description": "crwdns9179:0crwdne9179:0",
+    "schema": {
+      "lat": "crwdns9181:0crwdne9181:0",
+      "lon": "crwdns9183:0crwdne9183:0",
+      "flag": "crwdns9185:0crwdne9185:0",
+      "shiptype": {
+        "keyword": "crwdns9187:0crwdne9187:0",
+        "enum": {
+          "Cast Nets": "crwdns9189:0crwdne9189:0",
+          "Anchored gillnets": "crwdns9191:0crwdne9191:0",
+          "Shrimp net": "crwdns9193:0crwdne9193:0",
+          "Purse Seine Big Pelagics with one boat": "crwdns9195:0crwdne9195:0",
+          "Transporter": "crwdns9197:0crwdne9197:0",
+          "Basic longline": "crwdns9199:0crwdne9199:0",
+          "Pole-and-line": "crwdns9201:0crwdne9201:0",
+          "Hand Line Tuna": "crwdns9203:0crwdne9203:0",
+          "Handline": "crwdns9205:0crwdne9205:0",
+          "Purse Seine Small Pelagics": "crwdns9207:0crwdne9207:0",
+          "Stick-Held lift net": "crwdns9209:0crwdne9209:0",
+          "Longline Tuna": "crwdns9211:0crwdne9211:0",
+          "Oceanic gillnet": "crwdns9213:0crwdne9213:0",
+          "Fish net/dragnet": "crwdns9215:0crwdne9215:0",
+          "Squid hooking": "crwdns9217:0crwdne9217:0"
+        }
+      },
+      "vessel_id": "crwdns9219:0crwdne9219:0"
+    }
+  },
+  "private-indonesia-rare-presence": {
+    "name": "crwdns26456:0crwdne26456:0",
+    "description": "crwdns26458:0crwdne26458:0",
+    "schema": {
+      "lat": "crwdns26460:0crwdne26460:0",
+      "lon": "crwdns26462:0crwdne26462:0",
+      "flag": "crwdns26464:0crwdne26464:0",
+      "geartype": {
+        "keyword": "crwdns26466:0crwdne26466:0",
+        "enum": {
+          "gillnets": "crwdns26468:0crwdne26468:0",
+          "longline": "crwdns26470:0crwdne26470:0",
+          "traps": "crwdns26472:0crwdne26472:0",
+          "purse seine": "crwdns26474:0crwdne26474:0",
+          "Handline": "crwdns26476:0crwdne26476:0"
+        }
+      },
+      "vessel_id": "crwdns26478:0crwdne26478:0"
+    }
+  },
+  "private-indonesia-rare-vessels": {
+    "name": "crwdns26480:0crwdne26480:0",
+    "description": "crwdns26482:0crwdne26482:0",
+    "schema": {
+      "id": "crwdns26484:0crwdne26484:0",
+      "flag": "crwdns26486:0crwdne26486:0",
+      "source": "crwdns26488:0crwdne26488:0",
+      "dataset": "crwdns26490:0crwdne26490:0",
+      "geartype": "crwdns26492:0crwdne26492:0",
+      "shipname": "crwdns26494:0crwdne26494:0",
+      "lastTransmissionDate": "crwdns26496:0crwdne26496:0",
+      "firstTransmissionDate": "crwdns26498:0crwdne26498:0"
+    }
+  },
+  "private-indonesia-zebrax-presence": {
+    "name": "crwdns17441:0crwdne17441:0",
+    "description": "crwdns17443:0crwdne17443:0",
+    "schema": {
+      "lat": "crwdns17445:0crwdne17445:0",
+      "lon": "crwdns17447:0crwdne17447:0",
+      "flag": "crwdns17449:0crwdne17449:0",
+      "geartype": {
+        "keyword": "crwdns17451:0crwdne17451:0",
+        "enum": {
+          "gillnets": "crwdns17453:0crwdne17453:0",
+          "longline": "crwdns17455:0crwdne17455:0",
+          "trap net": "crwdns17457:0crwdne17457:0",
+          "purse seine": "crwdns17459:0crwdne17459:0"
+        }
+      },
+      "vessel_id": "crwdns17461:0crwdne17461:0"
+    }
+  },
+  "private-indonesia-zebrax-vessels": {
+    "name": "crwdns17463:0crwdne17463:0",
+    "description": "crwdns17465:0crwdne17465:0",
+    "schema": {
+      "id": "crwdns17467:0crwdne17467:0",
+      "flag": "crwdns17469:0crwdne17469:0",
+      "source": "crwdns17471:0crwdne17471:0",
+      "dataset": "crwdns17473:0crwdne17473:0",
+      "geartype": "crwdns17475:0crwdne17475:0",
+      "shipname": "crwdns17477:0crwdne17477:0",
+      "lastTransmissionDate": "crwdns17479:0crwdne17479:0",
+      "firstTransmissionDate": "crwdns17481:0crwdne17481:0"
+    }
+  },
+  "private-norway-fishing-effort": {
+    "name": "crwdns18154:0crwdne18154:0",
+    "description": "crwdns18156:0crwdne18156:0",
+    "schema": {
+      "lat": "crwdns18158:0crwdne18158:0",
+      "lon": "crwdns18160:0crwdne18160:0",
+      "flag": {
+        "keyword": "crwdns18162:0crwdne18162:0",
+        "enum": {
+          "NOR": "crwdns18164:0crwdne18164:0"
+        }
+      },
+      "hours": "crwdns18166:0crwdne18166:0",
+      "vessel_id": "crwdns18168:0crwdne18168:0",
+      "elevation_m": "crwdns18170:0crwdne18170:0",
+      "distance_from_port_m": "crwdns18172:0crwdne18172:0",
+      "distance_from_shore_m": "crwdns18174:0crwdne18174:0"
+    }
+  },
+  "private-panama-fishing-effort": {
+    "name": "crwdns9221:0crwdne9221:0",
+    "description": "crwdns9223:0crwdne9223:0",
+    "schema": {
+      "lat": "crwdns9225:0crwdne9225:0",
+      "lon": "crwdns9227:0crwdne9227:0",
+      "flag": "crwdns9229:0crwdne9229:0",
+      "hours": "crwdns9231:0crwdne9231:0",
+      "vessel_id": "crwdns9233:0crwdne9233:0",
+      "elevation_m": "crwdns9235:0crwdne9235:0",
+      "distance_from_port_m": "crwdns9237:0crwdne9237:0",
+      "distance_from_shore_m": "crwdns9239:0crwdne9239:0"
+    }
+  },
+  "private-panama-fishing-vessels": {
+    "name": "crwdns18176:0crwdne18176:0",
+    "description": "crwdns9243:0crwdne9243:0",
+    "schema": {
+      "id": "crwdns9245:0crwdne9245:0",
+      "imo": "crwdns9247:0crwdne9247:0",
+      "flag": "crwdns9249:0crwdne9249:0",
+      "length": "crwdns9251:0crwdne9251:0",
+      "source": "crwdns18178:0crwdne18178:0",
+      "geartype": "crwdns9253:0crwdne9253:0",
+      "shipname": "crwdns9255:0crwdne9255:0",
+      "veselType": "crwdns18180:0crwdne18180:0",
+      "netTonnage": "crwdns18182:0crwdne18182:0",
+      "grossTonnage": "crwdns18184:0crwdne18184:0",
+      "lastTransmissionDate": "crwdns9263:0crwdne9263:0",
+      "firstTransmissionDate": "crwdns9265:0crwdne9265:0"
+    }
+  },
+  "private-panama-non-fishing-vessels": {
+    "name": "crwdns18186:0crwdne18186:0",
+    "description": "crwdns9269:0crwdne9269:0",
+    "schema": {
+      "id": "crwdns9271:0crwdne9271:0",
+      "flag": "crwdns9275:0crwdne9275:0",
+      "source": "crwdns18188:0crwdne18188:0",
+      "geartype": "crwdns9279:0crwdne9279:0",
+      "shipname": "crwdns9281:0crwdne9281:0",
+      "veselType": "crwdns18190:0crwdne18190:0",
+      "lastTransmissionDate": "crwdns9289:0crwdne9289:0",
+      "firstTransmissionDate": "crwdns9291:0crwdne9291:0"
+    }
+  },
+  "private-peru-fishing-effort": {
+    "name": "crwdns9293:0crwdne9293:0",
+    "description": "crwdns9295:0crwdne9295:0",
+    "schema": {
+      "lat": "crwdns9297:0crwdne9297:0",
+      "lon": "crwdns9299:0crwdne9299:0",
+      "flag": "crwdns9301:0crwdne9301:0",
+      "fleet": {
+        "keyword": "crwdns9303:0crwdne9303:0",
+        "enum": {
+          "industrial": "crwdns9305:0crwdne9305:0",
+          "artisanal": "crwdns9307:0crwdne9307:0",
+          "small-scale": "crwdns17197:0crwdne17197:0",
+          "not defined": "crwdns9309:0crwdne9309:0"
+        }
+      },
+      "hours": "crwdns9311:0crwdne9311:0",
+      "origin": {
+        "keyword": "crwdns9313:0crwdne9313:0",
+        "enum": {
+          "PER": "crwdns9315:0crwdne9315:0",
+          "Foreign": "crwdns9317:0crwdne9317:0"
+        }
+      },
+      "geartype": {
+        "keyword": "crwdns9319:0crwdne9319:0",
+        "enum": {
+          "drifting_longlines": "crwdns9321:0crwdne9321:0",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "crwdns9323:0crwdne9323:0",
+          "set_longlines": "crwdns9325:0crwdne9325:0",
+          "purse_seines": "crwdns9327:0crwdne9327:0",
+          "trawlers": "crwdns9329:0crwdne9329:0",
+          "drifting_longlines|squid_jiggers": "crwdns9331:0crwdne9331:0",
+          "pots_and_traps": "crwdns9333:0crwdne9333:0",
+          "set_gillnets": "crwdns9335:0crwdne9335:0",
+          "set_longlines|squid_jigger": "crwdns9337:0crwdne9337:0",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "crwdns9339:0crwdne9339:0",
+          "fishing": "crwdns9341:0crwdne9341:0",
+          "driftnets|set_gillnets": "crwdns9343:0crwdne9343:0",
+          "fishing|purse_seines": "crwdns9345:0crwdne9345:0",
+          "drifting_longlines|trawlers": "crwdns9347:0crwdne9347:0"
+        }
+      },
+      "vessel_id": "crwdns9349:0crwdne9349:0",
+      "elevation_m": "crwdns9351:0crwdne9351:0",
+      "distance_from_port_m": "crwdns9353:0crwdne9353:0",
+      "distance_from_shore_m": "crwdns9355:0crwdne9355:0"
+    }
+  },
+  "private-peru-fishing-vessels": {
+    "name": "crwdns9357:0crwdne9357:0",
+    "description": "crwdns9359:0crwdne9359:0",
+    "schema": {
+      "id": "crwdns9361:0crwdne9361:0",
+      "beam": "crwdns9363:0crwdne9363:0",
+      "flag": "crwdns9365:0crwdne9365:0",
+      "casco": {
+        "keyword": "crwdns9367:0crwdne9367:0",
+        "enum": {
+          "ACERO NAVAL": "crwdns9369:0crwdne9369:0",
+          "MADERA": "crwdns9371:0crwdne9371:0",
+          "N/E": "crwdns9373:0crwdne9373:0",
+          "NONE": "crwdns9375:0crwdne9375:0",
+          "FIBRA DE VIDRIO": "crwdns9377:0crwdne9377:0"
+        }
+      },
+      "fleet": {
+        "keyword": "crwdns9379:0crwdne9379:0",
+        "enum": {
+          "industrial": "crwdns9381:0crwdne9381:0",
+          "artisanal": "crwdns9383:0crwdne9383:0",
+          "not defined": "crwdns9385:0crwdne9385:0"
+        }
+      },
+      "ssvid": "crwdns9387:0crwdne9387:0",
+      "width": "crwdns9389:0crwdne9389:0",
+      "length": "crwdns9391:0crwdne9391:0",
+      "origin": {
+        "keyword": "crwdns9393:0crwdne9393:0",
+        "enum": {
+          "Peru": "crwdns9395:0crwdne9395:0",
+          "Foreign": "crwdns9397:0crwdne9397:0"
+        }
+      },
+      "source": "crwdns9399:0crwdne9399:0",
+      "regimen": "crwdns9401:0crwdne9401:0",
+      "capacity": "crwdns9403:0crwdne9403:0",
+      "geartype": "crwdns9405:0crwdne9405:0",
+      "shipname": "crwdns9407:0crwdne9407:0",
+      "chdSpecies": "crwdns9409:0crwdne9409:0",
+      "nationalId": "crwdns9411:0crwdne9411:0",
+      "resolution": "crwdns9413:0crwdne9413:0",
+      "normalized_shipname": "crwdns9415:0crwdne9415:0",
+      "lastTransmissionDate": "crwdns9417:0crwdne9417:0",
+      "firstTransmissionDate": "crwdns9419:0crwdne9419:0"
+    }
+  },
+  "private-peru-presence": {
+    "name": "crwdns9421:0crwdne9421:0",
+    "description": "crwdns9423:0crwdne9423:0",
+    "schema": {
+      "lat": "crwdns9425:0crwdne9425:0",
+      "lon": "crwdns9427:0crwdne9427:0",
+      "flag": "crwdns9429:0crwdne9429:0",
+      "fleet": {
+        "keyword": "crwdns9431:0crwdne9431:0",
+        "enum": {
+          "industrial": "crwdns9433:0crwdne9433:0",
+          "artisanal": "crwdns9435:0crwdne9435:0",
+          "small-scale": "crwdns17199:0crwdne17199:0",
+          "not defined": "crwdns9437:0crwdne9437:0"
+        }
+      },
+      "origin": {
+        "keyword": "crwdns9439:0crwdne9439:0",
+        "enum": {
+          "PER": "crwdns9441:0crwdne9441:0",
+          "Foreign": "crwdns9443:0crwdne9443:0"
+        }
+      },
+      "geartype": {
+        "keyword": "crwdns9445:0crwdne9445:0",
+        "enum": {
+          "drifting_longlines": "crwdns9447:0crwdne9447:0",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "crwdns9449:0crwdne9449:0",
+          "set_longlines": "crwdns9451:0crwdne9451:0",
+          "purse_seines": "crwdns9453:0crwdne9453:0",
+          "driftnets|fishing|set_gillnets": "crwdns9455:0crwdne9455:0",
+          "trawlers": "crwdns9457:0crwdne9457:0",
+          "drifting_longlines|squid_jiggers": "crwdns9459:0crwdne9459:0",
+          "pots_and_traps": "crwdns9461:0crwdne9461:0",
+          "set_gillnets": "crwdns9463:0crwdne9463:0",
+          "set_longlines|squid_jigger": "crwdns9465:0crwdne9465:0",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "crwdns9467:0crwdne9467:0",
+          "fishing": "crwdns9469:0crwdne9469:0",
+          "driftnets|set_gillnets": "crwdns9471:0crwdne9471:0",
+          "fishing|purse_seines": "crwdns9473:0crwdne9473:0",
+          "drifting_longlines|trawlers": "crwdns9475:0crwdne9475:0"
+        }
+      },
+      "vessel_id": "crwdns9477:0crwdne9477:0"
+    }
+  },
+  "public-ais-presence-viirs-match-prototype": {
+    "name": "crwdns18684:0crwdne18684:0",
+    "description": "crwdns25946:0crwdne25946:0",
+    "schema": {
+      "cel": "crwdns18688:0crwdne18688:0",
+      "lat": "crwdns18690:0crwdne18690:0",
+      "lon": "crwdns18692:0crwdne18692:0",
+      "pos": "crwdns18694:0crwdne18694:0",
+      "flag": "crwdns18696:0crwdne18696:0",
+      "htime": "crwdns18698:0crwdne18698:0",
+      "matched": {
+        "keyword": "crwdns18706:0crwdne18706:0",
+        "enum": {
+          "true": true,
+          "false": true
+        }
+      },
+      "radiance": {
+        "keyword": "crwdns18832:0crwdne18832:0",
+        "enum": {
+          "0": 0,
+          "10000": 0
+        }
+      },
+      "shiptype": {
+        "keyword": "crwdns18838:0crwdne18838:0",
+        "enum": {
+          "unknown": "crwdns18840:0crwdne18840:0",
+          "fishing": "crwdns18842:0crwdne18842:0",
+          "carrier": "crwdns18844:0crwdne18844:0",
+          "support": "crwdns18846:0crwdne18846:0"
+        }
+      },
+      "detect_id": "crwdns18848:0crwdne18848:0",
+      "qf_detect": {
+        "keyword": "crwdns18850:0crwdne18850:0",
+        "enum": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "5": 0,
+          "7": 0,
+          "10": 0
+        }
+      },
+      "timestamp": "crwdns18864:0crwdne18864:0",
+      "vessel_id": "crwdns18866:0crwdne18866:0"
+    }
+  },
+  "public-areas-to-be-avoided-1618836788619": {
+    "name": "crwdns25356:0crwdne25356:0",
+    "description": "crwdns25358:0crwdne25358:0",
+    "schema": {}
+  },
+  "public-belize-fishing-effort": {
+    "name": "crwdns18612:0crwdne18612:0",
+    "description": "crwdns25948:0crwdne25948:0",
+    "schema": {
+      "lat": "crwdns18616:0crwdne18616:0",
+      "lon": "crwdns18618:0crwdne18618:0",
+      "flag": "crwdns18620:0crwdne18620:0",
+      "hours": "crwdns18622:0crwdne18622:0",
+      "geartype": {
+        "keyword": "crwdns18624:0crwdne18624:0",
+        "enum": {
+          "purse_seine": "crwdns26072:0crwdne26072:0",
+          "trawler": "crwdns26074:0crwdne26074:0",
+          "longline": "crwdns26076:0crwdne26076:0"
+        }
+      },
+      "vessel_id": "crwdns18634:0crwdne18634:0",
+      "elevation_m": "crwdns18636:0crwdne18636:0",
+      "distance_from_port_m": "crwdns18638:0crwdne18638:0",
+      "distance_from_shore_m": "crwdns18640:0crwdne18640:0"
+    }
+  },
+  "public-belize-fishing-vessels": {
+    "name": "crwdns26158:0crwdne26158:0",
+    "description": "crwdns26160:0crwdne26160:0",
+    "schema": {
+      "id": "crwdns18646:0crwdne18646:0",
+      "flag": "crwdns18648:0crwdne18648:0",
+      "source": "crwdns18650:0crwdne18650:0",
+      "geartype": {
+        "keyword": "crwdns18654:0crwdne18654:0",
+        "enum": {
+          "purse_seine": "crwdns26082:0crwdne26082:0",
+          "trawler": "crwdns26084:0crwdne26084:0",
+          "longline": "crwdns26086:0crwdne26086:0",
+          "reefer": "crwdns26088:0crwdne26088:0"
+        }
+      },
+      "lastTransmissionDate": "crwdns18672:0crwdne18672:0",
+      "firstTransmissionDate": "crwdns18674:0crwdne18674:0"
+    }
+  },
+  "public-bra-onyxsat-fishing-effort": {
+    "name": "crwdns13511:0crwdne13511:0",
+    "description": "crwdns17201:0crwdne17201:0",
+    "schema": {
+      "flag": "crwdns11225:0crwdne11225:0",
+      "geartype": {
+        "keyword": "crwdns11227:0crwdne11227:0",
+        "enum": {
+          "trawlers": "crwdns11229:0crwdne11229:0",
+          "drifting_longlines": "crwdns11231:0crwdne11231:0",
+          "pole_and_line": "crwdns11233:0crwdne11233:0",
+          "line": "crwdns11235:0crwdne11235:0",
+          "pots_and_traps": "crwdns11237:0crwdne11237:0",
+          "set_longline": "crwdns11239:0crwdne11239:0",
+          "fishing": "crwdns11241:0crwdne11241:0",
+          "other_purse_seines": "crwdns11243:0crwdne11243:0",
+          "set_gillnets": "crwdns11245:0crwdne11245:0"
+        }
+      },
+      "vessel_id": "crwdns11247:0crwdne11247:0",
+      "target_species": {
+        "keyword": "crwdns11249:0crwdne11249:0",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "crwdns11251:0crwdne11251:0",
+          "Polvo": "crwdns11253:0crwdne11253:0",
+          "Caranguejo-vermelho": "crwdns11255:0crwdne11255:0",
+          "Sardinha-verdadeira e Anchova": "crwdns11257:0crwdne11257:0",
+          "peixes diversos": "crwdns11259:0crwdne11259:0",
+          "Sardinha-laje": "crwdns11261:0crwdne11261:0",
+          "Pescada-gó": "crwdns11263:0crwdne11263:0",
+          "Piramutaba e peixes diversos": "crwdns11265:0crwdne11265:0",
+          "Corvina; Pescadas; Castanha e Abrótea": "crwdns11267:0crwdne11267:0",
+          "Fundo e Superfície": "crwdns11269:0crwdne11269:0",
+          "permissionamento antigo; em processo de conversão": "crwdns11271:0crwdne11271:0",
+          "Tainhas; Anchova e Serras": "crwdns11273:0crwdne11273:0",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns11275:0crwdne11275:0",
+          "Sardinha-verdadeira e Tainha": "crwdns11277:0crwdne11277:0",
+          "Lagostas": "crwdns11279:0crwdne11279:0",
+          "Espadarte - atuns e afins": "crwdns11281:0crwdne11281:0",
+          "Camarão-rosa e peixes diversos": "crwdns11283:0crwdne11283:0",
+          "Pescada Amarela": "crwdns11285:0crwdne11285:0",
+          "Peixe-sapo": "crwdns11287:0crwdne11287:0",
+          "Piramutaba; Dourada e Gurijuba": "crwdns11289:0crwdne11289:0",
+          "Pargo": "crwdns11291:0crwdne11291:0",
+          "Serras": "crwdns11293:0crwdne11293:0",
+          "Cavala e Albacorinha": "crwdns11295:0crwdne11295:0",
+          "Camarão-sete-barbas": "crwdns11297:0crwdne11297:0",
+          "Bonito-listrado": "crwdns11299:0crwdne11299:0",
+          "camarões": "crwdns11301:0crwdne11301:0",
+          "Abrótea; Galo e Merluza": "crwdns11303:0crwdne11303:0",
+          "peixes demersais": "crwdns11305:0crwdne11305:0",
+          " Camarão-rosa": "crwdns11307:0crwdne11307:0",
+          "Dourado - atuns e afins": "crwdns11309:0crwdne11309:0",
+          "Albacoras - atuns e afins": "crwdns11311:0crwdne11311:0"
+        }
+      }
+    }
+  },
+  "public-bra-onyxsat-fishing-vessels": {
+    "name": "crwdns17203:0crwdne17203:0",
+    "description": "crwdns17205:0crwdne17205:0",
+    "schema": {
+      "id": "crwdns13863:0crwdne13863:0",
+      "flag": "crwdns17207:0crwdne17207:0",
+      "source": "crwdns13865:0crwdne13865:0",
+      "dataset": "crwdns13867:0crwdne13867:0",
+      "geartype": {
+        "keyword": "crwdns17209:0crwdne17209:0",
+        "enum": {
+          "trawlers": "crwdns17211:0crwdne17211:0",
+          "drifting_longlines": "crwdns17213:0crwdne17213:0",
+          "pole_and_line": "crwdns17215:0crwdne17215:0",
+          "line": "crwdns17217:0crwdne17217:0",
+          "pots_and_traps": "crwdns17219:0crwdne17219:0",
+          "set_longline": "crwdns17221:0crwdne17221:0",
+          "fishing": "crwdns17223:0crwdne17223:0",
+          "other_purse_seines": "crwdns17225:0crwdne17225:0",
+          "set_gillnets": "crwdns17227:0crwdne17227:0"
+        }
+      },
+      "mainGear": "crwdns17229:0crwdne17229:0",
+      "shipname": "crwdns13869:0crwdne13869:0",
+      "codMarinha": "crwdns17231:0crwdne17231:0",
+      "fishingZone": "crwdns17233:0crwdne17233:0",
+      "targetSpecies": {
+        "keyword": "crwdns17235:0crwdne17235:0",
+        "enum": {
+          "Sardinha-verdadeira e Bonito-listrado": "crwdns17237:0crwdne17237:0",
+          "Polvo": "crwdns17239:0crwdne17239:0",
+          "Caranguejo-vermelho": "crwdns17241:0crwdne17241:0",
+          "Sardinha-verdadeira e Anchova": "crwdns17243:0crwdne17243:0",
+          "peixes diversos": "crwdns17245:0crwdne17245:0",
+          "Sardinha-laje": "crwdns17247:0crwdne17247:0",
+          "Pescada-gó": "crwdns17249:0crwdne17249:0",
+          "Piramutaba e peixes diversos": "crwdns17251:0crwdne17251:0",
+          "Corvina; Pescadas; Castanha e Abrótea": "crwdns17253:0crwdne17253:0",
+          "Fundo e Superfície": "crwdns17255:0crwdne17255:0",
+          "permissionamento antigo; em processo de conversão": "crwdns17257:0crwdne17257:0",
+          "Tainhas; Anchova e Serras": "crwdns17259:0crwdne17259:0",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns17261:0crwdne17261:0",
+          "Sardinha-verdadeira e Tainha": "crwdns17263:0crwdne17263:0",
+          "Lagostas": "crwdns17265:0crwdne17265:0",
+          "Espadarte - atuns e afins": "crwdns17267:0crwdne17267:0",
+          "Camarão-rosa e peixes diversos": "crwdns17269:0crwdne17269:0",
+          "Pescada Amarela": "crwdns17271:0crwdne17271:0",
+          "Peixe-sapo": "crwdns17273:0crwdne17273:0",
+          "Piramutaba; Dourada e Gurijuba": "crwdns17275:0crwdne17275:0",
+          "Pargo": "crwdns17277:0crwdne17277:0",
+          "Serras": "crwdns17279:0crwdne17279:0",
+          "Cavala e Albacorinha": "crwdns17281:0crwdne17281:0",
+          "Camarão-sete-barbas": "crwdns17283:0crwdne17283:0",
+          "Bonito-listrado": "crwdns17285:0crwdne17285:0",
+          "camarões": "crwdns17287:0crwdne17287:0",
+          "Abrótea; Galo e Merluza": "crwdns17289:0crwdne17289:0",
+          "peixes demersais": "crwdns17291:0crwdne17291:0",
+          " Camarão-rosa": "crwdns17293:0crwdne17293:0",
+          "Dourado - atuns e afins": "crwdns17295:0crwdne17295:0",
+          "Albacoras - atuns e afins": "crwdns17297:0crwdne17297:0"
+        }
+      },
+      "lastTransmissionDate": "crwdns13871:0crwdne13871:0",
+      "firstTransmissionDate": "crwdns13873:0crwdne13873:0"
+    }
+  },
+  "public-brazil-opentuna-fishing-vessels": {
+    "name": "crwdns9483:0crwdne9483:0",
+    "description": "crwdns9485:0crwdne9485:0",
+    "schema": {
+      "id": "crwdns9487:0crwdne9487:0",
+      "code": "crwdns9489:0crwdne9489:0",
+      "source": "crwdns9491:0crwdne9491:0",
+      "shipname": "crwdns9493:0crwdne9493:0",
+      "normalizedShipname": "crwdns9495:0crwdne9495:0",
+      "lastTransmissionDate": "crwdns9497:0crwdne9497:0",
+      "firstTransmissionDate": "crwdns9499:0crwdne9499:0"
+    }
+  },
+  "public-brazil-opentuna-presence": {
+    "name": "crwdns9501:0crwdne9501:0",
+    "description": "crwdns9503:0crwdne9503:0",
+    "schema": {
+      "lat": "crwdns9505:0crwdne9505:0",
+      "lon": "crwdns9507:0crwdne9507:0",
+      "flag": "crwdns9509:0crwdne9509:0",
+      "vessel_id": "crwdns9511:0crwdne9511:0"
+    }
+  },
+  "public-chile-all-vessels": {
+    "name": "crwdns9513:0crwdne9513:0",
+    "description": "crwdns9515:0crwdne9515:0",
+    "schema": {
+      "id": "crwdns9517:0crwdne9517:0",
+      "shipname": "crwdns9519:0crwdne9519:0",
+      "normalizedShipname": "crwdns9521:0crwdne9521:0",
+      "lastTransmissionDate": "crwdns9523:0crwdne9523:0",
+      "firstTransmissionDate": "crwdns9525:0crwdne9525:0"
+    }
+  },
+  "public-chile-fishing-effort": {
+    "name": "crwdns9527:0crwdne9527:0",
+    "description": "crwdns9529:0crwdne9529:0",
+    "schema": {
+      "lat": "crwdns9531:0crwdne9531:0",
+      "lon": "crwdns9533:0crwdne9533:0",
+      "flag": "crwdns9535:0crwdne9535:0",
+      "fleet": {
+        "keyword": "crwdns9537:0crwdne9537:0",
+        "enum": {
+          "chile_vms_small_fisheries": "crwdns9539:0crwdne9539:0",
+          "chile_vms_industry": "crwdns9541:0crwdne9541:0"
+        }
+      },
+      "hours": "crwdns9543:0crwdne9543:0",
+      "vessel_id": "crwdns9545:0crwdne9545:0",
+      "elevation_m": "crwdns9547:0crwdne9547:0",
+      "distance_from_port_m": "crwdns9549:0crwdne9549:0",
+      "distance_from_shore_m": "crwdns9551:0crwdne9551:0"
+    }
+  },
+  "public-chile-fishing-vessels": {
+    "name": "crwdns17299:0crwdne17299:0",
+    "description": "crwdns9555:0crwdne9555:0",
+    "schema": {
+      "id": "crwdns9557:0crwdne9557:0",
+      "shipname": "crwdns9569:0crwdne9569:0",
+      "normalizedShipname": "crwdns17301:0crwdne17301:0",
+      "lastTransmissionDate": "crwdns9571:0crwdne9571:0",
+      "firstTransmissionDate": "crwdns9575:0crwdne9575:0"
+    }
+  },
+  "public-chile-non-fishing-vessels": {
+    "name": "crwdns17303:0crwdne17303:0",
+    "description": "crwdns17305:0crwdne17305:0",
+    "schema": {
+      "id": "crwdns17307:0crwdne17307:0",
+      "shipname": "crwdns17309:0crwdne17309:0",
+      "normalizedShipname": "crwdns17311:0crwdne17311:0",
+      "lastTransmissionDate": "crwdns17313:0crwdne17313:0",
+      "firstTransmissionDate": "crwdns17315:0crwdne17315:0"
+    }
+  },
+  "public-chile-presence": {
+    "name": "crwdns9577:0crwdne9577:0",
+    "description": "crwdns17317:0crwdne17317:0",
+    "schema": {
+      "lat": "crwdns9581:0crwdne9581:0",
+      "lon": "crwdns9583:0crwdne9583:0",
+      "flag": "crwdns9585:0crwdne9585:0",
+      "fleet": {
+        "keyword": "crwdns9587:0crwdne9587:0",
+        "enum": {
+          "chile_vms_small_fisheries": "crwdns9589:0crwdne9589:0",
+          "chile_vms_industry": "crwdns9591:0crwdne9591:0",
+          "chile_vms_aquaculture": "crwdns9593:0crwdne9593:0",
+          "chile_vms_transport": "crwdns9595:0crwdne9595:0"
+        }
+      },
+      "vessel_id": "crwdns9597:0crwdne9597:0"
+    }
+  },
+  "public-cold-water-corals": {
+    "name": "crwdns25360:0crwdne25360:0",
+    "description": "crwdns25362:0crwdne25362:0",
+    "schema": {}
+  },
+  "public-costa-rica-fishing-effort": {
+    "name": "crwdns17483:0crwdne17483:0",
+    "description": "crwdns17485:0crwdne17485:0",
+    "schema": {
+      "lat": "crwdns17487:0crwdne17487:0",
+      "lon": "crwdns17489:0crwdne17489:0",
+      "flag": "crwdns17491:0crwdne17491:0",
+      "fleet": {
+        "keyword": "crwdns17493:0crwdne17493:0",
+        "enum": {
+          "costarica_vms_avanzados": "crwdns17495:0crwdne17495:0",
+          "costarica_vms_atuneros": "crwdns17497:0crwdne17497:0",
+          "costarica_vms_sardineros": "crwdns17499:0crwdne17499:0"
+        }
+      },
+      "hours": "crwdns17501:0crwdne17501:0",
+      "vessel_id": "crwdns17503:0crwdne17503:0",
+      "elevation_m": "crwdns17505:0crwdne17505:0",
+      "distance_from_port_m": "crwdns17507:0crwdne17507:0",
+      "distance_from_shore_m": "crwdns17509:0crwdne17509:0"
+    }
+  },
+  "public-costa-rica-fishing-vessels": {
+    "name": "crwdns17511:0crwdne17511:0",
+    "description": "crwdns17513:0crwdne17513:0",
+    "schema": {
+      "id": "crwdns17515:0crwdne17515:0",
+      "flag": "crwdns17517:0crwdne17517:0",
+      "source": "crwdns17519:0crwdne17519:0",
+      "shipname": "crwdns25364:0crwdne25364:0",
+      "lastTransmissionDate": "crwdns17523:0crwdne17523:0",
+      "firstTransmissionDate": "crwdns17525:0crwdne17525:0"
+    }
+  },
+  "public-dgg_sar_caribe_match_2019": {
+    "name": "crwdns9603:0crwdne9603:0",
+    "description": "crwdns9605:0crwdne9605:0",
+    "schema": {}
+  },
+  "public-dgg_sar_caribe_not_match_2019": {
+    "name": "crwdns9607:0crwdne9607:0",
+    "description": "crwdns9609:0crwdne9609:0",
+    "schema": {}
+  },
+  "public-ecuador-fishing-effort": {
+    "name": "crwdns9611:0crwdne9611:0",
+    "description": "crwdns9613:0crwdne9613:0",
+    "schema": {
+      "lat": "crwdns9615:0crwdne9615:0",
+      "lon": "crwdns9617:0crwdne9617:0",
+      "flag": "crwdns9619:0crwdne9619:0",
+      "hours": "crwdns9621:0crwdne9621:0",
+      "shiptype": {
+        "keyword": "crwdns9623:0crwdne9623:0",
+        "enum": {
+          "fishing": "crwdns9625:0crwdne9625:0"
+        }
+      },
+      "vessel_id": "crwdns9627:0crwdne9627:0",
+      "elevation_m": "crwdns9629:0crwdne9629:0",
+      "distance_from_port_m": "crwdns9631:0crwdne9631:0",
+      "distance_from_shore_m": "crwdns9633:0crwdne9633:0"
+    }
+  },
+  "public-ecuador-fishing-vessels": {
+    "name": "crwdns17319:0crwdne17319:0",
+    "description": "crwdns25366:0crwdne25366:0",
+    "schema": {
+      "id": "crwdns9639:0crwdne9639:0",
+      "flag": "crwdns9641:0crwdne9641:0",
+      "source": "crwdns9643:0crwdne9643:0",
+      "shipname": "crwdns9645:0crwdne9645:0",
+      "nationalId": "crwdns9647:0crwdne9647:0",
+      "normalized_shipname": "crwdns17321:0crwdne17321:0",
+      "lastTransmissionDate": "crwdns9651:0crwdne9651:0",
+      "firstTransmissionDate": "crwdns9653:0crwdne9653:0"
+    }
+  },
+  "public-ecuador-non-fishing-vessels": {
+    "name": "crwdns17323:0crwdne17323:0",
+    "description": "crwdns25368:0crwdne25368:0",
+    "schema": {
+      "id": "crwdns17327:0crwdne17327:0",
+      "flag": "crwdns17329:0crwdne17329:0",
+      "source": "crwdns17331:0crwdne17331:0",
+      "shipname": "crwdns17333:0crwdne17333:0",
+      "nationalId": "crwdns17335:0crwdne17335:0",
+      "normalized_shipname": "crwdns17337:0crwdne17337:0",
+      "lastTransmissionDate": "crwdns17339:0crwdne17339:0",
+      "firstTransmissionDate": "crwdns17341:0crwdne17341:0"
+    }
+  },
+  "public-ecuador-presence": {
+    "name": "crwdns26310:0crwdne26310:0",
+    "description": "crwdns26312:0crwdne26312:0",
+    "schema": {
+      "lat": "crwdns26314:0crwdne26314:0",
+      "lon": "crwdns26316:0crwdne26316:0",
+      "flag": "crwdns26318:0crwdne26318:0",
+      "shiptype": {
+        "keyword": "crwdns26320:0crwdne26320:0",
+        "enum": {
+          "fishing": "crwdns26322:0crwdne26322:0",
+          "international traffic": "crwdns26324:0crwdne26324:0",
+          "national traffic": "crwdns26326:0crwdne26326:0",
+          "tug": "crwdns26328:0crwdne26328:0",
+          "boat": "crwdns26330:0crwdne26330:0",
+          "auxiliary": "crwdns26332:0crwdne26332:0"
+        }
+      },
+      "vessel_id": "crwdns26334:0crwdne26334:0",
+      "elevation_m": "crwdns26336:0crwdne26336:0",
+      "distance_from_port_m": "crwdns26338:0crwdne26338:0",
+      "distance_from_shore_m": "crwdns26340:0crwdne26340:0"
+    }
+  },
+  "public-eez-areas": {
+    "name": "crwdns25370:0crwdne25370:0",
+    "description": "crwdns9657:0crwdne9657:0",
+    "schema": {}
+  },
+  "public-eez-boundaries": {
+    "name": "crwdns25372:0crwdne25372:0",
+    "description": "crwdns25374:0crwdne25374:0",
+    "schema": {}
+  },
+  "public-eez-land": {
+    "name": "crwdns9663:0crwdne9663:0",
+    "description": "crwdns9665:0crwdne9665:0",
+    "schema": {}
+  },
+  "public-fao-areas-major-subareas": {
+    "name": "crwdns18192:0crwdne18192:0",
+    "description": "crwdns25014:0crwdne25014:0",
+    "schema": {}
+  },
+  "public-fd-chlorophyl-ascension-v3": {
+    "name": "crwdns25376:0crwdne25376:0",
+    "description": "crwdns25378:0crwdne25378:0",
+    "schema": {
+      "flag": "crwdns25380:0crwdne25380:0",
+      "vessel_id": "crwdns25382:0crwdne25382:0"
+    }
+  },
+  "public-fd-chlorophyl-caribe-v3": {
+    "name": "crwdns25384:0crwdne25384:0",
+    "description": "crwdns25386:0crwdne25386:0",
+    "schema": {
+      "flag": "crwdns25388:0crwdne25388:0",
+      "vessel_id": "crwdns25390:0crwdne25390:0"
+    }
+  },
+  "public-fd-chlorophyl-fiji-v3": {
+    "name": "crwdns25634:0crwdne25634:0",
+    "description": "crwdns25394:0crwdne25394:0",
+    "schema": {}
+  },
+  "public-fd-chlorophyl-fsm-v3": {
+    "name": "crwdns25636:0crwdne25636:0",
+    "description": "crwdns25398:0crwdne25398:0",
+    "schema": {}
+  },
+  "public-fd-chlorophyl-galapagos-v3": {
+    "name": "crwdns25400:0crwdne25400:0",
+    "description": "crwdns25402:0crwdne25402:0",
+    "schema": {
+      "flag": "crwdns25404:0crwdne25404:0",
+      "vessel_id": "crwdns25406:0crwdne25406:0"
+    }
+  },
+  "public-fd-chlorophyl-maldives-v3": {
+    "name": "crwdns25638:0crwdne25638:0",
+    "description": "crwdns25410:0crwdne25410:0",
+    "schema": {}
+  },
+  "public-fd-chlorophyl-mediterranean-v3": {
+    "name": "crwdns25412:0crwdne25412:0",
+    "description": "crwdns25414:0crwdne25414:0",
+    "schema": {
+      "flag": "crwdns25416:0crwdne25416:0",
+      "vessel_id": "crwdns25418:0crwdne25418:0"
+    }
+  },
+  "public-fd-chlorophyl-niue-v3": {
+    "name": "crwdns25420:0crwdne25420:0",
+    "description": "crwdns25422:0crwdne25422:0",
+    "schema": {
+      "flag": "crwdns25424:0crwdne25424:0",
+      "vessel_id": "crwdns25426:0crwdne25426:0"
+    }
+  },
+  "public-fd-chlorophyl-palau-v3": {
+    "name": "crwdns25428:0crwdne25428:0",
+    "description": "crwdns25430:0crwdne25430:0",
+    "schema": {
+      "flag": "crwdns25432:0crwdne25432:0",
+      "vessel_id": "crwdns25434:0crwdne25434:0"
+    }
+  },
+  "public-fd-chlorophyl-tristan-v3": {
+    "name": "crwdns25436:0crwdne25436:0",
+    "description": "crwdns25438:0crwdne25438:0",
+    "schema": {
+      "flag": "crwdns25440:0crwdne25440:0",
+      "vessel_id": "crwdns25442:0crwdne25442:0"
+    }
+  },
+  "public-fd-salinity-ascension-v3": {
+    "name": "crwdns9723:0crwdne9723:0",
+    "description": "crwdns25444:0crwdne25444:0",
+    "schema": {
+      "flag": "crwdns9727:0crwdne9727:0",
+      "vessel_id": "crwdns9729:0crwdne9729:0"
+    }
+  },
+  "public-fd-salinity-caribe-v3": {
+    "name": "crwdns25446:0crwdne25446:0",
+    "description": "crwdns25448:0crwdne25448:0",
+    "schema": {
+      "flag": "crwdns9735:0crwdne9735:0",
+      "vessel_id": "crwdns9737:0crwdne9737:0"
+    }
+  },
+  "public-fd-salinity-fiji-v3": {
+    "name": "crwdns25640:0crwdne25640:0",
+    "description": "crwdns25452:0crwdne25452:0",
+    "schema": {}
+  },
+  "public-fd-salinity-fsm-v3": {
+    "name": "crwdns25642:0crwdne25642:0",
+    "description": "crwdns25456:0crwdne25456:0",
+    "schema": {}
+  },
+  "public-fd-salinity-galapagos-v3": {
+    "name": "crwdns25458:0crwdne25458:0",
+    "description": "crwdns25460:0crwdne25460:0",
+    "schema": {
+      "flag": "crwdns25462:0crwdne25462:0",
+      "vessel_id": "crwdns25464:0crwdne25464:0"
+    }
+  },
+  "public-fd-salinity-maldives-v3": {
+    "name": "crwdns25644:0crwdne25644:0",
+    "description": "crwdns25468:0crwdne25468:0",
+    "schema": {}
+  },
+  "public-fd-salinity-mediterranean-v3": {
+    "name": "crwdns25470:0crwdne25470:0",
+    "description": "crwdns25472:0crwdne25472:0",
+    "schema": {
+      "flag": "crwdns25474:0crwdne25474:0",
+      "vessel_id": "crwdns25476:0crwdne25476:0"
+    }
+  },
+  "public-fd-salinity-niue-v3": {
+    "name": "crwdns25478:0crwdne25478:0",
+    "description": "crwdns17345:0crwdne17345:0",
+    "schema": {
+      "flag": "crwdns9759:0crwdne9759:0",
+      "vessel_id": "crwdns9761:0crwdne9761:0"
+    }
+  },
+  "public-fd-salinity-palau-v3": {
+    "name": "crwdns25480:0crwdne25480:0",
+    "description": "crwdns17347:0crwdne17347:0",
+    "schema": {
+      "flag": "crwdns9767:0crwdne9767:0",
+      "vessel_id": "crwdns9769:0crwdne9769:0"
+    }
+  },
+  "public-fd-salinity-tristan-v3": {
+    "name": "crwdns25482:0crwdne25482:0",
+    "description": "crwdns17349:0crwdne17349:0",
+    "schema": {
+      "flag": "crwdns9775:0crwdne9775:0",
+      "vessel_id": "crwdns9777:0crwdne9777:0"
+    }
+  },
+  "public-fd-water-temperature-ascension-v3": {
+    "name": "crwdns25484:0crwdne25484:0",
+    "description": "crwdns25486:0crwdne25486:0",
+    "schema": {
+      "flag": "crwdns25488:0crwdne25488:0",
+      "vessel_id": "crwdns25490:0crwdne25490:0"
+    }
+  },
+  "public-fd-water-temperature-caribe-v3": {
+    "name": "crwdns25492:0crwdne25492:0",
+    "description": "crwdns25494:0crwdne25494:0",
+    "schema": {
+      "flag": "crwdns25496:0crwdne25496:0",
+      "vessel_id": "crwdns25498:0crwdne25498:0"
+    }
+  },
+  "public-fd-water-temperature-fiji-v3": {
+    "name": "crwdns25646:0crwdne25646:0",
+    "description": "crwdns25502:0crwdne25502:0",
+    "schema": {}
+  },
+  "public-fd-water-temperature-fsm-v3": {
+    "name": "crwdns25648:0crwdne25648:0",
+    "description": "crwdns25506:0crwdne25506:0",
+    "schema": {}
+  },
+  "public-fd-water-temperature-galapagos-v3": {
+    "name": "crwdns25508:0crwdne25508:0",
+    "description": "crwdns25510:0crwdne25510:0",
+    "schema": {
+      "flag": "crwdns25512:0crwdne25512:0",
+      "vessel_id": "crwdns25514:0crwdne25514:0"
+    }
+  },
+  "public-fd-water-temperature-maldives-v3": {
+    "name": "crwdns25650:0crwdne25650:0",
+    "description": "crwdns25518:0crwdne25518:0",
+    "schema": {}
+  },
+  "public-fd-water-temperature-mediterranean-v3": {
+    "name": "crwdns25520:0crwdne25520:0",
+    "description": "crwdns25522:0crwdne25522:0",
+    "schema": {
+      "flag": "crwdns25524:0crwdne25524:0",
+      "vessel_id": "crwdns25526:0crwdne25526:0"
+    }
+  },
+  "public-fd-water-temperature-niue-v3": {
+    "name": "crwdns25528:0crwdne25528:0",
+    "description": "crwdns25530:0crwdne25530:0",
+    "schema": {
+      "flag": "crwdns25532:0crwdne25532:0",
+      "vessel_id": "crwdns25534:0crwdne25534:0"
+    }
+  },
+  "public-fd-water-temperature-palau-v3": {
+    "name": "crwdns25536:0crwdne25536:0",
+    "description": "crwdns25538:0crwdne25538:0",
+    "schema": {
+      "flag": "crwdns25540:0crwdne25540:0",
+      "vessel_id": "crwdns25542:0crwdne25542:0"
+    }
+  },
+  "public-fd-water-temperature-tristan-v3": {
+    "name": "crwdns25544:0crwdne25544:0",
+    "description": "crwdns25546:0crwdne25546:0",
+    "schema": {
+      "flag": "crwdns25548:0crwdne25548:0",
+      "vessel_id": "crwdns25550:0crwdne25550:0"
+    }
+  },
+  "public-fisheries-restricted-areas": {
+    "name": "crwdns25552:0crwdne25552:0",
+    "description": "crwdns25554:0crwdne25554:0",
+    "schema": {}
+  },
+  "public-global-carrier-vessels": {
+    "name": "crwdns9839:0crwdne9839:0",
+    "description": "crwdns9841:0crwdne9841:0",
+    "schema": {
+      "id": "crwdns9843:0crwdne9843:0",
+      "imo": "crwdns25968:0crwdne25968:0",
+      "dataset": "crwdns9845:0crwdne9845:0",
+      "msgCount": "crwdns9847:0crwdne9847:0",
+      "posCount": "crwdns9849:0crwdne9849:0",
+      "shipname": "crwdns9851:0crwdne9851:0",
+      "normalizedShipname": "crwdns9853:0crwdne9853:0",
+      "lastTransmissionDate": "crwdns9855:0crwdne9855:0",
+      "firstTransmissionDate": "crwdns9857:0crwdne9857:0"
+    }
+  },
+  "public-global-encounters-events-carriers-fishing": {
+    "name": "crwdns9859:0crwdne9859:0",
+    "description": "crwdns9861:0crwdne9861:0",
+    "schema": {
+      "fields": "crwdns9863:0crwdne9863:0",
+      "event_id": "crwdns9865:0crwdne9865:0",
+      "event_end": "crwdns9867:0crwdne9867:0",
+      "vessel_id": "crwdns9869:0crwdne9869:0",
+      "event_info": "crwdns9871:0crwdne9871:0",
+      "event_type": {
+        "keyword": "crwdns9873:0crwdne9873:0",
+        "enum": {
+          "port": "crwdns9875:0crwdne9875:0"
+        }
+      },
+      "event_start": "crwdns9877:0crwdne9877:0",
+      "event_vessels": "crwdns9879:0crwdne9879:0",
+      "event_mean_position": "crwdns9881:0crwdne9881:0"
+    }
+  },
+  "public-global-encounters-events": {
+    "name": "crwdns9883:0crwdne9883:0",
+    "description": "crwdns9885:0crwdne9885:0",
+    "schema": {
+      "fields": "crwdns9887:0crwdne9887:0",
+      "event_id": "crwdns9889:0crwdne9889:0",
+      "event_end": "crwdns9891:0crwdne9891:0",
+      "vessel_id": "crwdns9893:0crwdne9893:0",
+      "event_info": "crwdns9895:0crwdne9895:0",
+      "event_type": {
+        "keyword": "crwdns9897:0crwdne9897:0",
+        "enum": {
+          "port": "crwdns9899:0crwdne9899:0"
+        }
+      },
+      "event_start": "crwdns9901:0crwdne9901:0",
+      "event_vessels": "crwdns9903:0crwdne9903:0",
+      "event_mean_position": "crwdns9905:0crwdne9905:0"
+    }
+  },
+  "public-global-fishing-effort": {
+    "name": "crwdns26342:0crwdne26342:0",
+    "description": "crwdns25970:0crwdne25970:0",
+    "schema": {
+      "flag": "crwdns9911:0crwdne9911:0",
+      "geartype": {
+        "keyword": "crwdns9913:0crwdne9913:0",
+        "enum": {
+          "tuna_purse_seines": "crwdns9915:0crwdne9915:0",
+          "driftnets": "crwdns9917:0crwdne9917:0",
+          "trollers": "crwdns9919:0crwdne9919:0",
+          "set_longlines": "crwdns9921:0crwdne9921:0",
+          "purse_seines": "crwdns9923:0crwdne9923:0",
+          "pots_and_traps": "crwdns9925:0crwdne9925:0",
+          "other_fishing": "crwdns9927:0crwdne9927:0",
+          "dredge_fishing": "crwdns9929:0crwdne9929:0",
+          "set_gillnets": "crwdns9931:0crwdne9931:0",
+          "fixed_gear": "crwdns9933:0crwdne9933:0",
+          "trawlers": "crwdns9935:0crwdne9935:0",
+          "fishing": "crwdns9937:0crwdne9937:0",
+          "seiners": "crwdns9939:0crwdne9939:0",
+          "other_purse_seines": "crwdns9941:0crwdne9941:0",
+          "other_seines": "crwdns9943:0crwdne9943:0",
+          "squid_jigger": "crwdns9945:0crwdne9945:0",
+          "pole_and_line": "crwdns9947:0crwdne9947:0",
+          "drifting_longlines": "crwdns9949:0crwdne9949:0"
+        }
+      },
+      "vessel_id": "crwdns9951:0crwdne9951:0",
+      "vessel-groups": "crwdns26344:0crwdne26344:0"
+    }
+  },
+  "public-global-fishing-vessels": {
+    "name": "crwdns9953:0crwdne9953:0",
+    "description": "crwdns9955:0crwdne9955:0",
+    "schema": {
+      "id": "crwdns9957:0crwdne9957:0",
+      "imo": "crwdns9959:0crwdne9959:0",
+      "flag": "crwdns9961:0crwdne9961:0",
+      "mmsi": "crwdns9963:0crwdne9963:0",
+      "source": "crwdns9965:0crwdne9965:0",
+      "dataset": "crwdns9967:0crwdne9967:0",
+      "callsign": "crwdns9969:0crwdne9969:0",
+      "geartype": {
+        "keyword": "crwdns9971:0crwdne9971:0",
+        "enum": {
+          "tuna_purse_seines": "crwdns9973:0crwdne9973:0",
+          "driftnets": "crwdns9975:0crwdne9975:0",
+          "trollers": "crwdns9977:0crwdne9977:0",
+          "set_longlines": "crwdns9979:0crwdne9979:0",
+          "purse_seines": "crwdns9981:0crwdne9981:0",
+          "pots_and_traps": "crwdns9983:0crwdne9983:0",
+          "other_fishing": "crwdns9985:0crwdne9985:0",
+          "dredge_fishing": "crwdns9987:0crwdne9987:0",
+          "set_gillnets": "crwdns9989:0crwdne9989:0",
+          "fixed_gear": "crwdns9991:0crwdne9991:0",
+          "trawlers": "crwdns9993:0crwdne9993:0",
+          "fishing": "crwdns9995:0crwdne9995:0",
+          "seiners": "crwdns9997:0crwdne9997:0",
+          "other_purse_seines": "crwdns9999:0crwdne9999:0",
+          "other_seines": "crwdns10001:0crwdne10001:0",
+          "squid_jigger": "crwdns10003:0crwdne10003:0",
+          "pole_and_line": "crwdns10005:0crwdne10005:0",
+          "drifting_longlines": "crwdns10007:0crwdne10007:0"
+        }
+      },
+      "msgCount": "crwdns10009:0crwdne10009:0",
+      "posCount": "crwdns10011:0crwdne10011:0",
+      "shipname": "crwdns10013:0crwdne10013:0",
+      "normalized_shipname": "crwdns10015:0crwdne10015:0",
+      "lastTransmissionDate": "crwdns10017:0crwdne10017:0",
+      "firstTransmissionDate": "crwdns10019:0crwdne10019:0"
+    }
+  },
+  "public-global-presence": {
+    "name": "crwdns25804:0crwdne25804:0",
+    "description": "crwdns26360:0crwdne26360:0",
+    "schema": {
+      "flag": "crwdns25808:0crwdne25808:0",
+      "vessel_id": "crwdns25810:0crwdne25810:0",
+      "vessel_type": {
+        "keyword": "crwdns25812:0crwdne25812:0",
+        "enum": {
+          "fishing": "crwdns25814:0crwdne25814:0",
+          "carrier": "crwdns25816:0crwdne25816:0",
+          "cargo": "crwdns25972:0crwdne25972:0",
+          "bunker_or_tanker": "crwdns25974:0crwdne25974:0",
+          "passenger": "crwdns25976:0crwdne25976:0",
+          "seismic_vessel": "crwdns25978:0crwdne25978:0",
+          "other_non_fishing": "crwdns25980:0crwdne25980:0",
+          "unknown": "crwdns25828:0crwdne25828:0"
+        }
+      },
+      "vessel-groups": "crwdns26544:0crwdne26544:0"
+    }
+  },
+  "public-global-sar-footprints": {
+    "name": "crwdns26164:0crwdne26164:0",
+    "description": "crwdns26166:0crwdne26166:0",
+    "schema": {}
+  },
+  "public-global-sar-presence": {
+    "name": "crwdns17541:0crwdne17541:0",
+    "description": "crwdns17543:0crwdne17543:0",
+    "schema": {
+      "id": "crwdns17545:0crwdne17545:0",
+      "lat": "crwdns17547:0crwdne17547:0",
+      "lon": "crwdns17549:0crwdne17549:0",
+      "pos": "crwdns17551:0crwdne17551:0",
+      "cell": "crwdns17553:0crwdne17553:0",
+      "htime": "crwdns17555:0crwdne17555:0",
+      "ssvid": "crwdns17557:0crwdne17557:0",
+      "matched": {
+        "keyword": "crwdns17559:0crwdne17559:0",
+        "enum": {
+          "true": true,
+          "false": true
+        }
+      },
+      "timestamp": "crwdns17565:0crwdne17565:0",
+      "confidence": "crwdns17567:0crwdne17567:0"
+    }
+  },
+  "public-global-support-vessels": {
+    "name": "crwdns10037:0crwdne10037:0",
+    "description": "crwdns10039:0crwdne10039:0",
+    "schema": {
+      "id": "crwdns10041:0crwdne10041:0",
+      "imo": "crwdns10043:0crwdne10043:0",
+      "flag": "crwdns10045:0crwdne10045:0",
+      "mmsi": "crwdns10047:0crwdne10047:0",
+      "source": "crwdns10049:0crwdne10049:0",
+      "dataset": "crwdns10051:0crwdne10051:0",
+      "callsign": "crwdns10053:0crwdne10053:0",
+      "geartype": {
+        "keyword": "crwdns10055:0crwdne10055:0",
+        "enum": {
+          "Purse Seine Support Vessel": "crwdns10057:0crwdne10057:0"
+        }
+      },
+      "msgCount": "crwdns10059:0crwdne10059:0",
+      "posCount": "crwdns10061:0crwdne10061:0",
+      "shipname": "crwdns10063:0crwdne10063:0",
+      "normalized_shipname": "crwdns10065:0crwdne10065:0",
+      "lastTransmissionDate": "crwdns10067:0crwdne10067:0",
+      "firstTransmissionDate": "crwdns10069:0crwdne10069:0"
+    }
+  },
+  "public-global-viirs-presence": {
+    "name": "crwdns25202:0crwdne25202:0",
+    "description": "crwdns25982:0crwdne25982:0",
+    "schema": {
+      "cel": "crwdns17573:0crwdne17573:0",
+      "lat": "crwdns17575:0crwdne17575:0",
+      "lon": "crwdns17577:0crwdne17577:0",
+      "pos": "crwdns17579:0crwdne17579:0",
+      "htime": "crwdns17581:0crwdne17581:0",
+      "radiance": {
+        "keyword": "crwdns17583:0crwdne17583:0",
+        "enum": {
+          "1": 0,
+          "1000": 0
+        }
+      },
+      "detect_id": "crwdns17645:0crwdne17645:0",
+      "qf_detect": {
+        "keyword": "crwdns17647:0crwdne17647:0",
+        "enum": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "5": 0,
+          "7": 0,
+          "10": 0
+        }
+      },
+      "timestamp": "crwdns17661:0crwdne17661:0"
+    }
+  },
+  "public-graticules": {
+    "name": "crwdns25572:0crwdne25572:0",
+    "description": "crwdns25574:0crwdne25574:0",
+    "schema": {}
+  },
+  "public-gs-as-simplified": {
+    "name": "crwdns25576:0crwdne25576:0",
+    "description": "crwdns25578:0crwdne25578:0",
+    "schema": {}
+  },
+  "public-gulf-of-lion-french-zones": {
+    "name": "crwdns25580:0crwdne25580:0",
+    "description": "crwdns25582:0crwdne25582:0",
+    "schema": {}
+  },
+  "public-high-seas": {
+    "name": "crwdns25584:0crwdne25584:0",
+    "description": "crwdns10115:0crwdne10115:0",
+    "schema": {}
+  },
+  "public-indonesia-fishing-effort": {
+    "name": "crwdns10117:0crwdne10117:0",
+    "description": "crwdns25984:0crwdne25984:0",
+    "schema": {
+      "lat": "crwdns10121:0crwdne10121:0",
+      "lon": "crwdns10123:0crwdne10123:0",
+      "flag": "crwdns10125:0crwdne10125:0",
+      "hours": "crwdns10127:0crwdne10127:0",
+      "geartype": {
+        "keyword": "crwdns10129:0crwdne10129:0",
+        "enum": {
+          "Purse Seine Group (2 boat) Small Pelagics": "crwdns10131:0crwdne10131:0",
+          "Purse Seine Group (2 boat) Big Pelagics": "crwdns10133:0crwdne10133:0",
+          "Cast Nets": "crwdns10135:0crwdne10135:0",
+          "Pots": "crwdns10137:0crwdne10137:0",
+          "Anchored gillnets": "crwdns10139:0crwdne10139:0",
+          "Lampara Seine Nets": "crwdns10141:0crwdne10141:0",
+          "Shrimp net": "crwdns10143:0crwdne10143:0",
+          "Purse Seine Big Pelagics with one boat": "crwdns10145:0crwdne10145:0",
+          "Basic longline": "crwdns10147:0crwdne10147:0",
+          "Pole-and-line": "crwdns10149:0crwdne10149:0",
+          "Hand Line Tuna": "crwdns10151:0crwdne10151:0",
+          "Handline": "crwdns10153:0crwdne10153:0",
+          "Purse Seine Small Pelagics": "crwdns10155:0crwdne10155:0",
+          "Stick-Held lift net": "crwdns10157:0crwdne10157:0",
+          "Oceanic gillnet": "crwdns10159:0crwdne10159:0",
+          "Longline Tuna": "crwdns10161:0crwdne10161:0",
+          "Fish net/dragnet": "crwdns10163:0crwdne10163:0",
+          "Squid hooking": "crwdns10165:0crwdne10165:0"
+        }
+      },
+      "vessel_id": "crwdns10167:0crwdne10167:0",
+      "elevation_m": "crwdns10169:0crwdne10169:0",
+      "distance_from_port_m": "crwdns10171:0crwdne10171:0",
+      "distance_from_shore_m": "crwdns10173:0crwdne10173:0"
+    }
+  },
+  "public-indonesia-pelagic-presence": {
+    "name": "crwdns18200:0crwdne18200:0",
+    "description": "crwdns18202:0crwdne18202:0",
+    "schema": {
+      "lat": "crwdns18068:0crwdne18068:0",
+      "lon": "crwdns18070:0crwdne18070:0",
+      "flag": "crwdns18072:0crwdne18072:0",
+      "geartype": {
+        "keyword": "crwdns18074:0crwdne18074:0",
+        "enum": {
+          "gillnets": "crwdns18076:0crwdne18076:0",
+          "longline": "crwdns18078:0crwdne18078:0",
+          "traps": "crwdns25986:0crwdne25986:0",
+          "purse seine": "crwdns18082:0crwdne18082:0",
+          "Handline": "crwdns25988:0crwdne25988:0"
+        }
+      },
+      "vessel_id": "crwdns18084:0crwdne18084:0"
+    }
+  },
+  "public-indonesia-zebrax-presence": {
+    "name": "crwdns10175:0crwdne10175:0",
+    "description": "crwdns10177:0crwdne10177:0",
+    "schema": {
+      "lat": "crwdns10179:0crwdne10179:0",
+      "lon": "crwdns10181:0crwdne10181:0",
+      "flag": "crwdns10183:0crwdne10183:0",
+      "geartype": {
+        "keyword": "crwdns17527:0crwdne17527:0",
+        "enum": {
+          "gillnets": "crwdns17529:0crwdne17529:0",
+          "longline": "crwdns17531:0crwdne17531:0",
+          "trap net": "crwdns17533:0crwdne17533:0",
+          "purse seine": "crwdns17535:0crwdne17535:0"
+        }
+      },
+      "vessel_id": "crwdns10185:0crwdne10185:0"
+    }
+  },
+  "public-inshore-fishing-zone-1618837176535": {
+    "name": "crwdns25586:0crwdne25586:0",
+    "description": "crwdns25588:0crwdne25588:0",
+    "schema": {}
+  },
+  "public-mediterranean-area-of-interest-1": {
+    "name": "crwdns25590:0crwdne25590:0",
+    "description": "crwdns25592:0crwdne25592:0",
+    "schema": {}
+  },
+  "public-mexico-fishing-effort": {
+    "name": "crwdns10195:0crwdne10195:0",
+    "description": "crwdns10197:0crwdne10197:0",
+    "schema": {
+      "lat": "crwdns10199:0crwdne10199:0",
+      "lon": "crwdns10201:0crwdne10201:0",
+      "flag": "crwdns10203:0crwdne10203:0",
+      "hours": "crwdns10205:0crwdne10205:0",
+      "shiptype": {
+        "keyword": "crwdns10207:0crwdne10207:0",
+        "enum": {
+          "fishing": "crwdns10209:0crwdne10209:0"
+        }
+      },
+      "vessel_id": "crwdns10211:0crwdne10211:0",
+      "elevation_m": "crwdns10213:0crwdne10213:0",
+      "distance_from_port_m": "crwdns10215:0crwdne10215:0",
+      "distance_from_shore_m": "crwdns10217:0crwdne10217:0"
+    }
+  },
+  "public-mexico-fishing-vessels": {
+    "name": "crwdns26346:0crwdne26346:0",
+    "description": "crwdns10221:0crwdne10221:0",
+    "schema": {
+      "id": "crwdns10223:0crwdne10223:0",
+      "flag": "crwdns10225:0crwdne10225:0",
+      "source": "crwdns10227:0crwdne10227:0",
+      "shipname": "crwdns10229:0crwdne10229:0",
+      "nationalId": "crwdns10231:0crwdne10231:0",
+      "normalizedShipname": "crwdns26348:0crwdne26348:0",
+      "lastTransmissionDate": "crwdns10235:0crwdne10235:0",
+      "firstTransmissionDate": "crwdns10237:0crwdne10237:0"
+    }
+  },
+  "public-mexico-presence": {
+    "name": "crwdns10239:0crwdne10239:0",
+    "description": "crwdns10241:0crwdne10241:0",
+    "schema": {
+      "lat": "crwdns10243:0crwdne10243:0",
+      "lon": "crwdns10245:0crwdne10245:0",
+      "flag": "crwdns10247:0crwdne10247:0",
+      "shiptype": {
+        "keyword": "crwdns10249:0crwdne10249:0",
+        "enum": {
+          "fishing": "crwdns10251:0crwdne10251:0",
+          "international traffic": "crwdns10253:0crwdne10253:0",
+          "national traffic": "crwdns10255:0crwdne10255:0",
+          "tug": "crwdns10257:0crwdne10257:0",
+          "boat": "crwdns10259:0crwdne10259:0",
+          "auxiliary": "crwdns10261:0crwdne10261:0"
+        }
+      },
+      "vessel_id": "crwdns10263:0crwdne10263:0",
+      "elevation_m": "crwdns10265:0crwdne10265:0",
+      "distance_from_port_m": "crwdns10267:0crwdne10267:0",
+      "distance_from_shore_m": "crwdns10269:0crwdne10269:0"
+    }
+  },
+  "public-mpa-all": {
+    "name": "crwdns25598:0crwdne25598:0",
+    "description": "crwdns25600:0crwdne25600:0",
+    "schema": {}
+  },
+  "public-mpa-no-take": {
+    "name": "crwdns25602:0crwdne25602:0",
+    "description": "crwdns10277:0crwdne10277:0",
+    "schema": {}
+  },
+  "public-mpa-restricted": {
+    "name": "crwdns25604:0crwdne25604:0",
+    "description": "crwdns10281:0crwdne10281:0",
+    "schema": {}
+  },
+  "public-no-take-zone-1618836692786": {
+    "name": "crwdns25606:0crwdne25606:0",
+    "description": "crwdns25608:0crwdne25608:0",
+    "schema": {}
+  },
+  "public-panama-fishing-effort": {
+    "name": "crwdns10287:0crwdne10287:0",
+    "description": "crwdns10289:0crwdne10289:0",
+    "schema": {
+      "lat": "crwdns10291:0crwdne10291:0",
+      "lon": "crwdns10293:0crwdne10293:0",
+      "flag": "crwdns10295:0crwdne10295:0",
+      "hours": "crwdns10297:0crwdne10297:0",
+      "vessel_id": "crwdns10299:0crwdne10299:0",
+      "elevation_m": "crwdns10301:0crwdne10301:0",
+      "distance_from_port_m": "crwdns10303:0crwdne10303:0",
+      "distance_from_shore_m": "crwdns10305:0crwdne10305:0"
+    }
+  },
+  "public-panama-fishing-vessels": {
+    "name": "crwdns18206:0crwdne18206:0",
+    "description": "crwdns10309:0crwdne10309:0",
+    "schema": {
+      "id": "crwdns10311:0crwdne10311:0",
+      "flag": "crwdns18208:0crwdne18208:0",
+      "source": "crwdns18210:0crwdne18210:0",
+      "shipname": "crwdns25610:0crwdne25610:0",
+      "lastTransmissionDate": "crwdns10315:0crwdne10315:0",
+      "firstTransmissionDate": "crwdns10317:0crwdne10317:0"
+    }
+  },
+  "public-panama-non-fishing-vessels": {
+    "name": "crwdns18212:0crwdne18212:0",
+    "description": "crwdns17355:0crwdne17355:0",
+    "schema": {
+      "id": "crwdns17357:0crwdne17357:0",
+      "flag": "crwdns18214:0crwdne18214:0",
+      "source": "crwdns18216:0crwdne18216:0",
+      "geartype": "crwdns18218:0crwdne18218:0",
+      "shipname": "crwdns17359:0crwdne17359:0",
+      "lastTransmissionDate": "crwdns17363:0crwdne17363:0",
+      "firstTransmissionDate": "crwdns17365:0crwdne17365:0"
+    }
+  },
+  "public-peru-fishing-effort": {
+    "name": "crwdns10319:0crwdne10319:0",
+    "description": "crwdns10321:0crwdne10321:0",
+    "schema": {
+      "lat": "crwdns10323:0crwdne10323:0",
+      "lon": "crwdns10325:0crwdne10325:0",
+      "flag": "crwdns10327:0crwdne10327:0",
+      "fleet": {
+        "keyword": "crwdns10329:0crwdne10329:0",
+        "enum": {
+          "industrial": "crwdns10331:0crwdne10331:0",
+          "artisanal": "crwdns10333:0crwdne10333:0",
+          "small-scale": "crwdns17367:0crwdne17367:0",
+          "not defined": "crwdns10335:0crwdne10335:0"
+        }
+      },
+      "hours": "crwdns10337:0crwdne10337:0",
+      "origin": {
+        "keyword": "crwdns10339:0crwdne10339:0",
+        "enum": {
+          "PER": "crwdns10341:0crwdne10341:0",
+          "Foreign": "crwdns10343:0crwdne10343:0"
+        }
+      },
+      "geartype": {
+        "keyword": "crwdns10345:0crwdne10345:0",
+        "enum": {
+          "drifting_longlines": "crwdns10347:0crwdne10347:0",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "crwdns10349:0crwdne10349:0",
+          "set_longlines": "crwdns10351:0crwdne10351:0",
+          "purse_seines": "crwdns10353:0crwdne10353:0",
+          "trawlers": "crwdns10355:0crwdne10355:0",
+          "drifting_longlines|squid_jiggers": "crwdns10357:0crwdne10357:0",
+          "pots_and_traps": "crwdns10359:0crwdne10359:0",
+          "set_gillnets": "crwdns10361:0crwdne10361:0",
+          "set_longlines|squid_jigger": "crwdns10363:0crwdne10363:0",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "crwdns10365:0crwdne10365:0",
+          "fishing": "crwdns10367:0crwdne10367:0",
+          "driftnets|set_gillnets": "crwdns10369:0crwdne10369:0",
+          "fishing|purse_seines": "crwdns10371:0crwdne10371:0",
+          "drifting_longlines|trawlers": "crwdns10373:0crwdne10373:0"
+        }
+      },
+      "vessel_id": "crwdns10375:0crwdne10375:0",
+      "elevation_m": "crwdns10377:0crwdne10377:0",
+      "distance_from_port_m": "crwdns10379:0crwdne10379:0",
+      "distance_from_shore_m": "crwdns10381:0crwdne10381:0"
+    }
+  },
+  "public-peru-fishing-vessels": {
+    "name": "crwdns17369:0crwdne17369:0",
+    "description": "crwdns17371:0crwdne17371:0",
+    "schema": {
+      "id": "crwdns17373:0crwdne17373:0",
+      "shipname": "crwdns17375:0crwdne17375:0",
+      "normalized_shipname": "crwdns17377:0crwdne17377:0",
+      "lastTransmissionDate": "crwdns17379:0crwdne17379:0",
+      "firstTransmissionDate": "crwdns17381:0crwdne17381:0"
+    }
+  },
+  "public-peru-presence": {
+    "name": "crwdns10383:0crwdne10383:0",
+    "description": "crwdns10385:0crwdne10385:0",
+    "schema": {
+      "lat": "crwdns10387:0crwdne10387:0",
+      "lon": "crwdns10389:0crwdne10389:0",
+      "flag": "crwdns10391:0crwdne10391:0",
+      "fleet": {
+        "keyword": "crwdns10393:0crwdne10393:0",
+        "enum": {
+          "industrial": "crwdns10395:0crwdne10395:0",
+          "artisanal": "crwdns10397:0crwdne10397:0",
+          "small-scale": "crwdns17383:0crwdne17383:0",
+          "not defined": "crwdns10399:0crwdne10399:0"
+        }
+      },
+      "origin": {
+        "keyword": "crwdns10401:0crwdne10401:0",
+        "enum": {
+          "PER": "crwdns10403:0crwdne10403:0",
+          "Foreign": "crwdns10405:0crwdne10405:0"
+        }
+      },
+      "geartype": {
+        "keyword": "crwdns10407:0crwdne10407:0",
+        "enum": {
+          "drifting_longlines": "crwdns10409:0crwdne10409:0",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "crwdns10411:0crwdne10411:0",
+          "set_longlines": "crwdns10413:0crwdne10413:0",
+          "purse_seines": "crwdns10415:0crwdne10415:0",
+          "driftnets|fishing|set_gillnets": "crwdns10417:0crwdne10417:0",
+          "trawlers": "crwdns10419:0crwdne10419:0",
+          "drifting_longlines|squid_jiggers": "crwdns10421:0crwdne10421:0",
+          "pots_and_traps": "crwdns10423:0crwdne10423:0",
+          "set_gillnets": "crwdns10425:0crwdne10425:0",
+          "set_longlines|squid_jigger": "crwdns10427:0crwdne10427:0",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "crwdns10429:0crwdne10429:0",
+          "fishing": "crwdns10431:0crwdne10431:0",
+          "driftnets|set_gillnets": "crwdns10433:0crwdne10433:0",
+          "fishing|purse_seines": "crwdns10435:0crwdne10435:0",
+          "drifting_longlines|trawlers": "crwdns10437:0crwdne10437:0"
+        }
+      },
+      "vessel_id": "crwdns10439:0crwdne10439:0"
+    }
+  },
+  "public-presence-viirs-match-prototype": {
+    "name": "crwdns18220:0crwdne18220:0",
+    "description": "crwdns25990:0crwdne25990:0",
+    "schema": {
+      "cel": "crwdns18224:0crwdne18224:0",
+      "lat": "crwdns18226:0crwdne18226:0",
+      "lon": "crwdns18228:0crwdne18228:0",
+      "pos": "crwdns18230:0crwdne18230:0",
+      "flag": "crwdns18232:0crwdne18232:0",
+      "htime": "crwdns18234:0crwdne18234:0",
+      "source": {
+        "keyword": "crwdns18236:0crwdne18236:0",
+        "enum": {
+          "unknown": "crwdns18238:0crwdne18238:0",
+          "chile_vms_aquaculture": "crwdns18240:0crwdne18240:0",
+          "peru.trasat_api": "crwdns18242:0crwdne18242:0",
+          "namibia_vms": "crwdns18244:0crwdne18244:0",
+          "indovms": "crwdns18246:0crwdne18246:0",
+          "mexico_vms": "crwdns18248:0crwdne18248:0",
+          "chile_vms_small_fisheries": "crwdns18250:0crwdne18250:0",
+          "peru.historic": "crwdns18252:0crwdne18252:0",
+          "chile_vms_industry": "crwdns18254:0crwdne18254:0",
+          "ais_scored": "crwdns18256:0crwdne18256:0",
+          "AIS": "crwdns18258:0crwdne18258:0",
+          "panama_vms": "crwdns18260:0crwdne18260:0",
+          "chile_vms_transport": "crwdns18262:0crwdne18262:0"
+        }
+      },
+      "matched": {
+        "keyword": "crwdns18264:0crwdne18264:0",
+        "enum": {
+          "true": true,
+          "false": true
+        }
+      },
+      "geartype": {
+        "keyword": "crwdns18270:0crwdne18270:0",
+        "enum": {
+          "unknown": "crwdns18272:0crwdne18272:0",
+          "reefer": "crwdns18274:0crwdne18274:0",
+          "Purse Seine Group (2 boat) Big Pelagics": "crwdns18276:0crwdne18276:0",
+          "specialized_reefer": "crwdns18278:0crwdne18278:0",
+          "container_reefer": "crwdns18280:0crwdne18280:0",
+          "Transporter": "crwdns18282:0crwdne18282:0",
+          "Handline": "crwdns18284:0crwdne18284:0",
+          "Purse Seine Small Pelagics": "crwdns18286:0crwdne18286:0",
+          "fish_tender|reefer": "crwdns18288:0crwdne18288:0",
+          "fishing|specialized_reefer": "crwdns18290:0crwdne18290:0",
+          "fish_factory|reefer": "crwdns18292:0crwdne18292:0",
+          "reefer|fish_tender": "crwdns18294:0crwdne18294:0",
+          "drifting_longlines": "crwdns18296:0crwdne18296:0",
+          "tuna_purse_seines": "crwdns18298:0crwdne18298:0",
+          "Anchored gillnets": "crwdns18300:0crwdne18300:0",
+          "set_longlines": "crwdns18302:0crwdne18302:0",
+          "fish_tender|purse_seines|supply_vessel": "crwdns18304:0crwdne18304:0",
+          "purse_seines": "crwdns18306:0crwdne18306:0",
+          "fixed_gear": "crwdns18308:0crwdne18308:0",
+          "other_seines": "crwdns18310:0crwdne18310:0",
+          "purse_seine_support": "crwdns18312:0crwdne18312:0",
+          "longline": "crwdns18314:0crwdne18314:0",
+          "trawlers|specialized_reefer|fish_factory": "crwdns18316:0crwdne18316:0",
+          "torchlight_net": "crwdns18318:0crwdne18318:0",
+          "Pots": "crwdns18320:0crwdne18320:0",
+          "Lampara Seine Nets": "crwdns18322:0crwdne18322:0",
+          "supply": "crwdns18324:0crwdne18324:0",
+          "fish_tender|pots_and_traps": "crwdns18326:0crwdne18326:0",
+          "specialized_reefer|well_boat": "crwdns18328:0crwdne18328:0",
+          "well_boat": "crwdns18330:0crwdne18330:0",
+          "Fish net/dragnet": "crwdns18332:0crwdne18332:0",
+          "cargo": "crwdns18334:0crwdne18334:0",
+          "Hand Line Tuna": "crwdns18336:0crwdne18336:0",
+          "dredge_fishing": "crwdns18338:0crwdne18338:0",
+          "trawlers": "crwdns18340:0crwdne18340:0",
+          "seiners": "crwdns18342:0crwdne18342:0",
+          "reefer|well_boat": "crwdns18344:0crwdne18344:0",
+          "Stick-Held lift net": "crwdns18346:0crwdne18346:0",
+          "Squid hooking": "crwdns18348:0crwdne18348:0",
+          "trollers": "crwdns18350:0crwdne18350:0",
+          "Shrimp net": "crwdns18352:0crwdne18352:0",
+          "fish_factory": "crwdns18354:0crwdne18354:0",
+          "Basic longline": "crwdns18356:0crwdne18356:0",
+          "well_boat|reefer": "crwdns18358:0crwdne18358:0",
+          "well_boat|drifting_longlines|reefer": "crwdns18360:0crwdne18360:0",
+          "fish_tender|fishing": "crwdns18362:0crwdne18362:0",
+          "pole_and_line": "crwdns18364:0crwdne18364:0",
+          "purse_seine": "crwdns18366:0crwdne18366:0",
+          "Pole-and-line": "crwdns18368:0crwdne18368:0",
+          "pots_and_traps": "crwdns18370:0crwdne18370:0",
+          "set_gillnets": "crwdns18372:0crwdne18372:0",
+          "Oceanic gillnet": "crwdns18374:0crwdne18374:0",
+          "longline_gigging": "crwdns18376:0crwdne18376:0",
+          "oil_tanker": "crwdns18378:0crwdne18378:0",
+          "gigging": "crwdns18380:0crwdne18380:0",
+          "fishing": "crwdns18382:0crwdne18382:0",
+          "cargo_reefer": "crwdns18384:0crwdne18384:0",
+          "reefer|fish_tender|drifting_longlines": "crwdns18386:0crwdne18386:0",
+          "driftnets|set_gillnets": "crwdns18388:0crwdne18388:0",
+          "Purse Seine Group (2 boat) Small Pelagics": "crwdns18390:0crwdne18390:0",
+          "Cast Nets": "crwdns18392:0crwdne18392:0",
+          "pots_and_traps|fish_tender": "crwdns18394:0crwdne18394:0",
+          "Purse Seine Big Pelagics with one boat": "crwdns18396:0crwdne18396:0",
+          "fish_tender": "crwdns18398:0crwdne18398:0",
+          "other_purse_seines": "crwdns18400:0crwdne18400:0",
+          "fish_tender|purse_seines": "crwdns18402:0crwdne18402:0",
+          "Longline Tuna": "crwdns18404:0crwdne18404:0",
+          "squid_jigger": "crwdns18406:0crwdne18406:0"
+        }
+      },
+      "radiance": {
+        "keyword": "crwdns18408:0crwdne18408:0",
+        "enum": {
+          "1": 0,
+          "1000": 0
+        }
+      },
+      "shiptype": {
+        "keyword": "crwdns18414:0crwdne18414:0",
+        "enum": {
+          "unknown": "crwdns18416:0crwdne18416:0",
+          "fishing": "crwdns18418:0crwdne18418:0",
+          "carrier": "crwdns18420:0crwdne18420:0",
+          "support": "crwdns18422:0crwdne18422:0"
+        }
+      },
+      "detect_id": "crwdns18424:0crwdne18424:0",
+      "qf_detect": {
+        "keyword": "crwdns18426:0crwdne18426:0",
+        "enum": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "5": 0,
+          "7": 0,
+          "10": 0
+        }
+      },
+      "timestamp": "crwdns18440:0crwdne18440:0",
+      "vessel_id": "crwdns18442:0crwdne18442:0"
+    }
+  },
+  "public-tristan-seamounts-200-1618586314138": {
+    "name": "crwdns25612:0crwdne25612:0",
+    "description": "crwdns25614:0crwdne25614:0",
+    "schema": {}
+  },
+  "public-tristan-seamounts-3000-1618586349746": {
+    "name": "crwdns25616:0crwdne25616:0",
+    "description": "crwdns25618:0crwdne25618:0",
+    "schema": {}
+  },
+  "public-tristan-seamounts-existing-1618586378121": {
+    "name": "crwdns25620:0crwdne25620:0",
+    "description": "crwdns25622:0crwdne25622:0",
+    "schema": {}
+  },
+  "public-tuna-rfmo": {
+    "name": "crwdns25624:0crwdne25624:0",
+    "description": "crwdns25626:0crwdne25626:0",
+    "schema": {}
+  },
+  "public-wdpa-may-2021-marine": {
+    "name": "crwdns25628:0crwdne25628:0",
+    "description": "crwdns25630:0crwdne25630:0",
+    "schema": {}
+  },
+  "public-wpp-nri": {
+    "name": "crwdns10461:0crwdne10461:0",
+    "description": "crwdns25632:0crwdne25632:0",
+    "schema": {}
+  }
+}

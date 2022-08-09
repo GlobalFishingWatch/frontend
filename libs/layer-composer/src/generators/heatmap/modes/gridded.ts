@@ -31,15 +31,19 @@ export default function gridded(
         ? [
             'interpolate',
             ['linear'],
+            // we'll need to minus the offset (TBD: 50 or from dataset) once we are ready for negative values
+            // ['-', ['/', exprPick, VALUE_MULTIPLIER], 50],
             ['/', exprPick, VALUE_MULTIPLIER],
-            ...colorRamp.flatMap((color, index) => [
-              breaks[0][index - 1] !== undefined
-                ? breaks[0][index - 1]
-                : breaks[0][0] === 0
-                ? -1
-                : 0,
-              color,
-            ]),
+            ...colorRamp.flatMap((color, index) => {
+              return [
+                breaks[0][index - 1] !== undefined
+                  ? breaks[0][index - 1]
+                  : breaks[0][index] <= 0
+                  ? breaks[0][index] - 1
+                  : 0,
+                color,
+              ]
+            }),
           ]
         : ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 

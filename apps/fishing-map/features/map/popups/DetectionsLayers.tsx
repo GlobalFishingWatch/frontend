@@ -38,7 +38,7 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             {t([`common.${feature.temporalgrid?.unit}` as any, 'common.detection'], 'detections', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}{' '}
-            {showFeaturesDetails && notMatchedDetectionsCount > 0 && (
+            {showFeaturesDetails && notMatchedDetectionsCount >= 0 && (
               <Fragment>
                 {' - '}
                 <I18nNumber number={notMatchedDetectionsCount} />{' '}

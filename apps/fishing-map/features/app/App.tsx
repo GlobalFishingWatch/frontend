@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useLayoutEffect, Fragment } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
@@ -24,7 +25,7 @@ import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
@@ -32,8 +33,8 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
-import { initializeHints } from 'features/help/hints/hints.slice'
-import AppModals from 'features/app/AppModals'
+import { initializeHints } from 'features/hints/hints.slice'
+import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
@@ -65,11 +66,19 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
+
+  const showTimebar =
+    workspaceLocation &&
+    workspaceStatus === AsyncReducerStatus.Finished &&
+    !isTimeComparisonAnalysis
 
   return (
     <div className={styles.main}>
-      <div className={styles.mapContainer}>{<Map />}</div>
-      {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
+      <div className={cx(styles.mapContainer, { [styles.withTimebar]: showTimebar })}>
+        <Map />
+      </div>
+      {showTimebar && <Timebar />}
       <Footer />
     </div>
   )
@@ -93,7 +102,10 @@ function App(): React.ReactElement {
   const analysisQuery = useSelector(selectAnalysisQuery)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
+  const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
   const narrowSidebar = workspaceLocation && !analysisQuery
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -108,7 +120,7 @@ function App(): React.ReactElement {
       map.resize()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAnalysing, sidebarOpen])
+  }, [isAnalysing, sidebarOpen, showTimebar, isTimeComparisonAnalysis])
 
   useEffect(() => {
     setMobileSafeVH()

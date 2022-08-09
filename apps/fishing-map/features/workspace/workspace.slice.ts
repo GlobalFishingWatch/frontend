@@ -1,8 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
 import { DateTime } from 'luxon'
-import { Workspace, Dataview, WorkspaceUpsert } from '@globalfishingwatch/api-types'
-import { GFWAPI, FetchOptions } from '@globalfishingwatch/api-client'
+import {
+  Workspace,
+  Dataview,
+  WorkspaceUpsert,
+  DataviewInstance,
+} from '@globalfishingwatch/api-types'
+import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
+import { parseLegacyDataviewInstanceEndpoint } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
@@ -12,12 +18,12 @@ import {
   selectLocationCategory,
   selectLocationType,
   selectUrlDataviewInstances,
-  selectVersion,
 } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
+  BASEMAP_LABELS_DATAVIEW_ID,
   DEFAULT_DATAVIEW_IDS,
   getWorkspaceEnv,
   VESSEL_PRESENCE_DATAVIEW_ID,
@@ -58,14 +64,13 @@ export const getDefaultWorkspace = () => {
   const workspace = import(`../../data/default-workspaces/workspace.${workspaceEnv}`).then(
     (m) => m.default
   )
-  return workspace as Promise<Workspace<WorkspaceState>>
+  return workspace as Promise<AppWorkspace>
 }
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }) => {
     const state = getState() as RootState
-    const version = selectVersion(state)
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = isGuestUser(state)
@@ -73,15 +78,32 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
     try {
       let workspace = workspaceId
-        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`, {
+        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
             signal,
           })
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
+        if (gfwUser) {
+          // Labels only available for gfw staff for now
+          workspace.dataviewInstances.push({
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
+          })
+        }
       }
 
-      if (!workspace) {
+      if (workspace) {
+        workspace = {
+          ...workspace,
+          dataviewInstances: (workspace.dataviewInstances || []).map(
+            (dv) => parseLegacyDataviewInstanceEndpoint(dv) as DataviewInstance
+          ),
+        }
+      } else {
         return
       }
 
@@ -102,7 +124,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
       const dataviewIds = [
         ...defaultWorkspaceDataviews,
-        ...(workspace.dataviews || []).map(({ id }) => id as number),
         ...(workspace.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId as number),
       ].filter(Boolean)
@@ -130,13 +151,15 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
         if (error) {
+          console.warn(error)
           return rejectWithValue({ workspace, error: payload })
         }
       }
 
       return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e: any) {
-      return rejectWithValue({ error: e as AsyncError })
+      console.warn(e)
+      return rejectWithValue({ error: parseAPIError(e) })
     }
   },
   {
@@ -150,11 +173,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
 const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
   const { id, ownerId, createdAt, ownerType, ...restWorkspace } = workspace
-  return {
-    ...restWorkspace,
-    ...(workspace.dataviews && { dataviews: workspace.dataviews.map(({ id }) => id) }),
-    ...(workspace.aoi && { aoi: workspace.aoi.id }),
-  }
+  return restWorkspace
 }
 
 export const saveWorkspaceThunk = createAsyncThunk(
@@ -178,19 +197,15 @@ export const saveWorkspaceThunk = createAsyncThunk(
       let workspaceUpdated
       if (tries < 2) {
         try {
-          const version = selectVersion(state)
           const name = tries > 0 ? defaultName + `_${tries}` : defaultName
-          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-            `/${version}/workspaces`,
-            {
-              method: 'POST',
-              body: {
-                ...workspaceUpsert,
-                name,
-                public: createAsPublic,
-              },
-            } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
-          )
+          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces`, {
+            method: 'POST',
+            body: {
+              ...workspaceUpsert,
+              name,
+              public: createAsPublic,
+            },
+          } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
         } catch (e: any) {
           // Means we already have a workspace with this name
           if (e.status === 400) {
@@ -223,13 +238,11 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
 export const updatedCurrentWorkspaceThunk = createAsyncThunk(
   'workspace/updatedCurrent',
-  async (workspace: AppWorkspace, { dispatch, getState }) => {
-    const state = getState() as RootState
-    const version = selectVersion(state)
+  async (workspace: AppWorkspace, { dispatch }) => {
     const workspaceUpsert = parseUpsertWorkspace(workspace)
 
     const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-      `/${version}/workspaces/${workspace.id}`,
+      `/workspaces/${workspace.id}`,
       {
         method: 'PATCH',
         body: workspaceUpsert,
@@ -251,6 +264,11 @@ const workspaceSlice = createSlice({
     },
     setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
       state.lastVisited = action.payload
+    },
+    removeLocationLabelsDataview: (state) => {
+      state.data.dataviewInstances = state.data.dataviewInstances.filter(
+        (d) => d.dataviewId !== BASEMAP_LABELS_DATAVIEW_ID
+      )
     },
   },
   extraReducers: (builder) => {
@@ -306,6 +324,7 @@ const workspaceSlice = createSlice({
   },
 })
 
-export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData } = workspaceSlice.actions
+export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData, removeLocationLabelsDataview } =
+  workspaceSlice.actions
 
 export default workspaceSlice.reducer

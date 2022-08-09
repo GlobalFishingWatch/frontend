@@ -26,7 +26,7 @@ import {
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
   selectActiveVesselsDataviews,
-  selectDataviewInstancesMerged,
+  selectDataviewInstancesMergedOrdered,
 } from 'features/dataviews/dataviews.slice'
 import { RootState } from 'store'
 import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
@@ -180,14 +180,13 @@ export const selectWorkspaceWithCurrentState = createSelector(
     selectTimeRange,
     selectLocationCategory,
     selectWorkspaceAppState,
-    (state: RootState) => selectDataviewInstancesMerged(state),
+    (state: RootState) => selectDataviewInstancesMergedOrdered(state),
   ],
   (workspace, viewport, timerange, category, state, dataviewInstances): AppWorkspace => {
     return {
       ...workspace,
       app: APP_NAME,
       category,
-      aoi: undefined,
       viewport,
       startAt: timerange.start,
       endAt: timerange.end,

@@ -8,7 +8,15 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { Range } from 'features/timebar/timebar.slice'
 
 export type StatType = 'vessels' | 'detections'
-export type StatField = 'id' | 'flag' | 'vessel_id' | 'geartype'
+export type StatField =
+  | 'id'
+  | 'flag'
+  | 'vessel_id'
+  | 'geartype'
+  | 'minLat'
+  | 'minLon'
+  | 'maxLat'
+  | 'maxLon'
 export type StatFields = {
   [key in StatField]: number
 } & { type: StatType }
@@ -32,13 +40,14 @@ const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ que
   ].join('-')
 }
 
+export const MAX_STATS_YEARS = 1
 export const DEFAULT_STATS_FIELDS = ['vessel_id', 'flag']
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
   serializeQueryArgs: serializeStatsDataviewKey,
   baseQuery: gfwBaseQuery({
-    baseUrl: '/v1/4wings/stats',
+    baseUrl: `/4wings/stats`,
   }),
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
@@ -46,6 +55,7 @@ export const dataviewStatsApi = createApi({
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
           filters: [dataview.config?.filter] || [],
+          'vessel-groups': [dataview.config?.['vessel-groups']] || [],
           'date-range': [timerange.start, timerange.end].join(','),
         }
         return {
@@ -55,7 +65,7 @@ export const dataviewStatsApi = createApi({
         }
       },
       transformResponse: (response: StatFields[], meta, args) => {
-        const units = uniq(args?.dataview?.datasets?.map((d) => d.unit))
+        const units = uniq(args?.dataview?.datasets?.flatMap((d) => d.unit || []))
         if (units.length > 1) {
           console.warn('Incompatible datasets stats unit, using the first type', units[0])
         }

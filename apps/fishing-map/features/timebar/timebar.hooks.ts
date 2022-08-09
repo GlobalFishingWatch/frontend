@@ -20,10 +20,10 @@ import {
   selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import store, { RootState } from 'store'
+import store from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
-import { setHintDismissed } from 'features/help/hints/hints.slice'
+import { setHintDismissed } from 'features/hints/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -48,7 +48,7 @@ export const TimeRangeAtom = atom<Range | null>({
     ({ trigger, setSelf, onSet }) => {
       const redirectUrl =
         typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
-      const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
+      const urlTimeRange = selectUrlTimeRange(store.getState() as any)
 
       if (trigger === 'get') {
         if (urlTimeRange) {

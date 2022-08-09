@@ -6,8 +6,8 @@ import { selectAdvancedSearchFields, selectUrlQuery } from 'routes/routes.select
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchData, fetchVesselSearchThunk } from './search.thunk'
 
-// Maximum number of vessels that can be merged
-const LIMIT_VESSELS_MERGE_TO = 3
+// Maximum number of vessels that can be merged, I set 300 to not change the code in the case we need to rollback
+const LIMIT_VESSELS_MERGE_TO = 300
 
 export const useSearchResultsConnect = () => {
   const [selectedVessels, setSelectedVessels] = useState<number[]>([])

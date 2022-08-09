@@ -18,6 +18,10 @@
   justify-content: space-between;
 }
 
+.label {
+  margin-bottom: var(--space-XS);
+}
+
 .labelIconWarning {
   margin: 0 0.9rem;
 }

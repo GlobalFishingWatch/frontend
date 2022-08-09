@@ -1,13 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { VesselSearch } from '@globalfishingwatch/api-types'
+import { RelatedVesselSearchMerged, VesselSearch } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchVesselSearchThunk, getSerializedQuery } from './search.thunk'
+import { mergeSearchVessels } from './search.utils'
 
 export type CachedVesselSearch = {
   offset: number
   searching: boolean
   total: number | null
-  vessels: VesselSearch[]
+  vessels: RelatedVesselSearchMerged[]
 }
 
 const searchInitialState = {
@@ -67,7 +68,7 @@ const slice = createSlice({
           vessels:
             action.meta.arg.offset > 0
               ? [...state.queries[serializedQuery].vessels, ...action.payload.vessels]
-              : action.payload.vessels,
+              : mergeSearchVessels(action.payload.vessels),
         }
       } else {
         state.queries[serializedQuery].searching = false

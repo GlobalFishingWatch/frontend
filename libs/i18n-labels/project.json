@@ -1,4 +1,5 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/i18n-labels",
   "projectType": "library",
   "tags": [],
@@ -51,6 +52,11 @@
             "output": "."
           },
           {
+            "glob": "libs/i18n-labels/val",
+            "input": ".",
+            "output": "."
+          },
+          {
             "glob": "libs/i18n-labels/source",
             "input": ".",
             "output": "."
@@ -79,7 +85,6 @@
         "access": "public"
       }
     },
-
     "publish:stable": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {

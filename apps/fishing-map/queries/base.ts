@@ -1,5 +1,5 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
-import { GFWAPI, ResponseError } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 
 export const gfwBaseQuery =
   (
@@ -12,14 +12,13 @@ export const gfwBaseQuery =
     unknown,
     unknown
   > =>
-  async ({ url, signal }) => {
-    try {
-      const data = await GFWAPI.fetch(baseUrl + url, { signal })
-      return { data }
-    } catch (gfwApiError) {
-      const err = gfwApiError as ResponseError
-      return {
-        error: { status: err?.status, data: err?.message },
+    async ({ url, signal }) => {
+      try {
+        const data = await GFWAPI.fetch(baseUrl + url, { signal })
+        return { data }
+      } catch (gfwApiError) {
+        return {
+          error: parseAPIError(gfwApiError),
+        }
       }
     }
-  }

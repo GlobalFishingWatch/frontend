@@ -11,7 +11,6 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
-  ResourceStatus,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -52,6 +51,9 @@ export function isMergedAnimatedGenerator(generatorId: string) {
 // or something similar ??
 const getDatasetAvailableIntervals = (dataset?: Dataset) =>
   dataset?.configuration?.intervals as Interval[]
+
+const getDatasetAttribution = (dataset?: Dataset) =>
+  dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
 
 type TimeRange = { start: string; end: string }
 export type DataviewsGeneratorConfigsParams = {
@@ -224,8 +226,8 @@ export function getGeneratorConfig(
           {
             id: generator.id,
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
-            colorRampWhiteEnd: false,
             filter: dataview.config?.filter,
+            vesselGroups: dataview.config?.['vessel-groups'],
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
             datasets: datasetsIds,
@@ -239,17 +241,20 @@ export function getGeneratorConfig(
 
         const { url: tilesAPI } = resolveDataviewDatasetResource(dataview, DatasetTypes.Fourwings)
         const dataviewInterval = dataview.config?.interval
+        const dataviewIntervals = dataview.config?.intervals
         const datasetIntervals = getDatasetAvailableIntervals(dataset)
         let availableIntervals = DEFAULT_ENVIRONMENT_INTERVALS
         if (dataviewInterval) {
           availableIntervals = [dataviewInterval]
+        } else if (dataviewIntervals && dataviewIntervals.length > 0) {
+          availableIntervals = dataviewIntervals
         } else if (datasetIntervals && datasetIntervals.length > 0) {
           availableIntervals = datasetIntervals
         }
 
         environmentalConfig = {
           sublayers,
-          maxZoom: 8,
+          maxZoom: dataview.config.maxZoom || 8,
           mode: HeatmapAnimatedMode.Single,
           tilesAPI,
           dynamicBreaks: dataview.config?.dynamicBreaks || true,
@@ -303,7 +308,7 @@ export function getGeneratorConfig(
           return {
             id,
             tilesUrl: url,
-            attribution: resolvedDataset?.source,
+            attribution: getDatasetAttribution(resolvedDataset),
             datasetId: resolvedDataset.id,
           }
         })
@@ -330,7 +335,7 @@ export function getGeneratorConfig(
           generator.tilesUrl = url
         }
         if (dataset?.source) {
-          generator.attribution = dataset.source
+          generator.attribution = getDatasetAttribution(dataset)
         }
 
         const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
@@ -342,8 +347,8 @@ export function getGeneratorConfig(
           const rampScale = scaleLinear().range([min, max]).domain([0, 1])
           const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
           const steps = [...Array(numSteps)]
-            .map((_, i) => parseFloat((i / (numSteps - 1))?.toFixed(2)))
-            .map((value) => parseFloat((rampScale(value) as number)?.toFixed(3)))
+            .map((_, i) => i / (numSteps - 1))
+            .map((value) => rampScale(value) as number)
           generator.steps = steps
         } else if (
           dataset.category === DatasetCategory.Context &&
@@ -430,8 +435,8 @@ export function getMergedHeatmapAnimatedDataview(
       id: dataview.id,
       datasets,
       colorRamp: config.colorRamp as ColorRampsIds,
-      colorRampWhiteEnd: true,
       filter: config.filter,
+      vesselGroups: config['vessel-groups'],
       visible: config.visible,
       legend: {
         label: dataview.name,

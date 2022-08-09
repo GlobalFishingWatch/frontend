@@ -37,22 +37,23 @@
   },
   "bigQuery": {
     "aggregateAvg": "Promedio",
-    "aggregateSum": "Sum",
-    "aggregationMode": "Aggregation mode *",
-    "create": "Create",
+    "aggregateSum": "Suma",
+    "aggregationMode": "Modo de agregación *",
+    "create": "Crear",
     "query": "Query",
-    "queryError": "There is an error in the query",
-    "runCost": "This query will move:",
-    "runCostCheck": "Check creation cost",
-    "selectVisualisation": "Select a visualisation mode first",
-    "validationError": "Query, name, visualisation mode, aggregation mode and checking creation cost are required",
-    "visualiationMode": "Visualisation mode",
-    "visualisationActivity": "Activity (heatmap)",
-    "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
-    "visualisationEvents": "Events (clusters)",
-    "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
+    "queryError": "Hay un error con la query",
+    "runCost": "Esta query moverá:",
+    "runCostCheck": "Consultar coste de creación",
+    "selectVisualisation": "Seleccione primero un modo de visualización",
+    "validationError": "La consulta, el nombre, el modo de visualización, el modo de agregación y la comprobación del coste de creación son requeridos",
+    "visualiationMode": "Modo de visualización",
+    "visualisationActivity": "Actividad (Heatmap)",
+    "visualisationActivityHint": "(Asegúrate de que el id, lat, lon, timestamp y value estén todos presentes)",
+    "visualisationEvents": "Eventos (clusters)",
+    "visualisationEventsHint": "(Asegúrate de que el event_id, el event_start, el event_end y gem estén todos presentes)"
   },
   "common": {
+    "back": "atrás",
     "active_after": "Activo después de",
     "active_before": "Activo antes de",
     "activity": "Actividad",
@@ -65,10 +66,11 @@
     "category": "Categoría",
     "comingSoon": "¡próximamente!",
     "confirm": "Confirmar",
+    "continue": "Continuar",
     "context_area_other": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
     "country_other": "paises",
-    "detections": "Detections",
+    "detections": "Detecciones",
     "date": "Fecha",
     "date_one": "Fecha",
     "date_other": "Fechas",
@@ -82,6 +84,8 @@
     "detection_other": "Detecciones",
     "dismiss": "Cancelar",
     "environment": "Datos ambientales",
+    "exclude": "Exclude",
+    "excluded": "Excluded",
     "events": "Eventos",
     "feedback": "Comentarios",
     "fishing": "Pesca",
@@ -95,6 +99,7 @@
     "hour_one": "Hora",
     "hour_other": "Horas",
     "in": "en",
+    "include": "Include",
     "latitude": "Latitud",
     "layerList": "Lista de capas",
     "learnMore": "Ver más",
@@ -113,6 +118,8 @@
     "months_other": "meses",
     "more": "más",
     "name": "Nombre",
+    "onlyVisibleForGFW": "Solo visible para usuarios de GFW",
+    "onlyVisibleForGFWShort": "Sólo GFW",
     "onScreen": "en pantalla",
     "optional": "Opcional",
     "or": "o",
@@ -188,6 +195,11 @@
     "context-layer-mpa": {
       "dataWarning": "Esta plataforma utiliza capas de referencia AMP de la fuente World Database on Protected Areas.",
       "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente World Database on Protected Areas para áreas marinas protegidas. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> and <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
+    },
+    "basemap-labels": {
+      "title": "Locations",
+      "dataWarning": "This platform uses location labels from Google Maps.",
+      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>"
     }
   },
   "download": {
@@ -220,7 +232,7 @@
     "contactUs": "Por favor <1>póngase en contacto con nosotros</1> para informar del problema.",
     "datasetNotFound": "No se pudo encontrar esos datos",
     "datasetNotValid": "Parece que algo falló en tu archivo",
-    "datasetShapefileMultiple": "Shapefiles containing multiple components (mutiple file names) are not supported yet",
+    "datasetShapefileMultiple": "Los archivos de forma que contienen múltiples componentes (nombres de archivos múltiples) aún no están soportados",
     "fields": "Errores con los campos {{fields}}",
     "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
     "genericShort": "Ha habido un error",
@@ -241,7 +253,11 @@
     "workspaceDuplicatedName": "Ya existe un espacio de trabajo con este nombre",
     "workspaceLoad": "Hubo un error cargando tu espacio de trabajo, inténtalo de nuevo.",
     "workspaceMissingName": "Se necesita cargar el nombre del espacio de trabajo",
-    "workspaceNotFound": "La vista que solicitó no se encontró"
+    "workspaceNotFound": "La vista que solicitó no se encontró",
+    "uploadShapefile": "Error leyendo el shapefile: {{error}}",
+    "uploadShapefileComponents": "Error leyendo shapefile: debe contener archivos con las extensiones *.shp, *.shx, *.dbf y *.prj.",
+    "uploadGeojson": "Error leyendo el archivo GeoJSON: {{error}}",
+    "uploadCsv": "Error leyendo archivo CSV: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -346,14 +362,16 @@
     "source": "Fuente",
     "source_one": "Fuente",
     "source_other": "Fuentes",
-    "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
-    "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
+    "statsHelp": "El número de buques y banderas se calcula para sus filtros actuales y el rango de tiempo en todo el mundo.",
+    "statsHelpDetection": "El número de detecciones se calcula para sus filtros actuales y el rango de tiempo en todo el mundo. Puede ocurrir un recuento doble.",
+    "type": "Tipo",
     "toggleCombinationMode": {
       "combine": "Combinar las capas",
       "split": "Separar las capas"
     },
     "toggleVisibility": "Cambiar la visibilidad de la capa",
     "vessel_fit_bounds": "Centrar mapa en la trayectoria de la embarcación",
+    "activity_fit_bounds": "Centrar mapa en la actividad",
     "vessel_fit_bounds_out_of_timerange": "La trayectoria de la embarcación no tiene actividad en el periodo seleccionado. ¿Desea cambiar el periodo para que se ajuste a esta trayectoria?"
   },
   "map": {
@@ -392,6 +410,7 @@
   },
   "selects": {
     "allSelected": "Todos",
+    "noneSelected": "None",
     "placeholder": "Seleccione una opción",
     "selected": "seleccionado"
   },
@@ -401,8 +420,8 @@
     "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
   },
   "timebarSettings": {
-    "activityDisabled": "Select at least one activity layer",
-    "detectionsDisabled": "Select at least one detection layer.",
+    "activityDisabled": "Selecciona al menos una capa de actividad",
+    "detectionsDisabled": "Selecciona al menos una capa de detecciones.",
     "graph": "Gráfico",
     "graphDepth": "Profundidad de la embarcacion",
     "graphDisabled": "No disponible con más de 2 embarcaciones seleccionadas",
@@ -410,8 +429,8 @@
     "presenceDisabled": "Selecciona al menos una capa de presencia",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
-    "showActivity": "Show activity graph",
-    "showDetections": "Show detections graph",
+    "showActivity": "Mostrar gráfico de actividad",
+    "showDetections": "Mostrar gráfico de detenciones",
     "showGraphDepth": "Mostrar gráfico de profundidad",
     "showGraphSpeed": "Mostrar gráfico de velocidad",
     "showPresence": "Mostrar gráfico de presencia",
@@ -424,7 +443,8 @@
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
     "profile": "Perfil de usuario",
-    "title": "Usuario"
+    "title": "Usuario",
+    "info": "Información de usuario"
   },
   "vessel": {
     "addToWorkspace": "Añadir embarcación a la vista",
@@ -502,7 +522,31 @@
     "unmatched": "Sin coincidencia con AIS",
     "vessel_type": "Tipos de embarcaciones",
     "vesselType_other": "Tipos de embarcaciones",
-    "widthRange": "Rango de ancho"
+    "widthRange": "Rango de ancho",
+    "transmissionDates": "Fecha de transmisiones"
+  },
+  "vesselGroup": {
+    "add": "Añadir a un grupo",
+    "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
+    "confirmRemove": "¿Está seguro de que quieres eliminar permanentemente este grupo de embarcaciones?",
+    "createNewGroup": "Crear nuevo grupo",
+    "csvError": "El archivo CSV subido tiene múltiples columnas y no hay una columna ID obvia",
+    "edit": "Editar lista de embarcaciones",
+    "emptyState": "Los grupos de embarcaciones aparecerán aquí",
+    "groupName": "Nombre del grupo",
+    "idField": "Campo identificador",
+    "ids": "identificadores",
+    "idsPlaceholder": "Escriba aquí o pegue una lista de {{field}} separada por comas, espacios o saltos de línea",
+    "label": "{{name}} ({{count}} identificadores)",
+    "missingName": "Nombre del grupo de embarcaciones obligatorio",
+    "new": "Nuevo grupo de embarcaciones",
+    "uploadPublic": "Permitir a otros usuarios ver este grupo de embarcaciones cuando comparta un espacio de trabajo",
+    "remove": "Eliminar este grupo",
+    "removeVessel": "Eliminar embarcación del grupo",
+    "timeRangeLimit": "Soportado sólo para rangos de tiempo menores de 30 días",
+    "tooManyVessels": "El número máximo de embarcaciones es {{count}}",
+    "vesselGroup": "Grupo de embarcaciones",
+    "vesselGroups": "Grupos de embarcaciones"
   },
   "workspace": {
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
@@ -515,7 +559,7 @@
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
     "noVesselInFilters": "Ningún resultado coincide con sus filtros actuales",
-    "noDetectionInFilters": "No detections match your current filters",
+    "noDetectionInFilters": "Ninguna detección coincide con sus filtros actuales",
     "privateTitle_other": "Espacios de trabajo privados",
     "remove": "Eliminar el espacio de trabajo",
     "save": "Guardar el mapa actual",
@@ -528,6 +572,7 @@
       "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
     },
     "title_other": "Espacios de trabajo",
+    "user": "Espacios de trabajo del usuario",
     "update": "Actualizar",
     "uploadPublic": "Permitir a otros usuarios ver este espacio de trabajo",
     "uploadPublicDisabled": "Este espacio de trabajo no puede ser compartido públicamente porque contiene datos privados"

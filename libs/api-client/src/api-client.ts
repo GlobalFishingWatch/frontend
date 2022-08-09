@@ -3,8 +3,11 @@ import type {
   UserData,
   ResourceResponseType,
   ResourceRequestType,
+  UserPermission,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
+import { parseAPIError } from './utils/errors'
 
 const API_GATEWAY =
   process.env.API_GATEWAY ||
@@ -13,7 +16,11 @@ const API_GATEWAY =
   'https://gateway.api.dev.globalfishingwatch.org'
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
+export const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v2'
+const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
+
 const AUTH_PATH = 'auth'
+export const GUEST_USER_TYPE = 'guest'
 
 export interface V2MessageError {
   detail: string
@@ -30,31 +37,31 @@ interface UserTokens {
   refreshToken: string
 }
 
-interface LibConfig {
-  debug?: boolean
-  baseUrl?: string
-  dataset?: string
-}
-
 interface LoginParams {
   accessToken?: string | null
   refreshToken?: string | null
 }
-
+export type ApiVersion = '' | 'v1' | 'v2'
 export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
+  version?: ApiVersion
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   responseType?: ResourceResponseType
   requestType?: ResourceRequestType
-  dataset?: boolean
   body?: T
   local?: boolean
+}
+
+interface LibConfig {
+  version?: ApiVersion
+  debug?: boolean
+  baseUrl?: string
 }
 
 const processStatus = (response: Response): Promise<Response> => {
   return new Promise(async (resolve, reject) => {
     const { status, statusText } = response
     try {
-      if (response.status >= 200 && response.status < 300) {
+      if (response.status >= 200 && response.status < 400) {
         return resolve(response)
       }
       // Compatibility with v1 and v2 errors format
@@ -94,8 +101,8 @@ export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloadin
 export class GFW_API_CLASS {
   debug: boolean
   token = ''
+  apiVersion: ApiVersion
   refreshToken = ''
-  dataset = ''
   baseUrl: string
   storageKeys: {
     token: string
@@ -106,13 +113,15 @@ export class GFW_API_CLASS {
   status: RequestStatus = 'idle'
 
   constructor({
-    debug = false,
+    debug = DEBUG_API_REQUESTS,
     baseUrl = API_GATEWAY,
+    version = API_VERSION as ApiVersion,
     tokenStorageKey = USER_TOKEN_STORAGE_KEY,
     refreshTokenStorageKey = USER_REFRESH_TOKEN_STORAGE_KEY,
   } = {}) {
     this.debug = debug
     this.baseUrl = baseUrl
+    this.apiVersion = version
     this.storageKeys = { token: tokenStorageKey, refreshToken: refreshTokenStorageKey }
     if (isClientSide) {
       this.setToken(localStorage.getItem(tokenStorageKey) || '')
@@ -139,7 +148,11 @@ export class GFW_API_CLASS {
       (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
-    return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`
+    return this.generateUrl(
+      `/v2/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
+      '',
+      true
+    )
   }
 
   getConfig() {
@@ -152,11 +165,15 @@ export class GFW_API_CLASS {
     }
   }
 
+  setDefaultApiVersion(version: ApiVersion) {
+    this.apiVersion = version
+  }
+
   setConfig(config: LibConfig) {
-    const { debug = this.debug, baseUrl = this.baseUrl, dataset = this.dataset } = config
+    const { debug = this.debug, baseUrl = this.baseUrl, version = this.apiVersion } = config
     this.debug = debug
     this.baseUrl = baseUrl
-    this.dataset = dataset
+    this.apiVersion = version
   }
 
   getToken() {
@@ -192,13 +209,15 @@ export class GFW_API_CLASS {
   }
 
   async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
-    return fetch(`${this.baseUrl}/${AUTH_PATH}/token?access-token=${accessToken}`)
+    return fetch(
+      this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, this.apiVersion, true)
+    )
       .then(processStatus)
       .then(parseJSON)
   }
 
   async getTokenWithRefreshToken(refreshToken: string): Promise<{ token: string }> {
-    return fetch(`${this.baseUrl}/${AUTH_PATH}/token/reload`, {
+    return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, this.apiVersion, true), {
       headers: {
         'refresh-token': refreshToken,
       },
@@ -228,8 +247,21 @@ export class GFW_API_CLASS {
     return
   }
 
+  generateUrl(url: string, version?: ApiVersion, absolute: boolean = false): string {
+    if (isUrlAbsolute(url)) {
+      return url
+    }
+    if (url.startsWith('/v2/') || url.startsWith('/v1/')) {
+      return absolute ? `${this.baseUrl}${url}` : url
+    }
+    const apiVersion = version ?? this.apiVersion
+    const prefix = apiVersion ? `/${apiVersion}` : ''
+
+    return absolute ? `${this.baseUrl}${prefix}${url}` : `${prefix}${url}`
+  }
+
   fetch<T>(url: string, options: FetchOptions = {}) {
-    return this._internalFetch<T>(url, options)
+    return this._internalFetch<T>(this.generateUrl(url, options.version), options)
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
@@ -273,32 +305,30 @@ export class GFW_API_CLASS {
           responseType = 'json',
           requestType = 'json',
           signal,
-          dataset = this.dataset,
           local = false,
         } = options
         if (this.debug) {
           console.log(`GFWAPI: Fetching URL: ${url}`)
         }
-        const fetchUrl = isUrlAbsolute(url)
-          ? url
-          : this.baseUrl + (dataset ? `/datasets/${this.dataset}` : '') + url
+        const finalHeaders = {
+          ...headers,
+          ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
+          ...(local && {
+            'x-gateway-url': API_GATEWAY,
+            user: JSON.stringify({
+              id: process.env.REACT_APP_LOCAL_API_USER_ID,
+              type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
+              email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
+            }),
+          }),
+          Authorization: `Bearer ${this.getToken()}`,
+        }
+        const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
         const data = await fetch(fetchUrl, {
           method,
           signal,
           ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
-          headers: {
-            ...headers,
-            ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
-            ...(local && {
-              'x-gateway-url': API_GATEWAY,
-              user: JSON.stringify({
-                id: process.env.REACT_APP_LOCAL_API_USER_ID,
-                type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
-                email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
-              }),
-            }),
-            Authorization: `Bearer ${this.getToken()}`,
-          },
+          headers: finalHeaders,
         })
           .then(processStatus)
           .then((res) => {
@@ -360,7 +390,7 @@ export class GFW_API_CLASS {
               localStorage.removeItem(this.storageKeys.token)
               localStorage.removeItem(this.storageKeys.refreshToken)
               e.refreshError = true
-              throw e
+              throw parseAPIError(e)
             }
           }
           if (isAuthError || e.status >= 500) {
@@ -374,25 +404,43 @@ export class GFW_API_CLASS {
             }
             console.warn(`GFWAPI: Error fetching ${url}`, e)
           }
-          throw e
+          throw parseAPIError(e)
         }
       }
     } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Error fetching ${url}`, e)
       }
-      throw e
+      throw parseAPIError(e)
     }
   }
 
   async fetchUser() {
     try {
       const user = await this._internalFetch<UserData>(
-        `/${AUTH_PATH}/me`,
-        { dataset: false },
+        this.generateUrl(`/${AUTH_PATH}/me`, this.apiVersion),
+        {},
         0,
         false
       )
+      return user
+    } catch (e: any) {
+      console.warn(e)
+      throw new Error('Error trying to get user data')
+    }
+  }
+
+  async fetchGuestUser(): Promise<UserData> {
+    try {
+      const permissions: UserPermission[] = await this._internalFetch<
+        APIPagination<UserPermission>
+      >(this.generateUrl(`/auth/acl/permissions/anonymous`, this.apiVersion)).then(
+        (response: APIPagination<UserPermission>) => {
+          return response.entries
+        }
+      )
+      const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
+
       return user
     } catch (e: any) {
       console.warn(e)
@@ -491,11 +539,11 @@ export class GFW_API_CLASS {
       if (this.debug) {
         console.log(`GFWAPI: Logout - tokens cleaned`)
       }
-      await fetch(`${this.baseUrl}/${AUTH_PATH}/logout`, {
+      await this._internalFetch(`/${AUTH_PATH}/logout`, {
         headers: {
-          'refresh-token': this.refreshToken,
+          'refresh-token': this.getRefreshToken(),
         },
-      }).then(processStatus)
+      })
       this.setToken('')
       this.setRefreshToken('')
       if (this.debug) {

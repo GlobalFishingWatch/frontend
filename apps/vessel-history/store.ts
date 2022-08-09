@@ -13,6 +13,7 @@ import psmaReducer from './features/psma/psma.slice'
 import regionsReducer from './features/regions/regions.slice'
 import resourcesReducer from './features/resources/resources.slice'
 import userReducer from './features/user/user.slice'
+import indicatorsReducer from './features/risk-indicator/risk-indicator.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 
 const {
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   search: searchReducer,
   settings: settingsReducer,
   filters: filtersReducer,
+  indicators: indicatorsReducer,
   location: location,
   map: mapReducer,
   dataviews: dataviewsReducer,

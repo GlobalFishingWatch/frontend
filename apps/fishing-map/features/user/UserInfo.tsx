@@ -2,12 +2,13 @@ import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import { Button, Spinner } from '@globalfishingwatch/ui-components'
+import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './User.module.css'
-import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
+import { fetchUserThunk, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged, selectUserGroupsClean } from './user.selectors'
 
 function UserInfo() {
@@ -41,7 +42,6 @@ function UserInfo() {
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
           <div>
-            <label>{t('user.title', 'User')}</label>
             <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
             <p className={styles.secondary}>{userData.email}</p>
           </div>

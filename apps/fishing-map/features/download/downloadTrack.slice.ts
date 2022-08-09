@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
@@ -50,19 +50,18 @@ export const downloadTrackThunk = createAsyncThunk<
     const toDate = DateTime.fromISO(dateRange.end).toUTC().toString()
 
     const downloadTrackParams = {
-      startDate: fromDate,
-      endDate: toDate,
+      'start-date': fromDate,
+      'end-date': toDate,
       datasets,
       format: format === Format.GeoJson ? 'lines' : format,
       fields: 'lonlat,timestamp,speed,course',
     }
 
-    const fileName = `${vesselName || vesselId} - ${downloadTrackParams.startDate},${
-      downloadTrackParams.endDate
-    }.${format}`
+    const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${downloadTrackParams['end-date']
+      }.${format}`
 
     const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
-      `/v1/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
+      `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
       {
         method: 'GET',
         responseType: 'blob',
@@ -72,7 +71,7 @@ export const downloadTrackThunk = createAsyncThunk<
     })
     return createdDownload
   } catch (e: any) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 

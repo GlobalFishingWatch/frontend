@@ -1,6 +1,6 @@
 import MapboxDraw, {
   DrawCreateEvent,
-  DrawModeChageEvent,
+  DrawModeChangeEvent,
   DrawSelectionChangeEvent,
   DrawUpdateEvent,
 } from '@mapbox/mapbox-gl-draw'
@@ -12,7 +12,7 @@ type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
   position?: ControlPosition
   onCreate?: (e: DrawCreateEvent) => void
   onUpdate?: (e: DrawUpdateEvent) => void
-  onModeChange?: (e: DrawModeChageEvent) => void
+  onModeChange?: (e: DrawModeChangeEvent) => void
   onSelectionChange?: (e: DrawSelectionChangeEvent) => void
 }
 

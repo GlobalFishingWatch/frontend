@@ -1,11 +1,26 @@
+import { EXCLUDE_FILTER_ID, FilterOperator } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import i18n, { t } from './i18n'
 
-export const getPlaceholderBySelections = (selections?: MultiSelectOption[]): string => {
-  if (!selections?.length) return t('selects.allSelected', 'All')
-  return selections.length > 1
-    ? `${selections.length} ${t('selects.selected', 'selected')}`
-    : selections[0].label
+export const getPlaceholderBySelections = (
+  selections?: MultiSelectOption[],
+  filterOperator?: FilterOperator
+): string => {
+  if (!selections?.length) {
+    return filterOperator === EXCLUDE_FILTER_ID
+      ? t('selects.noneSelected', 'None')
+      : t('selects.allSelected', 'All')
+  }
+  const placeholder =
+    selections.length > 1
+      ? `${selections.length} ${t('selects.selected', 'selected')}`
+      : selections[0].label
+  if (typeof placeholder === 'string') {
+    return placeholder
+  }
+  // Otherwise we are using the DatasetLabelComponent
+  return getDatasetLabel(placeholder.props.dataset)
 }
 
 export const removeDatasetVersion = (datasetId: string) => {

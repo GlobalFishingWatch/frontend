@@ -1,8 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { WorkspaceState } from 'types'
+import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { RootState } from 'store'
+import { selectQueryParam } from 'routes/routes.selectors'
+import { DEFAULT_WORKSPACE } from 'data/config'
 
-export const selectWorkspace = (state: RootState) => state.workspace.data
+export const selectWorkspace = (state: RootState) => state.workspace
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
@@ -29,3 +31,16 @@ export const selectWorkspaceState = createSelector(
     return workspace?.state || ({} as WorkspaceState)
   }
 )
+
+export const selectWorkspaceProfileView = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.profileView
+})
+
+export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =>
+  createSelector(
+    [selectQueryParam(property), selectWorkspaceState],
+    (urlProperty, workspaceState) => {
+      if (urlProperty !== undefined) return urlProperty
+      return workspaceState[property] ?? DEFAULT_WORKSPACE[property]
+    }
+  )

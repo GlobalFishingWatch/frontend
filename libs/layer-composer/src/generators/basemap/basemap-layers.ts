@@ -16,16 +16,6 @@ export const layers: Dictionary<LayerSpecification[]> = {
       },
     },
   ],
-  [BasemapType.Labels]: [
-    {
-      type: 'raster',
-      id: BasemapType.Labels,
-      source: BasemapType.Labels,
-      metadata: {
-        group: Group.BasemapForeground,
-      },
-    },
-  ],
   [BasemapType.Default]: [
     {
       id: 'bathymetry',
@@ -55,14 +45,6 @@ export const sources: Dictionary<Record<string, Partial<any>>> = {
   [BasemapType.Satellite]: {
     satellite: {
       tiles: [`${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/sat/tile?x={x}&y={y}&z={z}`],
-      type: 'raster',
-      tileSize: 256,
-      attribution: 'Google',
-    },
-  },
-  [BasemapType.Labels]: {
-    labels: {
-      tiles: [`${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels/tile?x={x}&y={y}&z={z}`],
       type: 'raster',
       tileSize: 256,
       attribution: 'Google',

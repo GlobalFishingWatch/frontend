@@ -1,4 +1,3 @@
-import { Dispatch } from 'redux'
 import {
   NOT_FOUND,
   RoutesMap,
@@ -8,6 +7,7 @@ import {
   StateGetter,
   Bag,
 } from 'redux-first-router'
+import { Dispatch } from '@reduxjs/toolkit'
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { IS_PRODUCTION } from 'data/config'
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')

@@ -26,7 +26,7 @@ import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
 import { getSourceId, toURLArray } from './util'
-import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
+import fetchBreaks, { getBreaksCacheKey, Breaks, FetchBreaksParams } from './util/fetch-breaks'
 import griddedTimeCompare from './modes/gridded-time-compare'
 import { getTimeChunksInterval } from './util/get-time-chunks-interval'
 
@@ -72,6 +72,14 @@ const getSubLayersFilters = (
   return [sublayersFilters[0]]
 }
 
+const getSubLayersVesselGroups = (
+  sublayers: HeatmapAnimatedGeneratorSublayer[],
+  merge = false
+): string[] => {
+  const sublayersVesselGroups = sublayers.map((sublayer) => sublayer.vesselGroups || '')
+  return sublayersVesselGroups
+}
+
 const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
   sublayer.visible === false ? false : true
 const getSubLayersVisible = (config: HeatmapAnimatedGeneratorConfig) =>
@@ -87,13 +95,21 @@ const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
     geomType: params.geomType,
     interval: params.interval,
     singleFrame: params.singleFrame ? 'true' : 'false',
-    filters: toURLArray('filters', params.filters),
     datasets: toURLArray('datasets', params.datasets),
+    ...(params.filters?.length && {
+      filters: toURLArray('filters', params.filters),
+    }),
+    ...(params['vessel-groups']?.length && {
+      'vessel-groups': toURLArray('datasets', params['vessel-groups']),
+    }),
     delta: params.delta.toString(),
     quantizeOffset: params.quantizeOffset.toString(),
     sublayerVisibility: JSON.stringify(params.sublayerVisibility),
     sublayerCount: params.sublayerCount.toString(),
     interactive: params.interactive ? 'true' : 'false',
+  }
+  if (params['vessel-groups']) {
+    serialized['vessel-groups'] = toURLArray('vessel-groups', params['vessel-groups'])
   }
   if (params['date-range']) {
     serialized['date-range'] = params['date-range'].join(',')
@@ -106,6 +122,39 @@ const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
   }
 
   return serialized
+}
+
+const getFinalurl = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  params: TileAggregationSourceParamsSerialized
+) => {
+  const { datasets, filters, 'vessel-groups': vesselGroups, ...rest } = params
+  const finalUrlParams = {
+    ...rest,
+    format: 'intArray',
+    'temporal-aggregation': params.singleFrame === 'true',
+    // We want proxy active as default when api tiles auth is required
+    proxy: params.proxy !== 'false',
+  }
+  const finalUrlParamsArr = Object.entries(finalUrlParams)
+    .filter(([_, value]) => {
+      return value !== undefined && value !== null && value !== 'undefined' && value !== 'null'
+    })
+    .map(([key, value]) => {
+      return `${key}=${value}`
+    })
+  if (datasets) {
+    finalUrlParamsArr.push(datasets)
+  }
+  if (filters) {
+    finalUrlParamsArr.push(filters)
+  }
+  if (vesselGroups) {
+    finalUrlParamsArr.push(vesselGroups)
+  }
+  const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
+  const finalUrlStr = `${tilesUrl}?${finalUrlParamsArr.join('&')}`
+  return decodeURI(finalUrlStr)
 }
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
@@ -149,15 +198,16 @@ class HeatmapAnimatedGenerator {
       config.sublayers,
       config.mode === HeatmapAnimatedMode.TimeCompare
     )
+
     const filters = getSubLayersFilters(
       config.sublayers,
       config.mode === HeatmapAnimatedMode.TimeCompare
     )
 
+    // TODO should be an array per sublayer?
+    const vesselGroups = getSubLayersVesselGroups(config.sublayers)
+
     const visible = getSubLayersVisible(config)
-
-    const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
-
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource = config.interactive && INTERACTION_MODES.includes(config.mode)
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
@@ -181,6 +231,7 @@ class HeatmapAnimatedGenerator {
         quantizeOffset: timeChunk.quantizeOffset,
         interval: timeChunks.interval,
         filters,
+        'vessel-groups': vesselGroups,
         datasets,
         aggregationOperation: config.aggregationOperation,
         sublayerCombinationMode,
@@ -214,16 +265,16 @@ class HeatmapAnimatedGenerator {
       }
 
       const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
+      // console.log(serializedBaseSourceParams)
 
       const sourceParams = [serializedBaseSourceParams]
 
       return sourceParams.map((params: Record<string, string>) => {
-        const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
-        const urlString = decodeURI(url.toString())
+        const url = getFinalurl(config, params)
         const source = {
           id: params.id,
           type: 'temporalgrid',
-          tiles: [urlString],
+          tiles: [url],
           updateDebounce: config.updateDebounce && timeChunk.active,
           maxzoom: config.maxZoom,
         }
@@ -259,8 +310,8 @@ class HeatmapAnimatedGenerator {
   getCacheKey = (config: FetchBreaksParams) => {
     const visibleSublayers = config.sublayers?.filter((sublayer) => sublayer.visible)
     const datasetKey = getSubLayersDatasets(visibleSublayers)?.join(',')
-    const filtersKey = visibleSublayers?.flatMap((subLayer) => subLayer.filter || []).join(',')
-    return [datasetKey, filtersKey, config.mode].join(',')
+    const breaksCacheKey = getBreaksCacheKey(config)
+    return [datasetKey, breaksCacheKey].join(',')
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
@@ -316,13 +367,13 @@ class HeatmapAnimatedGenerator {
     const breaks =
       useSublayerBreaks && config.mode !== HeatmapAnimatedMode.TimeCompare
         ? config.sublayers.map(({ breaks }) => breaks || [])
-        : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
+        : getSublayersBreaks(breaksConfig, this.breaksCache[cacheKey]?.breaks)
 
     const legends = getLegends(finalConfig, breaks || [])
     const style = {
       id: finalConfig.id,
-      sources: this._getStyleSources(finalConfig, timeChunks, breaks),
-      layers: this._getStyleLayers(finalConfig, timeChunks, breaks),
+      sources: this._getStyleSources(breaksConfig, timeChunks, breaks),
+      layers: this._getStyleLayers(breaksConfig, timeChunks, breaks),
       metadata: {
         breaks,
         legends,

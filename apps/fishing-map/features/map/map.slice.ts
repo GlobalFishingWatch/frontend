@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
+import { DateTime } from 'luxon'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -12,6 +13,7 @@ import {
   EndpointId,
   EventVessel,
   EventVesselTypeEnum,
+  APIPagination,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
@@ -22,6 +24,7 @@ import {
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -34,6 +37,7 @@ export type ExtendedFeatureVesselDatasets = Vessel & {
   trackDataset?: Dataset
 }
 
+// TODO extract this type in app types
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
   hours: number
   [key: string]: any
@@ -89,8 +93,8 @@ const getInteractionEndpointDatasetConfig = (
   const featuresDataviews = features.flatMap((feature) => {
     return feature.temporalgrid
       ? temporalgridDataviews.find(
-          (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
-        ) || []
+        (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
+      ) || []
       : []
   })
   const fourWingsDataset = featuresDataviews[0]?.datasets?.find(
@@ -122,8 +126,16 @@ const getInteractionEndpointDatasetConfig = (
   }
 
   const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
-  if (filters?.length) {
+  if (filters.length) {
     datasetConfig.query?.push({ id: 'filters', value: filters })
+  }
+
+  const vesselGroups = featuresDataviews
+    .map((dv) => dv.config?.['vessel-groups'] || [])
+    .filter((vg) => vg.length)
+
+  if (vesselGroups.length) {
+    datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
   }
 
   return { featuresDataviews, fourWingsDataset, datasetConfig }
@@ -158,13 +170,13 @@ export const fetchVesselInfo = async (
 ) => {
   const vesselsInfoUrl = getVesselInfoEndpoint(datasets, vesselIds)
   if (!vesselsInfoUrl) {
-    console.warn('No vessel info found for dataset', datasets)
+    console.warn('No vessel info url found for dataset', datasets)
     console.warn('and vesselIds', vesselIds)
     return
   }
   try {
-    const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
-      signal,
+    const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl, {
+      signal
     })
     // TODO remove entries once the API is stable
     const vesselsInfoList: Vessel[] =
@@ -200,12 +212,12 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
     const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
     if (interactionUrl) {
-      const sublayersVesselsIdsResponse = await GFWAPI.fetch<ExtendedFeatureVessel[]>(
+      const sublayersVesselsIdsResponse = await GFWAPI.fetch<APIPagination<ExtendedFeatureVessel>>(
         interactionUrl,
         { signal }
       )
       // TODO remove once normalized in api between id and vessel_id
-      const sublayersVesselsIds = sublayersVesselsIdsResponse.map((sublayer) =>
+      const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
         sublayer.map((vessel) => {
           const { id, vessel_id, ...rest } = vessel
           return { ...rest, id: id || vessel_id }
@@ -272,6 +284,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
 
+      const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
+      const startYear = DateTime.fromISO(mainTemporalgridFeature?.visibleStartDate).toUTC().year
+      const endYear = DateTime.fromISO(mainTemporalgridFeature?.visibleEndDate).toUTC().year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {
@@ -279,7 +294,16 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           vessels: sublayerVessels
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
-                const vesselInfo = vesselsInfo?.find((entry) => entry.id === vessel.id)
+                const vesselInfo = vesselsInfo?.find((entry) => {
+                  if (entry.years?.length && startYear && endYear) {
+                    return (
+                      entry.id === vessel.id &&
+                      entry.years.includes(startYear) &&
+                      entry.years.includes(endYear)
+                    )
+                  }
+                  return entry.id === vessel.id
+                })
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
@@ -358,7 +382,9 @@ export const fetchEncounterEventThunk = createAsyncThunk<
         }
         const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
         if (vesselsUrl) {
-          vesselsInfo = await GFWAPI.fetch<ExtendedEventVessel[]>(vesselsUrl, { signal })
+          vesselsInfo = await GFWAPI.fetch<APIPagination<ExtendedEventVessel>>(vesselsUrl, {
+            signal
+          }).then((r) => r.entries)
         }
       }
 
