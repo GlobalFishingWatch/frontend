@@ -18,13 +18,13 @@ const queryClient = new QueryClient()
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}>
-        <QueryClientProvider client={queryClient}>
-          <MapProvider>
-            <Component {...pageProps} />
-          </MapProvider>
-        </QueryClientProvider>
-      </RecoilURLSyncJSONNext>
+      {/* <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}> */}
+      <QueryClientProvider client={queryClient}>
+        <MapProvider>
+          <Component {...pageProps} />
+        </MapProvider>
+      </QueryClientProvider>
+      {/* </RecoilURLSyncJSONNext> */}
     </RecoilRoot>
   )
 }
