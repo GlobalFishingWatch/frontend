@@ -33,7 +33,6 @@ function NewDatasetModal(): React.ReactElement {
   const [fileUploaded, setFileUploaded] = useState<boolean>(false)
   const [fileMetadata, setFileMetadata] = useState<any>()
   const [file, setFile] = useState<File>()
-  console.log(file)
 
   const onClose = useCallback(() => {
     setNewFourwingsDataset(false)

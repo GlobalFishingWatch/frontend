@@ -1,13 +1,13 @@
 import { atom, useRecoilState } from 'recoil'
 import { useCallback } from 'react'
 import { urlSyncEffect } from 'recoil-sync'
-import { mixed } from '@recoiljs/refine'
+import { array, object, string } from '@recoiljs/refine'
 import {
   BasemapGeneratorConfig,
   BasemapType,
   GeneratorType,
 } from '@globalfishingwatch/layer-composer'
-import libraryDatasets, { LibraryDataset, DatasetCategory } from 'features/datasets/data/library'
+import { APIDataset, useAPIDatasets } from 'features/datasets/datasets.hooks'
 
 export type LayerConfig = {
   type?: GeneratorType
@@ -21,18 +21,19 @@ export type DatasetLayerConfig = {
   config: LayerConfig
 }
 
-export type DatasetLayer = LibraryDataset & {
+export type DatasetLayer = APIDataset & {
   config: LayerConfig
 }
 
-// const layersChecker = array(
-//   object({
-//     id: string(),
-//     config: object({
-//       color: string(),
-//     }),
-//   })
-// )
+const layersChecker = array(
+  object({
+    id: string(),
+    config: object({
+      type: string(),
+      color: string(),
+    }),
+  })
+)
 
 const defaultLayers: DatasetLayerConfig[] = [
   {
@@ -47,7 +48,7 @@ const defaultLayers: DatasetLayerConfig[] = [
 export const layersConfigAtom = atom<DatasetLayerConfig[]>({
   key: 'layersConfig',
   default: defaultLayers,
-  effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
+  effects: [urlSyncEffect({ refine: layersChecker, history: 'replace' })],
 })
 
 export const useLayersConfig = () => {
@@ -91,22 +92,21 @@ export const useLayersConfig = () => {
   return { layersConfig, addLayer, updateLayer, removeLayer, setLayers }
 }
 
-export const useDatasetLayers = () => {
+export const useDatasetLayers = (): DatasetLayer[] => {
   const { layersConfig } = useLayersConfig()
+  const datasets = useAPIDatasets()
   return layersConfig.flatMap((layerConfig) => {
-    const dataset = libraryDatasets.find((dataset) => dataset.id === layerConfig.id)
+    const dataset = datasets.data?.find((dataset) => dataset.id === layerConfig.id)
     return dataset ? { ...dataset, ...layerConfig } : []
   })
 }
 
 export const useGeoTemporalLayers = () => {
   const layers = useDatasetLayers()
-  return layers.filter(
-    (l) => l.category === DatasetCategory.gee || l.category === DatasetCategory.gfw
-  )
+  return layers.filter((l) => l.type === '4wings')
 }
 
 export const useContexLayers = () => {
   const layers = useDatasetLayers()
-  return layers.filter((l) => l.category === DatasetCategory.context)
+  return layers.filter((l) => l.type === 'context')
 }

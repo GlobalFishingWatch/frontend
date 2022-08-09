@@ -1,7 +1,8 @@
 export const ROOT_DOM_ELEMENT = '__next'
 
-// Params to use replace instead of push for router history to make navigation easier
-export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
+const LOCAL_API_URL = 'http://192.168.68.101:8080'
+const LOCAL_API_VERSION = '/v1'
+export const API_URL = LOCAL_API_URL + LOCAL_API_VERSION
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = new Date().getFullYear()

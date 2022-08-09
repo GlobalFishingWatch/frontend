@@ -1,26 +1,26 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { uniq } from 'lodash'
 import cx from 'classnames'
 import Image from 'next/image'
-import { InputText, Modal } from '@globalfishingwatch/ui-components'
-import libraryDatasets, { LibraryDataset, DatasetCategory } from 'features/datasets/data/library'
+import { InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import { getNextColor } from 'features/layers/layers.utils'
 import { useModal } from 'features/modals/modals.hooks'
+import { APIDataset, DatasetSource, useAPIDatasets } from 'features/datasets/datasets.hooks'
 import styles from './DatasetsLibraryModal.module.css'
 
-const DatasetsLibraryCategories = ({ categories }: { categories: DatasetCategory[] }) => {
-  return categories && categories.length ? (
+const DatasetsLibraryCategories = ({ sources }: { sources: DatasetSource[] }) => {
+  return sources && sources.length ? (
     <ul>
-      {categories.map((category) => {
+      {sources.map((category) => {
         return <li key={category}>{category}</li>
       })}
     </ul>
   ) : null
 }
 
-const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
+const DatasetsLibraryItems = ({ datasets }: { datasets: APIDataset[] }) => {
   const { addLayer } = useLayersConfig()
   const layers = useDatasetLayers()
   const onLayerClick = (dataset) => {
@@ -41,7 +41,7 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
             onClick={disabled ? undefined : () => onLayerClick(dataset)}
           >
             {dataset.image && <Image src={dataset.image}></Image>}
-            {dataset.label}
+            {dataset.description}
           </li>
         )
       })}
@@ -49,22 +49,37 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: LibraryDataset[] }) => {
   ) : null
 }
 
-const DatasetsLibraryModal = () => {
+const DatasetsLibraryContent = ({ datasets }: { datasets: APIDataset[] }) => {
   const [datasetSearch, setDatasetSearch] = useState('')
-  const [isOpen, setIsOpen] = useModal('datasetLibrary')
 
   const filteredDatasets = datasetSearch
-    ? libraryDatasets.filter((d) => {
+    ? datasets?.filter((d) => {
         const search = datasetSearch.toUpperCase()
         return (
           d.id.toUpperCase().includes(search) ||
-          d.label.toUpperCase().includes(search) ||
-          d.category.toUpperCase().includes(search)
+          d.description.toUpperCase().includes(search) ||
+          d.source.toUpperCase().includes(search)
         )
       })
-    : libraryDatasets
-  const categories = uniq(filteredDatasets.flatMap((d) => d.category || []))
+    : datasets
+  const sources = uniq(filteredDatasets?.flatMap((d) => d.source || []))
 
+  return (
+    <Fragment>
+      <div className={styles.sidebar}>
+        <InputText value={datasetSearch} onChange={(e) => setDatasetSearch(e.target.value)} />
+        <DatasetsLibraryCategories sources={sources} />
+      </div>
+      <div className={styles.content}>
+        <DatasetsLibraryItems datasets={filteredDatasets} />
+      </div>
+    </Fragment>
+  )
+}
+
+const DatasetsLibraryModal = () => {
+  const [isOpen, setIsOpen] = useModal('datasetLibrary')
+  const datasets = useAPIDatasets()
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
@@ -74,13 +89,7 @@ const DatasetsLibraryModal = () => {
       contentClassName={styles.container}
       onClose={() => setIsOpen(false)}
     >
-      <div className={styles.sidebar}>
-        <InputText value={datasetSearch} onChange={(e) => setDatasetSearch(e.target.value)} />
-        <DatasetsLibraryCategories categories={categories} />
-      </div>
-      <div className={styles.content}>
-        <DatasetsLibraryItems datasets={filteredDatasets} />
-      </div>
+      {datasets.isLoading ? <Spinner /> : <DatasetsLibraryContent datasets={datasets.data} />}
     </Modal>
   )
 }
