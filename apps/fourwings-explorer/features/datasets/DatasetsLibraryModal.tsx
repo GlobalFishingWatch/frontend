@@ -3,6 +3,7 @@ import { uniq } from 'lodash'
 import cx from 'classnames'
 import Image from 'next/image'
 import { InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { ColorRampId, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import { getNextColor } from 'features/layers/layers.utils'
@@ -43,7 +44,12 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: APIDataset[] }) => {
     const colors = layers.flatMap((layer) => layer?.config?.color || [])
     addLayer({
       id: dataset.id,
-      config: { visible: true, color: getNextColor('fill', colors)?.value },
+      config: {
+        type: GeneratorType.HeatmapAnimated,
+        visible: true,
+        color: getNextColor('fill', colors)?.value,
+        colorRamp: getNextColor('fill', colors)?.id as ColorRampId,
+      },
     })
   }
   return datasets && datasets.length ? (

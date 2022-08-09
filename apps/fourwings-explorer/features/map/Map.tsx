@@ -4,12 +4,13 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import MapControls from 'features/map/MapControls'
-import { useMapStyle } from 'features/map/map-style.hooks'
+import { useMapLayers } from 'features/map/map-layers.hooks'
 import { useMapLoaded } from 'features/map/map-state.hooks'
 import {
   useAllMapSourceTilesLoaded,
   useMapSourceTilesLoadedAtom,
 } from 'features/map/map-sources.hooks'
+import { useDynamicBreaksUpdate } from 'features/map/dynamic-breaks.hooks'
 import styles from './Map.module.css'
 import { useURLViewport, useViewport } from './map-viewport.hooks'
 
@@ -44,8 +45,9 @@ const style = {
 const MapWrapper = (): React.ReactElement => {
   useURLViewport()
   useMapSourceTilesLoadedAtom()
+  useDynamicBreaksUpdate()
   const { viewport, onViewportChange } = useViewport()
-  const { style: mapStyle, loading: layerComposerLoading } = useMapStyle()
+  const { style: mapStyle, loading: layerComposerLoading } = useMapLayers()
   const mapLoaded = useMapLoaded()
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded

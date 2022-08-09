@@ -72,6 +72,7 @@ export interface GeneratorConfig {
   data?: AnyData
   type: GeneratorType | string
   visible?: boolean
+  color?: string
   opacity?: number
   metadata?: GeneratorMetadata
 }
@@ -461,7 +462,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   id: string
   datasets: string[]
   filter?: string
-  vesselGroups: string
+  vesselGroups?: string
   colorRamp: ColorRampsIds
   colorRampWhiteEnd?: boolean
   visible?: boolean

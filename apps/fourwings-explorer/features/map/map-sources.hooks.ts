@@ -1,10 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
-import { MapDataEvent } from '@globalfishingwatch/maplibre-gl'
-import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
+import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
+import {
+  DEFAULT_CONTEXT_SOURCE_LAYER,
+  ExtendedStyle,
+  HeatmapLayerMeta,
+  TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
+} from '@globalfishingwatch/layer-composer'
 import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
 import useMapInstance, { useMapInstanceStyle } from 'features/map/map-context.hooks'
+import { DatasetLayer } from 'features/layers/layers.hooks'
 
 export type TilesAtomSourceState = {
   loaded: boolean
@@ -23,7 +30,7 @@ export const getHeatmapSourceMetadata = (style: ExtendedStyle, id: string) => {
   return style?.metadata?.generatorsMetadata?.[id]
 }
 
-const toArray = (elem) => (Array.isArray(elem) ? elem : [elem])
+export const toArray = (elem) => (Array.isArray(elem) ? elem : [elem])
 
 const getSourcesFromMergedGenerator = (style: ExtendedStyle, mergeId: string) => {
   const meta = getHeatmapSourceMetadata(style, mergeId)
@@ -133,4 +140,128 @@ export const useAllMapSourceTilesLoaded = () => {
   const sourceTilesLoaded = useMapSourceTiles()
   const allSourcesLoaded = sources.every((source) => sourceTilesLoaded[source]?.loaded === true)
   return allSourcesLoaded
+}
+
+type LayerMetadata = {
+  metadata: HeatmapLayerMeta
+  sourcesId: string[]
+  generatorSourceId: string
+  layerId: string
+  filter?: string[]
+}
+
+export type LayerChunkFeature = {
+  active: boolean
+  state: TilesAtomSourceState
+  features: GeoJSONFeature<TimeseriesFeatureProps>[]
+  quantizeOffset: number
+}
+export type LayerFeature = {
+  state: TilesAtomSourceState
+  sourceId: string
+  layerId: string
+  features: GeoJSONFeature[]
+  chunksFeatures: LayerChunkFeature[]
+  metadata: HeatmapLayerMeta
+}
+
+export const areLayersFeatureLoaded = (layers: LayerFeature | LayerFeature[]) => {
+  const layersArray: LayerFeature[] = toArray(layers)
+  return layersArray.length ? layersArray.every(({ state }) => state?.loaded) : false
+}
+
+export const useMapLayerFeatures = (layers: DatasetLayer | DatasetLayer[]) => {
+  const style = useMapInstanceStyle()
+  const map = useMapInstance()
+
+  // Memoized to avoid re-runs on style changes like hovers
+  const memoizedLayers = useMemoCompare(layers)
+  // TODO: review performance as chunk activeStart timebar changes forces to rerun everything here
+  const generatorsMetadata = useMemoCompare(style?.metadata?.generatorsMetadata)
+
+  const layersMetadata = useMemo(() => {
+    const style = { metadata: { generatorsMetadata } } as ExtendedStyle
+    const layersArray = toArray(memoizedLayers || [])
+    if (!layersArray || !layersArray.length) {
+      return []
+    }
+    const layersMetadata: LayerMetadata[] = layersArray.reduce((acc, layer) => {
+      const generatorSourceId = layer.id
+
+      const metadata =
+        getHeatmapSourceMetadata(style, generatorSourceId) ||
+        ({ sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER } as HeatmapLayerMeta)
+
+      const sourcesId =
+        metadata?.timeChunks?.chunks.flatMap(({ sourceId }) => sourceId) || layer?.id
+      return acc.concat({
+        metadata,
+        sourcesId,
+        generatorSourceId,
+        layerId: layer.id,
+        filter: layer.config.filter,
+      })
+    }, [] as LayerMetadata[])
+    return layersMetadata
+  }, [memoizedLayers, generatorsMetadata])
+
+  const sourcesIds = layersMetadata.flatMap(({ sourcesId }) => sourcesId)
+  const sourceTilesLoaded = useMapSourceTiles(sourcesIds)
+
+  const layerFeatures = useMemo(() => {
+    const layerFeature = layersMetadata.map(({ layerId, metadata, filter }) => {
+      const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
+      const chunks = metadata?.timeChunks?.chunks.map(({ active, sourceId, quantizeOffset }) => ({
+        active,
+        sourceId,
+        quantizeOffset,
+      }))
+      const chunksFeatures: LayerChunkFeature[] | null = chunks
+        ? chunks.map(({ active, sourceId, quantizeOffset }) => {
+            const emptyChunkState = {} as TilesAtomSourceState
+            const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
+            const features =
+              chunkState.loaded && !chunkState.error
+                ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
+                : null
+            return {
+              active,
+              features: features as unknown as GeoJSONFeature<TimeseriesFeatureProps>[],
+              quantizeOffset,
+              state: chunkState,
+            }
+          })
+        : null
+      const sourceId = metadata?.timeChunks?.activeSourceId || layerId
+      const state = chunks
+        ? ({
+            loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
+            error: chunksFeatures
+              .filter(({ state }) => state.error)
+              .map(({ state }) => state.error)
+              .join(','),
+          } as TilesAtomSourceState)
+        : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
+
+      const features: GeoJSONFeature[] | null =
+        !chunks && state?.loaded && !state?.error
+          ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
+          : null
+
+      const data: LayerFeature = {
+        sourceId,
+        layerId,
+        state,
+        features,
+        chunksFeatures,
+        metadata,
+      }
+      return data
+    })
+    return layerFeature
+    // Runs only when source tiles load change to avoid unu
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, sourceTilesLoaded])
+
+  return layerFeatures
 }
