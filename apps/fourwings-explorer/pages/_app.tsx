@@ -3,9 +3,9 @@ import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import { MapProvider } from 'react-map-gl'
 import './styles.css'
-import '../../../libs/ui-components/src/base.css'
-import '../../../libs/timebar/src/timebar-settings.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
+import './base.css'
+import './timebar-settings.css'
 
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>

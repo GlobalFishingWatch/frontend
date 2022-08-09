@@ -8,7 +8,7 @@
   min-height: var(--size-M);
 }
 
-.LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+.LayerPanel::after {
   content: '';
   position: absolute;
   left: var(--space-S);
@@ -37,6 +37,10 @@
 
 .LayerPanel:hover .dragger {
   width: var(--size-S);
+}
+
+.LayerPanel.expandedContainerOpen {
+  box-shadow: var(--box-shadow);
 }
 
 .expandedContainerOpen .header {

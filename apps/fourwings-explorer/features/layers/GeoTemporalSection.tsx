@@ -13,7 +13,7 @@ function Section() {
   return (
     <SortableContext items={geoTemporalLayers}>
       <div className={styles.content}>
-        <h2>Geo temporal layers</h2>
+        <h2 className={styles.title}>Geo temporal layers</h2>
         {geoTemporalLayers && geoTemporalLayers?.length > 0 && (
           <ul>
             {geoTemporalLayers.map((layer) => {
@@ -21,9 +21,20 @@ function Section() {
             })}
           </ul>
         )}
-        <p>Add new layer</p>
-        <Button onClick={() => setDatasetsLibraryModal(true)}>Public datasets</Button>
-        <Button onClick={() => setNewFourwingsDatasetModal(true)}>Local File</Button>
+        <div className={styles.actions}>
+          <label>Add new dataset</label>
+          <Button className={styles.cta} size="small" onClick={() => setDatasetsLibraryModal(true)}>
+            Public dataset library
+          </Button>
+          <Button
+            className={styles.cta}
+            size="small"
+            onClick={() => setNewFourwingsDatasetModal(true)}
+            type="secondary"
+          >
+            Local File
+          </Button>
+        </div>
       </div>
     </SortableContext>
   )
