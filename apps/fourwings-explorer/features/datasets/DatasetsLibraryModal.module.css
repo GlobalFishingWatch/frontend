@@ -79,8 +79,8 @@
 }
 
 .description {
+  overflow: hidden;
   display: box;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 }
