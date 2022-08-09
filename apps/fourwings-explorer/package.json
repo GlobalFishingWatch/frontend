@@ -23,6 +23,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-map-gl": "^7.0.16",
+    "react-query": "^4.0.0",
     "recoil": "0.7.2",
     "recoil-sync": "^0.1.0",
     "recoil-sync-next": "^0.0.1",
