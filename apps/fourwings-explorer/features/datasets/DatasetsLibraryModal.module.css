@@ -71,3 +71,17 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.name {
+  font: var(--font-L);
+  font-weight: 700;
+  font-family: var(--secondary-font-family);
+}
+
+.description {
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  /* stylelint-disable-next-line */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+}
