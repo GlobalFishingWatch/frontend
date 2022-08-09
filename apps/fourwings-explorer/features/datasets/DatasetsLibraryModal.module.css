@@ -1,20 +1,59 @@
 .container {
   display: flex;
+  min-height: 75vh;
+  padding: 0;
 }
 
 .sidebar {
-  width: 30%;
+  width: 32rem;
   display: flex;
   flex-direction: column;
+  border-right: var(--border);
+}
+
+.search {
+  border-bottom: var(--border);
+}
+
+.search input,
+.search input:placeholder-shown {
+  padding: 0 var(--space-M);
+  border-bottom: none;
+}
+
+.search svg {
+  margin-right: var(--space-S);
+}
+
+.categoriesList {
+  padding: var(--space-S) 0;
+}
+
+.category {
+  line-height: var(--size-M);
+  padding: 0 1.5rem;
+  cursor: pointer;
+  border-left: 0.4rem solid transparent;
+  opacity: var(--opacity-secondary);
+}
+
+.category.selected {
+  opacity: 1;
+  border-left: 0.4rem solid var(--color-primary-blue);
 }
 
 .content {
   flex: 1;
 }
 
+.datasetList {
+  padding: var(--space-M);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+}
+
 .dataset {
-  width: 50%;
-  margin-right: var(--space-M);
   display: flex;
   flex-direction: column;
   cursor: pointer;
