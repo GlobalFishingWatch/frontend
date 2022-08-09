@@ -8,6 +8,7 @@ import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary'
 export type ButtonSize = 'tiny' | 'small' | 'default' | 'big' | 'verybig'
+export type HTMLButtonType = 'submit' | 'reset' | 'button' | undefined
 
 export interface ButtonProps {
   id?: string
@@ -24,6 +25,7 @@ export interface ButtonProps {
   onMouseLeave?: (e: React.MouseEvent) => void
   href?: string
   target?: string
+  htmlType?: HTMLButtonType
 }
 
 export function Button(props: ButtonProps) {
@@ -42,6 +44,7 @@ export function Button(props: ButtonProps) {
     onMouseLeave,
     href,
     target,
+    htmlType,
   } = props
   return (
     <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
@@ -70,6 +73,7 @@ export function Button(props: ButtonProps) {
           onClick={(e) => !loading && !disabled && onClick && onClick(e)}
           onMouseEnter={(e) => onMouseEnter && onMouseEnter(e)}
           onMouseLeave={(e) => onMouseLeave && onMouseLeave(e)}
+          {...(htmlType ? { type: htmlType } : {})}
         >
           {loading ? (
             <Spinner
