@@ -10,11 +10,27 @@ import { useModal } from 'features/modals/modals.hooks'
 import { APIDataset, DatasetSource, useAPIDatasets } from 'features/datasets/datasets.hooks'
 import styles from './DatasetsLibraryModal.module.css'
 
-const DatasetsLibraryCategories = ({ sources }: { sources: DatasetSource[] }) => {
+const DatasetsLibrarySources = ({
+  sources,
+  sourceSelected,
+  setSourceSelected,
+}: {
+  sources: DatasetSource[]
+  sourceSelected: DatasetSource
+  setSourceSelected: (source: DatasetSource) => void
+}) => {
   return sources && sources.length ? (
-    <ul>
-      {sources.map((category) => {
-        return <li key={category}>{category}</li>
+    <ul className={styles.categoriesList}>
+      {sources.map((source) => {
+        return (
+          <li
+            className={cx(styles.category, { [styles.selected]: sourceSelected === source })}
+            key={source}
+            onClick={() => setSourceSelected(source)}
+          >
+            {source}
+          </li>
+        )
       })}
     </ul>
   ) : null
@@ -31,7 +47,7 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: APIDataset[] }) => {
     })
   }
   return datasets && datasets.length ? (
-    <ul>
+    <ul className={styles.datasetList}>
       {datasets.map((dataset) => {
         const disabled = layers.some((l) => l.id === dataset.id)
         return (
@@ -51,24 +67,34 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: APIDataset[] }) => {
 
 const DatasetsLibraryContent = ({ datasets }: { datasets: APIDataset[] }) => {
   const [datasetSearch, setDatasetSearch] = useState('')
+  const sources = uniq(datasets?.flatMap((d) => d.source || []))
+  const [sourceSelected, setSourceSelected] = useState<DatasetSource>(sources[0])
 
-  const filteredDatasets = datasetSearch
-    ? datasets?.filter((d) => {
-        const search = datasetSearch.toUpperCase()
-        return (
-          d.id.toUpperCase().includes(search) ||
-          d.description.toUpperCase().includes(search) ||
-          d.source.toUpperCase().includes(search)
-        )
-      })
-    : datasets
-  const sources = uniq(filteredDatasets?.flatMap((d) => d.source || []))
+  const filteredDatasets = datasets?.filter((d) => {
+    const search = datasetSearch.toUpperCase()
+    return (
+      d.source === sourceSelected &&
+      (d.id.toUpperCase().includes(search) || d.description.toUpperCase().includes(search))
+    )
+  })
 
   return (
     <Fragment>
       <div className={styles.sidebar}>
-        <InputText value={datasetSearch} onChange={(e) => setDatasetSearch(e.target.value)} />
-        <DatasetsLibraryCategories sources={sources} />
+        <div className={styles.sidebar}>
+          <InputText
+            className={styles.search}
+            type="search"
+            placeholder="Search"
+            value={datasetSearch}
+            onChange={(e) => setDatasetSearch(e.target.value)}
+          />
+          <DatasetsLibrarySources
+            sources={sources}
+            sourceSelected={sourceSelected}
+            setSourceSelected={setSourceSelected}
+          />
+        </div>
       </div>
       <div className={styles.content}>
         <DatasetsLibraryItems datasets={filteredDatasets} />
@@ -88,6 +114,7 @@ const DatasetsLibraryModal = () => {
       shouldCloseOnEsc
       contentClassName={styles.container}
       onClose={() => setIsOpen(false)}
+      fullScreen
     >
       {datasets.isLoading ? <Spinner /> : <DatasetsLibraryContent datasets={datasets.data} />}
     </Modal>
