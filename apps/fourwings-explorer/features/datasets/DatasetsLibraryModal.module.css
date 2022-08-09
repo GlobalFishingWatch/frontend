@@ -80,7 +80,8 @@
 
 .description {
   overflow: hidden;
-  display: box;
-  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
+  /* stylelint-disable-next-line */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
 }
