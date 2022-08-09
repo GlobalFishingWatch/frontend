@@ -41,7 +41,7 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
     setColorOpen(false)
   }
 
-  const title = layer.label
+  const title = layer.dataset?.name
 
   const TitleComponent = (
     <Title
