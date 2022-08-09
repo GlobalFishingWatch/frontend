@@ -112,6 +112,7 @@ const DatasetsLibraryModal = () => {
       title={'Public dataset library'}
       isOpen={isOpen}
       shouldCloseOnEsc
+      className={styles.modal}
       contentClassName={styles.container}
       onClose={() => setIsOpen(false)}
       fullScreen

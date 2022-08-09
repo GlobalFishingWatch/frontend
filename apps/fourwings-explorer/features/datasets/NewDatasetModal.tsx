@@ -62,6 +62,7 @@ function NewDatasetModal(): React.ReactElement {
       appSelector={ROOT_DOM_ELEMENT}
       title={newContextDataset ? 'Add a polygon layers' : 'Add dataset from local file'}
       isOpen={newFourwingsDataset || newContextDataset}
+      className={styles.modal}
       contentClassName={styles.modalContainer}
       onClose={onClose}
     >
