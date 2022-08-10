@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { RiskLevel, RiskOutput, VesselWithHistory } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import { FIRST_YEAR_OF_DATA } from 'data/config'
+import { FIRST_YEAR_OF_DATA, LAST_YEAR_FORCED_LABOR } from 'data/config'
 import styles from './ForcedLabor.module.css'
 
 interface ForcedLaborProps {
@@ -16,7 +16,7 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
 
   const riskModel: RiskOutput[] = useMemo(() => {
-    const yearsLength = new Date().getFullYear() - (FIRST_YEAR_OF_DATA - 1)
+    const yearsLength = LAST_YEAR_FORCED_LABOR - (FIRST_YEAR_OF_DATA - 1)
     const yearsToDisplay = Array.from({ length: yearsLength }, (x, i) => i + FIRST_YEAR_OF_DATA).reverse()
     const initialModel: RiskOutput[] = yearsToDisplay.map(year => {
       return {
@@ -46,6 +46,18 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
             RiskLevel.high : (parsedRisks[indexYearFound].highestRisk === RiskLevel.low || riskLevel === RiskLevel.low ?
               RiskLevel.low : RiskLevel.unknown)
         }
+      } else {
+        // We are showing until a fixed date, if some day the data is updated
+        // we will display the data until we update the config
+        parsedRisks.push({
+          year: risk.year,
+          levels: [riskLevel],
+          reportedCases: !!risk.reported,
+          highrisk: riskLevel === RiskLevel.high,
+          highestRisk: riskLevel === RiskLevel.high ?
+            RiskLevel.high : (riskLevel === RiskLevel.low ? RiskLevel.low : RiskLevel.unknown)
+        })
+        return parsedRisks.sort((a, b) => b.year - a.year)
       }
       return parsedRisks
     }, initialModel)
@@ -70,6 +82,9 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
               <br />
               Unknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.
             </Trans>
+            <p className={styles.availabilityWarning}>
+              {t('vessel.forcedLabourModelAvailability', "The forced labor model is available from 2012 to 2020 at the moment.")}
+            </p>
           </DataAndTerminology>
         </div>
         <div>{t('risk.reportedCases', 'Reported Cases')}</div>
