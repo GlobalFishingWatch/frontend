@@ -374,6 +374,8 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   availableIntervals?: Interval[]
   aggregationOperation?: AggregationOperation
   breaksMultiplier?: number
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export type AnyGeneratorConfig =

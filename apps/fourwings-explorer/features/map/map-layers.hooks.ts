@@ -52,6 +52,8 @@ export function getLayerGeneratorConfig(layer: DatasetLayer) {
         maxZoom: config.maxZoom || 8,
         mode: HeatmapAnimatedMode.Single,
         dynamicBreaks: config?.dynamicBreaks || true,
+        minVisibleValue: config?.minVisibleValue,
+        maxVisibleValue: config?.maxVisibleValue,
         interactive: true,
         aggregationOperation:
           dataset?.configuration?.aggregationOperation || AggregationOperation.Avg,

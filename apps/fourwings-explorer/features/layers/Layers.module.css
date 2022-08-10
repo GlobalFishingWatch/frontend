@@ -94,12 +94,20 @@
 }
 
 .filters {
-  display: flex;
-  flex-wrap: wrap;
+  display: none;
+  padding: var(--space-S);
 }
 
 .filter:not(:last-of-type) {
   margin-right: var(--space-M);
+}
+
+.filters.active {
+  display: block;
+}
+
+.slider {
+  width: 100%;
 }
 
 .legendContainer {

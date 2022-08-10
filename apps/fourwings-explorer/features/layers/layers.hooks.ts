@@ -27,6 +27,8 @@ export type FourwingsLayerConfig = BaseLayerConfig & {
   breaks?: number[]
   maxZoom?: number
   dynamicBreaks?: boolean
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export type DatasetLayerConfig = {
@@ -37,6 +39,11 @@ export type DatasetLayerConfig = {
 
 export type DatasetLayer<Dataset = APIDataset> = DatasetLayerConfig & {
   dataset: Dataset
+}
+
+export type UpdateDatasetLayerConfig = {
+  id: DatasetLayerConfig['id']
+  config: Partial<DatasetLayerConfig['config']>
 }
 
 // const layersChecker = array(
@@ -77,8 +84,8 @@ export const useLayersConfig = () => {
   )
 
   const updateLayer = useCallback(
-    (layer: DatasetLayerConfig | DatasetLayerConfig[]) => {
-      const layersToUpdate: DatasetLayerConfig[] = toArray(layer)
+    (layer: UpdateDatasetLayerConfig | UpdateDatasetLayerConfig[]) => {
+      const layersToUpdate: UpdateDatasetLayerConfig[] = toArray(layer)
       setMapLayersConfig((layers) =>
         layers.map((layer) => {
           const layerToUpdate = layersToUpdate.find((l) => l.id === layer.id)

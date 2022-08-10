@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import cx from 'classnames'
-import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
+import { Tooltip, ColorBarOption, IconButton, Slider } from '@globalfishingwatch/ui-components'
 import { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { useLayerPanelDataviewSort } from 'features/layers/layers-sort.hook'
 import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
@@ -9,9 +9,10 @@ import Color from 'features/layers/common/Color'
 import LayerSwitch from './common/LayerSwitch'
 import Title from './common/Title'
 import styles from './Layers.module.css'
+import { FourwingsAPIDataset } from 'features/datasets/datasets.types'
 
 type LayerPanelProps = {
-  layer: DatasetLayer
+  layer: DatasetLayer<FourwingsAPIDataset>
   onToggle?: () => void
 }
 
@@ -43,6 +44,30 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
   }
 
   const title = layer.dataset?.name
+  const { max, min, scale, offset } = layer.dataset?.configuration
+  const cleanMin = Math.floor(min * scale + offset)
+  const cleanMax = Math.ceil(max * scale + offset)
+  const sliderConfig = {
+    steps: [cleanMin, cleanMax],
+    min: cleanMin,
+    max: cleanMax,
+  }
+  const onSliderChange = useCallback(
+    (rangeSelected) => {
+      if (rangeSelected[0] === min && rangeSelected[1] === max) {
+        // onClean(id)
+      } else {
+        updateLayer({
+          id: layer.id,
+          config: {
+            minVisibleValue: rangeSelected[0],
+            maxVisibleValue: rangeSelected[1],
+          },
+        })
+      }
+    },
+    [layer.id, max, min, updateLayer]
+  )
 
   const TitleComponent = (
     <Title
@@ -98,6 +123,16 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
             />
           )}
         </div>
+      </div>
+      <div className={cx(styles.filters, { [styles.active]: layerActive })}>
+        <Slider
+          className={styles.slider}
+          initialRange={[cleanMin, cleanMax]}
+          label="filter values"
+          config={sliderConfig}
+          onChange={onSliderChange}
+          histogram={false}
+        ></Slider>
       </div>
       <div className={styles.properties}>
         <div className={styles.legendContainer}>

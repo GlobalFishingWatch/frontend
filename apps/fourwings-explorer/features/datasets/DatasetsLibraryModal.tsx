@@ -136,7 +136,9 @@ const DatasetsLibraryModal = () => {
       fullScreen
     >
       {datasets.isLoading ? (
-        <Spinner />
+        <div className={styles.spinnerContainer}>
+          <Spinner />
+        </div>
       ) : (
         <DatasetsLibraryContent datasets={datasets.data as FourwingsAPIDataset[]} />
       )}
