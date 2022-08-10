@@ -3,13 +3,14 @@ import { uniq } from 'lodash'
 import cx from 'classnames'
 import Image from 'next/image'
 import { Button, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { ColorRampId, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import { getNextColor } from 'features/layers/layers.utils'
 import { useModal } from 'features/modals/modals.hooks'
-import { APIDataset, DatasetSource, useAPIDatasets } from 'features/datasets/datasets.hooks'
-import styles from './DatasetsLibraryModal.module.css'
+import { useAPIDatasets } from 'features/datasets/datasets.hooks'
+import { DatasetSource, FourwingsAPIDataset } from 'features/datasets/datasets.types'
+import styles from './DatasetsLibrary.module.css'
 
 const DatasetsLibrarySources = ({
   sources,
@@ -37,7 +38,7 @@ const DatasetsLibrarySources = ({
   ) : null
 }
 
-const DatasetsLibraryItems = ({ datasets }: { datasets: APIDataset[] }) => {
+const DatasetsLibraryItems = ({ datasets }: { datasets: FourwingsAPIDataset[] }) => {
   const { addLayer } = useLayersConfig()
   const layers = useDatasetLayers()
   const onLayerClick = (dataset) => {
@@ -45,7 +46,6 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: APIDataset[] }) => {
     addLayer({
       id: dataset.id,
       config: {
-        type: GeneratorType.HeatmapAnimated,
         visible: true,
         color: getNextColor('fill', colors)?.value,
         colorRamp: getNextColor('fill', colors)?.id as ColorRampId,
@@ -76,9 +76,9 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: APIDataset[] }) => {
   ) : null
 }
 
-const DatasetsLibraryContent = ({ datasets }: { datasets: APIDataset[] }) => {
+const DatasetsLibraryContent = ({ datasets }: { datasets: FourwingsAPIDataset[] }) => {
   const [datasetSearch, setDatasetSearch] = useState('')
-  const sources = uniq(datasets?.flatMap((d) => d.source || []))
+  const sources = uniq(datasets?.flatMap((d) => d.source || [])).filter((s) => s !== 'LOCAL')
   const [sourceSelected, setSourceSelected] = useState<DatasetSource>(sources[0])
 
   const filteredDatasets = datasets?.filter((d) => {
@@ -116,7 +116,7 @@ const DatasetsLibraryContent = ({ datasets }: { datasets: APIDataset[] }) => {
 
 const DatasetsLibraryModal = () => {
   const [isOpen, setIsOpen] = useModal('datasetLibrary')
-  const datasets = useAPIDatasets()
+  const datasets = useAPIDatasets({ type: '4wings' })
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
@@ -128,7 +128,11 @@ const DatasetsLibraryModal = () => {
       onClose={() => setIsOpen(false)}
       fullScreen
     >
-      {datasets.isLoading ? <Spinner /> : <DatasetsLibraryContent datasets={datasets.data} />}
+      {datasets.isLoading ? (
+        <Spinner />
+      ) : (
+        <DatasetsLibraryContent datasets={datasets.data as FourwingsAPIDataset[]} />
+      )}
     </Modal>
   )
 }

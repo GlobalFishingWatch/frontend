@@ -47,7 +47,7 @@ class PolygonsGenerator {
       layout: { visibility },
       paint,
       metadata: {
-        group: Group.Track,
+        group: Group.OutlinePolygons,
       },
     }
     return [layer]

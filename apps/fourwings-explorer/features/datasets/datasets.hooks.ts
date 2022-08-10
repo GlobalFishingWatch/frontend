@@ -1,7 +1,5 @@
-import { StaticImageData } from 'next/image'
 import { useQuery } from '@tanstack/react-query'
-import { Interval } from '@globalfishingwatch/layer-composer'
-import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { APIDataset, DatasetSource, DatasetType } from 'features/datasets/datasets.types'
 import PrecipitationImage from 'assets/images/datasets/precipitation.jpg'
 import { API_URL } from 'data/config'
 
@@ -11,37 +9,31 @@ const IMAGES_BY_ID = {
   'public-global-chlorophyl:v20220801': PrecipitationImage,
 }
 
-export type DatasetSource = 'GEE' | 'GFW' | 'LOCAL'
-export type DatasetType = '4wings' | 'context'
-
-export type APIDataset = {
-  id: string
-  name: string
-  description: string
-  source: DatasetSource
-  type: DatasetType
-  startDate: string
-  endDate: string
-  unit: string
-  image?: StaticImageData
-  tags?: string[]
-  configuration: {
-    aggregationOperation: AggregationOperation
-    intervals: Interval[]
-    min: number
-    max: number
-    offset: number
-    scale: number
-  }
-}
-
 const getDatasets = async () => {
   const datasets: APIDataset[] = await fetch(`${API_URL}/datasets`).then((r) => r.json())
-  const datasetsWithImages = datasets.map((d) => ({ ...d, image: IMAGES_BY_ID[d.id] }))
+  const datasetsWithImages = datasets.map((d) =>
+    IMAGES_BY_ID[d.id] ? { ...d, image: IMAGES_BY_ID[d.id] } : d
+  )
   return datasetsWithImages
 }
 
-export const useAPIDatasets = () => {
-  const query = useQuery<APIDataset[]>(['datasets'], getDatasets)
+export type ApiDatasetsParams = {
+  type?: DatasetType
+  source?: DatasetSource
+}
+export const DATASET_QUERY_ID = 'datasets'
+export const useAPIDatasets = ({ type, source }: ApiDatasetsParams = {}) => {
+  const query = useQuery<APIDataset[]>([DATASET_QUERY_ID], getDatasets, {
+    select: (datasets) => {
+      if (type || source) {
+        return datasets.filter((d) => {
+          const matchType = type ? d.type === type : true
+          const matchSource = source ? d.source === source : true
+          return matchType && matchSource
+        })
+      }
+      return datasets
+    },
+  })
   return query
 }

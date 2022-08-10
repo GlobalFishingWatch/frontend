@@ -28,7 +28,6 @@ function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement 
       id: layer.id,
       config: {
         color: color.value,
-        colorRamp: color.id,
       },
     })
     setColorOpen(false)
@@ -41,7 +40,7 @@ function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement 
     setColorOpen(false)
   }
 
-  const title = layer.label
+  const title = layer.dataset?.name
 
   const TitleComponent = (
     <Title

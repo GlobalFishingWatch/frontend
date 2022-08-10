@@ -75,6 +75,7 @@ export interface GeneratorConfig {
   color?: string
   opacity?: number
   metadata?: GeneratorMetadata
+  attribution?: string
 }
 
 /**
@@ -157,10 +158,6 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    * Id for API dataset in case you need to fetch geometries by gfw_id
    */
   datasetId?: string
-  /**
-   * Contains the attribution to be displayed when the map is showing the layer.
-   */
-  attribution?: string
   /**
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */

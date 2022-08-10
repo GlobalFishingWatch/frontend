@@ -8,17 +8,16 @@ import {
   ColorRampId,
   GeneratorType,
 } from '@globalfishingwatch/layer-composer'
-import { APIDataset, useAPIDatasets } from 'features/datasets/datasets.hooks'
+import { useAPIDatasets } from 'features/datasets/datasets.hooks'
 import { toArray } from 'features/map/map-sources.hooks'
+import { APIDataset } from 'features/datasets/datasets.types'
 
 export type BaseLayerConfig = {
-  type?: GeneratorType
   visible?: boolean
   color?: string
 }
 
 export type FourwingsLayerConfig = BaseLayerConfig & {
-  type: GeneratorType.HeatmapAnimated
   colorRamp?: ColorRampId
   breaks?: number[]
   maxZoom?: number

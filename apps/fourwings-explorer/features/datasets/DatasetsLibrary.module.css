@@ -61,6 +61,10 @@
   gap: 2rem;
 }
 
+.datasets {
+  display: flex;
+}
+
 .dataset {
   display: flex;
   flex-direction: column;
