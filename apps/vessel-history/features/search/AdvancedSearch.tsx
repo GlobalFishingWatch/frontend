@@ -178,7 +178,7 @@ const AdvancedSearch: React.FC = () => {
             }}
           />
         </div>
-        <div className={cx(styles.row, styles.flexEnd)}>
+        <div className={cx(styles.row)}>
           <IconButton
             type="border"
             icon="delete"
