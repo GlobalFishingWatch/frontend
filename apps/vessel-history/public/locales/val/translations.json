@@ -291,6 +291,7 @@
     "encounteredVessel": "crwdns7757:0crwdne7757:0",
     "flag": "crwdns4268:0crwdne4268:0",
     "flag_plural": "crwdns4330:0crwdne4330:0",
+    "forcedLaborModelAvailability": "crwdns26704:0crwdne26704:0",
     "forcedLaborModelDescription": "crwdns26248:0crwdne26248:0",
     "forcedLabourModel": "crwdns26678:0crwdne26678:0",
     "formatValues": "crwdns7759:0{{quantity}}crwdne7759:0",
