@@ -28,11 +28,11 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
   ) => {
     try {
       const response = await GFWAPI.fetch<RunCostResponse>(
-        `/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
+        `/${visualisationMode}/bq/create-temporal-dataset?dry-run=true`,
         {
           method: 'POST',
           body: {
-            name: 'Calculating cost using dryRun',
+            name: 'Calculating cost using dry-run',
             public: true,
             // ttl: 1, // days
             query,

@@ -1,9 +1,9 @@
 import { StaticImageData } from 'next/image'
 import { useQuery } from '@tanstack/react-query'
 import { Interval } from '@globalfishingwatch/layer-composer'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import PrecipitationImage from 'assets/images/datasets/precipitation.jpg'
 import { API_URL } from 'data/config'
-import { AggregationOperation } from '../../libs/fourwings-aggregate/src/types'
 
 const IMAGES_BY_ID = {
   'public-global-water-temperature:v20220801': PrecipitationImage,

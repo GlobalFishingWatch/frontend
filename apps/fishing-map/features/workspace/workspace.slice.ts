@@ -265,6 +265,11 @@ const workspaceSlice = createSlice({
     setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
       state.lastVisited = action.payload
     },
+    removeLocationLabelsDataview: (state) => {
+      state.data.dataviewInstances = state.data.dataviewInstances.filter(
+        (d) => d.dataviewId !== BASEMAP_LABELS_DATAVIEW_ID
+      )
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceThunk.pending, (state) => {
@@ -319,6 +324,7 @@ const workspaceSlice = createSlice({
   },
 })
 
-export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData } = workspaceSlice.actions
+export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData, removeLocationLabelsDataview } =
+  workspaceSlice.actions
 
 export default workspaceSlice.reducer
