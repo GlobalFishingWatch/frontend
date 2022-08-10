@@ -2,34 +2,34 @@ import { useEffect, useState, useCallback } from 'react'
 import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   filterFeaturesByBounds,
   getTimeseriesFromFeatures,
 } from '@globalfishingwatch/data-transforms'
-import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
+import { checkEqualBounds, useMapBounds } from 'features/map/map-bounds.hooks'
 import {
-  areDataviewsFeatureLoaded,
-  hasDataviewsFeatureError,
-  useMapDataviewFeatures,
+  areLayersFeatureLoaded,
+  haslayersFeatureError,
+  useMapLayerFeatures,
 } from 'features/map/map-sources.hooks'
+import { DatasetLayer } from 'features/layers/layers.hooks'
 
-export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
+export const useStackedActivity = (layers: DatasetLayer[]) => {
   const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
   const [stackedActivity, setStackedActivity] = useState<Timeseries>()
   const isSmallScreen = useSmallScreen()
-  const { bounds } = useMapBounds()
+  const bounds = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 400)
-  const dataviewFeatures = useMapDataviewFeatures(dataviews)
-  const error = hasDataviewsFeatureError(dataviewFeatures)
+  const layerFeatures = useMapLayerFeatures(layers)
+  const error = haslayersFeatureError(layerFeatures)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
   const loading =
-    boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures) || generatingStackedActivity
+    boundsChanged || !areLayersFeatureLoaded(layerFeatures) || generatingStackedActivity
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetStackedActivity = useCallback(
-    debounce((dataviewFeatures, bounds) => {
-      const dataviewFeaturesFiltered = dataviewFeatures.map((dataview) => {
+    debounce((layerFeatures, bounds) => {
+      const layerFeaturesFiltered = layerFeatures.map((dataview) => {
         return {
           ...dataview,
           chunksFeatures: dataview.chunksFeatures?.map((chunk) => {
@@ -40,7 +40,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
           }),
         }
       })
-      const stackedActivity = getTimeseriesFromFeatures(dataviewFeaturesFiltered)
+      const stackedActivity = getTimeseriesFromFeatures(layerFeaturesFiltered)
       setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
     }, 400),
@@ -48,13 +48,13 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   )
 
   useEffect(() => {
-    const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
-    if (!isSmallScreen && dataviewFeaturesLoaded && !error) {
+    const layerFeaturesLoaded = areLayersFeatureLoaded(layerFeatures)
+    if (!isSmallScreen && layerFeaturesLoaded && !error) {
       setGeneratingStackedActivity(true)
-      debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
+      debouncedSetStackedActivity(layerFeatures, debouncedBounds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataviewFeatures, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
+  }, [layerFeatures, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
 
   return { loading, error, stackedActivity }
 }

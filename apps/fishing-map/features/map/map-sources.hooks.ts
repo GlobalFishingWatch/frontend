@@ -17,6 +17,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { ChunkFeature, LayerFeature } from '@globalfishingwatch/data-transforms'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom, TilesAtomSourceState } from 'features/map/map-sources.atom'
@@ -147,19 +148,8 @@ export const useAllMapSourceTilesLoaded = () => {
   return allSourcesLoaded
 }
 
-export type DataviewChunkFeature = {
-  active: boolean
-  state: TilesAtomSourceState
-  features: GeoJSONFeature<TimeseriesFeatureProps>[]
-  quantizeOffset: number
-}
-export type DataviewFeature = {
-  state: TilesAtomSourceState
-  sourceId: string
+export type DataviewFeature = LayerFeature & {
   dataviewsId: string[]
-  features: GeoJSONFeature[]
-  chunksFeatures: DataviewChunkFeature[]
-  metadata: HeatmapLayerMeta
 }
 
 export const areDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewFeature[]) => {
@@ -239,7 +229,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         sourceId,
         quantizeOffset,
       }))
-      const chunksFeatures: DataviewChunkFeature[] | null = chunks
+      const chunksFeatures: ChunkFeature[] | null = chunks
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const emptyChunkState = {} as TilesAtomSourceState
             const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState

@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Timebar } from '@globalfishingwatch/timebar'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { useTimerangeConnect, useURLTimerange } from 'features/timebar/timebar.hooks'
+import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
 const TimebarWrapper = () => {
@@ -18,7 +19,9 @@ const TimebarWrapper = () => {
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
         onChange={onTimebarChange}
-      ></Timebar>
+      >
+        <TimebarActivityGraph />
+      </Timebar>
     </div>
   )
 }

@@ -10,14 +10,15 @@ import {
 import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
+import {
+  LayerFeature as BaseLayerFeature,
+  ChunkFeature,
+  TilesSourceState,
+} from '@globalfishingwatch/data-transforms'
 import useMapInstance, { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { DatasetLayer } from 'features/layers/layers.hooks'
 
-export type TilesAtomSourceState = {
-  loaded: boolean
-  error?: string
-}
-export const mapTilesAtom = atom<Record<string, TilesAtomSourceState>>({
+export const mapTilesAtom = atom<Record<string, TilesSourceState>>({
   key: 'mapSourceTilesState',
   default: {},
 })
@@ -150,24 +151,18 @@ type LayerMetadata = {
   filter?: string[]
 }
 
-export type LayerChunkFeature = {
-  active: boolean
-  state: TilesAtomSourceState
-  features: GeoJSONFeature<TimeseriesFeatureProps>[]
-  quantizeOffset: number
-}
-export type LayerFeature = {
-  state: TilesAtomSourceState
-  sourceId: string
+export type LayerFeature = BaseLayerFeature & {
   layerId: string
-  features: GeoJSONFeature[]
-  chunksFeatures: LayerChunkFeature[]
-  metadata: HeatmapLayerMeta
 }
 
 export const areLayersFeatureLoaded = (layers: LayerFeature | LayerFeature[]) => {
   const layersArray: LayerFeature[] = toArray(layers)
   return layersArray.length ? layersArray.every(({ state }) => state?.loaded) : false
+}
+
+export const haslayersFeatureError = (layers: LayerFeature | LayerFeature[]) => {
+  const layersArray: LayerFeature[] = toArray(layers)
+  return layersArray.length ? layersArray.some(({ state }) => state?.error) : false
 }
 
 export const useMapLayerFeatures = (layers: DatasetLayer | DatasetLayer[]) => {
@@ -216,9 +211,9 @@ export const useMapLayerFeatures = (layers: DatasetLayer | DatasetLayer[]) => {
         sourceId,
         quantizeOffset,
       }))
-      const chunksFeatures: LayerChunkFeature[] | null = chunks
+      const chunksFeatures: ChunkFeature[] | null = chunks
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
-            const emptyChunkState = {} as TilesAtomSourceState
+            const emptyChunkState = {} as TilesSourceState
             const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
             const features =
               chunkState.loaded && !chunkState.error
@@ -240,8 +235,8 @@ export const useMapLayerFeatures = (layers: DatasetLayer | DatasetLayer[]) => {
               .filter(({ state }) => state.error)
               .map(({ state }) => state.error)
               .join(','),
-          } as TilesAtomSourceState)
-        : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
+          } as TilesSourceState)
+        : sourceTilesLoaded[sourceId] || ({} as TilesSourceState)
 
       const features: GeoJSONFeature[] | null =
         !chunks && state?.loaded && !state?.error

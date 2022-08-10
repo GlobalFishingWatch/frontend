@@ -2,12 +2,15 @@ import { useCallback, useEffect } from 'react'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { filterFeaturesByBounds, aggregateFeatures } from '@globalfishingwatch/data-transforms'
+import {
+  filterFeaturesByBounds,
+  aggregateFeatures,
+  ChunkFeature,
+} from '@globalfishingwatch/data-transforms'
 import { useGeoTemporalLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import {
   areLayersFeatureLoaded,
-  LayerChunkFeature,
   LayerFeature,
   useMapLayerFeatures,
 } from 'features/map/map-sources.hooks'
@@ -22,7 +25,7 @@ export const useDynamicBreaksUpdate = () => {
   const updateBreaksByViewportValues = useCallback(
     (layerFeatures: LayerFeature[], bounds: MiniglobeBounds) => {
       const layersConfig = layerFeatures?.flatMap(({ chunksFeatures, layerId, metadata }) => {
-        const { features } = chunksFeatures?.[0] || ({} as LayerChunkFeature)
+        const { features } = chunksFeatures?.[0] || ({} as ChunkFeature)
         if (features && features.length) {
           const filteredFeatures = filterFeaturesByBounds(features, bounds)
           const data = aggregateFeatures(filteredFeatures, metadata)

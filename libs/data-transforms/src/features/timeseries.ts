@@ -1,16 +1,41 @@
-import { uniqBy } from 'lodash'
 import { DateTime } from 'luxon'
+import { uniqBy } from 'lodash'
 import {
   AggregationOperation,
   getTimeSeries,
   TimeSeriesFrame,
   getRealValue,
+  TimeseriesFeatureProps,
 } from '@globalfishingwatch/fourwings-aggregate'
-import { quantizeOffsetToDate, Interval } from '@globalfishingwatch/layer-composer'
-import { DataviewChunkFeature, DataviewFeature } from 'features/map/map-sources.hooks'
+import {
+  quantizeOffsetToDate,
+  Interval,
+  HeatmapLayerMeta,
+} from '@globalfishingwatch/layer-composer'
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+
+export type TilesSourceState = {
+  loaded: boolean
+  error?: string
+}
+
+export type ChunkFeature = {
+  active: boolean
+  state: TilesSourceState
+  features: GeoJSONFeature<TimeseriesFeatureProps>[]
+  quantizeOffset: number
+}
+
+export type LayerFeature = {
+  state: TilesSourceState
+  sourceId: string
+  features: GeoJSONFeature[]
+  chunksFeatures: ChunkFeature[]
+  metadata?: HeatmapLayerMeta
+}
 
 type TimeseriesParams = {
-  chunksFeatures: DataviewChunkFeature[]
+  chunksFeatures: ChunkFeature[]
   numSublayers: number
   interval: Interval
   visibleSublayers: boolean[]
@@ -26,7 +51,7 @@ export const getChunksTimeseries = ({
   aggregationOperation,
   multiplier,
 }: TimeseriesParams) => {
-  const allChunksValues = chunksFeatures.flatMap(({ features, quantizeOffset }) => {
+  const allChunksValues = chunksFeatures?.flatMap(({ features, quantizeOffset }) => {
     if (features?.length > 0) {
       const { values } = getTimeSeries(features, numSublayers, quantizeOffset, aggregationOperation)
 
@@ -66,10 +91,10 @@ export const getChunksTimeseries = ({
   return allChunksValues
 }
 
-export const getTimeseriesFromDataviews = (dataviewFeatures: DataviewFeature[]) => {
-  const uniqDataviewFeatures = uniqBy(dataviewFeatures, 'sourceId')
-  const dataviewsTimeseries = uniqDataviewFeatures.map(({ chunksFeatures, metadata, state }) => {
-    if (!state.loaded || state.error || !chunksFeatures) {
+export const getTimeseriesFromFeatures = (layerFeatures: LayerFeature[]) => {
+  const uniqLayerFeatures = uniqBy(layerFeatures, 'sourceId')
+  const dataviewsTimeseries = uniqLayerFeatures.map(({ chunksFeatures, metadata, state }) => {
+    if (!state.loaded || state.error || !chunksFeatures || !metadata) {
       // TODO return loading or null depending on state
       return []
     }
