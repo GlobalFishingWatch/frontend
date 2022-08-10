@@ -12,7 +12,7 @@
   flex: 1 0 145px;
   position: sticky;
   left: 0;
-  background: #fefefe;
+  background: #f7fafb;
   z-index: 10;
 }
 
@@ -46,4 +46,9 @@
 
 .highRisk .riskYear {
   color: var(--color-primary-blue);
+}
+
+.availabilityWarning {
+  margin-top: var(--space-M);
+  color: var(--color-danger-red);
 }
