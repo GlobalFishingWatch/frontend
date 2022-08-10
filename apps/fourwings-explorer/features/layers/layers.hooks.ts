@@ -13,6 +13,7 @@ import { toArray } from 'features/map/map-sources.hooks'
 import { APIDataset } from 'features/datasets/datasets.types'
 
 export type BaseLayerConfig = {
+  type?: GeneratorType
   visible?: boolean
   color?: string
 }

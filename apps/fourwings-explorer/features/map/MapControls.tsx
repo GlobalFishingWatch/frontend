@@ -2,7 +2,11 @@ import { Fragment, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { MiniGlobe, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
+import {
+  BasemapGeneratorConfig,
+  BasemapType,
+  GeneratorType,
+} from '@globalfishingwatch/layer-composer'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { useLayersConfig } from 'features/layers/layers.hooks'
@@ -32,14 +36,15 @@ const MapControls = ({ mapLoading = false }: { mapLoading?: boolean }): React.Re
   }, [latitude, longitude, setMapCoordinates, zoom])
 
   const basemapLayer = layersConfig?.find((d) => d.config?.type === GeneratorType.Basemap)
-  const currentBasemap = basemapLayer?.config?.basemap ?? BasemapType.Default
+  const basemapLayerConfig = basemapLayer?.config as BasemapGeneratorConfig
+  const currentBasemap = basemapLayerConfig?.basemap ?? BasemapType.Default
   const switchBasemap = () => {
     updateLayer({
       id: basemapLayer?.id,
       config: {
         basemap:
           currentBasemap === BasemapType.Default ? BasemapType.Satellite : BasemapType.Default,
-      },
+      } as BasemapGeneratorConfig,
     })
   }
 

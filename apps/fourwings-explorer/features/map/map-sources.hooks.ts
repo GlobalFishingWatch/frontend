@@ -14,7 +14,7 @@ import {
   LayerFeature as BaseLayerFeature,
   ChunkFeature,
   TilesSourceState,
-} from '@globalfishingwatch/data-transforms'
+} from '@globalfishingwatch/features-aggregate'
 import useMapInstance, { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { DatasetLayer } from 'features/layers/layers.hooks'
 

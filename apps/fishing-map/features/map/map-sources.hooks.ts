@@ -17,7 +17,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
-import { ChunkFeature, LayerFeature } from '@globalfishingwatch/data-transforms'
+import { ChunkFeature, LayerFeature } from '@globalfishingwatch/features-aggregate'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom, TilesAtomSourceState } from 'features/map/map-sources.atom'

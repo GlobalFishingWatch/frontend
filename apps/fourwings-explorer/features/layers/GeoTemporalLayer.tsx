@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import cx from 'classnames'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
+import { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { useLayerPanelDataviewSort } from 'features/layers/layers-sort.hook'
 import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
 import Remove from 'features/layers/common/Remove'
@@ -28,7 +29,7 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
       id: layer.id,
       config: {
         color: color.value,
-        colorRamp: color.id,
+        colorRamp: color.id as ColorRampId,
       },
     })
     setColorOpen(false)

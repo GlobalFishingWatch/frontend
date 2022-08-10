@@ -3,10 +3,8 @@ import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import {
-  filterFeaturesByBounds,
-  getTimeseriesFromFeatures,
-} from '@globalfishingwatch/data-transforms'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { getTimeseriesFromFeatures } from '@globalfishingwatch/features-aggregate'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
 import {
   areDataviewsFeatureLoaded,

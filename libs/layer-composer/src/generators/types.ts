@@ -4,9 +4,8 @@ import {
   LayerSpecification,
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Locale } from '@globalfishingwatch/api-types'
+import { Segment, Locale } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 

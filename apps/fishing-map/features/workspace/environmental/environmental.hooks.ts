@@ -3,11 +3,8 @@ import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import {
-  filterFeaturesByBounds,
-  aggregateFeatures,
-  ChunkFeature,
-} from '@globalfishingwatch/data-transforms'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import {

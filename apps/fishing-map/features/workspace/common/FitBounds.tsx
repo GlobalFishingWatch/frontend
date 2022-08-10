@@ -3,13 +3,12 @@ import { useCallback } from 'react'
 import { FeatureCollection } from 'geojson'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
-  Segment,
   segmentsToBbox,
   filterSegmentsByTimerange,
   geoJSONToSegments,
   wrapBBoxLongitudes,
 } from '@globalfishingwatch/data-transforms'
-import { Resource, Vessel } from '@globalfishingwatch/api-types'
+import { Resource, Segment, Vessel } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { Bbox } from 'types'
