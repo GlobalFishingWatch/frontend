@@ -52,7 +52,7 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
 
 
   }, [vessel.forcedLabour])
-  console.log(riskModel)
+
   return (
     <div
       className={styles.forcedLabourContainer}
