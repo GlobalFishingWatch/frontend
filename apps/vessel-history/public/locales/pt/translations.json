@@ -291,6 +291,7 @@
     "encounteredVessel": "Encountered Vessel",
     "flag": "flag",
     "flag_plural": "bandeiras",
+    "forcedLaborModelAvailability": "The forced labor model is available from 2012 to 2020 at the moment.",
     "forcedLaborModelDescription": "High Risk: In multiple iterations, the model always predicted the vessel as an offender for that year.<1></1>\nLow Risk: In multiple iterations, the model always predicted the vessel as a non-offender for that year.<1></1>\nUnknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.",
     "forcedLabourModel": "Forced Labor",
     "formatValues": "{{quantity}} values",
