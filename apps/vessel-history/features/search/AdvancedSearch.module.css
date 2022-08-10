@@ -44,7 +44,7 @@
   .container {
     border-bottom: none;
     border-right: var(--border);
-    width: 33%;
+    flex: 0 0 33%;
     overflow-y: auto;
   }
 
