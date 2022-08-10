@@ -40,7 +40,7 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
         parsedRisks[indexYearFound] = {
           ...parsedRisks[indexYearFound],
           levels: yearRiskLevels,
-          reportedCases: parsedRisks[indexYearFound].reportedCases || risk.reportedCases,
+          reportedCases: parsedRisks[indexYearFound].reportedCases || !!risk.reported,
           highrisk: yearRiskLevels.includes(RiskLevel.high),
           highestRisk: parsedRisks[indexYearFound].highestRisk === RiskLevel.high || riskLevel === RiskLevel.high ?
             RiskLevel.high : (parsedRisks[indexYearFound].highestRisk === RiskLevel.low || riskLevel === RiskLevel.low ?
@@ -76,7 +76,7 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
       </div>
 
       {riskModel.map(risk =>
-        <div className={cx(styles.riskYearContainer, { [styles.highRisk]: risk.highrisk })}>
+        <div key={risk.year} className={cx(styles.riskYearContainer, { [styles.highRisk]: risk.highrisk })}>
           <div className={styles.riskYear}>{risk.year}</div>
           <div className={styles.riskLabel}>{t('risk.' + (risk.highestRisk) as any)}</div>
           <div className={styles.riskLabel}>{risk.reportedCases ? t('common.yes', 'Yes') : t('common.no', 'No')}</div>

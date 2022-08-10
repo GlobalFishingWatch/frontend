@@ -105,7 +105,7 @@ export interface ForcedLaborRisk {
   confidence: boolean
   score: boolean
   year: number
-  reportedCases: boolean
+  reported: boolean
 }
 
 export enum RiskLevel {
