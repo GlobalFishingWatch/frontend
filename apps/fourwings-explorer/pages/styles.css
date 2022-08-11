@@ -140,3 +140,20 @@
   border-left-color: white;
   transform: translateX(-1px);
 }
+
+.mapboxgl-ctrl-bottom-left .mapboxgl-ctrl,
+.maplibregl-ctrl-bottom-left .maplibregl-ctrl {
+  margin: 0 0 2.5rem 0.5rem !important;
+}
+
+.mapboxgl-control-container .mapboxgl-ctrl-scale {
+  min-height: 1.5rem;
+  font: var(--font-XS);
+  background: none;
+  color: rgba(var(--white-rgb), 0.65);
+  border-left: none;
+  border-right: none;
+  border-color: rgba(var(--white-rgb), 0.65);
+  border-width: 1px;
+  bottom: 2rem;
+}

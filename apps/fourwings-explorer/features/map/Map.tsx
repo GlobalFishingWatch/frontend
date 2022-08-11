@@ -4,6 +4,7 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import MapControls from 'features/map/MapControls'
+import MapInfo from 'features/map/MapInfo'
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import { useMapLoaded } from 'features/map/map-state.hooks'
 import {
@@ -53,8 +54,6 @@ const MapWrapper = (): React.ReactElement => {
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 300)
 
-  console.log(mapStyle)
-
   return (
     <div className={styles.container}>
       <MapControls mapLoading={debouncedMapLoading} />
@@ -69,7 +68,10 @@ const MapWrapper = (): React.ReactElement => {
         onMove={onViewportChange}
         transformRequest={transformRequest}
         onError={handleError}
-      ></Map>
+      >
+        {/* <MapInfo center={hoveredEvent} /> */}
+        <MapInfo />
+      </Map>
     </div>
   )
 }
