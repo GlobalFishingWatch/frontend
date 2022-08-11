@@ -13,6 +13,7 @@ export type ContextApiDatasetConfig = BaseApiDatasetConfig & {
   polygonId: string
 }
 
+export type FourwingsApiDatasetResolution = 'hour' | 'day'
 export type FourwingsApiDatasetConfig = BaseApiDatasetConfig & {
   maxZoom: number
   aggregationOperation: AggregationOperation
@@ -22,13 +23,16 @@ export type FourwingsApiDatasetConfig = BaseApiDatasetConfig & {
   offset: number
   scale: number
   fields: {
-    resolution: 'hour'
-    lat: 'lat'
-    lon: 'lon'
-    timestamp: 'timestamp'
-    filters: []
+    value: string
+    resolution: FourwingsApiDatasetResolution
+    lat: string
+    lon: string
+    timestamp: string
+    filters: string[]
   }
 }
+
+export type ImportStatus = 'CREATED' | 'IMPORTING' | 'ERROR' | 'COMPLETED'
 
 export type BaseDataset = {
   id: string
@@ -37,6 +41,7 @@ export type BaseDataset = {
   source: DatasetSource
   type: DatasetType
   image?: StaticImageData
+  status: ImportStatus
   tags?: string[]
 }
 
@@ -53,10 +58,10 @@ export type FourwingsAPIDataset = BaseDataset & {
 
 export type APIDataset = ContextAPIDataset | FourwingsAPIDataset
 
-export type ContextAPIDatasetUpdate = Partial<ContextAPIDataset> & {
-  configuration: Partial<FourwingsApiDatasetConfig>
-}
-export type FourwingsAPIDatasetUpdate = Partial<FourwingsAPIDataset> & {
+export type ContextAPIDatasetUpdate = Partial<BaseDataset> & {
   configuration: Partial<ContextApiDatasetConfig>
+}
+export type FourwingsAPIDatasetUpdate = Partial<BaseDataset> & {
+  configuration: Partial<FourwingsApiDatasetConfig>
 }
 export type APIDatasetUpdate = ContextAPIDatasetUpdate | FourwingsAPIDatasetUpdate

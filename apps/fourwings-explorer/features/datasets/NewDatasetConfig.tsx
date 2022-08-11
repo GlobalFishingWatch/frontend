@@ -1,13 +1,17 @@
 import cx from 'classnames'
 import { Fragment } from 'react'
-import { InputText, Select } from '@globalfishingwatch/ui-components'
+import { InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import {
-  APIDataset,
+  APIDatasetUpdate,
+  BaseDataset,
   ContextAPIDataset,
   DatasetType,
   FourwingsAPIDataset,
+  FourwingsApiDatasetResolution,
+  FourwingsAPIDatasetUpdate,
 } from 'features/datasets/datasets.types'
-import { FileMetadata } from 'features/datasets/NewDatasetModal'
+import { FileFields } from 'features/datasets/NewFourwingsDatasetModal'
 import styles from './NewDatasetModal.module.css'
 
 export const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
@@ -20,48 +24,63 @@ export const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection)
   return uniqueProperties
 }
 
-export const getPropertyFieldsOptions = (fields: string[]) => {
+export const getPropertyFieldsOptions = (fields: FileFields) => {
+  console.log(fields)
   if (!fields) return []
   return fields.map((property) => ({
-    id: property,
-    label: property,
+    id: property.name,
+    label: property.name,
   }))
 }
 
 interface DatasetConfigProps {
   className?: string
   datasetType: DatasetType
-  onDatasetFieldChange: (field: any) => void
-  onDatasetConfigChange: (field: any) => void
-  dataset: Partial<APIDataset>
-  metadata: FileMetadata
+  onDatasetAttributeChange: (attribute: { [key in keyof Partial<BaseDataset>]: any }) => void
+  onDatasetPropertyChange?: (field: APIDatasetUpdate['configuration']) => void
+  onDatasetFieldChange?: (
+    field: Partial<FourwingsAPIDatasetUpdate['configuration']['fields']>
+  ) => void
+  dataset: APIDatasetUpdate
+  fields: FileFields
 }
+
+const AGGREGATION_OPERATION_OPTIONS: SelectOption<AggregationOperation>[] = [
+  { id: AggregationOperation.Avg, label: 'Average' },
+  { id: AggregationOperation.Sum, label: 'Sum' },
+]
+
+const TIME_RESOLUTION_OPTIONS: SelectOption<FourwingsApiDatasetResolution>[] = [
+  { id: 'hour', label: 'Hourly' },
+  { id: 'day', label: 'Daily' },
+]
 
 const NewDatasetConfig: React.FC<DatasetConfigProps> = (props) => {
   const {
     dataset,
-    metadata,
+    fields,
     className = '',
     datasetType,
+    onDatasetAttributeChange,
+    onDatasetPropertyChange,
     onDatasetFieldChange,
-    onDatasetConfigChange,
   } = props
-  const fieldsOptions = metadata ? getPropertyFieldsOptions(metadata?.fields) : []
+  const fieldsOptions = getPropertyFieldsOptions(fields)
   return (
     <div className={cx(styles.datasetConfig, className)}>
       <InputText
         inputSize="small"
-        value={dataset.name}
+        value={dataset?.name}
         label="Name"
         className={styles.input}
-        onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
+        onChange={(e) => onDatasetAttributeChange({ name: e.target.value })}
       />
       <InputText
         inputSize="small"
         label="Description"
-        value={dataset.description}
+        value={dataset?.description}
         className={styles.input}
-        onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
+        onChange={(e) => onDatasetAttributeChange({ description: e.target.value })}
       />
       {datasetType === 'context' ? (
         <Select
@@ -73,27 +92,41 @@ const NewDatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           )}
           className={styles.input}
           onSelect={(selected) => {
-            onDatasetConfigChange({ polygonId: selected.id })
+            onDatasetPropertyChange({ polygonId: selected.id })
           }}
           onRemove={() => {
-            onDatasetConfigChange({ polygonId: undefined })
+            onDatasetPropertyChange({ polygonId: undefined })
           }}
         />
       ) : (
         <Fragment>
           <div className={cx(styles.multipleSelectContainer, styles.input)}>
             <Select
+              label="Value field"
+              placeholder="Select an option"
+              options={fieldsOptions}
+              selectedOption={fieldsOptions.find(
+                ({ id }) => id === (dataset as FourwingsAPIDataset)?.configuration?.fields?.value
+              )}
+              onSelect={(selected) => {
+                onDatasetFieldChange({ value: selected.id })
+              }}
+              onRemove={() => {
+                onDatasetFieldChange({ value: undefined })
+              }}
+            />
+            <Select
               label="Latitude field"
               placeholder="Select an option"
               options={fieldsOptions}
               selectedOption={fieldsOptions.find(
-                ({ id }) => id === (dataset as FourwingsAPIDataset).configuration?.fields?.lat
+                ({ id }) => id === (dataset as FourwingsAPIDataset)?.configuration?.fields?.lat
               )}
               onSelect={(selected) => {
-                onDatasetFieldChange({ latitude: selected.id })
+                onDatasetFieldChange({ lat: selected.id })
               }}
               onRemove={() => {
-                onDatasetFieldChange({ latitude: undefined })
+                onDatasetFieldChange({ lat: undefined })
               }}
             />
             <Select
@@ -101,13 +134,13 @@ const NewDatasetConfig: React.FC<DatasetConfigProps> = (props) => {
               placeholder="Select an option"
               options={fieldsOptions}
               selectedOption={fieldsOptions.find(
-                ({ id }) => id === (dataset as FourwingsAPIDataset).configuration?.fields?.lon
+                ({ id }) => id === (dataset as FourwingsAPIDataset)?.configuration?.fields?.lon
               )}
               onSelect={(selected) => {
-                onDatasetFieldChange({ longitude: selected.id })
+                onDatasetFieldChange({ lon: selected.id })
               }}
               onRemove={() => {
-                onDatasetFieldChange({ longitude: undefined })
+                onDatasetFieldChange({ lon: undefined })
               }}
             />
           </div>
@@ -117,13 +150,44 @@ const NewDatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             className={styles.input}
             options={fieldsOptions}
             selectedOption={fieldsOptions.find(
-              ({ id }) => id === (dataset as FourwingsAPIDataset).configuration?.fields?.timestamp
+              ({ id }) => id === (dataset as FourwingsAPIDataset)?.configuration?.fields?.timestamp
             )}
             onSelect={(selected) => {
               onDatasetFieldChange({ timestamp: selected.id })
             }}
             onRemove={() => {
               onDatasetFieldChange({ timestamp: undefined })
+            }}
+          />
+          <Select
+            label="Time resolution"
+            placeholder="Select an option"
+            className={styles.input}
+            options={TIME_RESOLUTION_OPTIONS}
+            selectedOption={TIME_RESOLUTION_OPTIONS.find(
+              ({ id }) => id === (dataset as FourwingsAPIDataset)?.configuration?.fields?.resolution
+            )}
+            onSelect={(selected) => {
+              onDatasetFieldChange({ resolution: selected.id })
+            }}
+            onRemove={() => {
+              onDatasetFieldChange({ resolution: undefined })
+            }}
+          />
+          <Select
+            label="Aggregation operation"
+            placeholder="Select an option"
+            className={styles.input}
+            options={AGGREGATION_OPERATION_OPTIONS}
+            selectedOption={AGGREGATION_OPERATION_OPTIONS.find(
+              ({ id }) =>
+                id === (dataset as FourwingsAPIDataset)?.configuration?.aggregationOperation
+            )}
+            onSelect={(selected) => {
+              onDatasetPropertyChange({ aggregationOperation: selected.id })
+            }}
+            onRemove={() => {
+              onDatasetPropertyChange({ aggregationOperation: undefined })
             }}
           />
         </Fragment>

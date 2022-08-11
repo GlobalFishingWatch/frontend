@@ -32,7 +32,7 @@ export function getLayerGeneratorConfig(layer: DatasetLayer) {
       const sublayers: HeatmapAnimatedGeneratorSublayer[] = [
         {
           id: layer.id,
-          colorRamp: config?.colorRamp,
+          colorRamp: config?.colorRamp || 'teal',
           visible: config?.visible ?? true,
           breaks: config?.breaks || [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
           datasets: [dataset.id],
@@ -127,7 +127,10 @@ export const useMapLayers = () => {
   const layers = useDatasetLayers()
   const globalGeneratorConfig = useGlobalGeneratorConfig()
   const generators = useMemo(() => {
-    return getLayersGeneratorConfig(layers)
+    const layersReady = layers.filter((l) =>
+      l.dataset?.status ? l.dataset.status === 'COMPLETED' : true
+    )
+    return getLayersGeneratorConfig(layersReady)
   }, [layers])
   return useLayerComposer(generators, globalGeneratorConfig, styleTransformations)
 }

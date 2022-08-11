@@ -1,12 +1,14 @@
 import { Fragment } from 'react'
 import DatasetsLibraryModal from 'features/datasets/DatasetsLibraryModal'
-import NewDatasetModal from 'features/datasets/NewDatasetModal'
+import NewFourwingsDatasetModal from 'features/datasets/NewFourwingsDatasetModal'
+import NewContextDatasetModal from 'features/datasets/NewContextDatasetModal'
 
 function Modals() {
   return (
     <Fragment>
       <DatasetsLibraryModal />
-      <NewDatasetModal />
+      <NewFourwingsDatasetModal />
+      <NewContextDatasetModal />
     </Fragment>
   )
 }

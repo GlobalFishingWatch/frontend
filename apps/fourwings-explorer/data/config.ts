@@ -1,6 +1,7 @@
 export const ROOT_DOM_ELEMENT = '__next'
 
 const LOCAL_API_URL = 'http://192.168.68.101:8080'
+// const LOCAL_API_URL = `http://${window.location.host}`
 const LOCAL_API_VERSION = '/v1'
 export const API_URL = LOCAL_API_URL + LOCAL_API_VERSION
 
