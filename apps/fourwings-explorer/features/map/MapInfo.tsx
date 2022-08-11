@@ -30,7 +30,7 @@ const MapInfo = ({ center }: { center?: InteractionEvent | null }) => {
   return (
     <div className={styles.info}>
       <div className={styles.flex}>
-        <ScaleControl maxWidth={100} unit="nautical" />
+        <ScaleControl maxWidth={100} unit="metric" />
         {center && (
           <div className={cx('print-hidden', styles.mouseCoordinates)}>
             {center.latitude.toFixed(4)} {center.longitude.toFixed(4)}
