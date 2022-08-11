@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { urlSyncEffect } from 'recoil-sync'
 import { object, string } from '@recoiljs/refine'
@@ -26,17 +26,18 @@ export const TimeRangeAtom = atom<TimebarRange | null>({
   effects: [],
 })
 
-export const useTimerangeConnect = () => {
-  const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
+export const HighlightedTimeRangeAtom = atom<TimebarRange | null>({
+  key: 'highlightedTimerange',
+  default: null,
+  effects: [],
+})
 
-  const onTimebarChange = useCallback(
-    ({ start, end }: TimebarRange) => {
-      setTimerange({ start, end })
-    },
-    [setTimerange]
-  )
+export const useTimerange = () => {
+  return useRecoilState(TimeRangeAtom)
+}
 
-  return { timerange, setTimerange, onTimebarChange }
+export const useHighlightTimerange = () => {
+  return useRecoilState(HighlightedTimeRangeAtom)
 }
 
 export const useURLTimerange = () => {

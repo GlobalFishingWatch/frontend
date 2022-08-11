@@ -253,12 +253,13 @@ export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
   hoverCallback?: InteractionEventCallback,
   map?: Map,
-  metadata?: ExtendedStyleMeta,
+  styleMetadata?: ExtendedStyleMeta,
   config?: MapHoverConfig
 ) => {
   const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
+  const metadata = styleMetadata || (map?.getStyle()?.metadata as ExtendedStyleMeta)
 
   const hoverCallbackDebounced = useRef<any>(null)
   useEffect(() => {

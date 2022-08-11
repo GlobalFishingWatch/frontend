@@ -1,17 +1,26 @@
 import { Map, MapboxStyle } from 'react-map-gl'
-import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
+import { useState } from 'react'
+import maplibregl, { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import maplibregl from '@globalfishingwatch/maplibre-gl'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
+import {
+  useDebounce,
+  useMapHover,
+  useMapLegend,
+  useMemoCompare,
+} from '@globalfishingwatch/react-hooks'
 import MapControls from 'features/map/MapControls'
 import MapInfo from 'features/map/MapInfo'
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import { useMapLoaded } from 'features/map/map-state.hooks'
+import useMapInstance from 'features/map/map-context.hooks'
 import {
   useAllMapSourceTilesLoaded,
   useMapSourceTilesLoadedAtom,
 } from 'features/map/map-sources.hooks'
 import { useDynamicBreaksUpdate } from 'features/map/dynamic-breaks.hooks'
+import MapPopup from 'features/map/MapPopup'
+import MapLegends from 'features/map/MapLegends'
+import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
 import styles from './Map.module.css'
 import { useURLViewport, useViewport } from './map-viewport.hooks'
 
@@ -47,12 +56,18 @@ const MapWrapper = (): React.ReactElement => {
   useURLViewport()
   useMapSourceTilesLoadedAtom()
   useDynamicBreaksUpdate()
+  const layers = useGeoTemporalLayers()
   const { viewport, onViewportChange } = useViewport()
   const { style: mapStyle, loading: layerComposerLoading } = useMapLayers()
   const mapLoaded = useMapLoaded()
+  const map = useMapInstance()
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 300)
+  const [hoveredEvent, setHoveredEvent] = useState<any>()
+  const onMapHover: any = useMapHover(setHoveredEvent, undefined, map, mapStyle?.metadata)
+  const interactiveLayerIds = useMemoCompare(mapStyle?.metadata?.interactiveLayerIds)
+  const mapLegends = useMapLegend(mapStyle, layers as any, hoveredEvent)
 
   return (
     <div className={styles.container}>
@@ -66,11 +81,14 @@ const MapWrapper = (): React.ReactElement => {
         zoom={viewport.zoom}
         mapStyle={mapStyle as MapboxStyle}
         onMove={onViewportChange}
+        onMouseMove={onMapHover}
+        interactiveLayerIds={interactiveLayerIds}
         transformRequest={transformRequest}
         onError={handleError}
       >
-        {/* <MapInfo center={hoveredEvent} /> */}
-        <MapInfo />
+        {hoveredEvent && <MapPopup event={hoveredEvent} />}
+        {mapLegends && <MapLegends legends={mapLegends} />}
+        <MapInfo center={hoveredEvent} />
       </Map>
     </div>
   )

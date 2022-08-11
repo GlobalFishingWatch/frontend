@@ -1,13 +1,94 @@
-import { memo } from 'react'
-import { Timebar } from '@globalfishingwatch/timebar'
+import { memo, useCallback } from 'react'
+import { DateTime } from 'luxon'
+import { HighlightedChunks, Timebar, TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { useTimerangeConnect, useURLTimerange } from 'features/timebar/timebar.hooks'
+import {
+  TimebarRange,
+  useHighlightTimerange,
+  useTimerange,
+  useURLTimerange,
+} from 'features/timebar/timebar.hooks'
+import { useMapInstanceStyle } from 'features/map/map-context.hooks'
+import { formatI18nDate } from 'utils/dates'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
+const TimebarHighlighterWrapper = () => {
+  const [highlightTimerange] = useHighlightTimerange()
+  console.log(highlightTimerange)
+  const metadata = useMapInstanceStyle()?.metadata?.generatorsMetadata
+  console.log(metadata)
+
+  // Return precise chunk frame extent
+  const dateCallback = useCallback((timestamp: number) => {
+    let dateLabel = formatI18nDate(timestamp, {
+      showUTCLabel: true,
+    })
+    // if (metadata) {
+    //   const interval = metadata.timeChunks.interval
+    //   if (interval === 'hour') {
+    //     return dateLabel
+    //   } else if (interval === 'day') {
+    //     return formatI18nDate(timestamp, { showUTCLabel: true })
+    //   } else if (interval === '10days') {
+    //     const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
+    //     const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame)).getTime()
+    //     const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame)).getTime()
+    //     return [formatI18nDate(start), formatI18nDate(end)].join(' - ') + ` ${UTC_SUFFIX}`
+    //   } else if (interval === 'month') {
+    //     // TODO
+    //   }
+    // }
+    return dateLabel
+  }, [])
+
+  return highlightTimerange ? (
+    <TimebarHighlighter
+      hoverStart={highlightTimerange.start}
+      hoverEnd={highlightTimerange.end}
+      dateCallback={dateCallback}
+    />
+  ) : null
+}
+
 const TimebarWrapper = () => {
   useURLTimerange()
-  const { timerange, onTimebarChange } = useTimerangeConnect()
+  const [timerange, setTimerange] = useTimerange()
+  const setHighlightTimerange = useHighlightTimerange()[1]
+
+  const onTimebarChange = useCallback(
+    ({ start, end }: TimebarRange) => {
+      setTimerange({ start, end })
+    },
+    [setTimerange]
+  )
+  const onMouseMove = useCallback(
+    (clientX: number, scale: (arg: number) => Date) => {
+      if (clientX === null || clientX === undefined || isNaN(clientX)) {
+        setHighlightTimerange(undefined)
+      } else {
+        try {
+          const start = scale(clientX - 10).toISOString()
+          const end = scale(clientX + 10).toISOString()
+          const startDateTime = DateTime.fromISO(start)
+          const endDateTime = DateTime.fromISO(end)
+          const diff = endDateTime.diff(startDateTime, 'hours')
+          if (diff.hours < 1) {
+            // To ensure at least 1h range is highlighted
+            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
+            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+            setHighlightTimerange({ start: hourStart, end: hourEnd })
+          } else {
+            setHighlightTimerange({ start, end })
+          }
+        } catch (e: any) {
+          console.log(clientX)
+          console.warn(e)
+        }
+      }
+    },
+    [setHighlightTimerange]
+  )
 
   if (!timerange?.start || !timerange?.end) return null
   return (
@@ -19,10 +100,12 @@ const TimebarWrapper = () => {
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
         onChange={onTimebarChange}
+        onMouseMove={onMouseMove}
         displayWarningWhenInFuture={false}
         showLastUpdate={false}
       >
         <TimebarActivityGraph />
+        <TimebarHighlighterWrapper />
       </Timebar>
     </div>
   )

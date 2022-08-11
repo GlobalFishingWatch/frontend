@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { ScaleControl } from 'react-map-gl'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useTimerange } from 'features/timebar/timebar.hooks'
 import styles from './MapInfo.module.css'
 
 export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
@@ -12,7 +12,7 @@ export const pickDateFormatByRange = (start: string, end: string): DateTimeForma
 }
 
 export const TimelineDatesRange = () => {
-  const { timerange } = useTimerangeConnect()
+  const [timerange] = useTimerange()
   const { start, end } = timerange
   if (!start || !end) return null
   const format = pickDateFormatByRange(start, end)

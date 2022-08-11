@@ -15,7 +15,7 @@ import { useLayerComposer } from '@globalfishingwatch/react-hooks'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { DatasetLayer, FourwingsLayerConfig, useDatasetLayers } from 'features/layers/layers.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useTimerange } from 'features/timebar/timebar.hooks'
 import { ContextAPIDataset, FourwingsAPIDataset } from 'features/datasets/datasets.types'
 import { API_URL } from 'data/config'
 
@@ -57,6 +57,8 @@ export function getLayerGeneratorConfig(layer: DatasetLayer) {
           dataset?.configuration?.aggregationOperation || AggregationOperation.Avg,
         availableIntervals: dataset?.configuration?.intervals,
         visible,
+        // debug: true,
+        // debugLabels: true,
         tilesAPI: `${API_URL}/4wings/tile/heatmap/{{z}}/{{x}}/{{y}}`,
         ...(dataset.startDate && { datasetsStart: dataset.startDate }),
         ...(dataset.endDate && { datasetsEnd: dataset.endDate }),
@@ -68,6 +70,7 @@ export function getLayerGeneratorConfig(layer: DatasetLayer) {
       const generator: PolygonsGeneratorConfig = {
         id: layer.id,
         visible: layer.config.visible,
+        color: layer.config.color,
         type: GeneratorType.Polygons,
         url: `${API_URL}/datasets/${dataset.id}/data`,
         attribution: dataset.source,
@@ -86,7 +89,7 @@ const getLayersGeneratorConfig = (layers: DatasetLayer[]): AnyGeneratorConfig[] 
 
 const useGlobalGeneratorConfig = () => {
   const { viewport } = useViewport()
-  const { timerange } = useTimerangeConnect()
+  const [timerange] = useTimerange()
   const globalGeneratorConfig = useMemo(
     () => ({
       start: timerange.start,
