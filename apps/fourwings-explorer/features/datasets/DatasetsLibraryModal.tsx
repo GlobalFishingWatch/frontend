@@ -12,6 +12,11 @@ import { useAPIDatasets } from 'features/datasets/datasets.hooks'
 import { DatasetSource, FourwingsAPIDataset } from 'features/datasets/datasets.types'
 import styles from './DatasetsLibrary.module.css'
 
+const CLEAN_SOURCE_NAMES = {
+  GEE: 'Google Earth Engine',
+  GFW: 'Global Fishing Watch',
+}
+
 const DatasetsLibrarySources = ({
   sources,
   sourceSelected,
@@ -30,7 +35,7 @@ const DatasetsLibrarySources = ({
             key={source}
             onClick={() => setSourceSelected(source)}
           >
-            {source}
+            {CLEAN_SOURCE_NAMES[source] || source}
           </li>
         )
       })}
@@ -41,6 +46,7 @@ const DatasetsLibrarySources = ({
 const DatasetsLibraryItems = ({ datasets }: { datasets: FourwingsAPIDataset[] }) => {
   const { addLayer } = useLayersConfig()
   const layers = useDatasetLayers()
+  const [, setIsOpen] = useModal('datasetLibrary')
   const onLayerClick = (dataset) => {
     const colors = layers.flatMap((layer) => layer?.config?.color || [])
     addLayer({
@@ -51,6 +57,7 @@ const DatasetsLibraryItems = ({ datasets }: { datasets: FourwingsAPIDataset[] })
         colorRamp: getNextColor('fill', colors)?.id as ColorRampId,
       },
     })
+    setIsOpen(false)
   }
   return datasets && datasets.length ? (
     <ul className={styles.datasetList}>

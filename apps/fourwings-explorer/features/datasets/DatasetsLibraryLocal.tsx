@@ -5,11 +5,13 @@ import { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import { getNextColor } from 'features/layers/layers.utils'
 import { APIDataset } from 'features/datasets/datasets.types'
+import { useModal } from 'features/modals/modals.hooks'
 import styles from './DatasetsLibrary.module.css'
 
 const LocalDatasetsLibrary = ({ datasets }: { datasets: APIDataset[] }) => {
   const { addLayer } = useLayersConfig()
   const layers = useDatasetLayers()
+  const [, setIsOpen] = useModal('newContextDataset')
   const onLayerClick = (dataset) => {
     const colors = layers.flatMap((layer) => layer?.config?.color || [])
     addLayer({
@@ -20,6 +22,7 @@ const LocalDatasetsLibrary = ({ datasets }: { datasets: APIDataset[] }) => {
         colorRamp: getNextColor('fill', colors)?.id as ColorRampId,
       },
     })
+    setIsOpen(false)
   }
   return datasets && datasets.length ? (
     <ul className={styles.dataset}>
