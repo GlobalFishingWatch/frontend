@@ -51,6 +51,7 @@ export type MultiSelectOnFilter = (
 export type MultiSelectOnRemove = (event: React.MouseEvent) => void
 
 interface MultiSelectProps {
+  id?: string
   label?: string
   placeholder?: string
   placeholderDisplayAll?: boolean
@@ -96,6 +97,7 @@ const getItemsFiltered = (items: MultiSelectOption[], filter?: string) => {
 
 export function MultiSelect(props: MultiSelectProps) {
   const {
+    id,
     label = '',
     options,
     selectedOptions = [],
@@ -177,6 +179,7 @@ export function MultiSelect(props: MultiSelectProps) {
     selectItem,
     getItemProps,
   } = useCombobox<MultiSelectOption | null>({
+    ...((id && { id }) || {}),
     items: filteredItems,
     inputValue,
     stateReducer: (state, { changes, type }) => {
