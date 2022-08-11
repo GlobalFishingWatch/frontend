@@ -122,6 +122,7 @@ export enum DatasetCategory {
   Context = 'context',
   Environment = 'environment',
   Activity = 'activity',
+  Vessel = 'vessel',
 }
 
 export interface Dataset {

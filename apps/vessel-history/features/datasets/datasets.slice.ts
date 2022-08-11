@@ -26,9 +26,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(
-      `/datasets/${id}?include=endpoints&cache=false`
-    )
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?include=endpoints&cache=false`)
     return dataset
   } catch (e: any) {
     return rejectWithValue({
@@ -62,11 +60,11 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       // if no ids are specified, then do not get all the datasets
       const relatedDatasets = relatedWorkspaceParams.ids
         ? await GFWAPI.fetch<APIPagination<Dataset>>(
-          `/datasets?${stringify(relatedWorkspaceParams, {
-            arrayFormat: 'comma',
-          })}`,
-          { signal }
-        ).then((d) => d.entries)
+            `/datasets?${stringify(relatedWorkspaceParams, {
+              arrayFormat: 'comma',
+            })}`,
+            { signal }
+          ).then((d) => d.entries)
         : []
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
 
@@ -128,9 +126,44 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 
 export const { setDatasetModal } = datasetSlice.actions
 
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<RootState>(
-  (state) => state.datasets
-)
+export const {
+  selectAll: baseSelectAll,
+  selectById,
+  selectIds,
+} = entityAdapter.getSelectors<RootState>((state) => state.datasets)
+
+export const selectAll = createSelector([baseSelectAll], (datasets) => {
+  const vesselInfo = datasets
+    .filter((d) => d.category === 'vessel' && d.subcategory === 'info')
+    // Inject Proto Gaps Dataset
+    .map((d) => ({
+      ...d,
+      relatedDatasets: [
+        ...d.relatedDatasets,
+        {
+          id: 'proto-global-gaps-events:v20201001',
+          type: 'events:v1',
+        },
+      ],
+    }))
+
+  const gaps = datasets
+    .filter((d) => d.id === 'proto-global-gaps-events:v20201001')
+    // Inject related datasets to Proto Gaps Dataset
+    .map((d) => ({
+      ...d,
+      relatedDatasets: [
+        ...d.relatedDatasets,
+        ...vesselInfo.map((vi) => ({ id: vi.id, type: vi.type })),
+      ],
+    }))
+  const result = datasets.map((dataset) => {
+    const override = [...vesselInfo, ...gaps].find((current) => current.id === dataset.id)
+    return override ?? dataset
+  })
+  console.log(result)
+  return datasets //result
+})
 
 export function selectDatasets(state: RootState) {
   return selectAll(state)
