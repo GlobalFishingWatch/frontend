@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { APIDataset, DatasetSource, DatasetType } from 'features/datasets/datasets.types'
 import PrecipitationImage from 'assets/images/datasets/precipitation.jpg'
 import { API_URL } from 'data/config'
@@ -51,4 +51,25 @@ export const useAPIDatasets = ({ type, source }: ApiDatasetsParams = {}) => {
     refetchInterval: intervalMs,
   })
   return query
+}
+
+export function useDeleleAPIDataset() {
+  const queryClient = useQueryClient()
+  const mutation = useMutation(
+    async (datasetId: string) => {
+      const response = await fetch(`${API_URL}/datasets/${datasetId}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) {
+        throw new Error('Error deleting dataset')
+      }
+      return response.json()
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([DATASET_QUERY_ID])
+      },
+    }
+  )
+  return mutation
 }

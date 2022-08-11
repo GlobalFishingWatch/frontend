@@ -1,17 +1,24 @@
 import cx from 'classnames'
 import Image from 'next/image'
-import { Button } from '@globalfishingwatch/ui-components'
+import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
 import { getNextColor } from 'features/layers/layers.utils'
 import { APIDataset } from 'features/datasets/datasets.types'
 import { useModal } from 'features/modals/modals.hooks'
+import { useDeleleAPIDataset } from 'features/datasets/datasets.hooks'
 import styles from './DatasetsLibrary.module.css'
 
 const LocalDatasetsLibrary = ({ datasets }: { datasets: APIDataset[] }) => {
   const { addLayer } = useLayersConfig()
   const layers = useDatasetLayers()
+  const deleteDataset = useDeleleAPIDataset()
   const [, setIsOpen] = useModal('newContextDataset')
+
+  const onRemoveClick = (dataset) => {
+    deleteDataset.mutate(dataset.id)
+  }
+
   const onLayerClick = (dataset) => {
     const colors = layers.flatMap((layer) => layer?.config?.color || [])
     addLayer({
@@ -33,6 +40,14 @@ const LocalDatasetsLibrary = ({ datasets }: { datasets: APIDataset[] }) => {
             {dataset.image && <Image src={dataset.image}></Image>}
             <h3 className={styles.name}>{dataset.name}</h3>
             <p className={styles.description}>{dataset.description}</p>
+            <IconButton
+              size="small"
+              icon="delete"
+              loading={deleteDataset.isLoading}
+              disabled={disabled}
+              onClick={disabled ? undefined : () => onRemoveClick(dataset)}
+              tooltip="Remove dataset"
+            />
             <Button
               size="small"
               disabled={disabled}

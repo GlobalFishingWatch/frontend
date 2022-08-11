@@ -26,19 +26,6 @@ export function useUploadFile() {
   return mutation
 }
 
-export function useDeleleFile() {
-  const mutation = useMutation(async (fileId: string) => {
-    const response = await fetch(`${API_URL}/files${fileId}`, {
-      method: 'DELETE',
-    })
-    if (!response.ok) {
-      throw new Error('Error uploading file')
-    }
-    return response.json() as Promise<UploadFileResponse>
-  })
-  return mutation
-}
-
 export type UploadFileStatusResponse = {
   fileId: string
   status: ImportStatus
@@ -117,5 +104,8 @@ export function useFetchFileFields(fileId: string) {
       enabled: enabled,
     }
   )
-  return query
+  return {
+    ...(enabled ? query : uploadFileStatus),
+    data: query.data,
+  }
 }
