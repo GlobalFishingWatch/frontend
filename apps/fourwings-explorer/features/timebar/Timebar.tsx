@@ -19,6 +19,8 @@ const TimebarWrapper = () => {
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
         onChange={onTimebarChange}
+        displayWarningWhenInFuture={false}
+        showLastUpdate={false}
       >
         <TimebarActivityGraph />
       </Timebar>

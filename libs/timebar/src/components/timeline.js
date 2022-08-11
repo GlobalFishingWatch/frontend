@@ -293,8 +293,8 @@ class Timeline extends PureComponent {
       }
     }
     // on release, "stick" to day/hour
-    const stickedToUnit = (stickToUnit) ? stickToUnit(newStart, newEnd) : null
-    const stickUnit = stickedToUnit ||  (isMoreThanADay(newStart, newEnd) ? 'day' : 'hour')
+    const stickedToUnit = stickToUnit ? stickToUnit(newStart, newEnd) : null
+    const stickUnit = stickedToUnit || (isMoreThanADay(newStart, newEnd) ? 'day' : 'hour')
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
     if (newStart === newEnd) {
@@ -341,6 +341,8 @@ class Timeline extends PureComponent {
       onBookmarkChange,
       showLastUpdate,
       trackGraphOrientation,
+      latestAvailableDataDate,
+      displayWarningWhenInFuture,
     } = this.props
     const {
       dragging,
@@ -365,7 +367,8 @@ class Timeline extends PureComponent {
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)
 
     const lastUpdatePosition = this.outerScale(new Date(absoluteEnd))
-    const isInTheFuture = new Date(start) > new Date(this.props.latestAvailableDataDate)
+    const isInTheFuture =
+      displayWarningWhenInFuture && new Date(start) > new Date(latestAvailableDataDate)
 
     return (
       <TimelineContext.Provider
@@ -541,6 +544,7 @@ Timeline.propTypes = {
   bookmarkPlacement: PropTypes.string,
   stickToUnit: PropTypes.func,
   showLastUpdate: PropTypes.bool,
+  displayWarningWhenInFuture: PropTypes.bool,
 }
 
 Timeline.defaultProps = {
@@ -556,6 +560,7 @@ Timeline.defaultProps = {
   bookmarkEnd: null,
   bookmarkPlacement: 'top',
   children: null,
+  displayWarningWhenInFuture: true,
   onBookmarkChange: () => {
     // do nothing
   },

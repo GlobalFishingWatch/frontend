@@ -5,6 +5,7 @@ const LOCAL_API_VERSION = '/v1'
 export const API_URL = LOCAL_API_URL + LOCAL_API_VERSION
 
 export const FIRST_YEAR_OF_DATA = 2012
+export const LAST_YEAR_OF_DATA = 2030
 export const CURRENT_YEAR = new Date().getFullYear()
 export const DEFAULT_WORKSPACE = {
   latitude: 0,
@@ -13,7 +14,9 @@ export const DEFAULT_WORKSPACE = {
   start: '2017-01-01T00:00:00.000Z',
   end: new Date().toISOString(),
   availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
-  availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
+  availableEnd: new Date(
+    Date.UTC(LAST_YEAR_OF_DATA, 11, 31) + 24 * 60 * 60 * 1000 - 1
+  ).toISOString(),
 }
 
 export const DEFAULT_VIEWPORT = {

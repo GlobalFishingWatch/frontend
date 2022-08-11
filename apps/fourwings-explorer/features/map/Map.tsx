@@ -52,6 +52,9 @@ const MapWrapper = (): React.ReactElement => {
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 300)
+
+  console.log(mapStyle)
+
   return (
     <div className={styles.container}>
       <MapControls mapLoading={debouncedMapLoading} />
