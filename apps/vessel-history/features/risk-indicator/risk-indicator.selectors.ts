@@ -191,3 +191,12 @@ export const selectFishingRFMOsAreasWithoutAuthorization = createSelector(
     )
   }
 )
+
+export const selectGapsIntentionalDisabling = createSelector(
+  [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
+  (indicators, events) => {
+    return events.filter((event) =>
+      (indicators?.gaps?.intentionalDisabling || []).includes(event.id)
+    )
+  }
+)

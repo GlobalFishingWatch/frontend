@@ -29,6 +29,7 @@ import {
   selectCurrentMergedVesselsIndicators,
   selectRiskVesselIndentityOperatorsHistory,
   selectCoverage,
+  selectGapsIntentionalDisabling,
 } from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
@@ -41,6 +42,7 @@ export interface UseRiskIndicator {
   fishingInMPA: RenderedEvent[]
   fishingInRFMOWithoutAuthorization: RenderedEvent[]
   fishingRFMOsAreasWithoutAuthorization: string[]
+  gapsIntentionalDisabling: RenderedEvent[]
   loiteringInMPA: RenderedEvent[]
   portVisitsToNonPSMAPortState: RenderedEvent[]
   countByRiskLevel: {
@@ -93,6 +95,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   const fishingRFMOsAreasWithoutAuthorization = useSelector(
     selectFishingRFMOsAreasWithoutAuthorization
   )
+  const gapsIntentionalDisabling = useSelector(selectGapsIntentionalDisabling)
 
   const uniqueFlags = useMemo(() => getUniqueHistoryValues(flagsHistory), [flagsHistory])
   const uniqueNames = useMemo(() => getUniqueHistoryValues(namesHistory), [namesHistory])
@@ -123,6 +126,7 @@ export function useRiskIndicator(): UseRiskIndicator {
         Math.max(0, uniqueOwners.length - 1) +
         portVisitsToNonPSMAPortState.length +
         vesselFlagsOnMOU.length +
+        (gapsIntentionalDisabling?.length ?? 0) +
         0,
       high: (iuuBlacklisted ? 1 : 0) + 0,
     },
@@ -136,6 +140,7 @@ export function useRiskIndicator(): UseRiskIndicator {
     fishingInRFMOWithoutAuthorization,
     fishingRFMOsAreasWithoutAuthorization,
     flagsHistory,
+    gapsIntentionalDisabling,
     indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
     iuuBlacklisted,
     loiteringInMPA,

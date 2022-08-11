@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TerminologyAisDisabling should render successfully 1`] = `
+<body>
+  <div>
+    <p
+      class="container"
+    >
+      TBD
+    </p>
+  </div>
+</body>
+`;
