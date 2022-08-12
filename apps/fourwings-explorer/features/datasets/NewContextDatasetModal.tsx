@@ -1,4 +1,5 @@
 import { useState, useCallback, Fragment } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import { FeatureCollection } from 'geojson'
 import { Modal, Button } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -7,7 +8,7 @@ import { useCreateDataset } from 'features/datasets/new-datasets.hooks'
 import { FielType, FileField, useUploadFile } from 'features/datasets/files.hooks'
 import { ContextAPIDatasetUpdate } from 'features/datasets/datasets.types'
 import NewDatasetConfig from 'features/datasets/NewDatasetConfig'
-import { readBlobAs } from 'features/datasets/datasets.utils'
+import { getFileFromGeojson, readBlobAs } from 'features/datasets/datasets.utils'
 import { useLayersConfig } from 'features/layers/layers.hooks'
 import LocalDatasetsLibrary from 'features/datasets/DatasetsLibraryLocal'
 import { useAPIDatasets } from 'features/datasets/datasets.hooks'
@@ -70,16 +71,16 @@ function NewDatasetModal(): React.ReactElement {
   const readGeojsonFile = useCallback(async (file: File) => {
     const fileData = await readBlobAs(file, 'text')
     const geojson = JSON.parse(fileData)
+    if (geojson.type === 'FeatureCollection') {
+      geojson.features = geojson.features.map((feature) => {
+        feature.properties = { id: uuidv4(), ...feature.properties }
+        return feature
+      })
+    }
+    const fileUpdated = getFileFromGeojson(geojson)
+    setFile(fileUpdated)
     setFileData(geojson)
   }, [])
-
-  const onFileLoaded = useCallback(
-    (file: File) => {
-      setFile(file)
-      readGeojsonFile(file)
-    },
-    [readGeojsonFile]
-  )
 
   const onNextClick = useCallback(() => {
     uploadFile.mutate(
@@ -130,7 +131,8 @@ function NewDatasetModal(): React.ReactElement {
         ) : (
           <Fragment>
             <LocalDatasetsLibrary datasets={apiLocalDatasets.data} />
-            <FileDropzone onFileLoaded={onFileLoaded} fileTypes={['shapefile', 'geojson']} />
+            {/* TODO: support shapefile one day */}
+            <FileDropzone onFileLoaded={readGeojsonFile} fileTypes={['geojson']} />
           </Fragment>
         )}
       </div>
