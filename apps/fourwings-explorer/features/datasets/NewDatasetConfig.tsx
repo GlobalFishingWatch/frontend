@@ -25,7 +25,6 @@ export const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection)
 }
 
 export const getPropertyFieldsOptions = (fields: FileFields) => {
-  console.log(fields)
   if (!fields) return []
   return fields.map((property) => ({
     id: property.name,

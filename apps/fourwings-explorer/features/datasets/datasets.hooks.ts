@@ -1,13 +1,21 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { APIDataset, DatasetSource, DatasetType } from 'features/datasets/datasets.types'
-import PrecipitationImage from 'assets/images/datasets/precipitation.jpg'
+import SeaSurfaceTemperature from 'assets/images/datasets/sea-surface-temperature.jpg'
+import SeaSalinity from 'assets/images/datasets/sea-salinity.jpg'
+import SeaChlorophyll from 'assets/images/datasets/sea-chlorophyll.jpg'
+import AirTemperatureProjectionsMin from 'assets/images/datasets/air-surface-temperature-projections.jpg'
+import PrecipitationProjections from 'assets/images/datasets/precipitation-projections.jpg'
+import AerosolOpticalThickness from 'assets/images/datasets/aerosol-optical-thickness.jpg'
 import { API_URL } from 'data/config'
 
 const IMAGES_BY_ID = {
-  'public-global-water-temperature:v20220801': PrecipitationImage,
-  'public-global-water-salinity:v20220801': PrecipitationImage,
-  'public-global-chlorophyl:v20220801': PrecipitationImage,
+  'public-global-water-temperature:v20220801': SeaSurfaceTemperature,
+  'public-global-water-salinity:v20220801': SeaSalinity,
+  'public-global-chlorophyl:v20220801': SeaChlorophyll,
+  'public-global-climate-projections-tasmin:v20220801': AirTemperatureProjectionsMin,
+  'public-global-climate-projections-pr:v20220801': PrecipitationProjections,
+  'public-global-terra-atmosphere': AerosolOpticalThickness,
 }
 
 const getDatasets = async () => {

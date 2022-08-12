@@ -37,7 +37,7 @@ const LocalDatasetsLibrary = ({ datasets }: { datasets: APIDataset[] }) => {
         const disabled = layers.some((l) => l.id === dataset.id)
         return (
           <li key={dataset.id} className={cx(styles.dataset, { [styles.disabled]: disabled })}>
-            {dataset.image && <Image src={dataset.image}></Image>}
+            {dataset.image && <Image className={styles.image} src={dataset.image}></Image>}
             <h3 className={styles.name}>{dataset.name}</h3>
             <p className={styles.description}>{dataset.description}</p>
             <IconButton

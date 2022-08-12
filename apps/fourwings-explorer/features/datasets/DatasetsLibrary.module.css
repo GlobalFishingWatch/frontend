@@ -76,6 +76,12 @@
   cursor: not-allowed;
 }
 
+.image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
 .name {
   font: var(--font-L);
   font-weight: 700;
