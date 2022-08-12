@@ -82,6 +82,13 @@ export const selectEncountersInForeignEEZ = createSelector(
   }
 )
 
+export const selectCoverage = createSelector(
+  [selectCurrentMergedVesselsIndicators],
+  (indicators) => {
+    return indicators?.coverage
+  }
+)
+
 export const selectPortVisitsToNonPSMAPortState = createSelector(
   [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
   (indicators, events) => {

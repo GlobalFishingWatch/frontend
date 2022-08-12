@@ -255,3 +255,8 @@ button.settingsLink {
 .eventLoading {
   margin: 0 var(--space-S);
 }
+
+.aisCoverageContainer {
+  padding-left: var(--space-M);
+  padding-bottom: var(--space-S);
+}

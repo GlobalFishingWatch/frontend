@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { Modal, ProgressBar, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'
 import RiskIndicator from 'features/risk-indicator/risk-indicator'
@@ -10,6 +10,7 @@ import useMapEvents from 'features/map/map-events.hooks'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import useViewport from 'features/map/map-viewport.hooks'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import TerminologyAISCoverage from 'features/terminology/terminology-ais-coverage'
 import TerminologyEncounterEvents from 'features/terminology/terminology-encounter-events'
 import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
 import TerminologyIuu from 'features/terminology/terminology-iuu'
@@ -30,6 +31,7 @@ export function RiskSummary(props: RiskSummaryProps) {
   const { t } = useTranslation()
   const { authorizedInsurer } = useUser()
   const {
+    coverage,
     encountersInForeignEEZ,
     encountersInMPA,
     encountersInRFMOWithoutAuthorization,
@@ -104,7 +106,18 @@ export function RiskSummary(props: RiskSummaryProps) {
   const hasChangedNames = uniqueNames.length > 1
   const hasChangedOperators = uniqueOperators.length > 1
   const hasChangedOwners = uniqueOwners.length > 1
-  console.log(operatorsHistory)
+  const coverageLevel = useMemo(() => {
+    if (!coverage?.percentage) {
+      return 'none'
+    }
+    if (coverage.percentage < 33) {
+      return 'high'
+    }
+    if (coverage.percentage < 66) {
+      return 'medium'
+    }
+    return 'low'
+  }, [coverage])
   const vesselFlagsPerMOU = useMemo(
     () => Array.from(new Set(vesselFlagsOnMOU.map((item) => item.name))),
     [vesselFlagsOnMOU]
@@ -117,8 +130,17 @@ export function RiskSummary(props: RiskSummaryProps) {
   const hasEncountersIndicators =
     hasEncountersInMPAs || hasEncountersInForeignEEZs || hasEncountersInRFMOWithoutAuthorization
   const hasFishingIndicators = hasFishingInMPAs || hasFishingInRFMOWithoutAuthorization
+
   return (
     <div className={styles['container']}>
+      <RiskSection
+        severity={coverageLevel}
+        title={t('events.aisCoverage', 'AIS')}
+        titleInfo={<TerminologyAISCoverage />}
+      >
+        <ProgressBar value={coverage?.percentage} />
+        <br />
+      </RiskSection>
       {hasIUUIndicators && (
         <RiskSection severity="high" title={t('event.iuu', 'iuu')} titleInfo={<TerminologyIuu />}>
           <RiskIndicator
@@ -267,247 +289,247 @@ export function RiskSummary(props: RiskSummaryProps) {
         hasChangedFlags ||
         hasChangedNames ||
         hasChangedOperators) && (
-        <RiskSection
-          severity="medium"
-          title={t('risk.identity', 'Identity')}
-          titleInfo={<TerminologyRiskIdentity />}
-        >
-          {vesselFlagsPerMOU.map((mou, index) => (
-            <RiskIdentityFlagsOnMouIndicator
-              key={`${mou}-${index}`}
-              name={mou}
-              flags={vesselFlagsOnMOU
-                .filter((item) => item.name === mou)
-                .map((item) => item.flags)
-                .flat()}
-              vesselName={vessel.shipname}
-              flagsHistory={flagsHistory}
-            ></RiskIdentityFlagsOnMouIndicator>
-          ))}
-          {hasChangedOwners && (
-            <RiskIdentityIndicator
-              field={VesselFieldLabel.owner}
-              history={ownersHistory}
-              title={
-                t('risk.identityChangedOwners', '{{count}} owner change', {
-                  count: uniqueOwners.length - 1,
-                }) as string
-              }
-              subtitle={`(${uniqueOwners.join(', ')})`}
-              vesselName={vessel.shipname}
-            />
-          )}
-          {hasChangedOperators && (
-            <RiskIdentityIndicator
-              field={VesselFieldLabel.operator}
-              history={operatorsHistory}
-              title={
-                t('risk.identityChangedOperators', '{{count}} operator change', {
-                  count: uniqueOperators.length - 1,
-                }) as string
-              }
-              subtitle={`(${uniqueOperators.join(', ')})`}
-              vesselName={vessel.shipname}
-            />
-          )}
-          {hasChangedFlags && (
-            <RiskIdentityIndicator
-              field={VesselFieldLabel.flag}
-              history={flagsHistory}
-              title={
-                t('risk.identityChangedFlags', '{{count}} flag change', {
-                  count: uniqueFlags.length - 1,
-                }) as string
-              }
-              subtitle={`(${uniqueFlags.join(', ')})`}
-              vesselName={vessel.shipname}
-            />
-          )}
-          {hasChangedNames && (
-            <RiskIdentityIndicator
-              field={VesselFieldLabel.name}
-              history={namesHistory}
-              title={
-                t('risk.identityChangedNames', '{{count}} name change', {
-                  count: uniqueNames.length - 1,
-                }) as string
-              }
-              subtitle={`(${uniqueNames.join(', ')})`}
-              vesselName={vessel.shipname}
-            />
-          )}
-        </RiskSection>
-      )}
+          <RiskSection
+            severity="medium"
+            title={t('risk.identity', 'Identity')}
+            titleInfo={<TerminologyRiskIdentity />}
+          >
+            {vesselFlagsPerMOU.map((mou, index) => (
+              <RiskIdentityFlagsOnMouIndicator
+                key={`${mou}-${index}`}
+                name={mou}
+                flags={vesselFlagsOnMOU
+                  .filter((item) => item.name === mou)
+                  .map((item) => item.flags)
+                  .flat()}
+                vesselName={vessel.shipname}
+                flagsHistory={flagsHistory}
+              ></RiskIdentityFlagsOnMouIndicator>
+            ))}
+            {hasChangedOwners && (
+              <RiskIdentityIndicator
+                field={VesselFieldLabel.owner}
+                history={ownersHistory}
+                title={
+                  t('risk.identityChangedOwners', '{{count}} owner change', {
+                    count: uniqueOwners.length - 1,
+                  }) as string
+                }
+                subtitle={`(${uniqueOwners.join(', ')})`}
+                vesselName={vessel.shipname}
+              />
+            )}
+            {hasChangedOperators && (
+              <RiskIdentityIndicator
+                field={VesselFieldLabel.operator}
+                history={operatorsHistory}
+                title={
+                  t('risk.identityChangedOperators', '{{count}} operator change', {
+                    count: uniqueOperators.length - 1,
+                  }) as string
+                }
+                subtitle={`(${uniqueOperators.join(', ')})`}
+                vesselName={vessel.shipname}
+              />
+            )}
+            {hasChangedFlags && (
+              <RiskIdentityIndicator
+                field={VesselFieldLabel.flag}
+                history={flagsHistory}
+                title={
+                  t('risk.identityChangedFlags', '{{count}} flag change', {
+                    count: uniqueFlags.length - 1,
+                  }) as string
+                }
+                subtitle={`(${uniqueFlags.join(', ')})`}
+                vesselName={vessel.shipname}
+              />
+            )}
+            {hasChangedNames && (
+              <RiskIdentityIndicator
+                field={VesselFieldLabel.name}
+                history={namesHistory}
+                title={
+                  t('risk.identityChangedNames', '{{count}} name change', {
+                    count: uniqueNames.length - 1,
+                  }) as string
+                }
+                subtitle={`(${uniqueNames.join(', ')})`}
+                vesselName={vessel.shipname}
+              />
+            )}
+          </RiskSection>
+        )}
       {(!hasFishingIndicators ||
         !hasEncountersIndicators ||
         !hasLoiteringInMPAs ||
         !hasPortVisitsToNonPSMAPortState ||
         !hasVesselFlagsOnMOU ||
         !hasIUUIndicators) && (
-        <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
-          {!hasIUUIndicators && (
-            <RiskSection className={styles.naSubSection} title={t('event.iuu', 'iuu')}>
-              {!hasIUUIndicators && (
-                <RiskIndicator
-                  title={
-                    iuuBlacklisted === false
-                      ? (t(
+          <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
+            {!hasIUUIndicators && (
+              <RiskSection className={styles.naSubSection} title={t('event.iuu', 'iuu')}>
+                {!hasIUUIndicators && (
+                  <RiskIndicator
+                    title={
+                      iuuBlacklisted === false
+                        ? (t(
                           'risk.notPresentOnARFMOIUUList',
                           'The vessel is not present on an RFMO IUU blacklist'
                         ) as string)
-                      : (t(
+                        : (t(
                           'risk.undeterminedPresenceOnARFMOIUUList',
                           'Unable to determine if the vessel is present on a RFMO IUU list or not'
                         ) as string)
-                  }
-                ></RiskIndicator>
+                    }
+                  ></RiskIndicator>
+                )}
+              </RiskSection>
+            )}
+            {(!hasFishingInMPAs || !hasFishingInRFMOWithoutAuthorization) && (
+              <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
+                {!hasFishingInRFMOWithoutAuthorization && (
+                  <RiskIndicator
+                    title={
+                      t(
+                        'risk.noFishingEventInRFMOWithoutAuthorization',
+                        'No fishing event detected outside known authorised areas'
+                      ) as string
+                    }
+                    events={fishingInRFMOWithoutAuthorization}
+                    onEventInfoClick={openModal}
+                    onEventMapClick={onEventMapClick}
+                  ></RiskIndicator>
+                )}
+                {!hasFishingInMPAs && (
+                  <RiskIndicator
+                    title={
+                      t('risk.noFishingEventInMPA', 'No fishing event detected in an MPA') as string
+                    }
+                    events={fishingInMPA}
+                    onEventInfoClick={openModal}
+                    onEventMapClick={onEventMapClick}
+                  ></RiskIndicator>
+                )}
+              </RiskSection>
+            )}
+            {(!hasEncountersInMPAs ||
+              !hasEncountersInForeignEEZs ||
+              !hasEncountersInRFMOWithoutAuthorization) && (
+                <RiskSection
+                  className={styles.naSubSection}
+                  title={t('event.encounter', 'encounter', { count: 2 })}
+                >
+                  {!hasEncountersInRFMOWithoutAuthorization && (
+                    <RiskIndicator
+                      title={
+                        t(
+                          'risk.noEncounterEventInRFMOWithoutAuthorization',
+                          'No encounters detected outside known authorised areas'
+                        ) as string
+                      }
+                      events={encountersInRFMOWithoutAuthorization}
+                      onEventInfoClick={openModal}
+                      onEventMapClick={onEventMapClick}
+                    ></RiskIndicator>
+                  )}
+                  {!hasEncountersInMPAs && (
+                    <RiskIndicator
+                      title={
+                        t('risk.noEncounterEventInMPA', 'No encounters detected in an MPA') as string
+                      }
+                      events={encountersInMPA}
+                      onEventInfoClick={openModal}
+                      onEventMapClick={onEventMapClick}
+                    ></RiskIndicator>
+                  )}
+                  {!hasEncountersInForeignEEZs && (
+                    <RiskIndicator
+                      title={
+                        t(
+                          'risk.noEncounterEventInForeignEEZ',
+                          'No encounters detected in foreign EEZ'
+                        ) as string
+                      }
+                      events={encountersInForeignEEZ}
+                      onEventInfoClick={openModal}
+                      onEventMapClick={onEventMapClick}
+                    ></RiskIndicator>
+                  )}
+                </RiskSection>
               )}
-            </RiskSection>
-          )}
-          {(!hasFishingInMPAs || !hasFishingInRFMOWithoutAuthorization) && (
-            <RiskSection className={styles.naSubSection} title={t('event.fishing', 'fishing')}>
-              {!hasFishingInRFMOWithoutAuthorization && (
+            {!hasLoiteringInMPAs && (
+              <RiskSection className={styles.naSubSection} title={t('event.loitering', 'loitering')}>
+                <RiskIndicator
+                  title={
+                    t('risk.noLoiteringEventInMPA', 'No loitering event detected in an MPA') as string
+                  }
+                  events={loiteringInMPA}
+                  onEventInfoClick={openModal}
+                  onEventMapClick={onEventMapClick}
+                ></RiskIndicator>
+              </RiskSection>
+            )}
+            {!hasPortVisitsToNonPSMAPortState && (
+              <RiskSection
+                className={styles.naSubSection}
+                title={t('event.portVisitEvents', 'Port Visits')}
+              >
                 <RiskIndicator
                   title={
                     t(
-                      'risk.noFishingEventInRFMOWithoutAuthorization',
-                      'No fishing event detected outside known authorised areas'
+                      'risk.noPortVisitsToNonPSMAPortState',
+                      'No visit to a port in a country that has not ratified the PSMA state detected'
                     ) as string
                   }
-                  events={fishingInRFMOWithoutAuthorization}
+                  events={portVisitsToNonPSMAPortState}
                   onEventInfoClick={openModal}
                   onEventMapClick={onEventMapClick}
                 ></RiskIndicator>
+              </RiskSection>
+            )}
+            {(!hasVesselFlagsOnMOU ||
+              !hasChangedOwners ||
+              !hasChangedFlags ||
+              !hasChangedNames ||
+              !hasChangedOperators) && (
+                <RiskSection className={styles.naSubSection} title={t('risk.identity', 'Identity')}>
+                  {!hasVesselFlagsOnMOU && (
+                    <RiskIndicator
+                      title={
+                        t(
+                          'risk.noVesselFlagsOnMOU',
+                          "The vessel's flag(s) are not listed on either the Paris or Tokyo MOU black or grey list"
+                        ) as string
+                      }
+                    ></RiskIndicator>
+                  )}
+                  {!hasChangedOwners && (
+                    <RiskIndicator
+                      title={t('risk.noOwnerChanges', 'The vessel did not changed owners') as string}
+                    ></RiskIndicator>
+                  )}
+                  {!hasChangedOperators && (
+                    <RiskIndicator
+                      title={
+                        t('risk.noOperatorChanges', 'The vessel did not changed operators') as string
+                      }
+                    ></RiskIndicator>
+                  )}
+                  {!hasChangedFlags && (
+                    <RiskIndicator
+                      title={t('risk.noFlagChanges', 'The vessel did not changed flags') as string}
+                    ></RiskIndicator>
+                  )}
+                  {!hasChangedNames && (
+                    <RiskIndicator
+                      title={t('risk.noNameChanges', 'The vessel did not changed names') as string}
+                    ></RiskIndicator>
+                  )}
+                </RiskSection>
               )}
-              {!hasFishingInMPAs && (
-                <RiskIndicator
-                  title={
-                    t('risk.noFishingEventInMPA', 'No fishing event detected in an MPA') as string
-                  }
-                  events={fishingInMPA}
-                  onEventInfoClick={openModal}
-                  onEventMapClick={onEventMapClick}
-                ></RiskIndicator>
-              )}
-            </RiskSection>
-          )}
-          {(!hasEncountersInMPAs ||
-            !hasEncountersInForeignEEZs ||
-            !hasEncountersInRFMOWithoutAuthorization) && (
-            <RiskSection
-              className={styles.naSubSection}
-              title={t('event.encounter', 'encounter', { count: 2 })}
-            >
-              {!hasEncountersInRFMOWithoutAuthorization && (
-                <RiskIndicator
-                  title={
-                    t(
-                      'risk.noEncounterEventInRFMOWithoutAuthorization',
-                      'No encounters detected outside known authorised areas'
-                    ) as string
-                  }
-                  events={encountersInRFMOWithoutAuthorization}
-                  onEventInfoClick={openModal}
-                  onEventMapClick={onEventMapClick}
-                ></RiskIndicator>
-              )}
-              {!hasEncountersInMPAs && (
-                <RiskIndicator
-                  title={
-                    t('risk.noEncounterEventInMPA', 'No encounters detected in an MPA') as string
-                  }
-                  events={encountersInMPA}
-                  onEventInfoClick={openModal}
-                  onEventMapClick={onEventMapClick}
-                ></RiskIndicator>
-              )}
-              {!hasEncountersInForeignEEZs && (
-                <RiskIndicator
-                  title={
-                    t(
-                      'risk.noEncounterEventInForeignEEZ',
-                      'No encounters detected in foreign EEZ'
-                    ) as string
-                  }
-                  events={encountersInForeignEEZ}
-                  onEventInfoClick={openModal}
-                  onEventMapClick={onEventMapClick}
-                ></RiskIndicator>
-              )}
-            </RiskSection>
-          )}
-          {!hasLoiteringInMPAs && (
-            <RiskSection className={styles.naSubSection} title={t('event.loitering', 'loitering')}>
-              <RiskIndicator
-                title={
-                  t('risk.noLoiteringEventInMPA', 'No loitering event detected in an MPA') as string
-                }
-                events={loiteringInMPA}
-                onEventInfoClick={openModal}
-                onEventMapClick={onEventMapClick}
-              ></RiskIndicator>
-            </RiskSection>
-          )}
-          {!hasPortVisitsToNonPSMAPortState && (
-            <RiskSection
-              className={styles.naSubSection}
-              title={t('event.portVisitEvents', 'Port Visits')}
-            >
-              <RiskIndicator
-                title={
-                  t(
-                    'risk.noPortVisitsToNonPSMAPortState',
-                    'No visit to a port in a country that has not ratified the PSMA state detected'
-                  ) as string
-                }
-                events={portVisitsToNonPSMAPortState}
-                onEventInfoClick={openModal}
-                onEventMapClick={onEventMapClick}
-              ></RiskIndicator>
-            </RiskSection>
-          )}
-          {(!hasVesselFlagsOnMOU ||
-            !hasChangedOwners ||
-            !hasChangedFlags ||
-            !hasChangedNames ||
-            !hasChangedOperators) && (
-            <RiskSection className={styles.naSubSection} title={t('risk.identity', 'Identity')}>
-              {!hasVesselFlagsOnMOU && (
-                <RiskIndicator
-                  title={
-                    t(
-                      'risk.noVesselFlagsOnMOU',
-                      "The vessel's flag(s) are not listed on either the Paris or Tokyo MOU black or grey list"
-                    ) as string
-                  }
-                ></RiskIndicator>
-              )}
-              {!hasChangedOwners && (
-                <RiskIndicator
-                  title={t('risk.noOwnerChanges', 'The vessel did not changed owners') as string}
-                ></RiskIndicator>
-              )}
-              {!hasChangedOperators && (
-                <RiskIndicator
-                  title={
-                    t('risk.noOperatorChanges', 'The vessel did not changed operators') as string
-                  }
-                ></RiskIndicator>
-              )}
-              {!hasChangedFlags && (
-                <RiskIndicator
-                  title={t('risk.noFlagChanges', 'The vessel did not changed flags') as string}
-                ></RiskIndicator>
-              )}
-              {!hasChangedNames && (
-                <RiskIndicator
-                  title={t('risk.noNameChanges', 'The vessel did not changed names') as string}
-                ></RiskIndicator>
-              )}
-            </RiskSection>
-          )}
-        </RiskSection>
-      )}
+          </RiskSection>
+        )}
       <Modal
         appSelector="__next"
         title={selectedEvent?.description ?? ''}
