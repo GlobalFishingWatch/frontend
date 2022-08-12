@@ -83,7 +83,7 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
               Unknown risk: In some iterations, the model predicted the vessel as an offender and in others, it predicted it as a non-offender, for that year.
             </Trans>
             <p className={styles.availabilityWarning}>
-              {t('vessel.forcedLabourModelAvailability', "The forced labor model is available from 2012 to 2020 at the moment.")}
+              {t('vessel.forcedLabourModelAvailability', "The Forced Labor Risk Model classifications are currently available for the years 2012-2020.")}
             </p>
           </DataAndTerminology>
         </div>
