@@ -1,5 +1,5 @@
 import { Map, MapboxStyle } from 'react-map-gl'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import maplibregl, { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -66,6 +66,7 @@ const MapWrapper = (): React.ReactElement => {
   const debouncedMapLoading = useDebounce(mapLoading, 300)
   const [hoveredEvent, setHoveredEvent] = useState<any>()
   const onMapHover: any = useMapHover(setHoveredEvent, undefined, map, mapStyle?.metadata)
+  const onMouseOut = useCallback(() => setHoveredEvent(undefined), [])
   const interactiveLayerIds = useMemoCompare(mapStyle?.metadata?.interactiveLayerIds)
   const mapLegends = useMapLegend(mapStyle, layers as any, hoveredEvent)
 
@@ -82,6 +83,7 @@ const MapWrapper = (): React.ReactElement => {
         mapStyle={mapStyle as MapboxStyle}
         onMove={onViewportChange}
         onMouseMove={onMapHover}
+        onMouseOut={onMouseOut}
         interactiveLayerIds={interactiveLayerIds}
         transformRequest={transformRequest}
         onError={handleError}

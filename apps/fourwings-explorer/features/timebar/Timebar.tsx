@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react'
 import { DateTime } from 'luxon'
-import { HighlightedChunks, Timebar, TimebarHighlighter } from '@globalfishingwatch/timebar'
+import { Timebar, TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import {
   TimebarRange,
@@ -8,16 +8,14 @@ import {
   useTimerange,
   useURLTimerange,
 } from 'features/timebar/timebar.hooks'
-import { useMapInstanceStyle } from 'features/map/map-context.hooks'
+// import { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { formatI18nDate } from 'utils/dates'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
 const TimebarHighlighterWrapper = () => {
   const [highlightTimerange] = useHighlightTimerange()
-  console.log(highlightTimerange)
-  const metadata = useMapInstanceStyle()?.metadata?.generatorsMetadata
-  console.log(metadata)
+  // const metadata = useMapInstanceStyle()?.metadata?.generatorsMetadata
 
   // Return precise chunk frame extent
   const dateCallback = useCallback((timestamp: number) => {

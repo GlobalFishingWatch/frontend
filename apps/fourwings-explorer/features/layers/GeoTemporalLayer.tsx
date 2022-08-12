@@ -98,10 +98,10 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
             />
           )}
         </div>
-        <div className={styles.properties}>
-          <div className={styles.legendContainer}>
-            <div className={styles.legend} id={`legend_${layer.id}`}></div>
-          </div>
+      </div>
+      <div className={styles.properties}>
+        <div className={styles.legendContainer}>
+          <div className={styles.legend} id={`legend_${layer.id}`}></div>
         </div>
       </div>
     </div>

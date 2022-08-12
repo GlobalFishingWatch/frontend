@@ -19,7 +19,9 @@ export const aggregateCell = ({
   const startOffset = quantizeOffset + frame
   const endOffset = startOffset + delta
 
-  if (startOffset > maxCellOffset || endOffset < minCellOffset) return null
+  if (startOffset > maxCellOffset || endOffset < minCellOffset) {
+    return null
+  }
 
   const cellStartOffset = Math.max(startOffset, minCellOffset)
   const cellEndOffset = Math.min(endOffset, maxCellOffset)
