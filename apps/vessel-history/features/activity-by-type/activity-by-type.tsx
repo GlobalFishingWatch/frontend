@@ -12,6 +12,8 @@ import { EventTypeVoyage, Voyage } from 'types/voyage'
 import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import ActivityGroup from 'features/profile/components/activity/ActivityGroup'
+import AisCoverage from 'features/profile/components/activity/AisCoverage'
+import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
 import { useActivityByType } from './activity-by-type.hook'
@@ -21,7 +23,7 @@ export interface ActivityByTypeProps {
   onMoveToMap?: () => void
 }
 
-export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
+export function ActivityByType({ onMoveToMap = () => { } }: ActivityByTypeProps) {
   const { events, toggleEventType } = useActivityByType()
 
   const [isModalOpen, setIsOpen] = useState(false)
@@ -30,6 +32,9 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     setSelectedEvent(event)
     setIsOpen(true)
   }, [])
+  const {
+    coverage,
+  } = useRiskIndicator()
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
@@ -67,6 +72,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         >
           {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
         </Modal>
+        <AisCoverage value={coverage?.percentage} />
         <div className={styles.activityContainer}>
           <AutoSizer disableWidth={true}>
             {({ width, height }) => (

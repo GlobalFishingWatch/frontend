@@ -21,16 +21,16 @@ import {
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
+import { useUser } from 'features/user/user.hooks'
 import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.selectors'
 import { TMT_CONTACT_US_URL } from 'data/constants'
 import { selectUserData } from 'features/user/user.slice'
+import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
 import InfoField from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
-import { useUser } from 'features/user/user.hooks'
-import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
 import ForcedLabor from './ForcedLabor'
 
 
@@ -157,6 +157,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   return (
     <Fragment>
       <div className={styles.infoContainer}>
+
         {vessel && (
           <Fragment>
             <div className={styles.imageAndFields}>
