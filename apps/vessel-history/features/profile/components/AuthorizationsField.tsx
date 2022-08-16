@@ -99,10 +99,7 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
               ),
             }}
             history={authsHistory}
-            isOpen={modalOpen}
             hideTMTDate={false}
-            onClose={closeModal}
-            vesselName={vesselName}
           ></InfoFieldHistory>
         </div>
       )}
