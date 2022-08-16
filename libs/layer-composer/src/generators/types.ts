@@ -63,6 +63,7 @@ export interface GeneratorLegend {
 
 export interface GeneratorMetadata {
   legend?: GeneratorLegend
+  interactive?: boolean
   [key: string]: any
 }
 

@@ -1,6 +1,7 @@
 import { useState, useCallback, Fragment } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Modal, Button } from '@globalfishingwatch/ui-components'
+import { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useModal } from 'features/modals/modals.hooks'
 import { useCreateDataset } from 'features/datasets/new-datasets.hooks'
@@ -15,6 +16,7 @@ import NewDatasetConfig from 'features/datasets/NewDatasetConfig'
 import { useLayersConfig } from 'features/layers/layers.hooks'
 import LocalDatasetsLibrary from 'features/datasets/DatasetsLibraryLocal'
 import { useAPIDatasets } from 'features/datasets/datasets.hooks'
+import { getNextColor } from 'features/layers/layers.utils'
 import styles from './NewDatasetModal.module.css'
 import FileDropzone from './FileDropzone'
 
@@ -96,7 +98,15 @@ function NewFourwingsDatasetModal(): React.ReactElement {
   const onConfirmClick = useCallback(() => {
     createDataset.mutate(newDataset, {
       onSuccess: (dataset) => {
-        addLayer({ id: dataset.id, config: { visible: true } })
+        const color = getNextColor('fill', [])
+        addLayer({
+          id: dataset.id,
+          config: {
+            visible: true,
+            color: color.value,
+            colorRamp: color.id as ColorRampId,
+          },
+        })
         onClose()
       },
     })

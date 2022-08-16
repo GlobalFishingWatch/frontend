@@ -145,7 +145,11 @@ function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement 
               <ul>
                 {featuresSortedByDistance.map((feature) => {
                   const id = feature?.properties?.[polygonId]
-                  return <li key={id}>{id}</li>
+                  return (
+                    <li key={id} className={styles.area}>
+                      {id} <IconButton icon="analysis" size="small" />
+                    </li>
+                  )
                 })}
               </ul>
             </div>

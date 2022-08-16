@@ -18,7 +18,7 @@ import {
   useMapSourceTilesLoadedAtom,
 } from 'features/map/map-sources.hooks'
 import { useDynamicBreaksUpdate } from 'features/map/dynamic-breaks.hooks'
-import MapPopup from 'features/map/MapPopup'
+import MapPopup from 'features/map/popups/PopupWrapper'
 import MapLegends from 'features/map/MapLegends'
 import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
 import styles from './Map.module.css'

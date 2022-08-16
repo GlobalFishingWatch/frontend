@@ -119,3 +119,8 @@
   background-color: white;
   color: var(--color-primary-blue);
 }
+
+.area {
+  display: flex;
+  align-items: center;
+}
