@@ -33,7 +33,7 @@ const ReportFilter: React.FC<ReportFilterOptions> = (props) => {
             vesselID: gfwId,
             tmtID: tmtId,
             start: '2015-05-30',
-            end: '2018-05-30',
+            end: '2022-05-30',
           },
           query: {
             aka: props.akaVesselProfileIds,

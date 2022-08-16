@@ -35,7 +35,6 @@ function useVoyagesConnect() {
     },
     [dispatch, expandedVoyages, mergedVesselId]
   )
-  console.log(eventsList)
   const eventsExpanded = useMemo(() => {
     const hasVoyages = !!eventsList.find((event) => event.type === EventTypeVoyage.Voyage)
     if (!hasVoyages) return eventsList as RenderedEvent[]

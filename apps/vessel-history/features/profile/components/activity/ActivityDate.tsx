@@ -7,15 +7,21 @@ import styles from './Activity.module.css'
 interface ActivityDateProps {
   event: RenderedEvent
   className?: any
+  displayEnd?: boolean
 }
 
 const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement => {
   const event = props.event
+  console.log(event)
   return (
     <Fragment>
       {event.timestamp && event.end && (
         <label className={props.className ? props.className : styles.date}>
           <I18nDate date={event.timestamp as number} format={DateTime.DATETIME_SHORT} /> -{' '}
+          {props.displayEnd &&
+            <Fragment>
+              <I18nDate date={event.end as number} format={DateTime.DATETIME_SHORT} />{' '}-
+            </Fragment>}
           {event.durationDescription}
         </label>
       )}

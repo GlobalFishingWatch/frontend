@@ -5,6 +5,15 @@
   z-index: 1000;
 }
 
+.backButton {
+  position: fixed;
+  left: 0;
+  background: var(--color-gradient);
+  color: var(--color-primary-blue);
+  top: 0;
+  z-index: 1000;
+}
+
 .title {
   margin-bottom: var(--space-M);
   text-align: center;

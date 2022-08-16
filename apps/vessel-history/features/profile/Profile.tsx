@@ -45,12 +45,11 @@ import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
 import ActivityByType from 'features/activity-by-type/activity-by-type'
+import Report from 'features/profile/report/Report'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
-import Report from 'features/profile/report/Report'
 import styles from './Profile.module.css'
-import { selectRiskSummaryTabVisible } from './profile.selectors'
 import ReportFilter from './report/ReportFilter'
 
 interface ProfileProps {

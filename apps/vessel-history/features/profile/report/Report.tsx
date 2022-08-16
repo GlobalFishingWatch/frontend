@@ -1,17 +1,23 @@
-import React, { Component , Fragment, useState, useEffect, useMemo, useCallback } from 'react';
+import React, { Component, Fragment, useState, useEffect, useMemo, useCallback } from 'react';
 import cx from 'classnames'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { redirect } from 'redux-first-router';
 import { Button } from '@globalfishingwatch/ui-components';
 import { EventTypes } from '@globalfishingwatch/api-types';
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook';
-import { selectReportRange } from 'routes/routes.selectors';
+import { selectReportRange, selectUrlAkaVesselQuery, selectVesselProfileId } from 'routes/routes.selectors';
 import { VesselWithHistory } from 'types';
 import { EventTypeVoyage } from 'types/voyage';
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors';
 import RiskSummary from 'features/risk-summary/risk-summary';
-import { selectRiskSummaryTabVisible } from 'features/profile/profile.selectors';
+import { selectCurrentUserProfileHasInsurerPermission, selectCurrentUserProfileHasPortInspectorPermission } from 'features/profile/profile.selectors';
+import ActivityByType from 'features/activity-by-type/activity-by-type';
+import { useActivityByType } from 'features/activity-by-type/activity-by-type.hook';
+import { PROFILE } from 'routes/routes';
 import ActivityItem from '../components/activity/ActivityItem';
 import Info from '../components/Info';
+import Activity from '../components/activity/Activity';
+import ActivityGroup from '../components/activity/ActivityGroup';
 import styles from './Report.module.css'
 
 interface ReportProps {
@@ -21,12 +27,39 @@ interface ReportProps {
 const Report: React.FC<ReportProps> = (props): React.ReactElement => {
   const vessel = props.vessel
   const dateRange = useSelector(selectReportRange)
-  const riskSummaryTabVisible = useSelector(selectRiskSummaryTabVisible)
+  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
+  const currentProfileIsPortInspector = useSelector(selectCurrentUserProfileHasPortInspectorPermission)
   const { eventsLoading, eventsExpanded } = useVoyagesConnect()
+  const { eventsByType } = useActivityByType()
+  const vesselProfileId = useSelector(selectVesselProfileId)
+  const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const print = useCallback(() => {
     window.print()
   }, [])
-  console.log(eventsExpanded)
+  const dispatch = useDispatch()
+
+  const goBack = useCallback(
+    () => {
+      let [dataset, gfwId, tmtId] = (
+        Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
+      ).split('_')
+
+      dispatch(
+        redirect({
+          type: PROFILE,
+          payload: {
+            dataset: dataset,
+            vesselID: gfwId,
+            tmtID: tmtId
+          },
+          query: {
+            aka: akaVesselProfileIds,
+          }
+        })
+      )
+    },
+    [dispatch, vesselProfileId, akaVesselProfileIds]
+  )
   const events = useMemo(() => {
     return eventsExpanded.filter(event => {
       const start = new Date(event.start)
@@ -58,9 +91,10 @@ const Report: React.FC<ReportProps> = (props): React.ReactElement => {
       }, { fishingHours: 0 }
     );
   }, [events])
-
+  console.log(eventsByType)
   return (
     <Fragment>
+      <Button onClick={goBack} className={cx(styles.backButton, 'no-print')}>Back</Button>
       <Button onClick={print} className={cx(styles.printButton, 'no-print')}>Print</Button>
       {!eventsLoading && (
         <Fragment>
@@ -72,7 +106,7 @@ const Report: React.FC<ReportProps> = (props): React.ReactElement => {
             filterRange={dateRange}
             onMoveToMap={() => null}
           />
-          {riskSummaryTabVisible && (
+          {currentProfileIsInsurer && (
             <Fragment>
               <h1 className={styles.title}>Risk Summary</h1>
               <RiskSummary />
@@ -91,8 +125,7 @@ const Report: React.FC<ReportProps> = (props): React.ReactElement => {
           </div>
 
           <h2 className={styles.title}>Activity Events</h2>
-
-          {events && events.length > 0 && events.map((event, index) =>
+          {currentProfileIsPortInspector && events && events.length > 0 && events.map((event, index) =>
             <ActivityItem
               key={index}
               event={event}
@@ -100,6 +133,27 @@ const Report: React.FC<ReportProps> = (props): React.ReactElement => {
               printView={true}
             />
           )}
+          {currentProfileIsInsurer && eventsByType.map((eventGroup, index) =>
+            <Fragment>
+              {eventGroup.group &&
+                <ActivityGroup
+                  key={index}
+                  eventType={eventGroup.type}
+                  loading={eventGroup.loading}
+                  onToggleClick={() => null}
+                  quantity={eventGroup.quantity}
+                  status={eventGroup.status}
+                ></ActivityGroup>}
+              {eventGroup.events && eventGroup.events.map((event, index2) =>
+                <ActivityItem
+                  key={index2}
+                  event={event}
+                  printView={true}
+                />
+              )}
+            </Fragment>
+          )
+          }
         </Fragment>
       )}
 

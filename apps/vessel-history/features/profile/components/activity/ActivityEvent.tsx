@@ -1,10 +1,12 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { getEncounterStatus } from 'features/vessels/activity/vessels-activity.utils'
 import ActivityDate from './ActivityDate'
 import styles from './Activity.module.css'
+import ActivityEventExtraDescription from './ActivityEventExtraDescription'
 
 interface EventProps {
   classname?: string
@@ -23,9 +25,10 @@ const ActivityEvent: React.FC<EventProps> = ({
   onMapClick = () => { },
   printView = false
 }): React.ReactElement => {
+  const { t } = useTranslation()
   return (
     <Fragment>
-      <div className={cx(styles.event, classname)}>
+      <div className={cx(styles.event, classname, { [styles.printView]: printView })}>
         <div
           className={cx(
             styles.eventIcon,
@@ -40,8 +43,9 @@ const ActivityEvent: React.FC<EventProps> = ({
           {event.type === 'port_visit' && <Icon icon="event-port-visit" type="default" />}
         </div>
         <div className={styles.eventData}>
-          <ActivityDate event={event} />
+          <ActivityDate event={event} displayEnd={printView} />
           <div className={styles.description}>{event.description}</div>
+          {printView && <ActivityEventExtraDescription event={event} />}
         </div>
         <div className={styles.actions}>
           {!printView && <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>}
