@@ -48,6 +48,7 @@ class PolygonsGenerator {
       paint,
       metadata: {
         group: Group.OutlinePolygons,
+        ...(config.metadata || {}),
       },
     }
     return [layer]

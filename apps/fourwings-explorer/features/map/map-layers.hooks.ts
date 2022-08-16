@@ -74,6 +74,9 @@ export function getLayerGeneratorConfig(layer: DatasetLayer) {
         type: GeneratorType.Polygons,
         url: `${API_URL}/datasets/${dataset.id}/data`,
         attribution: dataset.source,
+        metadata: {
+          interactive: true,
+        },
       }
       return generator
     }

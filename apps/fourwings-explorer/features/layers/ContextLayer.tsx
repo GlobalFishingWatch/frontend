@@ -21,10 +21,12 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
+const CONTEXT_FEATURES_LIMIT = 5
+
 const filterFeaturesByCenterDistance = (
   features: GeoJSONFeature[],
   center: MapCoordinates,
-  limit = 5
+  limit = CONTEXT_FEATURES_LIMIT
 ) => {
   if (!features?.length || !center?.latitude || !center?.latitude) {
     return []
