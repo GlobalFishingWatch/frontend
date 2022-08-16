@@ -52,6 +52,10 @@ export function useViewport(): UseViewport {
   return { viewport, onViewportChange, setMapCoordinates }
 }
 
+/**
+ * It sets the URLViewportAtom to the debounced viewport in the URL
+ * USED IT ONLY ONCE!
+ */
 export const useURLViewport = () => {
   const viewport = useRecoilValue(viewportAtom)
   const setURLViewport = useSetRecoilState(URLViewportAtom)
@@ -60,4 +64,8 @@ export const useURLViewport = () => {
   useEffect(() => {
     setURLViewport(debouncedViewport)
   }, [debouncedViewport, setURLViewport])
+}
+
+export const useDebouncedViewport = () => {
+  return useRecoilValue(URLViewportAtom)
 }

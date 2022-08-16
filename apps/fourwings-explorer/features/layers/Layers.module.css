@@ -25,6 +25,10 @@
   align-items: center;
 }
 
+.properties {
+  padding: var(--space-S);
+}
+
 .dragger {
   width: 0;
   overflow: hidden;
@@ -105,7 +109,6 @@
   justify-content: center;
   position: relative;
   z-index: 0;
-  padding: var(--space-S);
 }
 
 .legend {

@@ -10,7 +10,11 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { useAPIDatasets } from 'features/datasets/datasets.hooks'
 import { toArray } from 'features/map/map-sources.hooks'
-import { APIDataset } from 'features/datasets/datasets.types'
+import {
+  APIDataset,
+  ContextAPIDataset,
+  FourwingsAPIDataset,
+} from 'features/datasets/datasets.types'
 
 export type BaseLayerConfig = {
   type?: GeneratorType
@@ -30,8 +34,8 @@ export type DatasetLayerConfig = {
   config: BaseLayerConfig | BasemapGeneratorConfig | FourwingsLayerConfig
 }
 
-export type DatasetLayer = DatasetLayerConfig & {
-  dataset: APIDataset
+export type DatasetLayer<Dataset = APIDataset> = DatasetLayerConfig & {
+  dataset: Dataset
 }
 
 // const layersChecker = array(
@@ -124,10 +128,10 @@ export const useDatasetLayers = (): DatasetLayer[] => {
 
 export const useGeoTemporalLayers = () => {
   const layers = useDatasetLayers()
-  return layers.filter((l) => l.dataset?.type === '4wings')
+  return layers.filter((l) => l.dataset?.type === '4wings') as DatasetLayer<FourwingsAPIDataset>[]
 }
 
 export const useContexLayers = () => {
   const layers = useDatasetLayers()
-  return layers.filter((l) => l.dataset?.type === 'context')
+  return layers.filter((l) => l.dataset?.type === 'context') as DatasetLayer<ContextAPIDataset>[]
 }

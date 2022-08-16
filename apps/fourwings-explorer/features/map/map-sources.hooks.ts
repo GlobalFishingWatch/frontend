@@ -165,7 +165,15 @@ export const haslayersFeatureError = (layers: LayerFeature | LayerFeature[]) => 
   return layersArray.length ? layersArray.some(({ state }) => state?.error) : false
 }
 
-export const useMapLayerFeatures = (layers: DatasetLayer | DatasetLayer[]) => {
+export type MapLayerFeaturesParams = {
+  cacheKey?: string
+  queryMethod?: 'render' | 'source'
+}
+export const useMapLayerFeatures = (
+  layers: DatasetLayer | DatasetLayer[],
+  params: MapLayerFeaturesParams = {}
+) => {
+  const { cacheKey = '', queryMethod = 'source' } = params
   const style = useMapInstanceStyle()
   const map = useMapInstance()
 
@@ -215,10 +223,14 @@ export const useMapLayerFeatures = (layers: DatasetLayer | DatasetLayer[]) => {
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const emptyChunkState = {} as TilesSourceState
             const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
-            const features =
-              chunkState.loaded && !chunkState.error
-                ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
-                : null
+            let features = null
+            if (chunkState.loaded && !chunkState.error) {
+              if (queryMethod === 'render') {
+                features = map.queryRenderedFeatures(undefined, { layers: [sourceLayer] })
+              } else {
+                features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+              }
+            }
             return {
               active,
               features: features as unknown as GeoJSONFeature<TimeseriesFeatureProps>[],
@@ -238,11 +250,15 @@ export const useMapLayerFeatures = (layers: DatasetLayer | DatasetLayer[]) => {
           } as TilesSourceState)
         : sourceTilesLoaded[sourceId] || ({} as TilesSourceState)
 
-      const features: GeoJSONFeature[] | null =
-        !chunks && state?.loaded && !state?.error
-          ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
-          : null
+      let features: GeoJSONFeature[] | null = null
 
+      if (!chunks && state?.loaded && !state?.error) {
+        if (queryMethod === 'render') {
+          features = map.queryRenderedFeatures(undefined, { layers: [sourceId] })
+        } else {
+          features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+        }
+      }
       const data: LayerFeature = {
         sourceId,
         layerId,
@@ -256,7 +272,7 @@ export const useMapLayerFeatures = (layers: DatasetLayer | DatasetLayer[]) => {
     return layerFeature
     // Runs only when source tiles load change to avoid unu
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, sourceTilesLoaded])
+  }, [map, sourceTilesLoaded, cacheKey])
 
   return layerFeatures
 }

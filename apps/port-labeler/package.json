@@ -32,7 +32,7 @@
     "react-redux": "^8.0.2",
     "react-virtualized-auto-sizer": "^1.0.5",
     "react-window": "^1.8.6",
-    "recoil": "0.7.2",
+    "recoil": "0.7.5",
     "redux": "4.2.0",
     "redux-first-router": "2.1.5",
     "redux-first-router-link": "2.1.1",

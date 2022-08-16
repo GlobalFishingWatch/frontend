@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { APIDataset, DatasetSource, DatasetType } from 'features/datasets/datasets.types'
 import SeaSurfaceTemperature from 'assets/images/datasets/sea-surface-temperature.jpg'
@@ -61,6 +61,16 @@ export const useAPIDatasets = ({ type, source }: ApiDatasetsParams = {}) => {
     refetchInterval: intervalMs,
   })
   return query
+}
+
+export const useAreAPIDatasetsImporting = () => {
+  const { data } = useAPIDatasets()
+  const importing = useMemo(() => {
+    return (
+      data !== undefined && data.some((dataset) => dataset.status && dataset.status === 'IMPORTING')
+    )
+  }, [data])
+  return importing
 }
 
 export function useDeleleAPIDataset() {

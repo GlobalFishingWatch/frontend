@@ -3,12 +3,14 @@ import { Button } from '@globalfishingwatch/ui-components'
 import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
 import GeoTemporalLayer from 'features/layers/GeoTemporalLayer'
 import { useSetModal } from 'features/modals/modals.hooks'
+import { useAreAPIDatasetsImporting } from 'features/datasets/datasets.hooks'
 import styles from './Sections.module.css'
 
 function Section() {
   const setDatasetsLibraryModal = useSetModal('datasetLibrary')
   const setNewFourwingsDatasetModal = useSetModal('newFourwingsDataset')
   const geoTemporalLayers = useGeoTemporalLayers()
+  const areDatasetImporting = useAreAPIDatasetsImporting()
 
   return (
     <SortableContext items={geoTemporalLayers}>
@@ -29,6 +31,8 @@ function Section() {
           <Button
             className={styles.cta}
             size="small"
+            loading={areDatasetImporting}
+            disabled={areDatasetImporting}
             onClick={() => setNewFourwingsDatasetModal(true)}
             type="secondary"
           >
