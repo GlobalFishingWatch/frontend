@@ -4,6 +4,7 @@ import InfoFieldHistory from 'features/profile/components/InfoFieldHistory'
 import { ValueItem } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
 import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
+import InfoFieldHistoryModal from 'features/profile/components/InfoFieldHistorModal'
 import styles from './risk-identity-indicator.module.css'
 
 export interface RiskIdentityIndicatorProps {
@@ -54,14 +55,14 @@ export function RiskIdentityIndicator({
         ></IconButton>
       </div>
       {hasHistory && (
-        <InfoFieldHistory
+        <InfoFieldHistoryModal
           label={field}
           history={history}
           isOpen={modalOpen}
           hideTMTDate={hideTMTDate}
           onClose={closeModal}
           vesselName={vesselName}
-        ></InfoFieldHistory>
+        ></InfoFieldHistoryModal>
       )}
     </div>
   )

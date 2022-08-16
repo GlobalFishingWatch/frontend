@@ -9,6 +9,7 @@ import { VesselFieldLabel } from 'types/vessel'
 import { ValueItem } from 'types'
 import InfoFieldHistory from './InfoFieldHistory'
 import styles from './Info.module.css'
+import InfoFieldHistoryModal from './InfoFieldHistorModal'
 
 interface ListItemProps {
   label: VesselFieldLabel
@@ -83,7 +84,7 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
               quantity: sortedAuthorizations.length,
             })}
           </button>
-          <InfoFieldHistory
+          <InfoFieldHistoryModal
             label={label}
             columnHeaders={{
               field: t('vessel.rmfoRegistry', 'RMFO Registry'),
@@ -99,8 +100,11 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
               ),
             }}
             history={authsHistory}
+            isOpen={modalOpen}
             hideTMTDate={false}
-          ></InfoFieldHistory>
+            onClose={closeModal}
+            vesselName={vesselName}
+          ></InfoFieldHistoryModal>
         </div>
       )}
     </div>
