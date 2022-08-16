@@ -58,7 +58,7 @@
   padding: var(--space-M);
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 2rem;
+  gap: 3rem 2rem;
 }
 
 .datasets {
@@ -94,4 +94,5 @@
   /* stylelint-disable-next-line */
   display: -webkit-box;
   -webkit-line-clamp: 5;
+  margin-bottom: var(--space-S);
 }

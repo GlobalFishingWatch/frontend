@@ -7,6 +7,7 @@ import SeaChlorophyll from 'assets/images/datasets/sea-chlorophyll.jpg'
 import AirTemperatureProjectionsMin from 'assets/images/datasets/air-surface-temperature-projections.jpg'
 import PrecipitationProjections from 'assets/images/datasets/precipitation-projections.jpg'
 import AerosolOpticalThickness from 'assets/images/datasets/aerosol-optical-thickness.jpg'
+import ApparentFishingEffort from 'assets/images/datasets/apparent-fishing-effort.jpg'
 import { API_URL } from 'data/config'
 
 const IMAGES_BY_ID = {
@@ -16,6 +17,7 @@ const IMAGES_BY_ID = {
   'public-global-climate-projections-tasmin:v20220801': AirTemperatureProjectionsMin,
   'public-global-climate-projections-pr:v20220801': PrecipitationProjections,
   'public-global-terra-atmosphere': AerosolOpticalThickness,
+  'public-global-fishing-effort:v20201001': ApparentFishingEffort,
 }
 
 const getDatasets = async () => {

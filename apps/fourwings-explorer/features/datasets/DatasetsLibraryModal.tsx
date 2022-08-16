@@ -92,7 +92,7 @@ const DatasetsLibraryContent = ({ datasets }: { datasets: FourwingsAPIDataset[] 
     const search = datasetSearch.toUpperCase()
     return (
       d.source === sourceSelected &&
-      (d.id.toUpperCase().includes(search) || d.description.toUpperCase().includes(search))
+      (d.name.toUpperCase().includes(search) || d.description?.toUpperCase().includes(search))
     )
   })
 
