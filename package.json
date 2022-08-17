@@ -16,6 +16,7 @@
     "start:vessel-history": "nx start vessel-history",
     "start:tile-inspector": "nx start tile-inspector",
     "run:fishing-map": "nx serve:export fishing-map",
+    "run:fourwings-explorer": "nx serve:export fourwings-explorer",
     "build": "nx build",
     "test": "nx test",
     "dist": "nx run-many --target=dist --all --with-deps",

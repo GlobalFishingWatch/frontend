@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
 import cx from 'classnames'
 import { uniqBy } from 'lodash'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
@@ -40,6 +41,7 @@ const filterFeaturesByCenterDistance = (
 }
 
 function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement {
+  const router = useRouter()
   const { updateLayer } = useLayersConfig()
   const [colorOpen, setColorOpen] = useState(false)
   const viewport = useDebouncedViewport()
@@ -71,6 +73,11 @@ function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement 
     })
     setColorOpen(false)
   }
+
+  const onAreaClick = (areaId: string) => {
+    router.push(`/analysis/${areaId}`)
+  }
+
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
@@ -144,10 +151,12 @@ function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement 
               <label>Closest areas</label>
               <ul>
                 {featuresSortedByDistance.map((feature) => {
-                  const id = feature?.properties?.[polygonId]
+                  const id = feature?.properties?.id
+                  const title = feature?.properties?.[polygonId]
                   return (
                     <li key={id} className={styles.area}>
-                      {id} <IconButton icon="analysis" size="small" />
+                      {title}{' '}
+                      <IconButton icon="analysis" size="small" onClick={() => onAreaClick(id)} />
                     </li>
                   )
                 })}

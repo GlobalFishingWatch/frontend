@@ -14,15 +14,15 @@ const BASE_PATH = process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '/data-explorer
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
-  async rewrites() {
-    return [
-      // Rewrite everything to `pages/index`
-      {
-        source: '/:any*',
-        destination: '/',
-      },
-    ]
-  },
+  // async rewrites() {
+  //   return [
+  //     // Rewrite everything to `pages/index`
+  //     {
+  //       source: '/:any*',
+  //       destination: '/',
+  //     },
+  //   ]
+  // },
   nx: {
     // Set this to true if you would like to to use SVGR
     // See: https://github.com/gregberge/svgr

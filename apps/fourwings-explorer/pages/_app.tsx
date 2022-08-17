@@ -4,16 +4,12 @@ import { RecoilRoot } from 'recoil'
 import { MapProvider } from 'react-map-gl'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import './styles.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
+import './styles.css'
 import './base.css'
 import './timebar-settings.css'
 
 const queryClient = new QueryClient()
-
-// function SafeHydrate({ children }) {
-//   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
-// }
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (

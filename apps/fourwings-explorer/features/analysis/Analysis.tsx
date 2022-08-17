@@ -1,13 +1,24 @@
 import { useState, useCallback, Fragment } from 'react'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { SplitView } from '@globalfishingwatch/ui-components'
-import Sidebar from 'features/sidebar/Sidebar'
 import useMapInstance from 'features/map/map-context.hooks'
 import Modals from 'features/modals/Modals'
-import styles from './App.module.css'
+import styles from './Analysis.module.css'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
-const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+
+const Sidebar = () => {
+  const router = useRouter()
+  const { id } = router.query
+  return (
+    <div className={styles.main}>
+      <div className={styles.mapContainer}>
+        <h2>Analysis for: {id}</h2>
+      </div>
+    </div>
+  )
+}
 
 const Main = () => {
   return (
@@ -15,7 +26,6 @@ const Main = () => {
       <div className={styles.mapContainer}>
         <Map />
       </div>
-      <Timebar />
     </div>
   )
 }
@@ -44,6 +54,7 @@ function App(): React.ReactElement {
         aside={<Sidebar />}
         main={<Main />}
         asideWidth={asideWidth}
+        showAsideLabel={'TODO'}
         showMainLabel="Map"
         className="split-container"
       />
