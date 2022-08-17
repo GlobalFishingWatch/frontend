@@ -6,7 +6,7 @@ import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectEventsInsideMPAByType } from 'features/risk/risk.selectors'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { FlagOnMOU } from 'types/risk-indicator'
+import { AISCoverage, FlagOnMOU } from 'types/risk-indicator'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { ValueItem, VesselWithHistory } from 'types'
@@ -28,9 +28,11 @@ import {
   selectRiskVesselIndentityOwnersHistory,
   selectCurrentMergedVesselsIndicators,
   selectRiskVesselIndentityOperatorsHistory,
+  selectCoverage,
 } from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
+  coverage: AISCoverage
   encountersInForeignEEZ: RenderedEvent[]
   encountersInMPA: RenderedEvent[]
   encountersInRFMOWithoutAuthorization: RenderedEvent[]
@@ -74,6 +76,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   const encountersInMPA = useSelector(selectEncountersInMPA)
   const fishingInMPA = useSelector(selectFishingInMPA)
   const encountersInForeignEEZ = useSelector(selectEncountersInForeignEEZ)
+  const coverage = useSelector(selectCoverage)
   const portVisitsToNonPSMAPortState = useSelector(selectPortVisitsToNonPSMAPortState)
   const vesselFlagsOnMOU = useSelector(selectVesselIdentityMouIndicators)
   const flagsHistory = useSelector(selectRiskVesselIndentityFlagsHistory)
@@ -123,6 +126,7 @@ export function useRiskIndicator(): UseRiskIndicator {
         0,
       high: (iuuBlacklisted ? 1 : 0) + 0,
     },
+    coverage,
     encountersInForeignEEZ,
     encountersInMPA,
     encountersInRFMOWithoutAuthorization,

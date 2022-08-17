@@ -3,11 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
-import {
-  DEFAULT_STATS_FIELDS,
-  MAX_STATS_YEARS,
-  useGetStatsByDataviewQuery,
-} from 'queries/stats-api'
+import { DEFAULT_STATS_FIELDS, useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import {
   getDatasetConfigByDatasetType,
@@ -29,7 +25,6 @@ import { selectUrlTimeRange } from 'routes/routes.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
 import { SAR_DATAVIEW_ID } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
-import { getTimeRangeDuration } from 'utils/dates'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
 import DatasetFilterSource from '../shared/DatasetSourceField'
@@ -72,7 +67,6 @@ function ActivityLayerPanel({
   )
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
-  const duration = getTimeRangeDuration(urlTimeRange)
 
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
@@ -81,7 +75,7 @@ function ActivityLayerPanel({
       fields,
     },
     {
-      skip: guestUser || !urlTimeRange || !layerActive || duration?.years > MAX_STATS_YEARS,
+      skip: guestUser || !urlTimeRange || !layerActive,
     }
   )
 
@@ -161,7 +155,6 @@ function ActivityLayerPanel({
   }, [t])
 
   const statsValue = stats && (stats.vessel_id || stats.id)
-  const showStats = duration?.years <= 1
 
   return (
     <div
@@ -231,59 +224,57 @@ function ActivityLayerPanel({
                     'print-hidden'
                   )}
                 >
-                  {showStats && (
-                    <Tooltip
-                      content={
-                        stats.type === 'vessels'
-                          ? t(
-                              'layer.statsHelp',
-                              'The number of vessels and flag states is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
-                            )
-                          : t(
-                              'layer.statsHelpDetection',
-                              'The number of detections is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
-                            )
-                      }
-                    >
-                      <div className={activityStyles.help}>
-                        {statsValue > 0 ? (
-                          <span>
-                            <I18nNumber number={statsValue} />{' '}
-                            {stats.type === 'vessels'
-                              ? t('common.vessel', {
-                                  count: statsValue,
-                                  defaultValue: 'vessels',
-                                }).toLocaleLowerCase()
-                              : t('common.detection', {
-                                  count: statsValue,
-                                  defaultValue: 'detections',
-                                }).toLocaleLowerCase()}
-                          </span>
-                        ) : stats.type === 'vessels' ? (
-                          t('workspace.noVesselInFilters', 'No vessels match your filters')
-                        ) : (
-                          t('workspace.noDetectionInFilters', 'No detections match your filters')
-                        )}
-                        {stats.type === 'vessels' &&
-                          stats.flag > 0 &&
-                          (!dataview.config?.filters?.flag ||
-                            dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
-                            dataview.config?.filters?.flag.length > 1) && (
-                            <Fragment>
-                              <span> {t('common.from', 'from')} </span>
-                              <span>
-                                <I18nNumber number={stats.flag} />{' '}
-                                {t('layer.flagState', {
-                                  count: stats.flag,
-                                  defaultValue: 'flag states',
-                                }).toLocaleLowerCase()}
-                              </span>
-                            </Fragment>
-                          )}{' '}
-                        {t('common.globally', 'globally')}
-                      </div>
-                    </Tooltip>
-                  )}
+                  <Tooltip
+                    content={
+                      stats.type === 'vessels'
+                        ? t(
+                            'layer.statsHelp',
+                            'The number of vessels and flag states is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
+                          )
+                        : t(
+                            'layer.statsHelpDetection',
+                            'The number of detections is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
+                          )
+                    }
+                  >
+                    <div className={activityStyles.help}>
+                      {statsValue > 0 ? (
+                        <span>
+                          <I18nNumber number={statsValue} />{' '}
+                          {stats.type === 'vessels'
+                            ? t('common.vessel', {
+                                count: statsValue,
+                                defaultValue: 'vessels',
+                              }).toLocaleLowerCase()
+                            : t('common.detection', {
+                                count: statsValue,
+                                defaultValue: 'detections',
+                              }).toLocaleLowerCase()}
+                        </span>
+                      ) : stats.type === 'vessels' ? (
+                        t('workspace.noVesselInFilters', 'No vessels match your filters')
+                      ) : (
+                        t('workspace.noDetectionInFilters', 'No detections match your filters')
+                      )}
+                      {stats.type === 'vessels' &&
+                        stats.flag > 0 &&
+                        (!dataview.config?.filters?.flag ||
+                          dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
+                          dataview.config?.filters?.flag.length > 1) && (
+                          <Fragment>
+                            <span> {t('common.from', 'from')} </span>
+                            <span>
+                              <I18nNumber number={stats.flag} />{' '}
+                              {t('layer.flagState', {
+                                count: stats.flag,
+                                defaultValue: 'flag states',
+                              }).toLocaleLowerCase()}
+                            </span>
+                          </Fragment>
+                        )}{' '}
+                      {t('common.globally', 'globally')}
+                    </div>
+                  </Tooltip>
                 </div>
               )}
               <div className={styles.filters}>

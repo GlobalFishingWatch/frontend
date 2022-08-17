@@ -137,6 +137,26 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
   return detokenized
 }
 
+const PUBLIC_VMS_TRACK_DATASETS = [
+  'public-belize-fishing-tracks',
+  'public-bra-onyxsat-fishing-tracks',
+  'public-chile-fishing-tracks',
+  'public-chile-non-fishing-tracks',
+  'public-costa-rica-fishing-tracks',
+  'public-ecuador-fishing-tracks',
+  'public-ecuador-non-fishing-tracks',
+  'public-indonesia-fishing-tracks',
+  'public-mexico-fishing-tracks',
+  'public-panama-fishing-tracks',
+  'public-panama-non-fishing-tracks',
+  'public-peru-fishing-tracks',
+]
+export const migrateLegacyVMSPublicDatasets = (datasetId: string) => {
+  return PUBLIC_VMS_TRACK_DATASETS.some((legacyDataset) => datasetId.includes(legacyDataset))
+    ? datasetId.replace('public-', 'full-')
+    : datasetId
+}
+
 export const removeLegacyEndpointPrefix = (endpointId: string) => {
   return endpointId.replace('carriers-', '')
 }
@@ -149,6 +169,7 @@ export const parseLegacyDataviewInstanceEndpoint = (
     ...(dataviewInstance.datasetsConfig && {
       datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
         ...dc,
+        datasetId: migrateLegacyVMSPublicDatasets(dc.datasetId),
         endpoint: removeLegacyEndpointPrefix(dc.endpoint),
       })),
     }),

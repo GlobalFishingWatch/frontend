@@ -16,7 +16,12 @@ import {
   APIPagination,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { GFWAPI, parseAPIError, parseAPIErrorMessage } from '@globalfishingwatch/api-client'
+import {
+  GFWAPI,
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
 import {
   selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
@@ -46,7 +51,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue({
-        status: e.status || e.code,
+        status: parseAPIErrorStatus(e),
         message: `${id} - ${parseAPIErrorMessage(e)}`,
       })
     }
@@ -118,13 +123,10 @@ export const updateDataviewThunk = createAsyncThunk<
   'dataviews/update',
   async (partialDataview, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(
-        `/dataviews/${partialDataview.id}`,
-        {
-          method: 'PATCH',
-          body: partialDataview as any,
-        }
-      )
+      const dataview = await GFWAPI.fetch<Dataview>(`/dataviews/${partialDataview.id}`, {
+        method: 'PATCH',
+        body: partialDataview as any,
+      })
       return dataview
     } catch (e: any) {
       console.warn(e)

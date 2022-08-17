@@ -9,6 +9,13 @@ export type MOU = {
   paris: FlagColor
 }
 
+export type AISCoverage = {
+  blocks: number
+  blocksWithPositions: number
+  percentage: number
+  voyages: number
+}
+
 export type LocationRelatedEventIndicators = {
   mou: MOU
   eventsInForeignEEZ: string[]
@@ -45,6 +52,7 @@ export type FlagOnMOU = {
 
 export type Indicator = {
   id: string
+  coverage: AISCoverage
   encounters: LocationRelatedEventIndicators
   fishing: LocationRelatedEventIndicators
   portVisits: PortVisitsIndicators

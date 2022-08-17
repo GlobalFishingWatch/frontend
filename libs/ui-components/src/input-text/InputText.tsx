@@ -8,6 +8,8 @@ export type InputSize = 'default' | 'small'
 export type InputType = 'text' | 'email' | 'search' | 'number'
 
 type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  id?: string
+  name?: string
   labelClassName?: string
   className?: string
   label?: string
@@ -22,6 +24,7 @@ const defaultKey = Date.now().toString()
 
 function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
   const {
+    id,
     className,
     labelClassName = '',
     label,
@@ -35,23 +38,20 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
   const inputRef = useRef<HTMLInputElement>(null)
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
 
+  const inputProps = {
+    id: id ?? label,
+    name: id ?? label,
+    ...rest,
+    ...(type === 'number' && { step }),
+  }
   return (
     <div className={cx(styles.container, styles[inputSize], className)}>
       {label && (
-        <label className={labelClassName} htmlFor={label}>
+        <label className={labelClassName} htmlFor={inputProps.id}>
           {label}
         </label>
       )}
-      <input
-        className={styles.input}
-        key={inputKey}
-        ref={inputRef}
-        id={label}
-        name={label}
-        type={type}
-        {...rest}
-        {...(type === 'number' && { step })}
-      />
+      <input className={styles.input} key={inputKey} ref={inputRef} type={type} {...inputProps} />
       {loading && <Spinner size="tiny" className={styles.spinner} />}
       {!loading && (type === 'email' || type === 'search') && (
         <Icon

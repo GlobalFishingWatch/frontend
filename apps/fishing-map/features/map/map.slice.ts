@@ -22,9 +22,8 @@ import {
   selectActiveTemporalgridDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { selectUserLogged } from 'features/user/user.slice'
+import { isGuestUser, selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -93,8 +92,8 @@ const getInteractionEndpointDatasetConfig = (
   const featuresDataviews = features.flatMap((feature) => {
     return feature.temporalgrid
       ? temporalgridDataviews.find(
-        (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
-      ) || []
+          (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
+        ) || []
       : []
   })
   const fourWingsDataset = featuresDataviews[0]?.datasets?.find(
@@ -176,7 +175,7 @@ export const fetchVesselInfo = async (
   }
   try {
     const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl, {
-      signal
+      signal,
     })
     // TODO remove entries once the API is stable
     const vesselsInfoList: Vessel[] =
@@ -201,6 +200,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
+    const guestUser = isGuestUser(state)
     const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
     if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
@@ -257,7 +257,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       // Grab related dataset to fetch info from and prepare tracks
       const allInfoDatasets = await Promise.all(
         topActivityVesselsDatasets.flatMap(async (dataset) => {
-          const infoDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Vessels)
+          const infoDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Vessels, !guestUser)
           if (!infoDatasets) {
             return []
           }
@@ -276,6 +276,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           )
         })
       )
+
       const infoDatasets = allInfoDatasets.flatMap((d) => d || [])
       const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
@@ -298,8 +299,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   if (entry.years?.length && startYear && endYear) {
                     return (
                       entry.id === vessel.id &&
-                      entry.years.includes(startYear) &&
-                      entry.years.includes(endYear)
+                      (entry.years.some((year) => year > startYear) ||
+                        entry.years.some((year) => year < endYear))
                     )
                   }
                   return entry.id === vessel.id
@@ -383,7 +384,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
         const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
         if (vesselsUrl) {
           vesselsInfo = await GFWAPI.fetch<APIPagination<ExtendedEventVessel>>(vesselsUrl, {
-            signal
+            signal,
           }).then((r) => r.entries)
         }
       }
