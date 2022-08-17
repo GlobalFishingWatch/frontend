@@ -232,7 +232,7 @@ export const createVesselGroupThunk = createAsyncThunk(
           } as FetchOptions<any>)
         } catch (e: any) {
           // Means we already have a workspace with this name
-          if (e.code === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
+          if (e.status === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
             return await saveVesselGroup(vesselGroup, tries + 1)
           }
           console.warn('Error creating vessel group', e)
