@@ -276,6 +276,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           )
         })
       )
+
       const infoDatasets = allInfoDatasets.flatMap((d) => d || [])
       const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
@@ -298,8 +299,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   if (entry.years?.length && startYear && endYear) {
                     return (
                       entry.id === vessel.id &&
-                      entry.years.includes(startYear) &&
-                      entry.years.includes(endYear)
+                      (entry.years.some((year) => year > startYear) ||
+                        entry.years.some((year) => year < endYear))
                     )
                   }
                   return entry.id === vessel.id
