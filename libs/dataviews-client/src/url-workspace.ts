@@ -152,7 +152,7 @@ const PUBLIC_VMS_TRACK_DATASETS = [
   'public-peru-fishing-tracks',
 ]
 export const migrateLegacyVMSPublicDatasets = (datasetId: string) => {
-  return PUBLIC_VMS_TRACK_DATASETS.includes(datasetId)
+  return PUBLIC_VMS_TRACK_DATASETS.some((legacyDataset) => datasetId.includes(legacyDataset))
     ? datasetId.replace('public-', 'full-')
     : datasetId
 }
