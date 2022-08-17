@@ -148,7 +148,20 @@ export const getRelatedDatasetByType = (
   return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
 }
 
-export const getRelatedDatasetsByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
+export const getRelatedDatasetsByType = (
+  dataset?: Dataset,
+  datasetType?: DatasetTypes,
+  fullDatasetAllowed = false
+) => {
+  if (fullDatasetAllowed) {
+    const fullDataset = dataset?.relatedDatasets?.filter(
+      (relatedDataset) =>
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
+    )
+    if (fullDataset) {
+      return fullDataset
+    }
+  }
   return dataset?.relatedDatasets?.filter((relatedDataset) => relatedDataset.type === datasetType)
 }
 
