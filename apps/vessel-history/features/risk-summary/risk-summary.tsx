@@ -21,6 +21,7 @@ import TerminologyRiskIdentity from 'features/terminology/terminology-risk-ident
 import RiskIdentityFlagsOnMouIndicator from 'features/risk-identity-flags-on-mou-indicator/risk-identity-flags-on-mou-indicator'
 import RiskIdentityIndicator from 'features/risk-identity-indicator/risk-identity-indicator'
 import { VesselFieldLabel } from 'types/vessel'
+import TerminologyAisDisabling from 'features/terminology/terminology-ais-disabling'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -40,6 +41,7 @@ export function RiskSummary(props: RiskSummaryProps) {
     fishingInMPA,
     fishingInRFMOWithoutAuthorization,
     fishingRFMOsAreasWithoutAuthorization,
+    gapsIntentionalDisabling,
     indicatorsLoading,
     iuuBlacklisted,
     loiteringInMPA,
@@ -98,6 +100,7 @@ export function RiskSummary(props: RiskSummaryProps) {
     () => fishingRFMOsAreasWithoutAuthorization.join(', '),
     [fishingRFMOsAreasWithoutAuthorization]
   )
+  const hasGapsIntentionalDisabling = gapsIntentionalDisabling.length > 0
   const hasLoiteringInMPAs = loiteringInMPA.length > 0
   const hasPortVisitsToNonPSMAPortState = portVisitsToNonPSMAPortState.length > 0
 
@@ -151,6 +154,29 @@ export function RiskSummary(props: RiskSummaryProps) {
               ) as string
             }
             subtitle={' '}
+          ></RiskIndicator>
+        </RiskSection>
+      )}
+      {hasGapsIntentionalDisabling && (
+        <RiskSection
+          severity="medium"
+          title={t('risk.aisDisabling', 'AIS Disabling')}
+          titleInfo={<TerminologyAisDisabling />}
+        >
+          <RiskIndicator
+            title={
+              t(
+                'risk.likelyIntentionalDisablingEvent',
+                '{{count}} likely intentional disabling events',
+                {
+                  count: gapsIntentionalDisabling.length,
+                }
+              ) as string
+            }
+            subtitle={' '}
+            events={gapsIntentionalDisabling}
+            onEventInfoClick={openModal}
+            onEventMapClick={onEventMapClick}
           ></RiskIndicator>
         </RiskSection>
       )}
@@ -365,8 +391,26 @@ export function RiskSummary(props: RiskSummaryProps) {
         !hasLoiteringInMPAs ||
         !hasPortVisitsToNonPSMAPortState ||
         !hasVesselFlagsOnMOU ||
-        !hasIUUIndicators) && (
+        !hasIUUIndicators ||
+        !hasGapsIntentionalDisabling) && (
           <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
+            {!hasGapsIntentionalDisabling && (
+              <RiskSection
+                className={styles.naSubSection}
+                title={t('risk.aisDisabling', 'AIS Disabling')}
+              >
+                {!hasGapsIntentionalDisabling && (
+                  <RiskIndicator
+                    title={
+                      t(
+                        'risk.noIntentionalDisablingEvents',
+                        'No intentional disabling events detected'
+                      ) as string
+                    }
+                  ></RiskIndicator>
+                )}
+              </RiskSection>
+            )}
             {!hasIUUIndicators && (
               <RiskSection className={styles.naSubSection} title={t('event.iuu', 'iuu')}>
                 {!hasIUUIndicators && (

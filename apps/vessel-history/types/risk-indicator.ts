@@ -28,6 +28,10 @@ export type PortVisitsIndicators = {
   nonPSMAPortState: string[]
 }
 
+export type GapsIndicators = {
+  intentionalDisabling: string[]
+}
+
 export type VesselIdentityHistoryValue = {
   from: string
   to: string
@@ -58,4 +62,5 @@ export type Indicator = {
   portVisits: PortVisitsIndicators
   loitering: LocationRelatedEventIndicators
   vesselIdentity: VesselIdentityIndicators
+  gaps: GapsIndicators
 }
