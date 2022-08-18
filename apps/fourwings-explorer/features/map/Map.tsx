@@ -73,25 +73,27 @@ const MapWrapper = (): React.ReactElement => {
   return (
     <div className={styles.container}>
       <MapControls mapLoading={debouncedMapLoading} />
-      <Map
-        id="map"
-        style={style}
-        mapLib={maplibregl}
-        latitude={viewport.latitude}
-        longitude={viewport.longitude}
-        zoom={viewport.zoom}
-        mapStyle={mapStyle as MapboxStyle}
-        onMove={onViewportChange}
-        onMouseMove={onMapHover}
-        onMouseOut={onMouseOut}
-        interactiveLayerIds={interactiveLayerIds}
-        transformRequest={transformRequest}
-        onError={handleError}
-      >
-        {hoveredEvent && <MapPopup event={hoveredEvent} />}
-        {mapLegends && <MapLegends legends={mapLegends} />}
-        <MapInfo center={hoveredEvent} />
-      </Map>
+      {mapStyle && (
+        <Map
+          id="map"
+          style={style}
+          mapLib={maplibregl}
+          latitude={viewport.latitude}
+          longitude={viewport.longitude}
+          zoom={viewport.zoom}
+          mapStyle={mapStyle as MapboxStyle}
+          onMove={onViewportChange}
+          onMouseMove={onMapHover}
+          onMouseOut={onMouseOut}
+          interactiveLayerIds={interactiveLayerIds}
+          transformRequest={transformRequest}
+          onError={handleError}
+        >
+          {hoveredEvent && <MapPopup event={hoveredEvent} />}
+          {mapLegends && <MapLegends legends={mapLegends} />}
+          <MapInfo center={hoveredEvent} />
+        </Map>
+      )}
     </div>
   )
 }
