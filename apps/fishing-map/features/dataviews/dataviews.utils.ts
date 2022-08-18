@@ -41,7 +41,7 @@ type VesselInstanceDatasets = {
   eventsDatasetsId?: string[]
 }
 
-const getVesselDataviewInstanceDatasetConfig = (
+export const getVesselDataviewInstanceDatasetConfig = (
   vesselId: string,
   { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
 ) => {
