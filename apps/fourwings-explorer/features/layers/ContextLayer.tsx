@@ -75,7 +75,7 @@ function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement 
   }
 
   const onAreaClick = (layerId: string, areaId: string) => {
-    router.push(`/analysis/${layerId}?areaId=${areaId}`)
+    router.push({ pathname: '/analysis/[id]', query: { ...router.query, id: layerId, areaId } })
   }
 
   const onToggleColorOpen = () => {

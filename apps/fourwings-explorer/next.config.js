@@ -55,7 +55,7 @@ const nextConfig = {
   },
   // productionBrowserSourceMaps: true,
   ...(BASE_PATH && { basePath: BASE_PATH }),
-  productionBrowserSourceMaps: !IS_PRODUCTION,
+  // productionBrowserSourceMaps: !IS_PRODUCTION,
 }
 
 module.exports = withBundleAnalyzer(withNx(nextConfig))

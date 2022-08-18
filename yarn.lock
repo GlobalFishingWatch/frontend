@@ -15561,10 +15561,10 @@ recharts@^2.0.9:
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
-recoil-sync-next@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/recoil-sync-next/-/recoil-sync-next-0.0.1.tgz#40876bf3535f2c0da55c28ca6e29015eb2429c65"
-  integrity sha512-lvI068NNGsTEo3fep6MqSUnooD0VXtsnBJifUhwLhsIGAre2+apBsjf1Vv4oYIOEwv8IyGqaZIFYtgNZkfK79g==
+recoil-sync-next@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/recoil-sync-next/-/recoil-sync-next-0.0.2.tgz#511f80a6b30c8075c274190e0aa95c5c774f4a6a"
+  integrity sha512-Fh3FTj3raIUfJeGqEmjlDJAY2gzw12Jn+wlr1zd6YZNcdJoW18eaa19tn6xzAQea128SOQmruroZb0CfUwISlw==
 
 recoil-sync@^0.1.0:
   version "0.1.0"
