@@ -56,6 +56,11 @@ const nextConfig = {
   // productionBrowserSourceMaps: true,
   ...(BASE_PATH && { basePath: BASE_PATH }),
   // productionBrowserSourceMaps: !IS_PRODUCTION,
+  experimental: {
+    images: {
+      unoptimized: true,
+    },
+  },
 }
 
 module.exports = withBundleAnalyzer(withNx(nextConfig))
