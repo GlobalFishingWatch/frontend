@@ -148,6 +148,8 @@
     "toggleLayers": "crwdns6460:0crwdne6460:0"
   },
   "risk": {
+    "aisDisabling": "crwdns26716:0crwdne26716:0",
+    "aisDisablingDescription": "crwdns26718:0crwdne26718:0",
     "currentlyPresentOnARfmoIUUList": "crwdns26648:0crwdne26648:0",
     "encounterEventInForeignEEZ_one": "crwdns26564:0{{count}}crwdne26564:0",
     "encounterEventInForeignEEZ_other": "crwdns26566:0{{count}}crwdne26566:0",
@@ -171,6 +173,8 @@
     "identityChangedOwners_other": "crwdns26626:0{{count}}crwdne26626:0",
     "identitySectionDescription": "crwdns26606:0crwdne26606:0",
     "iuuStatusDescription": "crwdns26650:0crwdne26650:0",
+    "likelyIntentionalDisablingEvent_one": "crwdns26720:0{{count}}crwdne26720:0",
+    "likelyIntentionalDisablingEvent_other": "crwdns26722:0{{count}}crwdne26722:0",
     "loiteringEventInMPA_one": "crwdns26576:0{{count}}crwdne26576:0",
     "loiteringEventInMPA_other": "crwdns26578:0{{count}}crwdne26578:0",
     "low": "crwdns26670:0crwdne26670:0",
@@ -180,6 +184,7 @@
     "noFishingEventInMPA": "crwdns26200:0crwdne26200:0",
     "noFishingEventInRFMOWithoutAuthorization": "crwdns26622:0crwdne26622:0",
     "noFlagChanges": "crwdns26634:0crwdne26634:0",
+    "noIntentionalDisablingEvents": "crwdns26724:0crwdne26724:0",
     "noLoiteringEventInMPA": "crwdns26202:0crwdne26202:0",
     "noNameChanges": "crwdns26640:0crwdne26640:0",
     "noOperatorChanges": "crwdns26702:0crwdne26702:0",
