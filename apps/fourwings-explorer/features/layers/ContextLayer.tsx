@@ -74,8 +74,8 @@ function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement 
     setColorOpen(false)
   }
 
-  const onAreaClick = (areaId: string) => {
-    router.push(`/analysis/${areaId}`)
+  const onAreaClick = (layerId: string, areaId: string) => {
+    router.push(`/analysis/${layerId}?areaId=${areaId}`)
   }
 
   const onToggleColorOpen = () => {
@@ -156,7 +156,11 @@ function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement 
                   return (
                     <li key={id} className={styles.area}>
                       {title}{' '}
-                      <IconButton icon="analysis" size="small" onClick={() => onAreaClick(id)} />
+                      <IconButton
+                        icon="analysis"
+                        size="small"
+                        onClick={() => onAreaClick(layer.id, id)}
+                      />
                     </li>
                   )
                 })}

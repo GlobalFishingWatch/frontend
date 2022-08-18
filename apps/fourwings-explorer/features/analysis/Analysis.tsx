@@ -6,15 +6,21 @@ import useMapInstance from 'features/map/map-context.hooks'
 import Modals from 'features/modals/Modals'
 import styles from './Analysis.module.css'
 
-const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
+const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
 
 const Sidebar = () => {
-  const router = useRouter()
-  const { id } = router.query
+  const { query } = useRouter()
+  const { id, areaId } = query
   return (
     <div className={styles.main}>
       <div className={styles.mapContainer}>
-        <h2>Analysis for: {id}</h2>
+        <h2>
+          Analysis for:
+          <br />
+          datasetId:{id}
+          <br />
+          areaId: {areaId}
+        </h2>
       </div>
     </div>
   )
