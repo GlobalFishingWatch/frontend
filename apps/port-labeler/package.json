@@ -15,7 +15,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.8.2",
+    "@reduxjs/toolkit": "^1.8.4",
     "@turf/turf": "*",
     "classnames": "2.3.1",
     "i18next": "21.8.0",

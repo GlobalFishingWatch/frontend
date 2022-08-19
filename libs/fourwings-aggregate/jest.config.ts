@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default {
   displayName: 'fourwings-aggregate',
   transform: {
