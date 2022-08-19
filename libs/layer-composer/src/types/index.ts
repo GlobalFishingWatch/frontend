@@ -119,7 +119,7 @@ export interface HeatmapLayerMeta {
   multiplier: number
   numSublayers: number
   sublayerCombinationMode: SublayerCombinationMode
-  sublayers: ExtendedLayer<HeatmapLayerSpecification>[]
+  sublayers: HeatmapAnimatedGeneratorSublayer[]
   temporalgrid: true
   timeChunks: TimeChunks
   visibleSublayers: boolean[]

@@ -9,7 +9,7 @@ import {
   useURLTimerange,
 } from 'features/timebar/timebar.hooks'
 // import { useMapInstanceStyle } from 'features/map/map-context.hooks'
-import { formatI18nDate } from 'utils/dates'
+import { formatI18nDate } from 'utils/i18n'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 

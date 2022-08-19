@@ -202,7 +202,7 @@ export const useMapLayerFeatures = (
         sourcesId,
         generatorSourceId,
         layerId: layer.id,
-        filter: layer.config.filter,
+        filter: layer.filter,
       })
     }, [] as LayerMetadata[])
     return layersMetadata

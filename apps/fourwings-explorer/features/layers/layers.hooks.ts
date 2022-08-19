@@ -32,6 +32,7 @@ export type FourwingsLayerConfig = BaseLayerConfig & {
 export type DatasetLayerConfig = {
   id: string
   config: BaseLayerConfig | BasemapGeneratorConfig | FourwingsLayerConfig
+  filter?: unknown[]
 }
 
 export type DatasetLayer<Dataset = APIDataset> = DatasetLayerConfig & {

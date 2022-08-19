@@ -1,7 +1,3 @@
-export enum Locale {
-  en = 'en',
-}
-
 export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end' | 'sidebarOpen'
 
 export type QueryParams = {
