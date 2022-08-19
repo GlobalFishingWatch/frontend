@@ -18,7 +18,7 @@
     "@dnd-kit/utilities": "3.2.0",
     "@dnd-kit/modifiers": "6.0.0",
     "@math.gl/web-mercator": "^3.5.7",
-    "@reduxjs/toolkit": "^1.8.2",
+    "@reduxjs/toolkit": "^1.8.4",
     "@mapbox/mapbox-gl-draw": "^1.3.0",
     "@researchgate/react-intersection-observer": "1.3.5",
     "@tippyjs/react": "4.2.5",

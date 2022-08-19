@@ -15,8 +15,8 @@ import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import styles from './User.module.css'
-import { isGFWUser, selectUserData } from './user.slice'
-import { isUserLogged } from './user.selectors'
+import { selectUserData } from './user.slice'
+import { isUserLogged, selectUserGroupsPermissions } from './user.selectors'
 import UserWorkspaces from './UserWorkspaces'
 import UserWorkspacesPrivate from './UserWorkspacesPrivate'
 import UserDatasets from './UserDatasets'
@@ -28,7 +28,7 @@ function User() {
   const dispatch = useAppDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
-  const gfwUser = useSelector(isGFWUser)
+  const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const { datasetModal, editingDatasetId } = useDatasetModalConnect()
 
   const userTabs = useMemo(() => {
@@ -59,7 +59,7 @@ function User() {
         ),
       },
     ]
-    if (gfwUser) {
+    if (hasUserGroupsPermissions) {
       tabs.push({
         id: 'vesselGroups',
         title: t('vesselGroup.vesselGroups', 'Vessel Groups'),
@@ -67,7 +67,7 @@ function User() {
       })
     }
     return tabs
-  }, [gfwUser, t])
+  }, [hasUserGroupsPermissions, t])
   const [activeTab, setActiveTab] = useState<Tab | undefined>(userTabs?.[0])
 
   useEffect(() => {
@@ -82,10 +82,10 @@ function User() {
   }, [dispatch])
 
   useEffect(() => {
-    if (gfwUser) {
+    if (hasUserGroupsPermissions) {
       dispatch(fetchUserVesselGroupsThunk())
     }
-  }, [dispatch, gfwUser])
+  }, [dispatch, hasUserGroupsPermissions])
 
   useEffect(() => {
     if (userData?.type === GUEST_USER_TYPE) {

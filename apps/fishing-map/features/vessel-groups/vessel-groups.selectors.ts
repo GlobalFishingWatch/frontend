@@ -4,7 +4,6 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { isGFWUser } from 'features/user/user.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import {
   MAX_VESSEL_GROUP_VESSELS,
@@ -12,6 +11,7 @@ import {
   selectVesselGroupSearchVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
@@ -35,9 +35,9 @@ export const selectHasVesselGroupSearchVessels = createSelector(
 )
 
 export const selectVessselGroupsAllowed = createSelector(
-  [isAdvancedSearchAllowed, isGFWUser],
-  (advancedSearchAllowed, gfwUser) => {
-    return gfwUser && advancedSearchAllowed
+  [selectUserGroupsPermissions, isAdvancedSearchAllowed],
+  (hasUserGroupsPermissions, advancedSearchAllowed) => {
+    return hasUserGroupsPermissions && advancedSearchAllowed
   }
 )
 

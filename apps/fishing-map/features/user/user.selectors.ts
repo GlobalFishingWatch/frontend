@@ -32,7 +32,7 @@ export const isUserLogged = createSelector(
 )
 
 export const hasUserPermission = (permission: UserPermission) =>
-  createSelector([selectUserData], (userData) => {
+  createSelector([selectUserData], (userData): boolean => {
     if (!userData?.permissions) return false
     return checkExistPermissionInList(userData.permissions, permission)
   })
@@ -47,6 +47,12 @@ export const selectUserDataviewEditPermissions = hasUserPermission({
   type: 'entity',
   value: 'dataview',
   action: 'create-all',
+})
+
+export const selectUserGroupsPermissions = hasUserPermission({
+  type: 'entity',
+  value: 'vessel-group',
+  action: 'create',
 })
 
 export const selectUserId = createSelector([selectUserData], (userData) => {
