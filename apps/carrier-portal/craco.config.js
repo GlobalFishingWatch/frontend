@@ -1,4 +1,5 @@
 const path = require('path')
+const Webpack = require('webpack')
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
 module.exports = {
@@ -21,7 +22,6 @@ module.exports = {
           mainFields: ['module', 'main'],
         })
       )
-
       // Replace include option for babel loader with exclude
       // so babel will handle workspace projects as well.
       config.module.rules[1].oneOf.forEach((r) => {

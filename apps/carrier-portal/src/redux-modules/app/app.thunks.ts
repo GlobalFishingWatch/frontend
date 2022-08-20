@@ -39,7 +39,6 @@ export const datasetThunk = async (dispatch: Dispatch, getState: StateGetter<App
       const url = `/datasets/${datasetId || DATASET_ID}`
       const dataset = await fetchAPI<APIDataset>(url, dispatch)
       if (dataset) {
-        GFWAPI.setConfig({ dataset: dataset.id })
         dispatch(fetchDatasetComplete({ dataset }))
         dispatch(updateQueryParams({ dataset: dataset.id }))
         // if (datasetId !== dataset.id) {
@@ -65,7 +64,7 @@ export const configThunk = async (dispatch: Dispatch, getState: StateGetter<AppS
   if (!loading && dataset !== null && !errorConfig && config === null) {
     dispatch(fetchConfigInit())
     try {
-      const config = await fetchAPI('/config', dispatch)
+      const config = await fetchAPI(`/datasets/${dataset.id}/config`, dispatch)
       if (config.ports) {
         Object.keys(config.ports).forEach((portKey: string) => {
           config.ports[portKey] = orderBy(uniqBy(config.ports[portKey], 'id'), 'label')

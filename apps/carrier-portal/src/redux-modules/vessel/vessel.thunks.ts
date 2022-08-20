@@ -30,7 +30,7 @@ export const vesselDetailsThunk = async (dispatch: Dispatch, getState: StateGett
     if (!isVesselLoaded && !isDetailsLoading) {
       dispatch(fetchVesselDetailsInit(vesselId))
       try {
-        const data = await fetchAPI<Vessel>(`/vessels/${vesselId}`, dispatch)
+        const data = await fetchAPI<Vessel>(`/datasets/${dataset}/vessels/${vesselId}`, dispatch)
         if (data) {
           const vessel = {
             ...data,
@@ -80,7 +80,7 @@ export const vesselEventsThunk = async (dispatch: Dispatch, getState: StateGette
           },
           { arrayFormat: 'comma' }
         )
-        const data = await fetchAPI<Event[]>(`/events?${params}`, dispatch)
+        const data = await fetchAPI<Event[]>(`/datasets/${dataset}/events?${params}`, dispatch)
         if (data) {
           const events = data.map((event) => parseEvent(event, false))
           dispatch(fetchVesselEventsComplete({ id: vesselId, data: events }))

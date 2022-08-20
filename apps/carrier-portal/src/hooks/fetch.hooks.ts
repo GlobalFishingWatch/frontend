@@ -31,7 +31,7 @@ function useAbortableFetch<T>(url: string, options: any = defaultOptions): Fetch
       const controller = new AbortController()
       setState((state) => ({ ...state, loading: true }))
 
-      GFWAPI.fetch<T>(url, { signal: controller.signal, ...options })
+      GFWAPI.fetch<T>(url, { signal: controller.signal, version: '', ...options })
         .then((data) => {
           if (isMounted.current) {
             setState({ data, loading: false, error: null })

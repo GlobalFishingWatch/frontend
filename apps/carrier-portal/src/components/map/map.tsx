@@ -1,10 +1,10 @@
 import React, { lazy, Suspense, useMemo, useCallback, useEffect, useState, useRef } from 'react'
 import throttle from 'lodash/throttle'
 import { event as uaEvent } from 'react-ga'
-import FlyToInterpolator from 'react-map-gl/dist/esm/utils/transition/viewport-fly-to-interpolator'
+// import FlyToInterpolator from 'react-map-gl/dist/esm/utils/transition/viewport-fly-to-interpolator'
 import ScaleControl from 'react-map-gl/dist/esm/components/scale-control'
 import Popup from 'react-map-gl/dist/esm/components/popup'
-import { MapRequest } from 'react-map-gl'
+import { Map, MapboxStyle } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useLayerComposer } from '@globalfishingwatch/react-hooks'
 import {
@@ -15,6 +15,7 @@ import {
   GeneratorType,
   AnyGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
+import { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { useViewport } from 'hooks/map.hooks'
 import { useSmallScreen } from 'hooks/screen.hooks'
 import usePrevious from 'hooks/previous.hooks'
@@ -37,8 +38,6 @@ import styles from './map.module.css'
 
 import './popups/popups.module.css'
 
-const transitionInterpolator = new FlyToInterpolator()
-
 const defaultCursor = 'grab'
 const cursorDictionary: { [key: string]: string[] } = {
   // Ordered by priority
@@ -50,8 +49,6 @@ const cursorDictionary: { [key: string]: string[] } = {
     'cp_vessel_events_background',
   ],
 }
-
-const MapComponent = lazy((): any => import('react-map-gl'))
 
 const layerComposerConfig = {
   generators: {
@@ -87,7 +84,22 @@ interface MapProps {
   setMapDimensions: (mapDimensions: MapDimensions) => void
 }
 
-const Map: React.FC<MapProps> = (props): JSX.Element => {
+const mapStyles = {
+  width: '100%',
+  height: '100%',
+}
+
+const transformRequest: (...args: any[]) => RequestParameters = (url: string) => {
+  const response: RequestParameters = { url }
+  if (url.includes('globalfishingwatch')) {
+    response.headers = {
+      Authorization: 'Bearer ' + GFWAPI.getToken(),
+    }
+  }
+  return response
+}
+
+const MapWrapper: React.FC<MapProps> = (props): JSX.Element => {
   const {
     dateRange,
     generatorsConfig,
@@ -105,7 +117,7 @@ const Map: React.FC<MapProps> = (props): JSX.Element => {
   const [popup, setPopup] = useState<{
     latitude: number
     longitude: number
-    content: React.ReactElement
+    content: React.ReactNode
   } | null>(null)
 
   const mapRef = useRef<any>(null)
@@ -282,12 +294,12 @@ const Map: React.FC<MapProps> = (props): JSX.Element => {
   }, [setCursorCoordinatesThrottle])
 
   const cursor = useRef<string | null>(null)
-  const getCursor = useCallback(({ isDragging }) => {
-    return isDragging ? 'grabbing' : cursor.current
-  }, [])
+  // const getCursor = useCallback(({ isDragging }) => {
+  //   return isDragging ? 'grabbing' : cursor.current
+  // }, [])
 
   const handleMapHover = useCallback(
-    ({ lngLat, features }) => {
+    ({ lngLat, features }: any) => {
       const featureLayersId = (features || []).map((feature: any) => feature.layer.id)
       const heatmapLayer = (features || []).filter(
         (feature: any) => feature.layer.id === HeatmapLayerId
@@ -362,39 +374,28 @@ const Map: React.FC<MapProps> = (props): JSX.Element => {
     }
   }, [])
 
-  const transformRequest: any = useCallback((url: string, resourceType: string) => {
-    const response: MapRequest = { url }
-    if (resourceType === 'Tile' && url.includes('globalfishingwatch') && !url.includes('carto')) {
-      response.headers = {
-        Authorization: 'Bearer ' + GFWAPI.getToken(),
-      }
-    }
-    return response
-  }, [])
-
   return (
     <Suspense fallback={<Loader invert />}>
       {style && (
         <div className={styles.mapContainer}>
           <div className={styles.map} onMouseLeave={handleMouseLeave}>
-            <MapComponent
+            <Map
               ref={mapRef}
-              width="100%"
-              height="100%"
+              style={mapStyles}
               onLoad={onReady}
               latitude={viewport.latitude}
               longitude={viewport.longitude}
               zoom={viewport.zoom}
-              transitionDuration={viewport.transitionDuration}
-              transitionInterpolator={transitionInterpolator}
-              mapStyle={style}
-              getCursor={getCursor}
-              onHover={handleMapHover}
+              // transitionDuration={viewport.transitionDuration}
+              // transitionInterpolator={transitionInterpolator}
+              mapStyle={style as MapboxStyle}
+              cursor={cursor.current}
+              onMouseMove={handleMapHover}
               onClick={handleMapClick}
               onError={handleError}
               transformRequest={transformRequest}
               maxZoom={20}
-              onViewStateChange={onViewStateChange}
+              onMove={onViewStateChange}
               attributionControl={false}
             >
               {popup !== null && (
@@ -404,8 +405,8 @@ const Map: React.FC<MapProps> = (props): JSX.Element => {
                   closeButton
                   onClose={closePopup}
                   anchor="bottom"
-                  offsetTop={-10}
-                  tipSize={4}
+                  // offsetTop={-10}
+                  // tipSize={4}
                   closeOnClick={false}
                 >
                   {popup.content}
@@ -414,7 +415,7 @@ const Map: React.FC<MapProps> = (props): JSX.Element => {
               <div className={styles.scale}>
                 {mapReady && <ScaleControl maxWidth={100} unit="nautical" />}
               </div>
-            </MapComponent>
+            </Map>
             <MapControls />
             {mapRef.current && (
               <MapScreeenshot map={mapRef.current.getMap()} heatmapLegend={heatmapLegend} />
@@ -437,4 +438,4 @@ const Map: React.FC<MapProps> = (props): JSX.Element => {
   )
 }
 
-export default Map
+export default MapWrapper

@@ -61,7 +61,7 @@ export const eventsThunk = async (dispatch: Dispatch, getState: StateGetter<AppS
         { arrayFormat: 'comma' }
       )
 
-      const data = await fetchAPI<Event[]>(`/events?${params}`, dispatch)
+      const data = await fetchAPI<Event[]>(`/datasets/${dataset}/events?${params}`, dispatch)
       if (data) {
         const dataParsed = data.map((event) => parseEvent(event, true))
         dispatch(fetchEventsComplete({ eventType, data: dataParsed }))

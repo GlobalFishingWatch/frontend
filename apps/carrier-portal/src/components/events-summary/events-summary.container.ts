@@ -19,4 +19,4 @@ const mapStateToProps = (state: AppState) => ({
   eventsInfo: getCurrentEventsInfo(state),
 })
 
-export default connect(mapStateToProps, null)(EventsSummary) as React.StatelessComponent<any>
+export default connect(mapStateToProps, null)(EventsSummary) as React.FC<any>

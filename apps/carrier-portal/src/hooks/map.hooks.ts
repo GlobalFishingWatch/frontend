@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ViewportProps } from 'react-map-gl'
+import { ViewStateChangeEvent } from 'react-map-gl'
 import { Map } from '@globalfishingwatch/maplibre-gl'
 import { trunc } from 'utils'
 import { updateQueryParams } from 'redux-modules/router/router.actions'
@@ -57,9 +57,12 @@ export function useDebouncedViewport(
     setViewport({ ...viewport, transitionDuration })
   }, [])
 
-  const onViewportChange = useCallback((viewport: ViewportProps) => {
-    const { latitude, longitude, zoom, transitionDuration } = viewport
-    setViewport({ latitude, longitude, zoom, transitionDuration })
+  const onViewportChange = useCallback((ev: ViewStateChangeEvent) => {
+    const { latitude, longitude, zoom } = ev.viewState
+    if (latitude && longitude && zoom) {
+      setViewport({ latitude, longitude, zoom })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Updates local state when url changes

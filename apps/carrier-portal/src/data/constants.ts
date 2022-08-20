@@ -339,8 +339,7 @@ export const DEFAULT_FILTERS: DefaulQueryTypes = {
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
-export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
-  process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
+export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
   ? {}
   : { debug: true }

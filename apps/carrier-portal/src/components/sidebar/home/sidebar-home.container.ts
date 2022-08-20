@@ -33,14 +33,16 @@ const getEventsConfig = createSelector([getLoiteringActive], (loiteringActive) =
   })
 })
 
-const mapStateToProps = (state: AppState) => ({
-  layers: getLayers(state),
-  eventType: getEventType(state),
-  eventTypesConfig: getEventsConfig(state),
-  eventsError: getEventsError(state),
-  eventsLoaded: getEventsLoaded(state),
-  numberOfEvents: getNumberOfEvents(state),
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    layers: getLayers(state),
+    eventType: getEventType(state),
+    eventTypesConfig: getEventsConfig(state),
+    eventsError: getEventsError(state),
+    eventsLoaded: getEventsLoaded(state),
+    numberOfEvents: getNumberOfEvents(state),
+  }
+}
 
 const mapDispatchToProps = (dispatch: Dispatch<AppActions>) => ({
   setEventType: (eventType: EventType, layers: LayerTypes[]) =>

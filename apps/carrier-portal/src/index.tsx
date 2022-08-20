@@ -1,13 +1,20 @@
 import 'react-app-polyfill/ie11'
 import 'react-app-polyfill/stable'
 import React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { unregister } from './serviceWorker'
 import App from './app'
 import store from './store'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 import './index.css'
+
+declare global {
+  interface Window {
+    Buffer: any
+  }
+}
+window.Buffer = window.Buffer || require('buffer').Buffer
 
 const Root: React.FC = (): React.ReactElement => (
   <React.StrictMode>
@@ -35,13 +42,16 @@ function isBrowserSupported() {
   )
 }
 
+const rootElement = document.getElementById('root')
+const root = createRoot(rootElement)
+
 if (isBrowserSupported()) {
-  render(<Root />, document.getElementById('root'))
+  root.render(<Root />)
   // Uncomment when concurrent mode stable
   // const root = (ReactDOM as any).createRoot(document.getElementById('root'))
   // root.render(<Root />)
 } else {
-  render(<h1>Your browser is not supported in this app </h1>, document.getElementById('root'))
+  root.render(<h1>Your browser is not supported in this app </h1>)
 }
 
 unregister()

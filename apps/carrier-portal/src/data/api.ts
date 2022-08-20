@@ -14,7 +14,7 @@ export const fetchAPI = async <T = any>(
   options: any = { json: true }
 ) => {
   try {
-    const response = await GFWAPI.fetch<T>(url, options)
+    const response = await GFWAPI.fetch<T>(url, { version: '', ...options })
     return response
   } catch (error) {
     if (dispatch) {

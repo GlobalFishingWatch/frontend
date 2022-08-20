@@ -109,7 +109,7 @@ const Header: React.FC<HeaderProps> = (props): React.ReactElement => {
           const node = await import('json2csv')
           CSVParser.current = node
         }
-        const data = await GFWAPI.fetch<Event[]>(downloadUrl).then((events) =>
+        const data = await GFWAPI.fetch<Event[]>(downloadUrl, { version: '' }).then((events) =>
           events.map(transformDownloadEvent)
         )
         const { parse, transforms } = CSVParser.current

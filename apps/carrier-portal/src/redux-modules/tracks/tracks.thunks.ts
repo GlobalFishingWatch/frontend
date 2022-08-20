@@ -16,11 +16,12 @@ import { TrackReducerItem } from './tracks.reducer'
 import { fetchTrackInit, fetchTrackComplete, fetchTrackError } from './tracks.actions'
 
 const fetchTrack = async (
+  datasetId,
   id: string,
   { start, end }: { start: string; end: string },
   dispatch: Dispatch
 ) => {
-  const url = `/vessels/${id}/tracks?startDate=${start}&endDate=${end}&binary=true`
+  const url = `/datasets/${datasetId}/vessels/${id}/tracks?startDate=${start}&endDate=${end}&binary=true`
   const data = await fetchAPI(url, dispatch, { responseType: 'arrayBuffer' }).then((buffer) => {
     return geobuf.decode(new Pbf(buffer))
   })
@@ -52,7 +53,7 @@ export const trackThunk = async (dispatch: Dispatch, getState: StateGetter<AppSt
     const { start, end } = dateRange
     dispatch(fetchTrackInit({ id, startDate: start, endDate: end }))
     try {
-      const data = await fetchTrack(id, dateRange, dispatch)
+      const data = await fetchTrack(dataset, id, dateRange, dispatch)
       const track = { id, data }
       dispatch(fetchTrackComplete({ id, track }))
     } catch (e) {
@@ -87,7 +88,7 @@ export const encounterTrackThunk = async (dispatch: Dispatch, getState: StateGet
     const { start, end } = dateRange
     dispatch(fetchTrackInit({ id, startDate: start, endDate: end }))
     try {
-      const data = await fetchTrack(id, dateRange, dispatch)
+      const data = await fetchTrack(dataset, id, dateRange, dispatch)
       const track = { id, data }
       dispatch(fetchTrackComplete({ id, track }))
     } catch (e) {

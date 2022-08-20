@@ -59,7 +59,6 @@ const basemap: BasemapGeneratorConfig = {
   id: 'landmass',
   type: GeneratorType.Basemap,
   basemap: BasemapType.Default,
-  labels: false,
 }
 
 export const getEventMapLayer = (layerId: string) =>

@@ -22,6 +22,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AppActions>) => ({
   goToVesselDetail: (query: QueryParams) => dispatch(updateQueryParams(query)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventPopup) as React.StatelessComponent<
-  any
->
+export default connect(mapStateToProps, mapDispatchToProps)(EventPopup) as React.FC<any>

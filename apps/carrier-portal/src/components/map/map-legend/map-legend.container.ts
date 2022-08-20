@@ -9,6 +9,7 @@ import {
   getMapZoom,
   getMapViewport,
   hasVesselSelected,
+  getDataset,
 } from 'redux-modules/router/route.selectors'
 import {
   getVesselDetailsData,
@@ -36,10 +37,13 @@ type WorkspaceDataview = {
 
 const getDownloadUrl = (type: 'main' | 'encounter') => {
   const vesselSelector = type === 'main' ? getVesselId : getEncounterEventVesselId
-  return createSelector([vesselSelector, getDateRange], (vesselId, dateRange): string => {
-    const { start, end } = dateRange
-    return `/vessels/${vesselId}/tracks?startDate=${start}&endDate=${end}`
-  })
+  return createSelector(
+    [vesselSelector, getDateRange, getDataset],
+    (vesselId, dateRange, dataset): string => {
+      const { start, end } = dateRange
+      return `/datasets/${dataset}}/vessels/${vesselId}/tracks?startDate=${start}&endDate=${end}`
+    }
+  )
 }
 
 const getTrackInspectorLinkParams = createSelector(

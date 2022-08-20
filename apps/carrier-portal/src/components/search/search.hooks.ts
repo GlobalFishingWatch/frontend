@@ -195,7 +195,10 @@ export const useResultsFiltered = (
       const controller = new AbortController()
       const searchUrlWithQuery = searchUrl.replace('{{searchQuery}}', searchQuery)
       const isNumericSearch = /^\d+$/.test(searchQuery)
-      GFWAPI.fetch<PaginatedVesselSearch>(searchUrlWithQuery, { signal: controller.signal })
+      GFWAPI.fetch<PaginatedVesselSearch>(searchUrlWithQuery, {
+        signal: controller.signal,
+        version: '',
+      })
         .then((data) => {
           const apiResults = parseVesselSearchResponse(data, { useSuggestions: !isNumericSearch })
             .map((d) => ({ ...d, type: 'vessel' }))
