@@ -1,10 +1,10 @@
-import React, { lazy, Suspense, useMemo, useCallback, useEffect, useState, useRef } from 'react'
+import React, { Suspense, useMemo, useCallback, useEffect, useState, useRef } from 'react'
 import throttle from 'lodash/throttle'
 import { event as uaEvent } from 'react-ga'
 // import FlyToInterpolator from 'react-map-gl/dist/esm/utils/transition/viewport-fly-to-interpolator'
 import ScaleControl from 'react-map-gl/dist/esm/components/scale-control'
 import Popup from 'react-map-gl/dist/esm/components/popup'
-import { Map, MapboxStyle } from 'react-map-gl'
+import { Map, MapboxStyle, ViewStateChangeEvent, MapLayerMouseEvent } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useLayerComposer } from '@globalfishingwatch/react-hooks'
 import {
@@ -179,8 +179,8 @@ const MapWrapper: React.FC<MapProps> = (props): JSX.Element => {
   }, [mapReady, trackBounds, currentEvent])
 
   const onViewStateChange = useCallback(
-    ({ viewState }) => {
-      const { width, height } = viewState
+    (ev: ViewStateChangeEvent) => {
+      const { width, height } = (ev.target as any)._canvas
       if (
         width &&
         height &&
@@ -188,7 +188,7 @@ const MapWrapper: React.FC<MapProps> = (props): JSX.Element => {
       ) {
         setMapDimensions({ width, height })
       }
-      onViewportChange(viewState)
+      onViewportChange(ev)
     },
     [mapDimensions, onViewportChange, setMapDimensions]
   )
@@ -299,7 +299,8 @@ const MapWrapper: React.FC<MapProps> = (props): JSX.Element => {
   // }, [])
 
   const handleMapHover = useCallback(
-    ({ lngLat, features }: any) => {
+    (event: MapLayerMouseEvent) => {
+      const { lngLat, features } = event
       const featureLayersId = (features || []).map((feature: any) => feature.layer.id)
       const heatmapLayer = (features || []).filter(
         (feature: any) => feature.layer.id === HeatmapLayerId
@@ -321,7 +322,7 @@ const MapWrapper: React.FC<MapProps> = (props): JSX.Element => {
         cursor.current = defaultCursor
       }
       if (!isSmallScreen) {
-        setCursorCoordinatesThrottle({ latitude: lngLat[1], longitude: lngLat[0] })
+        setCursorCoordinatesThrottle({ latitude: lngLat.lat, longitude: lngLat.lng })
       }
     },
     [heatmapCurrentValue, isSmallScreen, setCursorCoordinatesThrottle]
@@ -331,7 +332,7 @@ const MapWrapper: React.FC<MapProps> = (props): JSX.Element => {
     (e: any) => {
       const { features } = e
       if (features && features.length) {
-        const position = { latitude: e.lngLat[1], longitude: e.lngLat[0] }
+        const position = { latitude: e.lngLat.lat, longitude: e.lngLat.lng }
         // .some() returns true as soon as any of the callbacks return true, short-circuiting the execution of the rest
         const hadHandler = features.some((feature: any) => {
           const eventHandler = layerMapClickHandlers[feature.layer.id]

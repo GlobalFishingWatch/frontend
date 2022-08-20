@@ -23,7 +23,8 @@ const MousePosition: React.FC<MousePositionProps> = ({ coordinates = null, float
         <button className={styles.coordinates} onClick={handleClick}>
           {format === 'latLng' ? (
             <span>
-              {coordinates.latitude.toFixed(4)}&nbsp;&nbsp;&nbsp;{coordinates.longitude.toFixed(4)}
+              {coordinates.latitude?.toFixed(4)}&nbsp;&nbsp;&nbsp;
+              {coordinates.longitude?.toFixed(4)}
             </span>
           ) : (
             formatCoords({ lat: coordinates.latitude, lng: coordinates.longitude }).format(format, {

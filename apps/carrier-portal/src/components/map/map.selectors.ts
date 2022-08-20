@@ -277,6 +277,9 @@ const getHeatmapLayer = createSelector(
     let filters = 'filters[0]=distance_from_port_m > 10000'
 
     let visible = eventsLoaded && layersActive !== null && layersActive.includes('heatmap')
+    if (!visible) {
+      return
+    }
     if (hasVesselFilter === true && eventsCarriers !== null) {
       if (eventsCarriers.length === 0) {
         visible = false
