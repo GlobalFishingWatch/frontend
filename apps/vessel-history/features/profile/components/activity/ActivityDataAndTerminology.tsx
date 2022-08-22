@@ -4,6 +4,7 @@ import TerminologyEncounterEvents from 'features/terminology/terminology-encount
 import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
 import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
 import TerminologyPortVisitEvents from 'features/terminology/terminology-port-visit-events'
+import TerminologyAisDisabling from 'features/terminology/terminology-ais-disabling'
 import GuideAndVideo from '../GuideAndVideo'
 import Faq from '../Faq'
 
@@ -27,6 +28,8 @@ const ActivityDataAndTerminology = (): React.ReactElement => {
       <TerminologyLoiteringEvents></TerminologyLoiteringEvents>
       <label>{t('events.portVisitEvents', 'Port Visits')}</label>
       <TerminologyPortVisitEvents />
+      <label>{t('events.gapEvents', 'Gap Events')}</label>
+      <TerminologyAisDisabling />
       <GuideAndVideo source="Data and terminology" />
     </Fragment>
   )

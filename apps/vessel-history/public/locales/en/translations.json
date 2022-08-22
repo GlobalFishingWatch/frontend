@@ -129,6 +129,7 @@
     "encounterEventsDescription": "\"Encounters may indicate potential transshipment activity between two vessels that both appear on AIS. Encounters are estimated using AIS data, including distance between the two vessels, vessel speeds, and duration in a given area. <1></1>\nAn encounter is defined as a period when two vessels, a carrier vessel and encountered fishing vessel, are detected on AIS data within 500 meters of each other for at least two hours and traveling at a median speed less than two knots, while at least 10 km from a coastal anchorage.",
     "fishingEvents": "Fishing Events",
     "fishingEventsDescription": "When there is a consistent series of automatic identification system (AIS) points that indicate apparent fishing activity, the points are grouped into fishing events. <1></1>\nWe analyze the AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine apparent fishing activity based on changes in vessel speed and direction..<3></3>The algorithm classifies each AIS broadcast data point for these vessels as either “apparently fishing” or “not fishing” and shows the former on our fishing activity heat map. You can find more detail in our technology page: <6>https://globalfishingwatch.org/our-technology/</6>, dataset page: <10>https://globalfishingwatch.org/datasets-and-code/</10> and FAQs: <10>https://drive.google.com/file/d/1N4YRJ_yxAObEIWbaYM8l-YDPHS0bKe2N/view?usp=sharing/</10>.",
+    "gapEvents": "Gap Events",
     "highlitingSettings": "settings",
     "loadingEncounterEvents": "loading encounters",
     "loadingFishingEvents": "loading fishing events",
@@ -251,6 +252,10 @@
     "fishingEvents": {
       "shortTitle": "Fishing",
       "title": "Fishing Events"
+    },
+    "gapEvents": {
+      "shortTitle": "Gap",
+      "title": "Gap Events"
     },
     "greaterThan": "Greater than",
     "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",
