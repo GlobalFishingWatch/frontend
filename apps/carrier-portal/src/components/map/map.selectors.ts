@@ -3,7 +3,6 @@ import {
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
   BasemapType,
-  ContextGeneratorConfig,
   GeneratorType,
   GlGeneratorConfig,
   HeatmapGeneratorConfig,
@@ -155,12 +154,20 @@ export const getClusterLayers = createSelector(
   }
 )
 
-export const getContextualMapLayer = (layerId: string) =>
+export const getContextualLayerVisible = (layerId: string) =>
+  createSelector([getLayers], (layersActive) => {
+    const visible = layersActive !== null && layersActive.includes(layerId)
+    return visible
+  })
+
+export const getContextualMapGenerator = (layerId: string) =>
   createSelector([getLayers], (layersActive) => {
     const layer = CONTEXT_LAYERS.find((l) => l.id === layerId)
     if (!layer || !layer.id) return null
 
     const visible = layersActive !== null && layersActive.includes(layerId)
+
+    // 👋 keep working from 📍 adding dataviews and datasets
     const layerDataview = CONTEXT_DATAVIEWS.find((l) => l.id === layer.id)
 
     if (!layerDataview) return null
@@ -174,7 +181,7 @@ export const getContextualMapLayer = (layerId: string) =>
   })
 
 export const getRFMOLayer = createSelector(
-  [getContextualMapLayer(CONTEXT_LAYERS_IDS.rfmo), getRfmos],
+  [getContextualMapGenerator(CONTEXT_LAYERS_IDS.rfmo), getRfmos],
   (layer, selectedRfmos) => {
     if (!layer) return null
 
@@ -192,10 +199,10 @@ export const getRFMOLayer = createSelector(
 )
 
 const generatorConfig = {}
-export const getMPALayer = getContextualMapLayer(CONTEXT_LAYERS_IDS.mpant)
-export const getOtherRFMOSLayer = getContextualMapLayer(CONTEXT_LAYERS_IDS.otherRfmos)
+export const getMPALayer = getContextualMapGenerator(CONTEXT_LAYERS_IDS.mpant)
+export const getOtherRFMOSLayer = getContextualMapGenerator(CONTEXT_LAYERS_IDS.otherRfmos)
 export const getEEZLayer = createSelector(
-  [getContextualMapLayer(CONTEXT_LAYERS_IDS.eez), getEezs],
+  [getContextualMapGenerator(CONTEXT_LAYERS_IDS.eez), getEezs],
   (layer, selectedEezs) => {
     return layer || null
     // TODO highlight selected eez with featureState
@@ -211,25 +218,20 @@ export const getEEZLayer = createSelector(
     }
   }
 )
-export const getBluefinLayer = getContextualMapLayer(CONTEXT_LAYERS_IDS.bluefinRfmo)
+export const getBluefinLayer = getContextualMapGenerator(CONTEXT_LAYERS_IDS.bluefinRfmo)
 
 export const getPortsLayer = createSelector(
   [
-    getContextualMapLayer(CONTEXT_LAYERS_IDS.nextPort),
+    getContextualLayerVisible(CONTEXT_LAYERS_IDS.nextPort),
     getCurrentEventsPortsGeojson,
     hasVesselSelected,
     getMapDownloadVisible,
   ],
-  (
-    layer: ContextGeneratorConfig,
-    eventPorts,
-    vesselSelected,
-    downloadVisible
-  ): GlGeneratorConfig => {
+  (layerVisible, eventPorts, vesselSelected, downloadVisible): GlGeneratorConfig => {
     return {
-      id: layer?.id || CONTEXT_LAYERS_IDS.nextPort,
+      id: CONTEXT_LAYERS_IDS.nextPort,
       type: GeneratorType.GL,
-      visible: layer?.visible && !vesselSelected && !downloadVisible,
+      visible: layerVisible && !vesselSelected && !downloadVisible,
       sources: [
         {
           type: 'geojson',
@@ -387,13 +389,15 @@ export const getTrackLayers = createSelector(
 
 export const getLayerComposerLayers = createSelector(
   [getPortsLayer, getEventsLayer, getContextualLayers, getClusterLayers, getTrackLayers],
-  (portsLayer, eventsLayer, contextualLayers, clusterLayers, trackLayers) => [
-    background,
-    basemap,
-    ...contextualLayers,
-    // portsLayer,
-    // ...clusterLayers,
-    // ...trackLayers,
-    // ...eventsLayer,
-  ]
+  (portsLayer, eventsLayer, contextualLayers, clusterLayers, trackLayers) => {
+    return [
+      background,
+      basemap,
+      ...contextualLayers,
+      portsLayer,
+      ...clusterLayers,
+      ...trackLayers,
+      ...eventsLayer,
+    ]
+  }
 )

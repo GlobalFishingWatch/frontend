@@ -1,6 +1,13 @@
 import ReactGA from 'react-ga'
-import { ContextLayerType } from '@globalfishingwatch/layer-composer'
-import { SearchTypes, QueryParam, GraphOption, ContextLayer, EventType } from 'types/app.types'
+import {
+  SearchTypes,
+  QueryParam,
+  GraphOption,
+  ContextLayer,
+  EventType,
+  LayerTypes,
+  ContextualLayerTypes,
+} from 'types/app.types'
 
 export const BASE_URL = process.env.NODE_ENV === 'production' ? '/carrier-portal' : ''
 export const TRACK_INSPECTOR_URL = process.env.REACT_APP_TRACK_INSPECTOR_URL
@@ -168,16 +175,8 @@ export const ENCOUNTER_RISKS = {
   unmatched: 3,
 }
 
-type CustomContextLayerType =
-  | 'cp_rfmo'
-  | 'other_rfmos'
-  | 'cp_next_port'
-  | 'mpant'
-  | 'bluefin_rfmo'
-  | 'heatmap'
-type ContextLayerId = ContextLayerType.EEZ | CustomContextLayerType
-export const CONTEXT_LAYERS_IDS: { [key in string]: ContextLayerId } = {
-  eez: ContextLayerType.EEZ,
+export const CONTEXT_LAYERS_IDS: { [key in string]: LayerTypes } = {
+  eez: 'eez',
   rfmo: 'cp_rfmo',
   otherRfmos: 'other_rfmos',
   nextPort: 'cp_next_port',
@@ -201,11 +200,20 @@ export const EVENTS_LAYERS: ContextLayer[] = [
   },
 ]
 
+export const CONTEXT_LAYERS_COLORS: Record<ContextualLayerTypes, string> = {
+  cp_rfmo: '#6b67e5',
+  cp_next_port: EVENTS_COLORS.port,
+  other_rfmos: '#d8d454',
+  eez: '#93c96c',
+  mpant: '#e5777c',
+  bluefin_rfmo: '#A758FF',
+}
+
 export const CONTEXT_LAYERS: ContextLayer[] = [
   {
     id: CONTEXT_LAYERS_IDS.nextPort,
     label: 'Ports visited after {{eventType}}',
-    color: EVENTS_COLORS.port,
+    color: CONTEXT_LAYERS_COLORS.cp_next_port,
     description: 'See the ports visited after the {{eventType}} that match your filters',
   },
   {
@@ -218,34 +226,34 @@ export const CONTEXT_LAYERS: ContextLayer[] = [
   {
     id: CONTEXT_LAYERS_IDS.rfmo,
     label: 'Registry RFMO areas',
-    color: '#6b67e5',
+    color: CONTEXT_LAYERS_COLORS.cp_rfmo,
     description:
       'RFMO stands for Regional Fishery Management Organization. These organizations are international organizations formed by countries with a shared interest in managing or conserving an area’s fish stock (All Tuna RFMOS, Geographic Area of Competence of South Pacific RFMO and The North Pacific Fisheries Commission).',
   },
   {
     id: CONTEXT_LAYERS_IDS.otherRfmos,
     label: 'Other RFMO areas',
-    color: '#d8d454',
+    color: CONTEXT_LAYERS_COLORS.other_rfmos,
     description:
       'Convention on Conservation of Antarctic Marine Living Resources, North-East Atlantic Fisheries Commission, Northwest Atlantic Fisheries Organization, South-East Atlantic Fisheries Organization, South Indian Ocean Fisheries Agreement, and General Fisheries Commission for the Mediterranean. Source: fao.org/geonetwork',
   },
   {
     id: CONTEXT_LAYERS_IDS.eez,
     label: 'Exclusive Economic Zones',
-    color: '#93c96c',
+    color: CONTEXT_LAYERS_COLORS.eez,
     description:
       'Exclusive Economic Zones (EEZ) are states’ sovereign waters, which extend 200 nautical miles from the coast. Source: marineregions.org',
   },
   {
     id: CONTEXT_LAYERS_IDS.mpant,
     label: 'Marine Protected Areas',
-    color: '#e5777c',
+    color: CONTEXT_LAYERS_COLORS.mpant,
     description: 'Source: Protected Planet WDPA',
   },
   {
     id: CONTEXT_LAYERS_IDS.bluefinRfmo,
     label: 'Southern bluefin tuna range',
-    color: '#A758FF',
+    color: CONTEXT_LAYERS_COLORS.bluefin_rfmo,
     description:
       'Prepared by GFW based on "The Current Status of International Fishery Stocks", 2018, Fisheries Agency and Japan Fisheries Research and Education Agency',
   },

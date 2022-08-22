@@ -1,17 +1,25 @@
-export const eezDatasets = [
+import {
+  Dataset,
+  DatasetCategory,
+  DatasetStatus,
+  DatasetTypes,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
+
+export const eezDatasets: Dataset[] = [
   {
     alias: null,
     id: 'public-eez-areas',
     name: 'EEZ (marineregions.org)',
-    type: 'user-context-layer:v1',
+    type: DatasetTypes.Context,
     description:
       'Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org',
     startDate: null,
     endDate: null,
     unit: null,
-    status: 'done',
+    status: DatasetStatus.Done,
     importLogs: null,
-    category: 'context-layer',
+    category: DatasetCategory.Context,
     subcategory: null,
     source:
       "<a href='https://www.marineregions.org' target='_blank' rel='noopener noreferrer'>Marine Regions</a>",
@@ -30,7 +38,7 @@ export const eezDatasets = [
     fieldsAllowed: null,
     endpoints: [
       {
-        id: 'user-context-tiles',
+        id: EndpointId.UserContextTiles,
         description: 'Endpoint to retrieve tiles from user context layers',
         downloadable: true,
         method: 'GET',
@@ -67,15 +75,15 @@ export const eezDatasets = [
     alias: null,
     id: 'public-eez-boundaries-shp',
     name: 'Areas boundaries for eez',
-    type: 'user-context-layer:v1',
+    type: DatasetTypes.Context,
     description:
       'Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org',
     startDate: null,
     endDate: null,
     unit: null,
-    status: 'done',
+    status: DatasetStatus.Done,
     importLogs: null,
-    category: 'context-layer',
+    category: DatasetCategory.Context,
     subcategory: null,
     source:
       "<a href='https://www.marineregions.org' target='_blank' rel='noopener noreferrer'>Marine Regions</a>",
@@ -92,7 +100,7 @@ export const eezDatasets = [
     fieldsAllowed: [],
     endpoints: [
       {
-        id: 'user-context-tiles',
+        id: EndpointId.UserContextTiles,
         description: 'Endpoint to retrieve tiles from user context layers',
         downloadable: true,
         method: 'GET',

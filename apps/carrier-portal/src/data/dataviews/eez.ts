@@ -1,12 +1,11 @@
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { eezDatasets } from 'data/datasets/datasets'
-
-export const EEZ_DATAVIEW_ID = ContextLayerType.EEZ
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { CONTEXT_LAYERS_COLORS, CONTEXT_LAYERS_IDS } from 'data/constants'
+import { eezDatasets } from 'data/datasets/context'
 
 const eezDataview: UrlDataviewInstance = {
-  id: EEZ_DATAVIEW_ID,
+  id: CONTEXT_LAYERS_IDS.eez,
   name: 'EEZ',
   app: 'fishing-map',
   description:
@@ -14,7 +13,7 @@ const eezDataview: UrlDataviewInstance = {
   category: DataviewCategory.Context,
   config: {
     type: GeneratorType.Context,
-    color: '#00FFBC',
+    color: CONTEXT_LAYERS_COLORS.eez,
     layers: [
       {
         id: 'eez-areas',
@@ -26,7 +25,7 @@ const eezDataview: UrlDataviewInstance = {
       },
     ],
   },
-  datasets: eezDatasets as any,
+  datasets: eezDatasets,
   datasetsConfig: [
     {
       query: [

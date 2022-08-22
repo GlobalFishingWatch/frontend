@@ -1,5 +1,4 @@
 import { FeatureCollection } from '@turf/helpers'
-import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 
 export type ValueOf<T> = T[keyof T]
 
@@ -18,8 +17,15 @@ export type GraphType =
   | 'loitering-flag'
   | 'loitering-time'
 
+export type ContextualLayerTypes =
+  | 'cp_rfmo'
+  | 'cp_next_port'
+  | 'other_rfmos'
+  | 'eez'
+  | 'mpant'
+  | 'bluefin_rfmo'
 export type HeatmapLayerType = 'heatmap'
-export type LayerTypes = ContextLayerType | EventType | HeatmapLayerType
+export type LayerTypes = ContextualLayerTypes | EventType | HeatmapLayerType
 
 export type SearchTypes =
   | 'flag'

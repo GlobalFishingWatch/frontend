@@ -34,10 +34,11 @@ const MapControls: React.FC<MapControlsProps> = ({
   setMapDownloadVisible,
 }): JSX.Element => {
   const [showContextLayers, setShowContextLayers] = useState<boolean>(false)
+
   const switchContextLayers = useCallback(() => {
     setShowContextLayers(!showContextLayers)
   }, [showContextLayers])
-  const layerSelectorRef = useClickOutside(switchContextLayers)
+  // const layerSelectorRef = useClickOutside(switchContextLayers)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetZoom = useCallback(
@@ -109,7 +110,7 @@ const MapControls: React.FC<MapControlsProps> = ({
         {!showContextLayers ? <IconLayers /> : <IconClose />}
       </button>
       {showContextLayers && (
-        <div className={styles.contextLayersContainer} ref={layerSelectorRef}>
+        <div className={styles.contextLayersContainer} /*ref={layerSelectorRef}*/>
           <div className={styles.contextLayers}>
             {layers !== null &&
               layers.map((layer) => (

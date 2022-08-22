@@ -130,6 +130,7 @@ const MapWrapper: React.FC<MapProps> = (props): JSX.Element => {
     }),
     [viewport, dateRange]
   )
+  // console.log(generatorsConfig)
   const { style } = useLayerComposer(
     // This needs to be extensible to allow external generators and this cast
     generatorsConfig as any,

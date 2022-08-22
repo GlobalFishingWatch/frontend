@@ -83,7 +83,7 @@ export interface DatasetDocumentation {
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
-  srid?: number
+  srid?: string
   file?: string
   type?: EventTypes
   geometryType?: DatasetGeometryType
