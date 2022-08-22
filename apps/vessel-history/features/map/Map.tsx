@@ -43,6 +43,13 @@ const MapWrapper: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
+  const styleUpdated = useMemo(() => {
+    return {
+      ...style,
+
+    }
+  }, [])
+  console.log(style)
   const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 

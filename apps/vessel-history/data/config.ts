@@ -78,6 +78,7 @@ export const EVENTS_COLORS: Record<string, string> = {
   port_visit: '#99EEFF',
   fishing: '#fff',
   fishingLabels: '#163f89',
+  gap: '#f7b500'
 }
 
 export const DEFAULT_EMPTY_VALUE = ' --- '

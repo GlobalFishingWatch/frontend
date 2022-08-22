@@ -60,11 +60,11 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       // if no ids are specified, then do not get all the datasets
       const relatedDatasets = relatedWorkspaceParams.ids
         ? await GFWAPI.fetch<APIPagination<Dataset>>(
-            `/datasets?${stringify(relatedWorkspaceParams, {
-              arrayFormat: 'comma',
-            })}`,
-            { signal }
-          ).then((d) => d.entries)
+          `/datasets?${stringify(relatedWorkspaceParams, {
+            arrayFormat: 'comma',
+          })}`,
+          { signal }
+        ).then((d) => d.entries)
         : []
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
 
@@ -162,7 +162,7 @@ export const selectAll = createSelector([baseSelectAll], (datasets) => {
     return override ?? dataset
   })
   console.log(result)
-  return datasets //result
+  return result
 })
 
 export function selectDatasets(state: RootState) {

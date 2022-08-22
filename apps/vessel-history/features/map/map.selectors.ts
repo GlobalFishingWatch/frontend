@@ -148,6 +148,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     offlineDataviewsGenerators,
     vesselLastPositionGenerator
   ) => {
+    console.log(mapGeneratorsConfig)
     const generators =
       vesselStatus !== AsyncReducerStatus.Finished
         ? [...offlineDataviewsGenerators, basemapGenerator]

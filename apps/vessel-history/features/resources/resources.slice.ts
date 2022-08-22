@@ -38,13 +38,28 @@ export const selectResources = createSelector([originalSelectResource], (resourc
             start: event.end as number,
             id: `${event.id}-exit`,
           }))
-
+      /*
+      TODO: I don't know if we will keep this
+      const gapsEnds =
+        Array.isArray(resource.data) &&
+        (resource.data as any[])
+          .filter((event) => event.type === EventTypes.Gap)
+          .map((event) => ({
+            ...event,
+            timestamp: event.end as number,
+            // Important: To display gap end in map it's necessary
+            // to override start timestamp because that's used to
+            //  filter events when highlightTime is set
+            start: event.end as number,
+            id: `${event.id}-end`,
+          }))
+          */
       return [
         url,
         {
           ...resource,
           data: Array.isArray(resource.data)
-            ? (resource.data as any[])?.concat(portExitEvents)
+            ? (resource.data as any[])?.concat(portExitEvents)//.concat(gapsEnds)
             : resource.data,
         } as Resource,
       ]

@@ -127,6 +127,21 @@ export interface PortVisitEvent {
   endAnchorage: Anchorage
 }
 
+export interface GapEvent {
+  distanceKm: number;
+  durationHours: number;
+  intentionalDisabling: boolean;
+  impliedSpeedKnots: number;
+  isEventStart?: boolean;
+  isEventEnd?: boolean;
+  offPosition: PointCoordinate;
+  onPosition: PointCoordinate;
+  positions12HoursBefore: number;
+  positions12HoursBeforeSat: number;
+  positionsPerDaySatReception: number;
+
+}
+
 export interface ApiEvent<Vessel = EventVessel> {
   id: string
   type: EventTypes
@@ -139,6 +154,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   position: PointCoordinate
   loitering?: LoiteringEvent
   encounter?: EncounterEvent<Vessel>
+  gap?: GapEvent
   port?: PortEvent
   port_visit?: PortVisitEvent
   key?: string

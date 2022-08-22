@@ -14,6 +14,7 @@ export const EVENTS_COLORS: Dictionary<string> = {
   port: '#99EEFF',
   port_visit: '#99EEFF',
   fishing: '#ffffff',
+  gap: '#f7b500',
 }
 
 export const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
@@ -24,6 +25,7 @@ export const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
   port: '#99EEFF',
   port_visit: '#99EEFF',
   fishing: '#ffffff',
+  gap: '#f7b500',
 }
 
 export const SHAPE_BY_TYPE: Record<EventType, string> = {

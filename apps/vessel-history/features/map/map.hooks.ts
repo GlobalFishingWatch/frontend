@@ -30,18 +30,22 @@ const styleTransformations: StyleTransformation[] = [
     ],
   }),
 ]
+console.log(selectGlobalGeneratorsConfig)
+
+console.log(selectDefaultMapGeneratorsConfig)
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   const dispatch = useDispatch()
-
-  return {
+  const generator = {
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
     generatorsConfig: useSelector(selectDefaultMapGeneratorsConfig),
     updateGenerator: (payload: UpdateGeneratorPayload) => dispatch(updateGenerator(payload)),
     styleTransformations,
   }
+  console.log(generator)
+  return generator
 }
 export type LatLon = {
   latitude: number
