@@ -115,7 +115,7 @@ export const selectEventsForTracks = createSelector(
 // This selet will split the gaps in two events before add the rendering data
 export const selectEventsWithGapsSplit = createSelector([selectEventsForTracks], (events) => {
   return events // I dont know if this change is temporaly
-  const eventsWithRenderingInfo = events.map(({ dataview, data }) => {
+  const eventsWithGapsSplit = events.map(({ dataview, data }) => {
     const updatedGaps = (data || []).reduce((newListEvents, event) => {
       if (event.type === EventTypes.Gap) {
         return [...newListEvents, {
@@ -142,8 +142,7 @@ export const selectEventsWithGapsSplit = createSelector([selectEventsForTracks],
       data: updatedGaps
     }
   })
-  console.log(eventsWithRenderingInfo)
-  return eventsWithRenderingInfo
+  return eventsWithGapsSplit
 })
 
 export const selectEventsWithRenderingInfo = createSelector(
@@ -286,8 +285,6 @@ const getEventRegionDescription = (
   mpas: Region[]
 ) => {
   const getRegionNamesByType = (regionType: string, values: string[]) => {
-    console.log('***************' + regionType)
-    console.log(values)
     switch (regionType) {
       case 'eez':
         return values
@@ -312,14 +309,6 @@ const getEventRegionDescription = (
   const regionsDescription = (['mpa', 'eez', 'rfmo'] as (keyof Regions)[])
     // use only regions with values
     .filter((regionType) => event?.regions && event?.regions[regionType].length > 0)
-    .map((region) => {
-      if (event.type === 'gap') {
-        console.log(region)
-        console.log(event?.regions[region])
-
-      }
-      return region
-    })
     // retrieve its corresponding names
     .map(
       (regionType) =>
@@ -332,7 +321,7 @@ const getEventRegionDescription = (
     )
     // combine all the regions with commas
     .join(', ')
-  console.log(regionsDescription)
+
   return regionsDescription ?? ''
 }
 

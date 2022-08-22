@@ -161,7 +161,6 @@ export const selectAll = createSelector([baseSelectAll], (datasets) => {
     const override = [...vesselInfo, ...gaps].find((current) => current.id === dataset.id)
     return override ?? dataset
   })
-  console.log(result)
   return result
 })
 
