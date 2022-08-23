@@ -503,6 +503,7 @@
     "loading": "Memuat trek kapal",
     "loadingInfo": "Loading vessel info",
     "login": "Anda perlu <1> masuk </1> untuk mengetahui detail selengkapnya (gratis, 2 menit)",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Main gear",
     "matched": "Match",
     "matricula": "Matricula",

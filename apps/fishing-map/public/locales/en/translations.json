@@ -503,6 +503,7 @@
     "loading": "Loading vessel track",
     "loadingInfo": "Loading vessel info",
     "login": "Register and <1>login</1> to see more details (free, 2 minutes)",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Main gear",
     "matched": "Matching",
     "matricula": "Matricula",
