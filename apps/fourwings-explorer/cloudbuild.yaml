@@ -37,14 +37,19 @@ steps:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
 
-  - id: 'zip'
+  - id: 'zip-and-upload'
     waitFor: ['build-app']
-    name: node:14
-    entrypoint: yarn
-    args: ['nx', 'zip', 'fourwings-explorer']
-
-  - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['cp', './dist.zip', 'gs://geotemporal-data-explorer-releases/ui/latest.zip']
+    name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        apt-get update -y && \
+        apt-get install -y zip && \
+        zip -r dist.zip dist/apps/fourwings-explorer/exported/* && \
+        gsutil cp ./dist.zip gs://geotemporal-data-explorer-releases/ui/latest.zip
 
 timeout: 1800s
 options:
