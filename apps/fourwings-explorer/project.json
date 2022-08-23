@@ -30,6 +30,13 @@
         ]
       }
     },
+    "zip": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["zip -r dist.zip dist/apps/fourwings-explorer/exported/*"]
+      }
+    },
     "compile": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],

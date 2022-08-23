@@ -1,6 +1,10 @@
 export const ROOT_DOM_ELEMENT = '__next'
 
-const LOCAL_API_URL = process.env.NEXT_LOCAL_API_URL || 'http://localhost:8080'
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+const LOCAL_API_URL =
+  IS_PRODUCTION && typeof window !== 'undefined'
+    ? `http://${window.location.host}`
+    : process.env.NEXT_LOCAL_API_URL || 'http://localhost:8080'
 const LOCAL_API_VERSION = process.env.NEXT_LOCAL_API_VERSION || '/v1'
 export const API_URL = LOCAL_API_URL + LOCAL_API_VERSION
 
