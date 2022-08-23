@@ -45,7 +45,11 @@ export const getResources = (
       dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
         ? DatasetTypes.UserTracks
         : DatasetTypes.Tracks
-    const track = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
+
+    const trackDatasetConfig = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
+    const hasTrackData = trackDatasetConfig?.params?.find((p) => p.id === 'vesselId')?.value
+    // Cleaning track resources with no data as now now the track is hidden for guest users in VMS full- datasets
+    const track = hasTrackData ? trackDatasetConfig : ({} as DataviewDatasetConfig)
 
     const events = getDatasetConfigsByDatasetType(dataview, DatasetTypes.Events).filter(
       (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value

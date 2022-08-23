@@ -6,7 +6,7 @@ import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectEventsInsideMPAByType } from 'features/risk/risk.selectors'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { FlagOnMOU } from 'types/risk-indicator'
+import { AISCoverage, FlagOnMOU } from 'types/risk-indicator'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { ValueItem, VesselWithHistory } from 'types'
@@ -27,9 +27,13 @@ import {
   selectRiskVesselIndentityNamesHistory,
   selectRiskVesselIndentityOwnersHistory,
   selectCurrentMergedVesselsIndicators,
+  selectRiskVesselIndentityOperatorsHistory,
+  selectCoverage,
+  selectGapsIntentionalDisabling,
 } from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
+  coverage: AISCoverage
   encountersInForeignEEZ: RenderedEvent[]
   encountersInMPA: RenderedEvent[]
   encountersInRFMOWithoutAuthorization: RenderedEvent[]
@@ -38,6 +42,7 @@ export interface UseRiskIndicator {
   fishingInMPA: RenderedEvent[]
   fishingInRFMOWithoutAuthorization: RenderedEvent[]
   fishingRFMOsAreasWithoutAuthorization: string[]
+  gapsIntentionalDisabling: RenderedEvent[]
   loiteringInMPA: RenderedEvent[]
   portVisitsToNonPSMAPortState: RenderedEvent[]
   countByRiskLevel: {
@@ -50,9 +55,11 @@ export interface UseRiskIndicator {
   vessel: VesselWithHistory
   flagsHistory: ValueItem[]
   namesHistory: ValueItem[]
+  operatorsHistory: ValueItem[]
   ownersHistory: ValueItem[]
   uniqueFlags: string[]
   uniqueNames: string[]
+  uniqueOperators: string[]
   uniqueOwners: string[]
 }
 
@@ -71,10 +78,12 @@ export function useRiskIndicator(): UseRiskIndicator {
   const encountersInMPA = useSelector(selectEncountersInMPA)
   const fishingInMPA = useSelector(selectFishingInMPA)
   const encountersInForeignEEZ = useSelector(selectEncountersInForeignEEZ)
+  const coverage = useSelector(selectCoverage)
   const portVisitsToNonPSMAPortState = useSelector(selectPortVisitsToNonPSMAPortState)
   const vesselFlagsOnMOU = useSelector(selectVesselIdentityMouIndicators)
   const flagsHistory = useSelector(selectRiskVesselIndentityFlagsHistory)
   const namesHistory = useSelector(selectRiskVesselIndentityNamesHistory)
+  const operatorsHistory = useSelector(selectRiskVesselIndentityOperatorsHistory)
   const ownersHistory = useSelector(selectRiskVesselIndentityOwnersHistory)
   const encountersInRFMOWithoutAuthorization = useSelector(
     selectEncountersInRFMOWithoutAuthorization
@@ -86,9 +95,14 @@ export function useRiskIndicator(): UseRiskIndicator {
   const fishingRFMOsAreasWithoutAuthorization = useSelector(
     selectFishingRFMOsAreasWithoutAuthorization
   )
+  const gapsIntentionalDisabling = useSelector(selectGapsIntentionalDisabling)
 
   const uniqueFlags = useMemo(() => getUniqueHistoryValues(flagsHistory), [flagsHistory])
   const uniqueNames = useMemo(() => getUniqueHistoryValues(namesHistory), [namesHistory])
+  const uniqueOperators = useMemo(
+    () => getUniqueHistoryValues(operatorsHistory),
+    [operatorsHistory]
+  )
   const uniqueOwners = useMemo(() => getUniqueHistoryValues(ownersHistory), [ownersHistory])
   const {
     vesselIdentity: { iuuListed: iuuBlacklisted },
@@ -108,12 +122,15 @@ export function useRiskIndicator(): UseRiskIndicator {
         fishingInRFMOWithoutAuthorization.length +
         loiteringInMPA.length +
         Math.max(0, uniqueFlags.length - 1) +
+        Math.max(0, uniqueOperators.length - 1) +
         Math.max(0, uniqueOwners.length - 1) +
         portVisitsToNonPSMAPortState.length +
         vesselFlagsOnMOU.length +
+        (gapsIntentionalDisabling?.length ?? 0) +
         0,
       high: (iuuBlacklisted ? 1 : 0) + 0,
     },
+    coverage,
     encountersInForeignEEZ,
     encountersInMPA,
     encountersInRFMOWithoutAuthorization,
@@ -123,14 +140,17 @@ export function useRiskIndicator(): UseRiskIndicator {
     fishingInRFMOWithoutAuthorization,
     fishingRFMOsAreasWithoutAuthorization,
     flagsHistory,
+    gapsIntentionalDisabling,
     indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
     iuuBlacklisted,
     loiteringInMPA,
     namesHistory,
+    operatorsHistory,
     ownersHistory,
     portVisitsToNonPSMAPortState,
     uniqueFlags,
     uniqueNames,
+    uniqueOperators,
     uniqueOwners,
     vessel,
     vesselFlagsOnMOU,

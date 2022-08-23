@@ -9,6 +9,7 @@ import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { removeLocationLabelsDataview } from 'features/workspace/workspace.slice'
 
 interface UserState {
   logged: boolean
@@ -58,9 +59,13 @@ export const fetchUserThunk = createAsyncThunk(
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async ({ loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false }) => {
+  async (
+    { loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false },
+    { dispatch }
+  ) => {
     try {
       await GFWAPI.logout()
+      dispatch(removeLocationLabelsDataview())
     } catch (e: any) {
       console.warn(e)
     }

@@ -29,6 +29,7 @@ export const WORKSPACE_START_DATE = new Date()
 WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 6)
 
 export const FIRST_YEAR_OF_DATA = 2012
+export const LAST_YEAR_FORCED_LABOR = 2020
 export const CURRENT_YEAR = new Date().getFullYear()
 
 export const DEFAULT_WORKSPACE: AppState = {
@@ -122,12 +123,18 @@ export const APP_PROFILE_VIEWS = [
     name: 'Port Inspector',
     required_permission: PORT_INSPECTOR_PERMISSION,
     propagate_events_query_params: ['confidences'],
+    events_query_params: {
+      start_date: undefined,
+    },
   },
   {
     id: 'insurance-underwriter',
     name: 'Insurance Underwriter',
     required_permission: INSURER_PERMISSION,
     propagate_events_query_params: ['confidences'],
+    events_query_params: {
+      start_date: DateTime.now().toUTC().minus({ months: 12 }).toISO(),
+    },
   },
 ]
 

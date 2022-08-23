@@ -82,6 +82,13 @@ export const selectEncountersInForeignEEZ = createSelector(
   }
 )
 
+export const selectCoverage = createSelector(
+  [selectCurrentMergedVesselsIndicators],
+  (indicators) => {
+    return indicators?.coverage
+  }
+)
+
 export const selectPortVisitsToNonPSMAPortState = createSelector(
   [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
   (indicators, events) => {
@@ -132,6 +139,9 @@ export const selectRiskVesselIndentityNamesHistory = selectRiskVesselIndentityFi
 export const selectRiskVesselIndentityOwnersHistory =
   selectRiskVesselIndentityFieldHistory('owners')
 
+export const selectRiskVesselIndentityOperatorsHistory =
+  selectRiskVesselIndentityFieldHistory('operators')
+
 export const selectEncountersInRFMOWithoutAuthorization = createSelector(
   [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
   (indicators, events) => {
@@ -178,6 +188,15 @@ export const selectFishingRFMOsAreasWithoutAuthorization = createSelector(
           .filter((eventAuth) => eventAuth.is_authorized === 'false')
           .map((eventAuth) => eventAuth.rfmo)
       )
+    )
+  }
+)
+
+export const selectGapsIntentionalDisabling = createSelector(
+  [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
+  (indicators, events) => {
+    return events.filter((event) =>
+      (indicators?.gaps?.intentionalDisabling || []).includes(event.id)
     )
   }
 )

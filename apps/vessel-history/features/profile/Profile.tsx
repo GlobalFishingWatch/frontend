@@ -43,6 +43,7 @@ import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessel
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
+import ActivityByType from 'features/activity-by-type/activity-by-type'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -72,7 +73,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     [akaVesselProfileIds]
   )
   const { online } = useNavigatorOnline()
-  const riskSummaryTabVisible = useSelector(selectCurrentUserProfileHasInsurerPermission)
+  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
@@ -268,9 +269,26 @@ const Profile: React.FC = (props): React.ReactElement => {
     [lastPortVisit, lastPosition, loading, mapTab, t, vessel, visibleHighlights]
   )
 
+  const activityByTypeTab = useMemo(
+    () => ({
+      id: 'activity',
+      title: (
+        <div className={styles.tagContainer}>
+          {t('common.activityByType', 'ACTIVITY BY TYPE').toLocaleUpperCase()}
+          {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
+        </div>
+      ),
+      content: <ActivityByType onMoveToMap={() => setActiveTab(mapTab)} />,
+    }),
+    [mapTab, t, visibleHighlights]
+  )
+
   const tabs: Tab[] = useMemo(
-    () => [...(riskSummaryTabVisible ? [riskSummaryTab] : []), infoTab, activityTab, mapTab],
-    [riskSummaryTabVisible, riskSummaryTab, infoTab, activityTab, mapTab]
+    () =>
+      currentProfileIsInsurer
+        ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
+        : [infoTab, activityTab, mapTab],
+    [currentProfileIsInsurer, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])

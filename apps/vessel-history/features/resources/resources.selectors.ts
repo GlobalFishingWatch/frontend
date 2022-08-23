@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { Dataset, EventType, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { selectVisibleEvents } from 'features/event-filters/filters.selectors'
 import { selectResources } from './resources.slice'
 
@@ -17,3 +18,9 @@ export const selectVisibleResources = createSelector(
     return Object.fromEntries(resourcesEntries)
   }
 )
+
+export const selectEventResourcesLoading = createSelector([selectResources], (resources) => {
+  return Object.entries(resources)
+    .filter(([url, resource]) => resource.status === ResourceStatus.Loading)
+    .map(([url, resource]) => resource?.dataset?.subcategory)
+})

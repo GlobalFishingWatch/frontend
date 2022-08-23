@@ -72,7 +72,8 @@
   flex: 1;
 }
 
-.voyage {
+.voyage,
+.eventGroup {
   margin-left: unset;
   width: 100%;
   padding-left: var(--space-M);
@@ -80,24 +81,29 @@
   height: 60px;
   border-top: var(--border);
   background: var(--gradient);
-  margin-top: -0.9rem;
 }
 
-.voyage .eventData {
+.voyage .eventData,
+.eventGroup .eventData {
   height: 100%;
   display: flex;
   align-items: center;
 }
 
-.voyage .eventData .description {
-  text-transform: uppercase;
+.voyage .eventData .description,
+.eventGroup .eventData .description {
   width: calc(100vw - var(--size-S) * 3.5);
   margin-top: 2px;
   line-height: 1;
   color: var(--color-secondary-blue);
 }
 
-.voyage.open .eventData .description {
+.voyage .eventData .description {
+  text-transform: uppercase;
+}
+
+.voyage.open .eventData .description,
+.eventGroup.open .eventData .description {
   color: var(--color-promary-blue);
 }
 
@@ -244,4 +250,13 @@ button.settingsLink {
   color: var(--color-secondary-blue);
   padding: var(--space-M);
   text-align: center;
+}
+
+.eventLoading {
+  margin: 0 var(--space-S);
+}
+
+.aisCoverageContainer {
+  padding-left: var(--space-M);
+  padding-bottom: var(--space-S);
 }

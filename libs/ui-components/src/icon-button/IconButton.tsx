@@ -5,6 +5,7 @@ import { Icon, IconType } from '../icon'
 import { TooltipTypes } from '../types/types'
 import { Tooltip } from '../tooltip'
 import { Spinner } from '../spinner'
+import { HTMLButtonType } from '../button/Button'
 import styles from './IconButton.module.css'
 
 export type IconButtonType =
@@ -32,6 +33,7 @@ export interface IconButtonProps {
   tooltipPlacement?: Placement
   children?: React.ReactNode
   style?: CSSProperties
+  htmlType?: HTMLButtonType
 }
 
 const warningVarColor =
@@ -55,6 +57,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
     tooltipPlacement = 'auto',
     children,
     style,
+    htmlType,
     ...rest
   } = props
   let spinnerColor
@@ -76,6 +79,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
         onClick={disabled ? undefined : onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        type={htmlType ?? 'button'}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         style={style}
         {...rest}

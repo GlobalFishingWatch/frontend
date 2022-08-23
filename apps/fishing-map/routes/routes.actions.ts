@@ -30,6 +30,15 @@ export function updateLocation(
   return { type, query, payload, replaceQuery }
 }
 
+export function updateQueryParam(query: QueryParams = {}) {
+  return (dispatch: AppDispatch, getState: () => unknown) => {
+    const state = getState() as RootState
+    const location = selectCurrentLocation(state)
+    const payload = selectLocationPayload(state)
+    return dispatch(updateLocation(location.type, { query, payload, replaceQuery: false }))
+  }
+}
+
 const cleanQueryLocation = () => {
   return (dispatch: AppDispatch, getState: () => unknown) => {
     const state = getState() as RootState

@@ -199,7 +199,12 @@ export const selectActiveTrackDataviews = createSelector([selectTrackDataviews],
 export const selectGetVesselDataviewInstance = createSelector(
   [selectWorkspaceProfileView],
   (profileView) => {
-    return getVesselDataviewInstanceFactory(DEFAULT_VESSEL_DATAVIEWS[profileView])
+    const {
+      events_query_params: { start_date },
+    } = APP_PROFILE_VIEWS.filter((v) => v.id === profileView).shift() ?? {
+      events_query_params: { start_date: undefined },
+    }
+    return getVesselDataviewInstanceFactory(DEFAULT_VESSEL_DATAVIEWS[profileView], start_date)
   }
 )
 
