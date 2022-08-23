@@ -47,6 +47,7 @@ import {
 import { TYPES as CARRIER_TYPES } from 'components/map/layers/generators'
 import { getMapDownloadVisible } from 'redux-modules/app/app.selectors'
 import { AppState } from 'types/redux.types'
+import { LayerTypes } from 'types/app.types'
 import { ClusterEventsGeneratorConfig } from './layers/generators/clusters-events-generator'
 
 const FILL_SELECTED_FEATURES_COLOR = 'rgba(0, 0, 0, 0.3)'
@@ -160,7 +161,7 @@ export const getContextualLayerVisible = (layerId: string) =>
     return visible
   })
 
-export const getContextualMapGenerator = (layerId: string) =>
+export const getContextualMapGenerator = (layerId: LayerTypes) =>
   createSelector([getLayers], (layersActive) => {
     const layer = CONTEXT_LAYERS.find((l) => l.id === layerId)
     if (!layer || !layer.id) return null
