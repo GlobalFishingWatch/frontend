@@ -4,7 +4,11 @@ import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { ChunkFeature, aggregateFeatures } from '@globalfishingwatch/features-aggregate'
-import { useGeoTemporalLayers, useLayersConfig } from 'features/layers/layers.hooks'
+import {
+  FourwingsLayerConfig,
+  useGeoTemporalLayers,
+  useLayersConfig,
+} from 'features/layers/layers.hooks'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import {
   areLayersFeatureLoaded,
@@ -18,14 +22,25 @@ export const useDynamicBreaksUpdate = () => {
   const { updateLayer } = useLayersConfig()
   const layerFeatures = useMapLayerFeatures(layers)
   const sourcesLoaded = areLayersFeatureLoaded(layerFeatures)
+  const layersFilterHash = layers
+    .flatMap(({ config }) => `${config.minVisibleValue}-${config.maxVisibleValue}`)
+    .join(',')
 
   const updateBreaksByViewportValues = useCallback(
     (layerFeatures: LayerFeature[], bounds: MiniglobeBounds) => {
       const layersConfig = layerFeatures?.flatMap(({ chunksFeatures, layerId, metadata }) => {
         const { features } = chunksFeatures?.[0] || ({} as ChunkFeature)
         if (features && features.length) {
+          const config = layers.find(({ id }) => id === layerId)?.config as FourwingsLayerConfig
           const filteredFeatures = filterFeaturesByBounds(features, bounds)
-          const data = aggregateFeatures(filteredFeatures, metadata)
+          const rawData = aggregateFeatures(filteredFeatures, metadata)
+          const data = rawData.filter((d) => {
+            const matchesMin =
+              config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
+            const matchesMax =
+              config?.maxVisibleValue !== undefined ? d <= config?.maxVisibleValue : true
+            return matchesMin && matchesMax
+          })
 
           if (data && data.length) {
             const dataSampled = data.length > 1000 ? sample(data, 1000, Math.random) : data
@@ -66,13 +81,12 @@ export const useDynamicBreaksUpdate = () => {
         updateLayer(layersConfig)
       }
     },
-    [updateLayer]
+    [updateLayer, layers]
   )
 
   useEffect(() => {
     if (sourcesLoaded) {
       updateBreaksByViewportValues(layerFeatures, bounds)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sourcesLoaded])
+  }, [sourcesLoaded, layersFilterHash])
 }

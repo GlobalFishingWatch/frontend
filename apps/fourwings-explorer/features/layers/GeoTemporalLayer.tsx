@@ -3,16 +3,16 @@ import cx from 'classnames'
 import { Tooltip, ColorBarOption, IconButton, Slider } from '@globalfishingwatch/ui-components'
 import { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { useLayerPanelDataviewSort } from 'features/layers/layers-sort.hook'
-import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
+import { DatasetLayer, FourwingsLayerConfig, useLayersConfig } from 'features/layers/layers.hooks'
 import Remove from 'features/layers/common/Remove'
 import Color from 'features/layers/common/Color'
+import { FourwingsAPIDataset } from 'features/datasets/datasets.types'
 import LayerSwitch from './common/LayerSwitch'
 import Title from './common/Title'
 import styles from './Layers.module.css'
-import { FourwingsAPIDataset } from 'features/datasets/datasets.types'
 
 type LayerPanelProps = {
-  layer: DatasetLayer<FourwingsAPIDataset>
+  layer: DatasetLayer<FourwingsAPIDataset, FourwingsLayerConfig>
   onToggle?: () => void
 }
 
@@ -44,13 +44,18 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
   }
 
   const title = layer.dataset?.name
-  const { max, min, scale, offset } = layer.dataset?.configuration
-  const cleanMin = Math.floor(min * scale + offset)
+  const { max, min, scale = 1, offset = 0 } = layer.dataset?.configuration
+
+  const showRange = max !== undefined && min !== undefined
+  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
+  const cleanMin = Math.max(0, Math.floor(min * scale + offset))
   const cleanMax = Math.ceil(max * scale + offset)
+  const minSliderValue = layer.config?.minVisibleValue ?? cleanMin
+  const maxSliderValue = layer.config?.maxVisibleValue ?? cleanMax
   const sliderConfig = {
     steps: [cleanMin, cleanMax],
-    min: cleanMin,
-    max: cleanMax,
+    min: minSliderValue,
+    max: maxSliderValue,
   }
   const onSliderChange = useCallback(
     (rangeSelected) => {
@@ -125,14 +130,16 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
         </div>
       </div>
       <div className={cx(styles.filters, { [styles.active]: layerActive })}>
-        <Slider
-          className={styles.slider}
-          initialRange={[cleanMin, cleanMax]}
-          label="filter values"
-          config={sliderConfig}
-          onChange={onSliderChange}
-          histogram={false}
-        ></Slider>
+        {showRange && (
+          <Slider
+            className={styles.slider}
+            initialRange={[minSliderValue, maxSliderValue]}
+            label="filter values"
+            config={sliderConfig}
+            onChange={onSliderChange}
+            histogram={false}
+          ></Slider>
+        )}
       </div>
       <div className={styles.properties}>
         <div className={styles.legendContainer}>

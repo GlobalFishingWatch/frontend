@@ -31,13 +31,17 @@ export type FourwingsLayerConfig = BaseLayerConfig & {
   maxVisibleValue?: number
 }
 
-export type DatasetLayerConfig = {
+export type AnyDatasetLayerConfig = BaseLayerConfig | BasemapGeneratorConfig | FourwingsLayerConfig
+export type DatasetLayerConfig<Config = AnyDatasetLayerConfig> = {
   id: string
-  config: BaseLayerConfig | BasemapGeneratorConfig | FourwingsLayerConfig
+  config: Config
   filter?: unknown[]
 }
 
-export type DatasetLayer<Dataset = APIDataset> = DatasetLayerConfig & {
+export type DatasetLayer<
+  Dataset = APIDataset,
+  Config = AnyDatasetLayerConfig
+> = DatasetLayerConfig<Config> & {
   dataset: Dataset
 }
 
@@ -136,7 +140,10 @@ export const useDatasetLayers = (): DatasetLayer[] => {
 
 export const useGeoTemporalLayers = () => {
   const layers = useDatasetLayers()
-  return layers.filter((l) => l.dataset?.type === '4wings') as DatasetLayer<FourwingsAPIDataset>[]
+  return layers.filter((l) => l.dataset?.type === '4wings') as DatasetLayer<
+    FourwingsAPIDataset,
+    FourwingsLayerConfig
+  >[]
 }
 
 export const useContexLayers = () => {

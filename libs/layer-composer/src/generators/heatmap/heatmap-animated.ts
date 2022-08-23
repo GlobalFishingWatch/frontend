@@ -378,6 +378,8 @@ class HeatmapAnimatedGenerator {
         breaks,
         legends,
         temporalgrid: true,
+        minVisibleValue: finalConfig.minVisibleValue,
+        maxVisibleValue: finalConfig.maxVisibleValue,
         numSublayers: finalConfig.sublayers.length,
         sublayers: finalConfig.sublayers,
         visibleSublayers: getSubLayersVisible(finalConfig),
