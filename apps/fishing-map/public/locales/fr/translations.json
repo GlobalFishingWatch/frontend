@@ -503,6 +503,7 @@
     "loading": "Chargement de la trajectoire du navire",
     "loadingInfo": "Chargement des informations du navire",
     "login": "Vous devez <1>vous connecter</1> pour voir plus de détails (gratuit, 2 minutes)",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Équipement principal",
     "matched": "Match",
     "matricula": "Matricula",
