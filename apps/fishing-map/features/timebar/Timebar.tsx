@@ -272,9 +272,13 @@ const TimebarWrapper = () => {
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
   const loading =
-    tracks?.some(({ status }) => status === ResourceStatus.Loading) ||
-    tracksGraphsData?.some(({ status }) => status === ResourceStatus.Loading) ||
-    tracksEvents?.some(({ status }) => status === ResourceStatus.Loading)
+    tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
+    tracksGraphsData?.some(
+      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+    ) ||
+    tracksEvents?.some(
+      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+    )
 
   const hasTrackError =
     tracks?.some(({ status }) => status === ResourceStatus.Error) ||
