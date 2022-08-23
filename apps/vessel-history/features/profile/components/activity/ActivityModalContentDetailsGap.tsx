@@ -48,7 +48,7 @@ const ActivityModalContentDetailsGap: React.FC<ActivityModalContentProps> = (
           value: event.gap.impliedSpeedKnots?.toFixed(2),
         })} />
       </div>
-      <ActivityModalContentField label={t('event.regionsInvolved', 'regionsInvolved')} value={event.description} />
+      <ActivityModalContentField label={t('event.regionsInvolved', 'Regions involved')} value={event.description} />
 
     </Fragment>
   )
