@@ -29,6 +29,7 @@ export const WORKSPACE_START_DATE = new Date()
 WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 6)
 
 export const FIRST_YEAR_OF_DATA = 2012
+export const LAST_YEAR_FORCED_LABOR = 2020
 export const CURRENT_YEAR = new Date().getFullYear()
 
 export const DEFAULT_WORKSPACE: AppState = {

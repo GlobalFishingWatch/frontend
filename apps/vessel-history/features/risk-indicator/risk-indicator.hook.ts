@@ -6,7 +6,7 @@ import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectEventsInsideMPAByType } from 'features/risk/risk.selectors'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { FlagOnMOU } from 'types/risk-indicator'
+import { AISCoverage, FlagOnMOU } from 'types/risk-indicator'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { ValueItem, VesselWithHistory } from 'types'
@@ -28,9 +28,12 @@ import {
   selectRiskVesselIndentityOwnersHistory,
   selectCurrentMergedVesselsIndicators,
   selectRiskVesselIndentityOperatorsHistory,
+  selectCoverage,
+  selectGapsIntentionalDisabling,
 } from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
+  coverage: AISCoverage
   encountersInForeignEEZ: RenderedEvent[]
   encountersInMPA: RenderedEvent[]
   encountersInRFMOWithoutAuthorization: RenderedEvent[]
@@ -39,6 +42,7 @@ export interface UseRiskIndicator {
   fishingInMPA: RenderedEvent[]
   fishingInRFMOWithoutAuthorization: RenderedEvent[]
   fishingRFMOsAreasWithoutAuthorization: string[]
+  gapsIntentionalDisabling: RenderedEvent[]
   loiteringInMPA: RenderedEvent[]
   portVisitsToNonPSMAPortState: RenderedEvent[]
   countByRiskLevel: {
@@ -74,6 +78,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   const encountersInMPA = useSelector(selectEncountersInMPA)
   const fishingInMPA = useSelector(selectFishingInMPA)
   const encountersInForeignEEZ = useSelector(selectEncountersInForeignEEZ)
+  const coverage = useSelector(selectCoverage)
   const portVisitsToNonPSMAPortState = useSelector(selectPortVisitsToNonPSMAPortState)
   const vesselFlagsOnMOU = useSelector(selectVesselIdentityMouIndicators)
   const flagsHistory = useSelector(selectRiskVesselIndentityFlagsHistory)
@@ -90,6 +95,7 @@ export function useRiskIndicator(): UseRiskIndicator {
   const fishingRFMOsAreasWithoutAuthorization = useSelector(
     selectFishingRFMOsAreasWithoutAuthorization
   )
+  const gapsIntentionalDisabling = useSelector(selectGapsIntentionalDisabling)
 
   const uniqueFlags = useMemo(() => getUniqueHistoryValues(flagsHistory), [flagsHistory])
   const uniqueNames = useMemo(() => getUniqueHistoryValues(namesHistory), [namesHistory])
@@ -120,9 +126,11 @@ export function useRiskIndicator(): UseRiskIndicator {
         Math.max(0, uniqueOwners.length - 1) +
         portVisitsToNonPSMAPortState.length +
         vesselFlagsOnMOU.length +
+        (gapsIntentionalDisabling?.length ?? 0) +
         0,
       high: (iuuBlacklisted ? 1 : 0) + 0,
     },
+    coverage,
     encountersInForeignEEZ,
     encountersInMPA,
     encountersInRFMOWithoutAuthorization,
@@ -132,6 +140,7 @@ export function useRiskIndicator(): UseRiskIndicator {
     fishingInRFMOWithoutAuthorization,
     fishingRFMOsAreasWithoutAuthorization,
     flagsHistory,
+    gapsIntentionalDisabling,
     indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
     iuuBlacklisted,
     loiteringInMPA,

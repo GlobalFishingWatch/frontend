@@ -8,9 +8,8 @@ import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
-import { isUserLogged } from 'features/user/user.selectors'
+import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
-import { isGFWUser } from 'features/user/user.slice'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './Sidebar.module.css'
@@ -43,15 +42,15 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
   const userLogged = useSelector(isUserLogged)
-  const gfwUser = useSelector(isGFWUser)
+  const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
   const { datasetModal } = useDatasetModalConnect()
 
   useEffect(() => {
-    if (gfwUser) {
+    if (hasUserGroupsPermissions) {
       dispatch(fetchUserVesselGroupsThunk())
     }
-  }, [dispatch, gfwUser])
+  }, [dispatch, hasUserGroupsPermissions])
 
   const sidebarComponent = useMemo(() => {
     if (!userLogged) {

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^4.0.0",
-    "@reduxjs/toolkit": "^1.8.2",
+    "@reduxjs/toolkit": "^1.8.4",
     "customize-cra": "^0.9.1",
     "get-yarn-workspaces": "^1.0.2",
     "react": "^18.2.0",

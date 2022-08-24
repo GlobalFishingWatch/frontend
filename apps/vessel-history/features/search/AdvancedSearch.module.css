@@ -37,16 +37,17 @@
 }
 
 .cta {
-  min-width: 20rem;
+  min-width: 16rem;
 }
 
 @media only screen and (min-width: 1000px) {
   .container {
     border-bottom: none;
     border-right: var(--border);
-    width: 33%;
+    flex: 0 0 33%;
     overflow-y: auto;
   }
+
   .full,
   .width6ch,
   .width7ch,

@@ -9,6 +9,13 @@ export type MOU = {
   paris: FlagColor
 }
 
+export type AISCoverage = {
+  blocks: number
+  blocksWithPositions: number
+  percentage: number
+  voyages: number
+}
+
 export type LocationRelatedEventIndicators = {
   mou: MOU
   eventsInForeignEEZ: string[]
@@ -19,6 +26,10 @@ export type LocationRelatedEventIndicators = {
 
 export type PortVisitsIndicators = {
   nonPSMAPortState: string[]
+}
+
+export type GapsIndicators = {
+  intentionalDisabling: string[]
 }
 
 export type VesselIdentityHistoryValue = {
@@ -45,9 +56,11 @@ export type FlagOnMOU = {
 
 export type Indicator = {
   id: string
+  coverage: AISCoverage
   encounters: LocationRelatedEventIndicators
   fishing: LocationRelatedEventIndicators
   portVisits: PortVisitsIndicators
   loitering: LocationRelatedEventIndicators
   vesselIdentity: VesselIdentityIndicators
+  gaps: GapsIndicators
 }

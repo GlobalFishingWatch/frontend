@@ -67,8 +67,8 @@ function WorkspaceError(): React.ReactElement {
   if (
     error.status === 401 ||
     error.status === 403 ||
-    vesselGroupsError?.code === 401 ||
-    vesselGroupsError?.code === 403
+    vesselGroupsError?.status === 401 ||
+    vesselGroupsError?.status === 403
   ) {
     return (
       <ErrorPlaceHolder title={t('errors.privateView', 'This is a private view')}>
