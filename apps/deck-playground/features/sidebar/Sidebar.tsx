@@ -8,8 +8,9 @@ function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
 
   const getFirstVesselData = () => {
-    const vesselLayerInstances = layers.find((l) => l.id === 'vessel')?.instances?.[0]
-    console.log('getFirstVesselData', vesselLayerInstances.getTrackLayer().getSegments())
+    const vesselLayerInstance = layers.find((l) => l.id === 'vessel')?.instance
+    console.log('First Vessel Data')
+    console.log(vesselLayerInstance.getVesselsLayer()?.[0].getTrackLayer().getSegments())
   }
 
   const onLayerVisibilityClick = (layer: MapLayer) => {

@@ -2,7 +2,9 @@ import { CompositeLayer } from '@deck.gl/core/typed'
 import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
 import { trackLoader } from 'loaders/trackLoader'
 
-export class VesselLayer extends CompositeLayer<_VesselTrackLayerProps> {
+export type VesselLayerProps = _VesselTrackLayerProps
+
+export class VesselLayer extends CompositeLayer<VesselLayerProps> {
   trackLayer = new VesselTrackLayer({
     id: `vessel-layer-${this.props.id}`,
     data: `https://gateway.api.dev.globalfishingwatch.org/v2/vessels/${this.props.id}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&distance-fishing=50&bearing-val-fishing=1&change-speed-fishing=10&min-accuracy-fishing=2&distance-transit=100&bearing-val-transit=1&change-speed-transit=10&min-accuracy-transit=10&datasets=public-global-fishing-tracks%3Av20201001`,

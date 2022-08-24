@@ -5,7 +5,7 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayerType, useMapLayers } from 'features/map/layers.hooks'
-import { VesselLayer } from '../../layers/vessel/VesselLayer'
+import { VesselsLayer } from '../../layers/vessel/VesselsLayer'
 
 const INITIAL_VIEW_STATE = {
   longitude: -2,
@@ -45,11 +45,11 @@ const MapWrapper = (): React.ReactElement => {
   const highlightEndTime = dateToMs(highlightTimerange?.end)
 
   const setMapLayerInstances = useCallback(
-    (id: MapLayerType, instances) => {
+    (id: MapLayerType, instance) => {
       setMapLayers((layers) =>
         layers.map((l) => {
           if (l.id === id) {
-            return { ...l, instances }
+            return { ...l, instance }
           }
           return l
         })
@@ -61,19 +61,16 @@ const MapWrapper = (): React.ReactElement => {
   const vesselLayerVisible = mapLayers.find((l) => l.id === 'vessel')?.visible
   useEffect(() => {
     if (vesselLayerVisible) {
-      const vesselLayers = VESSEL_IDS.map(
-        (id) =>
-          new VesselLayer({
-            id,
-            startTime,
-            endTime,
-            highlightStartTime,
-            highlightEndTime,
-          })
-      )
-      setMapLayerInstances('vessel', vesselLayers)
+      const vesselsLayer = new VesselsLayer({
+        ids: VESSEL_IDS,
+        startTime,
+        endTime,
+        highlightStartTime,
+        highlightEndTime,
+      })
+      setMapLayerInstances('vessel', vesselsLayer)
     } else {
-      setMapLayerInstances('vessel', [])
+      setMapLayerInstances('vessel', null)
     }
   }, [
     vesselLayerVisible,
@@ -85,7 +82,7 @@ const MapWrapper = (): React.ReactElement => {
   ])
 
   const layers = useMemo(() => {
-    return [basemap, ...mapLayers.flatMap((l) => l.instances)]
+    return [basemap, ...mapLayers.flatMap((l) => l.instance)]
   }, [mapLayers])
 
   return (
