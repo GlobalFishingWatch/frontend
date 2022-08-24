@@ -40,9 +40,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
   const highlightsIds = useSelector(selectHighlightEventIds)
-  const {
-    coverage,
-  } = useRiskIndicator()
+  const { coverage } = useRiskIndicator()
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
       if (event.type === EventTypeVoyage.Voyage) {
@@ -67,8 +65,10 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   return (
     <div className={styles.activityContainer}>
-      <ActivityFilters></ActivityFilters>
-      <AisCoverage value={coverage?.percentage} />
+      <div className={styles.heading}>
+        <AisCoverage value={coverage?.percentage} />
+        <ActivityFilters></ActivityFilters>
+      </div>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>
