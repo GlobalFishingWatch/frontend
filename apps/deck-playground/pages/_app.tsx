@@ -1,5 +1,6 @@
 import { useState, useCallback, Component } from 'react'
 import { AppProps } from 'next/app'
+import { FpsView } from 'react-fps'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -79,6 +80,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
             showMainLabel="Map"
             className="split-container"
           />
+          <FpsView bottom="0" left="0" top="auto" />
         </ErrorBoundary>
       </QueryClientProvider>
       {/* </RecoilURLSyncJSONNext> */}
