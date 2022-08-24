@@ -5,13 +5,13 @@ import {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
-import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
 import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = () => {
-  const layers = useGeoTemporalLayers()
+  return null
+  // const layers = useGeoTemporalLayers()
 
-  const { loading, stackedActivity, error } = useStackedActivity(layers)
+  // const { loading, stackedActivity, error } = useStackedActivity(layers)
 
   // const style = useMapStyle()
   // const mapLegends = useMapLegend(style, activeDataviews)
@@ -38,26 +38,26 @@ const TimebarActivityGraph = () => {
   //   [loading, mapLegends, visualisation]
   // )
 
-  if (error) {
-    return (
-      <div className={styles.error}>
-        There was a problem loading the data, please try refreshing the page
-      </div>
-    )
-  }
-  if (!stackedActivity || !stackedActivity.length || !layers?.length) return null
+  // if (error) {
+  //   return (
+  //     <div className={styles.error}>
+  //       There was a problem loading the data, please try refreshing the page
+  //     </div>
+  //   )
+  // }
+  // if (!stackedActivity || !stackedActivity.length || !layers?.length) return null
 
-  return (
-    <div className={cx({ [styles.loading]: loading })}>
-      <TimebarStackedActivity
-        key="stackedActivity"
-        timeseries={stackedActivity}
-        dataviews={layers}
-        // highlighterCallback={getActivityHighlighterLabel}
-        highlighterIconCallback="heatmap"
-      />
-    </div>
-  )
+  // return (
+  //   <div className={cx({ [styles.loading]: loading })}>
+  //     <TimebarStackedActivity
+  //       key="stackedActivity"
+  //       timeseries={stackedActivity}
+  //       dataviews={layers}
+  //       // highlighterCallback={getActivityHighlighterLabel}
+  //       highlighterIconCallback="heatmap"
+  //     />
+  //   </div>
+  // )
 }
 
 export default TimebarActivityGraph

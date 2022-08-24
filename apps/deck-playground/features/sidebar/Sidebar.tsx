@@ -9,7 +9,7 @@ function Sidebar() {
 
   const getFirstVesselData = () => {
     const vesselLayerInstances = layers.find((l) => l.id === 'vessel')?.instances?.[0]
-    console.log('getFirstVesselData', vesselLayerInstances.getSegments())
+    console.log('getFirstVesselData', vesselLayerInstances.getTrackLayer().getSegments())
   }
 
   const onLayerVisibilityClick = (layer: MapLayer) => {

@@ -1,4 +1,4 @@
-import VesselTrackLayer from 'layers/vessel/VesselTrackLayer'
+import { VesselLayer } from 'layers/vessel/VesselLayer'
 import { atom, useRecoilState } from 'recoil'
 
 export type MapLayerType = 'vessel' | 'fourwings'
@@ -6,7 +6,7 @@ export type MapLayerType = 'vessel' | 'fourwings'
 export type MapLayer = {
   id: MapLayerType
   visible?: boolean
-  instances?: any[]
+  instances?: VesselLayer[]
 }
 
 export const mapLayersAtom = atom<MapLayer[]>({
