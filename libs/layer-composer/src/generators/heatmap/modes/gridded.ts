@@ -48,25 +48,29 @@ export default function gridded(
         : ['match', exprPick, ...colorRampBaseExpression, 'transparent']
 
     const visibilityOffset = 0.0000001
-    const visibleValues = config.minVisibleValue &&
-      config.maxVisibleValue && [
-        'step',
-        ['/', exprPick, VALUE_MULTIPLIER],
-        0,
-        config.minVisibleValue - visibilityOffset,
-        1,
-        config.minVisibleValue,
-        1,
-        config.maxVisibleValue,
-        0,
-        config.maxVisibleValue + visibilityOffset,
-        0,
-      ]
+    const minVisibleExpression =
+      config.minVisibleValue !== undefined
+        ? [0, config.minVisibleValue - visibilityOffset, 1, config.minVisibleValue]
+        : []
+    const maxVisibleExpression =
+      config.maxVisibleValue !== undefined
+        ? [1, config.maxVisibleValue, 0, config.maxVisibleValue + visibilityOffset]
+        : []
+    const visibleValuesExpression =
+      minVisibleExpression.length || maxVisibleExpression.length
+        ? [
+            'step',
+            ['/', exprPick, VALUE_MULTIPLIER],
+            ...minVisibleExpression,
+            ...maxVisibleExpression,
+            0,
+          ]
+        : []
 
     const paint = {
       'fill-color': timeChunk.active ? exprColorRamp : 'rgba(0,0,0,0)',
       'fill-outline-color': 'transparent',
-      'fill-opacity': visibleValues ? visibleValues : 1,
+      'fill-opacity': visibleValuesExpression?.length ? visibleValuesExpression : 1,
     }
 
     const chunkMainLayer = getBaseLayer(
