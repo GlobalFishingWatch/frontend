@@ -21,6 +21,7 @@ export function TerminologyAISCoverage(props: TerminologyAISCoverageProps) {
         >
           All Data caveats can be found in the FAQ here.
         </a>
+        Unknown refers to situations where there is no AIS activity detected during the previous 12 months.
       </Trans>
     </p>
   )

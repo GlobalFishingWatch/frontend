@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import { Modal, ProgressBar, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'
@@ -141,7 +142,9 @@ export function RiskSummary(props: RiskSummaryProps) {
         title={t('events.aisCoverage', 'AIS')}
         titleInfo={<TerminologyAISCoverage />}
       >
-        <ProgressBar value={coverage?.percentage} />
+        <ProgressBar value={eventsLoading ? null : coverage?.percentage}
+          disabled={coverage?.percentage === 0}
+          disabledText={t('common.unknown', 'Unknown')} />
         <br />
       </RiskSection>
       {hasIUUIndicators && (

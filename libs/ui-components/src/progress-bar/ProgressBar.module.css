@@ -42,10 +42,18 @@
   content: '';
 }
 
+.zero {
+  visibility: hidden;
+}
+
 .bar .dot.loading {
   background-color: #fff !important;
   position: relative;
   animation: loading 2s infinite;
+}
+
+.disabled {
+  filter: grayscale(1);
 }
 
 @keyframes loading {
