@@ -7,3 +7,35 @@
 .spinnerFull {
   height: calc(100vh - 110px);
 }
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-S) var(--space-S) var(--space-XS) var(--space-S);
+}
+
+.dataAndTerminologyContainer {
+  height: 90vh;
+}
+
+.headingButtons {
+  display: flex;
+}
+
+.headingButtons > * {
+  margin-left: var(--space-S);
+}
+
+button.filterBtn {
+  height: 3.2rem;
+  border-radius: 1.6rem;
+  text-transform: none;
+}
+
+@media only screen and (max-width: 650px) {
+  .heading {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column-reverse;
+  }
+}
