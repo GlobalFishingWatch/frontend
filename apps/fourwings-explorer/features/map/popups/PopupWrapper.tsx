@@ -35,7 +35,7 @@ function MapPopup({
           return <ContextPopup feature={feature} />
         }
         return (
-          <div className={styles.popupSection}>
+          <div className={styles.popupSection} key={feature.id}>
             <div className={styles.row}>
               <span className={styles.rowText}>{feature.value}</span>
             </div>
