@@ -86,7 +86,7 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
     id: 'public-tuna-rfmo',
     config: {
       color: '#6b67e5',
-      visible: false,
+      visible: true,
     },
     dataviewId: DEFAULT_RFMO_DATAVIEW_ID,
   },
