@@ -1,6 +1,5 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { Modal, ProgressBar, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'

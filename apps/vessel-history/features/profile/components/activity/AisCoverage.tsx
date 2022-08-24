@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { ProgressBar } from '@globalfishingwatch/ui-components'
 import styles from './Activity.module.css'
