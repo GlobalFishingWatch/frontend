@@ -957,6 +957,26 @@
       "vessel_id": "crwdns9477:0crwdne9477:0"
     }
   },
+  "proto-global-encounters-events": {
+    "name": "crwdns26730:0crwdne26730:0",
+    "description": "crwdns26732:0crwdne26732:0",
+    "schema": {
+      "fields": "crwdns26734:0crwdne26734:0",
+      "event_id": "crwdns26736:0crwdne26736:0",
+      "event_end": "crwdns26738:0crwdne26738:0",
+      "vessel_id": "crwdns26740:0crwdne26740:0",
+      "event_info": "crwdns26742:0crwdne26742:0",
+      "event_type": {
+        "keyword": "crwdns26744:0crwdne26744:0",
+        "enum": {
+          "port": "crwdns26746:0crwdne26746:0"
+        }
+      },
+      "event_start": "crwdns26748:0crwdne26748:0",
+      "event_vessels": "crwdns26750:0crwdne26750:0",
+      "event_mean_position": "crwdns26752:0crwdne26752:0"
+    }
+  },
   "public-ais-presence-viirs-match-prototype": {
     "name": "crwdns18684:0crwdne18684:0",
     "description": "crwdns25946:0crwdne25946:0",
