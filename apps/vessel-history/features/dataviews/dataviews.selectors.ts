@@ -134,14 +134,18 @@ export const selectDataviewsForResourceQuerying = createDeepEqualSelector(
       return trackDatasetConfigs([info, track, ...events])
     }
 
-    return dataviewInstances.map((dataview) => ({
-      ...dataview,
-      // Use the same datasets config used to get resources in
-      // selectDataviewsResources of features/dataviews/dataviews.selectors
-      // resources urls are properly built and resources found
-      // in the state
-      datasetsConfig: getDatasetsConfig(dataview),
-    }))
+    return dataviewInstances.map((dataview) => {
+      const config = dataview.category === DataviewCategory.Context ? dataview.datasetsConfig : getDatasetsConfig(dataview)
+      const result = {
+        ...dataview,
+        // Use the same datasets config used to get resources in
+        // selectDataviewsResources of features/dataviews/dataviews.selectors
+        // resources urls are properly built and resources found
+        // in the state
+        datasetsConfig: config,
+      }
+      return result
+    })
   }
 )
 
