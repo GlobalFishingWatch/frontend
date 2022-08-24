@@ -1,4 +1,3 @@
-import React from 'react'
 import cx from 'classnames'
 import { TagList, TagItem } from '@globalfishingwatch/ui-components'
 import styles from 'features/workspace/shared/LayerPanel.module.css'

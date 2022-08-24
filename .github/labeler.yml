@@ -19,6 +19,8 @@ data-transforms:
   - libs/data-transforms/**/*
 dataviews-client:
   - libs/dataviews-client/**/*
+features-aggregate:
+  - libs/features-aggregate/**/*
 fourwings-aggregate:
   - libs/fourwings-aggregate/**/*
 i18n-labels:

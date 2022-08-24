@@ -44,6 +44,7 @@
       },
       "configurations": {
         "local": {
+          "watch": true,
           "outputPath": "libs/fourwings-aggregate/dist"
         }
       }

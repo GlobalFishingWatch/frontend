@@ -1,0 +1,14 @@
+.container {
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-M);
+}
+
+.graphsContainer {
+  padding: 0 var(--space-M);
+}

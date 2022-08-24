@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   FISHING_EVENTS_MAX_DISTANCE,
   FISHING_EVENTS_MAX_DURATION,

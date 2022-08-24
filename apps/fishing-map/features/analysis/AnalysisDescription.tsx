@@ -1,4 +1,3 @@
-import React from 'react'
 import { DescriptionChunks } from './analysisDescription.hooks'
 import styles from './AnalysisDescription.module.css'
 

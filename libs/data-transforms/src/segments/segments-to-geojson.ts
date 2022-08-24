@@ -1,5 +1,5 @@
 import type { FeatureCollection, LineString, Feature } from 'geojson'
-import { Segment, Point } from '../track-value-array-to-segments/types'
+import { Segment, Point } from '@globalfishingwatch/api-types'
 
 const segmentsToGeoJSON = (segments: Segment[]) => {
   const geoJSON: FeatureCollection = {
