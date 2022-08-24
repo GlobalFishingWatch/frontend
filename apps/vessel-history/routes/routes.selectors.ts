@@ -75,7 +75,7 @@ export const selectUrlQuery = createSelector([selectQueryParam('q')], (q: string
 
 export const selectUrlDataviewInstances = createSelector(
   [selectQueryParam('dataviewInstances')],
-  (dataviewInstances: UrlDataviewInstance[]) => dataviewInstances.map(dataviewInstance => {
+  (dataviewInstances: UrlDataviewInstance[]) => dataviewInstances?.map(dataviewInstance => {
     const visibility: string = (dataviewInstance.config?.visible as any)
     return {
       ...dataviewInstance,
