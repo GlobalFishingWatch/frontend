@@ -71,6 +71,8 @@ import { ReactComponent as Split } from '../assets/icons/split.svg'
 import { ReactComponent as Target } from '../assets/icons/target.svg'
 import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as Track } from '../assets/icons/track.svg'
+import { ReactComponent as TransmissionsOff } from '../assets/icons/transmissions-off.svg'
+import { ReactComponent as TransmissionsOn } from '../assets/icons/transmissions-on.svg'
 import { ReactComponent as Upload } from '../assets/icons/upload.svg'
 import { ReactComponent as User } from '../assets/icons/user.svg'
 import { ReactComponent as Vessel } from '../assets/icons/vessel.svg'
@@ -152,6 +154,8 @@ export const IconComponents = {
   target: Target,
   tick: Tick,
   track: Track,
+  'transmissions-off': TransmissionsOff,
+  'transmissions-on': TransmissionsOn,
   upload: Upload,
   user: User,
   vessel: Vessel,

@@ -93,6 +93,7 @@ export const selectDataviewInstancesResolved = createSelector(
     ) {
       return []
     }
+
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstances as UrlDataviewInstance[],
       dataviews,

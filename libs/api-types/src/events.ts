@@ -3,6 +3,16 @@ export interface PointCoordinate {
   lon: number
 }
 
+export interface Regions {
+  eez: string[]
+  rfmo: string[]
+  mpa: any[]
+}
+
+export interface GapPosition extends PointCoordinate {
+  regions: Regions
+}
+
 export enum EventTypes {
   Encounter = 'encounter',
   Fishing = 'fishing',
@@ -127,6 +137,21 @@ export interface PortVisitEvent {
   endAnchorage: Anchorage
 }
 
+export interface GapEvent {
+  distanceKm: number;
+  durationHours: number;
+  intentionalDisabling: boolean;
+  impliedSpeedKnots: number;
+  isEventStart?: boolean;
+  isEventEnd?: boolean;
+  offPosition: GapPosition;
+  onPosition: GapPosition;
+  positions12HoursBefore: number;
+  positions12HoursBeforeSat: number;
+  positionsPerDaySatReception: number;
+
+}
+
 export interface ApiEvent<Vessel = EventVessel> {
   id: string
   type: EventTypes
@@ -139,6 +164,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   position: PointCoordinate
   loitering?: LoiteringEvent
   encounter?: EncounterEvent<Vessel>
+  gap?: GapEvent
   port?: PortEvent
   port_visit?: PortVisitEvent
   key?: string

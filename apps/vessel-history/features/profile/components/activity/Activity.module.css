@@ -190,6 +190,10 @@
   background-color: #9ef;
 }
 
+.eventIcon.gap {
+  background-color: #f7b500;
+}
+
 .highlightsContainer {
   border-top: var(--border);
   margin-top: var(--space-S);

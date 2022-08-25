@@ -6,6 +6,7 @@ import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsL
 import ActivityModalContentDetailsEncounter from './ActivityModalContentDetailsEncounter'
 import styles from './ActivityModalDetails.module.css'
 import ActivityModalContentDetailsPortVisit from './ActivityModalContentDetailsPortVisit'
+import ActivityModalContentDetailsGap from './ActivityModalContentDetailsGap'
 
 interface ActivityModalContentProps {
   event: RenderedEvent
@@ -36,6 +37,12 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
           <ActivityModalContentDetailsPortVisit
             event={event}
           ></ActivityModalContentDetailsPortVisit>
+        )
+      case EventTypes.Gap:
+        return (
+          <ActivityModalContentDetailsGap
+            event={event}
+          ></ActivityModalContentDetailsGap>
         )
       default:
         return <Fragment />

@@ -9,6 +9,8 @@ import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
   event: RenderedEvent
+  startLabel?: string
+  endLabel?: string
 }
 
 const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
@@ -49,11 +51,11 @@ const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
     <Fragment>
       <div className={styles.row}>
         <ActivityModalContentField
-          label={t('event.start', 'Start')}
+          label={props.startLabel ? props.startLabel : t('event.start', 'Start')}
           value={<I18nDate date={event.start} format={DateTime.DATETIME_FULL} />}
         />
         <ActivityModalContentField
-          label={t('event.end', 'End')}
+          label={props.endLabel ? props.endLabel : t('event.end', 'End')}
           value={<I18nDate date={event.end} format={DateTime.DATETIME_FULL} />}
         />
         <ActivityModalContentField
@@ -67,8 +69,8 @@ const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
           value={
             distanceFromShore
               ? t('event.formatDistanceKm', '{{value}} km', {
-                  value: distanceFromShore.join(' - '),
-                })
+                value: distanceFromShore.join(' - '),
+              })
               : DEFAULT_EMPTY_VALUE
           }
         />
@@ -77,8 +79,8 @@ const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
           value={
             distanceFromPort
               ? t('event.formatDistanceKm', '{{value}} km', {
-                  value: distanceFromPort.join(' - '),
-                })
+                value: distanceFromPort.join(' - '),
+              })
               : DEFAULT_EMPTY_VALUE
           }
         />
