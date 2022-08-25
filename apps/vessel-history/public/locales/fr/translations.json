@@ -122,7 +122,7 @@
     "activityEventsDescription": "Toutes les données d'activité sont estimées à l'aide d'algorithmes de Global Fishing Watch (GFW). ",
     "activityHighlights": "Faits saillants de l'activité",
     "aisCoverage": "AIS Coverage",
-    "aisCoverageDescription": "The coverage metric is an estimate of how well a vessel's activities, i.e. where it traveled and what it did, can be captured by AIS data. To calculate it, all voyages linked to a vessel in the last year (i.e. 12 months) are segmented into one hour blocks and the total number of blocks with at least one AIS transmission are counted. The coverage metric is a percentage representing the proportion of one hour blocks a vessel is in a voyage and has at least one AIS transmission. <1>All Data caveats can be found in the FAQ here</1>",
+    "aisCoverageDescription": "The coverage metric is an estimate of how well a vessel's activities, i.e. where it traveled and what it did, can be captured by AIS data. To calculate it, all voyages linked to a vessel in the last year (i.e. 12 months) are segmented into one hour blocks and the total number of blocks with at least one AIS transmission are counted. The coverage metric is a percentage representing the proportion of one hour blocks a vessel is in a voyage and has at least one AIS transmission. <1>All Data caveats can be found in the FAQ here</1>. Unknown refers to situations where there is no AIS activity detected during the previous 12 months.",
     "byTypeEncounterTitle": "{{count}} encounters",
     "byTypeFishingTitle": "{{count}} fishing hours",
     "byTypeLoiteringTitle": "{{count}} loitering events",
