@@ -29,7 +29,7 @@ export interface ActivityByTypeProps {
   onMoveToMap?: () => void
 }
 
-export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
+export function ActivityByType({ onMoveToMap = () => { } }: ActivityByTypeProps) {
   const { t } = useTranslation()
 
   const { events, toggleEventType } = useActivityByType()
@@ -40,7 +40,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     setSelectedEvent(event)
     setIsOpen(true)
   }, [])
-  const { coverage } = useRiskIndicator()
+  const { coverage, eventsLoading } = useRiskIndicator()
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
@@ -87,7 +87,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         </Modal>
 
         <div className={styles.heading}>
-          <AisCoverage value={coverage?.percentage} />
+          <AisCoverage value={eventsLoading ? null : coverage?.percentage} />
           <div className={styles.headingButtons}>
             <DataAndTerminology
               containerClassName={styles.dataAndTerminologyContainer}
