@@ -160,7 +160,7 @@ export const getRelatedDatasetsByType = (
       (relatedDataset) =>
         relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
     )
-    if (fullDataset) {
+    if (fullDataset.length > 0) {
       return fullDataset
     }
   }
