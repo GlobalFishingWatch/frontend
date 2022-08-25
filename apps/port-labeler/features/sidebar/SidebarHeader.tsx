@@ -1,7 +1,13 @@
-import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Icon, IconButton, Logo, Select, SelectOption, SubBrands } from '@globalfishingwatch/ui-components'
+import {
+  Icon,
+  IconButton,
+  Logo,
+  Select,
+  SelectOption,
+  SubBrands,
+} from '@globalfishingwatch/ui-components'
 import { flags } from '@globalfishingwatch/i18n-labels'
 import { selectCountries, selectCountry, sortOptions } from 'features/labeler/labeler.slice'
 import styles from './SidebarHeader.module.css'
@@ -15,15 +21,9 @@ function SidebarHeader(props: HeaderProps) {
   const dispatch = useDispatch()
   const countries: SelectOption[] = useSelector(selectCountries)
   const country = useSelector(selectCountry)
-  const {
-    onCountryChange,
-    dispatchDownload,
-    dispatchImportHandler,
-  } = useSelectedTracksConnect()
-
+  const { onCountryChange, dispatchDownload, dispatchImportHandler } = useSelectedTracksConnect()
 
   return (
-
     <div className={styles.sidebarHeader}>
       <a href="https://globalfishingwatch.org" className={styles.logoLink}>
         <Logo className={styles.logo} subBrand={SubBrands.PortLabeler} />
@@ -44,11 +44,7 @@ function SidebarHeader(props: HeaderProps) {
             style={{ display: 'none' }}
             onChange={dispatchImportHandler}
           />
-          <Icon
-            icon="upload"
-            tooltip="Upload file"
-            tooltipPlacement="bottom"
-          />
+          <Icon icon="upload" tooltip="Upload file" tooltipPlacement="bottom" />
         </label>
 
         <IconButton
@@ -75,7 +71,6 @@ function SidebarHeader(props: HeaderProps) {
         }}
       />
     </div>
-
   )
 }
 

@@ -3,6 +3,16 @@ export interface PointCoordinate {
   lon: number
 }
 
+export interface Regions {
+  eez: string[]
+  rfmo: string[]
+  mpa: any[]
+}
+
+export interface GapPosition extends PointCoordinate {
+  regions: Regions
+}
+
 export enum EventTypes {
   Encounter = 'encounter',
   Fishing = 'fishing',
@@ -24,6 +34,11 @@ export enum EventVesselTypeEnum {
   Fishing = 'fishing',
 }
 
+export interface EventAuthorization {
+  is_authorized: string
+  rfmo: string
+}
+
 export interface EventVessel {
   id: string
   ssvid: string
@@ -31,6 +46,7 @@ export interface EventVessel {
   flag: string
   type: EventVesselTypeEnum
   nextPort?: EventNextPort
+  authorizations?: EventAuthorization[]
 }
 
 export type RFMOs =
@@ -121,6 +137,21 @@ export interface PortVisitEvent {
   endAnchorage: Anchorage
 }
 
+export interface GapEvent {
+  distanceKm: number;
+  durationHours: number;
+  intentionalDisabling: boolean;
+  impliedSpeedKnots: number;
+  isEventStart?: boolean;
+  isEventEnd?: boolean;
+  offPosition: GapPosition;
+  onPosition: GapPosition;
+  positions12HoursBefore: number;
+  positions12HoursBeforeSat: number;
+  positionsPerDaySatReception: number;
+
+}
+
 export interface ApiEvent<Vessel = EventVessel> {
   id: string
   type: EventTypes
@@ -133,8 +164,10 @@ export interface ApiEvent<Vessel = EventVessel> {
   position: PointCoordinate
   loitering?: LoiteringEvent
   encounter?: EncounterEvent<Vessel>
+  gap?: GapEvent
   port?: PortEvent
   port_visit?: PortVisitEvent
+  key?: string
 }
 
 export interface ApiEvents<T = ApiEvent> {

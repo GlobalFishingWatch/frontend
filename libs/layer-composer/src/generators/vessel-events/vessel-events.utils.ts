@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection } from 'geojson'
-import { Segment, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
-import { EventType } from '@globalfishingwatch/api-types'
+import { EventType, Segment } from '@globalfishingwatch/api-types'
+import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Dictionary } from '../../types'
 import filterTrackByTimerange from '../track/filterTrackByTimerange'
 import { AuthorizationOptions, RawEvent } from '../types'
@@ -14,6 +14,7 @@ export const EVENTS_COLORS: Dictionary<string> = {
   port: '#99EEFF',
   port_visit: '#99EEFF',
   fishing: '#ffffff',
+  gap: '#f7b500',
 }
 
 export const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
@@ -24,6 +25,7 @@ export const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
   port: '#99EEFF',
   port_visit: '#99EEFF',
   fishing: '#ffffff',
+  gap: '#f7b500',
 }
 
 export const SHAPE_BY_TYPE: Record<EventType, string> = {

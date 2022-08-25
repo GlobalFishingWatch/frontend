@@ -9,16 +9,15 @@ import {
   getDatasetConfigByDatasetType,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-import Hint from 'features/help/hints/Hint'
-import { setHintDismissed } from 'features/help/hints/hints.slice'
+import Hint from 'features/hints/Hint'
+import { setHintDismissed } from 'features/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
@@ -26,6 +25,8 @@ import { selectUrlTimeRange } from 'routes/routes.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
 import { SAR_DATAVIEW_ID } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
+import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -66,6 +67,7 @@ function ActivityLayerPanel({
   )
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
+
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
       dataview,
@@ -135,8 +137,8 @@ function ActivityLayerPanel({
     />
   )
 
-  const datasetFields: { field: SupportedDatasetSchema; label: string }[] = useMemo(
-    () => [
+  const datasetFields = useMemo(() => {
+    const fields: { field: SupportedDatasetSchema; label: string }[] = [
       { field: 'radiance', label: t('layer.radiance', 'Radiance') },
       { field: 'geartype', label: t('layer.gearType_other', 'Gear types') },
       { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
@@ -147,12 +149,12 @@ function ActivityLayerPanel({
       { field: 'target_species', label: t('vessel.target_species', 'Target species') },
       { field: 'license_category', label: t('vessel.license_category', 'License category') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
-    ],
-    [t]
-  )
+      { field: 'vessel-groups', label: t('vesselGroup.vesselGroups', 'Vessel Groups') },
+    ]
+    return fields
+  }, [t])
 
   const statsValue = stats && (stats.vessel_id || stats.id)
-  const showStats = statsValue > 0
 
   return (
     <div
@@ -201,6 +203,7 @@ function ActivityLayerPanel({
                   </div>
                 </ExpandedContainer>
               )}
+              {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />}
               <InfoModal
                 dataview={dataview}
                 // Workaround to always show the auxiliar dataset too
@@ -221,57 +224,57 @@ function ActivityLayerPanel({
                     'print-hidden'
                   )}
                 >
-                  {showStats ? (
-                    <Tooltip
-                      content={
-                        stats.type === 'vessels'
-                          ? t(
-                              'layer.statsHelp',
-                              'The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.'
-                            )
-                          : t(
-                              'layer.statsHelpDetection',
-                              'The number of detections is calculated for your current filters and time range globally. Some double counting may occur.'
-                            )
-                      }
-                    >
-                      <div className={activityStyles.help}>
-                        {statsValue > 0 && (
-                          <span>
-                            <I18nNumber number={statsValue} />{' '}
-                            {stats.type === 'vessels'
-                              ? t('common.vessel', {
-                                  count: statsValue,
-                                  defaultValue: 'vessels',
-                                }).toLocaleLowerCase()
-                              : t('common.detection', {
-                                  count: statsValue,
-                                  defaultValue: 'detections',
-                                }).toLocaleLowerCase()}
-                          </span>
-                        )}
-                        {stats.type === 'vessels' &&
-                          stats.flag > 0 &&
-                          !dataview.config?.filters?.flag && (
-                            <Fragment>
-                              <span> {t('common.from', 'from')} </span>
-                              <span>
-                                <I18nNumber number={stats.flag} />{' '}
-                                {t('layer.flagState', {
-                                  count: stats.flag,
-                                  defaultValue: 'flag states',
-                                }).toLocaleLowerCase()}
-                              </span>
-                            </Fragment>
-                          )}{' '}
-                        {t('common.globally', 'globally')}
-                      </div>
-                    </Tooltip>
-                  ) : stats.type === 'vessels' ? (
-                    t('workspace.noVesselInFilters', 'No vessels match your filters')
-                  ) : (
-                    t('workspace.noDetectionInFilters', 'No detections match your filters')
-                  )}
+                  <Tooltip
+                    content={
+                      stats.type === 'vessels'
+                        ? t(
+                            'layer.statsHelp',
+                            'The number of vessels and flag states is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
+                          )
+                        : t(
+                            'layer.statsHelpDetection',
+                            'The number of detections is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
+                          )
+                    }
+                  >
+                    <div className={activityStyles.help}>
+                      {statsValue > 0 ? (
+                        <span>
+                          <I18nNumber number={statsValue} />{' '}
+                          {stats.type === 'vessels'
+                            ? t('common.vessel', {
+                                count: statsValue,
+                                defaultValue: 'vessels',
+                              }).toLocaleLowerCase()
+                            : t('common.detection', {
+                                count: statsValue,
+                                defaultValue: 'detections',
+                              }).toLocaleLowerCase()}
+                        </span>
+                      ) : stats.type === 'vessels' ? (
+                        t('workspace.noVesselInFilters', 'No vessels match your filters')
+                      ) : (
+                        t('workspace.noDetectionInFilters', 'No detections match your filters')
+                      )}
+                      {stats.type === 'vessels' &&
+                        stats.flag > 0 &&
+                        (!dataview.config?.filters?.flag ||
+                          dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
+                          dataview.config?.filters?.flag.length > 1) && (
+                          <Fragment>
+                            <span> {t('common.from', 'from')} </span>
+                            <span>
+                              <I18nNumber number={stats.flag} />{' '}
+                              {t('layer.flagState', {
+                                count: stats.flag,
+                                defaultValue: 'flag states',
+                              }).toLocaleLowerCase()}
+                            </span>
+                          </Fragment>
+                        )}{' '}
+                      {t('common.globally', 'globally')}
+                    </div>
+                  </Tooltip>
                 </div>
               )}
               <div className={styles.filters}>

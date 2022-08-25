@@ -26,7 +26,7 @@ interface MpaAutocompleteProps {
 }
 const truncateLabels = (option: MultiSelectOption) => ({
   ...option,
-  label: option.label.slice(0, 55),
+  label: option.label.toString().slice(0, 55),
 })
 const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { settings, section } = props
@@ -54,8 +54,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       !eez.selected?.length
         ? (t('selects.none', 'None') as string)
         : eez.selected.length > 1
-          ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
-          : eez.selected[0].label,
+        ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
+        : eez.selected[0].label.toString(),
     [eez.selected, t]
   )
 
@@ -64,8 +64,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       !rfmo.selected?.length
         ? (t('selects.none', 'None') as string)
         : rfmo.selected.length > 1
-          ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
-          : rfmo.selected[0].label,
+        ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
+        : rfmo.selected[0].label.toString(),
     [rfmo.selected, t]
   )
 
@@ -74,8 +74,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       placeholder: !mpa.selected?.length
         ? (t(`common.typeToSearch`, 'Type to search') as string)
         : mpa.selected.length > 1
-          ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
-          : mpa.selected[0].label,
+        ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
+        : mpa.selected[0].label.toString(),
 
       onFilterOptions: (allOptions, filteredOptions, filter) => {
         if (filter && filter?.length >= 3) {
@@ -190,6 +190,11 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
               Example if you configure 5 hours, you will see all {{ eventType }} with duration more
               or equal to 5 hours
             </Trans>
+            <br />
+            {t('settings.helpRange', 'Should be a value between', {
+              min: props.minDuration,
+              max: props.maxDuration,
+            })}
           </DataAndTerminology>
         </label>
         <div>
@@ -205,10 +210,6 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           ></InputText>
           <span>{t('settings.hours', 'hours')}</span>
         </div>
-        <div className={styles.helpRange}>{t('settings.helpRange', 'Should be a value between', {
-          min: props.minDuration,
-          max: props.maxDuration
-        })}</div>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label className={styles.settingsLabel}>
@@ -224,6 +225,11 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
               equal to 8 km from the shore. Distance from shore will be highlighted if either the
               start or end position is more or equal to the specified distance.
             </Trans>
+            <br />
+            {t('settings.helpRange', 'Should be a value between', {
+              min: props.minDistance,
+              max: props.maxDistance,
+            })}
           </DataAndTerminology>
         </label>
         <div>
@@ -239,10 +245,6 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           ></InputText>
           <span>{t('settings.km', 'km')}</span>
         </div>
-        <div className={styles.helpRange}>{t('settings.helpRange', 'Should be a value between', {
-          min: props.minDistance,
-          max: props.maxDistance
-        })}</div>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label className={styles.settingsLabel}>
@@ -260,6 +262,11 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
               all GFW identified anchorages (for more details on anchorage including its definition
               here)
             </Trans>
+            <br />
+            {t('settings.helpRange', 'Should be a value between', {
+              min: props.minDistance,
+              max: props.maxDistance,
+            })}
           </DataAndTerminology>
         </label>
         <div>
@@ -275,10 +282,6 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           ></InputText>
           <span>{t('settings.km', 'km')}</span>
         </div>
-        <div className={styles.helpRange}>{t('settings.helpRange', 'Should be a value between', {
-          min: props.minDistance,
-          max: props.maxDistance
-        })}</div>
       </div>
     </div>
   )

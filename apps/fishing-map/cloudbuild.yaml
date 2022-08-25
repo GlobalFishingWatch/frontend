@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: bash
     args:
       - '-c'
@@ -29,14 +29,14 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
-      - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL_'
+      - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL'
       - 'NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID=$_NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID'
       - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY'

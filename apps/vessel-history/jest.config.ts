@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'vessel-history',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
@@ -23,5 +24,5 @@ module.exports = {
   },
   coverageDirectory: '../../coverage/apps/vessel-history',
   transformIgnorePatterns: ['/node_modules/', '^.+\\.module\\.(css|sass|scss)$'],
-  preset: '../../jest.preset.ts',
+  preset: '../../jest.preset.js',
 }

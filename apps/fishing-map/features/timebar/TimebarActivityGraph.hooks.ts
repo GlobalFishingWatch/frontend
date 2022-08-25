@@ -3,14 +3,14 @@ import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { getTimeseriesFromFeatures } from '@globalfishingwatch/features-aggregate'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
 import {
   areDataviewsFeatureLoaded,
   hasDataviewsFeatureError,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
-import { getTimeseriesFromDataviews } from 'features/timebar/TimebarActivityGraph.utils'
-import { filterByViewport } from 'features/map/map.utils'
 
 export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
@@ -33,12 +33,12 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
           chunksFeatures: dataview.chunksFeatures?.map((chunk) => {
             return {
               ...chunk,
-              features: chunk.features ? filterByViewport(chunk.features, bounds) : [],
+              features: chunk.features ? filterFeaturesByBounds(chunk.features, bounds) : [],
             }
           }),
         }
       })
-      const stackedActivity = getTimeseriesFromDataviews(dataviewFeaturesFiltered)
+      const stackedActivity = getTimeseriesFromFeatures(dataviewFeaturesFiltered)
       setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
     }, 400),

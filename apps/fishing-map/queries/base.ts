@@ -12,13 +12,13 @@ export const gfwBaseQuery =
     unknown,
     unknown
   > =>
-  async ({ url, signal }) => {
-    try {
-      const data = await GFWAPI.fetch(baseUrl + url, { signal })
-      return { data }
-    } catch (gfwApiError) {
-      return {
-        error: parseAPIError(gfwApiError),
+    async ({ url, signal }) => {
+      try {
+        const data = await GFWAPI.fetch(baseUrl + url, { signal })
+        return { data }
+      } catch (gfwApiError) {
+        return {
+          error: parseAPIError(gfwApiError),
+        }
       }
     }
-  }

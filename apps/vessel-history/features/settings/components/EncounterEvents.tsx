@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   ENCOUNTERS_MAX_DISTANCE,
   ENCOUNTERS_MAX_DURATION,

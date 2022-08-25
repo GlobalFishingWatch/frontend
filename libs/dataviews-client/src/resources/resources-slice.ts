@@ -3,7 +3,6 @@ import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
-  Field,
   mergeTrackChunks,
   trackValueArrayToSegments,
   wrapFeaturesLongitudes,
@@ -16,6 +15,7 @@ import {
   ApiEvent,
   ApiEvents,
   DataviewDatasetConfig,
+  Field,
 } from '@globalfishingwatch/api-types'
 
 export type ResourcesState = Record<any, Resource>
@@ -40,7 +40,7 @@ export const getTracksChunkSetId = (datasetConfig: DataviewDatasetConfig) => {
 const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   return {
     ...event,
-    id: eventKey,
+    key: eventKey,
     start: DateTime.fromISO(event.start as string).toMillis(),
     end: DateTime.fromISO(event.end as string).toMillis(),
   }
@@ -67,12 +67,14 @@ export const fetchResourceThunk = createAsyncThunk(
         ? 'vessel'
         : 'json'
 
+    // The urls has the version included so I need to remove them
     const data = await GFWAPI.fetch(resource.url, { responseType, signal }).then((data: any) => {
       // TODO Replace with enum?
       if (isTrackResource) {
         const fields = (
           resource.datasetConfig.query?.find((q) => q.id === 'fields')?.value as string
         ).split(',') as Field[]
+
         const segments = trackValueArrayToSegments(data as any, fields)
         return segments
       }

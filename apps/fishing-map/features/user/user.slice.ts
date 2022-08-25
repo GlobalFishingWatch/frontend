@@ -3,11 +3,13 @@ import {
   GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
+  GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { removeLocationLabelsDataview } from 'features/workspace/workspace.slice'
 
 interface UserState {
   logged: boolean
@@ -21,7 +23,6 @@ const initialState: UserState = {
   data: null,
 }
 
-export const GUEST_USER_TYPE = 'guest'
 export const GFW_GROUP_ID = 'GFW Staff'
 export const GFW_DEV_GROUP_ID = 'development-group'
 export const ADMIN_GROUP_ID = 'admin-group'
@@ -37,19 +38,11 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'Belize',
 ]
 
-export const fetchGuestUser = async () => {
-  const permissions = await fetch(`${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`).then(
-    (r) => r.json()
-  )
-  const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
-  return user
-}
-
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
   async ({ guest }: { guest: boolean } = { guest: false }) => {
     if (guest) {
-      return await fetchGuestUser()
+      return await GFWAPI.fetchGuestUser()
     }
     const accessToken = getAccessTokenFromUrl()
     if (accessToken) {
@@ -59,16 +52,20 @@ export const fetchUserThunk = createAsyncThunk(
     try {
       return await GFWAPI.login({ accessToken })
     } catch (e: any) {
-      return await fetchGuestUser()
+      return await GFWAPI.fetchGuestUser()
     }
   }
 )
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async ({ loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false }) => {
+  async (
+    { loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false },
+    { dispatch }
+  ) => {
     try {
       await GFWAPI.logout()
+      dispatch(removeLocationLabelsDataview())
     } catch (e: any) {
       console.warn(e)
     }
@@ -106,6 +103,8 @@ export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
 export const isGFWAdminUser = (state: RootState) => state.user.data?.groups.includes(ADMIN_GROUP_ID)
+export const isGFWDeveloper = (state: RootState) =>
+  state.user.data?.groups.includes(GFW_DEV_GROUP_ID)
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE

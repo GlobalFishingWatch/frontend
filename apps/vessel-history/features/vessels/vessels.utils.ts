@@ -3,14 +3,16 @@ import { VesselAPISource, VesselFieldsHistory, VesselWithHistory } from 'types'
 
 type VesselFieldKey = keyof VesselWithHistory
 
+export const NOT_AVAILABLE = 'NA'
+
 export const formatVesselProfileId = (dataset: string, gfwId: string, tmtId: string) => {
-  return `${dataset ?? 'NA'}_${gfwId ?? 'NA'}_${tmtId ?? 'NA'}`
+  return `${dataset ?? NOT_AVAILABLE}_${gfwId ?? NOT_AVAILABLE}_${tmtId ?? NOT_AVAILABLE}`
 }
 
 export const parseVesselProfileId = (vesselProfileId: string) => {
   const [dataset, id, vesselMatchId] = vesselProfileId
     .split('_')
-    .map((value) => (value.toLowerCase() === 'na' ? undefined : value))
+    .map((value) => (value.toLowerCase() === NOT_AVAILABLE.toLocaleLowerCase() ? undefined : value))
   return { dataset, id, vesselMatchId }
 }
 
@@ -29,7 +31,7 @@ const getPriorityzedFieldValue = <T = any>(
     .map((dataValue) => ({
       value: dataValue.value,
       priority: fieldPriority.indexOf(dataValue.source),
-      source: dataValue.source
+      source: dataValue.source,
     }))
     .sort((a, b) => {
       // If any of the values not exist, we use the other
@@ -107,17 +109,17 @@ export const mergeVesselFromSources = (
       const value =
         key.toString() === 'history'
           ? mergeHistoryFields(
-            key,
-            vesselData.map((data) => ({
-              source: data.source,
-              value: data.vessel[key] as VesselFieldsHistory,
-              vessel: data.vessel,
-            }))
-          )
+              key,
+              vesselData.map((data) => ({
+                source: data.source,
+                value: data.vessel[key] as VesselFieldsHistory,
+                vessel: data.vessel,
+              }))
+            )
           : priorityzeFieldValue(
-            key,
-            vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
-          )
+              key,
+              vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
+            )
       return {
         ...acc,
         [key]: value,

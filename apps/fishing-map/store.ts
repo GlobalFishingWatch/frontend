@@ -11,8 +11,9 @@ import debugReducer from './features/debug/debug.slice'
 import downloadActivityReducer from './features/download/downloadActivity.slice'
 import downloadTrackReducer from './features/download/downloadTrack.slice'
 import editorReducer from './features/editor/editor.slice'
-import hintsReducer from './features/help/hints/hints.slice'
+import hintsReducer from './features/hints/hints.slice'
 import mapReducer from './features/map/map.slice'
+import modalsReducer from './features/modals/modals.slice'
 import resourcesReducer from './features/resources/resources.slice'
 import rulersReducer from './features/map/rulers/rulers.slice'
 import searchReducer from './features/search/search.slice'
@@ -21,6 +22,7 @@ import titleReducer from './routes/title.reducer'
 import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 import workspacesReducer from './features/workspaces-list/workspaces-list.slice'
+import vesselGroupsReducer from './features/vessel-groups/vessel-groups.slice'
 
 const {
   reducer: location,
@@ -39,8 +41,9 @@ const rootReducer = combineReducers({
   downloadTrack: downloadTrackReducer,
   editor: editorReducer,
   hints: hintsReducer,
-  location: location,
+  location,
   map: mapReducer,
+  modals: modalsReducer,
   resources: resourcesReducer,
   rulers: rulersReducer,
   search: searchReducer,
@@ -50,6 +53,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   workspace: workspaceReducer,
   workspaces: workspacesReducer,
+  vesselGroups: vesselGroupsReducer,
   [dataviewStatsApi.reducerPath]: dataviewStatsApi.reducer,
 })
 

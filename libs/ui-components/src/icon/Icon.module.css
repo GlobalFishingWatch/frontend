@@ -1,5 +1,11 @@
 .icon {
-  min-width: fit-content;
+  width: auto;
+}
+
+@supports (min-width: fit-content) {
+  .icon {
+    min-width: fit-content;
+  }
 }
 
 .default path,

@@ -10,16 +10,16 @@
   color: rgba(34, 68, 126, 0.5);
 }
 
-.settingsField.inlineRow>div>div,
+.settingsField.inlineRow > div > div,
 .settingsField.inlineRow span {
   display: inline-block;
 }
 
-.settingsField.inlineRow>div>div {
+.settingsField.inlineRow > div > div {
   width: 7rem;
 }
 
-.settingsField.inlineRow>div>div>input {
+.settingsField.inlineRow > div > div > input {
   text-align: center;
 }
 
@@ -29,9 +29,4 @@
 
 .settingsLabel {
   display: inline-block;
-}
-
-.helpRange {
-  font: var(--font-XS);
-  color: var(--color-secondary-blue);
 }

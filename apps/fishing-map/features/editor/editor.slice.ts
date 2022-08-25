@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { stringify } from 'qs'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { API_VERSION, APP_NAME } from 'data/config'
+import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { BASEMAP_DATAVIEW_ID, TEMPLATE_DATAVIEW_IDS } from 'data/workspaces'
 
 interface EditorState {
@@ -30,8 +31,12 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
   }
 >('editor/fetchAllDataviews', async (_, { rejectWithValue }) => {
   try {
+    const dataviewsParams = {
+      app: APP_NAME,
+      ...DEFAULT_PAGINATION_PARAMS,
+    }
     const dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
-      `/${API_VERSION}/dataviews?app=${APP_NAME}`
+      `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`
     )
     const filteredDataviews = dataviews.entries.filter(
       ({ id, category }) =>

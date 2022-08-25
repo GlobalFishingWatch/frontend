@@ -1,4 +1,4 @@
-import { useCallback, Fragment, useMemo } from 'react'
+import { useCallback, Fragment, useMemo, useRef, useEffect } from 'react'
 import cx from 'classnames'
 import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { useCreateUserApplication } from 'features/user-applications/user-applications'
@@ -19,17 +19,21 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
     valid,
   } = useCreateUserApplication()
 
+  const nameRef = useRef<HTMLInputElement>()
   const create = useCallback(async () => {
     await mutate({
       ...token,
     })
+    nameRef.current.focus()
   }, [mutate, token])
 
   const validationMessage = useMemo(
     () => error && Object.values(error).map((e, index) => <p key={`msg-${index}`}>{e}</p>),
     [error]
   )
-
+  useEffect(() => {
+    nameRef.current.focus()
+  }, [])
   return (
     <div className={styles.container}>
       {isAllowed && (
@@ -46,6 +50,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
                 value={token?.name}
                 className={styles.input}
                 onChange={(e) => setToken({ ...token, name: e.target.value })}
+                ref={nameRef}
               />
             </div>
             <div className={cx([styles.field, styles.fieldsColumn])}>

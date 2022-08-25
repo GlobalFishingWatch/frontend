@@ -16,6 +16,7 @@
   cursor: not-allowed;
 }
 
+.input.invalid,
 .input:invalid {
   border-bottom: 1px solid var(--color-danger-red);
 }

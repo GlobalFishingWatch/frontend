@@ -8,6 +8,7 @@ import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { PROFILE } from 'routes/routes'
 import { useSearchConnect } from 'features/search/search.hooks'
+import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import ActivityModalContentField from './ActivityModalContentField'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import styles from './ActivityModalDetails.module.css'
@@ -50,8 +51,8 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
           type: PROFILE,
           payload: {
             dataset: dataset,
-            vesselID: vessel.id ?? 'NA',
-            tmtID: vesselMatchId ?? 'NA',
+            vesselID: vessel.id ?? NOT_AVAILABLE,
+            tmtID: vesselMatchId ?? NOT_AVAILABLE,
           },
         })
       )

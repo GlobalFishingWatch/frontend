@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy, memoize } from 'lodash'
+import { stringify } from 'qs'
 import {
   mergeWorkspaceUrlDataviewInstances,
   resolveDataviews,
@@ -15,7 +16,12 @@ import {
   APIPagination,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { GFWAPI, parseAPIError, parseAPIErrorMessage } from '@globalfishingwatch/api-client'
+import {
+  GFWAPI,
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
 import {
   selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
@@ -33,19 +39,19 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
-import { API_VERSION } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(`/${API_VERSION}/dataviews/${id}`)
+      const dataview = await GFWAPI.fetch<Dataview>(`/dataviews/${id}`)
       return dataview
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue({
-        status: e.status || e.code,
+        status: parseAPIErrorStatus(e),
         message: `${id} - ${parseAPIErrorMessage(e)}`,
       })
     }
@@ -63,8 +69,13 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
       return [] as Dataview[]
     }
     try {
+      const dataviewsParams = {
+        ids: uniqIds,
+        cache: false,
+        ...DEFAULT_PAGINATION_PARAMS,
+      }
       const dataviewsResponse = await GFWAPI.fetch<APIPagination<Dataview>>(
-        `/${API_VERSION}/dataviews?ids=${uniqIds.join(',')}`,
+        `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       if (
@@ -90,7 +101,7 @@ export const createDataviewThunk = createAsyncThunk<
   }
 >('dataviews/create', async (dataview, { rejectWithValue }) => {
   try {
-    const createdDataview = await GFWAPI.fetch<Dataview>(`/${API_VERSION}/dataviews`, {
+    const createdDataview = await GFWAPI.fetch<Dataview>(`/dataviews`, {
       method: 'POST',
       body: dataview as any,
     })
@@ -112,13 +123,10 @@ export const updateDataviewThunk = createAsyncThunk<
   'dataviews/update',
   async (partialDataview, { rejectWithValue }) => {
     try {
-      const dataview = await GFWAPI.fetch<Dataview>(
-        `/${API_VERSION}/dataviews/${partialDataview.id}`,
-        {
-          method: 'PATCH',
-          body: partialDataview as any,
-        }
-      )
+      const dataview = await GFWAPI.fetch<Dataview>(`/dataviews/${partialDataview.id}`, {
+        method: 'PATCH',
+        body: partialDataview as any,
+      })
       return dataview
     } catch (e: any) {
       console.warn(e)

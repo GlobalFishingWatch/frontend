@@ -53,6 +53,7 @@
     "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
   },
   "common": {
+    "back": "back",
     "active_after": "Active after",
     "active_before": "Active Before",
     "activity": "Activity",
@@ -65,6 +66,7 @@
     "category": "Category",
     "comingSoon": "coming soon!",
     "confirm": "Confirm",
+    "continue": "Continue",
     "context_area_other": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_other": "countries",
@@ -82,6 +84,8 @@
     "detection_other": "Detections",
     "dismiss": "Dismiss",
     "environment": "Environment",
+    "exclude": "Exclude",
+    "excluded": "Excluded",
     "events": "Events",
     "feedback": "Feedback",
     "fishing": "Fishing",
@@ -95,6 +99,7 @@
     "hour_one": "Hour",
     "hour_other": "hours",
     "in": "in",
+    "include": "Include",
     "latitude": "Latitude",
     "layerList": "Layer list",
     "learnMore": "Learn more",
@@ -113,6 +118,8 @@
     "months_other": "months",
     "more": "more",
     "name": "Name",
+    "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "on screen",
     "optional": "Optional",
     "or": "or",
@@ -188,6 +195,11 @@
     "context-layer-mpa": {
       "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+    },
+    "basemap-labels": {
+      "title": "Locations",
+      "dataWarning": "This platform uses location labels from Google Maps.",
+      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>"
     }
   },
   "download": {
@@ -241,7 +253,11 @@
     "workspaceDuplicatedName": "There is already a workspace with this name",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceMissingName": "Workspace name is needed",
-    "workspaceNotFound": "The view you request was not found"
+    "workspaceNotFound": "The view you request was not found",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -355,6 +371,7 @@
     },
     "toggleVisibility": "Toggle layer visibility",
     "vessel_fit_bounds": "Center view on vessel track",
+    "activity_fit_bounds": "Center view on activity",
     "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected timerange. Change timerange to fit this track?"
   },
   "map": {
@@ -393,6 +410,7 @@
   },
   "selects": {
     "allSelected": "All",
+    "noneSelected": "None",
     "placeholder": "Select an option",
     "selected": "selected"
   },
@@ -425,7 +443,8 @@
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "User Groups",
     "profile": "User profile",
-    "title": "User"
+    "title": "User",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Add vessel to view",
@@ -484,6 +503,7 @@
     "loading": "Loading vessel track",
     "loadingInfo": "Loading vessel info",
     "login": "You need to <1>login</1> to see more details",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Main gear",
     "matched": "Match",
     "matricula": "Matricula",
@@ -503,7 +523,31 @@
     "unmatched": "unmatched",
     "vessel_type": "Vessel type",
     "vesselType_other": "Vessel types",
-    "widthRange": "Width range"
+    "widthRange": "Width range",
+    "transmissionDates": "Transmission dates"
+  },
+  "vesselGroup": {
+    "add": "Add to vessel group",
+    "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
+    "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
+    "createNewGroup": "Create new group",
+    "csvError": "Uploaded CSV file has multiple columns and there is no obvious ID column",
+    "edit": "Edit list of vessels",
+    "emptyState": "Your vessel groups will appear here",
+    "groupName": "Group name",
+    "idField": "ID field",
+    "ids": "IDs",
+    "idsPlaceholder": "Type here or paste a list of {{field}} separated by commas, spaces or line breaks",
+    "label": "{{name}} ({{count}} IDs)",
+    "missingName": "Vessel group name is mandatory",
+    "new": "New vessel group",
+    "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
+    "remove": "Remove vessel group",
+    "removeVessel": "Remove vessel from group",
+    "timeRangeLimit": "Supported only for time ranges shorter than 30 days",
+    "tooManyVessels": "Maximum number of vessels is {{count}}",
+    "vesselGroup": "Vessel group",
+    "vesselGroups": "Vessel groups"
   },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",

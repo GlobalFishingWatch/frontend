@@ -63,7 +63,9 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
   const [dataview, setDataview] = useState<Partial<Dataview>>(editDataview || ({} as Dataview))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
-  const [dataviewDatasets, setDataviewDatasets] = useState<{ id: string; label: string }[]>([])
+  const [dataviewDatasets, setDataviewDatasets] = useState<
+    { id: string; label: string | JSX.Element }[]
+  >([])
   const datasets = useSelector(selectFourwingsDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const workspaceStatus = useSelector(selectWorkspaceStatus)

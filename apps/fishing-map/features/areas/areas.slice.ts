@@ -1,19 +1,18 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import bbox from '@turf/bbox'
 import { memoize } from 'lodash'
-import { ContextAreaGeometry, ContextAreaGeometryGeom } from '@globalfishingwatch/api-types'
+import { ContextAreaFeature, ContextAreaFeatureGeom } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { RootState } from 'store'
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { API_VERSION } from 'data/config'
 
 export interface Area {
   key: string
   id: string
   status: AsyncReducerStatus
-  geometry: ContextAreaGeometryGeom | undefined
+  geometry: ContextAreaFeatureGeom | undefined
   bounds: Bbox | undefined
   name: string
 }
@@ -32,8 +31,8 @@ export const fetchAreaThunk = createAsyncThunk(
     { datasetId, areaId, areaName }: FetchAreaThunkParam = {} as FetchAreaThunkParam,
     { signal }
   ) => {
-    const area = await GFWAPI.fetch<ContextAreaGeometry>(
-      `/${API_VERSION}/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
+    const area = await GFWAPI.fetch<ContextAreaFeature>(
+      `/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
       {
         signal,
       }
@@ -77,7 +76,7 @@ const areasSlice = createSlice({
   },
 })
 
-export const selectAreas = (state) => state.areas
+export const selectAreas = (state: RootState) => state.areas
 export const selectAreaById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => state.areas[id])
 )

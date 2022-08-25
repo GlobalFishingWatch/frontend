@@ -1,4 +1,5 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/fourwings-aggregate/src",
   "projectType": "library",
   "tags": [],
@@ -43,6 +44,7 @@
       },
       "configurations": {
         "local": {
+          "watch": true,
           "outputPath": "libs/fourwings-aggregate/dist"
         }
       }

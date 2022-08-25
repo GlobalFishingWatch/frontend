@@ -1,4 +1,4 @@
-import { Segment } from '../track-value-array-to-segments'
+import { Segment } from '@globalfishingwatch/api-types'
 
 /**
  * Filter segments by timerange

@@ -13,7 +13,7 @@ export const IS_PRODUCTION =
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
-  process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
+  process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.globalfishingwatch.org'
 export const LATEST_CARRIER_DATASET_ID =
   process.env.NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID || 'carriers:latest'
 
@@ -23,7 +23,6 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   : { debug: true }
 
 // TODO use it to retrieve it and store in workspace.default in deploy
-export const API_VERSION = 'v2'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
@@ -46,6 +45,11 @@ export const DEFAULT_VIEWPORT = {
 export const DEFAULT_TIME_RANGE = {
   start: DateTime.fromISO(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
   end: LAST_DATA_UPDATE,
+}
+
+export const DEFAULT_PAGINATION_PARAMS = {
+  limit: 99999,
+  offset: 0,
 }
 
 export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'

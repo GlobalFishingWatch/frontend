@@ -38,6 +38,10 @@ export function AccessTokenList(props: AccessTokenListProps) {
   )
   const { copyToClipboard, showClipboardNotification } = useClipboardNotification()
 
+  const clearActionMessage = useCallback(() => {
+    return setActionMessage(undefined)
+  }, [])
+
   const onDeleteClick = useCallback(
     async ({ id }: UserApplication) => {
       if (
@@ -52,8 +56,9 @@ export function AccessTokenList(props: AccessTokenListProps) {
         return
 
       try {
-        const response = await deleteUserApplication.mutate(id)
+        await deleteUserApplication.mutate(id)
         setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
+        setTimeout(clearActionMessage, 5000)
       } catch (e) {
         setActionMessage({
           type: 'error',
@@ -61,11 +66,8 @@ export function AccessTokenList(props: AccessTokenListProps) {
         })
       }
     },
-    [deleteUserApplication]
+    [clearActionMessage, deleteUserApplication]
   )
-  const clearActionMessage = useCallback(() => {
-    return setActionMessage(undefined)
-  }, [])
 
   const onCopyClipboardClick = useCallback(
     (tokenText) => {
@@ -141,12 +143,10 @@ export function AccessTokenList(props: AccessTokenListProps) {
                   </td>
                 </tr>
               ))}
-            {!isLoading && data && data?.length === 0 && (
+            {!isLoading && data && data?.entries?.length === 0 && (
               <tr key={`row-token-info`}>
                 <td className={cx([styles.cellNoData])} colSpan={5}>
-                  <div className={styles.content}>
-                    There are still no application tokens created.
-                  </div>
+                  <div className={styles.content}>There are no application tokens created yet.</div>
                 </td>
               </tr>
             )}

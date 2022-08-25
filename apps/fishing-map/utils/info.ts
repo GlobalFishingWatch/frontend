@@ -42,3 +42,8 @@ export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearT
   }
   return t('common.unknownVessel', 'Unknown vessel')
 }
+
+// 'any' is used here as timestamp is not declared in Vessel anyways
+export const getDetectionsTimestamps = (vessel: any) => {
+  return vessel?.timestamp?.split(',').sort()
+}

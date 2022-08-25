@@ -2,16 +2,18 @@ import { UserApplicationIntendedUse } from './user-applications'
 
 export type UserPermissionType = 'application' | 'dataset' | 'entity'
 export type UserPermissionValue =
-  | 'workspace'
-  | 'dataview'
-  | 'map-client'
-  | 'data-portal'
   | 'carrier-portal'
+  | 'carriers:*'
+  | 'data-portal'
+  | 'dataview'
   | 'fishing-map'
   | 'indonesia:*'
-  | 'carriers:*'
+  | 'map-client'
   | 'public'
   | 'user-application'
+  | 'vessel-group'
+  | 'workspace'
+
 export type UserPermissionAction =
   | 'read'
   | 'read-all'

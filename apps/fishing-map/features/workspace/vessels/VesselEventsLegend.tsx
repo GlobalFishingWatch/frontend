@@ -31,7 +31,8 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
     dataviews.flatMap((dataview) => getEventsDatasetsInDataview(dataview)),
     'id'
   )
-  const allEventTypes = eventDatasets.flatMap((dataset) => dataset.configuration?.type || [])
+
+  const allEventTypes = eventDatasets.flatMap((dataset) => dataset.subcategory || [])
   const showLegend =
     eventDatasets && eventDatasets?.length > 0 && dataviews.some((d) => d.config?.visible)
 
@@ -62,7 +63,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
 
   const eventTypes = useMemo(() => {
     return eventDatasets.flatMap((dataset) => {
-      const eventType = dataset.configuration?.type
+      const eventType = dataset.subcategory as EventType
       if (!eventType) return []
       const active =
         currentVisibleEvents === 'all'

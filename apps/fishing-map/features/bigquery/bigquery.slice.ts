@@ -4,7 +4,6 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { API_VERSION } from 'data/config'
 
 export type BigQueryVisualisation = '4wings' | 'events'
 
@@ -29,11 +28,11 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
   ) => {
     try {
       const response = await GFWAPI.fetch<RunCostResponse>(
-        `/${API_VERSION}/${visualisationMode}/bq/create-temporal-dataset?dryRun=true`,
+        `/${visualisationMode}/bq/create-temporal-dataset?dry-run=true`,
         {
           method: 'POST',
           body: {
-            name: 'Calculating cost using dryRun',
+            name: 'Calculating cost using dry-run',
             public: true,
             // ttl: 1, // days
             query,
@@ -62,7 +61,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
   ) => {
     try {
       const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
-        `/${API_VERSION}/${visualisationMode}/bq/create-temporal-dataset`,
+        `/${visualisationMode}/bq/create-temporal-dataset`,
         {
           method: 'POST',
           body: { query, name: kebabCase(name), public: createAsPublic } as any,

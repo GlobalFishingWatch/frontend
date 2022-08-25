@@ -27,24 +27,27 @@ import {
   getRelatedDatasetByType,
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectDataviewsResourceQueries } from 'features/dataviews/dataviews.selectors'
+import {
+  selectDataviewsResources,
+  selectGetVesselDataviewInstance,
+} from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
-import { parseVesselProfileId } from 'features/vessels/vessels.utils'
+import { NOT_AVAILABLE, parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { useUser } from 'features/user/user.hooks'
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
+import ActivityByType from 'features/activity-by-type/activity-by-type'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
+import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useAppDispatch()
@@ -62,30 +65,35 @@ const Profile: React.FC = (props): React.ReactElement => {
   const mergedVesselId = useSelector(selectMergedVesselId)
   const vessel = useSelector(selectVesselById(mergedVesselId))
   const datasets = useSelector(selectDatasets)
-  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const resourceQueries = useSelector(selectDataviewsResources)?.resources
   const vesselDataviewLoaded = useSelector(selectVesselDataviewMatchesCurrentVessel)
+  const getVesselDataviewInstance = useSelector(selectGetVesselDataviewInstance)
   const isMergedVesselsView = useMemo(
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
   const { online } = useNavigatorOnline()
-  const { authorizedInsurer } = useUser()
+  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
   useEffect(() => {
     const fetchVessel = async () => {
       dispatch(clearVesselDataview(null))
       let [dataset] = (Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? '').split(
         '_'
       )
-      if (akaVesselProfileIds && dataset.toLocaleLowerCase() === 'na') {
+      if (
+        akaVesselProfileIds &&
+        dataset.toLocaleLowerCase() === NOT_AVAILABLE.toLocaleLowerCase()
+      ) {
         const gfwAka = akaVesselProfileIds.find((aka) => {
           const [akaDataset] = aka.split('_')
-          return akaDataset.toLocaleLowerCase() !== 'na'
+          return akaDataset.toLocaleLowerCase() !== NOT_AVAILABLE.toLocaleLowerCase()
         })
         if (gfwAka) {
           const [akaDataset] = gfwAka.split('_')
           dataset = akaDataset
         }
       }
+
       await dispatch(
         fetchVesselByIdThunk({
           id: vesselProfileId,
@@ -113,12 +121,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
         if (trackDatasetId) {
           const eventsRelatedDatasets = getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)
-
           const eventsDatasetsId =
             eventsRelatedDatasets && eventsRelatedDatasets?.length
               ? eventsRelatedDatasets.map((d) => d.id)
               : []
-
           // Only merge with vessels of the same dataset that the main vessel
           const akaVesselsIds = [
             {
@@ -149,15 +155,33 @@ const Profile: React.FC = (props): React.ReactElement => {
         }
       }
     }
-    const [dataset, gfwId, tmtId] = (
+    let [dataset, gfwId, tmtId] = (
       Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
     ).split('_')
+    if (akaVesselProfileIds && dataset.toLocaleLowerCase() === NOT_AVAILABLE.toLocaleLowerCase()) {
+      const gfwAka = akaVesselProfileIds.find((aka) => {
+        const [akaDataset] = aka.split('_')
+        return akaDataset.toLocaleLowerCase() !== NOT_AVAILABLE.toLocaleLowerCase()
+      })
+      if (gfwAka) {
+        const [akaDataset, akaGfwId] = gfwAka.split('_')
+        dataset = akaDataset
+        gfwId = akaGfwId
+      }
+    }
 
     // this is for update the vessel dataview in case that keep cached with the dataview of another vessel
     if (!vesselDataview || 'vessel-' + gfwId !== vesselDataview.id) {
       updateDataview(dataset, gfwId, tmtId)
     }
-  }, [akaVesselProfileIds, datasets, dispatch, vesselDataview, vesselProfileId])
+  }, [
+    akaVesselProfileIds,
+    datasets,
+    dispatch,
+    getVesselDataviewInstance,
+    vesselDataview,
+    vesselProfileId,
+  ])
 
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
@@ -245,9 +269,26 @@ const Profile: React.FC = (props): React.ReactElement => {
     [lastPortVisit, lastPosition, loading, mapTab, t, vessel, visibleHighlights]
   )
 
+  const activityByTypeTab = useMemo(
+    () => ({
+      id: 'activity',
+      title: (
+        <div className={styles.tagContainer}>
+          {t('common.activityByType', 'ACTIVITY BY TYPE').toLocaleUpperCase()}
+          {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
+        </div>
+      ),
+      content: <ActivityByType onMoveToMap={() => setActiveTab(mapTab)} />,
+    }),
+    [mapTab, t, visibleHighlights]
+  )
+
   const tabs: Tab[] = useMemo(
-    () => [...(authorizedInsurer ? [riskSummaryTab] : []), infoTab, activityTab, mapTab],
-    [authorizedInsurer, riskSummaryTab, infoTab, activityTab, mapTab]
+    () =>
+      currentProfileIsInsurer
+        ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
+        : [infoTab, activityTab, mapTab],
+    [currentProfileIsInsurer, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])

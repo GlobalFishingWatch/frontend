@@ -29,12 +29,10 @@ import { selectHighlightedEvent, selectHighlightedTime, selectMapVoyageTime } fr
 export const selectMapTimeRange = createSelector(
   [selectMapVoyageTime, selectFilters],
   (voyageTime, filters) =>
-    voyageTime
-      ? {
-          start: voyageTime.start ?? filters.start,
-          end: voyageTime.end ?? filters.end,
-        }
-      : undefined
+    voyageTime ? {
+      start: voyageTime.start ?? filters.start,
+      end: voyageTime.end ?? filters.end,
+    } : undefined
 )
 
 export const selectGlobalGeneratorsConfig = createSelector(

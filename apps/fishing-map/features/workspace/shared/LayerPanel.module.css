@@ -69,6 +69,10 @@
   align-items: center;
 }
 
+.actions > * {
+  margin-right: calc(0px - var(--space-XS));
+}
+
 .active {
   opacity: 1;
 }
@@ -247,4 +251,8 @@
 
 .faded {
   color: var(--color-secondary-blue);
+}
+
+.gfwIcon {
+  margin-left: var(--space-XS);
 }

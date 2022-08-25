@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
+import { useTranslation } from 'react-i18next'
 import {
   InteractionEvent,
   TemporalGridFeature,
@@ -16,7 +17,7 @@ import {
   MULTILAYER_SEPARATOR,
   isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -27,7 +28,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
-import { setHintDismissed } from 'features/help/hints/hints.slice'
+import { setHintDismissed } from 'features/hints/hints.slice'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
@@ -74,6 +75,7 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
 export const useGeneratorsConnect = () => {
   const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()
+  const { i18n } = useTranslation()
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
@@ -98,6 +100,7 @@ export const useGeneratorsConnect = () => {
       start,
       end,
       token: GFWAPI.getToken(),
+      locale: i18n.language as Locale,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -109,7 +112,15 @@ export const useGeneratorsConnect = () => {
       generatorsConfig: updatedGeneratorConfig,
       globalConfig,
     }
-  }, [updatedGeneratorConfig, viewport.zoom, start, end, timeComparisonValues, showTimeComparison])
+  }, [
+    viewport.zoom,
+    start,
+    end,
+    i18n.language,
+    showTimeComparison,
+    timeComparisonValues,
+    updatedGeneratorConfig,
+  ])
 }
 
 export const useClickedEventConnect = () => {

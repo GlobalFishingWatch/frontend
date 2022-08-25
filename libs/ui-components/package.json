@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "12.5.0",
+  "version": "12.5.4",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -10,24 +10,24 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "prerender": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
-    "postinstall": "yarn prerender"
+    "prerender": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx"
   },
   "dependencies": {
     "@tippyjs/react": "4.2.5",
     "countryflag": "^4.1.2",
     "d3-format": "^3.1.0",
-    "d3-geo": "1.12.0",
+    "d3-geo": "^1.12.0",
     "d3-scale": "^3.3.0",
+    "downshift": "6.1.7",
     "match-sorter": "^6.3.0",
     "react-modal": "^3.11.2",
-    "react-range": "^1.8.11",
-    "topojson-client": "3.1.0"
+    "react-range": "^1.8.14",
+    "topojson-client": "^3.1.0",
+    "ts-node": "^10.8.1"
   },
   "devDependencies": {
     "@types/react-modal": "^3.10.5",
-    "@types/topojson-client": "^3.0.0",
-    "ts-node": "^10.8.1"
+    "@types/topojson-client": "^3.0.0"
   },
   "peerDependencies": {
     "@globalfishingwatch/layer-composer": "10.x",

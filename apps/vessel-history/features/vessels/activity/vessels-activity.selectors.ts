@@ -3,22 +3,28 @@ import { DateTime, Interval } from 'luxon'
 import { upperFirst } from 'lodash'
 import bearing from '@turf/bearing'
 import {
+  getDatasetConfigByDatasetType,
+  getDatasetConfigsByDatasetType,
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventTypes, GapEvent, GapPosition, Regions, ResourceStatus } from '@globalfishingwatch/api-types'
 import { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
-import { DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
+import { APP_PROFILE_VIEWS, DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
-import { ActivityEvent, Regions } from 'types/activity'
+import {
+  selectActiveTrackDataviews,
+  selectTrackDatasetConfigsCallback,
+} from 'features/dataviews/dataviews.selectors'
+import { ActivityEvent } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectSettings } from 'features/settings/settings.slice'
 import { TrackPosition } from 'types'
+import { selectWorkspaceProfileView } from 'features/workspace/workspace.selectors'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
 export interface RenderedEvent extends ActivityEvent {
@@ -43,7 +49,7 @@ export const selectTrackResources = createSelector(
 
       if (
         !hasTrackData ||
-        !tracksResourceResolved //||
+        !tracksResourceResolved
       ) {
         return { dataview, data: [] }
       }
@@ -82,37 +88,18 @@ export const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources],
 
   (trackDataviews, resources) => {
-    // const visibleEvents: (EventType[] | 'all') = 'all'
+    if (Object.keys(resources).length === 0) return []
+
     const vesselsEvents = trackDataviews.map((dataview) => {
-      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-      // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
       const hasEventData =
         eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
-      const tracksResourceResolved =
-        tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
 
-      // Waiting for the tracks resource to be resolved to show the events
-      if (
-        !hasEventData ||
-        !tracksResourceResolved //||
-        // (Array.isArray(visibleEvents) && visibleEvents?.length === 0)
-      ) {
+      if (!hasEventData) {
         return { dataview, data: [] }
       }
 
-      const eventsResourcesFiltered = eventsResources
-      // .filter(({ dataset }) => {
-      //   if (visibleEvents === 'all') {
-      //     return true
-      //   }
-      //   return (
-      //     dataset.configuration?.type &&
-      //     visibleEvents?.includes(dataset.configuration?.type))
-      //   )
-      // })
-
-      const data = eventsResourcesFiltered.flatMap(({ url }) => {
+      const data = eventsResources.flatMap(({ url }) => {
         if (!url || !resources[url].data) {
           return []
         }
@@ -125,11 +112,44 @@ export const selectEventsForTracks = createSelector(
   }
 )
 
+// This selet will split the gaps in two events before add the rendering data
+export const selectEventsWithGapsSplit = createSelector([selectEventsForTracks], (events) => {
+  return events // I dont know if this change is temporaly
+  const eventsWithGapsSplit = events.map(({ dataview, data }) => {
+    const updatedGaps = (data || []).reduce((newListEvents, event) => {
+      if (event.type === EventTypes.Gap) {
+        return [...newListEvents, {
+          ...event,
+          timestamp: event.start,
+          gap: {
+            ...event.gap,
+            isEventStart: true
+          } as GapEvent
+        }, {
+          ...event,
+          timestamp: event.end,
+          gap: {
+            ...event.gap,
+            isEventEnd: true
+          } as GapEvent
+        }]
+      }
+      return [...newListEvents, event]
+    }, [])
+
+    return {
+      dataview,
+      data: updatedGaps
+    }
+  })
+  return eventsWithGapsSplit
+})
+
 export const selectEventsWithRenderingInfo = createSelector(
-  [selectEventsForTracks, selectEEZs, selectRFMOs, selectMPAs],
+  [selectEventsWithGapsSplit, selectEEZs, selectRFMOs, selectMPAs],
   (eventsForTrack, eezs = [], rfmos = [], mpas = []) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
-      return (data || []).map((event: ActivityEvent, index) => {
+      return (data || []).map((event: ActivityEvent) => {
         const regionDescription = getEventRegionDescription(event, eezs, rfmos, mpas)
         let description = ''
         let descriptionGeneric = ''
@@ -185,6 +205,19 @@ export const selectEventsWithRenderingInfo = createSelector(
               regionName: regionDescription,
             })
             descriptionGeneric = t('event.fishing')
+            break
+          case EventTypes.Gap:
+            /*
+            Will split the gaps? 
+            description = event.gap.isEventStart ? t('event.gapStart', 'Gap start in {{regionName}}', {
+              regionName: regionDescription,
+            }) : t('event.gapEnd', 'Gap end in {{regionName}}', {
+              regionName: regionDescription,
+            }) */
+            description = t('event.gapAction', 'Likely Disabling in {{regionName}}', {
+              regionName: regionDescription
+            })
+            descriptionGeneric = t('event.gap', 'Likely Disabling')
             break
           default:
             description = t('event.unknown', 'Unknown event')
@@ -245,8 +278,8 @@ export const selectHighlightEventIds = createSelector(
   }
 )
 
-const getEventRegionDescription = (
-  event: ActivityEvent,
+export const getEventRegionDescription = (
+  event: ActivityEvent | GapPosition,
   eezs: Region[],
   rfmos: Region[],
   mpas: Region[]
@@ -275,8 +308,7 @@ const getEventRegionDescription = (
 
   const regionsDescription = (['mpa', 'eez', 'rfmo'] as (keyof Regions)[])
     // use only regions with values
-    .filter((regionType) => event?.regions && event?.regions[regionType].length > 0)
-
+    .filter((regionType) => event?.regions && event?.regions[regionType]?.length > 0)
     // retrieve its corresponding names
     .map(
       (regionType) =>
@@ -298,14 +330,23 @@ export const selectEvents = createSelector([selectEventsWithRenderingInfo], (eve
 )
 
 export const selectFilteredEvents = createSelector(
-  [selectEvents, selectFilters],
-  (events, filters) => {
+  [selectEvents, selectFilters, selectWorkspaceProfileView],
+  (events, filters, profileView) => {
+    const {
+      events_query_params: { start_date: datasetStartDate },
+    } = APP_PROFILE_VIEWS.filter((v) => v.id === profileView).shift() ?? {
+      events_query_params: { start_date: undefined },
+    }
+
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
-    const startDate = DateTime.fromISO(filters.start ?? DEFAULT_WORKSPACE.availableStart, {
-      zone: 'utc',
-    })
+    const startDate = DateTime.fromISO(
+      datasetStartDate ?? filters.start ?? DEFAULT_WORKSPACE.availableStart,
+      {
+        zone: 'utc',
+      }
+    )
 
     // Setting the time to 23:59:59.99 so the events in that same day
     //  are also displayed
@@ -333,6 +374,9 @@ export const selectFilteredEvents = createSelector(
       }
       if (event.type === 'port_visit') {
         return filters.portVisits
+      }
+      if (event.type === 'gap') {
+        return filters.gapEvents
       }
 
       return true

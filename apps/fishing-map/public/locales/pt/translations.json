@@ -53,6 +53,7 @@
     "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
   },
   "common": {
+    "back": "back",
     "active_after": "Ativo depois de",
     "active_before": "Ativo antes de",
     "activity": "Atividade",
@@ -65,6 +66,7 @@
     "category": "Categoria",
     "comingSoon": "Em breve!",
     "confirm": "Confirmar",
+    "continue": "Continue",
     "context_area_other": "Áreas de contexto",
     "copiedToClipboard": "O link para compartilhar este modo de exibição foi copiado para a área de transferência.",
     "country_other": "países",
@@ -82,6 +84,8 @@
     "detection_other": "Detecções",
     "dismiss": "Ignorar",
     "environment": "Ambiente",
+    "exclude": "Exclude",
+    "excluded": "Excluded",
     "events": "Eventos",
     "feedback": "Retorno",
     "fishing": "Pesca",
@@ -95,6 +99,7 @@
     "hour_one": "Hora",
     "hour_other": "horas",
     "in": "em",
+    "include": "Include",
     "latitude": "Latitude",
     "layerList": "Lista de camadas",
     "learnMore": "Saber mais",
@@ -113,6 +118,8 @@
     "months_other": "meses",
     "more": "mais",
     "name": "Nome",
+    "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "on screen",
     "optional": "Opcional",
     "or": "ou",
@@ -188,6 +195,11 @@
     "context-layer-mpa": {
       "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+    },
+    "basemap-labels": {
+      "title": "Locations",
+      "dataWarning": "This platform uses location labels from Google Maps.",
+      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>"
     }
   },
   "download": {
@@ -241,7 +253,11 @@
     "workspaceDuplicatedName": "Já existe um espaço de trabalho com esse nome",
     "workspaceLoad": "Ocorreu um erro ao carregar o espaço de trabalho. Por favor, tente novamente mais tarde",
     "workspaceMissingName": "É necessário incluir o nome do espaço de trabalho",
-    "workspaceNotFound": "A visualização solicitada não foi encontrada"
+    "workspaceNotFound": "A visualização solicitada não foi encontrada",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadCsv": "Error reading CSV file: {{error}}"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -355,6 +371,7 @@
     },
     "toggleVisibility": "Alterar visibilidade de camada",
     "vessel_fit_bounds": "Centralizar visualização na rota da embarcação",
+    "activity_fit_bounds": "Center view on activity",
     "vessel_fit_bounds_out_of_timerange": "A rota não tem nenhuma atividade no intervalo de tempo selecionado. Mude o intervalo de tempo para se adequar a esta rota?"
   },
   "map": {
@@ -393,6 +410,7 @@
   },
   "selects": {
     "allSelected": "Todos",
+    "noneSelected": "None",
     "placeholder": "Selecione uma opção",
     "selected": "selecionado"
   },
@@ -425,7 +443,8 @@
     "groupMissing": "Você pertence a um grupo de usuários que não aparece aqui? <2>Solicitar acesso</2>",
     "groups": "Grupos de usuários",
     "profile": "Perfil do usuário",
-    "title": "Usuário"
+    "title": "Usuário",
+    "info": "User Info"
   },
   "vessel": {
     "addToWorkspace": "Adicionar embarcação na visualização",
@@ -484,6 +503,7 @@
     "loading": "Carregando rota da embarcação",
     "loadingInfo": "Carregando informações da embarcação",
     "login": "Você precisa <1>login</1> para ver mais detalhes",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Petrecho pricipal",
     "matched": "Encontrado",
     "matricula": "Matrícula",
@@ -503,7 +523,31 @@
     "unmatched": "não encontrado",
     "vessel_type": "Vessel type",
     "vesselType_other": "Tipos de embarcação",
-    "widthRange": "Intervalo de largura"
+    "widthRange": "Intervalo de largura",
+    "transmissionDates": "Transmission dates"
+  },
+  "vesselGroup": {
+    "add": "Add to vessel group",
+    "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
+    "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
+    "createNewGroup": "Create new group",
+    "csvError": "Uploaded CSV file has multiple columns and there is no obvious ID column",
+    "edit": "Edit list of vessels",
+    "emptyState": "Your vessel groups will appear here",
+    "groupName": "Group name",
+    "idField": "ID field",
+    "ids": "IDs",
+    "idsPlaceholder": "Type here or paste a list of {{field}} separated by commas, spaces or line breaks",
+    "label": "{{name}} ({{count}} IDs)",
+    "missingName": "Vessel group name is mandatory",
+    "new": "New vessel group",
+    "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
+    "remove": "Remove vessel group",
+    "removeVessel": "Remove vessel from group",
+    "timeRangeLimit": "Supported only for time ranges shorter than 30 days",
+    "tooManyVessels": "Maximum number of vessels is {{count}}",
+    "vesselGroup": "Vessel group",
+    "vesselGroups": "Vessel groups"
   },
   "workspace": {
     "confirmRemove": "Tem certeza de que deseja excluir permanentemente este espaço de trabalho?",

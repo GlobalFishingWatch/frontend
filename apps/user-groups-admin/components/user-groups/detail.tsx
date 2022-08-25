@@ -15,14 +15,14 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
   const fetchGroup = useCallback(async (groupId: number) => {
     setLoading(true)
     try {
-      const group = await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}`)
+      const group = await GFWAPI.fetch<UserGroup>(`/auth/user-groups/${groupId}`)
       setGroup({ ...group, users: sortBy(group.users, 'email') })
     } catch (e) {
       console.warn(e)
     }
     try {
       const futureUsers = await GFWAPI.fetch<FutureUserData[]>(
-        `/auth/future-user?user-group=${groupId}`
+        `/auth/future-users?user-group=${groupId}`
       )
       setFutureUsers(sortBy(futureUsers, 'email'))
     } catch (e) {
@@ -32,14 +32,14 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
   }, [])
 
   const onAddUserClick = async () => {
-    const users = await GFWAPI.fetch<UserData[]>(`/auth/user?email=${encodeURIComponent(email)}`)
+    const users = await GFWAPI.fetch<UserData[]>(`/auth/users?email=${encodeURIComponent(email)}`)
     if (users.length === 1) {
       const userId = users[0]?.id
-      await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}/user/${userId}`, {
+      await GFWAPI.fetch<UserGroup>(`/auth/user-groups/${groupId}/user/${userId}`, {
         method: 'POST',
       })
     } else {
-      await GFWAPI.fetch<UserGroup>(`/auth/future-user?merge=true`, {
+      await GFWAPI.fetch<UserGroup>(`/auth/future-users?merge=true`, {
         method: 'POST',
         body: {
           email,
@@ -65,7 +65,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     const confirmation = window.confirm('Are you sure you want to remove the user from this group?')
     if (confirmation) {
       setUserLoading(true)
-      await GFWAPI.fetch<UserGroup>(`/auth/user-group/${groupId}/user/${id}`, {
+      await GFWAPI.fetch<UserGroup>(`/auth/user-groups/${groupId}/user/${id}`, {
         method: 'DELETE',
       })
       setUserLoading(false)
@@ -79,7 +79,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     )
     if (confirmation) {
       setUserLoading(true)
-      await GFWAPI.fetch<UserGroup>(`/auth/future-user/${futureUserId}`, {
+      await GFWAPI.fetch<UserGroup>(`/auth/future-users/${futureUserId}`, {
         method: 'DELETE',
       })
       setUserLoading(false)

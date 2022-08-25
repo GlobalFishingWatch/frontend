@@ -1,4 +1,4 @@
-import { BBox, Feature, Geometry } from 'geojson'
+import { BBox, Feature, FeatureCollection, Geometry } from 'geojson'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import explode from '@turf/explode'
 import nearest from '@turf/nearest-point'
@@ -89,14 +89,9 @@ interface Viewport extends LatLon {
   zoom: number
 }
 
-// Returns all overlapping areas, ordered from smallest to biggest
-// If no overlapping area found, returns only the closest area
-const getOceanAreas = (
-  { latitude, longitude }: LatLon,
-  { locale = OceanAreaLocale.en }: GetOceanAreaNameLocaleParam = {} as GetOceanAreaNameLocaleParam
-): OceanAreaProperties[] => {
+export const getOverlappingAreas = (areas: FeatureCollection, { latitude, longitude }: LatLon) => {
   const point = turfPoint([longitude, latitude])
-  const matchingAreas = oceanAreas.features
+  const matchingAreas = areas.features
     .flatMap((feature) => {
       return booleanPointInPolygon(point, feature as any) ? feature.properties : []
     })
@@ -104,17 +99,32 @@ const getOceanAreas = (
       if (featureA.area && featureB.area) return featureA.area - featureB.area
       else return -1
     })
+  return matchingAreas
+}
 
+export const getAreasByDistance = (areas: FeatureCollection, { latitude, longitude }: LatLon) => {
+  const point = turfPoint([longitude, latitude])
+  const filteredFeatures = areas.features.map((feature) => ({
+    ...feature,
+    distance: distance(point, nearest(point, explode(feature as any)) as any),
+  }))
+  const closestFeatures = filteredFeatures.sort((featureA, featureB) => {
+    return featureA.distance - featureB.distance
+  })
+  return closestFeatures
+}
+
+// Returns all overlapping areas, ordered from smallest to biggest
+// If no overlapping area found, returns only the closest area
+const getOceanAreas = (
+  center: LatLon,
+  { locale = OceanAreaLocale.en }: GetOceanAreaNameLocaleParam = {} as GetOceanAreaNameLocaleParam
+): OceanAreaProperties[] => {
+  let matchingAreas = getOverlappingAreas(oceanAreas, center)
   if (!matchingAreas.length) {
-    const filteredFeatures = oceanAreas.features.map((feature) => ({
-      ...feature,
-      distance: distance(point, nearest(point, explode(feature as any)) as any),
-    }))
-    const closestFeature = filteredFeatures.sort((featureA, featureB) => {
-      return featureA.distance - featureB.distance
-    })[0].properties
-    return [
-      { ...closestFeature, name: localizeName(closestFeature.name as OceanAreaLocaleKey, locale) },
+    const closestFeature = getAreasByDistance(oceanAreas, center)?.[0].properties
+    matchingAreas = [
+      { ...closestFeature, name: localizeName(closestFeature?.name as OceanAreaLocaleKey, locale) },
     ]
   }
   return matchingAreas.map((area) => ({

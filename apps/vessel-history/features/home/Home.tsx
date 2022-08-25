@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { redirect } from 'redux-first-router'
 import { DateTime, Interval } from 'luxon'
-import { VesselSearch } from '@globalfishingwatch/api-types'
+import { RelatedVesselSearchMerged, VesselSearch } from '@globalfishingwatch/api-types'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
@@ -27,11 +27,12 @@ import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
 import { HOME, PROFILE, SETTINGS } from 'routes/routes'
 import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
-import { formatVesselProfileId } from 'features/vessels/vessels.utils'
+import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserData } from 'features/user/user.slice'
 import { useApp } from 'features/app/app.hooks'
 import Partners from 'features/partners/Partners'
+import ViewSelector from 'features/view-selector/view-selector'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -71,8 +72,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       redirect({
         type: HOME,
         query: {
-          offline: 'false'
-        }
+          offline: 'false',
+        },
       })
     )
   }, [dispatch])
@@ -83,9 +84,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         redirect({
           type: PROFILE,
           payload: {
-            dataset: vessel.dataset ?? 'NA',
-            vesselID: vessel.id ?? 'NA',
-            tmtID: vessel.vesselMatchId ?? 'NA',
+            dataset: vessel.dataset ?? NOT_AVAILABLE,
+            vesselID: vessel.id ?? NOT_AVAILABLE,
+            tmtID: vessel.vesselMatchId ?? NOT_AVAILABLE,
           },
           query: {
             aka: aka as any,
@@ -95,26 +96,40 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     },
     [dispatch]
   )
+
+  const getListOfSelectedVessels = useCallback(() => {
+    return selectedVessels
+      .map((index) => vessels[index])
+      .map((allVessels) => allVessels.relatedVessels)
+      .flatMap((relatedVessel) => relatedVessel)
+  }, [vessels, selectedVessels])
+
   const onOpenVesselProfile = useCallback(
     (vessel) => () => openVesselProfile(vessel),
     [openVesselProfile]
   )
 
   const onSeeVesselClick = useCallback(() => {
-    const selectedVessel = vessels[selectedVessels[0]]
-    if (selectedVessel) openVesselProfile(selectedVessel)
+    const parsedSelectedVessels = getListOfSelectedVessels()
+    const selectedVessel = parsedSelectedVessels[0]
+    const akaVessels = parsedSelectedVessels
+      .slice(1)
+      .map((akaVessel) =>
+        formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
+      )
+    if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
   }, [openVesselProfile, selectedVessels, vessels])
 
   const onMergeVesselClick = useCallback(() => {
-    const selectedVessel = vessels[selectedVessels[0]]
+    const parsedSelectedVessels = getListOfSelectedVessels()
+    const selectedVessel = parsedSelectedVessels[0]
     uaEvent({
       category: 'Search Vessel VV',
       action: 'Merge vessels',
       label: JSON.stringify(selectedVessels),
     })
-    const akaVessels = selectedVessels
+    const akaVessels = parsedSelectedVessels
       .slice(1)
-      .map((index) => vessels[index])
       .map((akaVessel) =>
         formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
       )
@@ -209,31 +224,47 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     })
   }, [advancedSearch, query, vesselIds])
 
+  const vesselsLength = useMemo(() => {
+    return vessels.reduce((acc, vessel) => {
+      return acc + (vessel.relatedVessels?.length ?? 0)
+    }, 0)
+  }, [vessels])
   return (
     <div className={styles.homeContainer} data-testid="home">
-      <header>
-        <h1 className={styles.logo} >
-          Vessel Viewer
-        </h1>
-        {online && hasAccess && <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>}
-        {(online && !hasAccess) && <IconButton type="default" size="default" icon="user" onClick={onLoginClick}></IconButton>}
-        {online &&
-          <IconButton
-            onClick={onSettingsClick}
-            type="default"
-            size="default"
-            icon="settings"
-          ></IconButton>
-        }
-        {online &&
-          <IconButton
-            icon="feedback"
-            onClick={openFeedback}
-            tooltip={t('common.feedback', 'Feedback')}
-            tooltipPlacement="bottom"
-          />
-        }
-        <LanguageToggle />
+      <header className={styles.header}>
+        <h1 className={styles.logo}>Vessel Viewer</h1>
+
+        <div className={styles.toolbar}>
+          <ViewSelector />
+          <LanguageToggle />
+          {online && (
+            <IconButton
+              icon="feedback"
+              onClick={openFeedback}
+              tooltip={t('common.feedback', 'Feedback')}
+              tooltipPlacement="bottom"
+            />
+          )}
+          {online && (
+            <IconButton
+              onClick={onSettingsClick}
+              type="default"
+              size="default"
+              icon="settings"
+            ></IconButton>
+          )}
+          {online && !hasAccess && (
+            <IconButton
+              type="default"
+              size="default"
+              icon="user"
+              onClick={onLoginClick}
+            ></IconButton>
+          )}
+          {online && hasAccess && (
+            <IconButton type="default" size="default" icon="logout" onClick={logout}></IconButton>
+          )}
+        </div>
       </header>
       <div className={styles.search}>
         {hasAccess && <AdvancedSearch />}
@@ -252,7 +283,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                     onDeleteClick={() => trackRemoveOffline(vessel)}
                   />
                 ))}
-
               </div>
             ) : (
               <div className={styles.content}>
@@ -266,7 +296,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             )}
             <Partners />
           </div>
-
         )}
         {hasSearch && (
           <Fragment>
@@ -278,7 +307,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               )}
               {(!searching || offset > 0) && vessels.length > 0 && (
                 <div className={styles.content}>
-                  {vessels.map((vessel: VesselSearch, index) => (
+                  {vessels.map((vessel: RelatedVesselSearchMerged, index) => (
                     <VesselListItem
                       key={index}
                       vessel={vessel}
@@ -303,7 +332,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   )}
                 </div>
               )}
-              {totalResults > 0 && !searching && vessels.length < totalResults && (
+              {totalResults > 0 && !searching && vesselsLength < totalResults && (
                 <div className={styles.listFooter}>
                   <Button
                     className={styles.loadMoreBtn}
@@ -318,7 +347,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   <Spinner className={styles.loader}></Spinner>
                 </div>
               )}
-              {!searching && vessels.length >= 0 && (
+              {!searching && vesselsLength >= 0 && (
                 <SearchNoResultsState
                   contactUsLink={contactUsLink}
                   onContactUsClick={onContactUsClick}

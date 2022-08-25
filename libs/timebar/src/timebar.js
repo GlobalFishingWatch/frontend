@@ -231,6 +231,7 @@ class Timebar extends Component {
       maximumRange,
       maximumRangeUnit,
       stickToUnit,
+      displayWarningWhenInFuture,
     } = this.props
     const { immediate } = this.state
 
@@ -349,6 +350,7 @@ class Timebar extends Component {
               latestAvailableDataDate={this.props.latestAvailableDataDate}
               trackGraphOrientation={this.props.trackGraphOrientation}
               stickToUnit={stickToUnit}
+              displayWarningWhenInFuture={displayWarningWhenInFuture}
             />
           </div>
         </RecoilRoot>
@@ -413,7 +415,9 @@ Timebar.propTypes = {
   maximumRangeUnit: PropTypes.string,
   stickToUnit: PropTypes.func,
   showLastUpdate: PropTypes.bool,
-  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt']),
+  // val is used to live edit translations in crowdin
+  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt', 'val']),
+  displayWarningWhenInFuture: PropTypes.bool,
 }
 
 Timebar.defaultProps = {
@@ -451,7 +455,6 @@ Timebar.defaultProps = {
     zoomIn: 'Zoom in',
     zoomTo: 'Zoom to',
     zoomOut: 'Zoom out',
-    selectTimeRange: 'Select a time range',
   },
   bookmarkStart: null,
   bookmarkEnd: null,
@@ -476,6 +479,7 @@ Timebar.defaultProps = {
   maximumRangeUnit: 'month',
   showLastUpdate: true,
   locale: 'en',
+  displayWarningWhenInFuture: true,
 }
 
 export default Timebar

@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { formatVesselProfileId } from 'features/vessels/vessels.utils'
+import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
@@ -30,11 +30,11 @@ export const getLocationType = createSelector([selectLocation], (location) => {
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
 
 export const selectVesselId = createSelector([selectLocationPayload], (payload) => {
-  return payload.vesselID !== 'NA' ? payload.vesselID : null
+  return payload.vesselID !== NOT_AVAILABLE ? payload.vesselID : null
 })
 
 export const selectTmtId = createSelector([selectLocationPayload], (payload) => {
-  return payload.tmtID !== 'NA' ? payload.tmtID : null
+  return payload.tmtID !== NOT_AVAILABLE ? payload.tmtID : null
 })
 
 export const selectDataset = createSelector([selectLocationPayload], (payload) => {
@@ -72,9 +72,19 @@ export const selectUrlStartQuery = createSelector(
 )
 export const selectUrlEndQuery = createSelector([selectQueryParam('end')], (end: string) => end)
 export const selectUrlQuery = createSelector([selectQueryParam('q')], (q: string) => q || '')
+
 export const selectUrlDataviewInstances = createSelector(
   [selectQueryParam('dataviewInstances')],
-  (dataviewInstance: UrlDataviewInstance[]) => dataviewInstance
+  (dataviewInstances: UrlDataviewInstance[]) => dataviewInstances?.map(dataviewInstance => {
+    const visibility: string = (dataviewInstance.config?.visible as any)
+    return {
+      ...dataviewInstance,
+      config: {
+        ...dataviewInstance.config,
+        visible: visibility === 'true' ? true : (visibility === 'false' ? false : !!visibility)
+      }
+    }
+  })
 )
 
 export const selectUrlViewport = createSelector(
@@ -84,7 +94,6 @@ export const selectUrlViewport = createSelector(
     return { zoom, latitude, longitude }
   }
 )
-
 /**
  * get the start and end dates in string format
  */
@@ -178,12 +187,9 @@ export const selectUrlAkaVesselQuery = createSelector(
   (aka: string[]) => aka
 )
 
-export const isOfflineForced = createSelector(
-  [selectQueryParam('offline')],
-  (offline: string) => {
-    return offline === 'true'
-  }
-)
+export const isOfflineForced = createSelector([selectQueryParam('offline')], (offline: string) => {
+  return offline === 'true'
+})
 
 export const selectMergedVesselId = createSelector(
   [selectVesselProfileId, selectUrlAkaVesselQuery],

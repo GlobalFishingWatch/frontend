@@ -35,13 +35,14 @@ const styleTransformations: StyleTransformation[] = [
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   const dispatch = useDispatch()
-
-  return {
+  const generator = {
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
     generatorsConfig: useSelector(selectDefaultMapGeneratorsConfig),
     updateGenerator: (payload: UpdateGeneratorPayload) => dispatch(updateGenerator(payload)),
     styleTransformations,
   }
+
+  return generator
 }
 export type LatLon = {
   latitude: number

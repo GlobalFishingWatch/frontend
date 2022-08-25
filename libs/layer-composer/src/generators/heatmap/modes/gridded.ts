@@ -31,21 +31,46 @@ export default function gridded(
         ? [
             'interpolate',
             ['linear'],
+            // we'll need to minus the offset (TBD: 50 or from dataset) once we are ready for negative values
+            // ['-', ['/', exprPick, VALUE_MULTIPLIER], 50],
             ['/', exprPick, VALUE_MULTIPLIER],
-            ...colorRamp.flatMap((color, index) => [
-              breaks[0][index - 1] !== undefined
-                ? breaks[0][index - 1]
-                : breaks[0][0] === 0
-                ? -1
-                : 0,
-              color,
-            ]),
+            ...colorRamp.flatMap((color, index) => {
+              return [
+                breaks[0][index - 1] !== undefined
+                  ? breaks[0][index - 1]
+                  : breaks[0][index] <= 0
+                  ? breaks[0][index] - 1
+                  : 0,
+                color,
+              ]
+            }),
           ]
         : ['match', exprPick, ...colorRampBaseExpression, 'transparent']
+
+    const visibilityOffset = 0.0000001
+    const minVisibleExpression =
+      config.minVisibleValue !== undefined
+        ? [0, config.minVisibleValue - visibilityOffset, 1, config.minVisibleValue]
+        : []
+    const maxVisibleExpression =
+      config.maxVisibleValue !== undefined
+        ? [1, config.maxVisibleValue, 0, config.maxVisibleValue + visibilityOffset]
+        : []
+    const visibleValuesExpression =
+      minVisibleExpression.length || maxVisibleExpression.length
+        ? [
+            'step',
+            ['/', exprPick, VALUE_MULTIPLIER],
+            ...minVisibleExpression,
+            ...maxVisibleExpression,
+            0,
+          ]
+        : []
 
     const paint = {
       'fill-color': timeChunk.active ? exprColorRamp : 'rgba(0,0,0,0)',
       'fill-outline-color': 'transparent',
+      'fill-opacity': visibleValuesExpression?.length ? visibleValuesExpression : 1,
     }
 
     const chunkMainLayer = getBaseLayer(

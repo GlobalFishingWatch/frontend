@@ -10,8 +10,8 @@ import type {
   OceanArea,
 } from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
-import Hint from 'features/help/hints/Hint'
-import { setHintDismissed } from 'features/help/hints/hints.slice'
+import Hint from 'features/hints/Hint'
+import { setHintDismissed } from 'features/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'

@@ -90,6 +90,8 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
     dataset.configuration.id &&
     trackResource?.data?.features?.some((f) => f.properties.id !== NO_RECORD_ID)
 
+  const featuresColoredByField = singleTrack && trackResource?.data && hasRecordIds
+
   const loading = trackResource?.status === ResourceStatus.Loading
 
   if (!dataset) {
@@ -124,7 +126,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
-          color={singleTrack ? COLOR_SECONDARY_BLUE : undefined}
+          color={featuresColoredByField ? COLOR_SECONDARY_BLUE : undefined}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
@@ -149,7 +151,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
                     onColorClick={changeColor}
                     onToggleClick={onToggleColorOpen}
                     onClickOutside={closeExpandedContainer}
-                    disabled={singleTrack}
+                    disabled={featuresColoredByField}
                   />
                   <FitBounds hasError={trackError} trackResource={trackResource} />
                 </Fragment>
@@ -170,7 +172,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
         </div>
       </div>
 
-      {layerActive && singleTrack && trackResource?.data && hasRecordIds && (
+      {layerActive && featuresColoredByField && (
         <div
           className={cx(styles.properties, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,

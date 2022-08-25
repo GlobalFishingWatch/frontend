@@ -11,7 +11,8 @@ export const parseAPIErrorMessage = (error: ResponseError) => {
   return error.message
 }
 
-export const parseAPIError = (error: ResponseError) => ({
-  code: parseAPIErrorStatus(error),
+export type ParsedAPIError = { status: number; message: string }
+export const parseAPIError = (error: ResponseError): ParsedAPIError => ({
+  status: parseAPIErrorStatus(error),
   message: parseAPIErrorMessage(error),
 })

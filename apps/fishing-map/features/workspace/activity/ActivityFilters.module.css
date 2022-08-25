@@ -1,3 +1,4 @@
+.relative,
 .LayerPanel {
   position: relative;
 }
@@ -74,4 +75,9 @@
   margin-left: 0.4rem;
   font: var(--font-XS);
   vertical-align: super;
+}
+
+.filterOperator {
+  position: absolute;
+  right: var(--space-S);
 }

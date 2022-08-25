@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
-  "version": "1.2.37",
+  "version": "1.2.52",
   "license": "MIT",
   "scripts": {
     "start": "yarn kill && serve -p 8000 --cors=true",
@@ -12,13 +12,15 @@
     "fr",
     "id",
     "pt",
-    "source"
+    "source",
+    "val"
   ],
   "devDependencies": {
     "kill-port": "^1.6.1",
     "serve": "13.0.2"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

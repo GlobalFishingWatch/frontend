@@ -1,6 +1,7 @@
 import { GeneratorType } from './types'
 import BackgroundGenerator from './background/background'
 import BaseMapGenerator from './basemap/basemap'
+import BasemapLabelsGenerator from './basemap-labels/basemap-labels'
 import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-polygons'
 import ContextGenerator from './context/context'
 import GLStyleGenerator from './gl/gl'
@@ -34,6 +35,7 @@ export {
 const GeneratorConfig = {
   [GeneratorType.Background]: new BackgroundGenerator(),
   [GeneratorType.Basemap]: new BaseMapGenerator(),
+  [GeneratorType.BasemapLabels]: new BasemapLabelsGenerator(),
   [GeneratorType.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
   [GeneratorType.Context]: new ContextGenerator(),
   [GeneratorType.GL]: new GLStyleGenerator(),

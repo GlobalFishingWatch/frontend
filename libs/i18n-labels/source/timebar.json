@@ -37,6 +37,5 @@
   "hour": "hour",
   "zoomIn": "Zoom in",
   "zoomTo": "Zoom to",
-  "zoomOut": "Zoom out",
-  "selectTimeRange": "Select a time range"
+  "zoomOut": "Zoom out"
 }

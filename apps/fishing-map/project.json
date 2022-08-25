@@ -1,5 +1,5 @@
 {
-  "root": "apps/fishing-map",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fishing-map",
   "projectType": "application",
   "targets": {

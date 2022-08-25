@@ -33,6 +33,7 @@ const navigation: MenuItem[] = [
     childs: [
       { link: 'https://globalfishingwatch.org/our-technology/', label: 'Our Technology' },
       { link: 'https://globalfishingwatch.org/our-map/', label: 'Our Map' },
+      { link: 'https://globalfishingwatch.org/our-apis/', label: 'Our Apis' },
       {
         link: 'https://globalfishingwatch.org/carrier-vessel-portal/',
         label: 'Carrier Vessel Portal',

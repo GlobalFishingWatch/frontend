@@ -30,7 +30,13 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
+import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
+import {
+  fetchWorkspaceVesselGroupsThunk,
+  selectWorkspaceVesselGroupsError,
+  selectWorkspaceVesselGroupsStatus,
+} from 'features/vessel-groups/vessel-groups.slice'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -43,6 +49,7 @@ const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/s
 function WorkspaceError(): React.ReactElement {
   const [logoutLoading, setLogoutLoading] = useState(false)
   const error = useSelector(selectWorkspaceError)
+  const vesselGroupsError = useSelector(selectWorkspaceVesselGroupsError)
   const workspaceId = useSelector(selectWorkspaceId)
   const guestUser = useSelector(isGuestUser)
   const userData = useSelector(selectUserData)
@@ -57,7 +64,12 @@ function WorkspaceError(): React.ReactElement {
       </div>
     </div>
   )
-  if (error.status === 401 || error.status === 403) {
+  if (
+    error.status === 401 ||
+    error.status === 403 ||
+    vesselGroupsError?.status === 401 ||
+    vesselGroupsError?.status === 403
+  ) {
     return (
       <ErrorPlaceHolder title={t('errors.privateView', 'This is a private view')}>
         {guestUser ? (
@@ -131,8 +143,10 @@ function Workspace() {
   const workspace = useSelector(selectWorkspace)
   const dataviews = useSelector(selectDataviewInstancesMergedOrdered)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const dataviewsResources = useSelector(selectDataviewsResources)
+  const workspaceVesselGroupsIds = useSelector(selectWorkspaceVessselGroupsIds)
   const isUserWorkspace =
     workspace?.id?.endsWith(`-${USER_SUFIX}`) ||
     workspace?.id?.endsWith(`-${USER_SUFIX}-${PUBLIC_SUFIX}`)
@@ -154,6 +168,12 @@ function Workspace() {
     }
   }, [dispatch, dataviewsResources])
 
+  useEffect(() => {
+    if (workspaceVesselGroupsIds.length) {
+      dispatch(fetchWorkspaceVesselGroupsThunk(workspaceVesselGroupsIds))
+    }
+  }, [workspaceVesselGroupsIds, dispatch])
+
   if (
     workspaceStatus === AsyncReducerStatus.Idle ||
     workspaceStatus === AsyncReducerStatus.Loading
@@ -165,7 +185,10 @@ function Workspace() {
     )
   }
 
-  if (workspaceStatus === AsyncReducerStatus.Error) {
+  if (
+    workspaceStatus === AsyncReducerStatus.Error ||
+    workspaceVesselGroupsStatus === AsyncReducerStatus.Error
+  ) {
     return <WorkspaceError />
   }
 

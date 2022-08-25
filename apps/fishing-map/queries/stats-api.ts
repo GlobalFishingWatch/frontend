@@ -6,10 +6,17 @@ import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'lodash'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { Range } from 'features/timebar/timebar.slice'
-import { API_VERSION } from 'data/config'
 
 export type StatType = 'vessels' | 'detections'
-export type StatField = 'id' | 'flag' | 'vessel_id' | 'geartype'
+export type StatField =
+  | 'id'
+  | 'flag'
+  | 'vessel_id'
+  | 'geartype'
+  | 'minLat'
+  | 'minLon'
+  | 'maxLat'
+  | 'maxLon'
 export type StatFields = {
   [key in StatField]: number
 } & { type: StatType }
@@ -39,7 +46,7 @@ export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
   serializeQueryArgs: serializeStatsDataviewKey,
   baseQuery: gfwBaseQuery({
-    baseUrl: `/${API_VERSION}/4wings/stats`,
+    baseUrl: `/4wings/stats`,
   }),
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
@@ -47,6 +54,7 @@ export const dataviewStatsApi = createApi({
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
           filters: [dataview.config?.filter] || [],
+          'vessel-groups': [dataview.config?.['vessel-groups']] || [],
           'date-range': [timerange.start, timerange.end].join(','),
         }
         return {

@@ -48,7 +48,7 @@ export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
   async (_, { rejectWithValue }) => {
     try {
-      const apiUrl = `/${API_VERSION}/datasets`
+      const apiUrl = `/datasets`
       const options = {}
       const eezs = await GFWAPI.fetch<Region[]>(
         `${apiUrl}/public-eez-areas/user-context-layer-v1`,

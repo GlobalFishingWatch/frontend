@@ -11,7 +11,6 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
-  ResourceStatus,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -227,8 +226,8 @@ export function getGeneratorConfig(
           {
             id: generator.id,
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
-            colorRampWhiteEnd: false,
             filter: dataview.config?.filter,
+            vesselGroups: dataview.config?.['vessel-groups'],
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
             datasets: datasetsIds,
@@ -242,17 +241,20 @@ export function getGeneratorConfig(
 
         const { url: tilesAPI } = resolveDataviewDatasetResource(dataview, DatasetTypes.Fourwings)
         const dataviewInterval = dataview.config?.interval
+        const dataviewIntervals = dataview.config?.intervals
         const datasetIntervals = getDatasetAvailableIntervals(dataset)
         let availableIntervals = DEFAULT_ENVIRONMENT_INTERVALS
         if (dataviewInterval) {
           availableIntervals = [dataviewInterval]
+        } else if (dataviewIntervals && dataviewIntervals.length > 0) {
+          availableIntervals = dataviewIntervals
         } else if (datasetIntervals && datasetIntervals.length > 0) {
           availableIntervals = datasetIntervals
         }
 
         environmentalConfig = {
           sublayers,
-          maxZoom: 8,
+          maxZoom: dataview.config.maxZoom || 8,
           mode: HeatmapAnimatedMode.Single,
           tilesAPI,
           dynamicBreaks: dataview.config?.dynamicBreaks || true,
@@ -382,6 +384,13 @@ export function isDetectionsDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+export function isTrackDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Vessels &&
+    dataview.config?.type === GeneratorType.Track
+  )
+}
+
 export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
   return isActivityDataview(dataview) || isDetectionsDataview(dataview)
 }
@@ -433,8 +442,8 @@ export function getMergedHeatmapAnimatedDataview(
       id: dataview.id,
       datasets,
       colorRamp: config.colorRamp as ColorRampsIds,
-      colorRampWhiteEnd: true,
       filter: config.filter,
+      vesselGroups: config['vessel-groups'],
       visible: config.visible,
       legend: {
         label: dataview.name,
@@ -463,8 +472,8 @@ export function getMergedHeatmapAnimatedDataview(
       // apply the minimum max zoom level (the most restrictive approach)
       ...(maxZoomLevels &&
         maxZoomLevels.length > 0 && {
-          maxZoom: Math.min(...maxZoomLevels),
-        }),
+        maxZoom: Math.min(...maxZoomLevels),
+      }),
     },
   }
   dataviewsFiltered.push(mergedActivityDataview)
@@ -529,12 +538,14 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
-  const { activityDataviews, detectionDataviews, otherDataviews } = dataviews.reduce(
+  const { activityDataviews, detectionDataviews, trackDataviews, otherDataviews } = dataviews.reduce(
     (acc, dataview) => {
       if (isActivityDataview(dataview)) {
         acc.activityDataviews.push(dataview)
       } else if (isDetectionsDataview(dataview)) {
         acc.detectionDataviews.push(dataview)
+      } else if (isTrackDataview(dataview)) {
+        acc.trackDataviews.push(dataview)
       } else {
         acc.otherDataviews.push(dataview)
       }
@@ -543,6 +554,7 @@ export function getDataviewsGeneratorConfigs(
     {
       activityDataviews: [] as UrlDataviewInstance[],
       detectionDataviews: [] as UrlDataviewInstance[],
+      trackDataviews: [] as UrlDataviewInstance[],
       otherDataviews: [] as UrlDataviewInstance[],
     }
   )
@@ -550,21 +562,21 @@ export function getDataviewsGeneratorConfigs(
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
     ? getMergedHeatmapAnimatedDataview(activityDataviews, {
-        ...params,
-        mergedHeatmapGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-      })
+      ...params,
+      mergedHeatmapGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+    })
     : []
   const mergedDetectionsDataview = detectionDataviews.length
     ? getMergedHeatmapAnimatedDataview(detectionDataviews, {
-        ...params,
-        mergedHeatmapGeneratorId: MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
-      })
+      ...params,
+      mergedHeatmapGeneratorId: MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
+    })
     : []
-
   const generatorsConfig = [
     ...mergedActivityDataview,
     ...mergedDetectionsDataview,
-    ...otherDataviews,
+    ...trackDataviews,
+    ...otherDataviews
   ].flatMap((dataview) => {
     return getGeneratorConfig(dataview, params, resources)
   })

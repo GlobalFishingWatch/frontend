@@ -1,21 +1,18 @@
-import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
+import { ApiEvent, EventAuthorization, EventType, EventTypes, Regions } from '@globalfishingwatch/api-types'
 import { GroupRegions } from 'features/regions/regions.slice'
+import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 
+export type ExpandableStatus = 'expanded' | 'collapsed'
 export interface EventVessel {
   id: string
   name: string
   ssvid: string
   nextPort?: any
+  authorizations?: EventAuthorization[]
 }
 export interface Position {
   lat: number
   lon: number
-}
-
-export interface Regions {
-  eez: string[]
-  rfmo: string[]
-  mpa: any[]
 }
 
 export interface Distances {
@@ -58,4 +55,13 @@ export interface OfflineVesselActivity {
   activities: ActivityEvent[]
   profileId: string
   savedOn: string
+}
+
+export interface EventGroup {
+  events: RenderedEvent[]
+  group: boolean
+  loading: boolean
+  quantity?: number
+  status: ExpandableStatus
+  type: EventType
 }

@@ -1,4 +1,3 @@
-import React from 'react'
 import cx from 'classnames'
 import Tippy from '@tippyjs/react'
 import type { Placement } from 'tippy.js'

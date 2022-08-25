@@ -57,6 +57,7 @@ export function useLayerComposer(
           if (styleSpecValidate) {
             const styleErrors = styleSpecValidate(afterTransformations)
             if (styleErrors && styleErrors.length) {
+              console.warn(style)
               throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
             }
           }

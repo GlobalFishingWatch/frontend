@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: bash
     args:
       - '-c'
@@ -29,7 +29,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: yarn
     args: ['nx', 'build', 'tile-inspector', '--parallel']
     env:

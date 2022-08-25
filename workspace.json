@@ -4,11 +4,14 @@
     "api-client": "libs/api-client",
     "api-portal": "apps/api-portal",
     "api-types": "libs/api-types",
+    "deck-playground": "apps/deck-playground",
     "data-transforms": "libs/data-transforms",
     "dataviews-client": "libs/dataviews-client",
     "fishing-map": "apps/fishing-map",
     "fishing-map-e2e": "apps/fishing-map-e2e",
+    "features-aggregate": "libs/features-aggregate",
     "fourwings-aggregate": "libs/fourwings-aggregate",
+    "fourwings-explorer": "apps/fourwings-explorer",
     "i18n-labels": "libs/i18n-labels",
     "layer-composer": "libs/layer-composer",
     "ocean-areas": "libs/ocean-areas",
@@ -20,5 +23,6 @@
     "ui-components": "libs/ui-components",
     "user-groups-admin": "apps/user-groups-admin",
     "vessel-history": "apps/vessel-history"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

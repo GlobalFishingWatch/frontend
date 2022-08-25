@@ -1,4 +1,5 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui-components/src",
   "projectType": "library",
   "tags": [],
@@ -10,6 +11,7 @@
         "outputPath": "dist/libs/ui-components",
         "tsConfig": "libs/ui-components/tsconfig.lib.json",
         "project": "libs/ui-components/package.json",
+        "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "libs/ui-components/rollup.config.js",
@@ -19,7 +21,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "styles": "libs/ui-components/src/base.css"
       }
     },
     "lint": {

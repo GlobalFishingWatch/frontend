@@ -1,19 +1,21 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
-import { IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { VesselSearch as Vessel } from '@globalfishingwatch/api-types'
+import { Button, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { RelatedVesselSearchMerged, VesselSearch as Vessel } from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE, FIRST_YEAR_OF_DATA } from 'data/config'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import RelatedVesselListItem from './components/RelatedVesselListItem'
 import styles from './VesselListItem.module.css'
+
 interface ListItemProps {
   saved?: string
-  vessel: Vessel
+  vessel: RelatedVesselSearchMerged
   selected?: boolean
   index: number
   onDeleteClick?: () => void
@@ -22,10 +24,10 @@ interface ListItemProps {
 
 const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
-  const { vessel, onDeleteClick, onVesselClick = () => {}, selected = false } = props
+  const { vessel, onDeleteClick, onVesselClick = () => { }, selected = false } = props
   const { formatSource } = useVesselsConnect()
   const onClick = useCallback(() => onVesselClick(vessel), [onVesselClick, vessel])
-
+  const [relatedOpen, setRelatedOpen] = useState(false)
   if (!vessel) {
     return <div></div>
   }
@@ -66,14 +68,14 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
                 {sourceAPI.map((source) => formatSource(source)).join(' + ') ?? DEFAULT_EMPTY_VALUE}
               </div>
             )}
-            <div className={styles.fullWidth}>
+            <div className={styles.transmissionField}>
               <label>{t('vessel.transmission_plural', 'transmissions')}</label>
               {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
                 <Fragment>
                   {t('vessel.transmissionRange', '{{transmissions}} AIS transmissions from {{start}} to {{end}}', {
                     transmissions: vessel.posCount,
-                    start: vessel.firstTransmissionDate ? formatI18nDate(vessel.firstTransmissionDate) :  DEFAULT_EMPTY_VALUE,
-                    end: vessel.lastTransmissionDate ? formatI18nDate(vessel.lastTransmissionDate) :  DEFAULT_EMPTY_VALUE,
+                    start: vessel.firstTransmissionDate ? formatI18nDate(vessel.firstTransmissionDate) : DEFAULT_EMPTY_VALUE,
+                    end: vessel.lastTransmissionDate ? formatI18nDate(vessel.lastTransmissionDate) : DEFAULT_EMPTY_VALUE,
                   })}
                 </Fragment>
               ) : (
@@ -107,11 +109,45 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               firstTransmissionDate={vessel.firstTransmissionDate}
               lastTransmissionDate={vessel.lastTransmissionDate}
               firstYearOfData={FIRST_YEAR_OF_DATA}
+              parsedYears={vessel.years}
             />
           )}
+          {vessel.relatedVessels?.length > 1 &&
+            <Fragment>
+              <div className={styles.relatedVesselNotification}>
+                {t('vessel.relatedNotification', 'This vessel is the combination of {{amount}} results', {
+                  amount: vessel.relatedVessels.length
+                })}
+              </div>
+              {!relatedOpen && <Button
+                className={styles.fullWidth}
+                type="secondary"
+                size="default"
+                onClick={() => setRelatedOpen(true)}
+              >
+                {t('search.viewIndividual', 'VIEW INDIVIDUAL RESULTS')}
+              </Button>}
+              {relatedOpen && vessel.relatedVessels.map((relatedVessel, index) =>
+                <RelatedVesselListItem
+                  key={index}
+                  vessel={relatedVessel}
+                  index={index}
+                  //onVesselClick={onVesselClick(index)}
+                  selected={selected}
+                ></RelatedVesselListItem>
+              )}
+              {relatedOpen && <Button
+                className={styles.fullWidth}
+                type="secondary"
+                size="default"
+                onClick={() => setRelatedOpen(false)}
+              >
+                {t('search.hideIndividual', 'HIDE INDIVIDUAL RESULTS')}
+              </Button>}
+            </Fragment>
+          }
           {props.saved && (
             <div>
-
               <label>{t('vessel.savedOn', 'saved on')}</label>
               {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
             </div>

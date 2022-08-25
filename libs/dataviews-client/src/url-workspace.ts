@@ -31,6 +31,7 @@ const PARAMS_TO_ABBREVIATED = {
   query: 'qry',
   value: 'val',
   color: 'clr',
+  'vessel-groups': 'vGs',
 }
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 
@@ -136,6 +137,26 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
   return detokenized
 }
 
+const PUBLIC_VMS_TRACK_DATASETS = [
+  'public-belize-fishing-tracks',
+  'public-bra-onyxsat-fishing-tracks',
+  'public-chile-fishing-tracks',
+  'public-chile-non-fishing-tracks',
+  'public-costa-rica-fishing-tracks',
+  'public-ecuador-fishing-tracks',
+  'public-ecuador-non-fishing-tracks',
+  'public-indonesia-fishing-tracks',
+  'public-mexico-fishing-tracks',
+  'public-panama-fishing-tracks',
+  'public-panama-non-fishing-tracks',
+  'public-peru-fishing-tracks',
+]
+export const migrateLegacyVMSPublicDatasets = (datasetId: string) => {
+  return PUBLIC_VMS_TRACK_DATASETS.some((legacyDataset) => datasetId.includes(legacyDataset))
+    ? datasetId.replace('public-', 'full-')
+    : datasetId
+}
+
 export const removeLegacyEndpointPrefix = (endpointId: string) => {
   return endpointId.replace('carriers-', '')
 }
@@ -148,6 +169,7 @@ export const parseLegacyDataviewInstanceEndpoint = (
     ...(dataviewInstance.datasetsConfig && {
       datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
         ...dc,
+        datasetId: migrateLegacyVMSPublicDatasets(dc.datasetId),
         endpoint: removeLegacyEndpointPrefix(dc.endpoint),
       })),
     }),
@@ -157,10 +179,19 @@ export const parseLegacyDataviewInstanceEndpoint = (
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
   const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
+  const vesselGroups = dataview.config?.['vessel-groups']?.map((vg: any) => parseInt(vg as any))
+
+  const config = { ...dataview.config }
+  if (breaks) {
+    config.breaks = breaks
+  }
+  if (vesselGroups) {
+    config['vessel-groups'] = vesselGroups
+  }
   return {
     ...parseLegacyDataviewInstanceEndpoint(dataview),
     ...(dataviewId && { dataviewId }),
-    ...(dataview.config && breaks && { config: { ...dataview.config, breaks } }),
+    config,
   }
 }
 

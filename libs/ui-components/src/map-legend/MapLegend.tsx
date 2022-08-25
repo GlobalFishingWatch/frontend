@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import {
+import type {
   LayerMetadataLegend,
   LayerMetadataLegendBivariate,
 } from '@globalfishingwatch/layer-composer'

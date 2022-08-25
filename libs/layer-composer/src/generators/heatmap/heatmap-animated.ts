@@ -26,7 +26,7 @@ import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
 import { getSourceId, toURLArray } from './util'
-import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
+import fetchBreaks, { getBreaksCacheKey, Breaks, FetchBreaksParams } from './util/fetch-breaks'
 import griddedTimeCompare from './modes/gridded-time-compare'
 import { getTimeChunksInterval } from './util/get-time-chunks-interval'
 
@@ -72,6 +72,14 @@ const getSubLayersFilters = (
   return [sublayersFilters[0]]
 }
 
+const getSubLayersVesselGroups = (
+  sublayers: HeatmapAnimatedGeneratorSublayer[],
+  merge = false
+): string[] => {
+  const sublayersVesselGroups = sublayers.map((sublayer) => sublayer.vesselGroups || '')
+  return sublayersVesselGroups
+}
+
 const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
   sublayer.visible === false ? false : true
 const getSubLayersVisible = (config: HeatmapAnimatedGeneratorConfig) =>
@@ -99,6 +107,9 @@ const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
     sublayerVisibility: JSON.stringify(params.sublayerVisibility),
     sublayerCount: params.sublayerCount.toString(),
     interactive: params.interactive ? 'true' : 'false',
+  }
+  if (params['vessel-groups']) {
+    serialized['vessel-groups'] = toURLArray('vessel-groups', params['vessel-groups'])
   }
   if (params['date-range']) {
     serialized['date-range'] = params['date-range'].join(',')
@@ -187,10 +198,14 @@ class HeatmapAnimatedGenerator {
       config.sublayers,
       config.mode === HeatmapAnimatedMode.TimeCompare
     )
+
     const filters = getSubLayersFilters(
       config.sublayers,
       config.mode === HeatmapAnimatedMode.TimeCompare
     )
+
+    // TODO should be an array per sublayer?
+    const vesselGroups = getSubLayersVesselGroups(config.sublayers)
 
     const visible = getSubLayersVisible(config)
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
@@ -216,6 +231,7 @@ class HeatmapAnimatedGenerator {
         quantizeOffset: timeChunk.quantizeOffset,
         interval: timeChunks.interval,
         filters,
+        'vessel-groups': vesselGroups,
         datasets,
         aggregationOperation: config.aggregationOperation,
         sublayerCombinationMode,
@@ -249,6 +265,7 @@ class HeatmapAnimatedGenerator {
       }
 
       const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
+      // console.log(serializedBaseSourceParams)
 
       const sourceParams = [serializedBaseSourceParams]
 
@@ -293,8 +310,8 @@ class HeatmapAnimatedGenerator {
   getCacheKey = (config: FetchBreaksParams) => {
     const visibleSublayers = config.sublayers?.filter((sublayer) => sublayer.visible)
     const datasetKey = getSubLayersDatasets(visibleSublayers)?.join(',')
-    const filtersKey = visibleSublayers?.flatMap((subLayer) => subLayer.filter || []).join(',')
-    return [datasetKey, filtersKey, config.mode].join(',')
+    const breaksCacheKey = getBreaksCacheKey(config)
+    return [datasetKey, breaksCacheKey].join(',')
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
@@ -350,17 +367,19 @@ class HeatmapAnimatedGenerator {
     const breaks =
       useSublayerBreaks && config.mode !== HeatmapAnimatedMode.TimeCompare
         ? config.sublayers.map(({ breaks }) => breaks || [])
-        : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
+        : getSublayersBreaks(breaksConfig, this.breaksCache[cacheKey]?.breaks)
 
     const legends = getLegends(finalConfig, breaks || [])
     const style = {
       id: finalConfig.id,
-      sources: this._getStyleSources(finalConfig, timeChunks, breaks),
-      layers: this._getStyleLayers(finalConfig, timeChunks, breaks),
+      sources: this._getStyleSources(breaksConfig, timeChunks, breaks),
+      layers: this._getStyleLayers(breaksConfig, timeChunks, breaks),
       metadata: {
         breaks,
         legends,
         temporalgrid: true,
+        minVisibleValue: finalConfig.minVisibleValue,
+        maxVisibleValue: finalConfig.maxVisibleValue,
         numSublayers: finalConfig.sublayers.length,
         sublayers: finalConfig.sublayers,
         visibleSublayers: getSubLayersVisible(finalConfig),

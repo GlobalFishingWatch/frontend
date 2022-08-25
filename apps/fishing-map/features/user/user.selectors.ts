@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { orderBy } from 'lodash'
+import { orderBy, uniqBy } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -9,8 +9,12 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { PRIVATE_SUFIX } from 'data/config'
+import { PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
 import { RootState } from 'store'
+import {
+  selectAllVesselGroups,
+  selectWorkspaceVesselGroups,
+} from 'features/vessel-groups/vessel-groups.slice'
 import {
   selectUserStatus,
   selectUserLogged,
@@ -28,7 +32,7 @@ export const isUserLogged = createSelector(
 )
 
 export const hasUserPermission = (permission: UserPermission) =>
-  createSelector([selectUserData], (userData) => {
+  createSelector([selectUserData], (userData): boolean => {
     if (!userData?.permissions) return false
     return checkExistPermissionInList(userData.permissions, permission)
   })
@@ -43,6 +47,12 @@ export const selectUserDataviewEditPermissions = hasUserPermission({
   type: 'entity',
   value: 'dataview',
   action: 'create-all',
+})
+
+export const selectUserGroupsPermissions = hasUserPermission({
+  type: 'entity',
+  value: 'vessel-group',
+  action: 'create',
 })
 
 export const selectUserId = createSelector([selectUserData], (userData) => {
@@ -85,6 +95,7 @@ export const selectUserWorkspacesPrivate = createSelector(
     const privateWorkspaces = workspaces?.filter(
       (workspace) =>
         workspace.id.includes(PRIVATE_SUFIX) &&
+        !workspace.id.includes(USER_SUFIX) &&
         groupsWithAccess.some((g) => workspace.id.includes(g))
     )
     return orderBy(privateWorkspaces, 'createdAt', 'desc')
@@ -93,7 +104,8 @@ export const selectUserWorkspacesPrivate = createSelector(
 
 export const selectUserDatasets = createSelector(
   [(state: RootState) => selectAllDatasets(state), selectUserId],
-  (datasets, userId) => datasets?.filter((d) => d.ownerId === userId)
+  (datasets, userId) =>
+    datasets?.filter((d) => d.ownerId === userId && d.status !== DatasetStatus.Deleted)
 )
 
 export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
@@ -118,3 +130,17 @@ export const selectUserDatasetsNotUsed = (datasetCategory: DatasetCategory) => {
     }
   )
 }
+
+export const selectUserVesselGroups = createSelector(
+  [selectAllVesselGroups, selectUserId],
+  (vesselGroups, userId) => {
+    return vesselGroups?.filter((d) => d.ownerId === userId)
+  }
+)
+
+export const selectAllVisibleVesselGroups = createSelector(
+  [selectUserVesselGroups, selectWorkspaceVesselGroups],
+  (vesselGroups = [], workspaceVesselGroups = []) => {
+    return uniqBy([...vesselGroups, ...workspaceVesselGroups], 'id')
+  }
+)

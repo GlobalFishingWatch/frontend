@@ -2,7 +2,6 @@ import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
-import { feature } from 'topojson-client'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
@@ -36,7 +35,7 @@ function VesselEventsTooltipSection({
       const vesselResource = Object.values(resources).find((resource) => {
         return (resource.data as any)?.id === vesselId
       })
-      if (vesselResource) return formatInfoField((vesselResource as any).data.shipname, 'name')
+      return vesselResource ? formatInfoField((vesselResource as any).data.shipname, 'name') : ''
     })
   }, [resources, featuresByType])
 

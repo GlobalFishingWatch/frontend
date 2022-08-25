@@ -63,14 +63,13 @@ export const fetchData = async (
     'use-tmt': true,
   })
 
-  const url = `/${API_VERSION}/vessels/advanced-search-tmt?${urlQuery}`
+  const url = `/vessels/advanced-search-tmt?${urlQuery}`
 
   return await GFWAPI.fetch<any>(url, {
     signal,
   })
     .then((json: any) => {
       const resultVessels: Array<VesselSearch> = json.entries
-
       return {
         vessels: resultVessels,
         query,

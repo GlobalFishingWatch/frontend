@@ -5,14 +5,9 @@
 }
 
 .mapContainer {
-  flex: 1;
-  height: calc(100% - 9.6rem);
+  height: calc(100vh - var(--footer-height));
 }
 
-.editorModal {
-  height: 60rem;
-}
-
-.bqModal {
-  height: 56rem;
+.withTimebar {
+  height: calc(100vh - var(--footer-height) - var(--timebar-height));
 }

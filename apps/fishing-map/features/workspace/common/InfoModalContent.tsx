@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { getDatasetDescriptionTranslated } from 'features/i18n/utils'
 import { isGFWUser } from 'features/user/user.slice'
+import GFWOnly from 'features/user/GFWOnly'
 import styles from './InfoModal.module.css'
 
 export const getDatasetQueriesArray = (dataset) => {
@@ -37,7 +38,10 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
       </p>
       {gfwUser && queries?.length > 0 && (
         <div className={styles.content}>
-          <h2 className={styles.subtitle}>Queries used</h2>
+          <h2 className={styles.subtitle}>
+            Queries used
+            <GFWOnly />
+          </h2>
           {queries?.map((query: string, index: number) => (
             <div key={index}>
               <a target="_blank" href={query} rel="noreferrer">

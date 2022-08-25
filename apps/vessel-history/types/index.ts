@@ -1,9 +1,20 @@
-import { Vessel, Authorization, VesselSearch, EventType } from '@globalfishingwatch/api-types'
+import {
+  Vessel,
+  Authorization,
+  VesselSearch,
+  EventType,
+  Workspace as BaseWorkspace,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
-export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel'
+export type WorkspaceStateProperty =
+  | 'q'
+  | 'dataviewInstances'
+  | 'version'
+  | 'vessel'
+  | 'timebarGraph'
 export type WorkspaceOfflineOptions = 'offline'
 export type WorkspaceAdvancedSearchParam =
   | 'imo'
@@ -30,11 +41,17 @@ export type WorkspaceMergeVessels = {
 
 export type BivariateDataviews = [string, string]
 
+export type WorkspaceProfileViewParam = 'port-inspector' | 'insurance-underwriter'
+export interface Workspace<T> extends BaseWorkspace<T> {
+  profileView?: WorkspaceProfileViewParam
+}
+
 export type WorkspaceState = {
   q?: string
   version?: string
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   vessel?: string
+  timebarGraph?: TimebarGraphs
 }
 
 export type RedirectParam = {
@@ -88,17 +105,21 @@ export interface ForcedLaborRisk {
   confidence: boolean
   score: boolean
   year: number
+  reported: boolean
 }
 
 export enum RiskLevel {
   high = 'high',
   low = 'low',
-  unknown = 'unlnown'
+  unknown = 'unknown',
 }
 
 export interface RiskOutput {
-  level: RiskLevel
-  years: number[]
+  levels: RiskLevel[]
+  year: number
+  highrisk: boolean
+  reportedCases: boolean
+  highestRisk: RiskLevel
 }
 
 export interface VesselWithHistory extends Vessel {
@@ -234,3 +255,9 @@ export interface SearchResults {
 }
 
 export type VisibleEvents = EventType[] | 'all' | 'none'
+
+export enum TimebarGraphs {
+  Speed = 'speed',
+  Depth = 'elevation',
+  None = 'none',
+}

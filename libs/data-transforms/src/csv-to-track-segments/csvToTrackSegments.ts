@@ -1,5 +1,5 @@
 import { groupBy } from 'lodash'
-import { Segment } from '../track-value-array-to-segments'
+import { Segment } from '@globalfishingwatch/api-types'
 import { Columns } from './types'
 
 type Args = Columns & {
