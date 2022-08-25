@@ -32,7 +32,7 @@ export interface RenderedEvent extends ActivityEvent {
   description: string
   descriptionGeneric: string
   regionDescription: string
-  durationDescription: string
+  durationDescription?: string
   duration: number
 }
 
@@ -230,7 +230,7 @@ export const selectEventsWithRenderingInfo = createSelector(
 
         const duration = durationDiff.toObject()
 
-        const durationDescription = [
+        const durationDescription = event.end > event.start ? [
           duration.hours && duration.hours > 0
             ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
             : '',
@@ -239,7 +239,7 @@ export const selectEventsWithRenderingInfo = createSelector(
               count: Math.round(duration.minutes as number),
             })
             : '',
-        ].join(' ')
+        ].join(' ') : null
 
         let colorKey = event.type as string
         if (event.type === 'encounter' && dataview.config?.showAuthorizationStatus) {
