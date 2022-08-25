@@ -37,7 +37,12 @@ const DataAndTerminology: React.FC<ModalProps> = ({
         size={size}
         type={type}
         className={cx(styles.infoButton, className)}
-        onClick={() => setShowModal(true)}
+        onClick={(e) => {
+          e.stopPropagation()
+          e.nativeEvent.stopImmediatePropagation();
+          setShowModal(true)
+
+        }}
       />
       <Modal
         appSelector="__next"
