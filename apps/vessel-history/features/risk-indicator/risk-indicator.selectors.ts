@@ -53,6 +53,7 @@ const selectEventsForRiskSummary = createSelector(
         ...(indicators?.loitering?.eventsInMPA || []),
         ...(indicators?.loitering?.eventsInRFMO || []),
         ...(indicators?.portVisits?.nonPSMAPortState || []),
+        ...(indicators?.gaps.intentionalDisabling || [])
       ])
     )
     return events.filter((event) => indicatorsEvents.includes(event.id))
@@ -169,7 +170,6 @@ export const selectEncountersRFMOsAreasWithoutAuthorization = createSelector(
           .filter((event) => event.vessel?.authorizations)
           .map((event) => event.vessel?.authorizations)
           .flat()
-          .filter((eventAuth) => eventAuth.is_authorized === 'false')
           .map((eventAuth) => eventAuth.rfmo)
       )
     )
@@ -185,7 +185,6 @@ export const selectFishingRFMOsAreasWithoutAuthorization = createSelector(
           .filter((event) => event.vessel?.authorizations)
           .map((event) => event.vessel?.authorizations)
           .flat()
-          .filter((eventAuth) => eventAuth.is_authorized === 'false')
           .map((eventAuth) => eventAuth.rfmo)
       )
     )

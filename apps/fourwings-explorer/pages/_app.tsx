@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { AppProps } from 'next/app'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
@@ -14,6 +14,7 @@ import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 import './styles.css'
 import './base.css'
 import './timebar-settings.css'
+import { APP_VERSION } from 'data/config'
 
 const queryClient = new QueryClient()
 
@@ -67,6 +68,11 @@ function CustomApp({ Component, pageProps }: AppProps) {
   }, [sidebarOpen, map])
 
   const asideWidth = '32rem'
+
+  useEffect(() => {
+    console.log(APP_VERSION)
+  }, [])
+
   return (
     <RecoilRoot>
       <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}>

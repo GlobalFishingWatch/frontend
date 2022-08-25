@@ -43,6 +43,12 @@ const MapWrapper: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
+  const styleUpdated = useMemo(() => {
+    return {
+      ...style,
+
+    }
+  }, [])
   const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 
@@ -110,7 +116,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
           centetingMap = setTimeout(() => {
             map.easeTo({
               center: [map.getCenter().lng, map.getCenter().lat],
-              zoom: map.getZoom() + 1,
+              zoom: ENABLE_FLYTO ? map.getZoom() + 1 : map.getZoom(),
               duration:
                 1000 +
                 (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500),
@@ -137,7 +143,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
 
   const onEventChange = useCallback(
     (nextEvent: RenderedEvent, pitch: number, bearing: number, padding: number) => {
-      const currentZoom = map.getZoom() - 1
+      const currentZoom = ENABLE_FLYTO ? map.getZoom() - 1 : map.getZoom()
       if (ENABLE_FLYTO) {
         map.flyTo({
           center: [nextEvent.position.lon, nextEvent.position.lat],

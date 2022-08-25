@@ -19,7 +19,7 @@ export const FLY_EFFECTS = {
   fly: 2, // nice fly to moving the camera
 }
 // enable / disable the effect for switch events in the map
-export const ENABLE_FLYTO = FLY_EFFECTS.softFly //maybe we can move this to the settings
+export const ENABLE_FLYTO = FLY_EFFECTS.noFly //maybe we can move this to the settings
 export const DEBUG_MODE =
   ((process.env.NEXT_PUBLIC_DEBUG_MODE ?? false) as boolean) ||
   (WORKSPACE_ENV === 'production' ? false : true)
@@ -78,6 +78,7 @@ export const EVENTS_COLORS: Record<string, string> = {
   port_visit: '#99EEFF',
   fishing: '#fff',
   fishingLabels: '#163f89',
+  gap: '#f7b500'
 }
 
 export const DEFAULT_EMPTY_VALUE = ' --- '

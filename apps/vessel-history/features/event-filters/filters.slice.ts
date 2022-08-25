@@ -7,12 +7,14 @@ export type availableEventFilters =
   | 'fishingEvents'
   | 'encounters'
   | 'loiteringEvents'
+  | 'gapEvents'
 
 export type Filters = {
   portVisits: boolean
   fishingEvents: boolean
   encounters: boolean
   loiteringEvents: boolean
+  gapEvents: boolean
   start?: string
   end?: string
 }
@@ -26,6 +28,7 @@ export const initialState: FiltersSlice = {
     encounters: true,
     loiteringEvents: true,
     portVisits: true,
+    gapEvents: true,
   },
 }
 
