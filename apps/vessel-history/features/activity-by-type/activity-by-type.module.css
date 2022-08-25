@@ -24,6 +24,7 @@
 
 .headingButtons > * {
   margin-left: var(--space-S);
+  margin-bottom: var(--space-XS);
 }
 
 button.filterBtn {
