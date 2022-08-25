@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
@@ -16,11 +16,9 @@ import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { selectVesselId } from 'routes/routes.selectors'
 import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
-import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
-import AisCoverage from './AisCoverage'
 interface ActivityProps {
   vessel: VesselWithHistory | null
   lastPosition: any
@@ -40,7 +38,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
   const highlightsIds = useSelector(selectHighlightEventIds)
-  const { coverage } = useRiskIndicator()
+
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
       if (event.type === EventTypeVoyage.Voyage) {
@@ -65,10 +63,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   return (
     <div className={styles.activityContainer}>
-      <div className={styles.heading}>
-        <AisCoverage value={coverage?.percentage} />
-        <ActivityFilters></ActivityFilters>
-      </div>
+      <ActivityFilters></ActivityFilters>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>
