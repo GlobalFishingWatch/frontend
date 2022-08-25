@@ -28,7 +28,7 @@ const ActivityDataAndTerminology = (): React.ReactElement => {
       <TerminologyLoiteringEvents></TerminologyLoiteringEvents>
       <label>{t('events.portVisitEvents', 'Port Visits')}</label>
       <TerminologyPortVisitEvents />
-      <label>{t('events.gapEvents', 'Gap Events')}</label>
+      <label>{t('events.gapEvents', 'Likely disabling events')}</label>
       <TerminologyAisDisabling />
       <GuideAndVideo source="Data and terminology" />
     </Fragment>

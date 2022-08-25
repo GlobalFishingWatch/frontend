@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Anchorage } from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import { getEventRegionDescription, RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectPsmaEarliestDateById } from 'features/psma/psma.selectors'
 import { useI18nDate } from 'features/i18n/i18nDate'
 import { PORT_CONFIDENCE } from 'data/constants'
 import Faq from 'features/profile/components/Faq'
+import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import ActivityModalContentField from './ActivityModalContentField'
 import styles from './ActivityModalDetails.module.css'
@@ -22,33 +23,34 @@ const ActivityModalContentDetailsGap: React.FC<ActivityModalContentProps> = (
 ): React.ReactElement => {
   const event = props.event
   const { t } = useTranslation()
-  const psmaDate = useSelector(
-    selectPsmaEarliestDateById(event.port_visit?.intermediateAnchorage.flag ?? '')
-  )
-  const psmaDateFormatted = useI18nDate(psmaDate ?? 0, DateTime.DATE_FULL)
+  const eezs = useSelector(selectEEZs)
+  const rfmos = useSelector(selectRFMOs)
+  const mpas = useSelector(selectMPAs)
 
-  const psmaDescription = useMemo(
-    () =>
-      psmaDate
-        ? t('event.psmaIncluded', 'Included Since {{value}}', {
-          value: psmaDateFormatted,
-        })
-        : t('event.psmaNotIncluded', 'Not included'),
-    [psmaDate, psmaDateFormatted, t]
-  )
+  const { onRegions, offRegions } = useMemo(() => {
+    return {
+      onRegions: getEventRegionDescription(event.gap.onPosition, eezs, rfmos, mpas),
+      offRegions: getEventRegionDescription(event.gap.offPosition, eezs, rfmos, mpas)
+    }
+  }, [event, eezs, rfmos, mpas])
 
   return (
     <Fragment>
-      <ActivityModalContentDetails event={event} />
+      <ActivityModalContentDetails event={event}
+        startLabel={t('event.gapStart', 'Start of “off” event') as string}
+        endLabel={t('event.gapEnd', 'End of “off” event') as string} />
       <div className={styles.row}>
-        <ActivityModalContentField label={t('event.disabledDistance', 'Disabled distance')} value={t('event.formatDistanceKm', '{{value}} km', {
+        <ActivityModalContentField label={t('event.disabledDistance', 'Distance between transmissions')} value={t('event.formatDistanceKm', '{{value}} km', {
           value: event.gap.distanceKm?.toFixed(2),
         })} />
-        <ActivityModalContentField label={t('event.avgSpeed', 'Avg Speed')} value={t('event.formatSpeedKnots', '{{value}} knots', {
+        <ActivityModalContentField label={t('event.avgEstSpeed', 'Avg est speed')} value={t('event.formatSpeedKnots', '{{value}} knots', {
           value: event.gap.impliedSpeedKnots?.toFixed(2),
         })} />
       </div>
-      <ActivityModalContentField label={t('event.regionsInvolved', 'Regions involved')} value={event.description} />
+      <ActivityModalContentField label={t('event.regionsTransmissionOffInvolved', 'location of “off” event')}
+        value={offRegions && offRegions !== '' ? offRegions : t('common.unknown')} />
+      <ActivityModalContentField label={t('event.regionsTransmissionOnInvolved', 'location of "on" event')}
+        value={onRegions && onRegions !== '' ? onRegions : t('common.unknown')} />
 
     </Fragment>
   )

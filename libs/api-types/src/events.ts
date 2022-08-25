@@ -3,6 +3,16 @@ export interface PointCoordinate {
   lon: number
 }
 
+export interface Regions {
+  eez: string[]
+  rfmo: string[]
+  mpa: any[]
+}
+
+export interface GapPosition extends PointCoordinate {
+  regions: Regions
+}
+
 export enum EventTypes {
   Encounter = 'encounter',
   Fishing = 'fishing',
@@ -134,8 +144,8 @@ export interface GapEvent {
   impliedSpeedKnots: number;
   isEventStart?: boolean;
   isEventEnd?: boolean;
-  offPosition: PointCoordinate;
-  onPosition: PointCoordinate;
+  offPosition: GapPosition;
+  onPosition: GapPosition;
   positions12HoursBefore: number;
   positions12HoursBeforeSat: number;
   positionsPerDaySatReception: number;

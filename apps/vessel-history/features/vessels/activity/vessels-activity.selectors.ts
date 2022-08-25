@@ -8,7 +8,7 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes, EventTypes, GapEvent, ResourceStatus } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventTypes, GapEvent, GapPosition, Regions, ResourceStatus } from '@globalfishingwatch/api-types'
 import { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
 import { APP_PROFILE_VIEWS, DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
@@ -17,7 +17,7 @@ import {
   selectActiveTrackDataviews,
   selectTrackDatasetConfigsCallback,
 } from 'features/dataviews/dataviews.selectors'
-import { ActivityEvent, Regions } from 'types/activity'
+import { ActivityEvent } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
@@ -278,8 +278,8 @@ export const selectHighlightEventIds = createSelector(
   }
 )
 
-const getEventRegionDescription = (
-  event: ActivityEvent,
+export const getEventRegionDescription = (
+  event: ActivityEvent | GapPosition,
   eezs: Region[],
   rfmos: Region[],
   mpas: Region[]
@@ -308,7 +308,7 @@ const getEventRegionDescription = (
 
   const regionsDescription = (['mpa', 'eez', 'rfmo'] as (keyof Regions)[])
     // use only regions with values
-    .filter((regionType) => event?.regions && event?.regions[regionType].length > 0)
+    .filter((regionType) => event?.regions && event?.regions[regionType]?.length > 0)
     // retrieve its corresponding names
     .map(
       (regionType) =>

@@ -102,7 +102,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
           onClick={() => trackAndSetFilter('gapEvents', !isGapEventsActive)}
           active={isGapEventsActive}
         ></Switch>
-        {t(`settings.gapvents.title` as any, 'Gap Events')}
+        {t(`settings.gapvents.title` as any, 'Likely disabling events')}
       </div>
       <br />
       <InputDate
