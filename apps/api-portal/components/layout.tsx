@@ -54,6 +54,32 @@ const Layout = ({ children }) => {
           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
           })(window,document,'script','dataLayer','${GOOGLE_TAG_MANAGER_KEY}');
+
+          function debounce(func, wait, immediate) {
+            var timeout;
+
+            return function executedFunction() {
+              var context = this;
+              var args = arguments;
+
+              var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+              };
+
+              var callNow = immediate && !timeout;
+
+              clearTimeout(timeout);
+
+              timeout = setTimeout(later, wait);
+
+              if (callNow) func.apply(context, args);
+            };
+          };
+          window.addEventListener('popstate', function (event) {
+            var location = event.currentTarget.location.hash;
+            dataLayer.push({ event: 'page_view', location: location });
+          });
         `}
       </Script>
       <main className={styles.main}>
