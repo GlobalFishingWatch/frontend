@@ -19,6 +19,7 @@ interface ListItemProps {
   vessel: RelatedVesselSearchMerged
   selected?: boolean
   index: number
+  showLabelsHelp?: boolean
   onDeleteClick?: () => void
   onVesselClick?: (vessel: Vessel) => void
 }
@@ -71,14 +72,16 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
             )}
             <div className={styles.transmissionField}>
               <label>{t('vessel.transmission_plural', 'transmissions')}
-                <DataAndTerminology size="tiny" type="default" title={t('vessel.transmission_plural', 'transmissions')}>
-                  <Trans i18nKey="vessel.transmissionDescription">
-                    Transmissions refer to AIS transmissions. AIS stands for Automatic Identification Systems and is a GPS-like
-                    device that large ships use to broadcast their position in order to avoid collisions.
-                    The number is the number and time range of AIS transmissions we have on record, that we were able to match to a vessel.
-                    For more information, please see our FAQs.
-                  </Trans>
-                </DataAndTerminology>
+                {props.showLabelsHelp &&
+                  <DataAndTerminology size="tiny" type="default" title={t('vessel.transmission_plural', 'transmissions')}>
+                    <Trans i18nKey="vessel.transmissionDescription">
+                      Transmissions refer to AIS transmissions. AIS stands for Automatic Identification Systems and is a GPS-like
+                      device that large ships use to broadcast their position in order to avoid collisions.
+                      The number is the number and time range of AIS transmissions we have on record, that we were able to match to a vessel.
+                      For more information, please see our FAQs.
+                    </Trans>
+                  </DataAndTerminology>
+                }
               </label>
               {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
                 <Fragment>
