@@ -13,8 +13,8 @@ export const mapLayersAtom = atom<MapLayer[]>({
   key: 'mapLayers',
   dangerouslyAllowMutability: true,
   default: [
-    { id: 'fourwings', visible: false },
-    { id: 'vessel', visible: true },
+    { id: 'fourwings', visible: true },
+    { id: 'vessel', visible: false },
   ],
   // effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
 })

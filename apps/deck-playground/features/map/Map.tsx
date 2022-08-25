@@ -2,6 +2,9 @@ import { Fragment, useEffect, useCallback, useMemo } from 'react'
 import { DeckGL } from '@deck.gl/react'
 import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
+import { FourwingsLayer, FOURWINGS_LAYER_ID } from 'layers/fourwings/FourwingsLayer'
+import { aggregateCell } from 'layers/fourwings/FourwingsTileLayer'
+import { VALUE_MULTIPLIER } from 'loaders/constants'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayerType, useMapLayers } from 'features/map/layers.hooks'
@@ -81,9 +84,31 @@ const MapWrapper = (): React.ReactElement => {
     highlightEndTime,
   ])
 
+  const fourwingsLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
+  useEffect(() => {
+    if (fourwingsLayerVisible) {
+      const fourwingsLayer = new FourwingsLayer({
+        minFrame: startTime,
+        maxFrame: endTime,
+      })
+      setMapLayerInstances('fourwings', fourwingsLayer)
+    } else {
+      setMapLayerInstances('fourwings', null)
+    }
+  }, [fourwingsLayerVisible, setMapLayerInstances, startTime, endTime])
+
   const layers = useMemo(() => {
     return [basemap, ...mapLayers.flatMap((l) => l.instance)]
   }, [mapLayers])
+
+  const getTooltip = (tooltip) => {
+    if (tooltip.sourceLayer?.id === FOURWINGS_LAYER_ID && tooltip.object) {
+      const { minFrame, maxFrame } = tooltip.layer.props
+      const value = aggregateCell(tooltip.object, { minFrame, maxFrame })
+      return (value / VALUE_MULTIPLIER).toString()
+    }
+    return
+  }
 
   return (
     <Fragment>
@@ -91,7 +116,7 @@ const MapWrapper = (): React.ReactElement => {
         controller={true}
         initialViewState={INITIAL_VIEW_STATE}
         layers={layers}
-        getTooltip={({ object }) => object && `value: ${object.colorValue}`}
+        getTooltip={getTooltip}
       />
     </Fragment>
   )

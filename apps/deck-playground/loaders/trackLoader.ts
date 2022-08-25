@@ -1,7 +1,7 @@
 import Pbf from 'pbf'
 import { LoaderWithParser } from '@loaders.gl/loader-utils'
 
-export const trackLoader = (): LoaderWithParser => ({
+export const trackLoader: LoaderWithParser = {
   name: 'Tracks',
   module: 'tracks',
   options: {},
@@ -12,7 +12,7 @@ export const trackLoader = (): LoaderWithParser => ({
   worker: false,
   parse: async (arrayBuffer) => parseTrack(arrayBuffer),
   parseSync: async (arrayBuffer) => parseTrack(arrayBuffer),
-})
+}
 
 function readData(_, data, pbf) {
   data.push(pbf.readPackedSVarint())
