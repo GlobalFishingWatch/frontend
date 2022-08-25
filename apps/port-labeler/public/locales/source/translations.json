@@ -1,5 +1,6 @@
 {
     "common": {
+        "country": "Country",
         "port": "Port",
         "subarea": "Subarea",
         "anchorage": "Anchorage",

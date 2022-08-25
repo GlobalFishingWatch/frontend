@@ -9,8 +9,7 @@ import {
   SubBrands,
 } from '@globalfishingwatch/ui-components'
 import { flags } from '@globalfishingwatch/i18n-labels'
-import { selectCountry, sortOptions } from 'features/labeler/labeler.slice'
-import { selectCountries } from 'features/map/map.selectors'
+import { selectCountries, selectCountry, sortOptions } from 'features/labeler/labeler.slice'
 import styles from './SidebarHeader.module.css'
 import { useSelectedTracksConnect } from './sidebar.hooks'
 
@@ -59,7 +58,8 @@ function SidebarHeader(props: HeaderProps) {
       </div>
       <Select
         options={countries}
-        onRemove={() => {}}
+        onRemove={() => { }}
+        className={styles.countrySelector}
         placeholder={t('messages.country_selection', 'Select a country')}
         selectedOption={country ? { id: country, label: flags[country] ?? country } : undefined}
         onSelect={(selected: SelectOption) => {

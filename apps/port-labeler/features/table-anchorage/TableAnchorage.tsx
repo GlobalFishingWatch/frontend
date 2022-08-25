@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import { selectDisplayExtraData, sortPoints, toogleExtraData } from 'features/labeler/labeler.slice'
+import { flags } from '@globalfishingwatch/i18n-labels'
+import { IconButton, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { changeAnchoragePort, selectCountries, selectDisplayExtraData, sortPoints, toogleExtraData } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
 import { PortPosition } from 'types'
 import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
@@ -12,16 +13,19 @@ import styles from './TableAnchorage.module.css'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
 
+
 function TableAnchorage() {
 
   const { t } = useTranslation()
   const records = useSelector(selectFilteredPoints)
   const extraColumn = useSelector(selectDisplayExtraData)
+  const countries: SelectOption[] = useSelector(selectCountries)
   const dispatch = useDispatch()
   type orderDirectionType = 'asc' | 'desc' | ''
 
   const [orderColumn, setOrderColumn] = useState(null)
   const [orderDirection, setOrderDirection] = useState<orderDirectionType>('')
+  const [anchorageChangeCountryOpen, setAnchorageChangeCountryOpen] = useState<PortPosition>(null)
 
   const onToggleHeader = useCallback((column, order) => {
     setOrderColumn(column)
@@ -36,6 +40,21 @@ function TableAnchorage() {
     return mapBounds && mapBounds.north >= point.lat && mapBounds.south <= point.lat
       && mapBounds.west <= point.lon && mapBounds.east >= point.lon
   }, [mapBounds])
+
+  const onSetCountryToChange = useCallback((point: PortPosition) => {
+    setAnchorageChangeCountryOpen(point)
+  }, [])
+
+  const changeAnchorageCountry = useCallback((newCountry) => {
+    dispatch(changeAnchoragePort({
+      id: anchorageChangeCountryOpen.s2id,
+      iso3: newCountry
+    }))
+    setAnchorageChangeCountryOpen({
+      ...anchorageChangeCountryOpen,
+      iso3: newCountry
+    })
+  }, [anchorageChangeCountryOpen])
 
   const screenFilteredRecords = useMemo(() => {
     return records?.filter((record) => (pointInScreen(record)))
@@ -60,6 +79,8 @@ function TableAnchorage() {
           onToggle={(order) => onToggleHeader('top_destination', order)} />
         {extraColumn && <TableHeader
           label={t('common.anchorageId', 'Anchorage ID')} />}
+        {extraColumn && <TableHeader
+          label={t('common.country', 'Country')} />}
         <IconButton
           type="default"
           icon='more'
@@ -89,6 +110,7 @@ function TableAnchorage() {
                         key={record.s2id}
                         record={record}
                         extra={extraColumn}
+                        onCountryChange={onSetCountryToChange}
                       ></TableRow>
                     </div>
                   )
@@ -100,6 +122,26 @@ function TableAnchorage() {
       ) : (
         <p className={styles.alert}>{t('messages.no_anchorages', 'No anchorages found')}</p>
       )}
+
+      <Modal
+        appSelector="__next"
+        title={'Change anchorage country'}
+        isOpen={!!anchorageChangeCountryOpen}
+        onClose={() => setAnchorageChangeCountryOpen(null)}
+      >
+        <div>
+          <Select
+            options={countries}
+            onRemove={() => { }}
+            placeholder={t('messages.country_selection', 'Select a country')}
+            selectedOption={anchorageChangeCountryOpen ? { id: anchorageChangeCountryOpen.iso3, label: flags[anchorageChangeCountryOpen.iso3] ?? anchorageChangeCountryOpen.iso3 } : undefined}
+            onSelect={(selected: SelectOption) => {
+              changeAnchorageCountry(selected.id)
+
+            }}
+          />
+        </div>
+      </Modal>
     </div>
 
   )
