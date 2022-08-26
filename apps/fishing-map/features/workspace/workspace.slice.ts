@@ -169,7 +169,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           return isVesselDataview && !hasTrackDatasetConfig
         })
         const vesselDataviewsWithTrack = vesselDataviewsWithoutTrack.flatMap((dataviewInstance) => {
-          const infoDatasetConfig = dataviewInstance.datasetsConfig?.find(
+          const infoDatasetConfig = dataviewInstance?.datasetsConfig?.find(
             (dsc) => dsc.endpoint === EndpointId.Vessel
           )
           const infoDataset: Dataset = datasets.find((d) => d.id === infoDatasetConfig?.datasetId)
