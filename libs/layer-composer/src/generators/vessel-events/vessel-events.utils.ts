@@ -54,7 +54,11 @@ const getDateTimeDate = (date: string | number) => {
 }
 
 const filterEventByTimerange = (startMs: number, endMs: number, feature: Feature) =>
-  feature.properties && feature.properties.startMs <= endMs && feature.properties.endMs >= startMs
+  feature.properties &&
+  ((feature.properties.startMs && feature.properties.startMs <= endMs) ||
+    !feature.properties.startMs) &&
+  ((feature.properties.endMs && feature.properties.endMs >= startMs) ||
+    !feature.properties.endMs)
 
 
 export const getVesselEventsGeojson = (
