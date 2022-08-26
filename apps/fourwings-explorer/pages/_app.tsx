@@ -66,7 +66,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
     }
   }, [sidebarOpen, map])
 
-  const asideWidth = '32rem'
+  const asideWidth = '34rem'
   return (
     <RecoilRoot>
       <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}>
